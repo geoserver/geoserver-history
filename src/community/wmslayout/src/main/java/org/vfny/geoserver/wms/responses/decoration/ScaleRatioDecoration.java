@@ -12,13 +12,18 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.geotools.renderer.lite.RendererUtilities;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.BasicStroke;
+import java.awt.Stroke;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -37,7 +42,7 @@ public class ScaleRatioDecoration implements Decoration {
     }
 
     public Dimension findOptimalSize(WMSMapContext mapContext){
-        return new Dimension(50, 50);
+        return new Dimension(100, 30);
     }
 
     public String getScaleText(WMSMapContext mapContext) {
@@ -53,15 +58,29 @@ public class ScaleRatioDecoration implements Decoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
+        drawScale(g2d, paintArea, mapContext);
+    }
+
+    public void drawScale(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) {
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        Dimension d = 
+            new Dimension(metrics.stringWidth(getScaleText(mapContext)), metrics.getHeight());
         Color oldColor = g2d.getColor();
-        g2d.setColor(Color.WHITE);
-        g2d.fill(paintArea);
-        g2d.setColor(Color.BLACK);
-        g2d.drawString(
-            getScaleText(mapContext), 
-            (float)paintArea.getMinX(), 
-            (float)paintArea.getMaxY()
+
+        float x = (float)(paintArea.getMinX() + (paintArea.getWidth() - d.getWidth()) / 2.0); 
+        float y = (float)(paintArea.getMaxY() - (paintArea.getHeight() - d.getHeight()) / 2.0);
+        Rectangle2D bgRect = new Rectangle2D.Double(
+            x - 3.0, y - d.getHeight(), 
+            d.getWidth() + 6.0, d.getHeight() + 6.0
         );
+        g2d.setColor(Color.WHITE);
+        g2d.fill(bgRect);
+
+        g2d.setColor(Color.BLACK);
+
+        g2d.drawString(getScaleText(mapContext), x, y);
+        g2d.draw(bgRect);
+
         g2d.setColor(oldColor);
     }
 }
