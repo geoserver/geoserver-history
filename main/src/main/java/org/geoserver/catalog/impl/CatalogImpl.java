@@ -128,6 +128,12 @@ public class CatalogImpl implements Catalog {
         if ( store.getWorkspace() == null ) {
             throw new IllegalArgumentException( "Store must be part of a workspace");
         }
+        
+        WorkspaceInfo workspace = store.getWorkspace();
+        if ( getStoreByName( workspace, store.getName(), StoreInfo.class ) != null ) {
+            String msg = "Store '"+ store.getName() +"' already exists in workspace '"+workspace.getName()+"'";
+            throw new IllegalArgumentException( msg );
+        }
     }
     
     public void remove(StoreInfo store) {
@@ -321,11 +327,26 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate(ResourceInfo resource) {
+        if ( resource.getName() == null ) {
+            throw new NullPointerException( "Resource name must not be null");
+        }
         if ( resource.getStore() == null ) {
             throw new IllegalArgumentException( "Resource must be part of a store");
         }
         if ( resource.getNamespace() == null ) {
             throw new IllegalArgumentException( "Resource must be part of a namespace");
+        }
+        
+        StoreInfo store = resource.getStore();
+        if ( getResourceByStore( store, resource.getName(), ResourceInfo.class) != null ) {
+            String msg = "Resource named '"+resource.getName()+"' already exists in store: '"+ store.getName()+"'";
+            throw new IllegalArgumentException( msg );
+        }
+        
+        NamespaceInfo namespace = resource.getNamespace();
+        if ( getResourceByName( namespace, resource.getName(), ResourceInfo.class) != null ) {
+            String msg = "Resource named '"+resource.getName()+"' already exists in namespace: '"+ namespace.getPrefix()+"'";
+            throw new IllegalArgumentException( msg );
         }
     }
     
@@ -612,6 +633,9 @@ public class CatalogImpl implements Catalog {
         if ( layer.getResource() == null ) {
             throw new NullPointerException( "Layer resource must not be null" );
         }
+        if ( getLayerByName( layer.getName() ) != null ) {
+            throw new IllegalArgumentException( "Layer named '" + layer.getName() + "', already exists.");
+        }
         //(JD): not sure if default style should be mandatory
         //if ( layer.getDefaultStyle() == null ){
         //    throw new NullPointerException( "Layer default style must not be null" );
@@ -761,6 +785,11 @@ public class CatalogImpl implements Catalog {
             !(layerGroup.getStyles().size() == layerGroup.getLayers().size()) ) {
             throw new IllegalArgumentException( "Layer group has different number of styles than layers");
         }
+        
+        if ( getLayerGroupByName( layerGroup.getName() ) != null ) {
+            throw new IllegalArgumentException( "Layer group named '" + layerGroup.getName() + "' already exists." );
+        }
+        
     }
     
     public void remove(LayerGroupInfo layerGroup) {
@@ -869,6 +898,10 @@ public class CatalogImpl implements Catalog {
         if ( namespace.getURI() == null ) {
             throw new NullPointerException( "Namespace uri must not be null");
         }
+        
+        if ( getNamespaceByPrefix( namespace.getPrefix() ) != null ) {
+            throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
+        }
     }
     
     public void remove(NamespaceInfo namespace) {
@@ -930,6 +963,10 @@ public class CatalogImpl implements Catalog {
         if ( workspace.getName() == null ) {
             throw new NullPointerException( "workspace name must not be null");
         }
+        if ( getWorkspaceByName( workspace.getName() ) != null ) {
+            throw new IllegalArgumentException( "Workspace named '"+ workspace.getName() +"' already exists.");
+        }
+            
     }
     
     public void remove(WorkspaceInfo workspace) {
@@ -1038,6 +1075,10 @@ public class CatalogImpl implements Catalog {
         }
         if ( style.getFilename() == null ) {
             throw new NullPointerException( "Style fileName must not be null");
+        }
+        
+        if ( getStyleByName( style.getName() ) != null ) {
+            throw new IllegalArgumentException( "Style named '" +  style.getName() +"' already exists.");
         }
     }
     
