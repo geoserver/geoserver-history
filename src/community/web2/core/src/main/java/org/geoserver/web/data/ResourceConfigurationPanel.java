@@ -4,12 +4,16 @@
  */
 package org.geoserver.web.data;
 
+import java.util.logging.Logger;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.ResourceInfo;
+import org.geotools.util.logging.Logging;
 
+@SuppressWarnings("serial")
 public class ResourceConfigurationPanel extends Panel {
-	private static final long serialVersionUID = 4881474189619124359L;
+    protected static Logger LOGGER = Logging.getLogger(ResourceConfigurationPanel.class);
 
 	public ResourceConfigurationPanel(String id, IModel model){
 		super(id, model);
