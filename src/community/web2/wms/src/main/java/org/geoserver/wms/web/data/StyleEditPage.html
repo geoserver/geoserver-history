@@ -1,6 +1,4 @@
 <html>
-<head>
-</head>
 <body>
 <wicket:extend>
   <h2><wicket:message key="wms.data.style.editorTitle">Style Editor</wicket:message></h2>
@@ -12,7 +10,8 @@
       </li>
       <li>
         <label for="sld"><wicket:message key="wms.data.style.raw">SLD Text</wicket:message></label>
-        <span id="sld" class="field textarea" wicket:id="sld"> </span>
+        <div wicket:id="sld">
+        </div>
       </li>
       <li class="button-group selfclear">
         <button class="btnTxt" wicket:id="submit" type="submit"><wicket:message key="submit"/></button>
