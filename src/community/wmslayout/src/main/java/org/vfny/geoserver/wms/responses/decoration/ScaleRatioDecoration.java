@@ -15,6 +15,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Dimension;
@@ -22,7 +23,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.BasicStroke;
 import java.awt.Stroke;
 import java.io.IOException;
 import java.net.URL;
@@ -63,6 +63,7 @@ public class ScaleRatioDecoration implements Decoration {
         Dimension d = 
             new Dimension(metrics.stringWidth(getScaleText(mapContext)), metrics.getHeight());
         Color oldColor = g2d.getColor();
+        Stroke oldStroke = g2d.getStroke();
 
         float x = (float)(paintArea.getMinX() + (paintArea.getWidth() - d.getWidth()) / 2.0); 
         float y = (float)(paintArea.getMaxY() - (paintArea.getHeight() - d.getHeight()) / 2.0);
@@ -74,10 +75,12 @@ public class ScaleRatioDecoration implements Decoration {
         g2d.fill(bgRect);
 
         g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1));
 
         g2d.drawString(getScaleText(mapContext), x, y);
         g2d.draw(bgRect);
 
         g2d.setColor(oldColor);
+        g2d.setStroke(oldStroke);
     }
 }
