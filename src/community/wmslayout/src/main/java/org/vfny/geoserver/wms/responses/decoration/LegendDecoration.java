@@ -55,6 +55,8 @@ public class LegendDecoration implements Decoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
+        Dimension d = findOptimalSize(mapContext);
+
         Color oldColor = g2d.getColor();
         g2d.setColor(Color.WHITE);
         g2d.fill(paintArea);
@@ -62,6 +64,13 @@ public class LegendDecoration implements Decoration {
 
         AffineTransform tx = 
             AffineTransform.getTranslateInstance(paintArea.getX(), paintArea.getY());
+        
+        double scaleFactor = (paintArea.getWidth() / d.getWidth());
+        scaleFactor = Math.min(scaleFactor, paintArea.getHeight() / d.getHeight());
+
+        if (scaleFactor < 1.0) {
+            tx.scale(scaleFactor, scaleFactor);
+        }
 
         for (MapLayerInfo layer : mapContext.getRequest().getLayers()){
             BufferedImage legend = getLegend(layer);

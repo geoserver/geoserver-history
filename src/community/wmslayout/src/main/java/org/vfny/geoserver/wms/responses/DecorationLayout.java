@@ -6,12 +6,14 @@ package org.vfny.geoserver.wms.responses;
 
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.decorations.LegendDecoration;
+import org.vfny.geoserver.wms.responses.decorations.ScaleRatioDecoration;
 import org.vfny.geoserver.wms.responses.decorations.WatermarkDecoration;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,6 +47,8 @@ public class DecorationLayout {
                 Mode m) {
 
                 int x = 0, y = 0;
+                int height = dim.height, width = dim.width;
+                
 
                 if (m == Mode.APPEND) {
                     switch (p) {
@@ -117,17 +121,18 @@ public class DecorationLayout {
 
                     // in the event that this block is the same size as the container, 
                     // ignore the offset so it will fit
-                    if ((dim.width + o.x) > container.width) {
-                        x = (int) container.getMinX();
+                    if ((dim.width + (2 * o.x)) > container.width) {
+                        x = (int) container.getMinX() + o.x;
+                        width = container.width - (2 * o.x);
                     }
 
-                    if ((dim.height + o.y) > container.height) {
-                        y = (int) container.getMinY();
+                    if ((dim.height + (2 * o.y)) > container.height) {
+                        y = (int) container.getMinY() + o.y;
+                        height = container.height - (2 * o.y);
                     }
 
-                    return new Rectangle(x, y, dim.width, dim.height);
+                    return new Rectangle(x, y, width, height);
                 }
-
             }
         }
 
@@ -156,7 +161,10 @@ public class DecorationLayout {
             Dimension desiredSize = findOptimalSize(mapContext);
 
             Rectangle box = Position.findBounds(position, rect, desiredSize, offset, mode);
+            Shape oldClip = g2d.getClip();
+            g2d.setClip(box);
             decoration.paint(g2d, box, mapContext);
+            g2d.setClip(oldClip);
         }
     }
 
@@ -183,13 +191,8 @@ public class DecorationLayout {
             Block.Mode.OVERLAY
         ));
 
-        d = new WatermarkDecoration();
-        m = new HashMap<String, String>();
-        m.put("url", "/home/dwins/Cactuar.jpg");
-        d.loadOptions(m);
-
         dl.addBlock(new Block(
-            d,
+            new ScaleRatioDecoration(),
             Block.Position.LR, 
             new Dimension(100, 30),
             new Point(62, 16),
@@ -211,27 +214,28 @@ public class DecorationLayout {
         int x = mapContext.getRequest().getWidth(); 
         int y = mapContext.getRequest().getHeight();
 
-        for (Block b : blocks){
-            Dimension d = b.findOptimalSize(mapContext);
-            x = Math.max(x, d.width + b.offset.x * 2);
-            y = Math.max(y, d.height + b.offset.y * 2);
-        }
+//        for (Block b : blocks){
+//            Dimension d = b.findOptimalSize(mapContext);
+//            x = Math.max(x, d.width + b.offset.x * 2);
+//            y = Math.max(y, d.height + b.offset.y * 2);
+//        }
 
         return new Rectangle(0, 0, x, y);
     }
 
     public Rectangle findMapBounds(WMSMapContext mapContext) {
-        Rectangle image = findImageBounds(mapContext);
-
-        int dWidth = (int) (image.getWidth() - mapContext.getRequest().getWidth());
-        int dHeight = (int) (image.getHeight() - mapContext.getRequest().getHeight());
-
-        return new Rectangle(
-            dWidth / 2, 
-            dHeight / 2, 
-            mapContext.getRequest().getWidth(), 
-            mapContext.getRequest().getHeight()
-        );
+        return findImageBounds(mapContext);
+//        Rectangle image = findImageBounds(mapContext);
+//
+//        int dWidth = (int) (image.getWidth() - mapContext.getRequest().getWidth());
+//        int dHeight = (int) (image.getHeight() - mapContext.getRequest().getHeight());
+//
+//        return new Rectangle(
+//            dWidth / 2, 
+//            dHeight / 2, 
+//            mapContext.getRequest().getWidth(), 
+//            mapContext.getRequest().getHeight()
+//        );
     }
 
     private void addBlock(Block b){
