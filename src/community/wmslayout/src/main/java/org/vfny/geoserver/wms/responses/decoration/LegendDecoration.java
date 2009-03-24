@@ -16,6 +16,8 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.IOException;
@@ -41,7 +43,8 @@ public class LegendDecoration implements Decoration {
                 try {
                     BufferedImage legend = getLegend(layer);
                     x = Math.max(x, (int)legend.getWidth());
-                    y += legend.getHeight();
+                    x = Math.max(x, 7 * layer.getLabel().length());
+                    y += legend.getHeight() + 16; // 16pixels for the title
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Error getting legend for " + layer);
                     continue;
@@ -59,31 +62,40 @@ public class LegendDecoration implements Decoration {
         Dimension d = findOptimalSize(mapContext);
 
         Color oldColor = g2d.getColor();
+        AffineTransform oldTransform = (AffineTransform)g2d.getTransform().clone();
+        Font oldFont = g2d.getFont();
+        g2d.setFont(oldFont.deriveFont(Font.BOLD));
         g2d.setColor(Color.WHITE);
         g2d.fill(paintArea);
+        g2d.translate(paintArea.getX(), paintArea.getY());
+        g2d.setColor(Color.BLACK);
         final WMS wms = mapContext.getRequest().getWMS();
 
-        AffineTransform tx = 
-            AffineTransform.getTranslateInstance(paintArea.getX(), paintArea.getY());
-        
+        AffineTransform tx = new AffineTransform(); 
+
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+
         double scaleFactor = (paintArea.getWidth() / d.getWidth());
         scaleFactor = Math.min(scaleFactor, paintArea.getHeight() / d.getHeight());
 
         if (scaleFactor < 1.0) {
-            tx.scale(scaleFactor, scaleFactor);
+            g2d.scale(scaleFactor, scaleFactor);
         }
 
         for (MapLayerInfo layer : mapContext.getRequest().getLayers()){
             BufferedImage legend = getLegend(layer);
+            g2d.translate(0, metrics.getHeight());
+            g2d.drawString(layer.getLabel(), 4, 0 - metrics.getDescent());
             g2d.drawImage(legend, tx, null);
-            tx.translate(0, legend.getHeight());
+            g2d.translate(0, legend.getHeight());
         }
 
-        g2d.setColor(Color.BLACK);
+        g2d.setTransform(oldTransform);
         g2d.draw(new Rectangle2D.Double(
             paintArea.getX(), paintArea.getY(),
             paintArea.getWidth() - 1.0, paintArea.getHeight() - 1.0
         ));
+        g2d.setFont(oldFont);
         g2d.setColor(oldColor);
     }
 
