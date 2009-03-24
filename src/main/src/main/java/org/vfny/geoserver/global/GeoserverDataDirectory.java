@@ -189,15 +189,29 @@ public class GeoserverDataDirectory {
      * @return The style file, or null if it does not exist.
      */
     public static File findStyleFile(String fileName) {
+        return findStyleFile( fileName, false );
+    }
+    
+    /**
+     * Looks up a file under the "styles" directory.
+     * 
+     * @param fileName The name of the file.
+     * @param resolve If set to true a non-null file handle will be returned even 
+     * when the file does not exist.
+     * 
+     * @return The style file, or null if it does not exist and resolve == false.
+     */
+    public static File findStyleFile(String fileName, boolean resolve) {
         File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
         File styleFile = new File( new File( baseDir, "styles" ), fileName );
         
-        if (styleFile.exists() ) {
+        if (resolve || styleFile.exists() ) {
             return styleFile;
         }
         
         return null;
     }
+    
     /**
      * Given a path, tries to interpret it as a file into the data directory, or as an absolute
      * location, and returns the actual absolute location of the File
