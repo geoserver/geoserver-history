@@ -40,30 +40,40 @@
       </li>
       <li>
         <fieldset>
-          <legend><span>Native Data</span></legend>
+          <legend><span>Bounding boxes</span></legend>
           <ul>
-            <li>
-              <label for="SRS"><wicket:message key="page.nativeSrs">Native SRS</wicket:message></label>
-              <input id="SRS" class="text" type="text" wicket:id="SRS"></input>
-            </li>    
+            <form wicket:id="boxesForm">
             <li>
               <label for="nativeBoundingBox"><wicket:message key="page.nativeBbox">Native BBox</wicket:message></label>
-              <input id="nativeBoundingBox" class="text" type="text" wicket:id="nativeBoundingBox"></input>
+              <div id="nativeBoundingBox" wicket:id="nativeBoundingBox"></div>
+              <a href="#" wicket:id="computeNative">Compute from data</a>
             </li>
+            <li>
+              <label for="latLonBoundingBox"><wicket:message key="page.latLonBbox">Lat/Lon BBOX</wicket:message></label>
+              <div id="latLonBoundingBox" wicket:id="latLonBoundingBox"></div>
+              <a href="#" wicket:id="computeLatLon">Reproject from native</a>
+            </li>
+            </form>
           </ul>
+          
         </fieldset>
       </li>
       <li>
         <fieldset>
-          <legend><span>Published Data</span></legend>
+          <legend><span>Coordinate Reference Systems</span></legend>
           <ul>
             <li>
-              <label for="boundingBox"><wicket:message key="page.publishBbox">Published BBox</wicket:message></label>
-              <span wicket:id="boundingBox"></span>
+              <label for="nativeSRS"><wicket:message key="page.nativeSRS">Native SRS</wicket:message></label>
+              <span id="nativeSRS", wicket:id="nativeSRS"></span>
             </li>
             <li>
-              <label for="latLonBoundingBox"><wicket:message key="page.latLonBbox">Lat/Lon BBox</wicket:message></label>
-              <input id="latLonBoundingBox" class="text" type="text" wicket:id="latLonBoundingBox"></input>
+              <label for="srsHandling"><wicket:message key="page.srsHandling">Native to declared SRS handling</wicket:message></label>
+              <select id="srsHandling" wicket:id="srsHandling"></select>
+            </li>            
+            
+            <li>
+              <label for="declaredSRS"><wicket:message key="page.declaredSRS">Declared SRS</wicket:message></label>
+              <span id="declaredSRS" wicket:id="declaredSRS"></span>
             </li>
           </ul>
         </fieldset>
