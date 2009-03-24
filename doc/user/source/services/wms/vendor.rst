@@ -2,3 +2,134 @@
 
 WMS vendor parameters
 =====================
+
+WFS vendor parameters are options that are not defined in the official WFS specification, but are allowed by it.  GeoServer supports a range of custom WFS parameters.
+
+Filter parameters
+-----------------
+
+The WMS specification does not allow for much filtering of data.  GeoServer's WMS filter options are expanded to match those allowed by WFS.
+
+Filter
+``````
+
+The ``filter`` parameter encodes a list of OGC filters (in XML).  The list is enclosed in () parenthesis.  When this parameter is used in a GET request, the brackets of XML need to be URL-encoded.  If more than one layer is specified in the ``layers`` parameter, then more than one filter can be specified here, each corresponding to a layer.
+
+An example of an OGC filter encoded as part of a GET request::
+
+   filter=%3CFilter%20xmlns:gml=%22http://www.opengis.net/gml%22%3E%3CIntersects%3E%3CPropertyName%3Ethe_geom%3C/PropertyName%3E%3Cgml:Point%20srsName=%224326%22%3E%3Cgml:coordinates%3E-74.817265,40.5296504%3C/gml:coordinates%3E%3C/gml:Point%3E%3C/Intersects%3E%3C/Filter%3E
+
+CQL filter
+``````````
+
+The ``cql_filter`` parameter is similar to the ``filter`` parameter, expect that the filter is encoded using CQL (Common Query Language).  This makes the request much more human readable.  However, CQL isn't as flexible as OGC filters, and can't encode as many types of filters as the OGC specification does. In particular, filters by feature ID are not supported.  If more than one layer is specified in the ``layers`` parameter, then more than one filter can be specified here, each corresponding to a layer.
+
+An example of the same filter as above using CQL::
+
+   cql_filter=INTERSECT(the_geom,%20POINT%20(-74.817265%2040.5296504))
+
+Feature ID
+``````````
+
+The ``featureid`` parameter filters by feature ID, a unique value given to all features.  Multiple features can be selected by separating the featureids by comma, as seen in this example::
+
+   featureid=states.1,states.45  
+   
+  
+Rendering parameters
+--------------------
+
+Buffer
+``````
+
+The ``buffer`` parameter specifies the number of extra pixels that should be taken into account when rendering a map (using the :ref:`wms_getmap` request).  This is important for catching features that are outside the current bounding box, but whose styling is thick enough to make them visible inside the relevant area.  GeoServer will try to compute this buffer automatically by parsing the SLD, but that may fail if line widths and point sizes are not literal values.  When these size are linked to attributes, this parameter may be necessary.
+
+The syntax for using a buffer is::
+
+   buffer=<bufferwidth>
+   
+where ``<bufferwidth>`` is the width of the buffer in pixels.
+
+Palette
+``````` 
+
+It is sometimes advisable (for speed and bandwidth reasons) to downsample the bit depth of returned maps.  The way to do this is to create an image with a limited color palette, and save it in the ``palettes`` directory inside your GeoServer Data Directory.  It is then possible to specify the ``palette`` parameter of the form::
+
+   palette=<image>
+
+where ``<image>`` is the filename of the palette image (without the extension).  To force a web-safe palette, you can use the syntax ``palette=safe``.
+  
+Metatiling parameters
+---------------------
+
+When using a tiled client such as OpenLayers, there can be issues with duplicated labels. To deal with this, GeoServer can create metatiles, that is, images are rendered and then split into smaller tiles (by default in a 3x3 pattern) before being served.
+In order for meta-tiling to work properly, the tile size must be set to 256x256 pixels, and two extra parameters must be set.
+
+Tiled
+`````
+
+This parameter is of the form::
+
+   tiled=[yes|no]
+
+For metatiling to function, this must be set to ``yes``.
+
+Tilesorigin
+```````````
+
+This parameter is of the form::
+
+   tilesorigin=x,y
+   
+where ``x`` and ``y`` are the coordinates of the lower left corner (the "origin") of the layer in OpenLayers.
+
+
+KML parameters
+--------------
+
+These parameters mainly affect Google Earth functionality.
+
+Kmattr
+``````
+
+The ``kmattr`` parameter determines whether the KML returned by GeoServer should include clickable attributes or not.  The syntax is::
+
+   kmattr=[true|false]
+
+Kmscore
+```````
+
+The ``kmscore`` parameter sets whether GeoServer should render data as vector or raster.  The syntax is::
+
+   kmscore=<value>
+
+The possible values for this parameter are between 0 (force raster output) and 100 (force vector output).  See the page on :ref:`ge-feature-kml-vector-vs-raster-kml` for more information on this parameter.
+
+
+Paging parameters
+-----------------
+
+GeoServer WMS supports the parameters ``maxFeatures`` and ``startIndex``.  Both can be used together to provide "paging" support.  This is helpful in situations such as KML crawling, where it is desirable to be able to retrieve the map in sections when there are a large number of features.
+
+Note that not every layer will support paging.
+
+The ``startindex`` parameter specifies with a positive integer the index in an ordered list of features to start rendering.  For a layer to be queried this way, the underlying feature source shall support paging (such as PostGIS).
+
+The ``maxfeatures`` parameter sets a limit on the amount of features rendered, using a positive integer.  When used with ``startindex``, the features rendered will be the ones starting at the ``startindex`` value.
+
+
+Capabilities filter parameters
+------------------------------
+
+Namespace
+`````````
+
+WMS :ref:`wms_getcap` requests can be filtered to only return layers corresponding to a particular namespace.  The syntax is::
+
+   namespace=<namespace>
+
+where ``<namespace>`` is the namespace prefix.
+
+Using an invalid namespace prefix will not cause any errors, but the document returned will not contain information on any layers, only layer groups.
+
+.. note::  This only affects the capabilities document, and not any other requests. WMS requests given to other layers, even when a different namespace is specified, will still be processed.

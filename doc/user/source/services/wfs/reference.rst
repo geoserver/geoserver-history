@@ -134,7 +134,7 @@ If we wanted information about a specific featuretype, the GET request would be:
 
 The only difference between the two requests is the addition of ``typeName=namespace:featuretype``, where ``featuretype`` is the name of the featuretype and ``namespace`` is the name of the namespace that featuretype is contained in.
 
-
+.. _wfs_getfeature:
 
 GetFeature
 ----------

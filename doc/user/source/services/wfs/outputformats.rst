@@ -3,14 +3,13 @@
 WFS output formats
 ==================
 
-WFS returns features and feature information in a number of possible formats.  This list shows the list of output formats.  In all cases the syntax for setting an output format is::
+WFS returns features and feature information in a number of possible formats.  This page shows a list of the output formats.  In all cases the syntax for setting an output format is::
 
    outputFormat=<outputformat>
 
-where ``<outputformat>`` is any of the below options.
+where ``<outputformat>`` is any of the options below.
 
-.. note:: Some additional output formats are available with the use of an extension, such as Excel.  This list applies just to the basic GeoServer installation.
-
+.. note:: Some additional output formats are available with the use of an extension, such as Excel.  This list applies just to the basic GeoServer installation.  The full list of output formats supported by your GeoServer instance can be found by requesting your WFS :ref:`wfs_getcap`.
 
 .. list-table::
    :widths: 30 30 40
