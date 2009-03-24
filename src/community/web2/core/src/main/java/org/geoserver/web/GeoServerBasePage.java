@@ -58,6 +58,11 @@ import org.geoserver.web.acegi.GeoServerSession;
  */
 public class GeoServerBasePage extends WebPage {
 
+    /**
+     * feedback panel for subclasses to report errors and information.
+     */
+    protected FeedbackPanel feedbackPanel;
+    
 	@SuppressWarnings("serial")
     public GeoServerBasePage() {
 
@@ -132,7 +137,8 @@ public class GeoServerBasePage extends WebPage {
                 }
         );
 
-        add(new FeedbackPanel("feedback"));
+        add(feedbackPanel = new FeedbackPanel("feedback"));
+        feedbackPanel.setOutputMarkupId( true );
     }
 
     /**
