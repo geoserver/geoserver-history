@@ -5,39 +5,40 @@ import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 public class EnvelopePanelTest extends GeoServerWicketTestSupport {
 
-    Envelope e;
+    ReferencedEnvelope e;
     
     @Override
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
         
-        e = new Envelope(-180,180,-90,90);
+        e = new ReferencedEnvelope(-180,180,-90,90, DefaultGeographicCRS.WGS84);
         tester.startPage(new EnvelopePanelTestPage(e) ); 
     }
     
     public void test() throws Exception {
-        tester.assertComponent( "content:form", Form.class );
+        tester.assertComponent( "form", Form.class );
         
-        FormTester ft = tester.newFormTester( "content:form");
-        assertEquals( "-180", ft.getTextComponentValue( "minX") );
-        assertEquals( "-90", ft.getTextComponentValue( "minY") );
-        assertEquals( "180", ft.getTextComponentValue( "maxX") );
-        assertEquals( "90", ft.getTextComponentValue( "maxY") );
+        FormTester ft = tester.newFormTester( "form");
+        assertEquals( "-180", ft.getTextComponentValue( "content:minX") );
+        assertEquals( "-90", ft.getTextComponentValue( "content:minY") );
+        assertEquals( "180", ft.getTextComponentValue( "content:maxX") );
+        assertEquals( "90", ft.getTextComponentValue( "content:maxY") );
         
-        EnvelopePanel ep = (EnvelopePanel) tester.getComponentFromLastRenderedPage("content");
+        EnvelopePanel ep = (EnvelopePanel) tester.getComponentFromLastRenderedPage("form:content");
         assertEquals( e, ep.getModelObject() );
         
-        ft.setValue( "minX", "-2");
-        ft.setValue( "minY", "-2");
-        ft.setValue( "maxX", "2");
-        ft.setValue( "maxY", "2");
+        ft.setValue( "content:minX", "-2");
+        ft.setValue( "content:minY", "-2");
+        ft.setValue( "content:maxX", "2");
+        ft.setValue( "content:maxY", "2");
         
-        ep.updateModel();
+        ft.submit();
         
         assertEquals( new Envelope(-2,2,-2,2), ep.getModelObject() );
     }
