@@ -137,6 +137,9 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(StoreInfo store) {
+        if ( !getResourcesByStore(store, ResourceInfo.class).isEmpty() ) {
+            throw new IllegalArgumentException( "Unable to delete non-empty store.");
+        }
         store = unwrap(store);
         stores.remove(store.getClass(),store);
         removed(store);
@@ -351,6 +354,10 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(ResourceInfo resource) {
+        //ensure no references to the resource
+        if ( !getLayers( resource ).isEmpty() ) {
+            throw new IllegalArgumentException( "Unable to delete resource referenced by layer");
+        }
         resource = unwrap(resource);
         resources.remove(resource.getClass(), resource);
         removed(resource);
@@ -643,6 +650,13 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(LayerInfo layer) {
+        //ensure no references to the layer
+        for ( LayerGroupInfo lg : layerGroups ) {
+            if ( lg.getLayers().contains( layer ) ) {
+                String msg = "Unable to delete layer referenced by layer group '"+lg.getName()+"'";
+                throw new IllegalArgumentException( msg );
+            }
+        }
         layers.remove(unwrap(layer));
         removed(layer);
     }
@@ -905,6 +919,9 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(NamespaceInfo namespace) {
+        if ( !getResourcesByNamespace(namespace, ResourceInfo.class ).isEmpty() ) {
+            throw new IllegalArgumentException( "Unable to delete non-empty namespace.");
+        }
         namespaces.remove(namespace.getPrefix());
         removed(namespace);
     }
@@ -973,7 +990,10 @@ public class CatalogImpl implements Catalog {
         //JD: maintain the link between namespace and workspace, remove this when this is no 
         // longer necessary
         if ( getNamespaceByPrefix( workspace.getName() ) != null ) {
-            throw new IllegalStateException ( "Cannot delete workspace with linked namespace");
+            throw new IllegalArgumentException ( "Cannot delete workspace with linked namespace");
+        }
+        if ( !getStoresByWorkspace( workspace, StoreInfo.class).isEmpty() ) {
+            throw new IllegalArgumentException( "Cannot delete non-empty workspace.");
         }
         workspaces.remove( workspace.getName() );
         removed( workspace );
@@ -1083,6 +1103,12 @@ public class CatalogImpl implements Catalog {
     }
     
     public void remove(StyleInfo style) {
+        //ensure no references to the style
+        for ( LayerInfo l : layers ) {
+            if ( style.equals( l.getDefaultStyle() ) || l.getStyles().contains( style )) {
+                throw new IllegalArgumentException( "Unable to delete style referenced by '"+ l.getName()+"'");
+            }
+        }
         styles.remove(unwrap(style));
         removed(style);
     }
