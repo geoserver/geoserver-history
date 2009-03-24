@@ -131,18 +131,10 @@ public class HigherOrderFunction implements Function
 
     // the stuff used to make sure that we have a valid return type or a
     // known error, just like in the attribute classes
-    private static URI returnTypeURI;
-    private static RuntimeException earlyException;
+    private static final URI returnTypeURI = URI.create(BooleanAttribute.identifier);
 
     // try to create the return type URI, and also setup the id map
     static {
-        try {
-            returnTypeURI = new URI(BooleanAttribute.identifier);
-        } catch (Exception e) {
-            earlyException = new IllegalArgumentException();
-            earlyException.initCause(e);
-        }
-
         idMap = new HashMap();
 
         idMap.put(NAME_ANY_OF, new Integer(ID_ANY_OF));
@@ -218,9 +210,6 @@ public class HigherOrderFunction implements Function
      * @return the return type
      */
     public URI getReturnType() {
-        if (earlyException != null)
-            throw earlyException;
-
         return returnTypeURI;
     }
 
