@@ -10,6 +10,7 @@ import org.vfny.geoserver.wms.responses.Decoration;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -77,6 +78,12 @@ public class LegendDecoration implements Decoration {
             g2d.drawImage(legend, tx, null);
             tx.translate(0, legend.getHeight());
         }
+
+        g2d.setColor(Color.BLACK);
+        g2d.draw(new Rectangle2D.Double(
+            paintArea.getX(), paintArea.getY(),
+            paintArea.getWidth() - 1.0, paintArea.getHeight() - 1.0
+        ));
         g2d.setColor(oldColor);
     }
 
