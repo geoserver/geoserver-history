@@ -10,8 +10,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
-import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -117,9 +117,12 @@ public class CRSPanel extends FormComponentPanel {
         AjaxLink wktLink = new AjaxLink( "wkt" ) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                popupWindow.setInitialHeight( 275 );
-                popupWindow.setInitialWidth( 425 );
+                popupWindow.setInitialHeight( 375 );
+                popupWindow.setInitialWidth( 525 );
                 popupWindow.setContent(new WKTPanel( popupWindow.getContentId(), getCRS()));
+                CoordinateReferenceSystem crs = getCRSFromModel();
+                if(crs != null)
+                    popupWindow.setTitle(crs.getName().toString());
                 popupWindow.show(target);
             }
         };
@@ -132,29 +135,32 @@ public class CRSPanel extends FormComponentPanel {
     
     @Override
     protected void onBeforeRender() {
+        CoordinateReferenceSystem crs = getCRSFromModel();
+        if ( crs != null ) {
+            srsTextField.setModelObject( toSRS(crs) );
+            wktLabel.setModelObject( crs.getName().toString() );    
+        }
+        
+        super.onBeforeRender();
+    }
+
+    private CoordinateReferenceSystem getCRSFromModel() {
         Object value = getModelObject();
         
+        CoordinateReferenceSystem crs = null;
         if ( value != null ) {
-            CoordinateReferenceSystem crs = null;
             if ( value instanceof CoordinateReferenceSystem ) {
                 crs = (CoordinateReferenceSystem) value;
-            }
-            else if ( value instanceof String ) {
+            } else if ( value instanceof String ) {
                 String s = (String) value;
                 crs = fromSRS( s );
                 if ( crs == null ) {
                     //try as wkt
                     crs = fromWKT( s );
-                }
-            }
-            
-            if ( crs != null ) {
-                srsTextField.setModelObject( toSRS(crs) );
-                wktLabel.setModelObject( crs.getName().toString() );    
+                } 
             }
         }
-        
-        super.onBeforeRender();
+        return crs;
     }
     
     @Override
@@ -267,14 +273,12 @@ public class CRSPanel extends FormComponentPanel {
         public WKTPanel(String id, CoordinateReferenceSystem crs) {
             super(id);
             
-            TextArea wktTextArea = new TextArea("wkt");
-            wktTextArea.setOutputMarkupId(true);
-            wktTextArea.setEnabled( false );
+            MultiLineLabel wktLabel = new MultiLineLabel("wkt");
             
-            add( wktTextArea );
+            add( wktLabel );
             
             if ( crs != null ) {
-                wktTextArea.setModel( new Model( crs.toWKT() ) );
+                wktLabel.setModel( new Model( crs.toWKT() ) );
             }
         }
     }
