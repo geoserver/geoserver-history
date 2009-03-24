@@ -182,11 +182,13 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
     public void produceMap() throws WmsException {
         findDecorationLayout(mapContext);
 
-        Rectangle imageRect = layout.findImageBounds(mapContext);
-        Rectangle paintArea = layout.findMapBounds(mapContext);
+        Rectangle paintArea = new Rectangle(
+            0, 0, 
+            mapContext.getRequest().getWidth(), mapContext.getRequest().getHeight()
+        );
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine("setting up " + imageRect.width + "x" + imageRect.height + " image");
+            LOGGER.fine("setting up " + paintArea.width + "x" + paintArea.height + " image");
         }
 
         // extra antialias setting
@@ -220,7 +222,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         // is enabled, since apparently the Crop operation inside the meta-tiler
         // generates striped images in that case (see GEOS-
         boolean useAlpha = transparent || MetatileMapProducer.isRequestTiled(request, this);
-        final RenderedImage preparedImage = prepareImage(imageRect.width, imageRect.height, palette, useAlpha);
+        final RenderedImage preparedImage = prepareImage(paintArea.width, paintArea.height, palette, useAlpha);
         final Map hintsMap = new HashMap();
 
         final Graphics2D graphic = ImageUtils.prepareTransparency(
@@ -366,7 +368,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         // apply watermarking
         try {
             if (layout != null)
-                this.layout.paint(graphic, imageRect, mapContext);
+                this.layout.paint(graphic, paintArea, mapContext);
         } catch (Exception e) {
             throw new WmsException("Problem occurred while trying to watermark data", "", e);
         } 

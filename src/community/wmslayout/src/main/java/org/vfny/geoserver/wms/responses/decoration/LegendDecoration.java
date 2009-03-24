@@ -33,24 +33,27 @@ public class LegendDecoration implements Decoration {
     private static final Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses");
 
+    private static final int TITLE_INDENT = 4;
+
     public void loadOptions(Map<String, String> options){
     }
 
-    public Dimension findOptimalSize(WMSMapContext mapContext){
+    public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
         int x = 0, y = 0;
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont().deriveFont(Font.BOLD));
         try {
             for (MapLayerInfo layer : mapContext.getRequest().getLayers()){
                 try {
                     BufferedImage legend = getLegend(layer);
                     x = Math.max(x, (int)legend.getWidth());
-                    x = Math.max(x, 7 * layer.getLabel().length());
-                    y += legend.getHeight() + 16; // 16pixels for the title
+                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(layer.getLabel()));
+                    y += legend.getHeight() + metrics.getHeight(); 
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Error getting legend for " + layer);
                     continue;
                 }
             }
-            x += 5;
+            x += metrics.getDescent();
             return new Dimension(x, y);
         } catch (Exception e) {
             return new Dimension(50,50);
@@ -59,16 +62,14 @@ public class LegendDecoration implements Decoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
-        Dimension d = findOptimalSize(mapContext);
+        Dimension d = findOptimalSize(g2d, mapContext);
+        Rectangle bgRect = new Rectangle(0, 0, d.width, d.height);
 
         Color oldColor = g2d.getColor();
         AffineTransform oldTransform = (AffineTransform)g2d.getTransform().clone();
         Font oldFont = g2d.getFont();
         g2d.setFont(oldFont.deriveFont(Font.BOLD));
-        g2d.setColor(Color.WHITE);
-        g2d.fill(paintArea);
         g2d.translate(paintArea.getX(), paintArea.getY());
-        g2d.setColor(Color.BLACK);
         final WMS wms = mapContext.getRequest().getWMS();
 
         AffineTransform tx = new AffineTransform(); 
@@ -81,20 +82,23 @@ public class LegendDecoration implements Decoration {
         if (scaleFactor < 1.0) {
             g2d.scale(scaleFactor, scaleFactor);
         }
+        AffineTransform bgTransform = g2d.getTransform();
+        g2d.setColor(Color.WHITE);
+        g2d.fill(bgRect);
+        g2d.setColor(Color.BLACK);
 
         for (MapLayerInfo layer : mapContext.getRequest().getLayers()){
             BufferedImage legend = getLegend(layer);
             g2d.translate(0, metrics.getHeight());
-            g2d.drawString(layer.getLabel(), 4, 0 - metrics.getDescent());
+            g2d.drawString(layer.getLabel(), TITLE_INDENT, 0 - metrics.getDescent());
             g2d.drawImage(legend, tx, null);
             g2d.translate(0, legend.getHeight());
         }
 
+        g2d.setTransform(bgTransform);
+        g2d.draw(new Rectangle(bgRect.x, bgRect.y, bgRect.width -1, bgRect.height - 1));
+
         g2d.setTransform(oldTransform);
-        g2d.draw(new Rectangle2D.Double(
-            paintArea.getX(), paintArea.getY(),
-            paintArea.getWidth() - 1.0, paintArea.getHeight() - 1.0
-        ));
         g2d.setFont(oldFont);
         g2d.setColor(oldColor);
     }

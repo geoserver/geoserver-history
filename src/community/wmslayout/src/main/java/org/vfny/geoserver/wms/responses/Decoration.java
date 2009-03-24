@@ -27,7 +27,7 @@ public interface Decoration {
      */
     public void loadOptions(Map<String,String> options);
 
-    public Dimension findOptimalSize(WMSMapContext mapContext);
+    public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext);
 
     /**
      * Render the contents of this decoration onto the provided graphics object within the 

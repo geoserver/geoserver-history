@@ -41,8 +41,9 @@ public class ScaleRatioDecoration implements Decoration {
     public void loadOptions(Map<String, String> options) {
     }
 
-    public Dimension findOptimalSize(WMSMapContext mapContext){
-        return new Dimension(100, 30);
+    public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
+        FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
+        return new Dimension(metrics.stringWidth(getScaleText(mapContext)), metrics.getHeight());
     }
 
     public String getScaleText(WMSMapContext mapContext) {
@@ -58,10 +59,6 @@ public class ScaleRatioDecoration implements Decoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
-        drawScale(g2d, paintArea, mapContext);
-    }
-
-    public void drawScale(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) {
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont());
         Dimension d = 
             new Dimension(metrics.stringWidth(getScaleText(mapContext)), metrics.getHeight());

@@ -150,15 +150,15 @@ public class DecorationLayout {
             mode = m;
         }
 
-        public Dimension findOptimalSize(WMSMapContext mapContext){
+        public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
             return (dimension != null) 
                 ? dimension 
-                : decoration.findOptimalSize(mapContext);
+                : decoration.findOptimalSize(g2d, mapContext);
         }
 
         public void paint(Graphics2D g2d, Rectangle rect, WMSMapContext mapContext) 
         throws Exception {
-            Dimension desiredSize = findOptimalSize(mapContext);
+            Dimension desiredSize = findOptimalSize(g2d, mapContext);
 
             Rectangle box = Position.findBounds(position, rect, desiredSize, offset, mode);
             Shape oldClip = g2d.getClip();
@@ -186,8 +186,8 @@ public class DecorationLayout {
         dl.addBlock(new Block(
             d,
             Block.Position.LR, 
-            new Dimension(50, 50),
-            new Point(6, 6),
+            new Dimension(24, 24),
+            new Point(6, 18),
             Block.Mode.OVERLAY
         ));
 
@@ -195,7 +195,7 @@ public class DecorationLayout {
             new ScaleRatioDecoration(),
             Block.Position.LR, 
             new Dimension(100, 30),
-            new Point(62, 16),
+            new Point(40, 16),
             Block.Mode.OVERLAY
         ));
         
@@ -208,34 +208,6 @@ public class DecorationLayout {
         ));
 
         return dl;
-    }
-
-    public Rectangle findImageBounds(WMSMapContext mapContext) {
-        int x = mapContext.getRequest().getWidth(); 
-        int y = mapContext.getRequest().getHeight();
-
-//        for (Block b : blocks){
-//            Dimension d = b.findOptimalSize(mapContext);
-//            x = Math.max(x, d.width + b.offset.x * 2);
-//            y = Math.max(y, d.height + b.offset.y * 2);
-//        }
-
-        return new Rectangle(0, 0, x, y);
-    }
-
-    public Rectangle findMapBounds(WMSMapContext mapContext) {
-        return findImageBounds(mapContext);
-//        Rectangle image = findImageBounds(mapContext);
-//
-//        int dWidth = (int) (image.getWidth() - mapContext.getRequest().getWidth());
-//        int dHeight = (int) (image.getHeight() - mapContext.getRequest().getHeight());
-//
-//        return new Rectangle(
-//            dWidth / 2, 
-//            dHeight / 2, 
-//            mapContext.getRequest().getWidth(), 
-//            mapContext.getRequest().getHeight()
-//        );
     }
 
     private void addBlock(Block b){

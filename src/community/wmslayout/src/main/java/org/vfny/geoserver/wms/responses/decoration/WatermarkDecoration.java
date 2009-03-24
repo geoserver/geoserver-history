@@ -48,7 +48,7 @@ public class WatermarkDecoration implements Decoration {
         this.imageURL = options.get("url");
     }
 
-    public Dimension findOptimalSize(WMSMapContext mapContext){
+    public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
         try{
             BufferedImage logo = getLogo(mapContext);
             return new Dimension(logo.getWidth(), logo.getHeight());
