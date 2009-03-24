@@ -9,6 +9,10 @@ import org.vfny.geoserver.wms.responses.decorations.LegendDecoration;
 import org.vfny.geoserver.wms.responses.decorations.ScaleRatioDecoration;
 import org.vfny.geoserver.wms.responses.decorations.WatermarkDecoration;
 
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -175,37 +179,70 @@ public class DecorationLayout {
     }
 
     public static DecorationLayout fromFile(File f) throws Exception {
-        //TODO: Actually try to read something
         DecorationLayout dl = new DecorationLayout();
         
-        Decoration d = new WatermarkDecoration();
-        Map<String, String> m = new HashMap<String, String>();
-        m.put("url", "/home/dwins/public_html/alachua/theme/img/north_arrow.png");
-        d.loadOptions(m);
+        Document confFile = new SAXBuilder().build(f);
 
-        dl.addBlock(new Block(
-            d,
-            Block.Position.LR, 
-            new Dimension(24, 24),
-            new Point(6, 18),
-            Block.Mode.OVERLAY
-        ));
+        for (Element e : (List<Element>)confFile.getRootElement().getChildren("decoration")){
+            Map<String, String> m = new HashMap<String,String>();
+            for (Element option : (List<Element>)e.getChildren("option")){
+                m.put(option.getAttributeValue("name"), option.getAttributeValue("value"));
+            }
 
-        dl.addBlock(new Block(
-            new ScaleRatioDecoration(),
-            Block.Position.LR, 
-            new Dimension(100, 30),
-            new Point(40, 16),
-            Block.Mode.OVERLAY
-        ));
-        
-        dl.addBlock(new Block(
-            new LegendDecoration(),
-            Block.Position.UL, 
-            null,
-            new Point(6, 6),
-            Block.Mode.OVERLAY
-        ));
+            Decoration decoration = null;
+            if (e.getAttributeValue("type").equals("watermark")) {
+                decoration = new WatermarkDecoration();
+            } else if (e.getAttributeValue("type").equals("legend")) {
+                decoration = new LegendDecoration();
+            } else if (e.getAttributeValue("type").equals("scaleratio")) {
+                decoration = new ScaleRatioDecoration();
+            }
+
+            decoration.loadOptions(m);
+
+            Block.Position pos = null;
+
+            if (e.getAttributeValue("affinity").equalsIgnoreCase("bottom,right")) {
+                pos = Block.Position.LR;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("bottom,left")) {
+                pos = Block.Position.LL;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("bottom,center")) {
+                pos = Block.Position.LC;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("center,left")) {
+                pos = Block.Position.CL;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("center,right")) {
+                pos = Block.Position.CR;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("center,center")) {
+                pos = Block.Position.CC;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,right")) {
+                pos = Block.Position.UR;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,left")) {
+                pos = Block.Position.UL;
+            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,center")) {
+                pos = Block.Position.LC;
+            }
+
+            Dimension size = null;
+
+            if (e.getAttributeValue("size") != null 
+                    && !e.getAttributeValue("size").equalsIgnoreCase("auto")) {
+                String[] sizeArr = e.getAttributeValue("size").split(",");
+
+                size = new Dimension(Integer.valueOf(sizeArr[0]), Integer.valueOf(sizeArr[1]));
+            }
+
+            String[] offsetArr = e.getAttributeValue("offset").split(",");
+            Point offset =
+                new Point(Integer.valueOf(offsetArr[0]), Integer.valueOf(offsetArr[1]));
+
+            dl.addBlock(new Block(
+                decoration,
+                pos,
+                size,
+                offset,
+                Block.Mode.OVERLAY
+            ));
+        }
 
         return dl;
     }
