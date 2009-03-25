@@ -654,7 +654,7 @@ public class CatalogImplTest extends TestCase {
         //}
         //catch( Exception e) {}
         //
-        //l2.setDefaultStyle( s );
+        l2.setDefaultStyle( s );
         
         catalog.add( l2 );
         assertEquals( 2, catalog.getLayers().size() );

@@ -238,6 +238,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
     
     public void testAddLayer() throws Exception {
         testAddFeatureType();
+        testAddStyle();
         
         File f = new File( testData.getDataDirectoryRoot(), 
         "workspaces/acme/foostore/foo/layer.xml");
@@ -246,6 +247,9 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         LayerInfo l = catalog.getFactory().createLayer();
         l.setName("foolayer");
         l.setResource( catalog.getFeatureTypeByName( "bar", "foo") );
+        
+        StyleInfo s = catalog.getStyleByName( "foostyle");
+        l.setDefaultStyle(s);
         catalog.add( l );
         
         assertTrue( f.exists() );
@@ -321,7 +325,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
 
     public void testAddLayerGroup() throws Exception {
         testAddLayer();
-        testAddStyle();
+        //testAddStyle();
         
         File f = new File( testData.getDataDirectoryRoot(), 
             "layergroups/lg.xml");
