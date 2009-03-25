@@ -29,13 +29,13 @@ Web.
    data-directory/index
    webadmin/index
    data/index
-   services/index
    styling/index
-   google-earth/index
-   geowebcache/index
+   services/index
    security/index
+   geowebcache/index
+   google-earth/index
    production/index
-   templates/index
-   tutorials/index
    extensions/index
+   tutorials/index
    faq/index
+
