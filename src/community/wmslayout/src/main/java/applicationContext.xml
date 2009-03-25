@@ -8,7 +8,7 @@
         <constructor-arg index="0" ref="wms"/>
     </bean>
 
-    <bean id="watermark" 
+    <bean id="image" 
           class="org.vfny.geoserver.wms.responses.decoration.WatermarkDecoration"
           singleton="false"
     />
