@@ -117,7 +117,8 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
     private WMS wms;
 
     /** A logger for this class. */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = 
+        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
@@ -399,15 +400,17 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
 
         try {
             File layoutDir = GeoserverDataDirectory.findConfigDir(
-                    GeoserverDataDirectory.getGeoserverDataDirectory(),
-                    "layouts"
-                    );
+                GeoserverDataDirectory.getGeoserverDataDirectory(),
+                "layouts"
+            );
 
             File layoutConfig = new File(layoutDir, layoutName + ".xml");
 
-            //if (layoutConfig.exists() && layoutConfig.canRead()){
-            this.layout = DecorationLayout.fromFile(layoutConfig);
-            //}
+            if (layoutConfig.exists() && layoutConfig.canRead()){
+                this.layout = DecorationLayout.fromFile(layoutConfig);
+            } else {
+                LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
+            }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Failed to load layout: " + layoutName, e);
         }

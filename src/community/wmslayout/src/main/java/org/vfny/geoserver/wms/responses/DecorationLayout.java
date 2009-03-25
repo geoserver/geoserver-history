@@ -188,6 +188,12 @@ public class DecorationLayout {
             }
 
             Decoration decoration = getDecoration(e.getAttributeValue("type"));
+            if (decoration == null) {
+                LOGGER.log(
+                    Level.WARNING,
+                    "Unknown decoration type: " + e.getAttributeValue("type") + " requested."
+                );
+            }
             decoration.loadOptions(m);
 
             Block.Position pos = null;
@@ -210,20 +216,42 @@ public class DecorationLayout {
                 pos = Block.Position.UL;
             } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,center")) {
                 pos = Block.Position.LC;
+            } else {
+                LOGGER.log(
+                    Level.WARNING,
+                    "Unknown affinity: " + e.getAttributeValue("affinity") + " requested."
+                );
+                continue;
             }
 
             Dimension size = null;
 
-            if (e.getAttributeValue("size") != null 
-                    && !e.getAttributeValue("size").equalsIgnoreCase("auto")) {
-                String[] sizeArr = e.getAttributeValue("size").split(",");
+            try{
+                if (e.getAttributeValue("size") != null 
+                        && !e.getAttributeValue("size").equalsIgnoreCase("auto")) {
+                    String[] sizeArr = e.getAttributeValue("size").split(",");
 
-                size = new Dimension(Integer.valueOf(sizeArr[0]), Integer.valueOf(sizeArr[1]));
+                    size = new Dimension(Integer.valueOf(sizeArr[0]), Integer.valueOf(sizeArr[1]));
+                }
+            } catch (Exception exc){
+                LOGGER.log(
+                    Level.WARNING,
+                    "Couldn't interpret size parameter: "  + e.getAttributeValue("size"),
+                    e
+                );
             }
 
-            String[] offsetArr = e.getAttributeValue("offset").split(",");
-            Point offset =
-                new Point(Integer.valueOf(offsetArr[0]), Integer.valueOf(offsetArr[1]));
+            Point offset = null;
+            try {
+                String[] offsetArr = e.getAttributeValue("offset").split(",");
+                offset = new Point(Integer.valueOf(offsetArr[0]), Integer.valueOf(offsetArr[1]));
+            } catch (Exception exc) {
+                LOGGER.log(
+                    Level.WARNING,
+                    "Couldn't interpret size parameter: " + e.getAttributeValue("offset")
+                );
+                offset = new Point(0, 0);
+            }
 
             dl.addBlock(new Block(
                 decoration,
