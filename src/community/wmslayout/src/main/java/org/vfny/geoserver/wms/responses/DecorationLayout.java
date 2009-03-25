@@ -36,8 +36,6 @@ public class DecorationLayout {
         org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses");
 
     private static class Block {
-        private static enum Mode {OVERLAY, APPEND};
-
         public static enum Position {
             UL, UC, UR, CL, CC, CR, LL, LC, LR;
 
@@ -45,96 +43,66 @@ public class DecorationLayout {
                 Position p,
                 Rectangle container,
                 Dimension dim,
-                Point o,
-                Mode m) {
+                Point o) {
 
                 int x = 0, y = 0;
                 int height = dim.height, width = dim.width;
-                
 
-                if (m == Mode.APPEND) {
-                    switch (p) {
-                        case UC:
-                            return new Rectangle(
-                                (int)container.getMinX(), (int)(container.getMinY() - dim.height),
-                                (int)container.getWidth(), dim.height
-                            );
-                        case LC:
-                            return new Rectangle(
-                                (int)container.getMinX(), (int) container.getMaxY(),
-                                (int)container.getWidth(), dim.height
-                            );
-                        case CR:
-                            return new Rectangle(
-                                (int)container.getMaxX(), (int) container.getMinY(),
-                                dim.width, (int) container.getHeight()
-                            );
-                        case CL: 
-                            return new Rectangle(
-                                (int) (container.getMinX() - dim.width), (int) container.getMinY(),
-                                dim.width, (int) container.getHeight()
-                            );
-                        default:
-                            System.out.println("Returning null for Position: " + p);
-                            return null;
-                    }
-                } else {
-                    // adjust Y coord
-                    switch (p) {
-                        case UC:
-                        case UR:
-                        case UL:
-                            y = (int) (container.getMinY() + o.y);
-                            break;
+                // adjust Y coord
+                switch (p) {
+                    case UC:
+                    case UR:
+                    case UL:
+                        y = (int) (container.getMinY() + o.y);
+                        break;
 
-                        case CL:
-                        case CC:
-                        case CR:
-                            y = (int) (container.getMinY() + container.getMaxY() - dim.height) / 2;
-                            // ignore vertical offset when vertically centered
-                            break;
+                    case CL:
+                    case CC:
+                    case CR:
+                        y = (int) (container.getMinY() + container.getMaxY() - dim.height) / 2;
+                        // ignore vertical offset when vertically centered
+                        break;
 
-                        case LL:
-                        case LC:
-                        case LR:
-                            y = (int) (container.getMaxY() - o.y - dim.height);
-                    }
-
-                    // adjust X coord
-                    switch(p){
-                        case UL:
-                        case CL:
-                        case LL:
-                            x = (int) (container.getMinX() + o.x);
-                            break;
-
-                        case UC:
-                        case CC:
-                        case LC:
-                            x = (int) (container.getMinX() + container.getMaxX()) / 2;
-                            // ignore horizontal offset when horizontally centered
-                            break;
-
-                        case UR:
-                        case CR:
-                        case LR:
-                            x = (int) (container.getMaxX() - o.x - dim.width);
-                    }
-
-                    // in the event that this block is the same size as the container, 
-                    // ignore the offset so it will fit
-                    if ((dim.width + (2 * o.x)) > container.width) {
-                        x = (int) container.getMinX() + o.x;
-                        width = container.width - (2 * o.x);
-                    }
-
-                    if ((dim.height + (2 * o.y)) > container.height) {
-                        y = (int) container.getMinY() + o.y;
-                        height = container.height - (2 * o.y);
-                    }
-
-                    return new Rectangle(x, y, width, height);
+                    case LL:
+                    case LC:
+                    case LR:
+                        y = (int) (container.getMaxY() - o.y - dim.height);
                 }
+
+                // adjust X coord
+                switch(p){
+                    case UL:
+                    case CL:
+                    case LL:
+                        x = (int) (container.getMinX() + o.x);
+                        break;
+
+                    case UC:
+                    case CC:
+                    case LC:
+                        x = (int) (container.getMinX() + container.getMaxX()) / 2;
+                        // ignore horizontal offset when horizontally centered
+                        break;
+
+                    case UR:
+                    case CR:
+                    case LR:
+                        x = (int) (container.getMaxX() - o.x - dim.width);
+                }
+
+                // in the event that this block is the same size as the container, 
+                // ignore the offset so it will fit
+                if ((dim.width + (2 * o.x)) > container.width) {
+                    x = (int) container.getMinX() + o.x;
+                    width = container.width - (2 * o.x);
+                }
+
+                if ((dim.height + (2 * o.y)) > container.height) {
+                    y = (int) container.getMinY() + o.y;
+                    height = container.height - (2 * o.y);
+                }
+
+                return new Rectangle(x, y, width, height);
             }
         }
 
@@ -142,14 +110,12 @@ public class DecorationLayout {
         final Position position;
         final Dimension dimension;
         final Point offset;
-        final Mode mode;
 
-        public Block(Decoration d, Position p, Dimension dim, Point o, Mode m) {
+        public Block(Decoration d, Position p, Dimension dim, Point o) {
             decoration = d;
             position = p;
             dimension = dim;
             offset = o;
-            mode = m;
         }
 
         public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
@@ -162,7 +128,7 @@ public class DecorationLayout {
         throws Exception {
             Dimension desiredSize = findOptimalSize(g2d, mapContext);
 
-            Rectangle box = Position.findBounds(position, rect, desiredSize, offset, mode);
+            Rectangle box = Position.findBounds(position, rect, desiredSize, offset);
             Shape oldClip = g2d.getClip();
             g2d.setClip(box);
             decoration.paint(g2d, box, mapContext);
@@ -257,8 +223,7 @@ public class DecorationLayout {
                 decoration,
                 pos,
                 size,
-                offset,
-                Block.Mode.OVERLAY
+                offset
             ));
         }
 

@@ -9,17 +9,19 @@
     </bean>
 
     <bean id="watermark" 
-          class="org.vfny.geoserver.wms.responses.decorations.WatermarkDecoration"
+          class="org.vfny.geoserver.wms.responses.decoration.WatermarkDecoration"
           singleton="false"
     />
 
     <bean id="legend" 
-          class="org.vfny.geoserver.wms.responses.decorations.LegendDecoration"
+          class="org.vfny.geoserver.wms.responses.decoration.LegendDecoration"
           singleton="false"
-    />
+    >
+        <property name="catalog" ref="catalog2"/>
+    </bean>
 
     <bean id="scaleratio" 
-          class="org.vfny.geoserver.wms.responses.decorations.ScaleRatioDecoration"
+          class="org.vfny.geoserver.wms.responses.decoration.ScaleRatioDecoration"
           singleton="false"
     />
 </beans>

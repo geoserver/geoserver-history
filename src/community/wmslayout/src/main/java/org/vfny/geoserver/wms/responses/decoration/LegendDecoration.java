@@ -2,8 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.decorations;
+package org.vfny.geoserver.wms.responses.decoration;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.ResourceInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -71,6 +73,9 @@ public class LegendDecoration implements Decoration {
     private static SLDStyleFactory styleFactory = new SLDStyleFactory();
 
     private static final GeometryFactory geomFac = new GeometryFactory();
+
+    private Catalog catalog;
+
     /**
      * Just a holder to avoid creating many polygon shapes from inside
      * <code>getSampleShape()</code>
@@ -113,7 +118,7 @@ public class LegendDecoration implements Decoration {
                         g2d
                     );
                     x = Math.max(x, (int)legend.width);
-                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(layer.getTitle()));
+                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(findTitle(layer)));
                     y += legend.height + metrics.getHeight(); 
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Error getting legend for " + layer);
@@ -163,9 +168,9 @@ public class LegendDecoration implements Decoration {
         for (MapLayer layer : mapContext.getLayers()){
             g2d.translate(0, metrics.getHeight());
             g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
-            g2d.drawString(layer.getTitle(), TITLE_INDENT, 0 - metrics.getDescent());
+            g2d.drawString(findTitle(layer), TITLE_INDENT, 0 - metrics.getDescent());
             g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN));
-            Dimension dim = new LegendRenderer().drawLegend(
+            Dimension dim = drawLegend(
                 (SimpleFeatureType)layer.getFeatureSource().getSchema(),
                 layer.getStyle(),
                 scaleDenominator,
@@ -182,6 +187,26 @@ public class LegendDecoration implements Decoration {
         g2d.setTransform(oldTransform);
         g2d.setFont(oldFont);
         g2d.setColor(oldColor);
+    }
+
+    public void setCatalog(Catalog c) {
+        this.catalog = c;
+    }
+
+    public Catalog getCatalog() {
+        return this.catalog;
+    }
+
+    private String findTitle(MapLayer layer) {
+        String[] nameparts = layer.getTitle().split(":");
+
+        ResourceInfo resource = nameparts.length > 1 
+            ? catalog.getResourceByName(nameparts[0], nameparts[1], ResourceInfo.class) 
+            : catalog.getResourceByName(nameparts[0], ResourceInfo.class);
+
+        return resource != null
+            ? resource.getTitle()
+            : layer.getTitle();
     }
 
     public Dimension getLegendSize(

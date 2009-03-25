@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.decorations;
+package org.vfny.geoserver.wms.responses.decoration;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
