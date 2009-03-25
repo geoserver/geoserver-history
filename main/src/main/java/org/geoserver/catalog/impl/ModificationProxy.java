@@ -233,7 +233,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         InvocationHandler h = new ModificationProxy( proxyObject );
         
         //proxy all interfaces implemented by the source object
-        List<Class> proxyInterfaces = Arrays.asList( proxyObject.getClass().getInterfaces() );
+        List<Class> proxyInterfaces = (List) Arrays.asList( proxyObject.getClass().getInterfaces() );
         
         //ensure that the specified class is included
         boolean add = true;
