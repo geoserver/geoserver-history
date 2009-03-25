@@ -4,10 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import org.geoserver.platform.GeoServerExtensions;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.decorations.LegendDecoration;
-import org.vfny.geoserver.wms.responses.decorations.ScaleRatioDecoration;
-import org.vfny.geoserver.wms.responses.decorations.WatermarkDecoration;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -189,15 +187,7 @@ public class DecorationLayout {
                 m.put(option.getAttributeValue("name"), option.getAttributeValue("value"));
             }
 
-            Decoration decoration = null;
-            if (e.getAttributeValue("type").equals("watermark")) {
-                decoration = new WatermarkDecoration();
-            } else if (e.getAttributeValue("type").equals("legend")) {
-                decoration = new LegendDecoration();
-            } else if (e.getAttributeValue("type").equals("scaleratio")) {
-                decoration = new ScaleRatioDecoration();
-            }
-
+            Decoration decoration = getDecoration(e.getAttributeValue("type"));
             decoration.loadOptions(m);
 
             Block.Position pos = null;
@@ -259,5 +249,15 @@ public class DecorationLayout {
                 LOGGER.log(Level.WARNING, "couldn't paint due to: ", e);
             }
         }
+    }
+
+    private static Decoration getDecoration(String name) {
+        Object o = GeoServerExtensions.bean(name);
+
+        if (o instanceof Decoration) {
+            return (Decoration) o;
+        }
+
+        return null;
     }
 }
