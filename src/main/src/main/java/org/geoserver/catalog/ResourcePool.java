@@ -762,9 +762,16 @@ public class ResourcePool {
                 style = styleCache.get( info );
                 if ( style == null ) {
                     StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
-                    Reader in = readStyle( info );
                     
-                    SLDParser stylereader = new SLDParser(styleFactory, in);
+                    //JD: it is important that we call the SLDParser(File) constructor because
+                    // if not the sourceURL will not be set which will mean it will fail to 
+                    //resolve relative references to online resources
+                    File styleFile = GeoserverDataDirectory.findStyleFile( info.getFilename() );
+                    if ( styleFile == null ){
+                        throw new IOException( "No such file: " + info.getFilename());
+                    }
+                    
+                    SLDParser stylereader = new SLDParser(styleFactory, styleFile);
                     style = stylereader.readXML()[0];
                     //set the name of the style to be the name of hte style metadata
                     // remove this when wms works off style info
@@ -794,7 +801,7 @@ public class ResourcePool {
      * @return A reader for the style.
      */
     public BufferedReader readStyle( StyleInfo style ) throws IOException {
-        File styleFile = GeoserverDataDirectory.findStyleFile(style.getFilename(),true);
+        File styleFile = GeoserverDataDirectory.findStyleFile(style.getFilename());
         if( styleFile == null ) {
             throw new IOException( "No such file: " + style.getFilename() );
         }
