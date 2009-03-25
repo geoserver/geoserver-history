@@ -116,6 +116,7 @@ public class CatalogImpl implements Catalog {
         }
 
         validate(store);
+        validateNew(store);
         resolve(store);
         stores.put(store.getClass(), store);
         added(store);
@@ -128,7 +129,9 @@ public class CatalogImpl implements Catalog {
         if ( store.getWorkspace() == null ) {
             throw new IllegalArgumentException( "Store must be part of a workspace");
         }
+    }
         
+    void validateNew(StoreInfo store) {
         WorkspaceInfo workspace = store.getWorkspace();
         if ( getStoreByName( workspace, store.getName(), StoreInfo.class ) != null ) {
             String msg = "Store '"+ store.getName() +"' already exists in workspace '"+workspace.getName()+"'";
@@ -324,6 +327,7 @@ public class CatalogImpl implements Catalog {
         }
         
         validate(resource);
+        validateNew(resource);
         resolve(resource);
         resources.put(resource.getClass(), resource);
         added(resource);
@@ -339,7 +343,9 @@ public class CatalogImpl implements Catalog {
         if ( resource.getNamespace() == null ) {
             throw new IllegalArgumentException( "Resource must be part of a namespace");
         }
+    }
         
+    void validateNew(ResourceInfo resource) {
         StoreInfo store = resource.getStore();
         if ( getResourceByStore( store, resource.getName(), ResourceInfo.class) != null ) {
             String msg = "Resource named '"+resource.getName()+"' already exists in store: '"+ store.getName()+"'";
@@ -614,6 +620,7 @@ public class CatalogImpl implements Catalog {
     // Layer methods
     public void add(LayerInfo layer) {
         validate(layer);
+        validateNew(layer);
         resolve(layer);
         
         if ( layer.getType() == null ) {
@@ -640,13 +647,16 @@ public class CatalogImpl implements Catalog {
         if ( layer.getResource() == null ) {
             throw new NullPointerException( "Layer resource must not be null" );
         }
-        if ( getLayerByName( layer.getName() ) != null ) {
-            throw new IllegalArgumentException( "Layer named '" + layer.getName() + "', already exists.");
-        }
         //(JD): not sure if default style should be mandatory
         //if ( layer.getDefaultStyle() == null ){
         //    throw new NullPointerException( "Layer default style must not be null" );
         //}
+    }
+        
+    void validateNew( LayerInfo layer ) {
+        if ( getLayerByName( layer.getName() ) != null ) {
+            throw new IllegalArgumentException( "Layer named '" + layer.getName() + "', already exists.");
+        }
     }
     
     public void remove(LayerInfo layer) {
@@ -893,6 +903,7 @@ public class CatalogImpl implements Catalog {
 
     public void add(NamespaceInfo namespace) {
         validate(namespace);
+        validateNew(namespace);
         resolve(namespace);
         
         synchronized (namespaces) {
@@ -912,7 +923,9 @@ public class CatalogImpl implements Catalog {
         if ( namespace.getURI() == null ) {
             throw new NullPointerException( "Namespace uri must not be null");
         }
-        
+    }
+
+    void validateNew(NamespaceInfo namespace) {
         if ( getNamespaceByPrefix( namespace.getPrefix() ) != null ) {
             throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
         }
@@ -1084,6 +1097,7 @@ public class CatalogImpl implements Catalog {
 
     public void add(StyleInfo style) {
         validate(style);
+        validateNew(style);
         resolve(style);
         styles.add(style);
         added(style);
@@ -1096,7 +1110,9 @@ public class CatalogImpl implements Catalog {
         if ( style.getFilename() == null ) {
             throw new NullPointerException( "Style fileName must not be null");
         }
+    }
         
+    void validateNew( StyleInfo style ) {
         if ( getStyleByName( style.getName() ) != null ) {
             throw new IllegalArgumentException( "Style named '" +  style.getName() +"' already exists.");
         }
