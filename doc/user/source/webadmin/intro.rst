@@ -20,6 +20,9 @@ When correctly configured, the welcome page will show up in your browser.
    
 .. note:: Image of main page here
 
+
+.. _web_admin_welcome:
+
 Welcome page
 ------------
 

@@ -1,7 +1,7 @@
 .. _web_admin_quickstart:
 
-The Web Administration Tool
-===========================
+Web Administration Interface Quickstart
+=======================================
 
 The *Web Administration Tool* is a web based used to configure all aspects of GeoServer, from adding data to tweaking service settings. The web admin tool is accessed via web browser at ``http://<host>:<port>/geoserver``. http://localhost:8080/geoserver in a default installation running on the local host. 
 

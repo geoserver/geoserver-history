@@ -3,16 +3,18 @@
 Features
 ========
 
+This section delves into greater detail about the various functionality and options possible with KML output and Google Earth. 
+
 
 .. toctree::
    :maxdepth: 2
 
    kmlreflector.rst
-   customizingplacemarks.rst
    togglingplacemarks.rst
+   customizingplacemarks.rst
    kmlheighttime.rst
-   kmllegendoverlays.rst
-   otherfilters.rst
+   kmllegends.rst
+   filters.rst
    kmlsuperoverlays.rst
    kmlregionation.rst
-   vectorvsrasterkml.rst
+   kmlscoring.rst
