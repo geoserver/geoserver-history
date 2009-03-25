@@ -97,13 +97,24 @@ public class LegendDecoration implements Decoration {
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
         int x = 0, y = 0;
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont().deriveFont(Font.BOLD));
+        double scaleDenominator = RendererUtilities.calculateOGCScale(
+            mapContext.getAreaOfInterest(),
+            mapContext.getRequest().getWidth(),
+            new HashMap()
+        );
+
         try {
-            for (MapLayerInfo layer : mapContext.getRequest().getLayers()){
+            for (MapLayer layer : mapContext.getLayers()){
                 try {
-                    BufferedImage legend = getLegend(layer);
-                    x = Math.max(x, (int)legend.getWidth());
-                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(layer.getLabel()));
-                    y += legend.getHeight() + metrics.getHeight(); 
+                    Dimension legend = getLegendSize(
+                        (SimpleFeatureType)layer.getFeatureSource().getSchema(),
+                        layer.getStyle(),
+                        scaleDenominator,
+                        g2d
+                    );
+                    x = Math.max(x, (int)legend.width);
+                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(layer.getTitle()));
+                    y += legend.height + metrics.getHeight(); 
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Error getting legend for " + layer);
                     continue;
@@ -181,6 +192,54 @@ public class LegendDecoration implements Decoration {
         return ImageIO.read(imageURL);
     }
 
+    public Dimension getLegendSize(
+        final SimpleFeatureType layer,
+        final Style style,
+        final double scaleDenominator,
+        Graphics2D g2d
+    ) throws WmsException {
+
+		final SimpleFeature sampleFeature = createSampleFeature(layer);
+        final FeatureTypeStyle[] ftStyles = style.getFeatureTypeStyles();
+        final Rule[] applicableRules = LegendUtils.getApplicableRules(ftStyles, scaleDenominator);
+        final NumberRange<Double> scaleRange = 
+            NumberRange.create(scaleDenominator, scaleDenominator);
+        final int ruleCount = applicableRules.length;
+
+        final int w = 20;
+        final int h = 20;
+
+        FontMetrics metrics = g2d.getFontMetrics();
+
+        float totalHeight = 0, totalWidth = 0;
+
+        for (int i = 0; i < ruleCount; i++) {
+            final Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
+
+            for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
+                final Symbolizer symbolizer = symbolizers[sIdx];
+
+                if (symbolizer instanceof RasterSymbolizer) {
+                    throw new IllegalStateException(
+                        "It is not legal to have a RasterSymbolizer here"
+                    );
+                } 
+            }
+
+            String label = applicableRules[i].getTitle();
+            if (label == null) label = applicableRules[i].getName();
+            if (label == null) label = "";
+
+            float heightIncrement = Math.max(h, metrics.getHeight());
+
+            totalHeight = totalHeight + heightIncrement;
+            totalWidth = 
+                Math.max(totalWidth, w + metrics.getDescent() + metrics.stringWidth(label));
+        }
+
+        return new Dimension((int)totalWidth, (int)totalHeight);
+    }
+
     public Dimension drawLegend(
             final SimpleFeatureType layer,
             final Style style,
@@ -190,14 +249,10 @@ public class LegendDecoration implements Decoration {
 		final SimpleFeature sampleFeature = createSampleFeature(layer);
         final FeatureTypeStyle[] ftStyles = style.getFeatureTypeStyles();
         final Rule[] applicableRules = LegendUtils.getApplicableRules(ftStyles, scaleDenominator);
-        final NumberRange<Double> scaleRange = NumberRange.create(scaleDenominator, scaleDenominator);
+        final NumberRange<Double> scaleRange = 
+            NumberRange.create(scaleDenominator, scaleDenominator);
         final int ruleCount = applicableRules.length;
 
-        /**
-         * A legend graphic is produced for each applicable rule. They're being
-         * held here until the process is done and then painted on a "stack"
-         * like legend.
-         */
         final int w = 20;
         final int h = 20;
         final Color bgColor = Color.WHITE;
@@ -210,11 +265,6 @@ public class LegendDecoration implements Decoration {
 
         for (int i = 0; i < ruleCount; i++) {
             final Symbolizer[] symbolizers = applicableRules[i].getSymbolizers();
-
-            // TODO: revive antialiasing!
-            //            g2d.setRenderingHint(
-            //                    RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON
-            //            );
 
             for (int sIdx = 0; sIdx < symbolizers.length; sIdx++) {
                 final Symbolizer symbolizer = symbolizers[sIdx];
