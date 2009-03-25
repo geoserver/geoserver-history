@@ -184,14 +184,6 @@ public class LegendDecoration implements Decoration {
         g2d.setColor(oldColor);
     }
 
-    protected BufferedImage getLegend(MapLayerInfo layer) 
-    throws MalformedURLException, IOException {
-        // TODO: Do this via direct GetLegendGraphic instantiation
-        URL imageURL = new URL("http://localhost:8080/geoserver/wms?request=getLegendGraphic&format=image/png&layer=" + layer.getName());
-
-        return ImageIO.read(imageURL);
-    }
-
     public Dimension getLegendSize(
         final SimpleFeatureType layer,
         final Style style,
