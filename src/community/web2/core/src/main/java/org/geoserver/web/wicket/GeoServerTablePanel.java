@@ -161,6 +161,11 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         dataView.setItemsPerPage(items);
     }
     
+    public GeoServerTablePanel<T> setFilterable( boolean filterable ) {
+        filterForm.setVisible( filterable );
+        return this;
+    }
+    
     AjaxLink sortLink(final GeoServerDataProvider<T> dataProvider,
             ListItem item) {
         return new AjaxLink("link", item.getModel()) {
@@ -228,6 +233,9 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         target.addComponent(filter);
     }
     
+    /**
+     * Turns filtering capabilities on/off.
+     */
     public void setFilterVisible(boolean filterVisible) {
         filterForm.setVisible(filterVisible);
     }
