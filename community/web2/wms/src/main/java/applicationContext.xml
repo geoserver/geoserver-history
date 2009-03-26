@@ -45,5 +45,6 @@
      <property name="descriptionKey" value="style.description"/>
      <property name="componentClass" value="org.geoserver.wms.web.data.StylePage"/>
      <property name="category" ref="dataCategory"/>
+     <property name="icon" value="palette.png"/>
   </bean>
 </beans>
