@@ -7,6 +7,8 @@ package org.geoserver.web.demo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -27,6 +29,7 @@ import org.geoserver.web.wicket.GeoServerPagingNavigator;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
@@ -38,6 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Andrea Aime - TOPP
  */
 public class MapPreviewPage extends GeoServerBasePage {
+    private static final Logger LOGGER = Logging.getLogger(MapPreviewPage.class);
     private static final int MAX_ROWS = 25;
 
     @SuppressWarnings("serial")
@@ -54,7 +58,20 @@ public class MapPreviewPage extends GeoServerBasePage {
                 for (LayerInfo layer : layers) {
                     ResourceInfo resource = layer.getResource();
                     if (layer.isEnabled() && resource.isEnabled()) {
-                        result.add(resource.getPrefixedName());
+                        
+                        String layerName = resource.getPrefixedName(); 
+                        
+                        // make sure we can display the item
+                        try {
+                            GetMapRequest request = buildFakeGetMap(layerName);
+                            DefaultWebMapService.autoSetBoundsAndSize(request);
+                            
+                            // ok, won't bomb out trying to setup the page
+                            result.add(layerName);
+                        } catch(Exception e) {
+                            LOGGER.log(Level.FINE, "Layer " + layerName + " cannot be displayed due to projection settings");
+                        }
+                        
                     }
                 }
                 List<LayerGroupInfo> groups = getCatalog().getLayerGroups();
