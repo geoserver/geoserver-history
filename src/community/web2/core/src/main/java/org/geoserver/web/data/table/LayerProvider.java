@@ -90,28 +90,11 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
     }
 
     public IModel model(Object object) {
-        return new LayerInfoDetachableModel((LayerInfo) object);
+        return new LayerDetachableModel((LayerInfo) object);
     }
 
     @Override
     protected Comparator<LayerInfo> getComparator(SortParam sort) {
         return super.getComparator(sort);
     }
-
-    static class LayerInfoDetachableModel extends LoadableDetachableModel {
-        String name;
-
-        boolean selected;
-
-        public LayerInfoDetachableModel(LayerInfo layer) {
-            super(layer);
-            this.name = layer.getName();
-        }
-
-        @Override
-        protected Object load() {
-            return GeoServerApplication.get().getCatalog().getLayerByName(name);
-        }
-    }
-
 }
