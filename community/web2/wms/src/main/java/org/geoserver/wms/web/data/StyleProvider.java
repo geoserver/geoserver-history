@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.web.data.style.StyleDetachableModel;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 
 public class StyleProvider extends GeoServerDataProvider<StyleInfo> {
