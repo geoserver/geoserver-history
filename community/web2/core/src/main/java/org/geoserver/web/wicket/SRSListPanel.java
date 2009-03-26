@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -85,6 +86,11 @@ public class SRSListPanel extends Panel {
     private static CRSAuthorityFactory customFactory = ReferencingFactoryFinder
             .getCRSAuthorityFactory("EPSG", new Hints(Hints.CRS_AUTHORITY_FACTORY,
                     GeoserverCustomWKTFactory.class));
+    
+    /**
+     * Spots integral numbers
+     */
+    private static Pattern NUMERIC = Pattern.compile("\\d+");
 
     /**
      * Creates the new SRS list panel.
@@ -234,7 +240,10 @@ public class SRSListPanel extends Panel {
         for (String code : codes) {
             // make sure we're using just the non prefix part
             String id = code.substring(code.indexOf(':') + 1);
-            idSet.add(id);
+            // avoid WGS84DD and eventual friends, as we're still not able to handle them,
+            // if they are chosen exceptions arises everywhere
+            if(NUMERIC.matcher(id).matches())
+                idSet.add(id);
         }
         List<String> ids = new ArrayList<String>(idSet);
         Collections.sort(ids, new CodeComparator()); // sort to get them in
