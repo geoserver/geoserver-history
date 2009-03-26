@@ -5,7 +5,6 @@
 package org.geoserver.web.wicket;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
@@ -65,6 +64,14 @@ public class EnvelopePanel extends FormComponentPanel {
     
     @Override
     protected void convertInput() {
+        visitChildren( TextField.class, new org.apache.wicket.Component.IVisitor() {
+
+            public Object component(Component component) {
+                ((TextField) component).processInput();
+                return null;
+            }
+        });
+        
         // update the envelope model
         if(minX != null && maxX != null && minY != null && maxX != null)
             setConvertedInput(new ReferencedEnvelope(minX, maxX, minY, maxY, crs));
