@@ -38,26 +38,7 @@
           </ul>
         </fieldset>
       </li>
-      <li>
-        <fieldset>
-          <legend><span>Bounding boxes</span></legend>
-          <ul>
-            <form wicket:id="boxesForm">
-            <li>
-              <label for="nativeBoundingBox"><wicket:message key="page.nativeBbox">Native BBox</wicket:message></label>
-              <div id="nativeBoundingBox" wicket:id="nativeBoundingBox"></div>
-              <a href="#" wicket:id="computeNative">Compute from data</a>
-            </li>
-            <li>
-              <label for="latLonBoundingBox"><wicket:message key="page.latLonBbox">Lat/Lon BBOX</wicket:message></label>
-              <div id="latLonBoundingBox" wicket:id="latLonBoundingBox"></div>
-              <a href="#" wicket:id="computeLatLon">Reproject from native</a>
-            </li>
-            </form>
-          </ul>
-          
-        </fieldset>
-      </li>
+      <form wicket:id="referencingForm">
       <li>
         <fieldset>
           <legend><span>Coordinate Reference Systems</span></legend>
@@ -67,17 +48,35 @@
               <span id="nativeSRS", wicket:id="nativeSRS"></span>
             </li>
             <li>
-              <label for="srsHandling"><wicket:message key="page.srsHandling">Native to declared SRS handling</wicket:message></label>
-              <select id="srsHandling" wicket:id="srsHandling"></select>
-            </li>            
-            
-            <li>
               <label for="declaredSRS"><wicket:message key="page.declaredSRS">Declared SRS</wicket:message></label>
               <span id="declaredSRS" wicket:id="declaredSRS"></span>
             </li>
+            <li>
+              <label for="srsHandling"><wicket:message key="page.srsHandling">SRS handling</wicket:message></label>
+              <select id="srsHandling" wicket:id="srsHandling"></select>
+            </li>            
           </ul>
         </fieldset>
       </li>
+      <li>
+        <fieldset>
+          <legend><span>Bounding boxes</span></legend>
+          <ul>
+            <li>
+              <label for="nativeBoundingBox"><wicket:message key="page.nativeBbox">Native BBox</wicket:message></label>
+              <div id="nativeBoundingBox" wicket:id="nativeBoundingBox"></div>
+              <a href="#" wicket:id="computeNative">Compute from data</a>
+            </li>
+            <li>
+              <label for="latLonBoundingBox"><wicket:message key="page.latLonBbox">Lat/Lon BBOX</wicket:message></label>
+              <div id="latLonBoundingBox" wicket:id="latLonBoundingBox"></div>
+              <a href="#" wicket:id="computeLatLon">Compute from native bbox</a>
+            </li>
+          </ul>
+          
+        </fieldset>
+      </li>
+      </form>
   	</ul>
     </wicket:panel>
     <ul>
