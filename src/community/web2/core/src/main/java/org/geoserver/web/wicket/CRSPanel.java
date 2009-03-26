@@ -120,7 +120,7 @@ public class CRSPanel extends FormComponentPanel {
                 popupWindow.setInitialHeight( 375 );
                 popupWindow.setInitialWidth( 525 );
                 popupWindow.setContent(new WKTPanel( popupWindow.getContentId(), getCRS()));
-                CoordinateReferenceSystem crs = getCRSFromModel();
+                CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getModelObject();
                 if(crs != null)
                     popupWindow.setTitle(crs.getName().toString());
                 popupWindow.show(target);
@@ -135,7 +135,7 @@ public class CRSPanel extends FormComponentPanel {
     
     @Override
     protected void onBeforeRender() {
-        CoordinateReferenceSystem crs = getCRSFromModel();
+        CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getModelObject();
         if ( crs != null ) {
             srsTextField.setModelObject( toSRS(crs) );
             wktLabel.setModelObject( crs.getName().toString() );    
@@ -144,25 +144,6 @@ public class CRSPanel extends FormComponentPanel {
         super.onBeforeRender();
     }
 
-    private CoordinateReferenceSystem getCRSFromModel() {
-        Object value = getModelObject();
-        
-        CoordinateReferenceSystem crs = null;
-        if ( value != null ) {
-            if ( value instanceof CoordinateReferenceSystem ) {
-                crs = (CoordinateReferenceSystem) value;
-            } else if ( value instanceof String ) {
-                String s = (String) value;
-                crs = fromSRS( s );
-                if ( crs == null ) {
-                    //try as wkt
-                    crs = fromWKT( s );
-                } 
-            }
-        }
-        return crs;
-    }
-    
     @Override
     protected void convertInput() {
         String srs = srsTextField.getModelObjectAsString();
@@ -224,18 +205,6 @@ public class CRSPanel extends FormComponentPanel {
             return CRS.decode( srs );
         } 
         catch (Exception e) {
-            return null;
-        }
-    }
-    
-    /*
-     * Goes from WKT to CRS.
-     */
-    CoordinateReferenceSystem fromWKT( String wkt ) {
-        try {
-            return CRS.parseWKT( wkt );
-        }
-        catch(Exception e) {
             return null;
         }
     }
