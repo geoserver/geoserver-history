@@ -109,7 +109,6 @@ public class WatermarkDecoration implements Decoration {
             }
         } catch (MalformedURLException e) {
             url = null;
-            System.out.println(e.getMessage());
         }
 
         if (url == null)

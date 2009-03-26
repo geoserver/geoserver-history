@@ -114,7 +114,6 @@ public class LegendDecoration implements Decoration {
         for (MapLayer layer : mapContext.getLayers()){
             SimpleFeatureType type = (SimpleFeatureType)layer.getFeatureSource().getSchema();
             if (!isGridLayer(type)) {
-                LOGGER.log(Level.WARNING, "Sizing layer: " + layer);
                 try {
                     Dimension legend = getLegendSize(
                             type,
@@ -126,11 +125,11 @@ public class LegendDecoration implements Decoration {
                     x = Math.max(x, TITLE_INDENT + metrics.stringWidth(findTitle(layer)));
                     y += legend.height + metrics.getHeight(); 
                 } catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Error getting legend for " + layer);
+                    LOGGER.log(Level.WARNING, "Error sizing legend for " + layer);
                     continue;
                 }
             } else {
-                LOGGER.log(Level.WARNING, "Skipping raster layer: " + layer);
+                LOGGER.log(Level.FINE, "Skipping raster layer: " + layer);
             }
         }
         x += metrics.getDescent();
