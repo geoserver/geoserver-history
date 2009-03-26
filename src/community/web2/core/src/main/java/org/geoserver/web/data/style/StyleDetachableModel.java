@@ -1,4 +1,4 @@
-package org.geoserver.wms.web.data;
+package org.geoserver.web.data.style;
 
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.StyleInfo;
