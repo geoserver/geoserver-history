@@ -452,11 +452,16 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
        
         //styles
         File styles = resourceLoader.find( "styles" );
-        for ( File sf : list(styles,new SuffixFileFilter(".xml") ) ) { 
-            StyleInfo s = depersist( xp, sf, StyleInfo.class );
-            catalog.add( s );
-            
-            LOGGER.info( "Loaded style '" + s.getName() + "'" );
+        for ( File sf : list(styles,new SuffixFileFilter(".xml") ) ) {
+            try {
+                StyleInfo s = depersist( xp, sf, StyleInfo.class );
+                catalog.add( s );
+                
+                LOGGER.info( "Loaded style '" + s.getName() + "'" );
+            }
+            catch( Exception e ) {
+                LOGGER.log( Level.WARNING, "Failed to load style from file '" + sf.getName() + "'" , e );
+            }
         }
         
         //workspaces, stores, and resources
@@ -473,8 +478,13 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 //load the namespace
                 File nsf = new File( wsd, "namespace.xml" );
                 if ( nsf.exists() ) {
-                    NamespaceInfo ns = depersist( xp, nsf, NamespaceInfo.class );
-                    catalog.add( ns );
+                    try {
+                        NamespaceInfo ns = depersist( xp, nsf, NamespaceInfo.class );
+                        catalog.add( ns );
+                    }
+                    catch( Exception e ) {
+                        LOGGER.log( Level.WARNING, "Failed to load namespace for '" + wsd.getName() + "'" , e );
+                    }
                 }
                 
                 //load the stores for this workspace
@@ -482,29 +492,54 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                     File f = new File( sd, "datastore.xml");
                     if ( f.exists() ) {
                         //load as a datastore
-                        DataStoreInfo ds = depersist( xp, f, DataStoreInfo.class );
-                        catalog.add( ds );
-                        
-                        LOGGER.info( "Loaded data store '" + ds.getName() +"'");
+                        DataStoreInfo ds = null;
+                        try {    
+                            ds = depersist( xp, f, DataStoreInfo.class );
+                            catalog.add( ds );
+                            
+                            LOGGER.info( "Loaded data store '" + ds.getName() +"'");
+                        }
+                        catch( Exception e ) {
+                            LOGGER.log( Level.WARNING, "Failed to load data store '" + sd.getName() +"'", e);
+                            continue;
+                        }
                         
                         //load feature types
                         for ( File ftd : list(sd,DirectoryFileFilter.INSTANCE) ) {
                             f = new File( ftd, "featuretype.xml" );
                             if( f.exists() ) {
-                                FeatureTypeInfo ft = depersist(xp,f,FeatureTypeInfo.class);
+                                FeatureTypeInfo ft = null;
+                                try {
+                                    ft = depersist(xp,f,FeatureTypeInfo.class);
+                                }
+                                catch( Exception e ) {
+                                    LOGGER.log( Level.WARNING, "Failed to load feature type '" + ftd.getName() +"'", e);
+                                    continue;
+                                }
                                 
                                 //check for a schema override
-                                handleSchemaOverride( ft, ftd );
+                                try {
+                                    handleSchemaOverride( ft, ftd );
+                                }
+                                catch( Exception e ) {
+                                    LOGGER.log( Level.WARNING, "Schema override failed for feature type '" + ft.getName() +"'", e);
+                                }
+                                
                                 catalog.add( ft );
                                 
                                 LOGGER.info( "Loaded feature type '" + ds.getName() +"'");
                                 
                                 f = new File( ftd, "layer.xml" );
                                 if ( f.exists() ) {
-                                    LayerInfo l = depersist(xp, f, LayerInfo.class );
-                                    catalog.add( l );
-                                    
-                                    LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                    try {
+                                        LayerInfo l = depersist(xp, f, LayerInfo.class );
+                                        catalog.add( l );
+                                        
+                                        LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                    }
+                                    catch( Exception e ) {
+                                        LOGGER.log( Level.WARNING, "Failed to load layer for feature type '" + ft.getName() +"'", e);
+                                    }
                                 }
                             }
                             else {
@@ -516,26 +551,45 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                         //look for a coverage store
                         f = new File( sd, "coveragestore.xml" );
                         if ( f.exists() ) {
-                            CoverageStoreInfo cs = depersist( xp, f, CoverageStoreInfo.class );
-                            catalog.add( cs );
+                            CoverageStoreInfo cs = null;
+                            try {
+                                cs = depersist( xp, f, CoverageStoreInfo.class );
+                                catalog.add( cs );
                             
-                            LOGGER.info( "Loaded coverage store '" + cs.getName() +"'");
+                                LOGGER.info( "Loaded coverage store '" + cs.getName() +"'");
+                            }
+                            catch( Exception e ) {
+                                LOGGER.log( Level.WARNING, "Failed to load coverage store '" + sd.getName() +"'", e);
+                                continue;
+                            }
                             
                             //load coverages
                             for ( File cd : list(sd,DirectoryFileFilter.INSTANCE) ) {
                                 f = new File( cd, "coverage.xml" );
                                 if( f.exists() ) {
-                                    CoverageInfo ft = depersist(xp,f,CoverageInfo.class);
-                                    catalog.add( ft );
-                                    
-                                    LOGGER.info( "Loaded coverage '" + cs.getName() +"'");
+                                    CoverageInfo c = null;
+                                    try {
+                                        c = depersist(xp,f,CoverageInfo.class);
+                                        catalog.add( c );
+                                        
+                                        LOGGER.info( "Loaded coverage '" + cs.getName() +"'");
+                                    }
+                                    catch( Exception e ) {
+                                        LOGGER.log( Level.WARNING, "Failed to load coverage '" + cd.getName() +"'", e);
+                                        continue;
+                                    }
                                     
                                     f = new File( cd, "layer.xml" );
                                     if ( f.exists() ) {
-                                        LayerInfo l = depersist(xp, f, LayerInfo.class );
-                                        catalog.add( l );
-                                        
-                                        LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                        try {
+                                            LayerInfo l = depersist(xp, f, LayerInfo.class );
+                                            catalog.add( l );
+                                            
+                                            LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                        }
+                                        catch( Exception e ) {
+                                            LOGGER.log( Level.WARNING, "Failed to load layer coverage '" + c.getName() +"'", e);
+                                        }
                                     }
                                 }
                                 else {
@@ -561,10 +615,15 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         File layergroups = resourceLoader.find( "layergroups" );
         if ( layergroups != null ) {
             for ( File lgf : list( layergroups, new SuffixFileFilter( ".xml" ) ) ) {
-                LayerGroupInfo lg = depersist( xp, lgf, LayerGroupInfo.class );
-                catalog.add( lg );
-                
-                LOGGER.info( "Loaded layer group '" + lg.getName() + "'" );
+                try {
+                    LayerGroupInfo lg = depersist( xp, lgf, LayerGroupInfo.class );
+                    catalog.add( lg );
+                    
+                    LOGGER.info( "Loaded layer group '" + lg.getName() + "'" );    
+                }
+                catch( Exception e ) {
+                    LOGGER.log( Level.WARNING, "Failed to load layer group '" + lgf.getName() + "'", e );
+                }
             }
         }
                 
