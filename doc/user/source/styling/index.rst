@@ -8,4 +8,4 @@ Styling
 
    sld-introduction/
    sld-cookbook/index
-   sld-reference/
+   sld-reference/index
