@@ -798,11 +798,14 @@ public class CatalogImpl implements Catalog {
         if( layerGroup.getName() == null ) {
             throw new NullPointerException( "Layer group name must not be null");
         }
-        if ( layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty() ) {
-            throw new NullPointerException( "Layer group must not be empty");
+        
+        if ( !isNew ) {
+            if ( layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty() ) {
+                throw new NullPointerException( "Layer group must not be empty");
+            }
         }
-        if ( layerGroup.getStyles() != null && !layerGroup.getStyles().isEmpty() && 
-            !(layerGroup.getStyles().size() == layerGroup.getLayers().size()) ) {
+       
+        if (!(layerGroup.getLayers().size() == layerGroup.getStyles().size()) ) {
             throw new IllegalArgumentException( "Layer group has different number of styles than layers");
         }
         
