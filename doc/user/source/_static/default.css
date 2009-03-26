@@ -45,6 +45,21 @@ div {
 outline: none !important; /* avoid ugly dotted border for Firefox, when listeners are added via js */
 }
 
+/*  Added to override default italics */
+
+blockquote {
+font-style: normal;
+}
+
+li p {
+margin-bottom: 0;
+}
+
+li blockquote {
+margin: 0;
+}
+
+
 table, 
 td, 
 th {
