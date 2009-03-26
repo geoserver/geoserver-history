@@ -17,6 +17,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
  * Provides a filtered, sorted view over the catalog layers.
  * @author Andrea Aime - OpenGeo
  */
+@SuppressWarnings("serial")
 public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
     static final Property<LayerInfo> TYPE = new BeanProperty<LayerInfo>("type",
             "type");
