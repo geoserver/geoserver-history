@@ -26,6 +26,12 @@ public class EnvelopePanel extends FormComponentPanel {
     Double minX,minY,maxX,maxY;
     CoordinateReferenceSystem crs;
     
+    public EnvelopePanel(String id ) {
+        super(id);
+        
+        initComponents();
+    }
+    
     public EnvelopePanel(String id, ReferencedEnvelope e) {
         this(id, new Model(e));
     }
@@ -33,6 +39,10 @@ public class EnvelopePanel extends FormComponentPanel {
     public EnvelopePanel(String id, IModel model) {
         super(id, model);
         
+        initComponents();
+    }
+    
+    void initComponents() {
         updateFields();
         
         add( new TextField( "minX", new PropertyModel(this, "minX")) );
@@ -40,7 +50,13 @@ public class EnvelopePanel extends FormComponentPanel {
         add( new TextField( "maxX", new PropertyModel(this, "maxX") ) );
         add( new TextField( "maxY", new PropertyModel(this, "maxY")) );
     }
-
+    
+    @Override
+    protected void onBeforeRender() {
+        updateFields();
+        super.onBeforeRender();
+    }
+    
     private void updateFields() {
         ReferencedEnvelope e = (ReferencedEnvelope) getModelObject();
         if(e != null) {
@@ -52,14 +68,14 @@ public class EnvelopePanel extends FormComponentPanel {
         }
     }
    
-    public void setReadOnly( final boolean readOnly ) {
+    public EnvelopePanel setReadOnly( final boolean readOnly ) {
         visitChildren( TextField.class, new org.apache.wicket.Component.IVisitor() {
-
             public Object component(Component component) {
                 component.setEnabled( !readOnly );
                 return null;
             }
         });
+        return this;
     }
     
     @Override
