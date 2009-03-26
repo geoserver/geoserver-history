@@ -342,13 +342,20 @@ public class CatalogBuilder {
         
         ftinfo.setNamespace( namespace );
         
-        //bounds
+        // bounds
         ReferencedEnvelope bounds = featureSource.getBounds();
         ftinfo.setNativeBoundingBox( bounds );
         
-        CoordinateReferenceSystem crs =featureType.getCoordinateReferenceSystem();
+        CoordinateReferenceSystem crs = featureType.getCoordinateReferenceSystem();
         if ( crs == null ) {
             crs = bounds.getCoordinateReferenceSystem();
+        }
+        ftinfo.setNativeCRS(crs);
+        
+        // fix the native bounds if necessary, some datastores do
+        // not build a proper referenced envelope
+        if(bounds.getCoordinateReferenceSystem() == null && crs != null) {
+            bounds = new ReferencedEnvelope(bounds, crs);
         }
         
         ReferencedEnvelope boundsLatLon = null;
@@ -368,15 +375,15 @@ public class CatalogBuilder {
         }
         ftinfo.setLatLonBoundingBox( boundsLatLon );
         
-        //srs
+        // srs
         if ( crs != null ) {
             try {
                 ftinfo.setSRS( CRS.lookupIdentifier( crs, true ) );
-            } 
-            catch (FactoryException e) {
+            } catch (FactoryException e) {
                 throw (IOException) new IOException().initCause( e );
             }
-        }
+        } 
+        ftinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         
         return ftinfo;
     }
@@ -488,12 +495,17 @@ public class CatalogBuilder {
         CoordinateReferenceSystem nativeCRS = reader.getCrs();
         cinfo.setNativeCRS(nativeCRS);
         
+        // mind the default projection policy, Coverages do not have a flexible
+        // handling as feature types, they do reproject if the native srs is set,
+        // force if missing
         if ( nativeCRS != null && !nativeCRS.getIdentifiers().isEmpty()) {
             cinfo.setSRS( nativeCRS.getIdentifiers().toArray()[0].toString() );
+            cinfo.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
+        } 
+        if(nativeCRS == null) {
+            cinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         }
-        else {
-            cinfo.setSRS("UNKNOWN");
-        }
+        
         
         GeneralEnvelope envelope = reader.getOriginalEnvelope();
         cinfo.setNativeBoundingBox( new ReferencedEnvelope( envelope ) );
