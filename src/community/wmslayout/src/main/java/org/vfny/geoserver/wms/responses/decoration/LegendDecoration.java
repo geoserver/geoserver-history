@@ -21,7 +21,10 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.PropertyDescriptor;
+import org.opengis.feature.type.PropertyType;
 import org.opengis.feature.IllegalAttributeException;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.map.MapLayer;
@@ -103,20 +106,22 @@ public class LegendDecoration implements Decoration {
         int x = 0, y = 0;
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont().deriveFont(Font.BOLD));
         double scaleDenominator = RendererUtilities.calculateOGCScale(
-            mapContext.getAreaOfInterest(),
-            mapContext.getRequest().getWidth(),
-            new HashMap()
-        );
+                mapContext.getAreaOfInterest(),
+                mapContext.getRequest().getWidth(),
+                new HashMap()
+                );
 
-        try {
-            for (MapLayer layer : mapContext.getLayers()){
+        for (MapLayer layer : mapContext.getLayers()){
+            SimpleFeatureType type = (SimpleFeatureType)layer.getFeatureSource().getSchema();
+            if (!isGridLayer(type)) {
+                LOGGER.log(Level.WARNING, "Sizing layer: " + layer);
                 try {
                     Dimension legend = getLegendSize(
-                        (SimpleFeatureType)layer.getFeatureSource().getSchema(),
-                        layer.getStyle(),
-                        scaleDenominator,
-                        g2d
-                    );
+                            type,
+                            layer.getStyle(),
+                            scaleDenominator,
+                            g2d
+                            );
                     x = Math.max(x, (int)legend.width);
                     x = Math.max(x, TITLE_INDENT + metrics.stringWidth(findTitle(layer)));
                     y += legend.height + metrics.getHeight(); 
@@ -124,12 +129,12 @@ public class LegendDecoration implements Decoration {
                     LOGGER.log(Level.WARNING, "Error getting legend for " + layer);
                     continue;
                 }
+            } else {
+                LOGGER.log(Level.WARNING, "Skipping raster layer: " + layer);
             }
-            x += metrics.getDescent();
-            return new Dimension(x, y);
-        } catch (Exception e) {
-            return new Dimension(50,50);
         }
+        x += metrics.getDescent();
+        return new Dimension(x, y);
     }
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
@@ -166,17 +171,26 @@ public class LegendDecoration implements Decoration {
         g2d.setColor(Color.BLACK);
 
         for (MapLayer layer : mapContext.getLayers()){
-            g2d.translate(0, metrics.getHeight());
-            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
-            g2d.drawString(findTitle(layer), TITLE_INDENT, 0 - metrics.getDescent());
-            g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN));
-            Dimension dim = drawLegend(
-                (SimpleFeatureType)layer.getFeatureSource().getSchema(),
-                layer.getStyle(),
-                scaleDenominator,
-                g2d
-            );
-            g2d.translate(0, dim.getHeight());
+            SimpleFeatureType type = (SimpleFeatureType)layer.getFeatureSource().getSchema();
+            if (!isGridLayer(type)) {
+                try { 
+                    g2d.translate(0, metrics.getHeight());
+                    g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
+                    g2d.drawString(findTitle(layer), TITLE_INDENT, 0 - metrics.getDescent());
+                    g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN));
+                    Dimension dim = drawLegend(
+                            type,
+                            layer.getStyle(),
+                            scaleDenominator,
+                            g2d
+                            );
+                    g2d.translate(0, dim.getHeight()); 
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Couldn't make a legend for " + type.getName(), e);
+                }
+            } else {
+                LOGGER.log(Level.FINE, "Skipping raster layer " + type.getName() + " in legend decoration");
+            }
         }
 
         g2d.setTransform(bgTransform);
@@ -429,5 +443,14 @@ public class LegendDecoration implements Decoration {
         return sampleShape;
     }
 
+    public static boolean isGridLayer(final SimpleFeatureType layer) {
+		for(PropertyDescriptor descriptor : layer.getDescriptors()){
+			final PropertyType type = descriptor.getType();
+			if (type.getBinding().isAssignableFrom(AbstractGridCoverage2DReader.class)) {
+				return true;
+			}
+		}
 
+        return false;
+	}
 }
