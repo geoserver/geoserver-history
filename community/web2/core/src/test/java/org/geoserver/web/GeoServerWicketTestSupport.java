@@ -14,6 +14,10 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
 
     public void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
+        // prevent Wicket from bragging about us being in dev mode (and run
+        // the tests as if we were in production all the time)
+        System.setProperty("wicket.configuration", "deployment");
+        
         GeoServerApplication app = 
             (GeoServerApplication) applicationContext.getBean("webApplication");
         tester = new WicketTester(app);
