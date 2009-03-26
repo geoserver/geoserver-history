@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,6 +25,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
 import org.geoserver.web.wicket.KeywordsEditor;
+import org.geoserver.web.wicket.SRSToCRSModel;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 
@@ -35,7 +35,10 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 @SuppressWarnings("serial")
 public class BasicResourceConfig extends ResourceConfigurationPanel {
 	
-	public BasicResourceConfig(String id, IModel model) {
+	DropDownChoice projectionPolicy;
+	CRSPanel declaredCRS;
+
+    public BasicResourceConfig(String id, IModel model) {
 		super(id, model);
 
 		add(new TextField("title"));
@@ -43,32 +46,21 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 		add(new KeywordsEditor("keywords", new PropertyModel(model, "keywords")));
         add(new MetadataLinkEditor("metadataLinks", model));
         
-        final Form bboxForm = new Form("boxesForm");
-        add(bboxForm);
+        final Form refForm = new Form("referencingForm");
+        add(refForm);
         
         // native bbox
 		PropertyModel nativeBBoxModel = new PropertyModel(model, "nativeBoundingBox");
         final EnvelopePanel nativeBBox = new EnvelopePanel("nativeBoundingBox", nativeBBoxModel);
     	nativeBBox.setOutputMarkupId(true);
-    	bboxForm.add(nativeBBox);
-    	bboxForm.add(new AjaxLink("computeNative", nativeBBoxModel) {
+    	refForm.add(nativeBBox);
+    	refForm.add(new AjaxSubmitLink("computeNative", refForm) {
 
             @Override
-            public void onClick(final AjaxRequestTarget target) {
+            public void onSubmit(final AjaxRequestTarget target, Form form) {
+                form.process();
                 ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getModelObject();
-                ReferencedEnvelope re = null;
-                try {
-                    if(resource instanceof FeatureTypeInfo) {
-                        re = ((FeatureTypeInfo) resource).getFeatureSource(null, null).getBounds();
-                    } else if(resource instanceof CoverageInfo) {
-                        // for coverages that should be always available.. shoulnd't it?
-                        re = ((CoverageInfo) resource).getNativeBoundingBox();
-                    }
-                } catch(IOException e) {
-                    LOGGER.log(Level.SEVERE, "Error computing the native BBOX", e);
-                    error("Error computing the native BBOX:\n" + e.getMessage());
-                }
-                nativeBBox.setModelObject(re);
+                computeNative(nativeBBox, resource);
                 target.addComponent(nativeBBox);
             }
             
@@ -77,32 +69,24 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         // lat/lon bbox
         final EnvelopePanel latLonPanel = new EnvelopePanel("latLonBoundingBox", new PropertyModel(model, "latLonBoundingBox"));
         latLonPanel.setOutputMarkupId(true);
-        bboxForm.add(latLonPanel);
-        bboxForm.add(new AjaxSubmitLink("computeLatLon", bboxForm) {
+        refForm.add(latLonPanel);
+        refForm.add(new AjaxSubmitLink("computeLatLon", refForm) {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                form.process();
-                ReferencedEnvelope env = (ReferencedEnvelope) nativeBBox.getModelObject();
-                try {
-                    if(env != null) {
-                        latLonPanel.setModelObject(env.transform(DefaultGeographicCRS.WGS84, true));
-                    }
-                } catch(Exception e) {
-                    
-                }
+                
+                computeLatLon(nativeBBox, latLonPanel);
                 target.addComponent(latLonPanel);
             }
-            
         });
         
         // native srs , declared srs, and srs handling dropdown
         CRSPanel nativeCRS = new CRSPanel("nativeSRS", new PropertyModel(model, "nativeCRS"));
         nativeCRS.setReadOnly(true);
-        add(nativeCRS);
-        CRSPanel declaredCRS = new CRSPanel("declaredSRS", new PropertyModel(model, "cRS"));
-        add(declaredCRS);
-        DropDownChoice projectionPolicy = new DropDownChoice("srsHandling", new PropertyModel(model, "projectionPolicy"), Arrays.asList(ProjectionPolicy.values()), new ProjectionPolicyRenderer());
+        refForm.add(nativeCRS);
+        declaredCRS = new CRSPanel("declaredSRS", new SRSToCRSModel(new PropertyModel(model, "sRS")));
+        refForm.add(declaredCRS);
+        projectionPolicy = new DropDownChoice("srsHandling", new PropertyModel(model, "projectionPolicy"), Arrays.asList(ProjectionPolicy.values()), new ProjectionPolicyRenderer());
         ResourceInfo ri = (ResourceInfo) model.getObject();
         if(((ResourceInfo) model.getObject()).getCRS() == null) {
             // no native, the only meaningful policy is to force
@@ -112,8 +96,49 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
             CoverageInfo ci = (CoverageInfo) model.getObject();
             ci.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
         } else 
-        add(projectionPolicy);
+        refForm.add(projectionPolicy);
 	}
+    
+    void computeLatLon(final EnvelopePanel nativeBBox,
+            final EnvelopePanel latLonPanel) {
+        ReferencedEnvelope env = (ReferencedEnvelope) nativeBBox.getModelObject();
+        // handle the declared srs if necessary
+        if(projectionPolicy.getModelObject() == ProjectionPolicy.FORCE_DECLARED) {
+            env = new ReferencedEnvelope(env, declaredCRS.getCRS());
+        }
+        // reproject to WGS84
+        try {
+            if(env != null) {
+                latLonPanel.setModelObject(env.transform(DefaultGeographicCRS.WGS84, true));
+            }
+        } catch(Exception e) {
+            LOGGER.log(Level.FINE, "Envelope reprojection error", e);
+            error("Could not reproject to WGS84: " + e.getMessage());
+        }
+    }
+    
+    private void computeNative(final EnvelopePanel nativeBBox,
+            ResourceInfo resource) {
+        ReferencedEnvelope re = null;
+        try {
+            if(resource instanceof FeatureTypeInfo) {
+                re = ((FeatureTypeInfo) resource).getFeatureSource(null, null).getBounds();
+            } else if(resource instanceof CoverageInfo) {
+                // for coverages that should be always available.. shoulnd't it?
+                re = ((CoverageInfo) resource).getNativeBoundingBox();
+            }
+            if(projectionPolicy.getModelObject() == ProjectionPolicy.REPROJECT_TO_DECLARED) {
+                re = re.transform(declaredCRS.getCRS(), true);
+            }
+        } catch(IOException e) {
+            LOGGER.log(Level.SEVERE, "Error computing the native BBOX", e);
+            error("Error computing the native BBOX:" + e.getMessage());
+        } catch(Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error transforming the native BBOX to the declared projection", ex);
+            error("Error transforming the native BBOX to the declared projection " + ex.getMessage());
+        }
+        nativeBBox.setModelObject(re);
+    }
 	
 	class ProjectionPolicyRenderer implements IChoiceRenderer {
 
@@ -125,6 +150,5 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         public String getIdValue(Object object, int index) {
             return ((ProjectionPolicy) object).name();
         }
-	    
 	}
 }
