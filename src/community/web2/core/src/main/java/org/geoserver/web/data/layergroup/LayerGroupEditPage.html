@@ -1,0 +1,26 @@
+<html>
+  <body>
+   <wicket:extend>
+    <form wicket:id="form">
+     <ul>
+       <li>
+         <label for="name">Name</label>
+         <input wicket:id="name"></input>
+       </li>
+       <li>
+         <label for="bounds">Bounds</label>
+         <div wicket:id="bounds"></div>
+         <input wicket:id="generateBounds" type="submit" value="Generate Bounds"></input>
+       </li>
+       <li>
+         <label for="layers">Layers</label>
+         <div wicket:id="layers"></div>
+       </li>
+     </ul>
+    </form>
+    <a wicket:id="add">Add layer...</a>
+    <div wicket:id="popup"></div>
+    
+   </wicket:extend>
+  </body>
+</html>
