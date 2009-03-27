@@ -35,75 +35,75 @@ public class DecorationLayout {
     private static Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses");
 
-    private static class Block {
+    public static class Block {
         public static enum Position {
             UL, UC, UR, CL, CC, CR, LL, LC, LR;
+        }
 
-            public static Rectangle findBounds(
+        public static Rectangle findBounds(
                 Position p,
                 Rectangle container,
                 Dimension dim,
                 Point o) {
 
-                int x = 0, y = 0;
-                int height = dim.height, width = dim.width;
+            int x = 0, y = 0;
+            int height = dim.height, width = dim.width;
 
-                // adjust Y coord
-                switch (p) {
-                    case UC:
-                    case UR:
-                    case UL:
-                        y = (int) (container.getMinY() + o.y);
-                        break;
+            // adjust Y coord
+            switch (p) {
+                case UC:
+                case UR:
+                case UL:
+                    y = (int) (container.getMinY() + o.y);
+                    break;
 
-                    case CL:
-                    case CC:
-                    case CR:
-                        y = (int) (container.getMinY() + container.getMaxY() - dim.height) / 2;
-                        // ignore vertical offset when vertically centered
-                        break;
+                case CL:
+                case CC:
+                case CR:
+                    y = (int) (container.getMinY() + container.getMaxY() - dim.height) / 2;
+                    // ignore vertical offset when vertically centered
+                    break;
 
-                    case LL:
-                    case LC:
-                    case LR:
-                        y = (int) (container.getMaxY() - o.y - dim.height);
-                }
-
-                // adjust X coord
-                switch(p){
-                    case UL:
-                    case CL:
-                    case LL:
-                        x = (int) (container.getMinX() + o.x);
-                        break;
-
-                    case UC:
-                    case CC:
-                    case LC:
-                        x = (int) (container.getMinX() + container.getMaxX()) / 2;
-                        // ignore horizontal offset when horizontally centered
-                        break;
-
-                    case UR:
-                    case CR:
-                    case LR:
-                        x = (int) (container.getMaxX() - o.x - dim.width);
-                }
-
-                // in the event that this block is the same size as the container, 
-                // ignore the offset so it will fit
-                if ((dim.width + (2 * o.x)) > container.width) {
-                    x = (int) container.getMinX() + o.x;
-                    width = container.width - (2 * o.x);
-                }
-
-                if ((dim.height + (2 * o.y)) > container.height) {
-                    y = (int) container.getMinY() + o.y;
-                    height = container.height - (2 * o.y);
-                }
-
-                return new Rectangle(x, y, width, height);
+                case LL:
+                case LC:
+                case LR:
+                    y = (int) (container.getMaxY() - o.y - dim.height);
             }
+
+            // adjust X coord
+            switch(p){
+                case UL:
+                case CL:
+                case LL:
+                    x = (int) (container.getMinX() + o.x);
+                    break;
+
+                case UC:
+                case CC:
+                case LC:
+                    x = (int) (container.getMinX() + container.getMaxX()) / 2;
+                    // ignore horizontal offset when horizontally centered
+                    break;
+
+                case UR:
+                case CR:
+                case LR:
+                    x = (int) (container.getMaxX() - o.x - dim.width);
+            }
+
+            // in the event that this block does not fit in the container, resize each dimension 
+            // independently to fit (with space for the offset parameter)
+            if ((dim.width + (2 * o.x)) > container.width) {
+                x = (int) container.getMinX() + o.x;
+                width = container.width - (2 * o.x);
+            }
+
+            if ((dim.height + (2 * o.y)) > container.height) {
+                y = (int) container.getMinY() + o.y;
+                height = container.height - (2 * o.y);
+            }
+
+            return new Rectangle(x, y, width, height);
         }
 
         final Decoration decoration;
@@ -118,7 +118,7 @@ public class DecorationLayout {
             offset = o;
         }
 
-        public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
+        public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext) {
             return (dimension != null) 
                 ? dimension 
                 : decoration.findOptimalSize(g2d, mapContext);
@@ -128,7 +128,7 @@ public class DecorationLayout {
         throws Exception {
             Dimension desiredSize = findOptimalSize(g2d, mapContext);
 
-            Rectangle box = Position.findBounds(position, rect, desiredSize, offset);
+            Rectangle box = findBounds(position, rect, desiredSize, offset);
             Shape oldClip = g2d.getClip();
             g2d.setClip(box);
             decoration.paint(g2d, box, mapContext);
@@ -138,7 +138,7 @@ public class DecorationLayout {
 
     private List<Block> blocks;
 
-    public DecorationLayout(){
+    public DecorationLayout() {
         this.blocks = new ArrayList<Block>();
     }
 
@@ -230,13 +230,13 @@ public class DecorationLayout {
         return dl;
     }
 
-    private void addBlock(Block b){
+    public void addBlock(Block b) {
         blocks.add(b);
     }
 
-    public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext){ 
+    public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) { 
         for (Block b : blocks) {
-            try{
+            try {
                 b.paint(g2d, paintArea, mapContext);
             } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "couldn't paint due to: ", e);
