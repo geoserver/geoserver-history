@@ -2,6 +2,7 @@ package org.geoserver.web.wicket;
 
 import java.io.Serializable;
 
+import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
@@ -52,6 +53,18 @@ public class CRSPanelTest extends GeoServerWicketTestSupport {
         
         CRSPanel crsPanel = (CRSPanel) tester.getComponentFromLastRenderedPage( "form:crs");
         assertEquals( CRS.decode("EPSG:3005"), crsPanel.getCRS() );
+    }
+    
+    public void testRequired() throws Exception {
+        tester.startPage( new CRSPanelTestPage( (CoordinateReferenceSystem) null ) );
+        CRSPanel panel = (CRSPanel) tester.getComponentFromLastRenderedPage("form:crs");
+        panel.setRequired(true);
+        
+        FormTester ft = tester.newFormTester( "form");
+        ft.submit();
+        
+        assertEquals(1, Session.get().getFeedbackMessages().size());
+        // System.out.println(Session.get().getFeedbackMessages().messageForComponent(panel));
     }
     
     public void testCompoundPropertyUnchanged() throws Exception {
