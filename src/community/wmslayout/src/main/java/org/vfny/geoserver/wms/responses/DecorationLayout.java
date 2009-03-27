@@ -37,7 +37,21 @@ public class DecorationLayout {
 
     public static class Block {
         public static enum Position {
-            UL, UC, UR, CL, CC, CR, LL, LC, LR;
+            UL("top,left"), UC("top,center"), UR("top,right"), 
+            CL("center,left"), CC("center,center"), CR("center,right"), 
+            LL("bottom,left"), LC("bottom,center"), LR("bottom,right");
+
+            private final String name;
+
+            Position(String name) { this.name = name; }
+
+            public static Position fromString(String str) {
+                for (Position p : values()) {
+                    if (p.name.equalsIgnoreCase(str)) return p;
+                }
+
+                return null;
+            }
         }
 
         public static Rectangle findBounds(
@@ -162,27 +176,9 @@ public class DecorationLayout {
             }
             decoration.loadOptions(m);
 
-            Block.Position pos = null;
+            Block.Position pos = Block.Position.fromString(e.getAttributeValue("affinity"));
 
-            if (e.getAttributeValue("affinity").equalsIgnoreCase("bottom,right")) {
-                pos = Block.Position.LR;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("bottom,left")) {
-                pos = Block.Position.LL;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("bottom,center")) {
-                pos = Block.Position.LC;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("center,left")) {
-                pos = Block.Position.CL;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("center,right")) {
-                pos = Block.Position.CR;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("center,center")) {
-                pos = Block.Position.CC;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,right")) {
-                pos = Block.Position.UR;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,left")) {
-                pos = Block.Position.UL;
-            } else if (e.getAttributeValue("affinity").equalsIgnoreCase("top,center")) {
-                pos = Block.Position.LC;
-            } else {
+            if (pos == null) {
                 LOGGER.log(
                     Level.WARNING,
                     "Unknown affinity: " + e.getAttributeValue("affinity") + " requested."
