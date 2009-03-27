@@ -15,6 +15,10 @@ import java.util.Map;
 
 import javax.measure.unit.Unit;
 
+import org.geoserver.catalog.impl.ModificationProxy;
+import org.geoserver.catalog.impl.ResourceInfoImpl;
+import org.geoserver.catalog.impl.StoreInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.ClassProperties;
@@ -880,5 +884,72 @@ public class CatalogBuilder {
         }
         
         catalog.remove( resource );
+    }
+    
+    /**
+     * Reattaches a serialized {@link StoreInfo} to the catalog
+     */
+    public void attach(StoreInfo storeInfo) {
+        storeInfo = ModificationProxy.unwrap(storeInfo);
+        ((StoreInfoImpl) storeInfo).setCatalog(catalog);
+    }
+    
+    /**
+     * Reattaches a serialized {@link ResourceInfo} to the catalog 
+     */
+    public void attach(ResourceInfo resourceInfo) {
+        resourceInfo = ModificationProxy.unwrap(resourceInfo);
+        ((ResourceInfoImpl) resourceInfo).setCatalog(catalog);
+    }
+    
+    /**
+     * Reattaches a serialized {@link LayerInfo} to the catalog
+     */
+    public void attach(LayerInfo layerInfo) {
+        attach(layerInfo.getResource());
+    }
+    
+    /**
+     * Reattaches a serialized {@link MapInfo} to the catalog 
+     */
+    public void attach(MapInfo mapInfo) {
+        // hmmm... mapInfo has a list of layers inside? Not names?
+        for (LayerInfo layer : mapInfo.getLayers()) {
+            attach(layer);
+        }
+    }
+    
+    /**
+     * Reattaches a serialized {@link LayerGroupInfo} to the catalog
+     */
+    public void attach(LayerGroupInfo groupInfo) {
+        for (LayerInfo layer : groupInfo.getLayers()) {
+            attach(layer);
+        }
+        for (StyleInfo style : groupInfo.getStyles()) {
+            attach(style);
+        }
+    }
+    
+    /**
+     * Reattaches a serialized {@link StyleInfo} to the catalog 
+     */
+    public void attach(StyleInfo styleInfo) {
+        styleInfo = ModificationProxy.unwrap(styleInfo);
+        ((StyleInfoImpl) styleInfo).setCatalog(catalog);
+    }
+    
+    /**
+     * Reattaches a serialized {@link NamespaceInfo} to the catalog
+     */
+    public void attach(NamespaceInfo nsInfo) {
+        // nothing to do
+    }
+    
+    /**
+     * Reattaches a serialized {@link WorkspaceInfo} to the catalog 
+     */
+    public void attach(WorkspaceInfo wsInfo) {
+        // nothing to do
     }
 }
