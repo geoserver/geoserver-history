@@ -21,6 +21,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -62,11 +63,11 @@ public class BagTest extends TestCase {
 	
 	public void testBag() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("bag", "BagPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("bag", "BagPolicy.xml"));
 	    	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("bag","BagRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("bag","BagRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -80,11 +81,11 @@ public class BagTest extends TestCase {
 	
 	public void testIsBag1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("bag","BagPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("bag","BagPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("bag","BagRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("bag","BagRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -98,11 +99,11 @@ public class BagTest extends TestCase {
 	
 	public void testBagSize() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("bag","BagSizePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("bag","BagSizePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("bag","BagSizeRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("bag","BagSizeRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -116,11 +117,11 @@ public class BagTest extends TestCase {
 	
 	public void testOneAndOnly() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("bag","OneAndOnlyPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("bag","OneAndOnlyPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("bag","OneAndOnlyRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("bag","OneAndOnlyRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -134,11 +135,11 @@ public class BagTest extends TestCase {
 	
 	public void testIsIn() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("bag","IsInPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("bag","IsInPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("bag","IsInRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("bag","IsInRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -152,11 +153,11 @@ public class BagTest extends TestCase {
 	
 	public void testIsIn1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("bag","IsInPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("bag","IsInPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("bag","IsInRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("bag","IsInRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

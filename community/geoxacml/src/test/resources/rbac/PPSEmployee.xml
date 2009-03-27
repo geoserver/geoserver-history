@@ -14,22 +14,26 @@
 				<Resources>
 					<Resource>
 						<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-							<AttributeValue DataType="http://www.w3.org/2001/XMLSchema:string">purchase order</AttributeValue>
+							<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">purchase order</AttributeValue>
 							<ResourceAttributeDesignator
-								AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema:string" />
+								AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string" />
 						</ResourceMatch>
 					</Resource>
 				</Resources>
 				<Actions>
 					<Action>
 						<ActionMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-							<AttributeValue DataType="http://www.w3.org/2001/XMLSchema:string">create</AttributeValue>
+							<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">create</AttributeValue>
 							<ActionAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id"
-								DataType="http://www.w3.org/2001/XMLSchema:string" />
+								DataType="http://www.w3.org/2001/XMLSchema#string" />
 						</ActionMatch>
 					</Action>
 				</Actions>
 			 </Target>
 		</Rule>
 	</Policy>
+	
+	<!-- inlcude has permission of role policy -->
+	<PolicyIdReference>Permission:to:have:employee:role:permissions</PolicyIdReference>
+	
 </PolicySet>

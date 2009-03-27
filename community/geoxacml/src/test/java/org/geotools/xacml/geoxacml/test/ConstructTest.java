@@ -20,6 +20,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -60,11 +61,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testBuffer() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BufferPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","BufferPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BufferRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","BufferRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -78,11 +79,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testBuffer1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BufferPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","BufferPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BufferRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","BufferRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -97,11 +98,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testUnion() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","UnionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","UnionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","UnionRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","UnionRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -115,11 +116,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testUnion1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","UnionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","UnionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","UnionRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","UnionRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -133,11 +134,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testIntersection() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","IntersectionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","IntersectionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","IntersectionRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","IntersectionRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -151,11 +152,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testIntersection1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","IntersectionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","IntersectionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","IntersectionRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","IntersectionRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -169,11 +170,11 @@ public class ConstructTest extends TestCase {
 
 	public void testDifference() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","DifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","DifferencePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","DifferenceRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","DifferenceRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -187,11 +188,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testDifference1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","DifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","DifferencePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","DifferenceRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","DifferenceRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -205,11 +206,11 @@ public class ConstructTest extends TestCase {
 
 	public void testSymDifference() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","SymDifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","SymDifferencePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","SymDifferenceRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","SymDifferenceRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -223,11 +224,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testSymDifference1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","SymDifferencePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","SymDifferencePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","SymDifferenceRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","SymDifferenceRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -241,11 +242,11 @@ public class ConstructTest extends TestCase {
 
 	public void testBoundary() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BoundaryPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","BoundaryPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BoundaryRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","BoundaryRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -259,11 +260,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testBoundary1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","BoundaryPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","BoundaryPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","BoundaryRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","BoundaryRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -277,11 +278,11 @@ public class ConstructTest extends TestCase {
 
 	public void testCentroid() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","CentroidPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","CentroidPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","CentroidRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","CentroidRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -295,11 +296,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testCentroid1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","CentroidPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","CentroidPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","CentroidRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","CentroidRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -313,11 +314,11 @@ public class ConstructTest extends TestCase {
 
 	public void testConvexHull() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","ConvexHullPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","ConvexHullPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","ConvexHullRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","ConvexHullRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -331,11 +332,11 @@ public class ConstructTest extends TestCase {
 	
 	public void testConvexHull1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("construct","ConvexHullPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("construct","ConvexHullPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("construct","ConvexHullRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("construct","ConvexHullRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

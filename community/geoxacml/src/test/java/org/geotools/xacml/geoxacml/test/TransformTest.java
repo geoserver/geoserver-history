@@ -21,6 +21,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -61,11 +62,11 @@ public class TransformTest extends TestCase {
 	
 	public void testEPSG_4326() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("transform","EPSG_4326_Policy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("transform","EPSG_4326_Policy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("transform","EPSG_4326_Request.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("transform","EPSG_4326_Request.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -79,11 +80,11 @@ public class TransformTest extends TestCase {
 	
 	public void testEPSG_4326_1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("transform","EPSG_4326_Policy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("transform","EPSG_4326_Policy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("transform","EPSG_4326_Request1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("transform","EPSG_4326_Request1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -97,11 +98,11 @@ public class TransformTest extends TestCase {
 
 	public void testEPSG_4326_2() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("transform","EPSG_4326_Policy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("transform","EPSG_4326_Policy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("transform","EPSG_4326_Request2.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("transform","EPSG_4326_Request2.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

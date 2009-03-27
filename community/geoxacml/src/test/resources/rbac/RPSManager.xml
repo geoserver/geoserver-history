@@ -8,9 +8,9 @@
 		<Subjects>
 			<Subject>
 				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal">
-					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema:anyURI">urn:example:role-values:manager</AttributeValue>
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">urn:example:role-values:manager</AttributeValue>
 					<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role"
-						DataType="http://www.w3.org/2001/XMLSchema:anyURI" />
+						DataType="http://www.w3.org/2001/XMLSchema#anyURI" />
 				</SubjectMatch>
 			</Subject>
 		</Subjects>
