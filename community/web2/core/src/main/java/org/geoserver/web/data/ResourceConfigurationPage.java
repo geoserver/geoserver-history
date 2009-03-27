@@ -13,9 +13,11 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -63,7 +65,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
     }
 
     private void initComponents(){
-        add(new Label("resourcename", getResourceInfo().getId()));
+        add(new Label("resourcename", getResourceInfo().getPrefixedName()));
         Form theForm = new Form("resource", myResourceModel);
         add(theForm);
         List<ITab> tabs = new ArrayList<ITab>();
@@ -72,13 +74,24 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                 return new ListPanel(panelID, new ResourceConfigurationSectionListView("theList"));
             }
         });
-
         tabs.add(new AbstractTab(new Model("Publishing")){
             public Panel getPanel(String panelID) {
                 return new ListPanel(panelID, new LayerConfigurationSectionListView("theList"));
             }
         });
-        theForm.add(new TabbedPanel("tabs", tabs));
+        // we need to override with submit links so that the various form element
+        // will validate and write down into their
+        theForm.add(new TabbedPanel("tabs", tabs) {
+            @Override
+            protected WebMarkupContainer newLink(String linkId, final int index) {
+                return new SubmitLink(linkId) {
+                    @Override
+                    public void onSubmit() {
+                        setSelectedTab(index);
+                    }
+                };
+            }
+        });
         theForm.add(new Button("saveButton"){
             public void onSubmit(){
                 if (isNew){
