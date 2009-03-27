@@ -15,10 +15,11 @@ import javax.servlet.ServletContext;
 
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.config.ConfigurationListener;
+import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.JAIInfo;
 import org.geoserver.config.ServiceInfo;
-import org.geoserver.jai.JAIInfo;
 import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.dto.ContactDTO;
 import org.vfny.geoserver.global.dto.GeoServerDTO;
@@ -54,7 +55,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * api and forwards events to the old style listener.
      *
      */
-    static class ListenerWrapper implements ConfigurationListener {
+    static class ListenerWrapper extends ConfigurationListenerAdapter {
 
         Listener listener;
         
@@ -434,7 +435,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
     * @return String the Logging Level.
     */
     public String getLog4jConfigFile() {
-        return info.getLoggingLevel();
+        return gs.getLogging().getLevel();
         //return log4jConfigFile;
     }
 
@@ -619,9 +620,9 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             //contactPosition = dto.getContact().getContactPosition();
             //contactVoice = dto.getContact().getContactVoice();
             
-            info.setLoggingLevel( dto.getLog4jConfigFile() );
-            info.setStdOutLogging(!dto.getSuppressStdOutLogging());
-            info.setLoggingLocation( dto.getLogLocation() );
+            gs.getLogging().setLevel( dto.getLog4jConfigFile() );
+            gs.getLogging().setStdOutLogging(!dto.getSuppressStdOutLogging());
+            gs.getLogging().setLocation( dto.getLogLocation() );
             
             //log4jConfigFile = dto.getLog4jConfigFile();
             //suppressStdOutLogging = dto.getSuppressStdOutLogging();
@@ -637,18 +638,17 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
             //    throw new ConfigurationException("", ioe);
             //}
             
-            JAIInfo jai = new JAIInfo();
-            jai.setMemoryCapacity(dto.getJaiMemoryCapacity());
-            jai.setMemoryThreshold(dto.getJaiMemoryThreshold());
-            jai.setTileThreads( dto.getJaiTileThreads() );
-            jai.setTilePriority( dto.getJaiTilePriority() );
-            jai.setRecycling( dto.getJaiRecycling() );
-            jai.setImageIOCache( dto.getImageIOCache() );
-            jai.setPngAcceleration( dto.getJaiPNGNative() );
-            jai.setJpegAcceleration( dto.getJaiJPEGNative() );
-            jai.setAllowNativeMosaic(dto.getJaiMosaicNative());
+            info.getJAI().setMemoryCapacity(dto.getJaiMemoryCapacity());
+            info.getJAI().setMemoryThreshold(dto.getJaiMemoryThreshold());
+            info.getJAI().setTileThreads( dto.getJaiTileThreads() );
+            info.getJAI().setTilePriority( dto.getJaiTilePriority() );
+            info.getJAI().setRecycling( dto.getJaiRecycling() );
+            info.getJAI().setImageIOCache( dto.getImageIOCache() );
+            info.getJAI().setPngAcceleration( dto.getJaiPNGNative() );
+            info.getJAI().setJpegAcceleration( dto.getJaiJPEGNative() );
+            info.getJAI().setAllowNativeMosaic(dto.getJaiMosaicNative());
             //initJAI(jai);
-            info.getMetadata().put( JAIInfo.KEY, jai );
+            //info.getMetadata().put( JAIInfo.KEY, jai );
             
             //memoryCapacity = dto.getJaiMemoryCapacity();
             //memoryThreshold = dto.getJaiMemoryThreshold();
@@ -991,7 +991,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      *
      */
     public String getLogLocation() {
-        return info.getLoggingLocation();
+        return gs.getLogging().getLocation();
         //return logLocation;
     }
 
@@ -1000,7 +1000,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * the server logs to.
      */
     public void setLogLocation(String logLocation) {
-        info.setLoggingLocation( logLocation );
+        gs.getLogging().setLocation( logLocation );
         //this.logLocation = logLocation;
     }
 
@@ -1008,7 +1008,7 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * @return True if the server is logging to file, otherwise false.
      */
     public boolean getSuppressStdOutLogging() {
-        return !info.isStdOutLogging();
+        return !gs.getLogging().isStdOutLogging();
         //return suppressStdOutLogging;
     }
 
@@ -1016,12 +1016,13 @@ public class GeoServer extends GlobalLayerSupertype implements DisposableBean {
      * Toggles server logging to file.
      */
     public void setSuppressStdOutLogging(boolean loggingToFile) {
-        info.setStdOutLogging(!loggingToFile);
+        gs.getLogging().setStdOutLogging(!loggingToFile);
         //this.suppressStdOutLogging = loggingToFile;
     }
 
     JAIInfo jai() {
-        return (JAIInfo) info.getMetadata().get( JAIInfo.KEY );
+        return info.getJAI();
+        //return (JAIInfo) info.getMetadata().get( JAIInfo.KEY );
     }
     
     public JAI getJAIDefault() {
