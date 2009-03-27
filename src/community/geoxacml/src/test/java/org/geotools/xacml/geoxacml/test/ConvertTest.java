@@ -22,6 +22,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -63,11 +64,11 @@ public class ConvertTest extends TestCase {
 	
 	public void testConvertToSquareMetre() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("convert","ConvertToSquareMetrePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("convert","ConvertToSquareMetrePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("convert","ConvertToSquareMetreRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("convert","ConvertToSquareMetreRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -81,11 +82,11 @@ public class ConvertTest extends TestCase {
 	
 	public void testConvertToMetre() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("convert","ConvertToMetrePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("convert","ConvertToMetrePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("convert","ConvertToMetreRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("convert","ConvertToMetreRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

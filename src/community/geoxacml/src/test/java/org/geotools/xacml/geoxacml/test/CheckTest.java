@@ -21,6 +21,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -61,11 +62,11 @@ public class CheckTest extends TestCase {
 	
 	public void testIsClosed() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsClosedPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsClosedPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsClosedRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsClosedRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -79,11 +80,11 @@ public class CheckTest extends TestCase {
 	
 	public void testIsClosed1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsClosedPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsClosedPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsClosedRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsClosedRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -97,11 +98,11 @@ public class CheckTest extends TestCase {
 	
 	public void testIsSimple() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsSimplePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsSimplePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsSimpleRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsSimpleRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -115,11 +116,11 @@ public class CheckTest extends TestCase {
 	
 	public void testIsSimple1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsSimplePolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsSimplePolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsSimpleRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsSimpleRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -134,11 +135,11 @@ public class CheckTest extends TestCase {
 	
 	public void testIsValid() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsValidPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsValidPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsValidRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsValidRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -152,11 +153,11 @@ public class CheckTest extends TestCase {
 	
 	public void testIsValid1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("check","IsValidPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsValidPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("check","IsValidRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsValidRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

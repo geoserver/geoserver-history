@@ -20,6 +20,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -61,11 +62,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagIntersection() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagIntersectionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagIntersectionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagIntersectionRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagIntersectionRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -79,11 +80,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagIntersection1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagIntersectionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagIntersectionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagIntersectionRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagIntersectionRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -97,11 +98,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagUnion() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagUnionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagUnionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagUnionRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagUnionRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -115,11 +116,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagUnion1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagUnionPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagUnionPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagUnionRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagUnionRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -133,11 +134,11 @@ public class SetTest extends TestCase {
 
 	public void testBagAtLeastOneMemberOf() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagAtLeastOneMemberOfPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagAtLeastOneMemberOfPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagAtLeastOneMemberOfRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagAtLeastOneMemberOfRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -151,11 +152,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagAtLeastOneMemberOf1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagAtLeastOneMemberOfPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagAtLeastOneMemberOfPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagAtLeastOneMemberOfRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagAtLeastOneMemberOfRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -169,11 +170,11 @@ public class SetTest extends TestCase {
 
 	public void testBagSubset() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagSubsetPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagSubsetPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagSubsetRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagSubsetRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -187,11 +188,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagSubset1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagSubsetPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagSubsetPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagSubsetRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagSubsetRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -205,11 +206,11 @@ public class SetTest extends TestCase {
 
 	public void testBagEquals() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagEqualsPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagEqualsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagEqualsRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagEqualsRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -223,11 +224,11 @@ public class SetTest extends TestCase {
 	
 	public void testBagEquals1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getFNFor("set","BagEqualsPolicy.xml"));
+	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("set","BagEqualsPolicy.xml"));
 	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("set","BagEqualsRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("set","BagEqualsRequest1.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

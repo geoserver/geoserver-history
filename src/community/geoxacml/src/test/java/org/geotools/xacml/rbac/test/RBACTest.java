@@ -16,7 +16,7 @@
  */
 
 
-package org.geotools.xacml.geoxacml.test;
+package org.geotools.xacml.rbac.test;
 
 import java.io.FileInputStream;
 
@@ -34,20 +34,20 @@ import com.sun.xacml.ctx.Status;
 
 /**
  * @author Christian Mueller
+ * 
+ * Tests for RBAC
  *
- * Test for geomtry scalar functions
  */
-public class ScalarTest extends TestCase {
+public class RBACTest extends TestCase {
 
-
-	
-	
-	public ScalarTest() {
+		
+		
+	public RBACTest() {
 		super();
 						
 	}
 
-	public ScalarTest(String arg0) {
+	public RBACTest(String arg0) {
 		super(arg0);
 		
 	}
@@ -59,15 +59,13 @@ public class ScalarTest extends TestCase {
 	}
 	
 	
-	
-	
-	public void testArea() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","AreaPolicy.xml"));
-	    	    	    	    
+	public void testEmployee() {
+		
+	    PDP pdp = TestSupport.getRBAC_PDP();
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","AreaRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","EmployeeRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -79,13 +77,29 @@ public class ScalarTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testArea1() {
+	public void testIsEmployee1() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","AreaPolicy.xml"));
-	    	    	    	    
+		PDP pdp = TestSupport.getRBAC_PDP();	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","AreaRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","EmployeeRequest1.xml")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		}
+		
+	    ResponseCtx response= pdp.evaluate(request);
+	    Result result = (Result)response.getResults().iterator().next();
+	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+	}
+	
+	public void testIsEmployee2() {
+		
+		PDP pdp = TestSupport.getRBAC_PDP();	    	    	    	    
+	    RequestCtx request = null;
+		try {
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","EmployeeRequest2.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -97,31 +111,12 @@ public class ScalarTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	public void testLength() {
+	public void testIsEmployee3() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","LengthPolicy.xml"));
-	    	    	    	    
+		PDP pdp = TestSupport.getRBAC_PDP();	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","LengthRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testLength1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","LengthPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","LengthRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","EmployeeRequest3.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -133,14 +128,13 @@ public class ScalarTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-	
-	public void testDistance() {
+
+	public void testManagerJunior() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","DistancePolicy.xml"));
-	    	    	    	    
+		PDP pdp = TestSupport.getRBAC_PDP();	    	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","DistanceRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","ManagerRequestJunior.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -152,13 +146,12 @@ public class ScalarTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testDistance1() {
+	public void testManagerSenior() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","DistancePolicy.xml"));
-	    	    	    	    
+		PDP pdp = TestSupport.getRBAC_PDP();	    	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","DistanceRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","ManagerRequestSenior.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -166,17 +159,17 @@ public class ScalarTest extends TestCase {
 		
 	    ResponseCtx response= pdp.evaluate(request);
 	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
+	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
-	
-	public void testisWithinDistance() {
+
+
+	public void testHPORAliceEmployee() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","IsWithinDistancePolicy.xml"));
-	    	    	    	    
+	    PDP pdp = TestSupport.getRBAC_PDP();
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","IsWithinDistanceRequest.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","HPORAliceEmployeeRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());
@@ -188,13 +181,12 @@ public class ScalarTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testIsWithinDistance1() {
+	public void testHPORAliceManager() {
 		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("scalar","IsWithinDistancePolicy.xml"));
-	    	    	    	    
+		PDP pdp = TestSupport.getRBAC_PDP();	    	    	    	    
 	    RequestCtx request = null;
 		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("scalar","IsWithinDistanceRequest1.xml")));
+			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","HPORAliceManagerRequest.xml")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail(e.getMessage());

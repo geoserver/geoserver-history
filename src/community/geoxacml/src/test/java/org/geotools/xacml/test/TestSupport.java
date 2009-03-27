@@ -14,7 +14,7 @@
  *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  *    Lesser General Public License for more details.
  */
-package org.geotools.xacml.geoxacml.test;
+package org.geotools.xacml.test;
 
 
 import java.io.ByteArrayInputStream;
@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -37,25 +38,23 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 import org.geotools.xacml.geoxacml.finder.impl.GeoSelectorModule;
+import org.geotools.xacml.rbac.RBACPolicyFinder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.PDP;
 import com.sun.xacml.PDPConfig;
+import com.sun.xacml.ParsingException;
 import com.sun.xacml.Policy;
 import com.sun.xacml.Rule;
 import com.sun.xacml.cond.Apply;
 import com.sun.xacml.finder.AttributeFinder;
 import com.sun.xacml.finder.PolicyFinder;
-import com.sun.xacml.finder.ResourceFinder;
 import com.sun.xacml.finder.impl.CurrentEnvModule;
-import com.sun.xacml.finder.impl.SelectorModule;
+import com.sun.xacml.support.finder.BasicPolicyFinderModule;
 import com.sun.xacml.support.finder.FilePolicyModule;
-import com.sun.xacml.test.TestAttributeFinderModule;
-import com.sun.xacml.test.TestPolicyFinderModule;
-import com.sun.xacml.test.TestResourceFinderModule;
+import com.sun.xacml.support.finder.PolicyReader;
 
 /**
  * @author Christian Mueller
@@ -71,19 +70,19 @@ public class TestSupport  {
 
 	
     	    	
-   	static GeometryAttribute getGeometryAttribute(AbstractPolicy p) {
+   	public static GeometryAttribute getGeometryAttribute(AbstractPolicy p) {
 		Rule rule = (Rule) p.getChildren().get(0);
 		Apply apply = (Apply)rule.getCondition().getChildren().get(0);
 		GeometryAttribute attr = (GeometryAttribute) apply.getChildren().get(1);		
 		return attr;
 	}
 	
-	static AbstractPolicy policyFromXML(String xmlString) {
+	public static AbstractPolicy policyFromXML(String xmlString) {
 		InputStream in = new ByteArrayInputStream(xmlString.getBytes());
 		return loadPolicy(in);
 	}
 	
-	static AbstractPolicy policyFromFile(String fileName) {
+	public static AbstractPolicy policyFromFile(String fileName) {
 		try {
 			return loadPolicy(new FileInputStream(fileName));
 		} catch (FileNotFoundException ex) {
@@ -123,7 +122,7 @@ public class TestSupport  {
         return null;
     }
 
-   static String fileContentAsString (String fileName) {
+   public static String fileContentAsString (String fileName) {
 	   StringBuffer buff = new StringBuffer();
 	   try {
 			FileInputStream in = new FileInputStream(fileName);
@@ -139,7 +138,7 @@ public class TestSupport  {
 	   return buff.toString();
 	}
 
-   static PDP getPDP(String fileName) {
+   static public  PDP getPDP(String fileName) {
 	   FilePolicyModule policyModule = new FilePolicyModule();
 	   policyModule.addPolicy(fileName);
     	    	    
@@ -163,7 +162,58 @@ public class TestSupport  {
 	   return pdp;
    }
    
-   static String getFNFor(String resourceDir,String fn) {
+   static public  PDP getRBAC_PDP() {
+	   
+	   FilePolicyModule rpsPolicyModule = new FilePolicyModule();
+	   //rpsPolicyModule.addPolicy(rpsFileName);
+	   rpsPolicyModule.addPolicy(getFNFor("rbac", "RPSEmployee.xml"));
+	   rpsPolicyModule.addPolicy(getFNFor("rbac", "RPSManager.xml"));
+
+	   
+	   Set policyModules = new HashSet();
+	   policyModules.add(rpsPolicyModule);
+	   
+	   RBACPolicyFinder policyFinder = new RBACPolicyFinder();
+	   policyFinder.setRPSModules(policyModules);
+	   	   
+	   PolicyReader reader = new PolicyReader(policyFinder.getPpsFinder(),Logger.global);
+	   BasicPolicyFinderModule ppsPolicyModule = new BasicPolicyFinderModule();
+	   
+		try {
+			AbstractPolicy policy = reader.readPolicy(new File(getFNFor("rbac", "PPSEmployee.xml")));
+			ppsPolicyModule.addPolicyOnlyRef(policy);
+			policy = reader.readPolicy(new File(getFNFor("rbac", "PPSManager.xml")));
+			ppsPolicyModule.addPolicyOnlyRef(policy);
+			policy = reader.readPolicy(new File(getFNFor("rbac", "HPOREmployee.xml")));
+			ppsPolicyModule.addPolicyOnlyRef(policy);
+			policy = reader.readPolicy(new File(getFNFor("rbac", "HPORManager.xml")));
+			ppsPolicyModule.addPolicyOnlyRef(policy);
+			
+
+		} catch (ParsingException e) {
+			e.printStackTrace();
+		}		   
+
+	   
+	   policyModules = new HashSet();
+	   policyModules.add(ppsPolicyModule);
+	   policyFinder.setPPSModules(policyModules);
+
+	   CurrentEnvModule envModule = new CurrentEnvModule();
+	   GeoSelectorModule selectorModule = new GeoSelectorModule();
+	   
+	   AttributeFinder attrFinder = new AttributeFinder();
+	   List attrModules = new ArrayList();
+	   attrModules.add(envModule);
+	   attrModules.add(selectorModule);
+	   attrFinder.setModules(attrModules);
+    
+	   PDP pdp = new PDP(new PDPConfig(attrFinder, policyFinder, null));
+	   return pdp;
+   }
+
+   
+   static public String getGeoXACMLFNFor(String resourceDir,String fn) {
 		String result = "src"+File.separator+ "test"+File.separator+ "resources" + File.separator + "geoxml"
 		+ File.separator + resourceDir + File.separator+fn;
 		
@@ -172,10 +222,22 @@ public class TestSupport  {
 		result = "target"+File.separator+ "resources" + File.separator + "geoxml"
 		+ File.separator + resourceDir + File.separator+fn;
 		return result;
-
    }
    
-	static   protected void initOutputDir() throws Exception {
+   static public String getFNFor(String resourceDir,String fn) {
+		String result = "src"+File.separator+ "test"+File.separator+ "resources"  
+		+ File.separator + resourceDir + File.separator+fn;
+		
+		if (new File(result).exists()) return result;
+		
+		result = "target"+File.separator+ "resources"  
+		+ File.separator + resourceDir + File.separator+fn;
+		return result;
+
+  }
+
+   
+	static  public  void initOutputDir() throws Exception {
 	       File targetResourcedir = new File(OUTPUTDIR_RESOURCES);
 	
 	       if (targetResourcedir.exists() == false) {

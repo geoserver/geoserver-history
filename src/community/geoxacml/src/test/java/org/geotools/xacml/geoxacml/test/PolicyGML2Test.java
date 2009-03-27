@@ -22,6 +22,7 @@ package org.geotools.xacml.geoxacml.test;
 import org.geotools.xacml.geoxacml.attr.GMLVersion;
 import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import junit.framework.TestCase;
 
@@ -53,7 +54,7 @@ public class PolicyGML2Test extends TestCase {
 	public void testBox() {
 
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2", "BoxPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2", "BoxPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -76,7 +77,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2", "PointPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2", "PointPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -98,7 +99,7 @@ public class PolicyGML2Test extends TestCase {
 	public void testPoint2() {
 
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2", "PointPolicy2.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2", "PointPolicy2.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -121,7 +122,7 @@ public class PolicyGML2Test extends TestCase {
 	public void testBox2() {
 
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2", "BoxPolicy2.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2", "BoxPolicy2.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -147,7 +148,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2", "LineStringPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2", "LineStringPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -174,7 +175,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2", "LineStringPolicy2.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2", "LineStringPolicy2.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -201,7 +202,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2","MultiLineStringPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2","MultiLineStringPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -240,7 +241,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2","LinearRingPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2","LinearRingPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -270,7 +271,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2","LinearRingPolicy2.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2","LinearRingPolicy2.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -300,7 +301,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2","PolygonPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2","PolygonPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -356,7 +357,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2","MultiPolygonPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2","MultiPolygonPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -403,7 +404,7 @@ public class PolicyGML2Test extends TestCase {
 
 		
 		GeometryAttribute[] array = new GeometryAttribute[2];
-		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getFNFor("gml2","MultiPointPolicy.xml"));
+		AbstractPolicy p1 = TestSupport.policyFromFile(TestSupport.getGeoXACMLFNFor("gml2","MultiPointPolicy.xml"));
 		array[0] = TestSupport.getGeometryAttribute(p1);
 		AbstractPolicy p2 = policyFromAttributeEncoding(array[0], xmlTemplate);
 		array[1] = TestSupport.getGeometryAttribute(p2);
@@ -439,7 +440,7 @@ public class PolicyGML2Test extends TestCase {
 		GeoXACML.initialize();
 		TestSupport.initOutputDir();
 		if (xmlTemplate == null) {
-			xmlTemplate = TestSupport.fileContentAsString(TestSupport.getFNFor("gml2","PolicyTemplate.xml"));
+			xmlTemplate = TestSupport.fileContentAsString(TestSupport.getGeoXACMLFNFor("gml2","PolicyTemplate.xml"));
 		}
 		super.setUp();
 	}
