@@ -31,18 +31,18 @@ public class EnvelopePanelTest extends GeoServerWicketTestSupport {
         tester.assertComponent( "form", Form.class );
         
         FormTester ft = tester.newFormTester( "form");
-        assertEquals( "-180", ft.getTextComponentValue( "content:minX") );
-        assertEquals( "-90", ft.getTextComponentValue( "content:minY") );
-        assertEquals( "180", ft.getTextComponentValue( "content:maxX") );
-        assertEquals( "90", ft.getTextComponentValue( "content:maxY") );
+        assertEquals( "-180", ft.getTextComponentValue( "panel:minX") );
+        assertEquals( "-90", ft.getTextComponentValue( "panel:minY") );
+        assertEquals( "180", ft.getTextComponentValue( "panel:maxX") );
+        assertEquals( "90", ft.getTextComponentValue( "panel:maxY") );
         
-        EnvelopePanel ep = (EnvelopePanel) tester.getComponentFromLastRenderedPage("form:content");
+        EnvelopePanel ep = (EnvelopePanel) tester.getComponentFromLastRenderedPage("form:panel");
         assertEquals( e, ep.getModelObject() );
         
-        ft.setValue( "content:minX", "-2");
-        ft.setValue( "content:minY", "-2");
-        ft.setValue( "content:maxX", "2");
-        ft.setValue( "content:maxY", "2");
+        ft.setValue( "panel:minX", "-2");
+        ft.setValue( "panel:minY", "-2");
+        ft.setValue( "panel:maxX", "2");
+        ft.setValue( "panel:maxY", "2");
         
         ft.submit();
         
