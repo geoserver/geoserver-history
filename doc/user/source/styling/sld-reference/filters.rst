@@ -3,26 +3,22 @@
 Filters
 =======
 
-Filters
--------
-
 A *filter* is the mechanism in SLD for specifying predicates. Similar in nature to a "WHERE" clause in SQL, filters are the language for specifying which styles should be applied to which features in a data set.
 
-The filter language used by SLD is itself an OGC standard defined in the Filter Encoding specification freely available `here <http://www.opengeospatial.org/standards/filter>`_.
+The filter language used by SLD is itself an `<OGC standard <http://www.opengeospatial.org/standards/filter>`_ defined in the Filter Encoding specification freely available.
 
-A filter is used to select a subset of features of a dataset to apply a symbolizer to. See the :ref:`rules` section for more information about applying filters. 
+A filter is used to select a subset of features of a dataset to apply a symbolizer to.
 
 There are three types of filters:
 
 Attribute filters
-^^^^^^^^^^^^^^^^^
+-----------------
 
 Attribute filters are used to constrain the non-spatial attributes of a feature. Example
 
 .. code-block:: xml 
    :linenos: 
    
-
    <PropertyIsEqualTo>
       <PropertyName>NAME</PropertyName>
       <Literal>Bob</Literal>
@@ -39,7 +35,7 @@ The above filter selects those features which have a {{NAME}} attribute which ha
    * PropertyIsBetween
 
 Spatial filters
-^^^^^^^^^^^^^^^
+---------------
 
 Spatial filters used to constrain the spatial attributes of a feature. Example
 
@@ -68,7 +64,7 @@ The above filter selects those features with a geometry that intersects the poin
    * Distance
 
 Logical filters
-^^^^^^^^^^^^^^^
+---------------
 
 Logical filters are used to create combinations of filters using the logical operators And, Or, and Not. Example
 
@@ -120,7 +116,7 @@ A *rule* combines a number of symbolizers with a filter to define the portrayal 
 
 The above rule applies only to features which have a ``POPULATION`` attribute greater than ``100,000`` and symbolizes then with a red point. 
 
-An SLD document can contain many rules. Multiple rule SLD's are the basis for  :ref:`thematic_styling`. Consider the above example expanded::
+An SLD document can contain many rules. Multiple rule SLD's are the basis for "thematic styling". Consider the above example expanded::
 
 
   <Rule>

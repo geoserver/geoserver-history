@@ -12,7 +12,7 @@ The point layer that is used for the examples below contains information about t
 .. warning:: The code examples shown on this page are **not the full SLD code**, as they omit the header and footer information required for SLDs for the sake of brevity.  Please use the links to download the full SLDs for each example.
 
 
-Simple point
+Simple Point
 ------------
 
  
@@ -52,7 +52,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Simple point with stroke
+Simple Point With Stroke
 ------------------------
 
 This example adds a stroke (or border) around the simple point, colored black and with a thickness of 2 pixels.
@@ -94,7 +94,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Rotated square
+Rotated Square
 --------------
 
 This example uses a square instead of a circle, colors it green, sizes it larger, and rotates the square by 45 degrees.
@@ -133,7 +133,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Transparent triangle
+Transparent Triangle
 --------------------
 
 The example replaces the shape with a triangle, retains the black stroke, and sets the fill of the triangle to 20% opacity (mostly transparent).
@@ -176,7 +176,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Point as graphic
+Point As Graphic
 ----------------
 
 This examples styles points as a graphic instead of as a simple shape.
@@ -214,7 +214,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Point with default label
+Point With Default Label
 ------------------------
 
 This example shows a text label on the simple point, showing the "name" attribute of the point.  In the absence of any other customization, this is how a label will be displayed.
@@ -261,7 +261,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Point with styled label
+Point With Styled Label
 -----------------------
 
 This example improves the label style by centering the label above the point and specifying the font name and size.
@@ -327,7 +327,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Point with rotated label
+Point With Rotated Label
 ------------------------
 
 This example rotates the previous label by 45 degrees and sets 25 pixels of displacement to make the label farther away from the point.
@@ -392,7 +392,7 @@ Code
 .. warning:: Add link to SLD
 
 
-Attribute-based point
+Attribute-Based Point
 ---------------------
 
 This example alters the look of the points based on the population attribute.  
@@ -520,7 +520,7 @@ Code
 
 .. warning:: Add link to SLD
 
-Zoom-based point
+Zoom-Based Point
 ----------------
 
 This example alters the look of the points based on zoom level.

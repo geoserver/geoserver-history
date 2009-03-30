@@ -14,11 +14,32 @@ Simple polygon
 
 This example shows a polygon styled in blue.
 
-.. warning:: Add code
+.. figure:: pix/simplepolygon.png
+   :align: center
 
-.. warning:: Add screenshot
+Details
+```````
 
+There is one ``<Rule>`` in one ``<FeatureTypeStyle>`` for this style, which is the simplest possible situation.  (All subsequent examples will share this characteristic unless otherwise specified.)  **Line 5** specifies the fill color of the polygon to be ``#000080``, or a muted blue.  The borders around the polygons as shown in the figure are an artifacts of the renderer.
+
+Code
+````
+
+.. code-block:: xml 
+   :linenos:
+
+      <FeatureTypeStyle>
+        <Rule>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#000080</CssParameter>
+            </Fill>
+          </PolygonSymbolizer>
+        </Rule>
+      </FeatureTypeStyle>
+   
 .. warning:: Add link to SLD
+
 
 Simple polygon with stroke
 --------------------------
