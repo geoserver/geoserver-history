@@ -41,6 +41,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
     public BasicResourceConfig(String id, IModel model) {
 		super(id, model);
 
+		add(new TextField("name"));
 		add(new TextField("title"));
 		add(new TextArea("abstract"));
 		add(new KeywordsEditor("keywords", new PropertyModel(model, "keywords")));
