@@ -1,10 +1,7 @@
 package org.geoserver.wms.web.data;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
@@ -20,9 +17,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.GeoServerSecuredPage;
 
+/**
+ * Allows for editing a new style, includes file upload
+ */
+@SuppressWarnings("serial")
 public class StyleNewPage extends GeoServerSecuredPage {
 
     SLDEditorPanel sldEditorPanel;

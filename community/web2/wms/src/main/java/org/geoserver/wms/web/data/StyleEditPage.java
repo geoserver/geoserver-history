@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wms.web.data;
 
 import java.io.ByteArrayInputStream;
@@ -14,6 +18,10 @@ import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 
+/**
+ * Style edit page
+ */
+@SuppressWarnings("serial")
 public class StyleEditPage extends GeoServerSecuredPage {
     SLDEditorPanel sldEditorPanel;
     
