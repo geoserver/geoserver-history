@@ -4,6 +4,8 @@
   <bean id="gwcAppCtx" class="org.geowebcache.util.ApplicationContextProvider" />
   
   <bean id="gwcXmlConfig" class="org.geowebcache.util.XMLConfiguration">
+    <constructor-arg ref="gwcAppCtx" />
+    <constructor-arg ref="gwcDefaultStorageFinder" />
     <!--By default GWC will look for geowebcache.xml in the WEB-INF/classes folder.-->
     <!-- Other samples: -->
     <!--property name="relativePath"><value>../resources</value></property -->
