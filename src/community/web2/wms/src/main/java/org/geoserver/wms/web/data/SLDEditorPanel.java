@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wms.web.data;
 
 import java.io.BufferedReader;
@@ -18,6 +22,10 @@ import org.geoserver.web.wicket.XMLEditor;
 import org.geotools.sld.SLDConfiguration;
 import org.geotools.xml.Parser;
 
+/**
+ * Panel allowing for style editing   
+ */
+@SuppressWarnings("serial")
 public class SLDEditorPanel extends FormComponentPanel {
     
     @SuppressWarnings("unused")

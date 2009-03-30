@@ -1,19 +1,24 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wms.web.data;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
-import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.workspace.WorkspacePage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
+/**
+ * Page listing all the styles, allows to edit, add, remove styles
+ */
+@SuppressWarnings("serial")
 public class StylePage extends GeoServerSecuredPage {
 
     //FeedbackPanel feedbackPanel;
