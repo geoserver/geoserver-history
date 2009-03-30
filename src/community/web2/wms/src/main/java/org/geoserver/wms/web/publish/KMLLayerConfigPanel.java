@@ -15,16 +15,15 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converters.IntegerConverter;
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.util.MapModel;
 import org.opengis.feature.type.PropertyDescriptor;
 
-import com.vividsolutions.jts.algorithm.MinimumDiameter;
-
+/**
+ * Configures a layer KML related attributes (coming from metadata)
+ */
 @SuppressWarnings("serial")
 public class KMLLayerConfigPanel extends LayerConfigurationPanel {
     

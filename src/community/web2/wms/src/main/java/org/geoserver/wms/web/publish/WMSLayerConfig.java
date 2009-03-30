@@ -14,9 +14,15 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 
+/**
+ * Configures {@link LayerInfo} WMS specific attributes 
+ * @author Andrea Aime - OpenGeo
+ *
+ */
 @SuppressWarnings("serial")
 public class WMSLayerConfig extends LayerConfigurationPanel {
 
