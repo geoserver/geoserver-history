@@ -28,7 +28,6 @@ import org.geotools.xml.Parser;
 @SuppressWarnings("serial")
 public class SLDEditorPanel extends FormComponentPanel {
     
-    @SuppressWarnings("unused")
     private String rawSLD; // Accessed via a property model, don't remove
 
     public SLDEditorPanel( String id ) {
