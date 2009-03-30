@@ -4,22 +4,20 @@
  */
 package org.geoserver.web.publish;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ComponentPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 
 public class BasicLayerConfig extends LayerConfigurationPanel {
 	
 	public BasicLayerConfig(String id, IModel model) {
 		super(id, model);
 		init();
-		add(new TextField("name"));
+		// atm the layer follows the resource name, so it's not editable
+		TextField name = new TextField("name");
+		name.setEnabled(false);
+		
+        add(name);
 		add(new CheckBox("enabled"));
 	}
 	
