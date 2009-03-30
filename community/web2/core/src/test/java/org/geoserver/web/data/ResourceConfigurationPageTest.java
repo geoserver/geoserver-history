@@ -2,20 +2,19 @@ package org.geoserver.web.data;
 
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.geoserver.web.publish.BasicLayerConfig;
-import org.geoserver.catalog.ResourceInfo;
 
 public class ResourceConfigurationPageTest extends GeoServerWicketTestSupport {
     
     public void testBasic() {
-        ResourceInfo info = getGeoServerApplication()
-            .getCatalog()
-            .getResources(ResourceInfo.class).get(0);
+        LayerInfo layer = getGeoServerApplication().getCatalog().getLayers().get(0);
 
         login();
-        tester.startPage(new ResourceConfigurationPage(info, false));
-        tester.assertLabel("resourcename", info.getPrefixedName());
+        tester.startPage(new ResourceConfigurationPage(layer, false));
+        tester.assertLabel("resourcename", layer.getResource().getPrefixedName());
         tester.assertComponent("resource:tabs:panel:theList:0:content", BasicResourceConfig.class);
     }
     
