@@ -283,6 +283,9 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             connectionParameters = dataStoreInfo.getConnectionParameters();
             connectionParameters.clear();
             connectionParameters.putAll(dsParams);
+            connectionParameters.remove(DATASTORE_ID_PROPERTY_NAME);
+            connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
+            connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
 
             try {
                 dataStoreInfo.getDataStore(new NullProgressListener());
@@ -312,6 +315,9 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
             connectionParameters.clear();
             connectionParameters.putAll(dsParams);
+            connectionParameters.remove(DATASTORE_ID_PROPERTY_NAME);
+            connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
+            connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
 
             catalog.getResourcePool().clear(dataStoreInfo);
 
