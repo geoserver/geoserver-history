@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.data.table;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,10 +18,9 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.opengis.feature.type.Name;
 
 /**
@@ -49,6 +47,9 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
      */
     public NewLayerPageProvider(String storeId) {
         this.storeId = storeId;
+        
+        if(getCatalog().getStore(storeId, StoreInfo.class) == null)
+            throw new IllegalArgumentException("Could not find store " + storeId);
     }
 
     @Override
@@ -57,6 +58,7 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
             List<Resource> result;
             StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
             
+            Map<String, Resource> resources = new HashMap<String, Resource>();
             if(store instanceof DataStoreInfo) {
                 DataStoreInfo dstore = (DataStoreInfo) store;
                 
@@ -64,31 +66,28 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
                 // for the moment we use local names as datastores are not returning
                 // namespace qualified NameImpl
                 List<Name> names = dstore.getDataStore(null).getNames();
-                Map<String, Resource> resources = new HashMap<String, Resource>(names.size());
                 for (Name name : names) {
                     resources.put(name.getLocalPart(), new Resource(name));
                 }
                 
-                // lookup all configured layers, mark them as published in the resources
-                List<FeatureTypeInfo> configuredTypes = getCatalog().getFeatureTypesByDataStore(dstore);
-                for (FeatureTypeInfo type : configuredTypes) {
-                    Resource resource = resources.get(type.getName());
-                    if(resource != null)
-                        resource.setPublished(true);
-                }
-                
-                result = new ArrayList<Resource>(resources.values());
             } else {
-                CoverageStoreInfo cstore = (CoverageStoreInfo) store;
-                
                 // getting to the coverage name without reading the whole coverage seems to
                 // be hard stuff, let's have the catalog builder to the heavy lifting
                 CatalogBuilder builder = new CatalogBuilder(getCatalog());
                 builder.setStore(store);
                 CoverageInfo ci = builder.buildCoverage();
-                result = new ArrayList<Resource>();
-                result.add(new Resource(ci.getQualifiedName()));
+                Name name = ci.getQualifiedName();
+                resources.put(name.getLocalPart(), new Resource(name));
             }
+            
+            // lookup all configured layers, mark them as published in the resources
+            List<ResourceInfo> configuredTypes = getCatalog().getResourcesByStore(store, ResourceInfo.class);
+            for (ResourceInfo type : configuredTypes) {
+                Resource resource = resources.get(type.getName());
+                if(resource != null)
+                    resource.setPublished(true);
+            }
+            result = new ArrayList<Resource>(resources.values());
             
             // return by natural order
             Collections.sort(result);
