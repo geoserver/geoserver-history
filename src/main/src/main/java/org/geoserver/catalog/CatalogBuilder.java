@@ -597,11 +597,13 @@ public class CatalogBuilder {
         cinfo.setTitle(new StringBuffer(name).append(" is a ").append(format.getDescription()).toString());
         cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName()).toString() );
         
-        //metadata links
-        MetadataLinkInfo ml = catalog.getFactory().createMetadataLink();
-        ml.setAbout(format.getDocURL());
-        ml.setMetadataType("other");
-        cinfo.getMetadataLinks().add( ml );
+        // metadata links
+        if(format.getDocURL() != null && !"".equals(format.getDocURL().trim())) {
+            MetadataLinkInfo ml = catalog.getFactory().createMetadataLink();
+            ml.setAbout(format.getDocURL());
+            ml.setMetadataType("other");
+            cinfo.getMetadataLinks().add( ml );
+        }
         
         //keywords
         cinfo.getKeywords().add("WCS");
