@@ -69,6 +69,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         // lat/lon bbox
         final EnvelopePanel latLonPanel = new EnvelopePanel("latLonBoundingBox", new PropertyModel(model, "latLonBoundingBox"));
         latLonPanel.setOutputMarkupId(true);
+        latLonPanel.setRequired(true);
         refForm.add(latLonPanel);
         refForm.add(new AjaxSubmitLink("computeLatLon", refForm) {
 
@@ -85,7 +86,9 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         nativeCRS.setReadOnly(true);
         refForm.add(nativeCRS);
         declaredCRS = new CRSPanel("declaredSRS", new SRSToCRSModel(new PropertyModel(model, "sRS")));
+        declaredCRS.setRequired(true);
         refForm.add(declaredCRS);
+        
         projectionPolicy = new DropDownChoice("srsHandling", new PropertyModel(model, "projectionPolicy"), Arrays.asList(ProjectionPolicy.values()), new ProjectionPolicyRenderer());
         ResourceInfo ri = (ResourceInfo) model.getObject();
         if(((ResourceInfo) model.getObject()).getCRS() == null) {
@@ -95,7 +98,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
             // coverages projection policy choice is not allowed, if there is a native a reprojection will occurr
             CoverageInfo ci = (CoverageInfo) model.getObject();
             ci.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
-        } else 
+        } 
         refForm.add(projectionPolicy);
 	}
     
