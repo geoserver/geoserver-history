@@ -103,7 +103,7 @@ The ``kmscore`` parameter sets whether GeoServer should render data as vector or
 
    kmscore=<value>
 
-The possible values for this parameter are between 0 (force raster output) and 100 (force vector output).  See the page on :ref:`ge-feature-kml-vector-vs-raster-kml` for more information on this parameter.
+The possible values for this parameter are between 0 (force raster output) and 100 (force vector output).  See the page on :ref:`ge_feature_kml_scoring` for more information on this parameter.
 
 
 Paging parameters

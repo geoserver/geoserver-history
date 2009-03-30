@@ -1,7 +1,7 @@
 .. _google_earth_overview:
 
-Google Earth Overview
-=====================
+Overview
+========
 
 Why use GeoServer with Google Earth?
 ------------------------------------
