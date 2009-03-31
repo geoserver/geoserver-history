@@ -9,9 +9,11 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.feature.NameImpl;
 import org.geotools.referencing.CRS;
+import org.opengis.coverage.grid.Format;
 import org.opengis.feature.type.Name;
 
 public class CatalogBuilderTest extends GeoServerTestSupport {
@@ -78,6 +80,11 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         assertNotNull(fti.getNativeCRS());
         assertNotNull(fti.getNativeBoundingBox());
         assertNotNull(fti.getLatLonBoundingBox());
+        
+        // check the metadata links, geotiff should provide some
+        Format format = CoverageStoreUtils.acquireFormat("GeoTIFF");
+        assertEquals(1, fti.getMetadataLinks().size());
+        assertEquals(format.getDocURL(), fti.getMetadataLinks().get(0).getContent());
     }
     
     Name toName(QName qname) {

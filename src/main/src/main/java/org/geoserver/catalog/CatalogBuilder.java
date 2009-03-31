@@ -600,7 +600,7 @@ public class CatalogBuilder {
         // metadata links
         if(format.getDocURL() != null && !"".equals(format.getDocURL().trim())) {
             MetadataLinkInfo ml = catalog.getFactory().createMetadataLink();
-            ml.setAbout(format.getDocURL());
+            ml.setContent(format.getDocURL());
             ml.setMetadataType("other");
             cinfo.getMetadataLinks().add( ml );
         }
