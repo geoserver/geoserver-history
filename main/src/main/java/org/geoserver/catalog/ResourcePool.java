@@ -941,17 +941,17 @@ public class ResourcePool {
         }
 
         public void handlePostModifyEvent(CatalogPostModifyEvent event) {
-            clear( event.getSource() );
+            clearCacheEntry( event.getSource() );
         }
 
         public void handleRemoveEvent(CatalogRemoveEvent event) {
-            clear( event.getSource() );
+            clearCacheEntry( event.getSource() );
         }
 
         public void reloaded() {
         }
         
-        void clear( Object source ) {
+        void clearCacheEntry( Object source ) {
             if ( source instanceof DataStoreInfo ) {
                 clear( (DataStoreInfo) source );
             }
