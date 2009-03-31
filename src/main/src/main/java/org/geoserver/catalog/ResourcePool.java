@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -27,6 +26,11 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
+import org.geoserver.catalog.event.CatalogAddEvent;
+import org.geoserver.catalog.event.CatalogListener;
+import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
+import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
@@ -108,14 +112,14 @@ public class ResourcePool {
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
     
-    public ResourcePool() {
+    public ResourcePool(Catalog catalog) {
         crsCache = new HashMap<String, CoordinateReferenceSystem>();
         dataStoreCache = new DataStoreCache();
         featureTypeCache = new FeatureTypeCache();
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
         styleCache = new HashMap<StyleInfo, Style>();
-        
+        catalog.addListener( new CacheClearingListener() );
     }
     
     /**
@@ -264,7 +268,7 @@ public class ResourcePool {
      * @param info The data store metadata.
      */
     public void clear( DataStoreInfo info ) {
-        dataStoreCache.remove( info );
+        dataStoreCache.remove( info.getName() );
     }
     
     /**
@@ -922,6 +926,44 @@ public class ResourcePool {
                 dispose( entry.getKey(), entry.getValue() );
             }
             super.clear();
+        }
+    }
+    
+    /**
+     * Listens to catalog events clearing cache entires when resources are modified.
+     */
+    class CacheClearingListener /*extends CatalogVisitor*/ implements CatalogListener {
+
+        public void handleAddEvent(CatalogAddEvent event) {
+        }
+
+        public void handleModifyEvent(CatalogModifyEvent event) {
+        }
+
+        public void handlePostModifyEvent(CatalogPostModifyEvent event) {
+            clear( event.getSource() );
+        }
+
+        public void handleRemoveEvent(CatalogRemoveEvent event) {
+            clear( event.getSource() );
+        }
+
+        public void reloaded() {
+        }
+        
+        void clear( Object source ) {
+            if ( source instanceof DataStoreInfo ) {
+                clear( (DataStoreInfo) source );
+            }
+            else if ( source instanceof CoverageStoreInfo ) {
+                clear( (CoverageStoreInfo)source );
+            }
+            else if ( source instanceof FeatureTypeInfo ) {
+                clear( (FeatureTypeInfo) source );
+            }
+            else if ( source instanceof StyleInfo ) {
+                clear( (StyleInfo) source );
+            }
         }
     }
     
