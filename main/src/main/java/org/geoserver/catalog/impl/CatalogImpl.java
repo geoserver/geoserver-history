@@ -101,9 +101,13 @@ public class CatalogImpl implements Catalog {
     /** 
      * resources
      */
-    protected ResourcePool resourcePool = new ResourcePool();
+    protected ResourcePool resourcePool;
     protected GeoServerResourceLoader resourceLoader;
 
+    public CatalogImpl() {
+        resourcePool = new ResourcePool(this);
+    }
+    
     public CatalogFactory getFactory() {
         return new CatalogFactoryImpl( this );
     }
@@ -1344,7 +1348,7 @@ public class CatalogImpl implements Catalog {
         }
         
         if ( resourcePool == null ) {
-            resourcePool = new ResourcePool();    
+            resourcePool = new ResourcePool(this);
         }
         
         if ( listeners == null ) {

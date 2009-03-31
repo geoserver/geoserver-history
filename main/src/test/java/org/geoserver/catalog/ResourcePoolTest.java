@@ -23,7 +23,7 @@ public class ResourcePoolTest extends GeoServerTestSupport {
      * constructed for the same {@link FeatureTypeInfo}, Bad Things Happen (TM).
      */
     public void testFeatureTypeCacheInstance() throws Exception {
-        ResourcePool pool = new ResourcePool();
+        ResourcePool pool = new ResourcePool(getCatalog());
         FeatureTypeInfo info = getCatalog().getFeatureTypeByName(
                 MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
         FeatureType ft1 = pool.getFeatureType(info);
