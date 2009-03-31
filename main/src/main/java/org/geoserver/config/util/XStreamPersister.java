@@ -468,6 +468,7 @@ public class XStreamPersister {
         @Override
         public void marshal(Object source, HierarchicalStreamWriter writer,
                 MarshallingContext context) {
+        
             Map map = (Map) source;
             for (Iterator iterator = map.entrySet().iterator(); iterator.hasNext();) {
                 Map.Entry entry = (Map.Entry) iterator.next();
@@ -476,39 +477,67 @@ public class XStreamPersister {
                     continue;
                 }
                 
-                writer.startNode(entry.getKey().toString());
-                writeItem( entry.getValue(), context, writer );
+                writer.startNode("entry");
+                writer.addAttribute( "key", entry.getKey().toString());
+                if ( entry.getValue() != null ) {
+                    writer.setValue(entry.getValue().toString());
+                }
+                
                 writer.endNode();
             }
         }
 
         @Override
-        protected void writeItem(Object item, MarshallingContext context,
-                HierarchicalStreamWriter writer) {
-            writer.setValue( item.toString() );
-        }
-
-        @Override
         protected void populateMap(HierarchicalStreamReader reader,
                 UnmarshallingContext context, Map map) {
+            
             while (reader.hasMoreChildren()) {
                 reader.moveDown();
-
-                Object key = reader.getNodeName();
                 
                 //we support two syntaxes here:
                 // 1) <key>value</key>
                 // 2) <key><type>value</type></key>
-                boolean old = false;
-                if (reader.hasMoreChildren()) {
-                    old = true;
-                    reader.moveDown();    
+                // 3) <entry key="">value</entry>
+                // 4) <entry>
+                //      <type>key</type>
+                //      <type>value</type>
+                //    </entry>
+                String key = reader.getNodeName();
+                Object value = null;
+                if ( "entry".equals( key ) ) {
+                    if ( reader.getAttribute( "key") != null ) {
+                        //this is case 3
+                        key = reader.getAttribute( "key" );
+                        value = reader.getValue();
+                    }
+                    else if ( reader.hasMoreChildren() ){
+                        //this is case 4
+                        reader.moveDown();
+                        
+                        key = reader.getValue();
+                        
+                        reader.moveUp();
+                        reader.moveDown();
+                        
+                        value = reader.getValue();
+                        
+                        reader.moveUp();
+                    }
+
                 }
-                
-                Object value = readItem(reader, context, map);
-                
-                if ( old ) {
-                    reader.moveUp();    
+                else {
+                    boolean old = false;
+                    if (reader.hasMoreChildren()) {
+                        //this handles case 2
+                        old = true;
+                        reader.moveDown();    
+                    }
+                    
+                    value = readItem(reader, context, map);
+                    
+                    if ( old ) {
+                        reader.moveUp();    
+                    }
                 }
 
                 map.put(key, value);
