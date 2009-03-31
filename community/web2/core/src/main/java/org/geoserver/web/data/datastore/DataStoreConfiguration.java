@@ -33,6 +33,7 @@ import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
+import org.geoserver.web.data.table.NewLayerPage;
 import org.geoserver.web.data.table.StorePage;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataStoreFactorySpi;
@@ -301,6 +302,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
                         + e.getMessage());
                 return;
             }
+            setResponsePage(new NewLayerPage(dataStoreInfo.getId()));
         } else {
             // it is an existing datastore that's being modified
             dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
@@ -334,8 +336,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             }
             // it worked, save it
             catalog.save(dataStoreInfo);
+            setResponsePage(StorePage.class);
         }
-        setResponsePage(StorePage.class);
     }
 
     /**

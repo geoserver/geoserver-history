@@ -19,11 +19,13 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.StoreNameValidator;
 import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
 import org.geoserver.web.data.datastore.panel.WorkspacePanel;
+import org.geoserver.web.data.table.NewLayerPage;
 import org.geoserver.web.data.table.StorePage;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
@@ -131,7 +133,7 @@ public class CoverageStoreConfiguration extends GeoServerSecuredPage {
             public void onSubmit() {
                 CoverageStoreInfo info = (CoverageStoreInfo) CoverageStoreConfiguration.this.getModelObject();
                 getCatalog().save(info);
-                setResponsePage(StorePage.class);
+                setResponsePage(new NewLayerPage(info.getId()));
             }
         };
     }
