@@ -129,7 +129,7 @@ public class WMSMockData {
         dataStoreInfo.setWorkspace(workspaceInfo);
 
         dataStore = new MemoryDataStore();
-        ResourcePool resourcePool = new ResourcePool() {
+        ResourcePool resourcePool = new ResourcePool(catalog) {
             @Override
             public DataStore getDataStore(DataStoreInfo info) throws IOException {
                 return dataStore;
