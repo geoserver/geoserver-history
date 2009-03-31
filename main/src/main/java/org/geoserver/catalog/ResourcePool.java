@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -51,6 +53,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
+import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
@@ -811,6 +814,34 @@ public class ResourcePool {
         }
         return new BufferedReader( new InputStreamReader( new FileInputStream( styleFile ) ) );
         
+    }
+    
+    /**
+     * Serializes a style to configuration.
+     * 
+     * @param info The configuration for the style.
+     * @param style The style object.
+     * 
+     */
+    public void writeStyle( StyleInfo info, Style style ) throws IOException {
+        synchronized ( styleCache ) {
+            File styleFile = GeoserverDataDirectory.findStyleFile( info.getFilename(), true );
+            BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( styleFile ) );
+            
+            try {
+                SLDTransformer tx = new SLDTransformer();
+                try {
+                    tx.transform( style, out );
+                } 
+                catch (TransformerException e) {
+                    throw (IOException) new IOException("Error writing style").initCause(e);
+                }
+                clear(info);
+            }
+            finally {
+                out.close();
+            }
+        }
     }
     
     /**
