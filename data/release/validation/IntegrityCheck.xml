@@ -14,7 +14,7 @@
 <test>
 <name>FID Uniqueness</name>
 <description>Checks all Features for ID Uniqueness</description>
-<plugin>FID Uniqueness</plugin>
+<plugin>UniqueFID</plugin>
 <argument >
 <name>attributeName</name>
 <string>id</string>
