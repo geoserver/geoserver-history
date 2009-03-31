@@ -85,7 +85,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         File f = 
             new File( testData.getDataDirectoryRoot(), "workspaces/acme/foostore/datastore.xml");
         Document dom = dom( f );
-        assertXpathExists( "/dataStore/connectionParameters/foo", dom );
+        assertXpathExists( "/dataStore/connectionParameters/entry[@key='foo']", dom );
     }
     
     public void testRemoveDataStore() throws Exception {
