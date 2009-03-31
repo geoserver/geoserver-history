@@ -1347,12 +1347,12 @@ public class CatalogImpl implements Catalog {
             resolve(m);
         }
         
-        if ( resourcePool == null ) {
-            resourcePool = new ResourcePool(this);
+        if ( listeners == null ) {
+            listeners = new ArrayList<CatalogListener>();
         }
         
-        if ( listeners == null ) {
-            listeners = new ArrayList<CatalogListener>();    
+        if ( resourcePool == null ) {
+            resourcePool = new ResourcePool(this);
         }
     }
     
