@@ -196,6 +196,17 @@ public class GeoserverDataDirectory {
      * @return The style file, or null if it does not exist.
      */
     public static File findStyleFile(String fileName) {
+        return findStyleFile( fileName, false );
+    }
+    
+    /**
+     * Looks up a file under the "styles" directory.
+     * 
+     * @param fileName The name of the file.
+     * 
+     * @return The style file, or null if it does not exist.
+     */
+    public static File findStyleFile(String fileName, boolean resolve) {
         File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
         File styleFile = new File( new File( baseDir, "styles" ), fileName );
         

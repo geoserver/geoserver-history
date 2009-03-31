@@ -4,9 +4,15 @@
  */
 package org.geoserver.catalog;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +22,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.io.IOUtils;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
@@ -655,6 +664,7 @@ public class ResourcePool {
     
     public void setStyle( StyleInfo info, Style style ) throws IOException {
         synchronized ( styleCache ) {
+            writeStyle( info, style );
             styleCache.put( info, style );
         }
     }
@@ -667,6 +677,75 @@ public class ResourcePool {
     public void clear(StyleInfo info) {
         styleCache.remove( info );
     }
+    
+    /**
+     * Reads a raw style from persistence.
+     *
+     * @param style The configuration for the style. 
+     * 
+     * @return A reader for the style.
+     */
+    public BufferedReader readStyle( StyleInfo style ) throws IOException {
+        File styleFile = GeoserverDataDirectory.findStyleFile(style.getFilename());
+        if( styleFile == null ) {
+            throw new IOException( "No such file: " + style.getFilename() );
+        }
+        return new BufferedReader( new InputStreamReader( new FileInputStream( styleFile ) ) );
+        
+    }
+    
+    /**
+     * Serializes a style to configuration.
+     * 
+     * @param info The configuration for the style.
+     * @param style The style object.
+     * 
+     */
+    public void writeStyle( StyleInfo info, Style style ) throws IOException {
+        synchronized ( styleCache ) {
+            File styleFile = GeoserverDataDirectory.findStyleFile( info.getFilename(), true );
+            BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( styleFile ) );
+            
+            try {
+                SLDTransformer tx = new SLDTransformer();
+                try {
+                    tx.transform( style, out );
+                } 
+                catch (TransformerException e) {
+                    throw (IOException) new IOException("Error writing style").initCause(e);
+                }
+                clear(info);
+            }
+            finally {
+                out.close();
+            }
+        }
+    }
+    
+    /**
+     * Writes a raw style to configuration.
+     * 
+     * @param style The configuration for the style.
+     * @param in input stream representing the raw a style.
+     * 
+     */
+    public void writeStyle( StyleInfo style, InputStream in ) throws IOException {
+        synchronized ( styleCache ) {
+            File styleFile = GeoserverDataDirectory.findStyleFile( style.getFilename(), true );
+            BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( styleFile ) );
+            
+            try {
+                IOUtils.copy( in, out );
+                out.flush();
+                
+                clear(style);
+            }
+            finally {
+                out.close();
+            }
+        }
+    }
+    
     /**
      * Disposes all cached resources.
      *
