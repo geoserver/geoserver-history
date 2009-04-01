@@ -133,13 +133,12 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Store must be part of a workspace");
         }
         
-        if ( isNew) {
-            WorkspaceInfo workspace = store.getWorkspace();
-            if ( getStoreByName( workspace, store.getName(), StoreInfo.class ) != null ) {
-                String msg = "Store '"+ store.getName() +"' already exists in workspace '"+workspace.getName()+"'";
-                throw new IllegalArgumentException( msg );
-            }    
-        }
+        WorkspaceInfo workspace = store.getWorkspace();
+        StoreInfo existing = getStoreByName( workspace, store.getName(), StoreInfo.class );
+        if ( existing != null && !existing.getId().equals( store.getId() )) {
+            String msg = "Store '"+ store.getName() +"' already exists in workspace '"+workspace.getName()+"'";
+            throw new IllegalArgumentException( msg );
+        }    
     }
     
     public void remove(StoreInfo store) {
@@ -346,19 +345,20 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Resource must be part of a namespace");
         }
         
-        if ( isNew ) {
-            StoreInfo store = resource.getStore();
-            if ( getResourceByStore( store, resource.getName(), ResourceInfo.class) != null ) {
-                String msg = "Resource named '"+resource.getName()+"' already exists in store: '"+ store.getName()+"'";
-                throw new IllegalArgumentException( msg );
-            }
-            
-            NamespaceInfo namespace = resource.getNamespace();
-            if ( getResourceByName( namespace, resource.getName(), ResourceInfo.class) != null ) {
-                String msg = "Resource named '"+resource.getName()+"' already exists in namespace: '"+ namespace.getPrefix()+"'";
-                throw new IllegalArgumentException( msg );
-            }
+        StoreInfo store = resource.getStore();
+        ResourceInfo existing = getResourceByStore( store, resource.getName(), ResourceInfo.class);
+        if ( existing != null && !existing.getId().equals( resource.getId() ) ) {
+            String msg = "Resource named '"+resource.getName()+"' already exists in store: '"+ store.getName()+"'";
+            throw new IllegalArgumentException( msg );
         }
+        
+        NamespaceInfo namespace = resource.getNamespace();
+        existing =  getResourceByName( namespace, resource.getName(), ResourceInfo.class);
+        if ( existing != null && !existing.getId().equals( resource.getId() ) ) {
+            String msg = "Resource named '"+resource.getName()+"' already exists in namespace: '"+ namespace.getPrefix()+"'";
+            throw new IllegalArgumentException( msg );
+        }
+        
     }
     
     public void remove(ResourceInfo resource) {
@@ -645,6 +645,12 @@ public class CatalogImpl implements Catalog {
         if ( layer.getName() == null ) {
             throw new NullPointerException( "Layer name must not be null" );
         }
+        
+        LayerInfo existing = getLayerByName( layer.getName() );
+        if ( existing != null && !existing.getId().equals( layer.getName() ) ) {
+            throw new IllegalArgumentException( "Layer named '"+layer.getName()+"' already exists.");
+        }
+        
         if ( layer.getResource() == null ) {
             throw new NullPointerException( "Layer resource must not be null" );
         }
@@ -652,11 +658,6 @@ public class CatalogImpl implements Catalog {
         //if ( layer.getDefaultStyle() == null ){
         //    throw new NullPointerException( "Layer default style must not be null" );
         //}
-        if (isNew) {
-            if ( getLayerByName( layer.getName() ) != null ) {
-                throw new IllegalArgumentException( "Layer named '"+layer.getName()+"' already exists.");
-            }
-        }
     }
    
     public void remove(LayerInfo layer) {
@@ -803,6 +804,11 @@ public class CatalogImpl implements Catalog {
             throw new NullPointerException( "Layer group name must not be null");
         }
         
+        LayerGroupInfo existing = getLayerGroupByName( layerGroup.getName() );
+        if ( existing != null && !existing.getId().equals( layerGroup.getId() ) ) {
+            throw new IllegalArgumentException( "Layer group named '" + layerGroup.getName() + "' already exists." );
+        }
+        
         if ( !isNew ) {
             if ( layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty() ) {
                 throw new NullPointerException( "Layer group must not be empty");
@@ -811,12 +817,6 @@ public class CatalogImpl implements Catalog {
        
         if (!(layerGroup.getLayers().size() == layerGroup.getStyles().size()) ) {
             throw new IllegalArgumentException( "Layer group has different number of styles than layers");
-        }
-        
-        if ( isNew) {
-            if ( getLayerGroupByName( layerGroup.getName() ) != null ) {
-                throw new IllegalArgumentException( "Layer group named '" + layerGroup.getName() + "' already exists." );
-            }    
         }
     }
     
@@ -924,14 +924,14 @@ public class CatalogImpl implements Catalog {
         if ( namespace.getPrefix() == null ) {
             throw new NullPointerException( "Namespace prefix must not be null");
         }
+        
+        NamespaceInfo existing = getNamespaceByPrefix( namespace.getPrefix() );
+        if ( existing != null && !existing.getId().equals( namespace.getId() ) ) {
+            throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
+        }
+    
         if ( namespace.getURI() == null ) {
             throw new NullPointerException( "Namespace uri must not be null");
-        }
-        
-        if ( isNew) {
-            if ( getNamespaceByPrefix( namespace.getPrefix() ) != null ) {
-                throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
-            }
         }
     }
     
@@ -998,11 +998,11 @@ public class CatalogImpl implements Catalog {
             throw new NullPointerException( "workspace name must not be null");
         }
         
-        if ( isNew ) {
-            if ( getWorkspaceByName( workspace.getName() ) != null ) {
-                throw new IllegalArgumentException( "Workspace named '"+ workspace.getName() +"' already exists.");
-            }
+        WorkspaceInfo existing = getWorkspaceByName( workspace.getName() );
+        if ( existing != null && !existing.getId().equals( workspace.getId() ) ) {
+            throw new IllegalArgumentException( "Workspace named '"+ workspace.getName() +"' already exists.");
         }
+        
     }
     
     public void remove(WorkspaceInfo workspace) {
@@ -1116,10 +1116,9 @@ public class CatalogImpl implements Catalog {
             throw new NullPointerException( "Style fileName must not be null");
         }
         
-        if ( isNew ) {
-            if ( getStyleByName( style.getName() ) != null ) {
-                throw new IllegalArgumentException( "Style named '" +  style.getName() +"' already exists.");
-            }    
+        StyleInfo existing = getStyleByName( style.getName() );
+        if ( existing != null && !existing.getId().equals( style.getId() )) {
+            throw new IllegalArgumentException( "Style named '" +  style.getName() +"' already exists.");
         }
     }
     
