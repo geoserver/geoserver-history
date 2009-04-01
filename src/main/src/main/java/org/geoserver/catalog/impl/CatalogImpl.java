@@ -647,7 +647,7 @@ public class CatalogImpl implements Catalog {
         }
         
         LayerInfo existing = getLayerByName( layer.getName() );
-        if ( existing != null && !existing.getId().equals( layer.getName() ) ) {
+        if ( existing != null && !existing.getId().equals( layer.getId() ) ) {
             throw new IllegalArgumentException( "Layer named '"+layer.getName()+"' already exists.");
         }
         
