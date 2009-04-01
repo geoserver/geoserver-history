@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.wicket;
 
 import java.util.logging.Level;
@@ -11,8 +15,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 /**
  * A model allowing to edit an WKT property with the CRSPanel (by dynamically
  * converting it into a {@link CoordinateReferenceSystem} and back)
- * @author Andrea Aime - OpenGeo
- *
  */
 @SuppressWarnings("serial")
 public class WKTToCRSModel implements IModel {
