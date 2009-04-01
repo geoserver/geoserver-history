@@ -13,9 +13,9 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * The Decoration class describes a set of overlays to be used to enhance a WMS response.
- * It maintains a collection of Decoration objects and the configuration associated with each, and
- * delegates the actual rendering operations to the decorations.
+ * The Decoration class encapsulates the rendering code for an overlay to be used to enhance a WMS 
+ * response.  Decorations know how to determine their appropriate size, and how to render into a 
+ * given area, but leave the actual layout calculations to the {DecorationLayout} class.
  *
  * @author David Winslow <dwinslow@opengeo.org> 
  */
@@ -24,9 +24,17 @@ public interface Decoration {
      * Load in configuration parameters from a map.  All subsequent paint operations should use the 
      * provided parameters.  Implementations do not need to respect multiple calls to this method.
      * @param options a Map<String,String> containing the configuration parameters
+     * @throws Exception if required parameters are missing from the configuration
      */
-    public void loadOptions(Map<String,String> options);
+    public void loadOptions(Map<String,String> options) throws Exception;
 
+    /**
+     * Determine the 'best' size for this decoration, given the request parameters.
+     * @param g2d the Graphics2D context in which this Decoration will be rendered
+     * @param mapContext the map context for the request
+     *
+     * @throws InvalidStateException if loadOptions() has not been called yet
+     */
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext);
 
     /**
