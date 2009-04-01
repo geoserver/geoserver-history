@@ -9,12 +9,11 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.geoserver.web.wicket.WorkspaceChoice;
+import org.geoserver.web.data.workspace.WorkspaceChoiceRenderer;
+import org.geoserver.web.data.workspace.WorkspacesModel;
 
 /**
  * A label + workspace dropdown form panel
- * @author Andrea Aime - OpenGeo
- *
  */
 @SuppressWarnings("serial")
 public class WorkspacePanel extends Panel {
@@ -29,7 +28,7 @@ public class WorkspacePanel extends Panel {
         add(label);
 
         // the drop down field, with a decorator for validations
-        DropDownChoice choice = new WorkspaceChoice("paramValue", workspaceModel);
+        DropDownChoice choice = new DropDownChoice("paramValue", workspaceModel, new WorkspacesModel(), new WorkspaceChoiceRenderer());
         choice.setRequired(required);
         FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder(
                 "border");
