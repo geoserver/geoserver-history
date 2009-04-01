@@ -14,7 +14,9 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.body.BodyTagAttributeModifier;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -31,6 +33,7 @@ import org.geoserver.web.data.datastore.DataStoreConfiguration;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.MenuDropDownChoice;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -84,18 +87,18 @@ public class LayerPage extends GeoServerSecuredPage {
 
     private DropDownChoice storesDropDown() {
         final DropDownChoice stores;
-        stores = new DropDownChoice("storesDropDown", new Model(), new StoreListModel()); 
-        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        
+        stores = new MenuDropDownChoice("storesDropDown", new Model(), new StoreListModel()) {
+
             @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                if(stores.getModelObject() != null) {
-                    String name = stores.getModelObjectAsString();
+            protected void onChoice(AjaxRequestTarget target) {
+                if(getModelObject() != null) {
+                    String name = getModelObjectAsString();
                     StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
                     setResponsePage(new NewLayerPage(store.getId()));
                 }
             }
-        });
+            
+        };
         return stores;
     }
 
