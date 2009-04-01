@@ -1,4 +1,4 @@
-.. _mysql:
+.. _data_mysql:
 
 MySQL
 =====

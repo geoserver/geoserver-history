@@ -3,7 +3,7 @@
 ArcSDE
 ======
 
-.. warning:: ArcSDE support is not enabled by default and requires the :ref:`arcsde_extension` extension to be installed prior to use.
+.. warning:: ArcSDE support is not enabled by default and requires the ArcSDE extension to be installed prior to use.
 
 ESRI's `ArcSDE <http://www.esri.com/software/arcgis/arcsde/>`_ is a spatial 
 engine that runs on top of a relational database such as Oracle or SQL Server.

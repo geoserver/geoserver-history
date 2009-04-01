@@ -84,7 +84,7 @@ The following retrieves the created data store as XML::
    </dataStore>
 
 By default when a Shapefile is uploaded a feature type is automatically created.
-See :ref:` `_ for details on how to control this behaviour. The following 
+See :ref:`web_admin_config_featuretypes`_ for details on how to control this behaviour. The following 
 retrieves the created feature type as XML:: 
 
   curl -XGET 
@@ -111,7 +111,7 @@ created for it. The following retrieves the layer as XML::
 
   curl -XGET http://localhost:8080/geoserver/rest/layers/acme:roads.xml
 
-.. code-block::
+.. code-block:: xml
 
    <layer>
      <name>roads</name>

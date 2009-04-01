@@ -1,4 +1,4 @@
-.. _oracle:
+.. _data_oracle:
 
 Oracle
 ======

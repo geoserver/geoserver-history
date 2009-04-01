@@ -16,6 +16,6 @@ GeoServer supports Google Earth by providing KML as a `Web Map Service <http://e
 "**application/vnd.google-earth.kml+xml**" as the ``outputFormat``. Since generating KML is just a WMS request, it fully supports :ref:`styling` via SLD. 
 
 
-See the next section (:ref:`google-earth-quickstart`) to view GeoServer and Google 
+See the next section (:ref:`google_earth_quickstart`) to view GeoServer and Google 
 Earth in action. 
 

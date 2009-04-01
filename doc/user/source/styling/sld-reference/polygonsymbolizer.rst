@@ -72,6 +72,6 @@ Consider the following symbolizer taken from the Simple Point example in the :re
             </Fill>
           </PolygonSymbolizer>
           
- This symbolizer contains only a ``<Fill>`` tag.  Inside this tag is a ``<CssParameter>`` that specifies a fill color for the polygont o be ``#000080``, or a muted blue.
+This symbolizer contains only a ``<Fill>`` tag.  Inside this tag is a ``<CssParameter>`` that specifies a fill color for the polygont o be ``#000080``, or a muted blue.
  
  Further examples can be found in the :ref:`sld_cook_book_polygons` section of the :ref:`sld_cook_book`.

@@ -16,7 +16,7 @@ Spatial and Locator are the spatial extensions of Oracle.
 Supported versions
 ------------------
 
-.. _oracle_installation:
+.. _oracleng_installation:
 
 Installing the Oracle NG extension
 -----------------------------------

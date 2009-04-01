@@ -132,7 +132,7 @@ The ``demo`` directory contains files which define the *sample requests* availab
 palettes
 --------
 
-The ``palettes`` directory is used to store pre-computed *Image Palettes*. Image palettes are used by the GeoServer WMS as way to reduce the size of produced images while maintaining image quality. See the :ref:`paletted_images` section for more information.
+The ``palettes`` directory is used to store pre-computed *Image Palettes*. Image palettes are used by the GeoServer WMS as way to reduce the size of produced images while maintaining image quality.
 
 security
 --------
@@ -150,12 +150,12 @@ See the :ref:`styling` for more information about styling and SLD .
 templates
 ---------
 
-The ``template`` directory contains files used by the GeoServer *templating subsystem*. Templates are used to customize the output of various GeoServer operations. See the :ref:`templates` section for more information about templates.
+The ``template`` directory contains files used by the GeoServer *templating subsystem*. Templates are used to customize the output of various GeoServer operations.
 
 user_projections
 ----------------
 
-The ``user_projections`` directory contains a single file called ``epsg.properties`` which is used to define *custom* spatial reference systems which are not part of the official `EPSG database <http://www.epsg.org/CurrentDB.html>`_. See the :ref:`user_projections` section for more information about defining custom projections.
+The ``user_projections`` directory contains a single file called ``epsg.properties`` which is used to define *custom* spatial reference systems which are not part of the official `EPSG database <http://www.epsg.org/CurrentDB.html>`_.
 
 www
 ---

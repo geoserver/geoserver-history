@@ -85,13 +85,13 @@ Post installation
 At this point GeoServer should be up and running but it is *strongly recommend* that some post-install configuration is carried out.
 
 Data directory
-^^^^^^^^^^^^^^
+``````````````
 
 By default GeoServer is configured to run of an *internal* data directory. To ensure a smooth upgrade path when installing new versions of GeoServer it is recommended that an *external* data directory is set up. Proceed to the next section: :ref:`data_directory`.
 
 Server performance
-^^^^^^^^^^^^^^^^^^
+``````````````````
 
-By default GeoServer is not configured for optimal performance. If GeoServer is being run in a production environment in which maximal performance is necessary it is recommended that the default configuration be changed based on the :ref:`performance`.
+By default GeoServer is not configured for optimal performance. If GeoServer is being run in a production environment in which maximal performance is necessary it is recommended that the default configuration be changed based on :ref:`production`.
 
 
