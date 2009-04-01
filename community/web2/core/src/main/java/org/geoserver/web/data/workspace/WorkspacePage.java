@@ -18,6 +18,10 @@ import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
+/**
+ * Lists available workspaces, links to them, allows for addition and removal
+ */
+@SuppressWarnings("serial")
 public class WorkspacePage extends GeoServerSecuredPage {
     WorkspaceProvider provider = new WorkspaceProvider();
     

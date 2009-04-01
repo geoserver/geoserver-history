@@ -8,6 +8,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.web.GeoServerApplication;
 
+/**
+ * Detachable model for a specific namespace 
+ */
 @SuppressWarnings("serial")
 public class NamespaceDetachableModel extends LoadableDetachableModel {
 

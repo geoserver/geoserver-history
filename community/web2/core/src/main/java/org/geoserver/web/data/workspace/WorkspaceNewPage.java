@@ -16,6 +16,10 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 
+/**
+ * Allows creation of a new workspace
+ */
+@SuppressWarnings("serial")
 public class WorkspaceNewPage extends GeoServerSecuredPage {
 
     Form form;
