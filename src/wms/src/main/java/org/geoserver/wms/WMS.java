@@ -1,10 +1,8 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -16,6 +14,7 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
 import org.geotools.util.Version;
@@ -36,15 +35,6 @@ public class WMS {
     public static final String SVG_SIMPLE = "Simple";
 
     public static final String SVG_BATIK = "Batik";
-
-    /**
-     * Interpolation Types
-     */
-    public static final String INT_NEAREST = "Nearest";
-
-    public static final String INT_BIlINEAR = "Bilinear";
-
-    public static final String INT_BICUBIC = "Bicubic";
 
     private final GeoServer geoserver;
 
@@ -95,7 +85,7 @@ public class WMS {
         return this.geoserver;
     }
 
-    public String getInterpolation() {
+    public WMSInterpolation getInterpolation() {
         return getServiceInfo().getInterpolation();
     }
 

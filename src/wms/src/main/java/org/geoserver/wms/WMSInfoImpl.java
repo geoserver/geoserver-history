@@ -9,7 +9,7 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
 
     List<String> srs = new ArrayList<String>();
     WatermarkInfo watermark = new WatermarkInfoImpl();
-    String interpolation;
+    WMSInterpolation interpolation;
     
     public WMSInfoImpl() {
         setId( "wms" );
@@ -23,11 +23,11 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
         this.watermark = watermark;
     }
 
-    public void setInterpolation(String interpolation) {
+    public void setInterpolation(WMSInterpolation interpolation) {
         this.interpolation = interpolation;
     }
     
-    public String getInterpolation() {
+    public WMSInterpolation getInterpolation() {
         return interpolation;
     }
 

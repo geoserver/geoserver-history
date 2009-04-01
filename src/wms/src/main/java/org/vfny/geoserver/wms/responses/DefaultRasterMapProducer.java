@@ -31,6 +31,7 @@ import javax.media.jai.operator.LookupDescriptor;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -241,18 +242,17 @@ public abstract class DefaultRasterMapProducer extends
 
 
 		// turn off/on interpolation rendering hint
-		if ((wms != null)
-				&& WMS.INT_NEAREST.equals(wms.getInterpolation())) {
-			hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-		} else if ((wms != null)
-				&& WMS.INT_BIlINEAR.equals(wms.getInterpolation())) {
-			hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		} else if ((wms != null)
-				&& WMS.INT_BICUBIC.equals(wms.getInterpolation())) {
-			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		if(wms != null) {
+    		if (WMSInterpolation.Nearest.equals(wms.getInterpolation())) {
+    			hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
+    			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+    		} else if (WMSInterpolation.Bilinear.equals(wms.getInterpolation())) {
+    			hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
+    			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    		} else if (WMSInterpolation.Bicubic.equals(wms.getInterpolation())) {
+    			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
+    			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+    		}
 		}
 		// line look better with this hint, they are less blurred
 		hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
