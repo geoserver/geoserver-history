@@ -16,6 +16,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.web.GeoServerHomePage;
@@ -66,6 +67,10 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         form.add(new Label("service.enabled", new StringResourceModel("service.enabled", this, null, new Object[]{
             getServiceName()
         })));
+        form.add(new TextField("maintainer"));
+        TextField onlineResource = new TextField("onlineResource");
+        onlineResource.add(new UrlValidator());
+        form.add(onlineResource);
         form.add(new CheckBox("enabled"));
         form.add(new CheckBox("citeCompliant"));
         form.add(new TextField("title"));
