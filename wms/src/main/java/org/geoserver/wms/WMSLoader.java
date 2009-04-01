@@ -16,6 +16,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
@@ -43,7 +44,12 @@ public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
         wm.setPosition( Position.get( (Integer) props.get( "globalWatermarkingPosition" ) ) );
         wms.setWatermark( wm );
             
-        wms.setInterpolation( (String) props.get( "allowInterpolation" ) );
+        try {
+            wms.setInterpolation( WMSInterpolation.valueOf((String) props.get( "allowInterpolation" )) );
+        } catch(Exception e) {
+            // fallback on the default value if loading failed
+            wms.setInterpolation( WMSInterpolation.Nearest);
+        }
         wms.getMetadata().put( "svgRenderer", (Serializable) props.get( "svgRenderer") );
         wms.getMetadata().put( "svgAntiAlias",(Serializable) props.get( "svgAntiAlias") );
         

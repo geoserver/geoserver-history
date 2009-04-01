@@ -11,6 +11,8 @@ import org.geoserver.config.ServiceInfo;
  *
  */
 public interface WMSInfo extends ServiceInfo {
+    
+    enum WMSInterpolation { Nearest, Bilinear, Bicubic }
 
     /**
      * The watermarking configuration.
@@ -22,9 +24,9 @@ public interface WMSInfo extends ServiceInfo {
      */
     void setWatermark(WatermarkInfo watermark);
     
-    String getInterpolation();
+    WMSInterpolation getInterpolation();
     
-    void setInterpolation( String interpolation );
+    void setInterpolation(WMSInterpolation interpolation);
     
     /**
      * The srs's that the wms service supports.
