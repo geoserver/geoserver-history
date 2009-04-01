@@ -37,6 +37,16 @@
 			<version>2.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.mockrunner</groupId>
+			<artifactId>mockrunner</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>xmlunit</groupId>
+			<artifactId>xmlunit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-app-schema</artifactId>
 			<version>${gt.version}</version>
@@ -44,6 +54,7 @@
 	</dependencies>
 
 	<build>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -54,10 +65,24 @@
 							Exclude tests with lines like this
 							<exclude>**/Whatever.java</exclude>
 						-->
+						<!-- will not work without GT xsd patches and GS wfs patch accepted  -->
+						<exclude>**/AppSchemaGetFeatureTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.xsd</include>
+				</includes>
+			</testResource>
+		</testResources>
+
 	</build>
 
 </project>
