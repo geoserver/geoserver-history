@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.responses;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -53,6 +54,7 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
+import org.vfny.geoserver.wms.responses.decoration.WatermarkDecoration;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
@@ -181,7 +183,11 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
      *             For any problems.
      */
     public void produceMap() throws WmsException {
-        findDecorationLayout(mapContext);
+        try {
+            findDecorationLayout(mapContext);
+        } catch (Exception e) { 
+            throw new WmsException(e); 
+        }
 
         Rectangle paintArea = new Rectangle(
             0, 0, 
@@ -390,33 +396,60 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         this.layout = layout;
     }
 
-    public void findDecorationLayout(WMSMapContext mapContext){
+    public void findDecorationLayout(WMSMapContext mapContext) throws Exception {
         String layoutName = (String)mapContext.getRequest().getFormatOptions().get("layout");
 
-        if (layoutName == null){
-            layout = new DecorationLayout();
-            return;
-        }
+        if (layoutName != null){
+            try {
+                File layoutDir = GeoserverDataDirectory.findConfigDir(
+                        GeoserverDataDirectory.getGeoserverDataDirectory(),
+                        "layouts"
+                        );
 
-        try {
-            File layoutDir = GeoserverDataDirectory.findConfigDir(
-                GeoserverDataDirectory.getGeoserverDataDirectory(),
-                "layouts"
-            );
+                File layoutConfig = new File(layoutDir, layoutName + ".xml");
 
-            File layoutConfig = new File(layoutDir, layoutName + ".xml");
-
-            if (layoutConfig.exists() && layoutConfig.canRead()){
-                this.layout = DecorationLayout.fromFile(layoutConfig);
-            } else {
-                LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Failed to load layout: " + layoutName, e);
+                if (layoutConfig.exists() && layoutConfig.canRead()){
+                    this.layout = DecorationLayout.fromFile(layoutConfig);
+                } else {
+                    LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Failed to load layout: " + layoutName, e);
+            } 
         }
 
         if (layout == null){
             layout = new DecorationLayout();
+        }
+
+        if (mapContext.getRequest().getWMS().isGlobalWatermarking()) {
+            Map<String, String> options = new HashMap<String,String>();
+            options.put("url", mapContext.getRequest().getWMS().getGlobalWatermarkingURL());
+            
+            Decoration d = new WatermarkDecoration();
+            d.loadOptions(options);
+
+            DecorationLayout.Block.Position p = null;
+            
+            int wmPos = mapContext.getRequest().getWMS().getWatermarkPosition();
+            if (wmPos ==  WMS.WATERMARK_UC) p = DecorationLayout.Block.Position.UC; 
+            if (wmPos ==  WMS.WATERMARK_UL) p = DecorationLayout.Block.Position.UL; 
+            if (wmPos ==  WMS.WATERMARK_UR) p = DecorationLayout.Block.Position.UR; 
+            if (wmPos ==  WMS.WATERMARK_CL) p = DecorationLayout.Block.Position.CL; 
+            if (wmPos ==  WMS.WATERMARK_CC) p = DecorationLayout.Block.Position.CC; 
+            if (wmPos ==  WMS.WATERMARK_CR) p = DecorationLayout.Block.Position.CR; 
+            if (wmPos ==  WMS.WATERMARK_LL) p = DecorationLayout.Block.Position.LL; 
+            if (wmPos ==  WMS.WATERMARK_LC) p = DecorationLayout.Block.Position.LC; 
+            if (wmPos ==  WMS.WATERMARK_LR) p = DecorationLayout.Block.Position.LR; 
+
+            if (p == null) {
+                throw new WmsException(
+                        "Unknown position for global watermark: " 
+                        + mapContext.getRequest().getWMS().getWatermarkPosition()
+                        );
+            }
+
+            layout.addBlock(new DecorationLayout.Block(d, p, null, new Point(0,0)));
         }
     }
 
