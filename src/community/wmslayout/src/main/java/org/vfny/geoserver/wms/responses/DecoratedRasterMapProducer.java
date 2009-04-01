@@ -185,7 +185,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
 
         Rectangle paintArea = new Rectangle(
             0, 0, 
-            mapContext.getRequest().getWidth(), mapContext.getRequest().getHeight()
+            mapContext.getMapWidth(), mapContext.getMapHeight()
         );
 
         if (LOGGER.isLoggable(Level.FINE)) {
