@@ -90,9 +90,20 @@ Run WFS 1.1 tests
 .. note::
 
    Running the wfs 1.0 test suite requires that GeoServer is running with
-   the H2 extension enabled.
+   the H2 extension enabled. If you are running from eclipse you can simply
+   use the ``h2`` profile::
 
-#. Start GeoServer with the ``citewfs-1.1`` data directory.
+      mvn eclipse:eclipse -P h2
+
+   If you are running an actual release install the H2 extension available
+   from the download page.
+
+#. Change directory to the ``citewfs-1.1-h2`` data directory and Unpack the H2 
+   database::
+
+     unzip cite.db.zip
+
+#. Start GeoServer with the ``citewfs-1.1-h2`` data directory.
 
 #. On the setup screen:
 
