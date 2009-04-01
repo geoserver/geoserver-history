@@ -8,6 +8,10 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
 
+/**
+ * Detachable model for a specific workspace 
+ */
+@SuppressWarnings("serial")
 public class WorkspaceDetachableModel extends LoadableDetachableModel {
 
     String id;

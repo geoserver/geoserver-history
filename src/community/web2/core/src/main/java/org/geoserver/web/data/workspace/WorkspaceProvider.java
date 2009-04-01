@@ -8,9 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 
+/**
+ * {@link GeoServerDataProvider} for the list of workspaces available in the {@link Catalog}
+ */
+@SuppressWarnings("serial")
 public class WorkspaceProvider extends GeoServerDataProvider<WorkspaceInfo> {
 
     public static Property<WorkspaceInfo> NAME = 

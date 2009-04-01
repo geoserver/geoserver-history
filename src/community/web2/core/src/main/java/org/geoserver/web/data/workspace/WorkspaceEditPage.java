@@ -19,6 +19,10 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.table.StorePanel;
 import org.geoserver.web.data.table.StoreProvider;
 
+/**
+ * Allows editing a specific workspace
+ */
+@SuppressWarnings("serial")
 public class WorkspaceEditPage extends GeoServerSecuredPage {
 
     IModel wsModel;
