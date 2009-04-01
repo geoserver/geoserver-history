@@ -6,19 +6,21 @@ package org.geoserver.web.data.table;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.NewDataPage;
-import org.geoserver.web.wicket.WorkspaceChoice;
+import org.geoserver.web.data.workspace.WorkspaceChoiceRenderer;
+import org.geoserver.web.data.workspace.WorkspacesModel;
+import org.geoserver.web.wicket.MenuDropDownChoice;
 
 /**
  * Page listing all the available stores. Follows the usual filter/sort/page
  * approach, provides ways to bulk delete stores and to add new ones
- * 
- * @author Andrea Aime - OpenGeo
  */
+@SuppressWarnings("serial")
 public class StorePage extends GeoServerSecuredPage {
     StoreProvider provider = new StoreProvider();
 
@@ -35,17 +37,17 @@ public class StorePage extends GeoServerSecuredPage {
 
     private DropDownChoice workspacesDropDown() {
         final DropDownChoice workspaces;
-        workspaces = new WorkspaceChoice("wsDropDown", new Model(null));
-        workspaces.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        workspaces = new MenuDropDownChoice("wsDropDown", new Model(null), new WorkspacesModel(), new WorkspaceChoiceRenderer()) {
 
             @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                if(workspaces.getModelObject() != null) {
-                    WorkspaceInfo ws = (WorkspaceInfo) workspaces.getModelObject();
+            protected void onChoice(AjaxRequestTarget target) {
+                if(getModelObject() != null) {
+                    WorkspaceInfo ws = (WorkspaceInfo) getModelObject();
                     setResponsePage(new NewDataPage(ws.getName()));
                 }
             }
-        });
+            
+        };
         return workspaces;
     }
 }
