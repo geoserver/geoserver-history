@@ -13,6 +13,7 @@ import org.geoserver.wfs.WFS;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
@@ -232,7 +233,7 @@ public class WMS extends Service {
         setGlobalWatermarkingURL(config.getGlobalWatermarkingURL());
         setWatermarkTransparency(config.getWatermarkTransparency());
         setWatermarkPosition(config.getWatermarkPosition());
-        setAllowInterpolation(config.getAllowInterpolation());
+        setAllowInterpolation(WMSInterpolation.valueOf(config.getAllowInterpolation()));
         setBaseMapLayers(config.getBaseMapLayers());
         setBaseMapStyles(config.getBaseMapStyles());
         setBaseMapEnvelopes(config.getBaseMapEnvelopes());
@@ -290,7 +291,7 @@ public class WMS extends Service {
         w.setGlobalWatermarkingURL(getGlobalWatermarkingURL());
         w.setWatermarkTransparency(getWatermarkTransparency());
         w.setWatermarkPosition(getWatermarkPosition());
-        w.setAllowInterpolation(getAllowInterpolation());
+        w.setAllowInterpolation(getAllowInterpolation().name());
         w.setBaseMapLayers(getBaseMapLayers());
         w.setBaseMapStyles(getBaseMapStyles());
         w.setBaseMapEnvelopes(getBaseMapEnvelopes());
@@ -421,15 +422,14 @@ public class WMS extends Service {
     /**
      * @return Flag indicating wether the renderer should interpolate or not.
      */
-    public String getAllowInterpolation() {
+    public WMSInterpolation getAllowInterpolation() {
         return wms.getInterpolation();
-        //return allowInterpolation;
     }
 
     /**
      * Sets the Flag indicating wether the renderer should interpolate or not.
      */
-    public void setAllowInterpolation(String allowInterpolation) {
+    public void setAllowInterpolation(WMSInterpolation allowInterpolation) {
         wms.setInterpolation(allowInterpolation);
         //this.allowInterpolation = allowInterpolation;
     }
