@@ -10,6 +10,7 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
     List<String> srs = new ArrayList<String>();
     WatermarkInfo watermark = new WatermarkInfoImpl();
     WMSInterpolation interpolation;
+    int maxBuffer;
     
     public WMSInfoImpl() {
         setId( "wms" );
@@ -33,6 +34,14 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
 
     public List<String> getSRS() {
         return srs;
+    }
+
+    public int getMaxBuffer() {
+        return maxBuffer;
+    }
+
+    public void setMaxBuffer(int maxBuffer) {
+        this.maxBuffer = maxBuffer;
     }
 
 }

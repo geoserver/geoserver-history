@@ -243,4 +243,8 @@ public class WMS {
         NamespaceInfo ns = catalog.getNamespaceByURI(nsUri);
         return ns == null ? null : ns.getPrefix();
     }
+    
+    public int getMaxBuffer() {
+        return getServiceInfo().getMaxBuffer();
+    }
 }

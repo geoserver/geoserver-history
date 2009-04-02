@@ -206,6 +206,7 @@ public class LegacyServicesReader {
         text( "allowInterpolation", wmsElement, wms, String.class, false, "Nearest" );
         text( "svgRenderer", wmsElement, wms, String.class, false, "Batik" );
         text( "svgAntiAlias", wmsElement, wms, Boolean.class, false, Boolean.TRUE );
+        text( "maxBuffer", wmsElement, wms, Integer.class, false, 25 );
         
         ArrayList<Map> baseMaps = new ArrayList<Map>();
         Element baseMapGroupsElement = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
