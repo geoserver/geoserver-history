@@ -274,25 +274,6 @@
 
   <build>
     <plugins>
-
-      <!-- ====    Code Formatting  ============================== -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jalopy-maven-plugin</artifactId>
-        <configuration>
-          <srcExcludesPattern>${jalopy.srcExcludesPattern}</srcExcludesPattern>
-          <testExcludesPattern>${jalopy.srcExcludesPattern}</testExcludesPattern>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>format</goal>
-            </goals>
-            <phase>${jalopy.phase}</phase>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.geoserver.maven</groupId>
         <artifactId>config</artifactId>
