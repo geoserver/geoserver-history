@@ -26,7 +26,7 @@ import sys, os
 extensions = []
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ['../../theme/_templates']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -35,14 +35,14 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = u'GeoServer'
+project = u'GeoServer User Guide'
 copyright = u'2009 GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '1.7'
+version = '1.7.x'
 # The full version, including alpha/beta/rc tags.
 release = '1.7.x'
 
@@ -104,7 +104,7 @@ html_style = 'default.css'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['../../theme/_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
