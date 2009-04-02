@@ -2,16 +2,18 @@ package org.geoserver.wfs.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import junit.framework.Test;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
 
-import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
@@ -20,10 +22,7 @@ import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.NameImpl;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.w3c.dom.Document;
 
@@ -44,11 +43,21 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         return new GML3OutputFormat(getGeoServer(), configuration);
     }
     
-    Operation request() {
+    /**
+     * Build a GetFeature operation to request the named types.
+     * 
+     * @param names type names for which queries are present in the returned request
+     * @return GetFeature operation to request the named types
+     */
+    Operation request(QName... names) {
         Service service = new Service("wfs", null, null);
         GetFeatureType type = WfsFactory.eINSTANCE.createGetFeatureType();
         type.setBaseUrl("http://localhost:8080/geoserver");
-        
+        for (QName name : names) {
+            QueryType queryType = WfsFactory.eINSTANCE.createQueryType();
+            queryType.setTypeName(Collections.singletonList(name));
+            type.getQuery().add(queryType);
+        }
         Operation request = new Operation("wfs", service, null, new Object[] { type });
         return request;
     }
@@ -63,7 +72,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         fcType.getFeature().add(features);
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        producer().write(fcType, output, request() );
+        producer().write(fcType, output, request(MockData.SEVEN) );
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
@@ -81,7 +90,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         fcType.getFeature().add(getFeatureSource(MockData.FIFTEEN).getFeatures());
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        producer().write(fcType, output, request());
+        producer().write(fcType, output, request(MockData.SEVEN, MockData.FIFTEEN));
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();
@@ -101,7 +110,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
         int npolys = getFeatureSource(MockData.POLYGONS).getFeatures().size();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        producer().write(fcType, output, request());
+        producer().write(fcType, output, request(MockData.SEVEN, MockData.POLYGONS));
 
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
                 .newDocumentBuilder();

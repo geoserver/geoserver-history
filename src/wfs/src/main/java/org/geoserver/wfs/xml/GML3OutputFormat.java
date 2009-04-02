@@ -15,29 +15,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.QueryType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-
-import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.NameImpl;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 
 
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
@@ -68,29 +72,31 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         throws ServiceException, IOException {
         List featureCollections = results.getFeature();
 
-        //round up the info objects for each feature collection
-        HashMap /*<String,Set>*/ ns2metas = new HashMap();
-
-        for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
-            FeatureCollection<? extends FeatureType, ? extends Feature> features = (FeatureCollection) fc.next();
-            FeatureType featureType = features.getSchema();
-
-            //load the metadata for the feature type
-            String namespaceURI = featureType.getName().getNamespaceURI();
-            FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());
-            
-            if(meta == null)
-                throw new WFSException("Could not find feature type " + featureType.getName() + " in the GeoServer catalog");
-
-            //add it to the map
-            Set metas = (Set) ns2metas.get(namespaceURI);
-
-            if (metas == null) {
-                metas = new HashSet();
-                ns2metas.put(namespaceURI, metas);
+        // round up the info objects for each feature collection
+        HashMap<String, Set<FeatureTypeInfo>> ns2metas = new HashMap<String, Set<FeatureTypeInfo>>();
+        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(getFeature.getParameters(),
+                GetFeatureType.class);
+        int fcIndex = 0;
+        for (Iterator<?> fc = featureCollections.iterator(); fc.hasNext(); fc.next(), fcIndex++) {
+            // get the query for this featureCollection
+            QueryType queryType = (QueryType) request.getQuery().get(fcIndex);
+            // may have multiple type names in each query, so add them all
+            for (QName name : (List<QName>) queryType.getTypeName()) {
+                // get a feature type name from the query
+                Name featureTypeName = new NameImpl(name.getNamespaceURI(), name.getLocalPart());
+                FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureTypeName);
+                if (meta == null) {
+                    throw new WFSException("Could not find feature type " + featureTypeName
+                            + " in the GeoServer catalog");
+                }
+                // add it to the map
+                Set<FeatureTypeInfo> metas = ns2metas.get(featureTypeName.getNamespaceURI());
+                if (metas == null) {
+                    metas = new HashSet<FeatureTypeInfo>();
+                    ns2metas.put(featureTypeName.getNamespaceURI(), metas);
+                }
+                metas.add(meta);
             }
-
-            metas.add(meta);
         }
 
         //set feature bounding parameter
