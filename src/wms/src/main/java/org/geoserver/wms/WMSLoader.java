@@ -53,6 +53,9 @@ public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
         wms.getMetadata().put( "svgRenderer", (Serializable) props.get( "svgRenderer") );
         wms.getMetadata().put( "svgAntiAlias",(Serializable) props.get( "svgAntiAlias") );
         
+        // max GetFeatureInfo search radius
+        wms.setMaxBuffer((Integer) props.get("maxBuffer"));
+        
         // base maps
         Catalog catalog = geoServer.getCatalog();
         // ... we need access to the actual catalog, not a filtered out view of the
