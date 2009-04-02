@@ -54,6 +54,9 @@ public final class WMSDTO implements DataTransferObject {
     private String globalWatermarkingURL;
     private int watermarkTransparency;
     
+    /** GetFeatureInfo max buffer */
+    private int maxBuffer;
+    
     /** 
      * Watermark position
      * <pre>
@@ -110,6 +113,7 @@ public final class WMSDTO implements DataTransferObject {
         baseMapStyles = other.getBaseMapStyles();
         baseMapEnvelopes = other.getBaseMapEnvelopes();
         capabilitiesCrs = other.getCapabilitiesCrs();
+        maxBuffer = other.getMaxBuffer();
     }
 
     /**
@@ -149,7 +153,8 @@ public final class WMSDTO implements DataTransferObject {
             && (globalWatermarkingURL == dto.getGlobalWatermarkingURL())
             && (watermarkTransparency == dto.getWatermarkTransparency())
             && (watermarkPosition == dto.getWatermarkPosition())
-            && (allowInterpolation == dto.allowInterpolation);
+            && (allowInterpolation == dto.allowInterpolation)
+            && (maxBuffer == dto.maxBuffer);
 
         if (equals) {
             if (service == null) {
@@ -205,7 +210,7 @@ public final class WMSDTO implements DataTransferObject {
      */
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0) | (globalWatermarking ? 1 : 0)
-        | (watermarkTransparency) | (watermarkPosition)
+        | (watermarkTransparency) | (watermarkPosition) | (maxBuffer)
         | ((globalWatermarkingURL != null) ? 0 : globalWatermarkingURL.hashCode())
         | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode())
@@ -386,5 +391,13 @@ public final class WMSDTO implements DataTransferObject {
         }else{
             this.capabilitiesCrs = new TreeSet(crsList);
         }
+    }
+
+    public int getMaxBuffer() {
+        return maxBuffer;
+    }
+
+    public void setMaxBuffer(int maxBuffer) {
+        this.maxBuffer = maxBuffer;
     }
 }

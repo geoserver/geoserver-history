@@ -10,7 +10,6 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class GetFeatureInfoTest extends WMSTestSupport {
@@ -25,12 +24,19 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     public static Test suite() {
         return new OneTimeTestSetup(new GetFeatureInfoTest());
     }
+    
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+        getWMS().setMaxBuffer(50);
+    }
 
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
         dataDirectory.addCoverage(TASMANIA_BM, GetFeatureInfoTest.class.getResource("tazbm.tiff"),
                 "tiff", null);
+        dataDirectory.addStyle("thickStroke", GetFeatureInfoTest.class.getResource("thickStroke.sld"));
     }
     
     /**
@@ -40,12 +46,75 @@ public class GetFeatureInfoTest extends WMSTestSupport {
      * @throws Exception
      */
     public void testSimple() throws Exception {
-        String layer = MockData.FORESTS.getPrefix() + ":" + MockData.FORESTS.getLocalPart();
+        String layer = getLayerId(MockData.FORESTS);
         String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         String result = getAsString(request);
         assertNotNull(result);
         assertTrue(result.indexOf("Green Forest") > 0);
+    }
+    
+    /**
+     * Tests a simple GetFeatureInfo works, and that the result contains the
+     * expected polygon
+     * 
+     * @throws Exception
+     */
+    public void testSimpleHtml() throws Exception {
+        String layer = getLayerId(MockData.FORESTS);
+        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
+        Document dom = getAsDOM(request);
+        // count lines that do contain a forest reference
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[starts-with(.,'Forests.')])", dom);
+    }
+    
+    /**
+     * Tests GetFeatureInfo with a buffer specified works, and that the result contains the
+     * expected polygon
+     * 
+     * @throws Exception
+     */
+    public void testBuffer() throws Exception {
+        // to setup the request and the buffer I rendered BASIC_POLYGONS using GeoServer, then played
+        // against the image coordinates
+        String layer = getLayerId(MockData.BASIC_POLYGONS);
+        String base = "wms?bbox=-4.5,-2.,4.5,7&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&width=300&height=300";
+        Document dom = getAsDOM(base + "&x=85&y=230");
+        // make sure the document is empty, as we chose an area with no features inside
+        assertXpathEvaluatesTo("0", "count(/html/body/table/tr)", dom);
+
+        // another request that will catch one feature due to the extended buffer, make sure it's in
+        dom = getAsDOM(base + "&x=85&y=230&buffer=40");
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[starts-with(.,'BasicPolygons.')])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[. = 'BasicPolygons.1107531493630'])", dom);
+        
+        // this one would end up catching everything (3 features) if it wasn't that we say the max buffer at 50
+        // in the WMS configuration
+        dom = getAsDOM(base + "&x=85&y=230&buffer=300");
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[starts-with(.,'BasicPolygons.')])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[. = 'BasicPolygons.1107531493630'])", dom);
+    }
+    
+    /**
+     * Tests GetFeatureInfo with a buffer specified works, and that the result contains the
+     * expected polygon
+     * 
+     * @throws Exception
+     */
+    public void testAutoBuffer() throws Exception {
+        String layer = getLayerId(MockData.BASIC_POLYGONS);
+        String base = "wms?bbox=-4.5,-2.,4.5,7&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&width=300&height=300&x=115&y=230";
+        Document dom = getAsDOM(base + "&styles=");
+        // make sure the document is empty, the style we chose has thin lines
+        assertXpathEvaluatesTo("0", "count(/html/body/table/tr)", dom);
+
+        // another request that will catch one feature due to the style with a thick stroke, make sure it's in
+        dom = getAsDOM(base + "&styles=thickStroke");
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[starts-with(.,'BasicPolygons.')])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[. = 'BasicPolygons.1107531493630'])", dom);
     }
     
     /**

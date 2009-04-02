@@ -4,9 +4,11 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.geoserver.platform.ServiceException;
+import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
@@ -107,6 +109,8 @@ public abstract class GetFeatureInfoDelegate implements Response {
         //use the layer of the QUERY_LAYERS parameter, not the LAYERS one
         MapLayerInfo[] layers = request.getQueryLayers();
 
+        // grab the list of filters from the GetMap request, we don't want
+        // to return what the user explicitly excluded
         List filterList = request.getGetMapRequest().getFilter();
         Filter[] filters;
 
@@ -115,10 +119,30 @@ public abstract class GetFeatureInfoDelegate implements Response {
         } else {
             filters = new Filter[layers.length];
         }
+        
+        // grab the list of styles for each query layer, we'll use them to
+        // auto-evaluate the GetFeatureInfo radius if the user did not specify one
+        List<Style> getMapStyles = request.getGetMapRequest().getStyles();
+        Style[] styles = new Style[layers.length];
+        for (int i = 0; i < styles.length; i++) {
+            MapLayerInfo[] getMapLayers = request.getGetMapRequest().getLayers();
+            final String targetLayer = layers[i].getName();
+            for (int j = 0; j < getMapLayers.length; j++) {
+                if(getMapLayers[j].getName().equals(targetLayer)) {
+                    if(getMapStyles != null && getMapStyles.size() > 0)
+                        styles[i] = (Style) getMapStyles.get(j);
+                    if(styles[i] == null)
+                        styles[i] = getMapLayers[j].getDefaultStyle();
+                    break;
+                }
+            }
+        }
 
+        // delegate to subclasses the hard work
         int x = request.getXPixel();
         int y = request.getYPixel();
-        execute(layers, filters, x, y);
+        int buffer = request.getGetMapRequest().getBuffer();
+        execute(layers, styles, filters, x, y, buffer);
     }
 
     /**
@@ -135,16 +159,18 @@ public abstract class GetFeatureInfoDelegate implements Response {
      *
      * @param requestedLayers Array of config information of the FeatureTypes
      *        to be processed.
-     * @param queries Matching array of layer definition filters
+     * @param styles Matching array of layer styles 
+     * @param filters Matching array of layer definition filters
      * @param x the X coordinate in pixels where the identification must be
      *        done relative to the image dimensions
      * @param y the Y coordinate in pixels where the identification must be
      *        done relative to the image dimensions
+     * @param the user specified buffer
      *
      * @throws WmsException For any problems executing.
      */
-    protected abstract void execute(MapLayerInfo[] requestedLayers, Filter[] filters, int x,
-        int y) throws WmsException;
+    protected abstract void execute(MapLayerInfo[] requestedLayers, Style[] styles, Filter[] filters, int x,
+        int y, int buffer) throws WmsException;
 
     
     /**

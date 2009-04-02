@@ -177,6 +177,7 @@ public class LegacyServicesReader {
         text( "svgRenderer", wmsElement, wms, String.class, false, "Batik" );
         text( "svgAntiAlias", wmsElement, wms, Boolean.class, false, Boolean.TRUE );
         text( "capabilitiesCrsList", wmsElement, wms, String.class, false, null);
+        text( "maxBuffer", wmsElement, wms, Integer.class, false, 25 );
         
         ArrayList<Map> baseMaps = new ArrayList<Map>();
         Element baseMapGroupsElement = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");

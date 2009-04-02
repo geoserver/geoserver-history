@@ -237,6 +237,7 @@ public class WMS extends Service {
         setBaseMapStyles(config.getBaseMapStyles());
         setBaseMapEnvelopes(config.getBaseMapEnvelopes());
         setCapabilitiesCrsList(config.getCapabilitiesCrs());
+        setMaxBuffer(config.getMaxBuffer());
         
         //svgRenderer = config.getSvgRenderer();
         //svgAntiAlias = config.getSvgAntiAlias();
@@ -295,6 +296,7 @@ public class WMS extends Service {
         w.setBaseMapStyles(getBaseMapStyles());
         w.setBaseMapEnvelopes(getBaseMapEnvelopes());
         w.setCapabilitiesCrs(getCapabilitiesCrsList());
+        w.setMaxBuffer(getMaxBuffer());
         
         //w.setSvgRenderer(svgRenderer);
         //w.setSvgAntiAlias(svgAntiAlias);
@@ -635,5 +637,13 @@ public class WMS extends Service {
         
         //this.capabilitiesCrsList = epsgCodes == null ? Collections.EMPTY_SET : new TreeSet(
         //        epsgCodes);
+    }
+    
+    public int getMaxBuffer() {
+        return wms.getMaxBuffer();
+    }
+    
+    public void setMaxBuffer(int buffer) {
+        wms.setMaxBuffer(buffer);
     }
 }

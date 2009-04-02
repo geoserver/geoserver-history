@@ -141,9 +141,9 @@ public class GetMapRequest extends WMSRequest {
     }
 
     /**
-     * Gets a list of the names of the styles to be returned by the server.
+     * Gets a list of the styles to be returned by the server.
      *
-     * @return A list of Strings of the names of the styles.
+     * @return A list of {@link Style}
      */
     public List getStyles() {
         return this.mandatoryParams.styles;

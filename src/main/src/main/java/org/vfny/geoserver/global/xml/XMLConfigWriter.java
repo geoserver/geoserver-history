@@ -416,6 +416,7 @@ public class XMLConfigWriter {
         String globalWatermarkingURL = null;
         int watermarkTransparency = 0;
         int watermarkPosition = 8;
+        int maxBuffer = 25;
         String allowInterpolation = null;
         boolean citeConformanceHacks = false;
 
@@ -448,6 +449,7 @@ public class XMLConfigWriter {
             baseMapLayers = w.getBaseMapLayers();
             baseMapStyles = w.getBaseMapStyles();
             baseMapEnvelopes = w.getBaseMapEnvelopes();
+            maxBuffer = w.getMaxBuffer();
         } else {
             throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -588,6 +590,7 @@ public class XMLConfigWriter {
 
             cw.textTag("globalWatermarkingTransparency", watermarkTransparency + "");
             cw.textTag("globalWatermarkingPosition", watermarkPosition + "");
+            cw.textTag("maxBuffer", maxBuffer + "");
 
             if (allowInterpolation != null) {
                 cw.textTag("allowInterpolation", allowInterpolation);

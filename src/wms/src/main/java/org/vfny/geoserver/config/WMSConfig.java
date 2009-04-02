@@ -85,6 +85,11 @@ public class WMSConfig extends ServiceConfig {
      * the GetCapabilities document
      */
     private Set/*<String>*/ capabilitiesCrs;
+    
+    /**
+     * The WMS max GetFeatureInfo search radius
+     */
+    private int maxBuffer;
 
     /**
      * WMS constructor.
@@ -103,6 +108,7 @@ public class WMSConfig extends ServiceConfig {
         globalWatermarkingURL = "";
         watermarkTransparency = 0;
         watermarkPosition = 8;
+        maxBuffer = 25;
         allowInterpolation = INT_NEAREST;
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
@@ -133,6 +139,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapStyles = w.getBaseMapStyles();
         baseMapEnvelopes = w.getBaseMapEnvelopes();
         capabilitiesCrs = w.getCapabilitiesCrs();
+        maxBuffer = w.getMaxBuffer();
     }
 
     /**
@@ -174,6 +181,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapStyles = dto.getBaseMapStyles();
         baseMapEnvelopes = dto.getBaseMapEnvelopes();
         capabilitiesCrs = dto.getCapabilitiesCrs();
+        maxBuffer = dto.getMaxBuffer();
     }
 
     /**
@@ -201,6 +209,7 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setBaseMapStyles(baseMapStyles);
         wmsDto.setBaseMapEnvelopes(baseMapEnvelopes);
         wmsDto.setCapabilitiesCrs(capabilitiesCrs);
+        wmsDto.setMaxBuffer(maxBuffer);
         
         return wmsDto;
     }

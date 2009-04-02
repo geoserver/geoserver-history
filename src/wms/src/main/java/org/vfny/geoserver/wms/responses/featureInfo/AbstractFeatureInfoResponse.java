@@ -38,6 +38,8 @@ import org.geotools.geometry.TransformedDirectPosition;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.renderer.lite.MetaBufferEstimator;
+import org.geotools.styling.Style;
 import org.opengis.coverage.CannotEvaluateException;
 import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.feature.simple.SimpleFeature;
@@ -191,7 +193,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      * @throws WmsException For any problems.
      */
     @SuppressWarnings("unchecked")
-    protected void execute(MapLayerInfo[] requestedLayers, Filter[] filters, int x, int y)
+    protected void execute(MapLayerInfo[] requestedLayers, Style[] styles, Filter[] filters, int x, int y, int buffer)
         throws WmsException {
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getInfoFormat();
@@ -202,20 +204,6 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         int width = getMapReq.getWidth();
         int height = getMapReq.getHeight();
         Envelope bbox = getMapReq.getBbox();
-
-        Coordinate upperLeft = pixelToWorld(x - 2, y - 2, bbox, width, height);
-        Coordinate middle = pixelToWorld(x, y, bbox, width, height);
-        Coordinate lowerRight = pixelToWorld(x + 2, y + 2, bbox, width, height);
-
-        Coordinate[] coords = new Coordinate[5];
-        coords[0] = upperLeft;
-        coords[1] = new Coordinate(lowerRight.x, upperLeft.y);
-        coords[2] = lowerRight;
-        coords[3] = new Coordinate(upperLeft.x, lowerRight.y);
-        coords[4] = coords[0];
-
-        GeometryFactory geomFac = new GeometryFactory();
-        LinearRing boundary = geomFac.createLinearRing(coords); // this needs to be done with each FT so it can be reprojected
         FilterFactory2 filterFac = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         final int layerCount = requestedLayers.length;
@@ -228,8 +216,27 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     FeatureTypeInfo finfo = requestedLayers[i].getFeature();
                     CoordinateReferenceSystem dataCRS = finfo.getFeatureType().getCoordinateReferenceSystem();
 
-                    // reproject the bounding box
-                    Polygon pixelRect = geomFac.createPolygon(boundary, null);
+                    // compute the request radius
+                    double radius;
+                    if(buffer <= 0) {
+                        // estimate the radius given the current style
+                        MetaBufferEstimator estimator = new MetaBufferEstimator();
+                        styles[i].accept(estimator);
+                        if(estimator.getBuffer() < 2.0 || !estimator.isEstimateAccurate()) {
+                            radius = 2.0;
+                        } else {
+                            radius =  estimator.getBuffer() / 2.0;
+                        }
+                    } else {
+                        radius = buffer;
+                    }
+                    
+                    // make sure we don't go overboard, the admin might have set a maximum
+                    int maxRadius = request.getWMS().getMaxBuffer();
+                    if(maxRadius > 0 && radius > maxRadius)
+                        radius = maxRadius;
+                    
+                    Polygon pixelRect = getEnvelopeFilter(x, y, width, height, bbox, radius);
                     if ((requestedCRS != null) && !CRS.equalsIgnoreMetadata(dataCRS, requestedCRS)) {
                         try {
                             MathTransform transform = CRS.findMathTransform(requestedCRS, dataCRS, true);
@@ -270,6 +277,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     final GridGeometry2D coverageGeometry=(GridGeometry2D) cinfo.getGrid();
                     final GeneralEnvelope requestedEnvelope=new GeneralEnvelope(new ReferencedEnvelope(bbox,requestedCRS));
                     final GridCoverage2D coverage=(GridCoverage2D) cinfo.getCoverage(requestedEnvelope, new Rectangle(0,0,width,height));
+                    final Coordinate middle = pixelToWorld(x, y, bbox, width, height);
                     final DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                     try {
                         double[] pixelValues = null;
@@ -302,6 +310,23 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         } catch (Exception e) {
             throw new WmsException(null, "Internal error occurred", e);
         } 
+    }
+
+    private Polygon getEnvelopeFilter(int x, int y, int width, int height, Envelope bbox, double radius) {
+        Coordinate upperLeft = pixelToWorld(x - radius, y - radius, bbox, width, height);
+        Coordinate lowerRight = pixelToWorld(x + radius, y + radius, bbox, width, height);
+
+        Coordinate[] coords = new Coordinate[5];
+        coords[0] = upperLeft;
+        coords[1] = new Coordinate(lowerRight.x, upperLeft.y);
+        coords[2] = lowerRight;
+        coords[3] = new Coordinate(upperLeft.x, lowerRight.y);
+        coords[4] = coords[0];
+
+        GeometryFactory geomFac = new GeometryFactory();
+        LinearRing boundary = geomFac.createLinearRing(coords); // this needs to be done with each FT so it can be reprojected
+        Polygon pixelRect = geomFac.createPolygon(boundary, null);
+        return pixelRect;
     }
 
     private FeatureCollection<SimpleFeatureType, SimpleFeature> wrapPixelInFeatureCollection(
@@ -354,7 +379,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws RuntimeException DOCUMENT ME!
      */
-    private Coordinate pixelToWorld(int x, int y, Envelope map, int width, int height) {
+    private Coordinate pixelToWorld(double x, double y, Envelope map, double width, double height) {
         //set up the affine transform and calculate scale values
         AffineTransform at = worldToScreenTransform(map, width, height);
 
@@ -381,7 +406,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @return a transform that maps from real world coordinates to the screen
      */
-    private AffineTransform worldToScreenTransform(Envelope mapExtent, int width, int height) {
+    private AffineTransform worldToScreenTransform(Envelope mapExtent, double width, double height) {
         double scaleX = (double) width / mapExtent.getWidth();
         double scaleY = (double) height / mapExtent.getHeight();
 
