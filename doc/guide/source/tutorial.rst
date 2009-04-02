@@ -1,14 +1,14 @@
-.. _tutorial_template:
+.. _tutorial:
 
-Tutorial Template
-=================
+Writing a Tutorial
+==================
 
-A template for writing tutorials.
+A tutorial should have a clear goal and present step by step commands to acheive that goal.
 
 Example Tutorial
-================
+----------------
 
-This intoductory sentence should state the intent and goal of the tutorial. Keep it breif.
+This intoductory sentence should state the intent and goal of the tutorial. Keep it brief.
 
 .. note::
 
@@ -22,15 +22,15 @@ This tutorial assumes:
 * PostGIS is installed on the system
 
 Getting started
----------------
+```````````````
 
 State any introductory steps in this section. These might include:
 
 * Downloading data
 * Creating a database
 
-Section one
------------
+First section
+`````````````
 
 In a single sentence state what will be acheived in this section.
 
@@ -38,8 +38,8 @@ In a single sentence state what will be acheived in this section.
 #. Step two
 
 
-Section two
------------
+Second section
+``````````````
 
 In a single sentence state what will be acheived in this section.
 

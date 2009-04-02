@@ -1,12 +1,12 @@
 GeoServer Documentation Guide
-===================================
+=============================
 
-Information and guidelines for GeoServer documentation contributors.
+Information and guidelines for contributors to GeoServer documentation.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   style-guidelines/
-   sphinx-stuff/
-   tutorials/
-
+   style/
+   tutorial/
+   sphinx/
+   
