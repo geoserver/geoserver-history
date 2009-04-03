@@ -2,7 +2,7 @@
 General styles
 -----------------------*/
 body {
-background: #fff url(../img/globalbg.png) -60px 0 repeat-y;
+background: #fff;
 color: #0076a1;
 font-family: Tahoma, "Lucida Sans Unicode", "Lucida Grande", Verdana, sans-serif;
 text-align:left !important; /* override blueprint's ie.css */
@@ -83,6 +83,12 @@ display: block;
 height: 1px; /* IE < 7 */
 }
 
+/* Alpha transparency for IE6 */
+* html .pngfix {
+zoom: 1;
+behavior: expression((this.runtimeStyle.behavior="none")&&(this.pngSet?this.pngSet=true:(this.nodeName == "IMG" && this.src.toLowerCase().indexOf('.png')>-1 ?  (this.runtimeStyle.backgroundImage = "none", this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.src + "', sizingMethod='image')", this.src = "/img/transparent.gif") : (this.origBg = this.origBg ? this.origBg :  this.currentStyle.backgroundImage.toString().replace('url("','').replace('")',''), this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.origBg + "', sizingMethod='" + (this.currentStyle.backgroundRepeat=='no-repeat' ? 'crop' : 'scale') +"')", this.runtimeStyle.backgroundImage = "none")),this.pngSet=true));
+}
+
 .leftwise {
 float:left;
 }
@@ -100,8 +106,8 @@ display: none;
 }
 
 .wrap {
-width: 990px;
-margin: 0 auto; 
+width: 83em;
+margin: 0; 
 padding: 0;
 }
 
@@ -168,60 +174,65 @@ color: #660002;
 /*-----------------------
 Structural Elements
 -----------------------*/
-#container {
-}
+
 
 #header {
 background: #fff;
-border: 1px solid #0076a1;
-border-width: 0 0 2px;
 padding: 5px;
+}
+
+#main {
+border-top: 2px solid #c6e09b;
+background: url(../img/main-bg.png) repeat-x;
 }
 
 #sidebar, 
 #page {
-padding: 0 20px;
 text-align: left; /* IE */
 }
 
 #sidebar {
 float: left;
-width: 200px;
+width: 17em;
+padding: 38px 20px 0;
 } 
 
 #page {
-margin-left: 240px;
+margin: 0 0 -250px 19em;
 color: #262523;
+padding: 0 0 250px 19px;
 }
 
 /*-----------------------
 Tables
 -----------------------*/
+table {
+margin: 1.4em 0; /* override blueprint's settings */
+}
+
 th {
 background: transparent; /* override blueprint's settings */
 }
 
 thead th {
-background: #f0f5ef;
-border: 1px solid #000;
+background: #c6e09b;
+border: 1px solid #0076a1;
 border-width: 0 0 1px;
 }
 
 tr:hover td,
 tbody tr:hover th {
-background: #fffef2;
+background: #f4f9eb;
 }
 
 tr.even td,
 tr.even th {
-background: #f7faf7; /* override blueprint's settings */
-border: 1px solid #edf0ed;
-border-width: 1px 0;
+background: #e2efcd; /* override blueprint's settings */
 }
 
 tr.even:hover td,
 tr.even:hover th {
-background: #f6f7e9;
+background: #f4f9eb;
 }
 
 th.actions,
@@ -375,19 +386,28 @@ Button  Styles
 .button-group a,
 .button-group button,
 input.btnTxt {
-background: #eaeaea url(../img/button-gradient.png) top left repeat-x;
-border: 1px solid #d2d2d2;
-border-top: 1px solid #e2e2e2;
-border-left: 1px solid #e2e2e2;
+background: #c6e09b url(../img/button-gradient.png) top left repeat-x;
+border: 1px solid #c6e09b;
 font-size: 0.9em;
 font-weight: bold;
 text-decoration: none;
-color: #565656;
+color: #0076a1;
 cursor: pointer;
 padding: 5px 10px 5px 7px;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
+}
+
+/* Alpha transparency for IE6 
+Redundant to .pngfix but added as otherwise
+we have to declare "pngfix" on every button
+*/
+* html .button-group a,
+* html .button-group button,
+* html input.btnTxt {
+zoom: 1;
+behavior: expression((this.runtimeStyle.behavior="none")&&(this.pngSet?this.pngSet=true:(this.nodeName == "IMG" && this.src.toLowerCase().indexOf('.png')>-1 ?  (this.runtimeStyle.backgroundImage = "none", this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.src + "', sizingMethod='image')", this.src = "img/transparent.gif") : (this.origBg = this.origBg ? this.origBg :  this.currentStyle.backgroundImage.toString().replace('url("','').replace('")',''), this.runtimeStyle.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='" + this.origBg + "', sizingMethod='" + (this.currentStyle.backgroundRepeat=='no-repeat' ? 'crop' : 'scale') +"')", this.runtimeStyle.backgroundImage = "none")),this.pngSet=true));
 }
 
 .button-group button {
@@ -408,55 +428,8 @@ padding: 4px 10px 3px 7px; /* IE6 */
 .button-group a:hover,
 .button-group button:hover,
 input.btnTxt:hover {
-background-color: #dff4ff;
-color: #369;
-border: 1px solid #c2e1ef;
-}
-
-* html .button-group a,
-* html .button-group button,
-* html input.btnTxt { /*avoid transparency issues with IE6 */
-background: #eaeaea url(../img/button-bg.png) top left repeat-x;
-}
-
-* html .button-group a:hover,
-* html .button-group button:hover,
-* html input.btnTxt:hover { /*IE6 gets a solid button background regardless */
-background: #dff4ff url(../img/button-hover-bg.png) top left repeat-x;
-}
-
-button.positive,
-.button-group a.positive {
-color: #529214;
-}
-
-.button-group a.positive:hover,
-button.positive:hover {
-background-color: #e6efc2;
-border: 1px solid #c6d880;
-color: #529214;
-}
-
-* html .button-group a.positive:hover,
-* html button.positive:hover { /*IE6 gets a solid button background regardless */
-background: #e6efc2 url(../img/button-positive-bg.png) top left repeat-x;
-}
-
-.button-group a.negative,
- button.negative {
-color: #d12f19;
-}
-
-.button-group a.negative:hover,
-button.negative:hover {
-background-color: #fbe3e4;
-border: 1px solid #fbc2c4;
-color: #d12f19;
-}
-
-* html .button-group a.negative:hover,
-* html button.negative:hover { /*IE6 gets a solid button background regardless */
-background: #fbe3e4 url(../img/button-negative-bg.png) top left repeat-x;
+background-color: #e3f0ce;
+color: #004f6c;
 }
 
 .button-group a.icon,
@@ -531,16 +504,15 @@ font-size: 1.76em;
 
 #header h2 a {
 float: left;
-padding: 0 0 0 33px;
-min-height: 30px;
-background: url(../img/logo.png) 0 50% no-repeat;
-text-decoration: none;
-color: #0076a1;
+width: 220px;
+height: 67px;
+background: url(../img/logo.png) no-repeat;
+overflow: hidden;
+text-indent: -9999em;
+text-align: left;
+margin: 0 0 -23px;
 }
 
-#header h2 a:hover {
-color: #c6e09b;
-}
 
 #header .button-group {
 padding: 0.5em 0 0;
@@ -581,7 +553,7 @@ Sidebar
 -----------------------*/
 
 ul#navigation {
-margin: 20px 0 1.5em;
+margin: 10px 0 6px;
 list-style-type: none;
 }
 
@@ -594,7 +566,8 @@ text-decoration: underline;
 }
 
 .navigation-tab {
-margin-bottom: 8px;
+margin: 3px 0;
+border-bottom: 2px ridge #ebf5dd;
 }
 
 .navigation-tab-header {
@@ -603,26 +576,24 @@ padding: 2px 5px;
 
 .navigation-tab-single,
 .navigation-tab-content {
-padding: 3px 5px;
-border: 1px solid #d0d0d0;
+padding: 3px 5px 7px;
 }
 
 .navigation-tab-single,
 .navigation-tab-header {
 font-weight: bold;
-background: transparent url(../img/ext/panel/white-top-bottom.gif) 0 -1px repeat-x;
+color: #0076a1;
 }
 
 .navigation-tab-content {
 border-top: none;
-background: #f9f9f9;
 }
 
 .navigation-tab-single a,
 .navigation-tab-header a,
 .navigation-tab-content a {
 display: block;
-color: #333;
+color: #0076a1;
 }
 
 li.nav-administer-service {
@@ -634,6 +605,23 @@ float: left;
 margin-right: 0.5em;
 height: 16px;
 width: 16px;
+}
+
+/*-----------------------
+Rounded corners for content
+-----------------------*/
+#main .wrap {
+background: url(../img/main-wrap-bg.png) 100% 0 no-repeat;
+padding: 0 19px 250px 0;
+margin: 0 0 -250px 0;
+}
+
+#page {
+background: #fff url(../img/page-bg.png) no-repeat;
+}
+
+.page-header {
+background: #fff url(../img/page-header-bg.png) repeat-x;
 }
 
 /*-----------------------
@@ -737,8 +725,6 @@ background: #fff;
 
 .page-header {
 padding: 20px 0 0;
-margin-bottom: 0.75em;
-max-width: 70em;
 }
 
 .page-header h2 {
@@ -746,7 +732,7 @@ margin-bottom: 0;
 }
 
 .page-pane {
-max-width: 70em;
+background: #fff;
 }
 
 .page-pane-content {
