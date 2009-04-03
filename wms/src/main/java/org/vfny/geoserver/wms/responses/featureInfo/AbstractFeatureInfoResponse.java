@@ -4,13 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -26,6 +26,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.store.FilteringFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
@@ -35,13 +36,16 @@ import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.filter.visitor.SimplifyingFilterVisitor;
 import org.geotools.geometry.DirectPosition2D;
-import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.TransformedDirectPosition;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.MetaBufferEstimator;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.coverage.CannotEvaluateException;
 import org.opengis.coverage.PointOutsideCoverageException;
@@ -53,6 +57,7 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.Or;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
@@ -212,10 +217,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         GetMapRequest getMapReq = request.getGetMapRequest();
         CoordinateReferenceSystem requestedCRS = getMapReq.getCrs(); // optional, may be null
 
+        // basic information about the request
         int width = getMapReq.getWidth();
         int height = getMapReq.getHeight();
-        Envelope bbox = getMapReq.getBbox();
-        FilterFactory2 filterFac = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
+        ReferencedEnvelope bbox = new ReferencedEnvelope(getMapReq.getBbox(), getMapReq.getCrs());
+        double scaleDenominator = RendererUtilities.calculateOGCScale(bbox, width, new HashMap());
+        FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
         final int layerCount = requestedLayers.length;
         results = new ArrayList<FeatureCollection<? extends FeatureType,? extends Feature>>(layerCount);
@@ -223,6 +230,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         
         try {
             for (int i = 0; i < layerCount; i++) {
+                List<Rule> rules = getActiveRules(styles[i], scaleDenominator);
+                if(rules.size() == 0)
+                    continue;
                 MapLayerInfo layerInfo = requestedLayers[i];
                 if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
                     CoordinateReferenceSystem dataCRS = layerInfo.getCoordinateReferenceSystem();
@@ -230,9 +240,12 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     // compute the request radius
                     double radius;
                     if(buffer <= 0) {
-                        // estimate the radius given the current style
+                        // estimate the radius given the currently active rules
                         MetaBufferEstimator estimator = new MetaBufferEstimator();
-                        styles[i].accept(estimator);
+                        for (Rule rule : rules) {
+                            rule.accept(estimator);
+                        }
+                        
                         if(estimator.getBuffer() < 2.0 || !estimator.isEstimateAccurate()) {
                             radius = 2.0;
                         } else {
@@ -269,7 +282,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     try {
                         GeometryDescriptor geometryDescriptor = schema.getGeometryDescriptor();
                         String localName = geometryDescriptor.getLocalName();
-                        getFInfoFilter = filterFac.intersects(filterFac.property(localName), filterFac.literal(pixelRect));
+                        getFInfoFilter = ff.intersects(ff.property(localName), ff.literal(pixelRect));
                     } catch (IllegalFilterException e) {
                         e.printStackTrace();
                         throw new WmsException(null, "Internal error : " + e.getMessage());
@@ -277,7 +290,17 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                     // include the eventual layer definition filter
                     if (filters[i] != null) {
-                        getFInfoFilter = filterFac.and(getFInfoFilter, filters[i]);
+                        getFInfoFilter = ff.and(getFInfoFilter, filters[i]);
+                    }
+                    
+                    // see if we can include the rule filters as well, if too many we'll do them in memory
+                    Filter postFilter = Filter.INCLUDE;
+                    Filter rulesFilters = buildRulesFilter(ff, rules);
+                    if(!(rulesFilters instanceof Or) ||
+                        (rulesFilters instanceof Or && ((Or) rulesFilters).getChildren().size() <= 20)) {
+                        getFInfoFilter = ff.and(getFInfoFilter, rulesFilters);
+                    } else {
+                        postFilter = rulesFilters;
                     }
 
                     String typeName = schema.getName().getLocalPart();
@@ -285,6 +308,10 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     
                     FeatureCollection<? extends FeatureType, ? extends Feature> match;
                     match = featureSource.getFeatures(q);
+                    
+                    // if we could not include the rules filter into the query, post process in memory
+                    if(!Filter.INCLUDE.equals(postFilter))
+                        match = new FilteringFeatureCollection(match, postFilter);
 
                     //this was crashing Gml2FeatureResponseDelegate due to not setting
                     //the featureresults, thus not being able of querying the SRS
@@ -334,6 +361,41 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         } catch (Exception e) {
             throw new WmsException(null, "Internal error occurred", e);
         } 
+    }
+
+    private Filter buildRulesFilter(org.opengis.filter.FilterFactory ff, List<Rule> rules) {
+        // build up a or of all the rule filters
+        List<Filter> filters = new ArrayList<Filter>();
+        for (Rule rule : rules) {
+            if(rule.getFilter() == null)
+                return Filter.INCLUDE;
+            filters.add(rule.getFilter());
+        }
+        // not or and and simplify (if there is any include/exclude we'll get 
+        // a very simple result ;-)
+        Filter or = ff.or(filters);
+        SimplifyingFilterVisitor simplifier = new SimplifyingFilterVisitor();
+        return (Filter) or.accept(simplifier, null);
+    }
+
+    /**
+     * Selects the rules active at this zoom level
+     * @param style
+     * @param scaleDenominator
+     * @return
+     */
+    private List<Rule> getActiveRules(Style style, double scaleDenominator) {
+        List<Rule> result = new ArrayList<Rule>();
+        
+        for(FeatureTypeStyle fts : style.getFeatureTypeStyles()) {
+            for (Rule r : fts.rules()) {
+                if((r.getMinScaleDenominator() <= scaleDenominator)
+                    && (r.getMaxScaleDenominator() > scaleDenominator)) {
+                    result.add(r);
+                }
+            }
+        }
+        return result;
     }
 
     private Polygon getEnvelopeFilter(int x, int y, int width, int height, Envelope bbox, double radius) {
