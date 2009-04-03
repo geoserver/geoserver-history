@@ -1,6 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/" xml:lang="en" lang="en">
 <wicket:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -13,69 +12,76 @@
       <link rel="stylesheet" href="css/blueprint/ie.css" type="text/css" media="screen, projection" />
 	    <link rel="stylesheet" href="css/geoserver-ie.css" type="text/css" media="screen, projection" />
       <![endif]-->
+      <script type="text/javascript" src="js/jquery-1.2.6.min.js"></script>
+      <script type="text/javascript" src="js/jquery.inline-info.js"></script>
 	</wicket:link>
 </wicket:head>
 <body>
-<div id="container" class="selfclear">
   <div id="header" class="selfclear">
-    <h2><a wicket:id="home" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
-    <div class="button-group selfclear">
-    <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
-      <label class="noshow" for="username">Username</label>
-      <input id="username" type="text" name="username" value="username" onfocus="if(this.value=='username') this.value='';" onblur="if(this.value=='') this.value='username';" />
-      <label class="noshow" for="password">Password</label>
-      <input id="password" type="password" name="password" value="password" onfocus="if(this.value=='password') this.value='';" onblur="if(this.value=='') this.value='password';" />
-      <label class="shown" for="_acegi_security_remember_me">Remember me</label>
-      <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
-      <button class="button-login positive icon" type="submit"><div>Login</div></button>
-    </form>
-    <div wicket:id="logoutform">
-      <a class="button-logout icon" href="j_acegi_logout"><div>Logout</div></a>
-      <span class="username">Logged in as <span wicket:id="username">User von Testenheimer</span></span>.
-    </div>
-    </div>
+    <div class="wrap selfclear">
+      <h2><a wicket:id="home" class="pngfix" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
+      <div class="button-group selfclear">
+      <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
+        <label class="noshow" for="username">Username</label>
+        <input id="username" type="text" name="username" value="" title="username" />
+        <label class="noshow" for="password">Password</label>
+        <input id="password" type="password" name="password" value="" title="password" />
+        <label class="shown" for="_acegi_security_remember_me">Remember me</label>
+        <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
+        <button class="button-login positive icon" type="submit"><div>Login</div></button>
+        <script type="text/javascript">
+        //<![CDATA[
+        jQuery(document).ready(function() {$('#username, #password').inlineInfoTextify();});
+        //]]>
+        </script>
+      </form>
+      <div wicket:id="logoutform">
+        <a class="button-logout icon" href="j_acegi_logout"><div>Logout</div></a>
+        <span class="username">Logged in as <span wicket:id="username">User von Testenheimer</span></span>.
+      </div>
+      </div>
+    </div><!-- /.wrap -->
   </div><!-- /#header -->
-  
-  
-  <div id="sidebar">
-    <ul id="navigation">
-      <li class="navigation-tab" wicket:id="category">
-        <div class="navigation-tab-header">
-          <span wicket:id="category.header">[Category Header]</span>
-        </div>
-        <ul class="navigation-tab-content plain">
-          <li class="nav-administer-service" wicket:id="category.links">
-            <a wicket:id="link" title="title">
-              <img src="#" wicket:id="link.icon"/><span wicket:id="link.label"></span>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li class="navigation-tab" wicket:id="standalone">
-        <div class="navigation-tab-single">
-           <a wicket:id="link" href="#"><span wicket:id="link.label">[Link]</span></a>
-        </div>
-      </li>
-    </ul>
-    <div class="button-group selfclear" wicket:id="devButtons">
-      Developer toolbar:
-      <a href="#" class="positive" wicket:id="clearCache" title="Forces the Wicket caches to be cleared, so that localized messages will be reloaded without needing a restart" >
-          Clear Wicket caches
-      </a>
-    </div>
-  </div>
-  
-  
-  <div id="page">
-    <div class="page-header">
-      <div id="feedback" wicket:id="feedback"></div>
-      <h1><wicket:message key="page.title"></wicket:message></h1>
-      <p><wicket:message key="page.description"></wicket:message></p>
-    </div>
-    <div class="page-pane">
-      <wicket:child></wicket:child>
-    </div>
-  </div>
-</div>
+  <div id="main">
+    <div class="wrap selfclear">
+    <div id="sidebar">
+      <ul id="navigation">
+        <li class="navigation-tab" wicket:id="category">
+          <div class="navigation-tab-header">
+            <span wicket:id="category.header">[Category Header]</span>
+          </div>
+          <ul class="navigation-tab-content plain">
+            <li class="nav-administer-service" wicket:id="category.links">
+              <a wicket:id="link" title="title">
+                <img src="#" wicket:id="link.icon"/><span wicket:id="link.label"></span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="navigation-tab" wicket:id="standalone">
+          <div class="navigation-tab-single">
+             <a wicket:id="link" href="#"><span wicket:id="link.label">[Link]</span></a>
+          </div>
+        </li>
+      </ul>
+      <div class="button-group selfclear" wicket:id="devButtons">
+        Developer toolbar:
+        <a href="#" class="positive" wicket:id="clearCache" title="Forces the Wicket caches to be cleared, so that localized messages will be reloaded without needing a restart" >
+            Clear Wicket caches
+        </a>
+      </div>
+    </div><!-- /#sidebar -->
+    <div id="page">
+      <div class="page-header">
+        <div id="feedback" wicket:id="feedback"></div>
+        <h1><wicket:message key="page.title"></wicket:message></h1>
+        <p><wicket:message key="page.description"></wicket:message></p>
+      </div>
+      <div class="page-pane">
+        <wicket:child></wicket:child>
+      </div>
+    </div><!-- /#page -->
+    </div><!-- /.wrap> -->
+  </div><!-- /#main -->
 </body>
 </html>
