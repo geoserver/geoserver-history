@@ -17,6 +17,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     public static String WCS_PREFIX = "wcs";
     public static String WCS_URI = "http://www.opengis.net/wcs/1.1.1";
     public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
+    public static QName SQUARES = new QName(MockData.CITE_URI, "squares", MockData.CITE_PREFIX);
 
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -34,9 +35,14 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
-        dataDirectory.addCoverage(TASMANIA_BM, GetFeatureInfoTest.class.getResource("tazbm.tiff"),
-                "tiff", null);
         dataDirectory.addStyle("thickStroke", GetFeatureInfoTest.class.getResource("thickStroke.sld"));
+        dataDirectory.addStyle("raster", GetFeatureInfoTest.class.getResource("raster.sld"));
+        dataDirectory.addStyle("rasterScales", GetFeatureInfoTest.class.getResource("rasterScales.sld"));
+        dataDirectory.addCoverage(TASMANIA_BM, GetFeatureInfoTest.class.getResource("tazbm.tiff"),
+                "tiff", "raster");
+        dataDirectory.addStyle("squares", GetFeatureInfoTest.class.getResource("squares.sld"));
+        dataDirectory.addPropertiesType(SQUARES, GetFeatureInfoTest.class.getResource("squares.properties"),
+                null);
     }
     
     /**
@@ -118,6 +124,41 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     }
     
     /**
+     * Tests GetFeatureInfo with a buffer specified works, and that the result contains the
+     * expected polygon
+     * 
+     * @throws Exception
+     */
+    public void testBufferScales() throws Exception {
+        String layer = getLayerId(SQUARES);
+        String base = "wms?&format=png&info_format=text/html&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&styles=squares&bbox=0,0,10000,10000&feature_count=10";
+        
+        // first request, should provide no result, scale is 1:100
+        int w = (int) (100.0 / 0.28 * 1000); // dpi compensation
+        Document dom = getAsDOM(base + "&width=" + w + "&height=" + w + "&x=20&y=" + (w - 20));
+        // print(dom);
+        // make sure the document is empty, the style we chose has thin lines
+        assertXpathEvaluatesTo("0", "count(/html/body/table/tr)", dom);
+        
+        // second request, should provide oe result, scale is 1:50
+        w = (int) (200.0 / 0.28 * 1000); // dpi compensation
+        dom = getAsDOM(base + "&width=" + w + "&height=" + w + "&x=20&y=" + (w - 20));
+        // print(dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[starts-with(.,'squares.')])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[. = 'squares.1'])", dom);
+
+        // third request, should provide two result, scale is 1:10
+        w = (int) (1000.0 / 0.28 * 1000); // dpi compensation
+        dom = getAsDOM(base + "&width=" + w + "&height=" + w + "&x=20&y=" + (w - 20));
+        // print(dom);
+        assertXpathEvaluatesTo("2", "count(/html/body/table/tr/td[starts-with(.,'squares.')])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[. = 'squares.1'])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/td[. = 'squares.2'])", dom);
+        
+    }
+    
+    /**
      * Tests a GetFeatureInfo againworks, and that the result contains the
      * expected polygon
      * 
@@ -159,12 +200,29 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         String request = "wms?service=wms&request=GetFeatureInfo&version=1.1.1" +
         		"&layers=" + layer + "&styles=&bbox=146.5,-44.5,148,-43&width=600&height=600" + 
         		"&info_format=text/html&query_layers=" + layer + "&x=300&y=300&srs=EPSG:4326";
-        MockHttpServletResponse resp = getAsServletResponse(request);
+        Document dom = getAsDOM(request);
         // we also have the charset which may be platf. dep.
-        assertTrue(resp.getContentType().startsWith("text/html"));
-        assertTrue(resp.getOutputStreamContent().contains("RED_BAND"));
-        assertTrue(resp.getOutputStreamContent().contains("GREEN_BAND"));
-        assertTrue(resp.getOutputStreamContent().contains("BLUE_BAND"));
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'RED_BAND'])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'GREEN_BAND'])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'BLUE_BAND'])", dom);
+    }
+    
+    public void testCoverageScales() throws Exception {
+        String layer = getLayerId(TASMANIA_BM);
+        String request = "wms?service=wms&request=GetFeatureInfo&version=1.1.1" +
+                "&layers=" + layer + "&styles=rasterScales&bbox=146.5,-44.5,148,-43" + 
+                "&info_format=text/html&query_layers=" + layer + "&x=300&y=300&srs=EPSG:4326";
+        
+        // this one should be blank
+        Document dom = getAsDOM(request + "&width=300&height=300");
+        assertXpathEvaluatesTo("0", "count(/html/body/table/tr/th)", dom);
+        
+        // this one should draw the coverage
+        dom = getAsDOM(request + "&width=600&height=600");
+        // we also have the charset which may be platf. dep.
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'RED_BAND'])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'GREEN_BAND'])", dom);
+        assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'BLUE_BAND'])", dom);
     }
     
     
