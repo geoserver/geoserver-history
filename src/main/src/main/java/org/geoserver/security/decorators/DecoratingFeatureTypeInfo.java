@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
@@ -236,6 +237,10 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
 
     public void setTitle(String title) {
         delegate.setTitle(title);
+    }
+   
+    public void accept(CatalogVisitor visitor) {
+        delegate.accept(visitor);
     }
 
 }

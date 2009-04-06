@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -88,5 +89,9 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
 
     public void setType(Type type) {
         delegate.setType(type);
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        delegate.accept(visitor);
     }
 }
