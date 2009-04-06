@@ -13,7 +13,7 @@ import java.util.Set;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface LayerInfo extends Info {
+public interface LayerInfo extends CatalogInfo {
 
     /**
      * Enumeration for type of layer.
@@ -38,11 +38,6 @@ public interface LayerInfo extends Info {
         
         public abstract Integer getCode();
     }
-    
-    /**
-     * Identifier.
-     */
-    String getId();
     
     /**
      * Name of the layer.

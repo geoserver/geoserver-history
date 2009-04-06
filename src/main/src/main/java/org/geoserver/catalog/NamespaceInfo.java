@@ -12,12 +12,7 @@ import java.util.Map;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface NamespaceInfo extends Info {
-
-    /**
-     * Identifier.
-     */
-    String getId();
+public interface NamespaceInfo extends CatalogInfo {
 
     /**
      * The prefix of the namespace.

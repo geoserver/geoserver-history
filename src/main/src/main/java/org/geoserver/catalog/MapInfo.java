@@ -12,9 +12,7 @@ import java.util.List;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public interface MapInfo extends Info {
-
-    String getId();
+public interface MapInfo extends CatalogInfo {
 
     /**
      * The name of the map.

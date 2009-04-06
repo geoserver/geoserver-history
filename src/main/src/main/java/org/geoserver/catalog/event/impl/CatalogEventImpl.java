@@ -4,18 +4,19 @@
  */
 package org.geoserver.catalog.event.impl;
 
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.event.CatalogEvent;
 
 public class CatalogEventImpl implements CatalogEvent {
 
-	Object source;
+	CatalogInfo source;
 	
 	
-	public Object getSource() {
+	public CatalogInfo getSource() {
 		return source;
 	}
 
-	public void setSource(Object source) {
+	public void setSource(CatalogInfo source) {
 		this.source = source;
 	}
 }

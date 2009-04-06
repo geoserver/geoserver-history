@@ -17,13 +17,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface ResourceInfo extends Info {
+public interface ResourceInfo extends CatalogInfo {
 
-    /**
-     * @return The identifier of the resource.
-     */
-    String getId();
-    
     /**
      * The catalog the resource is part of.
      */
@@ -335,7 +330,7 @@ public interface ResourceInfo extends Info {
      * @uml.property name="store"
      */
     void setStore(StoreInfo store);
-
+    
     /**
      * Creates an adapter for the resource.
      * <p>

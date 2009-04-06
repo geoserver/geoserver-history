@@ -4,6 +4,8 @@
  */
 package org.geoserver.catalog.event;
 
+import org.geoserver.catalog.CatalogInfo;
+
 /**
  * Catalog event.
  * 
@@ -14,6 +16,6 @@ public interface CatalogEvent {
     /**
      * The source of the event.
      */
-    Object getSource();
+    CatalogInfo getSource();
 
 }
