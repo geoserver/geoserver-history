@@ -7,6 +7,7 @@ package org.geoserver.catalog.impl;
 import java.io.IOException;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.StyleInfo;
 import org.geotools.styling.Style;
 
@@ -56,6 +57,10 @@ public class StyleInfoImpl implements StyleInfo {
         return catalog.getResourcePool().getStyle( this );
     }
 
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit( this );
+    }
+    
     public int hashCode() {
         final int prime = 31;
         int result = 1;

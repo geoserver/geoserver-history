@@ -7,9 +7,9 @@ package org.geoserver.catalog.impl;
 import java.io.IOException;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geotools.data.DataAccess;
-import org.geotools.data.DataStore;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.util.ProgressListener;
@@ -34,6 +34,10 @@ public class DataStoreInfoImpl extends StoreInfoImpl implements DataStoreInfo {
         return catalog.getResourcePool().getDataStore(this);
     }
 
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
+    }
+    
     public boolean equals(Object obj) {
         if (!( obj instanceof DataStoreInfo ) ) {
             return false;

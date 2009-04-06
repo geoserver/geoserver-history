@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.FeatureSource;
@@ -80,6 +81,10 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     public FeatureSource<? extends FeatureType, ? extends Feature> getFeatureSource(ProgressListener listener, Hints hints)
             throws IOException {
         return catalog.getResourcePool().getFeatureSource( this, hints );
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
     }
 
     public int hashCode() {

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.WorkspaceInfo;
 
 public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
@@ -39,6 +40,10 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
     
     public void setMetadata(Map<String, Serializable> metadata) {
         this.metadata = metadata;
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
     }
 
     public int hashCode() {

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -118,6 +119,10 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     public GridCoverageReader getGridCoverageReader(ProgressListener listener,
             Hints hints) throws IOException {
         return catalog.getResourcePool().getGridCoverageReader(getStore(), hints);
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
     }
 
     public int hashCode() {

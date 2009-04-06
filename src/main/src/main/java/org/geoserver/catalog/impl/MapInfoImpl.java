@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
 
@@ -53,5 +54,9 @@ public class MapInfoImpl implements MapInfo {
     
     public void setLayers( List<LayerInfo> layers ) {
         this.layers = layers;
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        throw new UnsupportedOperationException();
     }
 }
