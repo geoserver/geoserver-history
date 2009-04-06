@@ -72,18 +72,22 @@
       <h2>GeoServer</h2>
       <div class="status-bar"><span style="width: 50%;">50%</span></div>
     </div>
-    <h3><wicket:message key="timestamps">Timestamps</wicket:message></h3>
     <table>
-      <tbody>
+      <thead>
         <tr>
+          <th colspan="2"><wicket:message key="timestamps">Timestamps</wicket:message></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="odd">
           <th scope="row">GeoServer</th>
           <td wicket:id="reload.date.geoserver">Jul 14, 3:07 PM</td>
         </tr>
-        <tr>
+        <tr class="even">
           <th scope="row"><wicket:message key="configuration">Configuration</wicket:message></th>
           <td wicket:id="reload.date.configuration">Jul 14, 3:07 PM</td>
         </tr>
-        <tr>
+        <tr class="odd">
           <th scope="row">XML</th>
           <td wicket:id="reload.date.xml">Mar 14, 2:15 PM</td>
         </tr>
