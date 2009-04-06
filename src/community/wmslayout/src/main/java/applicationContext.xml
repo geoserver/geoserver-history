@@ -24,4 +24,9 @@
           class="org.vfny.geoserver.wms.responses.decoration.ScaleRatioDecoration"
           singleton="false"
     />
+    
+    <bean id="scaleline" 
+          class="org.vfny.geoserver.wms.responses.decoration.ScaleLineDecoration"
+          singleton="false"
+    />
 </beans>

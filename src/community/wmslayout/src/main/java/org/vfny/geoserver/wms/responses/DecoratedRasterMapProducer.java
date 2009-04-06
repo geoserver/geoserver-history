@@ -402,9 +402,9 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         if (layoutName != null){
             try {
                 File layoutDir = GeoserverDataDirectory.findConfigDir(
-                        GeoserverDataDirectory.getGeoserverDataDirectory(),
-                        "layouts"
-                        );
+                    GeoserverDataDirectory.getGeoserverDataDirectory(),
+                    "layouts"
+                );
 
                 File layoutConfig = new File(layoutDir, layoutName + ".xml");
 
