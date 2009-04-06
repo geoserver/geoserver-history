@@ -18,8 +18,6 @@ import org.opengis.util.ProgressListener;
 public class CoverageStoreInfoImpl extends StoreInfoImpl implements
         CoverageStoreInfo {
 
-    String type;
-
     String url;
     
     AbstractGridFormat format;
@@ -30,14 +28,6 @@ public class CoverageStoreInfoImpl extends StoreInfoImpl implements
 
     public CoverageStoreInfoImpl(Catalog catalog,String id) {
         super(catalog,id);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getURL() {

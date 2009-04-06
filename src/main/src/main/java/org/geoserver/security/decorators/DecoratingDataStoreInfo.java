@@ -48,6 +48,10 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
     public String getDescription() {
         return delegate.getDescription();
     }
+    
+    public String getType() {
+        return delegate.getType();
+    }
 
     public Throwable getError() {
         return delegate.getError();
@@ -77,6 +81,10 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
         delegate.setDescription(description);
     }
 
+    public void setType(String type) {
+        delegate.setType(type);
+    }
+    
     public void setEnabled(boolean enabled) {
         delegate.setEnabled(enabled);
     }
