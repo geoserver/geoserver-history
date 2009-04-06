@@ -9,33 +9,28 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.StatelessForm;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerLoader;
 import org.geoserver.web.acegi.GeoServerSession;
+import org.geotools.util.logging.Logging;
 
 /**
  * Base class for web pages in GeoServer web application.
@@ -57,6 +52,8 @@ import org.geoserver.web.acegi.GeoServerSession;
  * @author Justin Deoliveira, The Open Planning Project
  */
 public class GeoServerBasePage extends WebPage {
+    
+    protected static final Logger LOGGER = Logging.getLogger(GeoServerBasePage.class);
 
     /**
      * feedback panel for subclasses to report errors and information.
