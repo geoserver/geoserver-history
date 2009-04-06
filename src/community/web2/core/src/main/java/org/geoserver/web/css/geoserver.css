@@ -107,6 +107,7 @@ display: none;
 
 .wrap {
 width: 83em;
+min-width: 80%;
 margin: 0; 
 padding: 0;
 }
@@ -174,8 +175,6 @@ color: #660002;
 /*-----------------------
 Structural Elements
 -----------------------*/
-
-
 #header {
 background: #fff;
 padding: 5px;
@@ -644,16 +643,19 @@ float: left;
 margin: 1.2em 0 0;
 float: left;
 width: 200px;
-height: 6px;
+height: 10px;
 background-color: #e8e6e6;
 border: 1px solid #555;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px;
 }
 
 .status-bar span {
 display: block;
 background-image: url(../img/status-bar-bg.png);
 background-repeat: no-repeat;
-height: 6px;
+height: 10px;
 overflow: hidden;
 text-indent: -9999em;
 }
@@ -751,6 +753,32 @@ font-style: italic;
 
 span.unconfiguredLayer {
 font-style: italic;
+}
+
+/* Pagination */
+.paginator {
+display: block;
+padding: 1em 0;
+}
+
+.paginator a,
+.paginator em {
+padding: 2px 6px;
+border: 1px solid #c6e09b;
+background: #fff;
+text-decoration: none;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+border-radius: 5px;
+}
+
+.paginator em {
+color: #aaa;
+}
+
+.paginator a:hover {
+background: #0076a1;
+color: #fff;
 }
 
 
