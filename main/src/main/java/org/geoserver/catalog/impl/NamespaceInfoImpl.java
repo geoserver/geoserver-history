@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.NamespaceInfo;
 
 public class NamespaceInfoImpl implements NamespaceInfo {
@@ -50,6 +51,10 @@ public class NamespaceInfoImpl implements NamespaceInfo {
     
     public void setMetadata(HashMap<String, Serializable> metadata) {
         this.metadata = metadata;
+    }
+
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit( this );
     }
     
     public String toString() {

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -77,5 +78,9 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     
     public void setMetadata(Map<String, Serializable> metadata) {
         this.metadata = metadata;
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
     }
 }

@@ -7,6 +7,7 @@ package org.geoserver.catalog.impl;
 import java.util.Iterator;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.util.ProgressListener;
@@ -49,5 +50,9 @@ public class CoverageStoreInfoImpl extends StoreInfoImpl implements
     
     public AbstractGridFormat getFormat() {
         return catalog.getResourcePool().getGridCoverageFormat(this);
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit( this );
     }
 }

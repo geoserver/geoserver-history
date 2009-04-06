@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -118,7 +119,9 @@ public class LayerInfoImpl implements LayerInfo {
         this.metadata = metadata;
     }
     
-    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
+    }
     
     @Override
     public int hashCode() {
