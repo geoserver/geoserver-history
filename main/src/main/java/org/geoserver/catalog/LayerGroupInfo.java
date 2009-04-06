@@ -17,10 +17,8 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public interface LayerGroupInfo extends Info {
+public interface LayerGroupInfo extends CatalogInfo {
 
-    String getId();
-    
     /**
      * The name of the layer group.
      */
@@ -68,4 +66,5 @@ public interface LayerGroupInfo extends Info {
      * 
      */
     Map<String,Serializable> getMetadata();
+
 }

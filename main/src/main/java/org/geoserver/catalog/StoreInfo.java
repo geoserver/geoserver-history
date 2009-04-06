@@ -12,12 +12,7 @@ import java.util.Map;
  * 
  * @author Justin Deoliveira, The Open Planning Project
  */
-public interface StoreInfo extends Info {
-
-    /**
-     * The store identifier.
-     */
-    String getId();
+public interface StoreInfo extends CatalogInfo {
 
     /**
      * The catalog the store is part of.

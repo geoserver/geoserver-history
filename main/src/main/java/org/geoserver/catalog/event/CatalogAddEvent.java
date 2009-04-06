@@ -4,6 +4,8 @@
  */
 package org.geoserver.catalog.event;
 
+import org.geoserver.catalog.CatalogInfo;
+
 /**
  * Event for the addition of an object to the catalog. 
  *
@@ -15,5 +17,5 @@ public interface CatalogAddEvent extends CatalogEvent {
     /**
      * the object that was added.
      */
-    Object getSource();
+    CatalogInfo getSource();
 }

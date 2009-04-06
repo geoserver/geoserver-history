@@ -5,7 +5,6 @@
 package org.geoserver.catalog;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 import org.geotools.styling.Style;
 
@@ -14,7 +13,7 @@ import org.geotools.styling.Style;
  * 
  * @author Justin Deoliveira, The Open Planning project
  */
-public interface StyleInfo extends Info {
+public interface StyleInfo extends CatalogInfo {
 
     /**
      * Name of the default point style.
@@ -33,10 +32,6 @@ public interface StyleInfo extends Info {
      */
     public static String DEFAULT_RASTER = "raster";
 
-    /**
-     * Identifier for the style.
-     */
-    String getId();
     
     /**
      * Name of the style.
@@ -70,4 +65,5 @@ public interface StyleInfo extends Info {
      * The style object.
      */
     Style getStyle() throws IOException;
+    
 }
