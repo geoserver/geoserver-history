@@ -18,20 +18,6 @@ import org.opengis.util.ProgressListener;
 public interface CoverageStoreInfo extends StoreInfo {
 
     /**
-     * The coverage store type.
-     * 
-     * @uml.property name="type"
-     */
-    String getType();
-
-    /**
-     * Sets the type of the coverage store.
-     * 
-     * @uml.property name="type"
-     */
-    void setType(String type);
-
-    /**
      * The coverage store url.
      * 
      * @uml.property name="url"

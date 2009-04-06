@@ -28,6 +28,8 @@ public abstract class StoreInfoImpl implements StoreInfo {
 
     String description;
 
+    String type;
+    
     boolean enabled;
 
     WorkspaceInfo workspace;
@@ -81,6 +83,14 @@ public abstract class StoreInfoImpl implements StoreInfo {
         this.description = description;
     }
 
+    public String getType() {
+        return type;
+    }
+    
+    public void setType(String type) {
+        this.type = type;
+    }
+    
     public boolean isEnabled() {
         return enabled;
     }

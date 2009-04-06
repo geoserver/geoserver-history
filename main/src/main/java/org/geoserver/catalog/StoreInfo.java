@@ -58,6 +58,20 @@ public interface StoreInfo extends CatalogInfo {
     void setDescription(String description);
 
     /**
+     * The store type.
+     * <p>
+     * This value is a well known string representing the nature of the store.
+     * Examples include "Shapefile", "Postgis", "GeoTIFF", etc...
+     * </p>
+     */
+    String getType();
+
+    /**
+     * Sets the type of the store.
+     */
+    void setType(String type);
+    
+    /**
      * Map of persistent properties associated with the store.
      * <p>
      * The intent of this map is for services to associate data with a
