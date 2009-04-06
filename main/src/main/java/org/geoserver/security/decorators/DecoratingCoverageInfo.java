@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -268,4 +269,7 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         delegate.setTitle(title);
     }
     
+    public void accept(CatalogVisitor visitor) {
+        delegate.accept(visitor);
+    }
 }

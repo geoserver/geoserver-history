@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
@@ -92,6 +93,10 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
         delegate.setWorkspace(workspace);
     }
 
+    public void accept(CatalogVisitor visitor) {
+        delegate.accept(visitor);
+    }
+    
     public <T> T getAdapter(Class<T> adapterClass, Map<?, ?> hints) {
         return delegate.getAdapter(adapterClass, hints);
     }
