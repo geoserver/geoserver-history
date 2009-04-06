@@ -18,6 +18,7 @@ import java.util.Map;
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -1197,24 +1198,24 @@ public class CatalogImpl implements Catalog {
         return result;
     }
 
-    protected void added(Object object) {
+    protected void added(CatalogInfo object) {
         fireAdded( object );
     }
     
-    protected void fireAdded(Object object) {
+    protected void fireAdded(CatalogInfo object) {
         CatalogAddEventImpl event = new CatalogAddEventImpl();
         event.setSource(object);
 
         event(event);
     }
 
-    protected void saved(Object object) {
+    protected void saved(CatalogInfo object) {
         //this object is a proxy
         ModificationProxy h = 
             (ModificationProxy) Proxy.getInvocationHandler(object);
         
         //get the real object
-        Object real = h.getProxyObject();
+        CatalogInfo real = (CatalogInfo) h.getProxyObject();
         
         //fire out what changed
         List propertyNames = h.getPropertyNames();
@@ -1234,7 +1235,7 @@ public class CatalogImpl implements Catalog {
         firePostModified( real );
     }
     
-    protected void fireModified(Object object, List propertyNames, List oldValues,
+    protected void fireModified(CatalogInfo object, List propertyNames, List oldValues,
             List newValues) {
         CatalogModifyEventImpl event = new CatalogModifyEventImpl();
 
@@ -1246,13 +1247,13 @@ public class CatalogImpl implements Catalog {
         event(event);
     }
 
-    protected void firePostModified(Object object) {
+    protected void firePostModified(CatalogInfo object) {
         CatalogPostModifyEventImpl event = new CatalogPostModifyEventImpl();
         event.setSource( object);
         
         event(event);
     }
-    protected void removed(Object object) {
+    protected void removed(CatalogInfo object) {
         CatalogRemoveEventImpl event = new CatalogRemoveEventImpl();
         event.setSource(object);
 
