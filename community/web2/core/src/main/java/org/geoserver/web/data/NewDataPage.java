@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
@@ -56,6 +57,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                 dataStores.keySet());
         Collections.sort(sortedDsNames);
 
+        final CatalogIconFactory icons = new CatalogIconFactory();
         final ListView dataStoreLinks = new ListView("vectorResources",
                 sortedDsNames) {
             @Override
@@ -77,7 +79,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                 item.add(link);
                 item.add(new Label("resourceDescription", description));
                 item.add(new Image("storeIcon",
-                        getStoreIcon(factory.getClass())));
+                        icons.getStoreIcon(factory.getClass())));
             }
         };
 
@@ -105,32 +107,12 @@ public class NewDataPage extends GeoServerSecuredPage {
                 item.add(link);
                 item.add(new Label("resourceDescription", description));
                 item.add(new Image("storeIcon",
-                        getStoreIcon(format.getClass())));
+                        icons.getStoreIcon(format.getClass())));
             }
         };
 
         add(dataStoreLinks);
         add(coverageLinks);
-    }
-
-    protected ResourceReference getStoreIcon(Class<?> factoryClass) {
-        // look for the associated panel info if there is one
-        List<DataStorePanelInfo> infos = getGeoServerApplication()
-                .getBeansOfType(DataStorePanelInfo.class);
-        for (DataStorePanelInfo panelInfo : infos) {
-            if (panelInfo.getFactoryClass().equals(factoryClass))
-                return new ResourceReference(panelInfo.getIconBase(), panelInfo
-                        .getIcon());
-        }
-
-        if (DataAccessFactory.class.isAssignableFrom(factoryClass))
-            // fall back on generic vector icon otherwise
-            return new ResourceReference(GeoServerApplication.class,
-                    "img/icons/geosilk/vector.png");
-        else
-            return new ResourceReference(GeoServerApplication.class,
-                    "img/icons/geosilk/raster.png");
-
     }
 
     /**

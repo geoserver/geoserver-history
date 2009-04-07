@@ -29,6 +29,7 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
 import org.geoserver.web.data.datastore.DataStoreConfiguration;
@@ -45,10 +46,6 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  */
 @SuppressWarnings("serial")
 public class LayerPage extends GeoServerSecuredPage {
-    public static final ResourceReference RASTER_ICON = new ResourceReference(GeoServerBasePage.class, "img/icons/geosilk/raster.png");
-    public static final ResourceReference VECTOR_ICON = new ResourceReference(GeoServerBasePage.class, "img/icons/geosilk/vector.png");
-    public static final ResourceReference UNKNOWN_ICON = new ResourceReference(GeoServerBasePage.class, "img/icons/silk/error.png");
-
     LayerProvider provider = new LayerProvider();
     ModalWindow popupWindow;
     GeoServerTablePanel<LayerInfo> table;
@@ -58,6 +55,7 @@ public class LayerPage extends GeoServerSecuredPage {
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
+        final CatalogIconFactory icons = new CatalogIconFactory();
         table = new GeoServerTablePanel<LayerInfo>("table", provider) {
 
             @Override
@@ -65,15 +63,7 @@ public class LayerPage extends GeoServerSecuredPage {
                     Property<LayerInfo> property) {
                 if(property == TYPE) {
                     Fragment f = new Fragment(id, "iconFragment", LayerPage.this);
-                    Type type = (Type) TYPE.getPropertyValue((LayerInfo) itemModel.getObject());
-                    ResourceReference icon = UNKNOWN_ICON;
-                    if(type == Type.VECTOR)
-                        icon = VECTOR_ICON;
-                    else if(type == Type.RASTER)
-                        icon = RASTER_ICON;
-                    else
-                        icon = UNKNOWN_ICON;
-                    f.add(new Image("layerIcon", icon));
+                    f.add(new Image("layerIcon", icons.getLayerIcon((LayerInfo) itemModel.getObject())));
                     return f;
                 } else if(property == WORKSPACE) {
                     return workspaceLink(id, itemModel);
