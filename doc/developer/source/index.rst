@@ -1,5 +1,5 @@
-GeoServer Developer Guide
-=========================
+GeoServer Developer Manual
+==========================
 
 .. toctree::
    :maxdepth: 2

@@ -1,9 +1,5 @@
-.. GeoServer documentation master file, created by sphinx-quickstart on Tue Oct 28 10:01:09 2008.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-GeoServer User Guide
-====================
+GeoServer User Manual
+=====================
 
 GeoServer is a open source software server written in Java that allows
 users to share and edit geospatial data. Designed for
