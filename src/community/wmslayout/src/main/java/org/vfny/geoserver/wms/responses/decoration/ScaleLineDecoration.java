@@ -159,9 +159,22 @@ public class ScaleLineDecoration implements Decoration {
     	int prongHeight = (int)metrics.getHeight() + metrics.getDescent();
     	
     	g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+
+        Rectangle frame = new Rectangle(
+            leftX - 4, centerY - prongHeight - 4, 
+            Math.max(topPx, bottomPx) + 8, 8 + prongHeight * 2
+        );
+
+        g2d.setColor(Color.WHITE);
+        g2d.fill(frame);;
+        
+        frame.height -= 1;
+        frame.width -= 1;
+    	g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(1));
+        g2d.draw(frame);
     	
     	g2d.setStroke(new BasicStroke(2));
-    	g2d.setColor(Color.BLACK);
     	
     	// Draw scale lines
     	g2d.drawLine(leftX, centerY, leftX + topPx, centerY);
