@@ -1,4 +1,7 @@
-
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.demo;
 
 import java.util.ArrayList;
@@ -19,43 +22,52 @@ import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
+/**
+ * A model class for the UI, hides the difference between simple layers and
+ * groups, centralizes the computation of a valid preview request
+ */
 public class PreviewLayer {
     static final Logger LOGGER = Logging.getLogger(PreviewLayer.class);
-    enum PreviewLayerType {Raster, Vector, Remote, Group};
+
+    enum PreviewLayerType {
+        Raster, Vector, Remote, Group
+    };
+
     LayerInfo layerInfo;
+
     LayerGroupInfo groupInfo;
+
     transient GetMapRequest request;
-    
-    
+
     public PreviewLayer(LayerInfo layerInfo) {
         this.layerInfo = layerInfo;
     }
-    
+
     public PreviewLayer(LayerGroupInfo groupInfo) {
         this.groupInfo = groupInfo;
     }
-    
+
     public String getName() {
-        if(layerInfo != null) {
+        if (layerInfo != null) {
             return layerInfo.getName();
         } else {
             return groupInfo.getName();
         }
     }
-    
+
     public PreviewLayer.PreviewLayerType getType() {
-        if(layerInfo != null) {
-            if(layerInfo.getType() == Type.RASTER)
+        if (layerInfo != null) {
+            if (layerInfo.getType() == Type.RASTER)
                 return PreviewLayerType.Raster;
-            else if(layerInfo.getType() == Type.VECTOR)
+            else if (layerInfo.getType() == Type.VECTOR)
                 return PreviewLayerType.Vector;
-            else 
+            else
                 return PreviewLayerType.Remote;
         } else {
             return PreviewLayerType.Group;
         }
     }
-    
+
     /**
      * Builds a fake GetMap request
      * 
@@ -63,7 +75,7 @@ public class PreviewLayer {
      * @return
      */
     GetMapRequest getRequest() {
-        if(request == null) {
+        if (request == null) {
             GeoServerApplication app = GeoServerApplication.get();
             request = new GetMapRequest(new WMS(app.getGeoServer()));
             Catalog catalog = app.getCatalog();
@@ -72,8 +84,10 @@ public class PreviewLayer {
             request.setFormat("application/openlayers");
             try {
                 DefaultWebMapService.autoSetBoundsAndSize(request);
-            } catch(Exception e) {
-                LOGGER.log(Level.INFO, "Could not set figure out automatically a good preview link for " + getName(), e);
+            } catch (Exception e) {
+                LOGGER.log(Level.INFO,
+                        "Could not set figure out automatically a good preview link for "
+                                + getName(), e);
             }
         }
         return request;
@@ -88,18 +102,17 @@ public class PreviewLayer {
      */
     private List<MapLayerInfo> expandLayers(Catalog catalog) {
         List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
-        
-        if ( layerInfo != null ) {
-            layers.add( new MapLayerInfo( layerInfo ) );
-        }  else {
-            for ( LayerInfo l : groupInfo.getLayers() ) {
-                layers.add( new MapLayerInfo( l ) );
+
+        if (layerInfo != null) {
+            layers.add(new MapLayerInfo(layerInfo));
+        } else {
+            for (LayerInfo l : groupInfo.getLayers()) {
+                layers.add(new MapLayerInfo(l));
             }
         }
         return layers;
     }
 
-    
     /**
      * Given a request and a target format, builds the WMS request
      * 
@@ -112,7 +125,7 @@ public class PreviewLayer {
         final Envelope bbox = request.getBbox();
         if (bbox == null)
             return null;
-        
+
         return "../wms?service=WMS&version=1.1.0&request=GetMap" //
                 + "&layers=" + getName() //
                 + "&styles=" //
