@@ -238,11 +238,14 @@ public class MapDecorationLayout {
      * therein.
      *
      * @param f the File from which the layout should be read
+     * @param tiled is this map metatiled?
      * @return a new MapDecorationLayout containing the MapDecorations specified
      * @throws Exception if the configuration is invalid or other errors occur while parsing
      */
-    public static MapDecorationLayout fromFile(File f) throws Exception {
-        MapDecorationLayout dl = new MapDecorationLayout();
+    public static MapDecorationLayout fromFile(File f, boolean tiled) throws Exception {
+        MapDecorationLayout dl = tiled 
+            ? new MetatiledMapDecorationLayout()
+            : new MapDecorationLayout();
         
         Document confFile = new SAXBuilder().build(f);
 

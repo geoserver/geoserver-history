@@ -401,6 +401,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
 
     public void findDecorationLayout(WMSMapContext mapContext) throws Exception {
         String layoutName = (String)mapContext.getRequest().getFormatOptions().get("layout");
+        boolean tiled = MetatileMapProducer.isRequestTiled(mapContext.getRequest(), this);
 
         if (layoutName != null){
             try {
@@ -411,8 +412,8 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
 
                 File layoutConfig = new File(layoutDir, layoutName + ".xml");
 
-                if (layoutConfig.exists() && layoutConfig.canRead()){
-                    this.layout = MapDecorationLayout.fromFile(layoutConfig);
+                if (layoutConfig.exists() && layoutConfig.canRead()) {
+                    this.layout = MapDecorationLayout.fromFile(layoutConfig, tiled);
                 } else {
                     LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
                 }
@@ -422,7 +423,9 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         }
 
         if (layout == null){
-            layout = new MapDecorationLayout();
+            layout = tiled 
+                ? new MetatiledMapDecorationLayout()
+                : new MapDecorationLayout();
         }
 
         if (mapContext.getRequest().getWMS().isGlobalWatermarking()) {
@@ -447,9 +450,9 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
 
             if (p == null) {
                 throw new WmsException(
-                        "Unknown position for global watermark: " 
-                        + mapContext.getRequest().getWMS().getWatermarkPosition()
-                        );
+                    "Unknown position for global watermark: " 
+                    + mapContext.getRequest().getWMS().getWatermarkPosition()
+                );
             }
 
             layout.addBlock(new MapDecorationLayout.Block(d, p, null, new Point(0,0)));
