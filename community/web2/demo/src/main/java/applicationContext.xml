@@ -3,11 +3,21 @@
 
 <beans>
 
+
+<!-- 
   <bean id="layerListDemo" class="org.geoserver.web.DemoLinkInfo">
     <property name="id" value="layerListDemo"/>
     <property name="titleKey" value="demo.layerlist"/>
     <property name="descriptionKey" value="demo.layerlist.description"/>
     <property name="componentClass" value="org.geoserver.web.demo.MapPreviewPage"/>
+  </bean>
+   -->
+  
+  <bean id="layerListDemo2" class="org.geoserver.web.DemoLinkInfo">
+    <property name="id" value="layerListDemo2"/>
+    <property name="titleKey" value="demo.layerlist"/>
+    <property name="descriptionKey" value="demo.layerlist.description"/>
+    <property name="componentClass" value="org.geoserver.web.demo.MapPreviewPage2"/>
   </bean>
     
   <bean id="demoRequests" class="org.geoserver.web.DemoLinkInfo">
