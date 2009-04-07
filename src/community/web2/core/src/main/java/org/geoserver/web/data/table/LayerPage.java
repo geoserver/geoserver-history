@@ -11,13 +11,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.body.BodyTagAttributeModifier;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -26,6 +26,8 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.LayerInfo.Type;
+import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
@@ -40,9 +42,12 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 /**
  * Page listing all the available layers. Follows the usual filter/sort/page approach,
  * provides ways to bulk delete layers and to add new ones
- * @author Andrea Aime - OpenGeo
  */
+@SuppressWarnings("serial")
 public class LayerPage extends GeoServerSecuredPage {
+    public static final ResourceReference RASTER_ICON = new ResourceReference(GeoServerBasePage.class, "img/icons/geosilk/raster.png");
+    public static final ResourceReference VECTOR_ICON = new ResourceReference(GeoServerBasePage.class, "img/icons/geosilk/vector.png");
+    public static final ResourceReference UNKNOWN_ICON = new ResourceReference(GeoServerBasePage.class, "img/icons/silk/error.png");
 
     LayerProvider provider = new LayerProvider();
     ModalWindow popupWindow;
@@ -59,7 +64,17 @@ public class LayerPage extends GeoServerSecuredPage {
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<LayerInfo> property) {
                 if(property == TYPE) {
-                    return new Label(id, TYPE.getModel(itemModel));
+                    Fragment f = new Fragment(id, "iconFragment", LayerPage.this);
+                    Type type = (Type) TYPE.getPropertyValue((LayerInfo) itemModel.getObject());
+                    ResourceReference icon = UNKNOWN_ICON;
+                    if(type == Type.VECTOR)
+                        icon = VECTOR_ICON;
+                    else if(type == Type.RASTER)
+                        icon = RASTER_ICON;
+                    else
+                        icon = UNKNOWN_ICON;
+                    f.add(new Image("layerIcon", icon));
+                    return f;
                 } else if(property == WORKSPACE) {
                     return workspaceLink(id, itemModel);
                 } else if(property == STORE) {
