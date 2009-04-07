@@ -6,6 +6,11 @@
 <wicket:extend>
   <div wicket:id="table"></div>
   
+  <wicket:fragment wicket:id="commonLinks">
+    <span wicket:id="ol"/>&nbsp;<span wicket:id="kml"/>&nbsp;<span wicket:id="gml"/>
+  </wicket:fragment>
+  
+  <!--  The custom drop down with optgroups -->
   <wicket:fragment wicket:id="menuFragment">
     <select wicket:id="menu">
       <option>Select one</option>

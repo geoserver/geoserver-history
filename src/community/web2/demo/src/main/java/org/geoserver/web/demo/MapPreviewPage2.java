@@ -56,17 +56,19 @@ public class MapPreviewPage2 extends GeoServerBasePage {
                     return new Label(id, property.getModel(itemModel));
                 } else if (property == NAME) {
                     return new Label(id, property.getModel(itemModel));
-                } else if (property == OL) {
-                    String url = "window.open('" + layer.getWmsLink()
+                } else if (property == COMMON) {
+                    Fragment f = new Fragment(id, "commonLinks", MapPreviewPage2.this);
+                    String olUrl = "window.open('" + layer.getWmsLink()
                             + "&format=application/openlayers" + "');";
-                    return buildJSExternalLink(id, url, "OpenLayers");
-                } else if (property == KML) {
-                    String url = "../wms/kml_reflect?layers=" + layer.getName();
-                    return buildJSExternalLink(id, url, "KML");
-                } else if (property == GML) {
-                    String url = "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+                    f.add(buildJSExternalLink("ol", olUrl, "OpenLayers"));
+                    
+                    String kmlUrl = "../wms/kml_reflect?layers=" + layer.getName();
+                    f.add(buildJSExternalLink("kml", kmlUrl, "KML"));
+                    
+                    String gmlUrl = "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
                             + layer.getName() + "&maxFeatures=50";
-                    return buildJSExternalLink(id, url, "GML");
+                    f.add(buildJSExternalLink("gml", gmlUrl, "GML"));
+                    return f;
                 } else if (property == ALL) {
                     return buildJSWMSSelect(id, wmsOutputFormats, wfsOutputFormats, layer);
                 } 
