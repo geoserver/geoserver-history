@@ -55,25 +55,17 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
         
     };
             
-            
-
     static final Property<PreviewLayer> NAME = new BeanProperty<PreviewLayer>(
             "name", "name");
 
-    static final Property<PreviewLayer> OL = new PropertyPlaceholder<PreviewLayer>(
-            "OpenLayers");
-
-    static final Property<PreviewLayer> KML = new PropertyPlaceholder<PreviewLayer>(
-            "KML");
-
-    static final Property<PreviewLayer> GML = new PropertyPlaceholder<PreviewLayer>(
-            "GML2");
+    static final Property<PreviewLayer> COMMON = new PropertyPlaceholder<PreviewLayer>(
+            "Common formats");
 
     static final Property<PreviewLayer> ALL = new PropertyPlaceholder<PreviewLayer>(
-            "ALL");
+            "All formats");
 
     static final List<Property<PreviewLayer>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, NAME, OL, KML, GML, ALL);
+            WORKSPACE, NAME, COMMON, ALL);
 
     @Override
     protected List<PreviewLayer> getItems() {
