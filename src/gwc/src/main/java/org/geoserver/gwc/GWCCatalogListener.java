@@ -89,21 +89,27 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         
         WMSLayer wmsLayer = getLayer(obj);
         
-        layerDispatcher.getLayers();
+        //TODO Add check for layer groups
         
-        layerDispatcher.add(wmsLayer);
-        
-        log.finer(wmsLayer.getName() + " added to TileLayerDispatcher");
+        if (wmsLayer != null) {
+			layerDispatcher.getLayers();
+
+			layerDispatcher.add(wmsLayer);
+
+			log.finer(wmsLayer.getName() + " added to TileLayerDispatcher");
+		}
     }
     
     public void handleModifyEvent(CatalogModifyEvent event) { 
         Object obj = event.getSource();
         
         WMSLayer wmsLayer = getLayer(obj);
-                
-        layerDispatcher.update(wmsLayer);
         
-        log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
+        if (wmsLayer != null) {
+			layerDispatcher.update(wmsLayer);
+
+			log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
+		}
     }
     
     public void handleRemoveEvent(CatalogRemoveEvent event) { 
