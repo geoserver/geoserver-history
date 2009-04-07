@@ -88,7 +88,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         Object obj = event.getSource();
         
         WMSLayer wmsLayer = getLayer(obj);
-                
+        
+        layerDispatcher.getLayers();
+        
         layerDispatcher.add(wmsLayer);
         
         log.finer(wmsLayer.getName() + " added to TileLayerDispatcher");
