@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.demo;
 
 import static org.geoserver.web.demo.PreviewLayerProvider.*;
@@ -21,6 +25,11 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.vfny.geoserver.wms.GetMapProducer;
 
+/**
+ * Shows a paged list of the available layers and points to previews
+ * in various formats 
+ */
+@SuppressWarnings("serial")
 public class MapPreviewPage2 extends GeoServerBasePage {
 
     PreviewLayerProvider provider = new PreviewLayerProvider();
