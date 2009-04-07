@@ -13,7 +13,7 @@
   </bean>
    -->
   
-  <bean id="layerListDemo2" class="org.geoserver.web.DemoLinkInfo">
+  <bean id="layerListDemo2" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="layerListDemo2"/>
     <property name="titleKey" value="demo.layerlist"/>
     <property name="descriptionKey" value="demo.layerlist.description"/>
