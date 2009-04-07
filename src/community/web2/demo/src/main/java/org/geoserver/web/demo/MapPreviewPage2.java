@@ -13,11 +13,13 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.form.select.Select;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -124,7 +126,9 @@ public class MapPreviewPage2 extends GeoServerBasePage {
     private Component buildJSWMSSelect(String id,
             List<String> wmsOutputFormats, List<String> wfsOutputFormats, PreviewLayer layer) {
         Fragment f = new Fragment(id, "menuFragment", MapPreviewPage2.this);
-        Select menu = new Select("menu", new Model(null));
+        WebMarkupContainer menu = new WebMarkupContainer("menu");
+        
+        // the wms formats are always there
         menu.add(new org.apache.wicket.markup.html.list.ListView("wmsFormats", wmsOutputFormats) {
 
             @Override
@@ -134,8 +138,10 @@ public class MapPreviewPage2 extends GeoServerBasePage {
             
         });
         
-        
-        menu.add(new org.apache.wicket.markup.html.list.ListView("wfsFormats", wfsOutputFormats) {
+        // the vector ones, it depends, we might have to hide them
+        boolean vector = layer.groupInfo == null && layer.layerInfo.getType() != LayerInfo.Type.RASTER;
+        WebMarkupContainer wfsFormats = new WebMarkupContainer("wfs");
+        wfsFormats.add(new org.apache.wicket.markup.html.list.ListView("wfsFormats", vector ? wfsOutputFormats : Collections.emptyList()) {
 
             @Override
             protected void populateItem(ListItem item) {
@@ -143,6 +149,8 @@ public class MapPreviewPage2 extends GeoServerBasePage {
             }
             
         });
+        wfsFormats.setVisible(vector);
+        menu.add(wfsFormats);
         
         // build the wms request, redirect to it in a new window, reset the selection
         String wmsUrl = "'" + layer.getWmsLink()
