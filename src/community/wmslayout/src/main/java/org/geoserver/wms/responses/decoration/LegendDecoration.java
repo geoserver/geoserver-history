@@ -6,7 +6,7 @@ package org.geoserver.wms.responses.decoration;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
-import org.geoserver.wms.responses.Decoration;
+import org.geoserver.wms.responses.MapDecoration;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -66,7 +66,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import javax.imageio.ImageIO;
 
-public class LegendDecoration implements Decoration {
+public class LegendDecoration implements MapDecoration {
     /** A logger for this class. */
     private static final Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");

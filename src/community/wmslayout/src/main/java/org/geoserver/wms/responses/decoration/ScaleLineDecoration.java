@@ -19,10 +19,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.renderer.lite.RendererUtilities;
-import org.geoserver.wms.responses.Decoration;
+import org.geoserver.wms.responses.MapDecoration;
 import org.vfny.geoserver.wms.WMSMapContext;
 
-public class ScaleLineDecoration implements Decoration {
+public class ScaleLineDecoration implements MapDecoration {
     /** A logger for this class. */
     private static final Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");

@@ -26,18 +26,18 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 /**
- * The DecorationLayout class describes a set of overlays to be used to enhance a WMS response.
- * It maintains a collection of Decoration objects and the configuration associated with each, and
+ * The MapDecorationLayout class describes a set of overlays to be used to enhance a WMS response.
+ * It maintains a collection of MapDecoration objects and the configuration associated with each, and
  * delegates the actual rendering operations to the decorations.
  *
  * @author David Winslow <dwinslow@opengeo.org> 
  */
-public class DecorationLayout {
+public class MapDecorationLayout {
     private static Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");
 
     /**
-     * The Block class annotates a Decoration object with positioning and sizing information, and
+     * The Block class annotates a MapDecoration object with positioning and sizing information, and
      * encapsulates the logic involved in resizing a decoration to fit within a particular image.
      */
     public static class Block {
@@ -71,14 +71,14 @@ public class DecorationLayout {
         }
         /**
          * Given the configuration and the geometry of a particular WMS response, determine the 
-         * appropriate space into which a Decoration should draw itself.
+         * appropriate space into which a MapDecoration should draw itself.
          * @param p the Position instance indicating the area of the image where the decoration is 
          *     anchored
          * @param container a Rectangle indicating the entire drawable area of the map image
          * @param dim the requested size based on either configuration or feedback from the 
-         *     Decoration
+         *     MapDecoration
          * @param o a Point whose x- and y-coordinates will be interpreted as x- and y-offsets for 
-         *     the Decoration
+         *     the MapDecoration
          * @return A rectangle that is as close to the desired size and position without exceeding 
          *     the container bounds
          */
@@ -152,9 +152,9 @@ public class DecorationLayout {
         }
 
         /**
-         * The Decoration that the Block will render
+         * The MapDecoration that the Block will render
          */
-        final Decoration decoration;
+        final MapDecoration decoration;
 
         /**
          * The Position at which the Block is anchored
@@ -162,25 +162,25 @@ public class DecorationLayout {
         final Position position;
         
         /**
-         * The requested size, or null if the Decoration should be allowed to determine sizing
+         * The requested size, or null if the MapDecoration should be allowed to determine sizing
          */
         final Dimension dimension;
 
         /**
          * A Point whose x- and y-coordinates are interpreted as the x- and y-offsets when rendering
-         * the Decoration
+         * the MapDecoration
          */
         final Point offset;
 
         /**
          * Create a Block with all needed information.
-         * @param d the Decoration which the Block will render
+         * @param d the MapDecoration which the Block will render
          * @param p the Position to which the Block is anchored
-         * @param dim the Dimension of the user-requested size, or null if the Decoration should 
+         * @param dim the Dimension of the user-requested size, or null if the MapDecoration should 
          *     determine its own size
          * @param o a Point indicating the offset (see {offset})
          */
-        public Block(Decoration d, Position p, Dimension dim, Point o) {
+        public Block(MapDecoration d, Position p, Dimension dim, Point o) {
             decoration = d;
             position = p;
             dimension = dim;
@@ -189,9 +189,9 @@ public class DecorationLayout {
 
         /**
          * Determine the desired size for the decoration, either the user-specified size, or an
-         * automatically detemrined size from the Decoration
+         * automatically detemrined size from the MapDecoration
          *
-         * @param g2d the Graphics2D context into which the Decoration will be rendered
+         * @param g2d the Graphics2D context into which the MapDecoration will be rendered
          * @param mapContext the WMSMapContext for the request being handled
          */
         public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext) {
@@ -227,22 +227,22 @@ public class DecorationLayout {
     private List<Block> blocks;
 
     /**
-     * Create a new DecorationLayout with no decorations in it yet.
+     * Create a new MapDecorationLayout with no decorations in it yet.
      */
-    public DecorationLayout() {
+    public MapDecorationLayout() {
         this.blocks = new ArrayList<Block>();
     }
 
     /**
-     * Read an XML layout file and populate a new DecorationLayout with the Decorations specified 
+     * Read an XML layout file and populate a new MapDecorationLayout with the MapDecorations specified 
      * therein.
      *
      * @param f the File from which the layout should be read
-     * @return a new DecorationLayout containing the Decorations specified
+     * @return a new MapDecorationLayout containing the MapDecorations specified
      * @throws Exception if the configuration is invalid or other errors occur while parsing
      */
-    public static DecorationLayout fromFile(File f) throws Exception {
-        DecorationLayout dl = new DecorationLayout();
+    public static MapDecorationLayout fromFile(File f) throws Exception {
+        MapDecorationLayout dl = new MapDecorationLayout();
         
         Document confFile = new SAXBuilder().build(f);
 
@@ -252,7 +252,7 @@ public class DecorationLayout {
                 m.put(option.getAttributeValue("name"), option.getAttributeValue("value"));
             }
 
-            Decoration decoration = getDecoration(e.getAttributeValue("type"));
+            MapDecoration decoration = getDecoration(e.getAttributeValue("type"));
             if (decoration == null) {
                 LOGGER.log(
                     Level.WARNING,
@@ -341,15 +341,15 @@ public class DecorationLayout {
     }
 
     /**
-     * Find a Decoration plugin by name
-     * @param name the name of the Decoration plugin to look up, case-sensitive
-     * @return the corresponding Decoration, or null if none is available with the given name
+     * Find a MapDecoration plugin by name
+     * @param name the name of the MapDecoration plugin to look up, case-sensitive
+     * @return the corresponding MapDecoration, or null if none is available with the given name
      */
-    private static Decoration getDecoration(String name) {
+    private static MapDecoration getDecoration(String name) {
         Object o = GeoServerExtensions.bean(name);
 
-        if (o instanceof Decoration) {
-            return (Decoration) o;
+        if (o instanceof MapDecoration) {
+            return (MapDecoration) o;
         }
 
         return null;

@@ -21,14 +21,14 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import org.geoserver.wms.responses.Decoration;
+import org.geoserver.wms.responses.MapDecoration;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.WMSMapContext;
 
-public class WatermarkDecoration implements Decoration {
+public class WatermarkDecoration implements MapDecoration {
     /** A logger for this class. */
     private static final Logger LOGGER = Logger.getLogger("org.geoserver.wms.responses");
 

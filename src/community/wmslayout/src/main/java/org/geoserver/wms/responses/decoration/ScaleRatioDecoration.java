@@ -4,7 +4,7 @@
  */
 package org.geoserver.wms.responses.decoration;
 
-import org.geoserver.wms.responses.Decoration;
+import org.geoserver.wms.responses.MapDecoration;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import javax.imageio.ImageIO;
 
-public class ScaleRatioDecoration implements Decoration {
+public class ScaleRatioDecoration implements MapDecoration {
     /** A logger for this class. */
     private static final Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");

@@ -12,14 +12,14 @@ import java.util.Map;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class DecorationLayoutTest extends TestCase {
-    public TestSuite suite() { return new TestSuite(DecorationLayout.class); }
+public class MapDecorationLayoutTest extends TestCase {
+    public TestSuite suite() { return new TestSuite(MapDecorationLayout.class); }
 
-    private class MockDecoration implements Decoration {
+    private class MockMapDecoration implements MapDecoration {
         Dimension request;
         Rectangle expect;
 
-        public MockDecoration(Dimension toRequest, Rectangle toExpect) {
+        public MockMapDecoration(Dimension toRequest, Rectangle toExpect) {
             this.request = toRequest;
             this.expect = toExpect;
         }
@@ -44,28 +44,28 @@ public class DecorationLayoutTest extends TestCase {
 
     public void testStaticSize() throws Exception {
         Graphics2D g2d = createMockGraphics(256, 256);
-        DecorationLayout dl = new DecorationLayout();
+        MapDecorationLayout dl = new MapDecorationLayout();
 
         // if we have a component that calculates a size which fits in the image, 
         // does it get that size?
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(100, 100),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             null,
             new Point(0,0)
         ));
 
         // if we have a component with a user-mandated size which fits in the image, 
         // does it get that size?
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(100, 100),
                 new Rectangle(0, 0, 50, 50)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             new Dimension(50, 50),
             new Point(0,0)
         ));
@@ -75,67 +75,67 @@ public class DecorationLayoutTest extends TestCase {
 
     public void testSquished() throws Exception {
         Graphics2D g2d = createMockGraphics(100, 100);
-        DecorationLayout dl = new DecorationLayout();
+        MapDecorationLayout dl = new MapDecorationLayout();
 
         // for dynamically sized components, expect to be scaled to fit in view
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(150, 100),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(100, 150),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(150, 150),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             null,
             new Point(0,0)
         ));
 
         // for components with specified sizes, let them run off the edge. 
         // TODO: Should we preserve the aspect ratio for sized components that don't fit? 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(150, 150),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             new Dimension(100, 150),
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(150, 150),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             new Dimension(150, 100),
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(150, 150),
                 new Rectangle(0, 0, 100, 100)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             new Dimension(150, 150),
             new Point(0,0)
         ));
@@ -145,96 +145,96 @@ public class DecorationLayoutTest extends TestCase {
 
     public void testPosition() {
         Graphics2D g2d = createMockGraphics(100, 100);
-        DecorationLayout dl = new DecorationLayout();
+        MapDecorationLayout dl = new MapDecorationLayout();
 
         // try all the position variants to verify that they actually put the block in the right 
         // position
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(0, 0, 10, 10)
             ),
-            DecorationLayout.Block.Position.UL,
+            MapDecorationLayout.Block.Position.UL,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(45, 0, 10, 10)
             ),
-            DecorationLayout.Block.Position.UC,
+            MapDecorationLayout.Block.Position.UC,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(90, 0, 10, 10)
             ),
-            DecorationLayout.Block.Position.UR,
+            MapDecorationLayout.Block.Position.UR,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(0, 45, 10, 10)
             ),
-            DecorationLayout.Block.Position.CL,
+            MapDecorationLayout.Block.Position.CL,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(45, 45, 10, 10)
             ),
-            DecorationLayout.Block.Position.CC,
+            MapDecorationLayout.Block.Position.CC,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(90, 45, 10, 10)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(0, 90, 10, 10)
             ),
-            DecorationLayout.Block.Position.LL,
+            MapDecorationLayout.Block.Position.LL,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(45, 90, 10, 10)
             ),
-            DecorationLayout.Block.Position.LC,
+            MapDecorationLayout.Block.Position.LC,
             null,
             new Point(0,0)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(90, 90, 10, 10)
             ),
-            DecorationLayout.Block.Position.LR,
+            MapDecorationLayout.Block.Position.LR,
             null,
             new Point(0,0)
         ));
@@ -244,95 +244,95 @@ public class DecorationLayoutTest extends TestCase {
 
     public void testOffset() {
         Graphics2D g2d = createMockGraphics(100, 100);
-        DecorationLayout dl = new DecorationLayout();
+        MapDecorationLayout dl = new MapDecorationLayout();
 
         // try offsets with differing positions 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(10, 10, 10, 10)
             ),
-            DecorationLayout.Block.Position.UL,
+            MapDecorationLayout.Block.Position.UL,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(45, 10, 10, 10)
             ),
-            DecorationLayout.Block.Position.UC,
+            MapDecorationLayout.Block.Position.UC,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(80, 10, 10, 10)
             ),
-            DecorationLayout.Block.Position.UR,
+            MapDecorationLayout.Block.Position.UR,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(10, 45, 10, 10)
             ),
-            DecorationLayout.Block.Position.CL,
+            MapDecorationLayout.Block.Position.CL,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(45, 45, 10, 10)
             ),
-            DecorationLayout.Block.Position.CC,
+            MapDecorationLayout.Block.Position.CC,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(80, 45, 10, 10)
             ),
-            DecorationLayout.Block.Position.CR,
+            MapDecorationLayout.Block.Position.CR,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(10, 80, 10, 10)
             ),
-            DecorationLayout.Block.Position.LL,
+            MapDecorationLayout.Block.Position.LL,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(45, 80, 10, 10)
             ),
-            DecorationLayout.Block.Position.LC,
+            MapDecorationLayout.Block.Position.LC,
             null,
             new Point(10,10)
         ));
 
-        dl.addBlock(new DecorationLayout.Block(
-            new MockDecoration(
+        dl.addBlock(new MapDecorationLayout.Block(
+            new MockMapDecoration(
                 new Dimension(10, 10),
                 new Rectangle(80, 80, 10, 10)
             ),
-            DecorationLayout.Block.Position.LR,
+            MapDecorationLayout.Block.Position.LR,
             null,
             new Point(10,10)
         ));

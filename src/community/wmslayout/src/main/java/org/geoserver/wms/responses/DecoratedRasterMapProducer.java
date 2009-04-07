@@ -128,8 +128,8 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
 
-    /** The DecorationLayout instance **/
-    private DecorationLayout layout;
+    /** The MapDecorationLayout instance **/
+    private MapDecorationLayout layout;
 
     private ApplicationContext applicationContext;
 
@@ -395,7 +395,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
     /**
      * Set the decoration layout
      */
-    public void setDecorationLayout(DecorationLayout layout) {
+    public void setDecorationLayout(MapDecorationLayout layout) {
         this.layout = layout;
     }
 
@@ -412,7 +412,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
                 File layoutConfig = new File(layoutDir, layoutName + ".xml");
 
                 if (layoutConfig.exists() && layoutConfig.canRead()){
-                    this.layout = DecorationLayout.fromFile(layoutConfig);
+                    this.layout = MapDecorationLayout.fromFile(layoutConfig);
                 } else {
                     LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
                 }
@@ -422,28 +422,28 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         }
 
         if (layout == null){
-            layout = new DecorationLayout();
+            layout = new MapDecorationLayout();
         }
 
         if (mapContext.getRequest().getWMS().isGlobalWatermarking()) {
             Map<String, String> options = new HashMap<String,String>();
             options.put("url", mapContext.getRequest().getWMS().getGlobalWatermarkingURL());
             
-            Decoration d = new WatermarkDecoration();
+            MapDecoration d = new WatermarkDecoration();
             d.loadOptions(options);
 
-            DecorationLayout.Block.Position p = null;
+            MapDecorationLayout.Block.Position p = null;
             
             int wmPos = mapContext.getRequest().getWMS().getWatermarkPosition();
-            if (wmPos ==  WMS.WATERMARK_UC) p = DecorationLayout.Block.Position.UC; 
-            if (wmPos ==  WMS.WATERMARK_UL) p = DecorationLayout.Block.Position.UL; 
-            if (wmPos ==  WMS.WATERMARK_UR) p = DecorationLayout.Block.Position.UR; 
-            if (wmPos ==  WMS.WATERMARK_CL) p = DecorationLayout.Block.Position.CL; 
-            if (wmPos ==  WMS.WATERMARK_CC) p = DecorationLayout.Block.Position.CC; 
-            if (wmPos ==  WMS.WATERMARK_CR) p = DecorationLayout.Block.Position.CR; 
-            if (wmPos ==  WMS.WATERMARK_LL) p = DecorationLayout.Block.Position.LL; 
-            if (wmPos ==  WMS.WATERMARK_LC) p = DecorationLayout.Block.Position.LC; 
-            if (wmPos ==  WMS.WATERMARK_LR) p = DecorationLayout.Block.Position.LR; 
+            if (wmPos ==  WMS.WATERMARK_UC) p = MapDecorationLayout.Block.Position.UC; 
+            if (wmPos ==  WMS.WATERMARK_UL) p = MapDecorationLayout.Block.Position.UL; 
+            if (wmPos ==  WMS.WATERMARK_UR) p = MapDecorationLayout.Block.Position.UR; 
+            if (wmPos ==  WMS.WATERMARK_CL) p = MapDecorationLayout.Block.Position.CL; 
+            if (wmPos ==  WMS.WATERMARK_CC) p = MapDecorationLayout.Block.Position.CC; 
+            if (wmPos ==  WMS.WATERMARK_CR) p = MapDecorationLayout.Block.Position.CR; 
+            if (wmPos ==  WMS.WATERMARK_LL) p = MapDecorationLayout.Block.Position.LL; 
+            if (wmPos ==  WMS.WATERMARK_LC) p = MapDecorationLayout.Block.Position.LC; 
+            if (wmPos ==  WMS.WATERMARK_LR) p = MapDecorationLayout.Block.Position.LR; 
 
             if (p == null) {
                 throw new WmsException(
@@ -452,7 +452,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
                         );
             }
 
-            layout.addBlock(new DecorationLayout.Block(d, p, null, new Point(0,0)));
+            layout.addBlock(new MapDecorationLayout.Block(d, p, null, new Point(0,0)));
         }
     }
 

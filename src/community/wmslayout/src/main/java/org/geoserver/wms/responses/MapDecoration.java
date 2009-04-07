@@ -13,13 +13,13 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * The Decoration class encapsulates the rendering code for an overlay to be used to enhance a WMS 
- * response.  Decorations know how to determine their appropriate size, and how to render into a 
- * given area, but leave the actual layout calculations to the {DecorationLayout} class.
+ * The MapDecoration class encapsulates the rendering code for an overlay to be used to enhance a 
+ * WMS response.  Decorations know how to determine their appropriate size, and how to render into
+ * a given area, but leave the actual layout calculations to the {MapDecorationLayout} class.
  *
  * @author David Winslow <dwinslow@opengeo.org> 
  */
-public interface Decoration {
+public interface MapDecoration {
     /**
      * Load in configuration parameters from a map.  All subsequent paint operations should use the 
      * provided parameters.  Implementations do not need to respect multiple calls to this method.
