@@ -2,11 +2,11 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.decoration;
+package org.geoserver.wms.responses.decoration;
 
+import org.geoserver.wms.responses.Decoration;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.global.MapLayerInfo;
-import org.vfny.geoserver.wms.responses.Decoration;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import org.geotools.renderer.lite.RendererUtilities;
@@ -36,7 +36,7 @@ import javax.imageio.ImageIO;
 public class ScaleRatioDecoration implements Decoration {
     /** A logger for this class. */
     private static final Logger LOGGER = 
-        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses");
+        org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");
 
     public void loadOptions(Map<String, String> options) {
     }

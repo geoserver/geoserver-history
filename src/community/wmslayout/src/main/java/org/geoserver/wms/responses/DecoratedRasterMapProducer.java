@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.responses;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -32,6 +32,7 @@ import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.responses.decoration.WatermarkDecoration;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
@@ -49,13 +50,15 @@ import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
-import org.vfny.geoserver.wms.responses.decoration.WatermarkDecoration;
 import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
+import org.vfny.geoserver.wms.responses.ImageUtils;
+import org.vfny.geoserver.wms.responses.PaletteExtractor;
 
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for
@@ -120,7 +123,7 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
 
     /** A logger for this class. */
     private static final Logger LOGGER = 
-        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
+        org.geotools.util.logging.Logging.getLogger("org.geoserver.responses.wms.map");
 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";

@@ -1,6 +1,6 @@
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.responses;
 
-import org.vfny.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WMSMapContext;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.responses;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -34,7 +34,7 @@ import java.util.logging.Level;
  */
 public class DecorationLayout {
     private static Logger LOGGER = 
-        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses");
+        org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");
 
     /**
      * The Block class annotates a Decoration object with positioning and sizing information, and

@@ -4,29 +4,29 @@
 <beans>
     <bean id="DecoratedPNGMapProducer"
         singleton="false"
-        class="org.vfny.geoserver.wms.responses.map.png.DecoratedPNGMapProducer">
+        class="org.geoserver.wms.responses.map.png.DecoratedPNGMapProducer">
         <constructor-arg index="0" ref="wms"/>
     </bean>
 
     <bean id="image" 
-          class="org.vfny.geoserver.wms.responses.decoration.WatermarkDecoration"
+          class="org.geoserver.wms.responses.decoration.WatermarkDecoration"
           singleton="false"
     />
 
     <bean id="legend" 
-          class="org.vfny.geoserver.wms.responses.decoration.LegendDecoration"
+          class="org.geoserver.wms.responses.decoration.LegendDecoration"
           singleton="false"
     >
         <property name="catalog" ref="catalog2"/>
     </bean>
 
     <bean id="scaleratio" 
-          class="org.vfny.geoserver.wms.responses.decoration.ScaleRatioDecoration"
+          class="org.geoserver.wms.responses.decoration.ScaleRatioDecoration"
           singleton="false"
     />
     
     <bean id="scaleline" 
-          class="org.vfny.geoserver.wms.responses.decoration.ScaleLineDecoration"
+          class="org.geoserver.wms.responses.decoration.ScaleLineDecoration"
           singleton="false"
     />
 </beans>

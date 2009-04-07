@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.decoration;
+package org.geoserver.wms.responses.decoration;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -19,13 +19,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.renderer.lite.RendererUtilities;
+import org.geoserver.wms.responses.Decoration;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.Decoration;
 
 public class ScaleLineDecoration implements Decoration {
     /** A logger for this class. */
     private static final Logger LOGGER = 
-        org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses");
+        org.geotools.util.logging.Logging.getLogger("org.geoserver.wms.responses");
 
     private static Map<String, Double>INCHES_PER_UNIT = new HashMap<String, Double> ();
     static {
@@ -117,7 +117,8 @@ public class ScaleLineDecoration implements Decoration {
     	String curMapUnits = "m";
     	
     	double normalizedScale = (scaleDenominator > 1.0) 
-    			? (1.0 / scaleDenominator) : scaleDenominator;
+            ? (1.0 / scaleDenominator) 
+            : scaleDenominator;
     	
     	double resolution = 1 / (normalizedScale * INCHES_PER_UNIT.get(curMapUnits) * this.dpi);
     	
@@ -126,6 +127,8 @@ public class ScaleLineDecoration implements Decoration {
     	if (maxWidth > paintArea.getWidth()) {
     		maxWidth = (int)paintArea.getWidth();
     	}
+
+        maxWidth = maxWidth - 6;
     	
     	double maxSizeData = maxWidth * resolution * INCHES_PER_UNIT.get(curMapUnits);
     	

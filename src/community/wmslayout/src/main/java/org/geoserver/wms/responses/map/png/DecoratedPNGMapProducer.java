@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map.png;
+package org.geoserver.wms.responses.map.png;
 
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DecoratedRasterMapProducer;
+import org.geoserver.wms.responses.DecoratedRasterMapProducer;
 
 
 /**
@@ -27,7 +27,7 @@ import org.vfny.geoserver.wms.responses.DecoratedRasterMapProducer;
 public class DecoratedPNGMapProducer extends DecoratedRasterMapProducer {
     /** Logger */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(
-            "org.vfny.geoserver.wms.responses.map.png");
+            "org.geoserver.wms.responses.map.png");
 
     private static final String MIME_TYPE = "png-decorated";
 
