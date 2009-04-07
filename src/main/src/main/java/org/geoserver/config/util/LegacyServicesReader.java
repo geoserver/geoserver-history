@@ -232,6 +232,9 @@ public class LegacyServicesReader {
                     if ( baseMapStyles.endsWith(",") ) {
                         styles.add("");
                     }
+                    else if ( k < baseMapStyles.length()-1 ) {
+                        styles.add(baseMapStyles.substring( k ).trim());
+                    }
                     
                     baseMap.put( "baseMapStyles", styles );
                     baseMap.put( "rawBaseMapStyles", baseMapStyles );
