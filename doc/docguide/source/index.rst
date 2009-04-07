@@ -1,7 +1,7 @@
 GeoServer Documentation Guide
 =============================
 
-This guide discusses the GeoServer Documentation.  It can be thought of as a "meta-guide", a guide to creating and maintaining the User Guide and Documentation Guide.  If you are interested in writing documentation for GeoServer, this guide is for you.
+This guide discusses the GeoServer Documentation.  It can be thought of as "meta-documentation" for creating and maintaining the User Manual and Developers Manual.  If you are interested in writing documentation for GeoServer, this guide is for you.
 
 .. toctree::
    :maxdepth: 2

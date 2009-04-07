@@ -14,8 +14,8 @@ The documentation is now under version control, just like the source code.  Also
 
 Once you have commit rights, please see the section on workflow for creating and editing the documentation.
 
-File an issue with attached content
------------------------------------
+File an issue with attached documentation
+-----------------------------------------
 
 GeoServer uses JIRA for issue tracking.  New documentation is treated like part of the code, and so those who want to submit content (patches etc) without commit access can file an issue with JIRA and attach the content to the issue.  If the content is deemed satisfactory, someone with commit rights will add the content.
 
