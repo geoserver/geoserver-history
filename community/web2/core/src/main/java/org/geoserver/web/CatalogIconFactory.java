@@ -4,6 +4,7 @@
  */
 package org.geoserver.web;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.apache.wicket.ResourceReference;
@@ -15,7 +16,8 @@ import org.geotools.data.DataAccessFactory;
 /**
  * Utility class used to lookup icons for various catalog objects
  */
-public class CatalogIconFactory {
+@SuppressWarnings("serial")
+public class CatalogIconFactory implements Serializable {
 
     public static final ResourceReference RASTER_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/geosilk/raster.png");
