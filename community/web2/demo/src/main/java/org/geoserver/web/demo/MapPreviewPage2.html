@@ -7,7 +7,15 @@
   <div wicket:id="table"></div>
   
   <wicket:fragment wicket:id="menuFragment">
-    <select wicket:id="menu"></select>
+    <select wicket:id="menu">
+      <option>Select one</option>
+      <optgroup label="WMS">
+          <option wicket:id="wmsFormats"><span wicket:id="wmsFormat"></span></option>
+      </optgroup>
+      <optgroup label="WFS">
+           <option wicket:id="wfsFormats"><span wicket:id="wfsFormat"></span></option>
+       </optgroup>
+    </select>
   </wicket:fragment>
 </wicket:extend>
 </body>

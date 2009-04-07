@@ -12,8 +12,9 @@ import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.extensions.markup.html.form.select.Select;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -37,9 +38,11 @@ public class MapPreviewPage2 extends GeoServerBasePage {
     GeoServerTablePanel<PreviewLayer> table;
 
     public MapPreviewPage2() {
+        // output formats for the drop downs
         final List<String> wmsOutputFormats = getAvailableWMSFormats();
         final List<String> wfsOutputFormats = getAvailableWFSFormats();
 
+        // build the table
         table = new GeoServerTablePanel<PreviewLayer>("table", provider) {
 
             @Override
@@ -64,11 +67,9 @@ public class MapPreviewPage2 extends GeoServerBasePage {
                     String url = "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
                             + layer.getName() + "&maxFeatures=50";
                     return buildJSExternalLink(id, url, "GML");
-                } else if (property == WMS) {
-                    return buildJSWMSSelect(id, wmsOutputFormats, layer);
-                } else if (property == WFS) {
-                    return buildJSWFSSelect(id, wfsOutputFormats, layer);
-                }
+                } else if (property == ALL) {
+                    return buildJSWMSSelect(id, wmsOutputFormats, wfsOutputFormats, layer);
+                } 
                 throw new IllegalArgumentException(
                         "Don't know a property named " + property.getName());
             }
@@ -107,11 +108,6 @@ public class MapPreviewPage2 extends GeoServerBasePage {
     /**
      * Builds an external link that uses javascript to open the target in a new
      * window
-     * 
-     * @param id
-     * @param url
-     * @param title
-     * @return
      */
     private Component buildJSExternalLink(String id, String url, String title) {
         SimpleExternalLink sel = new SimpleExternalLink(id, new Model("#"),
@@ -120,31 +116,70 @@ public class MapPreviewPage2 extends GeoServerBasePage {
         return sel;
     }
 
+    /**
+     * Builds a select that reacts like a menu, fully javascript based, for wms outputs 
+     */
     private Component buildJSWMSSelect(String id,
-            List<String> wmsOutputFormats, PreviewLayer layer) {
+            List<String> wmsOutputFormats, List<String> wfsOutputFormats, PreviewLayer layer) {
         Fragment f = new Fragment(id, "menuFragment", MapPreviewPage2.this);
-        DropDownChoice menu = new DropDownChoice("menu", new Model(null),
-                wmsOutputFormats);
-        String url = "'" + layer.getWmsLink()
+        Select menu = new Select("menu", new Model(null));
+        menu.add(new org.apache.wicket.markup.html.list.ListView("wmsFormats", wmsOutputFormats) {
+
+            @Override
+            protected void populateItem(ListItem item) {
+                item.add(new Label("wmsFormat", new Model(item.getModelObjectAsString())));
+            }
+            
+        });
+        
+        
+        menu.add(new org.apache.wicket.markup.html.list.ListView("wfsFormats", wfsOutputFormats) {
+
+            @Override
+            protected void populateItem(ListItem item) {
+                item.add(new Label("wfsFormat", item.getModel()));
+            }
+            
+        });
+        
+        // build the wms request, redirect to it in a new window, reset the selection
+        String wmsUrl = "'" + layer.getWmsLink()
                 + "&format=' + this.options[this.selectedIndex].text";
+        String wfsUrl = "'../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+          + layer.getName()
+          + "&maxFeatures=50"
+          + "&outputFormat=' + this.options[this.selectedIndex].text";
+        String choice = "(this.options[this.selectedIndex].parentNode.label == 'WMS') ? " + wmsUrl + " : " + wfsUrl;
         menu.add(new AttributeAppender("onchange", new Model("window.open("
-                + url + ");this.selectedIndex=0"), ";"));
+                + choice + ");this.selectedIndex=0"), ";"));
         f.add(menu);
         return f;
     }
 
-    private Component buildJSWFSSelect(String id,
-            List<String> wfsOutputFormats, PreviewLayer layer) {
-        Fragment f = new Fragment(id, "menuFragment", MapPreviewPage2.this);
-        DropDownChoice menu = new DropDownChoice("menu", new Model(null),
-                wfsOutputFormats);
-        String url = "'../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
-                + layer.getName()
-                + "&maxFeatures=50"
-                + "&outputFormat=' + this.options[this.selectedIndex].text";
-        menu.add(new AttributeAppender("onchange", new Model("window.open("
-                + url + ");this.selectedIndex=0"), ";"));
-        f.add(menu);
-        return f;
-    }
+//    /**
+//     * Builds a select that reacts like a menu, fully javascript based, for wfs outputs 
+//     */
+//    private Component buildJSWFSSelect(String id,
+//            List<String> wfsOutputFormats, PreviewLayer layer) {
+//        // don't provide the dropdown for non vector layers
+//        if(layer.groupInfo != null || layer.layerInfo.getType() == LayerInfo.Type.RASTER) {
+//            return new Label(id, "");
+//        }
+//        
+//        Fragment f = new Fragment(id, "menuFragment", MapPreviewPage2.this);
+//        DropDownChoice menu = new DropDownChoice("menu", new Model(null),
+//                wfsOutputFormats);
+//        
+//        // build the wms request, redirect to it in a new window, reset the selection
+//        String url = "'../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+//                + layer.getName()
+//                + "&maxFeatures=50"
+//                + "&outputFormat=' + this.options[this.selectedIndex].text";
+//        menu.add(new AttributeAppender("onchange", new Model("window.open("
+//                + url + ");this.selectedIndex=0"), ";"));
+//        f.add(menu);
+//        return f;
+//    }
+    
+   
 }
