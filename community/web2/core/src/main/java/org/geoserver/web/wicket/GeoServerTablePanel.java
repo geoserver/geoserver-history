@@ -95,7 +95,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
                 // create one component per viewable property
                 item.add(new ListView("itemProperties", dataProvider
-                        .getProperties()) {
+                        .getVisibleProperties()) {
 
                     @Override
                     protected void populateItem(ListItem item) {
@@ -127,7 +127,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
         // add the sorting links
         listContainer.add(new ListView("sortableLinks", dataProvider
-                .getProperties()) {
+                .getVisibleProperties()) {
 
             @Override
             protected void populateItem(ListItem item) {
