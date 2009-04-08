@@ -98,7 +98,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         }
 
         parametersMap = new HashMap<String, Serializable>(connectionParameters);
-        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreInfoId);
+        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreInfo.getName());
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
                 .isEnabled()));

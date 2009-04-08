@@ -117,7 +117,7 @@ public class GeoserverDataDirectory {
      */
     public static String findCoverageDirName(String coverageName) {
         Catalog data = getCatalog();
-        CoverageInfo coverageInfo = data.getCoverage(coverageName);
+        CoverageInfo coverageInfo = data.getCoverageByName(coverageName);
         return (String) coverageInfo.getMetadata().get( "dirName" );
     }
 

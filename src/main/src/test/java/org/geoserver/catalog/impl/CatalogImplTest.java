@@ -279,7 +279,7 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "wsName", ws3.getName() );
         
         catalog.save( ws2 );
-        ws3 = catalog.getWorkspace(ws2.getName());
+        ws3 = catalog.getWorkspaceByName(ws2.getName());
         assertEquals(ws2, ws3);
         assertEquals( "ws2", ws3.getName() );
     }

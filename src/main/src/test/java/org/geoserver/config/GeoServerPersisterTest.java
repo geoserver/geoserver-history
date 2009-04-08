@@ -356,7 +356,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         File f = new File( testData.getDataDirectoryRoot(), 
             "layergroups/lg.xml");
         Document dom = dom( f );
-        assertXpathEvaluatesTo( "foostyle2", "/layerGroup/styles/style/name", dom );
+        assertXpathEvaluatesTo( s.getId(), "/layerGroup/styles/style/id", dom );
     }
     
     public void testRemoveLayerGroup() throws Exception {

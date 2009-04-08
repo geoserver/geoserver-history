@@ -104,7 +104,7 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         // 4) Removal of LayerInfo from catalog
         cat.remove(li);
         
-        assertTrue(cat.getLayer(tl.getName()) == null);
+        assertTrue(cat.getLayerByName(tl.getName()) == null);
         
         boolean caughtException = false;
         try {

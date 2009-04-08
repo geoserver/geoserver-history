@@ -49,7 +49,7 @@ public class QNameKvpParser extends FlatKvpParser {
             
             String uri = null;
             if(prefix != null && !"".equals(prefix)) {
-                final NamespaceInfo namespace = catalog.getNamespace(prefix);
+                final NamespaceInfo namespace = catalog.getNamespaceByPrefix(prefix);
                 if(namespace == null)
                     throw new WFSException("Unknown namespace [" + prefix + "]");
                 uri = namespace.getURI();

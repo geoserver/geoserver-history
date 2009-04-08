@@ -1,5 +1,7 @@
 package org.geoserver.web.data.table;
 
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
@@ -14,7 +16,8 @@ public class NewLayerProviderTest extends GeoServerWicketTestSupport {
     }
     
     public void testFeatureType() {
-        NewLayerPageProvider provider = new NewLayerPageProvider(MockData.CITE_PREFIX);
+        StoreInfo cite = getCatalog().getStoreByName( MockData.CITE_PREFIX,StoreInfo.class );
+        NewLayerPageProvider provider = new NewLayerPageProvider(cite.getId());
         provider.setShowPublished(true);
         assertTrue(provider.size() > 0);
         provider.setShowPublished(false);
@@ -22,7 +25,8 @@ public class NewLayerProviderTest extends GeoServerWicketTestSupport {
     }
     
     public void testCoverages() {
-        NewLayerPageProvider provider = new NewLayerPageProvider(MockData.TASMANIA_DEM.getLocalPart());
+        StoreInfo dem = getCatalog().getStoreByName( MockData.TASMANIA_DEM.getLocalPart(),StoreInfo.class );
+        NewLayerPageProvider provider = new NewLayerPageProvider(dem.getId());
         provider.setShowPublished(true);
         assertTrue(provider.size() > 0);
         provider.setShowPublished(false);
