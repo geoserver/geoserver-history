@@ -45,7 +45,7 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
             try {
                 XStreamPersister xp = new XStreamPersister.XML();
                 initXStreamPersister(xp, gs);
-                return xp.load( in, getServiceClass() );
+                return initialize( xp.load( in, getServiceClass() ) );
             }
             finally {
                 in.close();    
@@ -54,10 +54,14 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
         else {
             //create an 'empty' object
             ServiceInfo service = createServiceFromScratch( gs );
-            return (T) service;
+            return initialize( (T) service );
         }
     }
 
+    protected T initialize( T service ) {
+        return service;
+    }
+    
     public void save(T service, GeoServer gs) throws Exception {
         String filename = filenameBase + ".xml";
         File file = resourceLoader.find( filename );
