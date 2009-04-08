@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -88,7 +89,7 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         }.setFilterable( false ));
         layerTable.setOutputMarkupId( true );
       
-        add( new AjaxLink( "add" ) {
+        form.add( new AjaxLink( "add" ) {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 popupWindow.setInitialHeight( 375 );
@@ -113,15 +114,14 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         });
         
         
-        /*
         form.add(new SubmitLink("save"){
             @Override
             public void onSubmit() {
-                super.onSubmit();
+                LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
+                getCatalog().save( lg );
             }
         });
-        form.add(new BookmarkablePageLink("cancel", WorkspacePage.class));
-        */
+        form.add(new BookmarkablePageLink("cancel", LayerGroupPage.class));
     }
     
     Component layerLink(String id, IModel itemModel) {
