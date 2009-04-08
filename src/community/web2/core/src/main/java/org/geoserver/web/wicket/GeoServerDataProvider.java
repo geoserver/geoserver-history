@@ -142,6 +142,19 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         return result;
     }
+    
+    /**
+     * Returns only the properties that have been marked as visible
+     * @return
+     */
+    List<Property<T>> getVisibleProperties() {
+        List<Property<T>> results = new ArrayList<Property<T>>();
+        for (Property<T> p : getProperties()) {
+            if(p.isVisible())
+                results.add(p);
+        }
+        return results;
+    }
 
     /**
      * Returns the list of properties served by this provider. The property keys
@@ -198,11 +211,31 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     public interface Property<T> extends Serializable {
         public String getName();
 
+        /**
+         * Given the item, returns the property
+         * @param item
+         * @return
+         */
         public Object getPropertyValue(T item);
 
+        /**
+         * Given the item model, returns a model for the property value
+         * @param itemModel
+         * @return
+         */
         public IModel getModel(IModel itemModel);
 
+        /**
+         * Allows for sorting the property
+         * @return
+         */
         public Comparator<T> getComparator();
+        
+        /**
+         * If false the property will be used for searches, but not 
+         * shown in the table
+         */
+        public boolean isVisible();
     }
 
     /**
@@ -216,11 +249,18 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         String name;
 
         String propertyPath;
+        
+        boolean visible;
 
         public BeanProperty(String key, String propertyPath) {
+            this(key, propertyPath, true);
+        }
+        
+        public BeanProperty(String key, String propertyPath, boolean visible) {
             super();
             this.name = key;
             this.propertyPath = propertyPath;
+            this.visible = visible;
         }
 
         public String getName() {
@@ -246,6 +286,10 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         public Comparator<T> getComparator() {
             return new PropertyComparator(this);
+        }
+
+        public boolean isVisible() {
+            return visible;
         }
     }
     
@@ -278,6 +322,12 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         public Object getPropertyValue(T item) {
             return item;
+        }
+
+        public boolean isVisible() {
+            // the very reason for placeholder existence 
+            // is to show up in the table
+            return true;
         }
         
     }
