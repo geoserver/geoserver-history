@@ -102,7 +102,7 @@ public class FileProvider extends SortableDataProvider {
     List<File> getFilteredFiles() {
         // grab the current directory
         File d = (File) directory.getObject();
-        if (!d.isDirectory())
+        if (d.isFile())
             d = d.getParentFile();
 
         // return a filtered view of the contents
@@ -111,7 +111,11 @@ public class FileProvider extends SortableDataProvider {
             files = d.listFiles((FileFilter) fileFilter);
         else
             files = d.listFiles();
-        return Arrays.asList(files);
+        
+        if(files != null)
+            return Arrays.asList(files);
+        else
+            return Collections.emptyList();
     }
 
     public IModel model(Object object) {
@@ -124,7 +128,7 @@ public class FileProvider extends SortableDataProvider {
 
     private Comparator<File> getComparator(SortParam sort) {
         if (sort == null)
-            return null;
+            return FILE_NAME_COMPARATOR;
 
         // build base comparator
         Comparator<File> comparator = null;
