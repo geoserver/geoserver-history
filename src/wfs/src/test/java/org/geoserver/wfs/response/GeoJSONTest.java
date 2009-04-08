@@ -1,14 +1,13 @@
 package org.geoserver.wfs.response;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.File;
 
 import junit.framework.Test;
 import junit.textui.TestRunner;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.geoserver.data.util.IOUtils;
 import org.geoserver.wfs.WFSTestSupport;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -20,6 +19,15 @@ public class GeoJSONTest extends WFSTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new GeoJSONTest());
+    }
+    
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+        File security = new File(getTestData().getDataDirectoryRoot(), "security");
+        security.mkdir();
+        File layers = new File(security, "layers.properties");
+        IOUtils.copy(GeoJSONTest.class.getResourceAsStream("layers_ro.properties"), layers);
     }
 	
     public void testGet() throws Exception {	
