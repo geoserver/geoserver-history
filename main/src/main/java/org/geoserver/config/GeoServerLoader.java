@@ -468,10 +468,20 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         File workspaces = resourceLoader.find( "workspaces" );
         if ( workspaces != null ) {
             for ( File wsd : list(workspaces, DirectoryFileFilter.INSTANCE ) ) {
+                File f = new File( wsd, "workspace.xml");
+                if ( !f.exists() ) {
+                    continue;
+                }
                 
-                WorkspaceInfo ws = factory.createWorkspace();
-                ws.setName( wsd.getName() );
-                catalog.add( ws );
+                WorkspaceInfo ws = null;
+                try {
+                    ws = depersist( xp, f, WorkspaceInfo.class );
+                    catalog.add( ws );    
+                }
+                catch( Exception e ) {
+                    LOGGER.log( Level.WARNING, "Failed to load workspace '" + wsd.getName() + "'" , e );
+                    continue;
+                }
                 
                 LOGGER.info( "Loaded workspace '" + ws.getName() +"'");
                 
@@ -489,7 +499,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 
                 //load the stores for this workspace
                 for ( File sd : list(wsd, DirectoryFileFilter.INSTANCE) ) {
-                    File f = new File( sd, "datastore.xml");
+                    f = new File( sd, "datastore.xml");
                     if ( f.exists() ) {
                         //load as a datastore
                         DataStoreInfo ds = null;
