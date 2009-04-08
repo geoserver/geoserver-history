@@ -6,12 +6,9 @@ package org.geoserver.web.demo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
@@ -31,6 +28,12 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
     
     static final Property<PreviewLayer> TITLE = new BeanProperty<PreviewLayer>(
             "Title", "title");
+    
+    static final Property<PreviewLayer> ABSTRACT = new BeanProperty<PreviewLayer>(
+            "Abstract", "abstract", false);
+    
+    static final Property<PreviewLayer> KEYWORDS = new BeanProperty<PreviewLayer>(
+            "Keywords", "keywords", false);
 
     static final Property<PreviewLayer> COMMON = new PropertyPlaceholder<PreviewLayer>(
             "Common formats");
@@ -39,7 +42,7 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
             "All formats");
 
     static final List<Property<PreviewLayer>> PROPERTIES = Arrays.asList(TYPE,
-            NAME, TITLE, COMMON, ALL);
+            NAME, TITLE, ABSTRACT, KEYWORDS, COMMON, ALL);
 
     @Override
     protected List<PreviewLayer> getItems() {

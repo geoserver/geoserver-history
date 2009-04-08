@@ -70,6 +70,20 @@ public class PreviewLayer {
         else
             return "";
     }
+    
+    public String getAbstract() {
+        if(layerInfo != null)
+            return layerInfo.getResource().getAbstract();
+        else
+            return "";
+    }
+    
+    public String getKeywords() {
+        if(layerInfo != null)
+            return layerInfo.getResource().getKeywords().toString();
+        else
+            return "";
+    }
 
     public PreviewLayer.PreviewLayerType getType() {
         if (layerInfo != null) {
