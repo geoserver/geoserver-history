@@ -6,6 +6,7 @@ package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -220,7 +221,7 @@ public class CatalogImpl implements Catalog {
     public <T extends StoreInfo> T getStoreByName(String workspaceName,
            String name, Class<T> clazz) {
         return getStoreByName(
-            workspaceName != null ? getWorkspace(workspaceName) : null, name, clazz);
+            workspaceName != null ? getWorkspaceByName(workspaceName) : null, name, clazz);
     }
     
     public <T extends StoreInfo> List<T> getStoresByWorkspace(
@@ -495,7 +496,10 @@ public class CatalogImpl implements Catalog {
             return getResourcesByNamespace((NamespaceInfo)null,clazz); 
         }
         
-        NamespaceInfo ns = getNamespace(namespace);
+        NamespaceInfo ns = getNamespaceByPrefix(namespace);
+        if ( ns == null ) {
+            ns = getNamespaceByURI(namespace);
+        }
         if ( ns == null ) {
             return Collections.EMPTY_LIST;
         }
@@ -1229,7 +1233,7 @@ public class CatalogImpl implements Catalog {
         h.commit();    
         
         //resolve to do a sync on the object
-        syncIdWithName(real);
+        //syncIdWithName(real);
         
         //fire the post modify event
         firePostModified( real );
@@ -1357,7 +1361,7 @@ public class CatalogImpl implements Catalog {
     }
     
     protected void resolve(WorkspaceInfo workspace) {
-        syncIdWithName(workspace);
+        setId(workspace);
         
         WorkspaceInfoImpl w = (WorkspaceInfoImpl) workspace;
         if(w.getMetadata() == null)
@@ -1365,8 +1369,7 @@ public class CatalogImpl implements Catalog {
     }
     
     protected void resolve(NamespaceInfo namespace) {
-        Object prefix = OwsUtils.get( namespace, "prefix");
-        OwsUtils.set( namespace, "id", prefix );
+        setId(namespace);
         
         NamespaceInfoImpl n = (NamespaceInfoImpl) namespace;
         if(n.getMetadata() == null)
@@ -1374,7 +1377,7 @@ public class CatalogImpl implements Catalog {
     }
     
     protected void resolve(StoreInfo store) {
-        syncIdWithName(store);
+        setId(store);
         StoreInfoImpl s = (StoreInfoImpl) store;
         
         //resolve the workspace
@@ -1392,7 +1395,7 @@ public class CatalogImpl implements Catalog {
     }
 
     protected void resolve(ResourceInfo resource) {
-        syncIdWithName(resource);
+        setId(resource);
         ResourceInfoImpl r = (ResourceInfoImpl) resource;
         
         //resolve the store
@@ -1429,7 +1432,7 @@ public class CatalogImpl implements Catalog {
     }
 
     protected void resolve(LayerInfo layer) {
-        syncIdWithName(layer);
+        setId(layer);
         
         // set empy collections, XStream won't do it for us
         LayerInfoImpl li = (LayerInfoImpl) layer;
@@ -1442,7 +1445,7 @@ public class CatalogImpl implements Catalog {
     }
     
     protected void resolve(LayerGroupInfo layerGroup) {
-        syncIdWithName(layerGroup);
+        setId(layerGroup);
         LayerGroupInfoImpl lg = (LayerGroupInfoImpl) layerGroup;
         
         for ( int i = 0; i < lg.getLayers().size(); i++ ) {
@@ -1465,20 +1468,18 @@ public class CatalogImpl implements Catalog {
     }
     
     protected void resolve(StyleInfo style) {
-        syncIdWithName(style);
+        setId(style);
         ((StyleInfoImpl)style).setCatalog( this );
     }
     
     protected void resolve(MapInfo map) {
-        syncIdWithName(map);
+        setId(map);
     }
     
-    protected void syncIdWithName( Object o ) {
-        if ( OwsUtils.getter(o.getClass(), "name", String.class) != null  && 
-             OwsUtils.getter(o.getClass(), "id", String.class ) != null ) {
-            
-            Object name = OwsUtils.get( o, "name");
-            OwsUtils.set( o, "id", name);    
+    protected void setId( Object o ) {
+        if ( OwsUtils.get( o, "id") == null ) {
+            String uid = new UID().toString();
+            OwsUtils.set( o, "id", o.getClass().getSimpleName() + "-"+uid );
         }
     }
     
