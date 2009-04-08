@@ -8,15 +8,18 @@ import static org.geoserver.web.demo.PreviewLayerProvider.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.panel.Fragment;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerInfo;
@@ -93,6 +96,7 @@ public class MapPreviewPage extends GeoServerBasePage {
                 .getBeansOfType(GetMapProducer.class)) {
             formats.add(producer.getOutputFormat());
         }
+        formats = new ArrayList<String>(new HashSet<String>(formats));
         Collections.sort(formats);
 
         return formats;
@@ -104,7 +108,7 @@ public class MapPreviewPage extends GeoServerBasePage {
         final GeoServerApplication application = getGeoServerApplication();
         for (WFSGetFeatureOutputFormat producer : application
                 .getBeansOfType(WFSGetFeatureOutputFormat.class)) {
-            formats.addAll(producer.getOutputFormats());
+            formats.add((String) producer.getOutputFormats().iterator().next());
         }
         Collections.sort(formats);
 
@@ -130,68 +134,54 @@ public class MapPreviewPage extends GeoServerBasePage {
         Fragment f = new Fragment(id, "menuFragment", MapPreviewPage.this);
         WebMarkupContainer menu = new WebMarkupContainer("menu");
         
-        // the wms formats are always there
-        menu.add(new org.apache.wicket.markup.html.list.ListView("wmsFormats", wmsOutputFormats) {
-
-            @Override
-            protected void populateItem(ListItem item) {
-                item.add(new Label("wmsFormat", new Model(item.getModelObjectAsString())));
-            }
-            
-        });
+        RepeatingView wmsFormats = new RepeatingView("wmsFormats");
+        for (int i = 0; i < wmsOutputFormats.size(); i++) {
+            String wmsOutputFormat = wmsOutputFormats.get(i);
+            String label = translateFormat("format.wms." + wmsOutputFormat);
+            // build option with text and value
+            Label format = new Label(i + "", label);
+            format.add(new AttributeModifier("value", true, new Model(wmsOutputFormat)));
+            wmsFormats.add(format);
+        }
+        menu.add(wmsFormats);
         
         // the vector ones, it depends, we might have to hide them
         boolean vector = layer.groupInfo == null && layer.layerInfo.getType() != LayerInfo.Type.RASTER;
-        WebMarkupContainer wfsFormats = new WebMarkupContainer("wfs");
-        wfsFormats.add(new org.apache.wicket.markup.html.list.ListView("wfsFormats", vector ? wfsOutputFormats : Collections.emptyList()) {
-
-            @Override
-            protected void populateItem(ListItem item) {
-                item.add(new Label("wfsFormat", item.getModel()));
+        WebMarkupContainer wfsFormatsGroup = new WebMarkupContainer("wfs");
+        RepeatingView wfsFormats = new RepeatingView("wfsFormats");
+        if(vector) {
+            for (int i = 0; i < wfsOutputFormats.size(); i++) {
+                String wfsOutputFormat = wfsOutputFormats.get(i);
+                String label = translateFormat("format.wfs." + wfsOutputFormat);
+                // build option with text and value
+                Label format = new Label(i + "", label);
+                format.add(new AttributeModifier("value", true, new Model(wfsOutputFormat)));
+                wfsFormats.add(format);
             }
-            
-        });
-        wfsFormats.setVisible(vector);
-        menu.add(wfsFormats);
+        }
+        wfsFormatsGroup.add(wfsFormats);
+        menu.add(wfsFormatsGroup);
         
         // build the wms request, redirect to it in a new window, reset the selection
         String wmsUrl = "'" + layer.getWmsLink()
-                + "&format=' + this.options[this.selectedIndex].text";
+                + "&format=' + this.options[this.selectedIndex].value";
         String wfsUrl = "'../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
           + layer.getName()
           + "&maxFeatures=50"
-          + "&outputFormat=' + this.options[this.selectedIndex].text";
+          + "&outputFormat=' + this.options[this.selectedIndex].value";
         String choice = "(this.options[this.selectedIndex].parentNode.label == 'WMS') ? " + wmsUrl + " : " + wfsUrl;
         menu.add(new AttributeAppender("onchange", new Model("window.open("
                 + choice + ");this.selectedIndex=0"), ";"));
         f.add(menu);
         return f;
     }
-
-//    /**
-//     * Builds a select that reacts like a menu, fully javascript based, for wfs outputs 
-//     */
-//    private Component buildJSWFSSelect(String id,
-//            List<String> wfsOutputFormats, PreviewLayer layer) {
-//        // don't provide the dropdown for non vector layers
-//        if(layer.groupInfo != null || layer.layerInfo.getType() == LayerInfo.Type.RASTER) {
-//            return new Label(id, "");
-//        }
-//        
-//        Fragment f = new Fragment(id, "menuFragment", MapPreviewPage2.this);
-//        DropDownChoice menu = new DropDownChoice("menu", new Model(null),
-//                wfsOutputFormats);
-//        
-//        // build the wms request, redirect to it in a new window, reset the selection
-//        String url = "'../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
-//                + layer.getName()
-//                + "&maxFeatures=50"
-//                + "&outputFormat=' + this.options[this.selectedIndex].text";
-//        menu.add(new AttributeAppender("onchange", new Model("window.open("
-//                + url + ");this.selectedIndex=0"), ";"));
-//        f.add(menu);
-//        return f;
-//    }
     
-   
+    private String translateFormat(String format) {
+        try {
+            return getLocalizer().getString(format, this);
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, e.getMessage());
+            return "?" + format + "?";
+        }
+    }
 }
