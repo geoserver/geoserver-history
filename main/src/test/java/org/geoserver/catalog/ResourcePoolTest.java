@@ -6,6 +6,8 @@
 
 package org.geoserver.catalog;
 
+import java.io.IOException;
+
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.opengis.feature.type.FeatureType;
@@ -31,6 +33,36 @@ public class ResourcePoolTest extends GeoServerTestSupport {
         FeatureType ft3 = pool.getFeatureType(info);
         assertSame(ft1, ft2);
         assertSame(ft1, ft3);
+    }
+    
+    boolean cleared = false;
+    public void testCacheClearing() throws IOException {
+        cleared = false;
+        ResourcePool pool = new ResourcePool(getCatalog()) {
+            @Override
+            public void clear(FeatureTypeInfo info) {
+                cleared = true;
+                super.clear(info);
+            }
+        };
+        FeatureTypeInfo info = getCatalog().getFeatureTypeByName(
+                MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
+        
+        assertNotNull( pool.getFeatureType( info ) );
+        info.setTitle("changed");
+        
+        assertFalse( cleared );
+        getCatalog().save( info );
+        assertTrue( cleared );
+        
+        cleared = false;
+        assertNotNull( pool.getFeatureType( info ) );
+        
+        for ( LayerInfo l : getCatalog().getLayers( info ) ) {
+            getCatalog().remove( l );
+        }
+        getCatalog().remove( info );
+        assertTrue( cleared );
     }
 
 }
