@@ -265,16 +265,16 @@ public class XStreamPersister {
         
         
         //WorkspaceInfo
-        xs.omitField( WorkspaceInfoImpl.class, "id");
+        //xs.omitField( WorkspaceInfoImpl.class, "id");
         xs.registerLocalConverter( WorkspaceInfoImpl.class, "metadata", new BreifMapConverter() );
         
         //NamespaceInfo
-        xs.omitField( NamespaceInfoImpl.class, "id");
+        //xs.omitField( NamespaceInfoImpl.class, "id");
         xs.omitField( NamespaceInfoImpl.class, "catalog");
         xs.registerLocalConverter( NamespaceInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // StoreInfo
-        xs.omitField(StoreInfoImpl.class, "id");
+        //xs.omitField(StoreInfoImpl.class, "id");
         xs.omitField(StoreInfoImpl.class, "catalog");
         //xs.omitField(StoreInfoImpl.class, "workspace"); //handled by StoreInfoConverter
         xs.registerLocalConverter(StoreInfoImpl.class, "workspace", new ReferenceConverter(WorkspaceInfo.class));
@@ -282,12 +282,12 @@ public class XStreamPersister {
         xs.registerLocalConverter(StoreInfoImpl.class, "metadata", new BreifMapConverter());
         
         // StyleInfo
-        xs.omitField(StyleInfoImpl.class, "id");
+        //xs.omitField(StyleInfoImpl.class, "id");
         xs.omitField(StyleInfoImpl.class, "catalog");
         xs.registerLocalConverter(StyleInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // ResourceInfo
-        xs.omitField( ResourceInfoImpl.class, "id");
+        //xs.omitField( ResourceInfoImpl.class, "id");
         xs.omitField( ResourceInfoImpl.class, "catalog");
         xs.omitField( ResourceInfoImpl.class, "crs" );
         xs.registerLocalConverter( ResourceInfoImpl.class, "nativeCRS", new CRSConverter());
@@ -307,7 +307,7 @@ public class XStreamPersister {
         xs.omitField( AttributeTypeInfoImpl.class, "attribute");
         
         // LayerInfo
-        xs.omitField( LayerInfoImpl.class, "id");
+        //xs.omitField( LayerInfoImpl.class, "id");
         //xs.omitField( LayerInfoImpl.class, "resource");
         xs.registerLocalConverter( LayerInfoImpl.class, "resource", new ReferenceConverter( ResourceInfo.class ) );
         xs.registerLocalConverter( LayerInfoImpl.class, "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
@@ -315,7 +315,7 @@ public class XStreamPersister {
         xs.registerLocalConverter( LayerInfoImpl.class, "metadata", new BreifMapConverter() );
         
         // LayerGroupInfo
-        xs.omitField(LayerGroupInfoImpl.class, "id" );
+        //xs.omitField(LayerGroupInfoImpl.class, "id" );
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "layers", new ReferenceCollectionConverter( LayerInfo.class ));
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ));
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "metadata", new BreifMapConverter() );
@@ -575,15 +575,23 @@ public class XStreamPersister {
             
             //gets its id
             String id = (String) OwsUtils.get( source, "id" );
-            
-            //use name if no id set
-            if ( id == null ) {
-                id = (String) OwsUtils.get( source, "name" );
+            if ( id != null ) {
+                writer.startNode("id");
+                writer.setValue( id );
+                writer.endNode();
             }
-        
-            writer.startNode("name");
-            writer.setValue( id );
-            writer.endNode();
+            else {
+                //use name if no id set
+                String name = (String) OwsUtils.get( source, "name" );
+                if ( name != null ) {
+                    writer.startNode("name");
+                    writer.setValue( name );
+                    writer.endNode();
+                }
+                else {
+                    throw new IllegalArgumentException( "Unable to marshal reference with no id or name.");
+                }
+            }
             
             callback.postEncodeReference( source, id, writer, context );
         }
@@ -603,7 +611,7 @@ public class XStreamPersister {
             Object proxy = ResolvingProxy.create( ref, clazz );
             Object resolved = proxy;
             if ( catalog != null ) {
-                resolved = ResolvingProxy.resolve( catalog, proxy );    
+                resolved = ResolvingProxy.resolve( catalog, proxy );
             }
             
             return CatalogImpl.unwrap( resolved );
