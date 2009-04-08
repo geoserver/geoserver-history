@@ -420,9 +420,7 @@
     <bean id="legend" 
           class="org.geoserver.wms.responses.decoration.LegendDecoration"
           singleton="false"
-    >
-        <property name="catalog" ref="catalog2"/>
-    </bean>
+    />
 
     <bean id="scaleratio" 
           class="org.geoserver.wms.responses.decoration.ScaleRatioDecoration"
