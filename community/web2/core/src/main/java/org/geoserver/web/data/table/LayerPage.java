@@ -133,7 +133,7 @@ public class LayerPage extends GeoServerSecuredPage {
     private Component workspaceLink(String id, final IModel model) {
         return new SimpleAjaxLink(id, WORKSPACE.getModel(model)) {
             public void onClick(AjaxRequestTarget target) {
-                WorkspaceInfo ws = getCatalog().getWorkspace(getModelObjectAsString());
+                WorkspaceInfo ws = getCatalog().getWorkspaceByName(getModelObjectAsString());
                 setResponsePage(new WorkspaceEditPage(ws));
             }
         };

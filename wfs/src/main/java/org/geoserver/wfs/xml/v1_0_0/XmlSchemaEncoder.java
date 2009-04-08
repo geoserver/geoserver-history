@@ -189,7 +189,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         LOGGER.finer("prefix is " + prefix);
 
         StringBuffer retBuffer = new StringBuffer("\n  <xs:import namespace=\"");
-        String namespace = catalog.getNamespace(prefix).getURI();
+        String namespace = catalog.getNamespaceByPrefix(prefix).getURI();
         retBuffer.append(namespace + "\"");
         retBuffer.append("\n        schemaLocation=\"" + baseUrl
             + "?request=DescribeFeatureType&amp;service=wfs&amp;version=1.0.0&amp;typeName=");

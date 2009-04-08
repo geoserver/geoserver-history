@@ -486,7 +486,7 @@ public class LegacyCatalogImporter {
         featureType.setStore(dataStore);
         
         // link to namespace
-        String prefix = dataStore.getWorkspace().getId();
+        String prefix = dataStore.getWorkspace().getName();
         featureType.setNamespace(catalog.getNamespaceByPrefix(prefix));    
         
         if ( featureType.isEnabled() && !dataStore.isEnabled() ) {
@@ -742,7 +742,7 @@ public class LegacyCatalogImporter {
         coverage.getParameters().putAll( cInfoReader.parameters() );
         
         // link to namespace
-        String prefix = catalog.getCoverageStore(coverageStoreName).getWorkspace().getId();
+        String prefix = catalog.getCoverageStoreByName(coverageStoreName).getWorkspace().getName();
         coverage.setNamespace(catalog.getNamespaceByPrefix(prefix));
         
         return coverage;

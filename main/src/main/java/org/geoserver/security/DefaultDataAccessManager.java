@@ -192,10 +192,10 @@ public class DefaultDataAccessManager implements DataAccessManager {
                         + "', the standard form is [namespace].[layer].[mode]=[role]+ "
                         + "Rule has been ignored");
 
-            if (!"*".equals(workspace) && catalog.getWorkspace(workspace) == null)
+            if (!"*".equals(workspace) && catalog.getWorkspaceByName(workspace) == null)
                 LOGGER.warning("Namespace/Workspace " + workspace + " is unknown in rule " + rule);
 
-            if (!"*".equals(layerName) && catalog.getLayer(layerName) == null)
+            if (!"*".equals(layerName) && catalog.getLayerByName(layerName) == null)
                 LOGGER.warning("Layer " + workspace + " is unknown in rule + " + rule);
 
             // check the access mode

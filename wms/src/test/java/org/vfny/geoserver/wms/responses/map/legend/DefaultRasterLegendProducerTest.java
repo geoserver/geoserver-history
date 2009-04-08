@@ -78,7 +78,7 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
      */
     public void testUserSpecifiedRule() throws Exception {
         //load a style with 3 rules
-        Style multipleRulesStyle = getCatalog().getStyle(MockData.ROAD_SEGMENTS.getLocalPart()).getStyle();
+        Style multipleRulesStyle = getCatalog().getStyleByName(MockData.ROAD_SEGMENTS.getLocalPart()).getStyle();
         assertNotNull(multipleRulesStyle);
         
         Rule rule = multipleRulesStyle.getFeatureTypeStyles()[0].getRules()[0];

@@ -72,7 +72,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertTrue(request.getLayers()[0].getName().endsWith(layer));
 
         assertEquals(1, request.getStyles().size());
-        Style expected = getCatalog().getStyle(layer).getStyle();
+        Style expected = getCatalog().getStyleByName(layer).getStyle();
         Style style = request.getStyles().get(0);
         assertEquals(expected, style);
 

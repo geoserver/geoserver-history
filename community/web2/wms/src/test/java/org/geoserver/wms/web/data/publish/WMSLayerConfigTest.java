@@ -20,7 +20,7 @@ import org.geoserver.wms.web.publish.WMSLayerConfig;
 public class WMSLayerConfigTest extends GeoServerWicketTestSupport {
     
     public void testExisting() {
-        final LayerInfo layer = getCatalog().getLayer(MockData.PONDS.getLocalPart());
+        final LayerInfo layer = getCatalog().getLayerByName(MockData.PONDS.getLocalPart());
         FormTestPage page = new FormTestPage(new ComponentBuilder() {
 
             public Component buildComponent(String id) {
