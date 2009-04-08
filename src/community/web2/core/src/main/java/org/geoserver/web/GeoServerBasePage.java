@@ -81,15 +81,9 @@ public class GeoServerBasePage extends WebPage {
             .add( new Label( "label", new StringResourceModel( "home", (Component)null, null ) )  ) );
         
         // dev buttons
-        WebMarkupContainer devButtons = new WebMarkupContainer("devButtons");
-        add(devButtons);
-        devButtons.add(new AjaxFallbackLink("clearCache"){
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                getGeoServerApplication().clearWicketCaches();
-            }
-        });
-        devButtons.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
+        DeveloperToolbar devToolbar = new DeveloperToolbar("devButtons");
+        add(devToolbar);
+        devToolbar.setVisible(Application.DEVELOPMENT.equalsIgnoreCase(
                 getApplication().getConfigurationType()));
         
         final Map<Category,List<MenuPageInfo>> links = splitByCategory(

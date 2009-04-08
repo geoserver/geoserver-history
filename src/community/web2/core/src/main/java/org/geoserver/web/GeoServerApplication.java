@@ -31,14 +31,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
-import org.apache.wicket.settings.IExceptionSettings;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.resource.AbstractResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 import org.apache.wicket.util.resource.locator.ResourceStreamLocator;
-import org.apache.wicket.util.time.Duration;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
@@ -165,14 +163,6 @@ public class GeoServerApplication extends SpringWebApplication {
         
         // we have our own application wide gzip compression filter 
         getResourceSettings().setDisableGZipCompression(true);
-        
-        // get some more debugging aid compared to the Wicket defaults
-        final String configurationType = getConfigurationType();
-        if (DEVELOPMENT.equalsIgnoreCase(configurationType)) {
-            // this makes it a lot easier to write unit test as the
-            // component path will be written on each path
-            getDebugSettings().setOutputComponentPath(true);
-        }
     }
     
     @Override
