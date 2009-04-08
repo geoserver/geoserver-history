@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.xml.transform.TransformerException;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -22,6 +19,8 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -31,7 +30,6 @@ import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.styling.SLDTransformer;
 import org.geotools.util.logging.Logging;
 
 public class GeoServerPersister implements CatalogListener, ConfigurationListener {
@@ -86,12 +84,54 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     }
 
     public void handleModifyEvent(CatalogModifyEvent event) {
+        Object source = event.getSource();
+        
+        try {
+            //here we handle name changes
+            int i = event.getPropertyNames().indexOf( "name" );
+            if ( i > -1 ) {
+                String newName = (String) event.getNewValues().get( i );
+                
+                if ( source instanceof WorkspaceInfo ) {
+                    renameWorkspace( (WorkspaceInfo) source, newName );
+                }
+                else if ( source instanceof StoreInfo ) {
+                    renameStore( (StoreInfo) source, newName );
+                }
+                else if ( source instanceof ResourceInfo ) {
+                    renameResource( (ResourceInfo) source, newName );
+                }
+                else if ( source instanceof StyleInfo ) {
+                    renameStyle( (StyleInfo) source, newName );
+                }
+                else if ( source instanceof LayerGroupInfo ) {
+                    renameLayerGroup( (LayerGroupInfo) source, newName );
+                }
+            }
+            
+            //handle the case of a store changing workspace
+            if ( source instanceof StoreInfo ) {
+                i = event.getPropertyNames().indexOf( "workspace");
+                if ( i > -1 ) {
+                    WorkspaceInfo newWorkspace = (WorkspaceInfo) event.getNewValues().get( i );
+                    File oldDir = dir( (StoreInfo) source );
+                    oldDir.renameTo( new File( dir( newWorkspace ), oldDir.getName() ) );
+                }
+            }
+            
+        } 
+        catch (IOException e) {
+            throw new RuntimeException( e );
+        }
     }
     
     public void handlePostModifyEvent(CatalogPostModifyEvent event) {
         Object source = event.getSource();
         try {
-            if ( source instanceof DataStoreInfo ) {
+            if ( source instanceof WorkspaceInfo ) {
+                modifyWorkspace( (WorkspaceInfo) source);
+            }
+            else if ( source instanceof DataStoreInfo ) {
                 modifyDataStore( (DataStoreInfo) source );
             }
             else if ( source instanceof NamespaceInfo ) {
@@ -201,6 +241,18 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
         LOGGER.fine( "Persisting workspace " + ws.getName() );
         File dir = dir( ws, true );
         dir.mkdirs();
+        
+        persist( ws, file( ws ) );
+    }
+    
+    void renameWorkspace( WorkspaceInfo ws, String newName ) throws IOException {
+        LOGGER.fine( "Renaming workspace " + ws.getName() + "to " + newName );
+        rename( dir( ws ), newName );
+    }
+    
+    void modifyWorkspace( WorkspaceInfo ws ) throws IOException {
+        LOGGER.fine( "Persisting workspace " + ws.getName() );
+        persist( ws, file( ws ) );
     }
     
     void removeWorkspace( WorkspaceInfo ws ) throws IOException {
@@ -209,117 +261,212 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
         FileUtils.deleteDirectory( dir );
     }
     
+    File dir( WorkspaceInfo ws ) throws IOException {
+        return dir( ws, false );
+    }
+    
+    File dir( WorkspaceInfo ws, boolean create ) throws IOException {
+        File d = rl.find( "workspaces", ws.getName() );
+        if ( d == null && create ) {
+            d = rl.createDirectory( "workspaces", ws.getName() );
+        }
+        return d;
+    }
+    
+    File file( WorkspaceInfo ws ) throws IOException {
+        return new File( dir( ws ), "workspace.xml" );
+    }
+    
     //namespaces
     void addNamespace( NamespaceInfo ns ) throws IOException {
+        LOGGER.fine( "Persisting namespace " + ns.getPrefix() );
         File dir = dir( ns, true );
         dir.mkdirs();
-        persist( ns, dir, "namespace.xml" );
+        persist( ns, file(ns) );
     }
     
     void modifyNamespace( NamespaceInfo ns) throws IOException {
-        File dir = dir( ns );
-        persist( ns, dir, "namespace.xml" );
+        LOGGER.fine( "Persisting namespace " + ns.getPrefix() );
+        persist( ns, file(ns) );
     }
     
     void removeNamespace( NamespaceInfo ns ) throws IOException {
-        File dir = dir( ns );
-        new File( dir, "namespace.xml" ).delete();
+        LOGGER.fine( "Removing namespace " + ns.getPrefix() );
+        file( ns ).delete();
+    }
+    
+    File dir( NamespaceInfo ns ) throws IOException {
+        return dir( ns, false );
+    }
+    
+    File dir( NamespaceInfo ns, boolean create ) throws IOException {
+        File d = rl.find( "workspaces", ns.getPrefix() );
+        if ( d == null && create ) {
+            d = rl.createDirectory( "workspaces", ns.getPrefix() );
+        }
+        return d;
+    }
+    
+    File file( NamespaceInfo ns ) throws IOException {
+        return new File( dir( ns ), "namespace.xml");
     }
     
     //datastores
     void addDataStore( DataStoreInfo ds ) throws IOException {
+        LOGGER.fine( "Persisting datastore " + ds.getName() );
         File dir = dir( ds );
         dir.mkdir();
         
-        persist( ds, dir, "datastore.xml" );
+        persist( ds, file( ds ) );
+    }
+    
+    void renameStore( StoreInfo s, String newName ) throws IOException {
+        LOGGER.fine( "Renaming store " + s.getName() + "to " + newName );
+        rename( dir( s ), newName );
     }
     
     void modifyDataStore( DataStoreInfo ds ) throws IOException {
-        File dir = dir( ds );
-        persist( ds, dir, "datastore.xml" );
+        LOGGER.fine( "Persisting datastore " + ds.getName() );
+        persist( ds, file( ds ) );
     }
     
     void removeDataStore( DataStoreInfo ds ) throws IOException {
+        LOGGER.fine( "Removing datastore " + ds.getName() );
         File dir = dir( ds );
         FileUtils.deleteDirectory( dir );
+    }
+    
+    File dir( StoreInfo s ) throws IOException {
+        return new File( dir( s.getWorkspace() ), s.getName() );
+    }
+    
+    File file( DataStoreInfo ds ) throws IOException {
+        return new File( dir( ds ), "datastore.xml" );
     }
     
     //feature types
     void addFeatureType( FeatureTypeInfo ft ) throws IOException {
+        LOGGER.fine( "Persisting feature type " + ft.getName() );
         File dir = dir( ft );
         dir.mkdir();
-        persist( ft, dir, "featuretype.xml" );
+        persist( ft, file( ft ) );
+    }
+    
+    void renameResource( ResourceInfo r, String newName ) throws IOException {
+        LOGGER.fine( "Renaming resource " + r.getName() + " to " + newName );
+        rename( dir( r ), newName );
     }
     
     void modifyFeatureType( FeatureTypeInfo ft ) throws IOException {
-        File dir = dir( ft );
-        persist( ft, dir, "featuretype.xml");
+        LOGGER.fine( "Persisting feature type " + ft.getName() );
+        persist( ft, file( ft ) );
     }
     
     void removeFeatureType( FeatureTypeInfo ft ) throws IOException {
+        LOGGER.fine( "Removing feature type " + ft.getName() );
         File dir = dir( ft );
         FileUtils.deleteDirectory( dir );
+    }
+    
+    File dir( ResourceInfo r ) throws IOException {
+        return new File( dir( r.getStore() ), r.getName() );
+    }
+    
+    File file( FeatureTypeInfo ft ) throws IOException {
+        return new File( dir( ft ), "featuretype.xml");
     }
     
     //coverage stores
     void addCoverageStore( CoverageStoreInfo cs ) throws IOException {
+        LOGGER.fine( "Persisting coverage store " + cs.getName() );
         File dir = dir( cs );
         dir.mkdir();
         
-        persist( cs, dir, "coveragestore.xml" );
+        persist( cs, file( cs ) );
     }
     
     void modifyCoverageStore( CoverageStoreInfo cs ) throws IOException {
-        File dir = dir( cs );
-        persist( cs, dir, "coveragestore.xml" );
+        LOGGER.fine( "Persisting coverage store " + cs.getName() );
+        persist( cs, file( cs ) );
     }
     
     void removeCoverageStore( CoverageStoreInfo cs ) throws IOException {
+        LOGGER.fine( "Removing coverage store " + cs.getName() );
         File dir = dir( cs );
         FileUtils.deleteDirectory( dir );
     }
     
+    File file( CoverageStoreInfo cs ) throws IOException {
+        return new File( dir( cs ), "coveragestore.xml");
+    }
+    
     //coverages
     void addCoverage( CoverageInfo c ) throws IOException {
+        LOGGER.fine( "Persisting coverage " + c.getName() );
         File dir = dir( c );
         dir.mkdir();
         persist( c, dir, "coverage.xml" );
     }
     
     void modifyCoverage( CoverageInfo c ) throws IOException {
+        LOGGER.fine( "Persisting coverage " + c.getName() );
         File dir = dir( c );
         persist( c, dir, "coverage.xml");
     }
     
     void removeCoverage( CoverageInfo c ) throws IOException {
+        LOGGER.fine( "Removing coverage " + c.getName() );
         File dir = dir( c );
         FileUtils.deleteDirectory( dir );
     }
     
     //layers
     void addLayer( LayerInfo l ) throws IOException {
+        LOGGER.fine( "Persisting layer " + l.getName() );
         File dir = dir( l );
         dir.mkdir();
-        persist( l, dir, "layer.xml" );
+        persist( l, file( l ) );
     }
     
     void modifyLayer( LayerInfo l ) throws IOException {
-        File dir = dir( l );
-        persist( l, dir, "layer.xml");
+        LOGGER.fine( "Persisting layer " + l.getName() );
+        persist( l, file( l ) );
     }
     
     void removeLayer( LayerInfo l ) throws IOException {
+        LOGGER.fine( "Removing layer " + l.getName() );
         File dir = dir( l );
         FileUtils.deleteDirectory( dir );
     }
     
+    File dir( LayerInfo l ) throws IOException {
+        if ( l.getResource() instanceof FeatureTypeInfo) {
+            return dir( (FeatureTypeInfo) l.getResource() );
+        }
+        else if ( l.getResource() instanceof CoverageInfo ) {
+            return dir( (CoverageInfo) l.getResource() );
+        }
+        return null;
+    }
+    
+    File file( LayerInfo l ) throws IOException {
+        return new File( dir( l ), "layer.xml" );
+    }
+    
     //styles
     void addStyle( StyleInfo s ) throws IOException {
+        LOGGER.fine( "Persisting style " + s.getName() );
         dir( s, true );
         persist( s, file( s ) );
     }
     
+    void renameStyle( StyleInfo s, String newName ) throws IOException {
+        LOGGER.fine( "Renameing style " + s.getName() + " to " + newName );
+        rename( file( s ), newName+".xml" );
+    }
+    
     void modifyStyle( StyleInfo s ) throws IOException {
+        LOGGER.fine( "Persisting style " + s.getName() );
         persist( s, file( s ) );
         /*
         //save out sld
@@ -340,79 +487,8 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     }
     
     void removeStyle( StyleInfo s ) throws IOException {
+        LOGGER.fine( "Removing style " + s.getName() );
         file( s ).delete();
-    }
-    
-    //layer groups
-    void addLayerGroup( LayerGroupInfo lg ) throws IOException {
-        dir( lg, true );
-        persist( lg, file( lg ) );
-    }
-    
-    void modifyLayerGroup( LayerGroupInfo lg ) throws IOException {
-        persist( lg, file( lg ) );
-    }
-    
-    void removeLayerGroup( LayerGroupInfo lg ) throws IOException {
-        file( lg ).delete();
-    }
-    
-    void backupDirectory(File dir) throws IOException {
-        File bak = new File( dir.getCanonicalPath() + ".bak");
-        if ( bak.exists() ) {
-            FileUtils.deleteDirectory( bak );
-        }
-        dir.renameTo( bak );
-    }
-    
-    File dir( WorkspaceInfo ws ) throws IOException {
-        return dir( ws, false );
-    }
-    
-    File dir( WorkspaceInfo ws, boolean create ) throws IOException {
-        File d = rl.find( "workspaces", ws.getName() );
-        if ( d == null && create ) {
-            d = rl.createDirectory( "workspaces", ws.getName() );
-        }
-        return d;
-    }
-    
-    File dir( NamespaceInfo ns ) throws IOException {
-        return dir( ns, false );
-    }
-    
-    File dir( NamespaceInfo ns, boolean create ) throws IOException {
-        File d = rl.find( "workspaces", ns.getPrefix() );
-        if ( d == null && create ) {
-            d = rl.createDirectory( "workspaces", ns.getPrefix() );
-        }
-        return d;
-    }
-    
-    File dir( DataStoreInfo ds ) throws IOException {
-        return new File( dir( ds.getWorkspace() ), ds.getName() );
-    }
-    
-    File dir( FeatureTypeInfo ft ) throws IOException {
-        return new File( dir( ft.getStore() ), ft.getName() );
-    }
-    
-    File dir( CoverageStoreInfo cs ) throws IOException {
-        return new File( dir( cs.getWorkspace() ), cs.getName() );
-    }
-    
-    File dir( CoverageInfo c ) throws IOException {
-        return new File( dir( c.getStore() ), c.getName() );
-    }
-    
-    File dir( LayerInfo l ) throws IOException {
-        if ( l.getResource() instanceof FeatureTypeInfo) {
-            return dir( (FeatureTypeInfo) l.getResource() );
-        }
-        else if ( l.getResource() instanceof CoverageInfo ) {
-            return dir( (CoverageInfo) l.getResource() );
-        }
-        return null;
     }
     
     File dir( StyleInfo s ) throws IOException {
@@ -431,6 +507,29 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
         return new File( dir( s ), s.getName() + ".xml");
     }
     
+    //layer groups
+    void addLayerGroup( LayerGroupInfo lg ) throws IOException {
+        LOGGER.fine( "Persisting layer group " + lg.getName() );
+        
+        dir( lg, true );
+        persist( lg, file( lg ) );
+    }
+    
+    void renameLayerGroup( LayerGroupInfo lg, String newName ) throws IOException {
+        LOGGER.fine( "Renaming layer group " + lg.getName() + " to " + newName );
+        rename( file( lg ), newName+".xml" );
+    }
+
+    void modifyLayerGroup( LayerGroupInfo lg ) throws IOException {
+        LOGGER.fine( "Persisting layer group " + lg.getName() );
+        persist( lg, file( lg ) );
+    }
+    
+    void removeLayerGroup( LayerGroupInfo lg ) throws IOException {
+        LOGGER.fine( "Removing layer group " + lg.getName() );
+        file( lg ).delete();
+    }
+    
     File dir( LayerGroupInfo lg ) throws IOException {
         return dir( lg, false );
     }
@@ -445,6 +544,19 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     
     File file( LayerGroupInfo lg ) throws IOException {
         return new File( dir( lg ), lg.getName() + ".xml" );
+    }
+    
+    //helpers
+    void backupDirectory(File dir) throws IOException {
+        File bak = new File( dir.getCanonicalPath() + ".bak");
+        if ( bak.exists() ) {
+            FileUtils.deleteDirectory( bak );
+        }
+        dir.renameTo( bak );
+    }
+    
+    void rename(File f, String newName) throws IOException {
+        f.renameTo( new File( f.getParentFile(), newName ) );
     }
     
     void persist( Object o, File dir, String filename ) throws IOException {
