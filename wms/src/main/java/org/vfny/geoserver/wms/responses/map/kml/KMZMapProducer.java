@@ -21,7 +21,6 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
-import org.vfny.geoserver.wms.responses.WatermarkPainter;
 import org.vfny.geoserver.wms.responses.map.png.PNGMapProducer;
 
 /**

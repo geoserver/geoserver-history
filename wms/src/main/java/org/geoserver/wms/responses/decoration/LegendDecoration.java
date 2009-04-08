@@ -68,8 +68,6 @@ public class LegendDecoration implements MapDecoration {
 
     private static final GeometryFactory geomFac = new GeometryFactory();
 
-    private Catalog catalog;
-
     /**
      * Just a holder to avoid creating many polygon shapes from inside
      * <code>getSampleShape()</code>
@@ -93,13 +91,18 @@ public class LegendDecoration implements MapDecoration {
     public void loadOptions(Map<String, String> options){
     }
 
+    Catalog findCatalog(WMSMapContext mapContext){
+        return mapContext.getRequest().getServiceConfig().getGeoServer().getCatalog();
+    }
+    
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
         int x = 0, y = 0;
+        Catalog catalog = findCatalog(mapContext);
         FontMetrics metrics = g2d.getFontMetrics(g2d.getFont().deriveFont(Font.BOLD));
         double scaleDenominator = RendererUtilities.calculateOGCScale(
                 mapContext.getAreaOfInterest(),
                 mapContext.getRequest().getWidth(),
-                new HashMap()
+                null
                 );
 
         for (MapLayer layer : mapContext.getLayers()){
@@ -113,7 +116,7 @@ public class LegendDecoration implements MapDecoration {
                             g2d
                             );
                     x = Math.max(x, (int)legend.width);
-                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(findTitle(layer)));
+                    x = Math.max(x, TITLE_INDENT + metrics.stringWidth(findTitle(layer, catalog)));
                     y += legend.height + metrics.getHeight(); 
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Error sizing legend for " + layer);
@@ -129,6 +132,7 @@ public class LegendDecoration implements MapDecoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
+    	Catalog catalog = mapContext.getRequest().getServiceConfig().getGeoServer().getCatalog();
         Dimension d = findOptimalSize(g2d, mapContext);
         Rectangle bgRect = new Rectangle(0, 0, d.width, d.height);
         double scaleDenominator = RendererUtilities.calculateOGCScale(
@@ -166,7 +170,7 @@ public class LegendDecoration implements MapDecoration {
                 try { 
                     g2d.translate(0, metrics.getHeight());
                     g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
-                    g2d.drawString(findTitle(layer), TITLE_INDENT, 0 - metrics.getDescent());
+                    g2d.drawString(findTitle(layer, catalog), TITLE_INDENT, 0 - metrics.getDescent());
                     g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN));
                     Dimension dim = drawLegend(
                             type,
@@ -193,15 +197,7 @@ public class LegendDecoration implements MapDecoration {
         g2d.setColor(oldColor);
     }
 
-    public void setCatalog(Catalog c) {
-        this.catalog = c;
-    }
-
-    public Catalog getCatalog() {
-        return this.catalog;
-    }
-
-    private String findTitle(MapLayer layer) {
+    private String findTitle(MapLayer layer, Catalog catalog) {
         String[] nameparts = layer.getTitle().split(":");
 
         ResourceInfo resource = nameparts.length > 1 
