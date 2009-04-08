@@ -50,6 +50,10 @@ public class StoreProvider extends GeoServerDataProvider {
         public Comparator<StoreInfo> getComparator() {
             return new PropertyComparator<StoreInfo>(this);
         }
+
+        public boolean isVisible() {
+            return true;
+        }
         
     };
 
