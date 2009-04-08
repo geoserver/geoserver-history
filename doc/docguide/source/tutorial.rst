@@ -10,10 +10,6 @@ Example Tutorial
 
 This intoductory sentence should state the intent and goal of the tutorial. Keep it brief.
 
-.. note::
-
-   This tutorial is targeted at GeoServer X.Y.Z and above.
-
 This next block should state any assumptions that you the writer are making. Present them in list form. Example: 
 
 This tutorial assumes:

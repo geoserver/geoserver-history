@@ -3,11 +3,20 @@
 Workflow
 ========
 
-GeoServer documentation aims to mirror the development process of the software itself.  Source code is kept in an online repository, copied locally using version control software, edited and tested locally, and then committed back to the project. Documentation works the same way.
+GeoServer documentation aims to mirror the development process of the software itself.  The process for writing/editing documentation is as follows:
+
+* **Step 1**: Copy source locally using version control software
+* **Step 2**: Make any changes
+* **Step 3**: Test to make sure that changes are correct
+* **Step 4**: Commit changes back to the repository
+   
 
 
-Check out source
-----------------
+Checking out source
+-------------------
+
+Repository
+``````````
 
 This documentation source code exists in the same repository as the GeoServer source code::
 
@@ -16,38 +25,38 @@ This documentation source code exists in the same repository as the GeoServer so
 Within this path are the various ``branches`` and ``tags`` associated with releases.  So, for example, the documentation for the 1.7.x branch is found inside this path::
 
    https://svn.codehaus.org/geoserver/branches/1.7.x/doc/
-
-Subversion
-``````````
-
-You must use a version control software to retrieve files.
-
-.. warning:: Add info about installing/configuring SVN/TortoiseSVN  
-
-
-Make edits
-----------
-
-Documentation in Sphinx is written using reStructuredText.  This is the "source code" for the documentation, and contains only content, leaving the theming to the build process.
-
-.. warning:: Add details about RST
-
-For suggestions about writing style, please see the :ref:`style_guidelines`. For tips and tricks about Sphinx, please see the :ref:`sphinx`.
-
    
-Build locally
--------------
+When making changes to the 1.7.x branch, this is the path to checkout.
 
-Sphinx builds the RST files into themed HTML pages and PDF sites.  You can install Sphinx on your local system to build the documentation locally and immediately view changes.  Also, a nightly build of the existing documentation is available on `docs.geoserver.org <http://docs.geoserver.org>`_, but it is *strongly* recommended to view any changes made locally before committing them.
+Software
+````````
+
+You must use a version control software to retrieve files.  Most people use `Subversion <http://subversion.tigris.org/>`_ (aka "svn"), a command line utility for managing version control systems.  There also exists a shell-integrated version of Subversion for Windows called `TortoiseSVN <http://tortoisesvn.tigris.org/>`_
+
+.. warning:: Add info about installing/configuring SVN
+
+
+Making edits
+------------
+
+Documentation in Sphinx is written in `reStructuredText <http://docutils.sourceforge.net/rst.htm>`_, a lightweight markup syntax.  For suggestions on writing reStructuredText for use with Sphinx, please see the section on :ref:`sphinx`.  For suggestions about writing style, please see the :ref:`style_guidelines`. 
+
+
+Testing locally
+---------------
+
+You should install Sphinx on your local system to build the documentation locally and view any changes made.  Sphinx builds the reStructuredText files into HTML pages and PDF files.
 
 .. warning:: Add info about installing Sphinx and testing the build
 
-Commit changes
---------------
+Committing changes
+------------------
 
-The final step is to commit the changes to the official repository.
+The final step is to commit the changes to the official repository.  If you are using Subversion, the command to use is::
 
-.. note:: You must have commit rights to do this.  Please see the section on :ref:`contributing` for details on how to obtain this.
+   svn commit [path/files]
+   
+where ``[path/files]`` is the path and files you wish to commit back to the repository.
 
-.. warning:: Add directions on how to commit.
+.. note:: You must have commit rights to do this.  Please see the section on :ref:`contributing_commit_rights` for details.
 
