@@ -30,6 +30,16 @@ public class CatalogIconFactory implements Serializable {
     
     public static final ResourceReference GROUP_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/silk/layers.png");
+    
+    static final CatalogIconFactory INSTANCE = new CatalogIconFactory();
+    
+    public static final CatalogIconFactory get() {
+        return INSTANCE;
+    }
+    
+    private CatalogIconFactory() {
+        // private constructor, this is a singleton
+    }
 
     /**
      * Returns the appropriate icon for the specified layer
