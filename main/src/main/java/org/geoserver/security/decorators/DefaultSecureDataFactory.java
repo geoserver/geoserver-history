@@ -15,6 +15,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 
 /**
  * The default read only wrapper factory, used as a fallback when no other, more
@@ -39,7 +40,8 @@ public class DefaultSecureDataFactory implements SecuredObjectFactory {
                 || FeatureStore.class.isAssignableFrom(clazz)
                 || FeatureLocking.class.isAssignableFrom(clazz)
                 || FeatureCollection.class.isAssignableFrom(clazz)
-                || Iterator.class.isAssignableFrom(clazz);
+                || Iterator.class.isAssignableFrom(clazz)
+                || FeatureIterator.class.isAssignableFrom(clazz);
     }
 
     public Object secure(Object object, WrapperPolicy policy) {
@@ -85,6 +87,8 @@ public class DefaultSecureDataFactory implements SecuredObjectFactory {
             return new ReadOnlyFeatureCollection((FeatureCollection) object, policy);
         } else if (Iterator.class.isAssignableFrom(clazz)) {
             return new ReadOnlyIterator((Iterator) object, policy);
+        } else if (FeatureIterator.class.isAssignableFrom(clazz)) {
+            return new ReadOnlyFeatureIterator((FeatureIterator) object); 
         }
 
         // all attempts have been made, we don't know how to handle this object
