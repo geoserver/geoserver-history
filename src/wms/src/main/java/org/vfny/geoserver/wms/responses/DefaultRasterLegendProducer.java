@@ -96,7 +96,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();
 
     /** Tolerance used to compare doubles for equality */
-    private static final double TOLERANCE = 1e-6;
+    static final double TOLERANCE = 1e-6;
 
     /**
      * Singleton shape painter to serve all legend requests. We can use a

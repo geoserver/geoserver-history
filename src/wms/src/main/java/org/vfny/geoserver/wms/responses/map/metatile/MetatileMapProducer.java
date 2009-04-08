@@ -115,11 +115,6 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 				// generate, split and cache
 				delegate.setMapContext(mapContext);
 				
-				// enable meta watermarking
-				// enable simple watermarking
-	            if (this.delegate instanceof DefaultRasterMapProducer)
-	                ((DefaultRasterMapProducer)this.delegate).setWmPainter(new MetatileWatermarkPainter(key, request));
-				
 				delegate.produceMap();
 				
 

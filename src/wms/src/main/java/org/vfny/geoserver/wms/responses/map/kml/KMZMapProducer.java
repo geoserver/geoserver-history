@@ -172,7 +172,6 @@ public class KMZMapProducer extends AbstractGetMapProducer implements GetMapProd
 
 			// render the map
 			mapProducer.setMapContext(mapContext);
-			mapProducer.setWmPainter(new WatermarkPainter(this.mapContext.getRequest()));
 			mapProducer.produceMap();
 
 			// write it to the zip stream

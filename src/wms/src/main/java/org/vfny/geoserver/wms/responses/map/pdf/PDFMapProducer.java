@@ -21,12 +21,13 @@ import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
-import org.vfny.geoserver.wms.responses.WatermarkPainter;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.FontFactory;
@@ -181,7 +182,13 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 			renderer.paint(graphic, paintArea, at);
 			
 			// render the watermark
-			new WatermarkPainter(this.mapContext.getRequest()).paint(graphic, paintArea);
+            MapDecorationLayout.Block watermark = 
+                DefaultRasterMapProducer.getWatermark(this.mapContext.getRequest().getWMS().getServiceInfo());
+
+            if (watermark != null) {
+                MapDecorationLayout layout = new MapDecorationLayout();
+                layout.paint(graphic, paintArea, this.mapContext);
+            }
 
 			if (!this.abortRequested) {
 				this.bos = curOs;
