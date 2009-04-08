@@ -39,6 +39,7 @@ import org.geoserver.feature.retype.RetypingDataStore;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccess;
+import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
@@ -162,6 +163,33 @@ public class ResourcePool {
         }
         
         return crs;
+    }
+    
+    /**
+     * Returns the datastore factory used to create underlying resources for a datastore.
+     * <p>
+     * This method first uses {@link DataStoreInfo#getType()} to obtain the datastore. In the 
+     * event of a failure it falls back on {@link DataStoreInfo#getConnectionParameters()}.
+     * </p>
+     * @param info The data store metadata.
+     * 
+     * @return The datastore factory, or null if no such factory could be found, or the factory
+     * is not available.
+     * 
+     * @throws IOException Any I/O errors.
+     */
+    public DataAccessFactory getDataStoreFactory( DataStoreInfo info ) throws IOException {
+        DataAccessFactory factory = null;
+    
+        if ( info.getType() != null ) {
+            factory = DataStoreUtils.aquireFactory( info.getType() );    
+        }
+    
+        if ( factory == null ) {
+            factory = DataStoreUtils.aquireFactory( getParams( info.getConnectionParameters() , GeoserverDataDirectory.getGeoserverDataDirectory().getCanonicalPath()));    
+        }
+   
+        return factory;
     }
     
     /**
@@ -963,7 +991,7 @@ public class ResourcePool {
     /**
      * Listens to catalog events clearing cache entires when resources are modified.
      */
-    class CacheClearingListener /*extends CatalogVisitor*/ implements CatalogListener {
+    class CacheClearingListener extends CatalogVisitorAdapter implements CatalogListener {
 
         public void handleAddEvent(CatalogAddEvent event) {
         }
@@ -972,29 +1000,31 @@ public class ResourcePool {
         }
 
         public void handlePostModifyEvent(CatalogPostModifyEvent event) {
-            clearCacheEntry( event.getSource() );
+            event.getSource().accept( this );
         }
 
         public void handleRemoveEvent(CatalogRemoveEvent event) {
-            clearCacheEntry( event.getSource() );
+            event.getSource().accept( this );
         }
 
         public void reloaded() {
         }
-        
-        void clearCacheEntry( Object source ) {
-            if ( source instanceof DataStoreInfo ) {
-                clear( (DataStoreInfo) source );
-            }
-            else if ( source instanceof CoverageStoreInfo ) {
-                clear( (CoverageStoreInfo)source );
-            }
-            else if ( source instanceof FeatureTypeInfo ) {
-                clear( (FeatureTypeInfo) source );
-            }
-            else if ( source instanceof StyleInfo ) {
-                clear( (StyleInfo) source );
-            }
+       
+        @Override
+        public void visit(DataStoreInfo dataStore) {
+            clear(dataStore);
+        }
+        @Override
+        public void visit(CoverageStoreInfo coverageStore) {
+            clear(coverageStore);
+        }
+        @Override
+        public void visit(FeatureTypeInfo featureType) {
+            clear(featureType);
+        }
+        @Override
+        public void visit(StyleInfo style) {
+            clear(style);
         }
     }
     
