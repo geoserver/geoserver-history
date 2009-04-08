@@ -198,6 +198,16 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     /**
      * Performs a directory lookup, creating the file if it does not exist.
      * 
+     * @param location The components of the path that make up the location of the directory to
+     *  find or create.
+     */
+    public File findOrCreateDirectory( String... location ) throws IOException {
+        return findOrCreateDirectory(concat(location));
+    }
+    
+    /**
+     * Performs a directory lookup, creating the file if it does not exist.
+     * 
      * @param location The location of the directory to find or create.
      * 
      * @return The file handle.
