@@ -1,9 +1,12 @@
 package org.geoserver.wfs;
 
+import java.util.ArrayList;
+
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.util.Version;
 
 /**
  * Loads and persist the {@link WFSInfo} object to and from xstream 
@@ -42,6 +45,18 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
 
     public Class<WFSInfo> getServiceClass() {
         return WFSInfo.class;
+    }
+    
+    @Override
+    protected WFSInfo initialize(WFSInfo service) {
+        if ( service.getVersions() == null ) {
+            ((WFSInfoImpl)service).setVersions( new ArrayList() );
+        }
+        if ( service.getVersions().isEmpty() ) {
+            service.getVersions().add( new Version( "1.0.0" ) );
+            service.getVersions().add( new Version( "1.1.0" ) );
+        }
+        return service;
     }
 
 }
