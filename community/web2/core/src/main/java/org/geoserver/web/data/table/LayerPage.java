@@ -55,7 +55,7 @@ public class LayerPage extends GeoServerSecuredPage {
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
-        final CatalogIconFactory icons = new CatalogIconFactory();
+        final CatalogIconFactory icons = CatalogIconFactory.get();
         table = new GeoServerTablePanel<LayerInfo>("table", provider) {
 
             @Override
