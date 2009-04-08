@@ -190,7 +190,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 			
 			// render the watermark
             MapDecorationLayout.Block watermark = 
-                DefaultRasterMapProducer.getWatermark(this.mapContext.getRequest().getWMS());
+                DefaultRasterMapProducer.getWatermark(this.mapContext.getRequest().getWMS().getInfo());
 
             if (watermark != null) {
                 MapDecorationLayout layout = new MapDecorationLayout();

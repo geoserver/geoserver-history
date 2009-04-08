@@ -37,6 +37,8 @@ import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
 import org.geoserver.wms.responses.decoration.WatermarkDecoration;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WatermarkInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -432,14 +434,20 @@ public abstract class DefaultRasterMapProducer extends
                 : new MapDecorationLayout();
         }
 
-        MapDecorationLayout.Block watermark = getWatermark(mapContext.getRequest().getWMS());
-        if (watermark != null) layout.addBlock(watermark);
+        WMS wms = mapContext.getRequest().getWMS();
+
+        if (wms != null){ 
+            MapDecorationLayout.Block watermark = 
+                getWatermark(mapContext.getRequest().getWMS().getInfo());
+            if (watermark != null) layout.addBlock(watermark);
+        }
     }
 
-    public static MapDecorationLayout.Block getWatermark(WMS wms) {
-        if (wms != null && wms.isGlobalWatermarking()) {
+    public static MapDecorationLayout.Block getWatermark(WMSInfo wms) {
+        WatermarkInfo watermark = (wms == null ? null : wms.getWatermark());
+        if (watermark != null && watermark.isEnabled()) {
             Map<String, String> options = new HashMap<String,String>();
-            options.put("url", wms.getGlobalWatermarkingURL());
+            options.put("url", watermark.getURL());
             
             MapDecoration d = new WatermarkDecoration();
             try {
@@ -451,20 +459,39 @@ public abstract class DefaultRasterMapProducer extends
 
             MapDecorationLayout.Block.Position p = null;
             
-            int wmPos = wms.getWatermarkPosition();
-            if (wmPos ==  WMS.WATERMARK_UC) p = MapDecorationLayout.Block.Position.UC; 
-            if (wmPos ==  WMS.WATERMARK_UL) p = MapDecorationLayout.Block.Position.UL; 
-            if (wmPos ==  WMS.WATERMARK_UR) p = MapDecorationLayout.Block.Position.UR; 
-            if (wmPos ==  WMS.WATERMARK_CL) p = MapDecorationLayout.Block.Position.CL; 
-            if (wmPos ==  WMS.WATERMARK_CC) p = MapDecorationLayout.Block.Position.CC; 
-            if (wmPos ==  WMS.WATERMARK_CR) p = MapDecorationLayout.Block.Position.CR; 
-            if (wmPos ==  WMS.WATERMARK_LL) p = MapDecorationLayout.Block.Position.LL; 
-            if (wmPos ==  WMS.WATERMARK_LC) p = MapDecorationLayout.Block.Position.LC; 
-            if (wmPos ==  WMS.WATERMARK_LR) p = MapDecorationLayout.Block.Position.LR; 
-
-            if (p == null) {
-                throw new WmsException("Unknown position for global watermark: " 
-                    + wms.getWatermarkPosition());
+            WatermarkInfo.Position wmPos = watermark.getPosition();
+            switch (watermark.getPosition()) {
+                case TOP_LEFT:
+                    p = MapDecorationLayout.Block.Position.UL;
+                    break;
+                case TOP_CENTER:
+                    p = MapDecorationLayout.Block.Position.UC;
+                    break;
+                case TOP_RIGHT:
+                    p = MapDecorationLayout.Block.Position.UR;
+                    break;
+                case MID_LEFT:
+                    p = MapDecorationLayout.Block.Position.CL;
+                    break;
+                case MID_CENTER:
+                    p = MapDecorationLayout.Block.Position.CC;
+                    break;
+                case MID_RIGHT:
+                    p = MapDecorationLayout.Block.Position.CR;
+                    break;
+                case BOT_LEFT:
+                    p = MapDecorationLayout.Block.Position.LL;
+                    break;
+                case BOT_CENTER:
+                    p = MapDecorationLayout.Block.Position.LC;
+                    break;
+                case BOT_RIGHT:
+                    p = MapDecorationLayout.Block.Position.LR;
+                    break;
+                default:
+                    throw new WmsException(
+                        "Unknown WatermarkInfo.Position value.  Something is seriously wrong."
+                    );
             }
 
             return new MapDecorationLayout.Block(d, p, null, new Point(0,0));
