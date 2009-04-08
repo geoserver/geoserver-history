@@ -6,11 +6,13 @@ package org.vfny.geoserver.wms.responses;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,8 +31,14 @@ import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.responses.MapDecoration;
+import org.geoserver.wms.responses.MapDecorationLayout;
+import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
+import org.geoserver.wms.responses.decoration.WatermarkDecoration;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WatermarkInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
@@ -41,7 +49,9 @@ import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
 import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.feature.simple.SimpleFeature;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
+import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
@@ -111,11 +121,14 @@ public abstract class DefaultRasterMapProducer extends
 	/** A logger for this class. */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
 
-	/** Which format to encode the image in if one is not supplied */
-	private static final String DEFAULT_MAP_FORMAT = "image/png";
-	
-	/** The Watermark Painter instance **/
-	private WatermarkPainter wmPainter;
+    /** Which format to encode the image in if one is not supplied */
+    private static final String DEFAULT_MAP_FORMAT = "image/png";
+
+    /** The MapDecorationLayout instance **/
+    private MapDecorationLayout layout;
+
+    /** true iff this image is metatiled */
+    private boolean tiled = false;
 
 
 	/**
@@ -171,14 +184,20 @@ public abstract class DefaultRasterMapProducer extends
 	 *             For any problems.
 	 */
 	public void produceMap() throws WmsException {
+        try {
+            findDecorationLayout(mapContext);
+        } catch (Exception e) { 
+            throw new WmsException(e); 
+        }
 
-		final int width = mapContext.getMapWidth();
-		final int height = mapContext.getMapHeight();
+        Rectangle paintArea = new Rectangle(
+            0, 0, 
+            mapContext.getMapWidth(), mapContext.getMapHeight()
+        );
 
-		if (LOGGER.isLoggable(Level.FINE)) {
-			LOGGER.fine(new StringBuffer("setting up ").append(width).append(
-					"x").append(height).append(" image").toString());
-		}
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("setting up " + paintArea.width + "x" + paintArea.height + " image");
+        }
 
 		// extra antialias setting
 		final GetMapRequest request = mapContext.getRequest();
@@ -210,7 +229,8 @@ public abstract class DefaultRasterMapProducer extends
 		// is enabled, since apparently the Crop operation inside the meta-tiler
 		// generates striped images in that case (see GEOS-
 		boolean useAlpha = transparent || MetatileMapProducer.isRequestTiled(request, this);
-        final RenderedImage preparedImage = prepareImage(width, height, palette, useAlpha);
+        final RenderedImage preparedImage = prepareImage(paintArea.width, paintArea.height, 
+            palette, useAlpha);
         final Map hintsMap = new HashMap();
 
         final Graphics2D graphic = ImageUtils.prepareTransparency(transparent, bgColor,
@@ -260,7 +280,6 @@ public abstract class DefaultRasterMapProducer extends
 		// make sure the hints are set before we start rendering the map
 		graphic.setRenderingHints(hintsMap);
 
-		Rectangle paintArea = new Rectangle(width, height);
 		RenderingHints hints = new RenderingHints(hintsMap);
 		renderer = new ShapefileRenderer();
 		renderer.setContext(mapContext);
@@ -341,8 +360,8 @@ public abstract class DefaultRasterMapProducer extends
 		
         // apply watermarking
         try {
-            if (wmPainter != null)
-                this.wmPainter.paint(graphic, paintArea);
+            if (layout != null)
+                this.layout.paint(graphic, paintArea, mapContext);
         } catch (Exception e) {
             throw new WmsException("Problem occurred while trying to watermark data", "", e);
         } 
@@ -363,8 +382,116 @@ public abstract class DefaultRasterMapProducer extends
      * @param wmPainter
      *            the wmPainter to set
      */
-    public void setWmPainter(WatermarkPainter wmPainter) {
-        this.wmPainter = wmPainter;
+    public void setDecorationLayout(MapDecorationLayout layout) {
+        this.layout = layout;
+    }
+
+    public void findDecorationLayout(WMSMapContext mapContext) throws Exception {
+        String layoutName = null;
+        if (mapContext.getRequest().getFormatOptions() != null) {
+            layoutName = (String)mapContext.getRequest().getFormatOptions().get("layout");
+        }
+
+        if (layoutName != null){
+            try {
+                File layoutDir = GeoserverDataDirectory.findConfigDir(
+                    GeoserverDataDirectory.getGeoserverDataDirectory(),
+                    "layouts"
+                );
+
+                if (layoutDir != null) {
+                    File layoutConfig = new File(layoutDir, layoutName + ".xml");
+
+                    if (layoutConfig.exists() && layoutConfig.canRead()) {
+                        this.layout = MapDecorationLayout.fromFile(layoutConfig, tiled);
+                    } else {
+                        LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
+                    }
+                } else {
+                    LOGGER.log(Level.WARNING, "No layout directory defined");
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Failed to load layout: " + layoutName, e);
+            } 
+        }
+
+        if (layout == null){
+            layout = tiled 
+                ? new MetatiledMapDecorationLayout()
+                : new MapDecorationLayout();
+        }
+
+        WMS wms = mapContext.getRequest().getWMS();
+
+        if (wms != null){ 
+            MapDecorationLayout.Block watermark = 
+                getWatermark(mapContext.getRequest().getWMS().getServiceInfo());
+            if (watermark != null) layout.addBlock(watermark);
+        }
+    }
+
+    public static MapDecorationLayout.Block getWatermark(WMSInfo wms) {
+        WatermarkInfo watermark = (wms == null ? null : wms.getWatermark());
+        if (watermark != null && watermark.isEnabled()) {
+            Map<String, String> options = new HashMap<String,String>();
+            options.put("url", watermark.getURL());
+            
+            MapDecoration d = new WatermarkDecoration();
+            try {
+                d.loadOptions(options);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Couldn't construct watermark from configuration", e);
+                throw new WmsException(e);
+            }
+
+            MapDecorationLayout.Block.Position p = null;
+            
+            WatermarkInfo.Position wmPos = watermark.getPosition();
+            switch (watermark.getPosition()) {
+                case TOP_LEFT:
+                    p = MapDecorationLayout.Block.Position.UL;
+                    break;
+                case TOP_CENTER:
+                    p = MapDecorationLayout.Block.Position.UC;
+                    break;
+                case TOP_RIGHT:
+                    p = MapDecorationLayout.Block.Position.UR;
+                    break;
+                case MID_LEFT:
+                    p = MapDecorationLayout.Block.Position.CL;
+                    break;
+                case MID_CENTER:
+                    p = MapDecorationLayout.Block.Position.CC;
+                    break;
+                case MID_RIGHT:
+                    p = MapDecorationLayout.Block.Position.CR;
+                    break;
+                case BOT_LEFT:
+                    p = MapDecorationLayout.Block.Position.LL;
+                    break;
+                case BOT_CENTER:
+                    p = MapDecorationLayout.Block.Position.LC;
+                    break;
+                case BOT_RIGHT:
+                    p = MapDecorationLayout.Block.Position.LR;
+                    break;
+                default:
+                    throw new WmsException(
+                        "Unknown WatermarkInfo.Position value.  Something is seriously wrong."
+                    );
+            }
+
+            return new MapDecorationLayout.Block(d, p, null, new Point(0,0));
+        }
+
+        return null;
+    }
+
+    /**
+     * Indicate whether metatiling is activated for this map producer.
+     */
+    public void setMetatiled(boolean tiled) {
+        this.tiled = tiled;
     }
 
     /**
