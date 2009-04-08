@@ -137,6 +137,10 @@ public class ServiceInfoImpl implements ServiceInfo {
         return versions;
     }
 
+    public void setVersions(List versions) {
+        this.versions = versions;
+    }
+    
     public List getExceptionFormats() {
         return exceptionFormats;
     }
