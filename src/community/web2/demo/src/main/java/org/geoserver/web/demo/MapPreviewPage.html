@@ -7,9 +7,14 @@
   <!-- the table component -->
   <div wicket:id="table"></div>
   
+  <!-- The fragment for the icon -->
+  <wicket:fragment wicket:id="iconFragment">
+    <img wicket:id="layerIcon"/>
+  </wicket:fragment>
+  
   <!-- The fragment for the common links -->
   <wicket:fragment wicket:id="commonLinks">
-    <span wicket:id="ol"/>&nbsp;<span wicket:id="kml"/>&nbsp;<span wicket:id="gml"/>
+    <div style="white-space: nowrap;"><span wicket:id="ol"/>&nbsp;<span wicket:id="kml"/>&nbsp;<span wicket:id="gml"/></div>
   </wicket:fragment>
   
   <!--  The custom drop down with optgroups -->

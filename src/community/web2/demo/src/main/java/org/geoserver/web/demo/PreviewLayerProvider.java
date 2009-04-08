@@ -24,39 +24,13 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
 @SuppressWarnings("serial")
 public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
     static final Property<PreviewLayer> TYPE = new BeanProperty<PreviewLayer>(
-            "type", "type");
+            "Type", "type");
 
-    static final Property<PreviewLayer> WORKSPACE = new Property<PreviewLayer>() {
-
-        public Comparator<PreviewLayer> getComparator() {
-            return new PropertyComparator<PreviewLayer>(this);
-        }
-
-        public IModel getModel(IModel itemModel) {
-            PreviewLayer pl = (PreviewLayer) itemModel.getObject();
-            if(pl.layerInfo != null) {
-                return new PropertyModel(itemModel, "layerInfo.resource.store.workspace.name");
-            } else {
-                return new Model(null);
-            }
-        }
-
-        public String getName() {
-            return "workspace";
-        }
-
-        public Object getPropertyValue(PreviewLayer item) {
-            if(item.layerInfo != null) {
-                return item.layerInfo.getResource().getStore().getWorkspace().getName();
-            } else {
-                return null;
-            }
-        }
-        
-    };
-            
     static final Property<PreviewLayer> NAME = new BeanProperty<PreviewLayer>(
-            "name", "name");
+            "Name", "name");
+    
+    static final Property<PreviewLayer> TITLE = new BeanProperty<PreviewLayer>(
+            "Title", "title");
 
     static final Property<PreviewLayer> COMMON = new PropertyPlaceholder<PreviewLayer>(
             "Common formats");
@@ -65,7 +39,7 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
             "All formats");
 
     static final List<Property<PreviewLayer>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, NAME, COMMON, ALL);
+            NAME, TITLE, COMMON, ALL);
 
     @Override
     protected List<PreviewLayer> getItems() {
