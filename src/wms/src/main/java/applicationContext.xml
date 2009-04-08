@@ -411,4 +411,26 @@
       <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.BestGuessRegionatingStrategy"/>
     </bean>
 
+    <!-- Default Decoration Plugins -->
+    <bean id="image" 
+          class="org.geoserver.wms.responses.decoration.WatermarkDecoration"
+          singleton="false"
+    />
+
+    <bean id="legend" 
+          class="org.geoserver.wms.responses.decoration.LegendDecoration"
+          singleton="false"
+    >
+        <property name="catalog" ref="catalog2"/>
+    </bean>
+
+    <bean id="scaleratio" 
+          class="org.geoserver.wms.responses.decoration.ScaleRatioDecoration"
+          singleton="false"
+    />
+    
+    <bean id="scaleline" 
+          class="org.geoserver.wms.responses.decoration.ScaleLineDecoration"
+          singleton="false"
+    />
 </beans>
