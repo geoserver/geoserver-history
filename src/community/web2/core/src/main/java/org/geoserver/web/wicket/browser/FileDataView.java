@@ -154,23 +154,5 @@ public abstract class FileDataView extends Panel {
             throw new UnsupportedOperationException("This converter works only for strings");
         }
     }
-    
-//    public static void main(String[] args) {
-//        WicketTestApplication.start(new IComponentFactory() {
-//        
-//            public Component createComponent(String id) {
-//                FileProvider provider = new FileProvider(new File("c:/progetti/gisData"));
-//                provider.setSort(new SortParam(FileProvider.NAME, true));
-//                return new FileDataView(id, provider) {
-//
-//                    @Override
-//                    protected void linkNameClicked(File modelObject,
-//                            AjaxRequestTarget target) {
-//                        System.out.println(modelObject.getAbsolutePath());
-//                    }
-//                    
-//                };
-//            }
-//        });
-//    }
+
 }
