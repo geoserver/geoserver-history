@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.wicket.ResourceReference;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LayerInfo.Type;
+import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.MapLayerInfo;
@@ -49,10 +51,24 @@ public class PreviewLayer {
 
     public String getName() {
         if (layerInfo != null) {
-            return layerInfo.getName();
+            return layerInfo.getResource().getPrefixedName();
         } else {
             return groupInfo.getName();
         }
+    }
+    
+    public ResourceReference getIcon() {
+        if(layerInfo != null)
+            return CatalogIconFactory.get().getLayerIcon(layerInfo);
+        else
+            return CatalogIconFactory.GROUP_ICON;
+    }
+    
+    public String getTitle() {
+        if(layerInfo != null)
+            return layerInfo.getResource().getTitle();
+        else
+            return "";
     }
 
     public PreviewLayer.PreviewLayerType getType() {
