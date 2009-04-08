@@ -47,6 +47,9 @@ public class ScaleLineDecoration implements MapDecoration {
     private float fontSize = 10;
     private float dpi = 25.4f / 0.28f; /// OGC Spec for SLD
     private float strokeWidth = 2;
+
+    private Color bgcolor = Color.WHITE;
+    private Color fgcolor = Color.BLACK;
     
     public void loadOptions(Map<String, String> options) {
     	if (options.get("fontsize") != null) {
@@ -72,6 +75,12 @@ public class ScaleLineDecoration implements MapDecoration {
     			this.LOGGER.log(Level.WARNING, "'strokewidth' must be a float.", e);
     		}
     	}
+
+        Color tmp = LegendDecoration.parseColor(options.get("bgcolor"));
+        if (tmp != null) bgcolor = tmp;
+
+        tmp = LegendDecoration.parseColor(options.get("fgcolor"));
+        if (tmp != null) fgcolor = tmp;
     }
 
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
@@ -170,12 +179,12 @@ public class ScaleLineDecoration implements MapDecoration {
             Math.max(topPx, bottomPx) + 8, 8 + prongHeight * 2
         );
 
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(bgcolor);
         g2d.fill(frame);;
         
         frame.height -= 1;
         frame.width -= 1;
-    	g2d.setColor(Color.BLACK);
+    	g2d.setColor(fgcolor);
         g2d.setStroke(new BasicStroke(1));
         g2d.draw(frame);
     	

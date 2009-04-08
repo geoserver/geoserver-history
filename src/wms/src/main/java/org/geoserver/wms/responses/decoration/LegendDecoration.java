@@ -66,6 +66,9 @@ public class LegendDecoration implements MapDecoration {
 
     private static SLDStyleFactory styleFactory = new SLDStyleFactory();
 
+    private Color bgcolor = Color.WHITE;
+    private Color fgcolor = Color.BLACK;
+
     private static final GeometryFactory geomFac = new GeometryFactory();
 
     /**
@@ -89,6 +92,11 @@ public class LegendDecoration implements MapDecoration {
     private static final StyledShapePainter shapePainter = new StyledShapePainter(null);
 
     public void loadOptions(Map<String, String> options){
+        Color tmp = parseColor(options.get("bgcolor"));
+        if (tmp != null) this.bgcolor = tmp;
+
+        tmp = parseColor(options.get("fgcolor"));
+        if (tmp != null) this.fgcolor = tmp;
     }
 
     Catalog findCatalog(WMSMapContext mapContext){
@@ -160,9 +168,9 @@ public class LegendDecoration implements MapDecoration {
             g2d.scale(scaleFactor, scaleFactor);
         }
         AffineTransform bgTransform = g2d.getTransform();
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(bgcolor);
         g2d.fill(bgRect);
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(fgcolor);
 
         for (MapLayer layer : mapContext.getLayers()){
             SimpleFeatureType type = (SimpleFeatureType)layer.getFeatureSource().getSchema();
@@ -272,7 +280,6 @@ public class LegendDecoration implements MapDecoration {
 
         final int w = 20;
         final int h = 20;
-        final Color bgColor = Color.WHITE;
 
         FontMetrics metrics = g2d.getFontMetrics();
         AffineTransform oldTransform = g2d.getTransform();
@@ -438,5 +445,46 @@ public class LegendDecoration implements MapDecoration {
 		}
 
         return false;
-	}
+    }
+    
+    public static Color parseColor(String origInput) {
+        if (origInput == null) return null;
+
+        String input = origInput.trim();
+        input = input.replaceFirst("\\A#", "");
+
+        int r, g, b, a;
+
+        switch (input.length()){
+            case 1:
+            case 2:
+                return new Color(Integer.valueOf(input, 16));
+            case 3:
+                r = Integer.valueOf(input.substring(0, 1), 16);
+                g = Integer.valueOf(input.substring(1, 2), 16);
+                b = Integer.valueOf(input.substring(2, 3), 16);
+                return new Color(r, g, b);
+            case 4:
+                r = Integer.valueOf(input.substring(0, 1), 16);
+                g = Integer.valueOf(input.substring(1, 2), 16);
+                b = Integer.valueOf(input.substring(2, 3), 16);
+                a = Integer.valueOf(input.substring(3, 4), 16);
+                return new Color(r, g, b, a);
+            case 6:
+                r = Integer.valueOf(input.substring(0, 2), 16);
+                g = Integer.valueOf(input.substring(2, 4), 16);
+                b = Integer.valueOf(input.substring(4, 6), 16);
+                return new Color(r, g, b);
+            case 8:
+                r = Integer.valueOf(input.substring(0, 2), 16);
+                g = Integer.valueOf(input.substring(2, 4), 16);
+                b = Integer.valueOf(input.substring(4, 6), 16);
+                a = Integer.valueOf(input.substring(6, 8), 16);
+                return new Color(r, g, b, a);
+            default: 
+                throw new RuntimeException("Couldn't decode color value: " + origInput 
+                    + " (" + input +")"
+                );
+        }
+    }
 }
