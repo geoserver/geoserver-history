@@ -45,17 +45,11 @@
         <ul>
           <li>
             <label for="defaultInterpolationMethod"><wicket:message key="wcs.data.resource.defaultInterpolationMethod">Default Interpolation Method</wicket:message></label>
-            <input id="defaultInterpolationMethod" class="text" type="text" wicket:id="defaultInterpolationMethod"></input>
+            <select id="defaultInterpolationMethod" wicket:id="defaultInterpolationMethod"/>
           </li>
           <li>
             <label for="interpolationMethods">Current Interpolation Methods</label>
-            <select id="interpolationMethods" class="select"wicket:id="interpolationMethods" multiple="multiple"/>
-            <button wicket:id="deleteInterpolationMethods" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.delete">Delete Selected</wicket:message></button>
-          </li>
-          <li>
-            <label for="newInterpolationMethod">New Interpolation Method</label>
-            <input class="text" wicket:id="newInterpolationMethod" type="text"></input>
-            <button wicket:id="addNewInterpolationMethod" type="submit"><wicket:message key="wcs.data.resource.interpolationMethods.add">Add Method</wicket:message></button>
+            <div wicket:id="interpolationMethods"></div>
           </li>
         </ul>
       </fieldset>

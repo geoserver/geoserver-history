@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
@@ -27,6 +28,7 @@ import org.geoserver.web.wicket.SimpleChoiceRenderer;
 public class WCSLayerConfig extends LayerConfigurationPanel {
 
     private static final List<String> WCS_FORMATS = Arrays.asList("GIF","PNG","JPEG","TIFF","GTOPO30","GEOTIFF","IMAGEMOSAIC","ARCGRID");
+    private static final List<String> INTERPOLATIONS = Arrays.asList("nearest neighbour","bilinear","bicubic");
     
     private List<String> selectedRequestSRSs;
     private List<String> selectedResponseSRSs;
@@ -81,29 +83,11 @@ public class WCSLayerConfig extends LayerConfigurationPanel {
             }
         });
 
-        add(new TextField("defaultInterpolationMethod", new PropertyModel(coverage, "defaultInterpolationMethod")));
+        add(new DropDownChoice("defaultInterpolationMethod", new PropertyModel(coverage, "defaultInterpolationMethod"),
+               new WCSInterpolationModel()));
  
-        add(new ListMultipleChoice("interpolationMethods", 
-                    new PropertyModel(this, "selectedInterpolationMethods"), 
-                    coverage.getInterpolationMethods()
-                    )
-        );
-
-        add(new TextField("newInterpolationMethod", new PropertyModel(this, "newInterpolationMethod")));
-
-        add(new Button("deleteInterpolationMethods"){
-            public void onSubmit(){
-                coverage.getInterpolationMethods().removeAll(selectedInterpolationMethods);
-                selectedInterpolationMethods.clear();
-            }
-        });
-
-        add(new Button("addNewInterpolationMethod"){
-            public void onSubmit(){
-                coverage.getInterpolationMethods().add(newInterpolationMethod);
-                newInterpolationMethod = "";
-            }
-        });
+        add(new Palette("interpolationMethods", LiveCollectionModel.list(new PropertyModel(coverage, "interpolationMethods")), 
+                new WCSInterpolationModel(), new SimpleChoiceRenderer(), 7, false));
 
         // don't allow editing the native format
         TextField nativeFormat = new TextField("nativeFormat", new PropertyModel(coverage, "nativeFormat"));
@@ -124,6 +108,18 @@ public class WCSLayerConfig extends LayerConfigurationPanel {
         @Override
         protected Object load() {
             return new ArrayList(WCS_FORMATS);
+        }
+    }
+    
+    static class WCSInterpolationModel extends LoadableDetachableModel {
+
+        WCSInterpolationModel() {
+            super(new ArrayList(INTERPOLATIONS));
+        }
+
+        @Override
+        protected Object load() {
+            return new ArrayList(INTERPOLATIONS);
         }
     }
 }
