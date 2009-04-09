@@ -14,9 +14,8 @@ import org.apache.wicket.model.Model;
 /**
  * A {@link SimpleAjaxLink} that asks a confirmation by using a Javascript confirm
  * dialog before carrying out its job
- * @author Andrea Aime - OpenGeo
- *
  */
+@SuppressWarnings("serial")
 public abstract class ConfirmationAjaxLink extends SimpleAjaxLink {
     IModel confirm;
 
