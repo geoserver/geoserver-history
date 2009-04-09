@@ -52,8 +52,8 @@ public class LayerGroupPage extends GeoServerSecuredPage {
         return new SimpleAjaxLink(id, LayerGroupProvider.NAME.getModel(itemModel)) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                String lgid = getModelObjectAsString();
-                LayerGroupInfo lg = getCatalog().getLayerGroup( lgid );
+                String lgName = getModelObjectAsString();
+                LayerGroupInfo lg = getCatalog().getLayerGroupByName( lgName );
                 setResponsePage( new LayerGroupEditPage( lg ) );
             }
         };
