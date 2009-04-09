@@ -7,6 +7,7 @@ package org.geoserver.web.data;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
@@ -111,14 +112,19 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         });
         theForm.add(new Button("saveButton") {
             public void onSubmit() {
-                if (isNew) {
-                    getCatalog().add(getResourceInfo());
-                    getCatalog().add(getLayerInfo());
-                } else {
-                    getCatalog().save(getResourceInfo());
-                    getCatalog().save(getLayerInfo());
+                try {
+                    if (isNew) {
+                        getCatalog().add(getResourceInfo());
+                        getCatalog().add(getLayerInfo());
+                    } else {
+                        getCatalog().save(getResourceInfo());
+                        getCatalog().save(getLayerInfo());
+                    }
+                    setResponsePage(LayerPage.class);
+                } catch(Exception e) {
+                    LOGGER.log(Level.INFO, "Error saving layer", e);
+                    error(e.getMessage());
                 }
-                setResponsePage(LayerPage.class);
             }
         });
     }
