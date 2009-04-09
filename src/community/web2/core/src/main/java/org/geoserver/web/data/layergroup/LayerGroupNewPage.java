@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.layergroup;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -8,6 +12,10 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 
+/**
+ * Allows creation of a new layer group
+ */
+@SuppressWarnings("serial")
 public class LayerGroupNewPage extends GeoServerSecuredPage {
 
     public LayerGroupNewPage() {

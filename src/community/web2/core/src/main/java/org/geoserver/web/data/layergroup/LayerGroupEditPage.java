@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.layergroup;
 
 import java.util.Arrays;
@@ -30,13 +34,16 @@ import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.BeanProperty;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 
+/**
+ * Edits a layer group
+ */
+@SuppressWarnings("serial")
 public class LayerGroupEditPage extends GeoServerSecuredPage {
 
     IModel lgModel;
     ModalWindow popupWindow;
-    GeoServerTablePanel layerTable;
+    GeoServerTablePanel<LayerGroupEntry> layerTable;
     
     public LayerGroupEditPage( LayerGroupInfo layerGroup ) {
         lgModel = new LayerGroupDetachableModel( layerGroup );
