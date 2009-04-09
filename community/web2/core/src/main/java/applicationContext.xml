@@ -120,7 +120,7 @@
     <property name="id" value="property"/>
     <property name="factoryClass" value="org.geotools.data.property.PropertyDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
-    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+    <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
   </bean>
   
   <bean id="wfsDataStoreConfig" class="org.geoserver.web.data.DataStorePanelInfo">
