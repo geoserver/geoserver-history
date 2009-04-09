@@ -32,22 +32,12 @@
 			newcss = document.createElement("style");
 			newcss.type="text/css";
 			newcss.media="all";
+			if(newcss.styleSheet){ // IE
+				newcss.styleSheet.cssText = styles;
+			} else { // W3C
+				newcss.appendChild(document.createTextNode(styles));
+			}
 			document.getElementsByTagName("head")[0].appendChild(newcss);
-			cssrules = styles.split("}");
-			newcss = document.styleSheets[0];
-			if(newcss.rules) { //IE
-				for(i=cssrules.length-2;i>=0;i--) {
-					newrule = cssrules[i].split("{");
-					newcss.addRule(newrule[0],newrule[1])
-				}
-			}
-			else if(newcss.cssRules) { //Firefox etc
-				for(i=cssrules.length-1;i>=0;i--) {
-					if(cssrules[i].indexOf("{")!=-1){
-						newcss.insertRule(cssrules[i]+"}",0);
-					}
-				}
-			}
 		}
 	};
 	
@@ -253,7 +243,7 @@
 			this.switchClassSticky(icon, 'editAreaButtonNormal', false);
 			
 			this.smooth_selection=false;
-			$("selection_field").style.display= "none";
+			this.selection_field.style.display= "none";
 			$("cursor_pos").style.display= "none";
 			$("end_bracket").style.display= "none";
 		}else{
@@ -261,7 +251,7 @@
 			//this.switchClass(icon,'editAreaButtonSelected');
 			this.switchClassSticky(icon, 'editAreaButtonSelected', false);
 			this.smooth_selection=true;
-			$("selection_field").style.display= "block";
+			this.selection_field.style.display= "block";
 			$("cursor_pos").style.display= "block";
 			$("end_bracket").style.display= "block";
 		}	
@@ -1086,4 +1076,13 @@
 				
 			this.files[id]['edited']= to;
 		}
+	};
+
+	EditArea.prototype.set_show_line_colors = function(new_value){
+		this.show_line_colors = new_value;
+		
+		if( new_value )
+			this.selection_field.className	+= ' show_colors';
+		else
+			this.selection_field.className	= this.selection_field.className.replace( / show_colors/g, '' );
 	};

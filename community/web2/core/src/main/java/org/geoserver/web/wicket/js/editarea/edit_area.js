@@ -2,7 +2,7 @@
  *
  *	EditArea 
  * 	Developped by Christophe Dolivet
- *	Released under LGPL and Apache licenses
+ *	Released under LGPL, Apache and BSD licenses (use the one you want)
  *
 ******/
 
@@ -22,8 +22,10 @@
 		this.last_hightlighted_text= "";
 		this.syntax_list= new Array();
 		this.allready_used_syntax= new Object();
+		this.check_line_selection_timer= 50;	// the timer delay for modification and/or selection change detection
 		
 		this.textareaFocused= false;
+		this.highlight_selection_line= null;
 		this.previous= new Array();
 		this.next= new Array();
 		this.last_undo="";
@@ -94,8 +96,8 @@
 				parent.document.getElementById("frame_"+editArea.id).style.width= parent.document.getElementsByTagName("html")[0].clientWidth + "px";
 				parent.document.getElementById("frame_"+editArea.id).style.height= parent.document.getElementsByTagName("html")[0].clientHeight + "px";
 			}
-		
-			if(editArea.tab_browsing_area.style.display=='block' && !editArea.nav['isIE'])
+			
+			if(editArea.tab_browsing_area.style.display=='block' && ( !editArea.nav['isIE'] || editArea.nav['isIE'] >= 8 ) )
 			{
 				editArea.tab_browsing_area.style.height= "0px";
 				editArea.tab_browsing_area.style.height= (editArea.result.offsetTop - editArea.tab_browsing_area.offsetTop -1)+"px";
@@ -133,6 +135,8 @@
 		
 		if(!this.settings['is_editable'])
 			this.set_editable(false);
+		
+		this.set_show_line_colors( this.settings['show_line_colors'] );
 		
 		if(syntax_selec= $("syntax_selection"))
 		{
@@ -187,7 +191,9 @@
 		// insert css rules for highlight mode		
 		if(typeof(parent.editAreaLoader.syntax[this.settings["syntax"]])!="undefined"){
 			for(var i in parent.editAreaLoader.syntax){
-				this.add_style(parent.editAreaLoader.syntax[i]["styles"]);
+				if (typeof(parent.editAreaLoader.syntax[i]["styles"]) != "undefined"){
+					this.add_style(parent.editAreaLoader.syntax[i]["styles"]);
+				}
 			}
 		}
 		// init key events
@@ -195,10 +201,7 @@
 			$("editor").onkeypress= keyDown;
 		else
 			$("editor").onkeydown= keyDown;
-	/*	if(this.nav['isIE'] || this.nav['isFirefox'])
-			this.textarea.onkeydown= keyDown;
-		else if
-			this.textarea.onkeypress= keyDown;*/
+
 		for(var i=0; i<this.inlinePopup.length; i++){
 			if(this.nav['isIE'] || this.nav['isFirefox'])
 				$(this.inlinePopup[i]["popup_id"]).onkeydown= keyDown;
@@ -234,26 +237,30 @@
 			this.textarea.spellcheck= this.settings["gecko_spellcheck"];
 		}
 		
+		/** Browser specific style fixes **/
+		
+		// fix rendering bug for highlighted lines beginning with no tabs
+		if( this.nav['isFirefox'] >= '3' )
+			this.content_highlight.style.borderLeft= "solid 1px transparent";
+		
+		if(this.nav['isIE'] && this.nav['isIE'] < 8 ){
+			this.textarea.style.marginTop= "-1px";
+		}
+		/*
 		if(this.nav['isOpera']){
 			this.editor_area.style.position= "absolute";
-			this.selection_field.style.marginTop= "-1pt";			
-			this.selection_field.style.paddingTop= "1pt";
-			$("cursor_pos").style.marginTop= "-1pt";
-			$("end_bracket").style.marginTop= "-1pt";
-			this.content_highlight.style.marginTop= "-1pt";
-			/*$("end_bracket").style.marginTop="1px";*/
+		}*/
+		
+		if(this.nav['isSafari'] ){
+			this.editor_area.style.position= "absolute";
+			this.textarea.style.marginLeft="-3px";
+			this.textarea.style.marginTop="1px";
 		}
 		
-		if(this.nav['isSafari']){
+		if( this.nav['isChrome'] ){
 			this.editor_area.style.position= "absolute";
-			this.selection_field.style.marginTop= "-1pt";			
-			this.selection_field.style.paddingTop= "1pt";
-			this.selection_field.style.marginLeft= "3px";			
-			this.content_highlight.style.marginTop= "-1pt";
-			this.content_highlight.style.marginLeft= "3px";
-			$("cursor_pos").style.marginLeft= "3px";	
-			$("end_bracket").style.marginLeft= "3px";	
-			
+			this.textarea.style.marginLeft="0px";
+			this.textarea.style.marginTop="0px";
 		}
 		
 		// si le textarea n'est pas grand, un click sous le textarea doit provoquer un focus sur le textarea
@@ -299,7 +306,7 @@
 			//1.1) Calc the new width to use for display
 			if( this.settings['wrap_text'] )
 			{
-				var area_width= this.result.offsetWidth -50;
+				//	var area_width= this.result.offsetWidth -50;
 			}
 			else
 			{
@@ -310,19 +317,12 @@
 				}
 			}
 			
-			if(this.nav['isIE']>=7)
-				area_width-=45;
-	
+			
 			//1.2) the width is not the same, we must resize elements
 			if(this.textarea.previous_scrollWidth!=area_width)
 			{	
-				if(!this.nav['isOpera'] && this.textarea.style.width && (this.textarea.style.width.replace("px","") < area_width))
-					area_width+=50;
-			
-				if(this.nav['isGecko'] || this.nav['isOpera'])
-					this.container.style.width= (area_width+45)+"px";
-				else
-					this.container.style.width= area_width+"px";
+				
+				this.container.style.width= area_width+"px";
 				this.textarea.style.width= area_width+"px";
 				this.content_highlight.style.width= area_width+"px";	
 				this.textarea.previous_scrollWidth=area_width;
