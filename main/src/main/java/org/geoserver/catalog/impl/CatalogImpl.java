@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
@@ -45,6 +47,7 @@ import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
 
 /**
@@ -54,6 +57,8 @@ import org.opengis.feature.type.Name;
  * 
  */
 public class CatalogImpl implements Catalog {
+    
+    private static final Logger LOGGER = Logging.getLogger(CatalogImpl.class);
 
     /**
      * stores
@@ -1266,15 +1271,19 @@ public class CatalogImpl implements Catalog {
 
     protected void event(CatalogEvent event) {
         for (Iterator l = listeners.iterator(); l.hasNext();) {
-            CatalogListener listener = (CatalogListener) l.next();
-            if (event instanceof CatalogAddEvent) {
-                listener.handleAddEvent((CatalogAddEvent) event);
-            } else if (event instanceof CatalogRemoveEvent) {
-                listener.handleRemoveEvent((CatalogRemoveEvent) event);
-            } else if (event instanceof CatalogModifyEvent) {
-                listener.handleModifyEvent((CatalogModifyEvent) event);
-            } else if (event instanceof CatalogPostModifyEvent) {
-                listener.handlePostModifyEvent((CatalogPostModifyEvent)event);
+            try {
+                CatalogListener listener = (CatalogListener) l.next();
+                if (event instanceof CatalogAddEvent) {
+                    listener.handleAddEvent((CatalogAddEvent) event);
+                } else if (event instanceof CatalogRemoveEvent) {
+                    listener.handleRemoveEvent((CatalogRemoveEvent) event);
+                } else if (event instanceof CatalogModifyEvent) {
+                    listener.handleModifyEvent((CatalogModifyEvent) event);
+                } else if (event instanceof CatalogPostModifyEvent) {
+                    listener.handlePostModifyEvent((CatalogPostModifyEvent)event);
+                }
+            } catch(Exception e) {
+                LOGGER.log(Level.WARNING, "Catalog listener is throwing exceptions, it should not...", e);
             }
             
         }
