@@ -2,6 +2,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+
+  <!--
+   Core web app setup
+    -->
   <bean id="webApplication"
       class="org.geoserver.web.GeoServerApplication">
   </bean>
@@ -39,7 +43,14 @@
     </property>
   </bean>
   
-  <!-- Common Categories -->
+  <!-- 
+   Menu categories
+   -->
+  <bean id="serverCategory" class="org.geoserver.web.Category">
+     <property name="nameKey" value="category.server"/>
+     <property name="order" value="100"/>
+  </bean>
+  
   <bean id="dataCategory" class="org.geoserver.web.Category">
      <property name="nameKey" value="category.data"/>
      <property name="order" value="150"/>
@@ -49,19 +60,103 @@
      <property name="nameKey" value="category.services"/>
      <property name="order" value="125"/>
   </bean>
-
-  <bean id="serverCategory" class="org.geoserver.web.Category">
-     <property name="nameKey" value="category.server"/>
-     <property name="order" value="100"/>
+  
+  <!-- 
+   Server menu items
+    -->
+  <bean id="statusMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.admin.status"/>
+    <property name="titleKey" value="StatusPage.page.title"/>
+    <property name="descriptionKey" value="StatusPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.admin.StatusPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="../img/icons/silk/server_chart.png"/>
+    <property name="order" value="10"/>
+  </bean>
+  <bean id="contactMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.admin.contact"/>
+    <property name="titleKey" value="ContactPage.page.title"/>
+    <property name="descriptionKey" value="ContactPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.admin.ContactPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="../img/icons/silk/vcard.png"/>
+    <property name="order" value="20"/>
+  </bean>
+  <bean id="globalSettingsMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.admin.global"/>
+    <property name="titleKey" value="GlobalSettingsPage.page.title"/>
+    <property name="descriptionKey" value="GlobalSettingsPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.admin.GlobalSettingsPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="../img/icons/silk/server.png"/>
+    <property name="order" value="30"/>
+  </bean>
+  <bean id="JAIMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.admin.jai"/>
+    <property name="titleKey" value="JAIPage.page.title"/>
+    <property name="descriptionKey" value="JAIPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.admin.JAIPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="../img/icons/silk/cog_photo.png"/>
+    <property name="order" value="40"/>
   </bean>
 
-  <!-- Resource configuration pages -->
-  <bean id="basicResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+
+  <!-- 
+   Data pages
+   -->
+  <bean id="workspaceMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="workspaces"/>
+    <property name="titleKey" value="WorkspacePage.page.title"/>
+    <property name="descriptionKey" value="WorkspacePage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.workspace.WorkspacePage"/>
+    <property name="category" ref="dataCategory"/>
+    <property name="icon" value="../../img/icons/silk/folder.png"/>
+  </bean>
+  <bean id="storeMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="stores"/>
+    <property name="titleKey" value="StorePage.page.title"/>
+    <property name="descriptionKey" value="StorePage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.store.StorePage"/>
+    <property name="category" ref="dataCategory"/>
+    <property name="icon" value="../../img/icons/silk/database.png"/>
+  </bean>
+  <bean id="layerMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="layers"/>
+    <property name="titleKey" value="LayerPage.page.title"/>
+    <property name="descriptionKey" value="LayerPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.layer.LayerPage"/>
+    <property name="category" ref="dataCategory"/>
+    <property name="icon" value="../../img/icons/silk/picture_empty.png"/>
+  </bean>
+  <bean id="layerGroupMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="layerGroups"/>
+    <property name="titleKey" value="LayerGroupPage.page.title"/>
+    <property name="descriptionKey" value="LayerGroupPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.data.layergroup.LayerGroupPage"/>
+    <property name="category" ref="dataCategory"/>
+    <property name="icon" value="../../img/icons/silk/layers.png"/>
+  </bean>
+  
+  <!-- 
+   Demo menu item
+   -->
+  <bean id="demoMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="demos"/>
+    <property name="titleKey" value="demo.title"/>
+    <property name="descriptionKey" value="demo.description"/>
+    <property name="componentClass" value="org.geoserver.web.DemoPage"/>
+  </bean>
+  
+  <!-- 
+    Resource configuration panels 
+    -->
+  <bean id="basicResourceConfigPanel" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
     <property name="titleKey" value="data.resource.config.basic"/>
     <property name="componentClass" value="org.geoserver.web.data.BasicResourceConfig"/>
   </bean>
-  <bean id="featureResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+  <bean id="featureResourceConfigPanel" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="feature"/>
     <property name="titleKey" value="data.resource.config.feature"/>
     <property name="componentClass" value="org.geoserver.web.data.FeatureResourceConfigurationPanel"/>
@@ -71,7 +166,7 @@
       </list>
     </property>
   </bean>
-  <bean id="coverageResourceConfig" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+  <bean id="coverageResourceConfigPanel" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
     <property name="id" value="coverage"/>
     <property name="titleKey" value="data.resource.config.coverage"/>
     <property name="componentClass" value="org.geoserver.web.data.CoverageResourceConfigurationPanel"/>
@@ -82,145 +177,50 @@
     </property>
   </bean>
 
-  <!-- Layer configuration pages -->
-  <bean id="basicLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+  <!-- 
+   Layer configuration panels 
+   -->
+  <bean id="basicLayerConfigPanel" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
     <property name="id" value="basic"/>
     <property name="titleKey" value="publish.layer.config.basic"/>
     <property name="componentClass" value="org.geoserver.web.publish.BasicLayerConfig"/>
   </bean>
     
-  <bean id="httpLayerConfig" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
+  <bean id="httpLayerConfigPanel" class="org.geoserver.web.publish.LayerConfigurationPanelInfo">
     <property name="id" value="http"/>
     <property name="titleKey" value="publish.layer.config.http"/>
     <property name="componentClass" value="org.geoserver.web.publish.HTTPLayerConfig"/>
   </bean>
   
-  <!-- <bean id="h2Config" class="org.geoserver.web.data.DataStorePanelInfo">
-    <property name="id" value="h2"/>
-    <property name="factoryClass" value="org.geotools.data.h2.H2DataStoreFactory"/>
-    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
-    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
-  </bean> -->
-  
-  <bean id="postgisConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+  <!-- 
+   Data store panels
+   -->
+  <bean id="postgisDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="postgis"/>
     <property name="factoryClass" value="org.geotools.data.postgis.PostgisDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
   </bean>
   
-  <bean id="shapefileConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="shapefileDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="property"/>
     <property name="factoryClass" value="org.geotools.data.shapefile.ShapefileDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
   </bean>
   
-  <bean id="propertyConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="propertyDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="property"/>
     <property name="factoryClass" value="org.geotools.data.property.PropertyDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
   </bean>
   
-  <bean id="wfsDataStoreConfig" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="wfsDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
     <property name="id" value="wfs"/>
     <property name="factoryClass" value="org.geotools.data.wfs.WFSDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/server_vector.png"/>
   </bean>
-  
-  <bean id="demoPageShortcut" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="demos"/>
-    <property name="titleKey" value="demo.title"/>
-    <property name="descriptionKey" value="demo.description"/>
-    <property name="componentClass" value="org.geoserver.web.DemoPage"/>
-  </bean>
-  <bean id="JAIPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="server.admin.jai"/>
-    <property name="titleKey" value="JAIPage.page.title"/>
-    <property name="descriptionKey" value="JAIPage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.admin.JAIPage"/>
-    <property name="category" ref="serverCategory"/>
-    <property name="icon" value="../img/icons/silk/cog_photo.png"/>
-    <property name="order" value="40"/>
-  </bean>
-  <bean id="statusPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="server.admin.status"/>
-    <property name="titleKey" value="StatusPage.page.title"/>
-    <property name="descriptionKey" value="StatusPage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.admin.StatusPage"/>
-    <property name="category" ref="serverCategory"/>
-    <property name="icon" value="../img/icons/silk/server_chart.png"/>
-    <property name="order" value="10"/>
-  </bean>
-  <bean id="contactPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="server.admin.contact"/>
-    <property name="titleKey" value="ContactPage.page.title"/>
-    <property name="descriptionKey" value="ContactPage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.admin.ContactPage"/>
-    <property name="category" ref="serverCategory"/>
-    <property name="icon" value="../img/icons/silk/vcard.png"/>
-    <property name="order" value="20"/>
-  </bean>
-  <bean id="globalSettingsPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="server.admin.global"/>
-    <property name="titleKey" value="GlobalSettingsPage.page.title"/>
-    <property name="descriptionKey" value="GlobalSettingsPage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.admin.GlobalSettingsPage"/>
-    <property name="category" ref="serverCategory"/>
-    <property name="icon" value="../img/icons/silk/server.png"/>
-    <property name="order" value="30"/>
-  </bean>
-  <bean id="workspacePageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="workspaces"/>
-    <property name="titleKey" value="WorkspacePage.page.title"/>
-    <property name="descriptionKey" value="WorkspacePage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.data.workspace.WorkspacePage"/>
-    <property name="category" ref="dataCategory"/>
-    <property name="icon" value="../../img/icons/silk/folder.png"/>
-  </bean>
-  <bean id="storePageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="stores"/>
-    <property name="titleKey" value="StorePage.page.title"/>
-    <property name="descriptionKey" value="StorePage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.data.store.StorePage"/>
-    <property name="category" ref="dataCategory"/>
-    <property name="icon" value="../../img/icons/silk/database.png"/>
-  </bean>
-  <bean id="layerPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="layers"/>
-    <property name="titleKey" value="LayerPage.page.title"/>
-    <property name="descriptionKey" value="LayerPage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.data.layer.LayerPage"/>
-    <property name="category" ref="dataCategory"/>
-    <property name="icon" value="../../img/icons/silk/picture_empty.png"/>
-  </bean>
-  <bean id="layerGroupPageMenu" class="org.geoserver.web.MenuPageInfo">
-    <property name="id" value="layerGroups"/>
-    <property name="titleKey" value="LayerGroupPage.page.title"/>
-    <property name="descriptionKey" value="LayerGroupPage.page.description"/>
-    <property name="componentClass" value="org.geoserver.web.data.layergroup.LayerGroupPage"/>
-    <property name="category" ref="dataCategory"/>
-    <property name="icon" value="../../img/icons/silk/layers.png"/>
-  </bean>
-  
-  <!-- 
-  <bean id="mySqlConfig" class="org.geoserver.web.data.DataStorePanelInfo">
-    <property name="id" value="MySql"/>
-    <property name="storeClassName" value="org.geotools.data.mysql.MySQLDataStore"/>
-    <property name="factoryClassName" value="org.geotools.data.mysql.MySQLDataStoreFactory"/>
-    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
-    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
-  </bean>
-  -->
-    
-  <!-- bean id="servicesPage" class="org.geoserver.web.MainPageInfo">
-    <property name="id" value="services"/>
-    <property name="title" value="Services"/>
-    <property name="componentClass" value="org.geoserver.web.services.ServicesPage"/>
-  </bean-->
-  
-  <!-- data store wizards -->
-  <!--bean id="shapefileWizard" class="org.geoserver.web.data.wizard.ShapefileWizardDelegate"/-->
+ 
 </beans>
