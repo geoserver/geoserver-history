@@ -1,10 +1,6 @@
-package org.geoserver.web.data.table;
+package org.geoserver.web.data.store;
 
-import static org.geoserver.web.data.table.StoreProvider.ENABLED;
-import static org.geoserver.web.data.table.StoreProvider.NAME;
-import static org.geoserver.web.data.table.StoreProvider.REMOVE;
-import static org.geoserver.web.data.table.StoreProvider.TYPE;
-import static org.geoserver.web.data.table.StoreProvider.WORKSPACE;
+import static org.geoserver.web.data.store.StoreProvider.*;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;

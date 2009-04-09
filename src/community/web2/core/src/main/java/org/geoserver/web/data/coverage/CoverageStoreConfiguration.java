@@ -25,8 +25,8 @@ import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.datastore.panel.LabelParamPanel;
 import org.geoserver.web.data.datastore.panel.TextParamPanel;
 import org.geoserver.web.data.datastore.panel.WorkspacePanel;
-import org.geoserver.web.data.table.NewLayerPage;
-import org.geoserver.web.data.table.StorePage;
+import org.geoserver.web.data.layer.NewLayerPage;
+import org.geoserver.web.data.store.StorePage;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 

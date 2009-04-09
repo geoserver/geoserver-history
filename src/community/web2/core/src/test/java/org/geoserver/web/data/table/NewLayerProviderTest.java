@@ -4,6 +4,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.geoserver.web.data.layer.NewLayerPageProvider;
 
 
 public class NewLayerProviderTest extends GeoServerWicketTestSupport {

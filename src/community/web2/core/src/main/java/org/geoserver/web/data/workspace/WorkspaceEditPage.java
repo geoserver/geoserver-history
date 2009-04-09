@@ -16,8 +16,8 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.table.StorePanel;
-import org.geoserver.web.data.table.StoreProvider;
+import org.geoserver.web.data.store.StorePanel;
+import org.geoserver.web.data.store.StoreProvider;
 
 /**
  * Allows editing a specific workspace

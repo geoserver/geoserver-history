@@ -1,6 +1,6 @@
 package org.geoserver.web;
 
-import org.geoserver.web.data.table.LayerPage;
+import org.geoserver.web.data.layer.LayerPage;
 
 public class GeoServerSecuredPageTest extends GeoServerWicketTestSupport {
     public void testSecuredPageGivesRedirectWhenLoggedOut() {

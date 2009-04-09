@@ -28,7 +28,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.table.LayerPage;
+import org.geoserver.web.data.layer.LayerPage;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.publish.LayerConfigurationPanelInfo;
 
