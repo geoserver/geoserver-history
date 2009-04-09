@@ -72,6 +72,7 @@ import org.vfny.geoserver.crs.GeoserverCustomWKTFactory;
  * @author Justin Deoliveira, OpenGeo
  *
  */
+@SuppressWarnings("serial")
 public class SRSListPanel extends Panel {
     /**
      * max number of rows to show in the table
