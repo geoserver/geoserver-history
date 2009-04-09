@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.layergroup;
 
 import java.util.ArrayList;
@@ -10,6 +14,12 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 
+/**
+ * Lists the layers in a layer group
+ * @author Andrea Aime - OpenGeo
+ *
+ */
+@SuppressWarnings("serial")
 public class LayerGroupEntryProvider extends GeoServerDataProvider<LayerGroupEntry> {
 
     public static Property<LayerGroupEntry> LAYER = 
