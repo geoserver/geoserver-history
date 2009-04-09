@@ -1,31 +1,39 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wcs.web.publish;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.web.publish.LayerConfigurationPanel;
+import org.geoserver.web.wicket.LiveCollectionModel;
+import org.geoserver.web.wicket.SimpleChoiceRenderer;
 
 /**
  * A configuration panel for CoverageInfo properties that related to WCS publication
- * @author Andrea Aime - OpenGeo
- *
  */
 @SuppressWarnings("serial")
 public class WCSLayerConfig extends LayerConfigurationPanel {
 
+    private static final List<String> WCS_FORMATS = Arrays.asList("GIF","PNG","JPEG","TIFF","GTOPO30","GEOTIFF","IMAGEMOSAIC","ARCGRID");
+    
     private List<String> selectedRequestSRSs;
     private List<String> selectedResponseSRSs;
-    private List<String> selectedFormats;
     private List<String> selectedInterpolationMethods;
     private String newRequestSRS;
     private String newResponseSRS;
     private String newInterpolationMethod;
-    private String newFormat;
 
     public WCSLayerConfig(String id, IModel model){
         super(id, model);
@@ -97,28 +105,25 @@ public class WCSLayerConfig extends LayerConfigurationPanel {
             }
         });
 
-        add(new TextField("nativeFormat", new PropertyModel(coverage, "nativeFormat")));
+        // don't allow editing the native format
+        TextField nativeFormat = new TextField("nativeFormat", new PropertyModel(coverage, "nativeFormat"));
+        nativeFormat.setEnabled(false);
+        add(nativeFormat);
 
-        add(new ListMultipleChoice("supportedFormats",
-                new PropertyModel(this, "selectedFormats"),
-                coverage.getSupportedFormats()
-                )
-        );
-
-        add(new TextField("newFormat", new PropertyModel(this, "newFormat")));
-
-        add(new Button("deleteSelectedFormats"){
-            public void onSubmit(){
-                coverage.getSupportedFormats().removeAll(selectedFormats);
-                selectedFormats.clear();
-            }
-        });
-
-        add(new Button("addNewFormat"){
-            public void onSubmit(){
-                coverage.getSupportedFormats().add(newFormat);
-                newFormat = "";
-            }
-        });
+        add(new Palette("formatPalette", LiveCollectionModel.list(new PropertyModel(coverage, "supportedFormats")), 
+                new WCSFormatsModel(), new SimpleChoiceRenderer(), 10, false));
    }
+    
+    
+    static class WCSFormatsModel extends LoadableDetachableModel {
+
+        WCSFormatsModel() {
+            super(new ArrayList(WCS_FORMATS));
+        }
+
+        @Override
+        protected Object load() {
+            return new ArrayList(WCS_FORMATS);
+        }
+    }
 }

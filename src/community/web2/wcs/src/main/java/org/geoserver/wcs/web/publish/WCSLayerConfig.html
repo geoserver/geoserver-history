@@ -1,4 +1,4 @@
-<html>
+<html xmlns:wicket="http://wicket.apache.org/">
 <head></head>
 <body>
 <form name="theForm">
@@ -69,14 +69,8 @@
             <input id="nativeFormat" wicket:id="nativeFormat" type="text"></input>
           </li>
           <li>
-            <label for="supportedFormats"><wicket:message key="wcs.data.resource.supportedFormats">Supported Formats</wicket:message></label>
-            <select id="supportedFormats" class="select" wicket:id="supportedFormats" multiple="multiple"/>
-            <button wicket:id="deleteSelectedFormats" type="submit"><wicket:message key="wcs.data.resource.format.delete">Delete Selected</wicket:message></button>
-          </li>
-          <li>
-            <label for="newFormat">New Format</label>
-            <input id="newFormat" class="text" wicket:id="newFormat" type="text"></input>
-            <button wicket:id="addNewFormat" type="submit"><wicket:message key="wcs.data.resource.format.add">Add Format</wicket:message></button>
+            <label for="formatPalette"><wicket:message key="wcs.data.resource.supportedFormats">Supported Formats</wicket:message></label>
+            <div wicket:id="formatPalette"></div>
           </li>
         </ul>
       </fieldset>
