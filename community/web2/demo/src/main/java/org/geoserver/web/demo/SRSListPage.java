@@ -12,10 +12,8 @@ import org.geoserver.web.wicket.SRSListPanel;
 
 /**
  * Lists all the SRS available in GeoServer
- * 
- * @author Andrea Aime - OpenGeo
- * 
  */
+@SuppressWarnings("serial")
 public class SRSListPage extends GeoServerBasePage {
 
     public SRSListPage() {
