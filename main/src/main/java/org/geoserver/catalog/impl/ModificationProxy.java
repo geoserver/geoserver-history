@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,10 +60,11 @@ public class ModificationProxy implements InvocationHandler, Serializable {
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
         
+        String property = null;
         if ( ( method.getName().startsWith( "get")  || method.getName().startsWith( "is" ) ) 
                 && method.getParameterTypes().length == 0 ) {
             //intercept getter to check the dirty property set
-            String property = method.getName().substring( 
+            property = method.getName().substring( 
                 method.getName().startsWith( "get") ? 3 : 2 );
             if ( properties != null && properties().containsKey( property ) ) {
                 //return the previously set object
@@ -86,7 +88,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         }
         if ( method.getName().startsWith( "set") && args.length == 1) {
             //intercept setter and put new value in list
-            String property = method.getName().substring( 3 );
+            property = method.getName().substring( 3 );
             properties().put( property, args[0] );
             
             return null;
@@ -101,6 +103,9 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                 Object o = ModificationProxy.unwrap( result );
                 if ( o == result ) {
                     result = ModificationProxy.create( result, (Class) method.getReturnType() );
+                    
+                    //cache the proxy, in case it is modified itself
+                    properties().put( property, result );
                 }
                 else {
                     //result was already proxied, leave as is
@@ -138,6 +143,16 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                         c.clear();
                         c.addAll( (Collection) v );
                     }
+                    else if ( Info.class.isAssignableFrom( g.getReturnType() ) ) {
+                        //check for a proxy, and commit it
+                        Info info = (Info) g.invoke(proxyObject, null);
+                        if ( info instanceof Proxy ) {
+                            ModificationProxy h = handler( info );
+                            if ( h != null && h.isDirty() ) {
+                                h.commit();
+                            }
+                        }
+                    }
                     else {
                         //call the setter
                         Method s = proxyObject.getClass().getMethod( "set" + p, g.getReturnType() );
@@ -171,20 +186,65 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         return properties;
     }
     
-    public List<String> getPropertyNames() {
+    /**
+     * Flag which indicates whether any properties of the object being proxied 
+     * are changed.
+     */
+    public boolean isDirty() {
+        boolean dirty = false;
+        for ( Iterator i = properties().entrySet().iterator(); i.hasNext() && !dirty; ) {
+            Map.Entry e = (Map.Entry) i.next();
+            if ( e.getValue() instanceof Proxy ) {
+                ModificationProxy h = handler( e.getValue() );
+                if ( h != null && !h.isDirty() ) {
+                    continue;
+                }
+            }
+            
+            dirty = true;
+        }
+        return dirty;
+    }
+    
+    List<String> getDirtyProperties() {
         List<String> propertyNames = new ArrayList<String>();
         
         for ( String propertyName : properties().keySet() ) {
-            propertyNames.add( Character.toLowerCase( propertyName.charAt( 0 ) )
-              + propertyName.substring(1));
+            //in the case this property is another proxy, check that it is actually dirty
+            Object value = properties.get( propertyName );
+            if ( value instanceof Proxy ) {
+                ModificationProxy h = handler( value );
+                if ( h != null && !h.isDirty() ) {
+                    continue;
+                }
+            }
+            propertyNames.add( propertyName );
         }
         
         return propertyNames;
     }
     
+    /**
+     * Returns the names of any changed properties.
+     */
+    public List<String> getPropertyNames() {
+        List<String> propertyNames = getDirtyProperties();
+        
+        for ( int i = 0; i < propertyNames.size(); i++ ) {
+            String name = propertyNames.get( i );
+            propertyNames.set( i , Character.toLowerCase( name.charAt( 0 ) )
+                    + name.substring(1) );
+        }
+        
+        return propertyNames;
+    }
+    
+    /**
+     * Returns the old values of any changed properties.
+     */
     public List<Object> getOldValues() {
         List<Object> oldValues = new ArrayList<Object>();
-        for ( String propertyName : properties().keySet() ) {
+        for ( String propertyName : getDirtyProperties() ) {
             try {
                 Method g = getter(propertyName);
                 if ( g == null ) {
@@ -201,8 +261,15 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         return oldValues;
     }
     
+    /**
+     * Returns the new values of any changed properties.
+     */
     public List<Object> getNewValues() {
-        return new ArrayList<Object>(properties().values());
+        ArrayList newValues = new ArrayList();
+        for ( String propertyName : getDirtyProperties()) {
+            newValues.add( properties().get( propertyName ) );
+        }
+        return newValues;
     }
     
     /*
@@ -281,9 +348,9 @@ public class ModificationProxy implements InvocationHandler, Serializable {
      */
     public static <T> T unwrap( T object ) {
         if ( object instanceof Proxy ) {
-            InvocationHandler h = Proxy.getInvocationHandler( object );
-            if ( h instanceof ModificationProxy ) {
-               return (T) ((ModificationProxy)h).getProxyObject();
+            ModificationProxy h = handler( object );
+            if ( h != null ) {
+                return (T) h.getProxyObject();
             }
         }
         if ( object instanceof ProxyList ) {
@@ -293,6 +360,23 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         return object;
     }
     
+    /**
+     * Returns the ModificationProxy invocation handler for an proxy object.
+     * <p>
+     * This method will return null in the case where the object is not a proxy, or
+     * it is being proxies by another invocation handler.
+     * </p>
+     */
+    public static ModificationProxy handler( Object object ) {
+        if ( object instanceof Proxy ) {
+            InvocationHandler h = Proxy.getInvocationHandler( object );
+            if ( h instanceof ModificationProxy ) {
+                return (ModificationProxy) h;
+            }
+        }
+        
+        return null;
+    }
     static class list<T> extends ProxyList {
 
         list( List<T> list, Class<T> clazz ) {
