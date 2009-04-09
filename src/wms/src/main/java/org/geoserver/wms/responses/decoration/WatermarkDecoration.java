@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
@@ -38,6 +39,8 @@ public class WatermarkDecoration implements MapDecoration {
 
     private String imageURL;
 
+    private float opacity = 1.0f;
+
     /**
      * Transient cache to avoid reloading the same file over and over
      */
@@ -46,6 +49,15 @@ public class WatermarkDecoration implements MapDecoration {
 
     public void loadOptions(Map<String, String> options){
         this.imageURL = options.get("url");
+
+        if (options.containsKey("opacity")) {
+            try {
+                opacity = Float.valueOf(options.get("opacity")) / 100f;
+                opacity = Math.max(Math.min(opacity, 1f), 0f);
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Invalid opacity value: " + options.get("opacity"), e);
+            }
+        }
     }
 
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
@@ -71,13 +83,10 @@ public class WatermarkDecoration implements MapDecoration {
         BufferedImage logo = getLogo(mapContext);
 
         if (logo != null) {
-            final WMS wms = mapContext.getRequest().getWMS();
-
             Composite oldComposite = g2D.getComposite();
             g2D.setComposite(
-                AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                (float) ((100.0 - wms.getWatermarkTransparency()) / 100.0)
-            ));
+                AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity)
+            );
 
             AffineTransform tx = 
                 AffineTransform.getTranslateInstance(paintArea.getX(), paintArea.getY());

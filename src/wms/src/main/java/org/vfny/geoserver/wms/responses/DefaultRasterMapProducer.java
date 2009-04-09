@@ -448,6 +448,7 @@ public abstract class DefaultRasterMapProducer extends
         if (watermark != null && watermark.isEnabled()) {
             Map<String, String> options = new HashMap<String,String>();
             options.put("url", watermark.getURL());
+            options.put("opacity", Float.toString((255f - watermark.getTransparency())/ 2.55f));
             
             MapDecoration d = new WatermarkDecoration();
             try {
