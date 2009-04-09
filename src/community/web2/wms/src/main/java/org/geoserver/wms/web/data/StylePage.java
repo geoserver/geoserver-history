@@ -59,7 +59,7 @@ public class StylePage extends GeoServerSecuredPage {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 String sid = getModelObjectAsString();
-                StyleInfo style = getCatalog().getStyle( sid );
+                StyleInfo style = getCatalog().getStyleByName( sid );
                 setResponsePage( new StyleEditPage( style ) );
             }
         };
