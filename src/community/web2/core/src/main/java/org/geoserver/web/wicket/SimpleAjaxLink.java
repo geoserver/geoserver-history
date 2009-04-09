@@ -15,6 +15,7 @@ import org.apache.wicket.model.IModel;
  * avoid some boilerplate code in case the link is really just 
  * @author Andrea Aime - OpenGeo
  */
+@SuppressWarnings("serial")
 public abstract class SimpleAjaxLink extends Panel {
     AjaxLink link;
     Label label;
