@@ -59,5 +59,7 @@ syntax_sql: "SQL",
 syntax_ruby: "Ruby",
 syntax_robotstxt: "Robots txt",
 syntax_tsql: "T-SQL",
+syntax_perl: "Perl",
+syntax_coldfusion: "Coldfusion",
 close_tab: "Fermer le fichier"
 };
