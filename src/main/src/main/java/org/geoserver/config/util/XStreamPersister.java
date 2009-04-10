@@ -194,7 +194,7 @@ public class XStreamPersister {
         SortableFieldKeySorter sorter = new SortableFieldKeySorter();
         sorter.registerFieldOrder( CatalogImpl.class, new String[]{ "workspaces", "namespaces", "stores", "styles", 
             /* these we actually omit, but the sorter needs them specified */
-            "layerGroups", "resources", "maps", "listeners", "layers",  "resourcePool", "resourceLoader" } ); 
+            "layerGroups", "resources", "maps", "listeners", "layers",  "resourcePool", "resourceLoader", "LOGGER" } ); 
         
         ReflectionProvider reflectionProvider = new CustomReflectionProvider( new FieldDictionary( sorter ) ); 
             //new Sun14ReflectionProvider( new FieldDictionary( sorter  ) ); 
