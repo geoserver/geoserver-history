@@ -6,18 +6,18 @@
   <ul>
     <li>
       <fieldset>
-        <legend><span><wicket:message key="page.title">Default Title</wicket:message></span></legend>
+        <legend><span><wicket:message key="defaultTitle">Default Title</wicket:message></span></legend>
         <ul>
           <li>
-            <label for="defaultStyle"><wicket:message key="page.defaultStyle">Default Style</wicket:message></label>
+            <label for="defaultStyle"><wicket:message key="defaultStyle">Default Style</wicket:message></label>
             <select id="defaultStyle" class="select" wicket:id="defaultStyle"></select>
           </li>
           <li> 
-            <label><wicket:message key="page.additionalStyles"></wicket:message></label>
+            <label><wicket:message key="additionalStyles">Additional Styles</wicket:message></label>
             <span wicket:id="extraStyles"></span>
           </li>
          <li>
-            <label for="wmsPath"><wicket:message key="page.wmsPath">Default WMS Path</wicket:message></label>
+            <label for="wmsPath"><wicket:message key="defaultWmsPath">Default WMS Path</wicket:message></label>
             <input id="wmsPath" class="text" wicket:id="wmsPath" type="text"></input> 
           </li>
         </ul>
@@ -25,7 +25,6 @@
     </li>   
   </ul>
   </wicket:panel>
-  <input type="submit" value="Submit!"></input>
 </form>
 </body>
 </html>

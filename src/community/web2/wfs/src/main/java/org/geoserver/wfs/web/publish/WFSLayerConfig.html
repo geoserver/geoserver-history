@@ -6,14 +6,14 @@
     <ul>
     <li>  
       <fieldset>
-        <legend><span><wicket:message key="page.title">WFS Settings</wicket:message></span></legend>
+        <legend><span><wicket:message key="title">WFS Settings</wicket:message></span></legend>
         <ul>
           <li>
-            <label for="maxFeatures"><wicket:message key="wfs.maxFeatures">Per-Request Feature Limit</wicket:message></label>
-            <span wicket:id="maxFeaturesBorder">
-              <input id="maxFeatures" class="text" wicket:id="maxFeatures" type="text"></input>
+            <label for="perReqFeatureLimit"><wicket:message key="perReqFeatureLimit">Per-Request feature limit</wicket:message></label>
+            <span wicket:id="perReqFeaturesBorder">
+              <input id="perReqFeatureLimit" class="text" wicket:id="perReqFeatureLimit" type="text"></input>
             </span>
-            <label for="maxDecimals"><wicket:message key="wfs.maxDecimals">Max decimals</wicket:message></label>
+            <label for="maxDecimals"><wicket:message key="maxDecimals">Maximum number of decimals</wicket:message></label>
             <span wicket:id="maxDecimalsBorder">
               <input id="maxDecimals" class="text" wicket:id="maxDecimals" type="text"></input>
             </span>
@@ -23,7 +23,6 @@
     </li>
     </ul>
   </wicket:panel>
-  <input type="submit" value="Submit!"></input>
 </form>
 </body>
 </html>
