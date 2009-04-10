@@ -321,11 +321,11 @@ public class DefaultWebMapService implements WebMapService,
                             try {
                                 CoordinateReferenceSystem nativeCrs = layerInfo.getCoordinateReferenceSystem();
                                 nativeBbox = curbbox.transform(nativeCrs, true);
-                                curbbox = nativeBbox;
                             } catch(Exception e) {
                                 throw new WmsException("Best effort native bbox computation failed", "", e);
                             }
                         }
+                        curbbox = nativeBbox;
                     }
                 }catch(Exception e){
                     throw new RuntimeException(e);
