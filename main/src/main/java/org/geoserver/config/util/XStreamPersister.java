@@ -256,6 +256,7 @@ public class XStreamPersister {
         xs.omitField(CatalogImpl.class, "layers");
         xs.omitField(CatalogImpl.class, "maps");
         xs.omitField(CatalogImpl.class, "layerGroups");
+        xs.omitField(CatalogImpl.class, "LOGGER");
         xs.registerLocalConverter(CatalogImpl.class, "stores",
                 new StoreMultiHashMapConverter());
         xs.registerLocalConverter(CatalogImpl.class, "namespaces",
