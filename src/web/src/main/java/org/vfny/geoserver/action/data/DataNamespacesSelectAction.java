@@ -6,6 +6,15 @@
  */
 package org.vfny.geoserver.action.data;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
@@ -15,18 +24,12 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
 import org.vfny.geoserver.action.ConfigAction;
 import org.vfny.geoserver.action.HTMLEncoder;
+import org.vfny.geoserver.config.CoverageStoreConfig;
 import org.vfny.geoserver.config.DataConfig;
 import org.vfny.geoserver.config.DataStoreConfig;
 import org.vfny.geoserver.config.NameSpaceConfig;
 import org.vfny.geoserver.form.data.DataNamespacesSelectForm;
 import org.vfny.geoserver.global.UserContainer;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -74,7 +77,7 @@ public class DataNamespacesSelectAction extends ConfigAction {
         getUserContainer(request).setNamespaceConfig(config);
 
         if (action.equals(delete)) {
-            if (dataStoresUseNamespace(dataConfig, nsSelected)) {
+            if (dataStoresUseNamespace(dataConfig, nsSelected) || coverageStoresUseNamespace(dataConfig, nsSelected)) {
                 //dont delete a namespace thats in use!
                 ActionErrors errors = new ActionErrors();
                 errors.add(ActionErrors.GLOBAL_ERROR,
@@ -135,6 +138,30 @@ public class DataNamespacesSelectAction extends ConfigAction {
             DataStoreConfig dsc = dataConfig.getDataStore((String) it.next());
 
             if (dsc.getNameSpaceId().equals(nsSelected)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    /**
+     *  return true if the namespace is being used by a coveragestore.
+     *  You dont want to delete a namespace thats actually being used.
+     *
+     * @param dataConfig
+     * @param nsSelected
+     * @return
+     */
+    private boolean coverageStoresUseNamespace(DataConfig dataConfig, String nsSelected) {
+        List stores = dataConfig.getDataFormatIds();
+
+        Iterator it = stores.iterator();
+
+        while (it.hasNext()) {
+            CoverageStoreConfig csc = dataConfig.getDataFormat((String) it.next());
+
+            if (csc.getNameSpaceId().equals(nsSelected)) {
                 return true;
             }
         }
