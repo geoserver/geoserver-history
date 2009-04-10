@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,14 +21,12 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
-
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.wkt.UnformattableObjectException;
-import org.geotools.resources.CRSUtilities;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -43,7 +42,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.vfny.geoserver.global.GeoServer;
 import org.vfny.geoserver.global.LegendURL;
-import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.MetaDataLink;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.util.requests.CapabilitiesRequest;
@@ -54,7 +52,6 @@ import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import java.util.Collections;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -658,7 +655,12 @@ public class WMSCapsTransformer extends TransformerBase {
                 }
 
                 if (fLayer.isEnabled() && !geometryless) {
-                    handleFeatureType(fLayer);
+                    try {
+                        handleFeatureType(fLayer);
+                    } catch(Exception e) {
+                        // report what layer we failed on to help the admin locate and fix it
+                        throw new WmsException("Error occurred trying to write out metadata for layer: " + fLayer.getName());
+                    }       
                 }
             }
 
@@ -777,7 +779,11 @@ public class WMSCapsTransformer extends TransformerBase {
                 cLayer = (CoverageInfo) it.next();
 
                 if (cLayer.isEnabled()) {
-                    handleCoverage(cLayer);
+                    try {
+                        handleCoverage(cLayer);
+                    } catch(Exception e) {
+                        throw new WmsException("Error occurred trying to write out metadata for layer: " + cLayer.getName());
+                    }
                 }
             }
 
