@@ -45,6 +45,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
+import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -638,7 +639,12 @@ public class WMSCapsTransformer extends TransformerBase {
                 }
 
                 if (layer.isEnabled() && hasGeometry) {
-                    handleLayer(layer);
+                    try {
+                        handleLayer(layer);
+                    } catch(Exception e) {
+                     // report what layer we failed on to help the admin locate and fix it
+                        throw new WmsException("Error occurred trying to write out metadata for layer: " + layer.getName());
+                    }
                 }
             }
 
