@@ -51,6 +51,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -1220,7 +1221,10 @@ public class Dispatcher extends AbstractController {
     void exception(Throwable t, Service service, Request request) {
         Throwable current = t;
         while (current != null && !(current instanceof ClientStreamAbortedException) && !(current instanceof AcegiSecurityException)) {
-            current = current.getCause();
+            if(current instanceof SAXException)
+                current = ((SAXException) current).getException();
+            else
+                current = current.getCause();
         }
         if (current instanceof ClientStreamAbortedException) {
             logger.log(Level.FINER, "Client has closed stream", t);
