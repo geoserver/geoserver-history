@@ -58,6 +58,9 @@ import org.opengis.feature.type.Name;
  */
 public class CatalogImpl implements Catalog {
     
+    /**
+     * logger
+     */
     private static final Logger LOGGER = Logging.getLogger(CatalogImpl.class);
 
     /**
@@ -1283,7 +1286,7 @@ public class CatalogImpl implements Catalog {
                     listener.handlePostModifyEvent((CatalogPostModifyEvent)event);
                 }
             } catch(Exception e) {
-                LOGGER.log(Level.WARNING, "Catalog listener is throwing exceptions, it should not...", e);
+                LOGGER.log(Level.WARNING, "Catalog listener threw exception handling event.", e);
             }
             
         }
