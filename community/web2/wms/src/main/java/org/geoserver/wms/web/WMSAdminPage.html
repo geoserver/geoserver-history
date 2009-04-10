@@ -2,50 +2,50 @@
 <body>
   <wicket:extend>
     <li>
-      <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
-        <legend><span>Raster rendering options</span></legend>
+      <fieldset>
+        <legend><span><wicket:message key="rasterRenderingOptions">Raster Rendering Options</wicket:message></span></legend>
         <ul>
           <li>
-            <label><wicket:message key="page.interpolation">Interpolation</wicket:message></label>
+            <label><wicket:message key="defaultInterpolation">Default Interpolation</wicket:message></label>
             <select wicket:id="interpolation" class="field"/>
           </li>
         </ul>
       </fieldset>
     </li>
     <li>
-      <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
-        <legend><span>Watermark Settings</span></legend>
+      <fieldset>
+        <legend><span><wicket:message key="watermarkSettings">Watermark Settings</wicket:message></span></legend>
         <ul>
           <li>
             <input class="field checkbox" type="checkbox" wicket:id="watermark.enabled"></input>
-            <label class="choice"><wicket:message key="page.watermarkEnabled">Enable Watermark</wicket:message></label>
+            <label class="choice"><wicket:message key="enableWatermark">Enable Watermark</wicket:message></label>
           </li>
           <li>
-            <label><wicket:message key="page.watermarkUrl">Watermark URL</wicket:message></label>
+            <label><wicket:message key="watermarkUrl">Watermark URL</wicket:message></label>
             <input wicket:id="watermark.uRL" class="field text" type="text"></input>
           </li>
           <li>
-            <label><wicket:message key="page.watermarkTransparency">Watermark Transparency</wicket:message></label>
+            <label><wicket:message key="watermarkTransparency">Watermark Transparency (0 - 100)</wicket:message></label>
             <input wicket:id="watermark.transparency" class="field text" type="text"></input>
           </li>
           <li>
-            <label><wicket:message key="page.watermarkPosition">Watermark Position</wicket:message></label>
+            <label><wicket:message key="watermarkPosition">Watermark Position</wicket:message></label>
             <select wicket:id="watermark.position"></select>
           </li>
         </ul>
       </fieldset>
     </li>
     <li>
-      <fieldset><!-- [TODO] Do we need to turn this legend into a wicket message? -->
-        <legend><span>SVG options</span></legend>
+      <fieldset>
+        <legend><span><wicket:message key="svgOptions">SVG Options</wicket:message></span></legend>
         <ul>
          <li>
-            <label><wicket:message key="page.svgproducer">SVG producer</wicket:message></label>
+            <label><wicket:message key="svgProducer">SVG producer</wicket:message></label>
             <select wicket:id="svg.producer"></select>
           </li>
           <li>
             <input class="field checkbox" type="checkbox" wicket:id="svg.antialias"></input>
-            <label class="choice"><wicket:message key="page.svgantialias">Enable antialiasing</wicket:message></label>
+            <label class="choice"><wicket:message key="enableAntialiasing">Enable antialiasing</wicket:message></label>
           </li>
         </ul>
       </fieldset>

@@ -18,9 +18,9 @@ public class WFSLayerConfig extends LayerConfigurationPanel {
     public WFSLayerConfig(String id, IModel model){
         super(id, model);
 
-        TextField maxFeatures = new TextField("maxFeatures", new PropertyModel(model, "resource.maxFeatures"));
+        TextField maxFeatures = new TextField("perReqFeatureLimit", new PropertyModel(model, "resource.maxFeatures"));
         maxFeatures.add(NumberValidator.minimum(0));
-        Border mfb = new FormComponentFeedbackBorder("maxFeaturesBorder");
+        Border mfb = new FormComponentFeedbackBorder("perReqFeaturesBorder");
         mfb.add(maxFeatures);
         add(mfb);
         TextField maxDecimals = new TextField("maxDecimals", new PropertyModel(model, "resource.numDecimals"));
