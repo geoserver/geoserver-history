@@ -607,6 +607,19 @@ width: 16px;
 }
 
 /*-----------------------
+Capabilities
+-------------------------*/
+
+#capabilities {
+float: right;
+padding-right: 50px;
+}
+
+div#capabilities ul {
+list-style-type: none;
+}
+
+/*-----------------------
 Rounded corners for content
 -----------------------*/
 #main .wrap {
