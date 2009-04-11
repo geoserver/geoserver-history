@@ -10,7 +10,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.geoserver.platform.Service;
+import org.geoserver.config.ServiceInfo;
+import org.geotools.util.Version;
 
 /**
  * Hope page, shows just the introduction and the capabilities link
@@ -21,19 +22,27 @@ import org.geoserver.platform.Service;
 public class GeoServerHomePage extends GeoServerBasePage {
 
     public GeoServerHomePage() {
+
         // when hacking this service listing code please refer to 
         // http://jira.codehaus.org/browse/GEOS-2114
         ListView view = new ListView("services", getServices()) {
-
             @Override
             protected void populateItem(ListItem item) {
-                Service s = (Service) item.getModelObject();
-                ExternalLink link = new ExternalLink("link", "../ows?service=" + s.getId()
-                        + "&version=" + s.getVersion() + "&request=GetCapabilities");
-                link.add(new Label("serviceId", s.getId().toUpperCase() + " " + s.getVersion()));
-                item.add(link);
+                ServiceInfo service = (ServiceInfo) item.getModelObject();
+                final String serviceId = service.getId();
+                item.add( new Label("service", service.getId().toUpperCase()) );
+                item.add( new ListView( "versions", service.getVersions()) {
+                    @Override
+                    protected void populateItem(ListItem item) {
+                        Version version = (Version) item.getModelObject();
+                        ExternalLink link = new ExternalLink("link", "../ows?service=" + serviceId
+                                + "&version=" + version.toString() + "&request=GetCapabilities");
+                        item.add( link );
+                        
+                        link.add( new Label( "version", version.toString() ) );
+                    }
+                });
             }
-
         };
         add(view);
     }
@@ -42,7 +51,7 @@ public class GeoServerHomePage extends GeoServerBasePage {
         return new LoadableDetachableModel() {
             @Override
             protected Object load() {
-                return getGeoServerApplication().getBeansOfType(Service.class);
+                return getGeoServerApplication().getGeoServer().getServices();
             }
         };
     }

@@ -1,12 +1,29 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-<div><wicket:message key="capabilities">Service capabilities</wicket:message>:
-<ul>
-    <li wicket:id="services"><a href="#" wicket:id="link"><span wicket:id="serviceId">WFS 1.0</span></a></li>
-</ul>
+<div id="capabilities">
+  <ul>
+    <li class="navigation-tab">
+      <div class="navigation-tab-header">
+        <span>Service Capabilities</span>
+      </div>
+      <div>
+        <ul class="navigation-tab-content plain">
+          <li wicket:id="services" class="selfclear">
+            <span wicket:id="service"></span>
+            <ul class="flat">
+              <li wicket:id="versions">
+                <a wicket:id="link" class="external icon">
+                  <span wicket:id="version">
+                </span></a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
 </div>
-
 </wicket:extend>
 </body>
 </html>
