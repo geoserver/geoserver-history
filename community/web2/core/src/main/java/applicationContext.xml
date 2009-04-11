@@ -100,6 +100,15 @@
     <property name="icon" value="../img/icons/silk/cog_photo.png"/>
     <property name="order" value="40"/>
   </bean>
+  <bean id="abountMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.about"/>
+    <property name="titleKey" value="AboutGeoServerPage.page.title"/>
+    <property name="descriptionKey" value="AboutGeoServerPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.AboutGeoServerPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="img/icons/silk/help.png"/>
+    <property name="order" value="50"/>
+  </bean>
 
 
   <!-- 
