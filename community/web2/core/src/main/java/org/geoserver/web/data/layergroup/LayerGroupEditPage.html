@@ -9,22 +9,23 @@
        </li>
        <li>
          <label for="bounds">Bounds</label>
-         <div wicket:id="bounds"></div>
+         <div wicket:id="bounds" class="selfclear"></div>
+       </li>
+       <li>
+         <div wicket:id="crs"></div>
+       </li>
+       <li>
          <input wicket:id="generateBounds" type="submit" value="Generate Bounds"></input>
        </li>
        <li>
-         <label for="layers">Layers</label>
          <div wicket:id="layers"></div>
        </li>
-       <li><a wicket:id="add">Add layer...</a></li>
        <li class="button-group selfclear">
          <a href="#" wicket:id="save"><wicket:message key="save">Save</wicket:message></a>
          <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a> 
        </li>  
      </ul>
     </form>
-    <div wicket:id="popup"></div>
-    
    </wicket:extend>
   </body>
 </html>
