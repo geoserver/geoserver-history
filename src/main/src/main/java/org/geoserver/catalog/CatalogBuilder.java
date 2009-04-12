@@ -48,6 +48,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -779,6 +780,26 @@ public class CatalogBuilder {
     }
     
     /**
+     * Calculates the bounds of a layer group specifying a particular crs.
+     */
+    public void calculateLayerGroupBounds( LayerGroupInfo lg, CoordinateReferenceSystem crs )
+        throws Exception {
+        
+        if ( lg.getLayers().isEmpty() ) {
+            return; 
+        }
+        
+        LayerInfo l = lg.getLayers().get( 0 );
+        ReferencedEnvelope bounds = transform( l.getResource().getLatLonBoundingBox(), crs );
+        
+        for ( int i = 1; i < lg.getLayers().size(); i++ ) {
+            l = lg.getLayers().get( i );
+            bounds.expandToInclude( transform( l.getResource().getLatLonBoundingBox(), crs ) );
+        }
+        lg.setBounds( bounds );
+    }
+    
+    /**
      * Calculates the bounds of a layer group by aggregating the bounds of each layer.
      * TODO: move this method to a utility class, it should not be on a builder.
      */
@@ -810,10 +831,7 @@ public class CatalogBuilder {
                 re = l.getResource().boundingBox();
             }
             
-            if ( !CRS.equalsIgnoreMetadata( bounds.getCoordinateReferenceSystem(), re.getCoordinateReferenceSystem() ) ) {
-                re = re.transform( bounds.getCoordinateReferenceSystem(), true );
-            }
-            
+            re = transform( re, bounds.getCoordinateReferenceSystem() );
             if ( re == null ) {
                 throw new IllegalArgumentException( "Could not calculate bounds from layer with no bounds, " + l.getName());
             }
@@ -821,6 +839,16 @@ public class CatalogBuilder {
         }
        
         lg.setBounds( bounds );
+    }
+    
+    /**
+     * Helper method for transforming an envelope.
+     */
+    ReferencedEnvelope transform( ReferencedEnvelope e, CoordinateReferenceSystem crs ) throws TransformException, FactoryException {
+        if ( !CRS.equalsIgnoreMetadata( crs, e.getCoordinateReferenceSystem() ) ) {
+            return e.transform( crs, true );
+        }
+        return e;
     }
     
     //
