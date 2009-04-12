@@ -50,8 +50,7 @@ public class WorkspacePage extends GeoServerSecuredPage {
         return new SimpleAjaxLink(id, WorkspaceProvider.NAME.getModel(itemModel)) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                String wsid = getModelObjectAsString();
-                WorkspaceInfo ws = getCatalog().getWorkspace( wsid );
+                WorkspaceInfo ws = (WorkspaceInfo) itemModel.getObject();
                 setResponsePage( new WorkspaceEditPage( ws ) );
             }
         };
