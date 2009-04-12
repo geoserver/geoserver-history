@@ -11,7 +11,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -19,8 +18,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -28,6 +25,7 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.layer.LayerDetachableModel;
 import org.geoserver.web.data.style.StyleDetachableModel;
+import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -42,32 +40,32 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 public class LayerGroupEditPage extends GeoServerSecuredPage {
 
     IModel lgModel;
-    ModalWindow popupWindow;
-    GeoServerTablePanel<LayerGroupEntry> layerTable;
+    EnvelopePanel envelopePanel;
+    CRSPanel crsPanel;
+    LayerGroupEntryPanel lgEntryPanel;
     
     public LayerGroupEditPage( LayerGroupInfo layerGroup ) {
         lgModel = new LayerGroupDetachableModel( layerGroup );
         
-        add( popupWindow = new ModalWindow( "popup" ) );
-       
-        Form form = new Form( "form", new CompoundPropertyModel( lgModel ) ) {
-            protected void onSubmit() {
-                Catalog catalog = getCatalog();
-                catalog.save( (LayerGroupInfo) lgModel.getObject() );
-            }
-        };
+        Form form = new Form( "form", new CompoundPropertyModel( lgModel ) );
         add(form);
         form.add(new TextField("name"));
         
         //bounding box
-        form.add(new EnvelopePanel( "bounds" ).setReadOnly(true));
-        form.add(new SubmitLink( "generateBounds") {
+        form.add(envelopePanel = new EnvelopePanel( "bounds" )/*.setReadOnly(true)*/);
+        envelopePanel.setOutputMarkupId( true );
+        
+        form.add(crsPanel = new CRSPanel( "crs", layerGroup.getBounds().getCoordinateReferenceSystem()));
+        
+        form.add(new AjaxLink( "generateBounds") {
             @Override
-            public void onSubmit() {
+            public void onClick(AjaxRequestTarget target) {
                 LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
                 try {
-                    new CatalogBuilder( getCatalog() ).calculateLayerGroupBounds( lg );
-                    getCatalog().save( lg );
+                    new CatalogBuilder( getCatalog() ).calculateLayerGroupBounds( lg, crsPanel.getCRS() );
+                    envelopePanel.setModelObject( lg.getBounds() );
+                    envelopePanel.modelChanged();
+                    target.addComponent( envelopePanel );
                 } 
                 catch (Exception e) {
                     throw new WicketRuntimeException( e );
@@ -75,106 +73,25 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
             }
         });
         
-        //layers
-        LayerGroupEntryProvider provider = new LayerGroupEntryProvider(layerGroup);
-        form.add( layerTable = new GeoServerTablePanel<LayerGroupEntry>("layers",provider) {
-
-            @Override
-            protected Component getComponentForProperty(String id, IModel itemModel,
-                    Property<LayerGroupEntry> property) {
-                if ( property == LayerGroupEntryProvider.LAYER ) {
-                    return layerLink( id, itemModel );
-                }
-                if ( property == LayerGroupEntryProvider.STYLE ) {
-                    return styleLink( id, itemModel );
-                }
-                if ( property == LayerGroupEntryProvider.REMOVE ) {
-                    return removeLink( id, itemModel );
-                }
-                return null;
-            }
-        }.setFilterable( false ));
-        layerTable.setOutputMarkupId( true );
-      
-        form.add( new AjaxLink( "add" ) {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                popupWindow.setInitialHeight( 375 );
-                popupWindow.setInitialWidth( 525 );
-                popupWindow.setContent( new LayerListPanel(popupWindow.getContentId()) {
-                    @Override
-                    protected void handleLayer(LayerInfo layer, AjaxRequestTarget target) {
-                        popupWindow.close( target );
-                        
-                        LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
-                        lg.getLayers().add( layer );
-                        lg.getStyles().add( layer.getDefaultStyle() );
-                        
-                        getCatalog().save( lg );
-                        target.addComponent( layerTable );
-                    }
-                });
-                
-                popupWindow.show(target);
-                
-            }
-        });
-        
-        
+        form.add(lgEntryPanel = new LayerGroupEntryPanel( "layers", layerGroup ));
         form.add(new SubmitLink("save"){
             @Override
             public void onSubmit() {
                 LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
+                
+                //update the layer group entries
+                lg.getLayers().clear();
+                lg.getStyles().clear();
+                
+                for ( LayerGroupEntry entry : lgEntryPanel.getEntries() ) {
+                    lg.getLayers().add( entry.getLayer() );
+                    lg.getStyles().add( entry.getStyle() );
+                }
+                
                 getCatalog().save( lg );
             }
         });
         form.add(new BookmarkablePageLink("cancel", LayerGroupPage.class));
-    }
-    
-    Component layerLink(String id, IModel itemModel) {
-        LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
-        return new Label( id, entry.layer.getName() );
-    }
-    
-    Component styleLink(String id, final IModel itemModel) {
-        LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
-        return new SimpleAjaxLink( id, new Model( entry.style.getName() )) {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                popupWindow.setInitialHeight( 375 );
-                popupWindow.setInitialWidth( 525 );
-                popupWindow.setContent( new StyleListPanel( popupWindow.getContentId() ) {
-                    @Override
-                    protected void handleStyle(StyleInfo style, AjaxRequestTarget target) {
-                        popupWindow.close( target );
-                        
-                        LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
-                        
-                        //update the style
-                        LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
-                        
-                        lg.getStyles().set( entry.index, style );
-                        getCatalog().save( lg );
-                        
-                        //redraw
-                        target.addComponent( layerTable );
-                    }
-                });
-                popupWindow.show(target);
-            }
-
-        };
-    }
-    
-    Component removeLink(String id, IModel itemModel) {
-        return new AjaxLink( id ) {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-            }
-            
-        };
     }
     
     abstract static class StyleListPanel extends GeoServerTablePanel<StyleInfo> {

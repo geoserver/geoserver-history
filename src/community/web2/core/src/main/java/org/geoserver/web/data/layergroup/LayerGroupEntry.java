@@ -4,8 +4,8 @@
  */
 package org.geoserver.web.data.layergroup;
 
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.geoserver.catalog.Catalog;
+import java.io.Serializable;
+
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -14,21 +14,36 @@ import org.geoserver.web.GeoServerApplication;
  * Represents one layer in the layer group
  */
 @SuppressWarnings("serial")
-public class LayerGroupEntry {
+public class LayerGroupEntry implements Serializable {
 
-    LayerInfo layer;
-    StyleInfo style;
-    int index;
+    String sid;
+    String lid;
     
-    public LayerGroupEntry( LayerInfo layer, StyleInfo style, int index ) {
-        this.layer = layer;
-        this.style = style;
-        this.index = index;
+    public LayerGroupEntry( LayerInfo layer, StyleInfo style ) {
+        this.sid = style.getId();
+        this.lid = layer.getId();
     }
     
+    public StyleInfo getStyle() {
+        return GeoServerApplication.get().getCatalog().getStyle( sid );
+    }
+    public void setStyle( StyleInfo style ) {
+        sid = style.getId();
+    }
+    
+    public LayerInfo getLayer() {
+        return GeoServerApplication.get().getCatalog().getLayer( lid );
+    }
+    
+    public void setLayer( LayerInfo layer ) {
+        lid = layer.getId();
+    }
+    
+    /*
     public LoadableDetachableModel toDetachableModel() {
         return new LayerGroupEntryModel( this );
     }
+    
     
     public static class LayerGroupEntryModel extends LoadableDetachableModel {
 
@@ -51,4 +66,5 @@ public class LayerGroupEntry {
         }
         
     }
+    */
 }
