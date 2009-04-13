@@ -163,14 +163,30 @@ latex_documents = [
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+latex_logo = '_static/GeoServer_500.png'
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
 #latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
+latex_elements = {
+  'fontpkg': '\\usepackage{palatino}',
+  'fncychap': '\\usepackage[Sonny]{fncychap}',
+  'preamble': """\\usepackage[parfill]{parskip}
+	\\hypersetup{
+		colorlinks = true,
+    linkcolor = [rgb]{0,0.46,0.63},
+    anchorcolor = [rgb]{0,0.46,0.63},
+    citecolor = blue,
+    filecolor = [rgb]{0,0.46,0.63},
+    pagecolor = [rgb]{0,0.46,0.63},
+    urlcolor = [rgb]{0,0.46,0.63}
+	}
+
+	
+"""
+}
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []
