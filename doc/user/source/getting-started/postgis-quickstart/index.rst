@@ -42,17 +42,17 @@ The first step is to create a *data store* for the PostGIS database "nyc". The d
 
     #. Navigate to ``Config->Data->DataStores``.
 
-       .. figure:: 1.1-datastores.png
+       .. figure:: 11-datastores.png
           :alt: Data stores
 
     #. Create a new data store by clicking the ``New`` link.
 
-       .. figure:: 1.2-new-datastore.png
+       .. figure:: 12-new-datastore.png
           :alt: Creating a new data store
 
     #. Select ``PostGIS`` from the drop down and enter "nyc_postgis" in the text field. Then click the ``New`` button.
 
-       .. figure:: 1.3-new-postgis.png
+       .. figure:: 13-new-postgis.png
           :alt: Adding a new PostGIS database
 
     #. Specify the PostGIS database connection parameters:
@@ -72,7 +72,7 @@ The first step is to create a *data store* for the PostGIS database "nyc". The d
 
           The **username** and **password** parameters specific to the user who created the postgis database. Depending on how PostgreSQL is configured the password parameter may be unnecessary.
            
-       .. figure:: 1.4-postgis-connect.png
+       .. figure:: 14-postgis-connect.png
           :alt: Specifying PostGIS connection parameters
 
     #. Click the ``Submit`` button.
@@ -89,12 +89,12 @@ The next step is to configure the *feature type* for the ``nyc_buildings`` table
 
     #. Set the *style* by selecting ``polygon`` from the ``Style`` drop down list.
 
-       .. figure:: 2.1-style.png
+       .. figure:: 21-style.png
           :alt: Setting style
 
     #. Generate the *bounds* by clicking the ``Generate`` button.
 
-       .. figure:: 2.2-bounds.png
+       .. figure:: 22-bounds.png
           :alt: Generating bounds
 
     #. Scroll to the bottom of the and click the ``Submit`` button.
@@ -112,9 +112,9 @@ The final step is to verify that the table has been published properly. To do th
 
 Navigate to the map preview and select the ``topp:nyc_buildings`` link.
 
-    .. figure:: 3.2-nyc_buildings-preview-link.png
+    .. figure:: 32-nyc_buildings-preview-link.png
 
 If the table was added properly the result should be an OpenLayers map:
 
-    .. figure:: 3.3-nyc_buildings-preview.png
+    .. figure:: 33-nyc_buildings-preview.png
 

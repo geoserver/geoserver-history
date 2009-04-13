@@ -30,22 +30,22 @@ The first step is to create a *data store* for the Shapefile. The data store tel
 
     #. Navigate to ``Config->Data->DataStores``.
 
-       .. figure:: 1.1-datastores.png
+       .. figure:: 11-datastores.png
           :alt: Data stores
 
     #. Create a new data store by clicking the ``New`` link.
 
-       .. figure:: 1.2-new-datastore.png
+       .. figure:: 12-new-datastore.png
           :alt: Creating a new data store
 
     #. Select ``Shapefile`` from the drop down and enter "nyc_roads_shapefile" in the text field. Then click the ``New`` button.
 
-       .. figure:: 1.3-new-shapefile.png
+       .. figure:: 13-new-shapefile.png
           :alt: Adding a new Shapefile
 
     #. Specify the Shapefile location by entering ``file:data/nyc_roads.shp`` in the ``url`` text field. Then click the ``Submit`` button.
 
-       .. figure:: 1.4-shapefile.png
+       .. figure:: 14-shapefile.png
           :alt: Specifying Shapefile location
 
     #. Click the ``Apply`` button located in the upper left hand corner of the page.
@@ -61,12 +61,12 @@ The next step is to configure the *feature type* for the Shapefile. The feature 
 
     #. Set the *style* by selecting ``line`` from the ``Style`` drop down list.
 
-       .. figure:: 2.1-style.png
+       .. figure:: 21-style.png
           :alt:
 
     #. Generate the *bounds* by clicking the ``Generate`` button.
 
-       .. figure:: 2.2-bounds.png
+       .. figure:: 22-bounds.png
           :alt:
 
     #. Scroll to the bottom of the and click the ``Submit`` button.
@@ -83,9 +83,9 @@ The final step is to verify that the Shapefile has been published properly. To d
 
 Navigate to the map preview and select the ``topp:nyc_roads`` link.
 
-    .. figure:: 3.2-nyc_roads-preview-link.png
+    .. figure:: 32-nyc_roads-preview-link.png
 
 If the shapefile was added properly the result should be an OpenLayers map:
 
-    .. figure:: 3.3-nyc_roads-preview.png
+    .. figure:: 33-nyc_roads-preview.png
 
