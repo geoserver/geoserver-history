@@ -15,23 +15,16 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.feature.FeatureSourceUtils;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.util.DataStoreUtils;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * DOCUMENT ME!
@@ -256,8 +249,15 @@ public final class MapLayerInfo {
             return false;
         }
         ResourceInfo resource = layerInfo.getResource();
-        Boolean cachingEnabled = (Boolean) resource.getMetadata().get("cachingEnabled");
-        return cachingEnabled == null ? false : cachingEnabled.booleanValue();
+        
+        // TODO: find a type safe way to handle this
+        Object cachingEnabled = resource.getMetadata().get("cachingEnabled");
+        if(cachingEnabled == null)
+            return false;
+        else if(cachingEnabled instanceof Boolean) 
+            return ((Boolean) cachingEnabled).booleanValue();
+        else
+            return Boolean.valueOf(cachingEnabled.toString());
     }
 
     /**
