@@ -19,6 +19,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
+import org.geotools.util.Converters;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -249,15 +250,8 @@ public final class MapLayerInfo {
             return false;
         }
         ResourceInfo resource = layerInfo.getResource();
-        
-        // TODO: find a type safe way to handle this
-        Object cachingEnabled = resource.getMetadata().get("cachingEnabled");
-        if(cachingEnabled == null)
-            return false;
-        else if(cachingEnabled instanceof Boolean) 
-            return ((Boolean) cachingEnabled).booleanValue();
-        else
-            return Boolean.valueOf(cachingEnabled.toString());
+        Boolean cachingEnabled = Converters.convert( resource.getMetadata().get("cachingEnabled"), Boolean.class );
+        return cachingEnabled == null ? false : cachingEnabled.booleanValue();
     }
 
     /**
