@@ -1,6 +1,10 @@
 package org.geoserver.web.data.store;
 
-import static org.geoserver.web.data.store.StoreProvider.*;
+import static org.geoserver.web.data.store.StoreProvider.ENABLED;
+import static org.geoserver.web.data.store.StoreProvider.NAME;
+import static org.geoserver.web.data.store.StoreProvider.REMOVE;
+import static org.geoserver.web.data.store.StoreProvider.TYPE;
+import static org.geoserver.web.data.store.StoreProvider.WORKSPACE;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -14,7 +18,7 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
-import org.geoserver.web.data.datastore.DataStoreConfiguration;
+import org.geoserver.web.data.datastore.DataAccessEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -75,7 +79,7 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
                     popupWindow.show(target);
                     target.addComponent(StorePanel.this);
                 } else if (store instanceof DataStoreInfo) {
-                    setResponsePage(new DataStoreConfiguration(store.getId()));
+                    setResponsePage(new DataAccessEditPage(store.getId()));
                 } else {
                     setResponsePage(new CoverageStoreConfiguration(store
                             .getId()));
