@@ -14,18 +14,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidator;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.layer.NewLayerPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.LabelParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.opengis.coverage.grid.Format;
 
 /**
  * Supports coverage store configuration
@@ -33,47 +29,14 @@ import org.opengis.coverage.grid.Format;
  * @author Andrea Aime
  */
 @SuppressWarnings("serial")
-public class CoverageStoreConfiguration extends GeoServerSecuredPage {
-    Form paramsForm;
+abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
+    
+    private Form paramsForm;
 
     private Panel namePanel;
 
-    /**
-     * 
-     * @param workspaceId
-     *            the {@link WorkspaceInfo#getId() id} of the workspace to
-     *            attach the new coverage to
-     * @param coverageFactoryName
-     *            the {@link Format#getName() name} of the format to create a
-     *            new raster coverage for
-     */
-    public CoverageStoreConfiguration(final String workspaceId,
-            final String coverageFactoryName) {
-        Catalog catalog = getCatalog();
-        final WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
-        CoverageStoreInfo store = catalog.getFactory().createCoverageStore();
-        store.setWorkspace(workspace);
-        store.setType(coverageFactoryName);
-        store.setEnabled(true);
-
-        init(store);
-    }
-    
-    /**
-     * 
-     * @param storeId
-     *            the store id 
-     */
-    public CoverageStoreConfiguration(final String storeId) {
-        Catalog catalog = getCatalog();
-        CoverageStoreInfo store =  catalog.getCoverageStore(storeId);
-        if(store == null)
-            throw new IllegalArgumentException("Cannot find coverage store " + storeId);
-
-        init(store);
-    }
-
-    void init(CoverageStoreInfo store) {
+  
+    void initUI(final CoverageStoreInfo store) {
         AbstractGridFormat format = store.getFormat();
         
         // the format description labels
@@ -128,12 +91,12 @@ public class CoverageStoreConfiguration extends GeoServerSecuredPage {
         return new SubmitLink("save") {
             @Override
             public void onSubmit() {
-                CoverageStoreInfo info = (CoverageStoreInfo) CoverageStoreConfiguration.this.getModelObject();
-                getCatalog().save(info);
-                setResponsePage(new NewLayerPage(info.getId()));
+                CoverageStoreInfo info = (CoverageStoreInfo) AbstractCoverageStorePage.this.getModelObject();
+                onSave(info);
             }
         };
     }
 
+    protected abstract void onSave(CoverageStoreInfo info);
     
 }
