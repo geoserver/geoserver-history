@@ -79,8 +79,7 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
                 } else if (store instanceof DataStoreInfo) {
                     setResponsePage(new DataAccessEditPage(store.getId()));
                 } else {
-                    setResponsePage(new CoverageStoreConfiguration(store
-                            .getId()));
+                    setResponsePage(new CoverageStoreEditPage(store.getId()));
                 }
             }
         };
