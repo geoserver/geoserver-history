@@ -32,7 +32,6 @@ import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml.producer.FeatureTypeTransformer;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
@@ -331,7 +330,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
      */
     private static String printElement(FeatureTypeInfo type) {
         return "\n  <xs:element name=\"" + type.getName() + "\" type=\""
-        + type.getNamespace().getPrefix() + ":" + type.getName() + "Type"
+        + type.getNamespace().getPrefix() + ":" + type.getName() + "_Type"
         + "\" substitutionGroup=\"gml:_Feature\"/>";
     }
 
