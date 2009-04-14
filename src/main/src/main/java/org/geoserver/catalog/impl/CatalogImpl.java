@@ -136,7 +136,7 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate(StoreInfo store, boolean isNew) {
-        if ( store.getName() == null ) {
+        if ( isNull(store.getName()) ) {
             throw new IllegalArgumentException( "Store name must not be null");
         }
         if ( store.getWorkspace() == null ) {
@@ -345,7 +345,7 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate(ResourceInfo resource, boolean isNew) {
-        if ( resource.getName() == null ) {
+        if ( isNull(resource.getName()) ) {
             throw new NullPointerException( "Resource name must not be null");
         }
         if ( resource.getStore() == null ) {
@@ -655,7 +655,7 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate( LayerInfo layer, boolean isNew) {
-        if ( layer.getName() == null ) {
+        if ( isNull(layer.getName()) ) {
             throw new NullPointerException( "Layer name must not be null" );
         }
         
@@ -813,7 +813,7 @@ public class CatalogImpl implements Catalog {
     }
     
     void validate( LayerGroupInfo layerGroup, boolean isNew ) {
-        if( layerGroup.getName() == null ) {
+        if( isNull(layerGroup.getName()) ) {
             throw new NullPointerException( "Layer group name must not be null");
         }
         
@@ -934,7 +934,7 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate(NamespaceInfo namespace, boolean isNew) {
-        if ( namespace.getPrefix() == null ) {
+        if ( isNull(namespace.getPrefix()) ) {
             throw new NullPointerException( "Namespace prefix must not be null");
         }
         
@@ -1007,7 +1007,7 @@ public class CatalogImpl implements Catalog {
     }
     
     void validate(WorkspaceInfo workspace, boolean isNew) {
-        if ( workspace.getName() == null ) {
+        if ( isNull(workspace.getName()) ) {
             throw new NullPointerException( "workspace name must not be null");
         }
         
@@ -1122,10 +1122,10 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate( StyleInfo style, boolean isNew ) {
-        if ( style.getName() == null ) {
+        if ( isNull(style.getName()) ) {
             throw new NullPointerException( "Style name must not be null");
         }
-        if ( style.getFilename() == null ) {
+        if ( isNull(style.getFilename()) ) {
             throw new NullPointerException( "Style fileName must not be null");
         }
         
@@ -1421,6 +1421,9 @@ public class CatalogImpl implements Catalog {
         if ( r.getMetadataLinks() == null ) {
             r.setMetadataLinks(new ArrayList());
         }
+        if ( r.getKeywords() == null ) {
+            r.setKeywords(new ArrayList());
+        }
         if ( resource instanceof FeatureTypeInfo ) {
             resolve( (FeatureTypeInfo) resource );
         }
@@ -1493,6 +1496,10 @@ public class CatalogImpl implements Catalog {
             String uid = new UID().toString();
             OwsUtils.set( o, "id", o.getClass().getSimpleName() + "-"+uid );
         }
+    }
+    
+    protected boolean isNull( String string ) {
+        return string == null || "".equals( string.trim() );
     }
     
     public void sync( CatalogImpl other ) {
