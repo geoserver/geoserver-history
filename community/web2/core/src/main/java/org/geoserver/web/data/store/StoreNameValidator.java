@@ -1,4 +1,4 @@
-package org.geoserver.web.data.resource;
+package org.geoserver.web.data.store;
 
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -15,7 +15,7 @@ import org.geoserver.web.GeoServerApplication;
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
-public class StoreNameValidator implements IValidator {
+class StoreNameValidator implements IValidator {
     Class<? extends StoreInfo> storeType;
 
     public StoreNameValidator(Class<? extends StoreInfo> storeType) {
