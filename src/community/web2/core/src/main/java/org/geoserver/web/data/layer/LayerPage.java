@@ -34,7 +34,7 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
-import org.geoserver.web.data.store.CoverageStoreConfiguration;
+import org.geoserver.web.data.store.CoverageStoreEditPage;
 import org.geoserver.web.data.store.DataAccessEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
@@ -126,7 +126,7 @@ public class LayerPage extends GeoServerSecuredPage {
                 if (store instanceof DataStoreInfo)
                     setResponsePage(new DataAccessEditPage(store.getId()));
                 else if(store instanceof CoverageStoreInfo)
-                    setResponsePage(new CoverageStoreConfiguration(store.getId()));
+                    setResponsePage(new CoverageStoreEditPage(store.getId()));
                 else
                     throw new RuntimeException("Don't know how to deal with store " + store);
             }
