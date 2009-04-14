@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -32,6 +33,7 @@ import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.BeanProperty;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Edits a layer group
@@ -55,17 +57,38 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         form.add(envelopePanel = new EnvelopePanel( "bounds" )/*.setReadOnly(true)*/);
         envelopePanel.setOutputMarkupId( true );
         
-        form.add(crsPanel = new CRSPanel( "crs", layerGroup.getBounds().getCoordinateReferenceSystem()));
+        CoordinateReferenceSystem crs = layerGroup.getBounds() != null 
+            ? layerGroup.getBounds().getCoordinateReferenceSystem() : null;
+
+        form.add(crsPanel = (crs != null) ? new CRSPanel( "crs", crs ) : new CRSPanel( "crs", new Model() ));
+        crsPanel.setOutputMarkupId( true );
         
         form.add(new AjaxLink( "generateBounds") {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
                 try {
-                    new CatalogBuilder( getCatalog() ).calculateLayerGroupBounds( lg, crsPanel.getCRS() );
+                    CoordinateReferenceSystem crs = crsPanel.getCRS();
+                    if ( crs != null ) {
+                        //ensure the bounds calculated in terms of the user specified crs
+                        new CatalogBuilder( getCatalog() ).calculateLayerGroupBounds( lg, crs );
+                    }
+                    else {
+                        //calculate from scratch
+                        new CatalogBuilder( getCatalog() ).calculateLayerGroupBounds( lg );
+                    }
+                    
                     envelopePanel.setModelObject( lg.getBounds() );
                     envelopePanel.modelChanged();
                     target.addComponent( envelopePanel );
+                    
+                    if ( crs == null ) {
+                        //update the crs as well
+                        crsPanel.setModelObject( lg.getBounds().getCoordinateReferenceSystem() );
+                        crsPanel.modelChanged();
+                        target.addComponent( crsPanel );
+                    }
+                    
                 } 
                 catch (Exception e) {
                     throw new WicketRuntimeException( e );
@@ -89,6 +112,7 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
                 }
                 
                 getCatalog().save( lg );
+                setResponsePage(LayerGroupPage.class);
             }
         });
         form.add(new BookmarkablePageLink("cancel", LayerGroupPage.class));
