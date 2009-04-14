@@ -110,6 +110,7 @@ width: 83em;
 min-width: 80%;
 margin: 0; 
 padding: 0;
+position: relative;
 }
 
 ul.plain {
@@ -191,7 +192,9 @@ text-align: left; /* IE */
 }
 
 #sidebar {
-float: left;
+position: absolute;
+top: 0;
+left: 0;
 width: 17em;
 padding: 38px 20px 0;
 } 
