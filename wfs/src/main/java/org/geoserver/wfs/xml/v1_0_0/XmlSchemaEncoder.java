@@ -196,7 +196,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
         for (int i = 0; i < infos.length; i++) {
             FeatureTypeInfo info = infos[i];
-            String typeName = info.getName();
+            String typeName = info.getPrefixedName();
 
             if (typeName.startsWith(prefix + ":")) {
                 retBuffer.append(typeName + ",");
