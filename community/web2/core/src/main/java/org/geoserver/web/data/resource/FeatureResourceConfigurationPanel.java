@@ -1,4 +1,4 @@
-package org.geoserver.web.data;
+package org.geoserver.web.data.resource;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;

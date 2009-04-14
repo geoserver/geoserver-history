@@ -160,25 +160,25 @@
   <!-- 
     Resource configuration panels 
     -->
-  <bean id="basicResourceConfigPanel" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+  <bean id="basicResourceConfigPanel" class="org.geoserver.web.data.resource.ResourceConfigurationPanelInfo">
     <property name="id" value="basic"/>
     <property name="titleKey" value="data.resource.config.basic"/>
-    <property name="componentClass" value="org.geoserver.web.data.BasicResourceConfig"/>
+    <property name="componentClass" value="org.geoserver.web.data.resource.BasicResourceConfig"/>
   </bean>
-  <bean id="featureResourceConfigPanel" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+  <bean id="featureResourceConfigPanel" class="org.geoserver.web.data.resource.ResourceConfigurationPanelInfo">
     <property name="id" value="feature"/>
     <property name="titleKey" value="data.resource.config.feature"/>
-    <property name="componentClass" value="org.geoserver.web.data.FeatureResourceConfigurationPanel"/>
+    <property name="componentClass" value="org.geoserver.web.data.resource.FeatureResourceConfigurationPanel"/>
     <property name="supportedTypes">
       <list>
         <value>org.geoserver.catalog.FeatureTypeInfo</value>
       </list>
     </property>
   </bean>
-  <bean id="coverageResourceConfigPanel" class="org.geoserver.web.data.ResourceConfigurationPanelInfo">
+  <bean id="coverageResourceConfigPanel" class="org.geoserver.web.data.resource.ResourceConfigurationPanelInfo">
     <property name="id" value="coverage"/>
     <property name="titleKey" value="data.resource.config.coverage"/>
-    <property name="componentClass" value="org.geoserver.web.data.CoverageResourceConfigurationPanel"/>
+    <property name="componentClass" value="org.geoserver.web.data.resource.CoverageResourceConfigurationPanel"/>
     <property name="supportedTypes">
       <list>
         <value>org.geoserver.catalog.CoverageInfo</value>
@@ -204,28 +204,28 @@
   <!-- 
    Data store panels
    -->
-  <bean id="postgisDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="postgisDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <property name="id" value="postgis"/>
     <property name="factoryClass" value="org.geotools.data.postgis.PostgisDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
   </bean>
   
-  <bean id="shapefileDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="shapefileDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <property name="id" value="property"/>
     <property name="factoryClass" value="org.geotools.data.shapefile.ShapefileDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
   </bean>
   
-  <bean id="propertyDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="propertyDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <property name="id" value="property"/>
     <property name="factoryClass" value="org.geotools.data.property.PropertyDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
   </bean>
   
-  <bean id="wfsDataStorePanel" class="org.geoserver.web.data.DataStorePanelInfo">
+  <bean id="wfsDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <property name="id" value="wfs"/>
     <property name="factoryClass" value="org.geotools.data.wfs.WFSDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>

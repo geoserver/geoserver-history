@@ -1,4 +1,4 @@
-package org.geoserver.web.data;
+package org.geoserver.web.data.resource;
 
 import java.util.Arrays;
 import java.util.List;

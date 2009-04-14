@@ -1,4 +1,4 @@
-package org.geoserver.web.data;
+package org.geoserver.web.data.resource;
 
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;

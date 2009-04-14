@@ -1,8 +1,8 @@
-package org.geoserver.web.data;
+package org.geoserver.web.data.resource;
 
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.CatalogBuilder;
-import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
 
 /**
@@ -12,21 +12,21 @@ import org.geoserver.web.GeoServerApplication;
  *
  */
 @SuppressWarnings("serial")
-public class LayerModel implements IModel {
-    LayerInfo layerInfo;
+public class ResourceModel implements IModel {
+    ResourceInfo resourceInfo;
     
-    public LayerModel(LayerInfo layerInfo) {
-        this.layerInfo = layerInfo;
+    public ResourceModel(ResourceInfo resourceInfo) {
+        this.resourceInfo = resourceInfo;
     }
 
     public Object getObject() {
-        if(layerInfo.getResource().getCatalog() == null)
-            new CatalogBuilder(GeoServerApplication.get().getCatalog()).attach(layerInfo);
-        return layerInfo;
+        if(resourceInfo.getCatalog() == null)
+            new CatalogBuilder(GeoServerApplication.get().getCatalog()).attach(resourceInfo);
+        return resourceInfo;
     }
 
     public void setObject(Object object) {
-        this.layerInfo = (LayerInfo) object;
+        this.resourceInfo = (ResourceInfo) object;
     }
 
     public void detach() {

@@ -1,4 +1,4 @@
-package org.geoserver.web.data;
+package org.geoserver.web.data.resource;
 
 import java.util.ArrayList;
 import java.util.Collections;

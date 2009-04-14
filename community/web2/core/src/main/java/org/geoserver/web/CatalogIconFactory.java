@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.wicket.ResourceReference;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LayerInfo.Type;
-import org.geoserver.web.data.DataStorePanelInfo;
+import org.geoserver.web.data.resource.DataStorePanelInfo;
 import org.geotools.data.DataAccessFactory;
 
 /**
