@@ -260,6 +260,26 @@ public class ResponseUtils {
     }
     
     /**
+     * Strips off the extension of a path.
+     * <p>
+     * Examples: 
+     * <ul>
+     *   <li>foo/bar.xml -> foo/bar
+     *   <li>bar.xml -> bar
+     *   <li>foo/bar -> foo/bar
+     * </ul>
+     * </p>
+     * @return the path minus the extension.
+     */
+    public static String stripExtension( String path ) {
+        String ext = getExtension( path );
+        if ( ext != null ) {
+            return path.substring(0,path.length()-ext.length()-1);
+        }
+        return path;
+    }
+    
+    /**
      * Returns the last component of a path. 
      * <p>
      * Examples:
