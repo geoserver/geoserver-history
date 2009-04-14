@@ -34,17 +34,23 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
 
     /** the geoserver resource loader */
     GeoServerResourceLoader resourceLoader;
+    
+    /** schema builder */
+    FeatureTypeSchemaBuilder schemaBuilder;
 
-    public XmlSchemaEncoder(GeoServer gs, GeoServerResourceLoader resourceLoader) {
-        super("text/xml; subtype=gml/3.1.1");
+    public XmlSchemaEncoder(String mimeType, GeoServer gs, FeatureTypeSchemaBuilder schemaBuilder) {
+        super(mimeType);
+        
         this.wfs = gs.getService( WFSInfo.class );
         this.catalog = gs.getCatalog();
-        this.resourceLoader = resourceLoader;
+        this.resourceLoader = catalog.getResourceLoader();
+        this.schemaBuilder = schemaBuilder;
     }
 
     public String getMimeType(Object value, Operation operation)
         throws ServiceException {
-        return "text/xml; subtype=gml/3.1.1";
+        return getOutputFormat();
+        //return "text/xml; subtype=gml/3.1.1";
     }
 
     protected void write(FeatureTypeInfo[] featureTypeInfos, OutputStream output,
@@ -54,13 +60,32 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         //create the schema
         DescribeFeatureTypeType req = (DescribeFeatureTypeType)describeFeatureType.getParameters()[0];
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), global.getProxyBaseUrl());
-        FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer(),
-                resourceLoader);
-        XSDSchema schema = builder.build(featureTypeInfos, proxifiedBaseUrl);
+        XSDSchema schema = schemaBuilder.build(featureTypeInfos, proxifiedBaseUrl);
 
         //serialize
         schema.updateElement();
         final String encoding = global.getCharset();
         XSDResourceImpl.serialize(output, schema.getElement(), encoding);
+    }
+    
+    public static class V11 extends XmlSchemaEncoder {
+
+        public V11(GeoServer gs) {
+            super("text/xml; subtype=gml/3.1.1",gs,new FeatureTypeSchemaBuilder.GML3(gs));
+        }
+        
+    }
+    
+    public static class V10 extends XmlSchemaEncoder {
+
+        public V10(GeoServer gs) {
+            super("XMLSCHEMA", gs, new FeatureTypeSchemaBuilder.GML2(gs));
+        }
+        
+        @Override
+        public String getMimeType(Object arg0, Operation arg1) throws ServiceException {
+            return "text/xml";
+        }
+        
     }
 }
