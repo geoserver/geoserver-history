@@ -41,7 +41,8 @@ public class StorePage extends GeoServerSecuredPage {
             protected void onChoice(AjaxRequestTarget target) {
                 if(getModelObject() != null) {
                     WorkspaceInfo ws = (WorkspaceInfo) getModelObject();
-                    setResponsePage(new NewDataPage(ws.getName()));
+                    String wsId = ws.getId();
+					setResponsePage(new NewDataPage(wsId));
                 }
             }
             
