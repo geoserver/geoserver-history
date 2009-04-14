@@ -29,9 +29,7 @@ public class VersionedXmlSchemaEncoder extends Response {
 
     WFSVConfiguration configuration;
 
-    public VersionedXmlSchemaEncoder(GeoServer gs,
-            GeoServerResourceLoader resourceLoader,
-            WFSVConfiguration configuration) {
+    public VersionedXmlSchemaEncoder(GeoServer gs,WFSVConfiguration configuration) {
         super(VersionedDescribeResults.class, Collections
                 .singleton("text/xml; subtype=gml/3.1.1"));
         this.wfs = gs.getService( WFSInfo.class );
