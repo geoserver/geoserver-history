@@ -1,47 +1,129 @@
-.. _arcsde_data:
+.. _arcsde:
 
 ArcSDE
 ======
 
-.. warning:: ArcSDE support is not enabled by default and requires the ArcSDE extension to be installed prior to use.
+.. warning:: ArcSDE support is not enabled by default and requires the ArcSDE extension to be installed prior to use.  Please see the section on :ref:`arcsde_install` for details.
 
-ESRI's `ArcSDE <http://www.esri.com/software/arcgis/arcsde/>`_ is a spatial 
-engine that runs on top of a relational database such as Oracle or SQL Server.
+ESRI's `ArcSDE <http://www.esri.com/software/arcgis/arcsde/>`_ is a spatial engine that runs on top of a relational database such as Oracle or SQL Server.  GeoServer with the ArcSDE extension supports ArcSDE **versions 9.2 and 9.3**.  It has been tested with **Oracle 10g** and **Microsoft SQL Server 2000 Developer Edition**.  The ArcSDE extension is based on the GeoTools ArcSDE driver and uses the ESRI Java API libraries.  See the `GeoTools ArcSDE page <http://docs.codehaus.org/display/GEOTDOC/ArcSDE+DataStore>`_ for more technical details.
 
-The ArcSDE extension is based on the GeoTools ArcSDE driver. See the `GeoTools 
-ArcSDE page <http://docs.codehaus.org/display/GEOTDOC/ArcSDE+DataStore>`_ for 
-more technical details.
+There are two types of ArcSDE data that can be added to GeoServer:  **vector** and **raster**.
 
-Supported versions
-------------------
+Vector support
+--------------
 
-The extension supports ArcSDE versions 9.2 and 9.3.
+Raster support
+--------------
 
-Adding a vector datastore
--------------------------
+ArcSDE provides efficient access to multi-band rasters by storing the raw raster data as database blobs, dividing it into tiles and creating a pyramid. It also allows a compression method to be set for the tiled blob data and an interpolation method for the pyramid resampling.
 
-In order to serve vector data layers, it is first necessary to register
-the ArcSDE instance as a datastore in GeoServer.
-Navigate to the **Create New Feature Data Set** page 
-(**Config** -> **Data** -> **Datastore** -> **New**) and an option for 
-**ArcSDE** will be in the dropdown menu for **Feature Data Set 
-Description.** Select this option, enter a name in the box for **Feature 
+All the bands comprising a single ArcSDE raster layer must have the same pixel depth, which can be one of 1, 4, 8, 16, and 32 bits per sample for integral data types. For 8, 16 and 32 bit bands, they may be signed or unsigned. 32 and 64 bit floating point sample types are also supported.
+
+ArcSDE rasters may also be color mapped, as long as the raster has a single band of data typed 8 or 16 bit unsigned.
+
+Finally, ArcSDE supports raster catalogs.  A raster catalog is a mosaic of rasters with the same spectral properties but instead of the mosaic being precomputed, the rasters comprising the catalog are independent and the mosaic work performed by the application at runtime.
+
+.. list-table::
+   :widths: 20 80
+
+   * - **Technical Detail**
+     - **Status**
+   * - Compression methods
+     - LZW, JPEG, JPEG2000 (9.2 only)
+   * - Number of bands 
+     - Any number of bands except for 1 and 4 bit rasters (supported for single-band only).
+   * - Bit depth for color-mapped rasters
+     - 8 bit and 16 bit 
+   * - Raster Catalogs 
+     - Any pixel storage type
+
+
+.. _arcsde_install:
+
+Installing the ArcSDE extension
+-------------------------------
+
+.. warning::
+
+   Due to licensing requirements, not all files are included with the extension.  To install ArcSDE support, it is necessary to download additional files.  **Just installing the ArcSDE extension will have no effect.**
+
+GeoServer files
+```````````````
+
+#. Download the ArcSDE extension from the `GeoServer download page 
+   <http://geoserver.org/display/GEOS/Download>`_.
+
+   .. note:
+
+      Make sure you match the version of the extension to the version of GeoServer.
+
+#. Extract the contents of the archive into the ``WEB-INF/lib`` directory of 
+   the GeoServer installation.
+
+Required external files
+```````````````````````
+
+There are three files required that are not packaged with the GeoServer extension:
+
+.. list-table::
+   :widths: 20 80
+
+   * - **File**
+     - **Notes**
+   * - ``jsde_sdk.jar``
+     - Also known as ``jsde##_sdk.jar`` where ``##`` is the version number, such as ``92`` for ArcSDE version 9.2
+   * - ``jpe_sdk.jar``
+     - Also known as ``jpe##_sdk.jar`` where ``##`` is the version number, such as ``92`` for ArcSDE version 9.2
+   * - ``icu4j_3_2.jar``
+     - Only needed for ArcSDE version 9.2 and newer
+     
+The first two files can be downloaded from ESRI's website or copied from the ArcSDE
+installation media.  To download the JSDE/JPE JAR files from ESRI's website:
+
+#. Navigate to `<http://support.esri.com/index.cfm?fa=downloads.patchesServicePacks.listPatches&PID=66>`_
+#. Find the link to the latest service pack for your version of ArcSDE
+#. Scroll down to **Installing this Service Pack** -> **ArcSDE SDK** -> **UNIX** (regardless of your target OS)
+#. Download any of the target files (but be sure to match 32/64 bit to your OS)
+#. Open the archive, and extract the appropriate JARs.
+
+.. note::
+
+   The JAR files may be in a nested archive inside this archive.
+
+To download the third file (``icu4j_3_2.jar``):
+
+#. Navigate to  `<ftp://ftp.software.ibm.com/software/globalization/icu/icu4j/3.2/>`_
+#. Download the file ``icu4j_3_2.jar``.
+
+When downloaded, copy all three files to the ``WEB-INF/lib`` directory of the GeoServer installation.
+
+After all GeoServer files and external files have been downloaded and copied, restart GeoServer.
+
+
+Adding an ArcSDE vector datastore
+---------------------------------
+
+In order to serve vector data layers, it is first necessary to register the ArcSDE instance as a datastore in GeoServer.  Navigate to the **Create New Feature Data Set** page, accessed in the :ref:`web_admin_config_datastores` page in the :ref:`web_admin_config` menu of the :ref:`web_admin`. (From the Welcome page: **Config** -> **Data** -> **Datastore** -> **New**) and an option for **ArcSDE** will be in the dropdown menu for **Feature Data Set Description**. Select this option, enter a name in the box for **Feature 
 Data Set ID**, and click **New**. 
 
-.. figure:: arcsdecreate.png
+.. note::
+
+   If ``ArcSDE`` is not an option in the **Feature Data Set Description** drop down box, the extension is not properly installed.  Please see the section on :ref:`arcsde_install`.
+
+.. figure:: pix/arcsdevectorcreate.png
    :align: center
 
-   *Figure 1: Creating a new ArcSDE datastore*
+   *Creating a new ArcSDE datastore*
 
-Vector datastore options
-------------------------   
+Configuring an ArcSDE vector datastore
+--------------------------------------
+
+The next page contains configuration options for the ArcSDE vector datastore.  Fill out the form then click **Submit**.  To apply the changes, click **Apply** then **Save**.   
    
-The next page contains configuration options for the ArcSDE instance.  Fill out the form then click **Submit**.  To apply the changes, click **Apply** then **Save**.   
-   
-.. figure:: arcsdeconfigure.png
+.. figure:: pix/arcsdevectorconfigure.png
    :align: center
 
-   *Figure 2: Configuring a new ArcSDE datastore*
+   *Configuring a new ArcSDE vector datastore*
 
 .. list-table::
    :widths: 20 10 80
@@ -86,35 +168,35 @@ The next page contains configuration options for the ArcSDE instance.  Fill out 
      - No
      - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details. 
   
-You may now add featuretypes as you would normally do, by navigating to 
-the **Create New Feature Type** page (**Config** -> **Data** -> 
-**Featuretype** -> **New**).
+You may now add featuretypes as you would normally do, by navigating to the **Create New Feature Type** page, accessed from the :ref:`web_admin_config_featuretypes` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: **Config** -> **Data** -> **Featuretypse** -> **New**).
 
-Adding a raster coveragestore
------------------------------
 
-In order to serve raster layers (or coverages), it is first necessary to register
-the ArcSDE instance as a coveragestore in GeoServer.
-Navigate to the **Create New Coverage Data Set** page 
-(**Config** -> **Data** -> **Coveragestores** -> **New**) and an option for 
-**ArcSDE Raster Format** will be in the dropdown menu for **Coverage Data Set 
-Description.** Select this option, enter a name in the box for **Coverage 
-Data Set ID**, and click **New**.
+Adding an ArcSDE raster coveragestore
+-------------------------------------
 
-.. figure:: arcsdecoveragecreate.png
+In order to serve raster layers (or coverages), it is first necessary to register the ArcSDE instance as a coveragestore in GeoServer.
+Navigate to the **Create New Coverage Data Set** page, accessed from the :ref:`web_admin_config_coveragestores` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: **Config** -> **Data** -> **Coveragestores** -> **New**) and an option for 
+**ArcSDE Raster Format** will be in the dropdown menu for **Coverage Data Set Description.** Select this option, enter a name in the box for **Coverage Data Set ID**, and click **New**.
+
+.. note::
+
+   If ``ArcSDE Raster Format`` is not an option in the **Coverage Data Set Description** drop down box, the extension is not properly installed.  Please see the section on :ref:`arcsde_install`.
+
+.. figure:: pix/arcsderastercreate.png
    :align: center
 
-   *Figure 3: Creating a new ArcSDE coveragestore*
+   *Creating a new ArcSDE coveragestore*
 
-Raster coveragestore options
-----------------------------
+
+Configuring an ArcSDE raster coveragestore
+------------------------------------------
 
 The next page contains configuration options for the ArcSDE instance.  Fill out the form then click **Submit**.  To apply the changes, click **Apply** then **Save**.
    
-.. figure:: arcsdecoverageconfigure.png
+.. figure:: pix/arcsderasterconfigure.png
    :align: center
 
-   *Figure 4: Configuring a new ArcSDE coveragestore*
+   *Configuring a new ArcSDE raster coveragestore*
 
 .. list-table::
    :widths: 20 10 80
@@ -141,12 +223,6 @@ The next page contains configuration options for the ArcSDE instance.  Fill out 
      - No
      - A description of the coveragestore.
 
-You may now add coverages as you would normally do, by navigating to 
-the **Create New Coverage Type** page (**Config** -> **Data** -> 
+You may now add coverages as you would normally do, by navigating to the **Create New Coverage Type** page, accessed from the :ref:`web_admin_config_coverages` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: **Config** -> **Data** -> 
 **Coverages** -> **New**).
 
-Performance considerations
---------------------------
-
-Common problems
----------------

@@ -19,6 +19,9 @@ On this page, you can register a new namespace, edit (configure) an existing nam
    
    *Namespace Configuration page*
 
+
+.. _web_admin_config_namespace_new:   
+   
 New
 ```
 
@@ -28,6 +31,9 @@ The New page allows new namespaces to be created.  Enter a name, and click **Sub
    :align: center
    
    *New Namespace page*
+
+
+.. _web_admin_config_namespace_edit:  
 
 Edit
 ````
@@ -39,7 +45,8 @@ The Edit page allows new or existing namespaces to be configured.  Enter a **URI
    
    *Edit Namespace page*
 
-.. _web_admin_config_coveragestores:   
+
+.. _web_admin_config_coveragestores:
    
 Coveragestores
 --------------
@@ -53,6 +60,8 @@ A **coveragestore** is a file or group of files that contain one or more coverag
 
 On this page, you can register a new coveragestore, edit (configure) an existing coveragestore, or delete (unregister) a coveragestore.
 
+.. _web_admin_config_coveragestores_new:
+
 New
 ```
 
@@ -64,6 +73,8 @@ The New page is where new coveragestores are loaded.  Select an option under **C
    :align: center
    
    *New Coveragestore page*
+
+.. _web_admin_config_coveragestores_edit:
 
 Edit
 ````
@@ -89,6 +100,8 @@ A **datastore** is a file, group of files, or database that contains featuretype
 
 On this page, you can register a new datastore, edit (configure) an existing datastore, or delete (unregister) a datastore.
 
+.. _web_admin_config_datastores_new: 
+
 New
 ```
 
@@ -100,6 +113,8 @@ The New page is where new datastores are loaded.  Select an option under **Featu
    :align: center
    
    *New Datastore page*
+
+.. _web_admin_config_datastores_edit: 
 
 Edit
 ````
@@ -125,6 +140,8 @@ Styles are methods of rendering geospatial data.  Styles for GeoServer are writt
 
 On this page, you can register or create a new style, edit (configure) an existing style, or delete (unregister) a style.
 
+.. _web_admin_config_style_new:
+
 New
 ```
 
@@ -134,6 +151,8 @@ Create a new style here.  Enter the name of the style and click **New** to go to
    :align: center
    
    *New Style page*
+
+.. _web_admin_config_style_edit:
 
 Edit
 ````
@@ -159,6 +178,8 @@ A **featuretype** is a data layer that contains geographic features in a vector 
 
 On this page, you can register a new featuretype, edit (configure) an existing featuretype, or delete (unregister) a featuretype.
 
+.. _web_admin_config_featuretypes_new:
+
 New
 ```
 
@@ -168,6 +189,8 @@ Register a new featuretype on this page.  Select an available featuretype from t
    :align: center
    
    *New Featuretype page*
+
+.. _web_admin_config_featuretypes_edit:
 
 Edit
 ````
@@ -179,7 +202,7 @@ Edit
    
    *Edit Featuretype page*
  
-.. _web_admin_config_coverage:
+.. _web_admin_config_coverages:
  
 Coverages
 ---------
@@ -193,6 +216,8 @@ A **coverage** is a data layer that contains geographic data in a raster format.
 
 On this page, you can register a new coverage, edit (configure) an existing coverage, or delete (unregister) a coverage.
 
+.. _web_admin_config_coverages_new:
+
 New
 ```
 
@@ -202,6 +227,8 @@ Register a new coverage on this page.  Select an available coverage from the lis
    :align: center
    
    *New Coverage page*
+
+.. _web_admin_config_coverages_edit:
 
 Edit
 ````
