@@ -23,6 +23,7 @@ import org.eclipse.xsd.XSDFactory;
 import org.eclipse.xsd.XSDForm;
 import org.eclipse.xsd.XSDImport;
 import org.eclipse.xsd.XSDModelGroup;
+import org.eclipse.xsd.XSDNamedComponent;
 import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDSchemaContent;
@@ -82,10 +83,10 @@ public abstract class FeatureTypeSchemaBuilder {
     protected String gmlPrefix;
     protected Configuration xmlConfiguration;
 
-    protected FeatureTypeSchemaBuilder(GeoServer gs, GeoServerResourceLoader resourceLoader) {
+    protected FeatureTypeSchemaBuilder(GeoServer gs) {
         this.wfs = gs.getService( WFSInfo.class );
         this.catalog = gs.getCatalog();
-        this.resourceLoader = resourceLoader;
+        this.resourceLoader = gs.getCatalog().getResourceLoader();
 
         profiles = new ArrayList();
         profiles.add(new XSProfile());
@@ -165,7 +166,7 @@ public abstract class FeatureTypeSchemaBuilder {
 
                 for (Iterator t = types.iterator(); t.hasNext();) {
                     FeatureTypeInfo type = (FeatureTypeInfo) t.next();
-                    queryString.append(type.getName());
+                    queryString.append(type.getPrefixedName());
 
                     if (t.hasNext()) {
                         queryString.append(",");
@@ -225,16 +226,14 @@ public abstract class FeatureTypeSchemaBuilder {
     void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory)
         throws IOException {
         //look if the schema for the type is already defined
+        String ws = featureTypeMeta.getStore().getWorkspace().getName();
         String ds = featureTypeMeta.getStore().getName();
         String name = featureTypeMeta.getName();
 
         File schemaFile = null;
 
         try {
-            schemaFile = resourceLoader.find("featureTypes/" + ds + "_" + name + "/schema.xsd");
-            if ( schemaFile == null ) {
-                schemaFile = resourceLoader.find("featureTypes/" + name + "/schema.xsd");
-            }
+            schemaFile = resourceLoader.find("workspaces/" + ws + "/" + ds + "/" + name + "/schema.xsd");
         } catch (IOException e1) {
         }
 
@@ -274,6 +273,19 @@ public abstract class FeatureTypeSchemaBuilder {
                     if ( content instanceof XSDImport ) {
                         XSDImport imprt = (XSDImport) content;
                         if ( gmlNamespace.equals( imprt.getNamespace() ) ) {
+                            i.remove();
+                        }
+                    }
+                    
+                    //check for duplicated elements and types
+                    
+                    if ( content instanceof XSDElementDeclaration ) {
+                        if ( contains( (XSDNamedComponent) content, schema.getElementDeclarations() ) ) {
+                            i.remove();
+                        }
+                    }
+                    else if ( content instanceof XSDTypeDefinition ) {
+                        if ( contains( (XSDNamedComponent) content, schema.getTypeDefinitions() ) ) {
                             i.remove();
                         }
                     }
@@ -350,7 +362,23 @@ public abstract class FeatureTypeSchemaBuilder {
         schema.updateElement();
     }
 
-   
+    boolean contains( XSDNamedComponent c, List l ) {
+
+        boolean contains = false;
+        for ( Iterator i = l.iterator(); !contains && i.hasNext(); ) {
+            XSDNamedComponent e = (XSDNamedComponent) i.next();
+            if ( e.getName().equals( c.getName() ) ) {
+                if ( e.getTargetNamespace() == null ) {
+                    contains = c.getTargetNamespace() == null;
+                }
+                else {
+                    contains = e.getTargetNamespace().equals( c.getTargetNamespace() );
+                }
+            }
+        }
+        
+        return contains;
+    }
     
     Name findTypeName(Class binding) {
         for (Iterator p = profiles.iterator(); p.hasNext();) {
@@ -379,15 +407,15 @@ public abstract class FeatureTypeSchemaBuilder {
          */
         private static XSDSchema gml2Schema;
 
-        public GML2(GeoServer gs, GeoServerResourceLoader resourceLoader) {
-            super(gs, resourceLoader);
+        public GML2(GeoServer gs) {
+            super(gs);
 
             profiles.add(new GML2Profile());
             gmlNamespace = org.geotools.gml2.GML.NAMESPACE;
             gmlSchemaLocation = "gml/2.1.2/feature.xsd";
             baseType = "AbstractFeatureType";
             substitutionGroup = "_Feature";
-            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0";
+            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.0.0&service=WFS";
             gmlPrefix = "gml";
             xmlConfiguration = new GMLConfiguration();
         }
@@ -407,8 +435,8 @@ public abstract class FeatureTypeSchemaBuilder {
          */
         private static XSDSchema gml3Schema;
 
-        public GML3(GeoServer gs, GeoServerResourceLoader resourceLoader) {
-            super(gs, resourceLoader);
+        public GML3(GeoServer gs) {
+            super(gs);
 
             profiles.add(new GML3Profile());
 
@@ -416,7 +444,7 @@ public abstract class FeatureTypeSchemaBuilder {
             gmlSchemaLocation = "gml/3.1.1/base/gml.xsd";
             baseType = "AbstractFeatureType";
             substitutionGroup = "_Feature";
-            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0";
+            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0&service=WFS";
             gmlPrefix = "gml";
             xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
         }
