@@ -1,4 +1,4 @@
-package org.geoserver.web.data.datastore;
+package org.geoserver.web.data.store;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,11 +22,10 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.StoreNameValidator;
-import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
-import org.geoserver.web.data.datastore.panel.LabelParamPanel;
-import org.geoserver.web.data.datastore.panel.PasswordParamPanel;
-import org.geoserver.web.data.datastore.panel.TextParamPanel;
-import org.geoserver.web.data.store.StorePage;
+import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
+import org.geoserver.web.data.store.panel.LabelParamPanel;
+import org.geoserver.web.data.store.panel.PasswordParamPanel;
+import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;

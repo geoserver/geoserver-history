@@ -2,21 +2,25 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.data.datastore.panel;
+package org.geoserver.web.data.store.panel;
+
+import java.awt.Color;
+import java.util.Locale;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidator;
+import org.geoserver.web.wicket.ColorPickerField;
 
 /**
  * A label with a text field. Can receive custom validators for the text field.
  * @author Gabriel Roldan
  */
 @SuppressWarnings("serial")
-public class TextParamPanel extends Panel {
+public class ColorPickerPanel extends Panel {
 
     /**
      * 
@@ -29,7 +33,7 @@ public class TextParamPanel extends Panel {
      *            any extra validator that should be added to the input field,
      *            or {@code null}
      */
-    public TextParamPanel(final String id, IModel paramVale, String paramLabel, 
+    public ColorPickerPanel(final String id, IModel paramVale, String paramLabel, 
                           final boolean required, IValidator... validators) {
         // make the value of the text field the model of this panel, for easy value retriaval
         super(id, paramVale);
@@ -38,8 +42,28 @@ public class TextParamPanel extends Panel {
         Label label = new Label("paramName", paramLabel);
         add(label);
 
-        // the text field, with a decorator for validations
-        TextField textField = new TextField("paramValue", paramVale);
+        // the color picker. Notice that we need to convert between RRGGBB and #RRGGBB,
+        // passing in a Color.class param is just a trick to force the component to use
+        // the converter both ways
+        ColorPickerField textField = new ColorPickerField("paramValue", paramVale, Color.class) {
+            @Override
+            public IConverter getConverter(Class type) {
+                return new IConverter() {
+                
+                    public String convertToString(Object value, Locale locale) {
+                        String input = (String) value;
+                        if(input.startsWith("#"))
+                            return input.substring(1);
+                        else
+                            return input;
+                    }
+                
+                    public Object convertToObject(String value, Locale locale) {
+                        return "#" + value;
+                    }
+                };
+            }
+        };
         textField.setRequired(required);
         if(validators != null) {
             for(IValidator validator : validators){
