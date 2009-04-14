@@ -56,7 +56,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         }
 
         parametersMap.putAll(connectionParameters);
-        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, dataStoreInfo.getName());
+        parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, dataStoreInfo.getName());
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
                 .isEnabled()));
@@ -80,7 +80,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         DataStoreInfo dataStoreInfo;
 
         // dataStoreId already validated, so its safe to use
-        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
+        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
         final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
 
@@ -97,7 +97,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
 
         connectionParameters.clear();
         connectionParameters.putAll(dsParams);
-        connectionParameters.remove(DATASTORE_ID_PROPERTY_NAME);
+        connectionParameters.remove(DATASTORE_NAME_PROPERTY_NAME);
         connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
 
