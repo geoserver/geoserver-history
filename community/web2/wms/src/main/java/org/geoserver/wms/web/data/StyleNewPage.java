@@ -17,6 +17,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.web.GeoServerSecuredPage;
 
 /**
@@ -25,6 +26,7 @@ import org.geoserver.web.GeoServerSecuredPage;
 @SuppressWarnings("serial")
 public class StyleNewPage extends GeoServerSecuredPage {
 
+    TextField nameTextField;
     SLDEditorPanel sldEditorPanel;
     FileUploadField fileUploadField;
     
@@ -34,7 +36,7 @@ public class StyleNewPage extends GeoServerSecuredPage {
         Form form = new Form( "form", new CompoundPropertyModel( s ) );
         add(form);
         
-        form.add( new TextField( "name", String.class ).setRequired( true ) );
+        form.add( nameTextField = new TextField( "name", String.class ) );
         form.add( sldEditorPanel = new SLDEditorPanel( "sld", new Model() ) );
         sldEditorPanel.setOutputMarkupId( true );
         
@@ -51,6 +53,10 @@ public class StyleNewPage extends GeoServerSecuredPage {
             @Override
             public void onSubmit() {
                 FileUpload upload = fileUploadField.getFileUpload();
+                if ( upload == null ) {
+                    warn( "No file selected.");
+                    return;
+                }
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
                 
                 try {
@@ -65,6 +71,12 @@ public class StyleNewPage extends GeoServerSecuredPage {
                 //update the style object
                 StyleInfo s = (StyleInfo) getForm().getModelObject();
                 s.setFilename( upload.getClientFileName() );
+                
+                if ( s.getName() == null || "".equals( s.getName().trim() ) ) {
+                    //set it
+                    nameTextField.setModelValue( ResponseUtils.stripExtension( upload.getClientFileName() ) );
+                    nameTextField.modelChanged();
+                }
             }
         };
         form.add( uploadLink );
