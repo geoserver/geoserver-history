@@ -27,9 +27,6 @@ public class VersionedXmlSchemaEncoder extends Response {
     /** the catalog */
     Catalog catalog;
 
-    /** the geoserver resource loader */
-    GeoServerResourceLoader resourceLoader;
-
     WFSVConfiguration configuration;
 
     public VersionedXmlSchemaEncoder(GeoServer gs,
@@ -39,7 +36,6 @@ public class VersionedXmlSchemaEncoder extends Response {
                 .singleton("text/xml; subtype=gml/3.1.1"));
         this.wfs = gs.getService( WFSInfo.class );
         this.catalog = gs.getCatalog();
-        this.resourceLoader = resourceLoader;
         this.configuration = configuration;
     }
 
@@ -59,11 +55,9 @@ public class VersionedXmlSchemaEncoder extends Response {
                 .getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         FeatureTypeSchemaBuilder builder = null;
         if (results.isVersioned()) {
-            builder = new VersionedSchemaBuilder(wfs.getGeoServer(), resourceLoader,
-                    configuration);
+            builder = new VersionedSchemaBuilder(wfs.getGeoServer(), configuration);
         } else {
-            builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer(),
-                    resourceLoader);
+            builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer());
         }
 
         XSDSchema schema = builder.build(results.getFeatureTypeInfo(),

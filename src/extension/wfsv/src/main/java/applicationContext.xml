@@ -185,7 +185,6 @@
   <!-- Encoders / Output formats -->
   <bean id="gml3VersionedFeatureTypeEncoder" class="org.geoserver.wfsv.response.v1_1_0.VersionedXmlSchemaEncoder">
         <constructor-arg ref="geoServer"/>
-        <constructor-arg ref="resourceLoader"/>
         <constructor-arg ref="wfsvXmlConfiguration-1.1"/>
   </bean>
   <bean id="gml2VersionedFeatureTypeEncoder" class="org.geoserver.wfsv.response.v1_0_0.VersionedXmlSchemaEncoder">
