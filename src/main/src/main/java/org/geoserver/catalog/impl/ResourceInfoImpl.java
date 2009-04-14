@@ -162,6 +162,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
     public List<String> getKeywords() {
         return keywords;
     }
+    
+    public void setKeywords(List<String> keywords) {
+        this.keywords = keywords;
+    }
 
     public List<MetadataLinkInfo> getMetadataLinks() {
         return metadataLinks;
