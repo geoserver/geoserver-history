@@ -23,11 +23,10 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.ResourceConfigurationPage;
+import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 
 /**
  * A page listing the resources contained in a store, and whose links will bring

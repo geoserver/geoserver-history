@@ -33,7 +33,7 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.ResourceConfigurationPage;
+import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.data.store.CoverageStoreConfiguration;
 import org.geoserver.web.data.store.DataAccessEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;

@@ -1,11 +1,7 @@
-package org.geoserver.web.data;
+package org.geoserver.web.data.resource;
 
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerWicketTestSupport;
-import org.geoserver.web.publish.BasicLayerConfig;
 
 public class ResourceConfigurationPageTest extends GeoServerWicketTestSupport {
     
