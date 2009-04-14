@@ -4,6 +4,8 @@
  */
 package org.geoserver.web.data.layergroup;
 
+import java.util.logging.Level;
+
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
@@ -38,6 +40,7 @@ public class LayerGroupNewPage extends GeoServerSecuredPage {
                 }
                 catch( Exception e ) {
                     error( e );
+                    LOGGER.log( Level.WARNING, "Error creating new layer group.", e );
                 }
             }
             
