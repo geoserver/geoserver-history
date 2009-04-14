@@ -20,8 +20,8 @@ In order to change any server settings a user must first be authenticated. Any t
 
    The default adminstrator **username** is "admin", and the default **password** is "geoserver". To change these defaults see the :ref: section.
 
-The submit-apply-save workflow
-------------------------------
+Submit-Apply-Save workflow
+--------------------------
 
 Making a change to server configuration with the web admin tool follows a three phase process:
 
@@ -44,9 +44,7 @@ Making a change to server configuration with the web admin tool follows a three 
    Saving persists all applied changes to disk so that the change is realized on subsequent GeoServer startups.
 
 
-.. _map_preview:
-
-map preview
+Map Preview
 -----------
 
 The *map preview* tool provides a built-in `OpenLayers <http://openlayers.org>`_ map for each layer being published by a GeoServer instance. It can be a useful tool for verifying the configuration of a particular layer, or as a means to explore a layer visually.
@@ -55,6 +53,7 @@ The map preview  tool is found by navigating to the ``Demo`` section from the ma
 
     .. image:: map-preview.png
        :align: center
+
 
 .. _sample_request_tool:
 

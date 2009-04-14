@@ -11,7 +11,7 @@ The Demo menu contains helpful links to various demos and information pages rega
    *Demo menu*
 
 
-.. _web_admin_map_preview:   
+.. _map_preview:   
 
 Map Preview
 -----------

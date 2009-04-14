@@ -6,17 +6,7 @@ WFS reference
 Introduction
 ------------ 
 
-The `Web Feature Service <http://www.opengeospatial.org/standards/wfs>`_ 
-(WFS) is a standard created by the OGC that refers to the 
-sending and receiving of geospatial data through the medium of the World 
-Wide Web. WFS encodes and transfer information in Geography Markup 
-Language, a subset of XML. The current version of WFS is 1.1.0. 
-GeoServer supports both version 1.1.0 (the default since GeoServer 
-1.6.0) and version 1.0.0. There are differences between these two 
-formats, some more subtle than others, and this will be noted where 
-differences arise. The current version of WFS is 1.1. WFS version 1.0 is 
-still used in places, and we will note where there are differences. 
-However, the syntax will often remain the same. 
+The `Web Feature Service <http://www.opengeospatial.org/standards/wfs>`_ (WFS) is a standard created by the OGC that refers to the sending and receiving of geospatial data through HTTP. WFS encodes and transfers information in Geography Markup Language, a subset of XML. The current version of WFS is 1.1.0. GeoServer supports both version 1.1.0 (the default since GeoServer 1.6.0) and version 1.0.0. There are differences between these two formats, some more subtle than others, and this will be noted where differences arise. The current version of WFS is 1.1. WFS version 1.0 is still used in places, and we will note where there are differences. However, the syntax will often remain the same. 
 
 An important distinction must be made between WFS and :ref:`wms`, which refers to the sending and receiving of geographic 
 information after it has been rendered as a digital image. 
@@ -42,21 +32,22 @@ WFS can perform the following operations:
 .. list-table::
    :widths: 20 80
 
-   * - **GetCapabilities**
-     - Determine a server's datasets, operations, and services
-   * - **DescribeFeatureType**
-     - Receive information and attributes about a particular dataset
-   * - **GetFeature**
-     - Receive the actual data, including geometry and attribute values
-   * - **LockFeature**
-     - Prevent a feature type from being edited
-   * - **Transaction** 
-     - Make edits to existing feature types, such as creating, updating, and deleting. 
-   * - **GetGMLObject** 
-     - *(Version 1.1.0 only)* - Retrieve element instances by traversing XLinks that refer to their XML IDs.
+   * - **Operation**
+     - **Description**
+   * - ``GetCapabilities``
+     - Retrieves a list of the server's data, as well as valid WFS operations and parameters
+   * - ``DescribeFeatureType``
+     - Retrieves information and attributes about a particular dataset
+   * - ``GetFeature``
+     - Retrieves the actual data, including geometry and attribute values
+   * - ``LockFeature``
+     - Prevents a feature type from being edited
+   * - ``Transaction`` 
+     - Edits existing featuretypes by creating, updating, and deleting. 
+   * - ``GetGMLObject`` 
+     - *(Version 1.1.0 only)* - Retrieves element instances by traversing XLinks that refer to their XML IDs.
 
-A WFS server that supports **transactions** is sometimes known as a WFS-T. 
-GeoServer fully supports transactions.
+A WFS server that supports **transactions** is sometimes known as a WFS-T.  **GeoServer fully supports transactions.**
 
 .. _wfs_getcap:
 
