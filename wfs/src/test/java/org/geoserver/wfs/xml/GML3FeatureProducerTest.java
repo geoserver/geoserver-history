@@ -36,8 +36,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
     }
 
     GML3OutputFormat producer() {
-        FeatureTypeSchemaBuilder sb = new FeatureTypeSchemaBuilder.GML3(getGeoServer(),
-                getResourceLoader()); 
+        FeatureTypeSchemaBuilder sb = new FeatureTypeSchemaBuilder.GML3(getGeoServer()); 
         WFSConfiguration configuration = new WFSConfiguration(getCatalog(),
                 sb, new WFS(sb));
         return new GML3OutputFormat(getGeoServer(), configuration);

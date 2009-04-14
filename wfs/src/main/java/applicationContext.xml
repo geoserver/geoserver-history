@@ -79,11 +79,9 @@
 	<!-- gml schema builders -->
 	<bean id="gml2SchemaBuilder" class="org.geoserver.wfs.xml.FeatureTypeSchemaBuilder$GML2">
 		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	<bean id="gml3SchemaBuilder" class="org.geoserver.wfs.xml.FeatureTypeSchemaBuilder$GML3">
 		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	
 	<!-- xml configuration -->
@@ -295,9 +293,8 @@
 		<constructor-arg ref="geoServer"/>
 	</bean>
 	<bean id="gml3FeatureTypeEncoder" 
-		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder">
+		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder$V11">
 		<constructor-arg ref="geoServer"/>
-		<constructor-arg ref="resourceLoader"/>
 	</bean>
 	<!-- default get feature producers -->
 	<bean id="gml2OutputFormat" 
