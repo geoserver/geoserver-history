@@ -18,8 +18,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.store.CoverageStoreConfiguration;
-import org.geoserver.web.data.store.DataAccessNewPage;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
@@ -36,9 +34,11 @@ import org.opengis.coverage.grid.Format;
  */
 public class NewDataPage extends GeoServerSecuredPage {
 
-    transient Map<String, DataAccessFactory> dataStores = getAvailableDataStores();
+    // do not access directly, it is transient and the instance can be the de-serialized version
+    private transient Map<String, DataAccessFactory> dataStores = getAvailableDataStores();
 
-    transient Map<String, Format> coverages = getAvailableCoverageStores();
+    // do not access directly, it is transient and the instance can be the de-serialized version
+    private transient Map<String, Format> coverages = getAvailableCoverageStores();
 
     /**
      * Creates the page components to present the list of available vector and raster data source
@@ -50,7 +50,7 @@ public class NewDataPage extends GeoServerSecuredPage {
     @SuppressWarnings("serial")
     public NewDataPage(final String workspaceId) {
 
-        final ArrayList<String> sortedDsNames = new ArrayList<String>(dataStores.keySet());
+        final ArrayList<String> sortedDsNames = new ArrayList<String>(getAvailableDataStores().keySet());
         Collections.sort(sortedDsNames);
 
         final CatalogIconFactory icons = CatalogIconFactory.get();
@@ -58,14 +58,13 @@ public class NewDataPage extends GeoServerSecuredPage {
             @Override
             protected void populateItem(ListItem item) {
                 final String dataStoreFactoryName = item.getModelObjectAsString();
-                final DataAccessFactory factory = dataStores.get(dataStoreFactoryName);
+                final DataAccessFactory factory = getAvailableDataStores().get(dataStoreFactoryName);
                 final String description = factory.getDescription();
                 Link link;
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        setResponsePage(new DataAccessNewPage(workspaceId,
-                                dataStoreFactoryName));
+                        setResponsePage(new DataAccessNewPage(workspaceId, dataStoreFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
@@ -75,21 +74,22 @@ public class NewDataPage extends GeoServerSecuredPage {
             }
         };
 
-        final List<String> sortedCoverageNames = new ArrayList<String>(coverages.keySet());
+        final List<String> sortedCoverageNames = new ArrayList<String>();
+        sortedCoverageNames.addAll(getAvailableCoverageStores().keySet());
         Collections.sort(sortedCoverageNames);
 
         final ListView coverageLinks = new ListView("rasterResources", sortedCoverageNames) {
             @Override
             protected void populateItem(ListItem item) {
                 final String coverageFactoryName = item.getModelObjectAsString();
+                final Map<String, Format> coverages = getAvailableCoverageStores();
                 Format format = coverages.get(coverageFactoryName);
                 final String description = format.getDescription();
                 Link link;
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        setResponsePage(new CoverageStoreConfiguration(workspaceId,
-                                coverageFactoryName));
+                        setResponsePage(new CoverageStoreNewPage(workspaceId, coverageFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", coverageFactoryName));
@@ -107,28 +107,36 @@ public class NewDataPage extends GeoServerSecuredPage {
      * @return the name/description set of available datastore factories
      */
     private Map<String, DataAccessFactory> getAvailableDataStores() {
-        final Iterator<DataAccessFactory> availableDataStores;
-        availableDataStores = DataAccessFinder.getAvailableDataStores();
+        // dataStores is transient, a back button may get us to the serialized version so check for
+        // it
+        if (dataStores == null) {
+            final Iterator<DataAccessFactory> availableDataStores;
+            availableDataStores = DataAccessFinder.getAvailableDataStores();
 
-        Map<String, DataAccessFactory> storeNames = new HashMap<String, DataAccessFactory>();
+            Map<String, DataAccessFactory> storeNames = new HashMap<String, DataAccessFactory>();
 
-        while (availableDataStores.hasNext()) {
-            DataAccessFactory factory = availableDataStores.next();
-            storeNames.put(factory.getDisplayName(), factory);
+            while (availableDataStores.hasNext()) {
+                DataAccessFactory factory = availableDataStores.next();
+                storeNames.put(factory.getDisplayName(), factory);
+            }
+            dataStores = storeNames;
         }
-        return storeNames;
+        return dataStores;
     }
 
     /**
      * @return the name/description set of available raster formats
      */
     private Map<String, Format> getAvailableCoverageStores() {
-        Format[] availableFormats = GridFormatFinder.getFormatArray();
-        Map<String, Format> formatNames = new HashMap<String, Format>();
-        for (Format format : availableFormats) {
-            formatNames.put(format.getName(), format);
+        if (coverages == null) {
+            Format[] availableFormats = GridFormatFinder.getFormatArray();
+            Map<String, Format> formatNames = new HashMap<String, Format>();
+            for (Format format : availableFormats) {
+                formatNames.put(format.getName(), format);
+            }
+            coverages = formatNames;
         }
-        return formatNames;
+        return coverages;
     }
 
 }
