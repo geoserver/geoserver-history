@@ -5,7 +5,7 @@
 /**
  * 
  */
-package org.geoserver.web.data.datastore;
+package org.geoserver.web.data.store;
 
 import java.io.Serializable;
 

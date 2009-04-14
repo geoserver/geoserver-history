@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.data.coverage;
+package org.geoserver.web.data.store;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -19,14 +19,12 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.NewDataPage;
 import org.geoserver.web.data.StoreNameValidator;
-import org.geoserver.web.data.datastore.panel.CheckBoxParamPanel;
-import org.geoserver.web.data.datastore.panel.LabelParamPanel;
-import org.geoserver.web.data.datastore.panel.TextParamPanel;
-import org.geoserver.web.data.datastore.panel.WorkspacePanel;
 import org.geoserver.web.data.layer.NewLayerPage;
-import org.geoserver.web.data.store.StorePage;
+import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
+import org.geoserver.web.data.store.panel.LabelParamPanel;
+import org.geoserver.web.data.store.panel.TextParamPanel;
+import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 

@@ -10,9 +10,8 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.web.data.datastore.panel.ColorPickerPanel;
-import org.geoserver.web.data.datastore.panel.TextParamPanel;
-import org.geoserver.web.publish.LayerConfigurationPanel;
+import org.geoserver.web.data.store.panel.ColorPickerPanel;
+import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.util.MapModel;
 
 /**
