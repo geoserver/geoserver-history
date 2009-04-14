@@ -11,103 +11,91 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.geoserver.web.CatalogIconFactory;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
-import org.geoserver.web.data.datastore.DataStoreConfiguration;
+import org.geoserver.web.data.datastore.DataAccessNewPage;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
 import org.opengis.coverage.grid.Format;
 
 /**
- * Page that presents a list of vector and raster store types available in the
- * classpath in order to choose what kind of data source to create.
+ * Page that presents a list of vector and raster store types available in the classpath in order to
+ * choose what kind of data source to create.
  * <p>
- * Meant to be called by {@link DataPage} when about to add a new datastore or
- * coverage.
+ * Meant to be called by {@link DataPage} when about to add a new datastore or coverage.
  * </p>
  * 
  * @author Gabriel Roldan
  */
 public class NewDataPage extends GeoServerSecuredPage {
-    
+
     transient Map<String, DataAccessFactory> dataStores = getAvailableDataStores();
+
     transient Map<String, Format> coverages = getAvailableCoverageStores();
 
     /**
-     * Creates the page components to present the list of available vector and
-     * raster data source types
+     * Creates the page components to present the list of available vector and raster data source
+     * types
      * 
      * @param workspaceId
-     *                the id of the workspace to attach the new resource store
-     *                to.
+     *            the id of the workspace to attach the new resource store to.
      */
     @SuppressWarnings("serial")
     public NewDataPage(final String workspaceId) {
 
-        final ArrayList<String> sortedDsNames = new ArrayList<String>(
-                dataStores.keySet());
+        final ArrayList<String> sortedDsNames = new ArrayList<String>(dataStores.keySet());
         Collections.sort(sortedDsNames);
 
         final CatalogIconFactory icons = CatalogIconFactory.get();
-        final ListView dataStoreLinks = new ListView("vectorResources",
-                sortedDsNames) {
+        final ListView dataStoreLinks = new ListView("vectorResources", sortedDsNames) {
             @Override
             protected void populateItem(ListItem item) {
-                final String dataStoreFactoryName = item
-                        .getModelObjectAsString();
-                final DataAccessFactory factory = dataStores
-                        .get(dataStoreFactoryName);
+                final String dataStoreFactoryName = item.getModelObjectAsString();
+                final DataAccessFactory factory = dataStores.get(dataStoreFactoryName);
                 final String description = factory.getDescription();
                 Link link;
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        setResponsePage(new DataStoreConfiguration(workspaceId,
+                        setResponsePage(new DataAccessNewPage(workspaceId,
                                 dataStoreFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
                 item.add(link);
                 item.add(new Label("resourceDescription", description));
-                item.add(new Image("storeIcon",
-                        icons.getStoreIcon(factory.getClass())));
+                item.add(new Image("storeIcon", icons.getStoreIcon(factory.getClass())));
             }
         };
 
-        final List<String> sortedCoverageNames = new ArrayList<String>(
-                coverages.keySet());
+        final List<String> sortedCoverageNames = new ArrayList<String>(coverages.keySet());
         Collections.sort(sortedCoverageNames);
 
-        final ListView coverageLinks = new ListView("rasterResources",
-                sortedCoverageNames) {
+        final ListView coverageLinks = new ListView("rasterResources", sortedCoverageNames) {
             @Override
             protected void populateItem(ListItem item) {
-                final String coverageFactoryName = item
-                        .getModelObjectAsString();
+                final String coverageFactoryName = item.getModelObjectAsString();
                 Format format = coverages.get(coverageFactoryName);
                 final String description = format.getDescription();
                 Link link;
                 link = new Link("resourcelink") {
                     @Override
                     public void onClick() {
-                        setResponsePage(new CoverageStoreConfiguration(
-                                workspaceId, coverageFactoryName));
+                        setResponsePage(new CoverageStoreConfiguration(workspaceId,
+                                coverageFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", coverageFactoryName));
                 item.add(link);
                 item.add(new Label("resourceDescription", description));
-                item.add(new Image("storeIcon",
-                        icons.getStoreIcon(format.getClass())));
+                item.add(new Image("storeIcon", icons.getStoreIcon(format.getClass())));
             }
         };
 

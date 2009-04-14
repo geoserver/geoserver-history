@@ -4,14 +4,19 @@
  */
 package org.geoserver.web.data.layer;
 
-import static org.geoserver.web.data.layer.LayerProvider.*;
+import static org.geoserver.web.data.layer.LayerProvider.ENABLED;
+import static org.geoserver.web.data.layer.LayerProvider.NAME;
+import static org.geoserver.web.data.layer.LayerProvider.REMOVE;
+import static org.geoserver.web.data.layer.LayerProvider.SRS;
+import static org.geoserver.web.data.layer.LayerProvider.STORE;
+import static org.geoserver.web.data.layer.LayerProvider.TYPE;
+import static org.geoserver.web.data.layer.LayerProvider.WORKSPACE;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
@@ -26,13 +31,11 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.LayerInfo.Type;
-import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.CatalogIconFactory;
+import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.ResourceConfigurationPage;
 import org.geoserver.web.data.coverage.CoverageStoreConfiguration;
-import org.geoserver.web.data.datastore.DataStoreConfiguration;
+import org.geoserver.web.data.datastore.DataAccessEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -121,7 +124,7 @@ public class LayerPage extends GeoServerSecuredPage {
                 String storeName = getModelObjectAsString();
                 StoreInfo store = getCatalog().getStoreByName(storeName, StoreInfo.class);
                 if (store instanceof DataStoreInfo)
-                    setResponsePage(new DataStoreConfiguration(store.getId()));
+                    setResponsePage(new DataAccessEditPage(store.getId()));
                 else if(store instanceof CoverageStoreInfo)
                     setResponsePage(new CoverageStoreConfiguration(store.getId()));
                 else
