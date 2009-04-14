@@ -40,17 +40,10 @@ public abstract class FeatureTypeSchema {
      */
     protected WFSInfo wfs;
 
-    /**
-     * resource loader
-     */
-    protected GeoServerResourceLoader loader;
-
-    protected FeatureTypeSchema(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog,
-        GeoServerResourceLoader loader) {
+    protected FeatureTypeSchema(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog) {
         this.featureType = featureType;
         this.catalog = catalog;
         this.wfs = wfs;
-        this.loader = loader;
     }
 
     /**
@@ -76,7 +69,7 @@ public abstract class FeatureTypeSchema {
             return this;
         }
 
-        return new GML2(featureType, wfs, catalog, loader);
+        return new GML2(featureType, wfs, catalog);
     }
 
     /**
@@ -87,7 +80,7 @@ public abstract class FeatureTypeSchema {
             return this;
         }
 
-        return new GML3(featureType, wfs, catalog, loader);
+        return new GML3(featureType, wfs, catalog);
     }
 
     /**
@@ -96,10 +89,9 @@ public abstract class FeatureTypeSchema {
      * @author Justin Deoliveira, The Open Planning Project
      */
     public static final class GML2 extends FeatureTypeSchema {
-        public GML2(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog,
-            GeoServerResourceLoader loader) {
-            super(featureType, wfs, catalog, loader);
-            builder = new FeatureTypeSchemaBuilder.GML2(wfs.getGeoServer(), loader);
+        public GML2(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog) {
+            super(featureType, wfs, catalog);
+            builder = new FeatureTypeSchemaBuilder.GML2(wfs.getGeoServer());
         }
     }
 
@@ -109,10 +101,9 @@ public abstract class FeatureTypeSchema {
      * @author Justin Deoliveira, The Open Planning Project
      */
     public static final class GML3 extends FeatureTypeSchema {
-        protected GML3(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog,
-            GeoServerResourceLoader loader) {
-            super(featureType, wfs, catalog, loader);
-            builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer(), loader);
+        protected GML3(FeatureTypeInfo featureType, WFSInfo wfs, Catalog catalog) {
+            super(featureType, wfs, catalog);
+            builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer());
         }
     }
 }

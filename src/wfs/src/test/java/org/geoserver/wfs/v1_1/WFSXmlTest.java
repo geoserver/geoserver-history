@@ -21,7 +21,7 @@ public class WFSXmlTest extends WFSTestSupport {
     WFSConfiguration configuration() {
         Catalog catalog = getCatalog();
         FeatureTypeSchemaBuilder sb = 
-            new FeatureTypeSchemaBuilder.GML3(getGeoServer(),getResourceLoader());
+            new FeatureTypeSchemaBuilder.GML3(getGeoServer());
         return new WFSConfiguration(catalog,sb,new WFS(sb));
     }
 

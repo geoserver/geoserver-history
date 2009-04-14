@@ -17,7 +17,7 @@ public class FeatureTypeInfoSchemaBuilderTest extends WFSTestSupport {
 
     public void testBuildGml2() throws Exception {
         FeatureTypeSchemaBuilder builder = new FeatureTypeSchemaBuilder.GML2(
-                getGeoServer(), getResourceLoader());
+                getGeoServer());
 
         FeatureTypeInfo lines = getFeatureTypeInfo(MockData.LINES);
         XSDSchema schema = builder.build(new FeatureTypeInfo[] { lines }, null);
