@@ -84,7 +84,7 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
 
             parametersMap.put(param.key, value);
         }
-        parametersMap.put(DATASTORE_ID_PROPERTY_NAME, null);
+        parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.TRUE);
 
@@ -106,7 +106,7 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         DataStoreInfo dataStoreInfo;
 
         // dataStoreId already validated, so its safe to use
-        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_ID_PROPERTY_NAME);
+        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
         final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
 
@@ -123,7 +123,7 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         connectionParameters = dataStoreInfo.getConnectionParameters();
         connectionParameters.clear();
         connectionParameters.putAll(dsParams);
-        connectionParameters.remove(DATASTORE_ID_PROPERTY_NAME);
+        connectionParameters.remove(DATASTORE_NAME_PROPERTY_NAME);
         connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
 
