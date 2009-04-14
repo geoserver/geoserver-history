@@ -55,10 +55,9 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
     private static final String DATASTORE_ENABLED_PROPERTY_NAME = "Wicket_Data_Source_Enabled";
 
     /**
-     * Holds datastore parameters. Properties will be settled by the form input
-     * fields.
+     * Holds datastore parameters. Properties will be settled by the form input fields.
      */
-    private final Map<String, Serializable> parametersMap;
+    final Map<String, Serializable> parametersMap;
 
     /**
      * Id of the workspace the datastore is or is going to be attached to
@@ -71,12 +70,10 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
     private final String dataStoreInfoId;
 
     /**
-     * Creates a new datastore configuration page to edit the properties of the
-     * given data store
+     * Creates a new datastore configuration page to edit the properties of the given data store
      * 
      * @param dataStoreInfoId
-     *            the datastore id to modify, as per
-     *            {@link DataStoreInfo#getId()}
+     *            the datastore id to modify, as per {@link DataStoreInfo#getId()}
      */
     public DataStoreConfiguration(final String dataStoreInfoId) {
         final Catalog catalog = getCatalog();
@@ -89,7 +86,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         }
 
         Map<String, Serializable> connectionParameters;
-        connectionParameters = new HashMap<String, Serializable>(dataStoreInfo.getConnectionParameters());
+        connectionParameters = new HashMap<String, Serializable>(dataStoreInfo
+                .getConnectionParameters());
         connectionParameters = DataStoreUtils.getParams(connectionParameters);
         final DataStoreFactorySpi dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
         if (null == dsFactory) {
@@ -108,20 +106,20 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
     }
 
     /**
-     * Creates a new datastore configuration page to create a new datastore of
-     * the given type
+     * Creates a new datastore configuration page to create a new datastore of the given type
      * 
      * @param the
-     *            workspace to attach the new datastore to, like in
-     *            {@link WorkspaceInfo#getId()}
+     *            workspace to attach the new datastore to, like in {@link WorkspaceInfo#getId()}
      * 
      * @param dataStoreFactDisplayName
-     *            the type of datastore to create, given by its factory display
-     *            name
+     *            the type of datastore to create, given by its factory display name
      */
     public DataStoreConfiguration(final String workspaceId, final String dataStoreFactDisplayName) {
         if (workspaceId == null) {
             throw new NullPointerException("workspaceId can't be null");
+        }
+        if (null == getCatalog().getWorkspace(workspaceId)) {
+            throw new IllegalArgumentException("Workspace not found. Id: '" + workspaceId + "'");
         }
         this.workspaceId = workspaceId;
         this.dataStoreInfoId = null;
@@ -149,7 +147,13 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
             // value with the namespace uri from the parent 'folder'
             if ("namespace".equals(param.key) && value == null) {
                 final Catalog catalog = getCatalog();
-                final NamespaceInfo nsInfo = catalog.getNamespace(workspaceId);
+                final WorkspaceInfo ws = catalog.getWorkspace(workspaceId);
+                final String nsPrefix = ws.getName();
+                final NamespaceInfo nsInfo = catalog.getNamespaceByPrefix(nsPrefix);
+                if (nsInfo == null) {
+                    throw new IllegalStateException("No matching namespace for workspace "
+                            + workspaceId);
+                }
                 final String nsUri = nsInfo.getURI();
                 value = nsUri;
             }
@@ -166,8 +170,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
     /**
      * 
      * @param workspaceId
-     *            the id for the workspace to attach the new datastore or the
-     *            current datastore is attached to
+     *            the id for the workspace to attach the new datastore or the current datastore is
+     *            attached to
      * 
      * @param dsFactory
      *            the datastore factory to use
@@ -207,7 +211,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
         paramsForm.add(dataStoreIdPanel);
 
         paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
-                DATASTORE_DESCRIPTION_PROPERTY_NAME), "Description", false, null));
+                DATASTORE_DESCRIPTION_PROPERTY_NAME), "Description", false, (IValidator[]) null));
 
         paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new MapModel(parametersMap,
                 DATASTORE_ENABLED_PROPERTY_NAME), "Enabled"));
@@ -235,6 +239,7 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         paramsForm.add(new SubmitLink("save") {
             private static final long serialVersionUID = 1L;
+
             @Override
             public void onSubmit() {
                 onSaveDataStore(paramsForm);
@@ -251,8 +256,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
     }
 
     /**
-     * Callback method called when the submit button have been hit and the
-     * parameters validation has succeed.
+     * Callback method called when the submit button have been hit and the parameters validation has
+     * succeed.
      * 
      * @param paramsForm
      *            the form to report any error to
@@ -341,8 +346,8 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
     }
 
     /**
-     * Creates a form input component for the given datastore param based on its
-     * type and metadata properties.
+     * Creates a form input component for the given datastore param based on its type and metadata
+     * properties.
      * 
      * @param param
      * @return
@@ -357,15 +362,16 @@ public class DataStoreConfiguration extends GeoServerSecuredPage {
 
         Panel parameterPanel;
         if (Boolean.class == binding) {
-            parameterPanel = new CheckBoxParamPanel(componentId, new MapModel(paramsMap, paramName), paramLabel);
+            parameterPanel = new CheckBoxParamPanel(componentId,
+                    new MapModel(paramsMap, paramName), paramLabel);
         } else if (String.class == binding && param.isPassword()) {
-            parameterPanel = new PasswordParamPanel(componentId, new MapModel(paramsMap, paramName), paramLabel,
-                    required);
+            parameterPanel = new PasswordParamPanel(componentId,
+                    new MapModel(paramsMap, paramName), paramLabel, required);
         } else {
-            parameterPanel = new TextParamPanel(componentId, new MapModel(paramsMap, paramName), paramLabel,
-                    required, null);
+            parameterPanel = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
+                    paramLabel, required, null);
         }
         return parameterPanel;
     }
-    
+
 }
