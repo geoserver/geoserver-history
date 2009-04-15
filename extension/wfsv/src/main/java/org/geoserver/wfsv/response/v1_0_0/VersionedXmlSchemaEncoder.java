@@ -10,7 +10,7 @@ import java.io.OutputStream;
 
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
-import org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder;
+import org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder;
 import org.geoserver.wfsv.VersionedDescribeResults;
 
 /**
