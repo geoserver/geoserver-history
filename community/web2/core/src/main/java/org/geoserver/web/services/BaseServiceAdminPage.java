@@ -51,7 +51,7 @@ import org.geoserver.web.wicket.KeywordsEditor;
 public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoServerSecuredPage {
 
     public BaseServiceAdminPage() {
-        IModel infoModel = new LoadableDetachableModel() {
+        final IModel infoModel = new LoadableDetachableModel() {
             public Object load() {
                 return getGeoServer().getService(getServiceClass());
             }
@@ -80,7 +80,7 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         SubmitLink submit = new SubmitLink("submit",new StringResourceModel( "save", (Component)null, null) ) {
             @Override
             public void onSubmit() {
-                handleSubmit((T)getModelObject());
+                handleSubmit((T)infoModel.getObject());
                 setResponsePage(GeoServerHomePage.class);
             }
         };
@@ -92,7 +92,7 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
             }
         };
         form.add( cancel );
-        cancel.setDefaultFormProcessing( false );
+        //cancel.setDefaultFormProcessing( false );
     }
     
     /**

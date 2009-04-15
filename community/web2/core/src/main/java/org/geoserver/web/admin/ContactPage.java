@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ContactInfo;
 
@@ -14,12 +15,7 @@ public class ContactPage extends ServerAdminPage {
         final IModel geoServerModel = getGeoServerModel();
         final IModel contactModel = getContactInfoModel();
 
-        Form form = new Form("form", new CompoundPropertyModel(contactModel)){
-                protected void onSubmit() {
-                    ((GeoServer)geoServerModel.getObject())
-                        .getGlobal().setContact((ContactInfo)contactModel.getObject());
-                }
-            };
+        Form form = new Form("form", new CompoundPropertyModel(contactModel));
 
         add(form);
         form.add(new TextField("contactPerson" ));
@@ -34,6 +30,20 @@ public class ContactPage extends ServerAdminPage {
         form.add(new TextField("contactVoice"));
         form.add(new TextField("contactFacsimile"));
         form.add(new TextField("contactEmail"));
-        form.add(new Button("submit"));
+        form.add(new Button("submit") {
+            @Override
+            public void onSubmit() {
+                GeoServer gs = (GeoServer)geoServerModel.getObject();
+                gs.getGlobal().setContact((ContactInfo)contactModel.getObject());
+                gs.save(gs.getGlobal());
+                setResponsePage(GeoServerHomePage.class);
+            }
+        });
+        form.add(new Button("cancel") {
+            @Override
+            public void onSubmit() {
+                setResponsePage(GeoServerHomePage.class);
+            }
+        });
     }
 }
