@@ -14,19 +14,20 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.LoggingInfo;
 
 public class GlobalSettingsPage extends ServerAdminPage {
     private static final long serialVersionUID = 4716657682337915996L;
 
     public GlobalSettingsPage() {
-        final IModel geoServerModel = getGeoServerModel();
         final IModel globalInfoModel = getGlobalInfoModel();
         final IModel loggingInfoModel = getLoggingInfoModel();
         
         Form form = new Form("form", new CompoundPropertyModel(globalInfoModel)) {
             protected void onSubmit() {
-                ((GeoServer) geoServerModel.getObject()).save((GeoServerInfo) globalInfoModel
-                        .getObject());
+                GeoServer gs = getGeoServer();
+                gs.save( (GeoServerInfo) globalInfoModel.getObject() );
+                gs.save( (LoggingInfo) loggingInfoModel.getObject() );
             }
         };
 
