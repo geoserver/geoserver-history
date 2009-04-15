@@ -9,6 +9,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -56,12 +57,7 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
             }
         };
         
-        Form form = new Form( "form", new CompoundPropertyModel(infoModel)) {
-            protected void onSubmit() {
-                handleSubmit((T)getModelObject());
-                setResponsePage(GeoServerHomePage.class);
-            }
-        };
+        Form form = new Form( "form", new CompoundPropertyModel(infoModel));
         add(form);
         
         form.add(new Label("service.enabled", new StringResourceModel("service.enabled", this, null, new Object[]{
@@ -81,7 +77,13 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         
         build(infoModel, form);
         
-        Button submit = new Button("submit",new StringResourceModel( "save", (Component)null, null) );
+        SubmitLink submit = new SubmitLink("submit",new StringResourceModel( "save", (Component)null, null) ) {
+            @Override
+            public void onSubmit() {
+                handleSubmit((T)getModelObject());
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
         form.add(submit);
         
         Button cancel = new Button( "cancel", new StringResourceModel( "cancel", (Component)null, null) ) {
