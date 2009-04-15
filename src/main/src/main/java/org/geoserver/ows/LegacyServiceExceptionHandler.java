@@ -118,8 +118,8 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         sb.append("?>");
 
-        //dtd location
-        String schemaBaseURL = RequestUtils.proxifiedBaseURL(RequestUtils.baseURL(request.httpRequest), geoServer.getGlobal().getProxyBaseUrl());
+        // dtd location
+        String schemaBaseURL = RequestUtils.schemaBaseURL(request.httpRequest, geoServer.getGlobal().getProxyBaseUrl());
         if (dtdLocation != null) {
             String fullDtdLocation = ResponseUtils.appendPath(schemaBaseURL, dtdLocation);
             sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
