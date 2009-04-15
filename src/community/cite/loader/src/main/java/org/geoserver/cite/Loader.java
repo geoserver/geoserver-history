@@ -25,6 +25,8 @@ import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
@@ -137,17 +139,24 @@ public class Loader {
         aliases.putAll( properties );
     }
     
-    SimpleFeatureType buildFeatureType( String name, String namespaceURI, List<String> names, Class... types ) {
+    SimpleFeatureType buildFeatureType( String name, String namespaceURI, int srid, List<String> names, Class... types ) {
+        return buildFeatureType(name, namespaceURI, srid, names, Collections.EMPTY_LIST, types);
+    }
+    
+    SimpleFeatureType buildFeatureType( String name, String namespaceURI, int srid, List<String> names, List<String> mandatory, Class... types ) {
         if ( aliases != null && aliases.containsKey( name ) ) {
             name = (String) aliases.get( name );
         }
-        return buildFeatureType(name, namespaceURI, names, Collections.EMPTY_LIST, types);
-    }
-    
-    SimpleFeatureType buildFeatureType( String name, String namespaceURI, List<String> names, List<String> mandatory, Class... types ) {
+        
         SimpleFeatureTypeBuilder b = new SimpleFeatureTypeBuilder();
         b.setName( name );
         b.setNamespaceURI( namespaceURI );
+        try {
+            b.setCRS( CRS.decode( "EPSG:" + srid) );
+        } 
+        catch( Exception e ) {
+            throw new RuntimeException( e );
+        }
         
         for ( int i = 0; i < names.size(); i++ ) {
             String attName = names.get( i );
@@ -186,7 +195,7 @@ public class Loader {
     }
     
     void loadDeletes(DataStore dataStore) throws Exception {
-        SimpleFeatureType Deletes = buildFeatureType( "Deletes", cdf, 
+        SimpleFeatureType Deletes = buildFeatureType( "Deletes", cdf, 32615, 
                 Arrays.asList( "id", "pointProperty"),  String.class, Point.class );    
 
         FeatureWriter w = buildFeatureStore( Deletes, dataStore );
@@ -197,7 +206,7 @@ public class Loader {
     }
     
     void loadFifteen(DataStore dataStore) throws Exception {
-        SimpleFeatureType Fifteen = buildFeatureType( "Fifteen", cdf,
+        SimpleFeatureType Fifteen = buildFeatureType( "Fifteen", cdf, 32615, 
                 Arrays.asList( "pointProperty" ), Point.class );
         
         FeatureWriter w = buildFeatureStore( Fifteen, dataStore );
@@ -220,7 +229,7 @@ public class Loader {
     }
     
     void loadInserts(DataStore dataStore) throws Exception {
-        SimpleFeatureType Inserts = buildFeatureType( "Inserts", cdf,
+        SimpleFeatureType Inserts = buildFeatureType( "Inserts", cdf, 32615, 
                 Arrays.asList( "id", "pointProperty"),  String.class, Point.class );
         
         FeatureWriter w = buildFeatureStore( Inserts, dataStore );
@@ -229,7 +238,7 @@ public class Loader {
     
     void loadLocks(DataStore dataStore) throws Exception {
         
-        SimpleFeatureType Locks = buildFeatureType( "Locks", cdf,
+        SimpleFeatureType Locks = buildFeatureType( "Locks", cdf, 32615,
             Arrays.asList( "id", "pointProperty"),  String.class, Point.class );
         
         FeatureWriter w = buildFeatureStore(Locks, dataStore);
@@ -305,7 +314,7 @@ public class Loader {
     }
     
     void loadNulls(DataStore dataStore) throws Exception {
-        SimpleFeatureType Nulls = buildFeatureType( "Nulls", cdf, 
+        SimpleFeatureType Nulls = buildFeatureType( "Nulls", cdf,  32615,
                 Arrays.asList( "description", "name", "integers", "dates", "pointProperty"),
                 String.class, String.class, Integer.class, Date.class, Point.class );
         
@@ -315,7 +324,7 @@ public class Loader {
     }
     
     void loadOther(DataStore dataStore) throws Exception {
-        SimpleFeatureType Other = buildFeatureType( "Other", cdf,
+        SimpleFeatureType Other = buildFeatureType( "Other", cdf, 32615,
                 Arrays.asList( "description", "name", "pointProperty", "string1", "string2", "integers", "dates"),
                 Arrays.asList( "string1" ), 
                 String.class, String.class, Point.class, String.class, String.class, Integer.class, Date.class );    
@@ -328,7 +337,7 @@ public class Loader {
     }
     
     void loadSeven(DataStore dataStore) throws Exception {
-        SimpleFeatureType Seven = buildFeatureType( "Seven", cdf, 
+        SimpleFeatureType Seven = buildFeatureType( "Seven", cdf, 32615,
                 Arrays.asList( "pointProperty"), Point.class );
         
         FeatureWriter w = buildFeatureStore(Seven, dataStore);
@@ -343,7 +352,7 @@ public class Loader {
     }
     
     void loadUpdates(DataStore dataStore) throws Exception {
-        SimpleFeatureType Updates = buildFeatureType( "Updates", cdf,
+        SimpleFeatureType Updates = buildFeatureType( "Updates", cdf, 32615,
                 Arrays.asList( "id", "pointProperty"), String.class, Point.class );
         
         FeatureWriter w = buildFeatureStore( Updates, dataStore );
@@ -355,7 +364,7 @@ public class Loader {
     }
     
     void loadLines(DataStore dataStore) throws Exception {
-        SimpleFeatureType Lines = buildFeatureType( "Lines", cgf, 
+        SimpleFeatureType Lines = buildFeatureType( "Lines", cgf, 32615,
                 Arrays.asList( "id", "lineStringProperty"), String.class, LineString.class );
             
         FeatureWriter w = buildFeatureStore(Lines, dataStore);
@@ -364,7 +373,7 @@ public class Loader {
     }
     
     void loadMLines(DataStore dataStore) throws Exception {
-        SimpleFeatureType MLines = buildFeatureType( "MLines", cgf, 
+        SimpleFeatureType MLines = buildFeatureType( "MLines", cgf,  32615,
                 Arrays.asList( "id", "multiLineStringProperty"), String.class, MultiLineString.class );
         
         FeatureWriter w = buildFeatureStore(MLines, dataStore);
@@ -373,7 +382,7 @@ public class Loader {
     }
     
     void loadMPoints(DataStore dataStore) throws Exception {
-        SimpleFeatureType MPoints = buildFeatureType( "MPoints", cgf, 
+        SimpleFeatureType MPoints = buildFeatureType( "MPoints", cgf, 32615,
                 Arrays.asList( "id", "multiPointProperty"), String.class, MultiPoint.class );
         
         FeatureWriter w = buildFeatureStore( MPoints, dataStore );
@@ -382,7 +391,7 @@ public class Loader {
     }
     
     void loadMPolygons(DataStore dataStore) throws Exception {
-        SimpleFeatureType MPolygons = buildFeatureType( "MPolygons", cgf, 
+        SimpleFeatureType MPolygons = buildFeatureType( "MPolygons", cgf,  32615,
                 Arrays.asList( "id", "multiPolygonProperty"), String.class, MultiPolygon.class );
             
         FeatureWriter w = buildFeatureStore( MPolygons, dataStore );
@@ -392,7 +401,7 @@ public class Loader {
     }
         
     void loadPoints(DataStore dataStore) throws Exception {
-        SimpleFeatureType Points = buildFeatureType( "Points", cgf, 
+        SimpleFeatureType Points = buildFeatureType( "Points", cgf, 32615,
             Arrays.asList( "id", "pointProperty"), String.class, Point.class );    
     
         FeatureWriter w = buildFeatureStore(Points,dataStore);
@@ -401,7 +410,7 @@ public class Loader {
     }
     
     void loadPolygons(DataStore dataStore) throws Exception {
-        SimpleFeatureType Polygons = buildFeatureType( "Polygons", cgf,
+        SimpleFeatureType Polygons = buildFeatureType( "Polygons", cgf, 32615,
                 Arrays.asList( "id", "polygonProperty"), String.class, Polygon.class );
     
         FeatureWriter w = buildFeatureStore(Polygons,dataStore);
@@ -419,7 +428,7 @@ public class Loader {
     }
     
     void loadPrimitiveGeoFeature(DataStore dataStore) throws Exception {
-        SimpleFeatureType PrimitiveGeoFeature = buildFeatureType( "PrimitiveGeoFeature", sf, 
+        SimpleFeatureType PrimitiveGeoFeature = buildFeatureType( "PrimitiveGeoFeature", sf, 4326,
             Arrays.asList( "description", "name", "surfaceProperty", "pointProperty", "curveProperty",
                 "intProperty", "uriProperty", "measurand", "dateTimeProperty", "dateProperty", "decimalProperty"), 
             Arrays.asList( "intProperty", "measurand", "decimalProperty" ), 
@@ -440,7 +449,7 @@ public class Loader {
         w.close();
     }
     void loadAggregateGeoFeature(DataStore dataStore) throws Exception {
-        SimpleFeatureType AggregateGeoFeature = buildFeatureType( "AggregateGeoFeature", sf, 
+        SimpleFeatureType AggregateGeoFeature = buildFeatureType( "AggregateGeoFeature", sf, 4326,
                 Arrays.asList( "description", "name", "multiPointProperty", "multiCurveProperty", 
                     "multiSurfaceProperty", "doubleProperty", "intRangeProperty", "strProperty", "featureCode"), 
                 Arrays.asList( "doubleProperty", "strProperty", "featureCode" ), 
@@ -469,7 +478,7 @@ public class Loader {
     
     void loadEntiteGenerique(DataStore dataStore) throws Exception {
     //void loadEntitŽGŽnŽrique(DataStore dataStore) throws Exception {
-        SimpleFeatureType /*EntitŽGŽnŽrique*/EntiteGenerique = buildFeatureType( "EntitŽGŽnŽrique", sf, 
+        SimpleFeatureType /*EntitŽGŽnŽrique*/EntiteGenerique = buildFeatureType( "EntitŽGŽnŽrique", sf, 4326,
             Arrays.asList( "description", "name", "attribut.GŽomŽtrie", "boolProperty", "str4Property", "featureRef"),
             Arrays.asList( "attribut.GŽomŽtrie", "boolProperty", "str4Property"), 
             String.class, String.class, Geometry.class, Boolean.class, String.class, String.class );
