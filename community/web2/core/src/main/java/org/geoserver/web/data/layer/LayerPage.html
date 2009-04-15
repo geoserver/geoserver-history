@@ -1,6 +1,6 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <head>
-<title>Layer list</title>
+<title><wicket:message key="layerList">Layer list</wicket:message></title>
 </head>
 <body>
 <wicket:extend>
@@ -8,8 +8,8 @@
 	<div wicket:id="table"></div>
 	
 	<ul>
-	<li><a href="#" >Batch remove...</a></li>
-	<li>Add layer from <select wicket:id="storesDropDown"></select></li>
+	<li><a href="#" ><wicket:message key="batchRemove">Batch remove...</wicket:message></a></li>
+	<li><wicket:message key="addALayerFrom">Add a layer from</wicket:message> <select wicket:id="storesDropDown"></select></li>
 	</ul>
 	
 	<div wicket:id="popupWindow"></div>
