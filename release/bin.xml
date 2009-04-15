@@ -6,8 +6,9 @@
  <includeBaseDirectory>false</includeBaseDirectory>
  <fileSets>
   <fileSet>
+   <!-- the main webapp -->
    <directory>community/web2/app/target/geoserver</directory>
-   <outputDirectory>geoserver/webapps/geoserver</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2/webapps/geoserver</outputDirectory>
    <includes>
     <include>**/*</include>
    </includes>
@@ -18,58 +19,18 @@
     <exclude>data/**/*</exclude>
    </excludes>
   </fileSet>
-  <!--fileSet>
-   <directory>web/target/geoserver/WEB-INF</directory>
-   <outputDirectory>geoserver/webapps/geoserver/data_dir</outputDirectory>
-   <includes>
-    <include>catalog.xml</include>
-    <include>services.xml</include>
-   </includes>
-  </fileSet-->
-  <!--fileSet>
-   <directory>community/web2/app/target/geoserver/data</directory>
-   <outputDirectory>geoserver/webapps/geoserver/conf/data</outputDirectory>
-   <includes>
-    <include>nyc/**/*</include>
-    <include>shapefiles/**/*</include>
-    <include>taz_shapes/**/*</include>
-   </includes>
-  </fileSet-->
   <fileSet>
+   <!-- the data directory -->
    <directory>community/web2/app/target/geoserver/data</directory>
-   <outputDirectory>geoserver/data_dir</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2/data_dir</outputDirectory>
    <includes>
     <include>**/*</include>
    </includes>
-   <!--excludes>
-    <exclude>nyc</exclude>
-    <exclude>nyc/**/*</exclude>
-    <exclude>taz_shapes</exclude>
-    <exclude>taz_shapes/**/*</exclude>
-    <exclude>shapefiles</exclude>
-    <exclude>shapefiles/**/*</exclude>
-   </excludes-->
   </fileSet>
-  <!--fileSet>
-   <directory>web/target/geoserver/data</directory>
-   <outputDirectory>geoserver/data_dir/data</outputDirectory>
-   <includes>
-    <include>nyc/**/*</include>
-    <include>shapefiles/**/*</include>
-    <include>taz_shapes/**/*</include>
-   </includes>
-  </fileSet-->
-  <!--fileSet>
-   <directory>web/target/geoserver/WEB-INF</directory>
-   <outputDirectory>geoserver/data_dir</outputDirectory>
-   <includes>
-    <include>catalog.xml</include>
-    <include>services.xml</include>
-   </includes>
-  </fileSet-->
   <fileSet>
+   <!-- the libs needed to run jetty -->
    <directory>release/target/dependency</directory>
-   <outputDirectory>geoserver/lib</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2/lib</outputDirectory>
    <includes>
     <include>ant-*.jar</include>
     <include>commons-el-*.jar</include>
@@ -88,18 +49,19 @@
    </includes>
   </fileSet>
   <fileSet>
-<!-- we gather the .sh files in a separate task below -->
+   <!-- windows batch files -->
    <directory>release/bin</directory>
    <lineEnding>keep</lineEnding>
-   <outputDirectory>geoserver/bin</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2/bin</outputDirectory>
    <includes>
     <include>*.bat</include>
    </includes>
   </fileSet>
   <fileSet>
+   <!-- unix shell scripts -->
    <directory>release/bin</directory>
    <lineEnding>unix</lineEnding>
-   <outputDirectory>geoserver/bin</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2/bin</outputDirectory>
    <fileMode>0755</fileMode>
    <directoryMode>0755</directoryMode>
    <includes>
@@ -107,8 +69,9 @@
    </includes>
   </fileSet>
   <fileSet>
+   <!-- the README and other text files -->
    <directory>release</directory>
-   <outputDirectory>geoserver</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2</outputDirectory>
    <includes>
     <include>LICENSE.txt</include>
     <include>GPL.txt</include>
@@ -117,15 +80,17 @@
    </includes>
   </fileSet>
   <fileSet>
+   <!-- jetty configuration -->
    <directory>release/jetty</directory>
-   <outputDirectory>geoserver</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2</outputDirectory>
    <includes>
     <include>**/*</include>
    </includes>
   </fileSet>
   <fileSet>
+   <!-- empty log directory -->
    <directory>release/logs</directory>
-   <outputDirectory>geoserver</outputDirectory>
+   <outputDirectory>geoserver-2.0-alpha2</outputDirectory>
   </fileSet>
  </fileSets>
 </assembly>
