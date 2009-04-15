@@ -18,20 +18,20 @@ Navigate to the **Create New Feature Data Set** page
 Description.** Select this option, enter a name in the box for **Feature 
 Data Set ID**, and click **New**.
 
-.. figure:: wfscreate.png
+.. figure:: pix/wfscreate.png
    :align: center
 
-   *Figure 1: Creating a new datastore from an external WFS*
+   *Creating a new datastore from an external WFS*
    
 Web Feature Server options
 --------------------------
 
 The next page contains configuration options for connecting to the remote WFS.  Fill out the form then click **Submit**.  To apply the changes, click **Apply** then **Save**.
 
-.. figure:: wfsconfigure.png
+.. figure:: pix/wfsconfigure.png
    :align: center
 
-   *Figure 2: Configuring a new datastore from an external WFS*
+   *Configuring a new datastore from an external WFS*
 
 .. list-table::
    :widths: 20 10 80

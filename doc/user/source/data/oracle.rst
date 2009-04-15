@@ -51,12 +51,18 @@ Adding an Oracle database
 Once the extension is properly installed ``Oracle`` and ``Oracle OCI`` will
 show up as a options when creating a new data store.
 
-.. figure:: oracle_create.png
+.. figure:: pix/oracle_create.png
+   :align: center
+
+   *Creating an Oracle datastore*
 
 Oracle options
 --------------
 
-.. figure:: oracle_configure.png
+.. figure:: pix/oracle_configure.png
+   :align: center
+
+   *Configuring an Oracle datastore*
 
 .. list-table::
    :widths: 20 80
@@ -75,7 +81,7 @@ Oracle options
    * - ``schema``
      - The database schema to access tables from.
    * - ``max connections``
-
+     
        ``min connections``
 
        ``validate connections``
@@ -86,7 +92,11 @@ Oracle options
 Oracle OCI options
 ------------------
 
-.. figure:: oracle_oci_configure.png
+.. figure:: pix/oracle_oci_configure.png
+   :align: center
+
+   *Configuring Oracle OCI options*
+
 
 .. list-table::
    :widths: 20 80

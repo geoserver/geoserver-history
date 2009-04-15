@@ -34,7 +34,7 @@ Installing the SQL Server extension
    the GeoServer installation.
 
 SQL Server JDBC driver
-^^^^^^^^^^^^^^^^^^^^^^
+``````````````````````
 
 #. Navigate to `JDBC driver download page 
    <Microsoft's http://msdn.microsoft.com/en-us/data/aa937724.aspx>`_.
@@ -54,9 +54,15 @@ Adding a SQL Server database
 Once the extension is properly installed ``SQL Server`` will
 show up as an option when creating a new data store.
 
-.. figure:: sqlserver_create.png
+.. figure:: pix/sqlserver_create.png
+   :align: center
 
-.. figure:: sqlserver_configure.png
+   *Creating a SQL Server datastore*
+
+.. figure:: pix/sqlserver_configure.png
+   :align: center
+
+   *Configuring a SQL Server datastore*
 
 SQL Server options
 ------------------

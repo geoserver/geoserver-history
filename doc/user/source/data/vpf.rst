@@ -36,9 +36,16 @@ Adding a VPF file
 Once the extension is properly installed ``Vector Product Format Library``
 will show up as an option when creating a new data store.
 
-.. figure:: vpf_create.png
+.. figure:: pix/vpf_create.png
+   :align: center
 
-.. figure:: vpf_configure.png
+   *Creating a VPF datastore*
+
+.. figure:: pix/vpf_configure.png
+   :align: center
+
+   *Configuring a VPF datastore*
+
 
 VPF options
 -----------

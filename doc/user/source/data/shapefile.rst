@@ -12,8 +12,10 @@ Adding a Shapefile
 
 As with all vector formats, adding a Shapefile to GeoServer involves adding a new data store through the web administration tool. This process is described step by step in the :ref:`shapefile_quickstart` tutorial.
 
-.. image:: shapefile.png
+.. figure:: pix/shapefile.png
    :align: center
+
+   *Configuring a shapefile as a datastore*
 
 Shapefile options
 -----------------

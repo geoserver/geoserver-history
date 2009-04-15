@@ -38,11 +38,17 @@ Adding a MySQL database
 -----------------------
 
 Once the extension is properly installed ``MySQL`` will show up as an option 
-when creating a new data store.
+when creating a new datastore.
 
-.. figure:: mysql_create.png
+.. figure:: pix/mysql_create.png
+   :align: center
 
-.. figure:: mysql_configure.png
+   *Creating a MySQL datastore*
+
+.. figure:: pix/mysql_configure.png
+   :align: center
+
+   *Configuring a MySQL datastore*
 
 MySQL options
 -------------

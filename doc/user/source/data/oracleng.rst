@@ -38,12 +38,18 @@ Adding an Oracle database
 Once the extension is properly installed ``OracleNG`` will show up as an
 option when creating a new data store.
 
-.. figure:: oracleng_create.png
+.. figure:: pix/oracleng_create.png
+   :align: center
+
+   *Creating an Oracle datastore*
 
 Oracle options
 --------------
 
-.. figure:: oracleng_configure.png
+.. figure:: pix/oracleng_configure.png
+   :align: center
+
+   *Configuring an Oracle datastore*
 
 .. list-table::
    :widths: 20 80

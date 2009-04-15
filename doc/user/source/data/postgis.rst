@@ -17,11 +17,13 @@ involves adding a new data store through the web administration
 tool. This process is described step by step in the
 :ref:`postgis_quickstart` tutorial.
 
-.. image:: postgis.png
-   :align: center
-
 PostGIS options
 ---------------
+
+.. figure:: pix/postgis.png
+   :align: center
+
+   *Configuring a PostGIS datastore*
 
 .. list-table::
    :widths: 20 80
@@ -91,14 +93,14 @@ Performance considerations
 --------------------------
 
 GEOS
-^^^^
+````
 
 GEOS (Geometry Engine Open Source) is an additional component which optionally can be installed with PostGIS. ...
 
 If PostGIS is installed on Windows via the installer it is automatically included. On other platforms like Linux it is optional. It is recommended that GEOS be installed in any PostGIS instance used by GeoServer as GeoServer makes use of its functionality when doing spatial operations like intersections. When GEOS is disabled these operations are performed internally in GeoServer which results in a performance hit.
 
 Spatial indexing
-^^^^^^^^^^^^^^^^
+````````````````
 
 Creating a spatial index on tables with a spatial component (ie geometry column) is *strongly recommended*. Any table of non-trivial size which does not have a spatial index will be slow to query spatially. ...
 
@@ -106,6 +108,6 @@ Common problems
 ---------------
 
 Primary keys
-^^^^^^^^^^^^
+````````````
 
 The transactional nature of a relational database makes formats such as PostGIS ideal for transactional WFS. However in order to enable the transactional extensions on a table it **must** have a primary key. Any table without a primary key defined on it is considered as *read only*.

@@ -9,8 +9,10 @@ The purpose served by a connection pool is to maintain connection to an underlyi
 
 Whenever a data store backed by a database is added to GeoServer an internal connection pool is created. This connection pool is configurable.
 
-.. image:: connection-pooling.png
+.. figure:: pix/connection-pooling.png
    :align: center
+
+   *Connection options*
 
 Connection pool options
 -----------------------

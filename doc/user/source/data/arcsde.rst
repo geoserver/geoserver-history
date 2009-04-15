@@ -29,7 +29,7 @@ Finally, ArcSDE supports raster catalogs.  A raster catalog is a mosaic of raste
    * - **Technical Detail**
      - **Status**
    * - Compression methods
-     - LZW, JPEG, JPEG2000 (9.2 only)
+     - LZW, JPEG
    * - Number of bands 
      - Any number of bands except for 1 and 4 bit rasters (supported for single-band only).
    * - Bit depth for color-mapped rasters
@@ -151,7 +151,7 @@ The next page contains configuration options for the ArcSDE vector datastore.  F
      - The port that the ArcSDE instance is set to listen to.  Default is 5151.
    * - ``instance``
      - No
-     - The name of the specific ArcSDE instance (if more than one).
+     - The name of the specific ArcSDE instance, where applicable, depending on the underlying database.
    * - ``user``
      - Yes
      - The username to authenticate with the ArcSDE instance.	 
@@ -209,7 +209,7 @@ The next page contains configuration options for the ArcSDE instance.  Fill out 
      - The name of the coveragestore as set on the previous page.
    * - ``Enabled``
      - N/A
-     - When this box is checked the coveragestore will be available to GeoServer
+     - When this box is checked the coveragestore will be available to GeoServer.
    * - ``Namespace``
      - Yes
      - The namespace associated with the coveragestore.
@@ -218,7 +218,7 @@ The next page contains configuration options for the ArcSDE instance.  Fill out 
      - The type of coveragestore.  Leave this to say ``ArcSDE Raster``. 	 
    * - ``URL``
      - Yes
-     - The URL of the ArcSDE instance.
+     - The URL of the raster, of the form ``sde://<user>:<pwd>@<server>/#<tableName>``.
    * - ``Description``
      - No
      - A description of the coveragestore.

@@ -1,7 +1,7 @@
 .. _gml:
 
-Geographic Markup Language
-==========================
+Geographic Markup Language (GML)
+================================
 
 Geographic Markup Language (GML) is a XML based format for representing vector
 based spatial data.
@@ -45,9 +45,17 @@ Adding a GML file
 Once the extension is properly installed ``GML`` will show up as an option 
 when creating a new data store.
 
-.. figure:: gml_create.png
+.. figure:: pix/gml_create.png
+   :align: center
 
-.. figure:: gml_configure.png
+   *Creating a GML datastore*
+
+.. figure:: pix/gml_configure.png
+   :align: center
+
+   *Configuring a GML datastore*
+
+
 
 GML options
 -------------
