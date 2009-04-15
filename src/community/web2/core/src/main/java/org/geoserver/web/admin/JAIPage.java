@@ -27,14 +27,7 @@ public class JAIPage extends ServerAdminPage {
         final IModel jaiModel = getJAIModel();
 
         // form and submit
-        Form form = new Form("form", new CompoundPropertyModel(jaiModel)) {
-            protected void onSubmit() {
-                GeoServer gs = (GeoServer) geoServerModel.getObject();
-                gs.getGlobal().setJAI( (JAIInfo)jaiModel.getObject() );
-                gs.save( gs.getGlobal() ); 
-                setResponsePage(GeoServerHomePage.class);
-            }
-        };
+        Form form = new Form("form", new CompoundPropertyModel(jaiModel));
         add( form );
 
         // All the fields
@@ -58,7 +51,23 @@ public class JAIPage extends ServerAdminPage {
         form.add(new CheckBox("pngAcceleration"));
         form.add(new CheckBox("allowNativeMosaic"));
 
-        Button submit = new Button("submit", new StringResourceModel("submit", this, null));
+        Button submit = new Button("submit", new StringResourceModel("submit", this, null)) {
+            @Override
+            public void onSubmit() {
+                GeoServer gs = (GeoServer) geoServerModel.getObject();
+                gs.getGlobal().setJAI( (JAIInfo)jaiModel.getObject() );
+                gs.save( gs.getGlobal() ); 
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
         form.add(submit);
+        
+        Button cancel = new Button("cancel") {
+            @Override
+            public void onSubmit() {
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
+        form.add(cancel);
     }
 }

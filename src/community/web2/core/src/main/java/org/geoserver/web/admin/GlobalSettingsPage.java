@@ -15,6 +15,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.LoggingInfo;
+import org.geoserver.web.GeoServerHomePage;
 
 public class GlobalSettingsPage extends ServerAdminPage {
     private static final long serialVersionUID = 4716657682337915996L;
@@ -23,13 +24,7 @@ public class GlobalSettingsPage extends ServerAdminPage {
         final IModel globalInfoModel = getGlobalInfoModel();
         final IModel loggingInfoModel = getLoggingInfoModel();
         
-        Form form = new Form("form", new CompoundPropertyModel(globalInfoModel)) {
-            protected void onSubmit() {
-                GeoServer gs = getGeoServer();
-                gs.save( (GeoServerInfo) globalInfoModel.getObject() );
-                gs.save( (LoggingInfo) loggingInfoModel.getObject() );
-            }
-        };
+        Form form = new Form("form", new CompoundPropertyModel(globalInfoModel));
 
         add(form);
 
@@ -43,8 +38,24 @@ public class GlobalSettingsPage extends ServerAdminPage {
         form.add(new CheckBox("stdOutLogging", new PropertyModel( loggingInfoModel, "stdOutLogging")));
         form.add(new TextField("loggingLocation", new PropertyModel( loggingInfoModel, "location")) );
 
-        Button submit = new Button("submit", new StringResourceModel("submit", this, null));
+        Button submit = new Button("submit", new StringResourceModel("submit", this, null)) {
+            @Override
+            public void onSubmit() {
+                GeoServer gs = getGeoServer();
+                gs.save( (GeoServerInfo) globalInfoModel.getObject() );
+                gs.save( (LoggingInfo) loggingInfoModel.getObject() );
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
         form.add(submit);
+        
+        Button cancel = new Button("cancel") {
+            @Override
+            public void onSubmit() {
+                setResponsePage(GeoServerHomePage.class);
+            }
+        };
+        form.add(cancel);
     }
 
     private void logLevelsAppend(Form form, IModel loggingInfoModel) {
