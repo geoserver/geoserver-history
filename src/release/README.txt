@@ -1,3 +1,14 @@
+GeoServer 2.0-alpha2 (April 15, 2009)
+-------------------------------------
+
+The next big milestone release for 2.0. This is the second major milestone 
+release of 2.x. Development has focused mainly around the new Wicket based
+user interface, and around the backend persistence and configuration sub
+systems.
+
+This release is based on GeoTools 2.6.x (revision 32802)
+
+
 GeoServer 2.0.0-alpha1 (August 11, 2008)
 ----------------------------------------
 
