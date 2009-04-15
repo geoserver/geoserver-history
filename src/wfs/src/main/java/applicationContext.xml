@@ -289,7 +289,7 @@
 	
 	<!-- default feature type encoders -->
 	<bean id="gml2FeatureTypeEncoder" 
-		class="org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder">
+		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder$V10">
 		<constructor-arg ref="geoServer"/>
 	</bean>
 	<bean id="gml3FeatureTypeEncoder" 
@@ -301,6 +301,11 @@
 		class="org.geoserver.wfs.xml.GML2OutputFormat" singleton="false">
 		<constructor-arg ref="geoServer"/>
 	</bean>
+	<!-- uncomment below and comment out above to switch between gml2 output formats -->
+	<!--bean id="gml2OutputFormat" 
+        class="org.geoserver.wfs.xml.GML2OutputFormat2" singleton="false">
+        <constructor-arg ref="geoServer"/>
+    </bean-->
 	<bean id="gml3OutputFormat" class="org.geoserver.wfs.xml.GML3OutputFormat"> 
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
