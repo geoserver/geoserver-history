@@ -135,6 +135,10 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
         assertEquals(2, request.getStyles().size());
+        LayerInfo basicPolygons = getCatalog().getLayerByName(MockData.BASIC_POLYGONS.getLocalPart());
+        LayerInfo buildings = getCatalog().getLayerByName(MockData.BUILDINGS.getLocalPart());
+        assertEquals(basicPolygons.getDefaultStyle().getStyle(), request.getStyles().get(0));
+        assertEquals(buildings.getDefaultStyle().getStyle(), request.getStyles().get(1));
     }
 
     public void testFilter() throws Exception {

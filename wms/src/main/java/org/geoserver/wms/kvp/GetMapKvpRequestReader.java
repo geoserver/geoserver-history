@@ -277,7 +277,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 List<Style> newStyles = new ArrayList<Style>();
 
                 for (int i = 0; i < requestedLayerInfos.size(); i++) {
-                    Object o = requestedLayerInfos.get(0);
+                    Object o = requestedLayerInfos.get(i);
                     Style style = oldStyles.isEmpty() ? null : (Style) oldStyles.get(i);
                     
                     if (o instanceof LayerGroupInfo) {
