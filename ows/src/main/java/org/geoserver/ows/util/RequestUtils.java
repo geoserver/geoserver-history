@@ -39,9 +39,29 @@ public class RequestUtils {
      * </p>
      *
      * @return A String of the form "<scheme>://<server>:<port>/<context>/schemas/"
+     * @deprecated This method does not take into account the proxy base 
+     * url, use {@link #schemaBaseURL(HttpServletRequest, String)} instead 
      */
     public static String schemaBaseURL(HttpServletRequest req) {
         return baseURL(req) + "schemas/";
+    }
+    
+    /**
+     * Returns the url which is hte base of schemas stored / served by
+     * geoserver.
+     * <p>
+     *         This method returns:
+     *         <pre>
+     *        <code>
+     *    proxifiedBaseURL(baseURL(req), proxyBase) + "schemas/"
+     *  </code>
+     *  </pre>
+     * </p>
+     *
+     * @return A String of the form "<scheme>://<server>:<port>/<context>/schemas/"
+     */
+    public static String schemaBaseURL(HttpServletRequest req, String proxyBase) {
+        return proxifiedBaseURL(baseURL(req), proxyBase) + "schemas/";
     }
 
     /**
