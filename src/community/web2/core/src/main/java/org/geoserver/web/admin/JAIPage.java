@@ -29,8 +29,9 @@ public class JAIPage extends ServerAdminPage {
         // form and submit
         Form form = new Form("form", new CompoundPropertyModel(jaiModel)) {
             protected void onSubmit() {
-                ((GeoServer)geoServerModel.getObject())
-                    .getGlobal().setJAI((JAIInfo)jaiModel.getObject());
+                GeoServer gs = (GeoServer) geoServerModel.getObject();
+                gs.getGlobal().setJAI( (JAIInfo)jaiModel.getObject() );
+                gs.save( gs.getGlobal() ); 
                 setResponsePage(GeoServerHomePage.class);
             }
         };
