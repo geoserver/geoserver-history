@@ -42,6 +42,9 @@ public class WMSXStreamLoader extends XStreamServiceLoader<WMSInfo> {
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.1.1" ) );
         }
+        if(service.getSRS() == null) {
+            ((WMSInfoImpl)service).setSRS( new ArrayList<String>() );
+        }
         return service;
     }
 }
