@@ -182,7 +182,7 @@ public class GeoServerImpl implements GeoServer {
         proxy.commit();
         
         //fire post modification event
-        fireGlobalPostModified();
+        fireLoggingPostModified();
     } 
     void fireGlobalPostModified() {
         for ( ConfigurationListener l : listeners ) {
