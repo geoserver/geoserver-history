@@ -8,8 +8,4 @@ GeoServer is geared towards many different uses, from the simple test to the ent
 .. toctree::
    :maxdepth: 2
 
-   java
-   container
-   config
-   data
-   misc
+   wmsdecoration

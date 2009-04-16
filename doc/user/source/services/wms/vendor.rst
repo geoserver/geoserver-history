@@ -106,6 +106,11 @@ The ``startindex`` parameter specifies with a positive integer the index in an o
 
 The ``maxfeatures`` parameter sets a limit on the amount of features rendered, using a positive integer.  When used with ``startindex``, the features rendered will be the ones starting at the ``startindex`` value.
 
+layout
+------
+
+The ``layout`` option chooses a named layout for decorations, a tool for visually annotating GeoServer's WMS output.  Layouts can be used to add information such as compasses and legends to the maps you retrieve from GeoServer.  :ref:`wms_decorations` are discussed further in the :ref:`advanced_config` section.
+
 
 namespace
 ---------

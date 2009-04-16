@@ -34,4 +34,5 @@ Web.
    extensions/index
    tutorials/index
    faq/index
+   advanced/index
 
