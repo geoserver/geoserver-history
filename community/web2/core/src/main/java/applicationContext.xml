@@ -207,7 +207,7 @@
    -->
   <bean id="postgisDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <property name="id" value="postgis"/>
-    <property name="factoryClass" value="org.geotools.data.postgis.PostgisDataStoreFactory"/>
+    <property name="factoryClass" value="org.geotools.data.postgis.PostgisNGDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
   </bean>
