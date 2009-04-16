@@ -1,15 +1,15 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-    <h3><wicket:message key="DataAccessEditPage.title">Edit Vector Source</wicket:message></h3>
-	<div><span wicket:id="storeType">Store Type</span></div>
-	<div><span wicket:id="storeTypeDescription">Store Description</span></div>
-	<h4>Folder: <span wicket:id="workspaceName">folder name</span></h4>
+    <h3><wicket:message key="title">Edit Vector Source</wicket:message></h3>
+	<div><span wicket:id="storeType">store type</span></div>
+	<div><span wicket:id="storeTypeDescription">store type description</span></div>
+	<h4><wicket:message key="folder">Folder</wicket:message>: <span wicket:id="workspaceName">folder name</span></h4>
     <form wicket:id="dataStoreForm">
       <ul>
         <li>
           <fieldset>
-            <legend><span><wicket:message key="AbstractDataAccessPage.basicInfo">Basic Store Info</wicket:message></span></legend> 
+            <legend><span><wicket:message key="basicStoreInfo">Basic Store Info</wicket:message></span></legend> 
         	<div><span wicket:id="dataStoreNamePanel"></span></div>
         	<div><span wicket:id="dataStoreDescriptionPanel"></span></div>
         	<div><span wicket:id="dataStoreEnabledPanel"></span></div>
@@ -17,7 +17,7 @@
         </li>
         <li>
           <fieldset>
-            <legend><span><wicket:message key="AbstractDataAccessPage.parameters">Connection Parameters</wicket:message></span></legend> 
+            <legend><span><wicket:message key="connectionParameters">Connection Parameters</wicket:message></span></legend> 
         	<div wicket:id="parameters">
     		  <span wicket:id="parameterPanel">x</span>
     		</div>

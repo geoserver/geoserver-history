@@ -1,17 +1,14 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <head>
-<title>Store list</title>
+<title><wicket:message key="title">Stores</wicket:message></title>
 </head>
 <body>
 <wicket:extend>
-	
 	<div wicket:id="table"></div>
-	
 	<ul>
-	<li><a href="#">Batch remove...</a></li>
-	<li>Add new store into workspace <select wicket:id="wsDropDown"></select></li>
+	  <li><a href="#"><wicket:message key="batchRemove">Batch remove...</wicket:message></a></li>
+	  <li><wicket:message key="addNewStoreIntoWorkspace">Add new store into workspace</wicket:message> <select wicket:id="wsDropDown"></select></li>
 	</ul>
-	
 </wicket:extend>
 </body>
 </html>
