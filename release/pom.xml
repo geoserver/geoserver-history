@@ -98,11 +98,6 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt-oracle-spatial</artifactId>
-   <version>${gt.version}</version>
-  </dependency>
-  <dependency>
-   <groupId>org.geotools</groupId>
    <artifactId>gt-vpf</artifactId>
    <version>${gt.version}</version>
   </dependency>
