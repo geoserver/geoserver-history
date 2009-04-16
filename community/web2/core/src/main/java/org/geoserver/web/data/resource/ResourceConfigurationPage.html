@@ -4,7 +4,7 @@
 <body>
 <wicket:extend>
 <h1><span wicket:id="resourcename"/></h1>
-<p>Configure of the resource and publishing information for the current layer</p>
+<p><wicket:message key="configureTheResourceAndPublishingInformation">Configure the resource and publishing information for the current layer</wicket:message></p>
 <form wicket:id="resource" name="resource">
     <div wicket:id="tabs" class="tabpanel"></div>
     <!-- <div wicket:id="resources">
@@ -21,7 +21,7 @@
     </li>
   </ul>
    -->
-    <button wicket:id="saveButton" type="submit">Save Changes</button>
+    <button wicket:id="saveButton" type="submit">wicket:message key="saveChanges">Save changes</wicket:message></button>
 </form>
 </wicket:extend>
 </body>

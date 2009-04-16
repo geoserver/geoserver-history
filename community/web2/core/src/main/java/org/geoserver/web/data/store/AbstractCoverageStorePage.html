@@ -8,7 +8,7 @@
   <ul>
     <li>
       <fieldset>
-        <legend><span><wicket:message key="AbstractCoverageStorePage.basicInfo">Basic Store Info</wicket:message></span></legend>
+        <legend><span><wicket:message key="basicStoreInfo">Basic Store Info</wicket:message></span></legend>
         <div><span wicket:id="namePanel"></span></div>
         <div><span wicket:id="descriptionPanel"></span></div>
         <div><span wicket:id="workspacePanel"></span></div>
@@ -17,16 +17,17 @@
     </li>
     <li>
       <fieldset>
-        <legend><span><wicket:message key="AbstractCoverageStorePage.parameters">Connection Parameters</wicket:message></span></legend>
+        <legend><span><wicket:message key="connectionParameters">Connection Parameters</wicket:message></span></legend>
         <div><span wicket:id="urlPanel"></span></div>
       </fieldset>
     </li>
   </ul>
 
     <div wicket:id="feedback"></div>
-    <div class="button-group selfclear"><a href="#"
-      wicket:id="save"><wicket:message key="save">Save</wicket:message></a>
-    <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a></div>
+    <div class="button-group selfclear">
+      <a href="#" wicket:id="save"><wicket:message key="save">Save</wicket:message></a>
+      <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a>
+    </div>
   </form>
 </wicket:extend>
 </body>

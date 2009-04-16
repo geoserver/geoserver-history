@@ -6,7 +6,7 @@
     <ul>
     <li>  
       <fieldset>
-        <legend><span><wicket:message key="page.title">Basic</wicket:message></span></legend>
+        <legend><span><wicket:message key="title">Basic Settings</wicket:message></span></legend>
         <ul>
           <li>
             <label for="basic-name"><wicket:message key="name">Name</wicket:message></label> 
@@ -17,12 +17,11 @@
             <label for="basic-enabled" class="choice"><wicket:message key="enabled">Enabled</wicket:message></label>
           </li>
           <!-- Options which should be exposed eventually.  These aren't there on the backend yet so...
-          Keywords: <select wicket:id="keywords" multiple="multiple"></select> <br/>
-          <button wicket:id="removeKeywords" type="submit">Remove selected</button> <br/>
-          New Keyword <input type="text" wicket:id="newKeyword"></input>
-          <button wicket:id="addKeyword" type="submit"> Add </button> <br/>
-          <wicket:message key="page.publishBbox">Default Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
-
+          <wicket:message key="keywords">Keywords</wicket:message>: <select wicket:id="keywords" multiple="multiple"></select> <br/>
+          <button wicket:id="remove" type="submit"><wicket:message key="removeSelected">Remove selected</wicket:message></button> <br/>
+          <wicket:message key="newKeyword">New keyword</wicket:message> <input type="text" wicket:id="newKeyword"></input>
+          <button wicket:id="addKeyword" type="submit"><wicket:message key="add">Add</wicket:message> </button> <br/>
+          <wicket:message key="defaultPublishedBbox">Default Published BBox</wicket:message>:  <span style="border:1px; border-color:black; text-color: gray" wicket:id="boundingBox"></span> <br/>
           -->
         </ul>
       </fieldset>

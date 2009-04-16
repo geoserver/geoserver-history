@@ -1,11 +1,11 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <head>
-<title>Generic sortable/filterable/pageable table</title>
+<title><wicket:message key="title">Generic sortable/filterable/pageable table</wicket:message></title>
 </head>
 <body>
 <wicket:panel>
 	<form wicket:id="filterForm">
-			<label for="filter">Filter:</label>
+			<label for="filter"><wicket:message key="filter">Filter</wicket:message>:</label>
 			<input wicket:id="filter" type="text" size="50"></input>
 			<input class="btnTxt"	wicket:id="applyFilter" type="submit" value="apply"></input>
 			<input class="btnTxt" wicket:id="resetFilter" type="button"	value="reset"></input>
