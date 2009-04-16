@@ -60,6 +60,15 @@ background: transparent;
 border-color: transparent;
 }
 
+input,
+textarea,
+select {
+background: #fff;
+color: #000;
+}
+
+
+
 /*-----------------------
 Utility Classes
 -----------------------*/
