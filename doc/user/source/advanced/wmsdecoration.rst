@@ -86,11 +86,11 @@ A layout configuration file might look like this:
 .. code-block:: xml
 
     <layout>
-        <decoration type="image" affinity="bottom,right" offset="6,6" size="24,24">
-            <option name="url" value="mylogo.png"/>
+        <decoration type="image" affinity="bottom,right" offset="6,6" size="80,31">
+            <option name="url" value="pbGS_80x31glow.png"/>
         </decoration>
 
-        <decoration type="scaleline" affinity="bottom,right" offset="36,6" size="100,30"/>
+        <decoration type="scaleline" affinity="bottom,left" offset="36,6"/>
 
         <decoration type="legend" affinity="top,left" offset="6,6" size="auto"/>
     </layout>
