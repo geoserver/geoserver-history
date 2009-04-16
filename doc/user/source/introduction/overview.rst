@@ -3,7 +3,7 @@
 Overview
 ======== 
 
-GeoServer is a open source software server written in Java that allows 
+GeoServer is an open source software server written in Java that allows 
 users to share and edit geospatial data. Designed for interoperability, 
 it publishes data from any major spatial data source using open 
 standards. 
@@ -22,7 +22,7 @@ History
 ------- 
 
 GeoServer was started in 2001 by `The Open Planning Project 
-<http://www.openplanningproject.org>`_ (TOPP), a non-profit technology 
+<http://theopenplanningproject.org/>`_ (TOPP), a non-profit technology 
 incubator based in New York. TOPP was creating a suite a tools to enable 
 open democracy and to help make government more transparent. The first 
 of these was GeoServer, which came out of a recognition that a suite of 
