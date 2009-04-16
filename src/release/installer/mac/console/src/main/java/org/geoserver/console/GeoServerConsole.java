@@ -536,7 +536,7 @@ public class GeoServerConsole {
             shutDownMenuItem.setEnabled(true);
             
             try {
-                Browser.openUrl( "http://localhost:8080/geoserver/welcome.do");
+                Browser.openUrl( "http://localhost:8080/geoserver/web");
             } 
             catch (IOException e) {
                 //log this
