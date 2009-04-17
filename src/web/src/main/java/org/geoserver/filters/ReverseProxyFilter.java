@@ -383,6 +383,10 @@ public class ReverseProxyFilter implements Filter {
             }
 
             public byte[] getCachedContent() {
+                if (cache == null) {
+                    //the request produced no content
+                    return new byte[0];
+                }
                 return cache.toByteArray();
             }
 
