@@ -643,7 +643,7 @@ public class WMSCapsTransformer extends TransformerBase {
                         handleLayer(layer);
                     } catch(Exception e) {
                      // report what layer we failed on to help the admin locate and fix it
-                        throw new WmsException("Error occurred trying to write out metadata for layer: " + layer.getName());
+                        throw new WmsException("Error occurred trying to write out metadata for layer: " + layer.getName(), "", e);
                     }
                 }
             }

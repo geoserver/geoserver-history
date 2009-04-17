@@ -198,6 +198,8 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
       if ( !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS) && 
           php == ProjectionPolicy.REPROJECT_TO_DECLARED ) {
           return nativeBox.transform(declaredCRS,true); 
+      } else if(php == ProjectionPolicy.FORCE_DECLARED) {
+          return new ReferencedEnvelope(nativeBox, declaredCRS);
       }
       
       return nativeBox;
