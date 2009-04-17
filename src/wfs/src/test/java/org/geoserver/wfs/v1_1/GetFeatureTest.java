@@ -67,7 +67,7 @@ public class GetFeatureTest extends WFSTestSupport {
         Document doc;
         doc = getAsDOM("wfs?request=GetFeature&typeName=cdf:Fifteen&version=1.1.0&service=wfs&featureid=Fifteen.2");
 
-        super.print(doc);
+        //super.print(doc);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
         XMLAssert.assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:featureMembers/cdf:Fifteen)",
                 doc);
@@ -76,7 +76,7 @@ public class GetFeatureTest extends WFSTestSupport {
 
         doc = getAsDOM("wfs?request=GetFeature&typeName=cite:NamedPlaces&version=1.1.0&service=wfs&featureId=NamedPlaces.1107531895891");
 
-        super.print(doc);
+        //super.print(doc);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
         XMLAssert.assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:featureMembers/cite:NamedPlaces)",
                 doc);
