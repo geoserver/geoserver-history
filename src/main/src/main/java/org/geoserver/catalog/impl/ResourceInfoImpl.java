@@ -166,9 +166,13 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
       CoordinateReferenceSystem nativeCRS = getNativeCRS();
       ProjectionPolicy php = getProjectionPolicy();
       
-      if ( !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS) && 
+      if(nativeBoundingBox == null)
+          return null;
+      else if ( !CRS.equalsIgnoreMetadata(declaredCRS, nativeCRS) && 
           php == ProjectionPolicy.REPROJECT_TO_DECLARED ) {
           return nativeBoundingBox.transform(declaredCRS,true); 
+      } else if(php == ProjectionPolicy.FORCE_DECLARED) {
+          return new ReferencedEnvelope(nativeBoundingBox, declaredCRS);
       }
       
       return nativeBoundingBox;
