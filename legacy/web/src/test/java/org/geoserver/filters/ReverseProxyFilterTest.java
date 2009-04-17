@@ -200,6 +200,22 @@ public class ReverseProxyFilterTest extends TestCase {
     }
 
     /**
+     * May the response have produced no content at all?
+     */
+    public void testDoFilterNoContent() throws ServletException, IOException {
+        final String proxyBaseUrl = "https://localhost/geoserver/tools";
+        final String requestBaseUrl = "http://localhost:8080/geoserver";
+        final String requestResource = "/resource.js";
+        final String content = "";
+        final String contentType = "text/html; charset=UTF-8";
+
+        String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
+                contentType, true);
+
+        assertEquals(content, result);
+    }
+
+    /**
      * @param proxyBaseUrl
      * @param requestBaseUrl
      * @param requestResource
