@@ -15,8 +15,8 @@ import org.apache.wicket.markup.html.form.Form;
  */
 public class FormTestPage extends WebPage {
 
-    private static final String PANEL = "panel";
-    private static final String FORM = "form";
+    public static final String PANEL = "panel";
+    public static final String FORM = "form";
 
     public FormTestPage(ComponentBuilder builder) {
         Form form = new Form(FORM);
