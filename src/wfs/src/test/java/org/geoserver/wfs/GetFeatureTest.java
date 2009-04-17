@@ -34,7 +34,7 @@ public class GetFeatureTest extends WFSTestSupport {
                 .getNodeName());
 
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
-        assertFalse(featureMembers.getLength() == 0);
+        assertEquals(15, featureMembers.getLength());
     }
     
     // see GEOS-1893
@@ -53,6 +53,29 @@ public class GetFeatureTest extends WFSTestSupport {
                 .getNodeName());
     }
     
+    // see GEOS-1287
+    public void testGetWithFeatureId() throws Exception {
+
+        Document doc;
+        doc = getAsDOM("wfs?request=GetFeature&typeName=cdf:Fifteen&version=1.0.0&service=wfs&featureid=Fifteen.2");
+
+        // super.print(doc);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:featureMember)",
+                doc);
+        XMLAssert.assertXpathEvaluatesTo("Fifteen.2",
+                "//wfs:FeatureCollection/gml:featureMember/cdf:Fifteen/@fid", doc);
+
+        doc = getAsDOM("wfs?request=GetFeature&typeName=cite:NamedPlaces&version=1.0.0&service=wfs&featureId=NamedPlaces.1107531895891");
+
+        //super.print(doc);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:featureMember)",
+                doc);
+        XMLAssert.assertXpathEvaluatesTo("NamedPlaces.1107531895891",
+                "//wfs:FeatureCollection/gml:featureMember/cite:NamedPlaces/@fid", doc);
+    }
+
     public void testPost() throws Exception {
 
         String xml = "<wfs:GetFeature " + "service=\"WFS\" "
