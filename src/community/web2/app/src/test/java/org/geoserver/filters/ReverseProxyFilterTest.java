@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -20,10 +19,11 @@ import javax.servlet.http.HttpServlet;
 
 import junit.framework.TestCase;
 
+import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
+import org.geoserver.platform.GeoServerExtensions;
 
 import com.mockrunner.mock.web.MockFilterChain;
 import com.mockrunner.mock.web.MockFilterConfig;
@@ -37,14 +37,15 @@ import com.mockrunner.mock.web.MockServletContext;
  * @version $Id$
  * @since 2.5.x
  * @source $URL:
- *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/test/java/org/geoserver/filters/ReverseProxyFilterTest.java $
+ *         https://svn.codehaus.org/geoserver/trunk/geoserver/web/src/test/java/org/geoserver/filters
+ *         /ReverseProxyFilterTest.java $
  */
 public class ReverseProxyFilterTest extends TestCase {
 
     private static final String DEFAULT_MIME_TYPES_REGEX = "text/html.*,text/css.*,text/javascript.*,application/x-javascript.*";
 
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-    
+
     ReverseProxyFilter filter;
 
     protected void setUp() throws Exception {
@@ -56,53 +57,41 @@ public class ReverseProxyFilterTest extends TestCase {
         super.tearDown();
         filter = null;
     }
-    
-    protected GeoServerInfo getGeoServerInfo(final String proxyBaseUrl) {
-        return new GeoServerInfoImpl(new GeoServerImpl()) {
+
+    protected GeoServerInfo getMockGeoServerInfo(final String proxyBaseUrl) {
+        GeoServerInfoImpl geoserver = new GeoServerInfoImpl((GeoServer) null) {
+            @Override
             public String getProxyBaseUrl() {
                 return proxyBaseUrl;
             }
         };
+        return geoserver;
     }
 
     public void testInit() throws ServletException {
         final String proxyBaseUrl = "https://localhost/geoserver/tools";
-        MockFilterConfig config = new MockFilterConfig() {
-            public String getInitParameter(String name) {
-                if ("mime-types".equals(name)) {
-                    return "*wrong*expression*";
-                } else if ("enabled".equals(name)) {
-                    return "true";
-                }
-                return null;
-            }
-            
-        };
+
+        GeoServerInfo geoserver = getMockGeoServerInfo(proxyBaseUrl);
+        String mimeTypesInitParam = "*wrong*expression*";
 
         try {
-            filter.init(config, getGeoServerInfo(proxyBaseUrl));
+            ReverseProxyFilter.parsePatterns(geoserver, mimeTypesInitParam);
             fail("expected ServletException with an illegal regular expression to match mime types");
         } catch (ServletException e) {
             assertTrue(true);
         }
 
-        config = new MockFilterConfig() {
-            public String getInitParameter(String name) {
-                if ("mime-types".equals(name)) {
-                    return DEFAULT_MIME_TYPES_REGEX;
-                }
-                return null;
-            }
-        };
+        mimeTypesInitParam = DEFAULT_MIME_TYPES_REGEX;
 
-        filter.init(config, getGeoServerInfo(proxyBaseUrl));
+        ReverseProxyFilter.parsePatterns(geoserver, mimeTypesInitParam);
     }
 
     public void testDoFilterDisabled() throws ServletException, IOException {
         final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/www/resource.html";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>"
+                + LINE_SEPARATOR;
         final String contentType = "text/html";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
@@ -116,13 +105,15 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/www/resource.html";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>"
+                + LINE_SEPARATOR;
         final String contentType = "text/html";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
                 contentType, true);
 
-        String expected = "<a href=\"https://proxy.server:9090/applications/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
+        String expected = "<a href=\"https://proxy.server:9090/applications/geoserver/linked.html\">link</a>"
+                + LINE_SEPARATOR;
 
         assertEquals(expected, result);
     }
@@ -131,7 +122,8 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server:9090/applications/geoserver";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/www/resource.bin";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR;
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>"
+                + LINE_SEPARATOR;
         final String contentType = "application/octect-stream";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
@@ -158,15 +150,15 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://proxy.server";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/resource.js";
-        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>" + LINE_SEPARATOR
-                + "<a href=\"/geoserver/style.css\"></a>" + LINE_SEPARATOR;
+        final String content = "<a href=\"http://localhost:8080/geoserver/linked.html\">link</a>"
+                + LINE_SEPARATOR + "<a href=\"/geoserver/style.css\"></a>" + LINE_SEPARATOR;
         final String contentType = "text/html; charset=UTF-8";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
                 contentType, true);
 
-        final String expected = "<a href=\"https://proxy.server/linked.html\">link</a>" + LINE_SEPARATOR
-                + "<a href=\"/style.css\"></a>" + LINE_SEPARATOR;
+        final String expected = "<a href=\"https://proxy.server/linked.html\">link</a>"
+                + LINE_SEPARATOR + "<a href=\"/style.css\"></a>" + LINE_SEPARATOR;
 
         assertEquals(expected, result);
     }
@@ -179,7 +171,24 @@ public class ReverseProxyFilterTest extends TestCase {
         final String proxyBaseUrl = "https://localhost/geoserver/tools";
         final String requestBaseUrl = "http://localhost:8080/geoserver";
         final String requestResource = "/resource.js";
-        final String content = "<input type=text value=\"https://localhost/geoserver/tools/proxified\">link</a>" + LINE_SEPARATOR;
+        final String content = "<input type=text value=\"https://localhost/geoserver/tools/proxified\">link</a>"
+                + LINE_SEPARATOR;
+        final String contentType = "text/html; charset=UTF-8";
+
+        String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
+                contentType, true);
+
+        assertEquals(content, result);
+    }
+
+    /**
+     * May the response have produced no content at all?
+     */
+    public void testDoFilterNoContent() throws ServletException, IOException {
+        final String proxyBaseUrl = "https://localhost/geoserver/tools";
+        final String requestBaseUrl = "http://localhost:8080/geoserver";
+        final String requestResource = "/resource.js";
+        final String content = "";
         final String contentType = "text/html; charset=UTF-8";
 
         String result = testDoFilter(proxyBaseUrl, requestBaseUrl, requestResource, content,
@@ -198,13 +207,18 @@ public class ReverseProxyFilterTest extends TestCase {
      * @throws ServletException
      * @throws IOException
      */
-    private String testDoFilter(final String proxyBaseUrl,
-            final String requestBaseUrl,
-            final String requestResource,
-            final String content,
-            final String contentType,
+    private String testDoFilter(final String proxyBaseUrl, final String requestBaseUrl,
+            final String requestResource, final String content, final String contentType,
             final boolean filterIsEnabled) throws MalformedURLException, ServletException,
             IOException {
+
+        GeoServerInfo mockGeoServerInfo = getMockGeoServerInfo(proxyBaseUrl);
+
+        ApplicationContextMock context = new ApplicationContextMock();
+        context.putBean(mockGeoServerInfo);
+
+        GeoServerExtensions ext = new GeoServerExtensions();
+        ext.setApplicationContext(context);
 
         MockFilterConfig config = new MockFilterConfig() {
             public String getInitParameter(String name) {
@@ -228,10 +242,12 @@ public class ReverseProxyFilterTest extends TestCase {
         MockFilterChain chain = new MockFilterChain();
         MockHttpSession session = new MockHttpSession();
         req.setSession(session);
-        MockServletContext context = new MockServletContext();
-        session.setupServletContext(context);
+        
+        MockServletContext servletContext = new MockServletContext();
+        session.setupServletContext(servletContext);
 
-        filter.init(config, getGeoServerInfo(proxyBaseUrl));
+        filter.init(config);
+        
         // the servlet to call at the end of the chain, just writes the provided content out
         // to the response
         Servlet servlet = new HttpServlet() {
