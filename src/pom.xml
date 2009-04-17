@@ -893,7 +893,7 @@
        <debug>true</debug>   <!-- Whether to include debugging information.   -->
        <encoding>UTF-8</encoding> <!-- The -encoding argument for the Java compiler. -->
      </configuration>
-  </plugin>
+   </plugin>
 
    <!-- source formatting -->
    <plugin>
@@ -911,6 +911,15 @@
       <version>1.7.3-SNAPSHOT</version>
      </dependency>
     </dependencies>
+   </plugin>
+
+   <!-- resources -->
+   <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-resources-plugin</artifactId>
+     <configuration>
+       <encoding>UTF-8</encoding>
+     </configuration>
    </plugin>
 
    <!-- unit testing -->
