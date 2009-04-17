@@ -7,6 +7,7 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 import junit.textui.TestRunner;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.gml3.GML;
@@ -57,6 +58,29 @@ public class GetFeatureTest extends WFSTestSupport {
             Element feature = (Element) features.item(i);
             assertTrue(feature.hasAttribute("gml:id"));
         }
+    }
+
+    // see GEOS-1287
+    public void testGetWithFeatureId() throws Exception {
+
+        Document doc;
+        doc = getAsDOM("wfs?request=GetFeature&typeName=cdf:Fifteen&version=1.1.0&service=wfs&featureid=Fifteen.2");
+
+        super.print(doc);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:featureMembers/cdf:Fifteen)",
+                doc);
+        XMLAssert.assertXpathEvaluatesTo("Fifteen.2",
+                "//wfs:FeatureCollection/gml:featureMembers/cdf:Fifteen/@gml:id", doc);
+
+        doc = getAsDOM("wfs?request=GetFeature&typeName=cite:NamedPlaces&version=1.1.0&service=wfs&featureId=NamedPlaces.1107531895891");
+
+        super.print(doc);
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//wfs:FeatureCollection/gml:featureMembers/cite:NamedPlaces)",
+                doc);
+        XMLAssert.assertXpathEvaluatesTo("NamedPlaces.1107531895891",
+                "//wfs:FeatureCollection/gml:featureMembers/cite:NamedPlaces/@gml:id", doc);
     }
 
     public void testPost() throws Exception {
