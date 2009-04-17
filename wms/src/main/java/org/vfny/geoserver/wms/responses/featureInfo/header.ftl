@@ -17,9 +17,8 @@ like td, tr, and so on.
 		font-size: 90%;
 		padding:.2em .1em;
 	}
-	table.featureInfo th{
+	table.featureInfo th {
 	    padding:.2em .2em;
-		text-transform:uppercase;
 		font-weight:bold;
 		background:#eee;
 	}
