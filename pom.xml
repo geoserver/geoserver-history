@@ -942,7 +942,16 @@
        <debug>true</debug>
        <encoding>UTF-8</encoding>
      </configuration>
-  </plugin>
+   </plugin>
+
+   <!-- resources -->
+   <plugin>
+     <groupId>org.apache.maven.plugins</groupId>
+     <artifactId>maven-resources-plugin</artifactId>
+     <configuration>
+       <encoding>UTF-8</encoding>
+     </configuration>
+   </plugin>
 
    <!-- unit testing -->
    <plugin>
