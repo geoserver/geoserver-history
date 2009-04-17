@@ -12,6 +12,10 @@ There are two types of ArcSDE data that can be added to GeoServer:  **vector** a
 Vector support
 --------------
 
+ArcSDE provides efficient access to vector layers, ("featureclasses" in ArcSDE jargon), over a number of relational databases.  GeoServer can set up featuretypes for registered ArcSDE featureclasses and spatial views.  For versioned ArcSDE featureclasses, GeoServer will work on the default database version, for both read and write access.
+
+Transactional support is enabled for featureclasses with a properly set primary key, regardless if the featureclass is managed by a user or by ArcSDE.  If a featureclass has no primary key set, it will be available as read-only.
+
 Raster support
 --------------
 
