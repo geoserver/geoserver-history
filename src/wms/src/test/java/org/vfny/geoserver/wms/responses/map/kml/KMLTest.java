@@ -71,7 +71,7 @@ public class KMLTest extends WMSTestSupport {
         
         assertEquals( 1, doc.getElementsByTagName("Placemark").getLength());
     }
-    
+   
     // see GEOS-1948
     public void testMissingGraphic() throws Exception {
         Document doc = getAsDOM(

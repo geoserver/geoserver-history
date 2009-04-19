@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,8 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.util.RequestUtils;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.type.DateUtil;
 import org.geotools.map.MapLayer;
+import org.geotools.renderer.style.ExpressionExtractor;
 import org.geotools.renderer.style.LineStyle2D;
 import org.geotools.renderer.style.MarkStyle2D;
 import org.geotools.renderer.style.PolygonStyle2D;
@@ -44,6 +47,7 @@ import org.geotools.xml.transform.Translator;
 import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.expression.Expression;
+import org.opengis.filter.FilterFactory;
 import org.vfny.geoserver.global.NameSpaceInfo;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -79,6 +83,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
      */
     static Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.geoserver.kml");
+
+    private static final FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+     
 
     /**
      * The scale denominator.
@@ -652,6 +659,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 ExternalGraphic graphic = symbolizer.getGraphic()
                         .getExternalGraphics()[0];
 
+
                 try {
                     if ("file".equals(graphic.getLocation().getProtocol())) {
                         // it is a local file, reference locally from "styles"
@@ -675,6 +683,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 }
             }
 
+            iconHref = evaluateDynamicSymbolizer(iconHref, feature);
+
             if (iconHref == null) {
                 iconHref = "http://maps.google.com/mapfiles/kml/pal4/icon25.png";
             }
@@ -685,6 +695,30 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             end("Icon");
 
             end("IconStyle");
+        }
+
+        /**
+         * Does value substitution on a URL with embedded CQL expressions
+         * @param strLocation the URL as a string, possibly with expressions
+         * @param feature the feature providing the context in which the expressions are evaluated
+         * @return a string containing the final URL
+         */
+        protected String evaluateDynamicSymbolizer(String strLocation, SimpleFeature feature){
+            if (strLocation == null) return null;
+
+            // parse the eventual ${cqlExpression} embedded in the URL
+            Expression location;
+            try {
+                location = ExpressionExtractor.extractCqlExpressions(strLocation);
+            } catch(IllegalArgumentException e) {
+                // in the unlikely event that a URL is using one of the chars reserved for ${cqlExpression}
+                // let's try and use the location as a literal
+                if(LOGGER.isLoggable(Level.SEVERE))
+                    LOGGER.log(Level.SEVERE, "Could not parse cql expressions out of " + strLocation, e);
+                location = ff.literal(strLocation);
+            }
+
+            return location.evaluate(feature).toString();
         }
 
         /**

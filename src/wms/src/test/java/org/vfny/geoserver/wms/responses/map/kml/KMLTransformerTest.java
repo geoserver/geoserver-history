@@ -66,6 +66,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         dataDirectory.addStyle("allsymbolizers", getClass().getResource("allsymbolizers.sld"));
         dataDirectory.addStyle("SingleFeature", getClass().getResource("singlefeature.sld"));
         dataDirectory.addStyle("Bridge", getClass().getResource("bridge.sld"));
+        dataDirectory.addStyle("dynamicsymbolizer", getClass().getResource("dynamicsymbolizer.sld"));
         dataDirectory.copyTo(getClass().getResourceAsStream("bridge.png"), "styles/bridge.png");
     }
 
@@ -309,7 +310,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         mapContext.setMapWidth(256);
 
         Document document = WMSTestSupport.transform(mapContext, transformer, false);
-        print(document);
+        // print(document);
 
         assertEquals("kml", document.getDocumentElement().getNodeName());
         assertEquals(3, document.getElementsByTagName("Style").getLength());
@@ -319,6 +320,25 @@ public class KMLTransformerTest extends WMSTestSupport {
         XMLAssert.assertXpathEvaluatesTo("1", "//Style[1]/PolyStyle/outline", document);
         XMLAssert.assertXpathEvaluatesTo("ffba3e00", "//Style[1]/LineStyle/color", document);
     }
+
+    /**
+     * See http://jira.codehaus.org/browse/GEOS-2670
+     */
+    public void testDynamicSymbolizer() throws Exception {
+        KMLTransformer transformer = new KMLTransformer();
+        mapContext.removeLayer(mapContext.getLayer(0));
+        mapContext.addLayer(createMapLayer(MockData.STREAMS, "dynamicsymbolizer"));
+        mapContext.setAreaOfInterest(new Envelope(-180,0,-90,90));
+        mapContext.setMapHeight(256);
+        mapContext.setMapWidth(256);
+
+        Document document = WMSTestSupport.transform(mapContext, transformer, false);
+
+        assertEquals("kml", document.getDocumentElement().getNodeName());
+        assertEquals(1, document.getElementsByTagName("Style").getLength());
+        XMLAssert.assertXpathEvaluatesTo("http://example.com/Cam Stream", "//Style[1]/IconStyle/Icon/href", document);
+    }
+
 
     public void testTransformer() throws Exception {
         KMLTransformer transformer = new KMLTransformer();
