@@ -97,8 +97,7 @@ Each sub-directory contains a file named ``info.xml`` which contains metadata ab
    * The spatial extent of the dataset
    * The default style used by the WMS when rendering the layer
 
-TODO: document info.xml in more detail
-TODO: write a "todo" role extension :)
+.. todo:: document info.xml in more detail
 
 data
 ----

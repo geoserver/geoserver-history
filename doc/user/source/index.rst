@@ -16,6 +16,9 @@ Consortium (OGC) Web Feature Service (WFS) and Web Coverage Service
 Map Service (WMS). GeoServer forms a core component of the Geospatial
 Web.
 
+.. todolist::
+
+
 .. toctree::
    :maxdepth: 2
 
