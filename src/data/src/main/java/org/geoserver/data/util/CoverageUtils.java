@@ -93,17 +93,16 @@ public class CoverageUtils {
 
     public static GeneralParameterValue[] getParameters(ParameterValueGroup params, Map values,
         boolean readGeom) {
-        final List parameters = new ArrayList();
+        final List<ParameterValue<?>> parameters = new ArrayList<ParameterValue<?>>();
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
-            List list = params.values();
-            final Iterator it = list.iterator();
-            while (it.hasNext()) {
-                final ParameterValue val = (ParameterValue) it.next();
+            final List<GeneralParameterValue> elements = params.values();
+            for (GeneralParameterValue elem: elements) {
+                final ParameterValue<?> val = (ParameterValue<?>)elem;
 
                 if (val != null) {
-                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    final ParameterDescriptor<?> descr = val.getDescriptor();
                     final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
@@ -128,23 +127,14 @@ public class CoverageUtils {
                     // format specific params
                     //
                     // /////////////////////////////////////////////////////////
-                    Object value = CoverageUtils.getCvParamValue(_key, val, values);
-
-                    if ((value == null)
-                            && (_key.equalsIgnoreCase("InputTransparentColor")
-                            || _key.equalsIgnoreCase("OutputTransparentColor"))) {
-                        parameters.add(new DefaultParameterDescriptor(_key, Color.class, null, value)
-                            .createValue());
-                    } else {
-                        parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
-                                value).createValue());
-                    }
+                    final Object value = CoverageUtils.getCvParamValue(_key, val, values);
+                    parameters.add(new DefaultParameterDescriptor(_key, descr.getValueClass(), null, value).createValue());
+                    
                 }
             }
 
-            return (!parameters.isEmpty())
-            ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()])
-            : null;
+            return (!parameters.isEmpty())? 
+            		(GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]): null;
         } else {
             return null;
         }
@@ -345,7 +335,25 @@ public class CoverageUtils {
                     Object[] inArray = { params.get(key) };
                     value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 }
-            } else {
+            }else if (key.equalsIgnoreCase("BackgroundValues")) {
+                if (params.get(key) != null) {
+                    String temp = (String) params.get(key);
+                    String[] elements = temp.split(",");
+                    final double[] backgroundValues = new double[elements.length];
+                    for(int i=0;i<elements.length;i++)
+                    	backgroundValues[i]=Double.valueOf(elements[i]);
+                    value=backgroundValues;
+                    
+                } 
+            } 
+            else if (key.equalsIgnoreCase("InputImageThresholdValue")) {
+                if (params.get(key) != null) {
+                    String temp = (String) params.get(key);
+                    value=Double.valueOf(temp);
+                    
+                } 
+            } 
+            else {
                 Class[] clArray = { String.class };
                 Object[] inArray = { params.get(key) };
                 value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
