@@ -4,10 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Dimension2D;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -15,12 +18,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.Query;
@@ -41,11 +49,15 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.TransformedDirectPosition;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.metadata.iso.spatial.PixelTranslation;
+import org.geotools.parameter.FloatParameter;
+import org.geotools.parameter.Parameter;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.renderer.lite.MetaBufferEstimator;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.geotools.resources.geometry.XRectangle2D;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
@@ -58,9 +70,14 @@ import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Or;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.metadata.spatial.PixelOrientation;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.MathTransform2D;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.global.CoverageInfo;
 import org.vfny.geoserver.global.FeatureTypeInfo;
@@ -309,32 +326,78 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                     //}
                 } else {
+
+                    
                     final CoverageInfo cinfo = requestedLayers[i].getCoverage();
+                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader)cinfo.getReader();
+                    final ParameterValueGroup params = reader.getFormat().getReadParameters();
+                    final GeneralParameterValue[] parameters = CoverageUtils.getParameters(params, requestedLayers[i].getCoverage().getParameters(),true);
+                    //get the original grid geometry
                     final GridGeometry2D coverageGeometry=(GridGeometry2D) cinfo.getGrid();
-                    final GeneralEnvelope requestedEnvelope=new GeneralEnvelope(new ReferencedEnvelope(bbox,requestedCRS));
-                    final GridCoverage2D coverage=(GridCoverage2D) cinfo.getCoverage(requestedEnvelope, new Rectangle(0,0,width,height));
+                    // set the requested position in model space for this request
                     final Coordinate middle = pixelToWorld(x, y, bbox, width, height);
-                    final DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
+                    DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
+                	
+                	//change from request crs to coverage crs in order to compute a minimal request area, 
+                    // TODO this code need to be made much more robust
+                    if (requestedCRS != null) {
+                        
+                        final CoordinateReferenceSystem targetCRS = coverageGeometry.getCoordinateReferenceSystem();
+                        final TransformedDirectPosition arbitraryToInternal = new 
+                        	TransformedDirectPosition(requestedCRS, targetCRS, new Hints(Hints.LENIENT_DATUM_SHIFT,Boolean.TRUE));
+                        try {
+                            arbitraryToInternal.transform(position);
+                        } catch (TransformException exception) {
+                            throw new CannotEvaluateException("Unable to answer the geatfeatureinfo",exception);
+                        }
+                        position=arbitraryToInternal;
+                    }
+                    //check that the provided point is inside the bbox for this coverage
+                    if(!reader.getOriginalEnvelope().contains(position))
+                    	throw new CannotEvaluateException("The position at which we should evaluate the coverage does not fall within the coverage's bbox");
+                    
+                    
+                    //now get the position in raster space using the world to grid related to corner
+                    final MathTransform worldToGrid=reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER).inverse();
+                    final DirectPosition rasterMid = worldToGrid.transform(position,null);
+                    // create a 20X20 rectangle aruond the mid point and then intersect with the original range
+                    final Rectangle2D.Double rasterArea= new Rectangle2D.Double();
+                    rasterArea.setFrameFromCenter(rasterMid.getOrdinate(0), rasterMid.getOrdinate(1), rasterMid.getOrdinate(0)+10, rasterMid.getOrdinate(1)+10);
+                    final Rectangle interegerRasterArea=rasterArea.getBounds();
+                    XRectangle2D.intersect(interegerRasterArea, reader.getOriginalGridRange().toRectangle(), interegerRasterArea);
+                    //paranoiac check, did we fall outside the coverage raster area? This should never really happne if the request is well formed.
+                    if(interegerRasterArea.isEmpty())
+                    	throw new CannotEvaluateException("Unable to evaluate the request coverage "+requestedLayers[i].toString());
+                    // now set the grid geometry for this request
+                    for(int k=0;k<parameters.length;k++){
+                    	if(!(parameters[k] instanceof Parameter<?>))
+                    		continue;
+                    	
+                    	final Parameter<?> parameter = (Parameter<?>) parameters[k];
+                    	if(parameter.getDescriptor().getName().equals(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName()))
+                    	{
+                    		//
+                    		//create a suitable geometry for this request reusing the getmap (we could probably optimize)
+                    		//
+                    		parameter.setValue(new GridGeometry2D(
+                    				new GridEnvelope2D(interegerRasterArea),
+                    				reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER),
+                    				reader.getCrs()
+                    				));
+                    	}
+                    	
+                    }
+                    final GridCoverage2D coverage=(GridCoverage2D) reader.read(parameters);
+                    if(coverage==null)
+                    {
+                    	if(LOGGER.isLoggable(Level.FINE))
+                    		LOGGER.fine("Unable to load raster data for this request.");
+                    	return;
+                    }
+
                     try {
-                        double[] pixelValues = null;
-                        if (requestedCRS != null) {
-                            
-                            final CoordinateReferenceSystem targetCRS = coverageGeometry.getCoordinateReferenceSystem();
-                            final TransformedDirectPosition arbitraryToInternal = new TransformedDirectPosition(
-                                    requestedCRS, targetCRS, new Hints(
-                                            Hints.LENIENT_DATUM_SHIFT,
-                                            Boolean.TRUE));
-                            try {
-                                arbitraryToInternal.transform(position);
-                            } catch (TransformException exception) {
-                                throw new CannotEvaluateException(exception
-                                        .getLocalizedMessage());
-                            }
-                            Point2D point2D = arbitraryToInternal.toPoint2D();
-                            pixelValues = coverage.evaluate(point2D,(double[]) null);
-                        } else
-                            pixelValues = coverage.evaluate(position,(double[]) null);
-                        FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
+                        final double[] pixelValues = coverage.evaluate(position,(double[]) null);
+                        final FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
                         pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getName());
                         metas.add(requestedLayers[i]);
                         results.add(pixel);
@@ -450,10 +513,10 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @throws RuntimeException DOCUMENT ME!
      */
-    private Coordinate pixelToWorld(double x, double y, Envelope map, double width, double height) {
+    private static Coordinate pixelToWorld(double x, double y, Envelope map, double width, double height) {
         //set up the affine transform and calculate scale values
-        AffineTransform at = worldToScreenTransform(map, width, height);
-
+        final AffineTransform at = worldToScreenTransform(map, width, height);
+        
         Point2D result = null;
 
         try {
@@ -463,9 +526,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
             throw new RuntimeException(e);
         }
 
-        Coordinate c = new Coordinate(result.getX(), result.getY());
+        return new Coordinate(result.getX(), result.getY());
 
-        return c;
     }
 
     /**
@@ -477,7 +539,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
      *
      * @return a transform that maps from real world coordinates to the screen
      */
-    private AffineTransform worldToScreenTransform(Envelope mapExtent, double width, double height) {
+    private static AffineTransform worldToScreenTransform(Envelope mapExtent, double width, double height) {
         double scaleX = (double) width / mapExtent.getWidth();
         double scaleY = (double) height / mapExtent.getHeight();
 
