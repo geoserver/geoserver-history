@@ -7,8 +7,8 @@
 	<form wicket:id="filterForm">
 			<label for="filter"><wicket:message key="filter">Filter</wicket:message>:</label>
 			<input wicket:id="filter" type="text" size="50"></input>
-			<input class="btnTxt"	wicket:id="applyFilter" type="submit" value="apply"></input>
-			<input class="btnTxt" wicket:id="resetFilter" type="button"	value="reset"></input>
+			<input class="btnTxt" wicket:id="applyFilter" type="submit"	wicket:message="value:applyFilter"></input>
+			<input class="btnTxt" wicket:id="resetFilter" type="button"	wicket:message="value:resetFilter"></input><br />
 			<span wicket:id="filterMatch">Matched xxx out of yyy</span>
 	</form>
 	

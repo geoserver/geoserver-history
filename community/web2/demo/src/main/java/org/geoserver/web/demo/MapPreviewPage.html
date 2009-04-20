@@ -1,6 +1,6 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <head>
-<title>Layer preview</title>
+<title><wicket:message key="layerPreview">Layer Preview</wicket:message></title>
 </head>
 <body>
 <wicket:extend>
@@ -20,7 +20,7 @@
   <!--  The custom drop down with optgroups -->
   <wicket:fragment wicket:id="menuFragment">
     <select wicket:id="menu">
-      <option>Select one</option>
+      <option><wicket:message key="selectOne">Select one</wicket:message></option>
       <optgroup label="WMS">
           <option wicket:id="wmsFormats"></option>
       </optgroup>

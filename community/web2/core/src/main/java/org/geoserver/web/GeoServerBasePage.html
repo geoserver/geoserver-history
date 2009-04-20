@@ -22,13 +22,13 @@
       <h2><a wicket:id="home" class="pngfix" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
       <div class="button-group selfclear">
       <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
-        <label class="noshow" for="username">Username</label>
+        <label class="noshow" for="username"><wicket:message key="username">Username</wicket:message></label>
         <input id="username" type="text" name="username" value="" title="username" />
-        <label class="noshow" for="password">Password</label>
+        <label class="noshow" for="password"><wicket:message key="password">Password</wicket:message></label>
         <input id="password" type="password" name="password" value="" title="password" />
-        <label class="shown" for="_acegi_security_remember_me">Remember me</label>
+        <label class="shown" for="_acegi_security_remember_me"><wicket:message key="rememberMe">Remember me</wicket:message></label>
         <input id="_acegi_security_remember_me" type="checkbox" name="_acegi_security_remember_me" />
-        <button class="button-login positive icon" type="submit"><div>Login</div></button>
+        <button class="button-login positive icon" type="submit"><div><wicket:message key="login">Login</wicket:message></div></button>
         <script type="text/javascript">
         //<![CDATA[
         jQuery(document).ready(function() {$('#username, #password').inlineInfoTextify();});
@@ -36,8 +36,8 @@
         </script>
       </form>
       <div wicket:id="logoutform">
-        <a class="button-logout icon" href="j_acegi_logout"><div>Logout</div></a>
-        <span class="username">Logged in as <span wicket:id="username">User von Testenheimer</span></span>.
+        <a class="button-logout icon" href="j_acegi_logout"><div><wicket:message key="logout">Logout</wicket:message></div></a>
+        <span class="username"><wicket:message key="loggedInAs">Logged in as</wicket:message> <span wicket:id="username">User von Testenheimer</span></span>.
       </div>
       </div>
     </div><!-- /.wrap -->

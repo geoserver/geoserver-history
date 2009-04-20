@@ -22,6 +22,8 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -77,7 +79,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         filterForm.add(filterReset);
 
         // add the filter match label
-        filterForm.add(matched = new Label("filterMatch", "Showing all records"));
+        filterForm.add(matched = new Label("filterMatch", new ResourceModel("showingAllRecords")));
         matched.setOutputMarkupId(true);
 
         // setup the table
@@ -88,7 +90,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             @Override
             protected void populateItem(Item item) {
                 final IModel itemModel = item.getModel();
-
+                
                 // odd/even style
                 item.add(new SimpleAttributeModifier("class",
                         item.getIndex() % 2 == 0 ? "even" : "odd"));
@@ -101,6 +103,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                     protected void populateItem(ListItem item) {
                         Property<T> property = (Property<T>) item
                                 .getModelObject();
+                       
                         Component component = getComponentForProperty(
                                 "component", itemModel, property);
                         
@@ -132,16 +135,19 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             @Override
             protected void populateItem(ListItem item) {
                 Property<T> property = (Property<T>) item.getModelObject();
+                
+                // Simple i18n
+                String pageName = this.getPage().getClass().getSimpleName();
+                ResourceModel resMod = new ResourceModel(pageName+".th."+property.getName(), property.getName());
+                
                 if (property.getComparator() != null) {
                     Fragment f = new Fragment("header", "sortableHeader", item);
                     AjaxLink link = sortLink(dataProvider, item);
-                    // todo: add internationalization
-                    link.add(new Label("label", property.getName()));
+                    link.add(new Label("label", resMod));
                     f.add(link);
                     item.add(f);
                 } else {
-                    // todo: add internationalization
-                    item.add(new Label("header", property.getName()));
+                    item.add(new Label("header", resMod));
                 }
             }
 
@@ -217,13 +223,21 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             dataProvider.setKeywords(null);
             filter.setModelObject("");
             dataView.setCurrentPage(0);
-            matched.setModelObject("Showing all records");
+            matched.setModel(new ResourceModel("showingAllRecords"));
         } else {
             String[] keywords = flatKeywords.split("\\s+");
             dataProvider.setKeywords(keywords);
             dataView.setCurrentPage(0);
-            matched.setModelObject("Matched " + dataProvider.size()
-                    + " out of " + dataProvider.fullSize());
+            StringResourceModel strResMod = 
+            	new StringResourceModel(
+            		"matchedXOutOfY", 
+            		this,
+            		new Model(""),
+            		new Object[] {
+            				Integer.valueOf(dataProvider.size()),
+            				Integer.valueOf(dataProvider.fullSize())
+            		} );
+            matched.setModel(strResMod);
         }
         navigator.setVisible(dataProvider.size() > dataView.getItemsPerPage());
 
