@@ -245,7 +245,7 @@ public class GetMapResponse implements Response {
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
                     if (cachingPossible) {
                         if (layers[i].getFeature().isCachingEnabled()) {
-                            int nma = Integer.parseInt(layers[i].getFeature().getCacheMaxAge());
+                            int nma = Integer.valueOf(layers[i].getFeature().getCacheMaxAge());
 
                             // suppose the map contains multiple cachable
                             // layers...we can only cache the combined map for
