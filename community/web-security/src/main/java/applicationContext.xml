@@ -3,14 +3,26 @@
 
 <beans>
 
+
+	<!-- 
+   Menu category for security work
+   -->
+	<bean id="securityCategory" class="org.geoserver.web.Category">
+		<property name="nameKey" value="category.security" />
+		<property name="order" value="200" />
+	</bean>
+
+	<!--
+	The user list page 
+	 -->
 	<bean id="securityPage" class="org.geoserver.web.MenuPageInfo">
-		<property name="id" value="security" />
-		<property name="titleKey" value="security.title" />
-		<property name="descriptionKey" value="security.description" />
-		<property name="componentClass" value="org.geoserver.security.web.SecurityPage" />
-		<property name="icon" value="img/pls.png" />
-		<property name="category" ref="dataCategory" />
-		<property name="order" value="50" />
+		<property name="id" value="security.user" />
+		<property name="titleKey" value="security.user.title" />
+		<property name="descriptionKey" value="security.user.description" />
+		<property name="componentClass" value="org.geoserver.web.security.user.SimpleUserPage" />
+		<property name="icon" value="../../img/icons/silk/user.png" />
+		<property name="category" ref="securityCategory" />
+		<property name="order" value="100" />
 	</bean>
 
 </beans> 
