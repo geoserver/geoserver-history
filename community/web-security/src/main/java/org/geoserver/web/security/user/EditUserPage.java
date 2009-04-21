@@ -7,6 +7,7 @@ package org.geoserver.web.security.user;
 import java.util.logging.Level;
 
 import org.acegisecurity.userdetails.UserDetails;
+import org.geoserver.security.GeoserverUserDao;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 /**
@@ -23,8 +24,9 @@ public class EditUserPage extends AbstractUserPage {
     protected void onFormSubmit() {
         try {
             UserUIModel model = (UserUIModel) getModelObject();
-            getUserDao().setUser(model.toAcegiUser());
-            getUserDao().storeUsers();
+            GeoserverUserDao dao = GeoserverUserDao.get();
+            dao.setUser(model.toAcegiUser());
+            dao.storeUsers();
             setResponsePage(SimpleUserPage.class);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error occurred while saving user", e);

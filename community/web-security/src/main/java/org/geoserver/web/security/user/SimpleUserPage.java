@@ -61,10 +61,6 @@ public class SimpleUserPage extends GeoServerSecuredPage {
         add(addUserLink());
     }
     
-    GeoserverUserDao getUserDao() {
-        return ((GeoserverUserDao) GeoServerApplication.get().getBean("userDetailsService"));
-    }
-
     ConfirmationAjaxLink removeUserLink(String id, IModel itemModel) {
         String username = ((User) itemModel.getObject()).getUsername();
         IModel confirmRemoveModel = new ParamResourceModel("confirmRemoveUser", this, username);
@@ -75,8 +71,9 @@ public class SimpleUserPage extends GeoServerSecuredPage {
                 try {
                     String username = ((User) getModelObject()).getUsername();
                     if(username.equals("admin"));
-                    getUserDao().removeUser(username);
-                    getUserDao().storeUsers();
+                    GeoserverUserDao dao = GeoserverUserDao.get();
+                    dao.removeUser(username);
+                    dao.storeUsers();
                 } catch(Exception e) {
                     LOGGER.log(Level.SEVERE, "Error occurred while removing the user and saving out the result", e);
                     error(new ParamResourceModel("saveError", this, e.getMessage()));

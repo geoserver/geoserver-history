@@ -42,7 +42,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
 
     protected AbstractUserPage(UserUIModel user) {
         final Model userModel = new Model(user);
-        roles = getUserDao().getRoles();
+        roles = GeoserverUserDao.get().getRoles();
 
         // build the form
         Form form = new Form("userForm");
@@ -64,7 +64,6 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         form.add(newRoleField = new TextField("newRole", new Model()));
         newRoleField.setOutputMarkupId(true);
         form.add(addRoleButton(form));
-        
         
         // build the submit/cancel
         form.add(new BookmarkablePageLink("cancel", SimpleUserPage.class));
@@ -115,10 +114,6 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         };
         button.setDefaultFormProcessing(false);
         return button;
-    }
-
-    GeoserverUserDao getUserDao() {
-        return ((GeoserverUserDao) GeoServerApplication.get().getBean("userDetailsService"));
     }
 
     SubmitLink saveLink() {

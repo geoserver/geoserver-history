@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.geoserver.security.GeoserverUserDao;
 import org.geoserver.web.wicket.ParamResourceModel;
 
 
@@ -35,7 +36,7 @@ public class NewUserPage extends AbstractUserPage {
         protected void onValidate(IValidatable validatable) {
             String newName = (String) validatable.getValue();
             try {
-                getUserDao().loadUserByUsername(newName);
+                GeoserverUserDao.get().loadUserByUsername(newName);
                 error(validatable, "NewUserPage.userConflict", Collections.singletonMap("user", newName));
             } catch(UsernameNotFoundException e) {
                 // fine, it's new, validation passed
@@ -48,8 +49,9 @@ public class NewUserPage extends AbstractUserPage {
     protected void onFormSubmit() {
         try {
             UserUIModel user = (UserUIModel) NewUserPage.this.getModelObject();
-            getUserDao().putUser(user.toAcegiUser());
-            getUserDao().storeUsers();
+            GeoserverUserDao dao = GeoserverUserDao.get();
+            dao.putUser(user.toAcegiUser());
+            dao.storeUsers();
             setResponsePage(SimpleUserPage.class);
         } catch(Exception e) {
             LOGGER.log(Level.SEVERE, "Error occurred while saving user", e);
