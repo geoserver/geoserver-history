@@ -13,11 +13,11 @@
         <property name="connection.username">jdeolive</property>
         <property name="connection.password"></property>
         <property name="connection.pool_size">5</property -->
-		<property name="connection.driver_class">org.postgresql.Driver</property>
+		<property name="connection.driver_class">org.postgis.Driver</property>
         <property name="connection.url">jdbc:postgresql://localhost/GS_CATALOG</property>
-        <property name="connection.username">geos2</property>
-        <property name="connection.password">geos2</property>
-        <property name="connection.pool_size">5</property>
+        <property name="connection.username">itt</property>
+        <property name="connection.password">itttti</property>
+        <property name="connection.pool_size">30</property>
 
         <!-- SQL dialect -->
         <!-- property name="dialect">org.geoserver.hibernate.H2Dialect</property -->
@@ -33,7 +33,7 @@
         <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
         <property name="net.sf.ehcache.configurationResourceName">ehcache.xml</property>
         <!-- property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property -->
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
         <property name="hbm2ddl.auto">update</property>
         <property name="hibernate.bytecode.use_reflection_optimizer">true</property>
 	</session-factory>
