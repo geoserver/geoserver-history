@@ -8,10 +8,12 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -65,12 +67,15 @@ public class StylePage extends GeoServerSecuredPage {
         };
     }
     
-    Component removeStyleLink( String id, IModel model ) {
+    Component removeStyleLink(String id, IModel model) {
         final StyleInfo style = (StyleInfo) model.getObject();
-        StringBuilder sb = new StringBuilder();
-        sb.append( "Are sure you sure you want to remove style " ).append( style.getName() ).append("?");
-        
-        return new ConfirmationAjaxLink( id, null, "remove", sb.toString() ) {
+
+        ResourceModel resRemove = new ResourceModel("removeStyle", "Remove");
+
+        ParamResourceModel confirmRemove = new ParamResourceModel(
+                "confirmRemoveStyleX", this, style.getName());
+
+        return new ConfirmationAjaxLink(id, null, resRemove, confirmRemove) {
             @Override
             protected void onClick(AjaxRequestTarget target) {
                 try {

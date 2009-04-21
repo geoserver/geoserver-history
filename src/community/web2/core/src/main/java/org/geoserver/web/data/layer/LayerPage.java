@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -40,6 +41,7 @@ import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.MenuDropDownChoice;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -134,6 +136,8 @@ public class LayerPage extends GeoServerSecuredPage {
     }
 
     private Component workspaceLink(String id, final IModel model) {
+    	
+    	
         return new SimpleAjaxLink(id, WORKSPACE.getModel(model)) {
             public void onClick(AjaxRequestTarget target) {
                 WorkspaceInfo ws = getCatalog().getWorkspaceByName(getModelObjectAsString());
@@ -144,9 +148,14 @@ public class LayerPage extends GeoServerSecuredPage {
     
     protected Component removeLink(String id, final IModel itemModel) {
         LayerInfo info = (LayerInfo) itemModel.getObject();
-        // TODO: i18n this!
-        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null, new Model("remove"),
-                new Model("About to remove \"" + info.getName() + "\". Are you sure?")) {
+        
+        ResourceModel resRemove = new ResourceModel("removeLayer", "Remove");
+
+        ParamResourceModel confirmRemove = new ParamResourceModel(
+                "confirmRemoveLayerX", this, info.getName());
+
+        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null,
+                resRemove, confirmRemove) {
             public void onClick(AjaxRequestTarget target) {
                 getCatalog().remove((LayerInfo) itemModel.getObject());
                 target.addComponent(table);

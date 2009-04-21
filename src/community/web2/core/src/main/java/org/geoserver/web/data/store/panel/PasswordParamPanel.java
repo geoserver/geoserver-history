@@ -18,9 +18,9 @@ public class PasswordParamPanel extends Panel {
 
     private static final long serialVersionUID = -7801141820174575611L;
 
-    public PasswordParamPanel(final String id, IModel model, final String paramLabel, final boolean required) {
+    public PasswordParamPanel(final String id, IModel model, IModel paramLabelModel, final boolean required) {
         super(id, model);
-        add(new Label("paramName", paramLabel));
+        add(new Label("paramName", paramLabelModel));
 
         PasswordTextField passwordField;
         passwordField = new PasswordTextField("paramValue", model);

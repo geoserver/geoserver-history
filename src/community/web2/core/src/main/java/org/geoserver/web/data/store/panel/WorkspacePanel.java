@@ -18,13 +18,13 @@ import org.geoserver.web.data.workspace.WorkspacesModel;
 @SuppressWarnings("serial")
 public class WorkspacePanel extends Panel {
 
-    public WorkspacePanel(final String id, IModel workspaceModel, String paramLabel, final boolean required) {
+    public WorkspacePanel(final String id, IModel workspaceModel, IModel paramLabelModel, final boolean required) {
         // make the value of the combo field the model of this panel, for easy
         // value retriaval
         super(id, workspaceModel);
 
         // the label
-        Label label = new Label("paramName", paramLabel);
+        Label label = new Label("paramName", paramLabelModel);
         add(label);
 
         // the drop down field, with a decorator for validations

@@ -18,6 +18,7 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -59,25 +60,19 @@ public class WorkspacePage extends GeoServerSecuredPage {
         };
     }
     
-    Component removeWorkspaceLink(String id, final IModel itemModel ) {
+    Component removeWorkspaceLink(String id, final IModel itemModel) {
         final WorkspaceInfo workspace = (WorkspaceInfo) itemModel.getObject();
-        
-        ResourceModel resRemove = new ResourceModel("removeWorkspace","Remove");
-        
-        StringResourceModel strResConfRemove = 
-        	new StringResourceModel(
-        		"confirmRemoveWorkspaceX", 
-        		this,
-        		new Model(""),
-        		new Object[] {
-        			workspace.getName()
-        		} );
-        
-        return new ConfirmationAjaxLink( id, null, resRemove, strResConfRemove) {
+
+        ResourceModel resRemove = new ResourceModel("removeWorkspace", "Remove");
+
+        ParamResourceModel confirmRemove = new ParamResourceModel(
+                "confirmRemoveWorkspaceX", this, workspace.getName());
+
+        return new ConfirmationAjaxLink(id, null, resRemove, confirmRemove) {
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                CatalogBuilder cb = new CatalogBuilder( getCatalog() );
-                cb.removeWorkspace( workspace, true );
+                CatalogBuilder cb = new CatalogBuilder(getCatalog());
+                cb.removeWorkspace(workspace, true);
                 setResponsePage(WorkspacePage.this);
             }
         };

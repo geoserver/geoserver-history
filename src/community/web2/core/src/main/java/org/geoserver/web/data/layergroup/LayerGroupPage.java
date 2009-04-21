@@ -8,10 +8,12 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -60,22 +62,24 @@ public class LayerGroupPage extends GeoServerSecuredPage {
     }
     
     Component removeLayerGroupLink(String id, IModel itemModel) {
-        final LayerGroupInfo layerGroup = (LayerGroupInfo) itemModel.getObject();
-        
-        StringBuilder sb = new StringBuilder();
-        sb.append( "Are sure you sure want to remove the layer group " )
-            .append( layerGroup.getName() ).append( "?");
-        
-        return new ConfirmationAjaxLink( id, null, "remove", sb.toString() ) {
+        final LayerGroupInfo layerGroup = (LayerGroupInfo) itemModel
+                .getObject();
+
+        ResourceModel resRemove = new ResourceModel(
+                "removeLayerGroup","Remove");
+
+        ParamResourceModel confirmRemove = new ParamResourceModel(
+                "confirmRemoveLayerGroupX", this, layerGroup.getName());
+
+        return new ConfirmationAjaxLink(id, null, resRemove, confirmRemove) {
             @Override
             protected void onClick(AjaxRequestTarget target) {
                 try {
-                    getCatalog().remove( layerGroup );
-                    setResponsePage( LayerGroupPage.this );
-                }
-                catch( Exception e ) {
-                    LayerGroupPage.this.error( e );
-                    target.addComponent( feedbackPanel );
+                    getCatalog().remove(layerGroup);
+                    setResponsePage(LayerGroupPage.this);
+                } catch (Exception e) {
+                    LayerGroupPage.this.error(e);
+                    target.addComponent(feedbackPanel);
                 }
             }
         };

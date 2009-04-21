@@ -33,13 +33,13 @@ public class ColorPickerPanel extends Panel {
      *            any extra validator that should be added to the input field,
      *            or {@code null}
      */
-    public ColorPickerPanel(final String id, IModel paramVale, String paramLabel, 
+    public ColorPickerPanel(final String id, IModel paramVale, IModel paramLabelModel, 
                           final boolean required, IValidator... validators) {
         // make the value of the text field the model of this panel, for easy value retriaval
         super(id, paramVale);
 
         // the label
-        Label label = new Label("paramName", paramLabel);
+        Label label = new Label("paramName", paramLabelModel);
         add(label);
 
         // the color picker. Notice that we need to convert between RRGGBB and #RRGGBB,

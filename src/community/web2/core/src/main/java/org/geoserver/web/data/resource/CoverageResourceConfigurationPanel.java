@@ -46,11 +46,13 @@ public class CoverageResourceConfigurationPanel extends ResourceConfigurationPan
             setVisible(false);
    }
     
-    private Component getInputComponent(String id,
-            IModel paramsModel, String keyName) {
-        if(keyName.contains("Color"))
-            return new ColorPickerPanel(id, new MapModel(paramsModel, keyName), keyName, false);
+    private Component getInputComponent(String id, IModel paramsModel,
+            String keyName) {
+        if (keyName.contains("Color"))
+            return new ColorPickerPanel(id, new MapModel(paramsModel, keyName),
+                    new org.apache.wicket.model.ResourceModel(keyName), false);
         else
-            return new TextParamPanel(id, new MapModel(paramsModel, keyName), keyName, false);
+            return new TextParamPanel(id, new MapModel(paramsModel, keyName),
+                    new org.apache.wicket.model.ResourceModel(keyName), false);
     }
 }

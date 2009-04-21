@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -57,27 +58,33 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
             IValidator dsIdValidator = new StoreNameValidator(
                     DataStoreInfo.class);
             namePanel = new TextParamPanel("namePanel", nameModel,
-                    "Data Source Name", true, dsIdValidator);
+                    new ResourceModel("dataSrcName", "Data Source Name"), 
+                    true,dsIdValidator);
 
         } else {
             namePanel = new LabelParamPanel("namePanel", nameModel,
-                    "Data Source Name");
+            		new ResourceModel("dataSrcName", "Data Source Name"));
         }
         paramsForm.add(namePanel);
 
         // description and enabled
         paramsForm.add(new TextParamPanel("descriptionPanel",
-                new PropertyModel(model, "description"), "Description", false,
-                null));
-        paramsForm.add(new CheckBoxParamPanel("enabledPanel",
-                new PropertyModel(model, "enabled"), "Enabled"));
+                new PropertyModel(model, "description"), 
+                new ResourceModel("dataSrcName", "Data Source Name"),
+                false, null));
+        paramsForm.add(new CheckBoxParamPanel(
+        		"enabledPanel",
+                new PropertyModel(model, "enabled"), 
+                new ResourceModel("enabled", "Enabled")));
         // a custom converter will turn this into a namespace url
         paramsForm.add(new WorkspacePanel("workspacePanel",
-                new PropertyModel(model, "workspace"), "Workspace", true));
+                new PropertyModel(model, "workspace"),
+                new ResourceModel("workspace", "Workspace"), true));
 
         // url
-        paramsForm.add(new TextParamPanel("urlPanel", new PropertyModel(model,
-                "URL"), "URL", true, null));
+        paramsForm.add(new TextParamPanel("urlPanel", 
+                new PropertyModel(model,"URL"), 
+                new ResourceModel("url", "URL"), true, null));
 
         // cancel/submit buttons
         paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
