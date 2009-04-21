@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -94,7 +95,7 @@ public class MetadataLinkEditor extends Panel {
         table.add(links);
         
         // the no metadata links label
-        noMetadata = new Label("noLinks", "No metadata links so far");
+        noMetadata = new Label("noLinks", new ResourceModel("noMetadataLinksSoFar"));
         container.add(noMetadata);
         updateLinksVisibility();
         

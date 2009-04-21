@@ -12,6 +12,7 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.StoreInfo;
@@ -20,6 +21,7 @@ import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -98,15 +100,14 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
     
     protected Component removeLink(String id, final IModel itemModel) {
         StoreInfo info = (StoreInfo) itemModel.getObject();
-        // TODO: i18n this!
-        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(
-                id,
-                null,
-                new Model("remove"),
-                new Model(
-                        "About to remove \""
-                                + info.getName()
-                                + "\". Are you sure? All contained layers will be removed as well")) {
+
+        ResourceModel resRemove = new ResourceModel("removeStore", "Remove");
+
+        ParamResourceModel confirmRemove = new ParamResourceModel(
+                "confirmRemoveStoreX", this, info.getName());
+
+        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null,
+                resRemove, confirmRemove) {
             public void onClick(AjaxRequestTarget target) {
                 getCatalog().remove((StoreInfo) itemModel.getObject());
                 target.addComponent(StorePanel.this);

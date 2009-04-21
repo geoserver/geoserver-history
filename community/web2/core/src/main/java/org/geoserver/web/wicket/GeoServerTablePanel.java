@@ -23,7 +23,6 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -228,16 +227,11 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             String[] keywords = flatKeywords.split("\\s+");
             dataProvider.setKeywords(keywords);
             dataView.setCurrentPage(0);
-            StringResourceModel strResMod = 
-            	new StringResourceModel(
-            		"matchedXOutOfY", 
-            		this,
-            		new Model(""),
-            		new Object[] {
-            				Integer.valueOf(dataProvider.size()),
-            				Integer.valueOf(dataProvider.fullSize())
-            		} );
-            matched.setModel(strResMod);
+            ParamResourceModel paramResMod = new ParamResourceModel(
+                    "matchedXOutOfY", this, 
+                    Integer.valueOf(dataProvider.size()), 
+                    Integer.valueOf(dataProvider.fullSize()));
+            matched.setModel(paramResMod);
         }
         navigator.setVisible(dataProvider.size() > dataView.getItemsPerPage());
 

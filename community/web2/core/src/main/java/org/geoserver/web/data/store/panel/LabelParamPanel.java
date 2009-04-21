@@ -17,11 +17,10 @@ import org.apache.wicket.model.IModel;
  */
 @SuppressWarnings("serial")
 public class LabelParamPanel extends Panel {
-
-    public LabelParamPanel(final String id, final IModel labelModel,
-            final String paramLabel) {
+	
+    public LabelParamPanel(final String id, final IModel labelModel, IModel paramLabelModel) {
         super(id, labelModel);
-        Label label = new Label("paramName", paramLabel);
+        Label label = new Label("paramName", paramLabelModel);
         TextField textField = new TextField("paramValue", labelModel);
 
         add(label);

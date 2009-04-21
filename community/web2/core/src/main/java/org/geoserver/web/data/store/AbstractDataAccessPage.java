@@ -20,6 +20,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
@@ -113,21 +114,26 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         Panel dataStoreNamePanel;
         if (isNew) {
             IValidator dsIdValidator = new StoreNameValidator(DataStoreInfo.class);
-            dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(
-                    parametersMap, DATASTORE_NAME_PROPERTY_NAME), "Data Source Name", true,
+            dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel",
+                    new MapModel(parametersMap, DATASTORE_NAME_PROPERTY_NAME),
+                    new ResourceModel("dataSrcName", "Data Source Name"), true,
                     dsIdValidator);
         } else {
-            dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel", new MapModel(
-                    parametersMap, DATASTORE_NAME_PROPERTY_NAME), "Data Source Name");
+            dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel",
+                    new MapModel(parametersMap, DATASTORE_NAME_PROPERTY_NAME),
+                    new ResourceModel("dataSrcName", "Data Source Name"));
         }
 
         paramsForm.add(dataStoreNamePanel);
 
-        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
-                DATASTORE_DESCRIPTION_PROPERTY_NAME), "Description", false, (IValidator[]) null));
+        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel",
+                        new MapModel(parametersMap,DATASTORE_DESCRIPTION_PROPERTY_NAME),
+                        new ResourceModel("description", "Description"), false,
+                        (IValidator[]) null));
 
-        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new MapModel(parametersMap,
-                DATASTORE_ENABLED_PROPERTY_NAME), "Enabled"));
+        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel",
+                new MapModel(parametersMap, DATASTORE_ENABLED_PROPERTY_NAME),
+                new ResourceModel("enabled", "Enabled")));
 
         ListView paramsList = new ListView("parameters", paramsInfo) {
             private static final long serialVersionUID = 1L;
@@ -195,14 +201,20 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
         Panel parameterPanel;
         if (Boolean.class == binding) {
-            parameterPanel = new CheckBoxParamPanel(componentId,
-                    new MapModel(paramsMap, paramName), paramLabel);
+            // TODO Add prefix for better i18n?
+            parameterPanel = new CheckBoxParamPanel(
+                    componentId, new MapModel(paramsMap, paramName),
+                    new ResourceModel(paramLabel, paramLabel));
+            
         } else if (String.class == binding && param.isPassword()) {
-            parameterPanel = new PasswordParamPanel(componentId,
-                    new MapModel(paramsMap, paramName), paramLabel, required);
+            parameterPanel = new PasswordParamPanel(
+                    componentId, new MapModel(paramsMap, paramName),
+                    new ResourceModel(paramLabel,paramLabel), required);
         } else {
-            parameterPanel = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
-                    paramLabel, required, null);
+            parameterPanel = new TextParamPanel(
+                    componentId, new MapModel(paramsMap, paramName),
+                    new ResourceModel(paramLabel,paramLabel), 
+                    required, null);
         }
         return parameterPanel;
     }
