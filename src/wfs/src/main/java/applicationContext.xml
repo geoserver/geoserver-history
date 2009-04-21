@@ -263,9 +263,10 @@
 	
 	<!-- default feature type encoders -->
 	<bean id="gml2FeatureTypeEncoder" 
-		class="org.geoserver.wfs.xml.v1_0_0.XmlSchemaEncoder">
+		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder$V10">
 		<constructor-arg ref="wfs"/>
-		<constructor-arg ref="catalog"/>
+        <constructor-arg ref="catalog"/>
+        <constructor-arg ref="resourceLoader"/>
 	</bean>
 
 	<!-- default get feature producers -->

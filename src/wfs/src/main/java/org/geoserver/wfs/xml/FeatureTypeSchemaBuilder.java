@@ -386,7 +386,7 @@ public abstract class FeatureTypeSchemaBuilder {
             gmlSchemaLocation = "gml/2.1.2/feature.xsd";
             baseType = "AbstractFeatureType";
             substitutionGroup = "_Feature";
-            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0";
+            describeFeatureTypeBase = "service=WFS&request=DescribeFeatureType&version=1.1.0";
             gmlPrefix = "gml";
             xmlConfiguration = new GMLConfiguration();
         }
@@ -415,7 +415,7 @@ public abstract class FeatureTypeSchemaBuilder {
             gmlSchemaLocation = "gml/3.1.1/base/gml.xsd";
             baseType = "AbstractFeatureType";
             substitutionGroup = "_Feature";
-            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0";
+            describeFeatureTypeBase = "service=WFS&request=DescribeFeatureType&version=1.1.0";
             gmlPrefix = "gml";
             xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
         }

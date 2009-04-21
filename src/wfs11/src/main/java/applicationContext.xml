@@ -67,7 +67,7 @@
 	
 	<!--  default feature type encoder -->
 	<bean id="gml3FeatureTypeEncoder" 
-		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder">
+		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder$V11">
 		<constructor-arg ref="wfs"/>
 		<constructor-arg ref="catalog"/>
 		<constructor-arg ref="resourceLoader"/>
