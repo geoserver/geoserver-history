@@ -9,7 +9,7 @@ import java.sql.Types;
 
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-import org.geotools.resources.Utilities;
+import org.geotools.util.Utilities;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
@@ -42,7 +42,7 @@ public class BoundingBoxType implements UserType {
 	}
 
 	public int hashCode(Object x) throws HibernateException {
-		return x.hashCode();
+		return Utilities.deepHashCode(x);
 	}
 
 	public boolean isMutable() {
@@ -107,7 +107,7 @@ public class BoundingBoxType implements UserType {
 		return original;
 	}
 
-	public Class returnedClass() {
+	public Class<?> returnedClass() {
 		return BoundingBox.class;
 	}
 

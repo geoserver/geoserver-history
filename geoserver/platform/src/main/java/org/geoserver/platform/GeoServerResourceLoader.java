@@ -52,7 +52,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** "path" for resource lookups */
-    Set searchLocations;
+    Set<File> searchLocations;
 
     /**
      * Base directory
@@ -67,7 +67,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * </p>
      */
     public GeoServerResourceLoader() {
-        searchLocations = new TreeSet();
+        searchLocations = new TreeSet<File>();
     }
 
     /**
@@ -95,8 +95,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      *
      * @param searchLocations A set of {@link File}.
      */
-    public void setSearchLocations(Set searchLocations) {
-        this.searchLocations = new HashSet(searchLocations);
+    public void setSearchLocations(Set<File> searchLocations) {
+        this.searchLocations = new HashSet<File>(searchLocations);
 
         //always add the base directory
         if (baseDirectory != null) {
@@ -141,8 +141,8 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
             return file;
         } else {
             //try a relative url
-            for (Iterator f = searchLocations.iterator(); f.hasNext();) {
-                File base = (File) f.next();
+            for (Iterator<File> f = searchLocations.iterator(); f.hasNext();) {
+                File base = f.next();
                 file = new File(base, location);
 
                 try {

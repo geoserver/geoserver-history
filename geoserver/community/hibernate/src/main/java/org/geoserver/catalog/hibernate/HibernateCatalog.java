@@ -2,6 +2,7 @@ package org.geoserver.catalog.hibernate;
 
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +45,7 @@ import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.hibernate.dao.IGeoServerDAO;
+import org.geoserver.hibernate.dao.GeoServerDAO;
 import org.geotools.coverage.io.CoverageAccess;
 import org.geotools.coverage.io.CoverageSource;
 import org.geotools.coverage.io.Driver;
@@ -79,7 +80,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * 
      */
-    private IGeoServerDAO catalogDAO;
+    private GeoServerDAO catalogDAO;
 
     /**
      * Flag indicating wether events are thrown on commit or as they happen
@@ -94,7 +95,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * events
      */
-    private Map events = Collections.synchronizedMap(new MultiHashMap());
+    private Map<GeoServerDAO, CatalogEvent> events = Collections.synchronizedMap(new MultiHashMap());
 
     /**
      * resources
@@ -199,14 +200,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getDataStore(String)
      */
     public DataStoreInfo getDataStore(String id) {
-        return (DataStoreInfo) getStore(id, DataStoreInfo.class);
+        return getStore(id, DataStoreInfo.class);
     }
 
     /**
      * @see Catalog#getDataStoreByName(String)
      */
     public DataStoreInfo getDataStoreByName(String name) {
-        return (DataStoreInfo) getStoreByName(name, DataStoreInfo.class);
+        return getStoreByName(name, DataStoreInfo.class);
     }
 
     /**
@@ -220,14 +221,14 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverageStore(String)
      */
     public CoverageStoreInfo getCoverageStore(String id) {
-        return (CoverageStoreInfo) getStore(id, CoverageStoreInfo.class);
+        return getStore(id, CoverageStoreInfo.class);
     }
 
     /**
      * @see Catalog#getCoverageStoreByName(String)
      */
     public CoverageStoreInfo getCoverageStoreByName(String name) {
-        return (CoverageStoreInfo) getStoreByName(name, CoverageStoreInfo.class);
+        return getStoreByName(name, CoverageStoreInfo.class);
     }
 
     /**
@@ -255,11 +256,11 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getResource(String, Class)
      */
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
-        ResourceInfo resource = this.catalogDAO.getResource(id, clazz);
+        T resource = this.catalogDAO.getResource(id, clazz);
         if (resource != null) {
             resource.setCatalog(this);
             resource.getStore().setCatalog(this);
-            return (T) resource;
+            return resource;
         }
         return null;
     }
@@ -281,15 +282,15 @@ public class HibernateCatalog implements Catalog {
 
         // TODO: make a query to retrieve the matching list directly
         List<T> matches = new ArrayList<T>();
-        for (Iterator i = getResources(clazz).iterator(); i.hasNext();) {
-            T resource = (T) i.next();
+        for (Iterator<T> i = getResources(clazz).iterator(); i.hasNext();) {
+            T resource = i.next();
             if (name.equals(resource.getName())) {
                 matches.add(resource);
             }
         }
 
         if (matches.size() == 1) {
-            return (T) matches.get(0);
+            return matches.get(0);
         }// he, this method contract is odd... imho the method shouldn't even
          // exist. Rather, let
         // client code care about asking for the resource in the default
@@ -316,12 +317,12 @@ public class HibernateCatalog implements Catalog {
         }
 
         if (namespace != null) {
-            ResourceInfo resource = this.catalogDAO.getResourceByName(namespace
+            T resource = this.catalogDAO.getResourceByName(namespace
                     .getId(), name, clazz);
             if (resource != null) {
                 resource.setCatalog(this);
                 resource.getStore().setCatalog(this);
-                return (T) resource;
+                return resource;
             }
         } else {
             // TODO: throw exception
@@ -393,21 +394,21 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getFeatureType(String)
      */
     public FeatureTypeInfo getFeatureType(String id) {
-        return (FeatureTypeInfo) getResource(id, FeatureTypeInfo.class);
+        return getResource(id, FeatureTypeInfo.class);
     }
 
     /**
      * @see Catalog#getFeatureTypeByName(String)
      */
     public FeatureTypeInfo getFeatureTypeByName(String name) {
-        return (FeatureTypeInfo) getResourceByName(name, FeatureTypeInfo.class);
+        return getResourceByName(name, FeatureTypeInfo.class);
     }
 
     /**
      * @see Catalog#getFeatureTypeByName(String, String)
      */
     public FeatureTypeInfo getFeatureTypeByName(String ns, String name) {
-        return (FeatureTypeInfo) getResourceByName(ns, name,
+        return getResourceByName(ns, name,
                 FeatureTypeInfo.class);
     }
 
@@ -430,7 +431,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverage(String)
      */
     public CoverageInfo getCoverage(String id) {
-        CoverageInfo coverage = (CoverageInfo) getResource(id,
+        CoverageInfo coverage = getResource(id,
                 CoverageInfo.class);
         if (coverage != null && coverage.getFields() == null) {
             // initializing fields, vertical and temporal extent
@@ -443,7 +444,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverageByName(String)
      */
     public CoverageInfo getCoverageByName(String name) {
-        CoverageInfo coverage = (CoverageInfo) getResourceByName(name, CoverageInfo.class);
+        CoverageInfo coverage = getResourceByName(name, CoverageInfo.class);
         if (coverage != null && coverage.getFields() == null) {
             // initializing fields, vertical and temporal extent
             initCoverage(coverage);
@@ -455,7 +456,7 @@ public class HibernateCatalog implements Catalog {
      * @see Catalog#getCoverageByName(String, String)
      */
     public CoverageInfo getCoverageByName(String ns, String name) {
-        CoverageInfo coverage = (CoverageInfo) getResourceByName(ns, name,
+        CoverageInfo coverage = getResourceByName(ns, name,
                 CoverageInfo.class);
         if (coverage != null && coverage.getFields() == null) {
             // initializing fields, vertical and temporal extent
@@ -486,7 +487,7 @@ public class HibernateCatalog implements Catalog {
                 try {
                     org.geoserver.catalog.CoverageStoreInfo coverageStore = coverage.getStore();
                     Driver driver = coverage.getStore().getDriver();
-                    Map params = new HashMap();
+                    Map<String, Serializable> params = new HashMap<String, Serializable>();
                     params.put("url", GeoserverDataDirectory.findDataFile(coverageStore.getURL()).toURI().toURL());
                     CoverageAccess cvAccess = driver.connect(params, null, null);
                     if (cvAccess != null) {
@@ -693,8 +694,7 @@ public class HibernateCatalog implements Catalog {
      */
     public List<LayerInfo> getLayers(ResourceInfo resource) {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
-        for (Iterator l = getLayers().iterator(); l.hasNext();) {
-            LayerInfo layer = (LayerInfo) l.next();
+        for (LayerInfo layer : getLayers()) {
             ResourceInfo targetResource = getResource(layer.getResource().getId(), layer.getResource().getClass());
             if (resource.equals(targetResource)) {
                 layer.setResource(resource);
@@ -963,8 +963,8 @@ public class HibernateCatalog implements Catalog {
      * @see #fireEvent(CatalogEvent)
      */
     private void doFireEvent(CatalogEvent event) {
-        for (Iterator l = listeners.iterator(); l.hasNext();) {
-            CatalogListener listener = (CatalogListener) l.next();
+        for (Iterator<CatalogListener> l = listeners.iterator(); l.hasNext();) {
+            CatalogListener listener = l.next();
             if (event instanceof CatalogAddEvent) {
                 listener.handleAddEvent((CatalogAddEvent) event);
             } else if (event instanceof CatalogRemoveEvent) {
@@ -992,9 +992,9 @@ public class HibernateCatalog implements Catalog {
      * 
      * @return List of properties of the object that differ.
      */
-    private List diff(Object o1, Object o2) {
+    private List<String> diff(Object o1, Object o2) {
 
-        List changed = new ArrayList();
+        List<String> changed = new ArrayList<String>();
         PropertyDescriptor[] properties = PropertyUtils
                 .getPropertyDescriptors(o1);
 
@@ -1327,7 +1327,7 @@ public class HibernateCatalog implements Catalog {
     /**
      * @return the catalogDAO
      */
-    public IGeoServerDAO getCatalogDAO() {
+    public GeoServerDAO getCatalogDAO() {
         return catalogDAO;
     }
 
@@ -1335,7 +1335,7 @@ public class HibernateCatalog implements Catalog {
      * @param catalogDAO
      *            the catalogDAO to set
      */
-    public void setCatalogDAO(IGeoServerDAO catalogDAO) {
+    public void setCatalogDAO(GeoServerDAO catalogDAO) {
         this.catalogDAO = catalogDAO;
     }
 

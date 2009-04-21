@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.geotools.resources.Utilities;
 import org.geotools.util.NumberRange;
+import org.geotools.util.Utilities;
 import org.hibernate.HibernateException;
 import org.hibernate.usertype.UserType;
 
@@ -50,7 +50,7 @@ public class NumberRangeType implements UserType {
 		double min = rs.getDouble( names[ 0 ] );
 		double max = rs.getDouble( names[ 1 ] );
 		
-		return new NumberRange( min, max );
+		return NumberRange.create( min, max );
 	}
 
 	public void nullSafeSet(PreparedStatement st, Object value, int index)
@@ -73,7 +73,7 @@ public class NumberRangeType implements UserType {
 		return original;
 	}
 
-	public Class returnedClass() {
+	public Class<NumberRange> returnedClass() {
 		return NumberRange.class;
 	}
 

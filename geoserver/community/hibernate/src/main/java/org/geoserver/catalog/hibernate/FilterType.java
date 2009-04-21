@@ -10,7 +10,7 @@ import java.sql.Types;
 
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
-import org.geotools.resources.Utilities;
+import org.geotools.util.Utilities;
 import org.geotools.xml.Encoder;
 import org.geotools.xml.Parser;
 import org.hibernate.HibernateException;
