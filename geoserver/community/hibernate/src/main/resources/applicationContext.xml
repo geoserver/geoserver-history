@@ -10,8 +10,7 @@
 	<bean id="placeholderConfig"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-			<value>classpath:h2.properties</value>
-			<!--value>classpath:postgresql.properties</value-->
+			<value>classpath:postgis.properties</value>
 		</property>
 		<!-- property name="systemPropertiesModeName">
 			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
@@ -113,7 +112,7 @@
 		</property>
 	</bean -->
 
-	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.dao.GeoServerDAO">
+	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.dao.GeoServerDAOImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
