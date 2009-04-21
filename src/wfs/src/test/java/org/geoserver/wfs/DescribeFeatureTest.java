@@ -22,7 +22,7 @@ public class DescribeFeatureTest extends WFSTestSupport {
 
     public void testGet() throws Exception {
         Document doc = getAsDOM("wfs?service=WFS&request=DescribeFeatureType&version=1.0.0");
-        assertEquals("xs:schema", doc.getDocumentElement().getNodeName());
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
     }
 
     public void testPost() throws Exception {
@@ -31,7 +31,7 @@ public class DescribeFeatureTest extends WFSTestSupport {
                 + "xmlns:wfs=\"http://www.opengis.net/wfs\" />";
 
         Document doc = postAsDOM("wfs", xml);
-        assertEquals("xs:schema", doc.getDocumentElement().getNodeName());
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
     }
 
     public void testPostDummyFeature() throws Exception {
@@ -56,9 +56,9 @@ public class DescribeFeatureTest extends WFSTestSupport {
            " </DescribeFeatureType>";
 
         Document doc = postAsDOM("wfs", xml);
-        assertEquals("xs:schema", doc.getDocumentElement().getNodeName());
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
         
-        assertEquals( 1, doc.getElementsByTagName("xs:complexType").getLength());
+        assertEquals( 1, doc.getElementsByTagName("xsd:complexType").getLength());
     }
     
 }
