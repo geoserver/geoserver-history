@@ -29,8 +29,10 @@ import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
@@ -43,12 +45,21 @@ public class GeoserverUserDao implements UserDetailsService {
     /** logger */
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.security");
 
-    private TreeMap<String, User> userMap;
+    TreeMap<String, User> userMap;
 
-    private PropertyFileWatcher userDefinitionsFile;
+    PropertyFileWatcher userDefinitionsFile;
+    
+    File securityDir;
 
-    private GeoServer geoServer;
-
+    GeoServer geoServer;
+    
+    /**
+     * Returns the {@link GeoserverUserDao} instance registered in the GeoServer Spring context
+     */
+    public static GeoserverUserDao get() {
+        return GeoServerExtensions.bean(GeoserverUserDao.class);
+    }
+    
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException,
             DataAccessException {
         checkUserMap();
@@ -72,7 +83,6 @@ public class GeoserverUserDao implements UserDetailsService {
         if ((userMap == null) || ((userDefinitionsFile != null) && userDefinitionsFile.isStale())) {
             try {
                 if (userDefinitionsFile == null) {
-                    File securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
                     File propFile = new File(securityDir, "users.properties");
 
                     if (!propFile.exists()) {
@@ -131,6 +141,8 @@ public class GeoserverUserDao implements UserDetailsService {
      * ROLE_ADMINISTRATOR will be part of the lot)
      */
     public List<String> getRoles() {
+        checkUserMap();
+        
         Set<String> roles = new TreeSet<String>();
         roles.add("ROLE_ADMINISTRATOR");
         for (User user : getUsers()) {
@@ -147,6 +159,8 @@ public class GeoserverUserDao implements UserDetailsService {
      * @return
      */
     public List<User> getUsers() {
+        checkUserMap();
+        
         return new ArrayList(userMap.values());
     }
     
@@ -155,6 +169,8 @@ public class GeoserverUserDao implements UserDetailsService {
      * @param user
      */
     public void putUser(User user) {
+        checkUserMap();
+        
         if(userMap.containsKey(user.getUsername()))
             throw new IllegalArgumentException("The user " + user.getUsername() + " already exists");
         else
@@ -166,6 +182,8 @@ public class GeoserverUserDao implements UserDetailsService {
      * @param user
      */
     public void setUser(User user) {
+        checkUserMap();
+        
         if(userMap.containsKey(user.getUsername()))
             userMap.put(user.getUsername(), user);
         else
@@ -178,6 +196,8 @@ public class GeoserverUserDao implements UserDetailsService {
      * @return
      */
     public boolean removeUser(String username) {
+        checkUserMap();
+        
         return userMap.remove(username) != null;
     }
 
@@ -191,7 +211,6 @@ public class GeoserverUserDao implements UserDetailsService {
             Properties p = storeUsersToProperties(userMap);
 
             // write out to the data dir
-            File securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
             File propFile = new File(securityDir, "users.properties");
             os = new FileOutputStream(propFile);
             p.store(os, null);
@@ -211,8 +230,16 @@ public class GeoserverUserDao implements UserDetailsService {
         return geoServer;
     }
 
-    public void setGeoServer(GeoServer geoServer) {
+    public void setGeoServer(GeoServer geoServer) throws ConfigurationException {
         this.geoServer = geoServer;
+        securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
+    }
+    
+    /**
+     * Force the dao to reload its definitions from the file
+     */
+    public void reload() {
+        userDefinitionsFile = null;
     }
 
     /**
