@@ -6,18 +6,16 @@ package org.geoserver.web.security.user;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.userdetails.User;
 import org.acegisecurity.userdetails.UserDetails;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -27,12 +25,9 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.security.GeoserverUserDao;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleChoiceRenderer;
 
 /**
@@ -47,8 +42,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
 
     protected AbstractUserPage(UserUIModel user) {
         final Model userModel = new Model(user);
-        roles = getUserDao()
-                .getRoles();
+        roles = getUserDao().getRoles();
 
         // build the form
         Form form = new Form("userForm");
@@ -63,8 +57,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         PasswordTextField pw2 = new PasswordTextField("confirmPassword").setResetPassword(false);
         form.add(pw1);
         form.add(pw2);
-        rolePalette = new Palette("roles", new PropertyModel(userModel, "authorities"), new Model(
-                (Serializable) roles), new SimpleChoiceRenderer(), 10, false);
+        rolePalette = rolesPalette(userModel);
         rolePalette.setOutputMarkupId(true);
         form.add(rolePalette);
         
@@ -80,7 +73,26 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         // add the validators
         form.add(new EqualInputValidator(pw1, pw2));
         username.setRequired(true);
+    }
 
+    /**
+     * Builds a palette that forces at least one role to be chosen
+     * @param userModel
+     * @return
+     */
+    Palette rolesPalette(final Model userModel) {
+        return new Palette("roles", new PropertyModel(userModel, "authorities"), new Model(
+                (Serializable) roles), new SimpleChoiceRenderer(), 10, false) {
+            
+            // trick to force the palette to have at least one selected elements
+            // tried with a nicer validator but it's not used at all, the required thing
+            // instead is working (don't know why...)
+            protected Recorder newRecorderComponent() {
+                Recorder rec = super.newRecorderComponent();
+                rec.setRequired(true);
+                return rec;
+            }
+        };
     }
 
     private AjaxButton addRoleButton(Form form) {
