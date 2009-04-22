@@ -70,6 +70,32 @@ public class DataAccessRuleDAO {
     }
 
     /**
+     * Adds/overwrites a rule in the rule set
+     * 
+     * @param rule
+     * @return true if the set did not contain the rule already, false otherwise
+     */
+    public boolean addRule(DataAccessRule rule) {
+        return rules.add(rule);
+    }
+    
+    /**
+     * Cleans up the contents of the rule set
+     */
+    public void clear() {
+        rules.clear();
+    }
+
+    /**
+     * Removes the rule from rule set
+     * @param rule
+     * @return
+     */
+    public boolean removeRule(DataAccessRule rule) {
+        return rules.remove(rule);
+    }
+
+    /**
      * The way the catalog should react to unauthorized access
      * 
      * @return
@@ -140,8 +166,9 @@ public class DataAccessRuleDAO {
             } else {
                 DataAccessRule rule = parseDataAccessRule(ruleKey, ruleValue);
                 if (rule != null) {
-                    if(result.contains(rule))
-                        LOGGER.warning("Rule " + ruleKey + "." + ruleValue + " overwrites another rule on the same path");
+                    if (result.contains(rule))
+                        LOGGER.warning("Rule " + ruleKey + "." + ruleValue
+                                + " overwrites another rule on the same path");
                     result.add(rule);
                 }
             }
