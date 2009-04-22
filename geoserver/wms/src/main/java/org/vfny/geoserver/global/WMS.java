@@ -287,18 +287,7 @@ public class WMS extends Service {
         w.setBaseMapStyles(getBaseMapStyles());
         w.setBaseMapEnvelopes(getBaseMapEnvelopes());
         w.setCapabilitiesCrs(getCapabilitiesCrsList());
-        
-        //w.setSvgRenderer(svgRenderer);
-        //w.setSvgAntiAlias(svgAntiAlias);
-        //w.setGlobalWatermarking(globalWatermarking);
-        //w.setGlobalWatermarkingURL(globalWatermarkingURL);
-        //w.setWatermarkTransparency(watermarkTransparency);
-        //w.setWatermarkPosition(watermarkPosition);
-        //w.setAllowInterpolation(allowInterpolation);
-        //w.setBaseMapLayers(baseMapLayers);
-        //w.setBaseMapStyles(baseMapStyles);
-        //w.setBaseMapEnvelopes(baseMapEnvelopes);
-        //w.setCapabilitiesCrs(capabilitiesCrsList);
+
 
         return w;
     }
@@ -316,15 +305,7 @@ public class WMS extends Service {
         return EXCEPTION_FORMATS;
     }
 
-    ///**
-    // * overrides getName() to return the fixed service name as specified by OGC
-    // * WMS 1.1 spec
-    // * 
-    // * @return static service name.
-    // */
-    //public String getName() {
-    //    return FIXED_SERVICE_NAME;
-    //}
+
 
     /**
      * Returns the version of this WMS Instance.

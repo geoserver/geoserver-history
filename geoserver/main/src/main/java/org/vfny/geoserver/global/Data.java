@@ -2185,33 +2185,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             
             return new CoverageInfo( layer(coverage),catalog); 
         }
-        //
-        //CoverageInfo found = null;
-        //
-        //found = (CoverageInfo) coverages.get(name);
-        //
-        //if (found != null) {
-        //    return found;
-        //}
-        //
-        //String defaultPrefix = defaultNameSpace.getPrefix();
-        //found = (CoverageInfo) coverages.get(defaultPrefix + ":" + name);
-        //
-        //if (found != null) {
-        //    return found;
-        //}
-        //
-        //for (Iterator i = coverages.values().iterator(); i.hasNext();) {
-        //    CoverageInfo cvo = (CoverageInfo) i.next();
-        //
-        //    if ((name != null) && name.equals(cvo.getName())) {
-        //        found = cvo;
-        //    }
-        //}
-        //
-        //if (found != null) {
-        //    return found;
-        //}
 
         throw new NoSuchElementException("Could not locate CoverageConfig '" + name + "'");
     }
@@ -2276,22 +2249,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
         
         return null;
-        //
-        //for (Iterator it = coverages.values().iterator(); it.hasNext();) {
-        //    CoverageInfo cvo = (CoverageInfo) it.next();
-        //
-        //    if (cvo.isEnabled()) {
-        //        String cvId = cvo.getNameSpace().getPrefix() + ":" + name;
-        //        boolean t1 = cvo.getName().equals(cvId);
-        //        boolean t2 = cvo.getNameSpace().getUri().equals(uri);
-        //
-        //        if (t1) {
-        //            return cvo;
-        //        }
-        //    }
-        //}
-        //
-        //return null;
+
     }
     
     /**
@@ -2342,10 +2300,8 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
 
     LayerInfo layer(ResourceInfo r) {
         final List<LayerInfo> layers = catalog.getLayers(r);
-        LayerInfo lyr;
-        if(layers.size() > 0) {
-            lyr = layers.get(0);
-            return lyr;
+        if(!layers.isEmpty()) {
+            return layers.get(0);
         } else
             return null;
     }
@@ -2459,7 +2415,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized int getLockCount() {
         int count = 0;
         DataStore dataStore;
-        ;
 
         LockingManager lockingManager;
 
