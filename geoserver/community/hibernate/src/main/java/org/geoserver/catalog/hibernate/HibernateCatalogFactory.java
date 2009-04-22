@@ -1,7 +1,6 @@
 package org.geoserver.catalog.hibernate;
 
 import org.geoserver.catalog.AttributeTypeInfo;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -12,9 +11,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
-import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.CoverageInfoImpl;
 import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
@@ -24,9 +21,7 @@ import org.geoserver.catalog.impl.LayerInfoImpl;
 import org.geoserver.catalog.impl.LegendInfoImpl;
 import org.geoserver.catalog.impl.MapInfoImpl;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
-import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
-import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 
 public class HibernateCatalogFactory implements CatalogFactory {
 
