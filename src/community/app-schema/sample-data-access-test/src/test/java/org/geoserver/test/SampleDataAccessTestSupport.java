@@ -7,18 +7,19 @@
 package org.geoserver.test;
 
 import org.geoserver.data.test.TestData;
+import org.geotools.data.SampleDataAccess;
 
 /**
- * Abstract base class for test cases that test integration of {@link AppSchemaDataAccess} with
+ * Abstract base class for test cases that test integration of {@link SampleDataAccess} with
  * GeoServer.
  * 
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
-public abstract class AppSchemaGeoServerTestSupport extends GeoServerAbstractTestSupport {
+public abstract class SampleDataAccessTestSupport extends GeoServerAbstractTestSupport {
 
     @Override
     protected TestData buildTestData() throws Exception {
-        return new AppSchemaMockData();
+        return new SampleDataAccessMockData();
     }
 
 }

@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
  * 
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
-public class AppSchemaGetFeatureTest extends AppSchemaGeoServerTestSupport {
+public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
 
     /**
      * Read-only test so can use one-time setup.
@@ -28,7 +28,7 @@ public class AppSchemaGetFeatureTest extends AppSchemaGeoServerTestSupport {
      * @return
      */
     public static Test suite() {
-        return new OneTimeTestSetup(new AppSchemaGetFeatureTest());
+        return new OneTimeTestSetup(new FeatureChainingWfsTest());
     }
 
     /**

@@ -65,8 +65,6 @@
 							Exclude tests with lines like this
 							<exclude>**/Whatever.java</exclude>
 						-->
-						<!-- will not work without GT xsd patches and GS wfs patch accepted  -->
-						<exclude>**/AppSchemaGetFeatureTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

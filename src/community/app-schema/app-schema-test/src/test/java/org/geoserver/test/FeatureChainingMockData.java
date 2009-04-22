@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * Inspired by {@link MockData}.
  */
 @SuppressWarnings("serial")
-public class AppSchemaMockData implements TestData {
+public class FeatureChainingMockData implements TestData {
 
     public static final String TEST_DATA = "/test-data/";
 
@@ -111,7 +111,7 @@ public class AppSchemaMockData implements TestData {
      * 
      * @throws IOException
      */
-    public AppSchemaMockData() throws Exception {
+    public FeatureChainingMockData() throws Exception {
         data = IOUtils.createRandomDirectory("./target", "app-schema-mock", "data");
         data.delete();
         data.mkdir();
