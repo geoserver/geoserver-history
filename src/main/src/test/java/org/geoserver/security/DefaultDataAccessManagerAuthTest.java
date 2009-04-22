@@ -98,28 +98,28 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
     
     public void testDefaultMode() throws Exception {
         DefaultDataAccessManager wo = buildManager("lockedDown.properties");
-        assertEquals(CatalogMode.HIDE, wo.mode);
+        assertEquals(CatalogMode.HIDE, wo.getMode());
     }
     
     public void testHideMode() throws Exception {
         DefaultDataAccessManager wo = buildManager("lockedDownHide.properties");
-        assertEquals(CatalogMode.HIDE, wo.mode);
+        assertEquals(CatalogMode.HIDE, wo.getMode());
     }
     
     public void testChallengeMode() throws Exception {
         DefaultDataAccessManager wo = buildManager("lockedDownChallenge.properties");
-        assertEquals(CatalogMode.CHALLENGE, wo.mode);
+        assertEquals(CatalogMode.CHALLENGE, wo.getMode());
     }
     
     public void testMixedMode() throws Exception {
         DefaultDataAccessManager wo = buildManager("lockedDownMixed.properties");
-        assertEquals(CatalogMode.MIXED, wo.mode);
+        assertEquals(CatalogMode.MIXED, wo.getMode());
     }
     
     public void testUnknownMode() throws Exception {
         DefaultDataAccessManager wo = buildManager("lockedDownUnknown.properties");
         // should fall back on the default and complain in the logger
-        assertEquals(CatalogMode.HIDE, wo.mode);
+        assertEquals(CatalogMode.HIDE, wo.getMode());
     }
     
 }
