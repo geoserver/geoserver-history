@@ -12,12 +12,17 @@
         <property name="connection.url">jdbc:h2:hibernate</property>
         <property name="connection.username">jdeolive</property>
         <property name="connection.password"></property>
-        <property name="connection.pool_size">5</property -->
 		<property name="connection.driver_class">org.postgis.Driver</property>
         <property name="connection.url">jdbc:postgresql://localhost/GS_CATALOG</property>
         <property name="connection.username">itt</property>
-        <property name="connection.password">itttti</property>
-        <property name="connection.pool_size">30</property>
+        <property name="connection.password">itttti</property>-->
+        
+        <!-- pooling -->
+        <property name="cp30.min_size">5</property>
+        <property name="cp30.max_size">30</property>
+        <property name="cp30.timeout">1800</property>
+        <property name="cp30.max_statements">50</property>
+        
 
         <!-- SQL dialect -->
         <!-- property name="dialect">org.geoserver.hibernate.H2Dialect</property -->
@@ -26,15 +31,25 @@
         <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="dialect">org.hibernate.dialect.HSQLDialect</property>
 		-->
+		
+		
 		 
-        <!-- property name="hibernate.current_session_context_class">thread</property -->
+        <!-- property name="hibernate.current_session_context_class">thread</property-->
+        
+        <!-- caching -->
         <property name="hibernate.cache.use_query_cache">true</property>
         <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
         <property name="net.sf.ehcache.configurationResourceName">ehcache.xml</property>
-        <!-- property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property -->
+        
+        
+        <!-- show sql  -->
         <property name="show_sql">false</property>
+        
+        <!-- export schema updated to the db -->
         <property name="hbm2ddl.auto">update</property>
+        
+        
         <property name="hibernate.bytecode.use_reflection_optimizer">true</property>
 	</session-factory>
 
