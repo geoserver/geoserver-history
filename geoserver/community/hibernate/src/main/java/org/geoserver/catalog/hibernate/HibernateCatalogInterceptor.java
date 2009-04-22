@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geotools.resources.Utilities;
+import org.geotools.util.Utilities;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
@@ -84,9 +84,9 @@ public class HibernateCatalogInterceptor extends EmptyInterceptor implements
 
     public boolean onFlushDirty(Object entity, Serializable id, Object[] currentState,
             Object[] previousState, String[] propertyNames, Type[] types) {
-        List propertyNamesChanged = new ArrayList();
-        List oldValues = new ArrayList();
-        List newValues = new ArrayList();
+        List<String> propertyNamesChanged = new ArrayList<String>();
+        List<Object> oldValues = new ArrayList<Object>();
+        List<Object> newValues = new ArrayList<Object>();
 
         for (int i = 0; i < propertyNames.length; i++) {
             Object oldValue = previousState[i];
