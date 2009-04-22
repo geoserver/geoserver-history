@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -55,6 +57,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.NullProgressListener;
 import org.geotools.util.SoftValueHashMap;
+import org.geotools.util.logging.Logging;
 import org.hibernate.Transaction;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
@@ -72,10 +75,12 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @author Gabriel Roldan (OpenGeo)
  */
 public class HibernateCatalog implements Catalog {
+	private final static Logger LOGGER= Logging.getLogger(HibernateCatalog.class);
+	
     /**
      * 
      */
-    private SoftValueHashMap<String, CoverageInfo> coveragesCache = new SoftValueHashMap<String, CoverageInfo>();
+    private SoftValueHashMap<String,ResourceInfo> resourceInfoCache = new SoftValueHashMap<String, ResourceInfo>();
 
     /**
      * 
@@ -150,7 +155,6 @@ public class HibernateCatalog implements Catalog {
         }
         return store;
     }
-
     /**
      * @see Catalog#add(StoreInfo)
      */
@@ -467,8 +471,8 @@ public class HibernateCatalog implements Catalog {
 
     private void initCoverage(final CoverageInfo coverage) {
         if (coverage != null) {
-            if (coveragesCache.containsKey(coverage.getId())) {
-                CoverageInfo cachedCoverage = coveragesCache.get(coverage.getId());
+            if (resourceInfoCache.containsKey(coverage.getId())) {
+                CoverageInfo cachedCoverage = (CoverageInfo) resourceInfoCache.get(coverage.getId());
                 
                 coverage.setNativeName(cachedCoverage.getNativeName());
                 
@@ -526,7 +530,7 @@ public class HibernateCatalog implements Catalog {
                         }
                     }
                     
-                    coveragesCache.put(coverage.getId(), coverage);
+                    resourceInfoCache.put(coverage.getId(), coverage);
                 } catch (MalformedURLException e) {
                     // e.printStackTrace();
                 } catch (IOException e) {
@@ -979,36 +983,7 @@ public class HibernateCatalog implements Catalog {
         events.remove(tx);
     }
 
-    /**
-     * Diffs two objects determing which properties have changed.
-     * <p>
-     * <tt>o1</tt> and <tt>o2</tt> must be of the same type.
-     * </p>
-     * 
-     * @param o1
-     *            The first object.
-     * @param o2
-     *            The second object.
-     * 
-     * @return List of properties of the object that differ.
-     */
-    private List<String> diff(Object o1, Object o2) {
 
-        List<String> changed = new ArrayList<String>();
-        PropertyDescriptor[] properties = PropertyUtils
-                .getPropertyDescriptors(o1);
-
-        BeanComparator comparator = new BeanComparator();
-        for (int i = 0; i < properties.length; i++) {
-            comparator.setProperty(properties[i].getName());
-            if (comparator.compare(o1, o2) != 0) {
-                changed.add(properties[i].getName());
-            }
-        }
-
-        return changed;
-
-    }
 
     /**
      * @see Catalog#add(LayerGroupInfo)
