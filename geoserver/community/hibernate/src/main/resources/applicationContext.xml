@@ -10,11 +10,13 @@
 	<bean id="placeholderConfig"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
-			<value>classpath:postgis.properties</value>
+			<value>classpath:postgis.properties
+			</value>
 		</property>
-		<!-- property name="systemPropertiesModeName">
-			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
-		</property -->
+		<!--
+			property name="systemPropertiesModeName">
+			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value> </property
+		-->
 	</bean>
 
 	<!-- data source -->
@@ -67,13 +69,13 @@
 		defined as beans in this context (such as the UsageLogAspect below).
 	-->
 	<!-- aop:aspectj-autoproxy / -->
-	
+
 	<!--
-		Activates various annotations to be detected in bean classes:
-		Spring's @Required and @Autowired, as well as JSR 250's @Resource.
+		Activates various annotations to be detected in bean classes: Spring's
+		@Required and @Autowired, as well as JSR 250's @Resource.
 	-->
 	<!-- context:annotation-config/ -->
-	
+
 	<!--
 		Instruct Spring to perform declarative transaction management
 		automatically on annotated classes.
@@ -83,34 +85,22 @@
 		this is a transactional proxy for services which make calls to catalog
 		/ config which ensrues transactions / session set up
 	-->
-	<!-- bean id="transactionalCatalogService"
+	<!--
+		bean id="transactionalCatalogService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager" />
-		<property name="target">
-			<ref local="catalogTarget" />
-		</property>
-		<property name="transactionAttributes">
-			<props>
-				<prop key="*">
-					PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
-				</prop>
-			</props>
-		</property>
-	</bean>
-	<bean id="transactionalGeoServerService"
+		<property name="target"> <ref local="catalogTarget" /> </property>
+		<property name="transactionAttributes"> <props> <prop key="*">
+		PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
+		</prop> </props> </property> </bean> <bean
+		id="transactionalGeoServerService"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager" />
-		<property name="target">
-			<ref local="configTarget" />
-		</property>
-		<property name="transactionAttributes">
-			<props>
-				<prop key="*">
-					PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
-				</prop>
-			</props>
-		</property>
-	</bean -->
+		<property name="target"> <ref local="configTarget" /> </property>
+		<property name="transactionAttributes"> <props> <prop key="*">
+		PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
+		</prop> </props> </property> </bean
+	-->
 
 	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.dao.GeoServerDAOImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -129,17 +119,6 @@
 	<alias name="catalogTarget" alias="rawCatalog" />
 
 	<bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl" />
-	<bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
-		<property name="catalogDAO">
-			<ref local="hibGeoServerDAO" />
-		</property>
-		<!--
-			property name="sessionFactory"> <ref local="sessionFactory" />
-			</property
-		-->
-		<property name="factory" ref="configFactory" />
-		<property name="catalog" ref="catalogTarget" />
-	</bean>
-	<alias name="configTarget" alias="geoServer2" />
+
 
 </beans>
