@@ -7,9 +7,11 @@
 package org.geoserver.data.gen;
 
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataStore;
 import org.geotools.data.gen.DataStoreLookup;
@@ -32,17 +34,25 @@ public class DataStoreLookupCatalog implements DataStoreLookup {
 	
 	
 	public DataStore getDataStoreFor(String name) {
-			return (DataStore) catalogObject.getDataStoreByName(name);		
+			return getDataStoreFor(null,name); 		
 	}
 
 	public DataStore getDataStoreFor(String workspace, String name) {
 		
-		return (DataStore) catalogObject.getDataStoreByName(workspace,name);		
+		DataStoreInfo info = catalogObject.getDataStoreByName(workspace,name);
+		if (info==null) {
+			throw new RuntimeException("Cannot find datastore "+ name + "in workspace "+ workspace);
+		}
+		try {
+			return info.getDataStore(null);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 
 	public void initialize(Object source) {
-		String beanName="geoServer2";
+		String beanName="catalog2";
 		catalogObject = (Catalog) GeoServerExtensions.bean(beanName);
 		if (catalogObject==null) {
 			log.warning("Cannot find bean "+beanName);
