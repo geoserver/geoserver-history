@@ -39,8 +39,9 @@ import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Schemas;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -52,7 +53,7 @@ import org.opengis.feature.type.PropertyDescriptor;
  * </p>
  *
  * @author Justin Deoliveira, The Open Planning Project
- *
+ * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
 public abstract class FeatureTypeSchemaBuilder {
     /** logging instance */
@@ -299,18 +300,48 @@ public abstract class FeatureTypeSchemaBuilder {
         }
 
         //build the type manually
-        FeatureType featureType = featureTypeMeta.getFeatureType();
-        XSDComplexTypeDefinition complexType = factory.createXSDComplexTypeDefinition();
-        complexType.setName(featureType.getName().getLocalPart() + "Type");
+        XSDComplexTypeDefinition xsdComplexType = buildComplexSchemaContent(featureTypeMeta
+                .getFeatureType(), schema, factory);
 
-        complexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
-        complexType.setBaseTypeDefinition(schema.resolveComplexTypeDefinition(gmlNamespace,
+        XSDElementDeclaration element = factory.createXSDElementDeclaration();
+        element.setName(name);
+
+        element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
+                substitutionGroup));
+        element.setTypeDefinition(xsdComplexType);
+
+        schema.getContents().add(element);
+        schema.updateElement();
+
+        schema.updateElement();
+    }
+
+    /**
+     * Construct an XSD type definition for a ComplexType. 
+     * 
+     * <p>
+     * 
+     * A side-effect of calling this method is that the constructed type and any concrete nested
+     * complex types are added to the schema.
+     * 
+     * @param complexType
+     * @param schema
+     * @param factory
+     * @return
+     */
+    private XSDComplexTypeDefinition buildComplexSchemaContent(ComplexType complexType,
+            XSDSchema schema, XSDFactory factory) {
+        XSDComplexTypeDefinition xsdComplexType = factory.createXSDComplexTypeDefinition();
+        xsdComplexType.setName(complexType.getName().getLocalPart() + "Type");
+
+        xsdComplexType.setDerivationMethod(XSDDerivationMethod.EXTENSION_LITERAL);
+        xsdComplexType.setBaseTypeDefinition(schema.resolveComplexTypeDefinition(gmlNamespace,
                 baseType));
 
         XSDModelGroup group = factory.createXSDModelGroup();
         group.setCompositor(XSDCompositor.SEQUENCE_LITERAL);
 
-        for (PropertyDescriptor pd : featureType.getDescriptors()) {
+        for (PropertyDescriptor pd : complexType.getDescriptors()) {
             if (pd instanceof AttributeDescriptor) {
                 AttributeDescriptor attribute = (AttributeDescriptor) pd;
 
@@ -322,12 +353,25 @@ public abstract class FeatureTypeSchemaBuilder {
                 element.setName(attribute.getLocalName());
                 element.setNillable(attribute.isNillable());
 
-                Class binding = attribute.getType().getBinding();
-                Name typeName = findTypeName(binding);
-
-                if (typeName == null) {
-                    throw new NullPointerException("Could not find a type for property: "
-                            + attribute.getName() + " of type: " + binding.getName());
+                Name typeName;
+                if (attribute.getType() instanceof ComplexType) {
+                    typeName = attribute.getType().getName();
+                    // If non-simple complex property not in schema, recurse.
+                    // Note that abstract types will of course not be resolved; these must be
+                    // configured at global level, so they can be found by the
+                    // encoder.
+                    if (schema.resolveTypeDefinition(typeName.getNamespaceURI(), typeName
+                            .getLocalPart()) == null) {
+                        buildComplexSchemaContent((ComplexType) attribute.getType(), schema,
+                                factory);
+                    }
+                } else {
+                    Class binding = attribute.getType().getBinding();
+                    typeName = findTypeName(binding);
+                    if (typeName == null) {
+                        throw new NullPointerException("Could not find a type for property: "
+                                + attribute.getName() + " of type: " + binding.getName());
+                    }
                 }
 
                 XSDTypeDefinition type = schema.resolveTypeDefinition(typeName.getNamespaceURI(),
@@ -345,21 +389,10 @@ public abstract class FeatureTypeSchemaBuilder {
         XSDParticle particle = factory.createXSDParticle();
         particle.setContent(group);
 
-        complexType.setContent(particle);
+        xsdComplexType.setContent(particle);
 
-        schema.getContents().add(complexType);
-
-        XSDElementDeclaration element = factory.createXSDElementDeclaration();
-        element.setName(name);
-
-        element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
-                substitutionGroup));
-        element.setTypeDefinition(complexType);
-
-        schema.getContents().add(element);
-        schema.updateElement();
-
-        schema.updateElement();
+        schema.getContents().add(xsdComplexType);
+        return xsdComplexType;
     }
 
     boolean contains( XSDNamedComponent c, List l ) {
