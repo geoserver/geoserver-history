@@ -7,10 +7,13 @@ package org.geoserver.security;
 import static org.geoserver.security.DataAccessRule.ANY;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -22,10 +25,14 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geotools.util.logging.Logging;
+import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Allows one to manage the rules used by the per layer security subsystem
+ * TODO: consider splitting the persistence of properties into two strategies,
+ * and in memory one, and a file system one (this class is so marginal that
+ * I did not do so right away, in memory access is mostly handy for testing)
  */
 public class DataAccessRuleDAO {
 
@@ -38,7 +45,7 @@ public class DataAccessRuleDAO {
     /**
      * Default to the highest security mode
      */
-    CatalogMode mode = CatalogMode.HIDE;
+    CatalogMode catalogMode = CatalogMode.HIDE;
 
     /**
      * Used to check the file for modifications
@@ -49,14 +56,30 @@ public class DataAccessRuleDAO {
      * Stores the time of the last rule list loading
      */
     long lastModified;
+    
+    /**
+     * The security dir
+     */
+    File securityDir;
 
     /**
      * Builds a new dao
      * 
      * @param rawCatalog
      */
-    public DataAccessRuleDAO(Catalog rawCatalog) {
+    public DataAccessRuleDAO(Catalog rawCatalog) throws ConfigurationException {
         this.rawCatalog = rawCatalog;
+        this.securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
+    }
+    
+    /**
+     * Builds a new dao with a custom security dir. Used mostly for testing purposes
+     * 
+     * @param rawCatalog
+     */
+    DataAccessRuleDAO(Catalog rawCatalog, File securityDir) throws ConfigurationException {
+        this.rawCatalog = rawCatalog;
+        this.securityDir = securityDir;
     }
 
     /**
@@ -65,7 +88,7 @@ public class DataAccessRuleDAO {
      * @return
      */
     public List<DataAccessRule> getRules() {
-        checkPropertyFile();
+        checkPropertyFile(false);
         return new ArrayList<DataAccessRule>(rules);
     }
 
@@ -77,6 +100,13 @@ public class DataAccessRuleDAO {
      */
     public boolean addRule(DataAccessRule rule) {
         return rules.add(rule);
+    }
+    
+    /**
+     * Forces a reload of the rules
+     */
+    public void refresh() {
+        checkPropertyFile(false);
     }
     
     /**
@@ -101,28 +131,48 @@ public class DataAccessRuleDAO {
      * @return
      */
     public CatalogMode getMode() {
-        checkPropertyFile();
-        return mode;
+        checkPropertyFile(false);
+        return catalogMode;
+    }
+    
+    /**
+     * Writes the rules back to file system
+     * @throws IOException
+     */
+    public void storeRules() throws IOException {
+        FileOutputStream os = null;
+        try {
+            // turn back the users into a users map
+            Properties p = toProperties();
+
+            // write out to the data dir
+            File propFile = new File(securityDir, "layers.properties");
+            os = new FileOutputStream(propFile);
+            p.store(os, null);
+        } catch (Exception e) {
+            if (e instanceof IOException)
+                throw (IOException) e;
+            else
+                throw (IOException) new IOException(
+                        "Could not write updated data access rules to file system").initCause(e);
+        } finally {
+            if (os != null)
+                os.close();
+        }
     }
 
     /**
      * Checks the property file is up to date, eventually rebuilds the tree
      */
-    void checkPropertyFile() {
+    void checkPropertyFile(boolean force) {
         try {
             if (rules == null) {
-                // delay building the authorization tree after the
-                // catalog is fully built and available, otherwise we
-                // end up ignoring the rules because the namespaces are not loaded
-                File security = GeoserverDataDirectory.findConfigDir(GeoserverDataDirectory
-                        .getGeoserverDataDirectory(), "security");
-
                 // no security folder, let's work against an empty properties then
-                if (security == null || !security.exists()) {
+                if (securityDir == null || !securityDir.exists()) {
                     this.rules = new TreeSet<DataAccessRule>();
                 } else {
                     // no security config, let's work against an empty properties then
-                    File layers = new File(security, "layers.properties");
+                    File layers = new File(securityDir, "layers.properties");
                     if (!layers.exists()) {
                         this.rules = new TreeSet<DataAccessRule>();
                     } else {
@@ -131,7 +181,7 @@ public class DataAccessRuleDAO {
                         loadRules(watcher.getProperties());
                     }
                 }
-            } else if (watcher != null && watcher.isStale()) {
+            } else if (watcher != null && (watcher.isStale() || force)) {
                 loadRules(watcher.getProperties());
             }
         } catch (Exception e) {
@@ -150,7 +200,7 @@ public class DataAccessRuleDAO {
      */
     void loadRules(Properties props) {
         TreeSet<DataAccessRule> result = new TreeSet<DataAccessRule>();
-        mode = CatalogMode.HIDE;
+        catalogMode = CatalogMode.HIDE;
         for (Map.Entry entry : props.entrySet()) {
             String ruleKey = (String) entry.getKey();
             String ruleValue = (String) entry.getValue();
@@ -158,7 +208,7 @@ public class DataAccessRuleDAO {
             // check for the mode
             if ("mode".equalsIgnoreCase(ruleKey)) {
                 try {
-                    mode = CatalogMode.valueOf(ruleValue.toUpperCase());
+                    catalogMode = CatalogMode.valueOf(ruleValue.toUpperCase());
                 } catch (Exception e) {
                     LOGGER.warning("Invalid security mode " + ruleValue + " acceptable values are "
                             + Arrays.asList(CatalogMode.values()));
@@ -187,6 +237,10 @@ public class DataAccessRuleDAO {
 
         // parse
         String[] elements = parseElements(ruleKey);
+        if(elements.length != 3) {
+            LOGGER.warning("Invalid rule " + rule + ", the expected format is workspace.layer.mode=role1,role2,...");
+            return null;
+        }
         String workspace = elements[0];
         String layerName = elements[1];
         String modeAlias = elements[2];
@@ -227,6 +281,28 @@ public class DataAccessRuleDAO {
 
         // build the rule
         return new DataAccessRule(workspace, layerName, mode, roles);
+    }
+    
+    /**
+     * Turns the rules list into a property bag
+     * @return
+     */
+    Properties toProperties() {
+        Properties props = new Properties();
+        props.put("mode", catalogMode);
+        for (DataAccessRule rule : rules) {
+            String roles = "";
+            if(rule.getRoles().isEmpty()) {
+                roles = DataAccessRule.ANY;
+            } else {
+                for (String role : rule.getRoles()) {
+                    roles += role + ",";
+                }
+                roles = roles.substring(0, roles.length() - 1);
+            }
+            props.put(rule.getKey(), roles);
+        }
+        return props;
     }
 
     /**

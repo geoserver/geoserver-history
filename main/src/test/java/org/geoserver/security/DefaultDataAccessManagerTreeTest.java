@@ -50,7 +50,7 @@ public class DefaultDataAccessManagerTreeTest extends TestCase {
 
     }
 
-    private SecureTreeNode buildTree(String propertyFile) throws IOException {
+    private SecureTreeNode buildTree(String propertyFile) throws Exception {
         Properties props = new Properties();
         props.load(getClass().getResourceAsStream(propertyFile));
         return new DefaultDataAccessManager(new MemoryDataAccessRuleDAO(catalog, props)).root;
