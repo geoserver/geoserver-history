@@ -5,6 +5,7 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
+import java.util.Iterator;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -16,6 +17,7 @@ import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 public class DataAccessRuleDAOTest extends TestCase {
 
     DataAccessRuleDAO dao;
+    Properties props;
     
     @Override
     protected void setUp() throws Exception {
@@ -26,7 +28,8 @@ public class DataAccessRuleDAOTest extends TestCase {
         replay(catalog);
         
         // prepare some base rules
-        Properties props = new Properties();
+        props = new Properties();
+        props.put("mode", "CHALLENGE");
         props.put("topp.states.w", "ROLE_TSW");
         props.put("topp.*.w", "ROLE_TW");
         props.put("*.*.r", "*");
@@ -60,6 +63,18 @@ public class DataAccessRuleDAOTest extends TestCase {
         assertTrue(dao.removeRule(first));
         assertFalse(dao.removeRule(first));
         assertEquals(2, dao.getRules().size());
+    }
+    
+    public void testStore() {
+        Properties newProps = dao.toProperties();
+        
+        // properties equality does not seem to work...
+        assertEquals(newProps.size(), props.size());
+        for (Object key : newProps.keySet()) {
+            Object newValue = newProps.get(key);
+            Object oldValue = newProps.get(key);
+            assertEquals(newValue, oldValue);
+        }
     }
     
 }
