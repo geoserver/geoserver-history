@@ -17,7 +17,6 @@
 
   <modules>
     <module>sample-data-access-test</module>
-    <module>text-feature-list</module>
     <module>app-schema-test</module>
   </modules>
 

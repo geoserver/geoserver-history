@@ -21,7 +21,7 @@ import org.w3c.dom.Document;
  * 
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
-public class SampleDataAccessGetFeatureTest extends SampleDataAccessGeoServerTestSupport {
+public class SampleDataAccessWfsTest extends SampleDataAccessTestSupport {
 
     /**
      * Read-only test so can use one-time setup.
@@ -29,7 +29,7 @@ public class SampleDataAccessGetFeatureTest extends SampleDataAccessGeoServerTes
      * @return
      */
     public static Test suite() {
-        return new OneTimeTestSetup(new SampleDataAccessGetFeatureTest());
+        return new OneTimeTestSetup(new SampleDataAccessWfsTest());
     }
 
     /**
