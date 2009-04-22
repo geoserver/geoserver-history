@@ -101,7 +101,7 @@ public class FilterType implements UserType {
 		return original;
 	}
 
-	public Class returnedClass() {
+	public Class<Filter> returnedClass() {
 		return Filter.class;
 	}
 
