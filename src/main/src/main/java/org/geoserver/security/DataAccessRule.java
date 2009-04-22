@@ -7,11 +7,14 @@ package org.geoserver.security;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 /**
- * Represents a data access rule: identifies a workspace, a layer, an access mode, and the set of roles
- * that are allowed to access it
+ * Represents a data access rule: identifies a workspace, a layer, an access mode, and the set of
+ * roles that are allowed to access it
+ * <p>Two rules are considered equal if 
  */
-public class DataAccessRule {
+public class DataAccessRule implements Comparable<DataAccessRule> {
 
     /**
      * Any layer, or any workspace, or any role
@@ -65,4 +68,66 @@ public class DataAccessRule {
         return roles;
     }
 
+    /**
+     * Returns the key for the current rule. No other rule should have the same
+     * 
+     * @return
+     */
+    public String getKey() {
+        return workspace + "." + layer + "." + accessMode.getAlias();
+    }
+
+    /**
+     * Comparison implemented so that generic rules get first, specific one are compared by name,
+     * and if anything else is equal, read comes before write
+     */
+    public int compareTo(DataAccessRule other) {
+        int compareWs = compareCatalogItems(workspace, other.workspace);
+        if (compareWs != 0)
+            return compareWs;
+
+        int compareLayer = compareCatalogItems(layer, other.layer);
+        if (compareLayer != 0)
+            return compareLayer;
+
+        if (accessMode.equals(other.accessMode))
+            return 0;
+        else
+            return accessMode.equals(AccessMode.READ) ? -1 : 1;
+    }
+
+    /**
+     * Equality based on ws/layer/mode only
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DataAccessRule))
+            return false;
+
+        return 0 == compareTo((DataAccessRule) obj);
+    }
+
+    /**
+     * Hashcode based on wfs/layer/mode only
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(workspace).append(layer).append(accessMode.getAlias())
+                .toHashCode();
+    }
+
+    /**
+     * Generic string comparison that considers the use of {@link #ANY}
+     */
+    public int compareCatalogItems(String item, String otherItem) {
+        if (item.equals(otherItem))
+            return 0;
+        else if (ANY.equals(item))
+            return -1;
+        else if (ANY.equals(otherItem))
+            return 1;
+        else
+            return item.compareTo(otherItem);
+
+    }
 }
