@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,38 +24,54 @@ import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
+/**
+ * Allows one to manage the rules used by the per layer security subsystem
+ */
 public class DataAccessRuleDAO {
 
     static final Logger LOGGER = Logging.getLogger(DataAccessRuleDAO.class);
 
     Catalog rawCatalog;
 
-    List<DataAccessRule> rules;
-    
+    TreeSet<DataAccessRule> rules;
+
     /**
      * Default to the highest security mode
      */
     CatalogMode mode = CatalogMode.HIDE;
 
+    /**
+     * Used to check the file for modifications
+     */
     PropertyFileWatcher watcher;
 
+    /**
+     * Stores the time of the last rule list loading
+     */
     long lastModified;
-    
+
+    /**
+     * Builds a new dao
+     * 
+     * @param rawCatalog
+     */
     public DataAccessRuleDAO(Catalog rawCatalog) {
         this.rawCatalog = rawCatalog;
     }
-    
+
     /**
      * Returns the list of rules contained in the property file
+     * 
      * @return
      */
     public List<DataAccessRule> getRules() {
         checkPropertyFile();
-        return rules;
+        return new ArrayList<DataAccessRule>(rules);
     }
-    
+
     /**
      * The way the catalog should react to unauthorized access
+     * 
      * @return
      */
     public CatalogMode getMode() {
@@ -76,12 +93,12 @@ public class DataAccessRuleDAO {
 
                 // no security folder, let's work against an empty properties then
                 if (security == null || !security.exists()) {
-                    this.rules = new ArrayList<DataAccessRule>();
+                    this.rules = new TreeSet<DataAccessRule>();
                 } else {
                     // no security config, let's work against an empty properties then
                     File layers = new File(security, "layers.properties");
                     if (!layers.exists()) {
-                        this.rules = new ArrayList<DataAccessRule>();
+                        this.rules = new TreeSet<DataAccessRule>();
                     } else {
                         // ok, something is there, let's load it
                         watcher = new PropertyFileWatcher(layers);
@@ -101,33 +118,43 @@ public class DataAccessRuleDAO {
 
     /**
      * Parses the rules contained in the property file
+     * 
      * @param props
      * @return
      */
     void loadRules(Properties props) {
-        List<DataAccessRule> result = new ArrayList<DataAccessRule>();
+        TreeSet<DataAccessRule> result = new TreeSet<DataAccessRule>();
         mode = CatalogMode.HIDE;
         for (Map.Entry entry : props.entrySet()) {
             String ruleKey = (String) entry.getKey();
             String ruleValue = (String) entry.getValue();
-            
+
             // check for the mode
-            if("mode".equalsIgnoreCase(ruleKey)) {
+            if ("mode".equalsIgnoreCase(ruleKey)) {
                 try {
                     mode = CatalogMode.valueOf(ruleValue.toUpperCase());
-                } catch(Exception e) {
-                    LOGGER.warning("Invalid security mode " + ruleValue 
-                            + " acceptable values are " + Arrays.asList(CatalogMode.values()));
+                } catch (Exception e) {
+                    LOGGER.warning("Invalid security mode " + ruleValue + " acceptable values are "
+                            + Arrays.asList(CatalogMode.values()));
                 }
             } else {
                 DataAccessRule rule = parseDataAccessRule(ruleKey, ruleValue);
-                if(rule != null)
+                if (rule != null) {
+                    if(result.contains(rule))
+                        LOGGER.warning("Rule " + ruleKey + "." + ruleValue + " overwrites another rule on the same path");
                     result.add(rule);
+                }
             }
         }
         rules = result;
     }
-    
+
+    /**
+     * Parses a single layer.properties line into a {@link DataAccessRule}, returns false if the
+     * rule is not valid
+     * 
+     * @return
+     */
     DataAccessRule parseDataAccessRule(String ruleKey, String ruleValue) {
         final String rule = ruleKey + "=" + ruleValue;
 
@@ -161,7 +188,7 @@ public class DataAccessRuleDAO {
                     + ", skipping rule " + rule);
             return null;
         }
-        
+
         // check ANY usage sanity
         if (ANY.equals(workspace)) {
             if (!ANY.equals(layerName)) {
@@ -170,7 +197,7 @@ public class DataAccessRuleDAO {
                 return null;
             }
         }
-        
+
         // build the rule
         return new DataAccessRule(workspace, layerName, mode, roles);
     }
@@ -184,10 +211,11 @@ public class DataAccessRuleDAO {
     public long getLastModified() {
         return lastModified;
     }
-    
+
     /**
-     * Parses a comma separated list of roles into a set of strings, with
-     * special handling for the {@link DataAccessRule#ANY} role
+     * Parses a comma separated list of roles into a set of strings, with special handling for the
+     * {@link DataAccessRule#ANY} role
+     * 
      * @param roleCsv
      * @return
      */
@@ -207,11 +235,12 @@ public class DataAccessRuleDAO {
         return roles;
     }
 
-   /**
-    * Parses workspace.layer.mode into an array of strings
-    * @param path
-    * @return
-    */
+    /**
+     * Parses workspace.layer.mode into an array of strings
+     * 
+     * @param path
+     * @return
+     */
     private String[] parseElements(String path) {
         // regexp: ignore extra spaces, split on dot
         return path.split("\\s*\\.\\s*");
