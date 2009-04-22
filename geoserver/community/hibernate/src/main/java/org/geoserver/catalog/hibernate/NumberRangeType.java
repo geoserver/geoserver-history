@@ -62,7 +62,7 @@ public class NumberRangeType implements UserType {
 			return;
 		}
 		
-		NumberRange numberRange = (NumberRange) value;
+		NumberRange<Double> numberRange = (NumberRange<Double>) value;
 		st.setDouble( index, numberRange.getMinimum() );
 		st.setDouble( index + 1, numberRange.getMaximum() );
 		
