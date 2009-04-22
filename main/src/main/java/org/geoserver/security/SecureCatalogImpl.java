@@ -103,7 +103,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     static DataAccessManager lookupDataAccessManager(Catalog catalog) throws Exception {
         DataAccessManager manager = GeoServerExtensions.bean(DataAccessManager.class);
         if (manager == null) {
-            manager = new DefaultDataAccessManager(catalog);
+            manager = new DefaultDataAccessManager(GeoServerExtensions.bean(DataAccessRuleDAO.class));
         }
         return manager;
     }

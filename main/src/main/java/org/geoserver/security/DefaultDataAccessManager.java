@@ -25,6 +25,8 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
+import static org.geoserver.security.DataAccessRule.ANY;
+
 /**
  * Default implementation of {@link DataAccessManager}, loads simple access
  * rules from a properties file or a Properties object. The format of each
@@ -59,63 +61,19 @@ public class DefaultDataAccessManager implements DataAccessManager {
 
     SecureTreeNode root;
 
-    Catalog catalog;
-
-    PropertyFileWatcher watcher;
-
-    File layers;
-
-    /**
-     * Default to the highest security mode
-     */
-    CatalogMode mode = CatalogMode.HIDE;
-
-    DefaultDataAccessManager(Catalog catalog, Properties layers) {
-        this.catalog = catalog;
-        this.root = buildAuthorizationTree(layers);
-    }
-
-    DefaultDataAccessManager(Catalog catalog) throws Exception {
-        this.catalog = catalog;
-    }
+//    Catalog catalog;
     
-    /**
-     * Checks the property file is up to date, eventually rebuilds the tree
-     */
-    void checkPropertyFile() {
-        try {
-            if (root == null) {
-                // delay building the authorization tree after the 
-                // catalog is fully built and available, otherwise we
-                // end up ignoring the rules because the namespaces are not loaded
-                File security = GeoserverDataDirectory.findConfigDir(GeoserverDataDirectory
-                        .getGeoserverDataDirectory(), "security");
+    DataAccessRuleDAO dao;
 
-                // no security folder, let's work against an empty properties then
-                if (security == null || !security.exists()) {
-                    this.root = new SecureTreeNode();
-                } else {
-                    // no security config, let's work against an empty properties then
-                    layers = new File(security, "layers.properties");
-                    if (!layers.exists()) {
-                        this.root = new SecureTreeNode();
-                    } else {
-                        // ok, something is there, let's load it
-                        watcher = new PropertyFileWatcher(layers);
-                        this.root = buildAuthorizationTree(watcher.getProperties());
-                    }
-                }
-            } else if(watcher != null && watcher.isStale()) { 
-                root = buildAuthorizationTree(watcher.getProperties());
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to reload data access rules from " + layers
-                    + ", keeping old rules", e);
-        }
+    long lastLoaded = Long.MIN_VALUE;
+
+    DefaultDataAccessManager(DataAccessRuleDAO dao) {
+        this.dao = dao;
+        this.root = buildAuthorizationTree(dao);
     }
-    
+
     public CatalogMode getMode() {
-        return mode;
+        return dao.getMode();
     }
 
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
@@ -153,70 +111,24 @@ public class DefaultDataAccessManager implements DataAccessManager {
         return node.canAccess(user, mode);
     }
 
-    private SecureTreeNode buildAuthorizationTree(File layers) throws IOException,
-            FileNotFoundException {
-        Properties props = new Properties();
-        props.load(new FileInputStream(layers));
-        return buildAuthorizationTree(props);
+    void checkPropertyFile() {
+        if(lastLoaded < dao.getLastModified())
+            root = buildAuthorizationTree(dao);
     }
 
-    SecureTreeNode buildAuthorizationTree(Properties props) {
+    SecureTreeNode buildAuthorizationTree(DataAccessRuleDAO dao) {
         SecureTreeNode root = new SecureTreeNode();
-
-        for (Map.Entry entry : props.entrySet()) {
-            final String ruleKey = (String) entry.getKey();
-            final String ruleValue = (String) entry.getValue();
-            final String rule = ruleKey + "=" + ruleValue;
+        
+        for(DataAccessRule rule : dao.getRules()) {
+            String workspace = rule.getWorkspace();
+            String layer = rule.getLayer();
+            AccessMode accessMode = rule.getAccessMode();
             
-            // check for the mode
-            if("mode".equalsIgnoreCase(ruleKey)) {
-                try {
-                    mode = CatalogMode.valueOf(ruleValue.toUpperCase());
-                } catch(Exception e) {
-                    LOGGER.warning("Invalid security mode " + ruleValue 
-                            + " acceptable values are " + Arrays.asList(CatalogMode.values()));
-                }
-                continue;
-            }
-
-            // parse
-            String[] elements = parseElements(ruleKey);
-            final String workspace = elements[0];
-            final String layerName = elements[1];
-            final String modeAlias = elements[2];
-            Set<String> roles = parseRoles(ruleValue);
-
-            // perform basic checks on the elements
-            if (elements.length != 3)
-                LOGGER.warning("Invalid rule '" + rule
-                        + "', the standard form is [namespace].[layer].[mode]=[role]+ "
-                        + "Rule has been ignored");
-
-            if (!"*".equals(workspace) && catalog.getWorkspaceByName(workspace) == null)
-                LOGGER.warning("Namespace/Workspace " + workspace + " is unknown in rule " + rule);
-
-            if (!"*".equals(layerName) && catalog.getLayerByName(layerName) == null)
-                LOGGER.warning("Layer " + workspace + " is unknown in rule + " + rule);
-
-            // check the access mode
-            AccessMode mode = AccessMode.getByAlias(modeAlias);
-            if (mode == null) {
-                LOGGER.warning("Unknown access mode " + modeAlias + " in " + entry.getKey()
-                        + ", skipping rule " + rule);
-                continue;
-            }
-
             // look for the node where the rules will have to be set
             SecureTreeNode node;
 
             // check for the * ws definition
-            if ("*".equals(workspace)) {
-                if (!"*".equals(layerName)) {
-                    LOGGER.warning("Invalid rule " + entry.getKey() + " when namespace "
-                            + "is * then also layer must be *. Skipping rule " + rule);
-                    continue;
-                }
-
+            if (ANY.equals(workspace)) {
                 node = root;
             } else {
                 // get or create the workspace
@@ -227,47 +139,28 @@ public class DefaultDataAccessManager implements DataAccessManager {
 
                 // if layer is "*" the rule applies to the ws, otherwise
                 // get/create the layer
-                if ("*".equals(layerName)) {
+                if ("*".equals(layer)) {
                     node = ws;
                 } else {
-                    SecureTreeNode layer = ws.getChild(layerName);
-                    if (layer == null)
-                        layer = ws.addChild(layerName);
-                    node = layer;
+                    SecureTreeNode layerNode = ws.getChild(layer);
+                    if (layerNode == null)
+                        layerNode = ws.addChild(layer);
+                    node = layerNode;
                 }
 
             }
 
             // actually set the rule
-            if (node.getAuthorizedRoles(mode) != null && node.getAuthorizedRoles(mode).size() > 0) {
+            if (node.getAuthorizedRoles(accessMode) != null && node.getAuthorizedRoles(accessMode).size() > 0) {
                 LOGGER.warning("Rule " + rule
                         + " is overriding another rule targetting the same resource");
             }
-            node.setAuthorizedRoles(mode, roles);
+            node.setAuthorizedRoles(accessMode, rule.getRoles());
         }
-
+        
         return root;
     }
 
-    Set<String> parseRoles(String roleCsv) {
-        // regexp: treat extra spaces as separators, ignore extra commas
-        // "a,,b, ,, c" --> ["a","b","c"]
-        String[] rolesArray = roleCsv.split("[\\s,]+");
-        Set<String> roles = new HashSet<String>(rolesArray.length);
-        roles.addAll(Arrays.asList(rolesArray));
-
-        // if any of the roles is * we just remove all of the others
-        for (String role : roles) {
-            if ("*".equals(role))
-                return Collections.singleton("*");
-        }
-
-        return roles;
-    }
-
-    private String[] parseElements(String path) {
-        // regexp: ignore extra spaces
-        return path.split("\\s*\\.\\s*");
-    }
+   
 
 }

@@ -53,7 +53,7 @@ public class DefaultDataAccessManagerTreeTest extends TestCase {
     private SecureTreeNode buildTree(String propertyFile) throws IOException {
         Properties props = new Properties();
         props.load(getClass().getResourceAsStream(propertyFile));
-        return new DefaultDataAccessManager(catalog, props).root;
+        return new DefaultDataAccessManager(new MemoryDataAccessRuleDAO(catalog, props)).root;
     }
 
     public void testWideOpen() throws Exception {

@@ -151,6 +151,6 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
     protected DefaultDataAccessManager buildManager(String propertyFile) throws IOException {
         Properties props = new Properties();
         props.load(getClass().getResourceAsStream(propertyFile));
-        return new DefaultDataAccessManager(catalog, props);
+        return new DefaultDataAccessManager(new MemoryDataAccessRuleDAO(catalog, props));
     }
 }
