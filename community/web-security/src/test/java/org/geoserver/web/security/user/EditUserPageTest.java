@@ -34,7 +34,7 @@ public class EditUserPageTest extends GeoServerWicketTestSupport {
         form.submit("save");
         
         tester.assertErrorMessages(new String[0]);
-        tester.assertRenderedPage(SimpleUserPage.class);
+        tester.assertRenderedPage(UserPage.class);
         
         dao.reload();
         UserDetails user = dao.loadUserByUsername("admin");

@@ -15,7 +15,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.security.GeoserverUserDao;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -27,24 +26,24 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * A page listing users, allowing for removal, addition and linking to an edit page
  */
 @SuppressWarnings("serial")
-public class SimpleUserPage extends GeoServerSecuredPage {
+public class UserPage extends GeoServerSecuredPage {
 
     private GeoServerTablePanel<User> users;
 
-    public SimpleUserPage() {
-        SimpleUserProvider provider = new SimpleUserProvider();
+    public UserPage() {
+        UserListProvider provider = new UserListProvider();
         users = new GeoServerTablePanel<User>("table", provider) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<User> property) {
-                if (property == SimpleUserProvider.USERNAME) {
+                if (property == UserListProvider.USERNAME) {
                     return editUserLink(id, itemModel, property);
-                } else if (property == SimpleUserProvider.ROLES) {
+                } else if (property == UserListProvider.ROLES) {
                     return new Label(id, property.getModel(itemModel));
-                } else if (property == SimpleUserProvider.ADMIN) {
+                } else if (property == UserListProvider.ADMIN) {
                     return new Label(id, property.getModel(itemModel));
-                } else if (property == SimpleUserProvider.REMOVE) {
+                } else if (property == UserListProvider.REMOVE) {
                     // don't allow one to remove the admin
                     if("admin".equals(((User) itemModel.getObject()).getUsername()))
                         return new Label(id, new Model("-"));

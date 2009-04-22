@@ -52,7 +52,7 @@ public class NewUserPage extends AbstractUserPage {
             GeoserverUserDao dao = GeoserverUserDao.get();
             dao.putUser(user.toAcegiUser());
             dao.storeUsers();
-            setResponsePage(SimpleUserPage.class);
+            setResponsePage(UserPage.class);
         } catch(Exception e) {
             LOGGER.log(Level.SEVERE, "Error occurred while saving user", e);
             error(new ParamResourceModel("saveError", getPage(), e.getMessage()));
