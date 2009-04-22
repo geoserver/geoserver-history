@@ -42,174 +42,12 @@ import org.vfny.geoserver.global.dto.CoverageInfoDTO;
  * @deprecated use {@link CoverageInfo}
  */
 public final class CoverageInfo extends GlobalLayerSupertype {
-    ///**
-    // *
-    // */
-    //private String formatId;
-    //
-    ///**
-    // *
-    // */
-    //private String name;
-    //
-    ///**
-    // *
-    // */
-    //private String wmsPath;
-    //
-    ///**
-    // *
-    // */
-    //private String label;
-    //
-    ///**
-    // *
-    // */
-    //private String description;
-    //
-    ///**
-    // *
-    // */
-    //private MetaDataLink metadataLink;
-    //
-    ///**
-    // *
-    // */
-    //private String dirName;
-    //
-    ///**
-    // *
-    // */
-    //private List keywords;
-    //
-    ///**
-    // *
-    // */
-    //private GeneralEnvelope envelope;
-    //
-    ///**
-    // *
-    // */
-    //private GeneralEnvelope lonLatWGS84Envelope;
-    //
-    ///**
-    // *
-    // */
-    //private GridGeometry grid;
-    //
-    ///**
-    // *
-    // */
-    //private CoverageDimension[] dimensions;
-    //
-    ///**
-    // *
-    // */
-    //private InternationalString[] dimensionNames;
-    //
-    ///**
-    // *
-    // */
-    //private List requestCRSs;
-    //
-    ///**
-    // *
-    // */
-    //private List responseCRSs;
-    //
-    ///**
-    // *
-    // */
-    //private String nativeFormat;
-    //
-    ///**
-    // *
-    // */
-    //private List supportedFormats;
-    //
-    ///**
-    // *
-    // */
-    //private String defaultInterpolationMethod;
-    //
-    ///**
-    // *
-    // */
-    //private List interpolationMethods;
-    //
-    ///**
-    // *
-    // */
-    //private Data data;
-    //
-    ///**
-    // *
-    // */
-    //private Map meta;
-    //
-    ///**
-    // *
-    // */
-    //private String srsName;
-    //
-    ///**
-    // *
-    // */
-    //private String srsWKT;
-    //
-    ///**
-    // *
-    // */
-    //private CoordinateReferenceSystem crs;
-    //
-    ///**
-    // * Default style used to render this Coverage with WMS
-    // */
-    //private String defaultStyle;
-    //
-    ///**
-    // * Other WMS Styles
-    // */
-    //private ArrayList styles;
-    //
-    ///**
-    //     * String representation of connection parameter values
-    //     */
-    //private Map parameters;
+    
 
     LayerInfo layer;
     org.geoserver.catalog.CoverageInfo coverage;
     Catalog catalog;
         
-    //public CoverageInfo(CoverageInfoDTO dto, Data data)
-    //    throws ConfigurationException {
-    //    this.data = data;
-    //    formatId = dto.getFormatId();
-    //    name = dto.getName();
-    //    wmsPath = dto.getWmsPath();
-    //    label = dto.getLabel();
-    //    description = dto.getDescription();
-    //    metadataLink = dto.getMetadataLink();
-    //    dirName = dto.getDirName();
-    //    keywords = dto.getKeywords();
-    //    crs = dto.getCrs();
-    //    srsName = dto.getSrsName();
-    //    srsWKT = dto.getSrsWKT();
-    //    envelope = dto.getEnvelope();
-    //    lonLatWGS84Envelope = dto.getLonLatWGS84Envelope();
-    //    grid = dto.getGrid();
-    //    dimensions = dto.getDimensions();
-    //    dimensionNames = dto.getDimensionNames();
-    //    requestCRSs = dto.getRequestCRSs();
-    //    responseCRSs = dto.getResponseCRSs();
-    //    nativeFormat = dto.getNativeFormat();
-    //    supportedFormats = dto.getSupportedFormats();
-    //    defaultInterpolationMethod = dto.getDefaultInterpolationMethod();
-    //    interpolationMethods = dto.getInterpolationMethods();
-    //    defaultStyle = dto.getDefaultStyle();
-    //    styles = dto.getStyles();
-    //    parameters = dto.getParameters();
-    //}
     
     public CoverageInfo( LayerInfo layer, Catalog catalog ) {
         this.layer = layer;
@@ -331,32 +169,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
         }
         dto.setStyles(styles);
         dto.setParameters(getParameters());
-        
-        //dto.setFormatId(formatId);
-        //dto.setName(name);
-        //dto.setWmsPath(wmsPath);
-        //dto.setLabel(label);
-        //dto.setDescription(description);
-        //dto.setMetadataLink(metadataLink);
-        //dto.setDirName(dirName);
-        //dto.setKeywords(keywords);
-        //dto.setCrs(crs);
-        //dto.setSrsName(srsName);
-        //dto.setSrsWKT(srsWKT);
-        //dto.setEnvelope(envelope);
-        //dto.setLonLatWGS84Envelope(lonLatWGS84Envelope);
-        //dto.setGrid(grid);
-        //dto.setDimensions(dimensions);
-        //dto.setDimensionNames(dimensionNames);
-        //dto.setRequestCRSs(requestCRSs);
-        //dto.setResponseCRSs(responseCRSs);
-        //dto.setNativeFormat(nativeFormat);
-        //dto.setSupportedFormats(supportedFormats);
-        //dto.setDefaultInterpolationMethod(defaultInterpolationMethod);
-        //dto.setInterpolationMethods(interpolationMethods);
-        //dto.setDefaultStyle(defaultStyle);
-        //dto.setStyles(styles);
-        //dto.setParameters(parameters);
+
 
         return dto;
     }
@@ -667,21 +480,7 @@ public final class CoverageInfo extends GlobalLayerSupertype {
 
     public GeneralEnvelope getWGS84LonLatEnvelope() {
         return new GeneralEnvelope( coverage.getLatLonBoundingBox() );
-        
-        //
-        //if (this.lonLatWGS84Envelope == null) {
-        //    try {
-        //        this.lonLatWGS84Envelope = CoverageStoreUtils.getWGS84LonLatEnvelope(this.envelope);
-        //    } catch (IndexOutOfBoundsException e) {
-        //        return null;
-        //    } catch (FactoryException e) {
-        //        return null;
-        //    } catch (TransformException e) {
-        //        return null;
-        //    }
-        //}
-        //
-        //return this.lonLatWGS84Envelope;
+
     }
 
     public String getWmsPath() {
