@@ -19,7 +19,7 @@
 		<property name="id" value="security.user" />
 		<property name="titleKey" value="security.user.title" />
 		<property name="descriptionKey" value="security.user.description" />
-		<property name="componentClass" value="org.geoserver.web.security.user.SimpleUserPage" />
+		<property name="componentClass" value="org.geoserver.web.security.user.UserPage" />
 		<property name="icon" value="../../img/icons/silk/user.png" />
 		<property name="category" ref="securityCategory" />
 		<property name="order" value="100" />

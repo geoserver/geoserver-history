@@ -66,7 +66,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         form.add(addRoleButton(form));
         
         // build the submit/cancel
-        form.add(new BookmarkablePageLink("cancel", SimpleUserPage.class));
+        form.add(new BookmarkablePageLink("cancel", UserPage.class));
         form.add(saveLink());
         
         // add the validators

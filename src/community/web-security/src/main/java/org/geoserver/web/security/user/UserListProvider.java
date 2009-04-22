@@ -20,7 +20,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
  * Page listing the users contained in the users.properties file 
  */
 @SuppressWarnings("serial")
-public class SimpleUserProvider extends GeoServerDataProvider<User> {
+public class UserListProvider extends GeoServerDataProvider<User> {
     
     public static final Property<User> USERNAME = new BeanProperty<User>("username", "username");
     public static final Property<User> ROLES = new Property<User>() {
