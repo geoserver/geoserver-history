@@ -50,6 +50,10 @@ public class DataAccessRule implements Comparable<DataAccessRule>, Serializable 
         this.accessMode = other.accessMode;
         this.roles = new HashSet<String>(other.roles);
     }
+    
+    public DataAccessRule() {
+        this(ANY, ANY, AccessMode.READ, null);
+    }
 
     public String getWorkspace() {
         return workspace;
