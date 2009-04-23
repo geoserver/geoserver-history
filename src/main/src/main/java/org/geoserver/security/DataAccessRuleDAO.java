@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -61,6 +61,14 @@ public class DataAccessRuleDAO {
      * The security dir
      */
     File securityDir;
+    
+    /**
+     * Returns the instanced contained in the Spring context for the UI to use
+     * @return
+     */
+    public static DataAccessRuleDAO get() {
+       return GeoServerExtensions.bean(DataAccessRuleDAO.class); 
+    }
 
     /**
      * Builds a new dao
@@ -99,6 +107,7 @@ public class DataAccessRuleDAO {
      * @return true if the set did not contain the rule already, false otherwise
      */
     public boolean addRule(DataAccessRule rule) {
+        lastModified = System.currentTimeMillis();
         return rules.add(rule);
     }
     
@@ -106,7 +115,7 @@ public class DataAccessRuleDAO {
      * Forces a reload of the rules
      */
     public void refresh() {
-        checkPropertyFile(false);
+        checkPropertyFile(true);
     }
     
     /**
@@ -114,6 +123,7 @@ public class DataAccessRuleDAO {
      */
     public void clear() {
         rules.clear();
+        lastModified = System.currentTimeMillis();
     }
 
     /**
@@ -122,6 +132,7 @@ public class DataAccessRuleDAO {
      * @return
      */
     public boolean removeRule(DataAccessRule rule) {
+        lastModified = System.currentTimeMillis();
         return rules.remove(rule);
     }
 
@@ -181,15 +192,16 @@ public class DataAccessRuleDAO {
                         loadRules(watcher.getProperties());
                     }
                 }
+                lastModified = System.currentTimeMillis();
             } else if (watcher != null && (watcher.isStale() || force)) {
                 loadRules(watcher.getProperties());
+                lastModified = System.currentTimeMillis();
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE,
                     "Failed to reload data access rules from layers.properties, keeping old rules",
                     e);
         }
-        lastModified = System.currentTimeMillis();
     }
 
     /**
@@ -223,6 +235,13 @@ public class DataAccessRuleDAO {
                 }
             }
         }
+        
+        // make sure the two basic rules if the set is empty
+        if(result.size() == 0) {
+            result.add(new DataAccessRule(DataAccessRule.READ_ALL));
+            result.add(new DataAccessRule(DataAccessRule.WRITE_ALL));
+        }
+        
         rules = result;
     }
 
@@ -289,18 +308,9 @@ public class DataAccessRuleDAO {
      */
     Properties toProperties() {
         Properties props = new Properties();
-        props.put("mode", catalogMode);
+        props.put("mode", catalogMode.toString());
         for (DataAccessRule rule : rules) {
-            String roles = "";
-            if(rule.getRoles().isEmpty()) {
-                roles = DataAccessRule.ANY;
-            } else {
-                for (String role : rule.getRoles()) {
-                    roles += role + ",";
-                }
-                roles = roles.substring(0, roles.length() - 1);
-            }
-            props.put(rule.getKey(), roles);
+            props.put(rule.getKey(), rule.getValue());
         }
         return props;
     }
