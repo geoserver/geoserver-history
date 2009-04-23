@@ -29,13 +29,13 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         Locale.setDefault(Locale.ENGLISH);
         
         // make sure the recorder is where we think it is, it contains the palette selection
-        tester.assertComponent("userForm:roles:recorder", Recorder.class);
+        tester.assertComponent("userForm:roles:roles:recorder", Recorder.class);
         
         FormTester form = tester.newFormTester("userForm");
         form.setValue("username", "user");
         form.setValue("password", "pwd");
         form.setValue("confirmPassword", "pwd");
-        form.setValue("roles:recorder", "ROLE_FOO1");
+        form.setValue("roles:roles:recorder", "ROLE_FOO1");
         form.submit("save");
         
         tester.assertErrorMessages(new String[0]);

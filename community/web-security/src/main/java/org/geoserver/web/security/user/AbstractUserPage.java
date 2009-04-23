@@ -26,8 +26,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.security.GeoserverUserDao;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.security.RolesFormComponent;
 import org.geoserver.web.wicket.SimpleChoiceRenderer;
 
 /**
@@ -35,14 +35,10 @@ import org.geoserver.web.wicket.SimpleChoiceRenderer;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractUserPage extends GeoServerSecuredPage {
-    List<String> roles;
     TextField username;
-    TextField newRoleField;
-    Palette rolePalette;
 
     protected AbstractUserPage(UserUIModel user) {
         final Model userModel = new Model(user);
-        roles = GeoserverUserDao.get().getRoles();
 
         // build the form
         Form form = new Form("userForm");
@@ -57,13 +53,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         PasswordTextField pw2 = new PasswordTextField("confirmPassword").setResetPassword(false);
         form.add(pw1);
         form.add(pw2);
-        rolePalette = rolesPalette(userModel);
-        rolePalette.setOutputMarkupId(true);
-        form.add(rolePalette);
-        
-        form.add(newRoleField = new TextField("newRole", new Model()));
-        newRoleField.setOutputMarkupId(true);
-        form.add(addRoleButton(form));
+        form.add(new RolesFormComponent("roles", new PropertyModel(userModel, "authorities"), form));
         
         // build the submit/cancel
         form.add(new BookmarkablePageLink("cancel", UserPage.class));
@@ -72,48 +62,6 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         // add the validators
         form.add(new EqualInputValidator(pw1, pw2));
         username.setRequired(true);
-    }
-
-    /**
-     * Builds a palette that forces at least one role to be chosen
-     * @param userModel
-     * @return
-     */
-    Palette rolesPalette(final Model userModel) {
-        return new Palette("roles", new PropertyModel(userModel, "authorities"), new Model(
-                (Serializable) roles), new SimpleChoiceRenderer(), 10, false) {
-            
-            // trick to force the palette to have at least one selected elements
-            // tried with a nicer validator but it's not used at all, the required thing
-            // instead is working (don't know why...)
-            protected Recorder newRecorderComponent() {
-                Recorder rec = super.newRecorderComponent();
-                rec.setRequired(true);
-                return rec;
-            }
-        };
-    }
-
-    private AjaxButton addRoleButton(Form form) {
-        // have this work without triggering the form validation. This also means
-        // we need to grab the raw value out of the role field
-        AjaxButton button = new AjaxButton("addRole", form) {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-                UserUIModel user = (UserUIModel) form.getModelObject();
-                String newRole = newRoleField.getRawInput();
-                if(!user.authorities.contains(newRole) && !roles.contains(newRole)) {
-                    user.authorities.add(newRole);
-                    roles.add(newRole);
-                }
-                newRoleField.clearInput();
-                target.addComponent(rolePalette);
-                target.addComponent(newRoleField);
-            }
-        };
-        button.setDefaultFormProcessing(false);
-        return button;
     }
 
     SubmitLink saveLink() {
