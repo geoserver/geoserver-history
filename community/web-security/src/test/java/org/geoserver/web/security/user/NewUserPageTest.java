@@ -1,6 +1,5 @@
 package org.geoserver.web.security.user;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.acegisecurity.userdetails.UserDetails;
