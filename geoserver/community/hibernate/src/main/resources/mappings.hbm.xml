@@ -412,7 +412,7 @@
     	</list>       	
 		<one-to-one name="metadataLink" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
 			
-		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER"/>
+		<many-to-one name="geoServer" class="org.geoserver.config.impl.GeoServerInfoImpl" column="GEOSERVER" lazy="false"/>
 
 		<property name="citeCompliant" column="CITE_COMPLIANT"/>
 		<property name="onlineResource" column="ONLINE_RESOURCE"/>

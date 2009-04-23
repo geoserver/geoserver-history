@@ -81,27 +81,10 @@
 		automatically on annotated classes.
 	-->
 	<tx:annotation-driven transaction-manager="transactionManager" />
-	<!--
-		this is a transactional proxy for services which make calls to catalog
-		/ config which ensrues transactions / session set up
-	-->
-	<!--
-		bean id="transactionalCatalogService"
-		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="target"> <ref local="catalogTarget" /> </property>
-		<property name="transactionAttributes"> <props> <prop key="*">
-		PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
-		</prop> </props> </property> </bean> <bean
-		id="transactionalGeoServerService"
-		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="target"> <ref local="configTarget" /> </property>
-		<property name="transactionAttributes"> <props> <prop key="*">
-		PROPAGATION_REQUIRED,-OrderException,-OrderMinimumAmountException,-DataIntegrityViolationException
-		</prop> </props> </property> </bean
-	-->
 
+
+
+ 	
 	<bean id="hibGeoServerDAO" class="org.geoserver.hibernate.dao.GeoServerDAOImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
@@ -121,4 +104,17 @@
 	<bean id="configFactory" class="org.geoserver.config.impl.GeoServerFactoryImpl" />
 
 
+	<bean id="configTarget" class="org.geoserver.config.hibernate.HibernateGeoServer">
+		<property name="catalogDAO">
+			<ref local="hibGeoServerDAO" />
+		</property>
+		<!--
+			property name="sessionFactory"> <ref local="sessionFactory" />
+			</property
+		-->
+		<property name="factory" ref="configFactory" />
+		<property name="catalog" ref="catalogTarget" />
+	</bean>
+	<alias name="configTarget" alias="geoServer2" />
+    
 </beans>
