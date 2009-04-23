@@ -4,28 +4,17 @@
  */
 package org.geoserver.security;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
+import static org.geoserver.security.DataAccessRule.ANY;
+
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-
-import static org.geoserver.security.DataAccessRule.ANY;
 
 /**
  * Default implementation of {@link DataAccessManager}, loads simple access
@@ -112,8 +101,11 @@ public class DefaultDataAccessManager implements DataAccessManager {
     }
 
     void checkPropertyFile() {
-        if(lastLoaded < dao.getLastModified())
+        long daoLastModified = dao.getLastModified();
+        if(lastLoaded < daoLastModified) {
             root = buildAuthorizationTree(dao);
+            lastLoaded = daoLastModified;
+        }
     }
 
     SecureTreeNode buildAuthorizationTree(DataAccessRuleDAO dao) {
@@ -150,8 +142,8 @@ public class DefaultDataAccessManager implements DataAccessManager {
 
             }
 
-            // actually set the rule
-            if (node.getAuthorizedRoles(accessMode) != null && node.getAuthorizedRoles(accessMode).size() > 0) {
+            // actually set the rule, but don't complain for the default root contents
+            if (node.getAuthorizedRoles(accessMode) != null && node.getAuthorizedRoles(accessMode).size() > 0 && node != root) {
                 LOGGER.warning("Rule " + rule
                         + " is overriding another rule targetting the same resource");
             }
