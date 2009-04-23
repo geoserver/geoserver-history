@@ -291,6 +291,11 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         public boolean isVisible() {
             return visible;
         }
+        
+        @Override
+        public String toString() {
+            return "BeanProperty[" + name + "]";
+        }
     }
     
     /**
@@ -328,6 +333,12 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
             // the very reason for placeholder existence 
             // is to show up in the table
             return true;
+        }
+        
+        
+        @Override
+        public String toString() {
+            return "PropertyPlacehoder[" + name + "]";
         }
         
     }
