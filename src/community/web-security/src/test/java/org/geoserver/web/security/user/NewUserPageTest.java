@@ -44,8 +44,8 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         dao.reload();
         UserDetails user = dao.loadUserByUsername("user");
         assertEquals("pwd", user.getPassword());
-        // no good way to test the authorities, the palette is not participatint
-        // in the submit the same way other compontents are
+        // no good way to test the authorities, the palette is not participating
+        // in the submit the same way other components are
         // assertEquals(1, user.getAuthorities().length);
     }
     
