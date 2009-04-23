@@ -4,6 +4,7 @@
  */
 package org.geoserver.security;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,12 +15,15 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * roles that are allowed to access it
  * <p>Two rules are considered equal if 
  */
-public class DataAccessRule implements Comparable<DataAccessRule> {
+@SuppressWarnings("serial")
+public class DataAccessRule implements Comparable<DataAccessRule>, Serializable {
 
     /**
      * Any layer, or any workspace, or any role
      */
     public static final String ANY = "*";
+    public static DataAccessRule READ_ALL = new DataAccessRule(ANY, ANY, AccessMode.READ, null);
+    public static DataAccessRule WRITE_ALL = new DataAccessRule(ANY, ANY, AccessMode.WRITE, null);
 
     String workspace;
 
@@ -38,6 +42,13 @@ public class DataAccessRule implements Comparable<DataAccessRule> {
             this.roles = new HashSet<String>();
         else
             this.roles = new HashSet<String>(roles);
+    }
+    
+    public DataAccessRule(DataAccessRule other) {
+        this.workspace = other.workspace;
+        this.layer = other.layer;
+        this.accessMode = other.accessMode;
+        this.roles = new HashSet<String>(other.roles);
     }
 
     public String getWorkspace() {
@@ -75,6 +86,24 @@ public class DataAccessRule implements Comparable<DataAccessRule> {
      */
     public String getKey() {
         return workspace + "." + layer + "." + accessMode.getAlias();
+    }
+    
+    /**
+     * Returns the list of roles as a comma separated string for this rule
+     * @return
+     */
+    public String getValue() {
+        if(roles.isEmpty()) {
+            return DataAccessRule.ANY;
+        } else {
+            StringBuffer sb = new StringBuffer();
+            for (String role : roles) {
+                sb.append(role);
+                sb.append(",");
+            }
+            sb.setLength(sb.length() - 1);
+            return sb.toString();
+        } 
     }
 
     /**
@@ -129,5 +158,10 @@ public class DataAccessRule implements Comparable<DataAccessRule> {
         else
             return item.compareTo(otherItem);
 
+    }
+    
+    @Override
+    public String toString() {
+        return getKey() + "=" + getValue();
     }
 }
