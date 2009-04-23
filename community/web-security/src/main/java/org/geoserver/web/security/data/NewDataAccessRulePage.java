@@ -46,7 +46,7 @@ public class NewDataAccessRulePage extends AbstractDataAccessRulePage {
     class DuplicateRuleValidator extends AbstractFormValidator {
         public void validate(Form form) {
             DataAccessRule rule = new DataAccessRule((String) workspace.getConvertedInput(), (String) layer.getConvertedInput(), 
-                    (AccessMode) accessMode.getConvertedInput(), null);
+                    (AccessMode) accessMode.getConvertedInput());
             if(DataAccessRuleDAO.get().getRules().contains(rule)) {
                 form.error(new ParamResourceModel("duplicateRule", getPage(), rule.getKey()).getString());
             }
