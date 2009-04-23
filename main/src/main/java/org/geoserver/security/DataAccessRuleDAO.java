@@ -114,7 +114,7 @@ public class DataAccessRuleDAO {
     /**
      * Forces a reload of the rules
      */
-    public void refresh() {
+    public void reload() {
         checkPropertyFile(true);
     }
     

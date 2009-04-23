@@ -5,6 +5,7 @@
 package org.geoserver.security;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,8 +23,8 @@ public class DataAccessRule implements Comparable<DataAccessRule>, Serializable 
      * Any layer, or any workspace, or any role
      */
     public static final String ANY = "*";
-    public static DataAccessRule READ_ALL = new DataAccessRule(ANY, ANY, AccessMode.READ, null);
-    public static DataAccessRule WRITE_ALL = new DataAccessRule(ANY, ANY, AccessMode.WRITE, null);
+    public static DataAccessRule READ_ALL = new DataAccessRule(ANY, ANY, AccessMode.READ);
+    public static DataAccessRule WRITE_ALL = new DataAccessRule(ANY, ANY, AccessMode.WRITE);
 
     String workspace;
 
@@ -33,6 +34,9 @@ public class DataAccessRule implements Comparable<DataAccessRule>, Serializable 
 
     Set<String> roles;
 
+    /**
+     * Builds a new rule
+     */
     public DataAccessRule(String workspace, String layer, AccessMode accessMode, Set<String> roles) {
         super();
         this.workspace = workspace;
@@ -44,15 +48,28 @@ public class DataAccessRule implements Comparable<DataAccessRule>, Serializable 
             this.roles = new HashSet<String>(roles);
     }
     
+    /**
+     * Builds a new rule
+     */
+    public DataAccessRule(String workspace, String layer, AccessMode accessMode, String... roles) {
+        this(workspace, layer, accessMode, roles == null ? null : new HashSet<String>(Arrays.asList(roles)));
+    }
+
+    /**
+     * Copy constructor
+     */
     public DataAccessRule(DataAccessRule other) {
         this.workspace = other.workspace;
         this.layer = other.layer;
         this.accessMode = other.accessMode;
         this.roles = new HashSet<String>(other.roles);
     }
-    
+
+    /**
+     * Builds the default rule: *.*.r=*
+     */
     public DataAccessRule() {
-        this(ANY, ANY, AccessMode.READ, null);
+        this(ANY, ANY, AccessMode.READ);
     }
 
     public String getWorkspace() {
