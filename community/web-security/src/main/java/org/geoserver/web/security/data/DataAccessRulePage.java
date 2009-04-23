@@ -12,7 +12,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
 import org.geoserver.security.DataAccessRule;
 import org.geoserver.security.DataAccessRuleDAO;
 import org.geoserver.web.GeoServerSecuredPage;
@@ -82,8 +81,7 @@ public class DataAccessRulePage extends GeoServerSecuredPage {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                System.out.println("IMPLEMENT ME!");
-                // setResponsePage(new NewUserPage());
+                setResponsePage(new NewDataAccessRulePage());
             }
 
         };
@@ -94,8 +92,7 @@ public class DataAccessRulePage extends GeoServerSecuredPage {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                System.out.println("IMPLEMENT ME!");
-                // setResponsePage(new EditUserPage((UserDetails) getModelObject()));
+                setResponsePage(new EditDataAccessRulePage((DataAccessRule) getModelObject()));
             }
 
         };
