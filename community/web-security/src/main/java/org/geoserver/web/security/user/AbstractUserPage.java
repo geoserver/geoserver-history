@@ -12,10 +12,6 @@ import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.userdetails.User;
 import org.acegisecurity.userdetails.UserDetails;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.palette.Palette;
-import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -25,10 +21,8 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.security.GeoserverUserDao;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.security.RolesFormComponent;
-import org.geoserver.web.wicket.SimpleChoiceRenderer;
 
 /**
  * Allows creation of a new user in users.properties
@@ -53,7 +47,7 @@ public abstract class AbstractUserPage extends GeoServerSecuredPage {
         PasswordTextField pw2 = new PasswordTextField("confirmPassword").setResetPassword(false);
         form.add(pw1);
         form.add(pw2);
-        form.add(new RolesFormComponent("roles", new PropertyModel(userModel, "authorities"), form));
+        form.add(new RolesFormComponent("roles", new PropertyModel(userModel, "authorities"), form, false));
         
         // build the submit/cancel
         form.add(new BookmarkablePageLink("cancel", UserPage.class));
