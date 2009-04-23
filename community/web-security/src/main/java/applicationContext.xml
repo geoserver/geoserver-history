@@ -15,7 +15,7 @@
 	<!--
 	The user list page 
 	 -->
-	<bean id="securityPage" class="org.geoserver.web.MenuPageInfo">
+	<bean id="userSecurityPage" class="org.geoserver.web.MenuPageInfo">
 		<property name="id" value="security.user" />
 		<property name="titleKey" value="security.user.title" />
 		<property name="descriptionKey" value="security.user.description" />
@@ -23,6 +23,19 @@
 		<property name="icon" value="../../img/icons/silk/user.png" />
 		<property name="category" ref="securityCategory" />
 		<property name="order" value="100" />
+	</bean>
+	
+	<!--
+	The user list page 
+	 -->
+	<bean id="dataSecurityPage" class="org.geoserver.web.MenuPageInfo">
+		<property name="id" value="security.data" />
+		<property name="titleKey" value="security.data.title" />
+		<property name="descriptionKey" value="security.data.description" />
+		<property name="componentClass" value="org.geoserver.web.security.data.DataAccessRulePage" />
+		<property name="icon" value="../../img/icons/silk/database_key.png" />
+		<property name="category" ref="securityCategory" />
+		<property name="order" value="200" />
 	</bean>
 
 </beans> 
