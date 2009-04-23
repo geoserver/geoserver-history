@@ -115,10 +115,13 @@ public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
         return result;
     }
     
+    /**
+     * Makes sure we see translated text, by the raw name is used for the model
+     */
     class AccessModeRenderer implements IChoiceRenderer {
 
         public Object getDisplayValue(Object object) {
-            return (String) new ParamResourceModel(((AccessMode) object).name(), getPage(), null).getObject();
+            return (String) new ParamResourceModel(((AccessMode) object).name(), getPage()).getObject();
         }
 
         public String getIdValue(Object object, int index) {
@@ -127,6 +130,9 @@ public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
         
     }
     
+    /**
+     * Bridge between Set and List
+     */
     static class RolesModel implements IModel {
         
         DataAccessRule rule;
@@ -136,12 +142,12 @@ public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
         }
 
         public Object getObject() {
-            return new ArrayList(rule.getRoles());
+            return new ArrayList<String>(rule.getRoles());
         }
 
         public void setObject(Object object) {
             rule.getRoles().clear();
-            rule.getRoles().addAll((List) object);
+            rule.getRoles().addAll((List<String>) object);
         }
 
         public void detach() {
