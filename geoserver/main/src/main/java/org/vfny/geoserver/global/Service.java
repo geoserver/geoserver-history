@@ -35,54 +35,12 @@ import org.vfny.geoserver.global.dto.ServiceDTO;
  * 
  * @deprecated use {@link ServiceInfo}
  */
-public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
-    //    private boolean enabled;
-    //    private URL onlineResource;
-    //    private String name;
-    //    private String title;
-    //    private String serverAbstract;
-    //    private String[] keywords = new String[0];
-    //    private String fees;
-    //    private String accessConstraints;
-    //    private String maintainer;
-    //private String strategy;
-    //private MetaDataLink metadataLink;
-    //private int partialBufferSize;
-    //private GeoServer gs;
-    //private Data dt;
+public class Service  implements OWS  {
+
 
     protected ServiceInfo service;
     protected org.geoserver.config.GeoServer gs;
     
-    ///**
-    // * Service constructor.
-    // *
-    // * <p>
-    // * Stores the new ServiceDTO data for this service.
-    // * </p>
-    // *
-    // * @param config
-    // *
-    // * @throws NullPointerException when the param is null
-    // */
-    //public Service(ServiceDTO dto) {
-    //    if (dto == null) {
-    //        throw new NullPointerException();
-    //    }
-    //
-    //    setEnabled(dto.isEnabled());
-    //    setName(dto.getName());
-    //    setTitle(dto.getTitle());
-    //    setAbtract(dto.getAbstract());
-    //    setKeywords(dto.getKeywords());
-    //    setFees(dto.getFees());
-    //    setAccessConstraints(dto.getAccessConstraints());
-    //    setMaintainer(dto.getMaintainer());
-    //    setOnlineResource(dto.getOnlineResource());
-    //    metadataLink = dto.getMetadataLink();
-    //    strategy = dto.getStrategy();
-    //    partialBufferSize = dto.getPartialBufferSize();
-    //}
     public Service( ServiceInfo service, org.geoserver.config.GeoServer gs ) {
         this.service = service;
         this.gs = gs;
@@ -120,19 +78,7 @@ public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
         
         setStrategy(dto.getStrategy());
         setPartialBufferSize( dto.getPartialBufferSize() );
-        
-        //setEnabled(dto.isEnabled());
-        //setName(dto.getName());
-        //setTitle(dto.getTitle());
-        //setAbtract(dto.getAbstract());
-        //setKeywords(dto.getKeywords());
-        //setFees(dto.getFees());
-        //setAccessConstraints(dto.getAccessConstraints());
-        //setMaintainer(dto.getMaintainer());
-        //setOnlineResource(dto.getOnlineResource());
-        //metadataLink = dto.getMetadataLink();
-        //stategy = dto.getStrategy();
-        //partialBufferSize = dto.getPartialBufferSize();
+
     }
 
     /**
@@ -197,19 +143,7 @@ public class Service  implements OWS /* extends GlobalLayerSupertype*/ {
         dto.setMetadataLink(getMetadataLink());    
         dto.setStrategy(getStrategy());
         dto.setPartialBufferSize(getPartialBufferSize());
-        
-        //dto.setAccessConstraints(getAccessConstraints());
-        //dto.setEnabled(isEnabled());
-        //dto.setFees(getFees());
-        //dto.setKeywords(getKeywords());
-        //dto.setMaintainer(getMaintainer());
-        //dto.setName(getName());
-        //dto.setOnlineResource(getOnlineResource());
-        //dto.setAbstract(getAbstract());
-        //dto.setTitle(getTitle());
-        //dto.setMetadataLink(metadataLink);
-        //dto.setStrategy(strategy);
-        //dto.setPartialBufferSize(partialBufferSize);
+
 
         return dto;
     }

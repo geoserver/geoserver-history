@@ -70,9 +70,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 /**
  * A {@link Catalog} implementation based on Hibernate
  * 
- * @author Justin Deoliveira (OpenGeo)
- * @author Alessio Fabianni (GeoSolutions)
- * @author Gabriel Roldan (OpenGeo)
+ * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class HibernateCatalog implements Catalog {
 	private final static Logger LOGGER= Logging.getLogger(HibernateCatalog.class);

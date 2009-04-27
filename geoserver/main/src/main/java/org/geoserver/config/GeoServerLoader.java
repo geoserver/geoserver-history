@@ -110,7 +110,7 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             try {
                 catalogImporter.imprt( resourceLoader.getBaseDirectory() );
             }
-            catch(Exception e) {
+            catch(Throwable e) {
                 throw new RuntimeException( e );
             }
             
@@ -125,8 +125,8 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 throw new RuntimeException( e );
             }
         }else{
-            LOGGER.info("Found an alternative catalog implementation: "
-                    + catalog.getClass().getName() + ". Skipping legacy catalog import");
+
+            LOGGER.info("Found an alternative catalog implementation: " + catalog.getClass().getName() + ". Skipping legacy catalog import");
         }
         
         //load initializer extensions
@@ -150,7 +150,8 @@ public final class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     public void destroy() throws Exception {
         //TODO: persist catalog
         //TODO: persist global
-
+    	if(geoserver==null)
+    		return;
         //persist services
         Collection services = geoserver.getServices();
         List<ServiceLoader> loaders = GeoServerExtensions.extensions( ServiceLoader.class );

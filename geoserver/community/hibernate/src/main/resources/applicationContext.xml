@@ -40,9 +40,12 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="schemaUpdate" value="false" />
 		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
-		<!-- property name="configurationClass">
-			<value>org.hibernate.cfg.AnnotationConfiguration</value>
-		</property -->
+		<!-- here below I can override the configuration in hibernate.cfg.xml-->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
 	</bean>
 
 	<!-- Interceptors -->
@@ -51,7 +54,11 @@
 		<constructor-arg ref="catalogTarget" />
 	</bean>
 
-	<!-- setup transaction manager	-->
+	<!--										  -->
+	<!--										  -->
+	<!-- setup transaction manager	for Hibernate -->
+	<!--										  -->
+	<!--										  -->
 	<!--
 		Transaction manager for a single Hibernate SessionFactory (alternative
 		to JTA)
@@ -59,22 +66,7 @@
 	<bean id="transactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
-		<!--
-			property name="dataSource"> <ref local="dataSource" /> </property
-		-->
-		<!-- property name="entityInterceptor" ref="catalogInterceptor" / -->
 	</bean>
-	<!--
-		Instruct Spring to retrieve and apply @AspectJ aspects which are
-		defined as beans in this context (such as the UsageLogAspect below).
-	-->
-	<!-- aop:aspectj-autoproxy / -->
-
-	<!--
-		Activates various annotations to be detected in bean classes: Spring's
-		@Required and @Autowired, as well as JSR 250's @Resource.
-	-->
-	<!-- context:annotation-config/ -->
 
 	<!--
 		Instruct Spring to perform declarative transaction management
@@ -94,10 +86,6 @@
 		<property name="catalogDAO">
 			<ref local="hibGeoServerDAO" />
 		</property>
-		<!--
-			property name="sessionFactory"> <ref local="sessionFactory" />
-			</property
-		-->
 	</bean>
 	<alias name="catalogTarget" alias="rawCatalog" />
 

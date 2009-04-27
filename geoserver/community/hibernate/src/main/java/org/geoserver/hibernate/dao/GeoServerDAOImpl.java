@@ -44,7 +44,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author Alessio
+ * @author Alessio Fabiani, GeoSolutions SAS
+ * @author Simone Giannecchini, GeoSolutions SAS
  * 
  */
 @Repository
@@ -66,14 +67,14 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * @param sessionFactory the sessionFactory to set
      */
-    public synchronized void setSessionFactory(SessionFactory sessionFactory) {
+    public  void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     /**
      * @return 
      */
-    public synchronized SessionFactory getSessionFactory() {
+    public  SessionFactory getSessionFactory() {
         return this.sessionFactory;
     }
     
@@ -89,7 +90,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
      * 
      * @see org.geoserver.hibernate.dao.IGeoServerDAO#save(java.lang.Object)
      */
-    public synchronized void save(Object entity) {
+    public  void save(Object entity) {
         getSessionFactory().getCurrentSession().save(entity);
     }
 
@@ -98,7 +99,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
      * 
      * @see org.geoserver.hibernate.dao.IGeoServerDAO#merge(java.lang.Object)
      */
-    public synchronized void merge(Object entity) {
+    public  void merge(Object entity) {
         getSessionFactory().getCurrentSession().merge(entity);
     }
 
@@ -107,7 +108,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
      * 
      * @see org.geoserver.hibernate.dao.IGeoServerDAO#delete(java.lang.Object)
      */
-    public synchronized void delete(Object entity) {
+    public  void delete(Object entity) {
         getSessionFactory().getCurrentSession().delete(entity);
         getSessionFactory().getCurrentSession().flush();
     }
@@ -117,7 +118,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
      * 
      * @see org.geoserver.hibernate.dao.IGeoServerDAO#update(java.lang.Object)
      */
-    public synchronized void update(Object entity) {
+    public  void update(Object entity) {
         getSessionFactory().getCurrentSession().update(entity);
     }
 
@@ -137,7 +138,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
         if (arguments != null) {
             for (int argN = 0; argN < arguments.length; argN++) {
                 final Object arg = arguments[argN];
-                final Class c = arg.getClass();
+                final Class<? extends Object> c = arg.getClass();
                 if (String.class == c) {
                     query.setString(argN, (String) arg);
                 } else if (Boolean.class == c) {
@@ -181,7 +182,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * @see Catalog#getDefaultNamespace()
      */
-    public synchronized HbNamespaceInfo getDefaultNamespace() {
+    public  HbNamespaceInfo getDefaultNamespace() {
         String hql = sqlQueryBuilder("from " , NamespaceInfo.class.getName(), " where default=?");
         HbNamespaceInfo info = (HbNamespaceInfo) first(hql, new Object[] { Boolean.TRUE });
         return info != null ? (HbNamespaceInfo) getSessionFactory().getCurrentSession().get(HbNamespaceInfo.class, info.getId()) : null;
@@ -190,7 +191,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
+    public  <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
         T store = (T) first(sqlQueryBuilder("from " , clazz.getName() , " where id = ?"), new Object[] { id }); 
         return store != null ? (T) getSessionFactory().getCurrentSession().get(StoreInfoImpl.class, store.getId()) : null;
     }
@@ -198,7 +199,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
+    public  <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
         T store = (T) first(sqlQueryBuilder("from " , clazz.getName() , " where name = ?"), new Object[] { name }); 
         return store != null ? (T) getSessionFactory().getCurrentSession().get(StoreInfoImpl.class, store.getId()) : null;
     }
@@ -206,7 +207,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
+    public  <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
         T resource = (T) first(sqlQueryBuilder("from " , clazz.getName() , " where id = ?"), new Object[] { id });
         return resource != null ? (T) getSessionFactory().getCurrentSession().get(ResourceInfoImpl.class, resource.getId()) : null;
     }
@@ -214,7 +215,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
+    public  <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
         T resource = (T) first(sqlQueryBuilder("from " , clazz.getName() , " where name = ? and namespace = ?"), new Object[] { name, ns });
         return resource != null ? (T) getSessionFactory().getCurrentSession().get(ResourceInfoImpl.class, resource.getId()) : null;
     }
@@ -222,7 +223,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized LayerInfo getLayer(String id) {
+    public  LayerInfo getLayer(String id) {
         LayerInfo layer = (LayerInfo) first(sqlQueryBuilder("from " , LayerInfo.class.getName() , " where id = ?"), new Object[] { id });
         return layer != null ? (LayerInfo) getSessionFactory().getCurrentSession().get(LayerInfoImpl.class, layer.getId()) : null;
     }
@@ -230,7 +231,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized LayerInfo getLayerByName(String name) {
+    public  LayerInfo getLayerByName(String name) {
         LayerInfo layer = (LayerInfo) first(sqlQueryBuilder("from ", LayerInfo.class.getName() , " where name = ?"), new Object[] { name });
         return layer != null ? (LayerInfo) getSessionFactory().getCurrentSession().get(LayerInfoImpl.class, layer.getId()) : null;
     }
@@ -238,21 +239,21 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends StoreInfo> List<T> getStores(Class<T> clazz) {
+    public  <T extends StoreInfo> List<T> getStores(Class<T> clazz) {
         return (List<T>) list(clazz);
     }
 
     /**
      * 
      */
-    public synchronized <T extends ResourceInfo> List<T> getResources(Class<T> clazz) {
+    public  <T extends ResourceInfo> List<T> getResources(Class<T> clazz) {
         return (List<T>) list(clazz);
     }
 
     /**
      * 
      */
-    public synchronized <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace, Class<T> clazz) {
+    public  <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace, Class<T> clazz) {
         String hql = sqlQueryBuilder("select r from " , clazz.getName() , " r, " + NamespaceInfo.class.getName() , " n where r.namespace = n and n.prefix = '" , namespace.getPrefix() , "'");
         return (List<T>) list(hql);
     }
@@ -260,7 +261,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized MapInfo getMap(String id) {
+    public  MapInfo getMap(String id) {
         MapInfo map = (MapInfo) first(sqlQueryBuilder("from " , MapInfo.class.getName() , " where id = ? "), new Object[] { id });
         return map != null ? (MapInfo) getSessionFactory().getCurrentSession().get(MapInfoImpl.class, map.getId()) : null;
     }
@@ -268,7 +269,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized MapInfo getMapByName(String name) {
+    public  MapInfo getMapByName(String name) {
         MapInfo map = (MapInfo) first(sqlQueryBuilder("from " , MapInfo.class.getName() , " where name = ?"), new Object[] { name });
         return map != null ? (MapInfo) getSessionFactory().getCurrentSession().get(MapInfoImpl.class, map.getId()) : null;
     }
@@ -276,21 +277,21 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<MapInfo> getMaps() {
+    public  List<MapInfo> getMaps() {
         return (List<MapInfo>) list(MapInfoImpl.class);
     }
 
     /**
      * 
      */
-    public synchronized List<LayerInfo> getLayers() {
+    public  List<LayerInfo> getLayers() {
         return (List<LayerInfo>) list(LayerInfoImpl.class);
     }
 
     /**
      * 
      */
-    public synchronized StyleInfo getStyle(String id) {
+    public  StyleInfo getStyle(String id) {
         StyleInfo style = (StyleInfo) first(sqlQueryBuilder("from " , StyleInfo.class.getName() , " where id = ?"), new Object[] { id }); 
         return style != null ? (StyleInfo) getSessionFactory().getCurrentSession().get(StyleInfoImpl.class, style.getId()) : null;
     }
@@ -298,7 +299,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized StyleInfo getStyleByName(String name) {
+    public  StyleInfo getStyleByName(String name) {
         StyleInfo style = (StyleInfo) first(sqlQueryBuilder("from " , StyleInfo.class.getName() , " where name = ?"), new Object[] { name }); 
         return style != null ? (StyleInfo) getSessionFactory().getCurrentSession().get(StyleInfoImpl.class, style.getId()) : null;
     }
@@ -306,14 +307,14 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<StyleInfo> getStyles() {
+    public  List<StyleInfo> getStyles() {
         return (List<StyleInfo>) list(StyleInfo.class);
     }
 
     /**
      * 
      */
-    public synchronized NamespaceInfo getNamespace(String id) {
+    public  NamespaceInfo getNamespace(String id) {
         HbNamespaceInfo nameSpace = (HbNamespaceInfo) first(sqlQueryBuilder("from " , NamespaceInfo.class.getName() , " where id = ?"), new Object[] { id });
         return nameSpace != null ? (NamespaceInfo) getSessionFactory().getCurrentSession().get(HbNamespaceInfo.class, nameSpace.getId()) : null;
     }
@@ -321,7 +322,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized HbNamespaceInfo getNamespaceByPrefix(String prefix) {
+    public  HbNamespaceInfo getNamespaceByPrefix(String prefix) {
         HbNamespaceInfo nameSpace = (HbNamespaceInfo) first(sqlQueryBuilder("from ", NamespaceInfo.class.getName() , " where prefix = ?"), new Object[] { prefix });
         return nameSpace != null ? (HbNamespaceInfo) getSessionFactory().getCurrentSession().get(HbNamespaceInfo.class, nameSpace.getId()) : null;
     }
@@ -329,7 +330,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized NamespaceInfo getNamespaceByURI(String uri) {
+    public  NamespaceInfo getNamespaceByURI(String uri) {
         NamespaceInfo nameSpace = (NamespaceInfo) first(sqlQueryBuilder("from " , NamespaceInfo.class.getName() , " where URI = ?"), new Object[] { uri });
         return nameSpace != null ? (NamespaceInfo) getSessionFactory().getCurrentSession().get(HbNamespaceInfo.class, nameSpace.getId()) : null;
     }
@@ -337,14 +338,14 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<NamespaceInfo> getNamespaces() {
+    public  List<NamespaceInfo> getNamespaces() {
         return (List<NamespaceInfo>) list(NamespaceInfoImpl.class);
     }
 
     /**
      * 
      */
-    public synchronized HbWorkspaceInfo getDefaultWorkspace() {
+    public  HbWorkspaceInfo getDefaultWorkspace() {
         String hql = sqlQueryBuilder("from " , HbWorkspaceInfo.class.getName(), " where default=?");
         HbWorkspaceInfo info = (HbWorkspaceInfo) first(hql, new Object[] { Boolean.TRUE });
         return info != null ? (HbWorkspaceInfo) getSessionFactory().getCurrentSession().get(HbWorkspaceInfo.class, info.getId()) : null;
@@ -353,14 +354,14 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<LayerGroupInfo> getLayerGroups() {
+    public  List<LayerGroupInfo> getLayerGroups() {
         return (List<LayerGroupInfo>) list(LayerGroupInfoImpl.class);
     }
 
     /**
      * 
      */
-    public synchronized ModelInfo getModel(String id) {
+    public  ModelInfo getModel(String id) {
         ModelInfo model = (ModelInfo) first(sqlQueryBuilder("from " , ModelInfo.class.getName() , " where id = ?"), new Object[] { id }); 
         return model != null ? (ModelInfo) getSessionFactory().getCurrentSession().get(ModelInfoImpl.class, model.getId()) : null;
     }
@@ -368,7 +369,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized ModelInfo getModelByName(String name) {
+    public  ModelInfo getModelByName(String name) {
         ModelInfo model = (ModelInfo) first(sqlQueryBuilder("from ", ModelInfo.class.getName() , " where name = ?"), new Object[] { name }); 
         return model != null ? (ModelInfo) getSessionFactory().getCurrentSession().get(ModelInfoImpl.class, model.getId()) : null;
     }
@@ -376,7 +377,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized ModelRunInfo getModelRun(String id) {
+    public  ModelRunInfo getModelRun(String id) {
         ModelRunInfo modelRun = (ModelRunInfo) first(sqlQueryBuilder("from " , ModelRunInfo.class.getName() , " where id = ?"), new Object[] { id }); 
         return modelRun != null ? (ModelRunInfo) getSessionFactory().getCurrentSession().get(ModelRunInfoImpl.class, modelRun.getId()) : null;
     }
@@ -384,7 +385,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<ModelInfo> getModels(GeophysicParamInfo param) {
+    public  List<ModelInfo> getModels(GeophysicParamInfo param) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select gp.models from " , GeophysicParamInfoImpl.class.getName() , " as gp where gp = ?"));
         query.setEntity(0, param);
         
@@ -394,7 +395,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized ModelRunInfo getModelRunByName(String name) {
+    public  ModelRunInfo getModelRunByName(String name) {
         ModelRunInfo modelRun = (ModelRunInfo) first(sqlQueryBuilder("from " , ModelRunInfoImpl.class.getName() , " where name = ?"), new Object[] { name }); 
         return modelRun != null ? (ModelRunInfo) getSessionFactory().getCurrentSession().get(ModelRunInfoImpl.class, modelRun.getId()) : null;
     }
@@ -402,14 +403,14 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<ModelRunInfo> getModelRuns() {
+    public  List<ModelRunInfo> getModelRuns() {
         return (List<ModelRunInfo>) list(ModelRunInfo.class);
     }
 
     /**
      * 
      */
-    public synchronized List<ModelRunInfo> getModelRuns(ModelInfo model) {
+    public  List<ModelRunInfo> getModelRuns(ModelInfo model) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("from " , ModelRunInfoImpl.class.getName() , " where model = ?"));
         query.setEntity(0, model);
         return query.list();
@@ -418,7 +419,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<ModelRunInfo> getModelRuns(GeophysicParamInfo param) {
+    public  List<ModelRunInfo> getModelRuns(GeophysicParamInfo param) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select gp.modelRuns from " , GeophysicParamInfoImpl.class.getName() , " as gp where gp = ?"));
         query.setEntity(0, param);
         return query.list();
@@ -427,7 +428,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
+    public  List<CoverageInfo> getGridCoverages(ModelRunInfo modelRun) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select mr.gridCoverages from ", ModelRunInfoImpl.class.getName(), " as mr where mr = ?"));
         query.setEntity(0, modelRun);
         return query.list();
@@ -436,7 +437,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<CoverageInfo> getGridCoverages(GeophysicParamInfo param) {
+    public  List<CoverageInfo> getGridCoverages(GeophysicParamInfo param) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select gp.gridCoverages from " , GeophysicParamInfoImpl.class.getName() , " as gp where gp = ?"));
         query.setEntity(0, param);
         return query.list();
@@ -445,7 +446,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<GeophysicParamInfo> getGeophysicalParameters(ModelInfo model) {
+    public  List<GeophysicParamInfo> getGeophysicalParameters(ModelInfo model) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select m.geophysicalParameters from " , ModelInfoImpl.class.getName() , " as m where m = ?"));
         query.setEntity(0, model);
         return query.list();
@@ -454,7 +455,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun) {
+    public  List<GeophysicParamInfo> getGeophysicalParameters(ModelRunInfo modelRun) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select mr.geophysicalParameters from ", ModelRunInfoImpl.class.getName(), " as mr where mr = ?"));
         query.setEntity(0, modelRun);
         return query.list();
@@ -463,7 +464,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<GeophysicParamInfo> getGeophysicalParameters(CoverageInfo coverage) {
+    public  List<GeophysicParamInfo> getGeophysicalParameters(CoverageInfo coverage) {
         Query query = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("select cv.geophysicalParameters from " , CoverageInfoImpl.class.getName() , " as cv where cv = ?"));
         query.setEntity(0, coverage);
         return query.list();
@@ -472,7 +473,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized GeophysicParamInfo getGeophysicParamByName(String name) {
+    public  GeophysicParamInfo getGeophysicParamByName(String name) {
         GeophysicParamInfo geophysicParam = (GeophysicParamInfo) first(sqlQueryBuilder("from " , GeophysicParamInfoImpl.class.getName() , " where name = ?"), new Object[] { name }); 
         return geophysicParam != null ? (GeophysicParamInfo) getSessionFactory().getCurrentSession().get(GeophysicParamInfoImpl.class, geophysicParam.getId()) : null;
     }
@@ -480,28 +481,28 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<ModelInfo> getModels() {
+    public  List<ModelInfo> getModels() {
         return (List<ModelInfo>) list(ModelInfo.class);
     }
 
     /**
      * 
      */
-    public synchronized List<GeophysicParamInfo> getGeophysicalParameters() {
+    public  List<GeophysicParamInfo> getGeophysicalParameters() {
         return (List<GeophysicParamInfo>) list(GeophysicParamInfo.class);
     }
 
     /**
      * 
      */
-    public synchronized <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace, Class<T> clazz) {
+    public  <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace, Class<T> clazz) {
         return null;
     }
 
     /**
      * 
      */
-    public synchronized WorkspaceInfo getWorkspace(String id) {
+    public  WorkspaceInfo getWorkspace(String id) {
         WorkspaceInfo ws = (WorkspaceInfo) first(sqlQueryBuilder("from " , WorkspaceInfo.class.getName() , " where id = "), new Object[] { id });
         return ws != null ? (WorkspaceInfo) getSessionFactory().getCurrentSession().get(HbWorkspaceInfo.class, ws.getId()) : null;
     }
@@ -509,7 +510,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized WorkspaceInfo getWorkspaceByName(String name) {
+    public  WorkspaceInfo getWorkspaceByName(String name) {
         WorkspaceInfo ws = (WorkspaceInfo) first(sqlQueryBuilder("from ", WorkspaceInfo.class.getName() , " where name = ?"), new Object[] { name });
         return ws != null ? (WorkspaceInfo) getSessionFactory().getCurrentSession().get(HbWorkspaceInfo.class, ws.getId()) : null;
     }
@@ -517,14 +518,14 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized List<WorkspaceInfo> getWorkspaces() {
+    public  List<WorkspaceInfo> getWorkspaces() {
         return (List<WorkspaceInfo>) list(WorkspaceInfo.class);
     }
 
     /**
      * 
      */
-    public synchronized GeoServerInfo getGeoServer() {
+    public  GeoServerInfo getGeoServer() {
         Iterator i = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("from ", GeoServerInfoImpl.class.getName())).iterate();
         if (i.hasNext())
             return (GeoServerInfo) getSessionFactory().getCurrentSession().get(GeoServerInfoImpl.class, ((GeoServerInfo) i.next()).getId());
@@ -535,7 +536,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
+    public  Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
         List<?> list = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("from " , clazz.getName())).list();
         return (Collection<? extends ServiceInfo>) list;
     }
@@ -543,7 +544,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
+    public  <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
         Iterator i = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("from " , clazz.getName() , " where id = '" , id , "'")).iterate();
         if (i.hasNext()) {
 //        	return  (T) i.next();
@@ -557,7 +558,7 @@ public class GeoServerDAOImpl implements GeoServerDAO {
     /**
      * 
      */
-    public synchronized <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
+    public  <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
         Iterator i = getSessionFactory().getCurrentSession().createQuery(sqlQueryBuilder("from " , clazz.getName() , " where name = '" , name , "'")).iterate();
         if (i.hasNext()) {
 //        	return  (T) i.next();

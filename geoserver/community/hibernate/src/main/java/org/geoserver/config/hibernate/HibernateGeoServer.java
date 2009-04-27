@@ -39,7 +39,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.data.util.CoverageStoreUtils;
-import org.geoserver.hibernate.dao.IGeoServerDAO;
+import org.geoserver.hibernate.dao.GeoServerDAO;
 import org.geoserver.jai.JAIInfo;
 import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
@@ -93,7 +93,7 @@ public class HibernateGeoServer implements GeoServer {
     /**
      * 
      */
-    private IGeoServerDAO catalogDAO;
+    private GeoServerDAO catalogDAO;
 
     /**
      * 
@@ -278,14 +278,14 @@ public class HibernateGeoServer implements GeoServer {
     /**
      * @return the catalogDAO
      */
-    public IGeoServerDAO getCatalogDAO() {
+    public GeoServerDAO getCatalogDAO() {
         return catalogDAO;
     }
 
     /**
      * @param catalogDAO the catalogDAO to set
      */
-    public void setCatalogDAO(IGeoServerDAO catalogDAO) {
+    public void setCatalogDAO(GeoServerDAO catalogDAO) {
         this.catalogDAO = catalogDAO;
     }
 

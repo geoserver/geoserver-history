@@ -3,8 +3,10 @@ package org.geoserver.catalog.hibernate;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.geotools.util.Utilities;
+import org.geotools.util.logging.Logging;
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
@@ -20,8 +22,25 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class HibernateCatalogInterceptor extends EmptyInterceptor implements
         ApplicationContextAware {
+	
+	private final static Logger LOGGER = Logging.getLogger(HibernateCatalogInterceptor.class);
 
-    /**
+    @Override
+	public void afterTransactionBegin(Transaction tx) {
+		// TODO Auto-generated method stub
+		super.afterTransactionBegin(tx);
+		LOGGER.info("afterTransactionBegin");
+	}
+
+	@Override
+	public void beforeTransactionCompletion(Transaction tx) {
+		// TODO Auto-generated method stub
+		super.beforeTransactionCompletion(tx);
+		
+		LOGGER.info("beforeTransactionCompletion");
+	}
+
+	/**
      * 
      */
     private static final long serialVersionUID = -9046884809650001060L;

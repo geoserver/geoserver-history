@@ -24,8 +24,6 @@
         <property name="name" column="NAME" unique="true" not-null="true" />
 		<property name="description" column="DESCRIPTION"/>
 		<property name="enabled" column="ENABLED"/>
-        <!-- many-to-one name="namespace" column="NAMESPACE" 
-        	class="org.geoserver.catalog.hibernate.HbNamespaceInfo"/ --> <!-- FIX: WorkSpace -->
         <many-to-one name="workspace" column="WORKSPACE" class="org.geoserver.catalog.hibernate.HbWorkspaceInfo" lazy="false"/>
         	
         <map name="metadata" table="STORE_METADATA" cascade="all" lazy="false">

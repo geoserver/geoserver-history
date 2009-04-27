@@ -2866,16 +2866,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         return dataStore.getDataStore().getFeatureSource(typeName);
     }
 
-    ///**
-    // * Returns the baseDir for use with relative paths.
-    // *
-    // * @return Returns the baseDir.
-    // *
-    // * @uml.property name="baseDir"
-    // */
-    //public File getBaseDir() {
-    //    return baseDir;
-    //}
 
     /**
      * Given a layer name will return its type, or null if the layer is not there
@@ -2894,49 +2884,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return null;
         }
         return layer.getType().getCode();
-        //
-        //Integer layerType = (Integer) layerNames.get(layerName);
-        //
-        //if (layerType != null) {
-        //    return layerType;
-        //}
-        //
-        //// vector layers are namespace prefixed, coverages are not
-        //if (layerName.indexOf(":") == -1) {
-        //    final String prefixedName = defaultNameSpace.getPrefix() + ":" + layerName;
-        //    
-        //    layerType = (Integer) layerNames.get(prefixedName); 
-        //    if ( layerType != null ) {
-        //        return layerType;
-        //    }
-        //    
-        //    //ok one last try, check other namespces
-        //    List<Integer> possible = new ArrayList<Integer>();
-        //    for ( int i = 0; i < getNameSpaces().length; i++ ) {
-        //        NameSpaceInfo ns = getNameSpaces()[i];
-        //        if ( ns.isDefault() ) {
-        //            continue;
-        //        }
-        //        
-        //        Integer possibleLayerType = 
-        //            (Integer) layerNames.get( ns.getPrefix() + ":" + layerName );
-        //        if ( possibleLayerType != null ) {
-        //            possible.add( possibleLayerType );
-        //        }
-        //    }
-        //    
-        //    //only one match, cool, return it
-        //    if ( possible.size() == 1 ) {
-        //        return possible.get( 1 );
-        //    }
-        //    
-        //    return null;
-        //} else {
-        //    final String strippedName = layerName.substring(layerName.indexOf(":") + 1,
-        //            layerName.length());
-        //
-        //    return (Integer) layerNames.get(strippedName);
-        //}
+        
     }
 
     /**
