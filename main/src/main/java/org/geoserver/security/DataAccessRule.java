@@ -14,7 +14,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Represents a data access rule: identifies a workspace, a layer, an access mode, and the set of
  * roles that are allowed to access it
- * <p>Two rules are considered equal if 
+ * <p>Mind, two rules are considered equal if the address the same data, if you need full
+ * comparison, use {@link #equalsExact(DataAccessRule)}</p>
  */
 @SuppressWarnings("serial")
 public class DataAccessRule implements Comparable<DataAccessRule>, Serializable {
@@ -155,6 +156,16 @@ public class DataAccessRule implements Comparable<DataAccessRule>, Serializable 
             return false;
 
         return 0 == compareTo((DataAccessRule) obj);
+    }
+    
+    /**
+     * Full equality, roles included
+     */
+    public boolean equalsExact(DataAccessRule obj) {
+        if(0 != compareTo(obj))
+            return false;
+        else
+            return roles.equals(obj.roles);
     }
 
     /**
