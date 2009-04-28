@@ -30,5 +30,5 @@ information see http://geoserver.org/display/GEOS/GeoSearch+Module .
 
 COMPATIBILITY
 
-This jar should work with any version of GeoServer 1.7.3 or later.  1.7.0 and
+This jar should work with any version of GeoServer 1.7.4 or later.  1.7.0 and
 up may work with the rest service support extension.

@@ -1,3 +1,20 @@
+GeoServer 1.7.4 (April 29, 2009)
+-------------------------------
+
+The fifth release of 1.7.x brings the following new features:
+
+  * WMS decorations , see http://geoserver.org/display/GEOS/WMS+Decorations
+  * Allow label conflict resolution to be turned off for selected labels
+  * Custom raster legends via GetLegendGraphic
+  * Tolerance of GetFeatureInfo is now configurable
+  * GetFeatureInfo observes the filters in the SLD
+
+And more. The entire change log can be found:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/14787
+
+This release is based on Geotools 2.5.5.
+
 GeoServer 1.7.3 (March 9, 2009)
 -------------------------------
 

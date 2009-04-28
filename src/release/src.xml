@@ -29,28 +29,28 @@
                    <include>org.geoserver:rest</include>
   		</includes>
   		<sources>
- 	  		<outputDirectory>geoserver-1.7.3/${artifactId}/</outputDirectory>
+ 	  		<outputDirectory>geoserver-1.7.4/${artifactId}/</outputDirectory>
 	  	</sources>
 	 	</moduleSet>
 	</moduleSets>
 	<fileSets>
 		<fileSet>
 			<directory>.</directory>
- 			<outputDirectory>geoserver-1.7.3/</outputDirectory>
+ 			<outputDirectory>geoserver-1.7.4/</outputDirectory>
                         <includes>
                                 <include>pom.xml</include>
                         </includes>
 		</fileSet>
 		<fileSet>
 			<directory>community</directory>
- 			<outputDirectory>geoserver-1.7.3/community</outputDirectory>
+ 			<outputDirectory>geoserver-1.7.4/community</outputDirectory>
                         <includes>
                                 <include>pom.xml</include>
                         </includes>
 		</fileSet>
 		<fileSet>
 			<directory>extension</directory>
- 			<outputDirectory>geoserver-1.7.3/extension</outputDirectory>
+ 			<outputDirectory>geoserver-1.7.4/extension</outputDirectory>
                         <includes>
                                 <include>pom.xml</include>
                         </includes>
