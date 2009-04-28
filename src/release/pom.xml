@@ -6,7 +6,7 @@
  <parent>
   <groupId>org.geoserver</groupId>
   <artifactId>geoserver</artifactId>
-  <version>1.7.3-SNAPSHOT</version>
+  <version>1.7.5-SNAPSHOT</version>
  </parent>
  <groupId>org.geoserver</groupId>
  <artifactId>release</artifactId>
@@ -124,47 +124,47 @@
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>h2</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>sqlserver</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>oracle</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>db2</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>imagemap</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>ogr</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>excel</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>restconfig</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>geosearch</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
  </dependencies>
  <build>

@@ -6,7 +6,7 @@
  <parent>
   <groupId>org.geoserver</groupId>
   <artifactId>extension</artifactId>
-  <version>1.7.3-SNAPSHOT</version>
+  <version>1.7.5-SNAPSHOT</version>
  </parent>
 
  <groupId>org.geoserver.extension</groupId>
@@ -18,17 +18,17 @@
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>rest</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>main</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>wms</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
   </dependency>
   <dependency>
    <groupId>org.h2database</groupId>
@@ -57,14 +57,14 @@
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>data</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
    <classifier>tests</classifier>
    <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>main</artifactId>
-   <version>1.7.3-SNAPSHOT</version>
+   <version>1.7.5-SNAPSHOT</version>
    <classifier>tests</classifier>
    <scope>test</scope>
   </dependency>

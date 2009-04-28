@@ -1,4 +1,4 @@
-GeoServer 1.7.3 (March 9, 2009)
+GeoServer 1.7.5-SNAPSHOT (March 9, 2009)
 -------------------------------
 
 The fourth release of 1.7.x brings the following new features:
