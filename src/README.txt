@@ -4,7 +4,7 @@ http://geoserver.org/display/GEOSDOC/Developers+Guide
 ---------------------------
 
 1) Install JAVA SDK
-Download and install the Java SDK.
+Download and install the Java SDK, Sun Java version 1.5.0
 
 Create an environment variable called JAVA_HOME and point it to your Java SDK directory.
 Then modify the PATH variable and add: ;%JAVA_HOME%/bin
@@ -12,9 +12,7 @@ Apply the changes.
 
 
 2) Download Subversion
-Windows: http://subversion.tigris.org/files/documents/15/29065/svn-1.3.0-setup.exe
-Linux: http://subversion.tigris.org/project_packages.html
-
+http://subversion.tigris.org/getting.html
 Install subversion.
 
 
@@ -24,12 +22,13 @@ svn checkout https://svn.codehaus.org/geoserver/trunk
 
 
 4) Download and install Maven
-Windows: http://www.apache.org/dyn/closer.cgi/maven/binaries/maven-2.0.4.exe
-Linux: http://www.apache.org/dyn/closer.cgi/maven/binaries/maven-2.0.4.zip
+As of 2009-04-28 GeoServer does not build with Maven 2.1.0. We therefore recommend 2.0.9. 
+Windows: http://www.apache.org/dyn/closer.cgi/maven/binaries/maven-2.0.9.exe
+Linux: http://www.apache.org/dyn/closer.cgi/maven/binaries/maven-2.0.9.zip
 
 
 If you are using Linux, execute the following commands:
-export M2_HOME=/usr/java/maven-2.0.4
+export M2_HOME=/usr/java/maven-2.0.9
 export PATH=$PATH:$M2_HOME/bin
 
 
@@ -45,9 +44,9 @@ mvn eclipse:eclipse
 
 
 6) Set up Eclipse
-Windows: http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops/R-3.1.2-200601181600/eclipse-SDK-3.1.2-win32.zip
-Linux GTK: http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops/R-3.1.2-200601181600/eclipse-SDK-3.1.2-linux-gtk.tar.gz
-Linux Motif: http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops/R-3.1.2-200601181600/eclipse-SDK-3.1.2-linux-motif.tar.gz
+http://www.eclipse.org/downloads/
+Pick "Eclipse IDE for Java Developers" unless you plan on integrating GeoServer into J2EE applications
+
 
 Install Eclipse.
 
@@ -60,4 +59,3 @@ Define a new variables called M2_REPO and set it to your local maven repository.
 7) Get the Code into Eclipse
 Import existing projects into the workspace, use the root of your geoserver source tree.
 Select all of the modules. Hit Finish.
-
