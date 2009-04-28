@@ -190,8 +190,13 @@ public class ExternalSortRegionatingStrategy extends
             CoordinateReferenceSystem nativeCrs = geom
                     .getCoordinateReferenceSystem();
             DefaultQuery q = new DefaultQuery();
-            q.setPropertyNames(new String[] { attribute, geom.getLocalName() });
-
+            
+            if (geom.getLocalName().equals(attribute)) {
+                q.setPropertyNames(new String[] { geom.getLocalName() });
+            } else {
+                q.setPropertyNames(new String[] { attribute, geom.getLocalName() });
+            }
+            
             // setup the eventual transform
             MathTransform tx = null;
             double[] coords = new double[2];
