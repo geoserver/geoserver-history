@@ -1,7 +1,6 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 import javax.xml.namespace.QName;
 
@@ -34,16 +33,11 @@ public abstract class RegionatingTestSupport extends GeoServerTestSupport {
                 getClass().getResource("Dispersed.properties"),
                 Collections.EMPTY_MAP
                 );
-        
-        HashMap extra = new HashMap();
-        extra.put(MockData.KEY_SRS_HANDLINGS, org.vfny.geoserver.global.FeatureTypeInfo.FORCE);
-        
         data.addPropertiesType(
                 TILE_TESTS,
                 getClass().getResource("TileTests.properties"),
-                extra
+                Collections.EMPTY_MAP
                 );
-        
         data.addPropertiesType(
                 CENTERED_POLY,
                 getClass().getResource("CenteredPoly.properties"),
