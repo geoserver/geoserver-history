@@ -7,6 +7,7 @@
 package org.geoserver.test;
 
 import org.geoserver.data.test.TestData;
+import org.geotools.data.complex.AppSchemaDataAccess;
 
 /**
  * Abstract base class for test cases that test integration of {@link AppSchemaDataAccess} with
