@@ -106,6 +106,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         WMSLayer wmsLayer = getLayer(obj);
         
         if (wmsLayer != null) {
+        	layerDispatcher.getLayers();
+        	
 			layerDispatcher.update(wmsLayer);
 
 			log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
@@ -116,6 +118,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         Object obj = event.getSource();
         
         String name = getLayerName(obj);
+        
+        layerDispatcher.getLayers();
         
         layerDispatcher.remove(name);
         
