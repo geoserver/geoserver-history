@@ -35,7 +35,7 @@
     <constructor-arg ref="gwcAppCtx" />
   </bean>
 
-  <bean id="gwcMetaStore" class="org.geowebcache.storage.metastore.jdbc.JDBCMetaBackend">
+  <bean id="gwcMetaStore" class="org.geowebcache.storage.metastore.jdbc.JDBCMetaBackend" destroy-method="destroy">
     <constructor-arg ref="gwcDefaultStorageFinder" />
   </bean>
   
