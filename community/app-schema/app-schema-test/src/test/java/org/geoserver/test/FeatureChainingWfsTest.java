@@ -32,13 +32,35 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
     }
 
     /**
-     * Test if GetFeature returns parsable XML.
+     * Test whether GetCapabilities returns wfs:WFS_Capabilities.
+     * 
+     * @throws Exception
+     */
+    public void testGetCapabilities() throws Exception {
+        Document doc = getAsDOM("wfs?request=GetCapabilities");
+        LOGGER.info("WFS GetCapabilities response:\n" + prettyString(doc));
+        assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
+    }
+
+    /**
+     * Test whether DescribeFeatureType returns xsd:schema.
+     * 
+     * @throws Exception
+     */
+    public void testDescribeFeatureType() throws Exception {
+        Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:MappedFeature");
+        LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+    }
+
+    /**
+     * Test whether GetFeature returns wfs:FeatureCollection.
      * 
      * @throws Exception
      */
     public void testGetFeature() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
-        LOGGER.info("WFS response:\n" + prettyString(doc));
+        LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
     }
 
