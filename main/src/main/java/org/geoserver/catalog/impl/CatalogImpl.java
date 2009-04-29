@@ -1427,6 +1427,12 @@ public class CatalogImpl implements Catalog {
         if ( resource instanceof FeatureTypeInfo ) {
             resolve( (FeatureTypeInfo) resource );
         }
+        if(r instanceof CoverageInfoImpl){
+            CoverageInfoImpl c = (CoverageInfoImpl)r;
+            if(c.getParameters() == null){
+                c.setParameters(new HashMap<String, Serializable>());
+            }
+        }
         r.setCatalog(this);
     }
     
