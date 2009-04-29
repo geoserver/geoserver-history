@@ -5,14 +5,21 @@
 <body>
 <wicket:panel>
 	<form wicket:id="filterForm">
-			<label for="filter"><wicket:message key="filter">Filter</wicket:message>:</label>
-			<input wicket:id="filter" type="text" size="50"></input>
-			<input class="btnTxt" wicket:id="applyFilter" type="submit"	wicket:message="value:applyFilter"></input>
-			<input class="btnTxt" wicket:id="resetFilter" type="button"	wicket:message="value:resetFilter"></input><br/>
-            <span wicket:id="navigatorTop">1|2|3|...</span>
+	        <div class="leftwise">
+	            <span wicket:id="navigatorTop">1|2|3|...</span>
+            </div>
+            <div class="rightwise">
+                <input id="filter" wicket:id="filter" class="rigthwise" type="text" size="35" title="Search"></input>
+	            <input wicket:id="submit" class="noshow" type="submit" value="Search"/>
+	            <script type="text/javascript">
+	              //<![CDATA[
+	              jQuery(document).ready(function() {$('#filter').inlineInfoTextify();});
+	              //]]>
+	            </script>
+            </div>
 	</form>
 	
-	<table wicket:id="listContainer">
+	<table wicket:id="listContainer" class="clearBoth">
 		<thead>
 			<tr>
 			  <!-- This is a repeater, will generate one th for each property -->
