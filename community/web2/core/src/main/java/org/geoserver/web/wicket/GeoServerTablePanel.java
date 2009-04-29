@@ -50,14 +50,17 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     DataView dataView;
 
     WebMarkupContainer listContainer;
-
-    GeoServerPagingNavigator navigator;
+    
+    WebMarkupContainer navigatorTopContainer;
+    GeoServerPagingNavigator navigatorTop;
+    WebMarkupContainer navigatorBottomContainer;
+    GeoServerPagingNavigator navigatorBottom;
 
     GeoServerDataProvider<T> dataProvider;
     
     Form filterForm;
 
-    private WebMarkupContainer navigatorContainer;
+    
 
     public GeoServerTablePanel(String id, final GeoServerDataProvider<T> dataProvider) {
         super(id);
@@ -154,12 +157,16 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
         // add the paging navigator and set the items per page
         dataView.setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
-        navigator = new GeoServerPagingNavigator("navigator", dataView);
-        navigator.setVisible(dataProvider.size() > dataView.getItemsPerPage());
-        navigatorContainer = new WebMarkupContainer("navigatorContainer");
-        navigatorContainer.setOutputMarkupId(true);
-        navigatorContainer.add(navigator);
-        add(navigatorContainer);
+        
+        // add the top navigator
+        filterForm.add(navigatorTopContainer = new WebMarkupContainer("navigatorTopContainer"));
+        navigatorTopContainer.setOutputMarkupId(true);
+        navigatorTopContainer.add(navigatorTop = new GeoServerPagingNavigator("navigatorTop", dataView));
+        
+        // add the bottom navigator
+        add(navigatorBottomContainer = new WebMarkupContainer("navigatorBottomContainer"));
+        navigatorBottomContainer.setOutputMarkupId(true);
+        navigatorBottomContainer.add(navigatorBottom = new GeoServerPagingNavigator("navigatorBottom", dataView));
     }
     
     public void setItemsPerPage(int items) {
@@ -233,10 +240,10 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                     Integer.valueOf(dataProvider.fullSize()));
             matched.setModel(paramResMod);
         }
-        navigator.setVisible(dataProvider.size() > dataView.getItemsPerPage());
 
         target.addComponent(listContainer);
-        target.addComponent(navigatorContainer);
+        target.addComponent(navigatorTopContainer);
+        target.addComponent(navigatorBottomContainer);
         target.addComponent(matched);
         target.addComponent(filter);
     }
