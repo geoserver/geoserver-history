@@ -9,10 +9,7 @@
 			<input wicket:id="filter" type="text" size="50"></input>
 			<input class="btnTxt" wicket:id="applyFilter" type="submit"	wicket:message="value:applyFilter"></input>
 			<input class="btnTxt" wicket:id="resetFilter" type="button"	wicket:message="value:resetFilter"></input><br/>
-			<span class="paginator" wicket:id="navigatorTopContainer">
-	           <span wicket:id="navigatorTop">1|2|3|...</span>
-            </span>
-            <span wicket:id="filterMatch">Matched xxx out of yyy</span>
+            <span wicket:id="navigatorTop">1|2|3|...</span>
 	</form>
 	
 	<table wicket:id="listContainer">
@@ -29,13 +26,17 @@
 			</tr>
 		</tbody>
 	</table>
-  <span class="paginator" wicket:id="navigatorBottomContainer">
-	 <span wicket:id="navigatorBottom">1|2|3|...</span>
-  </span>
+    <span wicket:id="navigatorBottom">1|2|3|...</span>
 	
 	<!-- Sortable header fragments -->
 	<wicket:fragment wicket:id="sortableHeader">
 		<a href="#" wicket:id="link"><span wicket:id="label"></span></a>
+	</wicket:fragment>
+	
+	<!-- Pagination fragment -->
+	<wicket:fragment wicket:id="pagingFragment">
+           <span class="paginator" wicket:id="navigator">1|2|3|...</span>
+           <span wicket:id="filterMatch">Matched xxx out of yyy</span>
 	</wicket:fragment>
 	
 	<wicket:child></wicket:child>
