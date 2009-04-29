@@ -54,9 +54,9 @@ public class CoverageResourceConfigurationPanel extends ResourceConfigurationPan
             String keyName) {
         if (keyName.contains("Color"))
             return new ColorPickerPanel(id, new MapModel(paramsModel, keyName),
-                    new org.apache.wicket.model.ResourceModel(keyName), false);
+                    new org.apache.wicket.model.ResourceModel(keyName, keyName), false);
         else
             return new TextParamPanel(id, new MapModel(paramsModel, keyName),
-                    new org.apache.wicket.model.ResourceModel(keyName), false);
+                    new org.apache.wicket.model.ResourceModel(keyName, keyName), false);
     }
 }
