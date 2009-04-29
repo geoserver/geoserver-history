@@ -95,120 +95,12 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     //
     /** used to create styles */
     private static StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(null);
-    //
-    ///** used to cache layer names and types **/
-    //private volatile Map layerNames = new HashMap();
-    //
-    ///** holds the mappings between prefixes and NameSpaceInfo objects */
-    //private Map nameSpaces;
-    //
-    ///** NameSpaceInfo */
-    //private NameSpaceInfo defaultNameSpace;
-    //
-    ///** Mapping of DataStoreInfo by dataStoreId */
-    //private Map dataStores;
-    //
-    ///**
-    // * Mapping of CoverageStoreInfo by formatId
-    // *
-    // * @uml.property name="formats"
-    // * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
-    // *                     qualifier="next:java.lang.String
-    // *                     org.vfny.geoserver.global.CoverageStoreInfo"
-    // *                     multiplicity= "(0 -1)" ordering="ordered"
-    // */
-    //private Map formats;
-    //
-    ///**
-    // * holds the mapping of Styles and style names
-    // *
-    // * @uml.property name="styles"
-    // * @uml.associationEnd elementType="org.vfny.geoserver.global.dto.FeatureTypeInfoDTO"
-    // *                     qualifier="id:java.lang.String
-    // *                     org.geotools.styling.Style" multiplicity="(0 -1) "
-    // *                     ordering="ordered"
-    // */
-    //private Map styles;
-    //
-    ///**
-    // *
-    // * @uml.property name="stFiles"
-    // * @uml.associationEnd qualifier="id:java.lang.String java.io.File"
-    // *                     multiplicity="(0 1)"
-    // */
-    //private Map stFiles;
-    //
-    ///**
-    // * Map of <code>FeatureTypeInfo</code>'s stored by full qualified name
-    // * (NameSpaceInfo prefix + PREFIX_DELIMITER + typeName)
-    // *
-    // * @uml.property name="featureTypes"
-    // * @uml.associationEnd inverse="data:org.vfny.geoserver.global.FeatureTypeInfo"
-    // *                     qualifier= "name:java.lang.String
-    // *                     org.vfny.geoserver.global.FeatureTypeInfo"
-    // *                     multiplicity= "(0 1)"
-    // */
-    //private Map featureTypes;
-    //
-    ///**
-    // *
-    // * @uml.property name="coverages"
-    // * @uml.associationEnd inverse="data:org.vfny.geoserver.global.CoverageInfo"
-    // *                     qualifier= "next:java.lang.String
-    // *                     org.vfny.geoserver.global.CoverageInfo"
-    // *                     multiplicity="(0 1)"
-    // */
-    //private Map coverages;
-    //
-    ///**
-    // * Base directory for use with file based relative paths
-    // *
-    // * @uml.property name="baseDir" multiplicity="(0 1)"
-    // */
-    //private File baseDir;
-    //
-    ///**
-    // * Data constructor.
-    // *
-    // * <p>
-    // * Creates a Data object from the data provided.
-    // * </p>
-    // *
-    // * @uml.property name="gs"
-    // * @uml.associationEnd multiplicity="(1 1)"
-    // */
-    //private GeoServer gs;
-    //
-    ///**
-    // * map of all featureTypeDTO -> load status (Boolean.True, Boolean.False,
-    // * Exception) Boolean.True when feature was loaded. Boolean.False when
-    // * something was disabled. Exception the error.
-    // *
-    // * @uml.property name="errors"
-    // * @uml.associationEnd qualifier="featureTypeDTO:org.vfny.geoserver.global.dto.FeatureTypeInfoDTO
-    // *                     org.vfny.geoserver.global.ConfigurationException"
-    // *                     multiplicity="(0 1)"
-    // */
+
     private Map errors;
     
     org.geoserver.config.GeoServer gs;
     Catalog catalog;
 
-    //public Data(DataDTO config, File dir, GeoServer g)
-    //    throws ConfigurationException {
-    //    baseDir = dir;
-    //    load(config);
-    //    gs = g;
-    //}
-    //
-    //public Data(File dir, GeoServer g) throws ConfigurationException {
-    //    baseDir = dir;
-    //    gs = g;
-    //}
-    //
-    //public Data(Config config, GeoServer g) throws ConfigurationException {
-    //    this(config.getData(), config.dataDirectory(), g);
-    //}
 
     public Data( org.geoserver.config.GeoServer gs, Catalog catalog) {
         this.gs = gs;
@@ -221,10 +113,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         this.catalog = gs.getCatalog();
         //errors = new HashMap();
     }
-    
-//    public void init() {
-//        this.catalog = gs.getCatalog();
-//    }
+
     
     public Catalog getCatalog() {
         return catalog;
@@ -261,14 +150,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         
         // Step 0: dispose datastore and readers as needed
         catalog.dispose();
-        
-        //DataStoreCache.getInstance().dispose();
-        
-        //if(dataStores != null)
-        //    for (Iterator it = dataStores.values().iterator(); it.hasNext();) {
-        //        DataStoreInfo ds = (DataStoreInfo) it.next();
-        //        ds.dispose();
-        //    }
+      
         
         // Step 1: load formats, dataStores and Namespaces
         
@@ -352,30 +234,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
     
         return null;
-        //Map map = new HashMap();
-        //
-        //for (Iterator i = dto.getFormats().values().iterator(); i.hasNext();) {
-        //    CoverageStoreInfoDTO formatDTO = (CoverageStoreInfoDTO) i.next();
-        //    String id = formatDTO.getId();
-        //
-        //    CoverageStoreInfo formatInfo = new CoverageStoreInfo(formatDTO, this);
-        //    map.put(id, formatInfo);
-        //
-        //    if (formatDTO.isEnabled()) {
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("Register Format '").append(id).append("'")
-        //                                                             .toString());
-        //        }
-        //    } else {
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("Did not Register Format '").append(id)
-        //                                                                     .append("' as it was not enabled")
-        //                                                                     .toString());
-        //        }
-        //    }
-        //}
-        //
-        //return map;
+
     }
 
     /**
@@ -446,33 +305,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
 
         return null;
-        
-        //Map map = new HashMap(dto.getDataStores().size());
-        //DataStoreInfoDTO dataStoreDTO;
-        //String id;
-        //DataStoreInfo dataStoreInfo;
-        //
-        //for (Iterator i = dto.getDataStores().values().iterator(); i.hasNext();) {
-        //    dataStoreDTO = (DataStoreInfoDTO) i.next();
-        //    id = dataStoreDTO.getId();
-        //    dataStoreInfo = new DataStoreInfo(dataStoreDTO, this);
-        //    map.put(id, dataStoreInfo);
-        //
-        //    if (dataStoreDTO.isEnabled()) {
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("Register DataStore '").append(id).append("'")
-        //                                                                .toString());
-        //        }
-        //    } else {
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("Did not Register DataStore '").append(id)
-        //                                                                        .append("' as it was not enabled")
-        //                                                                        .toString());
-        //        }
-        //    }
-        //}
-        //
-        //return map;
+
     }
 
     /**
@@ -546,19 +379,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
 
         return null;
         
-        //Map map = new HashMap(dto.getNameSpaces().size());
-        //NameSpaceInfoDTO namespaceDto;
-        //String prefix;
-        //NameSpaceInfo namespaceInfo;
-        //
-        //for (Iterator i = dto.getNameSpaces().values().iterator(); i.hasNext();) {
-        //    namespaceDto = (NameSpaceInfoDTO) i.next();
-        //    prefix = namespaceDto.getPrefix();
-        //    namespaceInfo = new NameSpaceInfo(this, namespaceDto);
-        //    map.put(prefix, namespaceInfo);
-        //}
-        //
-        //return map;
+
     }
 
     private final void loadCoverages(DataDTO dto) {
@@ -603,32 +424,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             org.geoserver.catalog.CoverageInfo tmpCI = catalog.getCoverageByName(ci.getName());
             if(tmpCI==null) catalog.add(ci);
             else {
-//                tmpCI.setCatalog(catalog);
-//                tmpCI.setAbstract(ci.getAbstract());
-//                tmpCI.setAlias(ci.getAlias());
-//                tmpCI.setDefaultInterpolationMethod(ci.getDefaultInterpolationMethod());
-//                tmpCI.setDescription(ci.getDescription());
-//                tmpCI.setEnabled(ci.isEnabled());
-//                tmpCI.setGrid(ci.getGrid());
-//                tmpCI.setLatLonBoundingBox(ci.getLatLonBoundingBox());
-//                tmpCI.setName(ci.getName());
-//                tmpCI.setNamespace(ci.getNamespace());
-//                tmpCI.setNativeBoundingBox(ci.getNativeBoundingBox());
-//                tmpCI.setNativeCRS(ci.getNativeCRS());
-//                tmpCI.setNativeFormat(ci.getNativeFormat());
-//                tmpCI.setNativeName(ci.getNativeName());
-//                tmpCI.setNativeSrsWKT(ci.getNativeSrsWKT());
-//                tmpCI.setProjectionPolicy(ci.getProjectionPolicy());
-//                tmpCI.setSRS(ci.getSRS());
-//                tmpCI.setTitle(ci.getTitle());
-//                
-//                tmpCI.setFields(ci.getFields());
-//
-//                tmpCI.setTemporalCRS(ci.getTemporalCRS());
-//                tmpCI.setTemporalExtent(ci.getTemporalExtent());
-//
-//                tmpCI.setVerticalCRS(ci.getVerticalCRS());
-//                tmpCI.setVerticalExtent(ci.getVerticalExtent());
+
                 
                 catalog.save(tmpCI);
             }
@@ -665,45 +461,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             }
         }
         
-        //if ((dto == null) || (dto.getCoverages() == null)) {
-        //    return Collections.EMPTY_MAP; // we *are* allowed no datasets
-        //}
-        //
-        //Map map = new HashMap(dto.getCoverages().size());
-        //CoverageInfoDTO coverageDTO;
-        //String id;
-        //CoverageInfo coverageInfo;
-        //
-        //for (Iterator i = dto.getCoverages().values().iterator(); i.hasNext();) {
-        //    coverageDTO = (CoverageInfoDTO) i.next();
-        //    id = coverageDTO.getName();
-        //
-        //    try {
-        //        coverageInfo = new CoverageInfo(coverageDTO, this);
-        //    } catch (ConfigurationException e) {
-        //        coverageInfo = null;
-        //    }
-        //
-        //    map.put(id, coverageInfo);
-        //    // set layer name, type raster (1)
-        //    layerNames.put(id, TYPE_RASTER);
-        //
-        //    if ((dto.getFormats() != null)
-        //            && (dto.getFormats().get(coverageDTO.getFormatId()) != null)) {
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("Register Coverage '").append(id).append("'")
-        //                                                               .toString());
-        //        }
-        //    } else {
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("Did not Register Coverage '").append(id)
-        //                                                                       .append("' as didn't exist a valid Format")
-        //                                                                       .toString());
-        //        }
-        //    }
-        //}
-        //
-        //return map;
+        
     }
 
     /**
@@ -769,23 +527,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             org.geoserver.catalog.FeatureTypeInfo tmpFti = catalog.getFeatureTypeByName(fti.getName()); 
             if(tmpFti==null) catalog.add(fti);
             else {
-//                tmpFti.setAbstract(fti.getAbstract());
-//                tmpFti.setAlias(fti.getAlias());
-//                tmpFti.setDescription(fti.getDescription());
-//                tmpFti.setEnabled(fti.isEnabled());
-//                tmpFti.setFilter(fti.getFilter());
-//                tmpFti.setLatLonBoundingBox(fti.getLatLonBoundingBox());
-//                tmpFti.setMaxFeatures(fti.getMaxFeatures());
-//                tmpFti.setName(fti.getName());
-//                tmpFti.setNamespace(fti.getNamespace());
-//                tmpFti.setNativeBoundingBox(fti.getNativeBoundingBox());
-//                tmpFti.setNativeCRS(fti.getNativeCRS());
-//                tmpFti.setNativeName(fti.getNativeName());
-//                tmpFti.setNumDecimals(fti.getNumDecimals());
-//                tmpFti.setProjectionPolicy(fti.getProjectionPolicy());
-//                tmpFti.setSRS(fti.getSRS());
-//                tmpFti.setStore(fti.getStore());
-//                tmpFti.setTitle(fti.getTitle());
+
                 
                 catalog.save(tmpFti);
             }
@@ -819,654 +561,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
                 catalog.remove(fti);
             }
         }
-//        
-//                
-//            errors = new HashMap();
-//            if ((dto == null) || (dto.getFeaturesTypes() == null)) {
-//                errors = null;
-//        
-//                //return Collections.EMPTY_MAP; // we *are* allowed no datasets
-//                return;
-//            }
-//        
-//            //let's sort the featuretypes first, and give some good loading messages as we go along.
-//            FeatureTypeInfoDTO[] ftypes = (FeatureTypeInfoDTO[])
-//                    dto.getFeaturesTypes().values().toArray(new FeatureTypeInfoDTO[dto.getFeaturesTypes().size()]);
-//            Arrays.sort(ftypes, new Comparator() {
-//                public int compare(Object arg0, Object arg1) {
-//                    FeatureTypeInfoDTO a0 = (FeatureTypeInfoDTO)arg0;
-//                    FeatureTypeInfoDTO a1 = (FeatureTypeInfoDTO)arg1;
-//                    return a0.getKey().compareToIgnoreCase(a1.getKey());
-//                }
-//            });
-//            
-//            int curLayerNum = 0;
-//            final int totalLayers = ftypes.length;
-//            
-//    SCHEMA: 
-//            for (Iterator i = Arrays.asList(ftypes).iterator(); i.hasNext();) {
-//                curLayerNum++;
-//                FeatureTypeInfoDTO featureTypeDTO = (FeatureTypeInfoDTO) i.next();
-//                if (featureTypeDTO == null) {
-//                    if (LOGGER.isLoggable(Level.WARNING)) {
-//                        LOGGER.warning(new StringBuffer("Ignore null FeatureTypeInfo DTO!").toString());
-//                }
-//    
-//                continue;
-//            }
-//    
-//            String key = featureTypeDTO.getKey(); // dataStoreId:typeName
-//            LOGGER.info("Loading feature type '" + key + "' (layer " + curLayerNum + "/" + totalLayers + ")");
-//    
-//            if (LOGGER.isLoggable(Level.FINER)) {
-//                LOGGER.finer(new StringBuffer("SimpleFeatureType ").append(key)
-//                                                             .append(": loading feature type info dto:")
-//                                                             .append(featureTypeDTO).toString());
-//            }
-//    
-//            String dataStoreId = featureTypeDTO.getDataStoreId();
-//    
-//            if (LOGGER.isLoggable(Level.FINEST)) {
-//                LOGGER.finest(new StringBuffer("SimpleFeatureType ").append(key).append(" looking up :")
-//                                                              .append(dataStoreId).toString());
-//            }
-//    
-//            DataStoreInfo dataStoreInfo = getDataStoreInfo(dataStoreId);
-//            if (dataStoreInfo == null) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
-//                                                                      .append(" could not be used - DataStore ")
-//                                                                      .append(dataStoreId)
-//                                                                      .append(" is not defined!")
-//                                                                      .toString());
-//                }
-//    
-//                DataStoreInfoDTO tmp = (DataStoreInfoDTO) dto.getDataStores().get(dataStoreId);
-//    
-//                if ((tmp != null) && (!tmp.isEnabled())) {
-//                    errors.put(featureTypeDTO, Boolean.FALSE);
-//                } else {
-//                    errors.put(featureTypeDTO,
-//                        new ConfigurationException("FeatureTypeInfo " + key
-//                            + " could not be used - DataStore " + dataStoreId + " is not defined!"));
-//                }
-//    
-//                continue;
-//            } else {
-//                if (LOGGER.isLoggable(Level.FINEST)) {
-//                    LOGGER.finest(new StringBuffer(key).append(" datastore found :")
-//                                                       .append(dataStoreInfo).toString());
-//                }
-//            }
-//    
-//            Style s = getStyle(featureTypeDTO.getDefaultStyle());
-//    
-//            if (s == null) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
-//                                                                      .append(" ignored - Style '")
-//                                                                      .append(featureTypeDTO
-//                            .getDefaultStyle()).append("' not found!").toString());
-//                }
-//    
-//                errors.put(featureTypeDTO,
-//                    new ConfigurationException("FeatureTypeInfo " + key + " ignored - Style '"
-//                        + featureTypeDTO.getDefaultStyle() + "' not found!"));
-//    
-//                continue SCHEMA;
-//            }
-//    
-//            // Check attributes configured correctly against schema
-//            String typeName = featureTypeDTO.getName();
-//    
-//            try {
-//                DataStore dataStore = dataStoreInfo.getDataStore();
-//                SimpleFeatureType featureType = dataStore.getSchema(typeName);
-//    
-//                Set attributeNames = new HashSet();
-//                Set ATTRIBUTENames = new HashSet();
-//    
-//                // as far as I can tell an emtpy list indicates that no
-//                // schema.xml file was found. I may be approaching this
-//                // all wrong, is this logic contained elsewhere?
-//                // CH: Yeah, this shit was super messed up. It was causing null
-//                // pointer
-//                // exceptions, and then it created this createAttrDTO flag that
-//                // wasn't
-//                // then used by anyone. So I fixed the null and made it so it
-//                // creates
-//                // AttributeTypeInfoDTO's (once again, I hate these) from the
-//                // SimpleFeatureType
-//                // of the real datastore.
-//                // boolean createAttrDTO =
-//                // (featureTypeDTO.getSchemaAttributes().size() == 0);
-//                if (LOGGER.isLoggable(Level.FINE)) {
-//                    LOGGER.fine(new StringBuffer("locading datastore ").append(typeName).toString());
-//                }
-//    
-//                boolean createAttrDTO;
-//    
-//                if (featureTypeDTO.getSchemaAttributes() == null) {
-//                    createAttrDTO = true;
-//                } else {
-//                    createAttrDTO = featureTypeDTO.getSchemaAttributes().size() == 0;
-//                }
-//    
-//                if (createAttrDTO) {
-//                    List attributeDTOs = createAttrDTOsFromSchema(featureType);
-//                    featureTypeDTO.setSchemaAttributes(attributeDTOs);
-//    
-//                    if (LOGGER.isLoggable(Level.FINER)) {
-//                        LOGGER.finer(new StringBuffer(
-//                                "No schema found, setting featureTypeDTO with ").append(
-//                                attributeDTOs).toString());
-//                    }
-//                } else {
-//                    for (int index = 0; index < featureType.getAttributeCount(); index++) {
-//                        AttributeDescriptor attrib = featureType.getAttribute(index);
-//                        attributeNames.add(attrib.getLocalName());
-//                        ATTRIBUTENames.add(attrib.getLocalName().toUpperCase());
-//                    }
-//    
-//                    if (featureTypeDTO.getSchemaAttributes() != null) {
-//                        for (Iterator a = featureTypeDTO.getSchemaAttributes().iterator();
-//                                a.hasNext();) {
-//                            AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a.next();
-//                            String attributeName = attribDTO.getName();
-//    
-//                            if (!attributeNames.contains(attributeName)) {
-//                                if (ATTRIBUTENames.contains(attributeName.toUpperCase())) {
-//                                    if (LOGGER.isLoggable(Level.SEVERE)) {
-//                                        LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-//                                                key).append(" ignored - attribute '")
-//                                                                                          .append(attributeName)
-//                                                                                          .append("' not found - please check captialization")
-//                                                                                          .toString());
-//                                    }
-//                                } else {
-//                                    if (LOGGER.isLoggable(Level.SEVERE)) {
-//                                        LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-//                                                key).append(" ignored - attribute '")
-//                                                                                          .append(attributeName)
-//                                                                                          .append("' not found!")
-//                                                                                          .toString());
-//                                    }
-//    
-//                                    String names = "";
-//                                    Iterator x = attributeNames.iterator();
-//    
-//                                    if (x.hasNext()) {
-//                                        names = x.next().toString();
-//                                    }
-//    
-//                                    while (x.hasNext())
-//                                        names = ":::" + x.next().toString();
-//    
-//                                    if (LOGGER.isLoggable(Level.SEVERE)) {
-//                                        LOGGER.severe(new StringBuffer(
-//                                                "Valid attribute names include :::").append(names)
-//                                                                                                           .toString());
-//                                    }
-//                                }
-//    
-//                                errors.put(featureTypeDTO,
-//                                    new ConfigurationException(
-//                                        new StringBuffer("FeatureTypeInfo ").append(key)
-//                                                                            .append(" could not be used - DataStore ")
-//                                                                            .append(dataStoreId)
-//                                                                            .append(" is not defined!")
-//                                                                            .toString()));
-//    
-//                                continue SCHEMA;
-//                            }
-//                        }
-//                    }
-//                }
-//            } catch (IllegalStateException illegalState) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.log(Level.SEVERE, new StringBuffer("FeatureTypeInfo ").append(key)
-//                                                                      .append(" ignored - as DataStore ")
-//                                                                      .append(dataStoreId)
-//                                                                      .append(" is disabled!")
-//                                                                      .toString());
-//                }
-//                if (LOGGER.isLoggable(Level.FINE)) {
-//                    LOGGER.log(Level.FINE,new StringBuffer(key).append(" ignored ").toString(), illegalState);
-//                }
-//                errors.put(featureTypeDTO, Boolean.FALSE);
-//    
-//                continue;
-//            } catch (IOException ioException) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.log(Level.SEVERE,
-//                        "FeatureTypeInfo " + key + " ignored - as DataStore " 
-//                        + dataStoreId + " is unavailable", ioException);
-//                }
-//    
-//                if (LOGGER.isLoggable(Level.FINE)) {
-//                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-//                        ioException);
-//                }
-//    
-//                errors.put(featureTypeDTO, ioException);
-//    
-//                continue;
-//            } catch (NoSuchElementException nse) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.log(Level.SEVERE,
-//                    "FeatureTypeInfo " + key + " ignored - as DataStore " 
-//                    + dataStoreId + " can't find FeatureType '" + typeName, nse);
-//                }
-//    
-//                if (LOGGER.isLoggable(Level.FINE)) {
-//                    LOGGER.log(Level.FINE, typeName + " not found", nse);
-//                }
-//
-//                continue;
-//            } catch (Throwable unExpected) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.log(Level.SEVERE, "FeatureTypeInfo " + key + " ignored - as DataStore " 
-//                            + dataStoreId  + " is broken", unExpected);
-//                }
-//    
-//                if (LOGGER.isLoggable(Level.FINE)) {
-//                    LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-//                        unExpected);
-//                }
-//
-//                errors.put(featureTypeDTO, unExpected);
-//    
-//                continue;
-//            }
-//    
-//            String prefix = dataStoreInfo.getNamesSpacePrefix();
-//    
-//            if (LOGGER.isLoggable(Level.FINEST)) {
-//                LOGGER.finest(new StringBuffer("SimpleFeatureType ").append(key)
-//                                                              .append(" creating FeatureTypeInfo for ")
-//                                                              .append(prefix).append(":")
-//                                                              .append(typeName).toString());
-//            }
-//    
-//            
-//            try {
-//                org.geoserver.catalog.FeatureTypeInfo fti = catalog.getFactory().createFeatureType();
-//                LayerInfo layer = catalog.getFactory().createLayer();
-//                layer.setResource( fti );
-//                
-//                new FeatureTypeInfo(layer,catalog).load( featureTypeDTO );
-//                catalog.add( fti );
-//                catalog.add( layer );
-//                
-//            } catch (Exception configException) {
-//                if (LOGGER.isLoggable(Level.SEVERE)) {
-//                    LOGGER.log(Level.SEVERE,
-//                        "FeatureTypeInfo " + key + " ignored because of a configuration problem", configException);
-//                }
-//
-//                if (LOGGER.isLoggable(Level.FINEST)) {
-//                    LOGGER.log(Level.FINEST,
-//                        new StringBuffer(key).append(" unavailable").toString(), configException);
-//                }
-//
-//                errors.put(featureTypeDTO, configException);
-//    
-//                continue;
-//            }
-//        }
-    
-        //
-        //errors = new HashMap();
-        //featureTypes = new HashMap(); // to fix lazy loading
-        //
-        //if ((dto == null) || (dto.getFeaturesTypes() == null)) {
-        //    errors = null;
-        //
-        //    return Collections.EMPTY_MAP; // we *are* allowed no datasets
-        //}
-        //
-        //Map map = new HashMap(dto.getFeaturesTypes().size());
-        //FeatureTypeInfoDTO featureTypeDTO;
-        //String key;
-        //DataStoreInfo dataStoreInfo;
-        //String dataStoreId;
-        //String typeName;
-        //Style s;
-        //
-        ////let's sort the featuretypes first, and give some good loading messages as we go along.
-        //        FeatureTypeInfoDTO[] ftypes = (FeatureTypeInfoDTO[])
-        //            dto.getFeaturesTypes().values().toArray(new FeatureTypeInfoDTO[dto.getFeaturesTypes().size()]);
-        //        Arrays.sort(ftypes, new Comparator() {
-        //            public int compare(Object arg0, Object arg1) {
-        //                FeatureTypeInfoDTO a0 = (FeatureTypeInfoDTO)arg0;
-        //                FeatureTypeInfoDTO a1 = (FeatureTypeInfoDTO)arg1;
-        //                return a0.getKey().compareToIgnoreCase(a1.getKey());
-        //            }
-        //        });
-        //        
-        //        int curLayerNum = 0;
-        //        final int totalLayers = ftypes.length;
-        //        
-        //SCHEMA: 
-        //        for (Iterator i = Arrays.asList(ftypes).iterator(); i.hasNext();) {
-        //            curLayerNum++;
-        //            featureTypeDTO = (FeatureTypeInfoDTO) i.next();
-        //
-        //            if (featureTypeDTO == null) {
-        //                if (LOGGER.isLoggable(Level.WARNING)) {
-        //                    LOGGER.warning(new StringBuffer("Ignore null FeatureTypeInfo DTO!").toString());
-        //        }
-        //
-        //        continue;
-        //    }
-        //
-        //    key = featureTypeDTO.getKey(); // dataStoreId:typeName
-        //    
-        //    LOGGER.info("Loading feature type '" + key + "' (layer " + curLayerNum + "/" + totalLayers + ")");
-        //
-        //    if (LOGGER.isLoggable(Level.FINER)) {
-        //        LOGGER.finer(new StringBuffer("SimpleFeatureType ").append(key)
-        //                                                     .append(": loading feature type info dto:")
-        //                                                     .append(featureTypeDTO).toString());
-        //    }
-        //
-        //    dataStoreId = featureTypeDTO.getDataStoreId();
-        //
-        //    if (LOGGER.isLoggable(Level.FINEST)) {
-        //        LOGGER.finest(new StringBuffer("SimpleFeatureType ").append(key).append(" looking up :")
-        //                                                      .append(dataStoreId).toString());
-        //    }
-        //
-        //    dataStoreInfo = (DataStoreInfo) dataStores.get(dataStoreId);
-        //
-        //    if (dataStoreInfo == null) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                              .append(" could not be used - DataStore ")
-        //                                                              .append(dataStoreId)
-        //                                                              .append(" is not defined!")
-        //                                                              .toString());
-        //        }
-        //
-        //        DataStoreInfoDTO tmp = (DataStoreInfoDTO) dto.getDataStores().get(dataStoreId);
-        //
-        //        if ((tmp != null) && (!tmp.isEnabled())) {
-        //            errors.put(featureTypeDTO, Boolean.FALSE);
-        //        } else {
-        //            errors.put(featureTypeDTO,
-        //                new ConfigurationException("FeatureTypeInfo " + key
-        //                    + " could not be used - DataStore " + dataStoreId + " is not defined!"));
-        //        }
-        //
-        //        continue;
-        //    } else {
-        //        if (LOGGER.isLoggable(Level.FINEST)) {
-        //            LOGGER.finest(new StringBuffer(key).append(" datastore found :")
-        //                                               .append(dataStoreInfo).toString());
-        //        }
-        //    }
-        //
-        //    s = getStyle(featureTypeDTO.getDefaultStyle());
-        //
-        //    if (s == null) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                              .append(" ignored - Style '")
-        //                                                              .append(featureTypeDTO
-        //                    .getDefaultStyle()).append("' not found!").toString());
-        //        }
-        //
-        //        errors.put(featureTypeDTO,
-        //            new ConfigurationException("FeatureTypeInfo " + key + " ignored - Style '"
-        //                + featureTypeDTO.getDefaultStyle() + "' not found!"));
-        //
-        //        continue SCHEMA;
-        //    }
-        //
-        //    // Check attributes configured correctly against schema
-        //    typeName = featureTypeDTO.getName();
-        //
-        //    try {
-        //        DataStore dataStore = dataStoreInfo.getDataStore();
-        //        SimpleFeatureType featureType = dataStore.getSchema(typeName);
-        //
-        //        Set attributeNames = new HashSet();
-        //        Set ATTRIBUTENames = new HashSet();
-        //
-        //        // as far as I can tell an emtpy list indicates that no
-        //        // schema.xml file was found. I may be approaching this
-        //        // all wrong, is this logic contained elsewhere?
-        //        // CH: Yeah, this shit was super messed up. It was causing null
-        //        // pointer
-        //        // exceptions, and then it created this createAttrDTO flag that
-        //        // wasn't
-        //        // then used by anyone. So I fixed the null and made it so it
-        //        // creates
-        //        // AttributeTypeInfoDTO's (once again, I hate these) from the
-        //        // SimpleFeatureType
-        //        // of the real datastore.
-        //        // boolean createAttrDTO =
-        //        // (featureTypeDTO.getSchemaAttributes().size() == 0);
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.fine(new StringBuffer("locading datastore ").append(typeName).toString());
-        //        }
-        //
-        //        boolean createAttrDTO;
-        //
-        //        if (featureTypeDTO.getSchemaAttributes() == null) {
-        //            createAttrDTO = true;
-        //        } else {
-        //            createAttrDTO = featureTypeDTO.getSchemaAttributes().size() == 0;
-        //        }
-        //
-        //        if (createAttrDTO) {
-        //            List attributeDTOs = createAttrDTOsFromSchema(featureType);
-        //            featureTypeDTO.setSchemaAttributes(attributeDTOs);
-        //
-        //            if (LOGGER.isLoggable(Level.FINER)) {
-        //                LOGGER.finer(new StringBuffer(
-        //                        "No schema found, setting featureTypeDTO with ").append(
-        //                        attributeDTOs).toString());
-        //            }
-        //        } else {
-        //            for (int index = 0; index < featureType.getAttributeCount(); index++) {
-        //                AttributeDescriptor attrib = featureType.getAttribute(index);
-        //                attributeNames.add(attrib.getLocalName());
-        //                ATTRIBUTENames.add(attrib.getLocalName().toUpperCase());
-        //            }
-        //
-        //            if (featureTypeDTO.getSchemaAttributes() != null) {
-        //                for (Iterator a = featureTypeDTO.getSchemaAttributes().iterator();
-        //                        a.hasNext();) {
-        //                    AttributeTypeInfoDTO attribDTO = (AttributeTypeInfoDTO) a.next();
-        //                    String attributeName = attribDTO.getName();
-        //
-        //                    if (!attributeNames.contains(attributeName)) {
-        //                        if (ATTRIBUTENames.contains(attributeName.toUpperCase())) {
-        //                            if (LOGGER.isLoggable(Level.SEVERE)) {
-        //                                LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-        //                                        key).append(" ignored - attribute '")
-        //                                                                                  .append(attributeName)
-        //                                                                                  .append("' not found - please check captialization")
-        //                                                                                  .toString());
-        //                            }
-        //                        } else {
-        //                            if (LOGGER.isLoggable(Level.SEVERE)) {
-        //                                LOGGER.severe(new StringBuffer("FeatureTypeInfo ").append(
-        //                                        key).append(" ignored - attribute '")
-        //                                                                                  .append(attributeName)
-        //                                                                                  .append("' not found!")
-        //                                                                                  .toString());
-        //                            }
-        //
-        //                            String names = "";
-        //                            Iterator x = attributeNames.iterator();
-        //
-        //                            if (x.hasNext()) {
-        //                                names = x.next().toString();
-        //                            }
-        //
-        //                            while (x.hasNext())
-        //                                names = ":::" + x.next().toString();
-        //
-        //                            if (LOGGER.isLoggable(Level.SEVERE)) {
-        //                                LOGGER.severe(new StringBuffer(
-        //                                        "Valid attribute names include :::").append(names)
-        //                                                                                                   .toString());
-        //                            }
-        //                        }
-        //
-        //                        errors.put(featureTypeDTO,
-        //                            new ConfigurationException(
-        //                                new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                                    .append(" could not be used - DataStore ")
-        //                                                                    .append(dataStoreId)
-        //                                                                    .append(" is not defined!")
-        //                                                                    .toString()));
-        //
-        //                        continue SCHEMA;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    } catch (IllegalStateException illegalState) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.log(Level.SEVERE, new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                              .append(" ignored - as DataStore ")
-        //                                                              .append(dataStoreId)
-        //                                                              .append(" is disabled!")
-        //                                                              .toString());
-        //        }
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.log(Level.FINE,new StringBuffer(key).append(" ignored ").toString(), illegalState);
-        //        }
-        //        errors.put(featureTypeDTO, Boolean.FALSE);
-        //
-        //        continue;
-        //    } catch (IOException ioException) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.log(Level.SEVERE,
-        //                new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                    .append(" ignored - as DataStore ")
-        //                                                    .append(dataStoreId)
-        //                                                    .append(" is unavailable:")
-        //                                                    .append(ioException).toString());
-        //        }
-        //
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-        //                ioException);
-        //        }
-        //
-        //        errors.put(featureTypeDTO, ioException);
-        //
-        //        continue;
-        //    } catch (NoSuchElementException nse) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.log(Level.SEVERE,
-        //                new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                    .append(" ignored - as DataStore ")
-        //                                                    .append(dataStoreId)
-        //                                                    .append(" can't find SimpleFeatureType '"
-        //                    + typeName + "'.  Error was:\n").append(nse).toString());
-        //        }
-        //
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.log(Level.FINE, typeName + " not found", nse);
-        //        }
-        //
-        //        continue;
-        //    } catch (Throwable unExpected) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.log(Level.SEVERE,
-        //                new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                    .append(" ignored - as DataStore ")
-        //                                                    .append(dataStoreId)
-        //                                                    .append(" is broken:").append(unExpected)
-        //                                                    .toString());
-        //        }
-        //
-        //        if (LOGGER.isLoggable(Level.FINE)) {
-        //            LOGGER.log(Level.FINE, new StringBuffer(key).append(" unavailable").toString(),
-        //                unExpected);
-        //        }
-        //
-        //        errors.put(featureTypeDTO, unExpected);
-        //
-        //        continue;
-        //    }
-        //
-        //    String prefix = dataStoreInfo.getNamesSpacePrefix();
-        //
-        //    if (LOGGER.isLoggable(Level.FINEST)) {
-        //        LOGGER.finest(new StringBuffer("SimpleFeatureType ").append(key)
-        //                                                      .append(" creating FeatureTypeInfo for ")
-        //                                                      .append(prefix).append(":")
-        //                                                      .append(typeName).toString());
-        //    }
-        //
-        //    FeatureTypeInfo featureTypeInfo = null;
-        //
-        //    try {
-        //        featureTypeInfo = new FeatureTypeInfo(featureTypeDTO, this);
-        //    } catch (ConfigurationException configException) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.log(Level.SEVERE,
-        //                new StringBuffer("FeatureTypeInfo ").append(key)
-        //                                                    .append(" ignored - configuration problem:")
-        //                                                    .append(configException).toString());
-        //        }
-        //
-        //        if (LOGGER.isLoggable(Level.FINEST)) {
-        //            LOGGER.log(Level.FINEST,
-        //                new StringBuffer(key).append(" unavailable").toString(), configException);
-        //        }
-        //
-        //        errors.put(featureTypeDTO, configException);
-        //
-        //        continue;
-        //    }
-        //
-        //    
-        //    String key2;
-        //    if(featureTypeDTO.getAlias() == null)
-        //        key2 = prefix + ":" + typeName;
-        //    else
-        //        key2 = prefix + ":" + featureTypeDTO.getAlias();
-        //
-        //    if (map.containsKey(key2)) {
-        //        if (LOGGER.isLoggable(Level.SEVERE)) {
-        //            LOGGER.severe(new StringBuffer("FeatureTypeInfo '").append(key2)
-        //                                                               .append("' already defined - you must have duplicate defined?")
-        //                                                               .toString());
-        //        }
-        //
-        //        errors.put(featureTypeDTO,
-        //            new ConfigurationException("FeatureTypeInfo '" + key2
-        //                + "' already defined - you must have duplicate defined?"));
-        //    } else {
-        //        if (LOGGER.isLoggable(Level.FINEST)) {
-        //            LOGGER.finest(new StringBuffer("FeatureTypeInfo ").append(key2)
-        //                                                              .append(" has been created...")
-        //                                                              .toString());
-        //        }
-        //
-        //        map.put(key2, featureTypeInfo);
-        //        // set layer name, type vector (0)
-        //        layerNames.put(key2, TYPE_VECTOR);
-        //
-        //        if (LOGGER.isLoggable(Level.FINEST)) {
-        //            LOGGER.finest(new StringBuffer("FeatureTypeInfo '").append(key2)
-        //                                                               .append("' is registered:")
-        //                                                               .append(dataStoreInfo)
-        //                                                               .toString());
-        //        }
-        //
-        //        errors.put(featureTypeDTO, Boolean.TRUE);
-        //    }
-        //}
-        //
-        //return map;
+
     }
 
     private List createAttrDTOsFromSchema(SimpleFeatureType featureType) {
@@ -1534,48 +629,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         }
 
         return null;
-        
-        //Map map = new HashMap();
-        //stFiles = new HashMap();
-        //
-        //if ((dto == null) || (dto.getStyles() == null)) {
-        //    return Collections.EMPTY_MAP; // we *are* allowed no datasets
-        //}
-        //
-        //for (Iterator i = dto.getStyles().values().iterator(); i.hasNext();) {
-        //    StyleDTO styleDTO = (StyleDTO) i.next();
-        //    String id = styleDTO.getId();
-        //    Style style;
-        //
-        //    try {
-        //        style = loadStyle(styleDTO.getFilename());
-        //        // HACK: due to our crappy weird id shit we rename the style's
-        //    // specified
-        //    // name with the id we (and our clients) refer to the style as.
-        //    // Should redo style management to not make use of our weird
-        //    // ids, just
-        //    // use the style's name out of the styles directory.
-        //    style.setName(id);
-        //} catch (Exception ioException) { // was IOException
-        //
-        //    if (LOGGER.isLoggable(Level.SEVERE)) {
-        //        LOGGER.log(Level.SEVERE,
-        //            new StringBuffer("Could not load style ").append(id).toString(), ioException);
-        //        }
-        //
-        //        continue;
-        //    }
-        //
-        //    stFiles.put(id, styleDTO.getFilename());
-        //    map.put(id, style);
-        //}
-        //
-        //if (LOGGER.isLoggable(Level.FINER)) {
-        //    LOGGER.finer(new StringBuffer("returning styles ").append(map).append("\n and set map ")
-        //                                                      .append(stFiles).toString());
-        //}
-        //
-        //return map;
+
     }
 
     /**
@@ -1640,18 +694,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             }
             
             return m;
-//        }
-//        else {
-//            Iterator i = errors.entrySet().iterator();
-//            
-//            while (i.hasNext()) {
-//                Map.Entry e = (Map.Entry) i.next();
-//                FeatureTypeInfoDTO ftdto = (FeatureTypeInfoDTO) e.getKey();
-//                m.put(ftdto.getDataStoreId() + ":" + ftdto.getName(), e.getValue());
-//            }
-//            
-//            return m;    
-//        }
+
     }
 
     /**
@@ -1667,20 +710,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
     public synchronized Map statusNamespaces() {
         Map m = new HashMap();
         return m;
-        //
-        //Iterator i = errors.entrySet().iterator();
-        //
-        //while (i.hasNext()) {
-        //    Map.Entry e = (Map.Entry) i.next();
-        //    FeatureTypeInfoDTO ftdto = (FeatureTypeInfoDTO) e.getKey();
-        //    DataStoreInfo dsdto = (DataStoreInfo) dataStores.get(ftdto.getDataStoreId());
-        //
-        //    if (dsdto != null) {
-        //        m.put(dsdto.getNamesSpacePrefix() + ":" + ftdto.getName(), e.getValue());
-        //    }
-        //}
-        //
-        //return m;
+
     }
 
     /**
@@ -1703,23 +733,14 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         for ( int i = 0; i < nameSpaces.length; i++ ) {
             tmp.put(nameSpaces[i].getPrefix(), nameSpaces[i].toDTO());
         }
-        //
-        //Iterator i;
-        //i = nameSpaces.keySet().iterator();
-        //
-        //while (i.hasNext()) {
-        //    NameSpaceInfo nsi = (NameSpaceInfo) nameSpaces.get(i.next());
-        //    tmp.put(nsi.getPrefix(), nsi.toDTO());
-        //}
+        
 
         dto.setNameSpaces(tmp);
 
         if ( getDefaultNameSpace() != null ) {
             dto.setDefaultNameSpacePrefix(getDefaultNameSpace().getPrefix());
         }
-        //if (defaultNameSpace != null) {
-        //    dto.setDefaultNameSpacePrefix(defaultNameSpace.getPrefix());
-        //}
+ 
 
         tmp = new HashMap();
         for ( StyleInfo s : catalog.getStyles() ) {
@@ -1729,28 +750,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             sdto.setDefault(false);
             tmp.put(s.getName(),sdto);
         }
-        //for ( Iterator s = getStyles().entrySet().iterator(); s.hasNext(); ) {
-        //    Map.Entry e = (Entry) s.next();
-        //    String id = (String) e.getKey();
-        //    Style st = (Style) e.getValue();
-        //    StyleDTO sdto = new StyleDTO();
-        //    sdto.setDefault(st.isDefault());
-        //    sdto.setFilename((File) stFiles.get(id));
-        //    sdto.setId(id);
-        //    tmp.put(id, sdto);
-        //}
-        
-        //i = styles.keySet().iterator();
-        //
-        //while (i.hasNext()) {
-        //    String id = (String) i.next();
-        //    Style st = (Style) styles.get(id);
-        //    StyleDTO sdto = new StyleDTO();
-        //    sdto.setDefault(st.isDefault());
-        //    sdto.setFilename((File) stFiles.get(id));
-        //    sdto.setId(id);
-        //    tmp.put(id, sdto);
-        //}
+
 
         if (LOGGER.isLoggable(Level.FINER)) {
             LOGGER.finer(new StringBuffer("setting styles to: ").append(tmp).toString());
@@ -1763,13 +763,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             CoverageStoreInfo format = (CoverageStoreInfo) f.next();
             tmp.put(format.getId(), format.toDTO());
         }
-        //
-        //i = formats.keySet().iterator();
-        //
-        //while (i.hasNext()) {
-        //    CoverageStoreInfo fmi = (CoverageStoreInfo) formats.get(i.next());
-        //    tmp.put(fmi.getId(), fmi.toDTO());
-        //}
 
         dto.setFormats(tmp);
 
@@ -1779,12 +772,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             tmp.put( dataStore.getId(), dataStore.toDTO() );
         }
 
-        //i = dataStores.keySet().iterator();
-        //
-        //while (i.hasNext()) {
-        //    DataStoreInfo dsi = (DataStoreInfo) dataStores.get(i.next());
-        //    tmp.put(dsi.getId(), dsi.toDTO());
-        //}
+  
 
         dto.setDataStores(tmp);
 
@@ -1795,14 +783,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             FeatureTypeInfo fti = (FeatureTypeInfo) entry.getValue();
             tmp.put( key, fti.toDTO() );
         }
-        //i = errors.keySet().iterator();
-        //
-        //while (i.hasNext()) {
-        //    FeatureTypeInfoDTO fti = (FeatureTypeInfoDTO) i.next();
-        //    tmp.put(fti.getKey(), fti.clone()); // DJB: changed to getKey() from
-        //                                        // getName() which was NOT
-        //                                        // unique!
-        //}
+
 
         dto.setFeaturesTypes(tmp);
  
@@ -1838,13 +819,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         org.geoserver.catalog.DataStoreInfo ds = catalog.getDataStoreByName(id);
         return ds != null && ds.isEnabled() ? 
                 new DataStoreInfo( ds, catalog ) : null;
-        //DataStoreInfo dsi = (DataStoreInfo) dataStores.get(id);
-        //
-        //if ((dsi != null) && dsi.isEnabled()) {
-        //    return dsi;
-        //}
-        //
-        //return null;
+ 
     }
 
     /**
@@ -1861,13 +836,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         return cs != null && cs.isEnabled() ?  
                 new CoverageStoreInfo( cs, catalog ) : null;
         
-        //CoverageStoreInfo dfi = (CoverageStoreInfo) formats.get(id);
-        //
-        //if ((dfi != null) && dfi.isEnabled()) {
-        //    return dfi;
-        //}
-        //
-        //return null;
+
     }
 
     /**
@@ -1907,9 +876,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         NamespaceInfo ns = catalog.getNamespaceByPrefix(prefix);
         return ns != null ? new NameSpaceInfo( ns, catalog ) : null;
         
-        //NameSpaceInfo retNS = (NameSpaceInfo) nameSpaces.get(prefix);
-        //
-        //return retNS;
+     
     }
 
     /**
@@ -1928,15 +895,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         NamespaceInfo ns = catalog.getNamespaceByURI(uri);
         return ns != null ? new NameSpaceInfo( ns, catalog ) : null; 
         
-        //for (Iterator i = nameSpaces.values().iterator(); i.hasNext();) {
-        //    NameSpaceInfo nsInfo = (NameSpaceInfo) i.next();
-        //
-        //    if (nsInfo.getURI().equals(uri)) {
-        //        return nsInfo;
-        //    }
-        //}
-        //
-        //return null;
+
     }
 
     /**
@@ -2041,46 +1000,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return new FeatureTypeInfo( layers.get(0), catalog );
             
         }
-        //
-        //
-        //FeatureTypeInfo found = null;
-        //
-        //found = (FeatureTypeInfo) featureTypes.get(name);
-        //
-        //if (found != null) {
-        //    return found;
-        //}
-        //
-        //String defaultPrefix = defaultNameSpace.getPrefix();
-        //found = (FeatureTypeInfo) featureTypes.get(defaultPrefix + ":" + name);
-        //
-        //if (found != null) {
-        //    return found;
-        //}
-        //
-        ////do an unprefixed check as well... if we dont find a prefixed 
-        //// match and only one unprexied feature type matches, bingo!
-        //List<FeatureTypeInfo> unprefixed = new ArrayList();
-        //for (Iterator i = featureTypes.values().iterator(); i.hasNext();) {
-        //    FeatureTypeInfo fto = (FeatureTypeInfo) i.next(); 
-        //
-        //    if ((name != null) && name.equals(fto.getName())) {
-        //        found = fto;
-        //    }
-        //    
-        //    if ( fto.getTypeName().equals( name ) ) {
-        //        unprefixed.add( fto );
-        //    }
-        //}
-        //
-        //if (found != null) {
-        //    return found;
-        //}
-        //
-        //if ( unprefixed.size() == 1 ){
-        //    return unprefixed.get( 0 );
-        //}
-        //
+
         throw new NoSuchElementException("Could not locate FeatureTypeConfig '" + name + "'");
     }
 
@@ -2138,30 +1058,7 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
             return new FeatureTypeInfo( layer( ft) , catalog );
         }
         return null;
-        //FeatureTypeInfo fallback = null;
-        //for (Iterator it = featureTypes.values().iterator(); it.hasNext();) {
-        //    FeatureTypeInfo fType = (FeatureTypeInfo) it.next();
-        //
-        //    if (fType.isEnabled()) {
-        //        String typeId = fType.getNameSpace().getPrefix() + ":" + typename;
-        //        boolean t1 = fType.getName().equals(typeId);
-        //        boolean t2 = fType.getNameSpace().getUri().equals(uri);
-        //
-        //        /**
-        //         * GR:
-        //         *
-        //         * @HACK it seems not to be working, so I'm just comparing the
-        //         *       prefixed name (don't should it be enough?)
-        //         */
-        //        if (t1 && t2) {
-        //            return fType;
-        //        } else if(t1) {
-        //            fallback = fType;
-        //        }
-        //    }
-        //}
-        //
-        //return fallback;
+
     }
 
     public synchronized CoverageInfo getCoverageInfo(String name)
@@ -2344,21 +1241,6 @@ public class Data extends GlobalLayerSupertype /* implements Repository */implem
         return stylereader.readXML()[0];
     }
 
-    ///**
-    // * tests whether a given file is a file containing type information.
-    // *
-    // * @param testFile
-    // *            the file to test.
-    // *
-    // * @return <tt>true</tt> if the file has type info.
-    // */
-    //private static boolean isInfoFile(File testFile) {
-    //    String testName = testFile.getAbsolutePath();
-    //    int start = testName.length() - INFO_FILE.length();
-    //    int end = testName.length();
-    //
-    //    return testName.substring(start, end).equals(INFO_FILE);
-    //}
 
     /**
      * The number of connections currently held.
