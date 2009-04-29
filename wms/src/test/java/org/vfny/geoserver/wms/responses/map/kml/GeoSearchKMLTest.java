@@ -150,4 +150,22 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
             );
         }
     }
+    
+    /**
+     * Test whether specifying different regionating strategies changes the results.
+     */
+    public void testDuplicateAttribute() throws Exception {
+        final String path = 
+            "wms?request=getmap&service=wms&version=1.1.1" + 
+            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&layers=" + TILE_TESTS.getPrefix() + ":" + TILE_TESTS.getLocalPart() + 
+            "&bbox=-180,-90,0,90&styles=" + 
+            "&height=1024&width=1024&srs=EPSG:4326";
+
+        FeatureTypeInfo fti = getFeatureTypeInfo(TILE_TESTS);
+        fti.getMetadata().put("kml.regionateFeatureLimit", 2);
+
+        Document geo = getAsDOM(path + "&format_options=regionateBy:best_guess;regionateattr:the_geom");
+        assertEquals("kml", geo.getDocumentElement().getTagName());
+    }
 }
