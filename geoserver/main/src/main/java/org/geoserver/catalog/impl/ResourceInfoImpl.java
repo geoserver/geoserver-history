@@ -413,14 +413,14 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
      * @param keywords the keywords to set
      */
     public void setKeywords(List<String> keywords) {
-        this.keywords = new ArrayList<String>(keywords);
+        this.keywords =keywords;
     }
 
     /**
      * @param metadataLinks the metadataLinks to set
      */
     public void setMetadataLinks(List<MetadataLinkInfo> metadataLinks) {
-        this.metadataLinks = new ArrayList<MetadataLinkInfo>(metadataLinks);
+        this.metadataLinks =metadataLinks;
     }
 
     /**
@@ -434,7 +434,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
      * @param alias the alias to set
      */
     public void setAlias(List<String> alias) {
-        this.alias = new ArrayList<String>(alias);
+        this.alias = alias;
     }
 
 }
