@@ -21,6 +21,7 @@
 		<id name="id" column="STORE_ID">
             <generator class="native"/>
         </id>
+        <discriminator column="STORE_TYPE" type="string"/>
         <property name="name" column="NAME" unique="true" not-null="true" />
 		<property name="description" column="DESCRIPTION"/>
 		<property name="enabled" column="ENABLED"/>
@@ -31,27 +32,30 @@
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
         </map>
+        
+ 		
+        <!-- DataStoreInfo -->
+	    <subclass name="org.geoserver.catalog.impl.DataStoreInfoImpl" discriminator-value="DataStore" >
+			<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all-delete-orphan" lazy="false">
+	        	<key column="DATA_STORE_ID"/>
+	        	<map-key type="java.lang.String"></map-key>
+				<element type="java.io.Serializable" length="100000"></element>
+	        </map>
+			
+		</subclass>
+	    
+	    <!-- CoverageStoreInfo -->
+	    <subclass name="org.geoserver.catalog.impl.CoverageStoreInfoImpl" 
+			extends="org.geoserver.catalog.impl.StoreInfoImpl" discriminator-value="CoverageStore">
+			<property name="type" column="COVERAGE_STORE_TYPE"/>
+			<property name="URL" column="COVERAGE_STORE_URL"/>
+	    </subclass>  
+        
+        
+      
     </class>
     
-    <!-- DataStoreInfo -->
-    <joined-subclass name="org.geoserver.catalog.impl.DataStoreInfoImpl" 
-		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="DATA_STORES">
-		<key column="DATA_STORE_ID"/>
-		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all-delete-orphan" lazy="false">
-        	<key column="DATA_STORE_ID"/>
-        	<map-key type="java.lang.String"></map-key>
-			<element type="java.io.Serializable" length="100000"></element>
-        </map>
-		
-	</joined-subclass>
-    
-    <!-- CoverageStoreInfo -->
-    <joined-subclass name="org.geoserver.catalog.impl.CoverageStoreInfoImpl" 
-		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="COVERAGE_STORES">
-		<key column="COVERAGE_STORE_ID"/>
-		<property name="type" column="COVERAGE_STORE_TYPE"/>
-		<property name="URL" column="COVERAGE_STORE_URL"/>
-    </joined-subclass>
+
     
 	<!-- StyleInfo -->
 	<class name="org.geoserver.catalog.impl.StyleInfoImpl" table="STYLES">
