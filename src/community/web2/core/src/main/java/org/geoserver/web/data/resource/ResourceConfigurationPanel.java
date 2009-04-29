@@ -26,8 +26,8 @@ import org.geotools.util.logging.Logging;
 public class ResourceConfigurationPanel extends Panel {
     protected static Logger LOGGER = Logging.getLogger(ResourceConfigurationPanel.class);
 
-	public ResourceConfigurationPanel(String id, IModel model){
-		super(id, model);
+	public ResourceConfigurationPanel(String panelId, IModel model){
+		super(panelId, model);
 	}
 	
 	public ResourceInfo getResourceInfo(){
