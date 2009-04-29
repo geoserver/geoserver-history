@@ -1,8 +1,10 @@
 package org.geoserver.web.data.resource;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -22,14 +24,16 @@ import org.geoserver.web.util.MapModel;
 @SuppressWarnings("serial")
 public class CoverageResourceConfigurationPanel extends ResourceConfigurationPanel {
 
-    public CoverageResourceConfigurationPanel(String id, IModel model){
-        super(id, model);
+    public CoverageResourceConfigurationPanel(final String panelId, final IModel model){
+        super(panelId, model);
 
         final CoverageInfo coverage = (CoverageInfo) getResourceInfo();
-        final IModel paramsModel = new PropertyModel(getModel(), "parameters");
         
-        List<String> keys = new ArrayList<String>(coverage.getParameters().keySet());
+        final Map<String, Serializable> parameters = coverage.getParameters();
+        List<String> keys = new ArrayList<String>(parameters.keySet());
         Collections.sort(keys);
+
+        final IModel paramsModel = new PropertyModel(model, "parameters");
         ListView paramsList = new ListView("parameters", keys) {
             
             @Override
