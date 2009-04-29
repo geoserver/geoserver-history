@@ -37,7 +37,7 @@
     <joined-subclass name="org.geoserver.catalog.impl.DataStoreInfoImpl" 
 		extends="org.geoserver.catalog.impl.StoreInfoImpl" table="DATA_STORES">
 		<key column="DATA_STORE_ID"/>
-		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all" lazy="false">
+		<map name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS" cascade="all-delete-orphan" lazy="false">
         	<key column="DATA_STORE_ID"/>
         	<map-key type="java.lang.String"></map-key>
 			<element type="java.io.Serializable" length="100000"></element>
