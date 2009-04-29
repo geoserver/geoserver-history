@@ -8,8 +8,11 @@
 			<label for="filter"><wicket:message key="filter">Filter</wicket:message>:</label>
 			<input wicket:id="filter" type="text" size="50"></input>
 			<input class="btnTxt" wicket:id="applyFilter" type="submit"	wicket:message="value:applyFilter"></input>
-			<input class="btnTxt" wicket:id="resetFilter" type="button"	wicket:message="value:resetFilter"></input><br />
-			<span wicket:id="filterMatch">Matched xxx out of yyy</span>
+			<input class="btnTxt" wicket:id="resetFilter" type="button"	wicket:message="value:resetFilter"></input><br/>
+			<span class="paginator" wicket:id="navigatorTopContainer">
+	           <span wicket:id="navigatorTop">1|2|3|...</span>
+            </span>
+            <span wicket:id="filterMatch">Matched xxx out of yyy</span>
 	</form>
 	
 	<table wicket:id="listContainer">
@@ -26,8 +29,8 @@
 			</tr>
 		</tbody>
 	</table>
-  <span class="paginator" wicket:id="navigatorContainer">
-	 <span wicket:id="navigator">1|2|3|...</span>
+  <span class="paginator" wicket:id="navigatorBottomContainer">
+	 <span wicket:id="navigatorBottom">1|2|3|...</span>
   </span>
 	
 	<!-- Sortable header fragments -->
