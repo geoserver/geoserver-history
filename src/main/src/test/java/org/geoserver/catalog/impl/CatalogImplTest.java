@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -26,7 +28,9 @@ public class CatalogImplTest extends TestCase {
     WorkspaceInfo ws;
     NamespaceInfo ns;
     DataStoreInfo ds;
+    CoverageStoreInfo cs;
     FeatureTypeInfo ft;
+    CoverageInfo cv;
     LayerInfo l;
     StyleInfo s;
     
@@ -52,6 +56,15 @@ public class CatalogImplTest extends TestCase {
         ft.setDescription( "ftDescription" );
         ft.setStore( ds );
         ft.setNamespace( ns );
+
+        cs = factory.createCoverageStore();
+        cs.setName("csName");
+        cs.setType("fakeCoverageType");
+        cs.setURL("file://fake");
+        
+        cv = factory.createCoverage();
+        cv.setName("cvName");
+        cv.setStore(cs);
         
         s = factory.createStyle();
         s.setName( "styleName" );
@@ -477,6 +490,48 @@ public class CatalogImplTest extends TestCase {
         catch( Exception e ) {}
     }
     
+    public void testAddCoverage() {
+        //set a default namespace
+        catalog.add( ns );
+        
+        assertNotNull(catalog.getCoverages());
+        assertTrue( catalog.getCoverages().isEmpty() );
+        
+        catalog.add( cv );
+        assertEquals( 1, catalog.getCoverages().size() );
+        
+        CoverageInfo cv2 = catalog.getFactory().createCoverage();
+        try {
+            catalog.add(cv2);
+            fail( "adding with no name should throw exception");
+        }
+        catch( Exception e ) {}
+        
+        cv2.setName("cv2Name");
+        try {
+            catalog.add(cv2);
+            fail( "adding with no store should throw exception");
+        }
+        catch( Exception e ) {}
+        
+        cv2.setStore( cs );
+        catalog.add( cv2 );
+        assertEquals( 2, catalog.getCoverages().size() );
+
+        CoverageInfo fromCatalog = catalog.getCoverageByName("cv2Name");
+        assertNotNull(fromCatalog);
+        //ensure the collection properties are set to NullObjects and not to null
+        assertNotNull(fromCatalog.getParameters());
+        
+        CoverageInfo cv3 = catalog.getFactory().createCoverage();
+        cv3.setName( "cv3Name");
+        try {
+            catalog.getCoverages().add( cv3 );
+            fail( "adding directly should throw an exception");
+        }
+        catch( Exception e ) {}
+    }
+
     public void testRemoveFeatureType() {
         catalog.add( ft );
         assertFalse( catalog.getFeatureTypes().isEmpty() );
