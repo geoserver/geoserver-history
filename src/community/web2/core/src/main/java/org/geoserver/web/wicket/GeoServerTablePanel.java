@@ -7,7 +7,7 @@ package org.geoserver.web.wicket;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -66,12 +66,14 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         filterForm = new Form("filterForm");
         add(filterForm);
         filterForm.add(filter = new TextField("filter", new Model()));
-        filter.setOutputMarkupId(true);
-        AjaxButton filterSubmit = filterSubmitButton();
-        filterForm.add(filterSubmit);
-        AjaxButton filterResetButton = filterResetButton();
-        AjaxButton filterReset = filterResetButton;
-        filterForm.add(filterReset);
+         filterForm.add(new AjaxSubmitButton("submit") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                updateFilter(target, filter.getModelObjectAsString());
+            }
+            
+        });
 
         // setup the table
         listContainer.setOutputMarkupId(true);
@@ -187,27 +189,27 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
 
 
-    private AjaxButton filterResetButton() {
-        return new AjaxButton("resetFilter") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-                updateFilter(target, "");
-            }
-
-        };
-    }
-
-    private AjaxButton filterSubmitButton() {
-        return new AjaxButton("applyFilter") {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-                updateFilter(target, filter.getModelObjectAsString().trim());
-            }
-
-        };
-    }
+//    private AjaxButton filterResetButton() {
+//        return new AjaxButton("resetFilter") {
+//
+//            @Override
+//            protected void onSubmit(AjaxRequestTarget target, Form form) {
+//                updateFilter(target, "");
+//            }
+//
+//        };
+//    }
+//
+//    private AjaxButton filterSubmitButton() {
+//        return new AjaxButton("applyFilter") {
+//
+//            @Override
+//            protected void onSubmit(AjaxRequestTarget target, Form form) {
+//                updateFilter(target, filter.getModelObjectAsString().trim());
+//            }
+//
+//        };
+//    }
     
     private void updateFilter(AjaxRequestTarget target, String flatKeywords) {
         if ("".equals(flatKeywords)) {
@@ -229,7 +231,6 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         target.addComponent(listContainer);
         target.addComponent(navigatorTop);
         target.addComponent(navigatorBottom);
-        target.addComponent(filter);
     }
     
     /**

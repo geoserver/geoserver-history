@@ -106,6 +106,10 @@ float:left;
 float:right;
 }
 
+.clearBoth {
+clear:both;
+}
+
 .nobreak {
 white-space: nowrap;
 }
