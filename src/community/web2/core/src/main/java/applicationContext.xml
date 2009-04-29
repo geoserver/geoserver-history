@@ -203,8 +203,23 @@
   </bean>
   
   <!-- 
-   Data store panels
+   Data store panels. Used to set up custom icons for the different vector or raster store types
    -->
+  <bean id="defaultDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
+    <!-- panel info used for a default vector store icon  -->
+    <property name="id" value="defaultVector"/>
+    <property name="factoryClass" value=""/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+  <bean id="defaultCoverageStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
+    <!-- panel info used for a default raster store icon  -->
+    <property name="id" value="defaultRaster"/>
+    <property name="factoryClass" value=""/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/page_white_raster.png"/>
+  </bean>
+
   <bean id="postgisDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <property name="id" value="postgis"/>
     <property name="factoryClass" value="org.geotools.data.postgis.PostgisNGDataStoreFactory"/>
@@ -213,7 +228,7 @@
   </bean>
   
   <bean id="shapefileDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
-    <property name="id" value="property"/>
+    <property name="id" value="shapefile"/>
     <property name="factoryClass" value="org.geotools.data.shapefile.ShapefileDataStoreFactory"/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/page_white_vector.png"/>
@@ -233,4 +248,31 @@
     <property name="icon" value="img/icons/geosilk/server_vector.png"/>
   </bean>
  
-</beans>
+ 
+  <!-- since the following ones are not part of the standard build at least their respective profiles
+       are enabled, I'm commenting them out, or the bean creation fails due to the factoryClass not not
+       being around. Yet, it would be useful to find a way of being able to define them even if the
+       geotools plug in is not on the classpath -->
+  <!-- 
+  <bean id="oracleDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
+    <property name="id" value="oracle"/>
+    <property name="factoryClass" value="org.geotools.data.oracle.OracleNGDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_oracle.png"/>
+  </bean>
+
+  <bean id="arcsdeDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
+    <property name="id" value="arcsde"/>
+    <property name="factoryClass" value="org.geotools.arcsde.ArcSDEDataStoreFactory"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+  </bean>
+
+  <bean id="arcsdeCoverageStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
+    <property name="id" value="arcsde_gce"/>
+    <property name="factoryClass" value="org.geotools.arcsde.gce.ArcSDERasterFormat"/>
+    <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
+    <property name="icon" value="img/icons/geosilk/database_raster.png"/>
+  </bean>
+  -->
+ </beans>
