@@ -32,10 +32,9 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * by a {@link GeoServerDataProvider}, subclasses only need to build a component
  * for each property by implementing the {@link #getComponentForProperty(String, IModel, Property)}
  * method
- * @author Andrea Aime - OpenGeo
- *
  * @param <T>
  */
+@SuppressWarnings("serial")
 public abstract class GeoServerTablePanel<T> extends Panel {
     
     
@@ -44,23 +43,17 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     // filter form components
     TextField filter;
 
-    Label matched;
-
     // table components
     DataView dataView;
 
     WebMarkupContainer listContainer;
     
-    WebMarkupContainer navigatorTopContainer;
-    GeoServerPagingNavigator navigatorTop;
-    WebMarkupContainer navigatorBottomContainer;
-    GeoServerPagingNavigator navigatorBottom;
+    Pager navigatorTop;
+    Pager navigatorBottom;
 
     GeoServerDataProvider<T> dataProvider;
     
     Form filterForm;
-
-    
 
     public GeoServerTablePanel(String id, final GeoServerDataProvider<T> dataProvider) {
         super(id);
@@ -79,10 +72,6 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         AjaxButton filterResetButton = filterResetButton();
         AjaxButton filterReset = filterResetButton;
         filterForm.add(filterReset);
-
-        // add the filter match label
-        filterForm.add(matched = new Label("filterMatch", new ResourceModel("showingAllRecords")));
-        matched.setOutputMarkupId(true);
 
         // setup the table
         listContainer.setOutputMarkupId(true);
@@ -126,6 +115,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
                 });
             }
+            
+            
 
         };
         listContainer.add(dataView);
@@ -157,16 +148,10 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
         // add the paging navigator and set the items per page
         dataView.setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
-        
-        // add the top navigator
-        filterForm.add(navigatorTopContainer = new WebMarkupContainer("navigatorTopContainer"));
-        navigatorTopContainer.setOutputMarkupId(true);
-        navigatorTopContainer.add(navigatorTop = new GeoServerPagingNavigator("navigatorTop", dataView));
-        
-        // add the bottom navigator
-        add(navigatorBottomContainer = new WebMarkupContainer("navigatorBottomContainer"));
-        navigatorBottomContainer.setOutputMarkupId(true);
-        navigatorBottomContainer.add(navigatorBottom = new GeoServerPagingNavigator("navigatorBottom", dataView));
+        filterForm.add(navigatorTop = new Pager("navigatorTop"));
+        navigatorTop.setOutputMarkupId(true);
+        add(navigatorBottom = new Pager("navigatorBottom"));
+        navigatorBottom.setOutputMarkupId(true);
     }
     
     public void setItemsPerPage(int items) {
@@ -229,7 +214,6 @@ public abstract class GeoServerTablePanel<T> extends Panel {
             dataProvider.setKeywords(null);
             filter.setModelObject("");
             dataView.setCurrentPage(0);
-            matched.setModel(new ResourceModel("showingAllRecords"));
         } else {
             String[] keywords = flatKeywords.split("\\s+");
             dataProvider.setKeywords(keywords);
@@ -238,33 +222,84 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                     "matchedXOutOfY", this, 
                     Integer.valueOf(dataProvider.size()), 
                     Integer.valueOf(dataProvider.fullSize()));
-            matched.setModel(paramResMod);
         }
+        navigatorTop.updateMatched();
+        navigatorBottom.updateMatched();
 
         target.addComponent(listContainer);
-        target.addComponent(navigatorTopContainer);
-        target.addComponent(navigatorBottomContainer);
-        target.addComponent(matched);
+        target.addComponent(navigatorTop);
+        target.addComponent(navigatorBottom);
         target.addComponent(filter);
     }
     
     /**
-     * Turns filtering capabilities on/off.
+     * Turns filtering abilities on/off.
      */
     public void setFilterVisible(boolean filterVisible) {
         filterForm.setVisible(filterVisible);
     }
-
+    
     /**
-     * Returns the component that will represent a property of a table item.
-     * Usually it should be a label, or a link, but you can return pretty much
-     * everything.
+     * Returns the component that will represent a property of a table item. Usually it should be a
+     * label, or a link, but you can return pretty much everything.
      * 
      * @param itemModel
      * @param property
      * @return
      */
-    protected abstract Component getComponentForProperty(String id,
-            IModel itemModel, Property<T> property);
+    protected abstract Component getComponentForProperty(String id, IModel itemModel,
+            Property<T> property);
 
+    class Pager extends Panel {
+
+        GeoServerPagingNavigator navigator;
+        Label matched;
+
+        Pager(String id) {
+            super(id);
+
+            add(navigator = new GeoServerPagingNavigator("navigator", dataView) {
+                @Override
+                protected void onAjaxEvent(AjaxRequestTarget target) {
+                    super.onAjaxEvent(target);
+                    navigatorTop.updateMatched();
+                    navigatorBottom.updateMatched();
+                    target.addComponent(navigatorTop);
+                    target.addComponent(navigatorBottom);
+                }
+            });
+            ParamResourceModel paramResMod = new ParamResourceModel("showingAllRecords", this,
+                        start(), end(), dataProvider.fullSize());
+            add(matched = new Label("filterMatch", paramResMod));
+        }
+
+        void updateMatched() {
+            if (dataProvider.getKeywords() == null) {
+                ParamResourceModel paramResMod = new ParamResourceModel("showingAllRecords", this,
+                        start(), end(), dataProvider.fullSize());
+                matched.setModel(paramResMod);
+            } else {
+                ParamResourceModel paramResMod = new ParamResourceModel("matchedXOutOfY", this,
+                        start(), end(), dataProvider.size(), dataProvider.fullSize());
+                matched.setModel(paramResMod);
+            }
+        }
+        
+        int start() {
+            if(dataView.getDataProvider().size() > 0)
+                return dataView.getItemsPerPage() * dataView.getCurrentPage() + 1;
+            else
+                return 0;
+        }
+        
+        int end() {
+            int count = dataView.getPageCount();
+            int page = dataView.getCurrentPage();
+            if(page < (count - 1))
+                return dataView.getItemsPerPage() * (page + 1);
+            else
+                return dataView.getDataProvider().size();
+                
+        }
+    }
 }
