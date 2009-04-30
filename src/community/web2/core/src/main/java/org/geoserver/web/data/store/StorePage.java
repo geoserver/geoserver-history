@@ -4,18 +4,22 @@
  */
 package org.geoserver.web.data.store;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.layer.NewLayerPage;
 import org.geoserver.web.data.workspace.WorkspaceChoiceRenderer;
 import org.geoserver.web.data.workspace.WorkspacesModel;
 import org.geoserver.web.wicket.MenuDropDownChoice;
 
 /**
- * Page listing all the available stores. Follows the usual filter/sort/page
- * approach, provides ways to bulk delete stores and to add new ones
+ * Page listing all the available stores. Follows the usual filter/sort/page approach, provides ways
+ * to bulk delete stores and to add new ones
  */
 @SuppressWarnings("serial")
 public class StorePage extends GeoServerSecuredPage {
@@ -24,30 +28,24 @@ public class StorePage extends GeoServerSecuredPage {
     StorePanel table;
 
     public StorePage() {
-        table = new StorePanel( "table", provider );
+        // the action buttons
+        add(new BookmarkablePageLink("addNew", NewDataPage.class));
+        add(removeSelectedLink());
+        table = new StorePanel("table", provider);
         table.setOutputMarkupId(true);
         add(table);
 
         // the workspaces drop down
-        add(workspacesDropDown());
+        //add(workspacesDropDown());
     }
 
-    private DropDownChoice workspacesDropDown() {
-        final DropDownChoice workspaces;
-        workspaces = new MenuDropDownChoice("wsDropDown", new Model(null), new WorkspacesModel(), new WorkspaceChoiceRenderer()) {
+    Component removeSelectedLink() {
+        return new AjaxLink("removeSelected") {
 
             @Override
-            protected void onChoice(AjaxRequestTarget target) {
-                if(getModelObject() != null) {
-                    WorkspaceInfo ws = (WorkspaceInfo) getModelObject();
-
-                    String wsId = ws.getId();
-                    setResponsePage(new NewDataPage(wsId));
-
-                }
+            public void onClick(AjaxRequestTarget target) {
+                System.out.println("IMPLEMENT ME!");
             }
-            
         };
-        return workspaces;
     }
 }
