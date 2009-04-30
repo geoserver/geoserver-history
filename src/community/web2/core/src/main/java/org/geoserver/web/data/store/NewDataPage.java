@@ -11,13 +11,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.image.Image;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.ValidationError;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.workspace.WorkspaceChoiceRenderer;
+import org.geoserver.web.data.workspace.WorkspacesModel;
+import org.geoserver.web.wicket.MenuDropDownChoice;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
@@ -25,7 +35,7 @@ import org.opengis.coverage.grid.Format;
 
 /**
  * Page that presents a list of vector and raster store types available in the classpath in order to
- * choose what kind of data source to create.
+ * choose what kind of data source to create, as well as which workspace to create the store in.
  * <p>
  * Meant to be called by {@link DataPage} when about to add a new datastore or coverage.
  * </p>
@@ -33,6 +43,8 @@ import org.opengis.coverage.grid.Format;
  * @author Gabriel Roldan
  */
 public class NewDataPage extends GeoServerSecuredPage {
+
+    private String workspaceId;
 
     // do not access directly, it is transient and the instance can be the de-serialized version
     private transient Map<String, DataAccessFactory> dataStores = getAvailableDataStores();
@@ -48,9 +60,16 @@ public class NewDataPage extends GeoServerSecuredPage {
      *            the id of the workspace to attach the new resource store to.
      */
     @SuppressWarnings("serial")
-    public NewDataPage(final String workspaceId) {
+    public NewDataPage() {
 
-        final ArrayList<String> sortedDsNames = new ArrayList<String>(getAvailableDataStores().keySet());
+        final Form storeForm = new Form("storeForm");
+        add(storeForm);
+
+        final DropDownChoice workspacesDropDown = workspacesDropDown();
+        storeForm.add(workspacesDropDown);
+
+        final ArrayList<String> sortedDsNames = new ArrayList<String>(getAvailableDataStores()
+                .keySet());
         Collections.sort(sortedDsNames);
 
         final CatalogIconFactory icons = CatalogIconFactory.get();
@@ -58,13 +77,19 @@ public class NewDataPage extends GeoServerSecuredPage {
             @Override
             protected void populateItem(ListItem item) {
                 final String dataStoreFactoryName = item.getModelObjectAsString();
-                final DataAccessFactory factory = getAvailableDataStores().get(dataStoreFactoryName);
+                final DataAccessFactory factory = getAvailableDataStores()
+                        .get(dataStoreFactoryName);
                 final String description = factory.getDescription();
-                Link link;
-                link = new Link("resourcelink") {
+                SubmitLink link;
+                link = new SubmitLink("resourcelink") {
                     @Override
-                    public void onClick() {
-                        setResponsePage(new DataAccessNewPage(workspaceId, dataStoreFactoryName));
+                    public void onSubmit() {
+                        if (workspaceId == null) {
+                            IValidationError e = new ValidationError().addMessageKey("noWorkspaceSelectedError");
+                            workspacesDropDown.error(e);
+                        } else {
+                            setResponsePage(new DataAccessNewPage(workspaceId, dataStoreFactoryName));
+                        }
                     }
                 };
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
@@ -85,11 +110,17 @@ public class NewDataPage extends GeoServerSecuredPage {
                 final Map<String, Format> coverages = getAvailableCoverageStores();
                 Format format = coverages.get(coverageFactoryName);
                 final String description = format.getDescription();
-                Link link;
-                link = new Link("resourcelink") {
+                SubmitLink link;
+                link = new SubmitLink("resourcelink") {
                     @Override
-                    public void onClick() {
-                        setResponsePage(new CoverageStoreNewPage(workspaceId, coverageFactoryName));
+                    public void onSubmit() {
+                        if (workspaceId == null) {
+                            IValidationError e = new ValidationError().addMessageKey("noWorkspaceSelectedError");
+                            workspacesDropDown.error(e);
+                        } else {
+                            setResponsePage(new CoverageStoreNewPage(workspaceId,
+                                    coverageFactoryName));
+                        }
                     }
                 };
                 link.add(new Label("resourcelabel", coverageFactoryName));
@@ -99,8 +130,31 @@ public class NewDataPage extends GeoServerSecuredPage {
             }
         };
 
-        add(dataStoreLinks);
-        add(coverageLinks);
+        storeForm.add(dataStoreLinks);
+        storeForm.add(coverageLinks);
+    }
+
+    @SuppressWarnings("serial")
+    private DropDownChoice workspacesDropDown() {
+        final DropDownChoice workspaces;
+
+        workspaces = new MenuDropDownChoice("workspaceDropDown", new Model(null),
+                new WorkspacesModel(), new WorkspaceChoiceRenderer()) {
+            @Override
+            protected void onChoice(AjaxRequestTarget target) {
+                if (getModelObject() == null) {
+                    workspaceId = null;
+                } else {
+                    WorkspaceInfo ws = (WorkspaceInfo) getModelObject();
+
+                    String wsId = ws.getId();
+                    workspaceId = wsId;
+                }
+            }
+
+        };
+        workspaces.setNullValid(false);
+        return workspaces;
     }
 
     /**
