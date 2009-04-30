@@ -16,7 +16,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
@@ -31,7 +30,7 @@ import org.opengis.feature.type.Name;
 @SuppressWarnings("serial")
 public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
     
-    public static final Property<Resource> NAME = new BeanProperty<Resource>("name", "name");
+    public static final Property<Resource> NAME = new BeanProperty<Resource>("name", "localName");
     public static final Property<Resource> PUBLISHED = new BeanProperty<Resource>("published", "published");
     
     public static final List<Property<Resource>> PROPERTIES = Arrays.asList(NAME, PUBLISHED);
@@ -40,20 +39,13 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
     
     String storeId;
     
-    /**
-     * Creates a new provider for the specified store. The store type class recognized so far
-     * are {@link DataStoreInfo} and {@link CoverageStoreInfo}
-     * @param storeId
-     */
-    public NewLayerPageProvider(String storeId) {
-        this.storeId = storeId;
-        
-        if(getCatalog().getStore(storeId, StoreInfo.class) == null)
-            throw new IllegalArgumentException("Could not find store " + storeId);
-    }
-
     @Override
     protected List<Resource> getItems() {
+        // return an empty list in case we still don't know about the store
+        if(storeId == null)
+            return new ArrayList<Resource>();
+        
+        // else, grab the resource list
         try {
             List<Resource> result;
             StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
@@ -99,6 +91,14 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
             
     }
     
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
+
     @Override
     protected List<Resource> getFilteredItems() {
         List<Resource> resources = super.getFilteredItems();

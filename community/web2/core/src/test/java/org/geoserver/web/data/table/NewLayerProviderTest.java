@@ -18,7 +18,8 @@ public class NewLayerProviderTest extends GeoServerWicketTestSupport {
     
     public void testFeatureType() {
         StoreInfo cite = getCatalog().getStoreByName( MockData.CITE_PREFIX,StoreInfo.class );
-        NewLayerPageProvider provider = new NewLayerPageProvider(cite.getId());
+        NewLayerPageProvider provider = new NewLayerPageProvider();
+        provider.setStoreId(cite.getId());
         provider.setShowPublished(true);
         assertTrue(provider.size() > 0);
         provider.setShowPublished(false);
@@ -27,9 +28,18 @@ public class NewLayerProviderTest extends GeoServerWicketTestSupport {
     
     public void testCoverages() {
         StoreInfo dem = getCatalog().getStoreByName( MockData.TASMANIA_DEM.getLocalPart(),StoreInfo.class );
-        NewLayerPageProvider provider = new NewLayerPageProvider(dem.getId());
+        NewLayerPageProvider provider = new NewLayerPageProvider();
+        provider.setStoreId(dem.getId());
         provider.setShowPublished(true);
         assertTrue(provider.size() > 0);
+        provider.setShowPublished(false);
+        assertEquals(0, provider.size());
+    }
+    
+    public void testEmpty() {
+        NewLayerPageProvider provider = new NewLayerPageProvider();
+        provider.setShowPublished(true);
+        assertEquals(0, provider.size());
         provider.setShowPublished(false);
         assertEquals(0, provider.size());
     }

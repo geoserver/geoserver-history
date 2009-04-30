@@ -4,14 +4,18 @@
  */
 package org.geoserver.web.data.layer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
-import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -33,38 +37,56 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * the user to a new resource configuration page
  * 
  * @author Andrea Aime - OpenGeo
- * 
  */
+@SuppressWarnings("serial")
 public class NewLayerPage extends GeoServerSecuredPage {
 
     String storeId;
+    private NewLayerPageProvider provider;
+    private GeoServerTablePanel<Resource> layers;
+    private WebMarkupContainer layersContainer;
+    private WebMarkupContainer selectLayersContainer;
+    private WebMarkupContainer selectLayers;
+    private Label storeName;
+    
+    public NewLayerPage() {
+        this(null);
+    }
 
     public NewLayerPage(String storeId) {
         this.storeId = storeId;
-        StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
         
-        // add the basic labels
-        add(new Label("storeName", store.getName()));
+        // the store selector, used when no store is initially known
+        WebMarkupContainer selector = new WebMarkupContainer("selector");
+        selector.add(storesDropDown());
+        selector.setVisible(storeId == null);
+        add(selector);
         
-        // build the unconfigured layer provider and the table showing it
-        final NewLayerPageProvider provider = new NewLayerPageProvider(storeId);
-        final GeoServerTablePanel<Resource> layers = new GeoServerTablePanel<Resource>("layers", provider) {
+        // the third and final group, the layer choosing one, 
+        // visible when in any  way a store has been chosen
+        selectLayersContainer = new WebMarkupContainer("selectLayersContainer");
+        selectLayersContainer.setOutputMarkupId(true);
+        add(selectLayersContainer);
+        selectLayers = new WebMarkupContainer("selectLayers");
+        selectLayers.setVisible(storeId != null);
+        selectLayersContainer.add(selectLayers);
+        
+        selectLayers.add(storeName = new Label("storeName", new Model()));
+        if(storeId != null) {
+            StoreInfo store = getCatalog().getStore(storeId, StoreInfo.class);
+            storeName.setModelObject(store.getName());
+        }
+        
+        provider = new NewLayerPageProvider();
+        provider.setStoreId(storeId);
+        provider.setShowPublished(true);
+        layers = new GeoServerTablePanel<Resource>("layers", provider) {
 
             @Override
             protected Component getComponentForProperty(String id,
                     IModel itemModel, Property<Resource> property) {
                 if (property == NewLayerPageProvider.NAME) {
-                    return new SimpleAjaxLink(id, itemModel, property
-                            .getModel(itemModel)) {
-
-                        @Override
-                        protected void onClick(AjaxRequestTarget target) {
-                            Resource resource = (Resource) getModelObject();
-                            setResponsePage(new ResourceConfigurationPage(
-                                    buildLayerInfo(resource), true));
-                        }
-
-                    };
+                    return resourceChooserLink(id, itemModel, property);
                 } else if (property == NewLayerPageProvider.PUBLISHED) {
                     return new Label(id, property.getModel(itemModel));
                 } else {
@@ -76,44 +98,48 @@ public class NewLayerPage extends GeoServerSecuredPage {
         };
         layers.setFilterVisible(false);
         
-        final WebMarkupContainer container = new WebMarkupContainer("layersContainer");
-        container.setOutputMarkupId(true);
-        add(container);
-        container.add(layers);
-        
-        // add the "all layers are published" warning message
-        String warnMessage = "All resources inside this store have " + 
-        		"  been publised already.\nCheck \"show published resources\" if you want to" + 
-        		"  see them, and publish a resource again (under a different" + 
-        		"  name/configuration)";
-        final MultiLineLabel allPublished = new MultiLineLabel("allPublished", warnMessage);
-        container.add(allPublished);
-        
-        updateLayersVisibility(provider, layers, allPublished);
-        
-        // add the published layers switch
-        final CheckBox showPublished = new CheckBox("showPublished", new Model(false));
-        showPublished.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        layersContainer = new WebMarkupContainer("layersContainer");
+        layersContainer.setOutputMarkupId(true);
+        selectLayers.add(layersContainer);
+        layersContainer.add(layers);
+    }
+    
+    private DropDownChoice storesDropDown() {
+        final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(),
+                new StoreListModel());
+        stores.setOutputMarkupId(true);
+        stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                Boolean selected = (Boolean) showPublished.getModelObject();
-                provider.setShowPublished(selected);
-                
-                updateLayersVisibility(provider, layers, allPublished);
-                
-                target.addComponent(container);
+                if (stores.getModelObject() != null) {
+                    String name = stores.getModelObjectAsString();
+                    StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
+                    provider.setStoreId(store.getId());
+                    storeName.setModelObject(store.getName());
+                    selectLayers.setVisible(true);
+                    
+                    target.addComponent(selectLayersContainer);
+                }
             }
+
         });
-        add(showPublished);
+        return stores;
     }
 
-    private void updateLayersVisibility(final NewLayerPageProvider provider,
-            final GeoServerTablePanel<Resource> layers, final MultiLineLabel allPublished) {
-        // decide what to show, the table or the warning message
-        int providerSize = provider.size();
-        layers.setVisible(providerSize > 0);
-        allPublished.setVisible(providerSize == 0);
+    SimpleAjaxLink resourceChooserLink(String id, IModel itemModel,
+            Property<Resource> property) {
+        return new SimpleAjaxLink(id, itemModel, property
+                .getModel(itemModel)) {
+
+            @Override
+            protected void onClick(AjaxRequestTarget target) {
+                Resource resource = (Resource) getModelObject();
+                setResponsePage(new ResourceConfigurationPage(
+                        buildLayerInfo(resource), true));
+            }
+
+        };
     }
 
     /**
@@ -152,5 +178,18 @@ public class NewLayerPage extends GeoServerSecuredPage {
             throw new IllegalArgumentException(
                     "Don't know how to deal with this store " + store);
     }
+    
+    private final class StoreListModel extends LoadableDetachableModel {
+      @Override
+      protected Object load() {
+          List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
+          List<String> storeNames = new ArrayList<String>();
+          for (StoreInfo store : stores) {
+              storeNames.add(store.getName());
+          }
+          Collections.sort(storeNames);
+          return storeNames;
+      }
+  }
 
 }

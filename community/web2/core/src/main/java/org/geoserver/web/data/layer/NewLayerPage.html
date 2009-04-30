@@ -5,15 +5,22 @@
 <body>
 <wicket:extend>
   <h2><wicket:message key="newLayerChooser">New Layer chooser</wicket:message></h2>
-  <p><wicket:message key="listOfResourcesContained">Here is a list of resources contained in the</wicket:message> '<span
-    wicket:id="storeName"></span>' <wicket:message key="store">store</wicket:message>. 
-    <wicket:message key="clickOnTheLayerYouWishToConfigure">Click on the layer you wish to configure.</wicket:message>
-  </p>
-  <label for="showPublished"><wicket:message key="showPublishedResources">Show published resources</wicket:message></label>
-  <input wicket:id="showPublished" id="showPublished" type="checkbox"></input>
-  <div wicket:id="layersContainer">
-    <div wicket:id="layers"></div>
-    <p wicket:id="allPublished">All available resources have already published?</p>
+  
+  <!-- Selector, used when no store has been specified in the constructor -->
+  <div wicket:id="selector">
+  	<wicket:message key="addALayerFrom">Add a layer from </wicket:message> <select wicket:id="storesDropDown"></select>
+  </div>
+  
+  <div wicket:id="selectLayersContainer">
+      <div wicket:id="selectLayers">
+		  <p><wicket:message key="listOfResourcesContained">Here is a list of resources contained in the</wicket:message> '<span
+		    wicket:id="storeName"></span>' <wicket:message key="store">store</wicket:message>. 
+		    <wicket:message key="clickOnTheLayerYouWishToConfigure">Click on the layer you wish to configure.</wicket:message>
+		  </p>
+		  <div wicket:id="layersContainer">
+		    <div wicket:id="layers"></div>
+		  </div>
+	   </div>
   </div>
 </wicket:extend>
 </body>

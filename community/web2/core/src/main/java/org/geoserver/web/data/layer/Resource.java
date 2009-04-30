@@ -36,6 +36,10 @@ public class Resource implements Comparable<Resource>, Serializable {
         this.name = name.getLocalPart();
         this.uri = name.getURI();
     }
+    
+    public String getLocalName() {
+        return name;
+    }
 
     public Name getName() {
         return new NameImpl(uri, name);
