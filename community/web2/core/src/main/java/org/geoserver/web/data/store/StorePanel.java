@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.store;
 
 import static org.geoserver.web.data.store.StoreProvider.ENABLED;
@@ -28,6 +32,14 @@ import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
+/**
+ * Panel listing the configured StoreInfo object on a table
+ * 
+ * @author Justin Deoliveira
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @see StorePage
+ */
 public class StorePanel extends GeoServerTablePanel<StoreInfo> {
 
     private static final long serialVersionUID = 5957961031378924960L;
