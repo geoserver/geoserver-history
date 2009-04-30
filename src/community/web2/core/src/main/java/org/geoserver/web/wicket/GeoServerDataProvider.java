@@ -26,11 +26,10 @@ import org.geotools.util.logging.Logging;
  * GeoServer specific data provider. In addition to the services provided by a
  * SortableDataProvider it can perform keyword based filtering, enum the model
  * properties used for display and sorting
- * 
- * @author Andrea Aime - OpenGeo
- * 
+ *
  * @param <T>
  */
+@SuppressWarnings("serial")
 public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     static final Logger LOGGER = Logging.getLogger(GeoServerDataProvider.class);
     

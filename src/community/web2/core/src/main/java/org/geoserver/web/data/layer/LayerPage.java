@@ -59,7 +59,7 @@ public class LayerPage extends GeoServerSecuredPage {
         add(removeSelectedLink());
         
         final CatalogIconFactory icons = CatalogIconFactory.get();
-        table = new GeoServerTablePanel<LayerInfo>("table", provider) {
+        table = new GeoServerTablePanel<LayerInfo>("table", provider, true) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
