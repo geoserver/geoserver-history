@@ -4,11 +4,11 @@
 </head>
 <body>
 <wicket:extend>
+	<a href="#" wicket:id="addNew"><wicket:message key="addNew" /></a>
+	<br/>
+	<a href="#" wicket:id="removeSelected"><wicket:message key="removeSelected" /></a>
+
 	<div wicket:id="table"></div>
-	<ul>
-	  <li><a href="#"><wicket:message key="batchRemove">Batch remove...</wicket:message></a></li>
-	  <li><wicket:message key="addNewStoreIntoWorkspace">Add new store into workspace</wicket:message> <select wicket:id="wsDropDown"></select></li>
-	</ul>
 </wicket:extend>
 </body>
 </html>
