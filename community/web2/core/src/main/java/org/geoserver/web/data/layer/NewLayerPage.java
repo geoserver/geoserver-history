@@ -62,7 +62,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
         selector.setVisible(storeId == null);
         add(selector);
         
-        // the third and final group, the layer choosing one, 
+        // the layer choosing block 
         // visible when in any  way a store has been chosen
         selectLayersContainer = new WebMarkupContainer("selectLayersContainer");
         selectLayersContainer.setOutputMarkupId(true);
@@ -117,8 +117,11 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
                     provider.setStoreId(store.getId());
                     storeName.setModelObject(store.getName());
-                    selectLayers.setVisible(true);
                     
+                    selectLayers.setVisible(true);
+                    target.addComponent(selectLayersContainer);
+                } else {
+                    selectLayers.setVisible(false);
                     target.addComponent(selectLayersContainer);
                 }
             }

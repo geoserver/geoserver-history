@@ -28,6 +28,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -62,11 +63,15 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
     Form filterForm;
     
+    CheckBox selectAll;
+    
     /**
      * An array of the selected items in the current page. Gets wiped out each
      * time the current page, the sorting or the filtering changes.
      */
     boolean[] selection;
+    boolean selectAllValue;
+    
     
     /**
      * Builds a non selectable table
@@ -110,7 +115,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                 
                 // add row selector (visible only if selection is active)
                 WebMarkupContainer cnt = new WebMarkupContainer("selectItemContainer");
-                cnt.add(new CheckBox("selectItem", new SelectionModel(item.getIndex())));
+                cnt.add(selectOneCheckbox(item));
                 cnt.setVisible(selectable);
                 item.add(cnt);
 
@@ -143,7 +148,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
         // add select all checkbox
         WebMarkupContainer cnt = new WebMarkupContainer("selectAllContainer");
-        cnt.add(selectAllCheckbox());
+        cnt.add(selectAll = selectAllCheckbox());
         cnt.setVisible(selectable);
         listContainer.add(cnt);
         
@@ -208,17 +213,14 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
     
     CheckBox selectAllCheckbox() {
-        CheckBox sa = new CheckBox("selectAll", new Model(false));
+        CheckBox sa = new CheckBox("selectAll", new PropertyModel(this, "selectAllValue"));
         sa.setOutputMarkupId(true);
         sa.add(new AjaxFormComponentUpdatingBehavior("onclick") {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 // select all the checkboxes
-                setSelection(true);
-                
-                // reset this checkbox
-                getComponent().setModel(new Model(false));
+                setSelection(selectAllValue);
                 
                 // update table and the checkbox itself
                 target.addComponent(getComponent());
@@ -229,10 +231,28 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         return sa;
     }
     
+    CheckBox selectOneCheckbox(Item item) {
+        CheckBox cb = new CheckBox("selectItem", new SelectionModel(item.getIndex()));
+        cb.setOutputMarkupId(true);
+        cb.add(new AjaxFormComponentUpdatingBehavior("onclick") {
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                if(Boolean.FALSE.equals(getComponent().getModelObject())) {
+                    selectAllValue = false;
+                    target.addComponent(selectAll);
+                }
+            }
+            
+        });
+        return cb;
+    }
+    
     void setSelection(boolean selected) {
         for (int i = 0; i < selection.length; i++) {
             selection[i] = selected;
         }
+        selectAllValue = selected;
     }
 
     /**
@@ -287,6 +307,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                     dataProvider
                             .setSort(new SortParam(property.getName(), !currSort.isAscending()));
                 }
+                setSelection(false);
                 target.addComponent(listContainer);
             }
 

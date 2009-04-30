@@ -62,6 +62,8 @@ public class GeoServerTablePanelTest extends TestCase {
         
         // test full selection
         assertEquals(0, table.getSelection().size());
+        FormTester ft = tester.newFormTester("form");
+        ft.setValue("panel:listContainer:selectAllContainer:selectAll", "true");
         tester.executeAjaxEvent(selectAllPath, "onclick");
         assertEquals(10, table.getSelection().size());
         assertEquals(new Integer(0), table.getSelection().get(0));
