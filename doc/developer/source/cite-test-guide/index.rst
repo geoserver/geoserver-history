@@ -61,11 +61,15 @@ Run WFS 1.0 tests
 
 #. Change back to the ``cite`` directory and start up the test engine::
 
-     sh run.sh wfs-1.0.0
+     ./run.sh wfs-1.0.0
 
    .. note::
 
       The test engine can take a few minutes to start up.
+
+   .. note::
+
+      If you are running Linux and get a blank windows, try ``export AWT_TOOLKIT="MToolkit"``.
     
 #. On the setup screen:
 
@@ -127,7 +131,7 @@ Run WMS 1.1 tests
 
 #. Change back to the ``cite`` directory and start up the test engine::
 
-     sh run.sh wms-1.1.1
+     ./run.sh wms-1.1.1
 
 #. On the setup screen:
 
@@ -159,13 +163,13 @@ Run WCS 1.1 tests
 
 #. Change back to the ``cite`` directory and start up the test engine::
     
-      sh run.sh wcs-1.1.1
+      ./run.sh wcs-1.1.1
 
 #. On the setup screen:
 
    #. Enter the url::
 
-         http://localhost:8080/geoserver/wcs?&service=wcsrequest=getcapabilities&version=1.1.1
+         http://localhost:8080/geoserver/wcs?service=wcs&request=getcapabilities&version=1.1.1
      
       And click ``Next``
 
@@ -187,7 +191,7 @@ Run WCS 1.0 tests
 
 #. Change back to the ``cite`` directory and start up the test engine::
 
-     sh run.sh wcs-1.0.0
+     ./run.sh wcs-1.0.0
 
 #. On the setup screen:
 
