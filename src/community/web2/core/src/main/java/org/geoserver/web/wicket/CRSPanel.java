@@ -6,6 +6,7 @@ package org.geoserver.web.wicket;
 
 import java.io.Serializable;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -13,7 +14,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -212,15 +212,17 @@ public class CRSPanel extends FormComponentPanel {
     /*
      * Builds the srs list panel component.
      */
+    @SuppressWarnings("serial")
     SRSListPanel srsListPanel() {
         return new SRSListPanel(popupWindow.getContentId(),10) {
             @Override
-            protected AbstractLink createLinkForCode(String linkId, final String epsgCode) {
-                return new AjaxLink(linkId) {
+            protected Component createLinkForCode(String linkId, IModel itemModel) {
+                return new SimpleAjaxLink(linkId, SRSProvider.CODE.getModel(itemModel)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         popupWindow.close(target);
                         
+                        String epsgCode = getModelObjectAsString();
                         String srs =  "EPSG:" + epsgCode ;
                         srsTextField.setModelObject( srs );
                         target.addComponent( srsTextField );
