@@ -4,11 +4,14 @@
  */
 package org.geoserver.web.demo;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
-import org.apache.wicket.markup.html.link.AbstractLink;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.model.IModel;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.wicket.SRSListPanel;
+import org.geoserver.web.wicket.SRSProvider;
+import org.geoserver.web.wicket.SimpleAjaxLink;
 
 /**
  * Lists all the SRS available in GeoServer
@@ -17,15 +20,21 @@ import org.geoserver.web.wicket.SRSListPanel;
 public class SRSListPage extends GeoServerBasePage {
 
     public SRSListPage() {
-        add( srsListPanel() );
+        add(srsListPanel());
     }
 
     SRSListPanel srsListPanel() {
-        return new SRSListPanel( "srsListPanel") {
+        return new SRSListPanel("srsListPanel") {
             @Override
-            protected AbstractLink createLinkForCode(String linkId, String epsgCode) {
-                return new BookmarkablePageLink("codeLink",  SRSDescriptionPage.class, 
-                    new PageParameters("code=EPSG:" + epsgCode));
+            protected Component createLinkForCode(String linkId, IModel itemModel) {
+                return new SimpleAjaxLink(linkId, SRSProvider.CODE.getModel(itemModel)) {
+                    @Override
+                    public void onClick(AjaxRequestTarget target) {
+                        String epsgCode = getModelObjectAsString();
+                        setResponsePage(SRSDescriptionPage.class, new PageParameters("code=EPSG:"
+                                + epsgCode));
+                    }
+                };
             }
         };
     }
