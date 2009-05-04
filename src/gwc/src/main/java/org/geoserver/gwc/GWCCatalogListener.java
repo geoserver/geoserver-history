@@ -174,7 +174,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
             if(obj instanceof FeatureTypeInfo) {
                 FeatureTypeInfo fti = (FeatureTypeInfo) obj;
               
-                return new WMSLayer(
+                WMSLayer retLayer = new WMSLayer(
                         fti.getPrefixedName(),
                         getWMSUrl(), 
                         null, // Styles 
@@ -183,12 +183,14 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                         getGrids(fti.getLatLonBoundingBox()), 
                         metaFactors,
                         null);
+                retLayer.setBackendTimeout(120);
+                return retLayer;
                 
             } else if(obj instanceof CoverageInfo) {
                 
                 CoverageInfo ci = (CoverageInfo) obj;
                 
-                return new WMSLayer(
+                WMSLayer retLayer = new WMSLayer(
                         ci.getPrefixedName(),
                         getWMSUrl(), 
                         null, // Styles 
@@ -197,6 +199,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                         getGrids(ci.getLatLonBoundingBox()), 
                         metaFactors,
                         null);
+                
+                retLayer.setBackendTimeout(120);
+                return retLayer;
                 
             } else {
                 log.fine("Unable to handle "  + obj.getClass());
