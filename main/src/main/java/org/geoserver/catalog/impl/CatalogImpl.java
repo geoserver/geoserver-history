@@ -1427,13 +1427,17 @@ public class CatalogImpl implements Catalog {
         if ( resource instanceof FeatureTypeInfo ) {
             resolve( (FeatureTypeInfo) resource );
         }
-        if(r instanceof CoverageInfoImpl){
-            CoverageInfoImpl c = (CoverageInfoImpl)r;
-            if(c.getParameters() == null){
-                c.setParameters(new HashMap<String, Serializable>());
-            }
+        if(r instanceof CoverageInfo){
+            resolve((CoverageInfo) resource);
         }
         r.setCatalog(this);
+    }
+
+    private void resolve(CoverageInfo r) {
+        CoverageInfoImpl c = (CoverageInfoImpl)r;
+        if(c.getParameters() == null){
+            c.setParameters(new HashMap<String, Serializable>());
+        }
     }
     
     /**
