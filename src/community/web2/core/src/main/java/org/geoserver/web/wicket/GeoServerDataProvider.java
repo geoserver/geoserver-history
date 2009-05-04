@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -23,20 +25,24 @@ import org.geoserver.web.GeoServerApplication;
 import org.geotools.util.logging.Logging;
 
 /**
- * GeoServer specific data provider. In addition to the services provided by a
- * SortableDataProvider it can perform keyword based filtering, enum the model
- * properties used for display and sorting
- *
+ * GeoServer specific data provider. In addition to the services provided by a SortableDataProvider
+ * it can perform keyword based filtering, enum the model properties used for display and sorting
+ * 
  * @param <T>
  */
 @SuppressWarnings("serial")
 public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     static final Logger LOGGER = Logging.getLogger(GeoServerDataProvider.class);
-    
+
     /**
      * Keywords used for filtering data
      */
     protected String[] keywords;
+
+    /**
+     * regular expression matchers, one per keyword
+     */
+    private transient Matcher[] matchers;
 
     /**
      * Returns the current filtering keywords
@@ -54,11 +60,75 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
      */
     public void setKeywords(String[] keywords) {
         this.keywords = keywords;
+        this.matchers = null;
     }
 
     /**
-     * Provides catalog access for the provider (cannot be stored as a field,
-     * this class is going to be serialized)
+     * @return a regex matcher for each search keyword
+     */
+    private Matcher[] getMatchers() {
+        if (matchers != null) {
+            return matchers;
+        }
+
+        if (keywords == null) {
+            return new Matcher[0];
+        }
+
+        // build the case insensitive regex patterns
+        matchers = new Matcher[keywords.length];
+
+        String keyword;
+        String regex;
+        Pattern pattern;
+        for (int i = 0; i < keywords.length; i++) {
+            keyword = keywords[i];
+            regex = ".*" + escape(keyword) + ".*";
+            pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            matchers[i] = pattern.matcher("");
+        }
+
+        return matchers;
+    }
+
+    /**
+     * Escape any character that's special for the regex api
+     * 
+     * @param keyword
+     * @return
+     */
+    private String escape(String keyword) {
+        final String escapeSeq = "\\";
+        final int len = keyword.length();
+        StringBuilder sb = new StringBuilder();
+        char c;
+        for (int i = 0; i < len; i++) {
+            c = keyword.charAt(i);
+            if (isSpecial(c)) {
+                sb.append(escapeSeq);
+            }
+            sb.append(keyword.charAt(i));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Convenience method to determine if a character is special to the regex system.
+     * 
+     * @param chr
+     *            the character to test
+     * 
+     * @return is the character a special character.
+     */
+    private boolean isSpecial(final char chr) {
+        return ((chr == '.') || (chr == '?') || (chr == '*') || (chr == '^') || (chr == '$')
+                || (chr == '+') || (chr == '[') || (chr == ']') || (chr == '(') || (chr == ')')
+                || (chr == '|') || (chr == '\\') || (chr == '&'));
+    }
+
+    /**
+     * Provides catalog access for the provider (cannot be stored as a field, this class is going to
+     * be serialized)
      * 
      * @return
      */
@@ -82,8 +152,8 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     }
 
     /**
-     * Returns a filtered list of items. Subclasses can override if they have a
-     * more efficient way of filtering than in memory keyword comparison
+     * Returns a filtered list of items. Subclasses can override if they have a more efficient way
+     * of filtering than in memory keyword comparison
      * 
      * @return
      */
@@ -103,9 +173,10 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     public int size() {
         return getFilteredItems().size();
     }
-    
+
     /**
      * Returns the global size of the collection, without filtering it
+     * 
      * @return
      */
     public int fullSize() {
@@ -113,52 +184,50 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     }
 
     private List<T> filterByKeywords(List<T> items) {
-        StringBuilder sb = new StringBuilder();
         List<T> result = new ArrayList<T>();
+
+        final Matcher[] matchers = getMatchers();
 
         List<Property<T>> properties = getProperties();
         for (T item : items) {
-            // reset the builder
-            sb.setLength(0);
-
-            // build a single string representation of all the
-            // properties we filter on
+            ITEM:
+            // find any match of any pattern over any property
             for (Property<T> property : properties) {
                 Object value = property.getPropertyValue(item);
-                if (value != null)
-                    sb.append(value).append(" ");
-            }
-            String description = sb.toString();
-
-            // brute force check for keywords
-            for (String keyword : keywords) {
-                if (description.indexOf(keyword) >= 0) {
-                    result.add(item);
-                    break;
+                if (value != null) {
+                    // brute force check for keywords
+                    for (Matcher matcher : matchers) {
+                        matcher.reset(String.valueOf(value));
+                        if (matcher.matches()) {
+                            result.add(item);
+                            break ITEM;
+                        }
+                    }
                 }
             }
         }
 
         return result;
     }
-    
+
     /**
      * Returns only the properties that have been marked as visible
+     * 
      * @return
      */
     List<Property<T>> getVisibleProperties() {
         List<Property<T>> results = new ArrayList<Property<T>>();
         for (Property<T> p : getProperties()) {
-            if(p.isVisible())
+            if (p.isVisible())
                 results.add(p);
         }
         return results;
     }
 
     /**
-     * Returns the list of properties served by this provider. The property keys
-     * are used to establish the layer sorting, whilst the Property itself is
-     * used to extract the value of the property from the item.
+     * Returns the list of properties served by this provider. The property keys are used to
+     * establish the layer sorting, whilst the Property itself is used to extract the value of the
+     * property from the item.
      * 
      * @return
      */
@@ -170,7 +239,7 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
      * @return
      */
     protected abstract List<T> getItems();
-    
+
     /**
      * Returns a comparator given the sort property.
      * 
@@ -192,16 +261,16 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
                 }
             }
         }
-        LOGGER.log(Level.WARNING, "Could not find any comparator "
-                + "for sort property " + sort.getProperty());
+        LOGGER.log(Level.WARNING, "Could not find any comparator " + "for sort property "
+                + sort.getProperty());
 
         return null;
     }
 
     /**
-     * Simply models the concept of a property in this provider. A property has
-     * a key, that identifies it and can be used for i18n, and can return the
-     * value of the property given an item served by the {@link GeoServerDataProvider}
+     * Simply models the concept of a property in this provider. A property has a key, that
+     * identifies it and can be used for i18n, and can return the value of the property given an
+     * item served by the {@link GeoServerDataProvider}
      * 
      * @author Andrea Aime - OpenGeo
      * 
@@ -212,6 +281,7 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         /**
          * Given the item, returns the property
+         * 
          * @param item
          * @return
          */
@@ -219,6 +289,7 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         /**
          * Given the item model, returns a model for the property value
+         * 
          * @param itemModel
          * @return
          */
@@ -226,13 +297,13 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         /**
          * Allows for sorting the property
+         * 
          * @return
          */
         public Comparator<T> getComparator();
-        
+
         /**
-         * If false the property will be used for searches, but not 
-         * shown in the table
+         * If false the property will be used for searches, but not shown in the table
          */
         public boolean isVisible();
     }
@@ -248,13 +319,13 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         String name;
 
         String propertyPath;
-        
+
         boolean visible;
 
         public BeanProperty(String key, String propertyPath) {
             this(key, propertyPath, true);
         }
-        
+
         public BeanProperty(String key, String propertyPath, boolean visible) {
             super();
             this.name = key;
@@ -274,8 +345,8 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
             try {
                 return PropertyUtils.getProperty(bean, propertyPath);
             } catch (Exception e) {
-                throw new RuntimeException("Could not find property "
-                        + propertyPath + " in " + bean.getClass(), e);
+                throw new RuntimeException("Could not find property " + propertyPath + " in "
+                        + bean.getClass(), e);
             }
         }
 
@@ -290,24 +361,25 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         public boolean isVisible() {
             return visible;
         }
-        
+
         @Override
         public String toString() {
             return "BeanProperty[" + name + "]";
         }
     }
-    
+
     /**
-     * Placeholder for a column that does not contain a real property (for example,
-     * a column containing commands instead of data). Will return the item model
-     * as the model, and as the property value.
+     * Placeholder for a column that does not contain a real property (for example, a column
+     * containing commands instead of data). Will return the item model as the model, and as the
+     * property value.
+     * 
      * @author Andrea Aime
-     *
+     * 
      * @param <T>
      */
     public static class PropertyPlaceholder<T> implements Property<T> {
         String name;
-        
+
         public PropertyPlaceholder(String name) {
             this.name = name;
         }
@@ -329,28 +401,27 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         }
 
         public boolean isVisible() {
-            // the very reason for placeholder existence 
+            // the very reason for placeholder existence
             // is to show up in the table
             return true;
         }
-        
-        
+
         @Override
         public String toString() {
             return "PropertyPlacehoder[" + name + "]";
         }
-        
+
     }
-    
+
     /**
-     * Uses {@link Property} to extract the values, and then compares
-     * them assuming they are {@link Comparable}
-     *
+     * Uses {@link Property} to extract the values, and then compares them assuming they are
+     * {@link Comparable}
+     * 
      * @param <T>
      */
     public static class PropertyComparator<T> implements Comparator<T> {
         Property<T> property;
-        
+
         public PropertyComparator(Property<T> property) {
             this.property = property;
         }
@@ -367,7 +438,7 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
             return p1.compareTo(p2);
         }
-        
+
     }
 
     /**
