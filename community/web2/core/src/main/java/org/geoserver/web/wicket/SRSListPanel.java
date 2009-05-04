@@ -4,10 +4,6 @@
  */
 package org.geoserver.web.wicket;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -16,8 +12,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.geoserver.web.wicket.SRSProvider.SRS;
-import org.geotools.referencing.CRS;
-import org.geotools.util.logging.Logging;
 
 /**
  * A panel which contains a list of all coordinate reference systems available to GeoServer.
@@ -58,28 +52,11 @@ import org.geotools.util.logging.Logging;
  */
 @SuppressWarnings("serial")
 public class SRSListPanel extends Panel {
-    /**
-     * max number of rows to show in the table
-     */
-    private static final int MAX_ROWS = 25;
-
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.demo");
-
 
     /**
      * Creates the new SRS list panel.
      */
     public SRSListPanel(String id) {
-        this(id, MAX_ROWS);
-    }
-
-    /**
-     * Creates the new SRS list panel specifying the number of rows.
-     */
-    public SRSListPanel(String id, int nrows) {
         super(id);
 
         final GeoServerTablePanel<SRS> table = new GeoServerTablePanel<SRS>("table",
@@ -132,39 +109,5 @@ public class SRSListPanel extends Panel {
             }
         };
     }
-
-    List<String> filterCodes(List<String> codes, String[] filters) {
-        // if filtering is required, filter against the code and the description
-        if (filters != null) {
-            List<String> result = new ArrayList<String>();
-            for (String code : codes) {
-                code = code.toUpperCase();
-
-                // grab the description
-                String description = null;
-                try {
-                    description = CRS.getAuthorityFactory(true).getDescriptionText("EPSG:" + code)
-                            .toString(getLocale()).toUpperCase();
-                } catch (Exception e) {
-                    // no problem
-                }
-
-                // check if we have all the keywords matching
-                boolean fullMatch = true;
-                for (String filter : filters) {
-                    filter = filter.toUpperCase();
-                    if (!code.contains(filter)
-                            && !(description != null && description.contains(filter))) {
-                        fullMatch = false;
-                        break;
-                    }
-                }
-                if (fullMatch)
-                    result.add(code);
-            }
-            return result;
-        } else {
-            return codes;
-        }
-    }
+    
 }

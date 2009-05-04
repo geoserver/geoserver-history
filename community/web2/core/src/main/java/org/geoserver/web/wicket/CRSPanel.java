@@ -36,6 +36,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 public class CRSPanel extends FormComponentPanel {
     
+    private static final long serialVersionUID = -6677103383336166008L;
+
     /** pop-up window for WKT and SRS list */
     ModalWindow popupWindow;
     
@@ -214,7 +216,7 @@ public class CRSPanel extends FormComponentPanel {
      */
     @SuppressWarnings("serial")
     SRSListPanel srsListPanel() {
-        return new SRSListPanel(popupWindow.getContentId(),10) {
+        return new SRSListPanel(popupWindow.getContentId()) {
             @Override
             protected Component createLinkForCode(String linkId, IModel itemModel) {
                 return new SimpleAjaxLink(linkId, SRSProvider.CODE.getModel(itemModel)) {
