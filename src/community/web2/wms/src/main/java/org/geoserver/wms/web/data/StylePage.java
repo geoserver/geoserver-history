@@ -29,6 +29,13 @@ public class StylePage extends GeoServerSecuredPage {
         //add( feedbackPanel = new FeedbackPanel( "feedback") );
         //feedbackPanel.setOutputMarkupId( true );
         
+        add( new AjaxLink( "new" ) {
+            @Override
+            public void onClick(AjaxRequestTarget target) { 
+                setResponsePage(StyleNewPage.class);
+            }
+        });
+
         StyleProvider provider = new StyleProvider();
         add( new GeoServerTablePanel<StyleInfo>("table", provider ) {
 
@@ -48,12 +55,6 @@ public class StylePage extends GeoServerSecuredPage {
             
         });
         
-        add( new AjaxLink( "new" ) {
-            @Override
-            public void onClick(AjaxRequestTarget target) { 
-                setResponsePage(StyleNewPage.class);
-            }
-        });
     }
     
     Component styleLink( String id, IModel model ) {

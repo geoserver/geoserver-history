@@ -25,6 +25,14 @@ public class LayerGroupPage extends GeoServerSecuredPage {
 
     public LayerGroupPage() {
         LayerGroupProvider provider = new LayerGroupProvider();
+        
+        add(new AjaxLink("add") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                setResponsePage(LayerGroupNewPage.class);
+            }
+        });
+
         add( new GeoServerTablePanel<LayerGroupInfo>( "table", provider ) {
 
             @Override
@@ -42,12 +50,6 @@ public class LayerGroupPage extends GeoServerSecuredPage {
             }
         });
         
-        add(new AjaxLink("add") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                setResponsePage(LayerGroupNewPage.class);
-            }
-        });
     }
     
     Component layerGroupLink(String id, IModel itemModel) {

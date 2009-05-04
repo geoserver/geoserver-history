@@ -1,9 +1,17 @@
 <html xmlns:wicket="http://wicket.apache.org/">
+<head>
+<title><wicket:message key="title">Styles</wicket:message></title>
+</head>
 <body>
 <wicket:extend>
-  <!--div wicket:id="feedback"></div-->
-  <div wicket:id="table"></div>
-  <a wicket:id="new"><wicket:message key="addANewStyle">Add a new style</wicket:message></a>
+  <form>
+    <ul>
+      <li><a wicket:id="new"><wicket:message key="addANewStyle">Add a new style</wicket:message></a></li>
+      <li>
+        <div wicket:id="table"></div>
+      </li>
+    </ul>
+  </form>
 </wicket:extend>
 </body>
 </html>
