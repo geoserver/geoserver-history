@@ -1,15 +1,16 @@
 <html xmlns:wicket="http://wicket.apache.org/">
   <body>
     <wicket:extend>
-      <ul> 
+    <form>
+      <ul>
+       <li>
+         <a wicket:id="add"><wicket:message key="addNewLayerGroup">Add new layer group</wicket:message></a>
+       </li>
        <li> 
         <div wicket:id="table"></div>
        </li>
-       <!--li>
-         <a wicket:id="new"><wicket:message key="addNewWorkspace">Add new workspace</wicket:message></a>
-       </li-->
       </ul>
-      <a wicket:id="add"><wicket:message key="addNewLayerGroup">Add new layer group</wicket:message></a>
+    </form>
     </wicket:extend>
   </body>
 </html>

@@ -31,6 +31,9 @@ public class WorkspacePage extends GeoServerSecuredPage {
     
     public WorkspacePage() {
         
+        BookmarkablePageLink newLink = new BookmarkablePageLink("new", WorkspaceNewPage.class);
+        add( newLink );
+
         add(new GeoServerTablePanel<WorkspaceInfo>("table", provider) {
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -46,8 +49,6 @@ public class WorkspacePage extends GeoServerSecuredPage {
             }
         });
         
-        BookmarkablePageLink newLink = new BookmarkablePageLink( "new", WorkspaceNewPage.class);
-        add( newLink );
     }
     
     Component workspaceLink(String id, final IModel itemModel) {
