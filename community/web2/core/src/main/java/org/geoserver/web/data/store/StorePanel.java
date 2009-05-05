@@ -82,7 +82,16 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
         } else if (property == NAME) {
             return storeNameLink(id, itemModel);
         } else if (property == ENABLED) {
-            return new Label(id, ENABLED.getModel(itemModel));
+            final StoreInfo storeInfo = (StoreInfo) itemModel.getObject();
+            ResourceReference enabledIcon;
+            if(storeInfo.isEnabled()){
+                enabledIcon = icons.getEnabledIcon();
+            }else{
+                enabledIcon = icons.getDisabledIcon();
+            }
+            Fragment f = new Fragment(id, "iconFragment", StorePanel.this);
+            f.add(new Image("storeIcon", enabledIcon));
+            return f;
         } else if (property == REMOVE) {
             return removeLink(id, itemModel);
         }
