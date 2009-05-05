@@ -19,7 +19,6 @@ import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.web.data.resource.DataStorePanelInfo;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccessFactory;
-import org.geotools.xml.xsi.XSISimpleTypes.ID;
 import org.opengis.coverage.grid.Format;
 
 /**
@@ -39,6 +38,12 @@ public class CatalogIconFactory implements Serializable {
 
     public static final ResourceReference GROUP_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/silk/layers.png");
+
+    public static final ResourceReference DISABLED_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/silk/error.png");
+
+    public static final ResourceReference ENABLED_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/silk/tick.png");
 
     static final CatalogIconFactory INSTANCE = new CatalogIconFactory();
 
@@ -146,5 +151,22 @@ public class CatalogIconFactory implements Serializable {
                     "img/icons/geosilk/page_white_raster.png");
         }
         throw new IllegalArgumentException("Unrecognized store format class: " + factoryClass);
+    }
+    
+
+    /**
+     * Returns a reference to a general purpose icon to indicate an enabled/properly configured
+     * resource
+     */
+    public ResourceReference getEnabledIcon() {
+        return ENABLED_ICON;
+    }
+
+    /**
+     * Returns a reference to a general purpose icon to indicate a
+     * disabled/missconfigured/unreachable resource
+     */
+    public ResourceReference getDisabledIcon() {
+        return DISABLED_ICON;
     }
 }

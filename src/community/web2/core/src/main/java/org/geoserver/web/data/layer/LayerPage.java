@@ -13,6 +13,7 @@ import static org.geoserver.web.data.layer.LayerProvider.TYPE;
 import static org.geoserver.web.data.layer.LayerProvider.WORKSPACE;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -75,7 +76,11 @@ public class LayerPage extends GeoServerSecuredPage {
                 } else if(property == NAME) {
                     return layerLink(id, itemModel);
                 } else if(property == ENABLED) {
-                    return new Label(id, ENABLED.getModel(itemModel));
+                    LayerInfo layerInfo = (LayerInfo) itemModel.getObject();
+                    ResourceReference icon = layerInfo.isEnabled()? icons.getEnabledIcon() : icons.getDisabledIcon();
+                    Fragment f = new Fragment(id, "iconFragment", LayerPage.this);
+                    f.add(new Image("layerIcon", icon));
+                    return f;
                 } else if(property == SRS) {
                     return new Label(id, SRS.getModel(itemModel));
                 } else if(property == REMOVE) {
