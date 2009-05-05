@@ -880,3 +880,16 @@ display: block;
 * html .tab-row ul {
 height: 1px; /* IE < 7 */
 }
+
+/*-----------
+Add/remove icons for add/remove links
+-------------*/
+.add-link {
+background: transparent url(../img/icons/silk/add.png) scroll no-repeat left center;
+padding: 2px 0px 2px 20px;
+}
+
+.remove-link {
+background: transparent url(../img/icons/silk/delete.png) scroll no-repeat left center;
+padding: 2px 0px 2px 20px;
+}
