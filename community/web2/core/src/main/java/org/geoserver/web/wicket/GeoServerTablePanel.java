@@ -183,6 +183,14 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
     
     /**
+     * Returns the data provider feeding this table
+     * @return
+     */
+    public GeoServerDataProvider<T> getDataProvider() {
+        return dataProvider;
+    }
+    
+    /**
      * Returns a model for this property title. Default behaviour is to lookup for a
      * resource name <page>.th.<propertyName>
      * @param property

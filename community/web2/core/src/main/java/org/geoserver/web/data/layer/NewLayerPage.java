@@ -14,6 +14,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -57,7 +58,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
         this.storeId = storeId;
         
         // the store selector, used when no store is initially known
-        WebMarkupContainer selector = new WebMarkupContainer("selector");
+        Form selector = new Form("selector");
         selector.add(storesDropDown());
         selector.setVisible(storeId == null);
         add(selector);
@@ -182,7 +183,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     "Don't know how to deal with this store " + store);
     }
     
-    private final class StoreListModel extends LoadableDetachableModel {
+    final class StoreListModel extends LoadableDetachableModel {
       @Override
       protected Object load() {
           List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
