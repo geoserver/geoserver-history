@@ -40,14 +40,14 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
     void initUI(final CoverageStoreInfo store) {
         AbstractGridFormat format = store.getFormat();
         
-        // the format description labels
-        add(new Label("storeType", format.getName()));
-        add(new Label("storeTypeDescription", format.getDescription()));
-        
         // build the form
         paramsForm = new Form("rasterStoreForm");
         add(paramsForm);
 
+        // the format description labels
+        paramsForm.add(new Label("storeType", format.getName()));
+        paramsForm.add(new Label("storeTypeDescription", format.getDescription()));
+        
         IModel model = new Model(store);
         setModel(model);
 
