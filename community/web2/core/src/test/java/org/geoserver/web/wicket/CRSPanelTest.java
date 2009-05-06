@@ -3,6 +3,7 @@ package org.geoserver.web.wicket;
 import java.io.Serializable;
 
 import org.apache.wicket.Session;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
@@ -39,6 +40,19 @@ public class CRSPanelTest extends GeoServerWicketTestSupport {
         
         CRSPanel crsPanel = (CRSPanel) tester.getComponentFromLastRenderedPage( "form:crs");
         assertEquals( DefaultGeographicCRS.WGS84, crsPanel.getCRS() );
+    }
+    
+    public void testPopupWindow() throws Exception {
+        CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84;
+        tester.startPage( new CRSPanelTestPage( crs ) );
+        
+        ModalWindow window = (ModalWindow) tester.getComponentFromLastRenderedPage("form:crs:popup");
+        assertFalse(window.isShown());
+        
+        tester.clickLink("form:crs:wkt", true);
+        assertTrue(window.isShown());
+        
+        tester.assertModelValue("form:crs:popup:content:wkt", crs.toWKT());
     }
     
     public void testStandaloneChanged() throws Exception {

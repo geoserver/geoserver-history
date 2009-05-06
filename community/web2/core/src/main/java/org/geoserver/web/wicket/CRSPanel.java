@@ -34,6 +34,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * </p>
  * @author Justin Deoliveira, OpenGeo
  */
+@SuppressWarnings("serial")
 public class CRSPanel extends FormComponentPanel {
     
     private static final long serialVersionUID = -6677103383336166008L;
@@ -122,7 +123,7 @@ public class CRSPanel extends FormComponentPanel {
                 popupWindow.setInitialHeight( 375 );
                 popupWindow.setInitialWidth( 525 );
                 popupWindow.setContent(new WKTPanel( popupWindow.getContentId(), getCRS()));
-                CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getModelObject();
+                CoordinateReferenceSystem crs = (CoordinateReferenceSystem) CRSPanel.this.getModelObject();
                 if(crs != null)
                     popupWindow.setTitle(crs.getName().toString());
                 popupWindow.show(target);
