@@ -143,22 +143,41 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                         c.clear();
                         c.addAll( (Collection) v );
                     }
-                    else if ( Info.class.isAssignableFrom( g.getReturnType() ) ) {
-                        //check for a proxy, and commit it
-                        Info info = (Info) g.invoke(proxyObject, null);
-                        if ( info instanceof Proxy ) {
-                            ModificationProxy h = handler( info );
-                            if ( h != null && h.isDirty() ) {
-                                h.commit();
+                    else {
+                        Method s = null;
+                        try {
+                            s = proxyObject.getClass().getMethod( "set" + p, g.getReturnType() );
+                        }
+                        catch( NoSuchMethodException ex ) {}
+                        
+                        if ( Info.class.isAssignableFrom( g.getReturnType() ) ) {
+                            //another info is the changed property, it could be one of two cases
+                            // 1) the info object was changed in place: x.getY().setFoo(...)
+                            // 2) a new info object was set x.setY(...)
+                            Info original = (Info) g.invoke(proxyObject, null);
+                            Info modified = (Info) unwrap(v);
+                            if ( original == modified ) {
+                                //case 1, in this case get the proxy and commit it
+                                if ( v instanceof Proxy ) {
+                                    ModificationProxy h = handler( v );
+                                    if ( h != null && h.isDirty() ) {
+                                        h.commit();
+                                    }
+                                }
+                            }
+                            else if ( s != null ){
+                                //case 2, just call the setter with the new object
+                                s.invoke( proxyObject, v );
+                            }
+                            else {
+                                throw new IllegalStateException( "New info object set, but no setter for it.");
                             }
                         }
+                        else {
+                            //call the setter
+                            s.invoke( proxyObject, v );
+                        }
                     }
-                    else {
-                        //call the setter
-                        Method s = proxyObject.getClass().getMethod( "set" + p, g.getReturnType() );
-                        s.invoke( proxyObject, v );    
-                    }
-                    
                 } 
                 catch( Exception ex ) {
                     throw new RuntimeException( ex );
