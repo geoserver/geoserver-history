@@ -7,6 +7,7 @@ package org.geoserver.web.data.store;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
@@ -119,14 +120,27 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         try {
             dataStoreInfo.getDataStore(new NullProgressListener());
         } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error obtaining datastore with the modified values", e);
             catalog.getResourcePool().clear(dataStoreInfo);
             connectionParameters.clear();
             connectionParameters.putAll(oldParams);
-            paramsForm.error("Error updating data store parameters: " + e.getMessage());
+            String message = e.getMessage();
+            if (message == null && e.getCause() != null) {
+                message = e.getCause().getMessage();
+            }
+            paramsForm.error("Error updating data store parameters: " + message);
             return;
         }
+
         // it worked, save it
-        catalog.save(dataStoreInfo);
+        try {
+            catalog.save(dataStoreInfo);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error saving data store to catalog", e);
+            paramsForm.error("Error saving data store:" + e.getMessage());
+            return;
+        }
+
         setResponsePage(StorePage.class);
     }
 
