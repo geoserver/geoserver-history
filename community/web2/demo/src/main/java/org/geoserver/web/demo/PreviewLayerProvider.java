@@ -21,25 +21,25 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
 @SuppressWarnings("serial")
 public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
     static final Property<PreviewLayer> TYPE = new BeanProperty<PreviewLayer>(
-            "Type", "type");
+            "type", "type");
 
     static final Property<PreviewLayer> NAME = new BeanProperty<PreviewLayer>(
-            "Name", "name");
+            "name", "name");
     
     static final Property<PreviewLayer> TITLE = new BeanProperty<PreviewLayer>(
-            "Title", "title");
+            "title", "title");
     
     static final Property<PreviewLayer> ABSTRACT = new BeanProperty<PreviewLayer>(
-            "Abstract", "abstract", false);
+            "abstract", "abstract", false);
     
     static final Property<PreviewLayer> KEYWORDS = new BeanProperty<PreviewLayer>(
-            "Keywords", "keywords", false);
+            "keywords", "keywords", false);
 
     static final Property<PreviewLayer> COMMON = new PropertyPlaceholder<PreviewLayer>(
-            "Common formats");
+            "commonFormats");
 
     static final Property<PreviewLayer> ALL = new PropertyPlaceholder<PreviewLayer>(
-            "All formats");
+            "allFormats");
 
     static final List<Property<PreviewLayer>> PROPERTIES = Arrays.asList(TYPE,
             NAME, TITLE, ABSTRACT, KEYWORDS, COMMON, ALL);
