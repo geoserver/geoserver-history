@@ -91,7 +91,10 @@ public class CatalogIconFactory implements Serializable {
                 throw new RuntimeException("Can't aquire the datastore factory for store "
                         + storeInfo.getName(), e);
             }
-            factoryClass = dataStoreFactory.getClass();
+            if(dataStoreFactory != null)
+                factoryClass = dataStoreFactory.getClass();
+            else
+                return null;
         } else if (storeInfo instanceof CoverageStoreInfo) {
             AbstractGridFormat format = resourcePool
                     .getGridCoverageFormat((CoverageStoreInfo) storeInfo);
