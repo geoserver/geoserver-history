@@ -77,6 +77,10 @@ Oracle options
 
        ``validate connections``
 
+       ``fetch size``
+
+       ``connection timeout``
+
      - Connection pool configuration parameters. See the 
        :ref:`connection_pooling` section for details.
 
