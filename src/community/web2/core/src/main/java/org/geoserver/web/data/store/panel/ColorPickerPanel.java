@@ -17,6 +17,7 @@ import org.geoserver.web.wicket.ColorPickerField;
 
 /**
  * A label with a text field. Can receive custom validators for the text field.
+ * 
  * @author Gabriel Roldan
  */
 @SuppressWarnings("serial")
@@ -30,11 +31,10 @@ public class ColorPickerPanel extends Panel {
      * @param paramLabel
      * @param required
      * @param validators
-     *            any extra validator that should be added to the input field,
-     *            or {@code null}
+     *            any extra validator that should be added to the input field, or {@code null}
      */
-    public ColorPickerPanel(final String id, IModel paramVale, IModel paramLabelModel, 
-                          final boolean required, IValidator... validators) {
+    public ColorPickerPanel(final String id, final IModel paramVale, final IModel paramLabelModel,
+            final boolean required, IValidator... validators) {
         // make the value of the text field the model of this panel, for easy value retriaval
         super(id, paramVale);
 
@@ -49,15 +49,15 @@ public class ColorPickerPanel extends Panel {
             @Override
             public IConverter getConverter(Class type) {
                 return new IConverter() {
-                
+
                     public String convertToString(Object value, Locale locale) {
                         String input = (String) value;
-                        if(input.startsWith("#"))
+                        if (input.startsWith("#"))
                             return input.substring(1);
                         else
                             return input;
                     }
-                
+
                     public Object convertToObject(String value, Locale locale) {
                         return "#" + value;
                     }
@@ -65,13 +65,16 @@ public class ColorPickerPanel extends Panel {
             }
         };
         textField.setRequired(required);
-        if(validators != null) {
-            for(IValidator validator : validators){
+        // set the label to be the paramLabelModel otherwise a validation error would look like
+        // "Parameter 'paramValue' is required"
+        textField.setLabel(paramLabelModel);
+
+        if (validators != null) {
+            for (IValidator validator : validators) {
                 textField.add(validator);
             }
         }
-        FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder(
-                "border");
+        FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(textField);
         add(feedback);
     }

@@ -12,20 +12,26 @@ import org.apache.wicket.model.IModel;
 
 /**
  * A label with a password field
+ * 
  * @author Gabriel Roldan
  */
 public class PasswordParamPanel extends Panel {
 
     private static final long serialVersionUID = -7801141820174575611L;
 
-    public PasswordParamPanel(final String id, IModel model, IModel paramLabelModel, final boolean required) {
+    public PasswordParamPanel(final String id, final IModel model, final IModel paramLabelModel,
+            final boolean required) {
         super(id, model);
         add(new Label("paramName", paramLabelModel));
 
         PasswordTextField passwordField;
         passwordField = new PasswordTextField("paramValue", model);
         passwordField.setRequired(required);
-        //we want to password to stay there if already is
+        // set the label to be the paramLabelModel otherwise a validation error would look like
+        // "Parameter 'paramValue' is required"
+        passwordField.setLabel(paramLabelModel);
+
+        // we want to password to stay there if already is
         passwordField.setResetPassword(false);
 
         FormComponentFeedbackBorder requiredFieldFeedback;

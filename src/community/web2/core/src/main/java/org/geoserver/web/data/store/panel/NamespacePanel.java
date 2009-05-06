@@ -34,6 +34,10 @@ public class NamespacePanel extends Panel {
         DropDownChoice choice = new DropDownChoice("paramValue", selectedItemModel,
                 new NamespacesModel(), new NamespaceChoiceRenderer());
         choice.setRequired(required);
+        // set the label to be the paramLabelModel otherwise a validation error would look like
+        // "Parameter 'paramValue' is required"
+        choice.setLabel(paramLabelModel);
+
         FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(choice);
         add(feedback);

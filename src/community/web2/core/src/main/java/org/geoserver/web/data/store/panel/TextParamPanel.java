@@ -9,10 +9,13 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.ValidationError;
 
 /**
  * A label with a text field. Can receive custom validators for the text field.
+ * 
  * @author Gabriel Roldan
  */
 @SuppressWarnings("serial")
@@ -26,29 +29,31 @@ public class TextParamPanel extends Panel {
      * @param paramLabelModel
      * @param required
      * @param validators
-     *            any extra validator that should be added to the input field,
-     *            or {@code null}
+     *            any extra validator that should be added to the input field, or {@code null}
      */
-    public TextParamPanel(final String id, IModel paramVale, IModel paramLabelModel,
-			final boolean required, IValidator... validators) {
-		// make the value of the text field the model of this panel, for easy value retrieval
-		super(id, paramVale);
+    public TextParamPanel(final String id, final IModel paramValue, final IModel paramLabelModel,
+            final boolean required, IValidator... validators) {
+        // make the value of the text field the model of this panel, for easy value retrieval
+        super(id, paramValue);
 
-		// the label
-		Label label = new Label("paramName", paramLabelModel);
-		add(label);
+        // the label
+        Label label = new Label("paramName", paramLabelModel);
+        add(label);
 
-		// the text field, with a decorator for validations
-		TextField textField = new TextField("paramValue", paramVale);
-		textField.setRequired(required);
-		if (validators != null) {
-			for (IValidator validator : validators) {
-				textField.add(validator);
-			}
-		}
-		FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder(
-				"border");
-		feedback.add(textField);
-		add(feedback);
-	}
+        // the text field, with a decorator for validations
+        TextField textField = new TextField("paramValue", paramValue);
+        textField.setRequired(required);
+        // set the label to be the paramLabelModel otherwise a validation error would look like
+        // "Parameter 'paramValue' is required"
+        textField.setLabel(paramLabelModel);
+
+        if (validators != null) {
+            for (IValidator validator : validators) {
+                textField.add(validator);
+            }
+        }
+        FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
+        feedback.add(textField);
+        add(feedback);
+    }
 }
