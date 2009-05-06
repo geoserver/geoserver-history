@@ -1,17 +1,21 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-  <h3><wicket:child/></h3>
-  <div><span wicket:id="storeType">Store Type</span></div>
-  <div><span wicket:id="storeTypeDescription">Store Description</span></div>
+  <wicket:child/>
   <form wicket:id="rasterStoreForm">
   <ul>
     <li>
       <fieldset>
+      <div><span wicket:id="storeType">Store Type</span></div>
+      <div><span wicket:id="storeTypeDescription">Store Description</span></div>
+      </fieldset>
+    </li>    
+    <li>
+      <fieldset>
         <legend><span><wicket:message key="basicStoreInfo">Basic Store Info</wicket:message></span></legend>
+        <div><span wicket:id="workspacePanel"></span></div>
         <div><span wicket:id="namePanel"></span></div>
         <div><span wicket:id="descriptionPanel"></span></div>
-        <div><span wicket:id="workspacePanel"></span></div>
         <div><span wicket:id="enabledPanel"></span></div>
       </fieldset>
     </li>

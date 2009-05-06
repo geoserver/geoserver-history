@@ -14,22 +14,19 @@ import org.opengis.coverage.grid.Format;
  * Supports coverage store configuration
  * 
  * @author Andrea Aime
+ * @author Gabriel Roldan
  */
-@SuppressWarnings("serial")
 public class CoverageStoreNewPage extends AbstractCoverageStorePage {
 
     /**
      * 
-     * @param workspaceId
-     *            the {@link WorkspaceInfo#getId() id} of the workspace to attach the new coverage
-     *            to
      * @param coverageFactoryName
      *            the {@link Format#getName() name} of the format to create a new raster coverage
      *            for
      */
-    public CoverageStoreNewPage(final String workspaceId, final String coverageFactoryName) {
+    public CoverageStoreNewPage(final String coverageFactoryName) {
         Catalog catalog = getCatalog();
-        final WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
+        final WorkspaceInfo workspace = catalog.getDefaultWorkspace();
         CoverageStoreInfo store = catalog.getFactory().createCoverageStore();
         store.setWorkspace(workspace);
         store.setType(coverageFactoryName);

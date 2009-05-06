@@ -5,7 +5,6 @@
 package org.geoserver.web.data.store;
 
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -16,11 +15,8 @@ import org.geoserver.web.data.layer.NewLayerPage;
  * 
  * @author Andrea Aime
  */
-@SuppressWarnings("serial")
 public class CoverageStoreEditPage extends AbstractCoverageStorePage {
     Form paramsForm;
-
-    private Panel namePanel;
 
     /**
      * 
