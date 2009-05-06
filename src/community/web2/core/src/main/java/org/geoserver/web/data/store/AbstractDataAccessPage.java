@@ -25,10 +25,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.LabelParamPanel;
+import org.geoserver.web.data.store.panel.NamespacePanel;
 import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
@@ -53,6 +55,12 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
     protected static final String WORKSPACE_PROPERTY = "Wicket_Workspace";
 
     /**
+     * Key used to handle the datastore "namespace" property as a NamespaceInfo instead of a plain
+     * String
+     */
+    protected static final String NAMESPACE_PROPERTY = "Wicket_Namespace";
+
+    /**
      * Key used to store the name assigned to the datastore in {@code parametersMap} as its a
      * DataStoreInfo property and not a DataAccess one
      */
@@ -74,7 +82,6 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * Holds datastore parameters. Properties will be settled by the form input fields.
      */
     protected final Map<String, Serializable> parametersMap;
-
 
     public AbstractDataAccessPage() {
         parametersMap = new HashMap<String, Serializable>();
@@ -107,7 +114,7 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         }
 
         final Form paramsForm = new Form("dataStoreForm");
-        
+
         paramsForm.add(new Label("storeType", dsFactory.getDisplayName()));
         paramsForm.add(new Label("storeTypeDescription", dsFactory.getDescription()));
         add(paramsForm);
@@ -118,11 +125,21 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
         Panel dataStoreNamePanel;
         if (isNew) {
+            parametersMap.put(NAMESPACE_PROPERTY, getCatalog().getDefaultNamespace());
             IValidator dsNameValidator = new StoreNameValidator(DataStoreInfo.class);
             dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(
                     parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
-                    "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true, dsNameValidator);
+                    "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true,
+                    dsNameValidator);
         } else {
+
+            NamespaceInfo namespace = null;
+            String uri = (String) parametersMap.get("namespace");
+            if (uri != null) {
+                namespace = getCatalog().getNamespaceByURI(uri);
+            }
+            parametersMap.put(NAMESPACE_PROPERTY, namespace);
+
             dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel", new MapModel(
                     parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
                     "AbstractDataAccessPage.dataSrcName", "Data Source Name"));
@@ -196,7 +213,13 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         final Class<?> binding = param.getBinding();
 
         Panel parameterPanel;
-        if (Boolean.class == binding) {
+        if ("namespace".equals(paramName)) {
+
+            IModel namespaceModel = new MapModel(paramsMap, NAMESPACE_PROPERTY);
+            IModel paramLabelModel = new ResourceModel(paramLabel, paramLabel);
+            parameterPanel = new NamespacePanel(componentId, namespaceModel, paramLabelModel, true);
+
+        } else if (Boolean.class == binding) {
             // TODO Add prefix for better i18n?
             parameterPanel = new CheckBoxParamPanel(componentId,
                     new MapModel(paramsMap, paramName), new ResourceModel(paramLabel, paramLabel));

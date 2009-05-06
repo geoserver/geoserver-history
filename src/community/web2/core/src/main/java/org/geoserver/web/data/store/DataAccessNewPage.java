@@ -6,6 +6,7 @@ package org.geoserver.web.data.store;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -69,12 +70,12 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
                 value = String.valueOf(param.sample);
             }
 
-            // as for GEOS-2080, we need to pre-populate the namespace parameter
-            // value with the namespace uri from the parent 'folder'
-            if ("namespace".equals(param.key) && value == null) {
-                final String nsUri = defaultNs.getURI();
-                value = nsUri;
-            }
+            // // as for GEOS-2080, we need to pre-populate the namespace parameter
+            // // value with the namespace uri from the parent 'folder'
+            // if ("namespace".equals(param.key) && value == null) {
+            // final String nsUri = defaultNs.getURI();
+            // value = nsUri;
+            // }
 
             parametersMap.put(param.key, value);
         }
@@ -97,7 +98,13 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
      */
     protected final void onSaveDataStore(final Form paramsForm) {
         final Catalog catalog = getCatalog();
-        final Map<String, Serializable> dsParams = parametersMap;
+        final Map<String, Serializable> dsParams = new HashMap<String, Serializable>(parametersMap);
+        // may the "namespace" parameter have been handled as a NamespaceInfo instead of a plain
+        // string?
+        if (dsParams.get(NAMESPACE_PROPERTY) != null) {
+            NamespaceInfo ns = (NamespaceInfo) dsParams.get(NAMESPACE_PROPERTY);
+            dsParams.put("namespace", ns.getURI());
+        }
 
         DataStoreInfo dataStoreInfo;
 
