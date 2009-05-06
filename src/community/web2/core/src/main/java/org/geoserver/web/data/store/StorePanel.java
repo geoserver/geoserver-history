@@ -98,12 +98,15 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
         throw new IllegalArgumentException("Don't know a property named " + property.getName());
     }
 
+    @SuppressWarnings("serial")
     private Component storeNameLink(String id, final IModel itemModel) {
-        return new SimpleAjaxLink(id, NAME.getModel(itemModel)) {
+        
+        final IModel labelModel = NAME.getModel(itemModel);
+        
+        return new SimpleAjaxLink(id, itemModel, labelModel) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                String storeName = getLink().getModelObjectAsString();
-                StoreInfo store = getCatalog().getStoreByName(storeName, StoreInfo.class);
+                StoreInfo store = (StoreInfo) getModelObject();
                 if (store == null) {
                     popupWindow.setContent(new Label(popupWindow.getContentId(),
                             "Cannot find the store " + store
