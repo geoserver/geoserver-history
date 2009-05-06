@@ -421,6 +421,23 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "dsDescription2", ds3.getDescription() );
     }
     
+    public void testChangeDataStoreWorkspace() throws Exception {
+        catalog.add( ds );
+        
+        WorkspaceInfo ws2 = catalog.getFactory().createWorkspace();
+        ws2.setName( "newWorkspace");
+        catalog.add( ws2 );
+        ws2 = catalog.getWorkspaceByName( ws2.getName() );
+        
+        DataStoreInfo ds2 = catalog.getDataStoreByName(ds.getName());
+        ds2.setWorkspace( ws2 );
+        catalog.save( ds2 );
+        
+        assertNull( catalog.getDataStoreByName( ws, ds2.getName() ) );
+        assertNotNull( catalog.getDataStoreByName( ws2, ds2.getName() ) );
+        
+    }
+    
     public void testDataStoreEvents() {
         TestListener l = new TestListener();
         catalog.addListener( l );
@@ -931,6 +948,12 @@ public class CatalogImplTest extends TestCase {
         
         ResourceInfo r = l.getResource();
         assertTrue( r instanceof Proxy );
+        
+        r.setName( "changed");
+        catalog.save( l );
+        
+        l = catalog.getLayerByName( "layerName");
+        assertEquals( "changed", l.getResource().getName() );
     }
     
     static class TestListener implements CatalogListener {
