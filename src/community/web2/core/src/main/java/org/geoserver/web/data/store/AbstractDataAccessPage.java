@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -23,7 +24,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -37,6 +37,7 @@ import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.util.logging.Logging;
 
 /**
  * Abstract base class for adding/editing a {@link DataStoreInfo}, provides the UI components and a
@@ -48,6 +49,8 @@ import org.geotools.data.DataAccessFactory.Param;
  * @see DataAccessEditPage
  */
 public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
+
+    protected static final Logger LOGGER = Logging.getLogger("org.geoserver.web.data.store");
 
     /**
      * Key used to store the name assigned workspace

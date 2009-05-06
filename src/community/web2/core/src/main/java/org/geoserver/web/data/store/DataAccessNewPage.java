@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
@@ -125,15 +126,25 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         try {
             dataStoreInfo.getDataStore(new NullProgressListener());
         } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Error obtaining new data store", e);
+            String message = e.getMessage();
+            if (message == null && e.getCause() != null) {
+                message = e.getCause().getMessage();
+            }
             paramsForm.error("Error creating data store, check the parameters. Error message: "
-                    + e.getMessage());
+                    + message);
             return;
         }
         try {
             catalog.add(dataStoreInfo);
         } catch (Exception e) {
-            paramsForm.error("Error creating data store with the provided parameters: "
-                    + e.getMessage());
+            LOGGER.log(Level.WARNING, "Error adding data store to catalog", e);
+            String message = e.getMessage();
+            if (message == null && e.getCause() != null) {
+                message = e.getCause().getMessage();
+            }
+
+            paramsForm.error("Error creating data store with the provided parameters: " + message);
             return;
         }
         setResponsePage(new NewLayerPage(dataStoreInfo.getId()));
