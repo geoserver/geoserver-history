@@ -18,7 +18,8 @@ import org.geoserver.web.data.workspace.WorkspacesModel;
 @SuppressWarnings("serial")
 public class WorkspacePanel extends Panel {
 
-    public WorkspacePanel(final String id, IModel workspaceModel, IModel paramLabelModel, final boolean required) {
+    public WorkspacePanel(final String id, final IModel workspaceModel,
+            final IModel paramLabelModel, final boolean required) {
         // make the value of the combo field the model of this panel, for easy
         // value retriaval
         super(id, workspaceModel);
@@ -28,10 +29,14 @@ public class WorkspacePanel extends Panel {
         add(label);
 
         // the drop down field, with a decorator for validations
-        DropDownChoice choice = new DropDownChoice("paramValue", workspaceModel, new WorkspacesModel(), new WorkspaceChoiceRenderer());
+        DropDownChoice choice = new DropDownChoice("paramValue", workspaceModel,
+                new WorkspacesModel(), new WorkspaceChoiceRenderer());
         choice.setRequired(required);
-        FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder(
-                "border");
+        // set the label to be the paramLabelModel otherwise a validation error would look like
+        // "Parameter 'paramValue' is required"
+        choice.setLabel(paramLabelModel);
+
+        FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(choice);
         add(feedback);
     }
