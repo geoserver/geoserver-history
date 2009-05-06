@@ -20,6 +20,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
 import org.geoserver.catalog.Catalog;
@@ -30,6 +31,7 @@ import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.LabelParamPanel;
 import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
+import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
@@ -44,6 +46,11 @@ import org.geotools.data.DataAccessFactory.Param;
  * @see DataAccessEditPage
  */
 public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
+
+    /**
+     * Key used to store the name assigned workspace
+     */
+    protected static final String WORKSPACE_PROPERTY = "Wicket_Workspace";
 
     /**
      * Key used to store the name assigned to the datastore in {@code parametersMap} as its a
@@ -68,10 +75,6 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      */
     protected final Map<String, Serializable> parametersMap;
 
-    /**
-     * Id of the workspace the datastore is or is going to be attached to
-     */
-    protected String workspaceId;
 
     public AbstractDataAccessPage() {
         parametersMap = new HashMap<String, Serializable>();
@@ -90,9 +93,9 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      *            may need not to be editable if not a new one.
      */
     protected final void initUI(final DataStoreFactorySpi dsFactory, final boolean isNew) {
-        WorkspaceInfo workspace = getWorkspace();
+        WorkspaceInfo workspace = (WorkspaceInfo) parametersMap.get(WORKSPACE_PROPERTY);
         if (workspace == null) {
-            throw new IllegalArgumentException("Can't locate workspace with id " + workspaceId);
+            throw new IllegalArgumentException("Workspace not provided");
         }
 
         final List<ParamInfo> paramsInfo = new ArrayList<ParamInfo>();
@@ -103,37 +106,36 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             }
         }
 
-        add(new Label("storeType", dsFactory.getDisplayName()));
-        add(new Label("storeTypeDescription", dsFactory.getDescription()));
-        add(new Label("workspaceName", workspace.getName()));
-
         final Form paramsForm = new Form("dataStoreForm");
-
+        
+        paramsForm.add(new Label("storeType", dsFactory.getDisplayName()));
+        paramsForm.add(new Label("storeTypeDescription", dsFactory.getDescription()));
         add(paramsForm);
+
+        IModel wsModel = new MapModel(parametersMap, WORKSPACE_PROPERTY);
+        IModel wsLabelModel = new ResourceModel("AbstractDataAccessPage.workspace");
+        paramsForm.add(new WorkspacePanel("workspacePanel", wsModel, wsLabelModel, true));
 
         Panel dataStoreNamePanel;
         if (isNew) {
-            IValidator dsIdValidator = new StoreNameValidator(DataStoreInfo.class);
-            dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel",
-                    new MapModel(parametersMap, DATASTORE_NAME_PROPERTY_NAME),
-                    new ResourceModel("dataSrcName", "Data Source Name"), true,
-                    dsIdValidator);
+            IValidator dsNameValidator = new StoreNameValidator(DataStoreInfo.class);
+            dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(
+                    parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
+                    "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true, dsNameValidator);
         } else {
-            dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel",
-                    new MapModel(parametersMap, DATASTORE_NAME_PROPERTY_NAME),
-                    new ResourceModel("dataSrcName", "Data Source Name"));
+            dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel", new MapModel(
+                    parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
+                    "AbstractDataAccessPage.dataSrcName", "Data Source Name"));
         }
 
         paramsForm.add(dataStoreNamePanel);
 
-        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel",
-                        new MapModel(parametersMap,DATASTORE_DESCRIPTION_PROPERTY_NAME),
-                        new ResourceModel("description", "Description"), false,
-                        (IValidator[]) null));
+        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
+                DATASTORE_DESCRIPTION_PROPERTY_NAME), new ResourceModel("description",
+                "Description"), false, (IValidator[]) null));
 
-        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel",
-                new MapModel(parametersMap, DATASTORE_ENABLED_PROPERTY_NAME),
-                new ResourceModel("enabled", "Enabled")));
+        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new MapModel(parametersMap,
+                DATASTORE_ENABLED_PROPERTY_NAME), new ResourceModel("enabled", "Enabled")));
 
         ListView paramsList = new ListView("parameters", paramsInfo) {
             private static final long serialVersionUID = 1L;
@@ -168,12 +170,6 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         paramsForm.add(new FeedbackPanel("feedback"));
     }
 
-    private WorkspaceInfo getWorkspace() {
-        Catalog catalog = getCatalog();
-        WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
-        return workspace;
-    }
-
     /**
      * Call back method called when the save button is hit. Subclasses shall override in order to
      * perform the action over the catalog, whether it is adding a new {@link DataStoreInfo} or
@@ -202,19 +198,16 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         Panel parameterPanel;
         if (Boolean.class == binding) {
             // TODO Add prefix for better i18n?
-            parameterPanel = new CheckBoxParamPanel(
-                    componentId, new MapModel(paramsMap, paramName),
-                    new ResourceModel(paramLabel, paramLabel));
-            
+            parameterPanel = new CheckBoxParamPanel(componentId,
+                    new MapModel(paramsMap, paramName), new ResourceModel(paramLabel, paramLabel));
+
         } else if (String.class == binding && param.isPassword()) {
-            parameterPanel = new PasswordParamPanel(
-                    componentId, new MapModel(paramsMap, paramName),
-                    new ResourceModel(paramLabel,paramLabel), required);
+            parameterPanel = new PasswordParamPanel(componentId,
+                    new MapModel(paramsMap, paramName), new ResourceModel(paramLabel, paramLabel),
+                    required);
         } else {
-            parameterPanel = new TextParamPanel(
-                    componentId, new MapModel(paramsMap, paramName),
-                    new ResourceModel(paramLabel,paramLabel), 
-                    required, null);
+            parameterPanel = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
+                    new ResourceModel(paramLabel, paramLabel), required, null);
         }
         return parameterPanel;
     }

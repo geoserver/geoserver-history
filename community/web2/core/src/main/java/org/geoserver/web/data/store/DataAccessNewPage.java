@@ -39,15 +39,8 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
      * @param dataStoreFactDisplayName
      *            the type of datastore to create, given by its factory display name
      */
-    public DataAccessNewPage(final String workspaceId, final String dataStoreFactDisplayName) {
+    public DataAccessNewPage(final String dataStoreFactDisplayName) {
         super();
-        if (workspaceId == null) {
-            throw new NullPointerException("workspaceId can't be null");
-        }
-        if (null == getCatalog().getWorkspace(workspaceId)) {
-            throw new IllegalArgumentException("Workspace not found. Id: '" + workspaceId + "'");
-        }
-        this.workspaceId = workspaceId;
 
         final DataStoreFactorySpi dsFact = DataStoreUtils.aquireFactory(dataStoreFactDisplayName);
         if (dsFact == null) {
@@ -56,6 +49,15 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         }
 
         // pre-populate map with default values
+
+        final WorkspaceInfo defaultWs = getCatalog().getDefaultWorkspace();
+        if (defaultWs == null) {
+            throw new IllegalStateException("No default Workspace configured");
+        }
+        final NamespaceInfo defaultNs = getCatalog().getDefaultNamespace();
+        if (defaultNs == null) {
+            throw new IllegalStateException("No default Namespace configured");
+        }
 
         Param[] parametersInfo = dsFact.getParametersInfo();
         for (int i = 0; i < parametersInfo.length; i++) {
@@ -70,20 +72,14 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
             // as for GEOS-2080, we need to pre-populate the namespace parameter
             // value with the namespace uri from the parent 'folder'
             if ("namespace".equals(param.key) && value == null) {
-                final Catalog catalog = getCatalog();
-                final WorkspaceInfo ws = catalog.getWorkspace(workspaceId);
-                final String nsPrefix = ws.getName();
-                final NamespaceInfo nsInfo = catalog.getNamespaceByPrefix(nsPrefix);
-                if (nsInfo == null) {
-                    throw new IllegalStateException("No matching namespace for workspace "
-                            + workspaceId);
-                }
-                final String nsUri = nsInfo.getURI();
+                final String nsUri = defaultNs.getURI();
                 value = nsUri;
             }
 
             parametersMap.put(param.key, value);
         }
+
+        parametersMap.put(WORKSPACE_PROPERTY, defaultWs);
         parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.TRUE);
@@ -106,11 +102,10 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         DataStoreInfo dataStoreInfo;
 
         // dataStoreId already validated, so its safe to use
+        final WorkspaceInfo workspace = (WorkspaceInfo) dsParams.get(WORKSPACE_PROPERTY);
         final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
         final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
-
-        final WorkspaceInfo workspace = catalog.getWorkspace(workspaceId);
 
         CatalogFactory factory = catalog.getFactory();
         dataStoreInfo = factory.createDataStore();

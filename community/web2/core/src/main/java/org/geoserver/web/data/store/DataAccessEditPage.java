@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.data.store.StorePage;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStoreFactorySpi;
@@ -56,12 +57,13 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         }
 
         parametersMap.putAll(connectionParameters);
+       
+        parametersMap.put(WORKSPACE_PROPERTY, dataStoreInfo.getWorkspace());
         parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, dataStoreInfo.getName());
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
                 .isEnabled()));
 
-        this.workspaceId = dataStoreInfo.getWorkspace().getId();
         initUI(dsFactory, false);
     }
 
@@ -80,12 +82,14 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         DataStoreInfo dataStoreInfo;
 
         // dataStoreId already validated, so its safe to use
+        final WorkspaceInfo workspace = (WorkspaceInfo) dsParams.get(WORKSPACE_PROPERTY);
         final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
         final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
 
         // it is an existing datastore that's being modified
         dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
+        dataStoreInfo.setWorkspace(workspace);
         dataStoreInfo.setName(dataStoreUniqueName);
         dataStoreInfo.setDescription(description);
         dataStoreInfo.setEnabled(enabled.booleanValue());
