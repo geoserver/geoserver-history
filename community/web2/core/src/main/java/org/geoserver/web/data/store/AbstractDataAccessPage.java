@@ -29,7 +29,6 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
-import org.geoserver.web.data.store.panel.LabelParamPanel;
 import org.geoserver.web.data.store.panel.NamespacePanel;
 import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
@@ -129,13 +128,7 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         Panel dataStoreNamePanel;
         if (isNew) {
             parametersMap.put(NAMESPACE_PROPERTY, getCatalog().getDefaultNamespace());
-            IValidator dsNameValidator = new StoreNameValidator(DataStoreInfo.class);
-            dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(
-                    parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
-                    "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true,
-                    dsNameValidator);
         } else {
-
             NamespaceInfo namespace = null;
             String uri = (String) parametersMap.get("namespace");
             if (uri != null) {
@@ -143,11 +136,15 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             }
             parametersMap.put(NAMESPACE_PROPERTY, namespace);
 
-            dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel", new MapModel(
-                    parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
-                    "AbstractDataAccessPage.dataSrcName", "Data Source Name"));
+            // dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel", new MapModel(
+            // parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
+            // "AbstractDataAccessPage.dataSrcName", "Data Source Name"));
         }
 
+        IValidator dsNameValidator = new StoreNameValidator(DataStoreInfo.class);
+        dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(parametersMap,
+                DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
+                "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true, dsNameValidator);
         paramsForm.add(dataStoreNamePanel);
 
         paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
