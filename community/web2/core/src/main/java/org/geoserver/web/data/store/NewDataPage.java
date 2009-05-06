@@ -11,23 +11,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.validation.IValidationError;
-import org.apache.wicket.validation.ValidationError;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.workspace.WorkspaceChoiceRenderer;
-import org.geoserver.web.data.workspace.WorkspacesModel;
-import org.geoserver.web.wicket.MenuDropDownChoice;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
@@ -43,8 +34,6 @@ import org.opengis.coverage.grid.Format;
  * @author Gabriel Roldan
  */
 public class NewDataPage extends GeoServerSecuredPage {
-
-    private String workspaceId;
 
     // do not access directly, it is transient and the instance can be the de-serialized version
     private transient Map<String, DataAccessFactory> dataStores = getAvailableDataStores();
@@ -65,9 +54,6 @@ public class NewDataPage extends GeoServerSecuredPage {
         final Form storeForm = new Form("storeForm");
         add(storeForm);
 
-        final DropDownChoice workspacesDropDown = workspacesDropDown();
-        storeForm.add(workspacesDropDown);
-
         final ArrayList<String> sortedDsNames = new ArrayList<String>(getAvailableDataStores()
                 .keySet());
         Collections.sort(sortedDsNames);
@@ -84,12 +70,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                 link = new SubmitLink("resourcelink") {
                     @Override
                     public void onSubmit() {
-                        if (workspaceId == null) {
-                            IValidationError e = new ValidationError().addMessageKey("noWorkspaceSelectedError");
-                            workspacesDropDown.error(e);
-                        } else {
-                            setResponsePage(new DataAccessNewPage(workspaceId, dataStoreFactoryName));
-                        }
+                        setResponsePage(new DataAccessNewPage(dataStoreFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
@@ -114,13 +95,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                 link = new SubmitLink("resourcelink") {
                     @Override
                     public void onSubmit() {
-                        if (workspaceId == null) {
-                            IValidationError e = new ValidationError().addMessageKey("noWorkspaceSelectedError");
-                            workspacesDropDown.error(e);
-                        } else {
-                            setResponsePage(new CoverageStoreNewPage(workspaceId,
-                                    coverageFactoryName));
-                        }
+                        setResponsePage(new CoverageStoreNewPage(coverageFactoryName));
                     }
                 };
                 link.add(new Label("resourcelabel", coverageFactoryName));
@@ -132,29 +107,6 @@ public class NewDataPage extends GeoServerSecuredPage {
 
         storeForm.add(dataStoreLinks);
         storeForm.add(coverageLinks);
-    }
-
-    @SuppressWarnings("serial")
-    private DropDownChoice workspacesDropDown() {
-        final DropDownChoice workspaces;
-
-        workspaces = new MenuDropDownChoice("workspaceDropDown", new Model(null),
-                new WorkspacesModel(), new WorkspaceChoiceRenderer()) {
-            @Override
-            protected void onChoice(AjaxRequestTarget target) {
-                if (getModelObject() == null) {
-                    workspaceId = null;
-                } else {
-                    WorkspaceInfo ws = (WorkspaceInfo) getModelObject();
-
-                    String wsId = ws.getId();
-                    workspaceId = wsId;
-                }
-            }
-
-        };
-        workspaces.setNullValid(false);
-        return workspaces;
     }
 
     /**
