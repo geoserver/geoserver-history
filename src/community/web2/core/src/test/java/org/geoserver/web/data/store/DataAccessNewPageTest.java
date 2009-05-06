@@ -5,6 +5,7 @@
 package org.geoserver.web.data.store;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
@@ -39,8 +40,9 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
 
         final AbstractDataAccessPage page = new DataAccessNewPage(dataStoreFactoryDisplayName);
 
-        final String assignedNamespace = (String) page.parametersMap.get("namespace");
-        final String expectedNamespace = catalog.getDefaultNamespace().getURI();
+        final NamespaceInfo assignedNamespace = (NamespaceInfo) page.parametersMap
+                .get(AbstractDataAccessPage.NAMESPACE_PROPERTY);
+        final NamespaceInfo expectedNamespace = catalog.getDefaultNamespace();
 
         assertEquals(expectedNamespace, assignedNamespace);
 
@@ -60,7 +62,7 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
 
         tester.assertLabel("dataStoreForm:storeType", dataStoreFactoryDisplayName);
         tester.assertLabel("dataStoreForm:storeTypeDescription", dataStoreFactory.getDescription());
-        
+
         tester.assertComponent("dataStoreForm:workspacePanel", WorkspacePanel.class);
         // TODO: add more components assertions
     }

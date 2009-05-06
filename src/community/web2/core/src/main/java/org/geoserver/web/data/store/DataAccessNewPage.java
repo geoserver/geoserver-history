@@ -70,13 +70,6 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
                 value = String.valueOf(param.sample);
             }
 
-            // // as for GEOS-2080, we need to pre-populate the namespace parameter
-            // // value with the namespace uri from the parent 'folder'
-            // if ("namespace".equals(param.key) && value == null) {
-            // final String nsUri = defaultNs.getURI();
-            // value = nsUri;
-            // }
-
             parametersMap.put(param.key, value);
         }
 
