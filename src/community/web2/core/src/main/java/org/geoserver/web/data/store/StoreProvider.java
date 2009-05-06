@@ -12,6 +12,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
@@ -103,22 +104,26 @@ public class StoreProvider extends GeoServerDataProvider {
     }
 
 
+    /**
+     * A StoreInfo detachable model that holds the store id to retrieve it on demand from the
+     * catalog
+     */
     static class StoreInfoDetachableModel extends LoadableDetachableModel {
-        String name;
 
-        boolean selected;
+        private static final long serialVersionUID = -6829878983583733186L;
 
-        Class clazz;
+        String id;
 
         public StoreInfoDetachableModel(StoreInfo store) {
             super(store);
-            this.name = store.getName();
-            this.clazz = store.getClass();
+            this.id = store.getId();
         }
 
         @Override
         protected Object load() {
-            return GeoServerApplication.get().getCatalog().getStoreByName(name, StoreInfo.class);
+            Catalog catalog = GeoServerApplication.get().getCatalog();
+            StoreInfo storeInfo = catalog.getStore(id, StoreInfo.class);
+            return storeInfo;
         }
     }
 }
