@@ -15,8 +15,8 @@
   
   <bean id="layerListDemo2" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="layerListDemo"/>
-    <property name="titleKey" value="MapPreviewPage.page.title"/>
-    <property name="descriptionKey" value="MapPreviewPage.page.description"/>
+    <property name="titleKey" value="MapPreviewPage.title"/>
+    <property name="descriptionKey" value="MapPreviewPage.description"/>
     <property name="componentClass" value="org.geoserver.web.demo.MapPreviewPage"/>
   </bean>
     
