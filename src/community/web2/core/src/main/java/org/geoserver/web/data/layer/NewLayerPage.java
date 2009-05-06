@@ -9,12 +9,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -27,6 +30,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -89,7 +93,12 @@ public class NewLayerPage extends GeoServerSecuredPage {
                 if (property == NewLayerPageProvider.NAME) {
                     return resourceChooserLink(id, itemModel, property);
                 } else if (property == NewLayerPageProvider.PUBLISHED) {
-                    return new Label(id, property.getModel(itemModel));
+                    final Resource resource = (Resource) itemModel.getObject();
+                    final CatalogIconFactory icons = CatalogIconFactory.get();
+                    ResourceReference icon = resource.isPublished()? icons.getEnabledIcon() : icons.getDisabledIcon();
+                    Fragment f = new Fragment(id, "iconFragment", NewLayerPage.this);
+                    f.add(new Image("layerIcon", icon));
+                    return f;
                 } else {
                     throw new IllegalArgumentException(
                             "Don't know of property " + property.getName());
