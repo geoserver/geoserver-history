@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.data.store.StorePage;
 import org.geotools.data.DataAccess;
@@ -57,7 +58,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         }
 
         parametersMap.putAll(connectionParameters);
-       
+
         parametersMap.put(WORKSPACE_PROPERTY, dataStoreInfo.getWorkspace());
         parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, dataStoreInfo.getName());
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
@@ -77,7 +78,13 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
      */
     protected final void onSaveDataStore(final Form paramsForm) {
         final Catalog catalog = getCatalog();
-        final Map<String, Serializable> dsParams = parametersMap;
+        final Map<String, Serializable> dsParams = new HashMap<String, Serializable>(parametersMap);
+        // may the "namespace" parameter have been handled as a NamespaceInfo instead of a plain
+        // string?
+        if (dsParams.get(NAMESPACE_PROPERTY) != null) {
+            NamespaceInfo ns = (NamespaceInfo) dsParams.get(NAMESPACE_PROPERTY);
+            dsParams.put("namespace", ns.getURI());
+        }
 
         DataStoreInfo dataStoreInfo;
 
