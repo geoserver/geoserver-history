@@ -72,7 +72,13 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         form.add(new AjaxLink( "generateBounds") {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
+                // build a layer group with the current contents of the group
+                LayerGroupInfo lg = getCatalog().getFactory().createLayerGroup();
+                for ( LayerGroupEntry entry : lgEntryPanel.getEntries() ) {
+                    lg.getLayers().add( entry.getLayer() );
+                    lg.getStyles().add( entry.getStyle() );
+                }
+                
                 try {
                     CoordinateReferenceSystem crs = crsPanel.getCRS();
                     if ( crs != null ) {
@@ -103,7 +109,7 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         });
         
         form.add(lgEntryPanel = new LayerGroupEntryPanel( "layers", layerGroup ));
-        form.add(new SubmitLink("save", form){
+        form.add(new SubmitLink("save"){
             @Override
             public void onSubmit() {
                 LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
