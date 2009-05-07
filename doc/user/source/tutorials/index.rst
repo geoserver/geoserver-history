@@ -6,4 +6,5 @@ Tutorials
 .. toctree::
    :maxdepth: 2
 
-   imagemosiac-jdbc/tutorial
+   imagemosiac-jdbc/imagemosaic-jdbc_tutorial
+   feature-pregeneralized/feature-pregeneralized_tutorial
