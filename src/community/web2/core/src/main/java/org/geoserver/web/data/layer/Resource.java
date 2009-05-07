@@ -80,10 +80,14 @@ public class Resource implements Comparable<Resource>, Serializable {
             return -1;
         else if (!published && o.published)
             return 1;
-
         // the compare by local name, as it's unlikely the users will see the
         // namespace URI (and the prefix is not available in Name)
         return name.compareTo(o.name);
+    }
+    
+    @Override
+    public String toString() {
+        return name + "(" + published + ")";
     }
 
 }
