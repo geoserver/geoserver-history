@@ -15,8 +15,6 @@ import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
@@ -27,6 +25,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.web.acegi.GeoServerSession;
@@ -196,5 +195,14 @@ public class GeoServerBasePage extends WebPage {
             result.add(page);
         }
         return result;
+    }
+    
+    @Override
+    protected void configureResponse() {
+        super.configureResponse();
+
+        // this is to avoid https://issues.apache.org/jira/browse/WICKET-923 in Firefox
+        final WebResponse response = getWebRequestCycle().getWebResponse();
+        response.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
     }
 }
