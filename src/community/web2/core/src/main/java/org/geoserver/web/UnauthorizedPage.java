@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -6,8 +10,6 @@ import org.apache.wicket.model.ResourceModel;
 
 /**
  * Displays a message suggesting the user to login or to elevate his privileges
- * @author Andrea Aime - TOPP
- *
  */
 public class UnauthorizedPage extends GeoServerBasePage {
 
