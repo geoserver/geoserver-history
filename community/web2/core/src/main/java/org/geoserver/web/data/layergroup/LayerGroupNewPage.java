@@ -4,12 +4,15 @@
  */
 package org.geoserver.web.data.layergroup;
 
+import java.util.Collections;
 import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.web.GeoServerSecuredPage;
@@ -25,7 +28,10 @@ public class LayerGroupNewPage extends GeoServerSecuredPage {
         Form form = new Form( "form", new CompoundPropertyModel( lg ) );
         add(form);
         
-        form.add( new TextField( "name" ) );
+        TextField name = new TextField( "name" );
+        name.setRequired(true);
+        name.add(new GroupNameValidator());
+        form.add(name);
         form.add( new SubmitLink( "submit", form ) {
             @Override
             public void onSubmit() {
@@ -51,5 +57,16 @@ public class LayerGroupNewPage extends GeoServerSecuredPage {
                 setResponsePage(LayerGroupPage.class);
             }
         });
+    }
+    
+    class GroupNameValidator extends AbstractValidator {
+
+        @Override
+        protected void onValidate(IValidatable validatable) {
+            String name = (String) validatable.getValue();
+            if(getCatalog().getLayerGroupByName(name) != null)
+                error(validatable, "duplicateGroupNameError", Collections.singletonMap("name", name));
+        }
+        
     }
 }
