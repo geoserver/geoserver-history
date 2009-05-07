@@ -28,11 +28,6 @@ import org.vfny.geoserver.util.DataStoreUtils;
 public class DataAccessEditPage extends AbstractDataAccessPage implements Serializable {
 
     /**
-     * Id of the datastore, null if creating a new datastore
-     */
-    private final String dataStoreInfoId;
-
-    /**
      * Creates a new datastore configuration page to edit the properties of the given data store
      * 
      * @param dataStoreInfoId
@@ -41,8 +36,6 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
     public DataAccessEditPage(final String dataStoreInfoId) {
         final Catalog catalog = getCatalog();
         final DataStoreInfo dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
-
-        this.dataStoreInfoId = dataStoreInfoId;
 
         if (null == dataStoreInfo) {
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
@@ -60,6 +53,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
 
         parametersMap.putAll(connectionParameters);
 
+        parametersMap.put(DATASTORE_ID_PROPERTY, dataStoreInfoId);
         parametersMap.put(WORKSPACE_PROPERTY, dataStoreInfo.getWorkspace());
         parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, dataStoreInfo.getName());
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
@@ -90,6 +84,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         DataStoreInfo dataStoreInfo;
 
         // dataStoreId already validated, so its safe to use
+        final String dataStoreInfoId = (String) dsParams.get(DATASTORE_ID_PROPERTY);
         final WorkspaceInfo workspace = (WorkspaceInfo) dsParams.get(WORKSPACE_PROPERTY);
         final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
         final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
@@ -109,6 +104,8 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
 
         connectionParameters.clear();
         connectionParameters.putAll(dsParams);
+        connectionParameters.remove(DATASTORE_ID_PROPERTY);
+        connectionParameters.remove(WORKSPACE_PROPERTY);
         connectionParameters.remove(DATASTORE_NAME_PROPERTY_NAME);
         connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
         connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
