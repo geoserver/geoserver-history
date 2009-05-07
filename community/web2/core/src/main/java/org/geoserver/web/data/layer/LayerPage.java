@@ -92,28 +92,7 @@ public class LayerPage extends GeoServerSecuredPage {
         };
         table.setOutputMarkupId(true);
         add(table);
-        
-        // the stores drop down
-//        final DropDownChoice stores = storesDropDown();
-//        add(stores);
     }
-
-//    private DropDownChoice storesDropDown() {
-//        final DropDownChoice stores;
-//        stores = new MenuDropDownChoice("storesDropDown", new Model(), new StoreListModel()) {
-//
-//            @Override
-//            protected void onChoice(AjaxRequestTarget target) {
-//                if(getModelObject() != null) {
-//                    String name = getModelObjectAsString();
-//                    StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
-//                    setResponsePage(new NewLayerPage(store.getId()));
-//                }
-//            }
-//            
-//        };
-//        return stores;
-//    }
 
     Component removeSelectedLink() {
         return new AjaxLink("removeSelected") {
@@ -165,32 +144,22 @@ public class LayerPage extends GeoServerSecuredPage {
         LayerInfo info = (LayerInfo) itemModel.getObject();
         
         ResourceModel resRemove = new ResourceModel("removeLayer", "Remove");
-
         ParamResourceModel confirmRemove = new ParamResourceModel(
                 "confirmRemoveLayerX", this, info.getName());
-
         SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null,
                 resRemove, confirmRemove) {
             public void onClick(AjaxRequestTarget target) {
-                getCatalog().remove((LayerInfo) itemModel.getObject());
+                LayerInfo layer = (LayerInfo) itemModel.getObject();
+                // at the moment both layer and resource need to go, 
+                // they are always created and removed togheter.
+                // When the resource/publish split is done, here we'll
+                // delete the layer only
+                getCatalog().remove(layer);
+                getCatalog().remove(layer.getResource());
                 target.addComponent(table);
             }
         };
         return linkPanel;
     }
-
-//    private final class StoreListModel extends LoadableDetachableModel {
-//        @Override
-//        protected Object load() {
-//            List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
-//            List<String> storeNames = new ArrayList<String>();
-//            for (StoreInfo store : stores) {
-//                storeNames.add(store.getName());
-//            }
-//            Collections.sort(storeNames);
-//            return storeNames;
-//        }
-//    }
-
 
 }

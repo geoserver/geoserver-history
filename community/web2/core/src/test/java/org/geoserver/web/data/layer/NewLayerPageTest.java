@@ -1,18 +1,21 @@
 package org.geoserver.web.data.layer;
 
+import java.util.Arrays;
+
 import junit.framework.Test;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geotools.data.DataStore;
 
 public class NewLayerPageTest extends GeoServerWicketTestSupport {
 
     
-    private static final String TABLE_PATH = "selectLayersContainer:selectLayers:layersContainer:layers";
+    private static final String TABLE_PATH = "selectLayersContainer:selectLayers:layers";
 
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -54,5 +57,20 @@ public class NewLayerPageTest extends GeoServerWicketTestSupport {
         
         // now it should be there
         assertNull(tester.getComponentFromLastRenderedPage("selectLayersContainer:selectLayers"));
+    }
+    
+    public void testAddLayer() throws Exception {
+        login();
+        DataStoreInfo store = getCatalog().getStoreByName(MockData.CITE_PREFIX, DataStoreInfo.class);
+        NewLayerPage page = new NewLayerPage(store.getId());
+        tester.startPage(page);
+        
+        // get the name of the first layer in the list
+        String[] names = ((DataStore) store.getDataStore(null)).getTypeNames();
+        Arrays.sort(names);
+        
+        tester.clickLink(TABLE_PATH + ":listContainer:items:1:itemProperties:0:component:link", true);
+        tester.assertRenderedPage(ResourceConfigurationPage.class);
+        assertEquals(names[0], ((ResourceConfigurationPage) tester.getLastRenderedPage()).getResourceInfo().getName());
     }
 }
