@@ -1,8 +1,6 @@
 package org.geoserver.web;
 
-import java.io.Serializable;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 
@@ -22,9 +20,5 @@ public class FormTestPage extends WebPage {
         Form form = new Form(FORM);
         form.add(builder.buildComponent(PANEL));
         add(form);
-    }
-
-    public interface ComponentBuilder extends Serializable {
-        Component buildComponent(String id);
     }
 }

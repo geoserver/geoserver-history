@@ -10,9 +10,9 @@ import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;
-import org.geoserver.web.FormTestPage.ComponentBuilder;
 import org.geoserver.wms.web.publish.StylesModel;
 import org.geoserver.wms.web.publish.WMSLayerConfig;
 

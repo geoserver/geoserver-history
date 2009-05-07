@@ -3,6 +3,7 @@ package org.geoserver.web.wicket;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
+import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -19,7 +20,7 @@ public class EnvelopePanelTest extends GeoServerWicketTestSupport {
         super.setUpInternal();
         
         e = new ReferencedEnvelope(-180,180,-90,90, DefaultGeographicCRS.WGS84);
-        tester.startPage(new FormTestPage(new FormTestPage.ComponentBuilder() {
+        tester.startPage(new FormTestPage(new ComponentBuilder() {
         
             public Component buildComponent(String id) {
                 return new EnvelopePanel(id, e);
