@@ -6,7 +6,6 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.context.SecurityContextImpl;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.wicket.Component;
-import org.apache.wicket.Page;
 import org.apache.wicket.util.tester.WicketTester;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.web.wicket.WicketHierarchyPrinter;
