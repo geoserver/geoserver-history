@@ -91,17 +91,6 @@ public class WicketHierarchyPrinter {
     }
 
     /**
-     * Prints the page containment hierarchy
-     * 
-     * @param p
-     */
-    public void print(Page p) {
-        for (Iterator it = p.iterator(); it.hasNext();) {
-            walkHierarchy((Component) it.next(), 0);
-        }
-    }
-
-    /**
      * Walks down the containment hierarchy depth first and prints each component found
      */
     private void walkHierarchy(Component c, int level) {
@@ -118,12 +107,29 @@ public class WicketHierarchyPrinter {
      * Prints a single component
      */
     private void printComponent(Component c, int level) {
-        out.print(tab(level) + c.getId());
-        if (classDumpEnabled)
+        if(c instanceof Page)
+            out.print(tab(level) + "PAGE_ROOT");
+        else
+            out.print(tab(level) + c.getId());
+            
+        if (classDumpEnabled) {
+            String className;
+            if(c.getClass().isAnonymousClass()) {
+                className = c.getClass().getSuperclass().getName();
+            } else {
+                className = c.getClass().getName();
+            }
+                
             out.print("(" + c.getClass().getName() + ")");
+        }
+        
         if (valueDumpEnabled) {
-            String value = NEWLINE.matcher(c.getModelObjectAsString()).replaceAll("\\\\n");
-            out.print(" '" + value + "'");
+            try {
+                String value = NEWLINE.matcher(c.getModelObjectAsString()).replaceAll("\\\\n");
+                out.print(" '" + value + "'");
+            } catch(Exception e) {
+                out.print(" 'ERROR_RETRIEVING_MODEL " + e.getMessage() + "'");
+            }
         }
         out.println();
     }
