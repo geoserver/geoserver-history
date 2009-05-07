@@ -108,10 +108,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
         };
         layers.setFilterVisible(false);
         
-        layersContainer = new WebMarkupContainer("layersContainer");
-        layersContainer.setOutputMarkupId(true);
-        selectLayers.add(layersContainer);
-        layersContainer.add(layers);
+        selectLayers.add(layers);
     }
     
     private DropDownChoice storesDropDown() {
@@ -163,7 +160,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
      */
     LayerInfo buildLayerInfo(Resource resource) {
         Catalog catalog = getCatalog();
-        StoreInfo store = catalog.getStore(storeId, StoreInfo.class);
+        StoreInfo store = catalog.getStore(getSelectedStoreId(), StoreInfo.class);
 
         // try to build from coverage store or data store
         try {
@@ -192,6 +189,16 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     "Don't know how to deal with this store " + store);
     }
     
+    /**
+     * Returns the storeId provided during construction, or the one pointed
+     * by the drop down if none was provided during construction
+     * @return
+     */
+    String getSelectedStoreId() {
+        // the provider is always up to date 
+        return provider.getStoreId();
+    }
+
     final class StoreListModel extends LoadableDetachableModel {
       @Override
       protected Object load() {
