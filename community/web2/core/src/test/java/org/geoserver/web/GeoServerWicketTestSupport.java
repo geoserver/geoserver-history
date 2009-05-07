@@ -1,5 +1,7 @@
 package org.geoserver.web;
 
+import java.util.Locale;
+
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.context.SecurityContextHolder;
@@ -19,10 +21,14 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
         // the tests as if we were in production all the time)
         System.setProperty("wicket.configuration", "deployment");
         
+        // make sure that we check the english i18n when needed
+        Locale.setDefault(Locale.ENGLISH);
+        
         GeoServerApplication app = 
             (GeoServerApplication) applicationContext.getBean("webApplication");
         tester = new WicketTester(app);
         app.init();
+        
     }
 
     public GeoServerApplication getGeoServerApplication(){
