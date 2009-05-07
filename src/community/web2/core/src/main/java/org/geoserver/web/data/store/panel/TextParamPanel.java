@@ -5,6 +5,7 @@
 package org.geoserver.web.data.store.panel;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -21,6 +22,8 @@ import org.apache.wicket.validation.ValidationError;
 @SuppressWarnings("serial")
 public class TextParamPanel extends Panel {
 
+    private TextField textField;
+    
     /**
      * 
      * @param id
@@ -41,7 +44,7 @@ public class TextParamPanel extends Panel {
         add(label);
 
         // the text field, with a decorator for validations
-        TextField textField = new TextField("paramValue", paramValue);
+        textField = new TextField("paramValue", paramValue);
         textField.setRequired(required);
         // set the label to be the paramLabelModel otherwise a validation error would look like
         // "Parameter 'paramValue' is required"
@@ -55,5 +58,9 @@ public class TextParamPanel extends Panel {
         FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(textField);
         add(feedback);
+    }
+    
+    public FormComponent getFormComponent(){
+        return textField;
     }
 }
