@@ -19,6 +19,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -30,6 +31,7 @@ import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.BeanProperty;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
@@ -51,10 +53,13 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         
         Form form = new Form( "form", new CompoundPropertyModel( lgModel ) );
         add(form);
-        form.add(new TextField("name"));
+        TextField name = new TextField("name");
+        name.setRequired(true);
+        form.add(name);
         
         //bounding box
         form.add(envelopePanel = new EnvelopePanel( "bounds" )/*.setReadOnly(true)*/);
+        envelopePanel.setRequired(true);
         envelopePanel.setOutputMarkupId( true );
         
         CoordinateReferenceSystem crs = layerGroup.getBounds() != null 
@@ -62,6 +67,7 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
 
         form.add(crsPanel = (crs != null) ? new CRSPanel( "crs", crs ) : new CRSPanel( "crs", new Model() ));
         crsPanel.setOutputMarkupId( true );
+        crsPanel.setRequired(true);
         
         form.add(new AjaxLink( "generateBounds") {
             @Override
@@ -97,12 +103,17 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         });
         
         form.add(lgEntryPanel = new LayerGroupEntryPanel( "layers", layerGroup ));
-        form.add(new SubmitLink("save"){
+        form.add(new SubmitLink("save", form){
             @Override
             public void onSubmit() {
                 LayerGroupInfo lg = (LayerGroupInfo) lgModel.getObject();
                 
-                //update the layer group entries
+                if(lgEntryPanel.getEntries().size() == 0) {
+                    error((String) new ParamResourceModel("oneLayerMinimum", getPage()).getObject());
+                    return;
+                }
+                
+                // update the layer group entries
                 lg.getLayers().clear();
                 lg.getStyles().clear();
                 
