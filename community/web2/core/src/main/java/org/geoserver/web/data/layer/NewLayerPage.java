@@ -7,6 +7,7 @@ package org.geoserver.web.data.layer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
@@ -132,6 +133,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     try {
                         provider.getItems();
                     } catch(Exception e) {
+                        LOGGER.log(Level.SEVERE, "Error retrieving layers for the specified store", e);
                         error(e.getMessage());
                         selectLayers.setVisible(false);
                     }
