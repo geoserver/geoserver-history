@@ -8,6 +8,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
@@ -19,7 +20,7 @@ public class HTTPLayerConfigTest extends GeoServerWicketTestSupport {
     @Override
     protected void setUpInternal() throws Exception {
         polygons = getCatalog().getLayerByName(MockData.BASIC_POLYGONS.getLocalPart());
-        page = new FormTestPage(new FormTestPage.ComponentBuilder() {
+        page = new FormTestPage(new ComponentBuilder() {
         
             public Component buildComponent(String id) {
                 return new HTTPLayerConfig(id, new Model(polygons));
@@ -37,7 +38,7 @@ public class HTTPLayerConfigTest extends GeoServerWicketTestSupport {
     
     public void testInvalid() {
         final LayerInfo polygons = getCatalog().getLayerByName(MockData.BASIC_POLYGONS.getLocalPart());
-        FormTestPage page = new FormTestPage(new FormTestPage.ComponentBuilder() {
+        FormTestPage page = new FormTestPage(new ComponentBuilder() {
         
             public Component buildComponent(String id) {
                 return new HTTPLayerConfig(id, new Model(polygons));

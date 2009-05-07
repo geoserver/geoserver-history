@@ -14,6 +14,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
+import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -26,7 +27,7 @@ public class GeoServerTablePanelTest extends TestCase {
     }
     
     public void testBasicTable() throws Exception {
-        tester.startPage(new FormTestPage(new FormTestPage.ComponentBuilder() {
+        tester.startPage(new FormTestPage(new ComponentBuilder() {
         
             public Component buildComponent(String id) {
                 return new IntegerTable(id, false);
@@ -45,7 +46,7 @@ public class GeoServerTablePanelTest extends TestCase {
     }
     
     public void testFullSelection() throws Exception {
-        tester.startPage(new FormTestPage(new FormTestPage.ComponentBuilder() {
+        tester.startPage(new FormTestPage(new ComponentBuilder() {
             
             public Component buildComponent(String id) {
                 return new IntegerTable(id, true);
@@ -74,7 +75,7 @@ public class GeoServerTablePanelTest extends TestCase {
     }
     
     public void testSingleSelection() throws Exception {
-        tester.startPage(new FormTestPage(new FormTestPage.ComponentBuilder() {
+        tester.startPage(new FormTestPage(new ComponentBuilder() {
             
             public Component buildComponent(String id) {
                 return new IntegerTable(id, true);
