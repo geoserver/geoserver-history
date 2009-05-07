@@ -25,6 +25,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
 import org.geoserver.web.wicket.KeywordsEditor;
+import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.web.wicket.SRSToCRSModel;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -45,7 +46,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         add(new TextField("name"));
         add(new TextField("title"));
         add(new TextArea("abstract"));
-        add(new KeywordsEditor("keywords", new PropertyModel(model, "keywords")));
+        add(new KeywordsEditor("keywords", LiveCollectionModel.list(new PropertyModel(model, "keywords"))));
         add(new MetadataLinkEditor("metadataLinks", model));
 
         final Form refForm = new Form("referencingForm");

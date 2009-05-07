@@ -23,6 +23,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.web.GeoServerHomePage;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.KeywordsEditor;
+import org.geoserver.web.wicket.LiveCollectionModel;
 
 /**
  * Base page for service administration pages.
@@ -71,7 +72,7 @@ public abstract class BaseServiceAdminPage<T extends ServiceInfo> extends GeoSer
         form.add(new CheckBox("citeCompliant"));
         form.add(new TextField("title"));
         form.add(new TextArea("abstract"));
-        form.add(new KeywordsEditor("keywords", new PropertyModel(infoModel, "keywords")));
+        form.add(new KeywordsEditor("keywords", LiveCollectionModel.list(new PropertyModel(infoModel, "keywords"))));
         form.add(new TextField("fees"));
         form.add(new TextField("accessConstraints"));
         

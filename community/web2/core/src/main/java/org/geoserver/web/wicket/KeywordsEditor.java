@@ -4,26 +4,29 @@
  */
 package org.geoserver.web.wicket;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
-import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 /**
  * Form component to edit a List<String> that makes up the keywords field of
  * various catalog objects.
  */
 @SuppressWarnings("serial")
-public class KeywordsEditor extends Panel {
+public class KeywordsEditor extends FormComponentPanel {
 
-    String myNewKeyword = "";
-
-    List<String> mySelectedKeywords;
+    ListMultipleChoice choices;
+    TextField newKeyword;
 
     /**
      * Creates a new keywords editor. 
@@ -33,21 +36,65 @@ public class KeywordsEditor extends Panel {
     public KeywordsEditor(String id, final IModel keywords) {
         super(id, keywords);
 
-        add(new ListMultipleChoice("keywords", new PropertyModel(this,
-                "mySelectedKeywords"), keywords));
-        add(new Button("removeKeywords") {
+        choices = new ListMultipleChoice("keywords", new Model(), new ArrayList((List) keywords.getObject()));
+        choices.setOutputMarkupId(true);
+        add(choices);
+        add(removeKeywordsButton());
+        newKeyword = new TextField("newKeyword", new Model());
+        newKeyword.setOutputMarkupId(true);
+        add(newKeyword);
+        add(addKeywordsButton());
+    }
+
+    private AjaxButton addKeywordsButton() {
+        AjaxButton button = new AjaxButton("addKeyword") {
             @Override
-            public void onSubmit() {
-                ((Collection) keywords.getObject()).clear();
+            public void onSubmit(AjaxRequestTarget target, Form form) {
+                List choiceList = choices.getChoices();
+                choiceList.add(newKeyword.getInput());
+                choices.setChoices(choiceList);
+                newKeyword.setModelObject(null);
+                newKeyword.modelChanged();
+                target.addComponent(newKeyword);
+                target.addComponent(choices);
             }
-        });
-        add(new TextField("newKeyword", new PropertyModel(this, "myNewKeyword")));
-        add(new Button("addKeyword") {
+        };
+        button.setDefaultFormProcessing(false);
+        return button;
+    }
+
+    private AjaxButton removeKeywordsButton() {
+        AjaxButton button = new AjaxButton("removeKeywords") {
+            
             @Override
-            public void onSubmit() {
-                ((Collection) keywords.getObject()).add(myNewKeyword);
-                myNewKeyword = "";
+            public void onSubmit(AjaxRequestTarget target, Form form) {
+                List selection = (List) choices.getModelObject();
+                List keywords = choices.getChoices();
+                for (Iterator it = selection.iterator(); it.hasNext();) {
+                    String selected = (String) it.next();
+                    keywords.remove(selected);
+                }
+                choices.setChoices(keywords);
+                choices.modelChanged();
+                target.addComponent(choices);
             }
-        });
+        };
+        // button.setDefaultFormProcessing(false);
+        return button;
+    }
+    
+    @Override
+    protected void onBeforeRender() {
+        super.onBeforeRender();
+        updateFields();
+    }
+
+    private void updateFields() {
+        choices.setChoices(getModel());
+    }
+    
+    @Override
+    protected void convertInput() {
+        setConvertedInput(choices.getChoices());
     }
 }
