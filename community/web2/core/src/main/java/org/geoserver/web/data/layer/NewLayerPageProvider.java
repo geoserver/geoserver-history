@@ -85,8 +85,7 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
             Collections.sort(result);
             return result;
         } catch(Exception e) {
-            throw new RuntimeException("Could not read the coverage name, " +
-                    "see detailed error report", e);
+            throw new RuntimeException("Could not list layers for this store, an error occurred retrieving them", e);
         }
             
     }

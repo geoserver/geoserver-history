@@ -124,13 +124,25 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
                     provider.setStoreId(store.getId());
                     storeName.setModelObject(store.getName());
-                    
                     selectLayers.setVisible(true);
-                    target.addComponent(selectLayersContainer);
+
+                    // make sure we can actually list the contents, it may happen
+                    // the store is actually unreachable, in that case we
+                    // want to display an error message
+                    try {
+                        provider.getItems();
+                    } catch(Exception e) {
+                        error(e.getMessage());
+                        selectLayers.setVisible(false);
+                    }
+                    
+                    
                 } else {
                     selectLayers.setVisible(false);
-                    target.addComponent(selectLayersContainer);
                 }
+                target.addComponent(selectLayersContainer);
+                target.addComponent(feedbackPanel);
+
             }
 
         });
@@ -205,7 +217,8 @@ public class NewLayerPage extends GeoServerSecuredPage {
           List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
           List<String> storeNames = new ArrayList<String>();
           for (StoreInfo store : stores) {
-              storeNames.add(store.getName());
+              if(store.isEnabled() && store.getError() == null)
+                  storeNames.add(store.getName());
           }
           Collections.sort(storeNames);
           return storeNames;
