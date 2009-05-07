@@ -15,7 +15,9 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -24,9 +26,12 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.NamespacePanel;
@@ -61,6 +66,8 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * String
      */
     protected static final String NAMESPACE_PROPERTY = "Wicket_Namespace";
+
+    protected static final String DATASTORE_ID_PROPERTY = "Wicket_DataStore_ID";
 
     /**
      * Key used to store the name assigned to the datastore in {@code parametersMap} as its a
@@ -116,16 +123,18 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         }
 
         final Form paramsForm = new Form("dataStoreForm");
+        add(paramsForm);
 
         paramsForm.add(new Label("storeType", dsFactory.getDisplayName()));
         paramsForm.add(new Label("storeTypeDescription", dsFactory.getDescription()));
-        add(paramsForm);
 
-        IModel wsModel = new MapModel(parametersMap, WORKSPACE_PROPERTY);
-        IModel wsLabelModel = new ResourceModel("AbstractDataAccessPage.workspace");
-        paramsForm.add(new WorkspacePanel("workspacePanel", wsModel, wsLabelModel, true));
+        final IModel wsModel = new MapModel(parametersMap, WORKSPACE_PROPERTY);
+        final IModel wsLabelModel = new ResourceModel("AbstractDataAccessPage.workspace");
+        final WorkspacePanel workspacePanel = new WorkspacePanel("workspacePanel", wsModel,
+                wsLabelModel, true);
+        paramsForm.add(workspacePanel);
 
-        Panel dataStoreNamePanel;
+        final TextParamPanel dataStoreNamePanel;
         if (isNew) {
             parametersMap.put(NAMESPACE_PROPERTY, getCatalog().getDefaultNamespace());
         } else {
@@ -141,10 +150,12 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             // "AbstractDataAccessPage.dataSrcName", "Data Source Name"));
         }
 
-        IValidator dsNameValidator = new StoreNameValidator(DataStoreInfo.class);
+        // IValidator dsNameValidator = new StoreNameValidator(new MapModel(parametersMap,
+        // WORKSPACE_PROPERTY), new MapModel(parametersMap, DATASTORE_ID_PROPERTY));
+
         dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(parametersMap,
                 DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
-                "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true, dsNameValidator);
+                "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true);
         paramsForm.add(dataStoreNamePanel);
 
         paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
@@ -185,6 +196,12 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         });
 
         paramsForm.add(new FeedbackPanel("feedback"));
+
+        // validate the selected workspace does not already contain a store with the same name
+        final String dataStoreInfoId = (String) parametersMap.get(DATASTORE_ID_PROPERTY);
+        StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
+                .getFormComponent(), dataStoreNamePanel.getFormComponent(), dataStoreInfoId);
+        paramsForm.add(storeNameValidator);
     }
 
     /**
