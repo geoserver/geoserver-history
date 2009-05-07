@@ -31,6 +31,7 @@ public class CRSPanelTest extends GeoServerWicketTestSupport {
     public void testStandaloneUnchanged() throws Exception {
         CoordinateReferenceSystem crs = DefaultGeographicCRS.WGS84;
         tester.startPage( new CRSPanelTestPage( crs ) );
+        // print(new CRSPanelTestPage(crs), true, true);
         
         tester.assertComponent( "form", Form.class );
         tester.assertComponent( "form:crs", CRSPanel.class );

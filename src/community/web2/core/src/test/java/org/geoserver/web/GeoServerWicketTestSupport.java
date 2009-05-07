@@ -1,13 +1,15 @@
 package org.geoserver.web;
 
-import org.geoserver.test.GeoServerTestSupport;
-
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.context.SecurityContextImpl;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.util.tester.WicketTester;
+import org.geoserver.test.GeoServerTestSupport;
+import org.geoserver.web.wicket.WicketHierarchyPrinter;
 
 public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
     public static WicketTester tester;
@@ -52,5 +54,17 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
             }
             )
         );
+    }
+    
+    /**
+     * Prints the specified component/page containment hierarchy to the standard output
+     * <p>
+     * Each line in the dump looks like: <componentId>(class) 'value'
+     * @param c the component to be printed
+     * @param dumpClass if enabled, the component classes are printed as well
+     * @param dumpValue if enabled, the component values are printed as well
+     */
+    public void print(Component c, boolean dumpClass, boolean dumpValue) {
+        WicketHierarchyPrinter.print(c, dumpClass, dumpValue);
     }
 }
