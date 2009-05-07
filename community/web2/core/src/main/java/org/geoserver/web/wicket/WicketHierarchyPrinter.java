@@ -120,7 +120,7 @@ public class WicketHierarchyPrinter {
                 className = c.getClass().getName();
             }
                 
-            out.print("(" + c.getClass().getName() + ")");
+            out.print("(" + className + ")");
         }
         
         if (valueDumpEnabled) {
