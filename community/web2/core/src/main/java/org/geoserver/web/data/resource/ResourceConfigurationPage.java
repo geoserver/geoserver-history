@@ -214,11 +214,19 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         }
     }
 
-    protected ResourceInfo getResourceInfo() {
+    /**
+     * Returns the {@link ResourceInfo} contained in this page
+     * @return
+     */
+    public ResourceInfo getResourceInfo() {
         return (ResourceInfo) myResourceModel.getObject();
     }
 
-    protected LayerInfo getLayerInfo() {
+    /**
+     * Returns the {@link LayerInfo} contained in this page
+     * @return
+     */
+    public LayerInfo getLayerInfo() {
         return (LayerInfo) myLayerModel.getObject();
     }
 }
