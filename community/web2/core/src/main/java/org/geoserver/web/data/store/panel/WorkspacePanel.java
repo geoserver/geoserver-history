@@ -6,6 +6,7 @@ package org.geoserver.web.data.store.panel;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -18,6 +19,8 @@ import org.geoserver.web.data.workspace.WorkspacesModel;
 @SuppressWarnings("serial")
 public class WorkspacePanel extends Panel {
 
+    private DropDownChoice choice;
+    
     public WorkspacePanel(final String id, final IModel workspaceModel,
             final IModel paramLabelModel, final boolean required) {
         // make the value of the combo field the model of this panel, for easy
@@ -29,7 +32,7 @@ public class WorkspacePanel extends Panel {
         add(label);
 
         // the drop down field, with a decorator for validations
-        DropDownChoice choice = new DropDownChoice("paramValue", workspaceModel,
+        choice = new DropDownChoice("paramValue", workspaceModel,
                 new WorkspacesModel(), new WorkspaceChoiceRenderer());
         choice.setRequired(required);
         // set the label to be the paramLabelModel otherwise a validation error would look like
@@ -39,5 +42,15 @@ public class WorkspacePanel extends Panel {
         FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(choice);
         add(feedback);
+    }
+
+    /**
+     * Returns the form component used in the panel in case it is needed for related form components
+     * validation
+     * 
+     * @return
+     */
+    public FormComponent getFormComponent() {
+        return choice;
     }
 }
