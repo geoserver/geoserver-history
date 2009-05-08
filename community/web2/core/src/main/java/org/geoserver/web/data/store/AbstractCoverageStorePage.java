@@ -53,7 +53,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
 
         // description and enabled
         paramsForm.add(new TextParamPanel("descriptionPanel", new PropertyModel(model,
-                "description"), new ResourceModel("dataSrcName", "Data Source Name"), false));
+                "description"), new ResourceModel("description", "Description"), false));
         paramsForm.add(new CheckBoxParamPanel("enabledPanel", new PropertyModel(model, "enabled"),
                 new ResourceModel("enabled", "Enabled")));
         // a custom converter will turn this into a namespace url
