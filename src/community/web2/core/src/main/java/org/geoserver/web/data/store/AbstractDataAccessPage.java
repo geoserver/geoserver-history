@@ -39,9 +39,11 @@ import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geoserver.web.util.MapModel;
+import org.geoserver.web.wicket.FileExistsValidator;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Abstract base class for adding/editing a {@link DataStoreInfo}, provides the UI components and a
@@ -246,8 +248,13 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                     new MapModel(paramsMap, paramName), new ResourceModel(paramLabel, paramLabel),
                     required);
         } else {
-            parameterPanel = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
+            TextParamPanel tp = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
                     new ResourceModel(paramLabel, paramLabel), required, null);
+            // if it can be a reference to the local filesystem make sure it's valid
+            if(paramName.equalsIgnoreCase("url"))
+                tp.getFormComponent().add(new FileExistsValidator(
+                        GeoserverDataDirectory.getGeoserverDataDirectory()));
+            parameterPanel = tp;
         }
         return parameterPanel;
     }
