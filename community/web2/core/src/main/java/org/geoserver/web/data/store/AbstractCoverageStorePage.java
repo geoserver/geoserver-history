@@ -18,7 +18,9 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
+import org.geoserver.web.wicket.FileExistsValidator;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Supports coverage store configuration
@@ -63,8 +65,10 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         paramsForm.add(workspacePanel);
 
         // url
-        paramsForm.add(new TextParamPanel("urlPanel", new PropertyModel(model, "URL"),
-                new ResourceModel("url", "URL"), true));
+        TextParamPanel url = new TextParamPanel("urlPanel", new PropertyModel(model, "URL"),
+                new ResourceModel("url", "URL"), true);
+        url.getFormComponent().add(new FileExistsValidator(GeoserverDataDirectory.getGeoserverDataDirectory()));
+        paramsForm.add(url);
 
         // cancel/submit buttons
         paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
