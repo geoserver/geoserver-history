@@ -233,8 +233,19 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             Object value = properties.get( propertyName );
             if ( value instanceof Proxy ) {
                 ModificationProxy h = handler( value );
-                if ( h != null && !h.isDirty() ) {
-                    continue;
+                if (h != null && !h.isDirty()) {
+                    //proxy reports it is not dirty, only return this property if the underling
+                    // value is not the same as the current value of the property on the object
+                    Object curr = unwrap( value );
+                    try {
+                        Object orig = unwrap( getter( propertyName ).invoke( proxyObject, null));
+                        if ( curr == orig ) {
+                            continue;
+                        }
+                    } 
+                    catch (Exception e) {
+                        throw new RuntimeException( e );
+                    }
                 }
             }
             propertyNames.add( propertyName );
