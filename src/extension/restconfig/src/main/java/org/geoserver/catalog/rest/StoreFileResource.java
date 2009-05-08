@@ -41,7 +41,7 @@ public abstract class StoreFileResource extends Resource {
 
         File uploadedFile = null;
         try {
-            String method = (String) getRequest().getResourceRef().getLastSegment();
+            final String method = (String) getRequest().getResourceRef().getLastSegment();
             if (method != null && method.toLowerCase().startsWith("file.")) {
                 uploadedFile = RESTUtils.handleBinUpload(store + "." + format, directory, getRequest());
             }
@@ -62,7 +62,7 @@ public abstract class StoreFileResource extends Resource {
         }
         
         //handle the case that the uploaded file was a zip file, if so unzip it
-        if ( RESTUtils.isZipMediaType( mediaType ) ) {
+        if (mediaType!=null && RESTUtils.isZipMediaType( mediaType ) ) {
             //rename to .zip if need be
             if ( !uploadedFile.getName().endsWith( ".zip") ) {
                 File newUploadedFile = new File( uploadedFile.getParentFile(), uploadedFile.getName() + ".zip" );

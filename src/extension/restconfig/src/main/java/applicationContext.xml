@@ -30,6 +30,14 @@
           <value>storeFileFinder</value>
         </entry>
         <entry>
+          <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/external.{format}</value></key>
+          <value>storeFileFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/url.{format}</value></key>
+          <value>storeFileFinder</value>
+        </entry>
+        <entry>
           <key><value>/workspaces/{workspace}/datastores/{datastore}.{format}</value></key>
           <value>dataStoreFinder</value>
         </entry>

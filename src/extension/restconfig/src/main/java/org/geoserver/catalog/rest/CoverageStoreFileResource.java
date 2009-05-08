@@ -2,6 +2,7 @@ package org.geoserver.catalog.rest;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import org.restlet.data.Form;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.StringRepresentation;
 
 public class CoverageStoreFileResource extends StoreFileResource {
 
@@ -34,43 +36,37 @@ public class CoverageStoreFileResource extends StoreFileResource {
     
     @Override
     public void handlePut() {
-        String workspace = (String)getRequest().getAttributes().get("workspace");
-        String coveragestore = (String)getRequest().getAttributes().get("coveragestore");
-        String format = (String)getRequest().getAttributes().get("format");
-
-        File directory;
-        try {
-            directory = catalog.getResourceLoader().createDirectory( "data/" + coveragestore );
-        } 
-        catch (IOException e) {
-            throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
-        }
+        final Request request = getRequest();
+        final String workspace = (String)request.getAttributes().get("workspace");
+        final String coveragestore = (String)request.getAttributes().get("coveragestore");
+        final String format = (String)request.getAttributes().get("format");
+        final String method = ((String) request.getResourceRef().getLastSegment()).toLowerCase();
         
-        File uploadedFile = handleFileUpload(coveragestore, format, directory);
+        File directory = null;
+        boolean isExternal = true;
+        
+        // Prepare the directory only in case this is not an external upload
+        if (method != null && (method.startsWith("file.") || method.startsWith("url."))){ 
+            isExternal = false;
+            try {
+                 directory = catalog.getResourceLoader().createDirectory( "data/" + coveragestore );
+            } 
+            catch (IOException e) {
+                throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
+            }
+        }
+        final File uploadedFile = handleFileUpload(coveragestore, format, directory);
         
         // /////////////////////////////////////////////////////////////////////
         //
         // Add overviews to the Coverage
         //
         // /////////////////////////////////////////////////////////////////////
-        Form form = getRequest().getResourceRef().getQueryAsForm();
+        final Form form = request.getResourceRef().getQueryAsForm();
         if ("yes".equalsIgnoreCase(form.getFirstValue("overviews")) ) {
             /* TODO: Add overviews here */;
         }
             
-//        int numDataSets = 0;
-//        AbstractGridCoverage2DReader cvReader;
-//        if (coverageFormat instanceof AbstractGridFormat) {
-//            cvReader = (AbstractGridCoverage2DReader) ((AbstractGridFormat) coverageFormat).getReader(uploadedFile);
-//
-//            try {
-//                numDataSets = cvReader.getGridCoverageCount();
-//            } catch (UnsupportedOperationException e) {
-//                numDataSets = 1;
-//            }
-//        }
-
-        
         //create a builder to help build catalog objects
         CatalogBuilder builder = new CatalogBuilder(catalog);
         builder.setWorkspace( catalog.getWorkspaceByName( workspace ) );
@@ -91,8 +87,14 @@ public class CoverageStoreFileResource extends StoreFileResource {
         }
         
         info.setType(coverageFormat.getName());
-        info.setURL("file:data/" + coveragestore + "/" + uploadedFile.getName() );
-            //info.setURL( uploadedFile.toURL().toExternalForm() );
+        if (!isExternal)
+            info.setURL("file:data/" + coveragestore + "/" + uploadedFile.getName() );
+        else
+            try {
+                info.setURL( uploadedFile.toURL().toExternalForm());
+            } catch (MalformedURLException e) {
+                throw new RestletException( "Error auto-configuring coverage", Status.SERVER_ERROR_INTERNAL, e );
+            }
        
         
         //add or update the datastore info
@@ -118,7 +120,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
             AbstractGridCoverage2DReader reader = 
                 (AbstractGridCoverage2DReader) ((AbstractGridFormat) coverageFormat).getReader(uploadedFile.toURL());
             if ( reader == null ) {
-                throw new RestletException( "Could not aquire reader for coverage.", Status.SERVER_ERROR_INTERNAL );
+                throw new RestletException( "Could not acquire reader for coverage.", Status.SERVER_ERROR_INTERNAL );
             }
             
             CoverageInfo cinfo = builder.buildCoverage( reader );
