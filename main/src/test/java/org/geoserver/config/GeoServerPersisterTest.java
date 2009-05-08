@@ -88,6 +88,25 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         assertXpathExists( "/dataStore/connectionParameters/entry[@key='foo']", dom );
     }
     
+    public void testChangeDataStoreWorkspace() throws Exception {
+        testAddDataStore();
+        File f1 = 
+            new File( testData.getDataDirectoryRoot(), "workspaces/acme/foostore/datastore.xml");
+        assertTrue( f1.exists() );
+        
+        WorkspaceInfo nws = catalog.getFactory().createWorkspace();
+        nws.setName( "topp");
+        catalog.add( nws );
+        
+        DataStoreInfo ds = catalog.getDataStoreByName( "acme", "foostore" );
+        ds.setWorkspace( nws );
+        catalog.save( ds );
+        
+        assertFalse( f1.exists() );
+        File f2 = new File( testData.getDataDirectoryRoot(), "workspaces/topp/foostore/datastore.xml");
+        assertTrue( f2.exists() );
+    }
+    
     public void testRemoveDataStore() throws Exception {
         testAddDataStore();
         
