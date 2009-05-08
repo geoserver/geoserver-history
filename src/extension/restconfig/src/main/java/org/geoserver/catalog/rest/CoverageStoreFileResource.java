@@ -2,11 +2,14 @@ package org.geoserver.catalog.rest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.rest.RestletException;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -149,8 +152,17 @@ public class CoverageStoreFileResource extends StoreFileResource {
             if ( add ) {
                 catalog.add( cinfo );
                 
-                //add a layer for the feature type as well
-                catalog.add(builder.buildLayer(cinfo));
+                final LayerInfo layerInfo;
+                final Map<String,String> layerProperties = new HashMap<String,String>(2);
+                if (form.getFirst("style") != null)
+                    layerProperties.put("style", form.getFirstValue("style"));
+                if (form.getFirst("wmspath") != null)
+                    layerProperties.put("path", form.getFirstValue("wmspath"));
+                if (layerProperties.isEmpty())
+                    layerInfo = builder.buildLayer(cinfo);
+                else
+                    layerInfo = builder.buildLayer(cinfo,layerProperties);
+                catalog.add(layerInfo);
             }
             else {
                 catalog.save( cinfo );

@@ -714,7 +714,36 @@ public class CatalogBuilder {
         layer.getStyles().add(style);
         
         return layer;
-
+    }
+    
+    /**
+     * Builds a layer for a coverage, setting additional elements leveraging 
+     * on the provided layerProperties map
+     * <p>
+     * The resulting object is not added to the catalog, it must be done by the calling code
+     * after the fact.
+     * </p>
+     */
+    public LayerInfo buildLayer( CoverageInfo coverage, final Map<String,String> layerProperties) throws IOException {
+        if (layerProperties != null && !layerProperties.isEmpty()){
+            final LayerInfo layer = buildLayer((ResourceInfo)coverage);
+            final String layerStyle;
+            if (layerProperties.containsKey("style")){
+                layerStyle = layerProperties.get("style");
+            }
+            else 
+                layerStyle = StyleInfo.DEFAULT_RASTER;
+            StyleInfo style = catalog.getStyleByName(layerStyle);
+            layer.setDefaultStyle(style);
+            layer.getStyles().add(style);
+            
+            if (layerProperties.containsKey("path")){
+                layer.setPath(layerProperties.get("path"));
+            }    
+            
+            return layer;
+        }
+        else return buildLayer(coverage); 
     }
     
     LayerInfo buildLayer( ResourceInfo resource ) {
