@@ -60,7 +60,11 @@ public class TextParamPanel extends Panel {
         add(feedback);
     }
     
-    public FormComponent getFormComponent(){
+    /**
+     * The text field stored inside the panel. 
+     * @return
+     */
+    public FormComponent getFormComponent() {
         return textField;
     }
 }

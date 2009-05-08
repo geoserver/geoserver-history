@@ -7,15 +7,8 @@ package org.geoserver.web.data.store;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.model.Model;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.data.layer.NewLayerPage;
-import org.geoserver.web.data.workspace.WorkspaceChoiceRenderer;
-import org.geoserver.web.data.workspace.WorkspacesModel;
-import org.geoserver.web.wicket.MenuDropDownChoice;
 
 /**
  * Page listing all the available stores. Follows the usual filter/sort/page approach, provides ways
