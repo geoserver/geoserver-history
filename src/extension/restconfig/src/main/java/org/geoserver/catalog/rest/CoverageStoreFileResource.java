@@ -19,6 +19,7 @@ import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.restlet.data.Form;
+import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
@@ -142,15 +143,15 @@ public class CoverageStoreFileResource extends StoreFileResource {
             //do some post configuration, if srs is not known or unset, transform to 4326
             if ("UNKNOWN".equals(cinfo.getSRS())) {
                 //CoordinateReferenceSystem sourceCRS = cinfo.getBoundingBox().getCoordinateReferenceSystem();
-                CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
-                ReferencedEnvelope re = cinfo.getBoundingBox().transform(targetCRS, true);
+                //CoordinateReferenceSystem targetCRS = CRS.decode("EPSG:4326", true);
+                //ReferencedEnvelope re = cinfo.getBoundingBox().transform(targetCRS, true);
                 cinfo.setSRS( "EPSG:4326" );
-                //TODO:
                 //cinfo.setCRS( targetCRS );
                 //cinfo.setBoundingBox( re );
             }
 
             //add/save
+            String layerName = cinfo.getName();
             if ( add ) {
                 catalog.add( cinfo );
                 
@@ -164,6 +165,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
                     layerInfo = builder.buildLayer(cinfo);
                 else
                     layerInfo = builder.buildLayer(cinfo,layerProperties);
+                layerName = layerInfo.getName();
                 catalog.add(layerInfo);
             }
             else {
@@ -173,6 +175,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
             }
             
             AbstractCatalogResource.saveCatalog( catalog );
+            getResponse().setEntity(new StringRepresentation(layerName, MediaType.TEXT_PLAIN));
             getResponse().setStatus( Status.SUCCESS_CREATED );
         }
         catch( Exception e ) {
