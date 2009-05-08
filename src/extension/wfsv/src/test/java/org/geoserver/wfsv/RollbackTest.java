@@ -49,7 +49,7 @@ public class RollbackTest extends WFSVTestSupport {
             "</wfs:Transaction>\r\n" + 
             "";
             Document doc = postAsDOM(root(), transaction);
-            print(doc);
+            // print(doc);
     
             // let's just ensure the transaction was successful
             assertXpathEvaluatesTo("1", "count(/wfs:TransactionResponse)", doc);
@@ -103,7 +103,7 @@ public class RollbackTest extends WFSVTestSupport {
     
     public void testRollbackWfs10() throws Exception {
         // perform the rollback
-        String rollback = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\"\r\n" + 
+        String rollback = "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n" + 
                 "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
                 "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
                 "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
@@ -114,7 +114,7 @@ public class RollbackTest extends WFSVTestSupport {
                 "  <wfsv:Rollback safeToIgnore=\"false\" vendorId=\"TOPP\" typeName=\"topp:archsites\" toFeatureVersion=\"1\"/>\r\n" + 
                 "</wfs:Transaction>\r\n";
         Document doc = postAsDOM(root(), rollback);
-//        print(doc);
+        // print(doc);
         
         // let's ensure the rollback was successful
         assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
@@ -125,7 +125,7 @@ public class RollbackTest extends WFSVTestSupport {
     
     public void testInvalidRollback() throws Exception {
         // perform the rollback, same as above, but no 
-        String rollback = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\"\r\n" + 
+        String rollback = "<wfs:Transaction service=\"WFSV\" version=\"1.0.0\"\r\n" + 
                 "  xmlns:topp=\"http://www.openplans.org/topp\"\r\n" + 
                 "  xmlns:ogc=\"http://www.opengis.net/ogc\"\r\n" + 
                 "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" + 
@@ -138,7 +138,7 @@ public class RollbackTest extends WFSVTestSupport {
         
         // make sure you get a decent service exception even without the schema validation
         Document doc = postAsDOM(root(false), rollback);
-        print(doc);
+        // print(doc);
         final Element root = doc.getDocumentElement();
         assertEquals("ServiceExceptionReport", root.getNodeName());
         String message = root.getElementsByTagName("ServiceException").item(0).getTextContent();
