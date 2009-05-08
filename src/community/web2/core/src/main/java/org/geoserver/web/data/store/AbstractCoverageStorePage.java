@@ -20,7 +20,6 @@ import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geoserver.web.wicket.FileExistsValidator;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Supports coverage store configuration
@@ -67,7 +66,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         // url
         TextParamPanel url = new TextParamPanel("urlPanel", new PropertyModel(model, "URL"),
                 new ResourceModel("url", "URL"), true);
-        url.getFormComponent().add(new FileExistsValidator(GeoserverDataDirectory.getGeoserverDataDirectory()));
+        url.getFormComponent().add(new FileExistsValidator());
         paramsForm.add(url);
 
         // cancel/submit buttons

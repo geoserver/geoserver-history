@@ -10,6 +10,8 @@ import java.util.Collections;
 
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
+import org.geotools.util.Converters;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Checks the specified file exists on the file system, including checks in the data directory
@@ -17,15 +19,9 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 @SuppressWarnings("serial")
 public class FileExistsValidator extends AbstractValidator {
     
-    File dataDirectoryBase;
-
-    public FileExistsValidator(File dataDirectoryBase) {
-        this.dataDirectoryBase = dataDirectoryBase;
-    }
-
     @Override
     protected void onValidate(IValidatable validatable) {
-        String path = (String) validatable.getValue();
+        String path = Converters.convert(validatable.getValue(), String.class);
         
         try {
             // Make sure we are dealing with a local path
@@ -40,8 +36,8 @@ public class FileExistsValidator extends AbstractValidator {
             File absFile = new File(path);
             if(!absFile.exists()) {
                 // local to data dir?
-                File relFile = new File(dataDirectoryBase, path);
-                if(!relFile.exists()) {
+                File relFile = GeoserverDataDirectory.findDataFile(path);
+                if(relFile == null || !relFile.exists()) {
                     error(validatable, "FileExistsValidator.fileNotFoundError", 
                             Collections.singletonMap("file", path));
                 }
