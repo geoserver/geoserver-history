@@ -49,7 +49,7 @@ public class RollbackTest extends WFSVTestSupport {
             "</wfs:Transaction>\r\n" + 
             "";
             Document doc = postAsDOM(root(), transaction);
-            print(doc);
+            // print(doc);
     
             // let's just ensure the transaction was successful
             assertXpathEvaluatesTo("1", "count(/wfs:TransactionResponse)", doc);
@@ -114,7 +114,7 @@ public class RollbackTest extends WFSVTestSupport {
                 "  <wfsv:Rollback safeToIgnore=\"false\" vendorId=\"TOPP\" typeName=\"topp:archsites\" toFeatureVersion=\"1\"/>\r\n" + 
                 "</wfs:Transaction>\r\n";
         Document doc = postAsDOM(root(), rollback);
-//        print(doc);
+        // print(doc);
         
         // let's ensure the rollback was successful
         assertXpathEvaluatesTo("1", "count(/wfs:WFS_TransactionResponse)", doc);
@@ -138,7 +138,7 @@ public class RollbackTest extends WFSVTestSupport {
         
         // make sure you get a decent service exception even without the schema validation
         Document doc = postAsDOM(root(false), rollback);
-        print(doc);
+        // print(doc);
         final Element root = doc.getDocumentElement();
         assertEquals("ServiceExceptionReport", root.getNodeName());
         String message = root.getElementsByTagName("ServiceException").item(0).getTextContent();
