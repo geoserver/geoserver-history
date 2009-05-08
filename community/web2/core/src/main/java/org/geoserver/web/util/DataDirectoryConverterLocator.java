@@ -27,6 +27,7 @@ import org.geoserver.platform.GeoServerResourceLoader;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
+@SuppressWarnings("serial")
 public class DataDirectoryConverterLocator implements IConverterLocator {
 
     GeoServerResourceLoader resourceLoader;
@@ -65,7 +66,7 @@ public class DataDirectoryConverterLocator implements IConverterLocator {
             
             File file = new File( value );
             if ( file.isAbsolute() ) {
-                return null;
+                return file;
             }
 
             return resourceLoader.find( value );
