@@ -15,9 +15,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.SubmitLink;
-import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -26,12 +24,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.NamespacePanel;
@@ -43,7 +38,6 @@ import org.geoserver.web.wicket.FileExistsValidator;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Abstract base class for adding/editing a {@link DataStoreInfo}, provides the UI components and a
@@ -249,11 +243,12 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                     required);
         } else {
             TextParamPanel tp = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
-                    new ResourceModel(paramLabel, paramLabel), required, null);
+                    new ResourceModel(paramLabel, paramLabel), required);
             // if it can be a reference to the local filesystem make sure it's valid
             if(paramName.equalsIgnoreCase("url"))
-                tp.getFormComponent().add(new FileExistsValidator(
-                        GeoserverDataDirectory.getGeoserverDataDirectory()));
+                tp.getFormComponent().add(new FileExistsValidator());
+            // make sure the proper value is returned
+            tp.getFormComponent().setType(param.getBinding());
             parameterPanel = tp;
         }
         return parameterPanel;
