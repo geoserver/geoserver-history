@@ -1,5 +1,6 @@
 package org.geoserver.data;
 
+import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataStoreFactorySpi;
 
 /**
@@ -36,7 +37,7 @@ import org.geotools.data.DataStoreFactorySpi;
  * @author Justin Deoliveira, The Open Planning Project
  *
  */
-public abstract class DataStoreFactoryInitializer<T extends DataStoreFactorySpi> {
+public abstract class DataStoreFactoryInitializer<T extends DataAccessFactory> {
 
     /**
      * the class of the factory instances to initialie

@@ -62,7 +62,7 @@ public class DataStoreConfig {
      * @see defaultSettings()
      */
     public DataStoreConfig(String dataStoreId, String factoryDescription) {
-        this(dataStoreId, DataStoreUtils.aquireFactory(factoryDescription));
+        this(dataStoreId, (DataStoreFactorySpi) DataStoreUtils.aquireFactory(factoryDescription));
     }
 
     /** Creates a new DataStoreConfig for the provided factory. */
@@ -102,7 +102,7 @@ public class DataStoreConfig {
             throw new NullPointerException("Non null DataStoreInfoDTO required");
         }
 
-        factory = DataStoreUtils.aquireFactory(dto.getConnectionParams());
+        factory = (DataStoreFactorySpi) DataStoreUtils.aquireFactory(dto.getConnectionParams());
 
         id = dto.getId();
         nameSpaceId = dto.getNameSpaceId();

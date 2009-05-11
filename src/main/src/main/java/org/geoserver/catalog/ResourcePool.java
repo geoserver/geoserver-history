@@ -217,7 +217,7 @@ public class ResourcePool {
                         // urls which are relative to the data directory
                         // TODO: find a better way to do this
                         connectionParameters = DataStoreUtils.getParams(connectionParameters,null);
-                        dataStore = DataStoreUtils.getDataStore(connectionParameters);
+                        dataStore = DataStoreUtils.getDataAccess(connectionParameters);
                         if (dataStore == null) {
                             /*
                              * Preserve DataStore retyping behaviour by calling
