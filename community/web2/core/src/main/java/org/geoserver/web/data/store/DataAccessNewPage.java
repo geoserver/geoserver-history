@@ -18,6 +18,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.data.layer.NewLayerPage;
 import org.geotools.data.DataAccess;
+import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.NullProgressListener;
@@ -44,7 +45,7 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
     public DataAccessNewPage(final String dataStoreFactDisplayName) {
         super();
 
-        final DataStoreFactorySpi dsFact = DataStoreUtils.aquireFactory(dataStoreFactDisplayName);
+        final DataAccessFactory dsFact = DataStoreUtils.aquireFactory(dataStoreFactDisplayName);
         if (dsFact == null) {
             throw new IllegalArgumentException("Can't locate a datastore factory named '"
                     + dataStoreFactDisplayName + "'");
@@ -79,7 +80,7 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.TRUE);
 
-        initUI(dsFact, true);
+        initUI(dsFact, true, null);
     }
 
     /**

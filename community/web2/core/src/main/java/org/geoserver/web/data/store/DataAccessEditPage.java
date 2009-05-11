@@ -10,13 +10,13 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.web.data.store.StorePage;
 import org.geotools.data.DataAccess;
-import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataAccessFactory;
 import org.geotools.util.NullProgressListener;
 import org.vfny.geoserver.util.DataStoreUtils;
 
@@ -45,11 +45,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         connectionParameters = new HashMap<String, Serializable>(dataStoreInfo
                 .getConnectionParameters());
         connectionParameters = DataStoreUtils.getParams(connectionParameters);
-        final DataStoreFactorySpi dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
-        if (null == dsFactory) {
-            throw new IllegalArgumentException(
-                    "Can't get the DataStoreFactory for the given connection parameters");
-        }
+        final DataAccessFactory dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
 
         parametersMap.putAll(connectionParameters);
 
@@ -60,7 +56,12 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
                 .isEnabled()));
 
-        initUI(dsFactory, false);
+        Serializable initError = null;
+        if (null == dsFactory) {
+            String msg = "Can't get the DataStoreFactory for the given connection parameters";
+            initError = new ResourceModel("DataAccessEditPage.cantConnectToDataStore", msg);
+        }
+        initUI(dsFactory, false, initError);
     }
 
     /**

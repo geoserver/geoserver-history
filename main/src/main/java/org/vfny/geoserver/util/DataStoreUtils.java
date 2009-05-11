@@ -6,10 +6,7 @@ package org.vfny.geoserver.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,9 +20,10 @@ import org.geoserver.data.DataStoreFactoryInitializer;
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.data.DataAccess;
+import org.geotools.data.DataAccessFactory;
+import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
 import org.opengis.feature.Feature;
@@ -52,6 +50,7 @@ public abstract class DataStoreUtils {
      * @param sc
      * @return
      * @throws IOException
+     * @deprecated as for 2.0.x
      */
     public static DataStore acquireDataStore(Map params, ServletContext sc)
         throws IOException {
@@ -68,22 +67,44 @@ public abstract class DataStoreUtils {
      * names are good ones from the wfs point of view (that is, no ":" in the type names)
      * @param params
      * @return
+     * @deprecated use {@link #getDataAccess(Map)}
      */
     public static DataStore getDataStore(Map params) throws IOException {
-        DataStoreFactorySpi factory = aquireFactory(params);
-        if ( factory == null ) {
+        DataAccess<? extends FeatureType, ? extends Feature> store;
+        store = getDataAccess(params);
+        if (!(store instanceof DataStore)) {
             return null;
         }
-        
-        DataStore store = factory.createDataStore(params);
-        if ( store == null ) {
+        return (DataStore) store;
+    }
+
+    /**
+     * Looks up the {@link DataAccess} using the given params, verbatim, and then eventually wraps
+     * it into a renaming wrapper so that feature type names are good ones from the wfs point of
+     * view (that is, no ":" in the type names)
+     * 
+     * @param params
+     * @return
+     */
+    public static DataAccess<? extends FeatureType, ? extends Feature> getDataAccess(Map params)
+            throws IOException {
+        DataAccessFactory factory = aquireFactory(params);
+        if (factory == null) {
             return null;
         }
-        
-        String[] names = store.getTypeNames();
-        for (int i = 0; i < names.length; i++) {
-            if(names[i].indexOf(":") >= 0)
-                return new RetypingDataStore(store); 
+
+        DataAccess<? extends FeatureType, ? extends Feature> store = factory
+                .createDataStore(params);
+        if (store == null) {
+            return null;
+        }
+
+        if (store instanceof DataStore) {
+            String[] names = ((DataStore) store).getTypeNames();
+            for (int i = 0; i < names.length; i++) {
+                if (names[i].indexOf(":") >= 0)
+                    return new RetypingDataStore((DataStore) store);
+            }
         }
         return store;
     }
@@ -110,9 +131,9 @@ public abstract class DataStoreUtils {
      *
      * @return
      */
-    public static DataStoreFactorySpi aquireFactory(Map params) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
-            DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
+    public static DataAccessFactory aquireFactory(Map params) {
+        for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
+            DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory( factory );
             
             if (factory.canProcess(params)) {
@@ -145,9 +166,9 @@ public abstract class DataStoreUtils {
      *
      * @return
      */
-    public static DataStoreFactorySpi aquireFactory(String displayName) {
-        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
-            DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
+    public static DataAccessFactory aquireFactory(String displayName) {
+        for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
+            DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory( factory );
             
             if (factory.getDisplayName().equals(displayName)) {
@@ -167,7 +188,7 @@ public abstract class DataStoreUtils {
      * extension point.
      *
      */
-    static DataStoreFactorySpi initializeDataStoreFactory( DataStoreFactorySpi factory ) {
+    static DataAccessFactory initializeDataStoreFactory( DataAccessFactory factory ) {
         List initializers = GeoServerExtensions.extensions( DataStoreFactoryInitializer.class );
         for ( Iterator i = initializers.iterator(); i.hasNext(); ) {
             DataStoreFactoryInitializer initer = (DataStoreFactoryInitializer) i.next();
@@ -185,17 +206,6 @@ public abstract class DataStoreUtils {
         return factory;
     }
     
-    /**
-     * Utility method for finding Params
-     *
-     * @param factory DOCUMENT ME!
-     * @param key DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    public static Param find(DataStoreFactorySpi factory, String key) {
-        return find(factory.getParametersInfo(), key);
-    }
 
     /**
      * Utility methods for find param by key
@@ -227,8 +237,8 @@ public abstract class DataStoreUtils {
     public static List listDataStoresDescriptions() {
         List list = new ArrayList();
 
-        for (Iterator i = DataStoreFinder.getAvailableDataStores(); i.hasNext();) {
-            DataStoreFactorySpi factory = (DataStoreFactorySpi) i.next();
+        for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
+            DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory(factory);
             
             list.add(factory.getDisplayName());
@@ -241,7 +251,7 @@ public abstract class DataStoreUtils {
         return defaultParams(aquireFactory(description));
     }
 
-    public static Map defaultParams(DataStoreFactorySpi factory) {
+    public static Map defaultParams(DataAccessFactory factory) {
         Map defaults = new HashMap();
         Param[] params = factory.getParametersInfo();
 
@@ -285,7 +295,7 @@ public abstract class DataStoreUtils {
      *
      * @throws IOException DOCUMENT ME!
      */
-    public static Map toConnectionParams(DataStoreFactorySpi factory, Map params)
+    public static Map toConnectionParams(DataAccessFactory factory, Map params)
         throws IOException {
         Map map = new HashMap(params.size());
 

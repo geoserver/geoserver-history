@@ -35,7 +35,7 @@ import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geoserver.web.util.MapModel;
 import org.geoserver.web.wicket.FileExistsValidator;
-import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
 
@@ -103,8 +103,11 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * @param isNew
      *            wheter to set up the UI for a new dataaccess or an existing one, some properties
      *            may need not to be editable if not a new one.
+     * @param initializationErrorMessage
+     *            the form error message to start with, or {@code null}
      */
-    protected final void initUI(final DataStoreFactorySpi dsFactory, final boolean isNew) {
+    protected final void initUI(final DataAccessFactory dsFactory, final boolean isNew,
+            final Serializable initializationErrorMessage) {
         WorkspaceInfo workspace = (WorkspaceInfo) parametersMap.get(WORKSPACE_PROPERTY);
         if (workspace == null) {
             throw new IllegalArgumentException("Workspace not provided");
@@ -198,6 +201,10 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
                 .getFormComponent(), dataStoreNamePanel.getFormComponent(), dataStoreInfoId);
         paramsForm.add(storeNameValidator);
+
+        if(initializationErrorMessage != null){
+            paramsForm.error(initializationErrorMessage);
+        }
     }
 
     /**
@@ -245,7 +252,7 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             TextParamPanel tp = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
                     new ResourceModel(paramLabel, paramLabel), required);
             // if it can be a reference to the local filesystem make sure it's valid
-            if(paramName.equalsIgnoreCase("url"))
+            if (paramName.equalsIgnoreCase("url"))
                 tp.getFormComponent().add(new FileExistsValidator());
             // make sure the proper value is returned
             tp.getFormComponent().setType(param.getBinding());
