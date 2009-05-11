@@ -2,27 +2,27 @@ package org.geoserver.catalog.rest;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.StringRepresentation;
 
 public class CoverageStoreFileResource extends StoreFileResource {
@@ -37,11 +37,13 @@ public class CoverageStoreFileResource extends StoreFileResource {
     
     @Override
     public void handlePut() {
-        final Request request = getRequest();
-        final String workspace = (String)request.getAttributes().get("workspace");
-        final String coveragestore = (String)request.getAttributes().get("coveragestore");
-        final String format = (String)request.getAttributes().get("format");
-        final String method = ((String) request.getResourceRef().getLastSegment()).toLowerCase();
+        Request request = getRequest();
+        Response response = getResponse();
+        
+        String workspace = (String)request.getAttributes().get("workspace");
+        String coveragestore = (String)request.getAttributes().get("coveragestore");
+        String format = (String)request.getAttributes().get("format");
+        String method = ((String) request.getResourceRef().getLastSegment()).toLowerCase();
         
         File directory = null;
         boolean isExternal = true;
@@ -63,7 +65,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
         // Add overviews to the Coverage
         //
         // /////////////////////////////////////////////////////////////////////
-        final Form form = request.getResourceRef().getQueryAsForm();
+        Form form = request.getResourceRef().getQueryAsForm();
         if ("yes".equalsIgnoreCase(form.getFirstValue("overviews")) ) {
             /* TODO: Add overviews here */;
         }
@@ -88,15 +90,16 @@ public class CoverageStoreFileResource extends StoreFileResource {
         }
         
         info.setType(coverageFormat.getName());
-        if (!isExternal)
+        if (!isExternal) {
             info.setURL("file:data/" + coveragestore + "/" + uploadedFile.getName() );
-        else
+        }
+        else {
             try {
                 info.setURL( uploadedFile.toURL().toExternalForm());
             } catch (MalformedURLException e) {
-                throw new RestletException( "Error auto-configuring coverage", Status.SERVER_ERROR_INTERNAL, e );
+                throw new RestletException( "url error", Status.SERVER_ERROR_INTERNAL, e );
             }
-       
+        }
         
         //add or update the datastore info
         if ( add ) {
@@ -121,7 +124,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
             AbstractGridCoverage2DReader reader = 
                 (AbstractGridCoverage2DReader) ((AbstractGridFormat) coverageFormat).getReader(uploadedFile.toURL());
             if ( reader == null ) {
-                throw new RestletException( "Could not acquire reader for coverage.", Status.SERVER_ERROR_INTERNAL );
+                throw new RestletException( "Could not aquire reader for coverage.", Status.SERVER_ERROR_INTERNAL );
             }
             
             CoverageInfo cinfo = builder.buildCoverage( reader );
@@ -151,21 +154,33 @@ public class CoverageStoreFileResource extends StoreFileResource {
             }
 
             //add/save
-            String layerName = cinfo.getName();
             if ( add ) {
                 catalog.add( cinfo );
                 
-                final LayerInfo layerInfo;
-                final Map<String,String> layerProperties = new HashMap<String,String>(2);
-                if (form.getFirst("style") != null)
-                    layerProperties.put("style", form.getFirstValue("style"));
-                if (form.getFirst("wmspath") != null)
-                    layerProperties.put("path", form.getFirstValue("wmspath"));
-                if (layerProperties.isEmpty())
-                    layerInfo = builder.buildLayer(cinfo);
-                else
-                    layerInfo = builder.buildLayer(cinfo,layerProperties);
-                layerName = layerInfo.getName();
+                LayerInfo layerInfo = builder.buildLayer( cinfo );
+                //JD: commenting this out, these sorts of edits should be handled
+                // with a second PUT request on the created coverage
+                /*
+                String styleName = form.getFirstValue("style");
+                if ( styleName != null ) {
+                    StyleInfo style = catalog.getStyleByName( styleName );
+                    if ( style != null ) {
+                        layerInfo.setDefaultStyle( style );
+                        if ( !layerInfo.getStyles().contains( style ) ) {
+                            layerInfo.getStyles().add( style );
+                        }
+                    }
+                    else {
+                        LOGGER.warning( "Client specified style '" + styleName + "'but no such style exists.");
+                    }
+                }
+
+                String path = form.getFirstValue( "path");
+                if ( path != null ) {
+                    layerInfo.setPath( path );
+                }
+                */
+
                 catalog.add(layerInfo);
             }
             else {
@@ -175,8 +190,12 @@ public class CoverageStoreFileResource extends StoreFileResource {
             }
             
             AbstractCatalogResource.saveCatalog( catalog );
-            getResponse().setEntity(new StringRepresentation(layerName, MediaType.TEXT_PLAIN));
-            getResponse().setStatus( Status.SUCCESS_CREATED );
+            
+            //poach the coverage store data format
+            DataFormat df = new CoverageStoreResource(getContext(),request,response,catalog)
+                .createXMLFormat(request, response);
+            response.setEntity(df.toRepresentation(info));
+            response.setStatus(Status.SUCCESS_CREATED);
         }
         catch( Exception e ) {
             throw new RestletException( "Error auto-configuring coverage", Status.SERVER_ERROR_INTERNAL, e );

@@ -84,12 +84,15 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
     }
     
     protected void encodeAlternateAtomLink( String link, HierarchicalStreamWriter writer ) {
+        encodeAlternateAtomLink( link, writer, getFormatGet() );
+    }
+    
+    protected void encodeAlternateAtomLink( String link, HierarchicalStreamWriter writer, DataFormat format ) {
         writer.startNode( "atom:link");
         writer.addAttribute("xmlns:atom", "http://www.w3.org/2005/Atom");
         writer.addAttribute( "rel", "alternate" );
-        writer.addAttribute( "href", href(link) );
+        writer.addAttribute( "href", href(link,format) );
         
-        DataFormat format = getFormatGet();
         if ( format != null ) {
             writer.addAttribute( "type", format.getMediaType().toString() );
         }
@@ -98,30 +101,38 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
     }
     
     protected void encodeLink( String link, HierarchicalStreamWriter writer ) {
+        encodeLink( link, writer, getFormatGet() );
+    }
+    
+    protected void encodeLink( String link, HierarchicalStreamWriter writer, DataFormat format ) {
         if ( getFormatGet() instanceof ReflectiveXMLFormat  ) {
             //encode as an atom link
-            encodeAlternateAtomLink(link, writer);
+            encodeAlternateAtomLink(link, writer, format);
         }
         else {
             //encode as a child element
             writer.startNode( "href" );
-            writer.setValue( href( link ) );
+            writer.setValue( href( link, format) );
             writer.endNode();
         }
     }
     
     protected void encodeCollectionLink( String link, HierarchicalStreamWriter writer ) {
-        if ( getFormatGet() instanceof ReflectiveXMLFormat ) {
+        encodeCollectionLink( link, writer, getFormatGet() );
+    }
+    
+    protected void encodeCollectionLink( String link, HierarchicalStreamWriter writer, DataFormat format) {
+        if ( format instanceof ReflectiveXMLFormat ) {
             //encode as atom link
-            encodeAlternateAtomLink(link, writer);
+            encodeAlternateAtomLink(link, writer, format);
         }
         else {
             //encode as a value
-            writer.setValue( href( link ) );
+            writer.setValue( href( link, format ) );
         }
     }
     
-    String href( String link ) {
+    String href( String link, DataFormat format ) {
         PageInfo pg = getPageInfo();
         
         String href = null;
@@ -136,7 +147,6 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
 
         //try to figure out extension
         String ext = null;
-        DataFormat format = getFormatGet();
         if ( format != null ) {
             ext = MediaTypes.getExtensionForMediaType( format.getMediaType() );
         }

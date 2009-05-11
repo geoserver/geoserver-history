@@ -7,6 +7,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -97,7 +98,7 @@ public class LayerGroupResource extends AbstractCatalogResource {
     }
     
     @Override
-    protected void configurePersister(XStreamPersister persister) {
+    protected void configurePersister(XStreamPersister persister, DataFormat format) {
         persister.setCallback( new XStreamPersister.Callback() {
            @Override
            protected void postEncodeReference(Object obj, String ref,

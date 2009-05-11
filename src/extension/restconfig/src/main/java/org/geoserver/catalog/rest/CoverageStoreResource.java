@@ -107,7 +107,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
     }
 
     @Override
-    protected void configurePersister(XStreamPersister persister) {
+    protected void configurePersister(XStreamPersister persister, final DataFormat format ) {
         persister.setCallback( 
             new XStreamPersister.Callback() {
                 @Override
@@ -116,7 +116,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
                         MarshallingContext context) {
                     //add a link to the coverages
                     writer.startNode( "coverages");
-                    encodeCollectionLink("coverages", writer);
+                    encodeCollectionLink("coverages", writer, format);
                     writer.endNode();
                 }
                 
@@ -124,7 +124,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
                 protected void postEncodeReference(Object obj, String ref,
                         HierarchicalStreamWriter writer, MarshallingContext context) {
                     if ( obj instanceof WorkspaceInfo ) {
-                        encodeLink( "/worksapces/" + ref, writer );
+                        encodeLink( "/workspaces/" + ref, writer, format );
                     }
                 }
             }

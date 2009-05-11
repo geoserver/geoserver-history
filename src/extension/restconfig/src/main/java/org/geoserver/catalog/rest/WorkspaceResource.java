@@ -39,7 +39,7 @@ public class WorkspaceResource extends AbstractCatalogResource {
     }
     
     @Override
-    protected void configurePersister(XStreamPersister persister) {
+    protected void configurePersister(XStreamPersister persister, DataFormat format) {
         persister.setCallback( new XStreamPersister.Callback() {
             @Override
             protected void postEncodeWorkspace(WorkspaceInfo ws,

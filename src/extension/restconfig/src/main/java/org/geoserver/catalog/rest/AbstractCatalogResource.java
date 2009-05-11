@@ -6,6 +6,7 @@ import java.io.OutputStream;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.ReflectiveJSONFormat;
 import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.restlet.Context;
@@ -28,7 +29,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
                 XStreamPersister p = new XStreamPersister.XML();
                 p.setCatalog( catalog );
                 
-                configurePersister(p);
+                configurePersister(p,this);
                 p.save( data, output );
             }
             
@@ -38,7 +39,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
                 XStreamPersister p = new XStreamPersister.XML();
                 p.setCatalog( catalog );
                 
-                configurePersister(p);
+                configurePersister(p,this);
                 return p.load( in, clazz );
             }
         };
@@ -53,7 +54,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
                 XStreamPersister p = new XStreamPersister.JSON();
                 p.setCatalog(catalog);
                 
-                configurePersister(p);
+                configurePersister(p,this);
                 p.save( data, output );
             }
             
@@ -63,7 +64,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
                 XStreamPersister p = new XStreamPersister.JSON();
                 p.setCatalog(catalog);
                 
-                configurePersister(p);
+                configurePersister(p,this);
                 return p.load( input, clazz );
             }
         };
@@ -73,6 +74,6 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
      * Method for subclasses to perform additional configuration of the 
      * xstream instance used for serializing/de-serializing objects.
      */
-    protected void configurePersister(XStreamPersister persister) {
+    protected void configurePersister(XStreamPersister persister, DataFormat format) {
     }
 }

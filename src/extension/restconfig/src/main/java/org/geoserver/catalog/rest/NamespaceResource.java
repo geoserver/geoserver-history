@@ -123,7 +123,7 @@ public class NamespaceResource extends AbstractCatalogResource {
     }
     
     @Override
-    protected void configurePersister(XStreamPersister persister) {
+    protected void configurePersister(XStreamPersister persister, DataFormat format) {
         persister.setCallback( 
             new XStreamPersister.Callback() {
                 @Override
