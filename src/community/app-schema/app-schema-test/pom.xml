@@ -65,6 +65,8 @@
 							Exclude tests with lines like this
 							<exclude>**/Whatever.java</exclude>
 						-->
+						<!-- until schema cache problem is resolved  -->
+						<exclude>**/XlinkWfsTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
