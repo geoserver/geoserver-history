@@ -3,7 +3,7 @@ package org.geoserver.h2;
 import java.util.HashMap;
 
 import org.geoserver.test.GeoServerTestSupport;
-import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataAccessFactory;
 import org.geotools.data.h2.H2DataStoreFactory;
 import org.vfny.geoserver.util.DataStoreUtils;
 
@@ -14,7 +14,7 @@ public class H2DataStoreInitializerTest extends GeoServerTestSupport {
         params.put( H2DataStoreFactory.DBTYPE.key, "h2");
         params.put( H2DataStoreFactory.DATABASE.key, "test" );
         
-        DataStoreFactorySpi f = DataStoreUtils.aquireFactory( params );
+        DataAccessFactory f = DataStoreUtils.aquireFactory( params );
         assertNotNull( f );
         assertTrue( f instanceof H2DataStoreFactory );
         
