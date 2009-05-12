@@ -883,24 +883,6 @@
      </configuration>
    </plugin>
 
-   <!-- source formatting -->
-   <plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>jalopy-maven-plugin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <configuration>
-     <convention>geoserver/geoserverjalopy.xml</convention>
-     <failOnError>false</failOnError>
-    </configuration>
-    <dependencies>
-     <dependency>
-      <groupId>org.geoserver.maven</groupId>
-      <artifactId>build-configs</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
-     </dependency>
-    </dependencies>
-   </plugin>
-
    <!-- resources -->
    <plugin>
      <groupId>org.apache.maven.plugins</groupId>
