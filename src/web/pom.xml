@@ -485,6 +485,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>restconfig_temp</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>rest-config</artifactId>
+          <version>1.7.5-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>sldService</id>
       <dependencies>
         <dependency>
