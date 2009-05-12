@@ -42,7 +42,6 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
     @Override
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
-
         // Setup XMLUnit namespaces
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("wfs", "http://www.opengis.net/wfs");
