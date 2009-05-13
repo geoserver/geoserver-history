@@ -302,7 +302,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      *            document under test
      * @throws Exception
      */
-    public void assertXpathCount(int count, String xpath, Document doc) throws Exception {
+    public static void assertXpathCount(int count, String xpath, Document doc) throws Exception {
         XpathEngine engine = XMLUnit.newXpathEngine();
         NodeList nodes = engine.getMatchingNodes(xpath, doc);
         assertEquals(count, nodes.getLength());
@@ -319,7 +319,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      *            document under test
      * @throws Exception
      */
-    public void assertXpathMatches(String regex, String xpath, Document doc) throws Exception {
+    public static void assertXpathMatches(String regex, String xpath, Document doc) throws Exception {
         XpathEngine engine = XMLUnit.newXpathEngine();
         String value = engine.evaluate(xpath, doc);
         assertTrue(value.matches(regex));
@@ -336,7 +336,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      *            document under test
      * @throws Exception
      */
-    public void assertXpathNotMatches(String regex, String xpath, Document doc) throws Exception {
+    public static void assertXpathNotMatches(String regex, String xpath, Document doc) throws Exception {
         XpathEngine engine = XMLUnit.newXpathEngine();
         String value = engine.evaluate(xpath, doc);
         assertFalse(value.matches(regex));
@@ -349,7 +349,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      * @return
      * @throws Exception
      */
-    public String prettyString(Document doc) throws Exception {
+    public static String prettyString(Document doc) throws Exception {
         OutputStream out = new ByteArrayOutputStream();
         prettyPrint(doc, out);
         return out.toString();
@@ -362,7 +362,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      * @param out
      * @throws Exception
      */
-    public void prettyPrint(Document doc, OutputStream out) throws Exception {
+    public static void prettyPrint(Document doc, OutputStream out) throws Exception {
         OutputFormat format = new OutputFormat(doc);
         format.setLineWidth(80);
         format.setIndenting(true);

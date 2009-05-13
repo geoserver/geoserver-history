@@ -51,6 +51,13 @@
 			<artifactId>gt-app-schema</artifactId>
 			<version>${gt.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-app-schema</artifactId>
+			<version>${gt.version}</version>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -67,6 +74,7 @@
 						-->
 						<!-- until schema cache problem is resolved  -->
 						<exclude>**/XlinkWfsTest.java</exclude>
+						<exclude>**/DataAccessIntegrationWfsTest.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
