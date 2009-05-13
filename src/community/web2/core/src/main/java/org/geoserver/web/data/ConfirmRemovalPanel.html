@@ -1,0 +1,36 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:panel>
+    <h2><wicket:message key="confirm">ConfirmObjectRemoval</wicket:message></h2>
+
+    <wicket:message key="aboutRemove">AboutRemove</wicket:message>:
+    <span wicket:id="rootObjects"></span>
+
+    <div wicket:id="removedObjects">
+        <wicket:message
+            key="removedObjects">removedObjects</wicket:message>
+        <ul>
+            <li wicket:id="workspacesRemoved"><wicket:message
+                key="workspaces" />: <span wicket:id="workspaces"></span></li>
+            <li wicket:id="storesRemoved"><wicket:message key="stores"/>:
+                <span wicket:id="stores"></span></li>
+            <li wicket:id="layersRemoved"><wicket:message key="layers" />:
+                <span wicket:id="layers"></span></li>
+            <li wicket:id="groupsRemoved"><wicket:message key="groups" />:
+                <span wicket:id="groups"></span></li>
+        </ul>
+    </div>
+
+    <div wicket:id="modifiedObjects">
+        <wicket:message
+            key="modifiedObjects">ModifiedObejcts</wicket:message>
+        <ul>
+            <li wicket:id="layersModified"><wicket:message key="layers" />:
+                <span wicket:id="layers"></span></li>
+            <li wicket:id="groupsModified"><wicket:message key="groups" />:
+                <span wicket:id="groups"></span></li>
+        </ul>
+    </div>
+</wicket:panel>
+</body>
+</html>
