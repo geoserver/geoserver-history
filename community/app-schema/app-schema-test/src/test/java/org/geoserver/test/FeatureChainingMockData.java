@@ -101,10 +101,10 @@ public class FeatureChainingMockData implements TestData {
 
     static final Envelope DEFAULT_ENVELOPE = new Envelope(-180, 180, -90, 90);
 
-    private File data;
+    private static File data;
 
     /** the 'featureTypes' directory, under 'data' */
-    File featureTypesBaseDir;
+    static File featureTypesBaseDir;
 
     /**
      * Constructor. Creates the mock data directory and adds all the feature types.
@@ -121,15 +121,20 @@ public class FeatureChainingMockData implements TestData {
         featureTypesBaseDir.mkdir();
 
         addFeatureType(GSML_NAMESPACE_PREFIX, "MappedFeature", "MappedFeaturePropertyfile.xml",
-                "MappedFeaturePropertyfile.properties");
+                "MappedFeaturePropertyfile.properties", data, featureTypesBaseDir, datastoreParams,
+                datastoreNamespacePrefixes);
         addFeatureType(GSML_NAMESPACE_PREFIX, "GeologicUnit", "GeologicUnit.xml",
-                "GeologicUnit.properties");
+                "GeologicUnit.properties", data, featureTypesBaseDir, datastoreParams,
+                datastoreNamespacePrefixes);
         addFeatureType(GSML_NAMESPACE_PREFIX, "CompositionPart", "CompositionPart.xml",
-                "CompositionPart.properties");
+                "CompositionPart.properties", data, featureTypesBaseDir, datastoreParams,
+                datastoreNamespacePrefixes);
         addFeatureType(GSML_NAMESPACE_PREFIX, "CGI_TermValue", "CGITermValue.xml",
-                "CGITermValue.properties");
+                "CGITermValue.properties", data, featureTypesBaseDir, datastoreParams,
+                datastoreNamespacePrefixes);
         addFeatureType(GSML_NAMESPACE_PREFIX, "ControlledConcept", "ControlledConcept.xml",
-                "ControlledConcept.properties");
+                "ControlledConcept.properties", data, featureTypesBaseDir, datastoreParams,
+                datastoreNamespacePrefixes);
     }
 
     /**
@@ -156,8 +161,9 @@ public class FeatureChainingMockData implements TestData {
      * @see org.geoserver.data.test.TestData#setUp()
      */
     public void setUp() throws Exception {
-        setUpCatalog();
-        copyTo(MockData.class.getResourceAsStream("services.xml"), "services.xml");
+        setUpCatalog(datastoreParams, datastoreNamespacePrefixes, NAMESPACES, data);
+        copyTo(MockData.class.getResourceAsStream("services.xml"), "services.xml",
+                getDataDirectoryRoot());
     }
 
     /**
@@ -173,18 +179,27 @@ public class FeatureChainingMockData implements TestData {
     /**
      * Writes catalog.xml to the data directory.
      * 
+     * @param datastoreParams
+     *            Data store connection parameters
+     * @param datastoreNamespacePrefixes
+     *            Map of data store name to namespace prefix.
+     * @param nameSpaces
+     *            Name spaces information
+     * @param root
+     *            Mock data root directory
      * @throws IOException
      */
     @SuppressWarnings("serial")
-    protected void setUpCatalog() throws IOException {
+    protected static void setUpCatalog(Map datastoreParams, Map datastoreNamespacePrefixes,
+            Map nameSpaces, File root) throws IOException {
         CatalogWriter writer = new CatalogWriter();
         writer.dataStores(datastoreParams, datastoreNamespacePrefixes, Collections
                 .<String> emptySet());
         writer.coverageStores(new HashMap<String, Map<String, String>>(),
                 new HashMap<String, String>(), Collections.<String> emptySet());
-        writer.namespaces(NAMESPACES);
+        writer.namespaces(nameSpaces);
         writer.styles(Collections.<String, String> emptyMap());
-        writer.write(new File(data, "catalog.xml"));
+        writer.write(new File(root, "catalog.xml"));
     }
 
     /**
@@ -194,9 +209,11 @@ public class FeatureChainingMockData implements TestData {
      *            source from which file content is copied
      * @param location
      *            path relative to mock data directory
+     * @param data
+     *            root directory to be copied to
      */
-    public void copyTo(InputStream input, String location) throws IOException {
-        IOUtils.copy(input, new File(getDataDirectoryRoot(), location));
+    public static void copyTo(InputStream input, String location, File data) throws IOException {
+        IOUtils.copy(input, new File(data, location));
     }
 
     /**
@@ -210,9 +227,14 @@ public class FeatureChainingMockData implements TestData {
      *            namespace prefix of the WFS feature type
      * @param typeName
      *            namespace prefix of the WFS feature type
+     * @param featureTypeDir
+     *            feature type base directory
+     * @param dataStoreName
+     *            data store directory name
      * @throws IOException
      */
-    public void writeInfoFile(String namespacePrefix, String typeName) throws IOException {
+    public static void writeInfoFile(String namespacePrefix, String typeName, File featureTypeDir,
+            String dataStoreName) throws IOException {
 
         // prepare extra params default
         Map<String, Object> params = new HashMap<String, Object>();
@@ -224,7 +246,6 @@ public class FeatureChainingMockData implements TestData {
 
         params.put(KEY_SRS_NUMBER, srs);
 
-        File featureTypeDir = getFeatureTypeDir(namespacePrefix, typeName);
         featureTypeDir.mkdir();
 
         File info = new File(featureTypeDir, "info.xml");
@@ -232,8 +253,7 @@ public class FeatureChainingMockData implements TestData {
         info.createNewFile();
 
         FileWriter writer = new FileWriter(info);
-        writer.write("<featureType datastore=\"" + getDataStoreName(namespacePrefix, typeName)
-                + "\">");
+        writer.write("<featureType datastore=\"" + dataStoreName + "\">");
         writer.write("<name>" + typeName + "</name>");
         if (params.get(KEY_ALIAS) != null)
             writer.write("<alias>" + params.get(KEY_ALIAS) + "</alias>");
@@ -279,17 +299,22 @@ public class FeatureChainingMockData implements TestData {
      *            local name of the WFS feature type
      * @param mappingFileName
      *            file name of the app-schema mapping file
+     * @param featureTypesBaseDir
+     *            feature types base directory
+     * @param dataStoreName
+     *            data store name
      * @return
      * @throws MalformedURLException
      */
     @SuppressWarnings("serial")
-    public Map<String, Serializable> buildDatastoreParams(final String namespacePrefix,
-            final String typeName, final String mappingFileName) throws MalformedURLException {
+    public static Map<String, Serializable> buildDatastoreParams(final String namespacePrefix,
+            final String typeName, final String mappingFileName, final File featureTypesBaseDir,
+            final String dataStoreName) throws MalformedURLException {
         return new LinkedHashMap<String, Serializable>() {
             {
                 put("dbtype", "app-schema");
-                put("url", new File(new File(featureTypesBaseDir, getDataStoreName(namespacePrefix,
-                        typeName)), mappingFileName).toURI().toURL());
+                put("url", new File(new File(featureTypesBaseDir, dataStoreName), mappingFileName)
+                        .toURI().toURL());
             }
         };
     }
@@ -306,19 +331,31 @@ public class FeatureChainingMockData implements TestData {
      *            file name of the app-schema mapping file
      * @param propertyFileName
      *            file name of the property file containing the data for this feature
+     * @param data
+     *            mock data root directory
+     * @param featureTypesBaseDir
+     *            feature types base directory
+     * @param datastoreParams
+     *            data store connection parameters
+     * @param datastoreNamespacePrefixes
+     *            Map of data store name to name space prefixes
      * @throws Exception
      */
-    public void addFeatureType(String namespacePrefix, String typeName, String mappingFileName,
-            String propertyFileName) throws Exception {
-        writeInfoFile(namespacePrefix, typeName);
-        copyMappingAndPropertyFiles(namespacePrefix, typeName, mappingFileName, propertyFileName);
-        copyFileToFeatureTypeDir(namespacePrefix, typeName, OASIS_CATALOG);
-        IOUtils.deepCopy(new File(getClass().getResource(TEST_DATA + SCHEMAS_DIR).toURI()),
-                new File(getFeatureTypeDir(namespacePrefix, typeName), SCHEMAS_DIR));
-        datastoreParams.put(getDataStoreName(namespacePrefix, typeName), buildDatastoreParams(
-                namespacePrefix, typeName, mappingFileName));
-        datastoreNamespacePrefixes
-                .put(getDataStoreName(namespacePrefix, typeName), namespacePrefix);
+    public static void addFeatureType(String namespacePrefix, String typeName,
+            String mappingFileName, String propertyFileName, File data, File featureTypesBaseDir,
+            Map datastoreParams, Map datastoreNamespacePrefixes) throws Exception {
+        File featureTypeDir = getFeatureTypeDir(featureTypesBaseDir, namespacePrefix, typeName);
+        String dataStoreName = getDataStoreName(namespacePrefix, typeName);
+        writeInfoFile(namespacePrefix, typeName, featureTypeDir, dataStoreName);
+        copyMappingAndPropertyFiles(namespacePrefix, typeName, mappingFileName, propertyFileName,
+                data);
+        copyFileToFeatureTypeDir(namespacePrefix, typeName, OASIS_CATALOG, data);
+        IOUtils.deepCopy(new File(FeatureChainingMockData.class
+                .getResource(TEST_DATA + SCHEMAS_DIR).toURI()), new File(featureTypeDir,
+                SCHEMAS_DIR));
+        datastoreParams.put(dataStoreName, buildDatastoreParams(namespacePrefix, typeName,
+                mappingFileName, featureTypesBaseDir, dataStoreName));
+        datastoreNamespacePrefixes.put(dataStoreName, namespacePrefix);
     }
 
     /**
@@ -331,7 +368,7 @@ public class FeatureChainingMockData implements TestData {
      *            local name of the WFS feature type
      * @return name of the data store for the feature type
      */
-    public String getDataStoreName(String namespacePrefix, String typeName) {
+    public static String getDataStoreName(String namespacePrefix, String typeName) {
         return namespacePrefix + "_" + typeName;
     }
 
@@ -344,7 +381,8 @@ public class FeatureChainingMockData implements TestData {
      *            local name of the WFS feature type
      * @return directory that contains the mapping and property files
      */
-    public File getFeatureTypeDir(String namespacePrefix, String typeName) {
+    public static File getFeatureTypeDir(File featureTypesBaseDir, String namespacePrefix,
+            String typeName) {
         return new File(featureTypesBaseDir, getDataStoreName(namespacePrefix, typeName));
     }
 
@@ -359,12 +397,14 @@ public class FeatureChainingMockData implements TestData {
      *            name of the mapping file for this feature type
      * @param properyFileName
      *            name of the property file containing the the data for this feature type
+     * @param data
+     *            mock data root directory
      * @throws IOException
      */
-    public void copyMappingAndPropertyFiles(String namespacePrefix, String typeName,
-            String mappingFileName, String properyFileName) throws IOException {
-        copyFileToFeatureTypeDir(namespacePrefix, typeName, mappingFileName);
-        copyFileToFeatureTypeDir(namespacePrefix, typeName, properyFileName);
+    public static void copyMappingAndPropertyFiles(String namespacePrefix, String typeName,
+            String mappingFileName, String properyFileName, File data) throws IOException {
+        copyFileToFeatureTypeDir(namespacePrefix, typeName, mappingFileName, data);
+        copyFileToFeatureTypeDir(namespacePrefix, typeName, properyFileName, data);
     }
 
     /**
@@ -376,12 +416,16 @@ public class FeatureChainingMockData implements TestData {
      *            local name of the WFS feature type
      * @param fileName
      *            short name of the file in test-data to copy
+     * @param data
+     *            mock data root directory
      * @throws IOException
      */
-    public void copyFileToFeatureTypeDir(String namespacePrefix, String typeName, String fileName)
-            throws IOException {
-        copyTo(getClass().getResourceAsStream(TEST_DATA + fileName), "featureTypes" + "/"
-                + getDataStoreName(namespacePrefix, typeName) + "/" + fileName);
+    public static void copyFileToFeatureTypeDir(String namespacePrefix, String typeName,
+            String fileName, File data) throws IOException {
+        copyTo(
+                FeatureChainingMockData.class.getResourceAsStream(TEST_DATA + fileName),
+                "featureTypes" + "/" + getDataStoreName(namespacePrefix, typeName) + "/" + fileName,
+                data);
     }
 
 }
