@@ -13,6 +13,7 @@ public abstract class LayerGroupBaseTest extends GeoServerWicketTestSupport {
 
     @Override
     protected void setUpInternal() throws Exception {
+        // TODO: see GEOS-3040
         Catalog catalog = getCatalog();
         String lakes = MockData.LAKES.getLocalPart();
         String forests = MockData.FORESTS.getLocalPart();
