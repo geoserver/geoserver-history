@@ -729,26 +729,8 @@ public class CatalogBuilder {
         //also create a layer for the feautre type
         LayerInfo layer = buildLayer( (ResourceInfo) featureType );
         
-        //styles
-        String styleName = null;
-        
-        Class gtype = featureType.getFeatureType().getGeometryDescriptor().getType().getBinding();
-        if ( Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
-            styleName = StyleInfo.DEFAULT_POINT;
-        }
-        else if ( LineString.class.isAssignableFrom(gtype) || MultiLineString.class.isAssignableFrom(gtype)) {
-            styleName = StyleInfo.DEFAULT_LINE;
-        }
-        else if ( Polygon.class.isAssignableFrom(gtype) || MultiPolygon.class.isAssignableFrom(gtype)) {
-            styleName = StyleInfo.DEFAULT_POLYGON;
-        } else {
-            //fall back to point
-            styleName = StyleInfo.DEFAULT_POINT;
-        }
-        
-        StyleInfo style = catalog.getStyleByName( styleName );
+        StyleInfo style = getDefaultStyle(featureType);
         layer.setDefaultStyle(style);
-        layer.getStyles().add( style );
         
         return layer;
     }
@@ -763,12 +745,40 @@ public class CatalogBuilder {
     public LayerInfo buildLayer( CoverageInfo coverage ) throws IOException {
         LayerInfo layer = buildLayer((ResourceInfo)coverage);
         
-        StyleInfo style = catalog.getStyleByName( StyleInfo.DEFAULT_RASTER );
-        layer.setDefaultStyle(style);
-        layer.getStyles().add(style);
+        layer.setDefaultStyle(getDefaultStyle(coverage));
         
         return layer;
-
+    }
+    
+    /**
+     * Returns the default style for the specified resource
+     * @param resource
+     * @return
+     * @throws IOException
+     */
+    public StyleInfo getDefaultStyle(ResourceInfo resource) throws IOException {
+        // raster wise, only one style
+        if(resource instanceof CoverageInfo)
+            return catalog.getStyleByName(StyleInfo.DEFAULT_RASTER);
+     
+        // for vectors we depend on the the nature of the default geometry
+        String styleName;
+        FeatureTypeInfo featureType = (FeatureTypeInfo) resource;
+        Class gtype = featureType.getFeatureType().getGeometryDescriptor().getType().getBinding();
+        if ( Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
+            styleName = StyleInfo.DEFAULT_POINT;
+        }
+        else if ( LineString.class.isAssignableFrom(gtype) || MultiLineString.class.isAssignableFrom(gtype)) {
+            styleName = StyleInfo.DEFAULT_LINE;
+        }
+        else if ( Polygon.class.isAssignableFrom(gtype) || MultiPolygon.class.isAssignableFrom(gtype)) {
+            styleName = StyleInfo.DEFAULT_POLYGON;
+        } else {
+            //fall back to point
+            styleName = StyleInfo.DEFAULT_POINT;
+        }
+        
+        return catalog.getStyleByName( styleName );
     }
     
     LayerInfo buildLayer( ResourceInfo resource ) {
@@ -863,21 +873,11 @@ public class CatalogBuilder {
      * </p>
      */
     public void removeWorkspace( WorkspaceInfo workspace, boolean recursive ) {
-         
         if ( recursive ) {
-            //remove all stores
-            for ( StoreInfo s : catalog.getStoresByWorkspace( workspace, StoreInfo.class ) ) {
-                removeStore( s, recursive );
-            }
-
-            //remove any linked namespaces
-            NamespaceInfo ns = catalog.getNamespaceByPrefix( workspace.getName() );
-            if ( ns != null ) {
-                catalog.remove( ns );
-            }
+            workspace.accept(new CascadeDeleteVisitor(catalog));
+        } else {
+            catalog.remove( workspace );
         }
-        
-        catalog.remove( workspace );
     }
     
     /**
@@ -889,13 +889,10 @@ public class CatalogBuilder {
      */
     public void removeStore( StoreInfo store, boolean recursive ) {
         if ( recursive ) {
-            //remove all resources
-            for ( ResourceInfo r : catalog.getResourcesByStore(store,ResourceInfo.class)) {
-                removeResource( r, recursive );
-            }
+            store.accept(new CascadeDeleteVisitor(catalog));
+        } else {
+            catalog.remove( store );
         }
-        
-        catalog.remove( store );
     }
     
     /**
@@ -907,13 +904,10 @@ public class CatalogBuilder {
      */
     public void removeResource( ResourceInfo resource, boolean recursive ) {
         if ( recursive ) {
-            //remove any linked layers
-            for ( LayerInfo l : catalog.getLayers( resource ) ) {
-                catalog.remove( l );
-            }
+            resource.accept(new CascadeDeleteVisitor(catalog));
+        } else {
+            catalog.remove( resource );
         }
-        
-        catalog.remove( resource );
     }
     
     /**
