@@ -4,21 +4,20 @@
  */
 package org.geoserver.web.data.workspace;
 
-import static org.geoserver.web.data.workspace.WorkspaceProvider.*;
+import static org.geoserver.web.data.workspace.WorkspaceProvider.NAME;
+import static org.geoserver.web.data.workspace.WorkspaceProvider.REMOVE;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
-import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.wicket.ConfirmationAjaxLink;
+import org.geoserver.web.data.ConfirmRemovalPanel;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
-import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -28,13 +27,15 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 @SuppressWarnings("serial")
 public class WorkspacePage extends GeoServerSecuredPage {
     WorkspaceProvider provider = new WorkspaceProvider();
+    GeoServerTablePanel<WorkspaceInfo> workspaces;
+    GeoServerDialog dialog;
     
     public WorkspacePage() {
         
         BookmarkablePageLink newLink = new BookmarkablePageLink("new", WorkspaceNewPage.class);
         add( newLink );
 
-        add(new GeoServerTablePanel<WorkspaceInfo>("table", provider) {
+        add(workspaces = new GeoServerTablePanel<WorkspaceInfo>("table", provider) {
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<WorkspaceInfo> property) {
@@ -48,7 +49,9 @@ public class WorkspacePage extends GeoServerSecuredPage {
                 throw new IllegalArgumentException("No such property "+ property.getName());
             }
         });
+        workspaces.setOutputMarkupId(true);
         
+        add(dialog = new GeoServerDialog("dialog"));        
     }
     
     Component workspaceLink(String id, final IModel itemModel) {
@@ -66,16 +69,25 @@ public class WorkspacePage extends GeoServerSecuredPage {
 
         ResourceModel resRemove = new ResourceModel("removeWorkspace", "Remove");
 
-        ParamResourceModel confirmRemove = new ParamResourceModel(
-                "confirmRemoveWorkspaceX", this, workspace.getName());
+        return new SimpleAjaxLink(id, null, resRemove) {
 
-        return new ConfirmationAjaxLink(id, null, resRemove, confirmRemove) {
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                CatalogBuilder cb = new CatalogBuilder(getCatalog());
-                cb.removeWorkspace(workspace, true);
-                setResponsePage(WorkspacePage.this);
+                dialog.showOkCancel(target, new GeoServerDialog.DialogDelegate() {
+                    protected Component getContents(String id) {
+                        return new ConfirmRemovalPanel(id, workspace);
+                    }
+                    
+                    protected boolean onSubmit(AjaxRequestTarget target) {
+                        CascadeDeleteVisitor visitor = new CascadeDeleteVisitor(getCatalog());
+                        workspace.accept(visitor);
+                        target.addComponent(workspaces);
+                        return true;
+                    }
+                    
+                });
             }
+            
         };
     }
 }

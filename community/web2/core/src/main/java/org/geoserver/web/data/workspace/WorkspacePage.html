@@ -1,4 +1,4 @@
-<html>
+<html xmlns:wicket="http://wicket.apache.org/">
 <head>
 <title><wicket:message key="title">Workspaces</wicket:message></title>
 </head>
@@ -14,6 +14,10 @@
    </li>
   </ul>
   </form>
+  
+  <!-- the cascade delete confirmation dialog -->
+  <div wicket:id="dialog"></div>
+  
 </wicket:extend>
 </body>
 </html>
