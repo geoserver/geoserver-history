@@ -163,5 +163,49 @@ public class GetFeatureTest extends WFSTestSupport {
         NodeList featureMembers = doc.getElementsByTagName("gml:featureMember");
         assertFalse(featureMembers.getLength() == 0);
     }
+    
+    public void testLikeMatchCase() throws Exception {
+        // first run, without matching case, should match both buildings
+        String xml = 
+            "<GetFeature xmlns:gml=\"http://www.opengis.net/gml\">" +  
+            " <Query typeName=\"" + MockData.BUILDINGS.getLocalPart() + "\">" + 
+            "   <PropertyName>ADDRESS</PropertyName>" + 
+            "   <Filter>" + 
+            "     <PropertyIsLike wildCard=\"*\" singleChar=\".\" escapeChar=\"\\\" matchCase=\"false\">" + 
+            "       <PropertyName>ADDRESS</PropertyName>" + 
+            "       <Literal>* MAIN STREET</Literal>" + 
+            "     </PropertyIsLike>" + 
+            "   </Filter>" + 
+            " </Query>" + 
+            "</GetFeature>";
+        
+        Document doc = postAsDOM( "wfs", xml );
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
+                .getNodeName());
+
+        NodeList featureMembers = doc.getElementsByTagName("cite:Buildings");
+        assertEquals(2,featureMembers.getLength());
+        
+        // second run, with match case, should match none
+        xml = 
+            "<GetFeature xmlns:gml=\"http://www.opengis.net/gml\">" +  
+            " <Query typeName=\"" + MockData.BUILDINGS.getLocalPart() + "\">" + 
+            "   <PropertyName>ADDRESS</PropertyName>" + 
+            "   <Filter>" + 
+            "     <PropertyIsLike wildCard=\"*\" singleChar=\".\" escapeChar=\"\\\" matchCase=\"true\">" + 
+            "       <PropertyName>ADDRESS</PropertyName>" + 
+            "       <Literal>* MAIN STREET</Literal>" + 
+            "     </PropertyIsLike>" + 
+            "   </Filter>" + 
+            " </Query>" + 
+            "</GetFeature>";
+        doc = postAsDOM( "wfs", xml );
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
+                .getNodeName());
+
+        featureMembers = doc.getElementsByTagName("cite:Buildings");
+        assertEquals(0,featureMembers.getLength());
+
+    }
 
 }
