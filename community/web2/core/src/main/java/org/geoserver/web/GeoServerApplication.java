@@ -17,6 +17,7 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
@@ -42,6 +43,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.acegi.GeoServerSession;
+import org.geoserver.web.data.layer.LayerPage;
 import org.geoserver.web.util.CompositeConverterLocator;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterAdapter;
@@ -178,12 +180,15 @@ public class GeoServerApplication extends SpringWebApplication {
      * files on a single file per module basis.
      */
     public static class GeoServerResourceStreamLocator extends ResourceStreamLocator {
+        static Pattern GS_PROPERTIES = Pattern.compile("GeoServerApplication.*.properties");
+        static Pattern GS_LOCAL_I18N = Pattern.compile("org/geoserver/.*(\\.properties|\\.xml)]");
+        
         @SuppressWarnings({ "unchecked", "serial" })
         public IResourceStream locate(Class clazz, String path) {
             int i = path.lastIndexOf("/");
             if (i != -1) {
                 String p = path.substring(i + 1);
-                if (p.matches("GeoServerApplication.*.properties")) {
+                if (GS_PROPERTIES.matcher(p).matches()) {
                     try {
                         // process the classpath for property files
                         Enumeration<URL> urls = getClass().getClassLoader()
@@ -218,6 +223,10 @@ public class GeoServerApplication extends SpringWebApplication {
                     } catch (IOException e) {
                         LOGGER.log(Level.WARNING, "", e);
                     }
+                } else if(GS_LOCAL_I18N.matcher(path).matches()) {
+                    return null;
+                } else if(path.matches("org/geoserver/.*" + clazz.getName() + ".*_.*.html")) {
+                    return null;
                 }
             }
 
@@ -237,38 +246,43 @@ public class GeoServerApplication extends SpringWebApplication {
     public static class GeoServerLocalizer extends Localizer {
         public String getString(String key, Component component, IModel model,
                 String defaultValue) throws MissingResourceException {
-            //walk up the component hierarchy
-            Component c = component;
-            while( c != null ) {
-                //walk up the class hierachy of the component looking for a key
-                Class<?> clazz = c.getClass();
-                while (Component.class.isAssignableFrom(clazz)) {
-                    try {
-                        String value = super.getString(key(key, clazz), component, model,defaultValue);
-                        
-                        //if resolved to default value, don't return, continue on
-                        if ( value != null && value != defaultValue ) {
-                            return value;
-                        }
-                        
-                        clazz = clazz.getSuperclass();
-                    } catch (MissingResourceException e) {
-                        clazz = clazz.getSuperclass();
-                    }
+
+            // look for a component specific label
+            try {
+                Component c = component;
+                while(c != null) {
+                    String componentKey = key(key, c.getClass());
+                    String result = super.getString(componentKey, component, model,defaultValue);
+                    if(result != null && !result.equals(defaultValue))
+                        return result;
+                    c = c.getParent();
                 }
+            } catch(Exception e) {
                 
-                c = c.getParent();
             }
             
+            // look for a page specific label
             try {
-                //try to resolve against no component
-                return super.getString(key,null, model,
-                        defaultValue);
+                if(component.getPage() != null) {
+                    String pageKey = key(key, component.getPage().getClass());
+                    String result = super.getString(pageKey, component, model,defaultValue);
+                    if(result != null && !result.equals(defaultValue))
+                        return result;
+                }
+            } catch(Exception e) {
+                
+            }
+            
+            // try to resolve against no component
+            try {
+                String result = super.getString(key, null, model,  defaultValue);
+                if(result != null && !result.equals(defaultValue))
+                    return result;
             } catch (MissingResourceException e) {
                 
             }
             
-            //fall back on default behaviour
+            // fall back on default behavior
             return super.getString( key, component, model, defaultValue );
         }
 
