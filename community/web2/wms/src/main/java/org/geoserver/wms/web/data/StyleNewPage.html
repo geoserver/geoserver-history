@@ -1,26 +1,28 @@
 <html xmlns:wicket="http://wicket.apache.org/">
-  <body>
-    <wicket:extend>
-      <form wicket:id="form">
-        <ul>
-          <li>
-            <label for="name"><wicket:message key="name">Name</wicket:message></label>
-            <input wicket:id="name"></input>
-          </li>
-          <li>
-            <label for="filename"><wicket:message key="sldFile">SLD file</wicket:message></label>
-            <input type="file" wicket:id="filename"></input>
-            <a href="#" wicket:id="upload">Upload</a>
-          </li>
-          <li>
-            <div wicket:id="sld"></div>
-            <div class="button-group selfclear">
-              <a href="#" wicket:id="submit"><wicket:message key="submit">Submit</wicket:message></a>
-              <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a> 
-            </div>
-          </li>
-        </ul>
-      </form>
-    </wicket:extend>
-  </body>
+<body>
+<wicket:extend>
+    <form wicket:id="form" id="mainForm">
+    <ul>
+        <li><label for="name"><wicket:message key="name">Name</wicket:message></label>
+        <input wicket:id="name"></input></li>
+        <li>
+        <div wicket:id="sld"></div>
+        </li>
+    </ul>
+    </form>
+
+    <form wicket:id="uploadForm" id="uploadForm"><label
+        for="filename"><wicket:message key="sldFile">SLD file</wicket:message></label>
+    <input type="file" wicket:id="filename"></input> <a href="#"
+        onclick="document.forms['uploadForm'].submit()">Upload</a></form>
+
+    <div class="button-group selfclear">
+       <a href="#" onclick="document.forms['mainForm'].submit()"><wicket:message key="submit">Submit</wicket:message></a>
+       <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a>
+    </div>
+
+
+
+</wicket:extend>
+</body>
 </html>
