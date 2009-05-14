@@ -28,7 +28,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridRange;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
@@ -172,7 +172,7 @@ public class WCSUtils {
      * @param destinationEnvelopeInSourceCRS
      * @return GridCoverage2D
      */
-    public static GridCoverage2D scale(final GridCoverage2D coverage, final GridRange newGridRange,
+    public static GridCoverage2D scale(final GridCoverage2D coverage, final GridEnvelope newGridRange,
         final GridCoverage sourceCoverage, final CoordinateReferenceSystem sourceCRS,
         final GeneralEnvelope destinationEnvelopeInSourceCRS) {
         // ///////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
-import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -397,7 +397,7 @@ public class CoverageResponse implements Response {
         //
         // /////////////////////////////////////////////////////////
         parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-            new GridGeometry2D(new GeneralGridRange(destinationSize), destinationEnvelopeInSourceCRS));
+            new GridGeometry2D(new GeneralGridEnvelope(destinationSize), destinationEnvelopeInSourceCRS));
 
         final GridCoverage coverage = coverageReader.read(CoverageUtils.getParameters(
                     coverageReader.getFormat().getReadParameters(), parameters, true));
@@ -424,7 +424,7 @@ public class CoverageResponse implements Response {
          * Scale/Resampling (if necessary)
          */
         GridCoverage2D subCoverage = croppedGridCoverage;
-        final GeneralGridRange newGridrange = new GeneralGridRange(destinationSize);
+        final GeneralGridEnvelope newGridrange = new GeneralGridEnvelope(destinationSize);
 
         /*if (!newGridrange.equals(croppedGridCoverage.getGridGeometry()
                         .getGridRange())) {*/
