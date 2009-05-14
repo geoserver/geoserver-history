@@ -7,6 +7,8 @@ package org.geoserver.web;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.wicket.ResourceReference;
 import org.geoserver.catalog.Catalog;
@@ -19,6 +21,7 @@ import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.web.data.resource.DataStorePanelInfo;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccessFactory;
+import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
 
 /**
@@ -26,6 +29,8 @@ import org.opengis.coverage.grid.Format;
  */
 @SuppressWarnings("serial")
 public class CatalogIconFactory implements Serializable {
+    
+    private static final Logger LOGGER = Logging.getLogger("org.geoserver.web");
 
     public static final ResourceReference RASTER_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/geosilk/raster.png");
@@ -78,29 +83,39 @@ public class CatalogIconFactory implements Serializable {
      * @see #getStoreIcon(Class)
      */
     public ResourceReference getStoreIcon(final StoreInfo storeInfo) {
-        Class<?> factoryClass;
+        
+        Class<?> factoryClass = null;
 
         Catalog catalog = storeInfo.getCatalog();
         final ResourcePool resourcePool = catalog.getResourcePool();
 
         if (storeInfo instanceof DataStoreInfo) {
-            DataAccessFactory dataStoreFactory;
+            DataAccessFactory dataStoreFactory = null;
             try {
                 dataStoreFactory = resourcePool.getDataStoreFactory((DataStoreInfo) storeInfo);
             } catch (IOException e) {
-                throw new RuntimeException("Can't aquire the datastore factory for store "
-                        + storeInfo.getName(), e);
+                LOGGER.log(Level.INFO, "factory class for storeInfo " + storeInfo.getName()
+                        + " not found", e);
             }
-            if(dataStoreFactory != null)
+            
+            if(dataStoreFactory != null){
                 factoryClass = dataStoreFactory.getClass();
-            else
-                return null;
+            }
+            
         } else if (storeInfo instanceof CoverageStoreInfo) {
             AbstractGridFormat format = resourcePool
                     .getGridCoverageFormat((CoverageStoreInfo) storeInfo);
-            factoryClass = format.getClass();
+            if(format != null){
+                factoryClass = format.getClass();
+            }
         } else {
             throw new IllegalStateException(storeInfo.getClass().getName());
+        }
+        
+        if (factoryClass == null) {
+            LOGGER.info("Could not determine factory class for StoreInfo " + storeInfo.getName()
+                    + ". Using 'unknown' icon.");
+            return UNKNOWN_ICON;
         }
         return getStoreIcon(factoryClass);
     }
