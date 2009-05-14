@@ -50,6 +50,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("gml", "http://www.opengis.net/gml");
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         namespaces.put(FeatureChainingMockData.GSML_NAMESPACE_PREFIX,
                 FeatureChainingMockData.GSML_NAMESPACE_URI);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
@@ -103,6 +104,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                 "//gsml:MappedFeature[@gml:id='mf1']/gml:name", doc);
         XMLAssert.assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:shape//gml:posList", doc);
+        // gu.25699
         XMLAssert.assertXpathEvaluatesTo("gu.25699",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                         + "/gsml:GeologicUnit/@gml:id", doc);
@@ -136,12 +138,19 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                         "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                                 + "/gsml:GeologicUnit/gsml:composition"
                                 + "/gsml:CompositionPart/gsml:role", doc);
+        // check occurence as xlink:href
+        assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:occurence", doc);
+        XMLAssert.assertXpathEvaluatesTo("",
+                "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification" + "/gsml:GeologicUnit"
+                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf1']", doc);
 
         // mf2
         XMLAssert.assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP",
                 "//gsml:MappedFeature[@gml:id='mf2']/gml:name", doc);
         XMLAssert.assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:shape//gml:posList", doc);
+        // gu.25678
         XMLAssert.assertXpathEvaluatesTo("gu.25678",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/@gml:id", doc);
@@ -191,12 +200,22 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[2]"
                         + "/gsml:CompositionPart/gsml:role", doc);
+        // check occurence as xlink:href
+        assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:occurence", doc);
+        XMLAssert.assertXpathEvaluatesTo("",
+                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification" + "/gsml:GeologicUnit"
+                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf2']", doc);
+        XMLAssert.assertXpathEvaluatesTo("",
+                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification" + "/gsml:GeologicUnit"
+                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf3']", doc);
 
         // mf3
         XMLAssert.assertXpathEvaluatesTo("CLIFTON FORMATION",
                 "//gsml:MappedFeature[@gml:id='mf3']/gml:name", doc);
         XMLAssert.assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:shape//gml:posList", doc);
+        // gu.25678
         XMLAssert.assertXpathEvaluatesTo("gu.25678",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/@gml:id", doc);
@@ -246,12 +265,22 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[2]"
                         + "/gsml:CompositionPart/gsml:role", doc);
+        // check occurence as xlink:href
+        assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:occurence", doc);
+        XMLAssert.assertXpathEvaluatesTo("",
+                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification" + "/gsml:GeologicUnit"
+                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf2']", doc);
+        XMLAssert.assertXpathEvaluatesTo("",
+                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification" + "/gsml:GeologicUnit"
+                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf3']", doc);
 
         // mf4
         XMLAssert.assertXpathEvaluatesTo("MURRADUC BASALT",
                 "//gsml:MappedFeature[@gml:id='mf4']/gml:name", doc);
         XMLAssert.assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:shape//gml:posList", doc);
+        // gu.25682
         XMLAssert.assertXpathEvaluatesTo("gu.25682",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                         + "/gsml:GeologicUnit/@gml:id", doc);
@@ -288,6 +317,12 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                         "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                                 + "/gsml:GeologicUnit/gsml:composition"
                                 + "/gsml:CompositionPart/gsml:role", doc);
+        // check occurence as xlink:href
+        assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:occurence", doc);
+        XMLAssert.assertXpathEvaluatesTo("",
+                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification" + "/gsml:GeologicUnit"
+                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf4']", doc);
 
     }
 
@@ -319,7 +354,8 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      *            document under test
      * @throws Exception
      */
-    public static void assertXpathMatches(String regex, String xpath, Document doc) throws Exception {
+    public static void assertXpathMatches(String regex, String xpath, Document doc)
+            throws Exception {
         XpathEngine engine = XMLUnit.newXpathEngine();
         String value = engine.evaluate(xpath, doc);
         assertTrue(value.matches(regex));
@@ -336,7 +372,8 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
      *            document under test
      * @throws Exception
      */
-    public static void assertXpathNotMatches(String regex, String xpath, Document doc) throws Exception {
+    public static void assertXpathNotMatches(String regex, String xpath, Document doc)
+            throws Exception {
         XpathEngine engine = XMLUnit.newXpathEngine();
         String value = engine.evaluate(xpath, doc);
         assertFalse(value.matches(regex));
