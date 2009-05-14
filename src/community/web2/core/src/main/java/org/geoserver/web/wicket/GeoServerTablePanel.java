@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -65,6 +66,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     
     CheckBox selectAll;
     
+    AjaxButton hiddenSubmit;
+    
     /**
      * An array of the selected items in the current page. Gets wiped out each
      * time the current page, the sorting or the filtering changes.
@@ -98,7 +101,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         filterForm = new Form("filterForm");
         add(filterForm);
         filterForm.add(filter = new TextField("filter", new Model()));
-        filterForm.add(hiddenSubmit());
+        filterForm.add(hiddenSubmit = hiddenSubmit());
+        filterForm.setDefaultButton(hiddenSubmit);
 
         // setup the table
         listContainer.setOutputMarkupId(true);
