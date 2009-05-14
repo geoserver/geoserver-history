@@ -4,16 +4,8 @@
 </head>
 <body>
 <wicket:extend>
-  <form>  
-  <ul> 
-   <li>
-     <a class="add-link" wicket:id="new"><wicket:message key="addNewWorkspace">Add new workspace</wicket:message></a>
-   </li>
-   <li> 
-    <div wicket:id="table"></div>
-   </li>
-  </ul>
-  </form>
+  <a class="add-link" wicket:id="new"><wicket:message key="addNewWorkspace">Add new workspace</wicket:message></a>
+  <div wicket:id="table"></div>
   
   <!-- the cascade delete confirmation dialog -->
   <div wicket:id="dialog"></div>
