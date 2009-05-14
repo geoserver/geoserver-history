@@ -41,14 +41,9 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.data.DataAccess;
-import org.geotools.data.DataStore;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.NameImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.GML;
@@ -62,7 +57,6 @@ import org.geotools.xml.Schemas;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -687,7 +681,7 @@ public class LegacyCatalogImporter {
             int[] low = (int[]) grid.get( "low" );
             int[] high = (int[]) grid.get( "high" );
             
-            GeneralGridRange range = new GeneralGridRange(low, high);
+            GeneralGridEnvelope range = new GeneralGridEnvelope(low, high);
             
             Map<String,Double> tx = (Map<String, Double>) grid.get( "geoTransform" );
             if ( tx != null ) {
@@ -710,7 +704,7 @@ public class LegacyCatalogImporter {
         }
         else {
             // new grid range
-            GeneralGridRange range = new GeneralGridRange(new int[] { 0,
+            GeneralGridEnvelope range = new GeneralGridEnvelope(new int[] { 0,
                     0 }, new int[] { 1, 1 });
             coverage.setGrid( new GridGeometry2D(range, gridEnvelope) );
         }

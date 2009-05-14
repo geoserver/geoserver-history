@@ -60,7 +60,7 @@ import org.geoserver.config.impl.LoggingInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geotools.coverage.grid.GeneralGridRange;
+import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -761,8 +761,8 @@ public class XStreamPersister {
             StringBuffer low = new StringBuffer();
             StringBuffer high = new StringBuffer();
             for (int r = 0; r < g.getGridRange().getDimension(); r++) {
-                low.append(g.getGridRange().getLower(r)).append(" ");
-                high.append(g.getGridRange().getUpper(r)).append(" ");
+                low.append(g.getGridRange().getLow(r)).append(" ");
+                high.append(g.getGridRange().getHigh(r)+1).append(" ");
             }
             low.setLength(low.length()-1);
             high.setLength(high.length()-1);
@@ -862,7 +862,7 @@ public class XStreamPersister {
             }
             
             // new grid range
-            GeneralGridRange gridRange = new GeneralGridRange(low, high);
+            GeneralGridEnvelope gridRange = new GeneralGridEnvelope(low, high);
             
             // grid to crs
             MathTransform gridToCRS = null;

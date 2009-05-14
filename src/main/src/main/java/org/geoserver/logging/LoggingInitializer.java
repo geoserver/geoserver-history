@@ -3,13 +3,10 @@ package org.geoserver.logging;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
 import org.geoserver.config.LoggingInfo;
-import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;

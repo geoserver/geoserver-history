@@ -6,13 +6,11 @@ import javax.imageio.ImageIO;
 import javax.media.jai.JAI;
 import javax.media.jai.RecyclingTileFactory;
 
-import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerInitializer;
 import org.geoserver.config.JAIInfo;
-import org.geoserver.config.ServiceInfo;
 import org.geotools.image.jai.Registry;
 
 import com.sun.media.jai.util.SunTileCache;

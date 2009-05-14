@@ -25,10 +25,9 @@ import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
 import org.geotools.coverage.Category;
 import org.geotools.coverage.GridSampleDimension;
-import org.geotools.coverage.grid.GeneralGridRange;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.GridRange2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
@@ -39,6 +38,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -516,7 +516,7 @@ public class CatalogBuilder {
         cinfo.setNativeBoundingBox( new ReferencedEnvelope( envelope ) );
         cinfo.setLatLonBoundingBox( new ReferencedEnvelope(CoverageStoreUtils.getWGS84LonLatEnvelope(envelope)) );
         
-        GeneralGridRange originalRange=reader.getOriginalGridRange();
+        GridEnvelope originalRange=reader.getOriginalGridRange();
         cinfo.setGrid(new GridGeometry2D(originalRange,reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER),nativeCRS));
 
         ///////////////////////////////////////////////////////////////////////
@@ -534,15 +534,15 @@ public class CatalogBuilder {
         
         final ParameterValueGroup readParams = format.getReadParameters();
         final Map parameters = CoverageUtils.getParametersKVP(readParams);
-        final int minX=originalRange.getLower(0);
-        final int minY=originalRange.getLower(1);
-        final int width=originalRange.getLength(0);
-        final int height=originalRange.getLength(1);
+        final int minX=originalRange.getLow(0);
+        final int minY=originalRange.getLow(1);
+        final int width=originalRange.getSpan(0);
+        final int height=originalRange.getSpan(1);
         final int maxX=minX+(width<=5?width:5);
         final int maxY=minY+(height<=5?height:5);
         
         //we have to be sure that we are working against a valid grid range.
-        final GridRange2D testRange= new GridRange2D(minX,minY,maxX,maxY);
+        final GridEnvelope2D testRange= new GridEnvelope2D(minX,minY,maxX,maxY);
         
         //build the corresponding envelope
         final MathTransform gridToWorldCorner =  reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
