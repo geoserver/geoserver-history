@@ -27,13 +27,13 @@ import org.geoserver.web.GeoServerApplication;
 
 @SuppressWarnings("serial")
 public class ConfirmRemovalPanel extends Panel {
-    List<CatalogInfo> roots;
+    List<? extends CatalogInfo> roots;
     
     public ConfirmRemovalPanel(String id, CatalogInfo... roots) {
         this(id, Arrays.asList(roots));
     }
 
-    public ConfirmRemovalPanel(String id, List<CatalogInfo> roots) {
+    public ConfirmRemovalPanel(String id, List<? extends CatalogInfo> roots) {
         super(id);
         this.roots = roots;
         
@@ -108,7 +108,7 @@ public class ConfirmRemovalPanel extends Panel {
         grm.add(new Label("groups", names(groups)));
     }
     
-    public List<CatalogInfo> getRoots() {
+    public List<? extends CatalogInfo> getRoots() {
         return roots;
     }
     
