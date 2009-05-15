@@ -13,10 +13,8 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 
 /**
  * An abstract ok/cancel dialog, subclasses will have to provide the actual contents and behavior
@@ -54,6 +52,13 @@ public class GeoServerDialog extends Panel {
 
             public boolean onCloseButtonClicked(AjaxRequestTarget target) {
                 return delegate.onCancel(target);
+            }
+        });
+        window.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+        
+            public void onClose(AjaxRequestTarget target) {
+                delegate.onClose(target);
+        
             }
         });
 
@@ -136,6 +141,15 @@ public class GeoServerDialog extends Panel {
          * @return
          */
         protected abstract Component getContents(String id);
+
+        /**
+         * Called when the dialog is closed, allows the delegate to perform
+         * ajax updates on the page underlying the dialog
+         * @param target
+         */
+        public void onClose(AjaxRequestTarget target) {
+            // by default do nothing
+        }
 
         /**
          * Called when the dialog is submitted
