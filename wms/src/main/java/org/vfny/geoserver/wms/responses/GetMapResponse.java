@@ -234,7 +234,7 @@ public class GetMapResponse implements Response {
                     final FeatureSource<SimpleFeatureType, SimpleFeature> source = layers[i]
                             .getRemoteFeatureSource();
                     layer = new DefaultMapLayer(source, layerStyle);
-                    layer.setTitle(layers[i].getName());
+                    layer.setTitle(layers[i].getRemoteFeatureSource().getSchema().getTypeName());
 
                     final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema()
                             .getTypeName());
@@ -298,7 +298,7 @@ public class GetMapResponse implements Response {
                     }
 
                     layer = new FeatureSourceMapLayer(source, layerStyle);
-                    layer.setTitle(layers[i].getName());
+                    layer.setTitle(layers[i].getFeature().getName());
 
                     final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema()
                             .getName().getLocalPart());
@@ -388,7 +388,7 @@ public class GetMapResponse implements Response {
                                     reader, CoverageUtils.getParameters(params, layers[i]
                                             .getCoverage().getParameters())), layerStyle);
 
-                            layer.setTitle(layers[i].getName());
+                            layer.setTitle(layers[i].getCoverage().getName());
                             layer.setQuery(Query.ALL);
                             map.addLayer(layer);
                         } catch (IllegalArgumentException e) {

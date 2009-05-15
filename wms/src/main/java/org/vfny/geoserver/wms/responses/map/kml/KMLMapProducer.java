@@ -130,18 +130,6 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
 	 * @see GetMapProducer#getContentDisposition()
 	 */
 	public String getContentDisposition() {
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < mapContext.getLayerCount(); i++) {
-			MapLayer layer = mapContext.getLayer(i);
-			String title = layer.getFeatureSource().getSchema().getName().getLocalPart();
-			if (title != null && !title.equals("")) {
-				sb.append(title).append("_");
-			}
-		}
-		if (sb.length() > 0) {
-			sb.setLength(sb.length() - 1);
-			return "attachment; filename=" + sb.toString() + ".kml";
-		}
-		return "attachment; filename=geoserver.kml";
+		return super.getContentDisposition(".kml");
 	}
 }
