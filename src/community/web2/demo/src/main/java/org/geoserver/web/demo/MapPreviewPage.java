@@ -26,6 +26,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.demo.PreviewLayer.PreviewLayerType;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleExternalLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
@@ -65,17 +66,23 @@ public class MapPreviewPage extends GeoServerBasePage {
                 } else if (property == TITLE) {
                     return new Label(id, property.getModel(itemModel));
                 } else if (property == COMMON) {
+                    // openlayers preview
                     Fragment f = new Fragment(id, "commonLinks", MapPreviewPage.this);
                     String olUrl = "window.open('" + layer.getWmsLink()
                             + "&format=application/openlayers" + "');";
                     f.add(buildJSExternalLink("ol", olUrl, "OpenLayers"));
                     
+                    // kml preview
                     String kmlUrl = "../wms/kml_reflect?layers=" + layer.getName();
                     f.add(buildJSExternalLink("kml", kmlUrl, "KML"));
                     
+                    // gml preview (we actually want it only for vector layers)
                     String gmlUrl = "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
                             + layer.getName() + "&maxFeatures=50";
-                    f.add(buildJSExternalLink("gml", gmlUrl, "GML"));
+                    Component gmlLink = buildJSExternalLink("gml", gmlUrl, "GML");
+                    f.add(gmlLink);
+                    gmlLink.setVisible(layer.getType() == PreviewLayerType.Vector);
+                    
                     return f;
                 } else if (property == ALL) {
                     return buildJSWMSSelect(id, wmsOutputFormats, wfsOutputFormats, layer);
