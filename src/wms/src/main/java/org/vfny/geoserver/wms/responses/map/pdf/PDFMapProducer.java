@@ -214,19 +214,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 	 */
 	@Override
 	public String getContentDisposition() {
-		if (this.mapContext.getLayer(0) != null) {
-			try {
-				String title = this.mapContext.getLayer(0).getFeatureSource()
-						.getSchema().getName().getLocalPart();
-
-				if ((title != null) && !title.equals("")) {
-					return "attachment; filename=" + title + ".pdf";
-				}
-			} catch (NullPointerException e) {
-			}
-		}
-
-		return "attachment; filename=geoserver.pdf";
+		return getContentDisposition(".pdf");
 	}
 
 	/**
