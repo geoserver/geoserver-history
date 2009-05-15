@@ -266,6 +266,20 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         }
         selectAllValue = selected;
     }
+    
+    /**
+     * Clears the current selection
+     */
+    public void clearSelection() {
+        setSelection(false);
+    }
+    
+    /**
+     * Selects all the items in the current page
+     */
+    public void selectAll() {
+        setSelection(true);
+    }
 
     /**
      * The hidden button that will submit the form when the user
