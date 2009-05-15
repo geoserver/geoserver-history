@@ -87,7 +87,7 @@ public class CascadeRemovalReporter implements CatalogVisitor {
      * will not want the roots to be part of the set)
      * @param objects
      */
-    public void removeAll(Collection<CatalogInfo> objects) {
+    public void removeAll(Collection<? extends CatalogInfo> objects) {
         for (CatalogInfo ci : objects) {
             this.objects.remove(ci);
         }
