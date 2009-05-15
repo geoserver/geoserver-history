@@ -44,7 +44,7 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
      * to be sure that method has been called before getContentType() thus
      * supporting the workflow contract of the request processing
      */
-    private String requestedOutputFormat;
+    protected String requestedOutputFormat;
 
     private final String mime;
 

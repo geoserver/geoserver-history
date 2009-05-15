@@ -100,6 +100,11 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 		this.wms = wms;
 	}
 
+	
+	@Override
+	public String getOutputFormat() {
+	    return requestedOutputFormat == null ? OUTPUT_FORMATS[0] : requestedOutputFormat;
+	}
 
 
 	@SuppressWarnings("unchecked")
