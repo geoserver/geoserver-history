@@ -5,13 +5,15 @@
 package org.geoserver.web.data.workspace;
 
 import static org.geoserver.web.data.workspace.WorkspaceProvider.NAME;
-import static org.geoserver.web.data.workspace.WorkspaceProvider.REMOVE;
+
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
@@ -34,16 +36,14 @@ public class WorkspacePage extends GeoServerSecuredPage {
         
         BookmarkablePageLink newLink = new BookmarkablePageLink("new", WorkspaceNewPage.class);
         add( newLink );
+        add(removeWorkspacesLink());
 
-        add(workspaces = new GeoServerTablePanel<WorkspaceInfo>("table", provider) {
+        add(workspaces = new GeoServerTablePanel<WorkspaceInfo>("table", provider, true) {
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<WorkspaceInfo> property) {
                 if ( property == NAME ) {
                     return workspaceLink(id, itemModel);
-                }
-                if ( property == REMOVE ) {
-                    return removeWorkspaceLink(id, itemModel);
                 }
                 
                 throw new IllegalArgumentException("No such property "+ property.getName());
@@ -64,29 +64,39 @@ public class WorkspacePage extends GeoServerSecuredPage {
         };
     }
     
-    Component removeWorkspaceLink(String id, final IModel itemModel) {
-        final WorkspaceInfo workspace = (WorkspaceInfo) itemModel.getObject();
-
-        ResourceModel resRemove = new ResourceModel("removeWorkspace", "Remove");
-
-        return new SimpleAjaxLink(id, null, resRemove) {
+    Component removeWorkspacesLink() {
+        return new AjaxLink("removeSelected", null) {
 
             @Override
-            protected void onClick(AjaxRequestTarget target) {
+            public void onClick(AjaxRequestTarget target) {
+                // see if the user selected anything
+                final List<WorkspaceInfo> selection = workspaces.getSelection();
+                if(selection.size() == 0)
+                    return;
+                
+                // if there is something to cancel, let's warn the user about what
+                // could go wrong, and if the user accepts, let's delete what's needed
                 dialog.showOkCancel(target, new GeoServerDialog.DialogDelegate() {
                     protected Component getContents(String id) {
-                        return new ConfirmRemovalPanel(id, workspace);
+                        return new ConfirmRemovalPanel(id, selection);
                     }
                     
                     protected boolean onSubmit(AjaxRequestTarget target) {
                         CascadeDeleteVisitor visitor = new CascadeDeleteVisitor(getCatalog());
-                        workspace.accept(visitor);
-                        target.addComponent(workspaces);
+                        for (WorkspaceInfo wi : selection) {
+                            wi.accept(visitor);
+                        }
+                        workspaces.clearSelection();
                         return true;
                     }
                     
+                    @Override
+                    public void onClose(AjaxRequestTarget target) {
+                        target.addComponent(workspaces);
+                    }
+                    
                 });
-            }
+             }
             
         };
     }
