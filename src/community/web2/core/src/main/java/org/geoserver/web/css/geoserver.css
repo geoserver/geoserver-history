@@ -255,6 +255,10 @@ td.actions {
 width: 13em;
 }
 
+th.selection {
+	width: 1%; /* use as few space as possible */
+}
+
 /*-----------------------
 Forms
 -----------------------*/
