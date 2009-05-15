@@ -21,10 +21,7 @@ public class WorkspaceProvider extends GeoServerDataProvider<WorkspaceInfo> {
     public static Property<WorkspaceInfo> NAME = 
         new BeanProperty<WorkspaceInfo>( "name", "name" );
 
-    public static Property<WorkspaceInfo> REMOVE = 
-        new PropertyPlaceholder<WorkspaceInfo>( "remove" );
-
-    static List PROPERTIES = Arrays.asList( NAME, REMOVE );
+    static List PROPERTIES = Arrays.asList( NAME);
    
     @Override
     protected List<WorkspaceInfo> getItems() {
