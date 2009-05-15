@@ -43,12 +43,15 @@
                       file="${basedir}/build.properties"/>
  
                   <!-- copy over resources from test suite --> 
+                  <!--
                   <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
                     <fileset dir="${basedir}/tests/wfs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                  -->
                   <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
                     <fileset dir="${basedir}/tests/wfs/1.1.0/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
+                  <!--
                   <copy todir="${basedir}/engine/scripts/wms-1.1.1">
                     <fileset dir="${basedir}/tests/wms/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
@@ -58,7 +61,7 @@
                   <copy todir="${basedir}/engine/scripts/wcs-1.1.1">
                     <fileset dir="${basedir}/tests/wcs/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
                   </copy>
-
+		  -->
                   <!-- create necessary directories -->
                   <mkdir dir="${basedir}/target/server/lib"/>
                   <mkdir dir="${basedir}/target/common/lib"/>

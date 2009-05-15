@@ -8,6 +8,7 @@ import static org.geoserver.web.demo.PreviewLayerProvider.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
@@ -97,7 +98,7 @@ public class MapPreviewPage extends GeoServerBasePage {
             formats.add(producer.getOutputFormat());
         }
         formats = new ArrayList<String>(new HashSet<String>(formats));
-        Collections.sort(formats);
+        Collections.sort(formats, new FormatComparator("format.wms."));
 
         return formats;
     }
@@ -110,7 +111,7 @@ public class MapPreviewPage extends GeoServerBasePage {
                 .getBeansOfType(WFSGetFeatureOutputFormat.class)) {
             formats.add((String) producer.getOutputFormats().iterator().next());
         }
-        Collections.sort(formats);
+        Collections.sort(formats, new FormatComparator("format.wfs."));
 
         return formats;
     }
@@ -183,5 +184,26 @@ public class MapPreviewPage extends GeoServerBasePage {
             LOGGER.log(Level.WARNING, e.getMessage());
             return "?" + format + "?";
         }
+    }
+    
+    /**
+     * Sorts the formats using the i18n translated name
+     * @author aaime
+     *
+     */
+    private class FormatComparator implements Comparator<String> {
+        
+        String prefix;
+        
+        public FormatComparator(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public int compare(String f1, String f2) {
+            String t1 = translateFormat(prefix + f1);
+            String t2 = translateFormat(prefix + f2);
+            return t1.compareTo(t2);
+        }
+        
     }
 }
