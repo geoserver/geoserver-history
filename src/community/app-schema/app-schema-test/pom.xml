@@ -73,6 +73,7 @@
 							<exclude>**/Whatever.java</exclude>
 						-->
 						<!-- until schema cache problem is resolved  -->
+						<exclude>**/XYGeomTest.java</exclude>
 						<exclude>**/XlinkWfsTest.java</exclude>
 						<exclude>**/DataAccessIntegrationWfsTest.java</exclude>
 					</excludes>
