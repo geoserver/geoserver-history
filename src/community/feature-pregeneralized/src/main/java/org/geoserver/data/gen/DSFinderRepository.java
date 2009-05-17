@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 
-import org.geotools.data.gen.DataStoreLookup;
+import org.geotools.data.Repository;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 /**
- * Implementation of {@link DataStoreLookup} 
+ * Implementation of {@link Repository} 
  * This class interprets the data source name as a file name or an URL for
  * a property file containing the ds creation parameters
  * 
@@ -26,7 +26,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @author Christian Mueller
  *
  */
-public class DataStoreLookupDSFinder extends org.geotools.data.gen.DataStoreLookupDSFinder {
+public class DSFinderRepository extends org.geotools.data.gen.DSFinderRepository {
 	
 			
 	

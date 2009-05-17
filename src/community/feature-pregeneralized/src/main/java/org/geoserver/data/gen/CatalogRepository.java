@@ -13,35 +13,37 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
-import org.geotools.data.gen.DataStoreLookup;
+import org.geotools.data.Repository;
+import org.opengis.feature.type.Name;
 
 /**
  * @author Christian Mueller
  * 
- * DataStoreLookup implementation using the geoserver catalog
+ * Repository implementation using the geoserver catalog
  *
  */
-public class DataStoreLookupCatalog implements DataStoreLookup {
+public class CatalogRepository implements Repository {
 		private Catalog catalogObject;
 		private Logger log; 
 		
-	public DataStoreLookupCatalog() {
+	public CatalogRepository() {
 		super();		
 		log= Logger.getLogger(this.getClass().getName());
 	}
 			
 	
 	
-	public DataStore getDataStoreFor(String name) {
-			return getDataStoreFor(null,name); 		
-	}
 
-	public DataStore getDataStoreFor(String workspace, String name) {
+	public DataStore dataStore(Name name) {
+                
+                String workspace = name .getNamespaceURI();
+                String localName=name.getLocalPart();
 		
-		DataStoreInfo info = catalogObject.getDataStoreByName(workspace,name);
+		DataStoreInfo info = catalogObject.getDataStoreByName(workspace,localName);
 		if (info==null) {
-			throw new RuntimeException("Cannot find datastore "+ name + "in workspace "+ workspace);
+			throw new RuntimeException("Cannot find datastore "+ localName + "in workspace "+ workspace);
 		}
 		try {
 			return info.getDataStore(null);
@@ -63,5 +65,12 @@ public class DataStoreLookupCatalog implements DataStoreLookup {
 			throw new RuntimeException("Cannot find geoserver catalog");			
 		}
 	}
+
+
+
+
+    public DataAccess<?, ?> access(Name name) {
+        return dataStore(name);
+    }
 
 }
