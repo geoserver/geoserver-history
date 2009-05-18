@@ -14,15 +14,16 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.GeoServerDataProvider;
-import org.geoserver.web.wicket.GeoServerDataProvider.Property;
-import org.geoserver.web.wicket.GeoServerDataProvider.PropertyPlaceholder;
 
-public class StoreProvider extends GeoServerDataProvider {
+/**
+ * Data providers for the {@link StorePanel}
+ */
+@SuppressWarnings("serial")
+public class StoreProvider extends GeoServerDataProvider<StoreInfo> {
     
     static final Property<StoreInfo> TYPE = new Property<StoreInfo>() {
 
@@ -67,10 +68,8 @@ public class StoreProvider extends GeoServerDataProvider {
     static final Property<StoreInfo> ENABLED = new BeanProperty<StoreInfo>(
             "enabled", "enabled");
     
-    static final Property<StoreInfo> REMOVE = new PropertyPlaceholder<StoreInfo>("remove");
-
     static final List<Property<StoreInfo>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, NAME, ENABLED, REMOVE);
+            WORKSPACE, NAME, ENABLED);
 
     WorkspaceInfo workspace;
     

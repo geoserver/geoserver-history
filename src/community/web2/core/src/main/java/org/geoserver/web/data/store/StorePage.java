@@ -4,11 +4,11 @@
  */
 package org.geoserver.web.data.store;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.SelectionRemovalLink;
+import org.geoserver.web.wicket.GeoServerDialog;
 
 /**
  * Page listing all the available stores. Follows the usual filter/sort/page approach, provides ways
@@ -19,26 +19,34 @@ public class StorePage extends GeoServerSecuredPage {
     StoreProvider provider = new StoreProvider();
 
     StorePanel table;
+    
+    SelectionRemovalLink removal;
+
+    GeoServerDialog dialog;
 
     public StorePage() {
-        // the action buttons
+        // the add buttons
         add(new BookmarkablePageLink("addNew", NewDataPage.class));
-        add(removeSelectedLink());
-        table = new StorePanel("table", provider);
+        
+        // the table, and wire up selection change
+        table = new StorePanel("table", provider, true) {
+            @Override
+            protected void onSelectionUpdate(AjaxRequestTarget target) {
+                removal.setEnabled(table.getSelection().size() > 0);
+                target.addComponent(removal);
+            }  
+        };
         table.setOutputMarkupId(true);
         add(table);
-
-        // the workspaces drop down
-        //add(workspacesDropDown());
+        
+        // the confirm dialog
+        add(dialog = new GeoServerDialog("dialog"));
+        
+        // the removal button
+        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);
     }
 
-    Component removeSelectedLink() {
-        return new AjaxLink("removeSelected") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                System.out.println("IMPLEMENT ME!");
-            }
-        };
-    }
+    
 }
