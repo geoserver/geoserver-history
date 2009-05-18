@@ -11,7 +11,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
@@ -22,22 +24,19 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  */
 @SuppressWarnings("serial")
 public class StylePage extends GeoServerSecuredPage {
-
-    //FeedbackPanel feedbackPanel;
     
+    GeoServerTablePanel<StyleInfo> table;
+    
+    SelectionRemovalLink removal;
+
+    GeoServerDialog dialog;
+
+
     public StylePage() {
-        //add( feedbackPanel = new FeedbackPanel( "feedback") );
-        //feedbackPanel.setOutputMarkupId( true );
-        
-        add( new AjaxLink( "new" ) {
-            @Override
-            public void onClick(AjaxRequestTarget target) { 
-                setResponsePage(StyleNewPage.class);
-            }
-        });
+        add(newStyleLink());
 
         StyleProvider provider = new StyleProvider();
-        add( new GeoServerTablePanel<StyleInfo>("table", provider ) {
+        add(table = new GeoServerTablePanel<StyleInfo>("table", provider, true) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -46,15 +45,36 @@ public class StylePage extends GeoServerSecuredPage {
                 if ( property == StyleProvider.NAME ) {
                     return styleLink( id, itemModel );
                 }
-                if ( property == StyleProvider.REMOVE ) {
-                    return removeStyleLink( id, itemModel );
-                }
                 
                 return null;
             }
             
+            @Override
+            protected void onSelectionUpdate(AjaxRequestTarget target) {
+                removal.setEnabled(table.getSelection().size() > 0);
+                target.addComponent(removal);
+            }  
+            
         });
+        table.setOutputMarkupId(true);
         
+        // the confirm dialog
+        add(dialog = new GeoServerDialog("dialog"));
+        
+        // the removal button
+        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);
+        
+    }
+
+    private AjaxLink newStyleLink() {
+        return new AjaxLink( "new" ) {
+            @Override
+            public void onClick(AjaxRequestTarget target) { 
+                setResponsePage(StyleNewPage.class);
+            }
+        };
     }
     
     Component styleLink( String id, IModel model ) {
