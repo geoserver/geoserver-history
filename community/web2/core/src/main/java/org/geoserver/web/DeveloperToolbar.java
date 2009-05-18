@@ -3,11 +3,12 @@ package org.geoserver.web;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.geoserver.config.GeoServerLoader;
 
 /**
  * Small utility panel showed only in dev mode that allows developers to control
@@ -20,10 +21,24 @@ public class DeveloperToolbar extends Panel {
         super(id);
 
         // Clears the resource caches
-        add(new AjaxFallbackLink("clearCache") {
+        add(new IndicatingAjaxLink("clearCache") {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 GeoServerApplication.get().clearWicketCaches();
+            }
+        });
+        
+        // Reloads the whole catalog and config from the file system
+        add(new IndicatingAjaxLink("reload") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                try {
+                    GeoServerLoader loader = (GeoServerLoader) GeoServerApplication.get().getBean("geoServerLoader");
+                    loader.reload();
+                    info("Catalog and configuration reloaded");
+                } catch(Exception e) {
+                    error(e);
+                }
             }
         });
 
