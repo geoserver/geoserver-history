@@ -18,6 +18,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
@@ -43,7 +44,9 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
     public BasicResourceConfig(String id, IModel model) {
         super(id, model);
 
-        add(new TextField("name"));
+        TextField name = new TextField("name");
+        name.add(new PatternValidator("[\\w_]\\w*"));
+        add(name);
         add(new TextField("title"));
         add(new TextArea("abstract"));
         add(new KeywordsEditor("keywords", LiveCollectionModel.list(new PropertyModel(model, "keywords"))));
@@ -161,6 +164,16 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 
         public String getIdValue(Object object, int index) {
             return ((ProjectionPolicy) object).name();
+        }
+    }
+    
+    /**
+     * Checks a resource name is actually a valid one (WFS/WMS wise),
+     * in particular, only word chars
+     */
+    static class ResourceNameValidator extends PatternValidator {
+        public ResourceNameValidator() {
+            super("[\\w][\\w.-]*");
         }
     }
 }
