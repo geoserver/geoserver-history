@@ -48,7 +48,7 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         form.add(new TextField("uRI"));
         
         //stores
-        StorePanel storePanel = new StorePanel( "storeTable", new StoreProvider( ws ) );
+        StorePanel storePanel = new StorePanel("storeTable", new StoreProvider(ws), false);
         form.add(storePanel);
         
         form.add(new SubmitLink("save"){

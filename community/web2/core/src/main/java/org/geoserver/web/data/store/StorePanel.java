@@ -6,7 +6,6 @@ package org.geoserver.web.data.store;
 
 import static org.geoserver.web.data.store.StoreProvider.ENABLED;
 import static org.geoserver.web.data.store.StoreProvider.NAME;
-import static org.geoserver.web.data.store.StoreProvider.REMOVE;
 import static org.geoserver.web.data.store.StoreProvider.TYPE;
 import static org.geoserver.web.data.store.StoreProvider.WORKSPACE;
 
@@ -47,11 +46,11 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
     private ModalWindow popupWindow;
 
     public StorePanel(String id) {
-        this(id, new StoreProvider());
+        this(id, new StoreProvider(), false);
     }
 
-    public StorePanel(String id, StoreProvider provider) {
-        super(id, provider);
+    public StorePanel(String id, StoreProvider provider, boolean selectable) {
+        super(id, provider, selectable);
 
         // the popup window for messages
         popupWindow = new ModalWindow("popupWindow");
@@ -92,8 +91,6 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
             Fragment f = new Fragment(id, "iconFragment", StorePanel.this);
             f.add(new Image("storeIcon", enabledIcon));
             return f;
-        } else if (property == REMOVE) {
-            return removeLink(id, itemModel);
         }
         throw new IllegalArgumentException("Don't know a property named " + property.getName());
     }
