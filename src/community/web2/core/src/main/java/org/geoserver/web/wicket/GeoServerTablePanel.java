@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -195,6 +194,16 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
     
     /**
+     * Called each time selection checkbox changes state due to a user action.
+     * By default it does nothing, subclasses can implement this to provide
+     * extra behavior
+     * @param target
+     */
+    protected void onSelectionUpdate(AjaxRequestTarget target) {
+        // by default do nothing
+    }
+    
+    /**
      * Returns a model for this property title. Default behaviour is to lookup for a
      * resource name <page>.th.<propertyName>
      * @param property
@@ -237,6 +246,9 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                 // update table and the checkbox itself
                 target.addComponent(getComponent());
                 target.addComponent(listContainer);
+                
+                // allow subclasses to play on this change as well
+                onSelectionUpdate(target);
             }
             
         });
@@ -254,6 +266,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                     selectAllValue = false;
                     target.addComponent(selectAll);
                 }
+                onSelectionUpdate(target);
             }
             
         });
