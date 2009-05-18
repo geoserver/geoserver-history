@@ -222,7 +222,8 @@ padding: 0 0 250px 19px;
 Tables
 -----------------------*/
 table {
-margin: 1.4em 0; /* override blueprint's settings */
+margin-bottom: 0.3em; /* override blueprint's settings */
+margin-top: 0.3em; /* override blueprint's settings */
 }
 
 th {
@@ -664,6 +665,7 @@ background: #fff url(../img/page-bg.png) no-repeat;
 
 .page-header {
 background: #fff url(../img/page-header-bg.png) repeat-x;
+margin-bottom: 1em;
 }
 
 /*-----------------------
@@ -906,4 +908,17 @@ padding: 2px 0px 2px 20px;
 .remove-link {
 background: transparent url(../img/icons/silk/delete.png) scroll no-repeat left center;
 padding: 2px 0px 2px 20px;
+}
+
+/*----------------
+  Page header
+-----------------*/
+
+.page-header p {
+margin-bottom: 0px;
+}
+
+.page-header ul {
+margin: 0.2em; /* override blueprint's settings for unordered lists */
+list-style-type: none;
 }

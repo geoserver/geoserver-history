@@ -9,10 +9,12 @@ import static org.geoserver.web.data.workspace.WorkspaceProvider.NAME;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
+import org.geoserver.web.data.layer.NewLayerPage;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
@@ -24,17 +26,13 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 @SuppressWarnings("serial")
 public class WorkspacePage extends GeoServerSecuredPage {
     WorkspaceProvider provider = new WorkspaceProvider();
-    GeoServerTablePanel<WorkspaceInfo> workspaces;
+    GeoServerTablePanel<WorkspaceInfo> table;
     GeoServerDialog dialog;
-    SelectionRemovalLink remove;
+    SelectionRemovalLink removal;
     
     public WorkspacePage() {
-        // add new workspace link        
-        BookmarkablePageLink newLink = new BookmarkablePageLink("new", WorkspaceNewPage.class);
-        add( newLink );
-
         // the middle table
-        add(workspaces = new GeoServerTablePanel<WorkspaceInfo>("table", provider, true) {
+        add(table = new GeoServerTablePanel<WorkspaceInfo>("table", provider, true) {
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<WorkspaceInfo> property) {
@@ -47,19 +45,29 @@ public class WorkspacePage extends GeoServerSecuredPage {
             
             @Override
             protected void onSelectionUpdate(AjaxRequestTarget target) {
-                remove.setEnabled(workspaces.getSelection().size() > 0);
-                target.addComponent(remove);    
+                removal.setEnabled(table.getSelection().size() > 0);
+                target.addComponent(removal);    
             }
         });
-        workspaces.setOutputMarkupId(true);
+        table.setOutputMarkupId(true);
         
         // the confirm dialog
         add(dialog = new GeoServerDialog("dialog"));
+        setHeaderPanel(headerPanel());
+    }
+    
+    protected Component headerPanel() {
+        Fragment header = new Fragment(HEADER_PANEL, "header", this);
         
-        // the cascade removal link
-        add(remove = new SelectionRemovalLink("removeSelected", workspaces, dialog));
-        remove.setOutputMarkupId(true);
-        remove.setEnabled(false);
+        // the add button
+        header.add(new BookmarkablePageLink("addNew", WorkspaceNewPage.class));
+        
+        // the removal button
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);
+        
+        return header;
     }
     
     Component workspaceLink(String id, final IModel itemModel) {

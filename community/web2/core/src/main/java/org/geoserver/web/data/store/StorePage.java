@@ -4,10 +4,13 @@
  */
 package org.geoserver.web.data.store;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
+import org.geoserver.web.data.layer.NewLayerPage;
 import org.geoserver.web.wicket.GeoServerDialog;
 
 /**
@@ -25,9 +28,6 @@ public class StorePage extends GeoServerSecuredPage {
     GeoServerDialog dialog;
 
     public StorePage() {
-        // the add buttons
-        add(new BookmarkablePageLink("addNew", NewDataPage.class));
-        
         // the table, and wire up selection change
         table = new StorePanel("table", provider, true) {
             @Override
@@ -41,11 +41,21 @@ public class StorePage extends GeoServerSecuredPage {
         
         // the confirm dialog
         add(dialog = new GeoServerDialog("dialog"));
+        setHeaderPanel(headerPanel());
+    }
+    
+    protected Component headerPanel() {
+        Fragment header = new Fragment(HEADER_PANEL, "header", this);
+        
+        // the add button
+        header.add(new BookmarkablePageLink("addNew", NewDataPage.class));
         
         // the removal button
-        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
         removal.setOutputMarkupId(true);
         removal.setEnabled(false);
+        
+        return header;
     }
 
     

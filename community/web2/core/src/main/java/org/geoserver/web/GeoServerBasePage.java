@@ -39,26 +39,24 @@ import org.geotools.util.logging.Logging;
  * <li>An infrastructure for locating subpages in the Spring context and
  * creating links</li>
  * </ul>
- * 
- * TODO: breadcrumb automated cration. This can be done by using a list of
- * {@link BookmarkablePageInfo} instances that needs to be passed to each page,
- * a custom PageLink subclass that provides that information, and some code
- * coming from {@link BreadCrumbBar}. <br>
- * See also this discussion on the wicket users mailing list:
- * http://www.nabble.com/Bread-crumbs-based-on-pages%2C-not-panels--tf2244730.html#a6225855
- * 
+ *
  * @author Andrea Aaime, The Open Planning Project
  * @author Justin Deoliveira, The Open Planning Project
  */
 public class GeoServerBasePage extends WebPage {
     
+    /**
+     * The id of the panel sitting in the page-header, right below the page description
+     */
+    protected static final String HEADER_PANEL = "headerPanel";
+
     protected static final Logger LOGGER = Logging.getLogger(GeoServerBasePage.class);
 
     /**
      * feedback panel for subclasses to report errors and information.
      */
     protected FeedbackPanel feedbackPanel;
-    
+
 	@SuppressWarnings("serial")
     public GeoServerBasePage() {
 
@@ -129,6 +127,24 @@ public class GeoServerBasePage extends WebPage {
 
         add(feedbackPanel = new FeedbackPanel("feedback"));
         feedbackPanel.setOutputMarkupId( true );
+        
+        add(new WebMarkupContainer(HEADER_PANEL));
+    }
+	
+	/**
+     * The base page is built with an empty panel in the page-header section that can be filled by
+     * subclasses calling this method
+     * 
+     * @param component
+     *            The component to be placed at the bottom of the page-header section. The component
+     *            must have "page-header" id
+     */
+    protected void setHeaderPanel(Component component) {
+        if (!HEADER_PANEL.equals(component.getId()))
+            throw new IllegalArgumentException(
+                    "The header panel component must have 'headerPanel' id");
+        remove(HEADER_PANEL);
+        add(component);
     }
 
     /**

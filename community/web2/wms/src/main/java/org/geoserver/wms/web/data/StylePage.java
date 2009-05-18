@@ -7,11 +7,14 @@ package org.geoserver.wms.web.data;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
+import org.geoserver.web.data.layer.NewLayerPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -33,8 +36,6 @@ public class StylePage extends GeoServerSecuredPage {
 
 
     public StylePage() {
-        add(newStyleLink());
-
         StyleProvider provider = new StyleProvider();
         add(table = new GeoServerTablePanel<StyleInfo>("table", provider, true) {
 
@@ -60,23 +61,24 @@ public class StylePage extends GeoServerSecuredPage {
         
         // the confirm dialog
         add(dialog = new GeoServerDialog("dialog"));
+        setHeaderPanel(headerPanel());
+        
+    }
+    
+    protected Component headerPanel() {
+        Fragment header = new Fragment(HEADER_PANEL, "header", this);
+        
+        // the add button
+        header.add(new BookmarkablePageLink("addNew", StyleNewPage.class));
         
         // the removal button
-        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
         removal.setOutputMarkupId(true);
         removal.setEnabled(false);
         
+        return header;
     }
 
-    private AjaxLink newStyleLink() {
-        return new AjaxLink( "new" ) {
-            @Override
-            public void onClick(AjaxRequestTarget target) { 
-                setResponsePage(StyleNewPage.class);
-            }
-        };
-    }
-    
     Component styleLink( String id, IModel model ) {
         return new SimpleAjaxLink( id, StyleProvider.NAME.getModel(model) ) {
             @Override
