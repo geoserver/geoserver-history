@@ -6,7 +6,8 @@ package org.geoserver.web.data.layergroup;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.LayerGroupInfo;
@@ -31,14 +32,6 @@ public class LayerGroupPage extends GeoServerSecuredPage {
 
     public LayerGroupPage() {
         LayerGroupProvider provider = new LayerGroupProvider();
-        
-        add(new AjaxLink("add") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                setResponsePage(LayerGroupNewPage.class);
-            }
-        });
-
         add(table = new GeoServerTablePanel<LayerGroupInfo>( "table", provider, true ) {
 
             @Override
@@ -63,11 +56,21 @@ public class LayerGroupPage extends GeoServerSecuredPage {
         
         // the confirm dialog
         add(dialog = new GeoServerDialog("dialog"));
+        setHeaderPanel(headerPanel());
+    }
+    
+    protected Component headerPanel() {
+        Fragment header = new Fragment(HEADER_PANEL, "header", this);
+        
+        // the add button
+        header.add(new BookmarkablePageLink("addNew", LayerGroupNewPage.class));
         
         // the removal button
-        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
         removal.setOutputMarkupId(true);
         removal.setEnabled(false);
+        
+        return header;
     }
     
     Component layerGroupLink(String id, IModel itemModel) {

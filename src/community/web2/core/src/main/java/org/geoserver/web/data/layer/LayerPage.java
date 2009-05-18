@@ -14,7 +14,6 @@ import static org.geoserver.web.data.layer.LayerProvider.WORKSPACE;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -47,19 +46,11 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 @SuppressWarnings("serial")
 public class LayerPage extends GeoServerSecuredPage {
     LayerProvider provider = new LayerProvider();
-    ModalWindow popupWindow;
     GeoServerTablePanel<LayerInfo> table;
     GeoServerDialog dialog;
     SelectionRemovalLink removal;
 
     public LayerPage() {
-        // the popup window for messages
-        popupWindow = new ModalWindow("popupWindow");
-        add(popupWindow);
-        
-        // the add button
-        add(new BookmarkablePageLink("addNew", NewLayerPage.class));
-        
         final CatalogIconFactory icons = CatalogIconFactory.get();
         table = new GeoServerTablePanel<LayerInfo>("table", provider, true) {
 
@@ -100,11 +91,21 @@ public class LayerPage extends GeoServerSecuredPage {
         
         // the confirm dialog
         add(dialog = new GeoServerDialog("dialog"));
+        setHeaderPanel(headerPanel());
+    }
+    
+    protected Component headerPanel() {
+        Fragment header = new Fragment(HEADER_PANEL, "header", this);
+        
+        // the add button
+        header.add(new BookmarkablePageLink("addNew", NewLayerPage.class));
         
         // the removal button
-        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
         removal.setOutputMarkupId(true);
         removal.setEnabled(false);
+        
+        return header;
     }
 
     private Component layerLink(String id, final IModel model) {
