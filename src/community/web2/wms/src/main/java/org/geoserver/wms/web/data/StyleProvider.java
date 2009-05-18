@@ -21,10 +21,7 @@ public class StyleProvider extends GeoServerDataProvider<StyleInfo> {
     public static Property<StyleInfo> NAME = 
         new BeanProperty<StyleInfo>( "name", "name" );
 
-    public static Property<StyleInfo> REMOVE = 
-        new PropertyPlaceholder<StyleInfo>( "remove" );
-
-    static List PROPERTIES = Arrays.asList( NAME, REMOVE );
+    static List PROPERTIES = Arrays.asList( NAME);
     
     @Override
     protected List<StyleInfo> getItems() {
