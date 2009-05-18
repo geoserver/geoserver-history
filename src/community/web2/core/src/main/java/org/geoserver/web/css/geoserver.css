@@ -355,6 +355,16 @@ padding: 0.2em;
 width: 25em;
 }
 
+/* search button inside text field */
+.search {
+border: 1px solid #BFBFBF;
+background-image: url(../img/icons/silk/magnifier.png);
+background-repeat: no-repeat;
+background-position: 4px 2px;
+padding-left: 24px;
+height: 18px;
+}
+
 textarea.textarea {
 font-family: "Lucida Grande",Tahoma,Arial,sans-serif;
 height: 15em;
