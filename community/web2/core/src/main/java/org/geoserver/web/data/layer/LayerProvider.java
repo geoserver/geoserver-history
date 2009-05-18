@@ -72,11 +72,8 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
         }
     };
     
-    static final Property<LayerInfo> REMOVE = new PropertyPlaceholder<LayerInfo>(
-            "remove");
-
     static final List<Property<LayerInfo>> PROPERTIES = Arrays.asList(TYPE,
-            WORKSPACE, STORE, NAME, ENABLED, SRS, REMOVE);
+            WORKSPACE, STORE, NAME, ENABLED, SRS);
 
     @Override
     protected List<LayerInfo> getItems() {
