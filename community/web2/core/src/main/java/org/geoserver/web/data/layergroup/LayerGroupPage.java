@@ -11,7 +11,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
@@ -22,6 +24,10 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  */
 @SuppressWarnings("serial")
 public class LayerGroupPage extends GeoServerSecuredPage {
+    
+    GeoServerTablePanel<LayerGroupInfo> table;
+    GeoServerDialog dialog;
+    SelectionRemovalLink removal;
 
     public LayerGroupPage() {
         LayerGroupProvider provider = new LayerGroupProvider();
@@ -33,7 +39,7 @@ public class LayerGroupPage extends GeoServerSecuredPage {
             }
         });
 
-        add( new GeoServerTablePanel<LayerGroupInfo>( "table", provider ) {
+        add(table = new GeoServerTablePanel<LayerGroupInfo>( "table", provider, true ) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -42,14 +48,26 @@ public class LayerGroupPage extends GeoServerSecuredPage {
                 if ( property == LayerGroupProvider.NAME ) {
                     return layerGroupLink( id, itemModel ); 
                 }
-                if ( property == LayerGroupProvider.REMOVE ) {
-                    return removeLayerGroupLink( id, itemModel );
-                }
                 
                 return null;
             }
+            
+            @Override
+            protected void onSelectionUpdate(AjaxRequestTarget target) {
+                removal.setEnabled(table.getSelection().size() > 0);
+                target.addComponent(removal);
+            }  
         });
+        table.setOutputMarkupId(true);
+        add(table);
         
+        // the confirm dialog
+        add(dialog = new GeoServerDialog("dialog"));
+        
+        // the removal button
+        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);
     }
     
     Component layerGroupLink(String id, IModel itemModel) {

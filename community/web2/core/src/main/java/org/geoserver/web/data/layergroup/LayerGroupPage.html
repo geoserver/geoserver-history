@@ -2,7 +2,13 @@
   <body>
     <wicket:extend>
         <a class="add-link" wicket:id="add"><wicket:message key="addNewLayerGroup">Add new layer group</wicket:message></a>
+        <br/>
+        <a class="remove-link" href="#" wicket:id="removeSelected"><wicket:message key="removeSelected" /></a>
+        
         <div wicket:id="table"></div>
+        
+        <!-- the cascade delete confirmation dialog -->
+        <div wicket:id="dialog"></div>
     </wicket:extend>
   </body>
 </html>
