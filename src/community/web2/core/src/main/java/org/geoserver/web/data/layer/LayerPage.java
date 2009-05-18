@@ -6,7 +6,6 @@ package org.geoserver.web.data.layer;
 
 import static org.geoserver.web.data.layer.LayerProvider.ENABLED;
 import static org.geoserver.web.data.layer.LayerProvider.NAME;
-import static org.geoserver.web.data.layer.LayerProvider.REMOVE;
 import static org.geoserver.web.data.layer.LayerProvider.SRS;
 import static org.geoserver.web.data.layer.LayerProvider.STORE;
 import static org.geoserver.web.data.layer.LayerProvider.TYPE;
@@ -15,7 +14,6 @@ import static org.geoserver.web.data.layer.LayerProvider.WORKSPACE;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
@@ -30,11 +28,13 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.data.store.CoverageStoreEditPage;
 import org.geoserver.web.data.store.DataAccessEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
@@ -49,15 +49,16 @@ public class LayerPage extends GeoServerSecuredPage {
     LayerProvider provider = new LayerProvider();
     ModalWindow popupWindow;
     GeoServerTablePanel<LayerInfo> table;
+    GeoServerDialog dialog;
+    SelectionRemovalLink removal;
 
     public LayerPage() {
         // the popup window for messages
         popupWindow = new ModalWindow("popupWindow");
         add(popupWindow);
         
-        // the action buttons
+        // the add button
         add(new BookmarkablePageLink("addNew", NewLayerPage.class));
-        add(removeSelectedLink());
         
         final CatalogIconFactory icons = CatalogIconFactory.get();
         table = new GeoServerTablePanel<LayerInfo>("table", provider, true) {
@@ -83,27 +84,27 @@ public class LayerPage extends GeoServerSecuredPage {
                     return f;
                 } else if(property == SRS) {
                     return new Label(id, SRS.getModel(itemModel));
-                } else if(property == REMOVE) {
-                    return removeLink(id, itemModel);
                 }
                 throw new IllegalArgumentException("Don't know a property named " + property.getName());
             }
             
+            @Override
+            protected void onSelectionUpdate(AjaxRequestTarget target) {
+                removal.setEnabled(table.getSelection().size() > 0);
+                target.addComponent(removal);
+            }  
+            
         };
         table.setOutputMarkupId(true);
         add(table);
-    }
-
-    Component removeSelectedLink() {
-        return new AjaxLink("removeSelected") {
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                System.out.println("IMPLEMENT ME!");
-                
-            }
-            
-        };
+        
+        // the confirm dialog
+        add(dialog = new GeoServerDialog("dialog"));
+        
+        // the removal button
+        add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);
     }
 
     private Component layerLink(String id, final IModel model) {
