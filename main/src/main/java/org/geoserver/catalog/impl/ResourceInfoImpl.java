@@ -396,7 +396,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         if (nativeCRS == null) {
             if (other.getNativeCRS() != null)
                 return false;
-        } else if (CRS.equalsIgnoreMetadata(nativeCRS, other.getNativeCRS()))
+        } else if (!CRS.equalsIgnoreMetadata(nativeCRS, other.getNativeCRS()))
             return false;
         if (nativeName == null) {
             if (other.getNativeName() != null)
