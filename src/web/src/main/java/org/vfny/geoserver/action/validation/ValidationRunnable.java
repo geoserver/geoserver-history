@@ -20,14 +20,14 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Repository;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.validation.ValidationProcessor;
 import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.config.DataStoreConfig;
+import org.opengis.feature.type.Name;
 
 
 /**
@@ -106,29 +106,26 @@ public class ValidationRunnable implements Runnable {
         //TestValidationResults vr = runTransactions(dataStores,gv,context);
         request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY, results);
 
-        Map dataStores = repository.getFeatureSources();
-        Iterator it = dataStores.entrySet().iterator();
-
-        // Go through each data store and run the featureValidation test on
-        //  each feature type
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String typeRef = (String) entry.getKey();
-            FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource) entry.getValue();
-            String dataStoreId = typeRef.split(":")[0];
-
-            try {
-                LOGGER.finer(dataStoreId + ": feature validation, " + featureSource);
-
-                FeatureCollection<SimpleFeatureType, SimpleFeature> features = featureSource.getFeatures();
-                validator.featureValidation(dataStoreId, features, results);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+        {   // Go through each data store and run the featureValidation test on
+            // each feature type
+        	for (DataStore store : repository.getDataStores() ) {
+	        	for( Name name : store.getNames() ){
+			        String typeRef = name.toString();
+			        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = store.getFeatureSource( name );
+			        
+			        String dataStoreId = name.getNamespaceURI() == null ? "" : name.getNamespaceURI();
+			        try {
+			            LOGGER.finer(dataStoreId + ": feature validation, " + featureSource);
+			            FeatureCollection<SimpleFeatureType, SimpleFeature> features = featureSource.getFeatures();
+			            validator.featureValidation(dataStoreId, features, results);
+			        } catch (Exception e1) {
+			            e1.printStackTrace();
+			        }
+	        	}
+	        }
         }
 
         /** ------------------------------------------------------------------ */
-
         /** run INTEGRITY validations */
 
         // this is stupid
@@ -137,7 +134,13 @@ public class ValidationRunnable implements Runnable {
 
         // a map of typeref -> DataSource
         try {
-            Map featureSources = repository.getFeatureSources();
+        	Map<Name,FeatureSource<?,?>> featureSources = new HashMap<Name,FeatureSource<?,?>>();            
+            for( DataStore store : repository.getDataStores() ){
+            	for( Name name : store.getNames() ){
+            		FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = store.getFeatureSource( name );
+            		featureSources.put( name, featureSource );
+            	}
+            }
             LOGGER.finer("integrity tests entry for " + featureSources.size() + " dataSources.");
             validator.integrityValidation(featureSources, env, results);
         } catch (Exception e) {
