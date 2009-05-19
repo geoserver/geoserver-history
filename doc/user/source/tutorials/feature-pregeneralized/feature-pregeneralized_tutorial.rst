@@ -46,7 +46,7 @@ You should see the following output::
   Shape file          	0/streams.shp
   Target directory    	.
   Distances           	5,10,20,50
-  % |####################################################################################################|
+  % |####################################################|
 
 Now there are four additonal directories **5.0** , **10.0** , **20.0** , **50.0** . Look at the size of files with the extension **shp** within these directories, increasing the generalization distance reduces the file size.
 
