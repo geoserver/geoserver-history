@@ -56,6 +56,7 @@ public class FeatureChainingMockData implements TestData {
             put("cv", "http://www.opengis.net/cv/0.2.1");
             put("swe", "http://www.opengis.net/swe/1.0.1");
             put("sml", "http://www.opengis.net/sensorML/1.0.1");
+            put("ex", "http://example.com");
         }
     };
 
@@ -135,6 +136,16 @@ public class FeatureChainingMockData implements TestData {
         addFeatureType(GSML_NAMESPACE_PREFIX, "ControlledConcept", "ControlledConcept.xml",
                 "ControlledConcept.properties", data, featureTypesBaseDir, datastoreParams,
                 datastoreNamespacePrefixes);
+        // this is a mock type to test encoding complex type with simple content
+        addFeatureType("ex", "ParentFeature", "ComplexTypeWithSimpleContent.xml",
+                "ControlledConcept.properties", data, featureTypesBaseDir, datastoreParams,
+                datastoreNamespacePrefixes);
+        copyTo(FeatureChainingMockData.class.getResourceAsStream(TEST_DATA + "simpleContent.xsd"),
+                "featureTypes" + "/" + getDataStoreName("ex", "ParentFeature")
+                        + "/simpleContent.xsd", data);
+        copyTo(FeatureChainingMockData.class.getResourceAsStream(TEST_DATA
+                + "SimpleContent.properties"), "featureTypes" + "/"
+                + getDataStoreName("ex", "ParentFeature") + "/SimpleContent.properties", data);
     }
 
     /**
