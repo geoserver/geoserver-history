@@ -78,4 +78,64 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     public void setMetadata(Map<String, Serializable> metadata) {
         this.metadata = metadata;
     }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((bounds == null) ? 0 : bounds.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((layers == null) ? 0 : layers.hashCode());
+        result = prime * result + ((metadata == null) ? 0 : metadata.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        result = prime * result + ((styles == null) ? 0 : styles.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!( obj instanceof LayerGroupInfo) ) 
+            return false;
+        LayerGroupInfo other = (LayerGroupInfo) obj;
+        if (bounds == null) {
+            if (other.getBounds() != null)
+                return false;
+        } else if (!bounds.equals(other.getBounds()))
+            return false;
+        if (id == null) {
+            if (other.getId() != null)
+                return false;
+        } else if (!id.equals(other.getId()))
+            return false;
+        if (layers == null) {
+            if (other.getLayers() != null)
+                return false;
+        } else if (!layers.equals(other.getLayers()))
+            return false;
+        if (metadata == null) {
+            if (other.getMetadata() != null)
+                return false;
+        } else if (!metadata.equals(other.getMetadata()))
+            return false;
+        if (name == null) {
+            if (other.getName() != null)
+                return false;
+        } else if (!name.equals(other.getName()))
+            return false;
+        if (styles == null) {
+            if (other.getStyles() != null)
+                return false;
+        } else if (!styles.equals(other.getStyles()))
+            return false;
+        return true;
+    }
+    
+    public String toString() {
+        return name;
+    }
 }
