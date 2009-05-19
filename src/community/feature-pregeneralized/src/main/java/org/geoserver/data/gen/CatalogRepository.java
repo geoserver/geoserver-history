@@ -8,6 +8,8 @@ package org.geoserver.data.gen;
 
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -41,7 +43,7 @@ public class CatalogRepository implements Repository {
                 String workspace = name .getNamespaceURI();
                 String localName=name.getLocalPart();
 		
-		DataStoreInfo info = catalogObject.getDataStoreByName(workspace,localName);
+		DataStoreInfo info = getCatalog().getDataStoreByName(workspace,localName);
 		if (info==null) {
 			throw new RuntimeException("Cannot find datastore "+ localName + "in workspace "+ workspace);
 		}
@@ -53,7 +55,10 @@ public class CatalogRepository implements Repository {
 	}
 
 
-	public void initialize(Object source) {
+	public Catalog getCatalog() {
+            
+                if (catalogObject!=null) return catalogObject;
+            
 		String beanName="catalog2";
 		catalogObject = (Catalog) GeoServerExtensions.bean(beanName);
 		if (catalogObject==null) {
@@ -64,6 +69,7 @@ public class CatalogRepository implements Repository {
 			log.severe("Cannot find bean implementing "+Catalog.class.getName());
 			throw new RuntimeException("Cannot find geoserver catalog");			
 		}
+                return catalogObject;
 	}
 
 
@@ -71,6 +77,18 @@ public class CatalogRepository implements Repository {
 
     public DataAccess<?, ?> access(Name name) {
         return dataStore(name);
+    }
+
+
+
+
+    /* (non-Javadoc)
+     * @see org.geotools.data.Repository#getDataStores()
+     * 
+     * return empty list, is not the job of this repository
+     */
+    public List<DataStore> getDataStores() {
+        return Collections.emptyList();
     }
 
 }
