@@ -612,11 +612,11 @@ public class WMSCapsTransformer extends TransformerBase {
         }
 
         /**
-         * @param featuresLayerTree
+         * @param layerTree
          */
-        private void handleLayerTree(LayerTree featuresLayerTree) {
-            final List<LayerInfo> data = new ArrayList<LayerInfo>(featuresLayerTree.getData());
-            final Collection<LayerTree> childrens = featuresLayerTree.getChildrens();
+        private void handleLayerTree(final LayerTree layerTree) {
+            final List<LayerInfo> data = new ArrayList<LayerInfo>(layerTree.getData());
+            final Collection<LayerTree> childrens = layerTree.getChildrens();
 
             Collections.sort(data, new Comparator<LayerInfo>() {
                 public int compare(LayerInfo o1, LayerInfo o2) {
@@ -625,20 +625,22 @@ public class WMSCapsTransformer extends TransformerBase {
             });
             
             for (LayerInfo layer : data) {
-                boolean hasGeometry = false;
-                try {
-                    hasGeometry = layer.getType() == Type.VECTOR
-                            && ((FeatureTypeInfo) layer.getResource()).getFeatureType()
-                                    .getGeometryDescriptor() != null;
-                } catch (Exception e) {
-                    LOGGER
-                            .log(
-                                    Level.SEVERE,
-                                    "An error occurred trying to determine if the layer is geometryless",
-                                    e);
+                //no sense in exposing a geometryless layer through wms...
+                boolean wmsExposable = false;
+                if (layer.getType() == Type.RASTER) {
+                    wmsExposable = true;
+                } else {
+                    try {
+                        wmsExposable = layer.getType() == Type.VECTOR
+                                && ((FeatureTypeInfo) layer.getResource()).getFeatureType()
+                                        .getGeometryDescriptor() != null;
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "An error occurred trying to determine if"
+                                + " the layer is geometryless", e);
+                    }
                 }
 
-                if (layer.isEnabled() && hasGeometry) {
+                if (layer.isEnabled() && wmsExposable) {
                     try {
                         handleLayer(layer);
                     } catch(Exception e) {
@@ -648,14 +650,14 @@ public class WMSCapsTransformer extends TransformerBase {
                 }
             }
 
-            LayerTree layerTree;
+            LayerTree childLayerTree;
 
             for (Iterator it = childrens.iterator(); it.hasNext();) {
-                layerTree = (LayerTree) it.next();
+                childLayerTree = (LayerTree) it.next();
                 start("Layer");
-                element("Name", layerTree.getName());
-                element("Title", layerTree.getName());
-                handleLayerTree(layerTree);
+                element("Name", childLayerTree.getName());
+                element("Title", childLayerTree.getName());
+                handleLayerTree(childLayerTree);
                 end("Layer");
             }
         }
@@ -723,6 +725,9 @@ public class WMSCapsTransformer extends TransformerBase {
             start("Style");
 
             StyleInfo defaultStyle = layer.getDefaultStyle();
+            if (defaultStyle == null) {
+                throw new NullPointerException("Layer " + layer.getName() + " has no default style");
+            }
             Style ftStyle;
             try {
                 ftStyle = defaultStyle.getStyle();
@@ -1011,7 +1016,7 @@ class LayerTree {
         for (Iterator<LayerInfo> it = c.iterator(); it.hasNext();) {
             LayerInfo layer = it.next();
             if (layer.isEnabled()) {
-                String wmsPath = layer.getPath(); 
+                String wmsPath = layer.getPath() == null? "" : layer.getPath();
 
                 if (wmsPath.startsWith("/")) {
                     wmsPath = wmsPath.substring(1, wmsPath.length());
