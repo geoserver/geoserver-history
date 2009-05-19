@@ -53,6 +53,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         namespaces.put(FeatureChainingMockData.GSML_NAMESPACE_PREFIX,
                 FeatureChainingMockData.GSML_NAMESPACE_URI);
+        namespaces.put("ex", "http://example.com");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
 
@@ -87,6 +88,31 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
         LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+    }
+    
+    /**
+     * Test nesting features of complex types with simple content. Previously the nested features
+     * attributes weren't encoded, so this is to ensure that this works.
+     * 
+     * @throws Exception
+     */
+    public void testComplexTypeWithSimpleContent() throws Exception {
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:ParentFeature");
+        LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
+        assertXpathCount(2, "//ex:ParentFeature", doc);
+
+        // 1
+        assertXpathCount(3, "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature", doc);
+        XMLAssert.assertXpathEvaluatesTo("name_a",
+                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute", doc);
+        XMLAssert.assertXpathEvaluatesTo("name_b",
+                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute", doc);
+        XMLAssert.assertXpathEvaluatesTo("name_c",
+                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute", doc);
+        // 2
+        assertXpathCount(1, "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature", doc);
+        XMLAssert.assertXpathEvaluatesTo("name_2",
+                "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature/ex:SimpleContent/ex:someAttribute", doc);
     }
 
     /**
