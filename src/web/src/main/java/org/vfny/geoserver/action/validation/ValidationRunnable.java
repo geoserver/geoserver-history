@@ -27,6 +27,8 @@ import org.geotools.validation.ValidationResults;
 import org.geotools.validation.Validator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.DataStoreConfig;
 import org.opengis.feature.type.Name;
 
 
