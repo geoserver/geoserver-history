@@ -432,14 +432,18 @@ public class MockData implements TestData {
      * Adds the "well known" coverage types to the data directory.
      */
     public void addWellKnownCoverageTypes() throws Exception {
+        URL style = MockData.class.getResource("raster.sld");
+        String styleName = "raster";
+        addStyle(styleName, style);
+        
         addCoverage(TASMANIA_DEM, TestData.class.getResource("tazdem.tiff"),
-                TIFF, null);
+                TIFF, styleName);
         addCoverage(TASMANIA_BM, TestData.class.getResource("tazbm.tiff"),
-                TIFF, null);
+                TIFF, styleName);
         addCoverage(ROTATED_CAD, TestData.class.getResource("rotated.tiff"),
-                TIFF, null);
+                TIFF, styleName);
         addCoverage(WORLD, TestData.class.getResource("world.tiff"),
-                TIFF, null);
+                TIFF, styleName);
     }
     
     /**
