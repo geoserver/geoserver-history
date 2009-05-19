@@ -108,24 +108,33 @@ public class ValidationRunnable implements Runnable {
         //TestValidationResults vr = runTransactions(dataStores,gv,context);
         request.getSession().setAttribute(TestValidationResults.CURRENTLY_SELECTED_KEY, results);
 
-        {   // Go through each data store and run the featureValidation test on
-            // each feature type
-        	for (DataStore store : repository.getDataStores() ) {
-	        	for( Name name : store.getNames() ){
-			        String typeRef = name.toString();
-			        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = store.getFeatureSource( name );
-			        
-			        String dataStoreId = name.getNamespaceURI() == null ? "" : name.getNamespaceURI();
-			        try {
-			            LOGGER.finer(dataStoreId + ": feature validation, " + featureSource);
-			            FeatureCollection<SimpleFeatureType, SimpleFeature> features = featureSource.getFeatures();
-			            validator.featureValidation(dataStoreId, features, results);
-			        } catch (Exception e1) {
-			            e1.printStackTrace();
-			        }
-	        	}
-	        }
-        }
+        { // Go through each data store and run the featureValidation test on
+			// each feature type
+			for (DataStore store : repository.getDataStores()) {
+				try {
+					for (Name name : store.getNames()) {
+						String typeRef = name.toString();
+						FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = store
+								.getFeatureSource(name);
+
+						String dataStoreId = name.getNamespaceURI() == null ? ""
+								: name.getNamespaceURI();
+						try {
+							LOGGER.finer(dataStoreId + ": feature validation, "
+									+ featureSource);
+							FeatureCollection<SimpleFeatureType, SimpleFeature> features = featureSource
+									.getFeatures();
+							validator.featureValidation(dataStoreId, features,
+									results);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
 
         /** ------------------------------------------------------------------ */
         /** run INTEGRITY validations */
@@ -138,10 +147,16 @@ public class ValidationRunnable implements Runnable {
         try {
         	Map<Name,FeatureSource<?,?>> featureSources = new HashMap<Name,FeatureSource<?,?>>();            
             for( DataStore store : repository.getDataStores() ){
-            	for( Name name : store.getNames() ){
-            		FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = store.getFeatureSource( name );
-            		featureSources.put( name, featureSource );
-            	}
+				try {
+
+	            	for( Name name : store.getNames() ){
+	            		FeatureSource <SimpleFeatureType, SimpleFeature> featureSource = store.getFeatureSource( name );
+	            		featureSources.put( name, featureSource );
+	            	}
+				}
+            	 catch (Exception e) {
+                     e.printStackTrace();
+                 }
             }
             LOGGER.finer("integrity tests entry for " + featureSources.size() + " dataSources.");
             validator.integrityValidation(featureSources, env, results);
