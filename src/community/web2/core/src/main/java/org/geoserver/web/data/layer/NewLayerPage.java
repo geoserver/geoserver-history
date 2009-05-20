@@ -107,7 +107,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
             }
 
         };
-        layers.setFilterVisible(false);
+        layers.setFilterVisible(true);
         
         selectLayers.add(layers);
     }
