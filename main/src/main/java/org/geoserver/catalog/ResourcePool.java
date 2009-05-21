@@ -204,11 +204,12 @@ public class ResourcePool {
      */
     public DataAccess<? extends FeatureType, ? extends Feature> getDataStore( DataStoreInfo info ) throws IOException {
         try {
-            String name = info.getName();
-            DataAccess<? extends FeatureType, ? extends Feature> dataStore = (DataAccess<? extends FeatureType, ? extends Feature>) dataStoreCache.get(name);
+            String id = info.getId();
+            DataAccess<? extends FeatureType, ? extends Feature> dataStore;
+            dataStore = (DataAccess<? extends FeatureType, ? extends Feature>) dataStoreCache.get(id);
             if ( dataStore == null ) {
                 synchronized (dataStoreCache) {
-                    dataStore = (DataAccess<? extends FeatureType, ? extends Feature>) dataStoreCache.get( name );
+                    dataStore = (DataAccess<? extends FeatureType, ? extends Feature>) dataStoreCache.get( id );
                     if ( dataStore == null ) {
                         //create data store
                         Map<String, Serializable> connectionParameters = info.getConnectionParameters();
@@ -234,7 +235,7 @@ public class ResourcePool {
                             throw new NullPointerException("Could not acquire data access '" + info.getName() + "'");
                         }
                         
-                        dataStoreCache.put( name, dataStore );
+                        dataStoreCache.put( id, dataStore );
                     }
                 } 
             }
