@@ -4,6 +4,10 @@
  */
 package org.geoserver.web.data.store;
 
+import java.util.logging.Level;
+
+import javax.management.RuntimeErrorException;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -35,9 +39,45 @@ public class CoverageStoreNewPage extends AbstractCoverageStorePage {
         initUI(store);
     }
 
-    protected void onSave(final CoverageStoreInfo info) {
-        getCatalog().save(info);
-        setResponsePage(new NewLayerPage(info.getId()));
+    @Override
+    protected void onSave(final CoverageStoreInfo info) throws IllegalArgumentException {
+        final Catalog catalog = getCatalog();
+
+        /*
+         * Try saving a copy of it so if the process fails somehow the original "info" does not end
+         * up with an id set
+         */
+        CoverageStoreInfo savedStore = catalog.getFactory().createCoverageStore();
+        clone(info, savedStore);
+
+        // GR: this shouldn't fail, the Catalog.save(StoreInfo) API does not declare any action in
+        // case
+        // of a failure!... strange, why a save can't fail?
+        // Still, be cautious and wrap it in a try/catch block so the page does not blow up
+        try {
+            catalog.save(savedStore);
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(
+                    "The coverage store could not be saved. Failure message: " + e.getMessage());
+        }
+
+        // the StoreInfo save succeeded... try to present the list of coverages (well, _the_
+        // coverage while the getotools coverage api does not allow for more than one
+        NewLayerPage layerChooserPage;
+        try {
+            layerChooserPage = new NewLayerPage(savedStore.getId());
+        } catch (RuntimeException e) {
+            // doh, can't present the list of coverages, means saving the StoreInfo is meaningless.
+            try {// be extra cautious
+                catalog.remove(savedStore);
+            } catch (RuntimeErrorException shouldNotHappen) {
+                LOGGER.log(Level.WARNING, "Can't remove CoverageStoreInfo after adding it!", e);
+            }
+            // tell the caller why we failed...
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+
+        setResponsePage(layerChooserPage);
     }
 
 }
