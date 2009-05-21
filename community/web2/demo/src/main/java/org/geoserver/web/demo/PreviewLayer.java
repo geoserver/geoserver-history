@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.util.parse.metapattern.GroupNotBoundException;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -19,6 +20,8 @@ import org.geoserver.web.GeoServerApplication;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
@@ -112,6 +115,15 @@ public class PreviewLayer {
             List<MapLayerInfo> layers = expandLayers(catalog);
             request.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
             request.setFormat("application/openlayers");
+            
+            // in the case of groups we already know about the envelope and the target SRS
+            if(groupInfo != null) {
+                ReferencedEnvelope bounds = groupInfo.getBounds();
+                request.setBbox(bounds);
+                String epsgCode = GML2EncodingUtils.epsgCode(bounds.getCoordinateReferenceSystem());
+                if(epsgCode != null)
+                    request.setSRS("EPSG:" + epsgCode);
+            }
             try {
                 DefaultWebMapService.autoSetBoundsAndSize(request);
             } catch (Exception e) {
