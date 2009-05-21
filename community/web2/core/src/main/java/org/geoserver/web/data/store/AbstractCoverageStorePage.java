@@ -13,6 +13,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
@@ -87,11 +88,34 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
             public void onSubmit() {
                 CoverageStoreInfo info = (CoverageStoreInfo) AbstractCoverageStorePage.this
                         .getModelObject();
-                onSave(info);
+                try {
+                    onSave(info);
+                } catch (IllegalArgumentException e) {
+                    paramsForm.error(e.getMessage());
+                }
             }
         };
     }
 
-    protected abstract void onSave(CoverageStoreInfo info);
+    /**
+     * Template method for subclasses to take the appropriate action when the coverage store page
+     * "save" button is pressed.
+     * 
+     * @param info
+     *            the StoreInfo to save
+     * @throws IllegalArgumentException
+     *             with an appropriate error message if the save action can't be successfully
+     *             performed
+     */
+    protected abstract void onSave(CoverageStoreInfo info) throws IllegalArgumentException;
+
+    protected void clone(final CoverageStoreInfo source, CoverageStoreInfo target) {
+        target.setDescription(source.getDescription());
+        target.setEnabled(source.isEnabled());
+        target.setName(source.getName());
+        target.setType(source.getType());
+        target.setURL(source.getURL());
+        target.setWorkspace(source.getWorkspace());
+    }
 
 }
