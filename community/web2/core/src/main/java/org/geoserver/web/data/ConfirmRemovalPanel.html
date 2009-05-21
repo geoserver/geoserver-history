@@ -3,16 +3,16 @@
 <wicket:panel>
     <h2><wicket:message key="confirm">ConfirmObjectRemoval</wicket:message></h2>
 
-    <wicket:message key="aboutRemove">AboutRemove</wicket:message>:
-    <span wicket:id="rootObjects"></span>
+    <p><wicket:message key="aboutRemove">AboutRemove</wicket:message>:
+    <span wicket:id="rootObjects"></span></p>
 
     <div wicket:id="removedObjects">
         <wicket:message
             key="removedObjects">removedObjects</wicket:message>
-        <ul>
+        <ul class="plain-ul">
             <li wicket:id="workspacesRemoved"><wicket:message
                 key="workspaces" />: <span wicket:id="workspaces"></span></li>
-            <li wicket:id="storesRemoved"><wicket:message key="stores"/>:
+            <li wicket:id="storesRemoved" class="plain-li"><wicket:message key="stores"/>:
                 <span wicket:id="stores"></span></li>
             <li wicket:id="layersRemoved"><wicket:message key="layers" />:
                 <span wicket:id="layers"></span></li>
@@ -24,7 +24,7 @@
     <div wicket:id="modifiedObjects">
         <wicket:message
             key="modifiedObjects">ModifiedObejcts</wicket:message>
-        <ul>
+        <ul class="plain-ul">
             <li wicket:id="layersModified"><wicket:message key="layers" />:
                 <span wicket:id="layers"></span></li>
             <li wicket:id="groupsModified"><wicket:message key="groups" />:
