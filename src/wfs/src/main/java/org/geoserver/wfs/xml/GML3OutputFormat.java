@@ -39,7 +39,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Encoder;
-import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 
@@ -74,27 +73,51 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
         // round up the info objects for each feature collection
         HashMap<String, Set<FeatureTypeInfo>> ns2metas = new HashMap<String, Set<FeatureTypeInfo>>();
-        GetFeatureType request = (GetFeatureType) OwsUtils.parameter(getFeature.getParameters(),
-                GetFeatureType.class);
-        int fcIndex = 0;
-        for (Iterator<?> fc = featureCollections.iterator(); fc.hasNext(); fc.next(), fcIndex++) {
-            // get the query for this featureCollection
-            QueryType queryType = (QueryType) request.getQuery().get(fcIndex);
-            // may have multiple type names in each query, so add them all
-            for (QName name : (List<QName>) queryType.getTypeName()) {
-                // get a feature type name from the query
-                Name featureTypeName = new NameImpl(name.getNamespaceURI(), name.getLocalPart());
-                FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureTypeName);
-                if (meta == null) {
-                    throw new WFSException("Could not find feature type " + featureTypeName
-                            + " in the GeoServer catalog");
+        for (int fcIndex = 0; fcIndex < featureCollections.size(); fcIndex++) {
+            if(getFeature.getParameters()[0] instanceof GetFeatureType) {
+                // get the query for this featureCollection
+                GetFeatureType request = (GetFeatureType) OwsUtils.parameter(getFeature.getParameters(),
+                        GetFeatureType.class);
+                QueryType queryType = (QueryType) request.getQuery().get(fcIndex);
+                
+                // may have multiple type names in each query, so add them all
+                for (QName name : (List<QName>) queryType.getTypeName()) {
+                    // get a feature type name from the query
+                    Name featureTypeName = new NameImpl(name.getNamespaceURI(), name.getLocalPart());
+                    FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureTypeName);
+                    
+                    if (meta == null) {
+                        throw new WFSException("Could not find feature type " + featureTypeName
+                                + " in the GeoServer catalog");
+                    }
+                    
+                    // add it to the map
+                    Set<FeatureTypeInfo> metas = ns2metas.get(featureTypeName.getNamespaceURI());
+                    
+                    if (metas == null) {
+                        metas = new HashSet<FeatureTypeInfo>();
+                        ns2metas.put(featureTypeName.getNamespaceURI(), metas);
+                    }
+                    metas.add(meta);
                 }
-                // add it to the map
-                Set<FeatureTypeInfo> metas = ns2metas.get(featureTypeName.getNamespaceURI());
+            } else {
+                FeatureType featureType = ((FeatureCollection) featureCollections.get(fcIndex)).getSchema();
+
+                //load the metadata for the feature type
+                String namespaceURI = featureType.getName().getNamespaceURI();
+                FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());
+                
+                if(meta == null)
+                    throw new WFSException("Could not find feature type " + featureType.getName() + " in the GeoServer catalog");
+
+                //add it to the map
+                Set metas = (Set) ns2metas.get(namespaceURI);
+
                 if (metas == null) {
-                    metas = new HashSet<FeatureTypeInfo>();
-                    ns2metas.put(featureTypeName.getNamespaceURI(), metas);
+                    metas = new HashSet();
+                    ns2metas.put(namespaceURI, metas);
                 }
+
                 metas.add(meta);
             }
         }
