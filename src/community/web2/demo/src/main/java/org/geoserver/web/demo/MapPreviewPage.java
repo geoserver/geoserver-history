@@ -73,12 +73,12 @@ public class MapPreviewPage extends GeoServerBasePage {
                     f.add(buildJSExternalLink("ol", olUrl, "OpenLayers"));
                     
                     // kml preview
-                    String kmlUrl = "../wms/kml_reflect?layers=" + layer.getName();
+                    String kmlUrl = "window.open('../wms/kml?layers=" + layer.getName() + "')";
                     f.add(buildJSExternalLink("kml", kmlUrl, "KML"));
                     
                     // gml preview (we actually want it only for vector layers)
-                    String gmlUrl = "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
-                            + layer.getName() + "&maxFeatures=50";
+                    String gmlUrl = "window.open('../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+                            + layer.getName() + "&maxFeatures=50')";
                     Component gmlLink = buildJSExternalLink("gml", gmlUrl, "GML");
                     f.add(gmlLink);
                     gmlLink.setVisible(layer.getType() == PreviewLayerType.Vector);
@@ -130,7 +130,7 @@ public class MapPreviewPage extends GeoServerBasePage {
     private Component buildJSExternalLink(String id, String url, String title) {
         SimpleExternalLink sel = new SimpleExternalLink(id, new Model("#"),
                 new Model(title));
-        sel.add(new AttributeAppender("onclick", new Model(url), ";"));
+        sel.getLink().add(new AttributeAppender("onclick", new Model(url), ";"));
         return sel;
     }
 
