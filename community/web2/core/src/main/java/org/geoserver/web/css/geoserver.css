@@ -356,6 +356,18 @@ padding: 0.2em;
 width: 25em;
 }
 
+/* standard ul inside form */
+form ul.plain-ul {
+	margin: 0 1.5em 1.5em;
+	list-style-type: disc;
+}
+
+form ul.plain-ul li {
+	display: list-item;
+	list-style-type: disc;
+	display: list-item;
+}
+
 /* search button inside text field */
 .search {
 border: 1px solid #BFBFBF;
