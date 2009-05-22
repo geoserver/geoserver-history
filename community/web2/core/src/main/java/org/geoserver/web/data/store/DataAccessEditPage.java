@@ -18,6 +18,8 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.util.NullProgressListener;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.util.DataStoreUtils;
 
 /**
@@ -33,7 +35,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
      * @param dataStoreInfoId
      *            the datastore id to modify, as per {@link DataStoreInfo#getId()}
      */
-    public DataAccessEditPage(final String dataStoreInfoId) {
+    public DataAccessEditPage(final String dataStoreInfoId) throws IllegalArgumentException {
         final Catalog catalog = getCatalog();
         final DataStoreInfo dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
 
@@ -46,6 +48,12 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
                 .getConnectionParameters());
         connectionParameters = DataStoreUtils.getParams(connectionParameters);
         final DataAccessFactory dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
+        if (null == dsFactory) {
+            String msg = "Data Access factory not found";
+            msg = (String) new ResourceModel("DataAccessEditPage.cantGetDataStoreFactory", msg)
+                    .getObject();
+            throw new IllegalArgumentException(msg);
+        }
 
         parametersMap.putAll(connectionParameters);
 
@@ -56,12 +64,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
                 .isEnabled()));
 
-        Serializable initError = null;
-        if (null == dsFactory) {
-            String msg = "Can't get the DataStoreFactory for the given connection parameters";
-            initError = new ResourceModel("DataAccessEditPage.cantConnectToDataStore", msg);
-        }
-        initUI(dsFactory, false, initError);
+        initUI(dsFactory, false);
     }
 
     /**
@@ -113,29 +116,40 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
 
         catalog.getResourcePool().clear(dataStoreInfo);
 
+        // get the original values to use as rollback...
+        final DataStoreInfo original = catalog.getFactory().createDataStore();
+        clone(catalog.getDataStore(dataStoreInfoId), original);
+
+        try {
+            catalog.save(dataStoreInfo);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error saving data store to catalog", e);
+            throw new IllegalArgumentException("Error saving data store:" + e.getMessage());
+        }
+
         // try and grab the datastore with the new configuration
         // parameters...
         try {
-            dataStoreInfo.getDataStore(new NullProgressListener());
+            DataAccess<? extends FeatureType, ? extends Feature> dataStore;
+            dataStore = dataStoreInfo.getDataStore(new NullProgressListener());
+            if (dataStore == null) {
+                throw new NullPointerException();
+            }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error obtaining datastore with the modified values", e);
             catalog.getResourcePool().clear(dataStoreInfo);
             connectionParameters.clear();
             connectionParameters.putAll(oldParams);
+
+            // roll back..
+            clone(original, dataStoreInfo);
+            catalog.save(dataStoreInfo);
+
             String message = e.getMessage();
             if (message == null && e.getCause() != null) {
                 message = e.getCause().getMessage();
             }
             paramsForm.error("Error updating data store parameters: " + message);
-            return;
-        }
-
-        // it worked, save it
-        try {
-            catalog.save(dataStoreInfo);
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error saving data store to catalog", e);
-            paramsForm.error("Error saving data store:" + e.getMessage());
             return;
         }
 
