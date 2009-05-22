@@ -223,7 +223,7 @@ public class Dispatcher extends AbstractController {
         } catch (Throwable t) {
             exception(t, service, request);
         } finally {
-            REQUEST.set(null);
+            REQUEST.remove();
         }
 
         return null;
