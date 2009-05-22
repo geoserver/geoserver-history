@@ -4,10 +4,21 @@
  */
 package org.geoserver.web.data.store;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.logging.Level;
+
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.web.data.layer.NewLayerPage;
+import org.geotools.coverage.CoverageFactoryFinder;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.coverage.grid.io.GridFormatFinder;
+import org.geotools.coverage.grid.io.UnknownFormat;
+import org.opengis.coverage.grid.Format;
+import org.opengis.coverage.grid.GridCoverageReader;
 
 /**
  * Supports coverage store configuration
@@ -33,44 +44,50 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
     }
 
     @Override
-    protected final void onSave(final CoverageStoreInfo info) {
+    protected final void onSave(final CoverageStoreInfo info) throws IllegalArgumentException {
         final Catalog catalog = getCatalog();
 
-        /**
-         * Catalog does not have transactions so.... lets save the previous state just in case
-         * saving fails, so we can restore it
-         */
-        final CoverageStoreInfo originalState = catalog.getFactory().createCoverageStore();
-        clone(catalog.getCoverageStore(info.getId()), originalState);
+        final String url = info.getURL();
+        Map<String, Serializable> connectionParameters = info.getConnectionParameters();
 
-        catalog.save(info);
-
-        final NewLayerPage layerChooserPage;
-        try {
-            layerChooserPage = new NewLayerPage(info.getId());
-        } catch (RuntimeException e) {
-            // rollback!
-            // save the currently modified state for later use
-            CoverageStoreInfo modifiedState = catalog.getFactory().createCoverageStore();
-            clone(info, modifiedState);
-
-            // restore info to its original state to be saved... so bad as a rollback but...
-            clone(originalState, info);
-            // save info as it was before modifying it...
-            catalog.save(info);
-
-            // restore the info to its modified state, without saving it, so it can keep being
-            // modified
-            clone(modifiedState, info);
-
-            // and finally notify the caller the reason of failure
-            String originalMessage = "[" + e.getMessage() + "]";
-            if (e.getCause() != null && e.getCause() != e && e.getCause().getMessage() != null) {
-                originalMessage += ":[" + e.getCause().getMessage() + "]";
-            }
-            throw new IllegalArgumentException("Error saving the Store: " + originalMessage);
+        Format format = GridFormatFinder.findFormat(url);
+        if (format instanceof UnknownFormat) {
+            throw new IllegalArgumentException(
+                    "No grid format found capable of connection to the provided URL");
         }
-        setResponsePage(layerChooserPage);
+        if (!(format instanceof AbstractGridFormat)) {
+            throw new IllegalArgumentException("Unknown format type: "
+                    + format.getClass().getName());
+        }
+        AbstractGridFormat gridFormat = (AbstractGridFormat) format;
+        GridCoverageReader reader;
+        try {
+            reader = gridFormat.getReader(url);
+        } catch (RuntimeException e) {
+            LOGGER
+                    .log(Level.INFO, "Editing CoverageStore " + info.getName() + ": <" + url + ">",
+                            e);
+            throw new IllegalArgumentException("Unable to access the coverage. Original error: "
+                    + e.getMessage());
+        }
+        if (reader == null) {
+            throw new IllegalArgumentException(
+                    "Can't obtain a coverage reader for the provided URL");
+        }
+        try {
+            reader.dispose();
+        } catch (IOException e) {
+            LOGGER.log(Level.INFO, "Closing test reader for " + url, e);
+        }
+
+        try {
+            catalog.save(info);
+        } catch (RuntimeException e) {
+            LOGGER.log(Level.WARNING, "Saving the store for " + url, e);
+            throw new IllegalArgumentException("Unable to save the store: " + e.getMessage());
+        }
+
+        setResponsePage(StorePage.class);
     }
 
 }
