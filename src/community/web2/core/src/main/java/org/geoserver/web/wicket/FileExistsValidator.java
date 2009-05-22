@@ -21,22 +21,21 @@ public class FileExistsValidator extends AbstractValidator {
     
     @Override
     protected void onValidate(IValidatable validatable) {
-        String path = Converters.convert(validatable.getValue(), String.class);
+        String uriSpec = Converters.convert(validatable.getValue(), String.class);
         
         try {
             // Make sure we are dealing with a local path
-            URI uri = new URI(path);
+            URI uri = new URI(uriSpec);
             if(uri.getScheme() != null && !"file".equals(uri.getScheme()))
                 return;
             
             // ok, strip away the scheme and just get to the path
-            path = uri.getPath();
+            String path = uri.getPath();
             
             // absolute path?
-            File absFile = new File(path);
-            if(!absFile.exists()) {
+            if(path == null || !new File(path).exists()) {
                 // local to data dir?
-                File relFile = GeoserverDataDirectory.findDataFile(path);
+                File relFile = GeoserverDataDirectory.findDataFile(uriSpec);
                 if(relFile == null || !relFile.exists()) {
                     error(validatable, "FileExistsValidator.fileNotFoundError", 
                             Collections.singletonMap("file", path));
@@ -44,7 +43,7 @@ public class FileExistsValidator extends AbstractValidator {
             }
         } catch(Exception e) {
             error(validatable, "FileExistsValidator.invalidPathError", 
-                    Collections.singletonMap("path", path));
+                    Collections.singletonMap("path", uriSpec));
         }
         
     }
