@@ -300,7 +300,7 @@ public class ResourcePool {
      * @param info The data store metadata.
      */
     public void clear( DataStoreInfo info ) {
-        dataStoreCache.remove( info.getName() );
+        dataStoreCache.remove( info.getId() );
     }
     
     /**
