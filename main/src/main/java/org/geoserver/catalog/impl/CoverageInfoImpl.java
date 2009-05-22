@@ -86,7 +86,7 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
         this.defaultInterpolationMethod = defaultInterpolationMethod;
     }
 
-    public List getDimensions() {
+    public List<CoverageDimensionInfo> getDimensions() {
         return dimensions;
     }
 
@@ -119,6 +119,26 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
     public GridCoverageReader getGridCoverageReader(ProgressListener listener,
             Hints hints) throws IOException {
         return catalog.getResourcePool().getGridCoverageReader(getStore(), hints);
+    }
+    
+    public void setSupportedFormats(List<String> supportedFormats) {
+        this.supportedFormats = supportedFormats;
+    }
+
+    public void setInterpolationMethods(List<String> interpolationMethods) {
+        this.interpolationMethods = interpolationMethods;
+    }
+
+    public void setDimensions(List<CoverageDimensionInfo> dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public void setRequestSRS(List<String> requestSRS) {
+        this.requestSRS = requestSRS;
+    }
+
+    public void setResponseSRS(List<String> responseSRS) {
+        this.responseSRS = responseSRS;
     }
     
     public void accept(CatalogVisitor visitor) {

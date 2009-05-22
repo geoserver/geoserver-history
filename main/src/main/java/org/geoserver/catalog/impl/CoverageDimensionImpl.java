@@ -21,7 +21,7 @@ public class CoverageDimensionImpl implements CoverageDimensionInfo {
 
     NumberRange range;
 
-    List nullValues = new ArrayList();
+    List<Double> nullValues = new ArrayList();
     
     public CoverageDimensionImpl() {
     }
@@ -62,11 +62,11 @@ public class CoverageDimensionImpl implements CoverageDimensionInfo {
         this.range = range;
     }
 
-    public List getNullValues() {
+    public List<Double> getNullValues() {
         return nullValues;
     }
 
-    public void setNullValues(List nullValues) {
+    public void setNullValues(List<Double> nullValues) {
         this.nullValues = nullValues;
     }
 }
