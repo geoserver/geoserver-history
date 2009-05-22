@@ -80,7 +80,7 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
         parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
         parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.TRUE);
 
-        initUI(dsFact, true, null);
+        initUI(dsFact, true);
     }
 
     /**
@@ -136,8 +136,13 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
                     + message);
             return;
         }
+
+        // save a copy, so if NewLayerPage fails we can keep on editing this one without being
+        // proxied
+        DataStoreInfo savedStore = catalog.getFactory().createDataStore();
+        clone(dataStoreInfo, savedStore);
         try {
-            catalog.add(dataStoreInfo);
+            catalog.add(savedStore);
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error adding data store to catalog", e);
             String message = e.getMessage();
@@ -148,7 +153,19 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
             paramsForm.error("Error creating data store with the provided parameters: " + message);
             return;
         }
-        setResponsePage(new NewLayerPage(dataStoreInfo.getId()));
+
+        final NewLayerPage newLayerPage;
+        try {
+            newLayerPage = new NewLayerPage(savedStore.getId());
+        } catch (RuntimeException e) {
+            try {
+                catalog.remove(savedStore);
+            } catch (Exception removeEx) {
+                LOGGER.log(Level.WARNING, "Error removing just added datastore!", e);
+            }
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
+        setResponsePage(newLayerPage);
     }
 
 }

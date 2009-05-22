@@ -103,11 +103,9 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * @param isNew
      *            wheter to set up the UI for a new dataaccess or an existing one, some properties
      *            may need not to be editable if not a new one.
-     * @param initializationErrorMessage
-     *            the form error message to start with, or {@code null}
      */
-    protected final void initUI(final DataAccessFactory dsFactory, final boolean isNew,
-            final Serializable initializationErrorMessage) {
+    protected final void initUI(final DataAccessFactory dsFactory, final boolean isNew)
+            throws IllegalArgumentException {
         WorkspaceInfo workspace = (WorkspaceInfo) parametersMap.get(WORKSPACE_PROPERTY);
         if (workspace == null) {
             throw new IllegalArgumentException("Workspace not provided");
@@ -190,7 +188,11 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
             @Override
             public void onSubmit() {
-                onSaveDataStore(paramsForm);
+                try {
+                    onSaveDataStore(paramsForm);
+                } catch (IllegalArgumentException e) {
+                    paramsForm.error(e.getMessage());
+                }
             }
         });
 
@@ -201,10 +203,6 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
                 .getFormComponent(), dataStoreNamePanel.getFormComponent(), dataStoreInfoId);
         paramsForm.add(storeNameValidator);
-
-        if(initializationErrorMessage != null){
-            paramsForm.error(initializationErrorMessage);
-        }
     }
 
     /**
@@ -214,8 +212,10 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * 
      * @param paramsForm
      *            the form containing the parameter values
+     * @throws IllegalArgumentException
+     *             with an appropriate message for the user if the operation failed
      */
-    protected abstract void onSaveDataStore(final Form paramsForm);
+    protected abstract void onSaveDataStore(final Form paramsForm) throws IllegalArgumentException;
 
     /**
      * Creates a form input component for the given datastore param based on its type and metadata
@@ -261,4 +261,14 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         return parameterPanel;
     }
 
+    protected void clone(final DataStoreInfo source, DataStoreInfo target) {
+        target.setDescription(source.getDescription());
+        target.setEnabled(source.isEnabled());
+        target.setName(source.getName());
+        target.setWorkspace(source.getWorkspace());
+        target.setType(source.getType());
+
+        target.getConnectionParameters().clear();
+        target.getConnectionParameters().putAll(source.getConnectionParameters());
+    }
 }

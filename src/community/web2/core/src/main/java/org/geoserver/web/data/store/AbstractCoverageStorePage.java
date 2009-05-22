@@ -34,6 +34,12 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
 
     void initUI(final CoverageStoreInfo store) {
         AbstractGridFormat format = store.getFormat();
+        if (format == null) {
+            String msg = "Coverage Store factory not found";
+            msg = (String) new ResourceModel("CoverageStoreEditPage.cantGetCoverageStoreFactory", msg)
+                    .getObject();
+            throw new IllegalArgumentException(msg);
+        }
 
         // build the form
         paramsForm = new Form("rasterStoreForm");

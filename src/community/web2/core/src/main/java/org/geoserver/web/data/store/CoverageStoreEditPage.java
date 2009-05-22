@@ -12,8 +12,6 @@ import java.util.logging.Level;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
-import org.geoserver.web.data.layer.NewLayerPage;
-import org.geotools.coverage.CoverageFactoryFinder;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.coverage.grid.io.UnknownFormat;
@@ -33,7 +31,7 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
      * @param storeId
      *            the store id
      */
-    public CoverageStoreEditPage(final String storeId) {
+    public CoverageStoreEditPage(final String storeId) throws IllegalArgumentException {
         Catalog catalog = getCatalog();
         CoverageStoreInfo store = catalog.getCoverageStore(storeId);
         if (store == null) {

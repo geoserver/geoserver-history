@@ -13,6 +13,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
@@ -83,9 +84,9 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
         } else if (property == ENABLED) {
             final StoreInfo storeInfo = (StoreInfo) itemModel.getObject();
             ResourceReference enabledIcon;
-            if(storeInfo.isEnabled()){
+            if (storeInfo.isEnabled()) {
                 enabledIcon = icons.getEnabledIcon();
-            }else{
+            } else {
                 enabledIcon = icons.getDisabledIcon();
             }
             Fragment f = new Fragment(id, "iconFragment", StorePanel.this);
@@ -97,9 +98,9 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
 
     @SuppressWarnings("serial")
     private Component storeNameLink(String id, final IModel itemModel) {
-        
+
         final IModel labelModel = NAME.getModel(itemModel);
-        
+
         return new SimpleAjaxLink(id, itemModel, labelModel) {
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -111,11 +112,23 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
                                     + "Will refresh the store list."));
                     popupWindow.show(target);
                     target.addComponent(StorePanel.this);
-                } else if (store instanceof DataStoreInfo) {
-                    setResponsePage(new DataAccessEditPage(store.getId()));
-                } else {
-                    setResponsePage(new CoverageStoreEditPage(store.getId()));
+                    return;
                 }
+
+                WebPage editPage;
+                try {
+                    if (store instanceof DataStoreInfo) {
+                        editPage = new DataAccessEditPage(store.getId());
+                    } else {
+                        editPage = new CoverageStoreEditPage(store.getId());
+                    }
+                } catch (IllegalArgumentException e) {
+                    popupWindow.setContent(new Label(popupWindow.getContentId(), e.getMessage()));
+                    popupWindow.show(target);
+                    target.addComponent(StorePanel.this);
+                    return;
+                }
+                setResponsePage(editPage);
             }
         };
     }
