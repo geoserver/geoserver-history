@@ -6,15 +6,15 @@
 
   <parent>
     <groupId>org.geoserver</groupId>		
-	<artifactId>community</artifactId>
+	<artifactId>extension</artifactId>
 	<version>1.7.5-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>feature-pregeneralized</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
-  <name>Geoserver plugins for geotools gt-feature-pregeneralized module</name>
+  <version>1.7.5-SNAPSHOT</version>
+  <name>Feature-pregeneralized Extension</name>
 
   <dependencies>
        <dependency>

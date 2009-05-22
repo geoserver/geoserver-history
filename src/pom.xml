@@ -921,6 +921,7 @@
       <descriptor>release/doc.xml</descriptor>
       <descriptor>release/ext-db2.xml</descriptor>
       <descriptor>release/ext-db2ng.xml</descriptor>
+      <descriptor>release/ext-feature-pregeneralized.xml</descriptor>
       <descriptor>release/ext-imagemosaic-jdbc.xml</descriptor>
       <descriptor>release/ext-gml.xml</descriptor>
       <descriptor>release/ext-mysql.xml</descriptor>

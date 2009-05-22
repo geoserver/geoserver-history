@@ -125,6 +125,7 @@
         <module>excel</module>
         <module>restconfig</module>
         <module>geosearch</module>
+        <module>feature-pregeneralized</module>
       </modules>
     </profile>
 
