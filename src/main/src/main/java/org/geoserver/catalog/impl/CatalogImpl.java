@@ -22,6 +22,7 @@ import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CatalogInfo;
+import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -29,6 +30,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
@@ -1435,9 +1437,28 @@ public class CatalogImpl implements Catalog {
 
     private void resolve(CoverageInfo r) {
         CoverageInfoImpl c = (CoverageInfoImpl)r;
-        if(c.getParameters() == null){
-            c.setParameters(new HashMap<String, Serializable>());
+        if(c.getDimensions() == null) {
+            c.setDimensions(new ArrayList<CoverageDimensionInfo>());
+        } else {
+            for (CoverageDimensionInfo dim : c.getDimensions()) {
+                if(dim.getNullValues() == null)
+                    ((CoverageDimensionImpl) dim).setNullValues(new ArrayList<Double>());
+            }
         }
+        if(c.getInterpolationMethods() == null)
+            c.setInterpolationMethods(new ArrayList<String>());
+        if(c.getKeywords() == null)
+            c.setKeywords(new ArrayList<String>());
+        if(c.getMetadataLinks() == null)
+            c.setMetadataLinks(new ArrayList<MetadataLinkInfo>());
+        if(c.getParameters() == null) 
+            c.setParameters(new HashMap<String, Serializable>());
+        if(c.getRequestSRS() == null)
+            c.setRequestSRS(new ArrayList<String>());
+        if(c.getResponseSRS() == null)
+            c.setResponseSRS(new ArrayList<String>());
+        if(c.getSupportedFormats() == null)
+            c.setSupportedFormats(new ArrayList<String>());
     }
     
     /**
