@@ -16,7 +16,7 @@ This tutorial walks through the steps of publishing a PostGIS table with GeoServ
 Getting started
 ---------------
 
-#. Download the zip file `<nyc_buildings.zip>`_. It contains a PostGIS dump of a subset of buildings from New York City that will be used during in this tutorial.
+#. Download the zip file :download:`nyc_buildings.zip`. It contains a PostGIS dump of a subset of buildings from New York City that will be used during in this tutorial.
 
 #. Create a PostGIS database called "nyc". This can be done with the following command line::
 

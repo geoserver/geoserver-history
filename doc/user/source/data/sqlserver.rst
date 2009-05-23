@@ -36,8 +36,8 @@ Installing the SQL Server extension
 SQL Server JDBC driver
 ``````````````````````
 
-#. Navigate to `JDBC driver download page 
-   <Microsoft's http://msdn.microsoft.com/en-us/data/aa937724.aspx>`_.
+#. Navigate to `Microsoft's JDBC driver download page 
+   <http://msdn.microsoft.com/en-us/data/aa937724.aspx>`_.
 
 #. Click the ``Download SQL Server 2005 JDBC Driver 1.2`` link.
 

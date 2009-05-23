@@ -60,8 +60,8 @@ If GeoServer is configured to run with an **internal** data directory:
    Undeploying the web application will delete the data directory. You **must** copy the data directory to a location external to the web application.
 
 #. Backup the data directory.
-#. Undeploy the old geoserver version.
-#. Deploy the new geoserver version.
+#. Undeploy the old GeoServer version.
+#. Deploy the new GeoServer version.
 #. Copy the backed up data directory into the web application root over-writting the existing directory.
 #. Restart the web application.
 

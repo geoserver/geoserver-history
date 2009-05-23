@@ -10,12 +10,12 @@ This tutorial describes the process of storing a coverage along with its pyramid
 
 The full documentation is available here:`<http://docs.codehaus.org/display/GEOTDOC/Image+Mosaicing+Pyramidal+JDBC+Plugin>`_
 
-This tutorial will show one possible scenario, explaining step by step what to do for using this module in geoserver (since Version 1.7.2)
+This tutorial will show one possible scenario, explaining step by step what to do for using this module in GeoServer (since Version 1.7.2)
 
 Getting Started
 ---------------
 
-We use postgis/postgres as database engine, a database named "gis" and start with an image from openstreetmap. We also need an installation from `<www.gdal.org>`_
+We use postgis/postgres as database engine, a database named "gis" and start with an image from openstreetmap. We also need an installation from `<http://www.gdal.org>`_
 
 .. image:: start.png
 
@@ -103,9 +103,9 @@ The configuration for a map is done in a xml file. This file has 3 main parts.
 
 Since the jdbc connect info and the sql mapping may be reused by more than one map, the best practice is to create xml fragments for both of them and to use xml entity references to include them into the map xml.
 
-Put all configuration files into the **coverages** subdirectory of your geoserver data directory. The standard location is
+Put all configuration files into the **coverages** subdirectory of your GeoServer data directory. The standard location is
 
-**<directory of your geoserver installation>/data_dir/coverages**
+**<directory of your GeoServer installation>/data_dir/coverages**
 
 1) Create a file **connect.postgis.xml.inc** with the following content::
 
@@ -123,7 +123,7 @@ Put all configuration files into the **coverages** subdirectory of your geoserve
  
 The jdbc user is "postgres", the password is "postgres", maxActive and maxIdle are parameters of the apache connection pooling, jdbcUrl and driverClassName are postgres specific. The name of the database is "gis".
 
-If you deploy geoserver into a j2ee container capable of handling jdbc data sources, a better approach is::
+If you deploy GeoServer into a J2EE container capable of handling jdbc data sources, a better approach is::
 
   <connect>
     <!-- value DBCP or JNDI -->
@@ -131,7 +131,7 @@ If you deploy geoserver into a j2ee container capable of handling jdbc data sour
     <jndiReferenceName value="jdbc/mydatasource"/>        
   </connect> 
 
-For this tutorial, we do not use data sources provided by a j2ee container.
+For this tutorial, we do not use data sources provided by a J2EE container.
 
 2) The next xml fragment to create is **mapping.postgis.xml.inc** 
 
@@ -197,7 +197,7 @@ Using the java ddl generation utility
 
 The full documentation is here: `<http://docs.codehaus.org/display/GEOTDOC/Using+the+java+ddl+generation+utility>`_
 
-To create the proper sql tables, we can use the java ddl generation utility. This utility is included in the gt-imagemosaic-jdbc-<version>.jar. Assure that this jar file is in your **WEB-INF/lib** directory of your geoserver installation.
+To create the proper sql tables, we can use the java ddl generation utility. This utility is included in the gt-imagemosaic-jdbc-<version>.jar. Assure that this jar file is in your **WEB-INF/lib** directory of your GeoServer installation.
 
 Change to your **working** directory and do a first test::
   
@@ -275,7 +275,7 @@ Configuring GeoServer
 ---------------------
 
 
-Start geoserver and log in.Under Config --> WCS -> CoveragePlugins you should see 
+Start GeoServer and log in.Under Config --> WCS -> CoveragePlugins you should see 
 
 .. image:: snapshot1.png
 

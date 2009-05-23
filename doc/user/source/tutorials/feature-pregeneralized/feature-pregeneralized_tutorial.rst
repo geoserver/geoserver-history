@@ -6,7 +6,7 @@ Feature-Pregeneralized
 Introduction
 ------------
 
-This tutorial shows how to use the geotools feature-pregeneralized module in geoserver. The feature-pregeneralized module is used to improve performance and lower memory usage and IO traffic.
+This tutorial shows how to use the geotools feature-pregeneralized module in GeoServer. The feature-pregeneralized module is used to improve performance and lower memory usage and IO traffic.
 
 .. note::
   
@@ -16,13 +16,13 @@ This module needs features with already generalized geometries, selecting the be
 
 The full documentation is available here:`<http://docs.codehaus.org/display/GEOTDOC/Feature-Pregeneralized>`_
 
-This tutorial will show two possible scenarios, explaining step by step what to do for using this module in geoserver.
+This tutorial will show two possible scenarios, explaining step by step what to do for using this module in GeoServer.
 
 
 Getting Started
 ---------------
 
-First, find the location of the GEOSERVER_DATA_DIR. This info is contained in the log file when starting geoserver.::
+First, find the location of the GEOSERVER_DATA_DIR. This info is contained in the log file when starting GeoServer.::
 
   ----------------------------------
   - GEOSERVER_DATA_DIR: /home/mcr/geoserver-1.7.x/1.7.x/data/release
@@ -36,7 +36,7 @@ Within **<GEOSERVER_DATA_DIR>/data/streams** create another sub directory called
 This tutorial is based on on a shape file, which you can download from here :download:`Streams <streams.zip>`.
 Unzip this file into **<GEOSERVER_DATA_DIR>/data/streams/0**. 
 
-Look for the **WEB-INF/lib/** directory of your geoserver installation. There must be a file called **gt-feature-pregeneralized-<version>-jar**. This jar file includes a tool for generalizing shape files. Open a cmd line and execute the following::
+Look for the **WEB-INF/lib/** directory of your GeoServer installation. There must be a file called **gt-feature-pregeneralized-<version>-jar**. This jar file includes a tool for generalizing shape files. Open a cmd line and execute the following::
 
   cd <GEOSERVER_DATA_DIR>/data/streams/0
   java -jar <GEOSERVER_INSTALLATION>/WEB-INF/lib/gt-feature-pregeneralized-<version>.jar generalize 0/streams.shp . 5,10,20,50
@@ -59,7 +59,7 @@ Now there are four additional directories **5.0** , **10.0** , **20.0** , **50.0
 There are two possibilities how we can deploy our generalized shape files.
 
 #. Deploy hidden (not visible to the user)
-#. Deploy each generalized shape file as a separate geoserver feature
+#. Deploy each generalized shape file as a separate GeoServer feature
 
 Hidden Deployment 
 ------------------
@@ -82,7 +82,7 @@ Save this file as **geninfo_shapefile.xml** into  **<GEOSERVER_DATA_DIR>/data/st
 
   The **dataSourceName** attribute in the XML config is not interpreted as a name, it could be the URL for a shape file or for a property file containing properties for data store creation (e. g. jdbc connect parameters). Remember, this is a hidden deployment and no names are needed. The only *official* name is the value of the attribute **featureName** in the **GeneralizationInfo** Element.
 
-Start geoserver and   go to Config->Data->DataStores->New and fill in the form
+Start GeoServer and   go to Config->Data->DataStores->New and fill in the form
 
 .. image:: createdatastore.png
 
@@ -94,7 +94,7 @@ The next form you see is
 
 .. note::
 
-   **RepositoryClassName** and  **GeneralizationInfosProviderClassName** have default values which suit for geotools, not for geoserver. Change **geotools** to **geoserver** in the package names to instantiate the correct objects for geoserver.
+   **RepositoryClassName** and  **GeneralizationInfosProviderClassName** have default values which suit for GeoTools, not for GeoServer. Change **GeoTools** to **GeoServer** in the package names to instantiate the correct objects for GeoServer.
 
 The configuration should look like this
 
@@ -110,12 +110,12 @@ Alter the **Style** to *line*, **SRS** is *26713* and press the **Generate** but
 
 Afterward, press **Submit**, **Apply** and **Save**.
 
-Examine the result by pressing "**My Geoserver**, **Demo** and **Map Preview**. In this list there must be an entry **topp:GenStreams**. Press it and you will see
+Examine the result by pressing "**My GeoServer**, **Demo** and **Map Preview**. In this list there must be an entry **topp:GenStreams**. Press it and you will see
 
 .. image:: streams.png
 
 
-Now start zooming in and out and look at the log file of geoserver. If the deployment is correct you should see something like this::
+Now start zooming in and out and look at the log file of GeoServer. If the deployment is correct you should see something like this::
 
   May 20, 2009 4:53:05 PM org.geotools.data.gen.PreGeneralizedFeatureSource logDistanceInfo
   INFO: Using generalizsation: file:data/streams/20.0/streams.shp streams the_geom 20.0
@@ -147,10 +147,10 @@ The **Feature Data Set ID** for the other  shape files is
 
 The **URL**  needed for the other  shape files 
 
-#.	file:data/streams/5.0/streams.shp
-#.	file:data/streams/10.0/streams.shp
-#.	file:data/streams/20.0/streams.shp
-#.	file:data/streams/50.0/streams.shp
+#.	``file:data/streams/5.0/streams.shp``
+#.	``file:data/streams/10.0/streams.shp``
+#.	``file:data/streams/20.0/streams.shp``
+#.	``file:data/streams/50.0/streams.shp``
 
 .. image:: streams_0_ds4.png
 
@@ -162,7 +162,7 @@ Each feature needs an **Alias**, here it is *streams_0*. For the other shape fil
 #.	streams_20
 #.	streams_50
 
-Check the result by pressing "**My Geoserver**, **Demo** and **Map Preview**. You should see your additional layers.
+Check the result by pressing "**My GeoServer**, **Demo** and **Map Preview**. You should see your additional layers.
 
 No we need another XML configuration file::
 
@@ -199,7 +199,7 @@ Last step
 
 
 In the **Map Preview** you should find **topp:GenStreams2** and all other generalizations. Test in the same manner we 
-discussed in the hidden deployment and you should see something like this in the geoserver log::
+discussed in the hidden deployment and you should see something like this in the GeoServer log::
 
 
   May 20, 2009 6:11:06 PM org.geotools.data.gen.PreGeneralizedFeatureSource logDistanceInfo

@@ -12,7 +12,7 @@ This tutorial walks through the steps of publishing a Shapefile with GeoServer.
 Getting started
 ---------------
 
-#. Download the zip file `<nyc_roads.zip>`_. It contains a shapefile with a subset of roads from New York City that will be used during in this tutorial.
+#. Download the zip file :download:`nyc_roads.zip`. It contains a Shapefile with a subset of roads from New York City that will be used during in this tutorial.
 
 #. Unzip ``nyc_roads.zip`` into ``<GEOSERVER_DATA_DIR>/data`` where ``GEOSERVER_DATA_DIR`` is the root of the GeoServer data directory. Unzipping the archive will result in the following four files::
 
@@ -24,7 +24,7 @@ Getting started
 Create a new data store
 -----------------------
 
-The first step is to create a *data store* for the Shapefile. The data store tells GeoServer how the shapefile should be loaded, in particular where it is located.
+The first step is to create a *data store* for the Shapefile. The data store tells GeoServer how the Shapefile should be loaded, in particular where it is located.
 
     #. In a web browser navigate to http://localhost:8080/geoserver.
 
@@ -57,7 +57,7 @@ The first step is to create a *data store* for the Shapefile. The data store tel
 Configure the feature type
 --------------------------
 
-The next step is to configure the *feature type* for the Shapefile. The feature type tells GeoServer how the shapefile should be published. 
+The next step is to configure the *feature type* for the Shapefile. The feature type tells GeoServer how the Shapefile should be published. 
 
     #. Set the *style* by selecting ``line`` from the ``Style`` drop down list.
 
