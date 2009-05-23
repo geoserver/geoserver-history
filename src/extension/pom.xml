@@ -74,6 +74,14 @@
     </profile>
 
     <profile>
+      <id>feature-pregeneralized</id>
+      <modules>
+        <module>feature-pregeneralized</module>
+      </modules>
+    </profile>
+
+
+    <profile>
       <id>imagemap</id>
       <modules>
         <module>imagemap</module>
@@ -119,13 +127,13 @@
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
+	<module>feature-pregeneralized</module>
 	<module>imagemosaic-jdbc</module>
         <module>imagemap</module>
         <module>ogr</module>
         <module>excel</module>
         <module>restconfig</module>
         <module>geosearch</module>
-        <module>feature-pregeneralized</module>
       </modules>
     </profile>
 
@@ -141,6 +149,7 @@
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
+        <module>feature-pregeneralized</module>
 	<module>imagemosaic-jdbc</module>
         <module>imagemap</module>
         <module>ogr</module>
