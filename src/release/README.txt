@@ -1,3 +1,15 @@
+GeoServer 2.0-beta1 (May 25, 2009)
+----------------------------------
+
+This is the first beta in the 2.x series. Development has focused
+mainly around the new Wicket based user interface and catalog
+persistence, closing a wopping 101 issues in our bug tracker,
+among improvements and bug fixes. The new UI is getting very close
+to its final appearance and the configuration subsystem has been
+undergoing more testing.
+
+This release is based on GeoTools 2.6.x (revision 33092)
+
 GeoServer 2.0-alpha2 (April 15, 2009)
 -------------------------------------
 
