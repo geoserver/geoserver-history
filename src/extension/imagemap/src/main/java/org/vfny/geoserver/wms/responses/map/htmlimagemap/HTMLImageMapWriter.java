@@ -49,6 +49,7 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,9 +91,12 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      *
      * @param out stream to encode the layer to
      * @param config current wms context
+     * @throws ClassCastException 
+     * @throws UnsupportedEncodingException 
      */
-    public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) {
-        super(out);        
+    public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) throws UnsupportedEncodingException, ClassCastException {    	
+    	super(out,mapContext.getRequest()!=null ? mapContext.getRequest().getHttpServletRequest().getCharacterEncoding() : "UTF-8");
+    	
         this.mapContext=mapContext;        
         mapEnv = mapContext.getAreaOfInterest();
         clippingBox=envToGeometry(mapEnv);
