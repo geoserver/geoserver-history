@@ -1,6 +1,9 @@
 package org.vfny.geoserver.wms.responses.map.png;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -118,7 +121,7 @@ public class GetMapTest extends WMSTestSupport {
     }
     
     public void testRemoteOWSGet() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
+        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
             return;
         
         ServletResponse response = getAsServletResponse(
@@ -135,8 +138,10 @@ public class GetMapTest extends WMSTestSupport {
     }
     
     public void testRemoteOWSUserStyleGet() throws Exception {
-        if (!RemoteOWSTestSupport.isRemoteStatesAvailable())
+        if (!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER)
+                || !RemoteOWSTestSupport.isRemoteOwsUserStyleAvailable(LOGGER)) {
             return;
+        }
 
         URL url = GetMapTest.class.getResource("remoteOws.sld");
 
@@ -148,5 +153,5 @@ public class GetMapTest extends WMSTestSupport {
 
         assertEquals("image/png", response.getContentType());
     }
-
+    
 }
