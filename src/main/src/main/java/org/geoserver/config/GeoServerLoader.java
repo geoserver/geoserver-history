@@ -12,9 +12,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.util.LegacyCatalogImporter;
 import org.geoserver.catalog.util.LegacyCatalogReader;
 import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
+import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
@@ -195,7 +198,12 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             f = resourceLoader.find( "global.xml");
             if ( f != null ) {
                 BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                GeoServerInfo global = new XStreamPersister.XML().load( in, GeoServerInfo.class );
+                GeoServerInfoImpl global = (GeoServerInfoImpl) new XStreamPersister.XML().load( in, GeoServerInfo.class );
+                // fill in default collection values if needed
+                if(global.getMetadata() == null)
+                    global.setMetadata(new HashMap<String, Serializable>());
+                if(global.getClientProperties() == null)
+                    global.setClientProperties(new HashMap<Object, Object>());
                 geoServer.setGlobal( global );    
             }
             

@@ -4,6 +4,7 @@
  */
 package org.geoserver.config.impl;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,9 +38,9 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     boolean verboseExceptions = false;
 
-    Map metadata = new HashMap();
+    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
 
-    Map clientProperties = new HashMap();
+    Map<Object, Object> clientProperties = new HashMap<Object, Object>();
 
     int updateSequence;
     
@@ -47,6 +48,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     String adminPassword;
 
     GeoServer geoServer;
+    
     public GeoServerInfoImpl(GeoServer geoServer) {
         this.geoServer = geoServer;
     }
@@ -163,16 +165,20 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         this.adminUsername = adminUsername;
     }
     
-    public Map getMetadata() {
+    public Map<String, Serializable> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map metadata) {
+    public void setMetadata(Map<String, Serializable> metadata) {
         this.metadata = metadata;
     }
 
-    public Map getClientProperties() {
+    public Map<Object, Object> getClientProperties() {
         return clientProperties;
+    }
+    
+    public void setClientProperties(Map<Object, Object> properties) {
+        this.clientProperties = clientProperties;
     }
     
     public void dispose() {
