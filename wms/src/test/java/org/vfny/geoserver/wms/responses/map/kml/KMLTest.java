@@ -55,7 +55,7 @@ public class KMLTest extends WMSTestSupport {
     }
     
     public void testVectorWithRemoteLayer() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
+        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
             return;
         
         Document doc = getAsDOM(
