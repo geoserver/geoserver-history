@@ -12,7 +12,6 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FidFilter;
 import org.geotools.filter.FilterFilter;
-import org.geotools.filter.parser.ParseException;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.gml.GMLFilterDocument;
