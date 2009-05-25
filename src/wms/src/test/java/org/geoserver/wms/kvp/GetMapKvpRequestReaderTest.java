@@ -266,7 +266,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     }
     
     public void testRemoteWFS() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
+        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
             return;
         
         HashMap raw = new HashMap();
@@ -291,7 +291,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     }
     
     public void testRemoteWFSNoStyle() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
+        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
             return;
         
         HashMap raw = new HashMap();
@@ -314,7 +314,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     }
     
     public void testRemoteWFSInvalidURL() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable())
+        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
             return;
         
         HashMap raw = new HashMap();
