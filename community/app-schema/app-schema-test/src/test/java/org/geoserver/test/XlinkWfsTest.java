@@ -1,34 +1,22 @@
 /*
- * Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.Test;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.custommonkey.xmlunit.SimpleNamespaceContext;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 /**
  * WFS GetFeature to test integration of {@link AppSchemaDataAccess} with GeoServer.
  * 
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
-public class XlinkWfsTest extends XlinkTestSupport {
+public class XlinkWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     /**
      * Read-only test so can use one-time setup.
@@ -40,20 +28,8 @@ public class XlinkWfsTest extends XlinkTestSupport {
     }
 
     @Override
-    protected void oneTimeSetUp() throws Exception {        
-        super.oneTimeSetUp();
-        // Setup XMLUnit namespaces
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
-        namespaces.put("wfs", "http://www.opengis.net/wfs");
-        namespaces.put("ows", "http://www.opengis.net/ows");
-        namespaces.put("ogc", "http://www.opengis.net/ogc");
-        namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
-        namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
-        namespaces.put("gml", "http://www.opengis.net/gml");
-        namespaces.put(FeatureChainingMockData.GSML_NAMESPACE_PREFIX,
-                FeatureChainingMockData.GSML_NAMESPACE_URI);
-        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+    protected NamespaceTestData buildTestData() {
+        return new XlinkMockData();
     }
 
     /**
@@ -100,117 +76,37 @@ public class XlinkWfsTest extends XlinkTestSupport {
         assertXpathCount(4, "//gsml:MappedFeature", doc);
 
         // mf1
-        XMLAssert.assertXpathEvaluatesTo("GUNTHORPE FORMATION",
+        assertXpathEvaluatesTo("GUNTHORPE FORMATION",
                 "//gsml:MappedFeature[@gml:id='mf1']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
+        assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:shape//gml:posList", doc);
-        XMLAssert.assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25699",
+        assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25699",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification/@xlink:href", doc);
 
         // mf2
-        XMLAssert.assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP",
+        assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP",
                 "//gsml:MappedFeature[@gml:id='mf2']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
+        assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:shape//gml:posList", doc);
-        XMLAssert.assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25678",
+        assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25678",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification/@xlink:href", doc);
 
         // mf3
-        XMLAssert.assertXpathEvaluatesTo("CLIFTON FORMATION",
-                "//gsml:MappedFeature[@gml:id='mf3']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
+        assertXpathEvaluatesTo("CLIFTON FORMATION", "//gsml:MappedFeature[@gml:id='mf3']/gml:name",
+                doc);
+        assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:shape//gml:posList", doc);
-        XMLAssert.assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25678",
+        assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25678",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification/@xlink:href", doc);
 
         // mf4
-        XMLAssert.assertXpathEvaluatesTo("MURRADUC BASALT",
-                "//gsml:MappedFeature[@gml:id='mf4']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
+        assertXpathEvaluatesTo("MURRADUC BASALT", "//gsml:MappedFeature[@gml:id='mf4']/gml:name",
+                doc);
+        assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:shape//gml:posList", doc);
-        XMLAssert.assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25682",
+        assertXpathEvaluatesTo("urn:x-test:GeologicUnit:gu.25682",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification/@xlink:href", doc);
 
-    }
-
-    /**
-     * Assert that there are count matches of xpath in doc.
-     * 
-     * @param count
-     *            expected number of matches
-     * @param xpath
-     *            xpath expression
-     * @param doc
-     *            document under test
-     * @throws Exception
-     */
-    public void assertXpathCount(int count, String xpath, Document doc) throws Exception {
-        XpathEngine engine = XMLUnit.newXpathEngine();
-        NodeList nodes = engine.getMatchingNodes(xpath, doc);
-        assertEquals(count, nodes.getLength());
-    }
-
-    /**
-     * Assert that the xpath string value matches the regex.
-     * 
-     * @param regex
-     *            regular expression that must be matched
-     * @param xpath
-     *            xpath expression
-     * @param doc
-     *            document under test
-     * @throws Exception
-     */
-    public void assertXpathMatches(String regex, String xpath, Document doc) throws Exception {
-        XpathEngine engine = XMLUnit.newXpathEngine();
-        String value = engine.evaluate(xpath, doc);
-        assertTrue(value.matches(regex));
-    }
-
-    /**
-     * Assert that the xpath string value does not match the regex.
-     * 
-     * @param regex
-     *            regular expression that must not be matched
-     * @param xpath
-     *            xpath expression
-     * @param doc
-     *            document under test
-     * @throws Exception
-     */
-    public void assertXpathNotMatches(String regex, String xpath, Document doc) throws Exception {
-        XpathEngine engine = XMLUnit.newXpathEngine();
-        String value = engine.evaluate(xpath, doc);
-        assertFalse(value.matches(regex));
-    }
-
-    /**
-     * Return {@link Document} as a pretty-printed string.
-     * 
-     * @param doc
-     * @return
-     * @throws Exception
-     */
-    public String prettyString(Document doc) throws Exception {
-        OutputStream out = new ByteArrayOutputStream();
-        prettyPrint(doc, out);
-        return out.toString();
-    }
-
-    /**
-     * Pretty-print a {@link Document} to an {@link OutputStream}.
-     * 
-     * @param doc
-     * @param out
-     * @throws Exception
-     */
-    public void prettyPrint(Document doc, OutputStream out) throws Exception {
-        OutputFormat format = new OutputFormat(doc);
-        format.setLineWidth(80);
-        format.setIndenting(true);
-        format.setIndent(4);
-        XMLSerializer serializer = new XMLSerializer(out, format);
-        serializer.serialize(doc);
     }
 
 }

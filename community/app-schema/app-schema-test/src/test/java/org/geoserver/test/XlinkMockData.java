@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -18,8 +18,9 @@ import org.geotools.data.complex.AppSchemaDataAccess;
  */
 public class XlinkMockData extends AbstractAppSchemaMockData {
 
-    public static final String GSML_PREFIX = AbstractAppSchemaMockData.GSML_NAMESPACE_PREFIX;
-
+    /**
+     * @see org.geoserver.test.AbstractAppSchemaMockData#addContent()
+     */
     @Override
     public void addContent() {
         addFeatureType(GSML_PREFIX, "MappedFeature", "MappedFeatureXlink.xml",
