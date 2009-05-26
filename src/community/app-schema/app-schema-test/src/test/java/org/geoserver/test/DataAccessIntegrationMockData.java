@@ -23,8 +23,6 @@ import org.geotools.data.DataAccessFinder;
 @SuppressWarnings("serial")
 public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
 
-    private static final String GSML_PREFIX = AbstractAppSchemaMockData.GSML_NAMESPACE_PREFIX;
-
     /**
      * Mineral Occurrence prefix
      */
@@ -35,9 +33,12 @@ public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
      */
     private static final String MO_URI = "urn:cgi:xmlns:GGIC:MineralOccurrence:1.0";
 
+    /**
+     * @see org.geoserver.test.AbstractAppSchemaMockData#addContent()
+     */
     @Override
     protected void addContent() {
-        setNamespace(MO_PREFIX, MO_URI);
+        putNamespace(MO_PREFIX, MO_URI);
         addFeatureType(GSML_PREFIX, "MappedFeature", "MappedFeatureAsOccurrence.xml",
                 "MappedFeaturePropertyfile.properties");
         // GeologicUnit is the output type with a mock MO:EarthResource data access as an

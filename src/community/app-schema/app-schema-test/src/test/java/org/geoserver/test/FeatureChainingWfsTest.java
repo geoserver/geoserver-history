@@ -1,34 +1,22 @@
 /*
- * Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
 
 package org.geoserver.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.Test;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.custommonkey.xmlunit.SimpleNamespaceContext;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 /**
  * WFS GetFeature to test integration of {@link AppSchemaDataAccess} with GeoServer.
  * 
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
-public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
+public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     /**
      * Read-only test so can use one-time setup.
@@ -40,21 +28,8 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
     }
 
     @Override
-    protected void oneTimeSetUp() throws Exception {
-        super.oneTimeSetUp();
-        // Setup XMLUnit namespaces
-        Map<String, String> namespaces = new HashMap<String, String>();
-        namespaces.put("wfs", "http://www.opengis.net/wfs");
-        namespaces.put("ows", "http://www.opengis.net/ows");
-        namespaces.put("ogc", "http://www.opengis.net/ogc");
-        namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
-        namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
-        namespaces.put("gml", "http://www.opengis.net/gml");
-        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
-        namespaces.put(FeatureChainingMockData.GSML_NAMESPACE_PREFIX,
-                FeatureChainingMockData.GSML_NAMESPACE_URI);
-        namespaces.put("ex", "http://example.com");
-        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
+    protected NamespaceTestData buildTestData() {
+        return new FeatureChainingMockData();
     }
 
     /**
@@ -89,7 +64,7 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
         LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
     }
-    
+
     /**
      * Test nesting features of complex types with simple content. Previously the nested features
      * attributes weren't encoded, so this is to ensure that this works.
@@ -103,16 +78,24 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
 
         // 1
         assertXpathCount(3, "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature", doc);
-        XMLAssert.assertXpathEvaluatesTo("name_a",
-                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute", doc);
-        XMLAssert.assertXpathEvaluatesTo("name_b",
-                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute", doc);
-        XMLAssert.assertXpathEvaluatesTo("name_c",
-                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute", doc);
+        assertXpathEvaluatesTo(
+                "name_a",
+                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
+                doc);
+        assertXpathEvaluatesTo(
+                "name_b",
+                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
+                doc);
+        assertXpathEvaluatesTo(
+                "name_c",
+                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute",
+                doc);
         // 2
         assertXpathCount(1, "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature", doc);
-        XMLAssert.assertXpathEvaluatesTo("name_2",
-                "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature/ex:SimpleContent/ex:someAttribute", doc);
+        assertXpathEvaluatesTo(
+                "name_2",
+                "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature/ex:SimpleContent/ex:someAttribute",
+                doc);
     }
 
     /**
@@ -126,15 +109,14 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
         assertXpathCount(4, "//gsml:MappedFeature", doc);
 
         // mf1
-        XMLAssert.assertXpathEvaluatesTo("GUNTHORPE FORMATION",
+        assertXpathEvaluatesTo("GUNTHORPE FORMATION",
                 "//gsml:MappedFeature[@gml:id='mf1']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
+        assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:shape//gml:posList", doc);
         // gu.25699
-        XMLAssert.assertXpathEvaluatesTo("gu.25699",
-                "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
-                        + "/gsml:GeologicUnit/@gml:id", doc);
-        XMLAssert.assertXpathEvaluatesTo("Yaugher Volcanic Group",
+        assertXpathEvaluatesTo("gu.25699", "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
+                + "/gsml:GeologicUnit/@gml:id", doc);
+        assertXpathEvaluatesTo("Yaugher Volcanic Group",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
         assertXpathMatches(".*Olivine basalt.*microgabbro.*",
@@ -142,45 +124,41 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:exposureColor", doc);
-        XMLAssert.assertXpathEvaluatesTo("Blue",
-                "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:exposureColor"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:exposureColor" + "/gsml:CGI_TermValue/gsml:value", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
-        XMLAssert.assertXpathEvaluatesTo("x",
-                "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:outcropCharacter"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:outcropCharacter" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition", doc);
-        XMLAssert.assertXpathEvaluatesTo("significant",
+        assertXpathEvaluatesTo("significant",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition"
                         + "/gsml:CompositionPart/gsml:proportion"
                         + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert
-                .assertXpathEvaluatesTo("interbedded component",
-                        "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
-                                + "/gsml:GeologicUnit/gsml:composition"
-                                + "/gsml:CompositionPart/gsml:role", doc);
+        assertXpathEvaluatesTo(
+                "interbedded component",
+                "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
+                        + "/gsml:GeologicUnit/gsml:composition" + "/gsml:CompositionPart/gsml:role",
+                doc);
         // check occurence as xlink:href
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:occurence", doc);
-        XMLAssert.assertXpathEvaluatesTo("",
-                "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification" + "/gsml:GeologicUnit"
-                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf1']", doc);
+        assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
+                + "/gsml:GeologicUnit"
+                + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf1']", doc);
 
         // mf2
-        XMLAssert.assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP",
+        assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP",
                 "//gsml:MappedFeature[@gml:id='mf2']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
+        assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:shape//gml:posList", doc);
         // gu.25678
-        XMLAssert.assertXpathEvaluatesTo("gu.25678",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
-                        + "/gsml:GeologicUnit/@gml:id", doc);
-        XMLAssert.assertXpathEvaluatesTo("Yaugher Volcanic Group",
+        assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/@gml:id", doc);
+        assertXpathEvaluatesTo("Yaugher Volcanic Group",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
         assertXpathMatches(".*Olivine basalt.*microgabbro.*",
@@ -188,64 +166,57 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:exposureColor", doc);
-        XMLAssert.assertXpathEvaluatesTo("Yellow",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:exposureColor[1]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("Blue",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:exposureColor[2]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("Yellow", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:exposureColor[1]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:exposureColor[2]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
-        XMLAssert.assertXpathEvaluatesTo("y",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:outcropCharacter[1]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("x",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:outcropCharacter[2]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("y", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:outcropCharacter[1]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:outcropCharacter[2]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition", doc);
-        XMLAssert.assertXpathEvaluatesTo("significant",
+        assertXpathEvaluatesTo("significant",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[1]"
                         + "/gsml:CompositionPart/gsml:proportion"
                         + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("interbedded component",
+        assertXpathEvaluatesTo("interbedded component",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit[@gml:id='gu.25678']/gsml:composition[1]"
                         + "/gsml:CompositionPart/gsml:role", doc);
-        XMLAssert.assertXpathEvaluatesTo("minor",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:composition[2]"
-                        + "/gsml:CompositionPart/gsml:proportion"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("interbedded component",
+        assertXpathEvaluatesTo("minor", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:composition[2]"
+                + "/gsml:CompositionPart/gsml:proportion" + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("interbedded component",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[2]"
                         + "/gsml:CompositionPart/gsml:role", doc);
         // check occurence as xlink:href
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:occurence", doc);
-        XMLAssert.assertXpathEvaluatesTo("",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification" + "/gsml:GeologicUnit"
-                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf2']", doc);
-        XMLAssert.assertXpathEvaluatesTo("",
-                "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification" + "/gsml:GeologicUnit"
-                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf3']", doc);
+        assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit"
+                + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf2']", doc);
+        assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
+                + "/gsml:GeologicUnit"
+                + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf3']", doc);
 
         // mf3
-        XMLAssert.assertXpathEvaluatesTo("CLIFTON FORMATION",
-                "//gsml:MappedFeature[@gml:id='mf3']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
+        assertXpathEvaluatesTo("CLIFTON FORMATION", "//gsml:MappedFeature[@gml:id='mf3']/gml:name",
+                doc);
+        assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:shape//gml:posList", doc);
         // gu.25678
-        XMLAssert.assertXpathEvaluatesTo("gu.25678",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
-                        + "/gsml:GeologicUnit/@gml:id", doc);
-        XMLAssert.assertXpathEvaluatesTo("Yaugher Volcanic Group",
+        assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/@gml:id", doc);
+        assertXpathEvaluatesTo("Yaugher Volcanic Group",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
         assertXpathMatches(".*Olivine basalt.*microgabbro.*",
@@ -253,64 +224,57 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:exposureColor", doc);
-        XMLAssert.assertXpathEvaluatesTo("Yellow",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:exposureColor[1]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("Blue",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:exposureColor[2]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("Yellow", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:exposureColor[1]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:exposureColor[2]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
-        XMLAssert.assertXpathEvaluatesTo("y",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:outcropCharacter[1]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("x",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:outcropCharacter[2]"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("y", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:outcropCharacter[1]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:outcropCharacter[2]" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition", doc);
-        XMLAssert.assertXpathEvaluatesTo("significant",
+        assertXpathEvaluatesTo("significant",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[1]"
                         + "/gsml:CompositionPart/gsml:proportion"
                         + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("interbedded component",
+        assertXpathEvaluatesTo("interbedded component",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[1]"
                         + "/gsml:CompositionPart/gsml:role", doc);
-        XMLAssert.assertXpathEvaluatesTo("minor",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:composition[2]"
-                        + "/gsml:CompositionPart/gsml:proportion"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert.assertXpathEvaluatesTo("interbedded component",
+        assertXpathEvaluatesTo("minor", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:composition[2]"
+                + "/gsml:CompositionPart/gsml:proportion" + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("interbedded component",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition[2]"
                         + "/gsml:CompositionPart/gsml:role", doc);
         // check occurence as xlink:href
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:occurence", doc);
-        XMLAssert.assertXpathEvaluatesTo("",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification" + "/gsml:GeologicUnit"
-                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf2']", doc);
-        XMLAssert.assertXpathEvaluatesTo("",
-                "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification" + "/gsml:GeologicUnit"
-                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf3']", doc);
+        assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit"
+                + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf2']", doc);
+        assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
+                + "/gsml:GeologicUnit"
+                + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf3']", doc);
 
         // mf4
-        XMLAssert.assertXpathEvaluatesTo("MURRADUC BASALT",
-                "//gsml:MappedFeature[@gml:id='mf4']/gml:name", doc);
-        XMLAssert.assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
+        assertXpathEvaluatesTo("MURRADUC BASALT", "//gsml:MappedFeature[@gml:id='mf4']/gml:name",
+                doc);
+        assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:shape//gml:posList", doc);
         // gu.25682
-        XMLAssert.assertXpathEvaluatesTo("gu.25682",
-                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
-                        + "/gsml:GeologicUnit/@gml:id", doc);
-        XMLAssert.assertXpathEvaluatesTo("New Group",
+        assertXpathEvaluatesTo("gu.25682", "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
+                + "/gsml:GeologicUnit/@gml:id", doc);
+        assertXpathEvaluatesTo("New Group",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
         assertXpathMatches(".*Olivine basalt.*",
@@ -321,117 +285,32 @@ public class FeatureChainingWfsTest extends FeatureChainingTestSupport {
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:exposureColor", doc);
-        XMLAssert.assertXpathEvaluatesTo("Red",
-                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:exposureColor"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("Red", "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:exposureColor" + "/gsml:CGI_TermValue/gsml:value", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
-        XMLAssert.assertXpathEvaluatesTo("z",
-                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:outcropCharacter"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
+        assertXpathEvaluatesTo("z", "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
+                + "/gsml:GeologicUnit/gsml:outcropCharacter" + "/gsml:CGI_TermValue/gsml:value",
+                doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition", doc);
-        XMLAssert.assertXpathEvaluatesTo("significant",
+        assertXpathEvaluatesTo("significant",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                         + "/gsml:GeologicUnit/gsml:composition"
                         + "/gsml:CompositionPart/gsml:proportion"
                         + "/gsml:CGI_TermValue/gsml:value", doc);
-        XMLAssert
-                .assertXpathEvaluatesTo("interbedded component",
-                        "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
-                                + "/gsml:GeologicUnit/gsml:composition"
-                                + "/gsml:CompositionPart/gsml:role", doc);
+        assertXpathEvaluatesTo(
+                "interbedded component",
+                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
+                        + "/gsml:GeologicUnit/gsml:composition" + "/gsml:CompositionPart/gsml:role",
+                doc);
         // check occurence as xlink:href
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:occurence", doc);
-        XMLAssert.assertXpathEvaluatesTo("",
-                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification" + "/gsml:GeologicUnit"
-                        + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf4']", doc);
+        assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
+                + "/gsml:GeologicUnit"
+                + "/gsml:occurence[@xlink:href='urn:cgi:feature:MappedFeature:mf4']", doc);
 
-    }
-
-    /**
-     * Assert that there are count matches of xpath in doc.
-     * 
-     * @param count
-     *            expected number of matches
-     * @param xpath
-     *            xpath expression
-     * @param doc
-     *            document under test
-     * @throws Exception
-     */
-    public static void assertXpathCount(int count, String xpath, Document doc) throws Exception {
-        XpathEngine engine = XMLUnit.newXpathEngine();
-        NodeList nodes = engine.getMatchingNodes(xpath, doc);
-        assertEquals(count, nodes.getLength());
-    }
-
-    /**
-     * Assert that the xpath string value matches the regex.
-     * 
-     * @param regex
-     *            regular expression that must be matched
-     * @param xpath
-     *            xpath expression
-     * @param doc
-     *            document under test
-     * @throws Exception
-     */
-    public static void assertXpathMatches(String regex, String xpath, Document doc)
-            throws Exception {
-        XpathEngine engine = XMLUnit.newXpathEngine();
-        String value = engine.evaluate(xpath, doc);
-        assertTrue(value.matches(regex));
-    }
-
-    /**
-     * Assert that the xpath string value does not match the regex.
-     * 
-     * @param regex
-     *            regular expression that must not be matched
-     * @param xpath
-     *            xpath expression
-     * @param doc
-     *            document under test
-     * @throws Exception
-     */
-    public static void assertXpathNotMatches(String regex, String xpath, Document doc)
-            throws Exception {
-        XpathEngine engine = XMLUnit.newXpathEngine();
-        String value = engine.evaluate(xpath, doc);
-        assertFalse(value.matches(regex));
-    }
-
-    /**
-     * Return {@link Document} as a pretty-printed string.
-     * 
-     * @param doc
-     * @return
-     * @throws Exception
-     */
-    public static String prettyString(Document doc) throws Exception {
-        OutputStream out = new ByteArrayOutputStream();
-        prettyPrint(doc, out);
-        return out.toString();
-    }
-
-    /**
-     * Pretty-print a {@link Document} to an {@link OutputStream}.
-     * 
-     * @param doc
-     * @param out
-     * @throws Exception
-     */
-    public static void prettyPrint(Document doc, OutputStream out) throws Exception {
-        OutputFormat format = new OutputFormat(doc);
-        format.setLineWidth(80);
-        format.setIndenting(true);
-        format.setIndent(4);
-        XMLSerializer serializer = new XMLSerializer(out, format);
-        serializer.serialize(doc);
     }
 
 }

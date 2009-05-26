@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * Copyright (c) 2001 - 20089 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -18,21 +18,32 @@ import org.geotools.data.complex.AppSchemaDataAccess;
  */
 public class FeatureChainingMockData extends AbstractAppSchemaMockData {
 
+    /**
+     * Prefix for ex namespace.
+     */
+    private static final String EX_PREFIX = "ex";
 
+    /**
+     * URI for ex namespace.
+     */
+    private static final String EX_URI = "http://example.com";
+
+    /**
+     * @see org.geoserver.test.AbstractAppSchemaMockData#addContent()
+     */
     @Override
     public void addContent() {
-        addFeatureType(GSML_NAMESPACE_PREFIX, "MappedFeature", "MappedFeaturePropertyfile.xml",
+        putNamespace(EX_PREFIX, EX_URI);
+        addFeatureType(GSML_PREFIX, "MappedFeature", "MappedFeaturePropertyfile.xml",
                 "MappedFeaturePropertyfile.properties");
-        addFeatureType(GSML_NAMESPACE_PREFIX, "GeologicUnit", "GeologicUnit.xml",
-                "GeologicUnit.properties");
-        addFeatureType(GSML_NAMESPACE_PREFIX, "CompositionPart", "CompositionPart.xml",
+        addFeatureType(GSML_PREFIX, "GeologicUnit", "GeologicUnit.xml", "GeologicUnit.properties");
+        addFeatureType(GSML_PREFIX, "CompositionPart", "CompositionPart.xml",
                 "CompositionPart.properties");
-        addFeatureType(GSML_NAMESPACE_PREFIX, "CGI_TermValue", "CGITermValue.xml",
-                "CGITermValue.properties");
-        addFeatureType(GSML_NAMESPACE_PREFIX, "ControlledConcept", "ControlledConcept.xml",
+        addFeatureType(GSML_PREFIX, "CGI_TermValue", "CGITermValue.xml", "CGITermValue.properties");
+        addFeatureType(GSML_PREFIX, "ControlledConcept", "ControlledConcept.xml",
                 "ControlledConcept.properties");
         // this is a mock type to test encoding complex type with simple content
-        addFeatureType("ex", "ParentFeature", "ComplexTypeWithSimpleContent.xml",
+        addFeatureType(EX_PREFIX, "ParentFeature", "ComplexTypeWithSimpleContent.xml",
                 "ControlledConcept.properties", "simpleContent.xsd", "SimpleContent.properties");
     }
 
