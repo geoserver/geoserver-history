@@ -119,7 +119,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("Yaugher Volcanic Group",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
-        assertXpathMatches(".*Olivine basalt.*microgabbro.*",
+        assertXpathEvaluatesTo("Olivine basalt, tuff, microgabbro, minor sedimentary rocks",
                 "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf1']/gsml:specification"
@@ -161,7 +161,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("Yaugher Volcanic Group",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
-        assertXpathMatches(".*Olivine basalt.*microgabbro.*",
+        assertXpathEvaluatesTo("Olivine basalt, tuff, microgabbro, minor sedimentary rocks",
                 "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf2']/gsml:specification"
@@ -219,7 +219,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("Yaugher Volcanic Group",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
-        assertXpathMatches(".*Olivine basalt.*microgabbro.*",
+        assertXpathEvaluatesTo("Olivine basalt, tuff, microgabbro, minor sedimentary rocks",
                 "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='mf3']/gsml:specification"
@@ -277,10 +277,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("New Group",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:name", doc);
-        assertXpathMatches(".*Olivine basalt.*",
-                "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
-                        + "/gsml:GeologicUnit/gml:description", doc);
-        assertXpathNotMatches(".*microgabbro.*",
+        assertXpathEvaluatesTo("Olivine basalt",
                 "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
                         + "/gsml:GeologicUnit/gml:description", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='mf4']/gsml:specification"
