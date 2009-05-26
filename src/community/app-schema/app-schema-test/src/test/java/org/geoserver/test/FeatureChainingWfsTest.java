@@ -34,8 +34,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     /**
      * Test whether GetCapabilities returns wfs:WFS_Capabilities.
-     * 
-     * @throws Exception
      */
     public void testGetCapabilities() {
         Document doc = getAsDOM("wfs?request=GetCapabilities");
@@ -45,8 +43,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     /**
      * Test whether DescribeFeatureType returns xsd:schema.
-     * 
-     * @throws Exception
      */
     public void testDescribeFeatureType() {
         Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:MappedFeature");
@@ -56,8 +52,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     /**
      * Test whether GetFeature returns wfs:FeatureCollection.
-     * 
-     * @throws Exception
      */
     public void testGetFeature() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
@@ -68,8 +62,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * Test nesting features of complex types with simple content. Previously the nested features
      * attributes weren't encoded, so this is to ensure that this works.
-     * 
-     * @throws Exception
      */
     public void testComplexTypeWithSimpleContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:ParentFeature");
@@ -100,8 +92,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     /**
      * Test content of GetFeature response.
-     * 
-     * @throws Exception
      */
     public void testGetFeatureContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
