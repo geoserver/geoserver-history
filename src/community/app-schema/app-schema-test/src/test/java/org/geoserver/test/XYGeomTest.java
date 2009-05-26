@@ -51,8 +51,8 @@ public class XYGeomTest extends XYGeomTestSupport {
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("gml", "http://www.opengis.net/gml");
-        namespaces.put(XYGeomMockData.TEST_NAMESPACE_PREFIX,
-                XYGeomMockData.TEST_NAMESPACE_URI);
+        namespaces.put(XYGeomMockData.TEST_PREFIX,
+                XYGeomMockData.TEST_URI);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
 
