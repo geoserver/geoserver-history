@@ -124,24 +124,6 @@ Set tag pom versions
 
      svn commit -m "Setting pom versions to 1.7.1" .
 
-Generate documentation from Confluence
---------------------------------------
-
-#. Go to http://geoserver.org and log in.
-
-#. `Export <http://geoserver.org/spaces/exportspace.action?key=GEOSDOC>`_  the 
-   user guide.
-
-#. Select ``HTML output``.
-
-#. Scroll to the bottom of the page and click the ``Export`` button. 
-
-#. Download the documentation when the export is completed.
-
-#. Unzip the resulting archive into the ``release`` directory.
-
-#. Rename ``GEOSDOC/Navigation.html`` to ``GEOSDOC/index.html``.
-
 Build release artifacts
 -----------------------
 
@@ -163,6 +145,33 @@ Build release artifacts
      mvn assembly:attached
 
 At this point the release artifacts will be located in ``target/release``.
+
+Build documentation
+-------------------
+
+.. note::
+
+   Building the GeoServer document requires the following be installed
+
+     * `Sphinx <http://sphinx.pocoo.org/>`_, version 0.6 or greather
+     * Make
+
+#. Change to the root of the documentation directory, or check it out from
+   http://svn.codehaus.org/geoserver/branches/1.7.x/doc
+
+#. Change directory to ``doc/user``.
+
+#. Run the ``make`` command::
+
+      make html
+
+#. Change directory to ``build/html`` and archive its contents::
+
+      cd build/html     
+      zip geoserver-1.7.1-userguide.zip *
+
+#. Upload the userguide to SourceForge following steps in the 
+   :ref:`upload_artifacts` section.
 
 CITE test 
 ---------
@@ -244,6 +253,8 @@ Release on Jira
    button.
 
    .. image:: jira4.png
+
+.. _upload_artifacts:
 
 Upload release artifacts to SourceForge
 ---------------------------------------
