@@ -38,7 +38,7 @@ public class XYGeomTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testDescribeFeatureType() throws Exception {
+    public void testDescribeFeatureType() {
         Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=test:PointFeature");
         LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
@@ -49,7 +49,7 @@ public class XYGeomTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testGetFeature() throws Exception {
+    public void testGetFeature() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=test:PointFeature");
         LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -60,7 +60,7 @@ public class XYGeomTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testGetFeatureContent() throws Exception {
+    public void testGetFeatureContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=test:PointFeature");
 
         assertXpathCount(2, "//test:PointFeature", doc);

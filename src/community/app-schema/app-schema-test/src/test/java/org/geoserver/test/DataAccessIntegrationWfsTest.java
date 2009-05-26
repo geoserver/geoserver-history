@@ -38,11 +38,10 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
      * 
      * @throws Exception
      */
-    public void testDescribeFeatureType() throws Exception {
-        Document document = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:GeologicUnit");
-        LOGGER.info("WFS DescribeFeatureType response:\n"
-                + prettyString(document));
-        assertEquals("xsd:schema", document.getDocumentElement().getNodeName());
+    public void testDescribeFeatureType() {
+        Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:GeologicUnit");
+        LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
     }
 
     /**
@@ -51,9 +50,9 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
      * @throws Exception
      */
     public void testGetCapabilities() {
-        Document document = getAsDOM("wfs?request=GetCapabilities");
-        LOGGER.info("WFS GetCapabilities response:\n" + prettyString(document));
-        assertEquals("wfs:WFS_Capabilities", document.getDocumentElement().getNodeName());
+        Document doc = getAsDOM("wfs?request=GetCapabilities");
+        LOGGER.info("WFS GetCapabilities response:\n" + prettyString(doc));
+        assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
     }
 
     /**
@@ -61,7 +60,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
      * 
      * @throws Exception
      */
-    public void testGetFeature() throws Exception {
+    public void testGetFeature() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:GeologicUnit");
         LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -72,7 +71,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
      * 
      * @throws Exception
      */
-    public void testGetFeatureContent() throws Exception {
+    public void testGetFeatureContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:GeologicUnit");
         assertXpathCount(3, "//gsml:GeologicUnit", doc);
 

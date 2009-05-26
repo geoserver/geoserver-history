@@ -37,7 +37,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testGetCapabilities() throws Exception {
+    public void testGetCapabilities() {
         Document doc = getAsDOM("wfs?request=GetCapabilities");
         LOGGER.info("WFS GetCapabilities response:\n" + prettyString(doc));
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
@@ -48,7 +48,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testDescribeFeatureType() throws Exception {
+    public void testDescribeFeatureType() {
         Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:MappedFeature");
         LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
@@ -59,7 +59,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testGetFeature() throws Exception {
+    public void testGetFeature() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
         LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -71,7 +71,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testComplexTypeWithSimpleContent() throws Exception {
+    public void testComplexTypeWithSimpleContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:ParentFeature");
         LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertXpathCount(2, "//ex:ParentFeature", doc);
@@ -103,7 +103,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * 
      * @throws Exception
      */
-    public void testGetFeatureContent() throws Exception {
+    public void testGetFeatureContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
 
         assertXpathCount(4, "//gsml:MappedFeature", doc);
