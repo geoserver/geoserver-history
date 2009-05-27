@@ -12,11 +12,14 @@ import java.io.Serializable;
 import org.geotools.data.DataAccessFactory.Param;
 
 /**
+ * A serializable view of a {@link Param}
  * 
  * @author Gabriel Roldan
  */
-@SuppressWarnings("serial")
-public class ParamInfo implements Serializable {
+class ParamInfo implements Serializable {
+
+    private static final long serialVersionUID = 886996604911751174L;
+
     private final String name;
 
     private final String title;
@@ -27,7 +30,7 @@ public class ParamInfo implements Serializable {
 
     private boolean required;
 
-    private Object value;
+    private Serializable value;
 
     public ParamInfo(Param param) {
         this.name = param.key;
@@ -35,21 +38,21 @@ public class ParamInfo implements Serializable {
         this.password = param.isPassword();
         if (Serializable.class.isAssignableFrom(param.type)) {
             this.binding = param.type;
-            this.value = param.sample;
+            this.value = (Serializable) param.sample;
         } else {
             // handle the parameter as a string and let the DataStoreFactory
             // convert it to the appropriate type
             this.binding = String.class;
-            this.value = param.sample == null? null : String.valueOf(param.sample);
+            this.value = param.sample == null ? null : String.valueOf(param.sample);
         }
         this.required = param.required;
     }
 
-    public Object getValue() {
+    public Serializable getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(Serializable value) {
         this.value = value;
     }
 

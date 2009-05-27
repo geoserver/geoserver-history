@@ -4,9 +4,10 @@
  */
 package org.geoserver.web.data.store;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -21,12 +22,15 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.NamespacePanel;
@@ -48,76 +52,62 @@ import org.geotools.util.logging.Logging;
  * @see DataAccessNewPage
  * @see DataAccessEditPage
  */
-public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
+abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
     protected static final Logger LOGGER = Logging.getLogger("org.geoserver.web.data.store");
 
-    /**
-     * Key used to store the name assigned workspace
-     */
-    protected static final String WORKSPACE_PROPERTY = "Wicket_Workspace";
-
-    /**
-     * Key used to handle the datastore "namespace" property as a NamespaceInfo instead of a plain
-     * String
-     */
-    protected static final String NAMESPACE_PROPERTY = "Wicket_Namespace";
-
-    protected static final String DATASTORE_ID_PROPERTY = "Wicket_DataStore_ID";
-
-    /**
-     * Key used to store the name assigned to the datastore in {@code parametersMap} as its a
-     * DataStoreInfo property and not a DataAccess one
-     */
-    protected static final String DATASTORE_NAME_PROPERTY_NAME = "Wicket_Data_Source_Name";
-
-    /**
-     * Key used to store the description assigned to the datastore in {@code parametersMap} as its a
-     * DataStoreInfo property and not a DataAccess one
-     */
-    protected static final String DATASTORE_DESCRIPTION_PROPERTY_NAME = "Wicket_Data_Source_Description";
-
-    /**
-     * Key used to store the enabled property assigned to the datastore in {@code parametersMap} as
-     * its a DataStoreInfo property and not a DataAccess one
-     */
-    protected static final String DATASTORE_ENABLED_PROPERTY_NAME = "Wicket_Data_Source_Enabled";
-
-    /**
-     * Holds datastore parameters. Properties will be settled by the form input fields.
-     */
-    protected final Map<String, Serializable> parametersMap;
-
     public AbstractDataAccessPage() {
-        parametersMap = new HashMap<String, Serializable>();
+
     }
 
     /**
      * 
-     * @param workspaceId
-     *            the id for the workspace to attach the new datastore or the current datastore is
-     *            attached to
-     * 
-     * @param dsFactory
-     *            the datastore factory to use
-     * @param isNew
-     *            wheter to set up the UI for a new dataaccess or an existing one, some properties
-     *            may need not to be editable if not a new one.
+     * @param info
+     * @throws IllegalArgumentException
      */
-    protected final void initUI(final DataAccessFactory dsFactory, final boolean isNew)
-            throws IllegalArgumentException {
-        WorkspaceInfo workspace = (WorkspaceInfo) parametersMap.get(WORKSPACE_PROPERTY);
-        if (workspace == null) {
+    protected final void initUI(final DataStoreInfo info) throws IllegalArgumentException {
+
+        if (info.getWorkspace() == null) {
             throw new IllegalArgumentException("Workspace not provided");
         }
 
-        final List<ParamInfo> paramsInfo = new ArrayList<ParamInfo>();
+        final Catalog catalog = getCatalog();
+        final ResourcePool resourcePool = catalog.getResourcePool();
+        DataAccessFactory dsFactory;
+        try {
+            dsFactory = resourcePool.getDataStoreFactory(info);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Can't locate a datastore factory for '"
+                    + info.getType() + "'. " + e.getMessage());
+        }
+        if (dsFactory == null) {
+            throw new IllegalArgumentException("Can't locate a datastore factory for '"
+                    + info.getType() + "'");
+        }
+
+        final Map<String, ParamInfo> paramsMetadata = new LinkedHashMap<String, ParamInfo>();
+
         {
-            Param[] dsParams = dsFactory.getParametersInfo();
+            final boolean isNew = null == info.getId();
+            final Param[] dsParams = dsFactory.getParametersInfo();
             for (Param p : dsParams) {
-                paramsInfo.add(new ParamInfo(p));
+                ParamInfo paramInfo = new ParamInfo(p);
+                paramsMetadata.put(p.key, paramInfo);
+
+                if (isNew) {
+                    // set default value
+                    Serializable defValue;
+                    if ("namespace".equals(paramInfo.getName())) {
+                        defValue = catalog.getDefaultNamespace().getURI();
+                    } else {
+                        defValue = paramInfo.getValue();
+                    }
+                    info.getConnectionParameters().put(paramInfo.getName(), defValue);
+                }
             }
         }
+
+        final IModel model = new CompoundPropertyModel(info);
 
         final Form paramsForm = new Form("dataStoreForm");
         add(paramsForm);
@@ -125,53 +115,45 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         paramsForm.add(new Label("storeType", dsFactory.getDisplayName()));
         paramsForm.add(new Label("storeTypeDescription", dsFactory.getDescription()));
 
-        final IModel wsModel = new MapModel(parametersMap, WORKSPACE_PROPERTY);
-        final IModel wsLabelModel = new ResourceModel("AbstractDataAccessPage.workspace");
-        final WorkspacePanel workspacePanel = new WorkspacePanel("workspacePanel", wsModel,
-                wsLabelModel, true);
+        final WorkspacePanel workspacePanel;
+        {
+            final IModel wsModel = new PropertyModel(model, "workspace");
+            final IModel wsLabelModel = new ResourceModel("AbstractDataAccessPage.workspace");
+            workspacePanel = new WorkspacePanel("workspacePanel", wsModel, wsLabelModel, true);
+        }
         paramsForm.add(workspacePanel);
 
         final TextParamPanel dataStoreNamePanel;
-        if (isNew) {
-            parametersMap.put(NAMESPACE_PROPERTY, getCatalog().getDefaultNamespace());
-        } else {
-            NamespaceInfo namespace = null;
-            String uri = (String) parametersMap.get("namespace");
-            if (uri != null) {
-                namespace = getCatalog().getNamespaceByURI(uri);
-            }
-            parametersMap.put(NAMESPACE_PROPERTY, namespace);
 
-            // dataStoreNamePanel = new LabelParamPanel("dataStoreNamePanel", new MapModel(
-            // parametersMap, DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
-            // "AbstractDataAccessPage.dataSrcName", "Data Source Name"));
-        }
-
-        // IValidator dsNameValidator = new StoreNameValidator(new MapModel(parametersMap,
-        // WORKSPACE_PROPERTY), new MapModel(parametersMap, DATASTORE_ID_PROPERTY));
-
-        dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new MapModel(parametersMap,
-                DATASTORE_NAME_PROPERTY_NAME), new ResourceModel(
-                "AbstractDataAccessPage.dataSrcName", "Data Source Name"), true);
+        dataStoreNamePanel = new TextParamPanel("dataStoreNamePanel", new PropertyModel(model,
+                "name"),
+                new ResourceModel("AbstractDataAccessPage.dataSrcName", "Data Source Name"), true);
         paramsForm.add(dataStoreNamePanel);
 
-        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new MapModel(parametersMap,
-                DATASTORE_DESCRIPTION_PROPERTY_NAME), new ResourceModel("description",
-                "Description"), false, (IValidator[]) null));
+        paramsForm.add(new TextParamPanel("dataStoreDescriptionPanel", new PropertyModel(model,
+                "description"), new ResourceModel("description", "Description"), false,
+                (IValidator[]) null));
 
-        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new MapModel(parametersMap,
-                DATASTORE_ENABLED_PROPERTY_NAME), new ResourceModel("enabled", "Enabled")));
+        paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new PropertyModel(model,
+                "enabled"), new ResourceModel("enabled", "Enabled")));
 
-        ListView paramsList = new ListView("parameters", paramsInfo) {
+        final List<String> keys = new ArrayList<String>(paramsMetadata.keySet());
+        final IModel paramsModel = new PropertyModel(model, "connectionParameters");
+
+        ListView paramsList = new ListView("parameters", keys) {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(ListItem item) {
-                ParamInfo parameter = (ParamInfo) item.getModelObject();
-                Component inputComponent = getInputComponent("parameterPanel", parametersMap,
-                        parameter);
-                if (parameter.getTitle() != null) {
-                    inputComponent.add(new SimpleAttributeModifier("title", parameter.getTitle()));
+                String paramName = item.getModelObjectAsString();
+                ParamInfo paramMetadata = paramsMetadata.get(paramName);
+
+                Component inputComponent;
+                inputComponent = getInputComponent("parameterPanel", paramsModel, paramMetadata);
+
+                String description = paramMetadata.getTitle();
+                if (description != null) {
+                    inputComponent.add(new SimpleAttributeModifier("title", description));
                 }
                 item.add(inputComponent);
             }
@@ -189,7 +171,7 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             @Override
             public void onSubmit() {
                 try {
-                    onSaveDataStore(paramsForm);
+                    onSaveDataStore(info);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
                 }
@@ -199,7 +181,7 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         paramsForm.add(new FeedbackPanel("feedback"));
 
         // validate the selected workspace does not already contain a store with the same name
-        final String dataStoreInfoId = (String) parametersMap.get(DATASTORE_ID_PROPERTY);
+        final String dataStoreInfoId = info.getId();
         StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
                 .getFormComponent(), dataStoreNamePanel.getFormComponent(), dataStoreInfoId);
         paramsForm.add(storeNameValidator);
@@ -210,52 +192,53 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * perform the action over the catalog, whether it is adding a new {@link DataStoreInfo} or
      * saving the edits to an existing one
      * 
-     * @param paramsForm
-     *            the form containing the parameter values
+     * @param info
+     *            the object to save
      * @throws IllegalArgumentException
      *             with an appropriate message for the user if the operation failed
      */
-    protected abstract void onSaveDataStore(final Form paramsForm) throws IllegalArgumentException;
+    protected abstract void onSaveDataStore(final DataStoreInfo info)
+            throws IllegalArgumentException;
 
     /**
      * Creates a form input component for the given datastore param based on its type and metadata
      * properties.
      * 
-     * @param param
+     * @param paramMetadata
      * @return
      */
-    private Panel getInputComponent(final String componentId, final Map<String, ?> paramsMap,
-            final ParamInfo param) {
+    private Panel getInputComponent(final String componentId, final IModel paramsModel,
+            final ParamInfo paramMetadata) {
 
-        final String paramName = param.getName();
-        final String paramLabel = param.getName();
-        final boolean required = param.isRequired();
-        final Class<?> binding = param.getBinding();
+        final String paramName = paramMetadata.getName();
+        final String paramLabel = paramMetadata.getName();
+        final boolean required = paramMetadata.isRequired();
+        final Class<?> binding = paramMetadata.getBinding();
 
         Panel parameterPanel;
         if ("namespace".equals(paramName)) {
-
-            IModel namespaceModel = new MapModel(paramsMap, NAMESPACE_PROPERTY);
+            IModel namespaceModel = new NamespaceParamModel(paramsModel, paramName);
             IModel paramLabelModel = new ResourceModel(paramLabel, paramLabel);
             parameterPanel = new NamespacePanel(componentId, namespaceModel, paramLabelModel, true);
 
         } else if (Boolean.class == binding) {
             // TODO Add prefix for better i18n?
-            parameterPanel = new CheckBoxParamPanel(componentId,
-                    new MapModel(paramsMap, paramName), new ResourceModel(paramLabel, paramLabel));
+            parameterPanel = new CheckBoxParamPanel(componentId, new MapModel(paramsModel,
+                    paramName), new ResourceModel(paramLabel, paramLabel));
 
-        } else if (String.class == binding && param.isPassword()) {
-            parameterPanel = new PasswordParamPanel(componentId,
-                    new MapModel(paramsMap, paramName), new ResourceModel(paramLabel, paramLabel),
-                    required);
+        } else if (String.class == binding && paramMetadata.isPassword()) {
+            parameterPanel = new PasswordParamPanel(componentId, new MapModel(paramsModel,
+                    paramName), new ResourceModel(paramLabel, paramLabel), required);
         } else {
-            TextParamPanel tp = new TextParamPanel(componentId, new MapModel(paramsMap, paramName),
+            TextParamPanel tp = new TextParamPanel(componentId,
+                    new MapModel(paramsModel, paramName),
                     new ResourceModel(paramLabel, paramLabel), required);
             // if it can be a reference to the local filesystem make sure it's valid
-            if (paramName.equalsIgnoreCase("url"))
+            if (paramName.equalsIgnoreCase("url")) {
                 tp.getFormComponent().add(new FileExistsValidator());
+            }
             // make sure the proper value is returned
-            tp.getFormComponent().setType(param.getBinding());
+            tp.getFormComponent().setType(binding);
             parameterPanel = tp;
         }
         return parameterPanel;
@@ -270,5 +253,33 @@ public abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
         target.getConnectionParameters().clear();
         target.getConnectionParameters().putAll(source.getConnectionParameters());
+    }
+
+    /**
+     * Model to wrap and unwrap a {@link NamespaceInfo} to and from a String for the Datastore's
+     * "namespace" parameter
+     * 
+     */
+    private final class NamespaceParamModel extends MapModel {
+
+        private static final long serialVersionUID = 6767931873085302114L;
+
+        private NamespaceParamModel(IModel model, String expression) {
+            super(model, expression);
+        }
+
+        @Override
+        public Object getObject() {
+            String nsUri = (String) super.getObject();
+            NamespaceInfo namespaceInfo = getCatalog().getNamespaceByURI(nsUri);
+            return namespaceInfo;
+        }
+
+        @Override
+        public void setObject(Object object) {
+            NamespaceInfo namespaceInfo = (NamespaceInfo) object;
+            String nsUri = namespaceInfo.getURI();
+            super.setObject(nsUri);
+        }
     }
 }

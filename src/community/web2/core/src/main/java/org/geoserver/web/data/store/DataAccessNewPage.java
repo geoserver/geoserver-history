@@ -5,24 +5,18 @@
 package org.geoserver.web.data.store;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.data.layer.NewLayerPage;
 import org.geotools.data.DataAccess;
-import org.geotools.data.DataAccessFactory;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.NullProgressListener;
-import org.vfny.geoserver.util.DataStoreUtils;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
 
 /**
  * Provides a form to configure a new geotools {@link DataAccess}
@@ -45,14 +39,6 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
     public DataAccessNewPage(final String dataStoreFactDisplayName) {
         super();
 
-        final DataAccessFactory dsFact = DataStoreUtils.aquireFactory(dataStoreFactDisplayName);
-        if (dsFact == null) {
-            throw new IllegalArgumentException("Can't locate a datastore factory named '"
-                    + dataStoreFactDisplayName + "'");
-        }
-
-        // pre-populate map with default values
-
         final WorkspaceInfo defaultWs = getCatalog().getDefaultWorkspace();
         if (defaultWs == null) {
             throw new IllegalStateException("No default Workspace configured");
@@ -62,85 +48,56 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
             throw new IllegalStateException("No default Namespace configured");
         }
 
-        Param[] parametersInfo = dsFact.getParametersInfo();
-        for (int i = 0; i < parametersInfo.length; i++) {
-            Serializable value;
-            final Param param = parametersInfo[i];
-            if (param.sample == null || param.sample instanceof Serializable) {
-                value = (Serializable) param.sample;
-            } else {
-                value = String.valueOf(param.sample);
-            }
+        // Param[] parametersInfo = dsFact.getParametersInfo();
+        // for (int i = 0; i < parametersInfo.length; i++) {
+        // Serializable value;
+        // final Param param = parametersInfo[i];
+        // if (param.sample == null || param.sample instanceof Serializable) {
+        // value = (Serializable) param.sample;
+        // } else {
+        // value = String.valueOf(param.sample);
+        // }
+        // }
 
-            parametersMap.put(param.key, value);
-        }
+        DataStoreInfo info = getCatalog().getFactory().createDataStore();
+        info.setWorkspace(defaultWs);
+        info.setEnabled(true);
+        info.setType(dataStoreFactDisplayName);
 
-        parametersMap.put(WORKSPACE_PROPERTY, defaultWs);
-        parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, null);
-        parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, null);
-        parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.TRUE);
-
-        initUI(dsFact, true);
+        initUI(info);
     }
 
     /**
-     * Callback method called when the submit button have been hit and the parameters validation has
-     * succeed.
+     * Callback method called when the submit button have been pressed and the parameters validation
+     * has succeed.
      * 
      * @param paramsForm
      *            the form to report any error to
      * @see AbstractDataAccessPage#onSaveDataStore(Form)
      */
-    protected final void onSaveDataStore(final Form paramsForm) {
+    @Override
+    protected final void onSaveDataStore(final DataStoreInfo info) throws IllegalArgumentException {
         final Catalog catalog = getCatalog();
-        final Map<String, Serializable> dsParams = new HashMap<String, Serializable>(parametersMap);
-        // may the "namespace" parameter have been handled as a NamespaceInfo instead of a plain
-        // string?
-        if (dsParams.get(NAMESPACE_PROPERTY) != null) {
-            NamespaceInfo ns = (NamespaceInfo) dsParams.get(NAMESPACE_PROPERTY);
-            dsParams.put("namespace", ns.getURI());
-        }
 
-        DataStoreInfo dataStoreInfo;
-
-        // dataStoreId already validated, so its safe to use
-        final WorkspaceInfo workspace = (WorkspaceInfo) dsParams.get(WORKSPACE_PROPERTY);
-        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
-        final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
-        final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
-
-        CatalogFactory factory = catalog.getFactory();
-        dataStoreInfo = factory.createDataStore();
-        dataStoreInfo.setName(dataStoreUniqueName);
-        dataStoreInfo.setWorkspace(workspace);
-        dataStoreInfo.setDescription(description);
-        dataStoreInfo.setEnabled(enabled.booleanValue());
-
-        Map<String, Serializable> connectionParameters;
-        connectionParameters = dataStoreInfo.getConnectionParameters();
-        connectionParameters.clear();
-        connectionParameters.putAll(dsParams);
-        connectionParameters.remove(DATASTORE_NAME_PROPERTY_NAME);
-        connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
-        connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
-
+        DataAccess<? extends FeatureType, ? extends Feature> dataStore;
         try {
-            dataStoreInfo.getDataStore(new NullProgressListener());
+            // REVISIT: this may need to be done after saveing the DataStoreInfo
+            dataStore = info.getDataStore(new NullProgressListener());
+            dataStore.dispose();
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Error obtaining new data store", e);
             String message = e.getMessage();
             if (message == null && e.getCause() != null) {
                 message = e.getCause().getMessage();
             }
-            paramsForm.error("Error creating data store, check the parameters. Error message: "
-                    + message);
-            return;
+            throw new IllegalArgumentException(
+                    "Error creating data store, check the parameters. Error message: " + message);
         }
 
         // save a copy, so if NewLayerPage fails we can keep on editing this one without being
         // proxied
         DataStoreInfo savedStore = catalog.getFactory().createDataStore();
-        clone(dataStoreInfo, savedStore);
+        clone(info, savedStore);
         try {
             catalog.add(savedStore);
         } catch (Exception e) {
@@ -150,8 +107,8 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
                 message = e.getCause().getMessage();
             }
 
-            paramsForm.error("Error creating data store with the provided parameters: " + message);
-            return;
+            throw new IllegalArgumentException(
+                    "Error creating data store with the provided parameters: " + message);
         }
 
         final NewLayerPage newLayerPage;
