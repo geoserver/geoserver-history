@@ -20,7 +20,9 @@ public class NamespaceChoiceRenderer implements IChoiceRenderer {
      * @see IChoiceRenderer#getDisplayValue(Object)
      */
     public Object getDisplayValue(Object object) {
-        return ((NamespaceInfo) object).getURI();
+        NamespaceInfo nsInfo = (NamespaceInfo) object;
+        String displayValue = nsInfo.getPrefix() + ": <" + nsInfo.getURI() + ">";
+        return displayValue;
     }
 
     /**
