@@ -5,22 +5,15 @@
 package org.geoserver.web.data.store;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geotools.data.DataAccess;
-import org.geotools.data.DataAccessFactory;
 import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.util.DataStoreUtils;
 
 /**
  * Provides a form to edit a geotools {@link DataAccess} that already exists in the {@link Catalog}
@@ -43,28 +36,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
         }
 
-        Map<String, Serializable> connectionParameters;
-        connectionParameters = new HashMap<String, Serializable>(dataStoreInfo
-                .getConnectionParameters());
-        connectionParameters = DataStoreUtils.getParams(connectionParameters);
-        final DataAccessFactory dsFactory = DataStoreUtils.aquireFactory(connectionParameters);
-        if (null == dsFactory) {
-            String msg = "Data Access factory not found";
-            msg = (String) new ResourceModel("DataAccessEditPage.cantGetDataStoreFactory", msg)
-                    .getObject();
-            throw new IllegalArgumentException(msg);
-        }
-
-        parametersMap.putAll(connectionParameters);
-
-        parametersMap.put(DATASTORE_ID_PROPERTY, dataStoreInfoId);
-        parametersMap.put(WORKSPACE_PROPERTY, dataStoreInfo.getWorkspace());
-        parametersMap.put(DATASTORE_NAME_PROPERTY_NAME, dataStoreInfo.getName());
-        parametersMap.put(DATASTORE_DESCRIPTION_PROPERTY_NAME, dataStoreInfo.getDescription());
-        parametersMap.put(DATASTORE_ENABLED_PROPERTY_NAME, Boolean.valueOf(dataStoreInfo
-                .isEnabled()));
-
-        initUI(dsFactory, false);
+        initUI(dataStoreInfo);
     }
 
     /**
@@ -75,53 +47,19 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
      *            the form to report any error to
      * @see AbstractDataAccessPage#onSaveDataStore(Form)
      */
-    protected final void onSaveDataStore(final Form paramsForm) {
+    protected final void onSaveDataStore(final DataStoreInfo info) {
         final Catalog catalog = getCatalog();
-        final Map<String, Serializable> dsParams = new HashMap<String, Serializable>(parametersMap);
-        // may the "namespace" parameter have been handled as a NamespaceInfo instead of a plain
-        // string?
-        if (dsParams.get(NAMESPACE_PROPERTY) != null) {
-            NamespaceInfo ns = (NamespaceInfo) dsParams.get(NAMESPACE_PROPERTY);
-            dsParams.put("namespace", ns.getURI());
-        }
 
-        DataStoreInfo dataStoreInfo;
+        final String dataStoreInfoId = info.getId();
 
-        // dataStoreId already validated, so its safe to use
-        final String dataStoreInfoId = (String) dsParams.get(DATASTORE_ID_PROPERTY);
-        final WorkspaceInfo workspace = (WorkspaceInfo) dsParams.get(WORKSPACE_PROPERTY);
-        final String dataStoreUniqueName = (String) dsParams.get(DATASTORE_NAME_PROPERTY_NAME);
-        final String description = (String) dsParams.get(DATASTORE_DESCRIPTION_PROPERTY_NAME);
-        final Boolean enabled = (Boolean) dsParams.get(DATASTORE_ENABLED_PROPERTY_NAME);
-
-        // it is an existing datastore that's being modified
-        dataStoreInfo = catalog.getDataStore(dataStoreInfoId);
-        dataStoreInfo.setWorkspace(workspace);
-        dataStoreInfo.setName(dataStoreUniqueName);
-        dataStoreInfo.setDescription(description);
-        dataStoreInfo.setEnabled(enabled.booleanValue());
-
-        Map<String, Serializable> connectionParameters;
-        connectionParameters = dataStoreInfo.getConnectionParameters();
-        final Map<String, Serializable> oldParams = new HashMap<String, Serializable>(
-                connectionParameters);
-
-        connectionParameters.clear();
-        connectionParameters.putAll(dsParams);
-        connectionParameters.remove(DATASTORE_ID_PROPERTY);
-        connectionParameters.remove(WORKSPACE_PROPERTY);
-        connectionParameters.remove(DATASTORE_NAME_PROPERTY_NAME);
-        connectionParameters.remove(DATASTORE_DESCRIPTION_PROPERTY_NAME);
-        connectionParameters.remove(DATASTORE_ENABLED_PROPERTY_NAME);
-
-        catalog.getResourcePool().clear(dataStoreInfo);
+        catalog.getResourcePool().clear(info);
 
         // get the original values to use as rollback...
         final DataStoreInfo original = catalog.getFactory().createDataStore();
         clone(catalog.getDataStore(dataStoreInfoId), original);
 
         try {
-            catalog.save(dataStoreInfo);
+            catalog.save(info);
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error saving data store to catalog", e);
             throw new IllegalArgumentException("Error saving data store:" + e.getMessage());
@@ -131,26 +69,21 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         // parameters...
         try {
             DataAccess<? extends FeatureType, ? extends Feature> dataStore;
-            dataStore = dataStoreInfo.getDataStore(new NullProgressListener());
-            if (dataStore == null) {
-                throw new NullPointerException();
-            }
+            dataStore = info.getDataStore(new NullProgressListener());
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error obtaining datastore with the modified values", e);
-            catalog.getResourcePool().clear(dataStoreInfo);
-            connectionParameters.clear();
-            connectionParameters.putAll(oldParams);
+            catalog.getResourcePool().clear(info);
 
             // roll back..
-            clone(original, dataStoreInfo);
-            catalog.save(dataStoreInfo);
+            DataStoreInfo saved = catalog.getDataStore(dataStoreInfoId);
+            clone(original, saved);
+            catalog.save(saved);
 
             String message = e.getMessage();
             if (message == null && e.getCause() != null) {
                 message = e.getCause().getMessage();
             }
-            paramsForm.error("Error updating data store parameters: " + message);
-            return;
+            throw new IllegalArgumentException("Error updating data store parameters: " + message);
         }
 
         setResponsePage(StorePage.class);
