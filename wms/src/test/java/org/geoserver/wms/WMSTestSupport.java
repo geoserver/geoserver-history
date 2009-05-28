@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.map.FeatureSourceMapLayer;
@@ -53,6 +54,12 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      */
     protected WMS getWMS() {
         return new WMS(getGeoServer());
+    }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("default", MockData.class.getResource("Default.sld"));
     }
 
     /**

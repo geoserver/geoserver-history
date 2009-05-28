@@ -56,6 +56,12 @@ public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
         // max GetFeatureInfo search radius
         wms.setMaxBuffer((Integer) props.get("maxBuffer"));
         
+        // max memory usage
+        wms.setMaxRequestMemory((Integer) props.get("maxRequestMemory"));
+        
+        // the max rendering time
+        wms.setMaxRenderingTime((Integer) props.get("maxRenderingTime"));
+        
         // base maps
         Catalog catalog = geoServer.getCatalog();
         // ... we need access to the actual catalog, not a filtered out view of the

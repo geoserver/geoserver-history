@@ -11,11 +11,21 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
     WatermarkInfo watermark = new WatermarkInfoImpl();
     WMSInterpolation interpolation;
     int maxBuffer;
+    int maxRequestMemory;
+    int maxRenderingTime;
     
     public WMSInfoImpl() {
         setId( "wms" );
     }
     
+    public int getMaxRequestMemory() {
+        return maxRequestMemory;
+    }
+
+    public void setMaxRequestMemory(int maxRequestMemory) {
+        this.maxRequestMemory = maxRequestMemory;
+    }
+
     public WatermarkInfo getWatermark() {
         return watermark;
     }
@@ -46,6 +56,14 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
 
     public void setMaxBuffer(int maxBuffer) {
         this.maxBuffer = maxBuffer;
+    }
+
+    public int getMaxRenderingTime() {
+        return maxRenderingTime;
+    }
+
+    public void setMaxRenderingTime(int maxRenderingTime) {
+        this.maxRenderingTime = maxRenderingTime;
     }
 
 }

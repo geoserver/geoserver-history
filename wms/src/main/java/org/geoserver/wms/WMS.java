@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.geoserver.wms;
 
 import java.io.IOException;
@@ -21,9 +25,9 @@ import org.geotools.util.Version;
 import org.opengis.feature.type.Name;
 
 /**
- * 
+ * A facade providing access to the WMS configuration details
+ *  
  * @author Gabriel Roldan
- * 
  */
 public class WMS {
 
@@ -246,5 +250,13 @@ public class WMS {
     
     public int getMaxBuffer() {
         return getServiceInfo().getMaxBuffer();
+    }
+    
+    public int getMaxRequestMemory() {
+        return getServiceInfo().getMaxRequestMemory();
+    }
+    
+    public int getMaxRenderingTime() {
+        return getServiceInfo().getMaxRenderingTime();
     }
 }

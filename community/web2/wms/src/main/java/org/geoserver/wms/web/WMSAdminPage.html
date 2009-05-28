@@ -14,6 +14,21 @@
     </li>
     <li>
       <fieldset>
+        <legend><span><wicket:message key="resourceLimits">ResourceConsumptionLimits</wicket:message></span></legend>
+        <ul>
+          <li>
+            <label><wicket:message key="maxRequestMemory">Max rendering memory (kb)</wicket:message></label>
+            <input type="text" wicket:id="maxRequestMemory" class="field text"/>
+          </li>
+          <li>
+            <label><wicket:message key="maxRenderingTime">Max rendering time (sec)</wicket:message></label>
+            <input type="text" wicket:id="maxRenderingTime" class="field text"/>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>
+      <fieldset>
         <legend><span><wicket:message key="watermarkSettings">Watermark Settings</wicket:message></span></legend>
         <ul>
           <li>

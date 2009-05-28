@@ -6,7 +6,6 @@ package org.geoserver.config.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -21,9 +20,7 @@ import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.springframework.util.StringUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Reads the GeoServer services.xml file.
@@ -207,6 +204,8 @@ public class LegacyServicesReader {
         text( "svgRenderer", wmsElement, wms, String.class, false, "Batik" );
         text( "svgAntiAlias", wmsElement, wms, Boolean.class, false, Boolean.TRUE );
         text( "maxBuffer", wmsElement, wms, Integer.class, false, 25 );
+        text( "maxRequestMemory", wmsElement, wms, Integer.class, false, 0);
+        text( "maxRenderingTime", wmsElement, wms, Integer.class, false, 0 );
         
         ArrayList<Map> baseMaps = new ArrayList<Map>();
         Element baseMapGroupsElement = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");
