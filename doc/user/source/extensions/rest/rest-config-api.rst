@@ -993,9 +993,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <layer_html>`
-- :ref:`XML <layer_xml>`
-- :ref:`JSON <layer_json>`
+- :ref:`HTML <layers_html>`
+- :ref:`XML <layers_xml>`
+- :ref:`JSON <layers_json>`
 
 ``/layers/<l>[.<format>]``
 
