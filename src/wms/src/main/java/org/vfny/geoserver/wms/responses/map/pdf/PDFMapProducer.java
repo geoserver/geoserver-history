@@ -128,7 +128,8 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 
             renderer = new StreamingRenderer();
             renderer.setContext(mapContext);
-            ((StreamingRenderer) renderer).setGeneralizationDistance(0);
+            // TODO: expose the generalization distance as a parameter
+            // ((StreamingRenderer) renderer).setGeneralizationDistance(0);
 
             RenderingHints hints = new RenderingHints(
                     RenderingHints.KEY_ANTIALIASING,
