@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataAccess;
@@ -27,6 +29,7 @@ import org.geotools.data.Transaction;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
@@ -38,6 +41,8 @@ import org.opengis.filter.Filter;
  * could shave off some attribute too) 
  */
 public class RetypingDataStore implements DataStore {
+    static final Logger LOGGER = Logging.getLogger(RetypingDataStore.class);
+    
     DataStore wrapped;
 
     Map forwardMap = new HashMap();
@@ -195,6 +200,8 @@ public class RetypingDataStore implements DataStore {
                 map.setFeatureTypes(original, transformed);
             }
         } catch (IOException e) {
+            LOGGER.log(Level.INFO, "Failure to remap feature type " + map.getOriginalName() 
+                    + ". The type will be ignored", e);
             // if the feature type cannot be found in the original data store,
             // remove it from the map
             backwardsMap.remove(map.getName());
