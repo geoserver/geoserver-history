@@ -390,20 +390,35 @@ public abstract class DefaultRasterMapProducer extends
 			return;
 		}
 		
-		// finally render the image
-		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-		renderer.paint(graphic, paintArea, dataArea);
-		
-        // apply watermarking
+		// setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
+        int maxRenderingTime = wms.getInfo().getMaxRenderingTime() * 1000;
+        RenderingTimeoutEnforcer timeout = new RenderingTimeoutEnforcer(maxRenderingTime, renderer,
+                graphic);
+        timeout.start();
         try {
-            if (layout != null)
-                this.layout.paint(graphic, paintArea, mapContext);
-        } catch (Exception e) {
-            throw new WmsException("Problem occurred while trying to watermark data", "", e);
-        } 
-
+    		// finally render the image
+    		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
+    		renderer.paint(graphic, paintArea, dataArea);
+    		
+            // apply watermarking
+            try {
+                if (layout != null)
+                    this.layout.paint(graphic, paintArea, mapContext);
+            } catch (Exception e) {
+                throw new WmsException("Problem occurred while trying to watermark data", "", e);
+            }
+        } finally {
+            timeout.stop();
+            graphic.dispose();
+        }
+        
+        // check if the request did timeout
+        if (timeout.isTimedOut()) {
+            throw new WmsException(
+                    "This requested used more time than allowed and has been forcefully stopped. "
+                            + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
+        }
 		
-		graphic.dispose();
 		if (!this.abortRequested) {
             if(palette != null && palette.getMapSize() < 256)
                 this.image = optimizeSampleModel(preparedImage);

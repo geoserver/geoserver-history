@@ -95,6 +95,12 @@ public class WMSConfig extends ServiceConfig {
      * The max amount of memory used per WMS request, in KB
      */
     private int maxRequestMemory;
+    
+     
+    /**
+     * The GeMap max rendering time
+     */
+    private int maxRenderingTime;
 
     /**
      * WMS constructor.
@@ -115,6 +121,7 @@ public class WMSConfig extends ServiceConfig {
         watermarkPosition = 8;
         maxBuffer = 25;
         maxRequestMemory = 0;
+        maxRenderingTime = 0;
         allowInterpolation = INT_NEAREST;
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
@@ -147,6 +154,7 @@ public class WMSConfig extends ServiceConfig {
         capabilitiesCrs = w.getCapabilitiesCrs();
         maxBuffer = w.getMaxBuffer();
         maxRequestMemory = w.getMaxRequestMemory();
+        maxRenderingTime = w.getMaxRenderingTime();
     }
 
     /**
@@ -190,6 +198,7 @@ public class WMSConfig extends ServiceConfig {
         capabilitiesCrs = dto.getCapabilitiesCrs();
         maxBuffer = dto.getMaxBuffer();
         maxRequestMemory = dto.getMaxRequestMemory();
+        maxRenderingTime = dto.getMaxRenderingTime();
     }
 
     /**
@@ -219,6 +228,7 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setCapabilitiesCrs(capabilitiesCrs);
         wmsDto.setMaxBuffer(maxBuffer);
         wmsDto.setMaxRequestMemory(maxRequestMemory);
+        wmsDto.setMaxRenderingTime(maxRenderingTime);
         
         return wmsDto;
     }

@@ -12,6 +12,7 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
     String interpolation;
     int maxBuffer;
     int maxRequestMemory;
+    int maxRenderingTime;
     
     public int getMaxRequestMemory() {
         return maxRequestMemory;
@@ -47,6 +48,14 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
 
     public void setMaxBuffer(int maxBuffer) {
         this.maxBuffer = maxBuffer;
+    }
+
+    public int getMaxRenderingTime() {
+        return maxRenderingTime;
+    }
+
+    public void setMaxRenderingTime(int maxRenderingTime) {
+        this.maxRenderingTime = maxRenderingTime;
     }
 
 }

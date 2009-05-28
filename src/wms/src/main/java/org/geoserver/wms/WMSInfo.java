@@ -56,4 +56,17 @@ public interface WMSInfo extends ServiceInfo {
      */
     void setMaxRequestMemory(int max);
 
+    /**
+     * The max time, in seconds, a WMS request is allowed to spend rendering
+     * the map. Various output formats will do a best effort to respect
+     * it (raster formats, for example, will account just rendering time,
+     * but not image encoding time)
+     */
+    int getMaxRenderingTime();
+
+    /**
+     * Sets the max allowed rendering time, in seconds
+     * @param maxRenderingTime
+     */
+    void setMaxRenderingTime(int maxRenderingTime);
 }

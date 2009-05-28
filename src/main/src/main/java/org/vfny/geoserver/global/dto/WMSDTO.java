@@ -60,6 +60,11 @@ public final class WMSDTO implements DataTransferObject {
     /** Max memory in kb per wms request **/
     private int maxRequestMemory;
     
+    /**
+     * GetMap max response time
+     */
+    private int maxRenderingTime;
+    
     /** 
      * Watermark position
      * <pre>
@@ -118,6 +123,7 @@ public final class WMSDTO implements DataTransferObject {
         capabilitiesCrs = other.getCapabilitiesCrs();
         maxBuffer = other.getMaxBuffer();
         maxRequestMemory = other.getMaxRequestMemory();
+        maxRenderingTime = other.getMaxRenderingTime();
     }
 
     /**
@@ -159,6 +165,7 @@ public final class WMSDTO implements DataTransferObject {
             && (watermarkPosition == dto.getWatermarkPosition())
             && (allowInterpolation == dto.allowInterpolation)
             && (maxBuffer == dto.maxBuffer)
+            && (maxRenderingTime == dto.maxRenderingTime)
             && (maxRequestMemory == dto.maxRequestMemory);
 
         if (equals) {
@@ -215,7 +222,8 @@ public final class WMSDTO implements DataTransferObject {
      */
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0) | (globalWatermarking ? 1 : 0)
-        | (watermarkTransparency) | (watermarkPosition) | (maxBuffer) | (maxRequestMemory)
+        | (watermarkTransparency) | (watermarkPosition) | (maxBuffer) | (maxRequestMemory)  
+        | (maxRenderingTime)
         | ((globalWatermarkingURL != null) ? 0 : globalWatermarkingURL.hashCode())
         | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode())
@@ -412,5 +420,13 @@ public final class WMSDTO implements DataTransferObject {
 
     public void setMaxRequestMemory(int maxRequestMemory) {
         this.maxRequestMemory = maxRequestMemory;
+    }
+
+    public int getMaxRenderingTime() {
+        return maxRenderingTime;
+    }
+
+    public void setMaxRenderingTime(int maxRenderingTime) {
+        this.maxRenderingTime = maxRenderingTime;
     }
 }

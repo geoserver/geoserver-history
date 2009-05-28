@@ -416,6 +416,7 @@ public class XMLConfigWriter {
         int watermarkPosition = 8;
         int maxBuffer = 25;
         int maxRequestMemory = 0;
+        int maxRenderingTime = 0;
         String allowInterpolation = null;
         boolean citeConformanceHacks = false;
 
@@ -450,6 +451,7 @@ public class XMLConfigWriter {
             baseMapEnvelopes = w.getBaseMapEnvelopes();
             maxBuffer = w.getMaxBuffer();
             maxRequestMemory = w.getMaxRequestMemory();
+            maxRenderingTime = w.getMaxRenderingTime();
         } else {
             throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -592,6 +594,7 @@ public class XMLConfigWriter {
             cw.textTag("globalWatermarkingPosition", watermarkPosition + "");
             cw.textTag("maxBuffer", maxBuffer + "");
             cw.textTag("maxRequestMemory", maxRequestMemory + "");
+            cw.textTag("maxRenderingTime", maxRenderingTime + "");
 
             if (allowInterpolation != null) {
                 cw.textTag("allowInterpolation", allowInterpolation);
