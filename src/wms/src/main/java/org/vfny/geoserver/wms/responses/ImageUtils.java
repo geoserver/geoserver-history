@@ -66,6 +66,8 @@ public class ImageUtils {
      */
     public static BufferedImage createImage(final int width, final int height,
             final IndexColorModel palette, final boolean transparent) {
+        // WARNING: whenever this method is changed, change getDrawingSurfaceMemoryUse
+        // accordingly
         if (palette != null) {
             // unfortunately we can't use packed rasters because line rendering
             // gets completely
@@ -83,6 +85,27 @@ public class ImageUtils {
         // don't use alpha channel if the image is not transparent
         return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
+    }
+    
+    /**
+     * Computes the memory usage of the buffered image used as the drawing
+     * surface. 
+     * @param width
+     * @param height
+     * @param palette
+     * @param transparent
+     * @return
+     */
+    public static long getDrawingSurfaceMemoryUse(final int width, final int height,
+            final IndexColorModel palette, final boolean transparent) {
+        long memory = width * height;
+        if (palette != null) {
+            return memory;
+        } 
+        if (transparent) {
+            return memory * 4;
+        }
+        return memory * 3;
     }
 
     /**

@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +18,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
@@ -29,7 +29,6 @@ import org.vfny.geoserver.global.FeatureTypeInfo;
 import org.vfny.geoserver.global.MapLayerInfo;
 import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.servlets.GetMap;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -52,6 +51,12 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      */
     protected WMS getWMS() {
         return (WMS) applicationContext.getBean("wms");
+    }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("default", MockData.class.getResource("Default.sld"));
     }
 
     /**

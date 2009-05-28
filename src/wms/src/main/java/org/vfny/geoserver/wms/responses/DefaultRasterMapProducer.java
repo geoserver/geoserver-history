@@ -14,6 +14,7 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.OutputStream;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -108,6 +109,11 @@ public abstract class DefaultRasterMapProducer extends
 
 	private final static List AA_SETTINGS = Arrays.asList(new String[] {
 			AA_NONE, AA_TEXT, AA_FULL });
+	
+	/**
+	 * The size of a megabyte
+	 */
+	private static final int KB = 1024;
 
 	/**
 	 * The lookup table used for data type transformation (it's really the identity one)
@@ -206,7 +212,7 @@ public abstract class DefaultRasterMapProducer extends
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("setting up " + paintArea.width + "x" + paintArea.height + " image");
         }
-
+        
 		// extra antialias setting
 		final GetMapRequest request = mapContext.getRequest();
         String antialias = (String) request.getFormatOptions().get("antialias");
@@ -232,6 +238,23 @@ public abstract class DefaultRasterMapProducer extends
 			if (pe.canComputePalette())
 				palette = pe.getPalette();
 		}
+        
+        // before even preparing the rendering surface, check it's not too big,
+        // if so, throw a service exception
+        long maxMemory = wms.getInfo().getMaxRequestMemory() * KB;
+        // ... base image memory
+        long memory = getDrawingSurfaceMemoryUse(paintArea.width, paintArea.height, palette, transparent);
+        // .. use a fake streaming renderer to evaluate the extra back buffers used when rendering
+        // multiple featureTypeStyles against the same layer
+        StreamingRenderer testRenderer = new StreamingRenderer();
+        testRenderer.setContext(mapContext);
+        memory += testRenderer.getMaxBackBufferMemory(paintArea.width, paintArea.height);
+        if(maxMemory > 0 && memory > maxMemory) {
+            long kbUsed = memory / KB;
+            long kbMax = maxMemory / KB;
+            throw new WmsException("Rendering request would use " + kbUsed + "KB, whilst the " +
+                    "maximum memory allowed is " + kbMax + "KB");
+        }
 
 		// we use the alpha channel if the image is transparent or if the meta tiler
 		// is enabled, since apparently the Crop operation inside the meta-tiler
@@ -366,7 +389,7 @@ public abstract class DefaultRasterMapProducer extends
 			graphic.dispose();
 			return;
 		}
-
+		
 		// finally render the image
 		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
 		renderer.paint(graphic, paintArea, dataArea);
@@ -388,7 +411,7 @@ public abstract class DefaultRasterMapProducer extends
                 this.image = preparedImage;
 		}
 	}
-	
+
     /**
      * Set the Watermark Painter.
      * 
@@ -521,6 +544,20 @@ public abstract class DefaultRasterMapProducer extends
 	protected RenderedImage prepareImage(int width, int height,
 			IndexColorModel palette, boolean transparent) {
 	    return ImageUtils.createImage(width, height, palette, transparent);
+	}
+	
+	/**
+	 * When you override {@link #prepareImage(int, int, IndexColorModel, boolean)} remember
+	 * to override this one as well
+	 * @param width
+	 * @param height
+	 * @param palette
+	 * @param transparent
+	 * @return
+	 */
+	protected long getDrawingSurfaceMemoryUse(int width, int height,
+            IndexColorModel palette, boolean transparent) {
+	    return ImageUtils.getDrawingSurfaceMemoryUse(width, height, palette, transparent);
 	}
 
 	/**

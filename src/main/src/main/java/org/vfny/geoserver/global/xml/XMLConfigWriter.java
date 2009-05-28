@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import java.awt.Color;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,11 +14,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +29,6 @@ import org.geotools.filter.FilterTransformer;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.GridGeometry;
-import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.util.InternationalString;
 import org.vfny.geoserver.global.ConfigurationException;
@@ -417,6 +415,7 @@ public class XMLConfigWriter {
         int watermarkTransparency = 0;
         int watermarkPosition = 8;
         int maxBuffer = 25;
+        int maxRequestMemory = 0;
         String allowInterpolation = null;
         boolean citeConformanceHacks = false;
 
@@ -450,6 +449,7 @@ public class XMLConfigWriter {
             baseMapStyles = w.getBaseMapStyles();
             baseMapEnvelopes = w.getBaseMapEnvelopes();
             maxBuffer = w.getMaxBuffer();
+            maxRequestMemory = w.getMaxRequestMemory();
         } else {
             throw new ConfigurationException("Invalid object: not WMS or WFS or WCS");
         }
@@ -591,6 +591,7 @@ public class XMLConfigWriter {
             cw.textTag("globalWatermarkingTransparency", watermarkTransparency + "");
             cw.textTag("globalWatermarkingPosition", watermarkPosition + "");
             cw.textTag("maxBuffer", maxBuffer + "");
+            cw.textTag("maxRequestMemory", maxRequestMemory + "");
 
             if (allowInterpolation != null) {
                 cw.textTag("allowInterpolation", allowInterpolation);

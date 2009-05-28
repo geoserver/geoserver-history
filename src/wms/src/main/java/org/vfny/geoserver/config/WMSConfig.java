@@ -90,6 +90,11 @@ public class WMSConfig extends ServiceConfig {
      * The WMS max GetFeatureInfo search radius
      */
     private int maxBuffer;
+    
+    /**
+     * The max amount of memory used per WMS request, in KB
+     */
+    private int maxRequestMemory;
 
     /**
      * WMS constructor.
@@ -109,6 +114,7 @@ public class WMSConfig extends ServiceConfig {
         watermarkTransparency = 0;
         watermarkPosition = 8;
         maxBuffer = 25;
+        maxRequestMemory = 0;
         allowInterpolation = INT_NEAREST;
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
@@ -140,6 +146,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapEnvelopes = w.getBaseMapEnvelopes();
         capabilitiesCrs = w.getCapabilitiesCrs();
         maxBuffer = w.getMaxBuffer();
+        maxRequestMemory = w.getMaxRequestMemory();
     }
 
     /**
@@ -182,6 +189,7 @@ public class WMSConfig extends ServiceConfig {
         baseMapEnvelopes = dto.getBaseMapEnvelopes();
         capabilitiesCrs = dto.getCapabilitiesCrs();
         maxBuffer = dto.getMaxBuffer();
+        maxRequestMemory = dto.getMaxRequestMemory();
     }
 
     /**
@@ -210,6 +218,7 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setBaseMapEnvelopes(baseMapEnvelopes);
         wmsDto.setCapabilitiesCrs(capabilitiesCrs);
         wmsDto.setMaxBuffer(maxBuffer);
+        wmsDto.setMaxRequestMemory(maxRequestMemory);
         
         return wmsDto;
     }

@@ -15,7 +15,7 @@ public class GifMapProducerTest extends DefaultRasterMapProducerTest {
     }
     
     protected DefaultRasterMapProducer getProducerInstance() {
-        return new GIFMapProducer(null); 
+        return new GIFMapProducer(getWMS()); 
     }
 
 }

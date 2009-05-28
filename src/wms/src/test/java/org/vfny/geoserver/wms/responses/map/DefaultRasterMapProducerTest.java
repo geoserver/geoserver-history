@@ -10,10 +10,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -27,6 +25,7 @@ import org.geotools.filter.IllegalFilterException;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -75,7 +74,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @return DOCUMENT ME!
      */
     protected DefaultRasterMapProducer getProducerInstance() {
-        return new DummyRasterMapProducer();
+        return new DummyRasterMapProducer(getWMS());
     }
 
     /**
@@ -315,8 +314,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     private static class DummyRasterMapProducer extends DefaultRasterMapProducer {
 
-        public DummyRasterMapProducer() {
-            super("image/gif", new String[] { "image/gif" }, null);
+        public DummyRasterMapProducer(WMS wms) {
+            super("image/gif", new String[] { "image/gif" }, wms);
         }
 
         public void formatImageOutputStream(RenderedImage image, OutputStream outStream)

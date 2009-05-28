@@ -4,9 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.jpeg;
 
-import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
@@ -16,9 +13,11 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.InterpolationNearest;
 import javax.media.jai.PlanarImage;
-import javax.media.jai.operator.TranslateDescriptor;
+
+import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.global.WMS;
+import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
 /**
  * Map producer for JPEG image format.
@@ -56,10 +55,19 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
 
     @Override
     protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
-        //there is no transparency in JPEG anyway :-)
+        // there is no transparency in JPEG anyway :-)
         transparent = false;
         palette = null;
         return super.prepareImage(width, height, palette, transparent);
+    }
+    
+    @Override
+    protected long getDrawingSurfaceMemoryUse(int width, int height, IndexColorModel palette,
+            boolean transparent) {
+        // there is no transparency in JPEG anyway :-)
+        transparent = false;
+        palette = null;
+        return super.getDrawingSurfaceMemoryUse(width, height, palette, transparent);
     }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)

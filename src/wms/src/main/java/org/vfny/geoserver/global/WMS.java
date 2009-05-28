@@ -238,6 +238,7 @@ public class WMS extends Service {
         setBaseMapEnvelopes(config.getBaseMapEnvelopes());
         setCapabilitiesCrsList(config.getCapabilitiesCrs());
         setMaxBuffer(config.getMaxBuffer());
+        getInfo().setMaxRequestMemory(config.getMaxRequestMemory());
         
         //svgRenderer = config.getSvgRenderer();
         //svgAntiAlias = config.getSvgAntiAlias();
@@ -297,6 +298,7 @@ public class WMS extends Service {
         w.setBaseMapEnvelopes(getBaseMapEnvelopes());
         w.setCapabilitiesCrs(getCapabilitiesCrsList());
         w.setMaxBuffer(getMaxBuffer());
+        w.setMaxRequestMemory(getInfo().getMaxRequestMemory());
         
         //w.setSvgRenderer(svgRenderer);
         //w.setSvgAntiAlias(svgAntiAlias);

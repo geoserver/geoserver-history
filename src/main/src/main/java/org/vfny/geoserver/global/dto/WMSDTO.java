@@ -57,6 +57,9 @@ public final class WMSDTO implements DataTransferObject {
     /** GetFeatureInfo max buffer */
     private int maxBuffer;
     
+    /** Max memory in kb per wms request **/
+    private int maxRequestMemory;
+    
     /** 
      * Watermark position
      * <pre>
@@ -114,6 +117,7 @@ public final class WMSDTO implements DataTransferObject {
         baseMapEnvelopes = other.getBaseMapEnvelopes();
         capabilitiesCrs = other.getCapabilitiesCrs();
         maxBuffer = other.getMaxBuffer();
+        maxRequestMemory = other.getMaxRequestMemory();
     }
 
     /**
@@ -154,7 +158,8 @@ public final class WMSDTO implements DataTransferObject {
             && (watermarkTransparency == dto.getWatermarkTransparency())
             && (watermarkPosition == dto.getWatermarkPosition())
             && (allowInterpolation == dto.allowInterpolation)
-            && (maxBuffer == dto.maxBuffer);
+            && (maxBuffer == dto.maxBuffer)
+            && (maxRequestMemory == dto.maxRequestMemory);
 
         if (equals) {
             if (service == null) {
@@ -210,7 +215,7 @@ public final class WMSDTO implements DataTransferObject {
      */
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0) | (globalWatermarking ? 1 : 0)
-        | (watermarkTransparency) | (watermarkPosition) | (maxBuffer)
+        | (watermarkTransparency) | (watermarkPosition) | (maxBuffer) | (maxRequestMemory)
         | ((globalWatermarkingURL != null) ? 0 : globalWatermarkingURL.hashCode())
         | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode())
@@ -399,5 +404,13 @@ public final class WMSDTO implements DataTransferObject {
 
     public void setMaxBuffer(int maxBuffer) {
         this.maxBuffer = maxBuffer;
+    }
+
+    public int getMaxRequestMemory() {
+        return maxRequestMemory;
+    }
+
+    public void setMaxRequestMemory(int maxRequestMemory) {
+        this.maxRequestMemory = maxRequestMemory;
     }
 }

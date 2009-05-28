@@ -41,5 +41,19 @@ public interface WMSInfo extends ServiceInfo {
      * (if 0 or negative no maximum is enforced)
      */
     void setMaxBuffer(int buffer);
+    
+    /**
+     * Returns the max amount of memory, in kilobytes, that each WMS request
+     * can allocate (each output format will make a best effort
+     * attempt to respect it, but there are no guarantees)
+     * @return the limit, or 0 if no limit
+     */
+    int getMaxRequestMemory();
+    
+    /**
+     * Sets the max amount of memory, in kilobytes, that each WMS
+     * request can allocate. Set it to 0 if no limit is desired. 
+     */
+    void setMaxRequestMemory(int max);
 
 }

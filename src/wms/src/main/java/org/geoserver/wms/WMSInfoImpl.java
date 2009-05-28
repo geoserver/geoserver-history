@@ -11,7 +11,16 @@ public class WMSInfoImpl extends ServiceInfoImpl implements WMSInfo {
     WatermarkInfo watermark;
     String interpolation;
     int maxBuffer;
+    int maxRequestMemory;
     
+    public int getMaxRequestMemory() {
+        return maxRequestMemory;
+    }
+
+    public void setMaxRequestMemory(int maxRequestMemory) {
+        this.maxRequestMemory = maxRequestMemory;
+    }
+
     public WatermarkInfo getWatermark() {
         return watermark;
     }
