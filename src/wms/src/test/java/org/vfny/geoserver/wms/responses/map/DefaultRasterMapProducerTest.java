@@ -22,6 +22,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.filter.IllegalFilterException;
@@ -75,7 +76,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @return DOCUMENT ME!
      */
     protected DefaultRasterMapProducer getProducerInstance() {
-        return new DummyRasterMapProducer();
+        return new DummyRasterMapProducer(getWMS());
     }
 
     /**
@@ -325,8 +326,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     private static class DummyRasterMapProducer extends DefaultRasterMapProducer {
 
-        public DummyRasterMapProducer() {
-            super("image/gif", new String[] { "image/gif" }, null);
+        public DummyRasterMapProducer(WMS wms) {
+            super("image/gif", new String[] { "image/gif" }, wms);
         }
 
         public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
