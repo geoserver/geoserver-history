@@ -45,6 +45,9 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	TextField maxTime = new TextField("maxRenderingTime");
     	maxTime.add(NumberValidator.minimum(0.0));
         form.add(maxTime);
+        TextField maxErrors = new TextField("maxRenderingErrors");
+        maxErrors.add(NumberValidator.minimum(0.0));
+        form.add(maxErrors);
     	// watermark
     	form.add(new CheckBox("watermark.enabled"));
     	form.add(new TextField("watermark.uRL"));

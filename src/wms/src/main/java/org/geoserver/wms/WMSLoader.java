@@ -62,6 +62,9 @@ public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
         // the max rendering time
         wms.setMaxRenderingTime((Integer) props.get("maxRenderingTime"));
         
+        // the max number of rendering errors
+        wms.setMaxRenderingErrors((Integer) props.get("maxRenderingErrors"));
+        
         // base maps
         Catalog catalog = geoServer.getCatalog();
         // ... we need access to the actual catalog, not a filtered out view of the

@@ -259,4 +259,8 @@ public class WMS {
     public int getMaxRenderingTime() {
         return getServiceInfo().getMaxRenderingTime();
     }
+    
+    public int getMaxRenderingErrors() {
+        return getServiceInfo().getMaxRenderingErrors();
+    }
 }

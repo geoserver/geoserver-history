@@ -32,6 +32,7 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
+import org.vfny.geoserver.wms.responses.MaxErrorEnforcer;
 import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -76,7 +77,7 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 	}
 
 	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		try {
+	    try {
 			MapContext map = renderer.getContext();
 			double width = -1;
 			double height = -1;
@@ -119,8 +120,18 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 			}
 
 			Rectangle r = new Rectangle(g.getSVGCanvasSize());
+			
+			// enforce no more than x rendering errors
+            int maxErrors = wmsConfig.getMaxRenderingErrors();
+            MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
 
-      renderer.paint(g, r, renderer.getContext().getAreaOfInterest());
+			renderer.paint(g, r, renderer.getContext().getAreaOfInterest());
+			
+			// check if too many errors occurred
+            if(errorChecker.exceedsMaxErrors()) {
+                throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out.", 
+                        "internalError", errorChecker.getLastException());
+            }
 
 			// This method of output does not output the DOCTYPE definiition
 			// TODO: make a config option that toggles wether doctype is
@@ -131,8 +142,8 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 
             // this method does output the DOCTYPE def
              g.stream(new OutputStreamWriter(out,"UTF-8"));
-        } catch (Exception e) {
-            new IOException().initCause(e);
+	    } catch(ParserConfigurationException e) {
+	        throw new WmsException("Unexpected exception", "internalError", e);
         } finally {
             // free up memory
             renderer = null;
