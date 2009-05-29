@@ -206,6 +206,7 @@ public class LegacyServicesReader {
         text( "maxBuffer", wmsElement, wms, Integer.class, false, 25 );
         text( "maxRequestMemory", wmsElement, wms, Integer.class, false, 0);
         text( "maxRenderingTime", wmsElement, wms, Integer.class, false, 0 );
+        text( "maxRenderingErrors", wmsElement, wms, Integer.class, false, 0 );
         
         ArrayList<Map> baseMaps = new ArrayList<Map>();
         Element baseMapGroupsElement = ReaderUtils.getChildElement(wmsElement, "BaseMapGroups");

@@ -17,12 +17,16 @@
         <legend><span><wicket:message key="resourceLimits">ResourceConsumptionLimits</wicket:message></span></legend>
         <ul>
           <li>
-            <label><wicket:message key="maxRequestMemory">Max rendering memory (kb)</wicket:message></label>
+            <label><wicket:message key="maxRequestMemory">Max rendering memory</wicket:message></label>
             <input type="text" wicket:id="maxRequestMemory" class="field text"/>
           </li>
           <li>
-            <label><wicket:message key="maxRenderingTime">Max rendering time (sec)</wicket:message></label>
+            <label><wicket:message key="maxRenderingTime">Max rendering time</wicket:message></label>
             <input type="text" wicket:id="maxRenderingTime" class="field text"/>
+          </li>
+          <li>
+            <label><wicket:message key="maxRenderingErrors">Max rendering errors</wicket:message></label>
+            <input type="text" wicket:id="maxRenderingErrors" class="field text"/>
           </li>
         </ul>
       </fieldset>
