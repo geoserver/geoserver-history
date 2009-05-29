@@ -101,6 +101,11 @@ public class WMSConfig extends ServiceConfig {
      * The GeMap max rendering time
      */
     private int maxRenderingTime;
+    
+    /**
+     * The GeMap max rendering error count
+     */
+    private int maxRenderingErrors;
 
     /**
      * WMS constructor.
@@ -122,6 +127,7 @@ public class WMSConfig extends ServiceConfig {
         maxBuffer = 25;
         maxRequestMemory = 0;
         maxRenderingTime = 0;
+        maxRenderingErrors = 0;
         allowInterpolation = INT_NEAREST;
         baseMapLayers = new HashMap();
         baseMapStyles = new HashMap();
@@ -155,6 +161,7 @@ public class WMSConfig extends ServiceConfig {
         maxBuffer = w.getMaxBuffer();
         maxRequestMemory = w.getMaxRequestMemory();
         maxRenderingTime = w.getMaxRenderingTime();
+        maxRenderingErrors = w.getMaxRenderingErrors();
     }
 
     /**
@@ -199,6 +206,7 @@ public class WMSConfig extends ServiceConfig {
         maxBuffer = dto.getMaxBuffer();
         maxRequestMemory = dto.getMaxRequestMemory();
         maxRenderingTime = dto.getMaxRenderingTime();
+        maxRenderingErrors = dto.getMaxRenderingErrors();
     }
 
     /**
@@ -229,6 +237,7 @@ public class WMSConfig extends ServiceConfig {
         wmsDto.setMaxBuffer(maxBuffer);
         wmsDto.setMaxRequestMemory(maxRequestMemory);
         wmsDto.setMaxRenderingTime(maxRenderingTime);
+        wmsDto.setMaxRenderingErrors(maxRenderingErrors);
         
         return wmsDto;
     }

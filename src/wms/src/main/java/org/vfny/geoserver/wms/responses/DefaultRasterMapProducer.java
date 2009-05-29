@@ -390,6 +390,10 @@ public abstract class DefaultRasterMapProducer extends
 			return;
 		}
 		
+		// enforce no more than x rendering errors
+		int maxErrors = wms.getInfo().getMaxRenderingErrors();
+        MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
+		
 		// setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
         int maxRenderingTime = wms.getInfo().getMaxRenderingTime() * 1000;
         RenderingTimeoutEnforcer timeout = new RenderingTimeoutEnforcer(maxRenderingTime, renderer,
@@ -417,6 +421,12 @@ public abstract class DefaultRasterMapProducer extends
             throw new WmsException(
                     "This requested used more time than allowed and has been forcefully stopped. "
                             + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
+        }
+        
+        // check if too many errors occurred
+        if(errorChecker.exceedsMaxErrors()) {
+            throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out.", 
+                    "internalError", errorChecker.getLastException());
         }
 		
 		if (!this.abortRequested) {

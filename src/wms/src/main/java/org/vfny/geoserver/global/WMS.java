@@ -240,6 +240,7 @@ public class WMS extends Service {
         setMaxBuffer(config.getMaxBuffer());
         getInfo().setMaxRequestMemory(config.getMaxRequestMemory());
         getInfo().setMaxRenderingTime(config.getMaxRenderingTime());
+        getInfo().setMaxRenderingErrors(config.getMaxRenderingErrors());
         
         //svgRenderer = config.getSvgRenderer();
         //svgAntiAlias = config.getSvgAntiAlias();
@@ -301,6 +302,7 @@ public class WMS extends Service {
         w.setMaxBuffer(getMaxBuffer());
         w.setMaxRequestMemory(getInfo().getMaxRequestMemory());
         w.setMaxRenderingTime(getInfo().getMaxRenderingTime());
+        w.setMaxRenderingErrors(getInfo().getMaxRenderingErrors());
         
         //w.setSvgRenderer(svgRenderer);
         //w.setSvgAntiAlias(svgAntiAlias);

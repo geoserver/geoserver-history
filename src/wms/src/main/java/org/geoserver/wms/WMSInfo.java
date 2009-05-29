@@ -69,4 +69,18 @@ public interface WMSInfo extends ServiceInfo {
      * @param maxRenderingTime
      */
     void setMaxRenderingTime(int maxRenderingTime);
+    
+    
+    /**
+     * The max number of rendering errors that will be tolerated before
+     * stating the rendering operation failed by throwing a service
+     * exception back to the client
+     */
+    int getMaxRenderingErrors();
+
+    /**
+     * Sets the max number of rendering errors tolerated
+     * @param maxRenderingTime
+     */
+    void setMaxRenderingErrors(int maxRenderingTime);
 }

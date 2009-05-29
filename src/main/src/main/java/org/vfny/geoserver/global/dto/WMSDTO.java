@@ -65,6 +65,11 @@ public final class WMSDTO implements DataTransferObject {
      */
     private int maxRenderingTime;
     
+    /**
+     * GetMap max tolerated rendering errors
+     */
+    private int maxRenderingErrors;
+    
     /** 
      * Watermark position
      * <pre>
@@ -124,6 +129,7 @@ public final class WMSDTO implements DataTransferObject {
         maxBuffer = other.getMaxBuffer();
         maxRequestMemory = other.getMaxRequestMemory();
         maxRenderingTime = other.getMaxRenderingTime();
+        maxRenderingErrors = other.getMaxRenderingErrors();
     }
 
     /**
@@ -166,6 +172,7 @@ public final class WMSDTO implements DataTransferObject {
             && (allowInterpolation == dto.allowInterpolation)
             && (maxBuffer == dto.maxBuffer)
             && (maxRenderingTime == dto.maxRenderingTime)
+            && (maxRenderingErrors == dto.maxRenderingErrors)
             && (maxRequestMemory == dto.maxRequestMemory);
 
         if (equals) {
@@ -223,7 +230,7 @@ public final class WMSDTO implements DataTransferObject {
     public int hashCode() {
         return (gmlPrefixing ? 1 : 0) | (svgAntiAlias ? 1 : 0) | (globalWatermarking ? 1 : 0)
         | (watermarkTransparency) | (watermarkPosition) | (maxBuffer) | (maxRequestMemory)  
-        | (maxRenderingTime)
+        | (maxRenderingTime) | (maxRenderingErrors)
         | ((globalWatermarkingURL != null) ? 0 : globalWatermarkingURL.hashCode())
         | ((allowInterpolation != null) ? 0 : allowInterpolation.hashCode())
         | ((service == null) ? 0 : service.hashCode())
@@ -428,5 +435,13 @@ public final class WMSDTO implements DataTransferObject {
 
     public void setMaxRenderingTime(int maxRenderingTime) {
         this.maxRenderingTime = maxRenderingTime;
+    }
+
+    public int getMaxRenderingErrors() {
+        return maxRenderingErrors;
+    }
+
+    public void setMaxRenderingErrors(int maxRenderingErrors) {
+        this.maxRenderingErrors = maxRenderingErrors;
     }
 }
