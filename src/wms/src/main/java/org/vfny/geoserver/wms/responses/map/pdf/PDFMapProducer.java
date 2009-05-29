@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.responses.map.pdf;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
@@ -25,15 +24,19 @@ import org.geotools.renderer.label.LabelCacheImpl;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
+import org.vfny.geoserver.global.WMS;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.MaxErrorEnforcer;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGraphics2D;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.vividsolutions.jts.geom.Envelope;
@@ -49,12 +52,20 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 		RasterMapProducer {
 	/** A logger for this class. */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map.pdf");
+	
+	/**
+	 * A kilobyte
+	 */
+	static final int KB = 1024;
 
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "application/pdf";
+    
+    WMS wms;
 
-	public PDFMapProducer() {
+	public PDFMapProducer(WMS wms) {
 	    super(MIME_TYPE);
+	    this.wms = wms;
 	}
 
 	/**
@@ -99,7 +110,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             // with it
             PdfContentByte cb = writer.getDirectContent();
             PdfTemplate tp = cb.createTemplate(width, height);
-            Graphics2D graphic = tp.createGraphics(width, height, mapper);
+            PdfGraphics2D graphic = (PdfGraphics2D) tp.createGraphics(width, height, mapper);
 
             // we set graphics options
             if (!mapContext.isTransparent()) {
@@ -166,7 +177,15 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
 
                 return;
             }
-
+            
+            // enforce no more than x rendering errors
+            int maxErrors = wms.getInfo().getMaxRenderingErrors();
+            MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
+            
+            // enforce max memory usage
+            int maxMemory = wms.getInfo().getMaxRequestMemory() * KB;
+            PDFMaxSizeEnforcer memoryChecker = new PDFMaxSizeEnforcer(renderer, graphic, maxMemory);
+            
             // render the map
             renderer.paint(graphic, paintArea, at);
             
@@ -178,20 +197,29 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
                 MapDecorationLayout layout = new MapDecorationLayout();
                 layout.paint(graphic, paintArea, this.mapContext);
             }
+            
+            // check if too many errors occurred
+            if(errorChecker.exceedsMaxErrors()) {
+                throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out", 
+                        "internalError", errorChecker.getLastException());
+            }
+            
+            // check we did not use too much memory
+            if(memoryChecker.exceedsMaxSize()) {
+                long kbMax = maxMemory / KB;
+                throw new WmsException("Rendering request used more memory than the maximum allowed:" 
+                        + kbMax + "KB");
+            }
 
             graphic.dispose();
             cb.addTemplate(tp, 0, 0);
 
             // step 5: we close the document
             document.close();
-            out.flush();
-        } catch (Throwable t) {
-            LOGGER.warning("UNCAUGHT exception: " + t.getMessage());
-
-            WmsException wmse = new WmsException("UNCAUGHT exception: "
-                    + t.getMessage());
-            wmse.setStackTrace(t.getStackTrace());
-            throw wmse;
+            writer.flush();
+            writer.close();
+        } catch (DocumentException t) {
+            throw new WmsException("Error setting up the PDF", "internalError", t);
         }
 	}
 
