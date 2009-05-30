@@ -21,7 +21,10 @@
     </li>
   </ul>
    -->
-    <button wicket:id="saveButton" type="submit"><wicket:message key="saveChanges">Save changes</wicket:message></button>
+    <div class="button-group selfclear">
+      <a href="#" wicket:id="save"><wicket:message key="save">Save</wicket:message></a>
+      <a href="#" wicket:id="cancel"><wicket:message key="cancel">Cancel</wicket:message></a>
+    </div>
 </form>
 </wicket:extend>
 </body>

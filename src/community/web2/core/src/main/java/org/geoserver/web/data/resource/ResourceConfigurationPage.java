@@ -16,9 +16,9 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -110,7 +110,14 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                 };
             }
         });
-        theForm.add(new Button("saveButton") {
+
+        theForm.add(saveLink());
+        theForm.add(new BookmarkablePageLink("cancel", LayerPage.class));
+    }
+
+    private SubmitLink saveLink() {
+        return new SubmitLink("save") {
+            @Override
             public void onSubmit() {
                 try {
                     if (isNew) {
@@ -126,9 +133,8 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                     error(e.getMessage());
                 }
             }
-        });
+        };
     }
-
     private List<ResourceConfigurationPanelInfo> filterResourcePanels(
             List<ResourceConfigurationPanelInfo> list) {
         for (int i = 0; i < list.size(); i++) {
