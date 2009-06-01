@@ -18,6 +18,7 @@ import org.geoserver.catalog.StyleInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.Style;
 import org.geotools.util.Converters;
 import org.opengis.coverage.grid.GridCoverageReader;
@@ -73,6 +74,11 @@ public final class MapLayerInfo {
     private final LayerInfo layerInfo;
 
     private Style style;
+    
+    /**
+     * The extra constraints that can be set when an external SLD is used
+     */
+    private FeatureTypeConstraint[] layerFeatureConstraints;
 
     public MapLayerInfo(FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource) {
         this.remoteFeatureSource = remoteSource;
@@ -322,5 +328,13 @@ public final class MapLayerInfo {
 
     public static String getRegionateAttribute(FeatureTypeInfo layerInfo) {
         return (String) layerInfo.getMetadata().get("kml.regionateAttribute");
+    }
+    
+    public void setLayerFeatureConstraints(FeatureTypeConstraint[] layerFeatureConstraints) {
+        this.layerFeatureConstraints = layerFeatureConstraints;
+    }
+
+    public FeatureTypeConstraint[] getLayerFeatureConstraints() {
+        return layerFeatureConstraints;
     }
 }
