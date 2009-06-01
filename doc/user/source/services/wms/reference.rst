@@ -3,7 +3,7 @@
 WMS reference
 ============= 
 
-The `Web Map Service <http://www.opengeospatial.org/standards/wfs>`_ (WMS) is a standard created by the OGC that refers to the sending and receving of geographically registered map images through HTTP.  GeoServer supports WMS version 1.1.1, and so the information below will refer to this specific version unless otherwise noted.
+The `Web Map Service <http://www.opengeospatial.org/standards/wms>`_ (WMS) is a standard created by the OGC that refers to the sending and receiving of geographically registered map images through HTTP.  GeoServer supports WMS version 1.1.1, and so the information below will refer to this specific version unless otherwise noted.
 
 WMS can perform the following operations:
 
