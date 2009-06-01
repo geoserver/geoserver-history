@@ -7,6 +7,11 @@ package org.geoserver.ows;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +78,7 @@ public class FilePublisher extends AbstractController {
         // we can't coalish 1) because we don't have a way to give jmimemagic the bytes at the 
         // beginning of the file without disabling extension quick matching
 
-        //load the file
+        // load the file
         File file = loader.find(reqPath);
 
         if (file == null) {
@@ -93,14 +98,25 @@ public class FilePublisher extends AbstractController {
             return null;
         }
 
+        // set the mime if known by the servlet container, set nothing otherwise
+        // (Tomcat behaves like this when it does not recognize the file format)
         String mime = getServletContext().getMimeType(file.getName());
-        if (mime == null) {
-            //return a 415: Unsupported Media Type
-            response.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
-
-            return null;
+        if (mime != null)
+            response.setContentType(mime);
+        
+        // set the content length
+        long length = file.length();
+        if(length > 0 && length <= Integer.MAX_VALUE)
+            response.setContentLength((int) length);
+        
+        // set the last modified header
+        long lastModified = file.lastModified();
+        if(lastModified > 0) {
+            SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss", Locale.ENGLISH);
+            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String formatted = format.format(new Date(lastModified)) + " GMT";
+            response.setHeader("Last-Modified", formatted);
         }
-        response.setContentType(mime);
 
         // Guessing the charset (and closing the stream)
         EncodingInfo encInfo = null;
