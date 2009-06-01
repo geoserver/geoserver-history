@@ -21,7 +21,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -43,6 +43,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @since 1.8.x
  * @version $Id$
  */
+@SuppressWarnings("serial")
 public class DemoRequestsPage extends GeoServerBasePage {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.demo");
@@ -55,8 +56,6 @@ public class DemoRequestsPage extends GeoServerBasePage {
      * @since 2.0.x
      */
     public static class DemoRequestsModel implements Serializable {
-        private static final long serialVersionUID = 1L;
-
         /**
          * The directory containing the demo files
          */
@@ -189,18 +188,16 @@ public class DemoRequestsPage extends GeoServerBasePage {
         responseWindow.setCookieName("demoResponse");
 
         responseWindow.setPageCreator(new ModalWindow.PageCreator() {
-            private static final long serialVersionUID = 1L;
 
             public Page createPage() {
                 return new DemoRequestResponse(model);
             }
         });
 
-        testWfsPostForm.add(new AjaxLink("submit") {
-            private static final long serialVersionUID = 1L;
+        testWfsPostForm.add(new AjaxSubmitLink("submit", testWfsPostForm) {
 
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onSubmit(AjaxRequestTarget target, Form testWfsPostForm) {
                 responseWindow.show(target);
             }
 
@@ -251,9 +248,6 @@ public class DemoRequestsPage extends GeoServerBasePage {
      * @author Gabriel Roldan
      */
     private static class DemoRequestsDropDown extends DropDownChoice {
-
-        private static final long serialVersionUID = 1L;
-
         private DemoRequestsModel demosModel;
 
         public DemoRequestsDropDown(final String id, DemoRequestsModel model, List<String> demoList) {
