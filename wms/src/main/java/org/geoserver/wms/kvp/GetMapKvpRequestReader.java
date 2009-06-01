@@ -484,6 +484,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             Object o = requestedLayers.get(i);
             if(o instanceof LayerInfo){
                 currLayer = new MapLayerInfo((LayerInfo)o);
+                
+                if (styledLayers[i] instanceof NamedLayer) {
+                    NamedLayer namedLayer = ((NamedLayer) styledLayers[i]);
+                    currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
+                }
+                
                 layers.add(currLayer);
                 Style style = findStyleOf(request, currLayer, styleName, styledLayers);
                 styles.add(style);
@@ -552,7 +558,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             } else {
                 // simpler case, one layer, eventually multiple styles
                 currLayer = null;
-
                 // handle the InLineFeature stuff
                 // TODO: add support for remote WFS here
                 if ((sl instanceof UserLayer)
@@ -568,6 +573,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 } else {
                     LayerInfo layerInfo = wms.getLayerByName(layerName);
                     currLayer = new MapLayerInfo(layerInfo);
+                    if (sl instanceof NamedLayer) {
+                        NamedLayer namedLayer = ((NamedLayer) sl);
+                        currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
+                    }
                 }
 
                 if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {

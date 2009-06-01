@@ -14,13 +14,15 @@ import java.util.List;
 import junit.framework.Test;
 
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
+import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.RemoteOWSTestSupport;
 import org.geoserver.wms.WMS;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.Style;
+import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.vfny.geoserver.config.PaletteManager;
@@ -252,6 +254,58 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         } catch(WmsException e) {
             //System.out.println(e);
         }
+    }
+    
+    public void testSldFeatureTypeConstraints() throws Exception {
+        // no styles, no layer, the full definition is in the sld
+        HashMap kvp = new HashMap();
+        URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsFeatureTypeConstaint.sld");
+        kvp.put("sld", url.toString());
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
+
+        assertNotNull(request.getSld());
+        assertEquals(url, request.getSld());
+        // check the style
+        final Style style = (Style) request.getStyles().get(0);
+        assertNotNull(style);
+        assertEquals("TheLibraryModeStyle", style.getName());
+        // check the layer
+        assertEquals(1, request.getLayers().length);
+        MapLayerInfo layer = request.getLayers()[0];
+        assertEquals(getLayerId(MockData.BASIC_POLYGONS), layer.getName());
+        // check the filter imposed in the feature type constraint
+        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+        assertEquals(1, layer.getLayerFeatureConstraints().length);
+        assertEquals(ff.equals(ff.property("ID"), ff.literal("xyz")), layer.getLayerFeatureConstraints()[0].getFilter());
+    }
+    
+    public void testSldLibraryFeatureTypeConstraints() throws Exception {
+        // no styles, no layer, the full definition is in the sld
+        HashMap kvp = new HashMap();
+        URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsFeatureTypeConstaint.sld");
+        kvp.put("sld", url.toString());
+        kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
+        kvp.put("styles", "TheLibraryModeStyle");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
+
+        assertNotNull(request.getSld());
+        assertEquals(url, request.getSld());
+        // check the style
+        final Style style = (Style) request.getStyles().get(0);
+        assertNotNull(style);
+        assertEquals("TheLibraryModeStyle", style.getName());
+        // check the layer
+        assertEquals(1, request.getLayers().length);
+        MapLayerInfo layer = request.getLayers()[0];
+        assertEquals(getLayerId(MockData.BASIC_POLYGONS), layer.getName());
+        // check the filter imposed in the feature type constraint
+        FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+        assertEquals(1, layer.getLayerFeatureConstraints().length);
+        assertEquals(ff.equals(ff.property("ID"), ff.literal("xyz")), layer.getLayerFeatureConstraints()[0].getFilter());
     }
     
     /**
