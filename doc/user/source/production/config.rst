@@ -42,6 +42,16 @@ Here is a short list:
 * Serve your data with your own namespace (and provide a correct URI)
 * Remove default layers (such as ``topp:states``)
 
+Configure service limits
+------------------------
+
+Make sure clients cannot request an inordinate amount of resources from your server.
+
+In particular:
+* for WFS set the maximum amount of feature returned by each GetFeature request (can be set on a per feature type basis too by modifying the info.xml files directly)
+* for WMS set the :ref:`request limits <wms_configuration_limits>` so that no request will consume too much memory or too much time
+
+
 Set security
 ------------
 

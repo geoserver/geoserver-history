@@ -8,5 +8,6 @@ Web Map Service
 
    basics
    outputformats
+   configuration
    vendor
    reference
