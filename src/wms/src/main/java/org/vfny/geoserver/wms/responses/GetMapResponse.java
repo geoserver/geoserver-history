@@ -31,6 +31,7 @@ import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
+import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -524,6 +525,16 @@ public class GetMapResponse implements Response {
                     layerDefinitionFilter = Filter.INCLUDE;
                 }
                 combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
+                
+                FeatureTypeConstraint[] featureTypeConstraints = layer.getLayerFeatureConstraints();
+                if (featureTypeConstraints != null) {
+	                List<Filter> filters = new ArrayList<Filter>();
+					for (int j=0;j<featureTypeConstraints.length; j++) {
+						FeatureTypeConstraint featureTypeConstraint =  featureTypeConstraints[j];
+						filters.add(featureTypeConstraint.getFilter());
+					};
+					combined = filterFac.and(combined, filterFac.and(filters));
+                }
                 combinedList[i] = combined;
             }        
         }

@@ -65,7 +65,6 @@ import org.vfny.geoserver.util.SLDValidator;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapKvpReader;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.servlets.GetMap;
 
 public class GetMapKvpRequestReader extends KvpRequestReader implements
 		HttpServletRequestAware {
@@ -478,6 +477,13 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
             currLayer = libraryModeLayers[i];
             if(styleNames != null && styleNames.size() > 0)
                 styleName = (String) styleNames.get(i);
+            
+            StyledLayer styledLayer = styledLayers[i];
+            
+            if (styledLayer instanceof NamedLayer) {
+				NamedLayer namedLayer = ((NamedLayer) styledLayer);
+				currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
+			}
 
             // base map layers do not participate in library mode
             if (currLayer.getType() == MapLayerInfo.TYPE_BASEMAP) {
@@ -549,6 +555,11 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
             } else {
                 // simpler case, one layer, eventually multiple styles
                 currLayer = new MapLayerInfo();
+                
+                if (sl instanceof NamedLayer) {
+                    NamedLayer namedLayer = ((NamedLayer) sl);
+                    currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
+                }
     
                 // handle the InLineFeature stuff
                 // TODO: add support for remote WFS here

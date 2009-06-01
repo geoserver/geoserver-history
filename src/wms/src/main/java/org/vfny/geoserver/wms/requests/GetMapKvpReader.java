@@ -39,6 +39,7 @@ import org.geotools.feature.FeatureTypes;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.FeatureTypeConstraint;
+import org.geotools.styling.LayerFeatureConstraints;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.NamedStyle;
 import org.geotools.styling.SLDParser;
@@ -51,6 +52,8 @@ import org.geotools.styling.UserLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.config.PaletteManager;
@@ -153,6 +156,8 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 	private static final StyleFactory styleFactory = CommonFactoryFinder
 			.getStyleFactory(null);
 
+	private static FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
+	
 	/**
 	 * Indicates wether STYLES parameter must be parsed. Defaults to
 	 * <code>true</code>, but can be set to false, for example, when parsing
@@ -1278,6 +1283,11 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 						throw new WmsException(e);
 					}
 				} else {
+				    if (sl instanceof NamedLayer) {  
+	                    NamedLayer namedLayer = ((NamedLayer) sl);
+	                    currLayer.setLayerFeatureConstraints(namedLayer.getLayerFeatureConstraints());
+				    }
+				    
 					try {
 						currLayer.setFeature(GetMapKvpReader.findFeatureLayer(
 								request, layerName));

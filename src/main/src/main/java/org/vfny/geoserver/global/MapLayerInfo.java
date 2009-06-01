@@ -4,17 +4,18 @@
  */
 package org.vfny.geoserver.global;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.io.IOException;
+import java.util.List;
+
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.global.dto.CoverageInfoDTO;
-import org.vfny.geoserver.global.dto.FeatureTypeInfoDTO;
 import org.vfny.geoserver.util.DataStoreUtils;
-import java.io.IOException;
-import java.util.List;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -90,6 +91,11 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
      * List of styles for a grouped layer
      */
     private List styles;
+    
+    /**
+     * The extra constraints that can be set when an external SLD is used
+     */
+    private FeatureTypeConstraint[] layerFeatureConstraints;
     
     public MapLayerInfo() {
         name = "";
@@ -380,5 +386,13 @@ public final class MapLayerInfo extends GlobalLayerSupertype {
             FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource) {
         this.remoteFeatureSource = remoteFeatureSource;
     }
+
+	public void setLayerFeatureConstraints(FeatureTypeConstraint[] layerFeatureConstraints) {
+		this.layerFeatureConstraints = layerFeatureConstraints;
+	}
+
+	public FeatureTypeConstraint[] getLayerFeatureConstraints() {
+		return layerFeatureConstraints;
+	}
 
 }
