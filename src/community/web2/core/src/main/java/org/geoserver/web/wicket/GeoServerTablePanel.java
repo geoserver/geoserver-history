@@ -45,7 +45,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 @SuppressWarnings("serial")
 public abstract class GeoServerTablePanel<T> extends Panel {
 
-    private static final int DEFAULT_ITEMS_PER_PAGE = 10;
+    private static final int DEFAULT_ITEMS_PER_PAGE = 25;
 
     // filter form components
     TextField filter;
