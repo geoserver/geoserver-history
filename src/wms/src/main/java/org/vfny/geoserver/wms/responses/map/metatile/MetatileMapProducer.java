@@ -114,6 +114,10 @@ public final class MetatileMapProducer extends AbstractGetMapProducer implements
 
 				// generate, split and cache
 				delegate.setMapContext(mapContext);
+
+                if (this.delegate instanceof DefaultRasterMapProducer) {
+                    ((DefaultRasterMapProducer)this.delegate).setMetatiled(true);
+                }
 				
 				delegate.produceMap();
 				
