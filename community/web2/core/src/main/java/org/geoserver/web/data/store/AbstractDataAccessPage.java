@@ -13,6 +13,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -109,7 +112,7 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
         final IModel model = new CompoundPropertyModel(info);
 
-        final Form paramsForm = new Form("dataStoreForm");
+        final Form paramsForm = new Form("dataStoreForm", model);
         add(paramsForm);
 
         paramsForm.add(new Label("storeType", dsFactory.getDisplayName()));
@@ -165,13 +168,15 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
         paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
 
-        paramsForm.add(new SubmitLink("save") {
+        paramsForm.add(new AjaxSubmitLink("save", paramsForm) {
             private static final long serialVersionUID = 1L;
 
+
             @Override
-            public void onSubmit() {
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
                 try {
-                    onSaveDataStore(info);
+                    DataStoreInfo modelObject = (DataStoreInfo) form.getModelObject();
+                    onSaveDataStore(modelObject, target);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
                 }
@@ -194,10 +199,11 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * 
      * @param info
      *            the object to save
+     * @param requestTarget 
      * @throws IllegalArgumentException
      *             with an appropriate message for the user if the operation failed
      */
-    protected abstract void onSaveDataStore(final DataStoreInfo info)
+    protected abstract void onSaveDataStore(final DataStoreInfo info, AjaxRequestTarget requestTarget)
             throws IllegalArgumentException;
 
     /**

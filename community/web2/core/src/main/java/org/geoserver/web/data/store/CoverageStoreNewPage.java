@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import javax.management.RuntimeErrorException;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -40,7 +41,7 @@ public class CoverageStoreNewPage extends AbstractCoverageStorePage {
     }
 
     @Override
-    protected void onSave(final CoverageStoreInfo info) throws IllegalArgumentException {
+    protected void onSave(final CoverageStoreInfo info, AjaxRequestTarget target) throws IllegalArgumentException {
         final Catalog catalog = getCatalog();
 
         /*

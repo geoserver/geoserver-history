@@ -7,6 +7,7 @@ package org.geoserver.web.data.store;
 import java.io.IOException;
 import java.util.logging.Level;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
@@ -76,7 +77,8 @@ public class DataAccessNewPage extends AbstractDataAccessPage {
      * @see AbstractDataAccessPage#onSaveDataStore(Form)
      */
     @Override
-    protected final void onSaveDataStore(final DataStoreInfo info) throws IllegalArgumentException {
+    protected final void onSaveDataStore(final DataStoreInfo info, AjaxRequestTarget target)
+            throws IllegalArgumentException {
         final Catalog catalog = getCatalog();
 
         DataAccess<? extends FeatureType, ? extends Feature> dataStore;

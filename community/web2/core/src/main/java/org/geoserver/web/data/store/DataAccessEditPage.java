@@ -4,14 +4,18 @@
  */
 package org.geoserver.web.data.store;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.logging.Level;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.ResourcePool;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geotools.data.DataAccess;
-import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
@@ -21,6 +25,11 @@ import org.opengis.feature.type.FeatureType;
  * @author Gabriel Roldan
  */
 public class DataAccessEditPage extends AbstractDataAccessPage implements Serializable {
+
+    /**
+     * Dialog to ask for save confirmation in case the store can't be reached
+     */
+    private GeoServerDialog dialog;
 
     /**
      * Creates a new datastore configuration page to edit the properties of the given data store
@@ -36,6 +45,9 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
         }
 
+        // the confirm dialog
+        dialog = new GeoServerDialog("dialog");
+        add(dialog);
         initUI(dataStoreInfo);
     }
 
@@ -47,46 +59,93 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
      *            the form to report any error to
      * @see AbstractDataAccessPage#onSaveDataStore(Form)
      */
-    protected final void onSaveDataStore(final DataStoreInfo info) {
+    protected final void onSaveDataStore(final DataStoreInfo info,
+            final AjaxRequestTarget requestTarget) {
+
         final Catalog catalog = getCatalog();
+        final ResourcePool resourcePool = catalog.getResourcePool();
+        resourcePool.clear(info);
 
-        final String dataStoreInfoId = info.getId();
+        if (info.isEnabled()) {
+            // store's enabled, check availability
+            DataAccess<? extends FeatureType, ? extends Feature> dataStore;
+            try {
+                dataStore = catalog.getResourcePool().getDataStore(info);
+                LOGGER.finer("connection parameters verified for store " + info.getName()
+                        + ". Got a " + dataStore.getClass().getName());
+                doSaveStore(info);
+                setResponsePage(StorePage.class);
+            } catch (IOException e) {
+                LOGGER.log(Level.WARNING, "Error obtaining datastore with the modified values", e);
+                confirmSaveOnConnectionFailure(info, requestTarget, e);
+            } catch (RuntimeException e) {
+                LOGGER.log(Level.WARNING, "Error obtaining datastore with the modified values", e);
+                confirmSaveOnConnectionFailure(info, requestTarget, e);
+            }
+        } else {
+            // store's disabled, no need to check the connection parameters
+            doSaveStore(info);
+            setResponsePage(StorePage.class);
+        }
+    }
 
-        catalog.getResourcePool().clear(info);
+    @SuppressWarnings("serial")
+    private void confirmSaveOnConnectionFailure(final DataStoreInfo info,
+            final AjaxRequestTarget requestTarget, final Exception error) {
 
-        // get the original values to use as rollback...
-        final DataStoreInfo original = catalog.getFactory().createDataStore();
-        clone(catalog.getDataStore(dataStoreInfoId), original);
+        getCatalog().getResourcePool().clear(info);
 
+        final String exceptionMessage;
+        {
+            String message = error.getMessage();
+            if (message == null && error.getCause() != null) {
+                message = error.getCause().getMessage();
+            }
+            exceptionMessage = message;
+        }
+
+        dialog.showOkCancel(requestTarget, new GeoServerDialog.DialogDelegate() {
+
+            boolean accepted = false;
+
+            @Override
+            protected Component getContents(String id) {
+                return new StoreConnectionFailedInformationPanel(id, info.getName(),
+                        exceptionMessage);
+            }
+
+            @Override
+            protected boolean onSubmit(AjaxRequestTarget target) {
+                doSaveStore(info);
+                accepted = true;
+                return true;
+            }
+
+            @Override
+            protected boolean onCancel(AjaxRequestTarget target) {
+                return true;
+            }
+
+            @Override
+            public void onClose(AjaxRequestTarget target) {
+                if (accepted) {
+                    setResponsePage(StorePage.class);
+                }
+            }
+        });
+    }
+
+    private void doSaveStore(final DataStoreInfo info) {
         try {
+            Catalog catalog = getCatalog();
+            ResourcePool resourcePool = catalog.getResourcePool();
+            resourcePool.clear(info);
             catalog.save(info);
+            LOGGER.finer("Saved store " + info.getName());
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error saving data store to catalog", e);
             throw new IllegalArgumentException("Error saving data store:" + e.getMessage());
         }
-
-        // try and grab the datastore with the new configuration
-        // parameters...
-        try {
-            DataAccess<? extends FeatureType, ? extends Feature> dataStore;
-            dataStore = info.getDataStore(new NullProgressListener());
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Error obtaining datastore with the modified values", e);
-            catalog.getResourcePool().clear(info);
-
-            // roll back..
-            DataStoreInfo saved = catalog.getDataStore(dataStoreInfoId);
-            clone(original, saved);
-            catalog.save(saved);
-
-            String message = e.getMessage();
-            if (message == null && e.getCause() != null) {
-                message = e.getCause().getMessage();
-            }
-            throw new IllegalArgumentException("Error updating data store parameters: " + message);
-        }
-
-        setResponsePage(StorePage.class);
     }
 
 }
