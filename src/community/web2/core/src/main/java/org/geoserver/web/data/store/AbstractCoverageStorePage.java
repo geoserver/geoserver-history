@@ -4,10 +4,13 @@
  */
 package org.geoserver.web.data.store;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -36,21 +39,20 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         AbstractGridFormat format = store.getFormat();
         if (format == null) {
             String msg = "Coverage Store factory not found";
-            msg = (String) new ResourceModel("CoverageStoreEditPage.cantGetCoverageStoreFactory", msg)
-                    .getObject();
+            msg = (String) new ResourceModel("CoverageStoreEditPage.cantGetCoverageStoreFactory",
+                    msg).getObject();
             throw new IllegalArgumentException(msg);
         }
 
+        IModel model = new Model(store);
+
         // build the form
-        paramsForm = new Form("rasterStoreForm");
+        paramsForm = new Form("rasterStoreForm", model);
         add(paramsForm);
 
         // the format description labels
         paramsForm.add(new Label("storeType", format.getName()));
         paramsForm.add(new Label("storeTypeDescription", format.getDescription()));
-
-        IModel model = new Model(store);
-        setModel(model);
 
         // name
         PropertyModel nameModel = new PropertyModel(model, "name");
@@ -88,14 +90,14 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         paramsForm.add(storeNameValidator);
     }
 
-    private SubmitLink saveLink() {
-        return new SubmitLink("save") {
+    private AjaxSubmitLink saveLink() {
+        return new AjaxSubmitLink("save", paramsForm) {
+
             @Override
-            public void onSubmit() {
-                CoverageStoreInfo info = (CoverageStoreInfo) AbstractCoverageStorePage.this
-                        .getModelObject();
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                CoverageStoreInfo info = (CoverageStoreInfo) form.getModelObject();
                 try {
-                    onSave(info);
+                    onSave(info, target);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
                 }
@@ -113,7 +115,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
      *             with an appropriate error message if the save action can't be successfully
      *             performed
      */
-    protected abstract void onSave(CoverageStoreInfo info) throws IllegalArgumentException;
+    protected abstract void onSave(CoverageStoreInfo info, AjaxRequestTarget target) throws IllegalArgumentException;
 
     protected void clone(final CoverageStoreInfo source, CoverageStoreInfo target) {
         target.setDescription(source.getDescription());
