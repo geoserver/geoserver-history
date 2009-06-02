@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -78,7 +79,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
         CoverageStoreInfo info = catalog.getCoverageStoreByName(workspace, coveragestore);
         boolean add = false;
         if ( info == null ) {
-          //create a new coverage store
+            //create a new coverage store
             LOGGER.info("Auto-configuring coverage store: " + coveragestore);
             
             info = builder.buildCoverageStore(coveragestore);
@@ -119,6 +120,9 @@ public class CoverageStoreFileResource extends StoreFileResource {
         }
         
         String coverage = uploadedFile.getName();
+        if ( coverage.indexOf( '.') != -1 ) { 
+            coverage = coverage.substring( 0, coverage.indexOf( '.') );
+        }
         
         try {
             AbstractGridCoverage2DReader reader = 
@@ -137,10 +141,29 @@ public class CoverageStoreFileResource extends StoreFileResource {
             
             if ( !add ) {
                 //update the existing
-                CoverageInfo existing = catalog.getCoverageByCoverageStore(info, coverage);
-                builder.updateCoverage(existing,cinfo);
-                catalog.save( existing );
-                cinfo = existing;
+                CoverageInfo existing = catalog.getCoverageByCoverageStore(info, 
+                    coverageName != null ? coverageName : coverage );
+                if ( existing == null ) {
+                    //grab the first if there is only one
+                    List<CoverageInfo> coverages = catalog.getCoveragesByCoverageStore( info);
+                    if ( coverages.size() == 1 ) {
+                        existing = coverages.get(0);
+                    }
+                    if ( coverages.size() == 0 ) {
+                        //no coverages yet configured, change add flag and continue on
+                        add = true;
+                    }
+                    else {
+                        // multiple coverages, and one to configure not specified
+                        throw new RestletException( "Unable to determine coverage to configure.", Status.SERVER_ERROR_INTERNAL);
+                    }
+                }
+                
+                if ( existing != null ) {
+                    builder.updateCoverage(existing,cinfo);
+                    catalog.save( existing );
+                    cinfo = existing;
+                }
             }
             
             //do some post configuration, if srs is not known or unset, transform to 4326
