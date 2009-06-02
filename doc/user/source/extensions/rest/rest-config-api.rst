@@ -28,6 +28,22 @@ a representation in XML, the content type "text/xml" or "application/xml" would
 be used. The latter is specified with the ``Accepts`` header as specified in the
 above paragraph describing a GET operation.
 
+The following table defines the ``Content-type`` values for each format: 
+
+.. list-table::
+   :header-rows: 1
+
+   * - Format
+     - Content-type
+   * - XML
+     - application/xml
+   * - JSON
+     - application/xml
+   * - HTML
+     - application/html
+   * - SLD
+     - application/vnd.ogc.sld+xml
+
 Authentication
 --------------
 
@@ -874,6 +890,7 @@ Operations
      - Create a new style
      - 201 with ``Location`` header
      - SLD, XML, JSON
+       See :ref:`notes <sld_post_put>` below
      -
      - :ref:`name <name_parameter>`
    * - PUT
@@ -894,6 +911,11 @@ Operations
 - :ref:`HTML <styles_html>`
 - :ref:`XML <styles_xml>`
 - :ref:`JSON <styles_json>`
+
+.. _sld_post_put:
+
+When POSTing or PUTing a style as SLD, the ``Content-type`` header should be
+set to ``application/vnd.ogc.sld+xml``.
 
 .. _name_parameter:
 
@@ -924,7 +946,8 @@ name can be not be inferred from the SLD itself.
    * - PUT
      - Modify style ``s`` 
      - 200
-     - SLD,XML,JSON
+     - SLD, XML, JSON
+       See :ref:`notes <sld_post_put>` above
      - 
    * - DELETE
      - Delete style ``s``
