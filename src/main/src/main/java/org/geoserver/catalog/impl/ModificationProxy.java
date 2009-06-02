@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.ows.util.ClassProperties;
+import org.geoserver.ows.util.OwsUtils;
+
 /**
  * Proxies an object storing any modifications to it.
  * <p>
@@ -41,6 +44,10 @@ public class ModificationProxy implements InvocationHandler {
      * the proxy object 
      */
     Object proxyObject;
+    /**
+     * reflection helper
+     */
+    ClassProperties cp;
     
     /** 
      * "dirty" properties 
@@ -49,6 +56,7 @@ public class ModificationProxy implements InvocationHandler {
 
     public ModificationProxy(Object proxyObject) {
         this.proxyObject = proxyObject;
+        cp = OwsUtils.getClassProperties(proxyObject.getClass());
     }
     /**
      * Intercepts getter and setter methods.
@@ -119,8 +127,8 @@ public class ModificationProxy implements InvocationHandler {
                     }
                     else {
                         //call the setter
-                        Method s = proxyObject.getClass().getMethod( "set" + p, g.getReturnType() );
-                        s.invoke( proxyObject, v );    
+                        Method s = setter(p,g.getReturnType());
+                        s.invoke( proxyObject, v );
                     }
                     
                 } 
@@ -200,9 +208,27 @@ public class ModificationProxy implements InvocationHandler {
             catch( NoSuchMethodException e2 ) {}
         }
         
+        if ( g == null ) {
+            g = cp.getter(propertyName, null);
+        }
+        
         return g;
     }
-    
+
+    /*
+     * Helper method for looking up a getter method.
+     */
+    Method setter( String propertyName, Class type ) {
+        Method s = null;
+        try {
+            s = proxyObject.getClass().getMethod( "set" + propertyName, type );
+        }
+        catch( NoSuchMethodException e ) {
+            s = cp.setter(propertyName, type);
+        }
+        return s;
+    }
+
     /**
      * Wraps an object in a proxy.
      * 
