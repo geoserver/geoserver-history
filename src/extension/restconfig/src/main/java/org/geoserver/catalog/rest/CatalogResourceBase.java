@@ -1,8 +1,10 @@
 package org.geoserver.catalog.rest;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
@@ -16,6 +18,8 @@ import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.vfny.geoserver.config.DataConfig;
+import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.Service;
 import org.vfny.geoserver.global.dto.WCSDTO;
@@ -65,9 +69,14 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
      */
     protected static void saveCatalog( Catalog catalog ) throws Exception {
         Data data = (Data) GeoServerExtensions.bean( "data" );
+        DataConfig dataConfig = (DataConfig) GeoServerExtensions.bean( "dataConfig" );
+
         synchronized( GeoServer.CONFIGURATION_LOCK ) {
             XMLConfigWriter.store( data.toDTO() , catalog.getResourceLoader().getBaseDirectory() );
+            dataConfig.update( data.toDTO() );
         }
+        
+        fireGeoServerChange();
     }
     
     protected void saveConfiguration() throws Exception {
@@ -76,10 +85,27 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
         Service wfs = (Service) GeoServerExtensions.bean( "wfs" );
         Service wms = (Service) GeoServerExtensions.bean( "wms" );
         Service wcs = (Service) GeoServerExtensions.bean( "wcs" );
-        
+        WMSConfig wmsConfig =  (WMSConfig) GeoServerExtensions.bean( "wmsConfig" );
+
         synchronized (GeoServer.CONFIGURATION_LOCK) {
             XMLConfigWriter.store((WCSDTO)wcs.toDTO(),(WMSDTO)wms.toDTO(),(WFSDTO)wfs.toDTO(),
-                global.toDTO(),catalog.getResourceLoader().getBaseDirectory());    
+                global.toDTO(),catalog.getResourceLoader().getBaseDirectory());
+            wmsConfig.update( (WMSDTO) wms.toDTO() );
+        }
+        
+        fireGeoServerChange();
+    }
+    
+    protected static void fireGeoServerChange() {
+        GeoServer gs = GeoServerExtensions.bean(GeoServer.class);
+        for (ConfigurationListener l : gs.getListeners() ) {
+            try {
+                l.reloaded();
+            }
+            catch( Throwable t ) {
+                LOGGER.warning( "listener threw exception, turn logging to FINE to view stack trace" );
+                LOGGER.log( Level.FINE, t.getLocalizedMessage(), t );
+            }
         }
     }
     
