@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.Info;
+import org.geoserver.ows.util.ClassProperties;
+import org.geoserver.ows.util.OwsUtils;
 
 /**
  * Proxies an object storing any modifications to it.
@@ -46,6 +48,11 @@ public class ModificationProxy implements InvocationHandler, Serializable {
      */
     Object proxyObject;
     
+    /**
+     * reflection helper
+     */
+    ClassProperties cp;
+    
     /** 
      * "dirty" properties 
      */
@@ -53,6 +60,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
 
     public ModificationProxy(Object proxyObject) {
         this.proxyObject = proxyObject;
+        this.cp = OwsUtils.getClassProperties(proxyObject.getClass());
     }
     /**
      * Intercepts getter and setter methods.
@@ -144,11 +152,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                         c.addAll( (Collection) v );
                     }
                     else {
-                        Method s = null;
-                        try {
-                            s = proxyObject.getClass().getMethod( "set" + p, g.getReturnType() );
-                        }
-                        catch( NoSuchMethodException ex ) {}
+                        Method s = setter(p,g.getReturnType());
                         
                         if ( Info.class.isAssignableFrom( g.getReturnType() ) ) {
                             //another info is the changed property, it could be one of two cases
@@ -318,9 +322,27 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             catch( NoSuchMethodException e2 ) {}
         }
         
+        if ( g == null ) {
+            g = cp.getter(propertyName, null);
+        }
+        
         return g;
     }
-    
+
+    /*
+     * Helper method for looking up a getter method.
+     */
+    Method setter( String propertyName, Class type ) {
+        Method s = null;
+        try {
+            s = proxyObject.getClass().getMethod( "set" + propertyName, type );
+        }
+        catch( NoSuchMethodException e ) {
+            s = cp.setter(propertyName, type);
+        }
+        return s;
+    }
+
     /**
      * Wraps an object in a proxy.
      * 
