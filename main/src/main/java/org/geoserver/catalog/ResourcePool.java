@@ -43,8 +43,10 @@ import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeTypeBuilder;
@@ -218,6 +220,45 @@ public class ResourcePool {
                         // urls which are relative to the data directory
                         // TODO: find a better way to do this
                         connectionParameters = DataStoreUtils.getParams(connectionParameters,null);
+                        
+                        //ensure that the namespace parameter is set for the datastore
+                        if (!connectionParameters.containsKey( "namespace")) {
+                            //obtain the factory
+                            DataAccessFactory factory = null;
+                            try {
+                                factory = getDataStoreFactory(info);
+                            }
+                            catch(Exception e ) {
+                                //ignore, it will fail later
+                            }
+                            
+                            //if we grabbed the factory, check that the factory actually supports
+                            // a namespace parameter, if we could not get the factory, assume that
+                            // it does
+                            boolean supportsNamespace = true;
+                            if ( factory != null ) {
+                                supportsNamespace = false;
+                                Param[] params = factory.getParametersInfo();
+                                for ( Param p : params ) {
+                                    if ( "namespace".equalsIgnoreCase( p.key ) ) {
+                                        supportsNamespace = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if ( supportsNamespace ) {
+                                WorkspaceInfo ws = info.getWorkspace();
+                                NamespaceInfo ns = info.getCatalog().getNamespaceByPrefix( ws.getName() );
+                                if ( ns == null ) {
+                                    ns = info.getCatalog().getDefaultNamespace();
+                                }
+                                if ( ns != null ) {
+                                    connectionParameters.put( "namespace", ns.getURI() );
+                                }    
+                            }
+                        }
+                        
                         dataStore = DataStoreUtils.getDataAccess(connectionParameters);
                         if (dataStore == null) {
                             /*
