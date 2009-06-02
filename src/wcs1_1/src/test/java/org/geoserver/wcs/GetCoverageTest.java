@@ -29,6 +29,8 @@ import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.wcs.WcsException;
 import org.w3c.dom.Document;
 
+import com.mockrunner.mock.web.MockHttpServletResponse;
+
 public class GetCoverageTest extends WCSTestSupport {
 
     private static final double EPS = 10 - 6;
@@ -387,7 +389,7 @@ public class GetCoverageTest extends WCSTestSupport {
         assertXpathEvaluatesTo(TASMANIA_BM.getLocalPart(),
                 "wcs:Coverages/wcs:Coverage/ows:Title", dom);
         
-        // grab the file path
+        // grab the file path on the disk
         String path = xpath.evaluate("//ows:Reference/@xlink:href", dom);
         File temp = new File(getTestData().getDataDirectoryRoot(), "temp");
         if(!temp.exists())
@@ -395,11 +397,16 @@ public class GetCoverageTest extends WCSTestSupport {
         File wcsTemp = new File(temp, "wcs");
             wcsTemp.mkdir();
         File coverageFile = new File(wcsTemp, path.substring(path.lastIndexOf("/") + 1)).getAbsoluteFile();
-        System.out.println(coverageFile);
         
         // make sure the tiff can be actually read
         ImageReader reader = ImageIO.getImageReadersByFormatName("tiff").next();
         reader.setInput(ImageIO.createImageInputStream(coverageFile));
+        reader.read(0);
+        
+        // make sure we can actually retrieve the coverage (GEOS-2790)
+        String localPath = path.substring(path.indexOf("geoserver/") + 10);
+        MockHttpServletResponse response = getAsServletResponse(localPath);
+        reader.setInput(ImageIO.createImageInputStream(getBinaryInputStream(response)));
         reader.read(0);
         reader.dispose();
     }

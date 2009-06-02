@@ -39,10 +39,11 @@
   <!-- http url mapping -->
   <bean id="wcs111URLMapping"
     class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
       <props>
         <prop key="/wcs">dispatcher</prop>
-        <prop key="/wcs/*">dispatcher</prop>
+        <prop key="/wcs/**">dispatcher</prop>
       </props>
     </property>
   </bean>
@@ -147,7 +148,7 @@
     <property name="alwaysUseFullPath" value="true" />
     <property name="mappings">
       <props>
-        <prop key="/temp/wcs/**">filePublisher</prop>
+        <prop key="/temp/**">filePublisher</prop>
       </props>
     </property>
   </bean>
