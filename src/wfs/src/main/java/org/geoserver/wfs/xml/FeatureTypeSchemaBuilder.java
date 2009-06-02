@@ -262,6 +262,11 @@ public abstract class FeatureTypeSchemaBuilder {
             }
 
             if (ftSchema != null) {
+                //respect the prefix (xs vs xsd) given by the underlying schema file
+                if ( ftSchema.getSchemaForSchemaQNamePrefix() != null ) {
+                    schema.setSchemaForSchemaQNamePrefix(ftSchema.getSchemaForSchemaQNamePrefix());
+                }
+                
                 //add the contents of this schema to the schema being built
                 //look up the complex type
                 List contents = ftSchema.getContents();
