@@ -15,8 +15,6 @@ import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.ajax.IAjaxIndicatorAware;
-import org.apache.wicket.extensions.breadcrumb.BreadCrumbBar;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -44,7 +42,7 @@ import org.geotools.util.logging.Logging;
  * @author Andrea Aaime, The Open Planning Project
  * @author Justin Deoliveira, The Open Planning Project
  */
-public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware{
+public class GeoServerBasePage extends WebPage {
     
     /**
      * The id of the panel sitting in the page-header, right below the page description
@@ -223,14 +221,4 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware{
         response.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
     }
 
-    /**
-     * Returns the id for the component used as a veil for the whole page while Wicket is processing
-     * an ajax request, so it is impossible to trigger the same ajax action multiple times (think of
-     * saving/deleting a resource, etc)
-     * 
-     * @see IAjaxIndicatorAware#getAjaxIndicatorMarkupId()
-     */
-    public String getAjaxIndicatorMarkupId() {
-        return "ajaxProcessingVeil";
-    }
 }
