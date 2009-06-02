@@ -68,6 +68,21 @@ public class LayerResource extends AbstractCatalogResource {
     }
     
     @Override
+    public boolean allowDelete() {
+        return getAttribute("layer") != null;
+    }
+    
+    @Override
+    protected void handleObjectDelete() throws Exception {
+        String l = getAttribute("layer");
+        LayerInfo layer = (LayerInfo) catalog.getLayerByName(l);
+        catalog.remove(layer);
+        saveCatalog();
+        
+        LOGGER.info( "DELETE layer " + l);
+    }
+    
+    @Override
     protected void configurePersister(XStreamPersister persister, DataFormat format) {
         persister.setCallback(new XStreamPersister.Callback() {
             @Override
@@ -99,5 +114,5 @@ public class LayerResource extends AbstractCatalogResource {
         });
         
     }
-
+    
 }
