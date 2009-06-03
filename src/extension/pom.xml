@@ -86,6 +86,13 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>charts</id>
+      <modules>
+        <module>charts</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
@@ -99,6 +106,7 @@
         <module>ogr</module>
         <module>excel</module>
         <module>validation</module>
+        <module>charts</module>
       </modules>
     </profile>
 
@@ -115,6 +123,7 @@
         <module>ogr</module>
         <module>excel</module>
         <module>validation</module>
+        <module>charts</module>
       </modules>
     </profile>
   </profiles>

@@ -375,6 +375,11 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-charts</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.wkb4j</groupId>
     <artifactId>wkb4j</artifactId>
     <version>1.0-RC1</version>
@@ -995,6 +1000,7 @@
       <descriptor>release/ext-imagemap.xml</descriptor>
       <descriptor>release/ext-ogr.xml</descriptor>
       <descriptor>release/ext-excel.xml</descriptor>
+      <descriptor>release/ext-charts.xml</descriptor>
      </descriptors>
      <finalName>geoserver-2.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
