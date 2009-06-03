@@ -1053,7 +1053,7 @@ public class XMLConfigWriter {
                 }
 
                 // rename it if its not a backup
-                if ( !fa[j].getName().endsWith( ".bak") ) {
+                if ( fa[j].isDirectory() && !fa[j].getName().endsWith( ".bak") ) {
                     try {
                         WriterUtils.backupDirectory( fa[j] );
                     }
