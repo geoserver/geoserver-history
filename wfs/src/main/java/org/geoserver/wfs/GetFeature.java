@@ -357,10 +357,14 @@ public class GetFeature {
 
                 FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
                 
-                // optimization: WFS 1.0 does not require count, so if we don't need it to limit 
-                // the features, don't compute it, avoid the count query
-                if(request.getQuery().size() > 1 || !("1.0".equals(request.getVersion()) || "1.0.0".equals(request.getVersion())))
+                // optimization: WFS 1.0 does not require count unless we have multiple query elements
+                // and we are asked to perform a global limit on the results returned
+                if(("1.0".equals(request.getVersion()) || "1.0.0".equals(request.getVersion())) && 
+                        (request.getQuery().size() == 1 || maxFeatures == Integer.MAX_VALUE)) {
+                    // skip the count update, in this case we don't need it
+                } else {
                 	count += features.size();
+                }
                 
                 // we may need to shave off geometries we did load only to make bounds
                 // computation happy
