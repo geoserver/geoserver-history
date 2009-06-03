@@ -116,6 +116,13 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>charts</id>
+      <modules>
+        <module>charts</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
 
     <profile>
@@ -134,6 +141,7 @@
         <module>excel</module>
         <module>restconfig</module>
         <module>geosearch</module>
+        <module>charts</module>
       </modules>
     </profile>
 
@@ -156,6 +164,7 @@
         <module>excel</module>
         <module>restconfig</module>
         <module>geosearch</module>
+        <module>charts</module>
       </modules>
     </profile>
   </profiles>

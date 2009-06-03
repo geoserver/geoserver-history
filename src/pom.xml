@@ -332,6 +332,11 @@
     <version>${gt.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.geotools</groupId>
+    <artifactId>gt-charts</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
     <groupId>org.wkb4j</groupId>
     <artifactId>wkb4j</artifactId>
     <version>1.0-RC1</version>
@@ -939,6 +944,7 @@
       <descriptor>release/ext-excel.xml</descriptor>
       <descriptor>release/ext-restconfig.xml</descriptor>
       <descriptor>release/ext-geosearch.xml</descriptor>
+      <descriptor>release/ext-charts.xml</descriptor>
      </descriptors>
      <finalName>geoserver-1.7.5-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
