@@ -481,22 +481,6 @@ function prepareFormData(){
     	</td>
     </tr>
 
-    <!--tr>
-      <td class="label">
-		<span class="help" title="<bean:message key="help.type.base"/>">
-			<bean:message key="label.base"/>:
-		</span>
-	  </td>
-	  <td class="datum">
-		<html:select property="schemaBase">
-			<html:options property="allYourBase"/>
-		</html:select>
-		<html:submit property="action">
-			<bean:message key="label.change"/>
-		</html:submit>
-      </td>
-    </tr-->
-
   <% boolean first = true;
      org.vfny.geoserver.form.data.AttributeDisplay attributeDisplay = null;;
      org.vfny.geoserver.form.data.AttributeForm attributeForm = null; 
@@ -506,19 +490,6 @@ function prepareFormData(){
      java.util.List attributes = (java.util.List) form.getAttributes();
      int attributesSize = attributes.size(); %>
              
-    <% if (!("--".equals(form.getSchemaBase())) ) { %>
-    <!--tr>
-      <td class="label">
-		<span class="help" title="<bean:message key="help.type.schemaName"/>">
-          <bean:message key="label.schemaName"/>:
-        </span>
-	  </td>
-	  <td class="datum">
-		<html:text property="schemaName" size="60"/>
-	  </td>
-	</tr-->
-    <%} %>    
-
 <logic:iterate id="attribute" indexId="index" name="typesEditorForm" property="attributes">
 	<tr>
       <td class="label">
