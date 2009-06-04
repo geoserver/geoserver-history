@@ -117,7 +117,14 @@ public class ReverseProxyFilter implements Filter {
         if (filterIsEnabled) {
             final String mimeTypesInitParam = filterConfig.getInitParameter(MIME_TYPES_INIT_PARAM);
 
-            geoServer = GeoServerExtensions.bean(GeoServerInfo.class);
+            GeoServer geoServerConfig = GeoServerExtensions.bean(GeoServer.class);
+            if (geoServerConfig == null) {
+                throw new ServletException("No " + GeoServer.class.getName()
+                        + " found, the system is either not properly "
+                        + "configured or the method to get to the GeoServer "
+                        + "config instance have changed!");
+            }
+            geoServer = geoServerConfig.getGlobal();
 
             if (geoServer == null) {
                 throw new ServletException(
