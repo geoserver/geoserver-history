@@ -298,7 +298,7 @@ public class HolesRemover {
 
 	private static LineString reverseWindingOrder(LineString vertices)
 	{
-		return vertices.reverse();		
+		return (LineString) vertices.reverse();		
 	}
 
 	private static int determineWindingOrder(LineString vertices) {
