@@ -22,6 +22,7 @@ import junit.framework.TestCase;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.GeoServerExtensions;
 
@@ -58,24 +59,22 @@ public class ReverseProxyFilterTest extends TestCase {
         filter = null;
     }
 
-    protected GeoServerInfo getMockGeoServerInfo(final String proxyBaseUrl) {
-        GeoServerInfoImpl geoserver = new GeoServerInfoImpl((GeoServer) null) {
-            @Override
-            public String getProxyBaseUrl() {
-                return proxyBaseUrl;
-            }
-        };
-        return geoserver;
+    protected GeoServer getMockGeoServer(final String proxyBaseUrl) {
+        GeoServerImpl config = new GeoServerImpl();
+        GeoServerInfoImpl geoserver = new GeoServerInfoImpl(config);
+        geoserver.setProxyBaseUrl(proxyBaseUrl);
+        config.setGlobal(geoserver);
+        return config;
     }
 
     public void testInit() throws ServletException {
         final String proxyBaseUrl = "https://localhost/geoserver/tools";
 
-        GeoServerInfo geoserver = getMockGeoServerInfo(proxyBaseUrl);
+        GeoServer geoserver = getMockGeoServer(proxyBaseUrl);
         String mimeTypesInitParam = "*wrong*expression*";
 
         try {
-            ReverseProxyFilter.parsePatterns(geoserver, mimeTypesInitParam);
+            ReverseProxyFilter.parsePatterns(geoserver.getGlobal(), mimeTypesInitParam);
             fail("expected ServletException with an illegal regular expression to match mime types");
         } catch (ServletException e) {
             assertTrue(true);
@@ -83,7 +82,7 @@ public class ReverseProxyFilterTest extends TestCase {
 
         mimeTypesInitParam = DEFAULT_MIME_TYPES_REGEX;
 
-        ReverseProxyFilter.parsePatterns(geoserver, mimeTypesInitParam);
+        ReverseProxyFilter.parsePatterns(geoserver.getGlobal(), mimeTypesInitParam);
     }
 
     public void testDoFilterDisabled() throws ServletException, IOException {
@@ -212,10 +211,10 @@ public class ReverseProxyFilterTest extends TestCase {
             final boolean filterIsEnabled) throws MalformedURLException, ServletException,
             IOException {
 
-        GeoServerInfo mockGeoServerInfo = getMockGeoServerInfo(proxyBaseUrl);
+        GeoServer mockGeoServer = getMockGeoServer(proxyBaseUrl);
 
         ApplicationContextMock context = new ApplicationContextMock();
-        context.putBean(mockGeoServerInfo);
+        context.putBean(mockGeoServer);
 
         GeoServerExtensions ext = new GeoServerExtensions();
         ext.setApplicationContext(context);
@@ -242,12 +241,12 @@ public class ReverseProxyFilterTest extends TestCase {
         MockFilterChain chain = new MockFilterChain();
         MockHttpSession session = new MockHttpSession();
         req.setSession(session);
-        
+
         MockServletContext servletContext = new MockServletContext();
         session.setupServletContext(servletContext);
 
         filter.init(config);
-        
+
         // the servlet to call at the end of the chain, just writes the provided content out
         // to the response
         Servlet servlet = new HttpServlet() {
