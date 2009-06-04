@@ -527,6 +527,11 @@
     <version>${spring.version}</version>
    </dependency>
    <dependency>
+    <groupId>org.acegisecurity</groupId>
+    <artifactId>acegi-security</artifactId>
+    <version>1.0.7</version>
+   </dependency>
+   <dependency>
     <groupId>log4j</groupId>
     <artifactId>log4j</artifactId>
     <version>1.2.14</version>
