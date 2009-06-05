@@ -120,8 +120,6 @@ public class CoverageStoreFileResource extends StoreFileResource {
             return;
         }
         
-        String coverage = uploadedFile.getName();
-        
         try {
             AbstractGridCoverage2DReader reader = 
                 (AbstractGridCoverage2DReader) ((AbstractGridFormat) coverageFormat).getReader(uploadedFile.toURL());
@@ -133,13 +131,16 @@ public class CoverageStoreFileResource extends StoreFileResource {
             
             //check if the name of the coverage was specified
             String coverageName = form.getFirstValue("coverageName");
-            if ( coverageName != null ) {
+            if(coverageName == null) {
+                coverageName = uploadedFile.getName();
+                coverageName = coverageName.substring(0, coverageName.lastIndexOf('.'));
+            } else {
                 cinfo.setName( coverageName );
             }
             
-            if ( !add ) {
+            CoverageInfo existing = catalog.getCoverageByCoverageStore(info, coverageName);
+            if (existing != null) {
                 //update the existing
-                CoverageInfo existing = catalog.getCoverageByCoverageStore(info, coverage);
                 builder.updateCoverage(existing,cinfo);
                 catalog.save( existing );
                 cinfo = existing;
@@ -157,7 +158,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
 
             //add/save
             String layerName = cinfo.getName();
-            if ( add ) {
+            if (existing == null) {
                 catalog.add( cinfo );
                 
                 final LayerInfo layerInfo=builder.buildLayer(cinfo);

@@ -20,6 +20,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.rest.RestletException;
+import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.StreamDataFormat;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFactorySpi;
@@ -88,12 +89,14 @@ public class DataStoreFileResource extends StoreFileResource {
     
     @Override
     public void handlePut() {
-        String workspace = (String)getRequest().getAttributes().get("workspace");
-        String datastore = (String)getRequest().getAttributes().get("datastore");
-        String format = (String)getRequest().getAttributes().get("format");
+        final Request request = getRequest();
+        final Response response = getResponse();
+        String workspace = (String)request.getAttributes().get("workspace");
+        String datastore = (String)request.getAttributes().get("datastore");
+        String format = (String)request.getAttributes().get("format");
 
-        getResponse().setStatus(Status.SUCCESS_ACCEPTED);
-        Form form = getRequest().getResourceRef().getQueryAsForm();
+        response.setStatus(Status.SUCCESS_ACCEPTED);
+        Form form = request.getResourceRef().getQueryAsForm();
 
         //get the directory to put the file into 
         //TODO: add a method createDirectory(String...) so as not to specify the file seperator
@@ -240,7 +243,7 @@ public class DataStoreFileResource extends StoreFileResource {
         // data feature types
         String configure = form.getFirstValue( "configure" );
         if ( "none".equalsIgnoreCase( configure ) ) {
-            getResponse().setStatus( Status.SUCCESS_CREATED );
+            response.setStatus( Status.SUCCESS_CREATED );
             return;
         }
         
@@ -283,6 +286,9 @@ public class DataStoreFileResource extends StoreFileResource {
                 }
                 
                 AbstractCatalogResource.saveCatalog( catalog );
+                DataFormat df = new DataStoreResource(getContext(),request,response,catalog)
+                .createXMLFormat(request, response);
+                response.setEntity(df.toRepresentation(ftinfo));
                 getResponse().setStatus( Status.SUCCESS_CREATED );
             }
         } 
