@@ -145,6 +145,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
 
     public void testFilter() throws Exception {
         HashMap kvp = new HashMap();
+        kvp.put("layers", getLayerId(MockData.BASIC_POLYGONS));
         kvp.put("filter", "<Filter><FeatureId id=\"foo\"/></Filter>");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
