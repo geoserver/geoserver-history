@@ -1,4 +1,4 @@
-/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -36,6 +36,7 @@ public class CoverageStoreNewPage extends AbstractCoverageStorePage {
         store.setWorkspace(workspace);
         store.setType(coverageFactoryName);
         store.setEnabled(true);
+        store.setURL("file:data/example.extension");
 
         initUI(store);
     }
