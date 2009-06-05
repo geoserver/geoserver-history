@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 
@@ -31,8 +32,36 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
     static final Property<LayerInfo> NAME = new BeanProperty<LayerInfo>("name",
             "name");
 
-    static final Property<LayerInfo> ENABLED = new BeanProperty<LayerInfo>(
-            "enabled", "enabled");
+    /**
+     * A custom property that uses the derived enabled() property instead of isEnabled() to account
+     * for disabled resource/store
+     */
+    static final Property<LayerInfo> ENABLED = new Property<LayerInfo>() {
+
+        public Comparator<LayerInfo> getComparator() {
+            return new Comparator<LayerInfo>() {
+                public int compare(LayerInfo o1, LayerInfo o2) {
+                    return Boolean.valueOf(o1.enabled()).compareTo(Boolean.valueOf(o2.enabled()));
+                }
+            };
+        }
+
+        public IModel getModel(IModel itemModel) {
+            return new Model(getPropertyValue((LayerInfo) itemModel.getObject()));
+        }
+
+        public String getName() {
+            return "enabled";
+        }
+
+        public Boolean getPropertyValue(LayerInfo item) {
+            return Boolean.valueOf(item.enabled());
+        }
+
+        public boolean isVisible() {
+            return true;
+        }
+    };
 
     static final Property<LayerInfo> SRS = new BeanProperty<LayerInfo>("SRS",
             "resource.SRS") {

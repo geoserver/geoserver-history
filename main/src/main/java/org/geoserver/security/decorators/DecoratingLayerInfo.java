@@ -63,6 +63,10 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
         return delegate.isEnabled();
     }
 
+    public boolean enabled() {
+        return delegate.enabled();
+    }
+
     public void setDefaultStyle(StyleInfo defaultStyle) {
         delegate.setDefaultStyle(defaultStyle);
     }

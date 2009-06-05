@@ -49,14 +49,16 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
         List<PreviewLayer> result = new ArrayList<PreviewLayer>();
 
         for (LayerInfo layer : getCatalog().getLayers()) {
-            if (layer.isEnabled())
+            // ask for enabled() instead of isEnabled() to account for disabled resource/store
+            if (layer.enabled())
                 result.add(new PreviewLayer(layer));
         }
 
         for (LayerGroupInfo group : getCatalog().getLayerGroups()) {
             boolean enabled = true;
             for (LayerInfo layer : group.getLayers()) {
-                enabled &= layer.isEnabled();
+                // ask for enabled() instead of isEnabled() to account for disabled resource/store
+                enabled &= layer.enabled();
             }
             if (enabled)
                 result.add(new PreviewLayer(group));

@@ -107,6 +107,16 @@ public class LayerInfoImpl implements LayerInfo {
         return enabled;
     }
 
+    /**
+     * @see LayerInfo#enabled()
+     */
+    public boolean enabled() {
+        ResourceInfo resource = getResource();
+        boolean resourceEnabled = resource != null && resource.enabled();
+        boolean thisEnabled = this.isEnabled();
+        return resourceEnabled && thisEnabled;
+    }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

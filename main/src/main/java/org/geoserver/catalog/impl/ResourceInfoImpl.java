@@ -217,6 +217,15 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         return enabled;
     }
 
+    /**
+     * @see ResourceInfo#enabled()
+     */
+    public boolean enabled(){
+        StoreInfo store = getStore();
+        boolean storeEnabled = store != null && store.isEnabled();
+        return storeEnabled && this.isEnabled();
+    }
+    
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

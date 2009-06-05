@@ -175,6 +175,10 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
         return delegate.isEnabled();
     }
 
+    public boolean enabled() {
+        return delegate.enabled();
+    }
+
     public void setAbstract(String _abstract) {
         delegate.setAbstract(_abstract);
     }
