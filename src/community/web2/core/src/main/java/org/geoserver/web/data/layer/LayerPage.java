@@ -69,7 +69,9 @@ public class LayerPage extends GeoServerSecuredPage {
                     return layerLink(id, itemModel);
                 } else if(property == ENABLED) {
                     LayerInfo layerInfo = (LayerInfo) itemModel.getObject();
-                    ResourceReference icon = layerInfo.isEnabled()? icons.getEnabledIcon() : icons.getDisabledIcon();
+                    // ask for enabled() instead of isEnabled() to account for disabled resource/store
+                    boolean enabled = layerInfo.enabled();
+                    ResourceReference icon = enabled? icons.getEnabledIcon() : icons.getDisabledIcon();
                     Fragment f = new Fragment(id, "iconFragment", LayerPage.this);
                     f.add(new Image("layerIcon", icon));
                     return f;

@@ -308,6 +308,19 @@ public interface ResourceInfo extends CatalogInfo {
     boolean isEnabled();
 
     /**
+     * Derived property indicating whether both this ResourceInfo and its StoreInfo are enabled.
+     * <p>
+     * Note this is a derived property and hence not part of the model. Consider it equal to {@code
+     * getStore() != null && getStore().isEnabled() && this.isEnabled()}
+     * </p>
+     * 
+     * @return the chained enabled status considering this object and it's StoreInfo parent
+     * @see #getStore()
+     * @see StoreInfo#isEnabled()
+     */
+    boolean enabled();
+    
+    /**
      * Sets the enabled flag for the resource.
      * 
      * @uml.property name="enabled"

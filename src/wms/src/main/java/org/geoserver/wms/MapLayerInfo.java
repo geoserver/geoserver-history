@@ -5,6 +5,7 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -256,7 +257,8 @@ public final class MapLayerInfo {
             return false;
         }
         ResourceInfo resource = layerInfo.getResource();
-        Boolean cachingEnabled = Converters.convert( resource.getMetadata().get("cachingEnabled"), Boolean.class );
+        Boolean cachingEnabled = Converters.convert(resource.getMetadata().get("cachingEnabled"),
+                Boolean.class);
         return cachingEnabled == null ? false : cachingEnabled.booleanValue();
     }
 
@@ -265,15 +267,16 @@ public final class MapLayerInfo {
      * and designating the time for which they are to remain valid. The specific header added is
      * "Cache-Control: max-age="
      * 
-     * @return a string representing the number of seconds to be added to the
-     *         "Cache-Control: max-age=" header
+     * @return the number of seconds to be added to the "Cache-Control: max-age=" header, or {@code
+     *         0} if not set
      */
-    public String getCacheMaxAge() {
+    public int getCacheMaxAge() {
         if (layerInfo == null) {
-            return null;
+            return 0;
         }
         ResourceInfo resource = layerInfo.getResource();
-        return (String) resource.getMetadata().get("cacheAgeMax");
+        Serializable val = resource.getMetadata().get("cacheAgeMax");
+        return val == null ? 0 : Converters.convert(val, Integer.class).intValue();
     }
 
     /**
@@ -288,7 +291,8 @@ public final class MapLayerInfo {
             throw new IllegalArgumentException("Layer type is not vector");
         }
 
-        if (!layerInfo.isEnabled()) {
+        // ask for enabled() instead of isEnabled() to account for disabled resource/store
+        if (!layerInfo.enabled()) {
             throw new IOException("featureType: " + getName()
                     + " does not have a properly configured " + "datastore");
         }

@@ -139,6 +139,19 @@ public interface LayerInfo extends CatalogInfo {
      * @uml.property name="enabled"
      */
     boolean isEnabled();
+    
+    /**
+     * Derived property indicating whether both this LayerInfo and its ResourceInfo are enabled.
+     * <p>
+     * Note this is a derived property and hence not part of the model. Consider it equal to {@code
+     * getResource() != null && getResouce.enabled() && this.isEnabled()}
+     * </p>
+     * 
+     * @return the chained enabled status considering this object and it's associated ResourceInfo
+     * @see #getResource()
+     * @see ResourceInfo#enabled()
+     */
+    boolean enabled();
 
     /**
      * Sets the flag indicating wether the layer is enabled or not.

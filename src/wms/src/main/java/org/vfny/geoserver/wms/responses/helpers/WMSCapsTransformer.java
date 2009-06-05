@@ -640,7 +640,8 @@ public class WMSCapsTransformer extends TransformerBase {
                     }
                 }
 
-                if (layer.isEnabled() && wmsExposable) {
+                // ask for enabled() instead of isEnabled() to account for disabled resource/store
+                if (layer.enabled() && wmsExposable) {
                     try {
                         handleLayer(layer);
                     } catch(Exception e) {
@@ -1015,7 +1016,8 @@ class LayerTree {
 
         for (Iterator<LayerInfo> it = c.iterator(); it.hasNext();) {
             LayerInfo layer = it.next();
-            if (layer.isEnabled()) {
+            // ask for enabled() instead of isEnabled() to account for disabled resource/store
+            if (layer.enabled()) {
                 String wmsPath = layer.getPath() == null? "" : layer.getPath();
 
                 if (wmsPath.startsWith("/")) {

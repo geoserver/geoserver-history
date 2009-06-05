@@ -205,6 +205,10 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.isEnabled();
     }
 
+    public boolean enabled() {
+        return delegate.enabled();
+    }
+
     public void setAbstract(String _abstract) {
         delegate.setAbstract(_abstract);
     }
