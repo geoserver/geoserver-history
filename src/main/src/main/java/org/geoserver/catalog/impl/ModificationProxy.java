@@ -51,7 +51,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
     /**
      * reflection helper
      */
-    ClassProperties cp;
+    transient ClassProperties cp;
     
     /** 
      * "dirty" properties 
@@ -60,8 +60,15 @@ public class ModificationProxy implements InvocationHandler, Serializable {
 
     public ModificationProxy(Object proxyObject) {
         this.proxyObject = proxyObject;
-        this.cp = OwsUtils.getClassProperties(proxyObject.getClass());
     }
+
+    private ClassProperties cp(){
+        if(cp == null){
+            this.cp = OwsUtils.getClassProperties(proxyObject.getClass());
+        }
+        return cp;
+    }
+    
     /**
      * Intercepts getter and setter methods.
      */
@@ -323,7 +330,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         }
         
         if ( g == null ) {
-            g = cp.getter(propertyName, null);
+            g = cp().getter(propertyName, null);
         }
         
         return g;
@@ -338,7 +345,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             s = proxyObject.getClass().getMethod( "set" + propertyName, type );
         }
         catch( NoSuchMethodException e ) {
-            s = cp.setter(propertyName, type);
+            s = cp().setter(propertyName, type);
         }
         return s;
     }
