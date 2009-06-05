@@ -86,7 +86,7 @@ installation media.  To download the JSDE/JPE JAR files from ESRI's website:
 
 #. Navigate to `<http://support.esri.com/index.cfm?fa=downloads.patchesServicePacks.listPatches&PID=66>`_
 #. Find the link to the latest service pack for your version of ArcSDE
-#. Scroll down to **Installing this Service Pack** -> **ArcSDE SDK** -> **UNIX** (regardless of your target OS)
+#. Scroll down to :menuselection:`Installing this Service Pack --> ArcSDE SDK --> UNIX` (regardless of your target OS)
 #. Download any of the target files (but be sure to match 32/64 bit to your OS)
 #. Open the archive, and extract the appropriate JARs.
 
@@ -172,14 +172,14 @@ The next page contains configuration options for the ArcSDE vector datastore.  F
      - No
      - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details. 
   
-You may now add featuretypes as you would normally do, by navigating to the **Create New Feature Type** page, accessed from the :ref:`web_admin_config_featuretypes` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: **Config** -> **Data** -> **Featuretypse** -> **New**).
+You may now add featuretypes as you would normally do, by navigating to the **Create New Feature Type** page, accessed from the :ref:`web_admin_config_featuretypes` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: :menuselection:`Config --> Data --> Featuretypes --> New`).
 
 
 Adding an ArcSDE raster coveragestore
 -------------------------------------
 
 In order to serve raster layers (or coverages), it is first necessary to register the ArcSDE instance as a coveragestore in GeoServer.
-Navigate to the **Create New Coverage Data Set** page, accessed from the :ref:`web_admin_config_coveragestores` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: **Config** -> **Data** -> **Coveragestores** -> **New**) and an option for 
+Navigate to the **Create New Coverage Data Set** page, accessed from the :ref:`web_admin_config_coveragestores` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: :menuselection:`Config --> Data --> Coveragestores --> New`) and an option for 
 **ArcSDE Raster Format** will be in the dropdown menu for **Coverage Data Set Description.** Select this option, enter a name in the box for **Coverage Data Set ID**, and click **New**.
 
 .. note::
@@ -227,6 +227,5 @@ The next page contains configuration options for the ArcSDE instance.  Fill out 
      - No
      - A description of the coveragestore.
 
-You may now add coverages as you would normally do, by navigating to the **Create New Coverage Type** page, accessed from the :ref:`web_admin_config_coverages` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: **Config** -> **Data** -> 
-**Coverages** -> **New**).
+You may now add coverages as you would normally do, by navigating to the **Create New Coverage Type** page, accessed from the :ref:`web_admin_config_coverages` page in the :ref:`web_admin_config` menu of the :ref:`web_admin` (From the Welcome page: :menuselection:`Config --> Data --> Coverages -> New`).
 

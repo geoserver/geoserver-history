@@ -13,7 +13,7 @@ Adding an external WFS
 
 To connect to an external WFS, it is necessary to load it as a new datastore.
 Navigate to the **Create New Feature Data Set** page 
-(**Config** -> **Data** -> **Datastore** -> **New**) and an option for 
+(:menuselection:`Config --> Data --> Datastore --> New`) and an option for 
 **Web Feature Server** will be in the dropdown menu for **Feature Data Set 
 Description.** Select this option, enter a name in the box for **Feature 
 Data Set ID**, and click **New**.
@@ -83,8 +83,7 @@ The next page contains configuration options for connecting to the remote WFS.  
      - Sets the maximum features for the remote WFS to return.  
 	 
 You may now add featuretypes as you would normally do, by navigating to 
-the **Create New Feature Type** page (**Config** -> **Data** -> 
-**Featuretype** -> **New**).
+the **Create New Feature Type** page (:menuselection:`Config --> Data --> Featuretype -> New`).
 
 .. note:: Should more info go here, or should this point elsewhere?
 
