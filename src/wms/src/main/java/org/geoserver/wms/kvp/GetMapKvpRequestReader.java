@@ -185,7 +185,10 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
         List styleNameList = Collections.EMPTY_LIST;
         if(stylesParam != null)
             styleNameList = KvpUtils.readFlat(stylesParam);
-
+        
+        // pre parse filters
+        List filters = parseFilters(getMap);
+        
 		// styles
 		// process SLD_BODY, SLD, then STYLES parameter
 		if (getMap.getSldBody() != null) {
@@ -207,6 +210,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			StyledLayerDescriptor sld = parseSld(new ByteArrayInputStream(
 					getMap.getSldBody().getBytes()));
 			processSld(getMap, sld, styleNameList);
+			
+			// set filter in, we'll check consistency later
+			getMap.setFilter(filters);
 		} else if (getMap.getSld() != null) {
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER.fine("Getting layers and styles from reomte SLD:" + getMap.getSld() );
@@ -246,6 +252,9 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			} finally {
 				input.close();
 			}
+			
+			// set filter in, we'll check consistency later
+            getMap.setFilter(filters);
 		} else {
 			if (LOGGER.isLoggable(Level.FINE)) {
 				LOGGER.fine("Getting layers and styles from LAYERS and STYLES");
@@ -255,14 +264,14 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 			if(styleNameList.size() > 0)
 			    getMap.setStyles(parseStyles(styleNameList));
 
-			// first, expand base layers and default styles
+			// first, expand base layers, default styles, and filters if there is any
 			if (getMap.getLayers() != null) {
-				List oldLayers = new ArrayList(Arrays
-						.asList(getMap.getLayers()));
-				List oldStyles = getMap.getStyles() != null ? new ArrayList(
-						getMap.getStyles()) : new ArrayList();
+				List oldLayers = new ArrayList(Arrays.asList(getMap.getLayers()));
+				List oldStyles = getMap.getStyles() != null ? new ArrayList(getMap.getStyles()) 
+				                 : new ArrayList();
 				List newLayers = new ArrayList();
 				List newStyles = new ArrayList();
+				List newFilters = filters == null ? null : new ArrayList();
 
 				for (int i = 0; i < oldLayers.size(); i++) {
 					MapLayerInfo info = (MapLayerInfo) oldLayers.get(i);
@@ -282,16 +291,30 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 							else
 								newStyles.add(currLayer.getDefaultStyle());
 						}
+						
+						// expand the filter on the layer group to all its sublayers
+						if(filters != null) {
+						    for (int j = 0; j < subLayers.size(); j++) {
+                                newFilters.add(filters.get(i));
+                            }
+						}
 					} else {
 						newLayers.add(info);
+						
+						// add style or default style
 						if (style != null)
 							newStyles.add(style);
 						else
 							newStyles.add(info.getDefaultStyle());
+						
+						// add filter if needed
+						if(filters != null)
+						    newFilters.add(filters.get(i));
 					}
 				}
 				getMap.setLayers(newLayers);
 				getMap.setStyles(newStyles);
+				getMap.setFilter(newFilters);
 			}
 
 			// then proceed with standard processing
@@ -304,7 +327,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 							+ styles.size()	+ " styles specified. ";
 					throw new WmsException(msg, getClass().getName());
 				}
-
+				
 				for (int i = 0; i < getMap.getStyles().size(); i++) {
 					Style currStyle = (Style) getMap.getStyles().get(i);
 					if(currStyle == null)
@@ -322,74 +345,69 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements
 				}
 			}
 		}
-
-		// filters
-		// in case of a mixed request, get with sld in post body, layers
-		// are not parsed, so we can't parse filters neither...
-		if ((getMap.getLayers() != null) && (getMap.getLayers().length > 0)) {
-			List filters = (getMap.getFilter() != null) ? getMap.getFilter()
-					: Collections.EMPTY_LIST;
-			List cqlFilters = (getMap.getCQLFilter() != null) ? getMap
-					.getCQLFilter() : Collections.EMPTY_LIST;
-			List featureId = (getMap.getFeatureId() != null) ? getMap
-					.getFeatureId() : Collections.EMPTY_LIST;
-
-			if (!featureId.isEmpty()) {
-				if (!filters.isEmpty()) {
-					throw new WmsException("GetMap KVP request contained "
-							+ "conflicting filters.  Filter: " + filters
-							+ ", fid: " + featureId);
-				}
-
-				Set ids = new HashSet();
-				for (Iterator i = featureId.iterator(); i.hasNext();) {
-					ids.add(filterFactory.featureId((String) i.next()));
-				}
-				filters = Collections.singletonList(filterFactory.id(ids));
-			}
-
-			if (!cqlFilters.isEmpty()) {
-				if (!filters.isEmpty()) {
-					throw new WmsException("GetMap KVP request contained "
-							+ "conflicting filters.  Filter: " + filters
-							+ ", fid: " + featureId + ", cql: " + cqlFilters);
-				}
-
-				filters = cqlFilters;
-			}
-
-			int numLayers = getMap.getLayers().length;
-
-			if (!filters.isEmpty() && (numLayers != filters.size())) {
-				// as in wfs getFeatures, perform lenient parsing, if just one
-				// filter, it gets
-				// applied to all layers
-				if (filters.size() == 1) {
-					Filter f = (Filter) filters.get(0);
-					filters = new ArrayList(numLayers);
-
-					for (int i = 0; i < numLayers; i++) {
-						filters.add(f);
-					}
-				} else {
-					String msg = numLayers
-							+ " layers requested, but found "
-							+ filters.size()
-							+ " filters specified. "
-							+ "When you specify the FILTER parameter, you must provide just one, \n"
-							+ " that will be applied to all layers, or exactly one for each requested layer";
-					throw new WmsException(msg, getClass().getName());
-				}
-			}
-			
-			getMap.setFilter(filters);
-		}
+		
+		// check filter size matches with the layer list size
+		List mapFilters = getMap.getFilter();
+		MapLayerInfo[] mapLayers = getMap.getLayers();
+        if (mapFilters != null && mapFilters.size() != mapLayers.length) {
+            String msg = mapLayers.length
+                    + " layers requested, but found " + mapFilters.size()
+                    + " filters specified. "
+                    + "When you specify the FILTER parameter, you must provide just one, "
+                    + " that will be applied to all layers, or exactly one for each requested layer";
+            throw new WmsException(msg, getClass().getName());
+        }
 
 		// set the raw params used to create the request
 		getMap.setRawKvp(rawKvp);
 
 		return getMap;
 	}
+
+	/**
+	 * Checks the various options, OGC filter, fid filter, CQL filter, and returns
+	 * a list of parsed filters
+	 * @param getMap
+	 * @return the list of parsed filters, or null if none was found
+	 */
+    private List parseFilters(GetMapRequest getMap) {
+        List filters = (getMap.getFilter() != null) ? getMap.getFilter()
+                    : Collections.EMPTY_LIST;
+        List cqlFilters = (getMap.getCQLFilter() != null) ? getMap
+                .getCQLFilter() : Collections.EMPTY_LIST;
+        List featureId = (getMap.getFeatureId() != null) ? getMap
+                .getFeatureId() : Collections.EMPTY_LIST;
+
+        if (!featureId.isEmpty()) {
+            if (!filters.isEmpty()) {
+                throw new WmsException("GetMap KVP request contained "
+                        + "conflicting filters.  Filter: " + filters
+                        + ", fid: " + featureId);
+            }
+
+            Set ids = new HashSet();
+            for (Iterator i = featureId.iterator(); i.hasNext();) {
+                ids.add(filterFactory.featureId((String) i.next()));
+            }
+            filters = Collections.singletonList(filterFactory.id(ids));
+        }
+
+        if (!cqlFilters.isEmpty()) {
+            if (!filters.isEmpty()) {
+                throw new WmsException("GetMap KVP request contained "
+                        + "conflicting filters.  Filter: " + filters
+                        + ", fid: " + featureId + ", cql: " + cqlFilters);
+            }
+
+            filters = cqlFilters;
+        }
+
+        // return null in case we found no filters
+        if(filters.size() == 0) {
+            filters = null;
+        }
+        return filters;
+    }
 
 	/**
 	 * validates an sld document.
