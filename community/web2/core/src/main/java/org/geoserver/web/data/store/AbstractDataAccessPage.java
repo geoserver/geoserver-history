@@ -6,6 +6,7 @@ package org.geoserver.web.data.store;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -100,6 +101,8 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                     Serializable defValue;
                     if ("namespace".equals(paramInfo.getName())) {
                         defValue = catalog.getDefaultNamespace().getURI();
+                    } else if (URL.class == paramInfo.getBinding()) {
+                        defValue = "file:data/example.extension";
                     } else {
                         defValue = paramInfo.getValue();
                     }
@@ -169,7 +172,6 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         paramsForm.add(new AjaxSubmitLink("save", paramsForm) {
             private static final long serialVersionUID = 1L;
 
-
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 try {
@@ -197,12 +199,12 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * 
      * @param info
      *            the object to save
-     * @param requestTarget 
+     * @param requestTarget
      * @throws IllegalArgumentException
      *             with an appropriate message for the user if the operation failed
      */
-    protected abstract void onSaveDataStore(final DataStoreInfo info, AjaxRequestTarget requestTarget)
-            throws IllegalArgumentException;
+    protected abstract void onSaveDataStore(final DataStoreInfo info,
+            AjaxRequestTarget requestTarget) throws IllegalArgumentException;
 
     /**
      * Creates a form input component for the given datastore param based on its type and metadata

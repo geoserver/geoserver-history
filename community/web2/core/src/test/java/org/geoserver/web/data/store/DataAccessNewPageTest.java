@@ -24,7 +24,7 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
     /**
      * print page structure?
      */
-    private static final boolean debugMode = true;
+    private static final boolean debugMode = false;
 
     private AbstractDataAccessPage startPage() {
         final String dataStoreFactoryDisplayName = new PropertyDataStoreFactory().getDisplayName();
@@ -100,7 +100,6 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
     }
 
     public void testDataStoreParametersAreCreated() {
-
         startPage();
         List parametersListViewValues = Arrays.asList(new Object[] { "directory", "namespace" });
         tester.assertListView("dataStoreForm:parameters", parametersListViewValues);
