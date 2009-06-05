@@ -40,7 +40,7 @@ The first step is to create a *data store* for the PostGIS database "nyc". The d
 
     #. In a web browser navigate to http://localhost:8080/geoserver.
 
-    #. Navigate to ``Config->Data->DataStores``.
+    #. Navigate to :menuselection:`Config-->Data-->DataStores`.
 
        .. figure:: 11-datastores.png
           :alt: Data stores
