@@ -3,7 +3,7 @@
 Setting up a JNDI connection pool with Tomcat
 =============================================
 
-This tutorial walks the reader throught the procedures necessary to setup a Oracle JNDI connection pool in Tomcat 6 and how to retrieve it from GeoServer
+This tutorial walks the reader through the procedures necessary to setup a Oracle JNDI connection pool in Tomcat 6 and how to retrieve it from GeoServer
 
 Tomcat setup
 ------------
@@ -39,7 +39,7 @@ The pool configuration shows is quite full fledged:
 * at most 100 prepared statements in the pool
 * a validation query that double checks the connection is still alive before actually using it (this is not necessary if there is guarantee the connections will never drop, either due to the server forcefully closing them, or to network/maintenance issues).
 
-For more informations about the possible parameters and their values refer to the `DBCP documentation <http://commons.apache.org/dbcp/configuration.html>`_.
+For more information about the possible parameters and their values refer to the `DBCP documentation <http://commons.apache.org/dbcp/configuration.html>`_.
 
 GeoServer setup
 ---------------
@@ -58,7 +58,7 @@ To allow a web application reference to a JNDI resource its :file:`web.xml` file
     </resource-ref>
   </web-app>
 
-Once that is done, it is possible to login into the GeoServer web adminstration interface and configure the datastore. 
+Once that is done, it is possible to login into the GeoServer web administration interface and configure the datastore. 
 
 First, choose the *Oracle (JNDI)* datastore and give it a name:
 
@@ -75,6 +75,6 @@ Then, configure the connection parameters so that the JNDI path matches the one 
    
    *Configuring the JNDI connection*
 
-When you are doing this, make sure the *schema* is properly setup, or the datastore will list all the tables it can find in the schemas it can access. In the case of Oracle the schema is usually the user name, uppercased.
+When you are doing this, make sure the *schema* is properly setup, or the datastore will list all the tables it can find in the schema it can access. In the case of Oracle the schema is usually the user name, upper cased.
 
 Once the datastore is accepted the GeoServer usage proceeds as normal.

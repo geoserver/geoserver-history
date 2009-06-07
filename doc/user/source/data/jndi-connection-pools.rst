@@ -16,7 +16,7 @@ The downside of JNDI lies mostly in the procedure to setup the connection pool: 
 Retrieving a connection pool from JNDI
 =======================================
 
-Starting with GeoServer 1.7.5 some datastore can retrieve their connection from JNDI. To leverage this functionality, use the datastores marked as *JNDI* capable in the drop down list, and provide the name of the connection pool as the JNDI reference parameter using the syntax ``java:comp/env/{poolPath}``
+Starting with GeoServer 1.7.5 some datastore can retrieve their connection from JNDI. To leverage this functionality, use the data stores marked as *JNDI* capable in the drop down list, and provide the name of the connection pool as the JNDI reference parameter using the syntax ``java:comp/env/{poolPath}``
 
 For example, if the pool was bound to the ``jdbc\oralocal`` name, the configuration of the ``jndiReferenceName`` parameter will be ``java:comp/env/jdbc/oralocal``
 
