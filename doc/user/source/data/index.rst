@@ -20,3 +20,4 @@ This section discusses the various types of data sources that can be accessed fr
    sqlserver/
    vpf/
    connection-pooling/
+   jndi-connection-pools/

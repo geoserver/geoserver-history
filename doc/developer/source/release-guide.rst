@@ -334,7 +334,7 @@ Primary artifacts
    Type`` to ``.exe.``.
 
 #. For the src artifact set the ``Processor`` to ``Platform-Independent`` and 
-   the ``File Type`` to ``.zip``.
+   the ``File Type`` to ``Source .zip``.
 
 #. For all other artifacts set the ``Processor`` to ``Platform-Independent`` and
    the ``File Type`` to ``.zip``.
