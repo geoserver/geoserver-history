@@ -34,6 +34,7 @@ import org.opengis.filter.spatial.Intersects;
 import org.opengis.filter.spatial.Overlaps;
 import org.opengis.filter.spatial.Touches;
 import org.opengis.filter.spatial.Within;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -85,7 +86,13 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
             double miny = filter.getMinY();
             double maxx = filter.getMaxX();
             double maxy = filter.getMaxY();
-            CoordinateReferenceSystem crs = CRS.decode(srs);
+            // parse the srs, it might be a code or a WKT definition
+            CoordinateReferenceSystem crs;
+            try {
+                crs = CRS.decode(srs);
+            } catch (NoSuchAuthorityCodeException e) {
+                crs = CRS.parseWKT(srs);
+            }
 
             // grab the property data
             String propertyName = filter.getPropertyName();
@@ -99,7 +106,14 @@ public class ReprojectingFilterVisitor extends DuplicatingFilterVisitor {
                 miny = envelope.getMinY();
                 maxx = envelope.getMaxX();
                 maxy = envelope.getMaxY();
-                srs = targetCrs.getIdentifiers().iterator().next().toString();
+                
+                // set the srs. If we have a code we use it, otherwise we use a WKT definition
+                if(targetCrs.getIdentifiers().isEmpty()) {
+                    // fall back to WKT
+                    srs = targetCrs.toString();
+                } else {
+                    srs = targetCrs.getIdentifiers().iterator().next().toString();
+                }
             }
 
             return getFactory(extraData).bbox(propertyName, minx, miny, maxx, maxy, srs);
