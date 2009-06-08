@@ -9,6 +9,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -20,6 +21,7 @@ import org.opengis.filter.expression.Function;
 import org.opengis.filter.expression.Literal;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.filter.spatial.Intersects;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -73,6 +75,27 @@ public class ReprojectingFilterVisitorTest extends TestCase {
         assertTrue(25 == clonedBbox.getMaxX());
         assertTrue(20 == clonedBbox.getMaxY());
         assertEquals("EPSG:4326", clonedBbox.getSRS());
+    }
+    
+    public void testBboxReprojectNoNativeAuthority() throws Exception {
+        // like WGS84, but no authority
+        String wkt = "GEOGCS[\"WGS 84\", DATUM[\"World Geodetic System 1984\", SPHEROID[\"WGS 84\", 6378137.0, 298.257223563]], PRIMEM[\"Greenwich\", 0.0], UNIT[\"degree\", 0.017453292519943295], AXIS[\"Geodetic longitude\", EAST], AXIS[\"Geodetic latitude\", NORTH]]";
+        CoordinateReferenceSystem crs = CRS.parseWKT(wkt);
+        SimpleFeatureType newFt = FeatureTypes.transform(ft, crs);
+        reprojector = new ReprojectingFilterVisitor(ff, newFt);
+        
+        BBOX bbox = ff.bbox(ff.property("geom"), 10, 15, 20, 25, "urn:x-ogc:def:crs:EPSG:6.11.2:4326");
+        Filter clone = (Filter) bbox.accept(reprojector, null);
+        assertNotSame(bbox, clone);
+        BBOX clonedBbox = (BBOX) clone;
+        assertEquals(bbox.getPropertyName(), clonedBbox.getPropertyName());
+        assertTrue(15 == clonedBbox.getMinX());
+        assertTrue(10 == clonedBbox.getMinY());
+        assertTrue(25 == clonedBbox.getMaxX());
+        assertTrue(20 == clonedBbox.getMaxY());
+        // the srs code cannot be found, but it's legal to use a WKT description instead
+        CoordinateReferenceSystem reprojected = CRS.parseWKT(clonedBbox.getSRS());
+        assertTrue(CRS.equalsIgnoreMetadata(crs, reprojected));
     }
     
     public void testBboxReprojectUnreferencedProperty() {
