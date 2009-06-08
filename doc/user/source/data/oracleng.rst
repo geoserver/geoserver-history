@@ -1,17 +1,17 @@
 .. _oracleng:
 
-Oracle Next Generation
-======================
+Oracle Next Generation (NG)
+===========================
 
-`Oracle <http://www.oracle.com/technology/products/spatial/index.html>`_ 
-Spatial and Locator are the spatial extensions of Oracle.
+`Oracle Spatial and Locator <http://www.oracle.com/technology/products/spatial/index.html>`_ 
+are the spatial extensions of Oracle.
 
-  .. note::
+.. note::
 
-     GeoServer does not come built-in with support for Oracle, it must be 
-     installed through an extension. Proceed to :ref:`oracle_installation` for
-     installation details.
+     Support for Oracle datastores are not enabled by default.  It is necessary to install the Oracle NG extension first.  Proceed to :ref:`oracle_installation` for installation details.
 
+Differences between Oracle and Oracle NG
+----------------------------------------
 
 Supported versions
 ------------------
@@ -19,15 +19,14 @@ Supported versions
 .. _oracleng_installation:
 
 Installing the Oracle NG extension
------------------------------------
+----------------------------------
 
 #. Download the Oracle NG extension from the `GeoServer download page 
    <http://geoserver.org/display/GEOS/Download>`_.
 
    .. warning::
 
-      Ensure the extension matching the version of the GeoServer installation 
-      is downloaded.
+      Make sure to match the version of the extension with the version of the GeoServer installation.
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of 
    the GeoServer installation.
@@ -35,18 +34,18 @@ Installing the Oracle NG extension
 Adding an Oracle database
 -------------------------
 
-Once the extension is properly installed ``OracleNG`` will show up as an
+Once the extension is properly installed ``Oracle NG`` will show up as an
 option when creating a new data store.
 
-.. figure:: pix/oracleng_create.png
+.. figure:: pix/oraclengcreate.png
    :align: center
 
-   *Creating an Oracle datastore*
+   *Adding an Oracle data store*
 
-Oracle options
---------------
+Configuring an Oracle datastore
+-------------------------------
 
-.. figure:: pix/oracleng_configure.png
+.. figure:: pix/oraclengconfigure.png
    :align: center
 
    *Configuring an Oracle datastore*
@@ -54,45 +53,41 @@ Oracle options
 .. list-table::
    :widths: 20 80
 
+   * - **Option**
+     - **Description**
    * - ``host``
-     - The oracle server host name or ip address.
+     - The oracle server host name or IP address.
    * - ``port``
-     - The port on which the oracle server is accepting connections.
+     - The port on which the Oracle server is accepting connections.
    * - ``database``
      - The name of the database to connect to.
    * - ``schema``
      - The database schema to access tables from.
    * - ``user``
-     - The name of the user to connect to the oracle database as.
-   * - ``password``     
-     - The password to use when connecting to the database. Left blank for no
-       password.
-   * - ``Loose bbox``
-     - 	Flag which controls how bounding box comparisons are made against
-        geometries in the database. See the :ref:`loose_bbox` section
-        below for more information.
+     - The name of the user to use when connecting to the oracle database.
+   * - ``password``
+     - The password to use when connecting to the database.  Leave blank for no password.
    * - ``max connections``
 
        ``min connections``
-
-       ``validate connections``
 
        ``fetch size``
 
        ``connection timeout``
 
+       ``validate connections``
      - Connection pool configuration parameters. See the 
        :ref:`connection_pooling` section for details.
+   * - ``Loose bbox``
+     - 	Controls how bounding box comparisons are made against
+        geometries in the database. See the :ref:`loose_bbox` section
+        below for more information.
 
 .. _loose_bbox:
 
 Using loose bounding box
 ------------------------
 
-When set only the bounding box of a geometry is used which results in a
-significant performance gain. The downside is that some geometries may be
-considered inside of a bounding box when they are technically not.
+When the ``loose bbox`` option is set, only the bounding box of a geometry is used.  This results in a significant performance gain. The downside is that some geometries may be considered inside of a bounding box when they are technically not.
 
-If the primary use of the database is through the WMS this flag can be set as
-a loss of some accuracy is usually acceptable. However if using with the WFS
-and making use of BBOX filtering capabilities, this flag should not be set.
+If the primary use of the database is through :ref:`WMS` this flag can be set safely since a loss of some accuracy is usually acceptable. However if using :ref:`WFS` and making use of BBOX filtering capabilities, this flag should not be set.
