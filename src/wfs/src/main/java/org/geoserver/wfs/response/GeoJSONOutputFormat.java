@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import net.opengis.wfs.FeatureCollectionType;
@@ -25,6 +26,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
+import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -212,20 +214,23 @@ public class GeoJSONOutputFormat extends WFSGetFeatureOutputFormat {
             // Coordinate Referense System, currently only if the namespace is
             // EPSG
             if (crs != null) {
-                NamedIdentifier namedIdent = (NamedIdentifier) crs
-                .getIdentifiers().iterator().next();
-                String csStr = namedIdent.getCodeSpace().toUpperCase();
-
-                if (csStr.equals("EPSG")) {
-                    jsonWriter.key("crs");
-                    jsonWriter.object();
-                    jsonWriter.key("type").value(csStr);
-                    jsonWriter.key("properties");
-                    jsonWriter.object();
-                    jsonWriter.key("code");
-                    jsonWriter.value(namedIdent.getCode());
-                    jsonWriter.endObject(); // end properties
-                    jsonWriter.endObject(); // end crs
+                Set<ReferenceIdentifier> ids = crs.getIdentifiers();
+                // WKT defined crs might not have identifiers at all
+                if(ids != null && ids.size() > 0) {
+                    NamedIdentifier namedIdent = (NamedIdentifier) ids.iterator().next();
+                    String csStr = namedIdent.getCodeSpace().toUpperCase();
+    
+                    if (csStr.equals("EPSG")) {
+                        jsonWriter.key("crs");
+                        jsonWriter.object();
+                        jsonWriter.key("type").value(csStr);
+                        jsonWriter.key("properties");
+                        jsonWriter.object();
+                        jsonWriter.key("code");
+                        jsonWriter.value(namedIdent.getCode());
+                        jsonWriter.endObject(); // end properties
+                        jsonWriter.endObject(); // end crs
+                    }
                 }
             }
 
