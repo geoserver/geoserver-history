@@ -4,6 +4,7 @@ package org.geoserver.sldservice.resource;
  * this will be deprecated when available in restconfig
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,8 @@ import org.restlet.resource.StringRepresentation;
 import org.vfny.geoserver.global.AttributeTypeInfo;
 import org.vfny.geoserver.global.Data;
 import org.vfny.geoserver.global.FeatureTypeInfo;
+import org.vfny.geoserver.global.dto.AttributeTypeInfoDTO;
+import org.vfny.geoserver.global.dto.DataTransferObjectFactory;
 
 /**
  * @author kappu
@@ -46,8 +49,13 @@ public class ListAttributes extends Restlet {
 		Object obj =this.findLayer(attributes);
 		JSONArray json = null;
 		
-		if(obj!=null) 
-			json =  this.jsonAttributesList(request,obj);
+		if(obj!=null)
+			try {
+				json =  this.jsonAttributesList(request,obj);
+			} catch (IOException e) {
+				response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+				response.setEntity("404 - Couldn't find requested resource", MediaType.TEXT_PLAIN);
+			}
 		
 		if(json!=null){
 				String message = json.toString();
@@ -61,7 +69,7 @@ public class ListAttributes extends Restlet {
 		
 	}
 
-	private JSONArray jsonAttributesList(Request req, Object obj) {
+	private JSONArray jsonAttributesList(Request req, Object obj) throws IOException {
 
 		Reference ref = req.getResourceRef();
 		JSONArray json=null;
@@ -72,12 +80,13 @@ public class ListAttributes extends Restlet {
 			FeatureTypeInfo fTpInfo;
 			fTpInfo = (FeatureTypeInfo) obj;
 			attributes = fTpInfo.getAttributes();
+			List<AttributeTypeInfoDTO> generated = DataTransferObjectFactory.generateAttributes(fTpInfo.getFeatureType());
 			List out = new ArrayList();
 			Map attributesOut;
-			for (AttributeTypeInfo attr : attributes) {
+			for (AttributeTypeInfoDTO attr : generated) {
 				attributesOut= new HashMap();
 				attributesOut.put("name",attr.getName() );
-				attributesOut.put("type", attr.getType());
+				attributesOut.put("type",attr.getType());
 				out.add(attributesOut);
 			}
 			json = JSONArray.fromObject(out);
@@ -111,3 +120,4 @@ public class ListAttributes extends Restlet {
 	}
 	
 }
+

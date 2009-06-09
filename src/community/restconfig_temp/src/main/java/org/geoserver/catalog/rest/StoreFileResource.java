@@ -46,7 +46,7 @@ public abstract class StoreFileResource extends Resource {
                 uploadedFile = RESTUtils.handleBinUpload(store + "." + format, directory, getRequest());
             }
             else if (method != null && method.toLowerCase().startsWith("url.")) {
-                uploadedFile = RESTUtils.handleURLUpload(store, format, getRequest());
+                uploadedFile = RESTUtils.handleURLUpload(store + "." + format, directory, getRequest());
             }    
             else if (method != null && method.toLowerCase().startsWith("external.")) {
                 uploadedFile = RESTUtils.handleEXTERNALUpload(getRequest());
