@@ -1,7 +1,7 @@
 ..  _imagemosaic-jdbc_tutorial:
 
-Imagemosiac-JDBC
-================
+Storing a coverage in a JDBC database
+=====================================
 
 Introduction
 ------------
@@ -20,20 +20,20 @@ We use postgis/postgres as database engine, a database named "gis" and start wit
 .. image:: start.png
 
 
-Create a working directory, lets call it **working** ,download this image with a right mouse click (Image save as ...) and save it as **start_rgb.png**
+Create a working directory, lets call it :file:`working` ,download this image with a right mouse click (Image save as ...) and save it as :file:`start_rgb.png`
 
 Check your image with::
   
   gdalinfo start_rgb.png
 
 
-This image has 4 Bands (Red,Green,Blue,Alpha) and needs much memory. As a rule, it is better to use images with a color table. We can transform with **rgb2pct** (**rgb2pct.py** on Unix).::
+This image has 4 Bands (Red,Green,Blue,Alpha) and needs much memory. As a rule, it is better to use images with a color table. We can transform with :command:`rgb2pct` (:command:`rgb2pct.py` on Unix).::
 
   rgb2pct -of png start_rgb.png start.png
 
 Compare the sizes of the 2 files.
 
-Afterwards, create a world file **start.wld** in the **working** directory with the following content.::
+Afterwards, create a world file :file:`start.wld` in the :file:`working` directory with the following content.::
 
   0.0075471698
   0.0000000000
@@ -45,41 +45,39 @@ Afterwards, create a world file **start.wld** in the **working** directory with 
 Preparing the pyramids and the tiles
 ------------------------------------
 
-
 If you are new to tiles and pyramids, take a quick look here `<http://star.pst.qub.ac.uk/idl/Image_Tiling.html>`_
 
-.. note::
+How many pyramids are needed ?
+------------------------------
 
-  Who many pyramids are needed ?
+Lets do a simple example. Given an image with 1024x1024 pixels and a tile size with 256x256 pixels.We can calculate in our brain that we need 16 tiles. Each pyramid reduces the number of tiles by a factor of 4. The first pyramid has 16/4 = 4 tiles, the second pyramid has only 4/4 = 1 tile.
 
-  Lets do a simple example. Given an image with 1024x1024 pixels and a tile size with 256x256 pixels.We can calculate in our brain that we need 16 tiles. Each pyramid reduces the number of tiles by a factor of 4. The first pyramid has 16/4 = 4 tiles, the second pyramid has only 4/4 = 1 tile.
+Solution: The second pyramid fits on one tile, we are finished and we need 2 pyramids.
 
-  Solution: The second pyramid fits on one tile, we are finished and we need 2 pyramids.
+The formula for this:
 
-  The formula for this:
+**number of pyramids = log(pixelsize of image) / log(2) - log (pixelsize of tile) / log(2)**.
 
-  number of pyramids = log(pixelsize of image) / log(2) - log (pixelsize of tile) / log(2).
+Try it: Go to Google and enter as search term "log(1024)/log(2) - log(256)/log(2)" and look at the result.
 
-  Try it: Go to Google and enter as search term "log(1024)/log(2) - log(256)/log(2)" and look at the result.
+If your image is 16384 pixels , and your tile size is 512 pixels, it is
 
-  If your image is 16384 pixels , and your tile size is 512 pixels, it is
+log(16384)/log(2) - log(512)/log(2) = 5
 
-  log(16384)/log(2) - log(512)/log(2) = 5
+If your image is 18000 pixels, the result = 5.13570929. Thake the floor and use 5 pyramids. Remember, the last pyramid reduces 4 tiles to 1 tile, so this pyramid is not important.
 
-  If your image is 18000 pixels, the result = 5.13570929. Thake the floor and use 5 pyramids. Remember, the last pyramid reduces 4 tiles to 1 tile, so this pyramid is not important.
-
-  If your image is 18000x12000 pixel, use the bigger dimension (18000) for the formula.
+If your image is 18000x12000 pixel, use the bigger dimension (18000) for the formula.
 
 
 For creating pyramids and tiles, use `<http://www.gdal.org/gdal_retile.html>`_ from the gdal project.
 
-The executeable for Windows users is **gdal_retile.bat** or only **gdal_retile**, Unix users call **gdal_retile.py**
+The executeable for Windows users is :command:`gdal_retile.bat` or only :command:`gdal_retile`, Unix users call :command:`gdal_retile.py`
 
-Create a subdirectory **tiles** in your **working** directory and execute within the **working** directory::
+Create a subdirectory :file:`tiles` in your :file:`working` directory and execute within the :file:`working` directory::
 
   gdal_retile -co "WORLDFILE=YES"  -r bilinear -ps 128 128 -of PNG -levels 2 -targetDir tiles start.png
 
-What is happening ? We tell gdal_retile to create world files for our tiles (-co "WORLDFILE=YES"), use bilinear interpolation (-r bilinear), the tiles are 128x128 pixels in size (-ps 128 128) , the image format should be PNG (-of PNG), we need 2 pyramid levels (-levels 2) ,the directory for the result is **tiles** (-targetDir tiles) and the source image is **start.png**.
+What is happening ? We tell gdal_retile to create world files for our tiles (-co "WORLDFILE=YES"), use bilinear interpolation (-r bilinear), the tiles are 128x128 pixels in size (-ps 128 128) , the image format should be PNG (-of PNG), we need 2 pyramid levels (-levels 2) ,the directory for the result is :file:`tiles` (-targetDir tiles) and the source image is :file:`start.png`.
 
 .. note::
 
@@ -87,10 +85,10 @@ What is happening ? We tell gdal_retile to create world files for our tiles (-co
 
 Now you should have the following directories
 
-*	**working** containing **start.png** , **start.wld** and a subdirectory **tiles**.
-*	**working/tiles** containing many \*.png files and associated \*.wld files representing the tiles of **start.png**
-*	**working/tiles/1** containing many \*.png files and associated \*.wld files representing the tiles of the first pyramid
-*	**working/tiles/2** containing many \*.png files and associated \*.wld files representing the tiles of the second pyramid 
+*	:file:`working` containing :file:`start.png` , :file:`start.wld` and a subdirectory :file:`tiles`.
+*	:file:`working/tiles` containing many :file:`\*.png` files and associated :file:`\*.wld` files representing the tiles of :file:`start.png`
+*	:file:`working/tiles/1` containing many :file:`\*.png` files and associated :file:`\*.wld` files representing the tiles of the first pyramid
+*	:file:`working/tiles/2` containing many :file:`\*.png` files and associated :file:`\*.wld` files representing the tiles of the second pyramid 
 
 Configuring the new map
 -----------------------
@@ -103,12 +101,21 @@ The configuration for a map is done in a xml file. This file has 3 main parts.
 
 Since the jdbc connect info and the sql mapping may be reused by more than one map, the best practice is to create xml fragments for both of them and to use xml entity references to include them into the map xml.
 
-Put all configuration files into the **coverages** subdirectory of your GeoServer data directory. The standard location is
+First, find the location of the GEOSERVER_DATA_DIR. This info is contained in the log file when starting GeoServer.::
 
-**<directory of your GeoServer installation>/data_dir/coverages**
+  ----------------------------------
+  - GEOSERVER_DATA_DIR: /home/mcr/geoserver-1.7.x/1.7.x/data/release
+  ----------------------------------
 
-1) Create a file **connect.postgis.xml.inc** with the following content::
 
+Put all configuration files into the :file:`coverages` subdirectory of your GeoServer data directory. The location in this example is 
+
+:file:`/home/mcr/geoserver-1.7.x/1.7.x/data/release/coverages`
+
+1) Create a file :file:`connect.postgis.xml.inc` with the following content
+
+.. code-block:: xml 
+   
     <connect>
       <!-- value DBCP or JNDI -->
       <dstype value="DBCP"/>
@@ -123,8 +130,10 @@ Put all configuration files into the **coverages** subdirectory of your GeoServe
  
 The jdbc user is "postgres", the password is "postgres", maxActive and maxIdle are parameters of the apache connection pooling, jdbcUrl and driverClassName are postgres specific. The name of the database is "gis".
 
-If you deploy GeoServer into a J2EE container capable of handling jdbc data sources, a better approach is::
+If you deploy GeoServer into a J2EE container capable of handling jdbc data sources, a better approach is
 
+.. code-block:: xml 
+   
   <connect>
     <!-- value DBCP or JNDI -->
     <dstype value="JNDI"/>
@@ -133,9 +142,9 @@ If you deploy GeoServer into a J2EE container capable of handling jdbc data sour
 
 For this tutorial, we do not use data sources provided by a J2EE container.
 
-2) The next xml fragment to create is **mapping.postgis.xml.inc** 
+2) The next xml fragment to create is :file:`mapping.postgis.xml.inc`
 
-mapping.postgis.xml.inc::
+.. code-block:: xml 
 
   <!-- possible values: universal,postgis,db2,mysql,oracle -->
   <spatialExtension name="postgis"/>
@@ -169,9 +178,9 @@ The first element ``<spatialExtension>`` specifies which spatial extension the m
 
 This xml fragment describes 3 tables, first we need a master table where information for each pyramid level is saved. Second and third, the attribute mappings for storing image data, envelopes and tile names are specified. To keep this tutorial simple, we will not further discuss these xml elements. After creating the sql tables things will become clear.
 
-3) Create the configuration xml **osm.postgis.xml** for the map (osm for "open street map") 
+3) Create the configuration xml :file:`osm.postgis.xml` for the map (osm for "open street map") 
 
-osm.postgis.xml::
+.. code-block:: xml 
 
   <?xml version="1.0" encoding="UTF-8" standalone="no"?>
   <!DOCTYPE ImageMosaicJDBCConfig [
@@ -197,20 +206,20 @@ Using the java ddl generation utility
 
 The full documentation is here: `<http://docs.codehaus.org/display/GEOTDOC/Using+the+java+ddl+generation+utility>`_
 
-To create the proper sql tables, we can use the java ddl generation utility. This utility is included in the gt-imagemosaic-jdbc-<version>.jar. Assure that this jar file is in your **WEB-INF/lib** directory of your GeoServer installation.
+To create the proper sql tables, we can use the java ddl generation utility. This utility is included in the :file:`gt-imagemosaic-jdbc-{version}.jar`. Assure that this jar file is in your :file:`WEB-INF/lib` directory of your GeoServer installation.
 
-Change to your **working** directory and do a first test::
+Change to your :file:`working` directory and do a first test::
   
-  java -jar <your_geoserver_install_dir>/webapps/geoserver/WEB-INF/lib/gt-imagemosaic-jdbc-<version>.jar
+  java -jar <your_geoserver_install_dir>/webapps/geoserver/WEB-INF/lib/gt-imagemosaic-jdbc-{version}.jar
 
 The reply should be::
 
   Missing cmd import | ddl
 
  
-Create a subdirectory **sqlscripts** in your **working** directory. Within the **working** directory, execute::
+Create a subdirectory :file:`sqlscripts` in your :file:`working` directory. Within the :file:`working` directory, execute::
 
- java -jar <your_geoserver_install_dir>/webapps/geoserver/WEB-INF/lib/gt-imagemosaic-jdbc-<version>.jar ddl -config <your geoserver data dir >/coverages/osm.postgis.xml -spatialTNPrefix tileosm -pyramids 2 -statementDelim ";" -srs 4326 -targetDir sqlscripts
+ java -jar <your_geoserver_install_dir>/webapps/geoserver/WEB-INF/lib/gt-imagemosaic-jdbc-{version}.jar ddl -config <your geoserver data dir >/coverages/osm.postgis.xml -spatialTNPrefix tileosm -pyramids 2 -statementDelim ";" -srs 4326 -targetDir sqlscripts
  
 Explanation of parameters
 
@@ -222,7 +231,7 @@ Explanation of parameters
   * - ddl 
     - create ddl statements
   * - -config
-    - the file name of our **osm.postgis.xml** file
+    - the file name of our :file:`osm.postgis.xml` file
   * - -pyramids
     - number of pyramids we want
   * - -statementDelim
@@ -234,15 +243,15 @@ Explanation of parameters
   * - -spatialTNPrefix
     - A prefix for tablenames to be created.
 
-In the directory **working/sqlscripts** you will find the following files after execution:
+In the directory :file:`working/sqlscripts` you will find the following files after execution:
 
-**createmeta.sql dropmeta.sql add_osm.sql remove_osm.sql**
+:file:`createmeta.sql`  :file:`dropmeta.sql` :file:`add_osm.sql` :file:`remove_osm.sql`
 
 .. note::
 
   *IMPORTANT:*
 
-  Look into the files **createmeta.sql** and **add_osm.sql** and compare them with the content of **mapping.postgis.xml.inc.** If you understand this relationship, you understand the mapping.
+  Look into the files :file:`createmeta.sql` and :file:`add_osm.sql` and compare them with the content of :file:`mapping.postgis.xml.inc`. If you understand this relationship, you understand the mapping.
 
 The generated scripts are only templates, it is up to you to modify them for better performance or other reasons. But do not break the relationship to the xml mapping fragment.
 
@@ -254,7 +263,7 @@ For user "postgres", databae "gis", execute in the following order::
   psql -U postgres -d gis  -f createmeta.sql
   psql -U postgres -d gis  -f add_osm.sql
 
-To clean your database, you can execute **remove_osm.sql** and **dropmeta.sql** after finishing the tutorial.
+To clean your database, you can execute :file:`remove_osm.sql` and :file:`dropmeta.sql` after finishing the tutorial.
 
 Importing the image data
 ------------------------
@@ -262,11 +271,11 @@ Importing the image data
 
 The full documentation is here: `<http://docs.codehaus.org/display/GEOTDOC/Using+the+java+import+utility>`_
 
-First, the jdbc jar file has to be in the **lib/ext** directory of your java runtime. In my case I had to copy **postgresql-8.1-407.jdbc3.jar**.
+First, the jdbc jar file has to be in the :file:`lib/ext` directory of your java runtime. In my case I had to copy :file:`postgresql-8.1-407.jdbc3.jar`.
 
-Change to the **working** directory and execute::
+Change to the :file:`working` directory and execute::
 
-  java -jar <your_geoserver_install_dir>/webapps/geoserver/WEB-INF/lib/gt-imagemosaic-jdbc-<version>.jar import  -config <your geoserver data dir>/coverages/osm.postgis.xml -spatialTNPrefix tileosm -tileTNPrefix tileosm -dir tiles -ext png
+  java -jar <your_geoserver_install_dir>/webapps/geoserver/WEB-INF/lib/gt-imagemosaic-jdbc-{version}.jar import  -config <your geoserver data dir>/coverages/osm.postgis.xml -spatialTNPrefix tileosm -tileTNPrefix tileosm -dir tiles -ext png
 
 This statement imports your tiles including all pyramids into your database.
 
@@ -275,13 +284,13 @@ Configuring GeoServer
 ---------------------
 
 
-Start GeoServer and log in.Under Config --> WCS -> CoveragePlugins you should see 
+Start GeoServer and log in.Under :menuselection:`Config --> WCS --> CoveragePlugins` you should see 
 
 .. image:: snapshot1.png
 
 
-If there is no line starting with "ImageMosaicJDBC", the **gt-imagemosiac-jdbc-<version>.jar** file is not in your **WEB-INF/lib** folder.
-Go to Config->Data->CoverageStores->New and fill in the formular
+If there is no line starting with "ImageMosaicJDBC", the :file:`gt-imagemosiac-jdbc-{version}.jar` file is not in your :file:`WEB-INF/lib` folder.
+Go to :menuselection:`Config-->Data-->CoverageStores-->New` and fill in the formular
 
 .. image:: snapshot2.png
 
@@ -293,13 +302,13 @@ Press Submit.
 
 Press Apply, then Save to save your changes.
 
-Next select Config->Data->Coverages->New and select "osm".
+Next select :menuselection:`Config-->Data-->Coverages-->New` and select "osm".
 
 .. image:: snapshot4.png
 
 Press New and you will enter the Coverage Editor. Press Submit, Apply and Save.
 
-Under Welcome->Demo->Map Preview you will find a new layer "topp:osm". Select it and see the results 
+Under :menuselection:`Welcome-->Demo-->Map Preview` you will find a new layer "topp:osm". Select it and see the results 
 
 .. image:: snapshot5.png
 

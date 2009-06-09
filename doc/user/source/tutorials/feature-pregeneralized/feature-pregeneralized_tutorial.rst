@@ -1,7 +1,7 @@
 ..  _feature-pregeneralized_tutorial:
 
-Feature-Pregeneralized
-=======================
+Using the GeoTools feature-pregeneralized module
+================================================
 
 Introduction
 ------------
@@ -28,18 +28,18 @@ First, find the location of the GEOSERVER_DATA_DIR. This info is contained in th
   - GEOSERVER_DATA_DIR: /home/mcr/geoserver-1.7.x/1.7.x/data/release
   ----------------------------------
 
-Within this directory, we have to place the shape files. There is already a sub directory **data** which will be used.
-Within this sub directory, create a directory **streams**.
+Within this directory, we have to place the shape files. There is already a sub directory :file:`data` which will be used.
+Within this sub directory, create a directory :file:`streams`.
 
-Within **<GEOSERVER_DATA_DIR>/data/streams** create another sub directory called **0**. ( 0 meaning "no generalized geometries"). 
+Within :file:`{GEOSERVER_DATA_DIR}/data/streams` create another sub directory called :file:`0`. ( 0 meaning "no generalized geometries"). 
 
 This tutorial is based on on a shape file, which you can download from here :download:`Streams <streams.zip>`.
-Unzip this file into **<GEOSERVER_DATA_DIR>/data/streams/0**. 
+Unzip this file into :file:`{GEOSERVER_DATA_DIR}/data/streams/0`. 
 
-Look for the **WEB-INF/lib/** directory of your GeoServer installation. There must be a file called **gt-feature-pregeneralized-<version>-jar**. This jar file includes a tool for generalizing shape files. Open a cmd line and execute the following::
+Look for the :file:`WEB-INF/lib/` directory of your GeoServer installation. There must be a file called :file:`gt-feature-pregeneralized-{version}-jar`. This jar file includes a tool for generalizing shape files. Open a cmd line and execute the following::
 
   cd <GEOSERVER_DATA_DIR>/data/streams/0
-  java -jar <GEOSERVER_INSTALLATION>/WEB-INF/lib/gt-feature-pregeneralized-<version>.jar generalize 0/streams.shp . 5,10,20,50
+  java -jar <GEOSERVER_INSTALLATION>/WEB-INF/lib/gt-feature-pregeneralized-{version}.jar generalize 0/streams.shp . 5,10,20,50
 
 You should see the following output::
 
@@ -48,7 +48,7 @@ You should see the following output::
   Distances           	5,10,20,50
   % |################################|
 
-Now there are four additional directories **5.0** , **10.0** , **20.0** , **50.0** . Look at the size of files with the extension **shp** within these directories, increasing the generalization distance reduces the file size.
+Now there are four additional directories :file:`5.0` , :file:`10.0` , :file:`20.0` , :file:`50.0` . Look at the size of files with the extension :file:`shp` within these directories, increasing the generalization distance reduces the file size.
 
 
 .. note::
@@ -64,7 +64,9 @@ There are two possibilities how we can deploy our generalized shape files.
 Hidden Deployment 
 ------------------
 
-First we need a XML config file ::
+First we need a XML config file 
+
+.. code-block:: xml 
 
   <?xml version="1.0" encoding="UTF-8"?>
   <GeneralizationInfos version="1.0">
@@ -76,13 +78,13 @@ First we need a XML config file ::
 	</GeneralizationInfo>
   </GeneralizationInfos>
 
-Save this file as **geninfo_shapefile.xml** into  **<GEOSERVER_DATA_DIR>/data/streams**.
+Save this file as :file:`geninfo_shapefile.xml` into  :file:`{GEOSERVER_DATA_DIR}/data/streams`.
 
 .. note::
 
   The **dataSourceName** attribute in the XML config is not interpreted as a name, it could be the URL for a shape file or for a property file containing properties for data store creation (e. g. jdbc connect parameters). Remember, this is a hidden deployment and no names are needed. The only *official* name is the value of the attribute **featureName** in the **GeneralizationInfo** Element.
 
-Start GeoServer and   go to Config->Data->DataStores->New and fill in the form
+Start GeoServer and   go to :menuselection:`Config-->Data-->DataStores-->New` and fill in the form
 
 .. image:: createdatastore.png
 
@@ -164,7 +166,9 @@ Each feature needs an **Alias**, here it is *streams_0*. For the other shape fil
 
 Check the result by pressing "**My GeoServer**, **Demo** and **Map Preview**. You should see your additional layers.
 
-No we need another XML configuration file::
+No we need another XML configuration file
+
+.. code-block:: xml 
 
   <?xml version="1.0" encoding="UTF-8"?>
   <GeneralizationInfos version="1.0">
@@ -176,7 +180,7 @@ No we need another XML configuration file::
 	</GeneralizationInfo>
   </GeneralizationInfos>
 
-Save this file as **geninfo_shapefile2.xml** into  **<GEOSERVER_DATA_DIR>/data/streams**.
+Save this file as :file:`geninfo_shapefile2.xml` into  :file:`{GEOSERVER_DATA_DIR}/data/streams`.
 
 Create the pregeneralized datastore 
 
