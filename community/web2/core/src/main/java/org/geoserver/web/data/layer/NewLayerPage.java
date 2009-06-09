@@ -6,6 +6,7 @@ package org.geoserver.web.data.layer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -17,6 +18,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
@@ -114,15 +116,14 @@ public class NewLayerPage extends GeoServerSecuredPage {
     
     private DropDownChoice storesDropDown() {
         final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(),
-                new StoreListModel());
+                new StoreListModel(), new StoreListChoiceRenderer());
         stores.setOutputMarkupId(true);
         stores.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if (stores.getModelObject() != null) {
-                    String name = stores.getModelObjectAsString();
-                    StoreInfo store = getCatalog().getStoreByName(name, StoreInfo.class);
+                    StoreInfo store = (StoreInfo) stores.getModelObject();
                     provider.setStoreId(store.getId());
                     storeName.setModelObject(store.getName());
                     selectLayers.setVisible(true);
@@ -214,17 +215,34 @@ public class NewLayerPage extends GeoServerSecuredPage {
     }
 
     final class StoreListModel extends LoadableDetachableModel {
-      @Override
-      protected Object load() {
-          List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
-          List<String> storeNames = new ArrayList<String>();
-          for (StoreInfo store : stores) {
-              if(store.isEnabled() && store.getError() == null)
-                  storeNames.add(store.getName());
-          }
-          Collections.sort(storeNames);
-          return storeNames;
-      }
-  }
+        @Override
+        protected Object load() {
+            List<StoreInfo> stores = getCatalog().getStores(StoreInfo.class);
+            stores = new ArrayList<StoreInfo>(stores);
+            Collections.sort(stores, new Comparator<StoreInfo>() {
+                public int compare(StoreInfo o1, StoreInfo o2) {
+                    if (o1.getWorkspace().equals(o2.getWorkspace())) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                    return o1.getWorkspace().getName().compareTo(o2.getWorkspace().getName());
+                }
+            });
+            return stores;
+        }
+    }
+    
+    static final class StoreListChoiceRenderer implements IChoiceRenderer {
+
+        public Object getDisplayValue(Object store) {
+            StoreInfo info = (StoreInfo) store;
+            return new StringBuilder(info.getWorkspace().getName()).append(':').append(
+                    info.getName());
+        }
+
+        public String getIdValue(Object store, int arg1) {
+            return ((StoreInfo) store).getId();
+        }
+
+    }
 
 }
