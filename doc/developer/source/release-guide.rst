@@ -7,6 +7,34 @@ Instructions for performing a GeoServer release.
 
 .. contents::
    :depth: 2
+   
+Notify developer lists
+----------------------
+
+It is good practice to notify the geoserver developer list of the intention
+to make the release a few days in advance, even though the release date as been
+agreed upon before hand. GeoServer releases are usually made in conjunction with
+GeoTools releases, so the geotools developer list should also be notified of the
+associated geotools release a few days in advance.
+
+On the day the release is being made is it also good practice to send a warning
+to the list asking that developers refrain from comitting until the release tag
+has been created.
+
+Prerequisites
+-------------
+
+The following are necessary to perform a GeoServer release:
+
+#. commit access to GeoServer svn
+#. edit access to the GeoServer wiki
+#. administration rights to the GeoServer JIRA
+
+For 2 and 3 above you may also simply ask someone on the developer list to 
+perform the associated steps.
+
+If a parallel GeoTools release is being preformed see the `GeoTools Release Guide <http://docs.codehaus.org/display/GEOT/How+to+cut+a+release>`_. Alternatively
+you can (nicely) ask one of the GeoTools developers to perform the release.
 
 Update source code
 ------------------
@@ -53,6 +81,13 @@ Update the README
       http://jira.codehaus.org/browse/GEOS/fixforversion/14502
 
     This release is based on GeoTools 2.5.2.
+    
+  .. note::
+
+     The ``fixforversion`` for the JIRA changelog can be found by exploring the
+     GeoServer main page on JIRA even before actually building the changelog. 
+     See the links to the various unreleased versions.
+
 #. Commit changes to the README::
 
      svn commit -m "Updating README for <VERSION>" release/README.txt
@@ -98,11 +133,11 @@ Upgrade branch pom versions
 
 #. Upgrade branch pom version numbers::
 
-     find . -name pom.xml -exec sed 's/<VERSION>-SNAPSHOT/<NEWVERSION>-SNAPSHOT/g' {} \;
+     find . -name pom.xml -exec sed -i 's/<VERSION>-SNAPSHOT/<NEWVERSION>-SNAPSHOT/g' {} \;
 
    Example::
 
-      find . -name pom.xml -exec sed 's/1.7.1-SNAPSHOT/1.7.2-SNAPSHOT/g' {} \; 
+      find . -name pom.xml -exec sed -i 's/1.7.1-SNAPSHOT/1.7.2-SNAPSHOT/g' {} \; 
 
 #. Commit changes::
 
@@ -114,11 +149,11 @@ Set tag pom versions
 
 #. Set tag pom version numbers::
 
-     find . -name pom.xml -exec sed 's/<VERSION>-SNAPSHOT/<VERSION>/g' {} \;
+     find . -name pom.xml -exec sed -i 's/<VERSION>-SNAPSHOT/<VERSION>/g' {} \;
 
    Example::
 
-     find . -name pom.xml -exec sed 's/1.7.1-SNAPSHOT/1.7.1/g' {} \;
+     find . -name pom.xml -exec sed -i 's/1.7.1-SNAPSHOT/1.7.1/g' {} \;
 
 #. Commit changes::
 
@@ -168,7 +203,7 @@ Build documentation
 #. Change directory to ``build/html`` and archive its contents::
 
       cd build/html     
-      zip geoserver-1.7.1-userguide.zip *
+      zip -r geoserver-1.7.1-userguide.zip *
 
 #. Upload the userguide to SourceForge following steps in the 
    :ref:`upload_artifacts` section.
@@ -287,7 +322,8 @@ Primary artifacts
 #. Go to the `GeoServer SourceForge page 
    <https://sourceforge.net/projects/geoserver/>`_.
 
-#. Under the ``Admin`` tab select ``File Releases``. 
+#. Under the ``Project admin`` tab select ``Feature Settings``.
+#. Click ``Manage`` in the ``File Release System`` row
 
    .. image:: sf1.png
 
