@@ -8,13 +8,13 @@
   <parent>
     <groupId>org.geoserver</groupId> 
     <artifactId>geoserver</artifactId>
-    <version>1.7.5-SNAPSHOT</version>
+    <version>1.7.6</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>rest</artifactId>
   <packaging>jar</packaging>
-  <version>1.7.5-SNAPSHOT</version>
+  <version>1.7.6</version>
   <name>Geoserver REST Support Code</name>
 
   <repositories>
@@ -35,12 +35,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
+      <version>1.7.6</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
+      <version>1.7.6</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -70,14 +70,14 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
+      <version>1.7.6</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.5-SNAPSHOT</version>
+      <version>1.7.6</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

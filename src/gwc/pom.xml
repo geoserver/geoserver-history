@@ -7,13 +7,13 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>1.7.5-SNAPSHOT</version>
+    <version>1.7.6</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>gwc</artifactId>
   <packaging>jar</packaging>
-  <version>1.7.5-SNAPSHOT</version>
+  <version>1.7.6</version>
   <name>GeoWebCache (GWC) Module</name>
 
  <repositories>
