@@ -13,7 +13,7 @@ And more. The entire change log can be found:
 
   http://jira.codehaus.org/browse/GEOS/fixforversion/14787
 
-This release is based on Geotools 2.5.6.
+This release is based on GeoTools 2.5.6.
 
 
 GeoServer 1.7.4 (April 29, 2009)
@@ -31,7 +31,7 @@ And more. The entire change log can be found:
 
   http://jira.codehaus.org/browse/GEOS/fixforversion/14787
 
-This release is based on Geotools 2.5.5.
+This release is based on GeoTools 2.5.5.
 
 GeoServer 1.7.3 (March 9, 2009)
 -------------------------------
@@ -50,7 +50,7 @@ And more. The entire change log can be found:
 
   http://jira.codehaus.org/browse/GEOS/fixforversion/14786
 
-This release is based on Geotools 2.5.4.
+This release is based on GeoTools 2.5.4.
 
 GeoServer 1.7.2 (January 19, 2008)
 ---------------------------------
@@ -140,7 +140,7 @@ And more, the changelog can be found here:
 
 http://jira.codehaus.org/browse/GEOS/fixforversion/14627
 
-This release is based on Geotools 2.5.x (revision 31644)
+This release is based on GeoTools 2.5.x (revision 31644)
 
 GeoServer 1.7.0-RC3 (September 22, 2008)
 ---------------------------------------
@@ -150,7 +150,7 @@ for this release can be found here:
 
 http://jira.codehaus.org/browse/GEOS/fixforversion/14538
 
-This release is based on Geotools 2.5.x (revision 31557)
+This release is based on GeoTools 2.5.x (revision 31557)
 
 GeoServer 1.7.0-RC1 (August 15,2008)
 -----------------------------------
@@ -160,7 +160,7 @@ This is the first release candidate of the official 1.7.0. This release include
 
 http://jira.codehaus.org/browse/GEOS/fixforversion/14475
 
-This release is based on Geotools 2.5.x (revision 31187)
+This release is based on GeoTools 2.5.x (revision 31187)
 
 GeoServer 1.7.0-beta2 (July 30, 2008)
 -------------------------------------
@@ -174,7 +174,7 @@ includes 35 bug fixes and improvements, including:
 For more information on bug fixes, please see:
 http://jira.codehaus.org/browse/GEOS/fixforversion/14377
 
-This release is based on Geotools 2.5.x (revision 31101).
+This release is based on GeoTools 2.5.x (revision 31101).
 
 
 GeoServer 1.7.0-beta1
@@ -189,7 +189,7 @@ functionality includes:
  * GDAL integration with support for MrSID and ECW formats
  * new configuration backend
 
-This release is based on geotools 2.5.x:
+This release is based on GeoTools 2.5.x:
   revision = 30605
   svn tag = 'geoserver-1.7.0-beta1'
 
@@ -208,7 +208,7 @@ This release is based on GeoTools 2.5.x:
 
 GeoServer 1.6.4b
 ---------------
-This release is based off of Geotools 2.4.4 and fixes the following issue:
+This release is based off of GeoTools 2.4.4 and fixes the following issue:
 http://jira.codehaus.org/browse/GEOS-1942
 
 
@@ -223,7 +223,7 @@ This release contains 35 patches and bugfixes since 1.6.3.  While mainly a bugfi
 See the entire 1.6.4 changelog:
 http://jira.codehaus.org/browse/GEOS/fixforversion/14170
 
-This release is based off of Geotools 2.4.3.
+This release is based off of GeoTools 2.4.3.
 
 
 GeoServer 1.6.3
@@ -238,7 +238,7 @@ This release contains over 30 patches and improvements since 1.6.2.  In particul
 Check out the entire 1.6.3 changelog:
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=14102
 
-This release is based off of Geotools 2.4.2.
+This release is based off of GeoTools 2.4.2.
 
 
 GeoServer 1.6.2a
@@ -254,7 +254,7 @@ This release contains one small but important patch since 1.6.1:
 
 See http://jira.codehaus.org/browse/GEOS-1785
 
-This release is based off of Geotools 2.4.1
+This release is based off of GeoTools 2.4.1
 
 
 Changes:
@@ -274,7 +274,7 @@ This release has over 40 patches and improvements since 1.6.0. They include
 And many many more. Check out the entire 1.6.x changelog:
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=14070&pid=10311&sorter/field=issuekey&sorter/order=DESC
 
-This release is based off of Geotools 2.4.1. 
+This release is based off of GeoTools 2.4.1. 
 
 GeoServer 1.6.0
 ---------------
@@ -293,7 +293,7 @@ And many many more. Check out the entire 1.6.x changelog:
 
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&fixfor=12871&fixfor=13993&fixfor=13874&fixfor=13631&fixfor=13619&fixfor=13675&fixfor=13547&fixfor=13250&fixfor=13200&pid=10311&sorter/field=issuekey&sorter/order=DESC
 
-This release is based off of Geotools 2.4.0. 
+This release is based off of GeoTools 2.4.0. 
 
 GeoServer 1.6.0-RC3
 -------------------
@@ -304,7 +304,7 @@ few other odds and ends. The changlog is available here:
 
 http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13993&styleName=Text&projectId=10311
 
-This release is based off of Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc3,
+This release is based off of GeoTools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc3,
 revision = 28790
 
 GeoServer 1.6.0-RC2
@@ -327,7 +327,7 @@ The entire changelog can be found here:
 
 http://jira.codehaus.org/secure/ReleaseNote.jspa?version=13874&styleName=Text&projectId=10311
 
-This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc2,
+This release is based on GeoTools 2.4-SNAPSHOT, tag = geoserver-1.6.0-rc2,
 revision = 28406
 
 GeoServer 1.6-rc1
@@ -422,7 +422,7 @@ on the number of opened database connections.
 The full change log for this release can be found here:
 http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&styleName=Html&version=13547
 
-This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-beta2,
+This release is based on GeoTools 2.4-SNAPSHOT, tag = geoserver-1.6-beta2,
 revision 26251.
 
 
@@ -439,7 +439,7 @@ The issue log for this release can be found here:
 
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&fixfor=13250&pid=10311
 
-This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-beta1,
+This release is based on GeoTools 2.4-SNAPSHOT, tag = geoserver-1.6-beta1,
 revision = 26134
 
 
@@ -461,7 +461,7 @@ The issue log for this release can be found here:
 
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=13200
 
-This release is based on Geotools 2.4-SNAPSHOT, tag = geoserver-1.6-alpha2,
+This release is based on GeoTools 2.4-SNAPSHOT, tag = geoserver-1.6-alpha2,
 revision = 24440
 
 GeoServer 1.5.0-beta1
@@ -515,7 +515,7 @@ Major features / improvements of this release include:
 
 The issue log for this release is here:
 
-Base on Geotools 2.3.0-M0 (tag = 2.3.0-M0)
+Base on GeoTools 2.3.0-M0 (tag = 2.3.0-M0)
         JAI      1.1.4+   (https://jai.dev.java.net/)
         ImageIO  1.1+     (https://jai-imageio.dev.java.net/)
 
@@ -532,7 +532,7 @@ Major features / improvements of this release include:
 The issue log for this release is here:
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=12950
 
-Base on Geotools 2.2.0 (tag = 2.2.0)
+Base on GeoTools 2.2.0 (tag = 2.2.0)
 
 
 GeoServer 1.4.0-M1
@@ -553,7 +553,7 @@ The issue log for this release is here:
 
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&mode=hide&sorter/order=ASC&sorter/field=priority&pid=10311&fixfor=12710
 
-Base on Geotools 2.2.0 (tag = 2.2.0)
+Base on GeoTools 2.2.0 (tag = 2.2.0)
 
 GeoServer 1.4.0-M0
 ------------------
@@ -570,7 +570,7 @@ The major changehas been the move to the spring framework. Spring
 is a IOC container that GeoServer now loads to bootstrap itself and 
 manages component dependencies in the system.
 
-Based on geotools 2.2.x (tag = geoserver-1.4.0-M0)
+Based on GeoTools 2.2.x (tag = geoserver-1.4.0-M0)
 
 Geoserver 1.3.2
 ---------------
@@ -596,7 +596,7 @@ http://geoserver.org/display/GEOSDOC/Google+Earth
 
 Geoserver 1.3.1 beta
 --------------------
-The main adition to this release is the move from Geotools 2.1.x to Geotools 2.2.x
+The main adition to this release is the move from GeoTools 2.1.x to GeoTools 2.2.x
 Bug fixes and new features listed in Jira will be added once this beta version has been tested
 by the community for a couple of days.
 
@@ -615,7 +615,7 @@ GeoServer project. Months of bug fixes and patches have allowed us to acheive
 our goal of a stable release. Much thanks to everyone who helped out with 
 contributions and bug reports.
 
-Based on the geotools 2.1.1 release (tag = 2.1.1)
+Based on the GeoTools 2.1.1 release (tag = 2.1.1)
 
 Geoserver 1.3.0 PR1
 -------------------
@@ -627,7 +627,7 @@ http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=
 This is the first 1.3.0 feature complete release. Changes from RC7 include bug
 fixes and documentation.
 
-Based on the geotools 2.1.1.PR0 release (tag = 2.1.1.PR0)
+Based on the GeoTools 2.1.1.PR0 release (tag = 2.1.1.PR0)
 
 Geoserver 1.3.0 RC7
 -------------------
@@ -643,7 +643,7 @@ The major changes since RC6 have been:
 * Logging
 * Http Unit Testing
 
-Based on the geotools 2.1.x branch (tag = geoserver-1.3.0.RC7)
+Based on the GeoTools 2.1.x branch (tag = geoserver-1.3.0.RC7)
 
 Geoserver 1.3.0 RC6
 -------------------
@@ -659,7 +659,7 @@ The major changes since RC5 have been:
 * Oracle spatial support for MultiPoints
 * Fast SVG Renderer - support for heterogeneos geometry types
 
-Based on the geotools 2.1.x branch (tag = geoserver-1.3.0.RC6)
+Based on the GeoTools 2.1.x branch (tag = geoserver-1.3.0.RC6)
 
 Geoserver 1.3.0 RC5
 -------------------
@@ -736,7 +736,7 @@ The major changes since RC2 have been:
 * New output format for WFS: SHAPE-ZIP  (shapefile-in-zip-file)
 * FeatureType summary page with link to Mapbuilder demo for each layer
 * Many improvements to the Renderer, labeling, etc...
-* Currently compatible with Geotools 2.1.x branch and Geotools 2.2 (trunk)
+* Currently compatible with GeoTools 2.1.x branch and GeoTools 2.2 (trunk)
 * added "Strict CITE conformance" checkbox to WFS because of problems in the way CITE test verifies the GetCapabilitites document
 * fixed VM crash for labeling (linux only)
 * <PropertyIsLike> now optimized in PostGIS and Oracle (SQL92 implementation)
@@ -744,7 +744,7 @@ The major changes since RC2 have been:
 * Useability changes & testing
 * Now based on StreamingRenderer/GTRenderer interfaces
 
-Based on the geotools 2.1.x branch (tag = for_geoserver_1_3_rc3)
+Based on the GeoTools 2.1.x branch (tag = for_geoserver_1_3_rc3)
 
 GeoServer 1.3.0-RC2 README file
 --------------------------------
@@ -752,7 +752,7 @@ GeoServer 1.3.0-RC2 README file
 The issue log for this release is here:
 http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&pid=10311&fixfor=11771
 
-This release is based on the geotools 2.1.0 release (2.1.x svn branch).
+This release is based on the GeoTools 2.1.0 release (2.1.x svn branch).
 
 1. JAI should no longer be required - this time I mean it.
       If you get an error regarding a security issue (because the jars a 'sealed')
@@ -771,7 +771,7 @@ This release is based on the geotools 2.1.0 release (2.1.x svn branch).
 
 4. KML (google map) output supported (james macgill)
 
-5. Several other bugs fixed in geoserver and geotools
+5. Several other bugs fixed in geoserver and GeoTools
 
 
 If you look at the roadmap for the next few releases 
@@ -785,7 +785,7 @@ GeoServer 1.3.0-RC1 README file
 --------------------------------
 0.  No longer relies on JAI!
 
-1.  Moved to Geotools 2.1.x branch
+1.  Moved to GeoTools 2.1.x branch
 2.  GetCapabilities (WFS and WMS) better reflect the added functionality + other fixes
 3.  Better SLD support and error reporting
 4.  Better handling of CRS xformations
@@ -853,7 +853,7 @@ Minor Changes
 1. bug fixes
 2. set of lite renderer improvements
 3. added a WFS lock tutorial (http://geoserver.org/display/GEOS/Feature+Locking)
-4. upgraded to latest geotools
+4. upgraded to latest GeoTools
 
 
 You can define your geoserver data directory in three ways:
@@ -947,8 +947,8 @@ be built from the source downloading using the 'ant document' command.
 Additional  wiki-based documentation is available at:
 http://geoserver.org/display/GEOS/Home
 
-Additional Geotools documentation is available at:
-http://www.geotools.org/
+Additional GeoTools documentation is available at:
+http://www.Geotools.org/
 
 Commercial Support
 ------------------
