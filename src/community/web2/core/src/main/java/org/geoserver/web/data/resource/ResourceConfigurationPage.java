@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -36,15 +37,13 @@ import org.geoserver.web.publish.LayerConfigurationPanelInfo;
 /**
  * Page allowing to configure a layer and its resource.
  * <p>
- * The page is completely pluggable, the UI will be made up by scanning the
- * Spring context for implementations of {@link ResourceConfigurationPanel} and
- * {@link LayerConfigurationPanel}.
+ * The page is completely pluggable, the UI will be made up by scanning the Spring context for
+ * implementations of {@link ResourceConfigurationPanel} and {@link LayerConfigurationPanel}.
  * <p>
- * WARNING: one crucial aspect of this page is its ability to not loose edits
- * when one switches from one tab to the other. I did not find any effective way
- * to unit test this, so _please_, if you do modify anything in this class
- * (especially the models), manually retest that the edits are not lost on tab
- * switch.
+ * WARNING: one crucial aspect of this page is its ability to not loose edits when one switches from
+ * one tab to the other. I did not find any effective way to unit test this, so _please_, if you do
+ * modify anything in this class (especially the models), manually retest that the edits are not
+ * lost on tab switch.
  */
 @SuppressWarnings("serial")
 public class ResourceConfigurationPage extends GeoServerSecuredPage {
@@ -86,14 +85,12 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         List<ITab> tabs = new ArrayList<ITab>();
         tabs.add(new AbstractTab(new Model("Data")) {
             public Panel getPanel(String panelID) {
-                return new ListPanel(panelID,
-                        new ResourceConfigurationSectionListView("theList"));
+                return new ListPanel(panelID, new ResourceConfigurationSectionListView("theList"));
             }
         });
         tabs.add(new AbstractTab(new Model("Publishing")) {
             public Panel getPanel(String panelID) {
-                return new ListPanel(panelID,
-                        new LayerConfigurationSectionListView("theList"));
+                return new ListPanel(panelID, new LayerConfigurationSectionListView("theList"));
             }
         });
         // we need to override with submit links so that the various form
@@ -120,21 +117,35 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
             @Override
             public void onSubmit() {
                 try {
+                    Catalog catalog = getCatalog();
+                    ResourceInfo resourceInfo = getResourceInfo();
                     if (isNew) {
-                        getCatalog().add(getResourceInfo());
-                        getCatalog().add(getLayerInfo());
+                        catalog.add(resourceInfo);
+                        try {
+                            catalog.add(getLayerInfo());
+                        } catch (IllegalArgumentException e) {
+                            catalog.remove(resourceInfo);
+                            throw e;
+                        }
                     } else {
-                        getCatalog().save(getResourceInfo());
-                        getCatalog().save(getLayerInfo());
+                        ResourceInfo oldState = catalog.getResource(resourceInfo.getId(), ResourceInfo.class);
+                        catalog.save(resourceInfo);
+                        try {
+                            catalog.save(getLayerInfo());
+                        } catch (IllegalArgumentException e) {
+                            catalog.save(oldState);
+                            throw e;
+                        }
                     }
                     setResponsePage(LayerPage.class);
-                } catch(Exception e) {
+                } catch (Exception e) {
                     LOGGER.log(Level.INFO, "Error saving layer", e);
                     error(e.getMessage());
                 }
             }
         };
     }
+
     private List<ResourceConfigurationPanelInfo> filterResourcePanels(
             List<ResourceConfigurationPanelInfo> list) {
         for (int i = 0; i < list.size(); i++) {
@@ -161,10 +172,8 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         private static final long serialVersionUID = -6575960326680386479L;
 
         public ResourceConfigurationSectionListView(String id) {
-            super(
-                    id,
-                    filterResourcePanels(((GeoServerApplication) getGeoServerApplication())
-                            .getBeansOfType(ResourceConfigurationPanelInfo.class)));
+            super(id, filterResourcePanels(((GeoServerApplication) getGeoServerApplication())
+                    .getBeansOfType(ResourceConfigurationPanelInfo.class)));
             // do this or die on validation (the form element contents will
             // reset, the edit will be lost)
             setReuseItems(true);
@@ -178,15 +187,13 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                 final Class<ResourceConfigurationPanel> componentClass = panelInfo
                         .getComponentClass();
                 final Constructor<ResourceConfigurationPanel> constructor;
-                constructor = componentClass.getConstructor(String.class,
-                        IModel.class);
-                ResourceConfigurationPanel panel = constructor.newInstance(
-                        "content", myResourceModel);
+                constructor = componentClass.getConstructor(String.class, IModel.class);
+                ResourceConfigurationPanel panel = constructor.newInstance("content",
+                        myResourceModel);
                 item.add((Component) panel);
             } catch (Exception e) {
                 throw new WicketRuntimeException(
-                        "Failed to add pluggable resource configuration panels",
-                        e);
+                        "Failed to add pluggable resource configuration panels", e);
             }
         }
     }
@@ -195,10 +202,8 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         private static final long serialVersionUID = -6575960326680386479L;
 
         public LayerConfigurationSectionListView(String id) {
-            super(
-                    id,
-                    filterLayerPanels(((GeoServerApplication) getGeoServerApplication())
-                            .getBeansOfType(LayerConfigurationPanelInfo.class)));
+            super(id, filterLayerPanels(((GeoServerApplication) getGeoServerApplication())
+                    .getBeansOfType(LayerConfigurationPanelInfo.class)));
             // do this or die on validation (the form element contents will
             // reset, the edit will be lost)
             setReuseItems(true);
@@ -209,9 +214,8 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
             LayerConfigurationPanelInfo panelInfo = (LayerConfigurationPanelInfo) item
                     .getModelObject();
             try {
-                LayerConfigurationPanel panel = panelInfo.getComponentClass()
-                        .getConstructor(String.class, IModel.class)
-                        .newInstance("content", myLayerModel);
+                LayerConfigurationPanel panel = panelInfo.getComponentClass().getConstructor(
+                        String.class, IModel.class).newInstance("content", myLayerModel);
                 item.add((Component) panel);
             } catch (Exception e) {
                 throw new WicketRuntimeException(
@@ -222,6 +226,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
 
     /**
      * Returns the {@link ResourceInfo} contained in this page
+     * 
      * @return
      */
     public ResourceInfo getResourceInfo() {
@@ -230,6 +235,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
 
     /**
      * Returns the {@link LayerInfo} contained in this page
+     * 
      * @return
      */
     public LayerInfo getLayerInfo() {
