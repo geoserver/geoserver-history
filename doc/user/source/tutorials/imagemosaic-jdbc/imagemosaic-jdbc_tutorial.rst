@@ -294,19 +294,19 @@ Go to :menuselection:`Config-->Data-->CoverageStores-->New` and fill in the form
 
 .. image:: snapshot2.png
 
-Press New and fill in the formular
+Press :guilabel:`New` and fill in the formular
 
 .. image:: snapshot3.png
 
-Press Submit.
+Press :guilabel:`Submit`.
 
-Press Apply, then Save to save your changes.
+Press :guilabel:`Apply`, then :guilabel:`Save` to save your changes.
 
 Next select :menuselection:`Config-->Data-->Coverages-->New` and select "osm".
 
 .. image:: snapshot4.png
 
-Press New and you will enter the Coverage Editor. Press Submit, Apply and Save.
+Press :guilabel:`New` and you will enter the Coverage Editor. Press :guilabel:`Submit`, :guilabel:`Apply` and :guilabel:`Save`.
 
 Under :menuselection:`Welcome-->Demo-->Map Preview` you will find a new layer "topp:osm". Select it and see the results 
 

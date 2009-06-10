@@ -88,7 +88,7 @@ Start GeoServer and   go to :menuselection:`Config-->Data-->DataStores-->New` an
 
 .. image:: createdatastore.png
 
-Press **Submit**.
+Press :guilabel:`Submit`.
 
 The next form you see is 
 
@@ -103,14 +103,14 @@ The configuration should look like this
 .. image:: editdatastore2.png
 
 
-Press **Submit**, afterward a form for the feature type opens.
+Press :guilabel:`Submit`, afterward a form for the feature type opens.
 
-Alter the **Style** to *line*, **SRS** is *26713* and press the **Generate** button labeled by **Bounding Box**.
+Alter the **Style** to *line*, **SRS** is *26713* and press the :guilabel:`Generate` button labeled by **Bounding Box**.
 
 .. image:: editfeaturestore1.png
 
 
-Afterward, press **Submit**, **Apply** and **Save**.
+Afterward, press :guilabel:`Submit`, :guilabel:`Apply` and :guilabel:`Save`.
 
 Examine the result by pressing "**My GeoServer**, **Demo** and **Map Preview**. In this list there must be an entry **topp:GenStreams**. Press it and you will see
 
@@ -164,7 +164,7 @@ Each feature needs an **Alias**, here it is *streams_0*. For the other shape fil
 #.	streams_20
 #.	streams_50
 
-Check the result by pressing "**My GeoServer**, **Demo** and **Map Preview**. You should see your additional layers.
+Check the result by pressing :guilabel:`My GeoServer`, :guilabel:`Demo` and :guilabel:`Map Preview`. You should see your additional layers.
 
 No we need another XML configuration file
 
@@ -202,7 +202,7 @@ Last step
 
 
 
-In the **Map Preview** you should find **topp:GenStreams2** and all other generalizations. Test in the same manner we 
+In the :guilabel:`Map Preview` you should find **topp:GenStreams2** and all other generalizations. Test in the same manner we 
 discussed in the hidden deployment and you should see something like this in the GeoServer log::
 
 
