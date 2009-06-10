@@ -37,7 +37,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = u'GeoServer User Guide'
+project = u'GeoServer User Manual'
 copyright = u'2009 GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
@@ -144,7 +144,7 @@ html_use_index = False
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'GeoServerdoc'
+htmlhelp_basename = 'GeoServerUserManual'
 
 
 # Options for LaTeX output
@@ -159,7 +159,7 @@ htmlhelp_basename = 'GeoServerdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
 latex_documents = [
-  ('index', 'GeoServer.tex', u'GeoServer Documentation',
+  ('index', 'GeoServerUserManual.tex', u'GeoServer User Manual',
    u'GeoServer', 'manual'),
 ]
 
