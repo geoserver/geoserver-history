@@ -8,7 +8,7 @@
 Name "${APPNAMEANDVERSION}"
 InstallDir "$PROGRAMFILES\${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "GeoServer-1.7.5-ng.exe"
+OutFile "geoserver-1.7.5-ng.exe"
 
 ; Modern interface settings
 !include "MUI.nsh"
