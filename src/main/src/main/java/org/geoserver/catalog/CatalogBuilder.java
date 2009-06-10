@@ -40,8 +40,10 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.feature.Feature;
+import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
+import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.metadata.Identifier;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
@@ -390,6 +392,21 @@ public class CatalogBuilder {
         } 
         ftinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         
+        //attributes
+        for ( PropertyDescriptor pd : featureType.getDescriptors() ) {
+            if ( !( pd instanceof AttributeDescriptor ) ) {
+                continue;
+            }
+            
+            AttributeTypeInfo att = catalog.getFactory().createAttribute();
+            att.setName( pd.getName().getLocalPart() );
+            att.setMinOccurs( pd.getMinOccurs() );
+            att.setMaxOccurs( pd.getMaxOccurs() );
+            att.setNillable( pd.isNillable() );
+            att.setAttribute( (AttributeDescriptor)pd );
+            att.setFeatureType( ftinfo );
+            ftinfo.getAttributes().add( att );
+        }
         return ftinfo;
     }
     
