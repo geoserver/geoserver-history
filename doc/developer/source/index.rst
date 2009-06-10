@@ -10,4 +10,4 @@ GeoServer Developer Manual
    maven-quickstart.rst
    eclipse-quickstart.rst
    programming-guide/index.rst
-   release-guide.rst
+   release-guide/index.rst
