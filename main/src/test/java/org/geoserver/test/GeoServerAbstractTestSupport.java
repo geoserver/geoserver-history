@@ -668,7 +668,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     protected Document getAsDOM(final String path)
             throws Exception {
-        return getAsDOM(path, false);
+        return getAsDOM(path, true);
     }
     
     /**
@@ -783,7 +783,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * Parses a stream into a dom.
      */
     protected Document dom(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-        return dom(is, false);
+        return dom(is, true);
     }
     
     /**
