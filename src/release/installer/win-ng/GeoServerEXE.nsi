@@ -160,11 +160,11 @@ Function JavaCheck
 	Call findJavaPath
   Pop $3
 	; This puts the JDK, if any, into the field...
-  !insertmacro MUI_INSTALLOPTIONS_WRITE "jdk.ini" "Field 2" "State" $3
+  !insertmacro MUI_INSTALLOPTIONS_WRITE "jdk.ini" "Field 4" "State" $3
   !insertmacro MUI_INSTALLOPTIONS_DISPLAY "jdk.ini"
 	
 	; ...and reads it back in (may be redundant)
-  !insertmacro MUI_INSTALLOPTIONS_READ $3 "jdk.ini" "Field 2" "State"
+  !insertmacro MUI_INSTALLOPTIONS_READ $3 "jdk.ini" "Field 4" "State"
   IfFileExists "$3\bin\java.exe" NoErrors Errors
 	
 	Errors:
