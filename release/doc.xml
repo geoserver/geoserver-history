@@ -6,8 +6,8 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<fileSets>
 		<fileSet>
-			<directory>release/GEOSDOC</directory>
-			<outputDirectory>geoserver/doc</outputDirectory>
+			<directory>../doc/user/build/html</directory>
+			<outputDirectory>geoserver-2.0-beta1/doc</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
