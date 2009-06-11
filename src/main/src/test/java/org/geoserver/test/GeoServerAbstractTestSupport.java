@@ -778,7 +778,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * Parses a stream into a dom.
      */
     protected Document dom(InputStream is) throws ParserConfigurationException, SAXException, IOException {
-        return dom(is, false);
+        return dom(is, true);
     }
     
     /**
