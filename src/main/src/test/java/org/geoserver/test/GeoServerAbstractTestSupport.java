@@ -663,7 +663,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     protected Document getAsDOM(final String path)
             throws Exception {
-        return getAsDOM(path, false);
+        return getAsDOM(path, true);
     }
     
     /**
