@@ -19,6 +19,9 @@
 				<include>gt-jdbc-core-*.jar</include>
 				<include>gt-jdbc-oracle-*.jar</include>
 			</includes>
+			<excludes>
+				<exclude>*-tests-*.jar</exclude>
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>release/extensions</directory>
