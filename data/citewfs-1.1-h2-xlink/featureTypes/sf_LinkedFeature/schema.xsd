@@ -7,6 +7,8 @@
   elementFormDefault="qualified" 
   version="2007.12">
 
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+
   <xsd:element name="LinkedFeature" type="sf:LinkedFeatureType" 
     substitutionGroup="gml:_Feature">
     <xsd:annotation>
