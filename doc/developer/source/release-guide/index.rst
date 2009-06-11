@@ -243,7 +243,7 @@ HTML
    .. note:: When done, the zip file should contain two folders, one called :file:`user` containing the HTML output for the User Manual, and one called :file:`developer` containing the HTML output for the Developer Manual.
 
 PDF
-```
+````
 
 .. note:: Building PDF files from Sphinx is a two step process.  First, it is necessary to create LaTeX files from Sphinx.  Next, convert the LaTeX file to PDF using :command:`pdflatex`.
 
@@ -444,21 +444,13 @@ Release on JIRA
 Upload release artifacts to SourceForge
 ---------------------------------------
 
-#. Using WebDAV or SFTP connect to::
+All of the artifacts generated so far need to be uploaded to the SourceForce ``File release System``. There are various ways to do so, consult the `documentation <http://apps.sourceforge.net/trac/sourceforge/wiki/Release files for download>`_ to find out the one better suited for you.
 
-     https://frs.sourceforge.net/[u]/[us]/[username]/uploads
-
-   Here [u] and [us] are the first and the first two characters respectively of your username on SourceForge,
-   and [username] is the full user name. Example::
-
-     https://frs.sourceforge.net/j/js/jsmith/uploads
-
-#. Copy all release artifacts to the :file:`uploads` directory. 
-
-.. note::
-
-   More information available in the SourceForge `File System Release Guide
-   <http://alexandria.wiki.sourceforge.net/File+Release+System+-+Offering+Files+for+Download>`_.
+The simplest way for developers working under a Unix like system is to use :command:`scp`::
+   
+  scp *.zip username@frs.sourceforge.net:uploads
+  
+The same can be accomplished in Windows using `WinSCP <http://winscp.net>`_.
 
 Release on SourceForge
 ----------------------
