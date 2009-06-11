@@ -2,6 +2,8 @@ package org.geoserver.catalog.impl;
 
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.geoserver.catalog.CatalogFactory;
@@ -956,6 +958,32 @@ public class CatalogImplTest extends TestCase {
         assertEquals( "changed", l.getResource().getName() );
     }
     
+    public void testProxyListBehaviour() throws Exception {
+        catalog.add( s );
+        
+        StyleInfo s2 = catalog.getFactory().createStyle();
+        s2.setName( "a" + s.getName() );
+        s2.setFilename( "a.sld");
+        catalog.add( s2 );
+        
+        List<StyleInfo> styles = catalog.getStyles();
+        assertEquals( 2 , styles.size() );
+        
+        assertEquals( s.getName(), styles.get( 0 ).getName() );
+        assertEquals( "a"+s.getName(), styles.get( 1).getName() );
+        
+        //test sorting
+        Collections.sort( styles, new Comparator<StyleInfo>() {
+
+            public int compare(StyleInfo o1, StyleInfo o2) {
+                return o1.getName().compareTo( o2.getName());
+            }
+        });
+        
+        assertEquals( "a"+s.getName(), styles.get( 0 ).getName() );
+        assertEquals( s.getName(), styles.get( 1 ).getName() );
+
+    }
     static class TestListener implements CatalogListener {
 
         public List<CatalogAddEvent> added = new ArrayList();
