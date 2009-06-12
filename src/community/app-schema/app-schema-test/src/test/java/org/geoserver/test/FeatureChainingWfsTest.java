@@ -226,6 +226,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     public void testGetFeatureContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
 
+        assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//gsml:MappedFeature", doc);
 
         // mf1
@@ -548,6 +549,43 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "/gsml:ControlledConcept/gml:name[2]", doc);
         }
 
+    }
+
+    public void testGetFeaturePropertyFilter() {
+        String xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:PropertyIsEqualTo>" //
+                + "                <ogc:PropertyName>gml:name</ogc:PropertyName>" //
+                + "                <ogc:Literal>MURRADUC BASALT</ogc:Literal>" //
+                + "            </ogc:PropertyIsEqualTo>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(1, "//gsml:MappedFeature", doc);
+        // mf4
+        {
+            String id = "mf4";
+            assertXpathEvaluatesTo(id, "//gsml:MappedFeature[1]/@gml:id", doc);
+            assertXpathEvaluatesTo("MURRADUC BASALT", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gml:name", doc);
+            // gu.25682
+            assertXpathEvaluatesTo("gu.25682", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
+        }
     }
 
 }
