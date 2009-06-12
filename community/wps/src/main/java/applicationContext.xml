@@ -5,11 +5,14 @@
         <constructor-arg ref="resourceLoader"/>
     </bean>
 
+    <!-- TODO: remove this thing -->    
+    <bean id="wpsServiceLegacyLoader" class="org.geoserver.wps.WPSLegacyLoader"/>
+
     <!-- WPS Service -->
     
 
     <bean id="wpsService" class="org.geoserver.wps.DefaultWebProcessingService">
-        <constructor-arg ref="geoServer2" />
+        <constructor-arg ref="geoServer" />
     </bean>
 
     <!-- Service Descriptor(s) -->
@@ -31,7 +34,8 @@
 
     <!-- XML Configuration -->
     <bean id="wpsXmlConfiguration-1.0.0"
-        class="org.geotools.wps.WPSConfiguration" />
+        class="org.geoserver.wps.xml.WPSConfiguration" >
+    </bean>
 
     <!-- XML Readers -->
     <bean id="wpsXmlReader-1.0.0"
@@ -96,4 +100,5 @@
         </list>
       </constructor-arg>
     </bean>
+    
 </beans>
