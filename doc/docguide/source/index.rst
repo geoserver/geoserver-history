@@ -8,6 +8,7 @@ This guide discusses the GeoServer Documentation.  It can be thought of as "meta
 
    background/
    contributing/
+   install/
    workflow/
    sphinx/
    style/
