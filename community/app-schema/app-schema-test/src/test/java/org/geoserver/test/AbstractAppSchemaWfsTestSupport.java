@@ -91,6 +91,10 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     }
 
     /**
+     * Return the response for a GET request for a path (starts with "wfs?").
+     * 
+     * <p>
+     * 
      * Override to remove checked exception.
      * 
      * @see org.geoserver.test.GeoServerAbstractTestSupport#getAsDOM(java.lang.String)
@@ -99,6 +103,26 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     protected Document getAsDOM(String path) {
         try {
             return super.getAsDOM(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Return the response for a POST request to a path (typically "wfs"). The request XML is a
+     * String.
+     * 
+     * <p>
+     * 
+     * Override to remove checked exception.
+     * 
+     * @see org.geoserver.test.GeoServerAbstractTestSupport#postAsDOM(java.lang.String,
+     *      java.lang.String)
+     */
+    @Override
+    protected Document postAsDOM(String path, String xml) {
+        try {
+            return super.postAsDOM(path, xml);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
