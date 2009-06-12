@@ -39,9 +39,9 @@ import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Schemas;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.ComplexType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
 
@@ -142,6 +142,11 @@ public abstract class FeatureTypeSchemaBuilder {
 
             schema.getContents().add(imprt);
 
+            // This is so we don't have duplicate imports
+            ArrayList<String> importedNamespaces = new ArrayList<String>(
+                    featureTypeInfos.length + 1);
+            importedNamespaces.add(gmlNamespace);
+
             String targetPrefix = (String) ns2featureTypeInfos.keySet().iterator().next();
             String targetNamespace = catalog.getNamespaceByPrefix(targetPrefix).getURI();
 
@@ -153,7 +158,7 @@ public abstract class FeatureTypeSchemaBuilder {
 
             //all types in same namespace, write out the schema
             for (int i = 0; i < featureTypeInfos.length; i++) {
-                buildSchemaContent(featureTypeInfos[i], schema, factory);
+                buildSchemaContent(featureTypeInfos[i], schema, factory, importedNamespaces);
             }
         } else {
             //different namespaces, write out import statements
@@ -190,6 +195,31 @@ public abstract class FeatureTypeSchemaBuilder {
     }
 
     /**
+     * Add import statement to schema.
+     * 
+     * @param schema
+     *            Output schema
+     * @param factory
+     *            XSD factory used to produce schema
+     * @param nsURI
+     *            Import name space
+     * @param schemaLocations
+     *            The schema to be imported
+     * @param importedNamespaces
+     *            List of already imported name spaces
+     */
+    private void addImport(XSDSchema schema, XSDFactory factory, String nsURI, String schemaURI,
+            List<String> importedNamespaces) {
+        if (!importedNamespaces.contains(nsURI)) {
+            XSDImport xsdImport = factory.createXSDImport();
+            xsdImport.setNamespace(nsURI);
+            xsdImport.setSchemaLocation((String) schemaURI);
+            schema.getContents().add(xsdImport);
+            importedNamespaces.add(nsURI);
+        }
+    }
+
+    /**
      * Adds types defined in the catalog to the provided schema.
      */
     public XSDSchema addApplicationTypes( XSDSchema wfsSchema ) throws IOException {
@@ -223,10 +253,10 @@ public abstract class FeatureTypeSchemaBuilder {
 
         return wfsSchema;
     }
-    
-    void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory)
-        throws IOException {
-        //look if the schema for the type is already defined
+
+    void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory,
+            List<String> importedNamespaces) throws IOException {
+        // look if the schema for the type is already defined
         String ws = featureTypeMeta.getStore().getWorkspace().getName();
         String ds = featureTypeMeta.getStore().getName();
         String name = featureTypeMeta.getName();
@@ -304,19 +334,29 @@ public abstract class FeatureTypeSchemaBuilder {
             }
         }
 
-        //build the type manually
-        XSDComplexTypeDefinition xsdComplexType = buildComplexSchemaContent(featureTypeMeta
-                .getFeatureType(), schema, factory);
+        FeatureType featureType = featureTypeMeta.getFeatureType();
+        Object schemaUri = featureType.getUserData().get("schemaURI");
+        if (schemaUri != null) {
+            // should always be a string.. set in AppSchemaDataAccessConfigurator
+            assert schemaUri instanceof String;
+            // schema is supplied by the user.. just import the top level schema instead of building
+            // the type
+            addImport(schema, factory, featureType.getName().getNamespaceURI(), (String) schemaUri,
+                    importedNamespaces);
+        } else {
+            // build the type manually
+            XSDComplexTypeDefinition xsdComplexType = buildComplexSchemaContent(featureTypeMeta
+                    .getFeatureType(), schema, factory);
 
-        XSDElementDeclaration element = factory.createXSDElementDeclaration();
-        element.setName(name);
+            XSDElementDeclaration element = factory.createXSDElementDeclaration();
+            element.setName(name);
 
-        element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
-                substitutionGroup));
-        element.setTypeDefinition(xsdComplexType);
+            element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
+                    substitutionGroup));
+            element.setTypeDefinition(xsdComplexType);
 
-        schema.getContents().add(element);
-        schema.updateElement();
+            schema.getContents().add(element);
+        }
 
         schema.updateElement();
     }

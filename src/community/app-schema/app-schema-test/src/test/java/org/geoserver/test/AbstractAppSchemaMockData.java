@@ -140,7 +140,7 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
         this.oasisCatalogFileName = oasisCatalogFileName;
         // create the mock data directory
         try {
-            data = IOUtils.createRandomDirectory("./target", "app-schema-mock", "data");
+            data = IOUtils.createRandomDirectory("target", "app-schema-mock", "data");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

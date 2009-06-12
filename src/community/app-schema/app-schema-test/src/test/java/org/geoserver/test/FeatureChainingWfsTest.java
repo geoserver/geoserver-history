@@ -6,9 +6,15 @@
 
 package org.geoserver.test;
 
-import junit.framework.Test;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import junit.framework.Test;
 import org.geotools.data.complex.AppSchemaDataAccess;
+import org.geotools.gml3.GML;
 import org.w3c.dom.Document;
 
 /**
@@ -42,12 +48,136 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     }
 
     /**
-     * Test whether DescribeFeatureType returns xsd:schema.
+     * Test whether DescribeFeatureType returns xsd:schema, and if the contents are correct. When no
+     * type name specified, it should return imports for all name spaces involved. If type name is
+     * specified, it should return imports of GML type and the type's top level schema.
+     * 
+     * @throws IOException
      */
-    public void testDescribeFeatureType() {
+    public void testDescribeFeatureType() throws IOException {
+        final String BASE_URL = "http://localhost:80/geoserver/";
+        final String DESCRIBE_FEATURE_TYPE_BASE = BASE_URL
+                + "wfs?request=DescribeFeatureType&version=1.1.0&service=WFS&typeName=";
+        File dataDir = this.getTestData().getDataDirectoryRoot();
+
+        /**
+         * gsml:MappedFeature
+         */
         Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:MappedFeature");
+        LOGGER.info("WFS DescribeFeatureType, typename=gsml:MappedFeature response:\n" + prettyString(doc));
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+        // make sure the contents are only relevant imports
+        assertXpathCount(2, "//xsd:import", doc);
+        // GML import
+        assertXpathEvaluatesTo(GML.NAMESPACE, "//xsd:import[1]/@namespace", doc);
+        assertXpathEvaluatesTo(BASE_URL + "schemas/gml/3.1.1/base/gml.xsd",
+                "//xsd:import[1]/@schemaLocation", doc);
+        // GSML import: a local file
+        assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import[2]/@namespace",
+                doc);
+        File gsmlSchema = findFile("featureTypes/gsml_MappedFeature/"
+                + AbstractAppSchemaMockData.SCHEMAS_DIR + "/GeoSciML/geosciml.xsd", dataDir);
+        assertNotNull(gsmlSchema);
+        assertEquals(gsmlSchema.exists(), true);
+
+        assertXpathEvaluatesTo(gsmlSchema.toURI().toString(), "//xsd:import[2]/@schemaLocation",
+                doc);
+        // nothing else
+        assertXpathCount(0, "//xsd:complexType", doc);
+        assertXpathCount(0, "//xsd:element", doc);
+        
+        /**
+         * gsml:GeologicUnit
+         */
+        doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:GeologicUnit");
+        LOGGER.info("WFS DescribeFeatureType, typename=gsml:GeologicUnit response:\n" + prettyString(doc));
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+        // make sure the contents are only relevant imports
+        assertXpathCount(2, "//xsd:import", doc);
+        // GML import
+        assertXpathEvaluatesTo(GML.NAMESPACE, "//xsd:import[1]/@namespace", doc);
+        assertXpathEvaluatesTo(BASE_URL + "schemas/gml/3.1.1/base/gml.xsd",
+                "//xsd:import[1]/@schemaLocation", doc);
+        // GSML import: a URL
+        assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import[2]/@namespace",
+                doc);
+        assertXpathEvaluatesTo("http://schemas.opengis.net/GeoSciML/geosciml.xsd", "//xsd:import[2]/@schemaLocation",
+                doc);
+        // nothing else
+        assertXpathCount(0, "//xsd:complexType", doc);
+        assertXpathCount(0, "//xsd:element", doc);
+
+        /**
+         * ex:ParentFeature
+         */
+        doc = getAsDOM("wfs?request=DescribeFeatureType&typeName=ex:ParentFeature");
+        LOGGER.info("WFS DescribeFeatureType, typename=ex:ParentFeature response:\n" + prettyString(doc));
+        assertXpathCount(2, "//xsd:import", doc);
+        // GML import
+        assertXpathEvaluatesTo(GML.NAMESPACE, "//xsd:import[1]/@namespace", doc);
+        assertXpathEvaluatesTo(BASE_URL + "schemas/gml/3.1.1/base/gml.xsd",
+                "//xsd:import[1]/@schemaLocation", doc);
+        // EX import
+        assertXpathEvaluatesTo(FeatureChainingMockData.EX_URI, "//xsd:import[2]/@namespace", doc);
+        File exSchema = findFile("featureTypes/ex_ParentFeature/simpleContent.xsd", dataDir);
+        assertNotNull(exSchema);
+        assertEquals(exSchema.exists(), true);
+
+        assertXpathEvaluatesTo(exSchema.toURI().toString(), "//xsd:import[2]/@schemaLocation", doc);
+        // nothing else
+        assertXpathCount(0, "//xsd:complexType", doc);
+        assertXpathCount(0, "//xsd:element", doc);
+
+        /**
+         * No type name specified
+         */
+        doc = getAsDOM("wfs?request=DescribeFeatureType");
         LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+        assertXpathCount(2, "//xsd:import", doc);
+        
+        // GSML import
+        assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import[1]/@namespace",
+                doc);
+        // schemaLocation="http://localhost:80/geoserver/wfs?request=DescribeFeatureType;version=1.1.0;
+        // service=WFS&amp;typeName=gsml:CGI_TermValue,gsml:CompositionPart,gsml:ControlledConcept,
+        // gsml:GeologicUnit,gsml:MappedFeature"
+        String schemaLocation = evaluate("//xsd:import[1]/@schemaLocation", doc);
+        assertNotNull(schemaLocation);
+        assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
+
+        String[] typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
+                schemaLocation.length()).split(",");
+
+        File featureTypeDir = findFile("featureTypes", dataDir);
+        assertNotNull(featureTypeDir);
+        assertEquals(featureTypeDir.exists(), true);
+
+        // get GSML feature types from data directory
+        List<File> featureTypes = Arrays.asList(featureTypeDir.listFiles());
+        ArrayList<String> gsmlTypes = new ArrayList<String>(featureTypes.size());
+        for (File fType : featureTypes) {
+            String folderName = fType.getName();
+            if (folderName.startsWith(AbstractAppSchemaMockData.GSML_PREFIX)) {
+                folderName = folderName.replaceFirst("gsml_", "gsml:");
+                gsmlTypes.add(folderName);
+            }
+        }
+        assertEquals(gsmlTypes.size(), typeNames.length);
+        assertEquals(gsmlTypes.containsAll(Arrays.asList(typeNames)), true);
+
+        // EX import
+        assertXpathEvaluatesTo(FeatureChainingMockData.EX_URI, "//xsd:import[2]/@namespace", doc);
+        schemaLocation = evaluate("//xsd:import[2]/@schemaLocation", doc);
+        assertNotNull(schemaLocation);
+        assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
+        typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
+                schemaLocation.length()).split(",");
+        assertEquals(typeNames.length, 1);
+        assertEquals(typeNames[0], "ex:ParentFeature");
+        // nothing else
+        assertXpathCount(0, "//xsd:complexType", doc);
+        assertXpathCount(0, "//xsd:element", doc);
     }
 
     /**
