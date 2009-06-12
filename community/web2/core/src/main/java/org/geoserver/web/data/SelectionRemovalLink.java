@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.CascadeDeleteVisitor;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogInfo;
@@ -45,7 +46,12 @@ public class SelectionRemovalLink extends AjaxLink {
         dialog.showOkCancel(target, new GeoServerDialog.DialogDelegate() {
             protected Component getContents(String id) {
                 // show a confirmation panel for all the objects we have to remove
-                return new ConfirmRemovalPanel(id, selection);
+                return new ConfirmRemovalPanel(id, selection) {
+                    @Override
+                    protected StringResourceModel canRemove(CatalogInfo info) {
+                        return SelectionRemovalLink.this.canRemove(info);
+                    }
+                };
             }
             
             protected boolean onSubmit(AjaxRequestTarget target) {
@@ -77,4 +83,19 @@ public class SelectionRemovalLink extends AjaxLink {
 
     }
 
+    /**
+     * Determines if a catalog object can be removed or not.
+     * <p>
+     * This method returns non-null in cases where the object should not be be
+     * removed. The return value should be a description or reason of why the
+     * object can not be removed. 
+     * </p>
+     * @param info The object to be removed.
+     * 
+     * @return A message stating why the object can not be removed, or null to 
+     * indicate that it can be removed. 
+     */
+    protected StringResourceModel canRemove(CatalogInfo info) {
+        return null;
+    }
 }

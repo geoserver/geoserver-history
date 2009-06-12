@@ -11,6 +11,8 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
@@ -72,7 +74,19 @@ public class StylePage extends GeoServerSecuredPage {
         header.add(new BookmarkablePageLink("addNew", StyleNewPage.class));
         
         // the removal button
-        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog));
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog){
+            @Override
+            protected StringResourceModel canRemove(CatalogInfo object) {
+                StyleInfo s = (StyleInfo) object;
+                if ( StyleInfo.DEFAULT_POINT.equals( s.getName() ) || 
+                    StyleInfo.DEFAULT_LINE.equals( s.getName() ) || 
+                    StyleInfo.DEFAULT_POLYGON.equals( s.getName() ) || 
+                    StyleInfo.DEFAULT_RASTER.equals( s.getName() ) ) {
+                    return new StringResourceModel("cantRemoveDefaultStyle", StylePage.this, null );
+                }
+                return null;
+            }
+        });
         removal.setOutputMarkupId(true);
         removal.setEnabled(false);
         

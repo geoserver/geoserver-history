@@ -9,18 +9,25 @@ import static org.geoserver.catalog.CascadeRemovalReporter.ModificationType.EXTR
 import static org.geoserver.catalog.CascadeRemovalReporter.ModificationType.GROUP_CHANGED;
 import static org.geoserver.catalog.CascadeRemovalReporter.ModificationType.STYLE_RESET;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.StringResourceModel;
+import org.geoserver.catalog.CascadeRemovalReporter;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.CascadeRemovalReporter;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -37,16 +44,36 @@ public class ConfirmRemovalPanel extends Panel {
         super(id);
         this.roots = roots;
         
+        //track objects that could not be removed
+        Map<CatalogInfo, StringResourceModel> notRemoved = new HashMap();
+        
         // collect the objects that will be removed (besides the roots)
         Catalog catalog = GeoServerApplication.get().getCatalog();
         CascadeRemovalReporter visitor = new CascadeRemovalReporter(catalog);
-        for (CatalogInfo root : roots) {
-            root.accept(visitor);
+        for (Iterator<CatalogInfo> i = (Iterator<CatalogInfo>) roots.iterator(); i.hasNext();) {
+            CatalogInfo root = i.next();
+            StringResourceModel reason = canRemove(root);
+            if ( reason != null ) {
+                notRemoved.put(root, reason);
+                i.remove();
+            }
+            else {
+                root.accept(visitor);
+            }
         }
         visitor.removeAll(roots);
         
         // add roots
-        add(new Label("rootObjects", names(roots)));
+        WebMarkupContainer root = new WebMarkupContainer("rootObjects");
+        root.add(new Label("rootObjectNames", names(roots)));
+        root.setVisible( !roots.isEmpty() );
+        add(root);
+        
+        // objects that could not be removed
+        WebMarkupContainer nr = new WebMarkupContainer("notRemovedObjects");
+        nr.setVisible( !notRemoved.isEmpty() );
+        nr.add( notRemovedList(notRemoved));
+        add(nr);
         
         // removed objects root (we show it if any removed object is on the list)
         WebMarkupContainer removed = new WebMarkupContainer("removedObjects");
@@ -113,20 +140,55 @@ public class ConfirmRemovalPanel extends Panel {
     }
     
     String names(List objects) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < objects.size(); i++) {
+            sb.append(name(objects.get(i)));
+            if(i < (objects.size() - 1))
+                sb.append(", ");
+        }
+        return sb.toString();
+    }
+    
+    String name(Object object){
         try {
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < objects.size(); i++) {
-                sb.append((String) BeanUtils.getProperty(objects.get(i), "name"));
-                if(i < (objects.size() - 1))
-                    sb.append(", ");
-            }
-            return sb.toString();
+            return (String) BeanUtils.getProperty(object, "name");
         } catch(Exception e) {
             throw new RuntimeException("A catalog object that does not have " +
-            		"a 'name' property has been used, this is unexpected", e);
+                        "a 'name' property has been used, this is unexpected", e);
         }
     }
+    
+    ListView notRemovedList(final Map<CatalogInfo,StringResourceModel> notRemoved) {
+        List<CatalogInfo> items = new ArrayList(notRemoved.keySet());
+        ListView lv = new ListView("notRemovedList", items) {
+            
+            @Override
+            protected void populateItem(ListItem item) {
+                CatalogInfo object = (CatalogInfo) item.getModelObject();
+                StringResourceModel reason = notRemoved.get(object);
+                item.add( new Label( "name", name(object) ) );
+                item.add( new Label( "reason", reason));
+            }
+        };
+        return lv;
+    }
 
+    /**
+     * Determines if a catalog object can be removed or not.
+     * <p>
+     * This method returns non-null in cases where the object should not be be
+     * removed. The return value should be a description or reason of why the
+     * object can not be removed. 
+     * </p>
+     * @param info The object to be removed.
+     * 
+     * @return A message stating why the object can not be removed, or null to 
+     * indicate that it can be removed. 
+     */
+    protected StringResourceModel canRemove(CatalogInfo info) {
+        return null;
+    }
+    
 //    String workspaceNames(List<WorkspaceInfo> workspaces) {
 //        StringBuffer sb = new StringBuffer();
 //        for (int i = 0; i < workspaces.size(); i++) {

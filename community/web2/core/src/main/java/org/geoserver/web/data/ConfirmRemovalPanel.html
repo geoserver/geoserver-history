@@ -3,12 +3,22 @@
 <wicket:panel>
     <h2><wicket:message key="confirm">ConfirmObjectRemoval</wicket:message></h2>
 
-    <p><wicket:message key="aboutRemove">AboutRemove</wicket:message>:
-    <span wicket:id="rootObjects"></span></p>
-
+    <div wicket:id="rootObjects">
+      <p>
+      <wicket:message key="aboutRemove">About to remove</wicket:message>: <span wicket:id="rootObjectNames"></span>
+      </p>
+    </div>
+    
+    <div wicket:id="notRemovedObjects">
+       <wicket:message key="notRemovedObject">The following objects could not be removed:</wicket:message>
+       <ul class="plain-ul">
+         <li wicket:id="notRemovedList" ><span wicket:id="name"></span>: <span wicket:id="reason"></span></li>
+       </ul>
+    </div>
+    
     <div wicket:id="removedObjects">
         <wicket:message
-            key="removedObjects">removedObjects</wicket:message>
+            key="removedObjects">The following objects will be removed</wicket:message>:
         <ul class="plain-ul">
             <li wicket:id="workspacesRemoved"><wicket:message
                 key="workspaces" />: <span wicket:id="workspaces"></span></li>
@@ -23,7 +33,7 @@
 
     <div wicket:id="modifiedObjects">
         <wicket:message
-            key="modifiedObjects">ModifiedObejcts</wicket:message>
+            key="modifiedObjects">The following objects will be modified as a result</wicket:message>:
         <ul class="plain-ul">
             <li wicket:id="layersModified"><wicket:message key="layers" />:
                 <span wicket:id="layers"></span></li>
