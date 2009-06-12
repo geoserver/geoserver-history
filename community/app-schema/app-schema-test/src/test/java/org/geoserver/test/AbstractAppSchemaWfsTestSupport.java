@@ -7,10 +7,13 @@
 package org.geoserver.test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.xml.serialize.OutputFormat;
@@ -131,7 +134,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
      *            the document under test
      * @return flattened string value
      */
-    private String evaluate(String xpath, Document document) {
+    protected String evaluate(String xpath, Document document) {
         try {
             return getXpathEngine().evaluate(xpath, document);
         } catch (XpathException e) {
@@ -250,5 +253,32 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
             throw new RuntimeException(e);
         }
     }
-
+    
+    /**
+     * Find the first file matching the supplied path, starting from the supplied root. This doesn't
+     * support multiple matching files.
+     * 
+     * @param path
+     *            Supplied path
+     * @param root
+     *            Directory to start searching from
+     * @return Matching file
+     */
+    protected File findFile(String path, File root) {
+        File target = null;
+        List<File> files = Arrays.asList(root.listFiles());
+        String[] steps = path.split("/");
+        for (int i = 0; i < steps.length; i++) {
+            for (File file : files) {
+                if (file.getName().equals(steps[i])) {
+                    if (i < steps.length - 1) {
+                        return findFile(path.substring(steps[i].length() + 1, path.length()), file);
+                    } else {
+                        return file;
+                    }
+                }
+            }
+        }
+        return target;
+    }
 }

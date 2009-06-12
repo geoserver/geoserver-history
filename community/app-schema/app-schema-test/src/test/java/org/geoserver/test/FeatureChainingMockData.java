@@ -21,12 +21,12 @@ public class FeatureChainingMockData extends AbstractAppSchemaMockData {
     /**
      * Prefix for ex namespace.
      */
-    private static final String EX_PREFIX = "ex";
+    protected static final String EX_PREFIX = "ex";
 
     /**
      * URI for ex namespace.
      */
-    private static final String EX_URI = "http://example.com";
+    protected static final String EX_URI = "http://example.com";
 
     /**
      * @see org.geoserver.test.AbstractAppSchemaMockData#addContent()
