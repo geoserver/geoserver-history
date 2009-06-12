@@ -663,7 +663,12 @@ public class CatalogImpl implements Catalog {
         
         LayerInfo existing = getLayerByName( layer.getName() );
         if ( existing != null && !existing.getId().equals( layer.getId() ) ) {
-            throw new IllegalArgumentException( "Layer named '"+layer.getName()+"' already exists.");
+            //JD: since layers are not qualified by anything (yet), check 
+            // namespace of the resource, if they are different then allow the 
+            // layer to be added
+            if ( existing.getResource().getNamespace().equals( layer.getName() ) ) {
+                throw new IllegalArgumentException( "Layer named '"+layer.getName()+"' already exists.");
+            }
         }
         
         if ( layer.getResource() == null ) {
