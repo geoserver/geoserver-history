@@ -239,7 +239,12 @@ public class GetFeature {
                 }
 
                 //make sure filters are sane
-                if (query.getFilter() != null) {
+                //
+                // Validation of filters on non-simple feature types is not yet supported.
+                // FIXME: Support validation of filters on non-simple feature types:
+                // need to consider xpath properties and how to configure namespace prefixes in
+                // GeoTools app-schema FeaturePropertyAccessorFactory.
+                if (query.getFilter() != null && source.getSchema() instanceof SimpleFeatureType) {
                     
                     //1. ensure any property name refers to a property that 
                     // actually exists
