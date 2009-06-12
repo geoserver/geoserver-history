@@ -7,7 +7,6 @@ package org.geoserver.wps;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import net.opengis.ows11.KeywordsType;
 import net.opengis.ows11.OperationType;
@@ -25,10 +24,8 @@ import net.opengis.wps10.ProcessOfferingsType;
 import net.opengis.wps10.WPSCapabilitiesType;
 import net.opengis.wps10.Wps10Factory;
 
-import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
-import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
