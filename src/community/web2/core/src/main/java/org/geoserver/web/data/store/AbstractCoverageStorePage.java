@@ -91,12 +91,18 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         return new AjaxSubmitLink("save", paramsForm) {
 
             @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                super.onError(target, form);
+                target.addComponent(paramsForm);
+            }
+            @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 CoverageStoreInfo info = (CoverageStoreInfo) form.getModelObject();
                 try {
                     onSave(info, target);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
+                    target.addComponent(paramsForm);
                 }
             }
         };
