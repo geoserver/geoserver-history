@@ -107,7 +107,7 @@ public class GML2OutputFormat2 extends WFSGetFeatureOutputFormat {
 
             for (Iterator m = metas.iterator(); m.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
-                typeNames.append(meta.getName());
+                typeNames.append(meta.getPrefixedName());
 
                 if (m.hasNext()) {
                     typeNames.append(",");
