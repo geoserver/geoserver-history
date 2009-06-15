@@ -173,12 +173,19 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             private static final long serialVersionUID = 1L;
 
             @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                super.onError(target, form);
+                target.addComponent(paramsForm);
+            }
+            
+            @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 try {
                     DataStoreInfo modelObject = (DataStoreInfo) form.getModelObject();
                     onSaveDataStore(modelObject, target);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
+                    target.addComponent(paramsForm);
                 }
             }
         });
