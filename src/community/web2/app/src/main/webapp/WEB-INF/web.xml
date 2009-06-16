@@ -251,6 +251,11 @@
      <url-pattern>/gwc/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+     <servlet-name>dispatcher</servlet-name>
+     <url-pattern>/pdf/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
      <servlet-name>TestWfsPost</servlet-name>
      <url-pattern>/TestWfsPost/*</url-pattern>
     </servlet-mapping>
