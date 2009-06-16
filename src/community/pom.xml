@@ -89,5 +89,11 @@
         <module>app-schema</module>
       </modules>
     </profile>
+    <profile>
+      <id>printing</id>
+      <modules>
+        <module>printing</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
