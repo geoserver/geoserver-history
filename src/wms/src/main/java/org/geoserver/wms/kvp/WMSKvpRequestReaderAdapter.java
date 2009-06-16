@@ -78,7 +78,7 @@ public class WMSKvpRequestReaderAdapter extends KvpRequestReader implements Http
 
         // create an instance of the delegate
         this.delegate = (org.vfny.geoserver.util.requests.readers.KvpRequestReader) constructor
-                .newInstance(new Object[] { rawKvp, wms });
+                .newInstance(new Object[] { kvp, wms });
 
         // create the request object
         return delegate.getRequest(this.request);
