@@ -15,14 +15,20 @@ import java.util.List;
 import junit.framework.Test;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.geotools.gml3.GML;
+import org.geotools.wfs.v1_1.WFS;
 import org.w3c.dom.Document;
 
 /**
  * WFS GetFeature to test integration of {@link AppSchemaDataAccess} with GeoServer.
  * 
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
+ * @author Rini Angreani, Curtin University of Technology
  */
 public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
+    final String BASE_URL = "http://localhost:80/geoserver/";
+
+    final String DESCRIBE_FEATURE_TYPE_BASE = BASE_URL
+            + "wfs?request=DescribeFeatureType&version=1.1.0&service=WFS&typeName=";
 
     /**
      * Read-only test so can use one-time setup.
@@ -55,9 +61,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * @throws IOException
      */
     public void testDescribeFeatureType() throws IOException {
-        final String BASE_URL = "http://localhost:80/geoserver/";
-        final String DESCRIBE_FEATURE_TYPE_BASE = BASE_URL
-                + "wfs?request=DescribeFeatureType&version=1.1.0&service=WFS&typeName=";
         File dataDir = this.getTestData().getDataDirectoryRoot();
 
         /**
@@ -228,6 +231,22 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
         assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//gsml:MappedFeature", doc);
+
+        String[] schemaLocationParts = evaluate("/wfs:FeatureCollection/@xsi:schemaLocation", doc)
+                .split(" ");
+        List<String> schemaLocationList = Arrays.asList(schemaLocationParts);
+        assertEquals(schemaLocationList.size(), 4);
+        // make sure describeFeatureType URL is correct
+        StringBuffer describeFeatureType = new StringBuffer();
+        describeFeatureType.append(BASE_URL).append(
+                "wfs?service=WFS&version=1.1.0&request=DescribeFeatureType").append(
+                "&typeName=gsml:MappedFeature");
+        assertEquals(schemaLocationList.contains(describeFeatureType.toString()), true);
+        // make sure the rest of the string would be there.. the order unimportant and might change
+        assertEquals(schemaLocationList.contains(WFS.NAMESPACE), true);
+        assertEquals(schemaLocationList.contains(AbstractAppSchemaMockData.GSML_URI), true);
+        assertEquals(schemaLocationList
+                .contains("http://localhost:80/geoserver/schemas/wfs/1.1.0/wfs.xsd"), true);
 
         // mf1
         {
