@@ -56,6 +56,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
                     put("xsd", "http://www.w3.org/2001/XMLSchema");
                     put("gml", "http://www.opengis.net/gml");
                     put("xlink", "http://www.w3.org/1999/xlink");
+                    put("xsi", "http://www.w3.org/2001/XMLSchema-instance");
                 }
             });
 
