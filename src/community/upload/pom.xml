@@ -11,7 +11,7 @@
   <artifactId>upload</artifactId>
   <packaging>jar</packaging>
   <version>1.7.5-SNAPSHOT</version>
-  <name>RESTful Image Upload</name>
+  <name>RESTful File Upload</name>
   
   <repositories>
     <repository>
@@ -60,7 +60,7 @@
     <dependency>
       <groupId>org.restlet</groupId>
       <artifactId>org.restlet.ext.fileupload</artifactId>
-      <version>1.0.5</version>
+      <version>1.0.8</version>
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
