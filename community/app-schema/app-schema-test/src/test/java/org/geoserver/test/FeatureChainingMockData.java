@@ -43,7 +43,9 @@ public class FeatureChainingMockData extends AbstractAppSchemaMockData {
         addFeatureType(GSML_PREFIX, "ControlledConcept", "ControlledConcept.xml",
                 "ControlledConcept.properties");
         // this is a mock type to test encoding complex type with simple content
-        addFeatureType(EX_PREFIX, "ParentFeature", "ComplexTypeWithSimpleContent.xml",
+        addFeatureType(EX_PREFIX, "FirstParentFeature", "ComplexTypeWithSimpleContent.xml",
+                "ControlledConcept.properties", "simpleContent.xsd", "SimpleContent.properties");
+        addFeatureType(EX_PREFIX, "SecondParentFeature", "ComplexTypeWithSimpleContent.xml",
                 "ControlledConcept.properties", "simpleContent.xsd", "SimpleContent.properties");
     }
 

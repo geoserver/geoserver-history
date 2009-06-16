@@ -67,7 +67,8 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
          * gsml:MappedFeature
          */
         Document doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:MappedFeature");
-        LOGGER.info("WFS DescribeFeatureType, typename=gsml:MappedFeature response:\n" + prettyString(doc));
+        LOGGER.info("WFS DescribeFeatureType, typename=gsml:MappedFeature response:\n"
+                + prettyString(doc));
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
         // make sure the contents are only relevant imports
         assertXpathCount(2, "//xsd:import", doc);
@@ -88,12 +89,13 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // nothing else
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
-        
+
         /**
          * gsml:GeologicUnit
          */
         doc = getAsDOM("wfs?request=DescribeFeatureType&typename=gsml:GeologicUnit");
-        LOGGER.info("WFS DescribeFeatureType, typename=gsml:GeologicUnit response:\n" + prettyString(doc));
+        LOGGER.info("WFS DescribeFeatureType, typename=gsml:GeologicUnit response:\n"
+                + prettyString(doc));
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
         // make sure the contents are only relevant imports
         assertXpathCount(2, "//xsd:import", doc);
@@ -104,17 +106,18 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // GSML import: a URL
         assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import[2]/@namespace",
                 doc);
-        assertXpathEvaluatesTo("http://schemas.opengis.net/GeoSciML/geosciml.xsd", "//xsd:import[2]/@schemaLocation",
-                doc);
+        assertXpathEvaluatesTo("http://schemas.opengis.net/GeoSciML/geosciml.xsd",
+                "//xsd:import[2]/@schemaLocation", doc);
         // nothing else
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
 
         /**
-         * ex:ParentFeature
+         * ex:FirstParentFeature and ex:SecondParentFeature
          */
-        doc = getAsDOM("wfs?request=DescribeFeatureType&typeName=ex:ParentFeature");
-        LOGGER.info("WFS DescribeFeatureType, typename=ex:ParentFeature response:\n" + prettyString(doc));
+        doc = getAsDOM("wfs?request=DescribeFeatureType&typeName=ex:FirstParentFeature,ex:SecondParentFeature");
+        LOGGER.info("WFS DescribeFeatureType, typename=ex:FirstParentFeature response:\n"
+                + prettyString(doc));
         assertXpathCount(2, "//xsd:import", doc);
         // GML import
         assertXpathEvaluatesTo(GML.NAMESPACE, "//xsd:import[1]/@namespace", doc);
@@ -122,12 +125,13 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "//xsd:import[1]/@schemaLocation", doc);
         // EX import
         assertXpathEvaluatesTo(FeatureChainingMockData.EX_URI, "//xsd:import[2]/@namespace", doc);
-        File exSchema = findFile("featureTypes/ex_ParentFeature/simpleContent.xsd", dataDir);
+        File exSchema = findFile("featureTypes/ex_FirstParentFeature/simpleContent.xsd", dataDir);
         assertNotNull(exSchema);
         assertEquals(exSchema.exists(), true);
 
         assertXpathEvaluatesTo(exSchema.toURI().toString(), "//xsd:import[2]/@schemaLocation", doc);
         // nothing else
+        assertXpathCount(0, "//xsd:import[3]", doc);
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
 
@@ -138,7 +142,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
         assertXpathCount(2, "//xsd:import", doc);
-        
+
         // GSML import
         assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import[1]/@namespace",
                 doc);
@@ -176,9 +180,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
         typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
                 schemaLocation.length()).split(",");
-        assertEquals(typeNames.length, 1);
-        assertEquals(typeNames[0], "ex:ParentFeature");
+        assertEquals(typeNames.length, 2);
+        assertEquals(typeNames[0], "ex:FirstParentFeature");
+        assertEquals(typeNames[1], "ex:SecondParentFeature");
         // nothing else
+        assertXpathCount(0, "//xsd:import[3]", doc);
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
     }
@@ -188,38 +194,59 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      */
     public void testGetFeature() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
-        LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
+        LOGGER.info("WFS GetFeature&typename=gsml:MappedFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
     }
 
     /**
      * Test nesting features of complex types with simple content. Previously the nested features
-     * attributes weren't encoded, so this is to ensure that this works.
+     * attributes weren't encoded, so this is to ensure that this works. This also tests that a
+     * feature type can have multiple FEATURE_LINK to be referred by different types.
      */
     public void testComplexTypeWithSimpleContent() {
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:ParentFeature");
-        LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
-        assertXpathCount(2, "//ex:ParentFeature", doc);
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:FirstParentFeature");
+        LOGGER
+                .info("WFS GetFeature&typename=ex:FirstParentFeature response:\n"
+                        + prettyString(doc));
+        assertXpathCount(2, "//ex:FirstParentFeature", doc);
 
         // 1
-        assertXpathCount(3, "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature", doc);
+        assertXpathCount(2, "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature", doc);
         assertXpathEvaluatesTo(
-                "name_a",
-                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
+                "string_one",
+                "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
                 doc);
         assertXpathEvaluatesTo(
-                "name_b",
-                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
+                "string_two",
+                "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
                 doc);
-        assertXpathEvaluatesTo(
-                "name_c",
-                "//ex:ParentFeature[@gml:id='1']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute",
+        assertXpathCount(
+                0,
+                "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/FEATURE_LINK",
                 doc);
         // 2
-        assertXpathCount(1, "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature", doc);
+        assertXpathCount(0, "//ex:FirstParentFeature[@gml:id='2']/ex:nestedFeature", doc);
+
+        doc = getAsDOM("wfs?request=GetFeature&typename=ex:SecondParentFeature");
+        LOGGER.info("WFS GetFeature&typename=ex:SecondParentFeature response:\n"
+                + prettyString(doc));
+        assertXpathCount(2, "//ex:SecondParentFeature", doc);
+
+        // 1
+        assertXpathCount(0, "//ex:SecondParentFeature[@gml:id='1']/ex:nestedFeature", doc);
+        // 2
+        assertXpathCount(3, "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature", doc);
         assertXpathEvaluatesTo(
-                "name_2",
-                "//ex:ParentFeature[@gml:id='2']/ex:nestedFeature/ex:SimpleContent/ex:someAttribute",
+                "string_one",
+                "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
+                doc);
+        assertXpathEvaluatesTo(
+                "string_two",
+                "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
+                doc);
+        assertXpathEvaluatesTo(
+                "string_three",
+                "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute",
                 doc);
     }
 
@@ -264,7 +291,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                             + "/gsml:GeologicUnit/gml:description", doc);
             // name
-            assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gml:name", doc);
             assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification"
@@ -275,8 +302,9 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]/@codeSpace", doc);
             assertXpathEvaluatesTo("-Py", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
-            assertXpathEvaluatesTo("gu.25699", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[3]", doc);
+            // feature link shouldn't appear as it's not in the schema
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
             // occurence [sic]
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:occurence", doc);
@@ -291,12 +319,20 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            // feature link shouldn't appear as it's not in the schema
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // outcropCharacter
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
             assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            // feature link shouldn't appear as it's not in the schema
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // composition
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition", doc);
@@ -306,10 +342,18 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                     + "/gsml:CompositionPart/gsml:role", doc);
+            // feature link shouldn't appear as it's not in the schema
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
             // lithology
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                     doc);
+            // feature link shouldn't appear as it's not in the schema
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:lithology/FEATURE_LINK", doc);
         }
 
         // mf2
@@ -324,7 +368,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
             // name
-            assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gml:name", doc);
             assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification"
@@ -335,8 +379,8 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]/@codeSpace", doc);
             assertXpathEvaluatesTo("-Py", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
-            assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[3]", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
             // occurence [sic]
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:occurence", doc);
@@ -363,6 +407,9 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // outcropCharacter
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
@@ -372,6 +419,9 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[2]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // composition
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition", doc);
@@ -382,16 +432,26 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "']/gsml:specification"
                     + "/gsml:GeologicUnit[@gml:id='gu.25678']/gsml:composition[1]"
                     + "/gsml:CompositionPart/gsml:role", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[1]"
+                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
             assertXpathEvaluatesTo("minor", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
                     + "/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value", doc);
             assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
                     + "/gsml:CompositionPart/gsml:role", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
+                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
+
             // lithology
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                     doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:lithology/FEATURE_LINK", doc);
         }
 
         // mf3
@@ -410,7 +470,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                             + "/gsml:GeologicUnit/gml:description", doc);
             // name
-            assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gml:name", doc);
             assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification"
@@ -421,8 +481,8 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]/@codeSpace", doc);
             assertXpathEvaluatesTo("-Py", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
-            assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[3]", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
             // occurence [sic]
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:occurence", doc);
@@ -442,18 +502,30 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Yellow", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // outcropCharacter
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
             assertXpathEvaluatesTo("y", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[1]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[1]"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[2]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[2]"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // composition
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition", doc);
@@ -463,16 +535,25 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[1]"
                     + "/gsml:CompositionPart/gsml:role", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[1]"
+                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
             assertXpathEvaluatesTo("minor", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
                     + "/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value", doc);
             assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
                     + "/gsml:CompositionPart/gsml:role", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
+                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
             // lithology
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                     doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:lithology/FEATURE_LINK", doc);
         }
 
         // mf4
@@ -490,7 +571,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Olivine basalt", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:description", doc);
             // name
-            assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gml:name", doc);
             assertXpathEvaluatesTo("New Group", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification"
@@ -501,8 +582,8 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]/@codeSpace", doc);
             assertXpathEvaluatesTo("-Xy", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
-            assertXpathEvaluatesTo("gu.25682", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[3]", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
             // occurence [sic]
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:occurence", doc);
@@ -517,12 +598,18 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Red", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // outcropCharacter
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
             assertXpathEvaluatesTo("z", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter"
+                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             // composition
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition", doc);
@@ -532,11 +619,14 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                     + "/gsml:CompositionPart/gsml:role", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
             // lithology
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                     doc);
-            assertXpathCount(4, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[1]"
                     + "/gsml:ControlledConcept/gml:name", doc);
             assertXpathEvaluatesTo("name_a", "//gsml:MappedFeature[@gml:id='" + id
@@ -551,21 +641,19 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "']/gsml:specification/gsml:GeologicUnit"
                     + "/gsml:composition/gsml:CompositionPart/gsml:lithology[1]"
                     + "/gsml:ControlledConcept/gml:name[3]", doc);
-            assertXpathEvaluatesTo("cp.167775491936278812", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit"
-                    + "/gsml:composition/gsml:CompositionPart/gsml:lithology[1]"
-                    + "/gsml:ControlledConcept/gml:name[4]", doc);
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:lithology[1]/FEATURE_LINK", doc);
+            assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[2]"
                     + "/gsml:ControlledConcept/gml:name", doc);
             assertXpathEvaluatesTo("name_2", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit"
                     + "/gsml:composition/gsml:CompositionPart/gsml:lithology[2]"
-                    + "/gsml:ControlledConcept/gml:name[1]", doc);
-            assertXpathEvaluatesTo("cp.167775491936278812", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit"
-                    + "/gsml:composition/gsml:CompositionPart/gsml:lithology[2]"
-                    + "/gsml:ControlledConcept/gml:name[2]", doc);
+                    + "/gsml:ControlledConcept/gml:name", doc);
+            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
+                    + "/gsml:CompositionPart/gsml:lithology[2]/FEATURE_LINK", doc);
         }
 
     }

@@ -69,7 +69,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
 
         // GU:25699
         assertXpathEvaluatesTo("er.25699", "//gsml:GeologicUnit[@gml:id='25699']/gml:name", doc);
-        assertXpathEvaluatesTo("gu.25699", "//gsml:GeologicUnit[@gml:id='25699']/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit/FEATURE_LINK", doc);
         assertXpathCount(1,
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature", doc);
         // mf1
@@ -105,6 +105,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "interbedded component",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition/gsml:CompositionPart/gsml:role",
                 doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition/gsml:CompositionPart/FEATURE_LINK", doc);
         // cp.167775491936278812
         assertXpathEvaluatesTo("significant",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:proportion"
@@ -113,6 +114,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "interbedded component",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:role",
                 doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/FEATURE_LINK", doc);
         assertXpathEvaluatesTo("name_a",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:lithology"
                         + "/gsml:ControlledConcept/gml:name", doc);
@@ -122,15 +124,11 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
         assertXpathEvaluatesTo("name_c",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:lithology"
                         + "/gsml:ControlledConcept/gml:name[3]", doc);
-        assertXpathEvaluatesTo("cp.167775491936278812",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:lithology"
-                        + "/gsml:ControlledConcept/gml:name[4]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition/gsml:CompositionPart/gsml:lithology/FEATURE_LINK", doc);
         assertXpathEvaluatesTo("name_2",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:lithology[2]"
                         + "/gsml:ControlledConcept/gml:name", doc);
-        assertXpathEvaluatesTo("cp.167775491936278812",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[2]/gsml:CompositionPart/gsml:lithology[2]"
-                        + "/gsml:ControlledConcept/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology[2]/FEATURE_LINK", doc);
         // cp.167775491936278856
         assertXpathEvaluatesTo("minor",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[3]/gsml:CompositionPart/gsml:proportion"
@@ -139,10 +137,11 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "interbedded component",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[3]/gsml:CompositionPart/gsml:role",
                 doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[3]/gsml:CompositionPart/FEATURE_LINK", doc);
 
         // GU:25678
         assertXpathEvaluatesTo("er.25678", "//gsml:GeologicUnit[@gml:id='25678']/gml:name", doc);
-        assertXpathEvaluatesTo("gu.25678", "//gsml:GeologicUnit[@gml:id='25678']/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit/FEATURE_LINK", doc);
         assertXpathEvaluatesTo(
                 "vein",
                 "//gsml:GeologicUnit[@gml:id='25678']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
@@ -194,10 +193,11 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "interbedded component",
                 "//gsml:GeologicUnit[@gml:id='25678']/gsml:composition/gsml:CompositionPart/gsml:role",
                 doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25678']/gsml:composition/gsml:CompositionPart/FEATURE_LINK", doc);
 
         // GU:25682
         assertXpathEvaluatesTo("er.25682", "//gsml:GeologicUnit[@gml:id='25682']/gml:name", doc);
-        assertXpathEvaluatesTo("gu.25682", "//gsml:GeologicUnit[@gml:id='25682']/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit/FEATURE_LINK", doc);
         assertXpathEvaluatesTo(
                 "cross-cutting",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
@@ -233,6 +233,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "interbedded component",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:role",
                 doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/FEATURE_LINK", doc);
         assertXpathEvaluatesTo("name_a",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology"
                         + "/gsml:ControlledConcept/gml:name", doc);
@@ -242,15 +243,12 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
         assertXpathEvaluatesTo("name_c",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology"
                         + "/gsml:ControlledConcept/gml:name[3]", doc);
-        assertXpathEvaluatesTo("cp.167775491936278812",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology"
-                        + "/gsml:ControlledConcept/gml:name[4]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology/FEATURE_LINK", doc);
         assertXpathEvaluatesTo("name_2",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology[2]"
                         + "/gsml:ControlledConcept/gml:name", doc);
-        assertXpathEvaluatesTo("cp.167775491936278812",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology[2]"
-                        + "/gsml:ControlledConcept/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25682']/gsml:composition/gsml:CompositionPart/gsml:lithology[2]/FEATURE_LINK", doc);
+
     }
 
 }
