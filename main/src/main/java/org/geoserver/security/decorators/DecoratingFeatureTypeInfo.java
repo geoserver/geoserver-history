@@ -15,6 +15,7 @@ import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
@@ -109,7 +110,7 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
         return delegate.getMaxFeatures();
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return delegate.getMetadata();
     }
 

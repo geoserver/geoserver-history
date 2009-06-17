@@ -33,5 +33,5 @@ public interface WorkspaceInfo extends CatalogInfo {
      * </p>
      * 
      */
-    Map<String,Serializable> getMetadata();
+    MetadataMap getMetadata();
 }

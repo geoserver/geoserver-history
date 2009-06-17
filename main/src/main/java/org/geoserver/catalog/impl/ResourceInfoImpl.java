@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
@@ -62,7 +63,7 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
 
     boolean enabled;
 
-    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
+    MetadataMap metadata = new MetadataMap();
 
     StoreInfo store;
     
@@ -230,11 +231,11 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         this.enabled = enabled;
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, Serializable> metaData) {
+    public void setMetadata(MetadataMap metaData) {
         this.metadata = metaData;
     }
     

@@ -298,7 +298,7 @@ public interface ResourceInfo extends CatalogInfo {
      * 
      * @uml.property name="metadata"
      */
-    Map<String,Serializable> getMetadata();
+    MetadataMap getMetadata();
 
     /**
      * A flag indicating if the resource is enabled or not.

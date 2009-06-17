@@ -15,6 +15,7 @@ import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.StoreInfo;
@@ -119,7 +120,7 @@ public class DecoratingCoverageInfo extends AbstractDecorator<CoverageInfo>
         return delegate.getLatLonBoundingBox();
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return delegate.getMetadata();
     }
 

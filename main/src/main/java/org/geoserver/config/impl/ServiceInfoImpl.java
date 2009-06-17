@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
@@ -53,7 +54,7 @@ public class ServiceInfoImpl implements ServiceInfo {
 
     String outputStrategy;
 
-    Map metadata = new HashMap();
+    MetadataMap metadata = new MetadataMap();
 
     Map clientProperties = new HashMap();
 
@@ -169,11 +170,11 @@ public class ServiceInfoImpl implements ServiceInfo {
         this.onlineResource = onlineResource;
     }
 
-    public Map getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map metadata) {
+    public void setMetadata(MetadataMap metadata) {
         this.metadata = metadata;
     }
 

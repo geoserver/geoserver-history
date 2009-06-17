@@ -11,6 +11,7 @@ import java.util.Map;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.DataAccess;
@@ -61,7 +62,7 @@ public class DecoratingDataStoreInfo extends AbstractDecorator<DataStoreInfo> im
         return delegate.getId();
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return delegate.getMetadata();
     }
 

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.geoserver.catalog.Info;
+import org.geoserver.catalog.MetadataMap;
 
 /**
  * Global GeoServer configuration.
@@ -198,7 +199,7 @@ public interface GeoServerInfo extends Info {
      *
      * @uml.property name="metadata"
      */
-    Map<String, Serializable> getMetadata();
+    MetadataMap getMetadata();
 
     /**
      * Client properties for services.

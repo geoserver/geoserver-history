@@ -97,7 +97,7 @@ public class GeoserverDataDirectory {
             ftInfo = data.getFeatureTypeByName(name);
         if(ftInfo == null)
             return null;
-        String dirName = (String) ftInfo.getMetadata().get("dirName");
+        String dirName = ftInfo.getMetadata().get("dirName",String.class);
         if ( dirName == null ) {
             dirName = ftInfo.getNamespace().getPrefix() + "_" + ftInfo.getName();
         }
@@ -118,7 +118,7 @@ public class GeoserverDataDirectory {
     public static String findCoverageDirName(String coverageName) {
         Catalog data = getCatalog();
         CoverageInfo coverageInfo = data.getCoverageByName(coverageName);
-        return (String) coverageInfo.getMetadata().get( "dirName" );
+        return coverageInfo.getMetadata().get( "dirName", String.class );
     }
 
     /**

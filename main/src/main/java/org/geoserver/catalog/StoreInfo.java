@@ -84,7 +84,7 @@ public interface StoreInfo extends CatalogInfo {
      * 
      * @uml.property name="metadata"
      */
-    Map<String,Serializable> getMetadata();
+    MetadataMap getMetadata();
 
     /**
      * Flag indicating wether or not teh store is enabled or not.
