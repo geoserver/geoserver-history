@@ -66,12 +66,12 @@ import com.sun.xacml.cond.StandardFunctionFactory;
 /**
  * @author Christian Mueller
  * 
- * Global class for configuration. The initialze mehtod has to be called for
+ * Global class for configuration. The initialize method has to be called for
  * 
  * 1) registering the new GeometryAttribute as XACML attribute
  * 2) registering a lot of geometry functions according to the GeoXACML spec.
  * 
- * All functions for conformance level STANDARD are implemented wich is a superset
+ * All functions for conformance level STANDARD are implemented which is a superset
  * of conformance level BASIC.
  *
  */
@@ -80,6 +80,15 @@ public class GeoXACML {
 	private static boolean initialized=false;
 	static Schema XACMLPolicySchema, XACMLContextSchema;
 
+
+	public static URL getSchemaValidationURL() {
+	    return GeoXACML.class.getResource("access_control-xacml-2.0-policy-schema-cd-04.xsd");
+	}
+	
+	public static URL getContextValidationURL() {
+	    return GeoXACML.class.getResource("access_control-xacml-2.0-context-schema-cd-04.xsd");
+	}
+
 	
 	public static synchronized Validator getPolicyValidator() {
 		
@@ -87,11 +96,11 @@ public class GeoXACML {
            SchemaFactory factory = 
 	            	SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 	            	            
-        URL url = GeoXACML.class.getResource("access_control-xacml-2.0-policy-schema-cd-04.xsd");
+        URL url = getSchemaValidationURL();
         try {
         	XACMLPolicySchema  = factory.newSchema(url);        		
             } catch (SAXException e) {
-            	// should not happend
+            	// should not happened
             }
             	
         return XACMLPolicySchema.newValidator(); 
@@ -99,16 +108,16 @@ public class GeoXACML {
 	
 	public static synchronized Validator getContextValidator() {
 		
-		if (XACMLContextSchema!=null) return XACMLContextSchema.newValidator();
-           SchemaFactory factory = 
+	if (XACMLContextSchema!=null) return XACMLContextSchema.newValidator();
+        SchemaFactory factory = 
 	            	SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 	            	            
-        URL url = GeoXACML.class.getResource("access_control-xacml-2.0-context-schema-cd-04.xsd");
+        URL url = getContextValidationURL();
         try {
         	XACMLContextSchema  = factory.newSchema(url);
         		
             } catch (SAXException e) {
-            	// should not happend
+            	// should not happened
             }
             	
         return XACMLContextSchema.newValidator(); 

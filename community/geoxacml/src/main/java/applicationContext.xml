@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    
+    <bean id="geoxacml" class="org.geoserver.xacml.geoxacml.GeoXACMLPDPController"/>      
+    
+    <bean id="geoxacmlDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>
+    <property name="mappings">
+        <props>
+            <prop key="/geoxacml">geoxacml</prop>            
+        </props>
+    </property>
+
+    </bean>
+</beans>
+

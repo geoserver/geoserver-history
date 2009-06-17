@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Policy xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	PolicyId="urn:oasis:names:tc:xacml:2.0:gis:PermitAll"
+	RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
+	<Target />
+	<Rule Effect="Permit"
+		RuleId="urn:oasis:names:tc:xacml:2.0:rule:PermitAll" >
+	</Rule>
+</Policy>
