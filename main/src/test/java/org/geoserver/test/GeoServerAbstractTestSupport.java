@@ -52,6 +52,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
 import org.geoserver.logging.LoggingUtils;
@@ -157,7 +158,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         LoggingUtils.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
 
         //HACK: once we port tests to the new data directory, remove this
-        GeoServerLoader.setLegacy( true );
+        GeoServerLoader.setLegacy( useLegacyDataDirectory() );
         
         // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
         testData = buildTestData();
@@ -179,6 +180,18 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
                     WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
                     applicationContext);
         }
+    }
+    
+    /**
+     * Flag which controls the mock data directory setup.
+     * <p>
+     * If true is returned, the legacy structure is presevered on sstartup, and no 
+     * conversion to the new data directory structure happens.
+     * </p>
+     * 
+     */
+    protected boolean useLegacyDataDirectory() {
+        return true;
     }
     
     /**
@@ -286,6 +299,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     protected GeoServerResourceLoader getResourceLoader() {
         return (GeoServerResourceLoader) applicationContext.getBean( "resourceLoader" );
+    }
+    
+    protected GeoServerDataDirectory getDataDirectory() {
+        return new GeoServerDataDirectory(getResourceLoader());
     }
 
     /**
