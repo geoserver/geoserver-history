@@ -133,32 +133,53 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      *
      * @throws IOException In the event of an I/O error.
      */
-    public File find(String location) throws IOException {
+    public File find( String location ) throws IOException {
+        return find( null, location );
+    }
+    
+    /**
+     * Performs a resource lookup, optionally specifying the containing directory.
+     *
+     * @param parent The containing directory, optionally null. 
+     * @param location The name of the resource to lookup, can be absolute or
+     * relative.
+     *
+     * @return The file handle representing the resource, or null if the
+     * resource could not be found.
+     *
+     * @throws IOException In the event of an I/O error.
+     */
+    public File find(File parent, String location) throws IOException {
         //first to an existance check
-        File file = new File(location);
+        File file = parent != null ? new File(parent,location) : new File(location);
 
         if (file.isAbsolute()) {
             return file.exists() ? file : null;
         } else {
-            //try a relative url
-            for (Iterator f = searchLocations.iterator(); f.hasNext();) {
-                File base = (File) f.next();
-                file = new File(base, location);
-
-                try {
-                    if (file.exists()) {
-                        return file;
+            //try a relative url if no parent specified
+            if ( parent == null ) {
+                for (Iterator f = searchLocations.iterator(); f.hasNext();) {
+                    File base = (File) f.next();
+                    file = new File(base, location);
+    
+                    try {
+                        if (file.exists()) {
+                            return file;
+                        }
+                    } catch (SecurityException e) {
+                        LOGGER.warning("Failed attemp to check existance of " + file.getAbsolutePath());
                     }
-                } catch (SecurityException e) {
-                    LOGGER.warning("Failed attemp to check existance of " + file.getAbsolutePath());
                 }
             }
         }
 
-        Resource resource = getResource(location);
-
-        if (resource.exists()) {
-            return resource.getFile();
+        //look for a generic resource if no parent specified
+        if ( parent == null ) {
+            Resource resource = getResource(location);
+    
+            if (resource.exists()) {
+                return resource.getFile();
+            }
         }
 
         return null;
@@ -180,7 +201,27 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * @throws IOException Any I/O errors that occur.
      */
     public File find( String... location ) throws IOException {
-        return find( concat( location ) );
+        return find( null, location );
+    }
+
+    /**
+     * Performs a resource lookup, optionally specifying a containing directory.
+     * <p>
+     * <pre>
+     * Example:
+     *   File f = resourceLoader.find( "data", "shapefiles", "foo.shp" );
+     * </pre> 
+     * </p>
+     * @param parent The parent directory, may be null.
+     * @param location The components of the path of the resource to lookup.
+     * 
+     * @return The file handle representing the resource, or null if the
+     *  resource could not be found.
+     *  
+     * @throws IOException Any I/O errors that occur.
+     */
+    public File find( File parent, String... location ) throws IOException {
+        return find( parent, concat( location ) );
     }
 
     /**
@@ -202,6 +243,17 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      *  find or create.
      */
     public File findOrCreateDirectory( String... location ) throws IOException {
+        return findOrCreateDirectory(null,location);
+    }
+    
+    /**
+     * Performs a directory lookup, creating the file if it does not exist.
+     * 
+     * @param parent The containing directory, possibly null.
+     * @param location The components of the path that make up the location of the directory to
+     *  find or create.
+     */
+    public File findOrCreateDirectory( File parent, String... location ) throws IOException {
         return findOrCreateDirectory(concat(location));
     }
     
@@ -215,7 +267,21 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * @throws IOException If any i/o errors occur.
      */
     public File findOrCreateDirectory( String location ) throws IOException {
-        File dir = find( location );
+        return findOrCreateDirectory(null,location);
+    }
+    
+    /**
+     * Performs a directory lookup, creating the file if it does not exist.
+     * 
+     * @param parent The containing directory, may be null.
+     * @param location The location of the directory to find or create.
+     * 
+     * @return The file handle.
+     * 
+     * @throws IOException If any i/o errors occur.
+     */
+    public File findOrCreateDirectory( File parent, String location ) throws IOException {
+        File dir = find( parent, location );
         if ( dir != null ) {
             if ( !dir.isDirectory() ) {
                 //location exists, but is a file
@@ -236,7 +302,17 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * </p>
      */
     public File createDirectory(String... location) throws IOException {
-        return createDirectory(concat(location));
+        return createDirectory(null,location);
+    }
+    
+    /**
+     * Creates a new directory specifying components of the location, and the containing directory.
+     * <p>
+     * Calls through to {@link #createDirectory(String)}
+     * </p>
+     */
+    public File createDirectory(File parent, String... location) throws IOException {
+        return createDirectory(parent,concat(location));
     }
     
     /**
@@ -256,7 +332,28 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * @throws IOException
      */
     public File createDirectory(String location) throws IOException {
-        File file = find(location);
+        return createDirectory(null,location);
+    }
+    
+    /**
+     * Creates a new directory, optionally specifying a containing directory.
+     * <p>
+     * Relative paths are created relative to {@link #baseDirectory}.
+     * If {@link #baseDirectory} is not set, an IOException is thrown.
+     * </p>
+     * <p>
+     * If <code>location</code> already exists as a file, an IOException is thrown.
+     * </p>
+     * @param parent The containing directory, may be null.
+     * @param location Location of directory to create, either absolute or
+     * relative.
+     *
+     * @return The file handle of the created directory.
+     *
+     * @throws IOException
+     */
+    public File createDirectory(File parent, String location) throws IOException {
+        File file = find(parent,location);
 
         if (file != null) {
             if (!file.isDirectory()) {
@@ -265,7 +362,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
             }
         }
 
-        file = new File(location);
+        file = parent != null ? new File(parent,location) : new File(location);
 
         if (file.isAbsolute()) {
             file.mkdirs();
@@ -273,20 +370,23 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
             return file;
         }
 
-        //no base directory set, cannot create a relative path
-        if (baseDirectory == null) {
-            String msg = "No base location set, could not create directory: " + location;
-            throw new IOException(msg);
+        if ( parent == null ) {
+            //no base directory set, cannot create a relative path
+            if (baseDirectory == null) {
+                String msg = "No base location set, could not create directory: " + location;
+                throw new IOException(msg);
+            }
+    
+            file = new File(baseDirectory, location);
+            file.mkdirs();
+    
+            return file;
         }
-
-        file = new File(baseDirectory, location);
-        file.mkdirs();
-
-        return file;
+        return null;
     }
 
     /**
-     * Creates a new file
+     * Creates a new file.
      * <p>
      * Calls through to {@link #createFile(String)}.
      * </p>
@@ -304,12 +404,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     /**
      * Creates a new file.
      * <p>
-     * Relative paths are created relative to {@link #baseDirectory}.
-     * </p>
-     * If {@link #baseDirectory} is not set, an IOException is thrown.
-     * </p>
-     * <p>
-     * If <code>location</code> already exists as a directory, an IOException is thrown.
+     * Calls through to {@link #createFile(File, String)}
      * </p>
      * @param location Location of file to create, either absolute or relative.
      *
@@ -318,7 +413,44 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * @throws IOException In the event of an I/O error.
      */
     public File createFile(String location) throws IOException {
-        File file = find(location);
+        return createFile(null,location);
+    }
+    
+    /**
+     * Creates a new file.
+     * <p>
+     * Calls through to {@link #createFile(File, String)}
+     * </p>
+     * @param location Location of file to create, either absolute or relative.
+     * @param parent The containing directory for the file.
+     * 
+     * @return The file handle of the created file.
+     *
+     * @throws IOException In the event of an I/O error.
+     */
+    public File createFile(File parent, String... location) throws IOException{
+        return createFile(parent,concat(location));
+    }
+    
+    /**
+     * Creates a new file.
+     * <p>
+     * Relative paths are created relative to {@link #baseDirectory}.
+     * </p>
+     * If {@link #baseDirectory} is not set, an IOException is thrown.
+     * </p>
+     * <p>
+     * If <code>location</code> already exists as a directory, an IOException is thrown.
+     * </p>
+     * @param location Location of file to create, either absolute or relative.
+     * @param parent The containing directory for the file.
+     * 
+     * @return The file handle of the created file.
+     *
+     * @throws IOException In the event of an I/O error.
+     */
+    public File createFile(File parent, String location) throws IOException{
+        File file = find(parent,location);
 
         if (file != null) {
             if (file.isDirectory()) {
@@ -329,7 +461,7 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
             return file;
         }
 
-        file = new File(location);
+        file = parent != null ? new File(parent,location) : new File(location);
 
         if (file.isAbsolute()) {
             file.createNewFile();
@@ -337,15 +469,17 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
             return file;
         }
 
-        //no base directory set, cannot create a relative path
-        if (baseDirectory == null) {
-            String msg = "No base location set, could not create file: " + location;
-            throw new IOException(msg);
+        if ( parent == null ) {
+            //no base directory set, cannot create a relative path
+            if (baseDirectory == null) {
+                String msg = "No base location set, could not create file: " + location;
+                throw new IOException(msg);
+            }
+
+            file = new File(baseDirectory, location);
+            file.createNewFile();
         }
-
-        file = new File(baseDirectory, location);
-        file.createNewFile();
-
+        
         return file;
     }
     
