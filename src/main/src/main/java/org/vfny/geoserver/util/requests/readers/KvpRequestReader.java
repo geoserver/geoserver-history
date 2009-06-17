@@ -16,6 +16,7 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.gml.GMLFilterDocument;
 import org.geotools.gml.GMLFilterGeometry;
+import org.geotools.util.Converters;
 
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -114,7 +115,7 @@ abstract public class KvpRequestReader {
      * @return DOCUMENT ME!
      */
     protected String getValue(String key) {
-        return (String) kvpPairs.get(key);
+        return Converters.convert( kvpPairs.get(key), String.class);
     }
 
     /**
