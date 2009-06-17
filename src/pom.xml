@@ -938,6 +938,7 @@
      <include>**/*.properties</include>
      <include>**/*.serialized</include>
      <include>**/*.ftl</include>
+     <include>**/*.ftl.disabled</include>
      <include>**/*.tiff</include>
     </includes>
     <excludes>
