@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
-import org.apache.commons.fileupload.FileItem;
 
 /**
  * FileStorage implementation for storing uploaded images in multiple sizes.
@@ -30,7 +29,7 @@ public class ThumbnailStorage implements FileStorage {
 //    private Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.rest.upload");
 
     public List handleUpload(
-        FileItem f, 
+        String contentType,
         File content, 
         UniqueIDGenerator namer, 
         File uploadDirectory
@@ -39,15 +38,9 @@ public class ThumbnailStorage implements FileStorage {
         ImageWriter format = null;
         BufferedImage image = null;
 
-        if (f == null) {
-            originalName = "";
-            format = findWriter("image/png");
-            image = ImageIO.read(content);
-        } else {
-            originalName = (new File(f.getName())).getName();
-            format = findWriter(f.getContentType());
-            image = ImageIO.read(f.getInputStream());
-        }
+        originalName = "";
+        format = findWriter(contentType);
+        image = ImageIO.read(content);
 
         double thumbScale = getDesiredSize(image.getWidth(), image.getHeight(), THUMB_SIZE);
         double fullScale  = getDesiredSize(image.getWidth(), image.getHeight(), FULL_SIZE);

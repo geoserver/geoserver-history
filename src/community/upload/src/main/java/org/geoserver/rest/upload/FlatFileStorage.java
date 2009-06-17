@@ -20,16 +20,12 @@ import java.util.List;
  */
 public class FlatFileStorage implements FileStorage {
     public List<String> handleUpload(
-        FileItem item, 
+        String contentType, 
         File content,
         UniqueIDGenerator generator, 
         File uploadDirectory
     ) throws IOException {
         String originalName = "";
-
-        if (item != null) {
-            originalName = (new File(item.getName())).getName();
-        }
 
         String name = generator.generate(originalName); 
 

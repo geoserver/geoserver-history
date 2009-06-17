@@ -1,12 +1,12 @@
 package org.geoserver.rest.upload;
 
-import org.apache.commons.fileupload.FileItem;
-import org.restlet.resource.Representation;
 import net.sf.json.JSON;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -18,13 +18,8 @@ import java.io.IOException;
  * @author David Winslow <dwinslow@opengeo.org>
  */
 public class JSONFilter implements UploadFilter {
-    public boolean filter(FileItem file) throws IOException {
-        JSONObject json = parseStream(file.getInputStream());
-        return json != null && !json.isNullObject() && !json.isEmpty();
-    }
-
-    public boolean filter(Representation rep) throws IOException {
-        JSONObject json = parseStream(rep.getStream());
+    public boolean filter(String contentType, File file) throws IOException {
+        JSONObject json = parseStream(new FileInputStream(file));
         return json != null && !json.isNullObject() && !json.isEmpty();
     }
 

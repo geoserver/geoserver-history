@@ -1,8 +1,8 @@
 package org.geoserver.rest.upload;
 
 import org.restlet.resource.Representation;
-import org.apache.commons.fileupload.FileItem;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -16,18 +16,10 @@ public interface UploadFilter {
     /**
      * Assess a FileItem for acceptability according to this filter's criterion.
      *
-     * @param file the FileItem that was uploaded
+     * @param contentType the reported mimetype of the uploaded data
+     * @param content a temporary File with the data that was uploaded
      * @return a boolean value; true if the upload should be accepted, false otherwise
      * @throws IOException if an error occurs while trying to read the data
      */
-    public boolean filter(FileItem file) throws IOException;
-
-    /**
-     * Assess a Restlet Representation for acceptability according to this filter's criterion.
-     *
-     * @param rep the Representation for consideration
-     * @return a boolean value; true if the upload should be accepted, false otherwise
-     * @throws IOException if an error occurs while trying to read the data
-     */
-    public boolean filter(Representation repr) throws IOException;
+    public boolean filter(String contentType, File content) throws IOException;
 }
