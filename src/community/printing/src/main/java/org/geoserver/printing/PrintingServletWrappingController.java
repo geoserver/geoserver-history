@@ -1,6 +1,9 @@
 package org.geoserver.printing;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -25,6 +28,11 @@ ServletWrappingController {
         try{
             File dir = GeoserverDataDirectory.findCreateConfigDir("printing");
             File qualifiedConfig = new File(dir, configProp);
+            /*If the config file does not exist, copy out the */
+            if (!qualifiedConfig.canRead()) {
+                LOG.warning("Printing module missing its configuration.  Any actions it takes will fail.");
+                return;
+            }
             initParameters.setProperty("config", qualifiedConfig.getCanonicalPath());			
         }
         catch(org.vfny.geoserver.global.ConfigurationException e){
