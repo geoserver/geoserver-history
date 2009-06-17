@@ -24,7 +24,7 @@ public interface FileStorage {
      *     uploaded files
      */
     public List<String> handleUpload(
-        FileItem file, 
+        String contentType, 
         File content,
         UniqueIDGenerator generator, 
         File uploadDirectory

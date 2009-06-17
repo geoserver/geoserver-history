@@ -1,8 +1,6 @@
 package org.geoserver.rest.upload;
 
-import org.apache.commons.fileupload.FileItem;
-import org.restlet.resource.Representation;
-
+import java.io.File;
 import java.util.regex.Pattern;
 
 /**
@@ -24,11 +22,7 @@ public class MimeFilter implements UploadFilter {
         mimePattern = Pattern.compile(p);
     }
 
-    public boolean filter(FileItem file) {
-        return mimePattern.matcher(file.getContentType()).matches();
-    }
-
-    public boolean filter(Representation rep) {
-        return mimePattern.matcher(rep.getMediaType().toString()).matches();
+    public boolean filter(String contentType, File file) {
+        return mimePattern.matcher(contentType).matches();
     }
 }

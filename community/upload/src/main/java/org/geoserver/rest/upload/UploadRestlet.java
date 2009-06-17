@@ -5,12 +5,16 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -31,15 +35,18 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.restlet.Restlet;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
+import org.restlet.data.Reference;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.FileRepresentation;
 import org.restlet.resource.Representation;
+import org.restlet.resource.OutputRepresentation;
 import org.restlet.ext.fileupload.RestletFileUpload;
 
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
+import org.geoserver.data.util.IOUtils;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.MapJSONFormat;
 
@@ -50,7 +57,7 @@ import org.geoserver.rest.format.MapJSONFormat;
  *
  * @author David Winslow <dwinslow@opengeo.org>
  */
-public class UploadRestlet extends Restlet{
+public class UploadRestlet extends Restlet {
     /**
      * The the directory in which files will be stored.
      */
@@ -109,10 +116,12 @@ public class UploadRestlet extends Restlet{
                 doGet(request, response);
             } else if (request.getMethod().equals(Method.POST)){
                 doPost(request, response);
+            } else if (request.getMethod().equals(Method.PUT)){
+                doPut(request, response);
             } else {
                 response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             }
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
             response.setStatus(Status.SERVER_ERROR_INTERNAL);
         }
     }
@@ -124,11 +133,17 @@ public class UploadRestlet extends Restlet{
      * @param resp the Response to which the file should be written
      */
     protected void doGet(Request req, Response resp)
-        throws IOException {
+        throws Exception {
             String file = (String)req.getAttributes().get("file");
+
+            if (file == null) {
+                listFiles(req, resp);
+                return;
+            }
+
             File f = getSecuredFile(file);
 
-            if (file == null || !f.exists()){ 
+            if (!f.exists()){ 
                 resp.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
                 return;
             }
@@ -143,10 +158,9 @@ public class UploadRestlet extends Restlet{
      * @param req the Request object being handled
      * @param resp the Response to which the result should be written
      */
-    protected void doPost(Request req, Response resp)
-        throws IOException {
-
-        if (req.getEntity().getMediaType().equals(MediaType.MULTIPART_FORM_DATA, true)) {
+    protected void doPost(Request req, Response resp) throws IOException {
+        if (req.getEntity().getMediaType() != null && 
+                req.getEntity().getMediaType().equals(MediaType.MULTIPART_FORM_DATA, true)) {
             try {
                 FileItemFactory factory = new DiskFileItemFactory();
                 RestletFileUpload upload = new RestletFileUpload(factory);
@@ -165,11 +179,12 @@ public class UploadRestlet extends Restlet{
                     resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                     return;
                 }
+
+                File temp = File.createTempFile("gs_upload", null);
+                file.write(temp);
                 
-                if (uploadFilter.filter(file)) {
-                    File temp = File.createTempFile("gs_upload", null);
-                    file.write(temp);
-                    resp.setEntity(doUpload(file, temp));
+                if (uploadFilter.filter(file.getContentType(), temp)) {
+                    doUpload(file.getContentType(), temp, req, resp);
                     temp.delete();
                 } else { 
                     resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
@@ -178,17 +193,16 @@ public class UploadRestlet extends Restlet{
                 resp.setStatus(Status.SERVER_ERROR_INTERNAL);
             }
         } else { 
-            if (uploadFilter.filter(req.getEntity())) {
-                File temp = File.createTempFile("gs_upload", null);
-                OutputStream tempStream = 
-                    new BufferedOutputStream(new FileOutputStream(temp));
+            File temp = File.createTempFile("gs_upload", null);
+            IOUtils.copy(req.getEntity().getStream(), temp);
+            String contentType = "";
 
-                FlatFileStorage.copyStream(req.getEntity().getStream(), tempStream);
+            if (req.getEntity().getMediaType() != null) {
+                contentType = req.getEntity().getMediaType().toString();
+            }
 
-                tempStream.flush();
-                tempStream.close();
-
-                resp.setEntity(doUpload(null, temp));
+            if (uploadFilter.filter(contentType, temp)) {
+                doUpload(contentType, temp, req, resp);
 
                 temp.delete();
             } else { 
@@ -197,16 +211,97 @@ public class UploadRestlet extends Restlet{
         }
     }
 
-    private Representation doUpload(FileItem item, File content) throws IOException {
+    /**
+     * Handle a PUT request by ensuring that the requested file exists before overwriting it.
+     *
+     * @param req the Request being handled
+     * @param resp the Response to use for reporting status
+     */
+    protected void doPut(Request req, Response resp) throws IOException {
+        String file = (String)req.getAttributes().get("file");
+        if (file == null) {
+            resp.setStatus(Status.CLIENT_ERROR_METHOD_NOT_ALLOWED);
+            return;
+        }
+
+        File f = getSecuredFile(file);
+        if (!f.exists()){ 
+            resp.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+            return;
+        }
+
+        File temp = File.createTempFile("gs_upload", null);
+        IOUtils.copy(req.getEntity().getStream(), temp);
+
+        String contentType = "";
+        if (req.getEntity().getMediaType() != null) {
+            contentType = req.getEntity().getMediaType().toString();
+        }
+
+        if (uploadFilter.filter(contentType, temp)) {
+            temp.renameTo(f);
+        } else {
+            resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+            return;
+        }
+    }
+
+    private void doUpload(String contentType, File content, Request req, Response resp) 
+    throws IOException {
         if (!rootPath.exists()) {
             rootPath.mkdirs();
         }
 
+        List<String> l = fileStorage.handleUpload(contentType, content, myIDGenerator, rootPath);
         Map<String, List<String>> m = new HashMap<String, List<String>>();
-        List<String> l = fileStorage.handleUpload(item, content, myIDGenerator, rootPath);
         m.put("files", l);
         DataFormat outputFormat = new MapJSONFormat();
-        return outputFormat.toRepresentation(m);
+        resp.setEntity(outputFormat.toRepresentation(m));
+        resp.setStatus(Status.SUCCESS_CREATED);
+
+        if (l.size() == 1) {
+            resp.setRedirectRef(new Reference(req.getResourceRef(), l.get(0)));
+        }
+    }
+
+    private void listFiles(Request req, Response resp) throws Exception {
+        resp.setEntity(new OutputRepresentation(MediaType.APPLICATION_JSON) {
+            public InputStream getStream() {
+                throw new UnsupportedOperationException();
+            }
+
+            public void write(OutputStream out) throws IOException {
+                PrintWriter writer = 
+                    new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
+
+                writer.print("{");
+                File[] children = rootPath.listFiles();
+                for (int i = 0; i < children.length; i++) {
+                    File child = children[i];
+
+                    writer.print("\"");
+                    writer.print(child.getName().replace("\"", "\\\""));
+                    writer.print("\":");
+
+                    BufferedReader reader = 
+                        new BufferedReader(new InputStreamReader(new FileInputStream(child)));
+
+                    String line = null;
+
+                    while ((line = reader.readLine()) != null) {
+                        writer.println(line);
+                    }
+
+                    if (i != children.length -1) {
+                        writer.print(",");
+                    };
+                }
+
+                writer.print("}");
+                writer.flush();
+                writer.close();
+            }
+        });
     }
 
     /**
