@@ -4,7 +4,7 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.rmi.server.UID;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +31,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
-import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
@@ -47,6 +48,7 @@ import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
+import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
@@ -1381,18 +1383,12 @@ public class CatalogImpl implements Catalog {
     
     protected void resolve(WorkspaceInfo workspace) {
         setId(workspace);
-        
-        WorkspaceInfoImpl w = (WorkspaceInfoImpl) workspace;
-        if(w.getMetadata() == null)
-            w.setMetadata(new HashMap());
+        resolveCollections(workspace);
     }
     
     protected void resolve(NamespaceInfo namespace) {
         setId(namespace);
-        
-        NamespaceInfoImpl n = (NamespaceInfoImpl) namespace;
-        if(n.getMetadata() == null)
-            n.setMetadata(new HashMap());
+        resolveCollections(namespace);
     }
     
     protected void resolve(StoreInfo store) {
@@ -1407,9 +1403,8 @@ public class CatalogImpl implements Catalog {
         else {
             //this means the workspace has not yet been added to the catalog, keep the proxy around
         }
-        if ( s.getMetadata() == null ) {
-            s.setMetadata(new HashMap());
-        }
+        resolveCollections(s);
+        
         s.setCatalog( this );
     }
 
@@ -1422,15 +1417,7 @@ public class CatalogImpl implements Catalog {
         if ( resolved != null ) {
             r.setStore( resolved );
         }
-        if ( r.getMetadata() == null ) {
-            r.setMetadata(new HashMap());
-        }
-        if ( r.getMetadataLinks() == null ) {
-            r.setMetadataLinks(new ArrayList());
-        }
-        if ( r.getKeywords() == null ) {
-            r.setKeywords(new ArrayList());
-        }
+        
         if ( resource instanceof FeatureTypeInfo ) {
             resolve( (FeatureTypeInfo) resource );
         }
@@ -1450,20 +1437,7 @@ public class CatalogImpl implements Catalog {
                     ((CoverageDimensionImpl) dim).setNullValues(new ArrayList<Double>());
             }
         }
-        if(c.getInterpolationMethods() == null)
-            c.setInterpolationMethods(new ArrayList<String>());
-        if(c.getKeywords() == null)
-            c.setKeywords(new ArrayList<String>());
-        if(c.getMetadataLinks() == null)
-            c.setMetadataLinks(new ArrayList<MetadataLinkInfo>());
-        if(c.getParameters() == null) 
-            c.setParameters(new HashMap<String, Serializable>());
-        if(c.getRequestSRS() == null)
-            c.setRequestSRS(new ArrayList<String>());
-        if(c.getResponseSRS() == null)
-            c.setResponseSRS(new ArrayList<String>());
-        if(c.getSupportedFormats() == null)
-            c.setSupportedFormats(new ArrayList<String>());
+        resolveCollections(r);
     }
     
     /**
@@ -1473,30 +1447,17 @@ public class CatalogImpl implements Catalog {
      */
     private void resolve(FeatureTypeInfo featureType) {
         FeatureTypeInfoImpl ft = (FeatureTypeInfoImpl) featureType;
-        
-        if ( ft.getAttributes() == null ) {
-            ft.setAttributes( new ArrayList() );
-        }
-        if ( ft.getMetadata() == null) {
-            ft.setMetadata(new HashMap());
-        }
+        resolveCollections(ft);
     }
 
     protected void resolve(LayerInfo layer) {
         setId(layer);
-        
-        // set empy collections, XStream won't do it for us
-        LayerInfoImpl li = (LayerInfoImpl) layer;
-        if(layer.getMetadata() == null) {
-            li.setMetadata(new HashMap<String, Serializable>());
-        }
-        if(layer.getStyles() == null) {
-            li.setStyles(new HashSet<StyleInfo>());
-        }
+        resolveCollections(layer);
     }
     
     protected void resolve(LayerGroupInfo layerGroup) {
         setId(layerGroup);
+        resolveCollections(layerGroup);
         LayerGroupInfoImpl lg = (LayerGroupInfoImpl) layerGroup;
         
         for ( int i = 0; i < lg.getLayers().size(); i++ ) {
@@ -1504,18 +1465,13 @@ public class CatalogImpl implements Catalog {
             LayerInfo resolved = ResolvingProxy.resolve( this, l );
             lg.getLayers().set( i, resolved );
         }
-        if ( lg.getStyles() == null ) {
-            lg.setStyles(new ArrayList<StyleInfo>());
-        }
+        
         for ( int i = 0; i < lg.getStyles().size(); i++ ) {
             StyleInfo s = lg.getStyles().get( i );
             StyleInfo resolved = ResolvingProxy.resolve( this, s );
             lg.getStyles().set( i, resolved );
         }
         
-        if ( lg.getMetadata() == null ) {
-            lg.setMetadata(new HashMap());
-        }
     }
     
     protected void resolve(StyleInfo style) {
@@ -1525,6 +1481,61 @@ public class CatalogImpl implements Catalog {
     
     protected void resolve(MapInfo map) {
         setId(map);
+    }
+    
+    /**
+     * Method which reflectively sets all collections when they are null.
+     */
+    protected void resolveCollections(Object object) {
+        ClassProperties properties = OwsUtils.getClassProperties( object.getClass() );
+        for ( String property : properties.properties() ) {
+            Method g = properties.getter( property, null );
+            if ( g == null ) {
+                continue;
+            }
+            
+            Class type = g.getReturnType();
+            //only continue if this is a collection or a map
+            if (  !(Map.class.isAssignableFrom( type ) || Collection.class.isAssignableFrom( type ) ) ) {
+                continue;
+            }
+            
+            //only continue if there is also a setter as well
+            Method s = properties.setter( property, null );
+            if ( s == null ) {
+                continue;
+            }
+            
+            //if the getter returns null, call the setter
+            try {
+                Object value = g.invoke( object, null );
+                if ( value == null ) {
+                    if ( Map.class.isAssignableFrom( type ) ) {
+                        if ( MetadataMap.class.isAssignableFrom( type ) ) {
+                            value = new MetadataMap();
+                        }
+                        else {
+                            value = new HashMap();
+                        }
+                    }
+                    else if ( List.class.isAssignableFrom( type ) ) {
+                        value = new ArrayList();
+                    }
+                    else if ( Set.class.isAssignableFrom( type ) ) {
+                        value = new HashSet();
+                    }
+                    else {
+                        throw new RuntimeException( "Unknown collection type:" + type.getName() );
+                    }
+                  
+                    //initialize
+                    s.invoke( object, value );
+                }
+            } 
+            catch (Exception e) {
+                throw new RuntimeException( e );
+            }
+        }
     }
     
     protected void setId( Object o ) {
