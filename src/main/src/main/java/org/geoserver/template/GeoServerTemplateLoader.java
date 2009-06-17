@@ -11,8 +11,13 @@ import freemarker.template.Configuration;
 
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.io.IOException;
@@ -67,10 +72,23 @@ public class GeoServerTemplateLoader implements TemplateLoader {
      * Delegate class based template loader, may be null depending on how
      */
     ClassTemplateLoader classTemplateLoader;
-
+    
+    /**
+     * GeoServer data directory 
+     */
+    GeoServerDataDirectory dd;
+    
     /**
      * Feature type directory to load template against. Its presence is mutually
      * exclusive with coverageName
+     * @deprecated Keeping this around for backwards compatability
+     */
+    ResourceInfo resource;
+    
+    /**
+     * Feature type directory to load template against. Its presence is mutually
+     * exclusive with coverageName
+     * @deprecated Keeping this around for backwards compatability
      */
     SimpleFeatureType featureType;
 
@@ -91,11 +109,25 @@ public class GeoServerTemplateLoader implements TemplateLoader {
      * @param caller The "calling" class, used to look up templates based with
      * {@link Class#getResource(String)}, may be <code>null</code>
      *
+     * @deprecated Use {@link #GeoServerTemplateLoader(Class, GeoServerResourceLoader)}  
      * @throws IOException
      */
     public GeoServerTemplateLoader(Class caller) throws IOException {
+        this(caller,GeoServerExtensions.bean(GeoServerResourceLoader.class));
+    }
+    
+    /**
+     * Constructs the template loader.
+     *
+     * @param caller The "calling" class, used to look up templates based with
+     * {@link Class#getResource(String)}, may be <code>null</code>
+     * @param rl The geoserver resource loader
+     *
+     * @throws IOException
+     */
+    public GeoServerTemplateLoader(Class caller, GeoServerResourceLoader rl) throws IOException {
         //create a file template loader to delegate to
-        fileTemplateLoader = new FileTemplateLoader(GeoserverDataDirectory.getGeoserverDataDirectory());
+        fileTemplateLoader = new FileTemplateLoader(rl.getBaseDirectory());
 
         //grab the catalog and store a reference
         catalog = (Catalog)GeoServerExtensions.bean("catalog");
@@ -104,31 +136,104 @@ public class GeoServerTemplateLoader implements TemplateLoader {
         if (caller != null) {
             classTemplateLoader = new ClassTemplateLoader(caller, "");
         }
+        
+        dd = new GeoServerDataDirectory(rl);
     }
 
     /**
      * Sets the feature type in which templates are loaded against.
-     * <p>
-     *
-     * </p>
-     * @param featureType
+     * @deprecated use {@link #setFeatureType(FeatureTypeInfo)}
      */
     public void setFeatureType(SimpleFeatureType featureType) {
         this.featureType = featureType;
+        FeatureTypeInfo ft = catalog.getFeatureTypeByName( featureType.getName() );
+        if ( ft == null ) {
+            return;
+            //throw new IllegalArgumentException("No feature type named " + featureType.getName() + " in catalog");
+        }
+        
+        setFeatureType(ft);
+    }
+    
+    public void setFeatureType(FeatureTypeInfo ft) {
+        this.resource = ft;
     }
 
     /**
      * Sets the coverage info
-     * 
-     * @param coverageName
+     * @deprecated use {@link #setCoverage(CoverageInfo)}
      */
     public void setCoverageName(String coverageName){
         this.coverageName = coverageName;
+        CoverageInfo c = catalog.getCoverageByName( coverageName );
+        if ( c == null ) {
+            return;
+            //throw new IllegalArgumentException("No coverage named " + coverageName + " in catalog");
+        }
+        setCoverage(c);
+    }
+    
+    public void setCoverage(CoverageInfo c) {
+        this.resource = c;
     }
     
     public Object findTemplateSource(String path) throws IOException {
         File template = null;
 
+        //template look up order
+        // 1. Relative to resource
+        // 2. Relative to store of the resource
+        // 3. Relative to workspace of resource
+        // 4. Relative to templates directory
+        // 5. Relative to the class
+        
+        if ( resource != null ) {
+            //first check relative to set resource
+            template = dd.findSuppResourceFile( resource, path);
+            
+            if ( template == null ) {
+              //next try relative to the store
+                template = dd.findSuppStoreFile( resource.getStore(), path);
+            }
+            
+            if ( template == null ) {
+                //next try relative to the workspace
+                template = dd.findSuppWorkspaceFile( resource.getStore().getWorkspace(), path);
+            }
+
+            if ( template != null ) {
+                return template;
+            }
+        }
+        
+        //for backwards compatability, use the old lookup mechanism
+        template = findTemplateSourceLegacy(path);
+        if ( template != null ) {
+            return template;
+        }
+        
+        //next, check the templates directory
+        template = (File) fileTemplateLoader.findTemplateSource("templates" + File.separator + path);
+
+        if (template != null) {
+            return template;
+        }
+
+        //final effort to use a class resource
+        if (classTemplateLoader != null) {
+            Object source = classTemplateLoader.findTemplateSource(path);
+
+            //wrap the source in a source that maintains the orignial path
+            if (source != null) {
+                return new ClassTemplateSource(path, source);
+            }
+        }
+
+        return null;
+    }
+    
+    File findTemplateSourceLegacy(String path) throws IOException {
+        File template = null;
         
         //first check relative to set feature type
         String baseDirName;
@@ -183,25 +288,7 @@ public class GeoServerTemplateLoader implements TemplateLoader {
             // the feature type is a remote one
             // No problem, we just go on, there won't be any specific template for it
         }
-    
-
-        //next, check the templates directory
-        template = (File) fileTemplateLoader.findTemplateSource("templates" + File.separator + path);
-
-        if (template != null) {
-            return template;
-        }
-
-        //final effort to use a class resource
-        if (classTemplateLoader != null) {
-            Object source = classTemplateLoader.findTemplateSource(path);
-
-            //wrap the source in a source that maintains the orignial path
-            if (source != null) {
-                return new ClassTemplateSource(path, source);
-            }
-        }
-
+        
         return null;
     }
 
