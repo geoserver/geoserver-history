@@ -1,3 +1,4 @@
+..  _app_schema_tutorial:
 Application Schema Tutorial
 ===========================
 
@@ -335,7 +336,7 @@ gsml:GeologicUnit WFS response
 Further reading
 ---------------
 
-* `GeoServer Feature Chaining User Guide <https://www.seegrid.csiro.au/twiki/bin/view/Infosrvices/GeoserverFeatureChainingUserGuide>`_
+* :ref:`GeoServer Feature Chaining User Guide <feature_chaining>`
 
 * `GeoServer Mapping File Property Interpolation <https://www.seegrid.csiro.au/twiki/bin/view/Infosrvices/GeoserverAppSchemaConfiguration>`_
 
