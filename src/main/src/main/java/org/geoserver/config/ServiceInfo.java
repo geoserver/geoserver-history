@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.geoserver.catalog.Info;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geotools.util.Version;
 
 /**
@@ -216,7 +217,7 @@ public interface ServiceInfo extends Info {
     /**
      * @uml.property name="metadata"
      */
-    Map<String,Serializable> getMetadata();
+    MetadataMap getMetadata();
     
     Map<Object,Object> getClientProperties();
 

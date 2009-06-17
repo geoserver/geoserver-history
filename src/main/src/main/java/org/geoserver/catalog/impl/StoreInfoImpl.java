@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.opengis.util.ProgressListener;
@@ -38,7 +39,7 @@ public abstract class StoreInfoImpl implements StoreInfo {
 
     Map<String, Serializable> connectionParameters = new HashMap<String, Serializable>();
 
-    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
+    MetadataMap metadata = new MetadataMap();
     
     Throwable error;
 
@@ -115,11 +116,11 @@ public abstract class StoreInfoImpl implements StoreInfo {
         this.connectionParameters = connectionParameters;
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, Serializable> metadata) {
+    public void setMetadata(MetadataMap metadata) {
         this.metadata = metadata;
     }
 

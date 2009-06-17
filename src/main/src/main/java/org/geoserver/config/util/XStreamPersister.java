@@ -27,6 +27,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
@@ -243,11 +244,13 @@ public class XStreamPersister {
         // GeoServerInfo
         xs.omitField(GeoServerInfoImpl.class, "clientProperties");
         xs.omitField(GeoServerInfoImpl.class, "geoServer");
+        xs.registerLocalConverter(GeoServerInfoImpl.class, "metadata", new MetadataMapConverter());
         
         // ServiceInfo
         xs.omitField(ServiceInfoImpl.class, "clientProperties");
         xs.omitField(ServiceInfoImpl.class, "geoServer");
-
+        xs.registerLocalConverter(ServiceInfoImpl.class, "metadata", new MetadataMapConverter());
+        
         // Catalog
         xs.omitField(CatalogImpl.class, "resourcePool");
         xs.omitField(CatalogImpl.class, "resourceLoader");
@@ -267,12 +270,12 @@ public class XStreamPersister {
         
         //WorkspaceInfo
         //xs.omitField( WorkspaceInfoImpl.class, "id");
-        xs.registerLocalConverter( WorkspaceInfoImpl.class, "metadata", new BreifMapConverter() );
+        xs.registerLocalConverter( WorkspaceInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         //NamespaceInfo
         //xs.omitField( NamespaceInfoImpl.class, "id");
         xs.omitField( NamespaceInfoImpl.class, "catalog");
-        xs.registerLocalConverter( NamespaceInfoImpl.class, "metadata", new BreifMapConverter() );
+        xs.registerLocalConverter( NamespaceInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // StoreInfo
         //xs.omitField(StoreInfoImpl.class, "id");
@@ -280,12 +283,12 @@ public class XStreamPersister {
         //xs.omitField(StoreInfoImpl.class, "workspace"); //handled by StoreInfoConverter
         xs.registerLocalConverter(StoreInfoImpl.class, "workspace", new ReferenceConverter(WorkspaceInfo.class));
         xs.registerLocalConverter(StoreInfoImpl.class, "connectionParameters", new BreifMapConverter() );
-        xs.registerLocalConverter(StoreInfoImpl.class, "metadata", new BreifMapConverter());
+        xs.registerLocalConverter(StoreInfoImpl.class, "metadata", new MetadataMapConverter());
         
         // StyleInfo
         //xs.omitField(StyleInfoImpl.class, "id");
         xs.omitField(StyleInfoImpl.class, "catalog");
-        xs.registerLocalConverter(StyleInfoImpl.class, "metadata", new BreifMapConverter() );
+        xs.registerLocalConverter(StyleInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // ResourceInfo
         //xs.omitField( ResourceInfoImpl.class, "id");
@@ -294,7 +297,7 @@ public class XStreamPersister {
         xs.registerLocalConverter( ResourceInfoImpl.class, "nativeCRS", new CRSConverter());
         xs.registerLocalConverter( ResourceInfoImpl.class, "store", new ReferenceConverter(StoreInfo.class));
         xs.registerLocalConverter( ResourceInfoImpl.class, "namespace", new ReferenceConverter(NamespaceInfo.class));
-        xs.registerLocalConverter( ResourceInfoImpl.class, "metadata", new BreifMapConverter() );
+        xs.registerLocalConverter( ResourceInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // FeatureTypeInfo
         
@@ -313,13 +316,13 @@ public class XStreamPersister {
         xs.registerLocalConverter( LayerInfoImpl.class, "resource", new ReferenceConverter( ResourceInfo.class ) );
         xs.registerLocalConverter( LayerInfoImpl.class, "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
         xs.registerLocalConverter( LayerInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ) );
-        xs.registerLocalConverter( LayerInfoImpl.class, "metadata", new BreifMapConverter() );
+        xs.registerLocalConverter( LayerInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // LayerGroupInfo
         //xs.omitField(LayerGroupInfoImpl.class, "id" );
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "layers", new ReferenceCollectionConverter( LayerInfo.class ));
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ));
-        xs.registerLocalConverter(LayerGroupInfoImpl.class, "metadata", new BreifMapConverter() );
+        xs.registerLocalConverter(LayerGroupInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         //ReferencedEnvelope
         xs.registerLocalConverter( ReferencedEnvelope.class, "crs", new SRSConverter() );
@@ -554,6 +557,36 @@ public class XStreamPersister {
         }
     }
     
+    /**
+     * Custom converter for the special metadata map.
+     */
+    class MetadataMapConverter extends BreifMapConverter {
+        
+        @Override
+        public boolean canConvert(Class type) {
+            return MetadataMap.class.equals(type) || super.canConvert(type);
+        }
+        
+        @Override
+        public void marshal(Object source, HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+            if ( source instanceof MetadataMap) {
+                MetadataMap mdmap = (MetadataMap) source;
+                source = mdmap.getMap();
+            }
+            
+            super.marshal(source, writer, context);
+        }
+        
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            Map map = (Map) super.unmarshal(reader, context);
+            if ( !(map instanceof MetadataMap ) ) {
+                map = new MetadataMap(map);
+            }
+            return map;
+        }
+    }
     /**
      * Converters which encodes an object by a reference, or its id.
      */

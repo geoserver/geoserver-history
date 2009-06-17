@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.geoserver.catalog.CatalogVisitor;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 
 public class NamespaceInfoImpl implements NamespaceInfo {
@@ -19,7 +20,7 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     String uri;
 
-    HashMap<String,Serializable> metadata = new HashMap();
+    MetadataMap metadata = new MetadataMap();
     
     public String getId() {
         return id;
@@ -45,11 +46,11 @@ public class NamespaceInfoImpl implements NamespaceInfo {
         this.uri = uri;
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
     
-    public void setMetadata(HashMap<String, Serializable> metadata) {
+    public void setMetadata(MetadataMap metadata) {
         this.metadata = metadata;
     }
 

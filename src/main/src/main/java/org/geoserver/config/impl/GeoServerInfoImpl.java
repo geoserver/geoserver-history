@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
@@ -38,7 +39,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     boolean verboseExceptions = false;
 
-    Map<String, Serializable> metadata = new HashMap<String, Serializable>();
+    MetadataMap metadata = new MetadataMap();
 
     Map<Object, Object> clientProperties = new HashMap<Object, Object>();
 
@@ -165,11 +166,11 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         this.adminUsername = adminUsername;
     }
     
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, Serializable> metadata) {
+    public void setMetadata(MetadataMap metadata) {
         this.metadata = metadata;
     }
 

@@ -40,6 +40,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -200,8 +201,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
                 GeoServerInfoImpl global = (GeoServerInfoImpl) new XStreamPersister.XML().load( in, GeoServerInfo.class );
                 // fill in default collection values if needed
+                //JD: this should not be here, it should be moved to a resolve() method
+                // on GeoServer, like the way the catalog does it
                 if(global.getMetadata() == null)
-                    global.setMetadata(new HashMap<String, Serializable>());
+                    global.setMetadata(new MetadataMap());
                 if(global.getClientProperties() == null)
                     global.setClientProperties(new HashMap<Object, Object>());
                 geoServer.setGlobal( global );    

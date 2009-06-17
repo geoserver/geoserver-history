@@ -58,7 +58,7 @@ public interface NamespaceInfo extends CatalogInfo {
      * </p>
      * 
      */
-    Map<String,Serializable> getMetadata();
+    MetadataMap getMetadata();
     
     /**
      * Two namespace objects are considred equal if they have the same "prefix"
