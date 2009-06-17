@@ -72,6 +72,7 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     }
     
     public void setNumDecimals(int numDecimals) {
+        this.numDecimals = numDecimals;
     }
 
     public FeatureType getFeatureType() throws IOException {
