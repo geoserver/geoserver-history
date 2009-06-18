@@ -19,6 +19,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -109,7 +110,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         });
 
         theForm.add(saveLink());
-        theForm.add(new BookmarkablePageLink("cancel", LayerPage.class));
+        theForm.add(cancelLink());
     }
 
     private SubmitLink saveLink() {
@@ -137,11 +138,21 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                             throw e;
                         }
                     }
-                    setResponsePage(LayerPage.class);
+                    onSuccessfulSave();
                 } catch (Exception e) {
                     LOGGER.log(Level.INFO, "Error saving layer", e);
                     error(e.getMessage());
                 }
+            }
+        };
+    }
+    
+    private Link cancelLink() {
+        return new Link("cancel") {
+
+            @Override
+            public void onClick() {
+                onCancel();                
             }
         };
     }
@@ -240,5 +251,19 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
      */
     public LayerInfo getLayerInfo() {
         return (LayerInfo) myLayerModel.getObject();
+    }
+    
+    /**
+     * By default brings back the user to LayerPage, subclasses can override this behavior
+     */
+    protected void onSuccessfulSave() {
+        setResponsePage(LayerPage.class);
+    }
+    
+    /**
+     * By default brings back the user to LayerPage, subclasses can override this behavior
+     */
+    protected void onCancel() {
+        setResponsePage(LayerPage.class);
     }
 }
