@@ -18,26 +18,26 @@ package org.geotools.xacml.geoxacml.attr;
 
 /**
  * @author Christian Mueller
- *
- * An exception class for GML parsing errors
+ * 
+ *         An exception class for GML parsing errors
  */
 public class GMLException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public GMLException() {
-	}
+    public GMLException() {
+    }
 
-	public GMLException(String message) {
-		super(message);
-	}
+    public GMLException(String message) {
+        super(message);
+    }
 
-	public GMLException(Throwable cause) {
-		super(cause);
-	}
+    public GMLException(Throwable cause) {
+        super(cause);
+    }
 
-	public GMLException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public GMLException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }

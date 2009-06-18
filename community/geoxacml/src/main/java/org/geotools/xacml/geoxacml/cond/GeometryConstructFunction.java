@@ -15,7 +15,6 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.geoxacml.cond;
 
 import java.net.URISyntaxException;
@@ -28,47 +27,46 @@ import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.cond.EvaluationResult;
 import com.vividsolutions.jts.geom.Geometry;
 
-
-
 /**
  * Abstract base class for geometry construct functions
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public abstract class GeometryConstructFunction extends GeoXACMLFunctionBase {
 
-	public GeometryConstructFunction(String functionName, int functionId, String paramType, boolean paramIsBag, int numParams, int minParams, String returnType, boolean returnsBag) {
-		super(functionName, functionId, paramType, paramIsBag, numParams, minParams,
-				returnType, returnsBag);
-	}
+    public GeometryConstructFunction(String functionName, int functionId, String paramType,
+            boolean paramIsBag, int numParams, int minParams, String returnType, boolean returnsBag) {
+        super(functionName, functionId, paramType, paramIsBag, numParams, minParams, returnType,
+                returnsBag);
+    }
 
-	public GeometryConstructFunction(String functionName, int functionId, String paramType, boolean paramIsBag, int numParams, String returnType, boolean returnsBag) {
-		super(functionName, functionId, paramType, paramIsBag, numParams, returnType,
-				returnsBag);
-	}
+    public GeometryConstructFunction(String functionName, int functionId, String paramType,
+            boolean paramIsBag, int numParams, String returnType, boolean returnsBag) {
+        super(functionName, functionId, paramType, paramIsBag, numParams, returnType, returnsBag);
+    }
 
-	public GeometryConstructFunction(String functionName, int functionId, String returnType, boolean returnsBag) {
-		super(functionName, functionId, returnType, returnsBag);
-	}
+    public GeometryConstructFunction(String functionName, int functionId, String returnType,
+            boolean returnsBag) {
+        super(functionName, functionId, returnType, returnsBag);
+    }
 
-	public GeometryConstructFunction(String functionName, int functionId, String[] paramTypes, boolean[] paramIsBag, String returnType, boolean returnsBag) {
-		super(functionName, functionId, paramTypes, paramIsBag, returnType, returnsBag);
-	}
+    public GeometryConstructFunction(String functionName, int functionId, String[] paramTypes,
+            boolean[] paramIsBag, String returnType, boolean returnsBag) {
+        super(functionName, functionId, paramTypes, paramIsBag, returnType, returnsBag);
+    }
 
-	protected EvaluationResult createGeometryInBagResult(Geometry resultGeom, String targetSrsName) {
-	    GeometryAttribute resultGeomAttr = null;
-	    
-	    try {
-			resultGeomAttr= new GeometryAttribute(
-					   resultGeom,
-					   targetSrsName,null,null,null);					   					   			
-	    } catch (URISyntaxException e) {
-	 	   // should not happen			
-	    }	    
-	    Set<GeometryAttribute> set = new HashSet<GeometryAttribute>();	    
-	    set.add(resultGeomAttr);	    
-	    BagAttribute bag  =new BagAttribute(resultGeomAttr.getType(),set);
-	    return new EvaluationResult(bag);
-	}
+    protected EvaluationResult createGeometryInBagResult(Geometry resultGeom, String targetSrsName) {
+        GeometryAttribute resultGeomAttr = null;
+
+        try {
+            resultGeomAttr = new GeometryAttribute(resultGeom, targetSrsName, null, null, null);
+        } catch (URISyntaxException e) {
+            // should not happen
+        }
+        Set<GeometryAttribute> set = new HashSet<GeometryAttribute>();
+        set.add(resultGeomAttr);
+        BagAttribute bag = new BagAttribute(resultGeomAttr.getType(), set);
+        return new EvaluationResult(bag);
+    }
 }

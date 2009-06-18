@@ -255,7 +255,7 @@ public class TestSupport  {
 		
 		while (entries.hasMoreElements()) {
 		    ZipEntry entry = entries.nextElement();
-		
+				    
 		    if (entry.isDirectory()) {
 		        File dir = new File(OUTPUTDIR_RESOURCES + entry.getName());
 		        dir.mkdir();

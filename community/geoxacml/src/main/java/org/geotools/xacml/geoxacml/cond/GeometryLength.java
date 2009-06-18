@@ -29,40 +29,36 @@ import com.sun.xacml.cond.EvaluationResult;
  * Calculates the length
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryLength extends GeometryScalarFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-length";
+    public static final String NAME = NAME_PREFIX + "geometry-length";
 
-    public GeometryLength() {        
-        super(NAME,0,
-        		new String[] {GeometryAttribute.identifier },
-        		new boolean[] { false},
-        		DoubleAttribute.identifier,false);
-              
+    public GeometryLength() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier }, new boolean[] { false },
+                DoubleAttribute.identifier, false);
+
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr =(GeometryAttribute)(argValues[0]); 
-           
-           double length =0;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   length = geomAttr.getGeometry().getLength();
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
 
-           return new EvaluationResult(new DoubleAttribute(length));		
-	}
+        double length = 0;
+
+        try {
+            length = geomAttr.getGeometry().getLength();
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        return new EvaluationResult(new DoubleAttribute(length));
+    }
 
 }

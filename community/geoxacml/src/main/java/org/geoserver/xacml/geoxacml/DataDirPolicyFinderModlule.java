@@ -3,7 +3,6 @@
  * application directory.
  */
 
-
 package org.geoserver.xacml.geoxacml;
 
 import java.io.File;
@@ -25,66 +24,105 @@ import com.sun.xacml.VersionConstraints;
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.PolicyFinderResult;
-import com.sun.xacml.support.finder.BasicPolicyFinderModule;
 import com.sun.xacml.support.finder.PolicyCollection;
 import com.sun.xacml.support.finder.PolicyReader;
 import com.sun.xacml.support.finder.TopLevelPolicyException;
 
+/**
+ * A PolicyFinderModule implementation reading policies form the GEOSERVER_DATA_DIR
+ * 
+ * Assumptions:
+ * 
+ * starting directory: geoxacml directory for policy matched against requests : geoxacml/byRequest
+ * directory for policy referenced by ohter policieis : geoxacml/byReference
+ * 
+ * Sub directories are searched recursively , all files with extension .xml or .XML are assumed to
+ * be policy files.
+ * 
+ * @author Christian Mueller
+ * 
+ */
 public class DataDirPolicyFinderModlule extends PolicyFinderModule {
 
-    protected PolicyCollection policiesByReference;
-    protected PolicyCollection policiesByRequest;
-    
-    private static final Logger logger =
-        Logger.getLogger(BasicPolicyFinderModule.class.getName());
+    public static String BASE_DIR = "geoxacml";
 
-    
+    public static String BY_REQUEST_DIR = "byRequest";
+
+    public static String BY_REFERENCE_DIR = "byReference";
+
+    protected PolicyCollection policiesByReference;
+
+    protected PolicyCollection policiesByRequest;
+
+    protected boolean validate;
+
+    private static final Logger logger = Logger.getLogger(DataDirPolicyFinderModlule.class
+            .getName());
+
+    /**
+     * Constructor, policies are not validated against the XML schema
+     * 
+     */
     public DataDirPolicyFinderModlule() {
+        this(false);
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param validate
+     *            if true, perform a XML schema validation
+     * 
+     */
+    public DataDirPolicyFinderModlule(boolean validate) {
+        this.validate = validate;
         this.policiesByReference = new PolicyCollection();
         this.policiesByRequest = new PolicyCollection();
     }
-    
+
     @Override
     public void init(PolicyFinder finder) {
-        
-        PolicyReader reader=null;
-//        try {
-            // TODO , enable Validation
-            //reader = new PolicyReader(finder, logger,new File(GeoXACML.getSchemaValidationURL().toURI()));
-            reader = new PolicyReader(finder, logger);
-//        } catch (URISyntaxException e) {
-//            // should not happen
-//        }
-        readPolicies(policiesByReference, "byId", reader);
-        readPolicies(policiesByRequest, "byRequest", reader);
-        
+
+        PolicyReader reader = null;
+        try {
+
+            if (validate)
+                reader = new PolicyReader(finder, logger, new File(GeoXACML.getPolicyXMLSchemaURL()
+                        .toURI()));
+            else
+                reader = new PolicyReader(finder, logger);
+        } catch (URISyntaxException e) {
+            // should not happen
+        }
+        readPolicies(policiesByReference, BY_REFERENCE_DIR, reader);
+        readPolicies(policiesByRequest, BY_REQUEST_DIR, reader);
+
     }
-    
+
     private void readPolicies(PolicyCollection coll, String subdir, PolicyReader reader) {
         List<String> fileNames = getXMLFileNames(subdir);
         for (String fileName : fileNames) {
             try {
                 AbstractPolicy policy = reader.readPolicy(new File(fileName));
-                if (! coll.addPolicy(policy))
+                if (!coll.addPolicy(policy))
                     if (logger.isLoggable(Level.WARNING))
-                        logger.log(Level.WARNING, "tried to load the same " +
-                                   "policy multiple times: " + fileName);                
+                        logger.log(Level.WARNING, "tried to load the same "
+                                + "policy multiple times: " + fileName);
             } catch (ParsingException e) {
                 if (logger.isLoggable(Level.WARNING))
-                    logger.log(Level.WARNING, "Error reading policy: " + fileName,e);
+                    logger.log(Level.WARNING, "Error reading policy: " + fileName, e);
             }
         }
     }
-    
-    
+
     private List<String> getXMLFileNames(String subdir) {
-        String parent = "file:geoxacml/"+subdir;        
+        String parent = "file:" + BASE_DIR + "/" + subdir;
         File parentDir = GeoserverDataDirectory.findDataFile(parent);
         List<String> fileNames = new ArrayList<String>();
         collectXMLFiles(parentDir, fileNames);
         return fileNames;
     }
-    
+
     private void collectXMLFiles(File f, List<String> fileNames) {
         if (f.isFile()) {
             if (f.getName().endsWith(".xml") || f.getName().endsWith(".XML"))
@@ -92,13 +130,13 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
         }
         if (f.isDirectory()) {
             File[] children = f.listFiles();
-            if (children==null) return;
+            if (children == null)
+                return;
             for (File child : children) {
                 collectXMLFiles(child, fileNames);
             }
         }
     }
-    
 
     @Override
     public PolicyFinderResult findPolicy(EvaluationCtx context) {
@@ -118,15 +156,15 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
     @Override
     public PolicyFinderResult findPolicy(URI idReference, int type, VersionConstraints constraints,
             PolicyMetaData parentMetaData) {
-        
-        AbstractPolicy policy = policiesByReference.getPolicy(idReference.toString(),type, constraints);
+
+        AbstractPolicy policy = policiesByReference.getPolicy(idReference.toString(), type,
+                constraints);
 
         if (policy == null)
-             return new PolicyFinderResult();
+            return new PolicyFinderResult();
         else
-            return new PolicyFinderResult(policy);                
+            return new PolicyFinderResult(policy);
     }
-
 
     @Override
     public void invalidateCache() {
@@ -141,7 +179,7 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
 
     @Override
     public boolean isRequestSupported() {
-        return false;
+        return true;
     }
 
 }

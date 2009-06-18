@@ -29,41 +29,36 @@ import com.sun.xacml.cond.EvaluationResult;
  * Caculates the area
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryArea extends GeometryScalarFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-area";
+    public static final String NAME = NAME_PREFIX + "geometry-area";
 
+    public GeometryArea() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier }, new boolean[] { false },
+                DoubleAttribute.identifier, false);
 
-    public GeometryArea() {        
-        super(NAME,0,
-        		new String[] {GeometryAttribute.identifier },
-        		new boolean[] { false},
-        		DoubleAttribute.identifier,false);
-              
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr =(GeometryAttribute)(argValues[0]); 
-           
-           double area =0;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   area = geomAttr.getGeometry().getArea();
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
 
-           return new EvaluationResult(new DoubleAttribute(area));		
-	}
+        double area = 0;
+
+        try {
+            area = geomAttr.getGeometry().getArea();
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        return new EvaluationResult(new DoubleAttribute(area));
+    }
 
 }

@@ -21,23 +21,21 @@ import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 
 import com.sun.xacml.attr.BooleanAttribute;
 
-
-
 /**
  * Abstract base class for geomtry topological functions
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public abstract class GeometryTopologicalFunction extends GeoXACMLFunctionBase {
-	
-    protected static final String params [] = { GeometryAttribute.identifier,
-    	GeometryAttribute.identifier };
-    protected static final boolean bagParams [] = { false, false };
+
+    protected static final String params[] = { GeometryAttribute.identifier,
+            GeometryAttribute.identifier };
+
+    protected static final boolean bagParams[] = { false, false };
 
     public GeometryTopologicalFunction(String name) {
-    	super(name, 0, params, bagParams, BooleanAttribute.identifier,
-                false);
+        super(name, 0, params, bagParams, BooleanAttribute.identifier, false);
     }
-        
+
 }

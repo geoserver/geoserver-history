@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Policy xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	PolicyId="urn:oasis:names:tc:xacml:2.0:gis:PermitAlice"
-	RuleCombiningAlgId=
-	"urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
+	RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
 	<Target>
 	  <Subjects>
 	    <Subject>
 		<SubjectMatch
 		MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-			<AttributeValue
-			DataType="http://www.w3.org/2001/XMLSchema#string">
-				Alice
-			</AttributeValue>
+			<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Alice</AttributeValue>
 			<SubjectAttributeDesignator
 				DataType="http://www.w3.org/2001/XMLSchema#string"
 			AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id" />

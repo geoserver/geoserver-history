@@ -20,22 +20,20 @@ import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 
 import com.sun.xacml.attr.BooleanAttribute;
 
-
-
 /**
  * Abstract base class for geomtry check functions
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public abstract class GeometryCheckFunction extends GeoXACMLFunctionBase {
-	
-    protected static final String params [] = { GeometryAttribute.identifier};
-    protected static final boolean bagParams [] = { false  };
+
+    protected static final String params[] = { GeometryAttribute.identifier };
+
+    protected static final boolean bagParams[] = { false };
 
     public GeometryCheckFunction(String name) {
-    	super(name, 0, params, bagParams, BooleanAttribute.identifier,
-                false);
+        super(name, 0, params, bagParams, BooleanAttribute.identifier, false);
     }
-        
+
 }

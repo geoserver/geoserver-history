@@ -30,42 +30,39 @@ import com.sun.xacml.cond.EvaluationResult;
  * Checks isWithinDistance
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryIsWithinDistance extends GeometryScalarFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-is-within-distance";
+    public static final String NAME = NAME_PREFIX + "geometry-is-within-distance";
 
+    public GeometryIsWithinDistance() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier, GeometryAttribute.identifier,
+                DoubleAttribute.identifier }, new boolean[] { false, false, false },
+                BooleanAttribute.identifier, false);
 
-    public GeometryIsWithinDistance() {        
-        super(NAME,0,
-        		new String[] {GeometryAttribute.identifier,GeometryAttribute.identifier ,DoubleAttribute.identifier},
-        		new boolean[] { false, false,false},
-        		BooleanAttribute.identifier,false);
-              
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr1 =(GeometryAttribute)(argValues[0]);
-           GeometryAttribute geomAttr2 =(GeometryAttribute)(argValues[1]);
-           DoubleAttribute withinDistance = (DoubleAttribute) (argValues[2]);
-           
-           boolean evalResult = false;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   evalResult =geomAttr1.getGeometry().isWithinDistance(geomAttr2.getGeometry(), withinDistance.getValue());
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
-           return EvaluationResult.getInstance(evalResult);		
-	}
+        GeometryAttribute geomAttr1 = (GeometryAttribute) (argValues[0]);
+        GeometryAttribute geomAttr2 = (GeometryAttribute) (argValues[1]);
+        DoubleAttribute withinDistance = (DoubleAttribute) (argValues[2]);
+
+        boolean evalResult = false;
+
+        try {
+            evalResult = geomAttr1.getGeometry().isWithinDistance(geomAttr2.getGeometry(),
+                    withinDistance.getValue());
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+        return EvaluationResult.getInstance(evalResult);
+    }
 
 }

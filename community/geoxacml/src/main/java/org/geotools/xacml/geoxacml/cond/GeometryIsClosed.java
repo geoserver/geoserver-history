@@ -33,49 +33,46 @@ import com.vividsolutions.jts.geom.Point;
  * Check if a geometry is closed
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryIsClosed extends GeometryCheckFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-is-closed";
+    public static final String NAME = NAME_PREFIX + "geometry-is-closed";
 
-
-    public GeometryIsClosed() {        
-        super(NAME);              
+    public GeometryIsClosed() {
+        super(NAME);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr  =(GeometryAttribute)(argValues[0]); 
-           
-           boolean evalResult = false;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   Geometry geom = geomAttr.getGeometry();
-        	   if (geom.isEmpty())
-        		   evalResult=true;
-        	   else if (geom instanceof Point || geom instanceof MultiPoint)
-        		   evalResult=true;
-        	   else if (geom instanceof LineString)
-        		   evalResult=((LineString)geom).isClosed();
-        	   else if (geom instanceof MultiLineString)
-        		   evalResult=((MultiLineString)geom).isClosed();
-        	   else
-        		   evalResult=false;
-        		   //evalResult= geom.getBoundary().isEmpty();
-        	   
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
-           return EvaluationResult.getInstance(evalResult);
-		
-	}
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
+
+        boolean evalResult = false;
+
+        try {
+            Geometry geom = geomAttr.getGeometry();
+            if (geom.isEmpty())
+                evalResult = true;
+            else if (geom instanceof Point || geom instanceof MultiPoint)
+                evalResult = true;
+            else if (geom instanceof LineString)
+                evalResult = ((LineString) geom).isClosed();
+            else if (geom instanceof MultiLineString)
+                evalResult = ((MultiLineString) geom).isClosed();
+            else
+                evalResult = false;
+            // evalResult= geom.getBoundary().isEmpty();
+
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+        return EvaluationResult.getInstance(evalResult);
+
+    }
 
 }
