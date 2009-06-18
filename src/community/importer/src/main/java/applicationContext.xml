@@ -7,9 +7,9 @@
    -->
   <bean id="importerMenuPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="importer"/>
-    <property name="titleKey" value="ImporterPage.menu"/>
-    <property name="descriptionKey" value="ImporterPage.description"/>
-    <property name="componentClass" value="org.geoserver.web.importer.ImporterPage"/>
+    <property name="titleKey" value="ImportPage.menu"/>
+    <property name="descriptionKey" value="ImportPage.description"/>
+    <property name="componentClass" value="org.geoserver.web.importer.ImportPage"/>
   </bean>
   
   <!-- the import thread pool manager -->

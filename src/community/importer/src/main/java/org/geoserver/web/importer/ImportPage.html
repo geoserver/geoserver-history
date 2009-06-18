@@ -1,0 +1,24 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:extend>
+    <form wicket:id="form">
+        <fieldset>
+            <legend><span><wicket:message key="projectInfo">Project</wicket:message></span></legend>
+            <ul>
+                <li>
+                   <label for="project"><wicket:message key="projectName">projectName</wicket:message>:</label> 
+                   <input type="text" wicket:id="project" id="project" />
+                </li>
+                <li>
+                   <label for="directory"><wicket:message key="directory">directory</wicket:message></label> 
+                   <input type="text" wicket:id="directory" id="directory" size="50"/>
+                </li>
+            </ul>
+            <div class="button-group selfclear">
+                <a href="#" wicket:id="import"><wicket:message key="import">Import</wicket:message></a> 
+            </div>
+        </fieldset>
+    </form>
+</wicket:extend>
+</body>
+</html>

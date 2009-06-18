@@ -81,7 +81,6 @@ public class FeatureTypeImporter  implements Runnable {
                         catalog.add(featureType);
                         try {
                             catalog.add(layer);
-                            summary.completeLayer(layerName, layer, SUCCESS);
                         } catch(Exception e) {
                             // will be caught by the external try/catch, here we just try to undo 
                             // the feature type saving (transactions, where are thou)
@@ -91,6 +90,7 @@ public class FeatureTypeImporter  implements Runnable {
                     }
                     summary.completeLayer(layerName, layer, status);
                 } catch (Exception e) {
+                    e.printStackTrace();
                     summary.completeLayer(layerName, layer, e);
                 }
                 

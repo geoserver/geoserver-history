@@ -29,12 +29,12 @@ import org.geotools.data.DataStoreFinder;
 import org.geotools.data.directory.DirectoryDataStoreFactory;
 
 @SuppressWarnings("serial")
-public class ImporterPage extends GeoServerSecuredPage {
+public class ImportPage extends GeoServerSecuredPage {
     String directory = "";
 
     String project = "";
     
-    public ImporterPage() {
+    public ImportPage() {
         Form form = new Form("form", new CompoundPropertyModel(this));
         add(form);
 
@@ -119,12 +119,12 @@ public class ImporterPage extends GeoServerSecuredPage {
                 params.put(DirectoryDataStoreFactory.NAMESPACE.key, new URI("http://www.geoserver.org"));
                 store = DataStoreFinder.getDataStore(params);
                 if (store == null) {
-                    error(validatable, "ImporterPage.invalidPath");
+                    error(validatable, "ImportPage.invalidPath");
                 } else if (store.getTypeNames().length == 0) {
-                    error(validatable, "ImporterPage.noData");
+                    error(validatable, "ImportPage.noData");
                 }
             } catch(Exception e) {
-                error(validatable, "ImporterPage.noData");
+                error(validatable, "ImportPage.noData");
             }
         }
     }
@@ -143,7 +143,7 @@ public class ImporterPage extends GeoServerSecuredPage {
             // new store too?
             StoreInfo store = getCatalog().getStoreByName(ws, project, StoreInfo.class);
             if(store != null)
-                error(validatable, "ImporterPage.duplicateStore", 
+                error(validatable, "ImportPage.duplicateStore", 
                         Collections.singletonMap("project", project));
         }
         
