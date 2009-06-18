@@ -19,7 +19,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.web.GeoServerApplication;
 import org.geotools.util.logging.Logging;
@@ -307,6 +307,45 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
          */
         public boolean isVisible();
     }
+    
+    /**
+     * Base property class. Assumes T is serializable, if it's not, manually override
+     * the getModel() method
+     */
+    public abstract static class AbstractProperty<T> implements Property<T> {
+        String name;
+        boolean visible;
+        
+        public AbstractProperty(String name) {
+            this(name, true);
+        }
+        
+        public AbstractProperty(String name, boolean visible) {
+            this.name = name;
+            this.visible = visible;
+        }
+        
+        public Comparator<T> getComparator() {
+            return new PropertyComparator<T>(this);
+        }
+
+        public IModel getModel(IModel itemModel) {
+            return new Model((Serializable) getPropertyValue((T) itemModel.getObject()));
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isVisible() {
+            return visible;
+        }
+        
+        @Override
+        public String toString() {
+            return "Property[" + name + "]";
+        }
+    }
 
     /**
      * A Property implementation that uses BeanUtils to access a bean properties
@@ -315,26 +354,16 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
      * 
      * @param <T>
      */
-    public static class BeanProperty<T> implements Property<T> {
-        String name;
-
+    public static class BeanProperty<T> extends AbstractProperty<T> {
         String propertyPath;
-
-        boolean visible;
 
         public BeanProperty(String key, String propertyPath) {
             this(key, propertyPath, true);
         }
 
         public BeanProperty(String key, String propertyPath, boolean visible) {
-            super();
-            this.name = key;
+            super(key, visible);
             this.propertyPath = propertyPath;
-            this.visible = visible;
-        }
-
-        public String getName() {
-            return name;
         }
 
         public Object getPropertyValue(T bean) {
@@ -348,18 +377,6 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
                 throw new RuntimeException("Could not find property " + propertyPath + " in "
                         + bean.getClass(), e);
             }
-        }
-
-        public IModel getModel(IModel itemModel) {
-            return new PropertyModel(itemModel, propertyPath);
-        }
-
-        public Comparator<T> getComparator() {
-            return new PropertyComparator(this);
-        }
-
-        public boolean isVisible() {
-            return visible;
         }
 
         @Override

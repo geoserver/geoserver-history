@@ -131,15 +131,19 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
                         Component component = getComponentForProperty("component", itemModel,
                                 property);
-
-                        // add some checks for the id, the error message
-                        // that wicket returns in case of mismatch is not
-                        // that helpful
-                        if (!"component".equals(component.getId()))
+                        
+                        if(component == null) {
+                            // show a plain label if the the subclass did not create any component
+                            component = new Label(id, property.getModel(itemModel));
+                        } else if (!"component".equals(component.getId())) {
+                            // add some checks for the id, the error message
+                            // that wicket returns in case of mismatch is not
+                            // that helpful
                             throw new IllegalArgumentException("getComponentForProperty asked "
                                     + "to build a component " + "with id = 'component' "
                                     + "for property '" + property.getName() + "', but got '"
                                     + component.getId() + "' instead");
+                        }
                         item.add(component);
                     }
 
@@ -385,7 +389,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
     /**
      * Returns the component that will represent a property of a table item. Usually it should be a
-     * label, or a link, but you can return pretty much everything.
+     * label, or a link, but you can return pretty much everything. The subclass can also return null,
+     * in that case a label will be created
      * 
      * @param itemModel
      * @param property
