@@ -5,12 +5,15 @@ import static org.geoserver.web.importer.ImportSummaryProvider.*;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.geoserver.importer.ImportStatus;
 import org.geoserver.importer.ImportSummary;
 import org.geoserver.importer.LayerSummary;
 import org.geoserver.web.CatalogIconFactory;
@@ -19,6 +22,7 @@ import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.demo.PreviewLayer;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
+import org.geoserver.web.wicket.SimpleExternalLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 @SuppressWarnings("serial")
@@ -49,26 +53,18 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                 } else if(property == COMMANDS) {
                     Fragment f = new Fragment(id, "commands", ImportSummaryPage.this);
 
+                    ExternalLink link = new ExternalLink("preview", "#");
                     if(layerSummary.getStatus().successful()) {
                         // TODO: move the preview link generation ability to some utility object
                         PreviewLayer preview = new PreviewLayer(layerSummary.getLayer());
-                        String link = preview.getWmsLink() + "&format=application/openlayers";
-                        f.add(new ExternalLink("preview", link));
+                        String url = "window.open(\"" + preview.getWmsLink() + "&format=application/openlayers\")";
+                        link.add(new AttributeAppender("onclick", new Model(url), ";"));
                     } else {
-                        ExternalLink link = new ExternalLink("preview", "#");
                         link.setEnabled(false);
-                        f.add(link);
                     }
+                    f.add(link);
                     
-                    Link editLink = new Link("edit") {
-
-                        @Override
-                        public void onClick() {
-                            Page p = new ResourceConfigurationPage(layerSummary.getLayer(), true);
-                            setResponsePage(p);
-                        }
-                        
-                    };
+                    Link editLink = editLink(layerSummary);
                     editLink.setEnabled(layerSummary.getLayer() != null);
                     f.add(editLink);
                     return f;
@@ -76,9 +72,34 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                 return null;
             }
 
+            
         };
         table.setOutputMarkupId(true);
         table.setFilterable(false);
         add(table);
     }
+    
+    Link editLink(final LayerSummary layerSummary) {
+        return new Link("edit") {
+
+            @Override
+            public void onClick() {
+                Page p = new ResourceConfigurationPage(layerSummary.getLayer(), true) {
+                    @Override
+                    protected void onSuccessfulSave() {
+                        setResponsePage(ImportSummaryPage.this);
+                        layerSummary.setStatus(ImportStatus.SUCCESS);
+                    }
+                    
+                    @Override
+                    protected void onCancel() {
+                        setResponsePage(ImportSummaryPage.this);
+                    }
+                };
+                setResponsePage(p);
+            }
+            
+        };
+    }
+
 }
