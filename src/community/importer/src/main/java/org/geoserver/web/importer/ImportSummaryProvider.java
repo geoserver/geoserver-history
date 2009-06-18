@@ -7,7 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.importer.LayerSummary;
@@ -73,7 +72,7 @@ public class ImportSummaryProvider extends GeoServerDataProvider<LayerSummary> {
     }
 
     public IModel model(Object object) {
-        return new Model((LayerSummary) object);
+        return new LayerSummaryModel((LayerSummary) object);
     }
 
 }
