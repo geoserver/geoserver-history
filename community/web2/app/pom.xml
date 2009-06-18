@@ -326,5 +326,15 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>printing</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>printing</artifactId>
+          <version>${project.version}</version> 
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>
