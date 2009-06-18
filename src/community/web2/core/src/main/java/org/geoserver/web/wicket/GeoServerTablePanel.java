@@ -134,7 +134,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                         
                         if(component == null) {
                             // show a plain label if the the subclass did not create any component
-                            component = new Label(id, property.getModel(itemModel));
+                            component = new Label("component", property.getModel(itemModel));
                         } else if (!"component".equals(component.getId())) {
                             // add some checks for the id, the error message
                             // that wicket returns in case of mismatch is not
