@@ -14,7 +14,7 @@ import org.geoserver.catalog.ProjectionPolicy;
 import org.geotools.data.DataAccess;
 import org.opengis.feature.type.Name;
 
-public class FeatureTypeImporter {
+public class FeatureTypeImporter  implements Runnable {
     DataStoreInfo storeInfo;
 
     String defaultSRS;
@@ -22,18 +22,22 @@ public class FeatureTypeImporter {
     Catalog catalog;
 
     ImportSummary summary;
+    
+    boolean cancelled;
 
     public FeatureTypeImporter(DataStoreInfo store, String defaultSRS, Catalog catalog) {
         this.storeInfo = store;
         this.defaultSRS = defaultSRS;
         this.catalog = catalog;
     }
+    
+    public String getProject() {
+        return storeInfo.getName();
+    }
 
     public void run() {
         DataAccess da = null;
         try {
-            summary = new ImportSummary();
-
             NamespaceInfo namespace = catalog.getNamespaceByPrefix(storeInfo.getWorkspace().getName());
 
             CatalogBuilder builder = new CatalogBuilder(catalog);
@@ -42,6 +46,7 @@ public class FeatureTypeImporter {
             // cast necessary due to some classpath oddity/geoapi issue, the compiler
             // complained about getNames() returning a List<Object>...
             List<Name> names = da.getNames();
+            summary = new ImportSummary(storeInfo.getName(), names.size());
             for (Name name : names) {
                 // start information
                 String layerName = name.getLocalPart();
@@ -53,6 +58,9 @@ public class FeatureTypeImporter {
                     FeatureTypeInfo featureType = builder.buildFeatureType(name);
                     layer = builder.buildLayer(featureType);
                     ImportStatus status = SUCCESS;
+                    
+                    if(cancelled)
+                        return;
                     
                     // if we have a default
                     if (layer.getResource().getSRS() == null && layer.getResource().getNativeCRS() != null) {
@@ -85,6 +93,9 @@ public class FeatureTypeImporter {
                 } catch (Exception e) {
                     summary.completeLayer(layerName, layer, e);
                 }
+                
+                if(cancelled)
+                    return;
             }
 
             summary.end();
@@ -98,5 +109,9 @@ public class FeatureTypeImporter {
 
     public ImportSummary getSummary() {
         return summary;
+    }
+    
+    public void cancel() {
+        this.cancelled = true;
     }
 }

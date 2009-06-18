@@ -22,6 +22,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.importer.FeatureTypeImporter;
+import org.geoserver.importer.ImporterThreadManager;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -88,10 +89,10 @@ public class ImporterPage extends GeoServerSecuredPage {
                     
                     // build and run the importer
                     FeatureTypeImporter importer = new FeatureTypeImporter(si, null, getCatalog());
-                    importer.run();
+                    ImporterThreadManager manager = (ImporterThreadManager) getGeoServerApplication().getBean("importerPool");
+                    String importerKey = manager.startImporter(importer);
                     
-                    setResponsePage(new ImportSummaryPage(importer.getSummary()));
-                    
+                    setResponsePage(new ImportProgressPage(importerKey));
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Error while setting up mass import", e);
                 }

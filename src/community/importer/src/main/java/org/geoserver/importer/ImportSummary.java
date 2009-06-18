@@ -16,6 +16,8 @@ public class ImportSummary implements Serializable {
     long endTime;
 
     int totalLayers;
+    
+    int processedLayers;
 
     int failures;
 
@@ -23,27 +25,38 @@ public class ImportSummary implements Serializable {
     
     Exception error;
     
+    String project;
+    
     // concurrent list so that we can manipulate it while it's being iterated over
     List<LayerSummary> layers = new CopyOnWriteArrayList<LayerSummary>();
 
-    public ImportSummary() {
-        startTime = System.currentTimeMillis();
+    public ImportSummary(String project, int totalLayers) {
+        this.project = project;
+        this.totalLayers = totalLayers;
+        this.startTime = System.currentTimeMillis();
+    }
+
+    public String getProject() {
+        return project;
     }
 
     public void newLayer(String currentLayer) {
-        totalLayers++;
         this.currentLayer = currentLayer;
     }
 
-    public void end(Exception error) {
+    void end(Exception error) {
         this.error = error;
         this.currentLayer = null;
         this.endTime = System.currentTimeMillis();
     }
 
-    public void end() {
+    void end() {
         this.currentLayer = null;
         this.endTime = System.currentTimeMillis();
+    }
+    
+    public boolean isCompleted() {
+        return currentLayer == null;
     }
 
     public long getStartTime() {
@@ -62,6 +75,10 @@ public class ImportSummary implements Serializable {
         return layers;
     }
 
+    public int getProcessedLayers() {
+        return processedLayers;
+    }
+
     public int getFailures() {
         return failures;
     }
@@ -70,15 +87,17 @@ public class ImportSummary implements Serializable {
         return currentLayer;
     }
 
-    public void completeLayer(String layerName, LayerInfo layer, ImportStatus status) {
+    void completeLayer(String layerName, LayerInfo layer, ImportStatus status) {
         layers.add(new LayerSummary(layerName, layer, status));
         if(status.successful())
             failures++;
+        processedLayers++;
     }
     
-    public void completeLayer(String layerName, LayerInfo layer, Exception error) {
+    void completeLayer(String layerName, LayerInfo layer, Exception error) {
         layers.add(new LayerSummary(layerName, layer, error));
         failures++;
+        processedLayers++;
     }
 
 }
