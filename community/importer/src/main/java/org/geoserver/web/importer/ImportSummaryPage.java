@@ -22,7 +22,6 @@ import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.demo.PreviewLayer;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
-import org.geoserver.web.wicket.SimpleExternalLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 @SuppressWarnings("serial")
@@ -43,7 +42,15 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<LayerSummary> property) {
                 final LayerSummary layerSummary = (LayerSummary) itemModel.getObject();
-                if(property == SUCCESS) {
+                if(property == LAYER) {
+                    Fragment f = new Fragment(id, "edit", ImportSummaryPage.this);
+                    
+                    Link editLink = editLink(layerSummary);
+                    editLink.setEnabled(layerSummary.getLayer() != null);
+                    f.add(editLink);
+                    
+                    return f;
+                } else if(property == STATUS) {
                     final CatalogIconFactory icons = CatalogIconFactory.get();
                     ResourceReference icon = layerSummary.getStatus().successful() ? 
                             icons.getEnabledIcon() : icons.getDisabledIcon();
@@ -51,7 +58,7 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                     f.add(new Image("icon", icon));
                     return f;
                 } else if(property == COMMANDS) {
-                    Fragment f = new Fragment(id, "commands", ImportSummaryPage.this);
+                    Fragment f = new Fragment(id, "preview", ImportSummaryPage.this);
 
                     ExternalLink link = new ExternalLink("preview", "#");
                     if(layerSummary.getStatus().successful()) {
@@ -64,9 +71,6 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                     }
                     f.add(link);
                     
-                    Link editLink = editLink(layerSummary);
-                    editLink.setEnabled(layerSummary.getLayer() != null);
-                    f.add(editLink);
                     return f;
                 }
                 return null;
@@ -80,7 +84,7 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
     }
     
     Link editLink(final LayerSummary layerSummary) {
-        return new Link("edit") {
+        Link link = new Link("edit") {
 
             @Override
             public void onClick() {
@@ -100,6 +104,13 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
             }
             
         };
+        // keep the last modified name if possible
+        if(layerSummary.getLayer() != null)
+            link.add(new Label("name", layerSummary.getLayer().getName()));
+        else
+            link.add(new Label("name", layerSummary.getLayerName()));
+        
+        return link;
     }
 
 }
