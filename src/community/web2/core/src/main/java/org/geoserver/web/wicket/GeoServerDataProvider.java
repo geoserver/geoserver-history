@@ -330,7 +330,11 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         }
 
         public IModel getModel(IModel itemModel) {
-            return new Model((Serializable) getPropertyValue((T) itemModel.getObject()));
+            Object value = getPropertyValue((T) itemModel.getObject());
+            if(value instanceof IModel)
+                return (IModel) value;
+            else
+                return new Model((Serializable) value);
         }
 
         public String getName() {
