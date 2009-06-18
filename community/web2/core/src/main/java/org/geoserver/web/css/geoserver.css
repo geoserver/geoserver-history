@@ -801,6 +801,28 @@ overflow: auto;
 border: 1px solid #ccc;
 }
 
+div.progress-bar {
+-moz-border-radius-bottomleft:5px;
+-moz-border-radius-bottomright:5px;
+-moz-border-radius-topleft:5px;
+-moz-border-radius-topright:5px;
+background-color:#E8E6E6;
+border:1px solid #555555;
+float:none;
+height:16px;
+margin:1.2em auto;
+width:50%;
+}
+
+div.progress-bar span.bar {
+background-image: url(../img/status-bar-bg.png);
+background-repeat:repeat.x;
+display:block;
+height:16px;
+overflow:hidden;
+text-indent:-9999em;
+}
+
 
 /* Data page styles */
 span.command {
