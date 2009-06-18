@@ -15,7 +15,6 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.geoxacml.cond;
 
 import java.util.List;
@@ -30,37 +29,34 @@ import com.sun.xacml.cond.EvaluationResult;
  * Check if a geometry is simple
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryIsSimple extends GeometryCheckFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-is-simple";
+    public static final String NAME = NAME_PREFIX + "geometry-is-simple";
 
-
-    public GeometryIsSimple() {        
-        super(NAME);              
+    public GeometryIsSimple() {
+        super(NAME);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr  =(GeometryAttribute)(argValues[0]); 
-           
-           boolean evalResult = false;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   evalResult=geomAttr.getGeometry().isSimple();
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
-           return EvaluationResult.getInstance(evalResult);
-		
-	}
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
+
+        boolean evalResult = false;
+
+        try {
+            evalResult = geomAttr.getGeometry().isSimple();
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+        return EvaluationResult.getInstance(evalResult);
+
+    }
 
 }

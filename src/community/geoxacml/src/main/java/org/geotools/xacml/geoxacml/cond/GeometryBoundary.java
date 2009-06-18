@@ -29,41 +29,36 @@ import com.vividsolutions.jts.geom.Geometry;
  * Calulates the boundary of a geometry
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryBoundary extends GeometryConstructFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-boundary";
+    public static final String NAME = NAME_PREFIX + "geometry-boundary";
 
-
-    public GeometryBoundary() {        
-        super(NAME,0,
-        		new String[] { GeometryAttribute.identifier},
-        		new boolean[] { false},
-        		GeometryAttribute.identifier,true);              
+    public GeometryBoundary() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier }, new boolean[] { false },
+                GeometryAttribute.identifier, true);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr = (GeometryAttribute)(argValues[0]); 
-           
-           Geometry resultGeom = null;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   resultGeom=geomAttr.getGeometry().getBoundary();
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
-           
-           return createGeometryInBagResult(resultGeom,geomAttr.getSrsName());
-           		
-	}
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
+
+        Geometry resultGeom = null;
+
+        try {
+            resultGeom = geomAttr.getGeometry().getBoundary();
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        return createGeometryInBagResult(resultGeom, geomAttr.getSrsName());
+
+    }
 
 }

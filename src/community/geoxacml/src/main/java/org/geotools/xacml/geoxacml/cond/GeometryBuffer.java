@@ -30,42 +30,37 @@ import com.vividsolutions.jts.geom.Geometry;
  * Executes a buffer operation
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryBuffer extends GeometryConstructFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-buffer";
+    public static final String NAME = NAME_PREFIX + "geometry-buffer";
 
-
-    public GeometryBuffer() {        
-        super(NAME,0,
-        		new String[] { GeometryAttribute.identifier,DoubleAttribute.identifier},
-        		new boolean[] { false,false},
-        		GeometryAttribute.identifier,true);              
+    public GeometryBuffer() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier, DoubleAttribute.identifier },
+                new boolean[] { false, false }, GeometryAttribute.identifier, true);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr = (GeometryAttribute)(argValues[0]); 
-           DoubleAttribute doubleAttr = (DoubleAttribute) (argValues[1]);
-           
-           Geometry resultGeom = null;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   resultGeom=geomAttr.getGeometry().buffer(doubleAttr.getValue());
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
+        DoubleAttribute doubleAttr = (DoubleAttribute) (argValues[1]);
 
-           return createGeometryInBagResult(resultGeom,geomAttr.getSrsName());
-           		
-	}
+        Geometry resultGeom = null;
+
+        try {
+            resultGeom = geomAttr.getGeometry().buffer(doubleAttr.getValue());
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        return createGeometryInBagResult(resultGeom, geomAttr.getSrsName());
+
+    }
 
 }

@@ -29,37 +29,34 @@ import com.sun.xacml.cond.EvaluationResult;
  * Check if a geometry is valid
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryIsValid extends GeometryCheckFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-is-valid";
+    public static final String NAME = NAME_PREFIX + "geometry-is-valid";
 
-
-    public GeometryIsValid() {        
-        super(NAME);              
+    public GeometryIsValid() {
+        super(NAME);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr  =(GeometryAttribute)(argValues[0]); 
-           
-           boolean evalResult = false;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   evalResult=geomAttr.getGeometry().isValid();
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
-           return EvaluationResult.getInstance(evalResult);
-		
-	}
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
+
+        boolean evalResult = false;
+
+        try {
+            evalResult = geomAttr.getGeometry().isValid();
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+        return EvaluationResult.getInstance(evalResult);
+
+    }
 
 }

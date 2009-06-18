@@ -17,40 +17,32 @@
 
 package org.geotools.xacml.geoxacml.finder.impl;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.UnknownIdentifierException;
-
-import com.sun.xacml.attr.AttributeFactory;
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-
-import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.ctx.Status;
-
-import com.sun.xacml.finder.AttributeFinderModule;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 
 import org.apache.xpath.XPathAPI;
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.UnknownIdentifierException;
+import com.sun.xacml.attr.AttributeFactory;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.ctx.Status;
+import com.sun.xacml.finder.AttributeFinderModule;
 
 /**
  * @author Christian Mueller
  * 
- * Modluel to handle XPATH constructs (XACML AttribueSelector)
- *
+ *         Modluel to handle XPATH constructs (XACML AttribueSelector)
+ * 
  */
-public class GeoSelectorModule extends AttributeFinderModule
-{
+public class GeoSelectorModule extends AttributeFinderModule {
 
     public boolean isSelectorSupported() {
         return true;
@@ -63,26 +55,28 @@ public class GeoSelectorModule extends AttributeFinderModule
     }
 
     /**
-     * Tries to find attribute values based on the given selector data.
-     * The result, if successful, always contains a <code>BagAttribute</code>,
-     * even if only one value was found. If no values were found, but no other
-     * error occurred, an empty bag is returned.
-     *
-     * @param path the XPath expression to search against
-     * @param namespaceNode the DOM node defining namespace mappings to use,
-     *                      or null if mappings come from the context root
-     * @param type the datatype of the attributes to find
-     * @param context the representation of the request data
-     * @param xpathVersion the XPath version to use
-     *
-     * @return the result of attribute retrieval, which will be a bag of
-     *         attributes or an error
+     * Tries to find attribute values based on the given selector data. The result, if successful,
+     * always contains a <code>BagAttribute</code>, even if only one value was found. If no values
+     * were found, but no other error occurred, an empty bag is returned.
+     * 
+     * @param path
+     *            the XPath expression to search against
+     * @param namespaceNode
+     *            the DOM node defining namespace mappings to use, or null if mappings come from the
+     *            context root
+     * @param type
+     *            the datatype of the attributes to find
+     * @param context
+     *            the representation of the request data
+     * @param xpathVersion
+     *            the XPath version to use
+     * 
+     * @return the result of attribute retrieval, which will be a bag of attributes or an error
      */
-    public EvaluationResult findAttribute(String path, Node namespaceNode,
-                                          URI type, EvaluationCtx context,
-                                          String xpathVersion) {
-    	
-        if (! xpathVersion.equals(PolicyMetaData.XPATH_1_0_IDENTIFIER))
+    public EvaluationResult findAttribute(String path, Node namespaceNode, URI type,
+            EvaluationCtx context, String xpathVersion) {
+
+        if (!xpathVersion.equals(PolicyMetaData.XPATH_1_0_IDENTIFIER))
             return new EvaluationResult(BagAttribute.createEmptyBag(type));
 
         // get the DOM root of the request document
@@ -101,7 +95,7 @@ public class GeoSelectorModule extends AttributeFinderModule
 
             // see if the request root is in a namespace
             String namespace = root.getNamespaceURI();
-            
+
             if (namespace == null) {
                 // no namespacing, so we're done
                 rootPath = "/" + rootName + "/";
@@ -137,8 +131,8 @@ public class GeoSelectorModule extends AttributeFinderModule
                 // if the rootPath is still null, then we don't have any
                 // definitions for the namespace
                 if (rootPath == null)
-                    return createProcessingError("Failed to map a namespace" +
-                                                 " in an XPath expression");
+                    return createProcessingError("Failed to map a namespace"
+                            + " in an XPath expression");
             }
         }
 
@@ -161,7 +155,7 @@ public class GeoSelectorModule extends AttributeFinderModule
         try {
             ArrayList list = new ArrayList();
             AttributeFactory attrFactory = AttributeFactory.getInstance();
-            
+
             for (int i = 0; i < matches.getLength(); i++) {
                 String text = null;
                 Node node = matches.item(i);
@@ -169,19 +163,16 @@ public class GeoSelectorModule extends AttributeFinderModule
 
                 // see if this is straight text, or a node with data under
                 // it and then get the values accordingly
-                
+
                 AttributeValue attrValue = null;
-                
-                if ((nodeType == Node.CDATA_SECTION_NODE) ||
-                    (nodeType == Node.COMMENT_NODE) ||
-                    (nodeType == Node.TEXT_NODE) ||
-                    (nodeType == Node.ATTRIBUTE_NODE)) {
+
+                if ((nodeType == Node.CDATA_SECTION_NODE) || (nodeType == Node.COMMENT_NODE)
+                        || (nodeType == Node.TEXT_NODE) || (nodeType == Node.ATTRIBUTE_NODE)) {
                     // there is no child to this node
                     text = node.getNodeValue();
                     attrValue = attrFactory.createValue(type, text);
-                } else if (nodeType == Node.DOCUMENT_NODE ||
-                			nodeType == Node.ELEMENT_NODE){
-                	attrValue= attrFactory.createValue(node, type);
+                } else if (nodeType == Node.DOCUMENT_NODE || nodeType == Node.ELEMENT_NODE) {
+                    attrValue = attrFactory.createValue(node, type);
                 } else {
                     // the data is in a child node
                     text = node.getFirstChild().getNodeValue();
@@ -190,7 +181,7 @@ public class GeoSelectorModule extends AttributeFinderModule
 
                 list.add(attrValue);
             }
-            
+
             return new EvaluationResult(new BagAttribute(type, list));
         } catch (ParsingException pe) {
             return createProcessingError(pe.getMessage());

@@ -30,49 +30,43 @@ import com.vividsolutions.jts.geom.Geometry;
  * Calculates the centroid
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryCentroid extends GeometryConstructFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-centroid";
+    public static final String NAME = NAME_PREFIX + "geometry-centroid";
 
-
-    public GeometryCentroid() {        
-        super(NAME,0,
-        		new String[] { GeometryAttribute.identifier},
-        		new boolean[] { false,false},
-        		GeometryAttribute.identifier,false);              
+    public GeometryCentroid() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier },
+                new boolean[] { false, false }, GeometryAttribute.identifier, false);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr = (GeometryAttribute)(argValues[0]); 
-           
-           
-           Geometry resultGeom = null;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   resultGeom=geomAttr.getGeometry().getCentroid();
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
+        GeometryAttribute geomAttr = (GeometryAttribute) (argValues[0]);
 
-           GeometryAttribute resultAttr = null;
-           
-           try {
-        	   resultAttr = new GeometryAttribute(resultGeom,geomAttr.getSrsName(),null,null,null);
-           } catch (URISyntaxException e) {
-			 // should not happend			
-           }
-           return new EvaluationResult(resultAttr);
-           		
-	}
+        Geometry resultGeom = null;
+
+        try {
+            resultGeom = geomAttr.getGeometry().getCentroid();
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        GeometryAttribute resultAttr = null;
+
+        try {
+            resultAttr = new GeometryAttribute(resultGeom, geomAttr.getSrsName(), null, null, null);
+        } catch (URISyntaxException e) {
+            // should not happend
+        }
+        return new EvaluationResult(resultAttr);
+
+    }
 
 }

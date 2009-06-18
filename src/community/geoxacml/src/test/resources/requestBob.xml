@@ -11,8 +11,8 @@
 	<Resource>
 		<Attribute
 		  AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
-		  DataType="urn:ogc:def:dataType:geoxacml:1.0:geometry">
-			<AttributeValue>Strassen</AttributeValue>	
+		  DataType="http://www.w3.org/2001/XMLSchema#string">
+			<AttributeValue>streets</AttributeValue>	
 		</Attribute>
 	</Resource>
 	<Action>

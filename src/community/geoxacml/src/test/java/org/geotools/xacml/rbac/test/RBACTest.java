@@ -163,23 +163,23 @@ public class RBACTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 
-
-	public void testHPORAliceEmployee() {
-		
-	    PDP pdp = TestSupport.getRBAC_PDP();
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","HPORAliceEmployeeRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
+//      TODO, activate
+//	public void testHPORAliceEmployee() {
+//		
+//	    PDP pdp = TestSupport.getRBAC_PDP();
+//	    RequestCtx request = null;
+//		try {
+//			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getFNFor("rbac","HPORAliceEmployeeRequest.xml")));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			Assert.fail(e.getMessage());
+//		}
+//		
+//	    ResponseCtx response= pdp.evaluate(request);
+//	    Result result = (Result)response.getResults().iterator().next();
+//	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
+//	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+//	}
 	
 	public void testHPORAliceManager() {
 		

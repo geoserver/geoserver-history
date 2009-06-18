@@ -1,3 +1,9 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
+
+
 package org.geoserver.xacml.geoxacml;
 
 
@@ -9,10 +15,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.URL;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geoserver.test.GeoServerTestSupport;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
 
@@ -20,15 +29,15 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
     @Override
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
-        File dir = new File( testData.getDataDirectoryRoot(), "geoxacml" );
+        File dir = new File( testData.getDataDirectoryRoot(), DataDirPolicyFinderModlule.BASE_DIR );
         deleteDirectory(dir);
-        File srcDir = new File("src/test/resources/geoserverdatadir/geoxacml");
+        File srcDir = new File("src/test/resources/geoserverdatadir/"+DataDirPolicyFinderModlule.BASE_DIR);
         copyDirectory(srcDir, dir);    
         
     }
     
     public void testDirExists() throws Exception {
-        File dir = new File( testData.getDataDirectoryRoot(), "geoxacml" );
+        File dir = new File( testData.getDataDirectoryRoot(), DataDirPolicyFinderModlule.BASE_DIR );
         assertTrue( dir.exists() );
         
     }
@@ -36,16 +45,39 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
     public void testAlice() throws Exception {
         File request = new File ("src/test/resources/requestAlice.xml");
         String xml = getXMLRequest(request);
+        //InputStream resp = post("geoxacml?validate=true",xml);
         InputStream resp = post("geoxacml",xml);
-        
-        
-        System.out.println("RESPONSE");       
-        byte[] bytes = new byte[512];
-        while (resp.read(bytes)!=-1) {
-            System.out.println(new String(bytes));
-        }
+        checkXACMLRepsonse(resp, "Permit");        
+    }
+    
+    public void testBob() throws Exception {
+        File request = new File ("src/test/resources/requestBob.xml");
+        String xml = getXMLRequest(request);
+        //InputStream resp = post("geoxacml?validate=true",xml);
+        InputStream resp = post("geoxacml",xml);
+        checkXACMLRepsonse(resp, "Deny");        
     }
 
+
+    
+    protected void checkXACMLRepsonse(InputStream resp,String decision) throws Exception{
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document doc = builder.parse(resp);
+        Node decisionNode = doc.getElementsByTagName("Decision").item(0);
+        assertEquals(decision,decisionNode.getTextContent());
+        Node statusNode = doc.getElementsByTagName("StatusCode").item(0);
+        String statusCode = statusNode.getAttributes().getNamedItem("Value").getTextContent();
+        assertEquals("urn:oasis:names:tc:xacml:1.0:status:ok",statusCode);
+        
+    }
+    
+    protected void dumpResponse(InputStream resp) throws IOException{      
+      System.out.println("RESPONSE");       
+      byte[] bytes = new byte[512];
+      while (resp.read(bytes)!=-1) {
+          System.out.println(new String(bytes));
+      }        
+    }
     
     private String getXMLRequest(File f) {
         try {

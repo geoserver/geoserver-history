@@ -15,38 +15,36 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.geoxacml.cond;
-
-
-
 
 /**
  * Abstract base class for geomtry scalar functions
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public abstract class GeometryScalarFunction extends GeoXACMLFunctionBase {
 
-	public GeometryScalarFunction(String functionName, int functionId, String paramType, boolean paramIsBag, int numParams, int minParams, String returnType, boolean returnsBag) {
-		super(functionName, functionId, paramType, paramIsBag, numParams, minParams,
-				returnType, returnsBag);
+    public GeometryScalarFunction(String functionName, int functionId, String paramType,
+            boolean paramIsBag, int numParams, int minParams, String returnType, boolean returnsBag) {
+        super(functionName, functionId, paramType, paramIsBag, numParams, minParams, returnType,
+                returnsBag);
 
-	}
+    }
 
-	public GeometryScalarFunction(String functionName, int functionId, String paramType, boolean paramIsBag, int numParams, String returnType, boolean returnsBag) {
-		super(functionName, functionId, paramType, paramIsBag, numParams, returnType,
-				returnsBag);
-	}
+    public GeometryScalarFunction(String functionName, int functionId, String paramType,
+            boolean paramIsBag, int numParams, String returnType, boolean returnsBag) {
+        super(functionName, functionId, paramType, paramIsBag, numParams, returnType, returnsBag);
+    }
 
-	public GeometryScalarFunction(String functionName, int functionId, String returnType, boolean returnsBag) {
-		super(functionName, functionId, returnType, returnsBag);
-	}
+    public GeometryScalarFunction(String functionName, int functionId, String returnType,
+            boolean returnsBag) {
+        super(functionName, functionId, returnType, returnsBag);
+    }
 
-	public GeometryScalarFunction(String functionName, int functionId, String[] paramTypes, boolean[] paramIsBag, String returnType, boolean returnsBag) {
-		super(functionName, functionId, paramTypes, paramIsBag, returnType, returnsBag);
-	}
-	
-        
+    public GeometryScalarFunction(String functionName, int functionId, String[] paramTypes,
+            boolean[] paramIsBag, String returnType, boolean returnsBag) {
+        super(functionName, functionId, paramTypes, paramIsBag, returnType, returnsBag);
+    }
+
 }

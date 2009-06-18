@@ -29,42 +29,37 @@ import com.sun.xacml.cond.EvaluationResult;
  * Calculates the difference
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryDistance extends GeometryScalarFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-distance";
+    public static final String NAME = NAME_PREFIX + "geometry-distance";
 
+    public GeometryDistance() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier, GeometryAttribute.identifier },
+                new boolean[] { false, false }, DoubleAttribute.identifier, false);
 
-    public GeometryDistance() {        
-        super(NAME,0,
-        		new String[] {GeometryAttribute.identifier,GeometryAttribute.identifier },
-        		new boolean[] { false, false},
-        		DoubleAttribute.identifier,false);
-              
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute geomAttr1 =(GeometryAttribute)(argValues[0]);
-           GeometryAttribute geomAttr2 =(GeometryAttribute)(argValues[1]);
-           
-           double distance =0;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   distance =geomAttr1.getGeometry().distance(geomAttr2.getGeometry());
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
+        GeometryAttribute geomAttr1 = (GeometryAttribute) (argValues[0]);
+        GeometryAttribute geomAttr2 = (GeometryAttribute) (argValues[1]);
 
-           return new EvaluationResult(new DoubleAttribute(distance));		
-	}
+        double distance = 0;
+
+        try {
+            distance = geomAttr1.getGeometry().distance(geomAttr2.getGeometry());
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        return new EvaluationResult(new DoubleAttribute(distance));
+    }
 
 }

@@ -25,11 +25,10 @@ import com.sun.xacml.attr.AttributeValue;
 
 /**
  * @author Christian Mueller
- *
- * A proxy class, this is required by the SUN XACML implementation
+ * 
+ *         A proxy class, this is required by the SUN XACML implementation
  */
 public class GeometryAttributeProxy implements AttributeProxy {
-
 
     public AttributeValue getInstance(Node root) throws Exception {
         return GeometryAttribute.getInstance(root);
@@ -39,5 +38,4 @@ public class GeometryAttributeProxy implements AttributeProxy {
         return GeometryAttribute.getInstance(value);
     }
 
-	
 }

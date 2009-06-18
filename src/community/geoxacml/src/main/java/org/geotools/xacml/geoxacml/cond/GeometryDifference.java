@@ -30,43 +30,38 @@ import com.vividsolutions.jts.geom.Geometry;
  * Calculates the difference
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryDifference extends GeometryConstructFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-difference";
+    public static final String NAME = NAME_PREFIX + "geometry-difference";
 
-
-    public GeometryDifference() {        
-        super(NAME,0,
-        		new String[] { GeometryAttribute.identifier,GeometryAttribute.identifier},
-        		new boolean[] { false,false},
-        		GeometryAttribute.identifier,true);              
+    public GeometryDifference() {
+        super(NAME, 0, new String[] { GeometryAttribute.identifier, GeometryAttribute.identifier },
+                new boolean[] { false, false }, GeometryAttribute.identifier, true);
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute[] geomArray = new GeometryAttribute[2]; 
-           geomArray[0] = (GeometryAttribute)(argValues[0]); 
-           geomArray[1] = (GeometryAttribute)(argValues[1]);
-           
-           String targetSrsName = null;                       
-           Geometry resultGeom = null;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   targetSrsName=transformOnDemand(geomArray);
-        	   resultGeom=geomArray[0].getGeometry().difference(geomArray[1].getGeometry());
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
-           return createGeometryInBagResult(resultGeom,targetSrsName);           		
-	}
+        GeometryAttribute[] geomArray = new GeometryAttribute[2];
+        geomArray[0] = (GeometryAttribute) (argValues[0]);
+        geomArray[1] = (GeometryAttribute) (argValues[1]);
+
+        String targetSrsName = null;
+        Geometry resultGeom = null;
+
+        try {
+            targetSrsName = transformOnDemand(geomArray);
+            resultGeom = geomArray[0].getGeometry().difference(geomArray[1].getGeometry());
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+        return createGeometryInBagResult(resultGeom, targetSrsName);
+    }
 
 }

@@ -28,42 +28,39 @@ import com.sun.xacml.cond.EvaluationResult;
  * Checks containment
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeometryContains extends GeometryTopologicalFunction {
 
-	public static final String NAME= NAME_PREFIX+"geometry-contains";
+    public static final String NAME = NAME_PREFIX + "geometry-contains";
 
-
-    public GeometryContains() {        
+    public GeometryContains() {
         super(NAME);
-              
+
     }
 
-	
-	public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
-		
-		   AttributeValue [] argValues = new AttributeValue[inputs.size()];
-           EvaluationResult result = evalArgs(inputs, context, argValues);
-           if (result != null)
-               return result;
+    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
 
-                      
-           GeometryAttribute[] geomAttrs =new GeometryAttribute[2]; 
-           geomAttrs[0] = (GeometryAttribute)(argValues[0]);
-           geomAttrs[1] = (GeometryAttribute)(argValues[1]);
-                      
-           boolean evalResult = false;
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
+        EvaluationResult result = evalArgs(inputs, context, argValues);
+        if (result != null)
+            return result;
 
-           try {
-        	   transformOnDemand(geomAttrs);
-        	   evalResult=geomAttrs[0].getGeometry().contains(geomAttrs[1].getGeometry());        	   
-           } catch (Throwable t) {
-        	   return exceptionError(t);
-           }
+        GeometryAttribute[] geomAttrs = new GeometryAttribute[2];
+        geomAttrs[0] = (GeometryAttribute) (argValues[0]);
+        geomAttrs[1] = (GeometryAttribute) (argValues[1]);
 
-           return EvaluationResult.getInstance(evalResult);
-		
-	}
+        boolean evalResult = false;
+
+        try {
+            transformOnDemand(geomAttrs);
+            evalResult = geomAttrs[0].getGeometry().contains(geomAttrs[1].getGeometry());
+        } catch (Throwable t) {
+            return exceptionError(t);
+        }
+
+        return EvaluationResult.getInstance(evalResult);
+
+    }
 
 }

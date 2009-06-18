@@ -18,9 +18,10 @@ package org.geotools.xacml.geoxacml.attr;
 
 /**
  * Enum for GML2 and GML3
+ * 
  * @author Christian Mueller
- *
+ * 
  */
 public enum GMLVersion {
-	Version2,Version3
+    Version2, Version3
 }

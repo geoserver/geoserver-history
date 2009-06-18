@@ -15,31 +15,30 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.geoxacml.cond;
 
 /**
  * @author Christian Mueller
- *
- * Exception class for proccessing erros
+ * 
+ *         Exception class for proccessing erros
  */
 public class GeoXACMLException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public GeoXACMLException() {
-	}
+    public GeoXACMLException() {
+    }
 
-	public GeoXACMLException(String message) {
-		super(message);
-	}
+    public GeoXACMLException(String message) {
+        super(message);
+    }
 
-	public GeoXACMLException(Throwable cause) {
-		super(cause);
-	}
+    public GeoXACMLException(Throwable cause) {
+        super(cause);
+    }
 
-	public GeoXACMLException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public GeoXACMLException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
 }
