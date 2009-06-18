@@ -162,7 +162,7 @@ public class PreviewLayer {
      * @param string
      * @return
      */
-    protected String getWmsLink() {
+    public String getWmsLink() {
         GetMapRequest request = getRequest();
         final Envelope bbox = request.getBbox();
         if (bbox == null)
