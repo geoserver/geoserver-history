@@ -25,7 +25,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
 @SuppressWarnings("serial")
 public class StoreProvider extends GeoServerDataProvider<StoreInfo> {
     
-    static final Property<StoreInfo> TYPE = new Property<StoreInfo>() {
+    static final Property<StoreInfo> TYPE = new AbstractProperty<StoreInfo>("type") {
 
         public IModel getModel(final IModel itemModel) {
             return new Model(itemModel) {
@@ -38,25 +38,12 @@ public class StoreProvider extends GeoServerDataProvider<StoreInfo> {
             };
         }
 
-        public String getName() {
-            return "type";
-        }
-
         public Object getPropertyValue(StoreInfo item) {
             if (item instanceof DataStoreInfo)
                 return "vector";
             else
                 return "raster";
         }
-        
-        public Comparator<StoreInfo> getComparator() {
-            return new PropertyComparator<StoreInfo>(this);
-        }
-
-        public boolean isVisible() {
-            return true;
-        }
-        
     };
 
     static final Property<StoreInfo> WORKSPACE = new BeanProperty<StoreInfo>(
