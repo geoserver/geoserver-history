@@ -18,7 +18,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.StreamDataFormat;
@@ -277,9 +279,15 @@ public class DataStoreFileResource extends StoreFileResource {
                 if ( add ) {
                     catalog.add( ftinfo );
                     
-                    //add a layer for the feature type as well
-                    catalog.add(builder.buildLayer(ftinfo));
-                   
+                    final LayerInfo layerInfo=builder.buildLayer(ftinfo);
+                    if (form.getFirst("style") != null){
+                        final String layerStyle =  form.getFirstValue("style");
+                        StyleInfo style = catalog.getStyleByName(layerStyle);
+                        layerInfo.setDefaultStyle(style);
+                        layerInfo.getStyles().add(style);
+                    }
+                    
+                    catalog.add(layerInfo);
                 }
                 else {
                     catalog.save( ftinfo );
