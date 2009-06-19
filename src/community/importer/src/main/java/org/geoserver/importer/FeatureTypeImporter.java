@@ -63,7 +63,8 @@ public class FeatureTypeImporter  implements Runnable {
                         return;
                     
                     // if we have a default
-                    if (layer.getResource().getSRS() == null && layer.getResource().getNativeCRS() != null) {
+                    if (layer.getResource().getSRS() == null && layer.getResource().getNativeCRS() != null
+                            && defaultSRS != null) {
                         layer.getResource().setSRS(defaultSRS);
                         layer.getResource().setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
                         status = DEFAULTED_SRS;
