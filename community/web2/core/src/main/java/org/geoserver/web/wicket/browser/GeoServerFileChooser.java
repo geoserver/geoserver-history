@@ -103,4 +103,12 @@ public class GeoServerFileChooser extends Panel {
         
         return isSubfile(root, selection.getParentFile());
     }
+    
+    /**
+     * 
+     * @param fileFilter
+     */
+    public void setFilter(IModel fileFilter) {
+        fileTable.provider.setFileFilter(fileFilter);
+    }
 }
