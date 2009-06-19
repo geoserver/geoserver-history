@@ -12,6 +12,7 @@
                 <li>
                    <label for="directory"><wicket:message key="directory">directory</wicket:message></label> 
                    <input type="text" wicket:id="directory" id="directory" size="50"/>
+                   <a href="#" wicket:id="chooser">...</a>
                 </li>
             </ul>
             <div class="button-group selfclear">
@@ -19,6 +20,7 @@
             </div>
         </fieldset>
     </form>
+    <div wicket:id="dialog"></div>
 </wicket:extend>
 </body>
 </html>

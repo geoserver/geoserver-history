@@ -1,6 +1,7 @@
 package org.geoserver.web.importer;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
@@ -8,10 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
@@ -24,6 +30,8 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.importer.FeatureTypeImporter;
 import org.geoserver.importer.ImporterThreadManager;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.GeoServerDialog;
+import org.geoserver.web.wicket.browser.GeoServerFileChooser;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.directory.DirectoryDataStoreFactory;
@@ -34,14 +42,23 @@ public class ImportPage extends GeoServerSecuredPage {
 
     String project = "";
     
+    GeoServerDialog dialog;
+
+    private TextField dirField;
+    
     public ImportPage() {
+        add(dialog = new GeoServerDialog("dialog"));
+        
         Form form = new Form("form", new CompoundPropertyModel(this));
         add(form);
 
-        TextField directory = new TextField("directory");
-        directory.add(new DirectoryValidator());
-        directory.setRequired(true);
-        form.add(directory);
+        dirField = new TextField("directory");
+        dirField.add(new DirectoryValidator());
+        dirField.setRequired(true);
+        dirField.setOutputMarkupId(true);
+        // dirField.setEnabled(false);
+        form.add(dirField);
+        form.add(chooserButton(form));
         TextField projectField = new TextField("project");
         projectField.setRequired(true);
         projectField.add(new ProjectValidator());
@@ -53,6 +70,46 @@ public class ImportPage extends GeoServerSecuredPage {
         form.add(submitLink);
         
         form.setDefaultButton(submitLink);
+    }
+
+    private Component chooserButton(Form form) {
+        AjaxSubmitLink link =  new AjaxSubmitLink("chooser") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                dialog.showOkCancel(target, new GeoServerDialog.DialogDelegate() {
+
+                    @Override
+                    protected Component getContents(String id) {
+                        // use what the user currently typed
+                        GeoServerFileChooser chooser = new GeoServerFileChooser(id, new Model(new File(dirField.getInput())));
+                        chooser.setFilter(new Model(new DirectoryFilter()));
+                        return chooser;
+                    }
+
+                    @Override
+                    protected boolean onSubmit(AjaxRequestTarget target, Component contents) {
+                        GeoServerFileChooser chooser = (GeoServerFileChooser) contents;
+                        directory = ((File) chooser.getModelObject()).getAbsolutePath();
+                        // clear the raw input of the field won't show the new model value
+                        dirField.clearInput();
+                        target.addComponent(dirField);
+                        return true;
+                    }
+                    
+                    @Override
+                    public void onClose(AjaxRequestTarget target) {
+                        // update the field with the user chosen value
+                        target.addComponent(dirField);
+                    }
+                    
+                });
+                
+            }
+            
+        };
+        // otherwise the link won't trigger when the form contents are not valid
+        link.setDefaultFormProcessing(false);
+        return link;
     }
 
     SubmitLink submitLink() {
@@ -145,6 +202,18 @@ public class ImportPage extends GeoServerSecuredPage {
             if(store != null)
                 error(validatable, "ImportPage.duplicateStore", 
                         Collections.singletonMap("project", project));
+        }
+        
+    }
+    
+    static class DirectoryFilter implements FileFilter, Serializable {
+
+        public boolean accept(File pathname) {
+            if(!pathname.isDirectory())
+                return false;
+            if(pathname.isHidden())
+                return false;
+            return true;
         }
         
     }
