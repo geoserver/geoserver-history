@@ -385,7 +385,9 @@ public class CatalogBuilder {
         // srs
         if ( crs != null ) {
             try {
-                ftinfo.setSRS( CRS.lookupIdentifier( crs, true ) );
+                Integer code = CRS.lookupEpsgCode(crs, true);
+                if(code != null)
+                    ftinfo.setSRS("EPSG:" + code);
             } catch (FactoryException e) {
                 throw (IOException) new IOException().initCause( e );
             }
@@ -803,6 +805,14 @@ public class CatalogBuilder {
         layer.setName( resource.getName() );
         layer.setEnabled(true);
         layer.setResource( resource );
+        
+        // setup the layer type
+        if ( layer.getResource() instanceof FeatureTypeInfo ) {
+            layer.setType( LayerInfo.Type.VECTOR );
+        } else if ( layer.getResource() instanceof CoverageInfo ) {
+            layer.setType( LayerInfo.Type.RASTER );
+        }
+        
         return layer;
     }
     
