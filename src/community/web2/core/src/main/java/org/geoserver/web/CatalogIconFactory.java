@@ -14,6 +14,7 @@ import org.apache.wicket.ResourceReference;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StoreInfo;
@@ -23,6 +24,14 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
+import org.opengis.feature.type.GeometryDescriptor;
+
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Utility class used to lookup icons for various catalog objects
@@ -37,6 +46,18 @@ public class CatalogIconFactory implements Serializable {
 
     public static final ResourceReference VECTOR_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/geosilk/vector.png");
+    
+    public static final ResourceReference POINT_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/geosilk/point.png");
+    
+    public static final ResourceReference LINE_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/geosilk/line.png");
+    
+    public static final ResourceReference POLYGON_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/geosilk/polygon.png");
+    
+    public static final ResourceReference GEOMETRY_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/geosilk/geometry..png");
 
     public static final ResourceReference UNKNOWN_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/silk/error.png");
@@ -73,6 +94,45 @@ public class CatalogIconFactory implements Serializable {
         else if (info.getType() == Type.RASTER)
             icon = RASTER_ICON;
         return icon;
+    }
+    
+    /**
+     * Returns the appropriate icon for the specified layer. This one distinguishes
+     * the geometry type inside vector layers.
+     * 
+     * @param info
+     * @return
+     */
+    public ResourceReference getSpecificLayerIcon(LayerInfo info) {
+        if (info.getType() == Type.RASTER) {
+            return RASTER_ICON;
+        } else if(info.getType() == Type.VECTOR) {
+            try {
+                FeatureTypeInfo fti = (FeatureTypeInfo) info.getResource();
+                GeometryDescriptor gd = fti.getFeatureType().getGeometryDescriptor();
+                if(gd == null) {
+                    return GEOMETRY_ICON;
+                } 
+                
+                Class geom = gd.getType().getBinding();
+                if(Point.class.isAssignableFrom(geom) 
+                        || MultiPoint.class.isAssignableFrom(geom)) {
+                    return POINT_ICON;
+                } else if(LineString.class.isAssignableFrom(geom) 
+                        || MultiLineString.class.isAssignableFrom(geom)) {
+                    return LINE_ICON;
+                } else if(Polygon.class.isAssignableFrom(geom) 
+                        || MultiPolygon.class.isAssignableFrom(geom)) {
+                    return POLYGON_ICON;
+                } else {
+                    return GEOMETRY_ICON;
+                }
+            } catch(Exception e) {
+                return GEOMETRY_ICON;
+            }
+        } else {
+            return UNKNOWN_ICON;
+        }
     }
 
     /**
