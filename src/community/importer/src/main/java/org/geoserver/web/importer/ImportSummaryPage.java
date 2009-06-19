@@ -42,6 +42,7 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
             protected Component getComponentForProperty(String id, IModel itemModel,
                     Property<LayerSummary> property) {
                 final LayerSummary layerSummary = (LayerSummary) itemModel.getObject();
+                final CatalogIconFactory icons = CatalogIconFactory.get();
                 if(property == LAYER) {
                     Fragment f = new Fragment(id, "edit", ImportSummaryPage.this);
                     
@@ -51,12 +52,20 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                     
                     return f;
                 } else if(property == STATUS) {
-                    final CatalogIconFactory icons = CatalogIconFactory.get();
                     ResourceReference icon = layerSummary.getStatus().successful() ? 
                             icons.getEnabledIcon() : icons.getDisabledIcon();
                     Fragment f = new Fragment(id, "iconFragment", ImportSummaryPage.this);
                     f.add(new Image("icon", icon));
                     return f;
+                } else if(property == TYPE) {
+                    if(layerSummary.getLayer() != null) {
+                        ResourceReference icon = icons.getSpecificLayerIcon(layerSummary.getLayer());
+                        Fragment f = new Fragment(id, "iconFragment", ImportSummaryPage.this);
+                        f.add(new Image("icon", icon));
+                        return f;
+                    } else {
+                        return new Label(id, "");
+                    }
                 } else if(property == COMMANDS) {
                     Fragment f = new Fragment(id, "preview", ImportSummaryPage.this);
 
