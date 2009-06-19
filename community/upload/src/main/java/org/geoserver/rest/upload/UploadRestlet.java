@@ -274,14 +274,14 @@ public class UploadRestlet extends Restlet {
                 PrintWriter writer = 
                     new PrintWriter(new BufferedWriter(new OutputStreamWriter(out)));
 
-                writer.print("{");
+                writer.print("{maps: [");
                 File[] children = rootPath.listFiles();
                 for (int i = 0; i < children.length; i++) {
                     File child = children[i];
 
-                    writer.print("\"");
+                    writer.print("{id:\"");
                     writer.print(child.getName().replace("\"", "\\\""));
-                    writer.print("\":");
+                    writer.print("\",config:");
 
                     BufferedReader reader = 
                         new BufferedReader(new InputStreamReader(new FileInputStream(child)));
@@ -292,12 +292,14 @@ public class UploadRestlet extends Restlet {
                         writer.println(line);
                     }
 
+                    writer.print("}");
+
                     if (i != children.length -1) {
                         writer.print(",");
                     };
                 }
 
-                writer.print("}");
+                writer.print("]}");
                 writer.flush();
                 writer.close();
             }
