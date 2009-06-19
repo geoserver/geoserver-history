@@ -15,6 +15,7 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 
 /**
  * An abstract ok/cancel dialog, subclasses will have to provide the actual contents and behavior
@@ -47,7 +48,7 @@ public class GeoServerDialog extends Panel {
                 return new ContentsPage(delegate.getContents("userPanel"));
             }
         });
-        // make sure close == cancel behaviour wise
+        // make sure close == cancel behavior wise
         window.setCloseButtonCallback(new ModalWindow.CloseButtonCallback() {
 
             public boolean onCloseButtonClicked(AjaxRequestTarget target) {
@@ -72,18 +73,20 @@ public class GeoServerDialog extends Panel {
      * 
      * @return
      */
-    Component sumbitLink() {
-        return new AjaxSubmitLink("submit") {
+    Component sumbitLink(Component contents) {
+        AjaxSubmitLink link = new AjaxSubmitLink("submit") {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-                if (delegate.onSubmit(target)) {
+                if (delegate.onSubmit(target, (Component) this.getModelObject())) {
                     window.close(target);
                     delegate = null;
                 }
             }
 
         };
+        link.setModel(new Model(contents));
+        return link;
     }
 
     /**
@@ -118,7 +121,7 @@ public class GeoServerDialog extends Panel {
             Form form = new Form("form");
             add(form);
             form.add(contents);
-            form.add(sumbitLink());
+            form.add(sumbitLink(contents));
             form.add(cancelLink());
         }
 
@@ -157,7 +160,7 @@ public class GeoServerDialog extends Panel {
          * @param target
          * @return true if the dialog is to be closed, false otherwise
          */
-        protected abstract boolean onSubmit(AjaxRequestTarget target);
+        protected abstract boolean onSubmit(AjaxRequestTarget target, Component contents);
 
         /**
          * Called when the dialog is canceled.
