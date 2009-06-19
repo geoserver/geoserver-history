@@ -115,7 +115,7 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
             }
 
             @Override
-            protected boolean onSubmit(AjaxRequestTarget target) {
+            protected boolean onSubmit(AjaxRequestTarget target, Component contents) {
                 doSaveStore(info);
                 accepted = true;
                 return true;

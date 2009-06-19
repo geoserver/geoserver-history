@@ -54,7 +54,7 @@ public class SelectionRemovalLink extends AjaxLink {
                 };
             }
             
-            protected boolean onSubmit(AjaxRequestTarget target) {
+            protected boolean onSubmit(AjaxRequestTarget target, Component contents) {
                 // cascade delete the whole selection
                 Catalog catalog = GeoServerApplication.get().getCatalog();
                 CascadeDeleteVisitor visitor = new CascadeDeleteVisitor(catalog);

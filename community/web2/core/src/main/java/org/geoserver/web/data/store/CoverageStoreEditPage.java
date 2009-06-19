@@ -107,7 +107,7 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
             }
 
             @Override
-            protected boolean onSubmit(AjaxRequestTarget target) {
+            protected boolean onSubmit(AjaxRequestTarget target, Component contents) {
                 doSaveStore(info);
                 accepted = true;
                 return true;
