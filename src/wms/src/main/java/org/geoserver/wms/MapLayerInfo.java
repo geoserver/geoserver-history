@@ -5,7 +5,6 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.Style;
-import org.geotools.util.Converters;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -257,8 +255,7 @@ public final class MapLayerInfo {
             return false;
         }
         ResourceInfo resource = layerInfo.getResource();
-        Boolean cachingEnabled = Converters.convert(resource.getMetadata().get("cachingEnabled"),
-                Boolean.class);
+        Boolean cachingEnabled = resource.getMetadata().get("cachingEnabled",Boolean.class);
         return cachingEnabled == null ? false : cachingEnabled.booleanValue();
     }
 
@@ -275,8 +272,8 @@ public final class MapLayerInfo {
             return 0;
         }
         ResourceInfo resource = layerInfo.getResource();
-        Serializable val = resource.getMetadata().get("cacheAgeMax");
-        return val == null ? 0 : Converters.convert(val, Integer.class).intValue();
+        Integer val = resource.getMetadata().get("cacheAgeMax",Integer.class);
+        return val == null ? 0 : val;
     }
 
     /**
@@ -331,7 +328,7 @@ public final class MapLayerInfo {
     }
 
     public static String getRegionateAttribute(FeatureTypeInfo layerInfo) {
-        return (String) layerInfo.getMetadata().get("kml.regionateAttribute");
+        return layerInfo.getMetadata().get("kml.regionateAttribute",String.class);
     }
     
     public void setLayerFeatureConstraints(FeatureTypeConstraint[] layerFeatureConstraints) {
