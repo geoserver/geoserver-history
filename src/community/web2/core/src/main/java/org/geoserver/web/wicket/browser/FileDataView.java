@@ -65,6 +65,10 @@ public abstract class FileDataView extends Panel {
 
         public String convertToString(Object value, Locale locale) {
             File file = (File) value;
+            
+            if(!file.isFile())
+                return "";
+            
             long size = file.length();
             if (size == 0L)
                 return null;
@@ -88,6 +92,7 @@ public abstract class FileDataView extends Panel {
     public FileDataView(String id, FileProvider fileProvider) {
         super(id);
         
+        this.provider = fileProvider;
 //        provider.setDirectory(currentPosition);
 //        provider.setSort(new SortParam(NAME, true));
         

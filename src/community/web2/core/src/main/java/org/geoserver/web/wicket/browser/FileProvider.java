@@ -108,7 +108,7 @@ public class FileProvider extends SortableDataProvider {
         // return a filtered view of the contents
         File[] files;
         if (fileFilter != null)
-            files = d.listFiles((FileFilter) fileFilter);
+            files = d.listFiles((FileFilter) fileFilter.getObject());
         else
             files = d.listFiles();
         
