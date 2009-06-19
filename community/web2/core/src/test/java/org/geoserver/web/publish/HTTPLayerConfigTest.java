@@ -61,7 +61,7 @@ public class HTTPLayerConfigTest extends GeoServerWicketTestSupport {
         // System.out.println(page.getSession().getFeedbackMessages());
         assertEquals(0,  page.getSession().getFeedbackMessages().messages(new ErrorLevelFeedbackMessageFilter(FeedbackMessage.ERROR)).size());
         // System.out.println(polygons.getResource().getMetadata().get("cacheAgeMax").getClass());
-        assertEquals(3600l, polygons.getResource().getMetadata().get("cacheAgeMax"));
+        assertEquals(Integer.valueOf(3600), polygons.getResource().getMetadata().get("cacheAgeMax",Integer.class));
 
     }
 }

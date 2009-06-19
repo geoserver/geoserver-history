@@ -458,7 +458,7 @@ public class KMLUtils {
         if (("auto").equals(stratname)) {
             Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
             Name name = layer.getFeatureSource().getName();
-            stratname = (String) catalog.getFeatureTypeByName(name).getMetadata().get( "kml.regionateStrategy" );
+            stratname = catalog.getFeatureTypeByName(name).getMetadata().get( "kml.regionateStrategy",String.class );
             if (stratname == null || "".equals( stratname ) ){
                 stratname = "best_guess";
                 LOGGER.log(

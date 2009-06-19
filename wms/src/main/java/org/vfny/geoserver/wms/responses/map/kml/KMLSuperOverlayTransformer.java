@@ -158,7 +158,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
         
         private int getRegionateFeatureLimit( FeatureTypeInfo ft ) {
-            Integer regionateFeatureLimit = (Integer) ft.getMetadata().get("kml.regionateFeatureLimit"); 
+            Integer regionateFeatureLimit = ft.getMetadata().get("kml.regionateFeatureLimit",Integer.class); 
             return regionateFeatureLimit != null ? regionateFeatureLimit : -1;
         }
 

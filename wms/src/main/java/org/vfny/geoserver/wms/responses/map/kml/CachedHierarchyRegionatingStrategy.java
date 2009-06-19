@@ -144,7 +144,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             // grab the features per tile, use a default if user did not
             // provide a decent value. The default should fill up the
             // tile when it shows up.
-            featuresPerTile = (Integer) featureType.getMetadata().get( "kml.regionateFeatureLimit" );
+            featuresPerTile = featureType.getMetadata().get( "kml.regionateFeatureLimit",Integer.class );
             if (featuresPerTile == null || featuresPerTile.intValue() <= 1)
                 featuresPerTile = 64;
 
