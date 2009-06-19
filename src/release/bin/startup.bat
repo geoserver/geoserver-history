@@ -1,98 +1,128 @@
 @echo off
-REM -----------------------------------------------------------------------------
-REM Start Script for GEOSERVER
-REM
-REM $Id: startup.bat,v 1.6 2004/08/24 17:37:53 cholmesny Exp $
-REM -----------------------------------------------------------------------------
+rem -----------------------------------------------------------------------------
+rem Startup Script for GeoServer
+rem -----------------------------------------------------------------------------
 
-if "%JAVA_HOME%" == "" goto noJava1
+cls
+echo Welcome to GeoServer!
+echo.
+set error=0
 
-if not exist "%JAVA_HOME%\bin\java.exe" goto noJava2
+rem JAVA_HOME not defined
+if "%JAVA_HOME%" == "" goto noJava
 
-:doGeo
-if "%GEOSERVER_HOME%" == "" goto noGeo1
+rem JAVA_HOME defined incorrectly
+if not exist "%JAVA_HOME%\bin\java.exe" goto badJava
 
-if not exist "%GEOSERVER_HOME%\bin\startup.bat" goto noGeo2
+echo JAVA_HOME: %JAVA_HOME%
+echo.
 
-if "%GEOSERVER_DATA_DIR%" == "" goto noDataDir
+rem GEOSERVER_HOME not defined
+if "%GEOSERVER_HOME%" == "" goto noHome
 
-REM -------------
-REM OK, we're ready to try actually runnning it.
-REM -------------
+rem GEOSERVER_HOME defined incorrectly
+if not exist "%GEOSERVER_HOME%\bin\startup.bat" goto badHome
 
-goto run
+goto checkDataDir
 
-REM Actions having to do with JAVA_HOME being defined
-:noJava1
+:noJava
   echo The JAVA_HOME environment variable is not defined.
-  echo Attempting to use current installed Java
-goto doGeo
+goto JavaFail
 
-:noJava2
-  echo The JAVA_HOME environment variable is defined, but 'java.exe'
-  echo was not found there.
+:badJava
+  echo The JAVA_HOME environment variable is not defined correctly.
+goto JavaFail
+
+:JavaFail
+  echo This environment variable is needed to run this program.
+  echo.
+  echo Set this environment variable via the following command:
+  echo    set JAVA_HOME=[path to Java]
+  echo Example:
+  echo    set JAVA_HOME=C:\Program Files\Java\jdk6
+  echo.
+  set error=1
 goto end
 
-REM Actions if GEOSERVER_HOME isn't defined
-:noGeo1
-  if exist ..\start.jar goto doGeo1
+
+:noHome
+  if exist ..\start.jar goto noHomeOK
   echo The GEOSERVER_HOME environment variable is not defined.
-  echo This environment variable is needed to run this program.
-goto end
+goto HomeFail
 
-:doGeo1
-  echo GEOSERVER_HOME environment variable not found.  Using current
-  echo directory.  Please set GEOSERVER_HOME for future uses.
-goto setCurAsHome
-
-:noGeo2
-  if exist ..\start.jar goto doGeo2
+:badHome
+  if exist ..\start.jar goto badHomeOK
   echo The GEOSERVER_HOME environment variable is not defined correctly.
+goto HomeFail
+
+:HomeFail
   echo This environment variable is needed to run this program.
+  echo.
+  echo Set this environment variable via the following command:
+  echo    set GEOSERVER_HOME=[path to GeoServer]
+  echo Example:
+  echo    set GEOSERVER_HOME=C:\Program Files\GeoServer
+  echo.
+  set error=1
 goto end
 
-:doGeo2
-  echo GEOSERVER_HOME environment variable not properly set.  Using parent
-  echo directory of this script.  Please set GEOSERVER_HOME correctly for 
-  echo future uses.
-goto setCurAsHome
 
-:setCurAsHome
+:noHomeOK
+  echo The GEOSERVER_HOME environment variable is not defined.
+goto setHome
+
+:badHomeOK
+  echo The GEOSERVER_HOME environment variable is not defined correctly.
+goto setHome
+
+:setHome
+  echo Temporarily setting GEOSERVER_HOME to the following directory:
   cd ..
-  set GEOSERVER_HOME=.
-goto run
+  set GEOSERVER_HOME=%CD%
+  echo %GEOSERVER_HOME%
+  echo.
+goto checkDataDir
 
-:run
-  if not exist "%GEOSERVER_DATA_DIR%" goto noDataDir
-  goto execJava
 
-REM if there's no GEOSERVER_DATA_DIR defined then use GEOSERVER_HOME/data_dir/
+:checkDataDir
+  rem GEOSERVER_DATA_DIR not defined
+  if "%GEOSERVER_DATA_DIR%" == "" goto noDataDir
+  goto run
+
 :noDataDir
+  rem if GEOSERVER_DATA_DIR is not defined then use GEOSERVER_HOME/data_dir/
   if exist "%GEOSERVER_HOME%\data_dir" goto setDataDir
-  goto execJava
+  echo No valid GeoServer data directory could be located.
+  echo Please set the GEOSERVER_DATA_DIR environment variable.
+  echo.
+  echo Set this environment variable via the following command:
+  echo    set GEOSERVER_DATA_DIR=[path to data_dir]
+  echo Example:
+  echo    set GEOSERVER_DATA_DIR=C:\Program Files\GeoServer\data_dir
+  echo.
+  set error=1
+goto end
 
 :setDataDir
   set GEOSERVER_DATA_DIR=%GEOSERVER_HOME%\data_dir
-  goto execJava
+  echo The GEOSERVER_DATA_DIR environment variable is not defined correctly.
+  echo Temporarily setting GEOSERVER_DATA_DIR to the following directory:
+  echo %GEOSERVER_DATA_DIR%
+  echo.
+goto run
 
-:execJava
-  if "%JAVA_HOME%" == "" goto usePathJava
-  ::If it's not defined by now, then we are just using 'java', and it will 
-  ::fail there if it can't find it.
+
+:run
   set RUN_JAVA=%JAVA_HOME%\bin\java
-  goto runJava
-
-:usePathJava
-  ::A better way to do this is given at http://www.ericphelps.com/batch/samples/JavaRuntime.cmd.txt
-  ::looking up the registry, but I think this should work too...
-  echo Assuming "java" is in the path and that is a JDK java executable. GeoServer UI won't run if "java" is not a JDK one 
-  set RUN_JAVA=java
-  goto runJava
-
-:runJava
   cd %GEOSERVER_HOME%
-  %RUN_JAVA% -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -jar %GEOSERVER_HOME%\start.jar
+  echo Please wait while loading GeoServer...
+  echo.
+  "%RUN_JAVA%" -DGEOSERVER_DATA_DIR="%GEOSERVER_DATA_DIR%" -Djava.awt.headless=true -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar
+  cd bin
+goto end
 
 
 :end
- pause
+  if %error% == 1 echo Startup of GeoServer was unsuccessful. 
+  echo.
+  pause
