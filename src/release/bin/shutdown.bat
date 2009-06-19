@@ -1,59 +1,121 @@
 @echo off
 REM -----------------------------------------------------------------------------
-REM Start Script for GEOSERVER
-REM
-REM $Id: shutdown.bat,v 1.6 2004/09/08 17:32:20 cholmesny Exp $
+REM Shutdown Script for GeoServer
 REM -----------------------------------------------------------------------------
 
-if "%JAVA_HOME%" == "" goto noJava1
 
-if not exist "%JAVA_HOME%\bin\java.exe" goto noJava2
+cls
+echo Shutting down GeoServer...
+echo.
+set error=0
 
-if "%GEOSERVER_HOME%" == "" goto noGeo1
+rem JAVA_HOME not defined
+if "%JAVA_HOME%" == "" goto noJava
 
-if not exist "%GEOSERVER_HOME%\start.jar" goto noGeo2
+rem JAVA_HOME defined incorrectly
+if not exist "%JAVA_HOME%\bin\java.exe" goto badJava
 
-REM -------------
-REM OK, we're ready to try actually runnning it.
-REM -------------
+rem GEOSERVER_HOME not defined
+if "%GEOSERVER_HOME%" == "" goto noHome
 
-java -jar "%GEOSERVER_HOME%\start.jar" --stop
+rem GEOSERVER_HOME defined incorrectly
+if not exist "%GEOSERVER_HOME%\bin\startup.bat" goto badHome
 
-goto end
+rem No errors
+goto shutdown
 
-:noJava1
+
+
+:noJava
   echo The JAVA_HOME environment variable is not defined.
+goto JavaFail
+
+:badJava
+  echo The JAVA_HOME environment variable is not defined correctly.
+goto JavaFail
+
+:JavaFail
   echo This environment variable is needed to run this program.
+  echo.
+  echo Set this environment variable via the following command:
+  echo    set JAVA_HOME=[path to Java]
+  echo Example:
+  echo    set JAVA_HOME=C:\Program Files\Java\jdk6
+  echo.
+  set error=1
 goto end
 
-:noJava2
-  echo The JAVA_HOME environment variable is defined, but 'java.exe'
-  echo was not found there.
-goto end
 
-:noGeo1
-  if exist stop.jar goto doGeo1
+:noHome
+  if exist ..\start.jar goto noHomeOK
   echo The GEOSERVER_HOME environment variable is not defined.
-  echo This environment variable is needed to run this program.
-goto end
+goto HomeFail
 
-:doGeo1
-echo GEOSERVER_HOME environment variable not found.  Using current
-echo directory.  Please set GEOSERVER_HOME for future uses.
- java -jar start.jar --stop
- goto end
-
-:noGeo2
-  if exist stop.jar goto doGeo2
+:badHome
+  if exist ..\start.jar goto badHomeOK
   echo The GEOSERVER_HOME environment variable is not defined correctly.
+goto HomeFail
+
+:HomeFail
   echo This environment variable is needed to run this program.
+  echo.
+  echo Set this environment variable via the following command:
+  echo    set GEOSERVER_HOME=[path to GeoServer]
+  echo Example:
+  echo    set GEOSERVER_HOME=C:\Program Files\GeoServer
+  echo.
+  set error=1
 goto end
 
-:doGeo2
-  echo GEOSERVER_HOME environment variable not properly set.  Using parent
-  echo directory of this script.  Please set GEOSERVER_HOME correctly for 
-  echo future uses.
-  java -jar start.jar --stop
+
+:noHomeOK
+  echo The GEOSERVER_HOME environment variable is not defined.
+goto setHome
+
+:badHomeOK
+  echo The GEOSERVER_HOME environment variable is not defined correctly.
+goto setHome
+
+:setHome
+  echo Temporarily setting GEOSERVER_HOME to the following directory:
+  cd ..
+  set GEOSERVER_HOME=%CD%
+  echo %GEOSERVER_HOME%
+  echo.
+goto shutdown
+
+:shutdown
+  set RUN_JAVA=%JAVA_HOME%\bin\java
+  cd %GEOSERVER_HOME%
+  "%RUN_JAVA%" -DSTOP.PORT=8079 -DSTOP.KEY=geoserver -jar start.jar --stop
+  cd bin
 goto end
 
 :end
+  if %error% == 1 echo Shutting down GeoServer was unsuccessful. 
+  echo.
+  pause
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
