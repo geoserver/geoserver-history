@@ -35,6 +35,6 @@ public class UniqueIDGenerator {
     }
 
     private String increment(String original){
-        return System.currentTimeMillis() + original;
+        return Long.toString(System.currentTimeMillis(),36) + original;
     }
 }
