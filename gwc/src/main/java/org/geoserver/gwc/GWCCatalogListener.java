@@ -11,15 +11,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.layer.Grid;
@@ -37,9 +41,6 @@ import org.geowebcache.util.wms.BBOX;
 /**
  * This class acts as a source of TileLayer objects for GeoWebCache.
  * 
- * 
- * 
- * 
  * @author Arne Kepp / OpenGeo 2009
  */
 public class GWCCatalogListener implements CatalogListener, Configuration {
@@ -54,6 +55,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     private int[] metaFactors = {4,4};
     
     private String wmsUrl = null;
+    
+    ArrayList<TileLayer> list;
    
     
     /**
@@ -87,47 +90,78 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     public void handleAddEvent(CatalogAddEvent event) {
         Object obj = event.getSource();
         
-        WMSLayer wmsLayer = getLayer(obj);
+        WMSLayer wmsLayer = null;
         
-        //TODO Add check for layer groups
+        if(obj instanceof CoverageInfo) {
+            CoverageInfo covInfo = (CoverageInfo) obj;
+            wmsLayer = getLayer(covInfo);
+        }
+        if(obj instanceof ResourceInfo) {
+            ResourceInfo resInfo = (ResourceInfo) obj;
+            wmsLayer = getLayer(resInfo);
+        }
         
-        if (wmsLayer != null) {
-			layerDispatcher.getLayers();
-
-			layerDispatcher.add(wmsLayer);
-
-			log.finer(wmsLayer.getName() + " added to TileLayerDispatcher");
-		}
+        if (wmsLayer != null && this.list != null) {
+            addToList(wmsLayer);
+            layerDispatcher.getLayers();
+            layerDispatcher.add(wmsLayer);
+            log.finer(wmsLayer.getName() + " added to TileLayerDispatcher");
+        }
     }
     
-    public void handleModifyEvent(CatalogModifyEvent event) { 
-        Object obj = event.getSource();
-        
-        WMSLayer wmsLayer = getLayer(obj);
-        
-        if (wmsLayer != null) {
-        	layerDispatcher.getLayers();
-        	
-			layerDispatcher.update(wmsLayer);
-
-			log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
-		}
+    public void handleModifyEvent(CatalogModifyEvent event) {
+        // We don't really care about this one, 
+        // though we could clear the cache on style change
     }
     
     public void handleRemoveEvent(CatalogRemoveEvent event) { 
         Object obj = event.getSource();
         
-        String name = getLayerName(obj);
+        //String name = null; //getLayerName(obj);
         
-        layerDispatcher.getLayers();
+        WMSLayer wmsLayer = null;
         
-        layerDispatcher.remove(name);
+        if(obj instanceof CoverageInfo) {
+            CoverageInfo covInfo = (CoverageInfo) obj;
+            wmsLayer = getLayer(covInfo);
+        }
+        if(obj instanceof ResourceInfo) {
+            ResourceInfo resInfo = (ResourceInfo) obj;
+            wmsLayer = getLayer(resInfo);
+        }
         
-        log.finer(name + " removed from TileLayerDispatcher");
+        if(wmsLayer != null && this.list != null) {
+            removeFromList(wmsLayer);
+            layerDispatcher.getLayers();
+            layerDispatcher.remove(wmsLayer.getName());
+            log.finer(wmsLayer.getName() + " removed from TileLayerDispatcher");
+        }
     }
 
-    public void handlePostModifyEvent(org.geoserver.catalog.event.CatalogPostModifyEvent test) {
+    public void handlePostModifyEvent(CatalogPostModifyEvent event) {
+        Object obj = event.getSource();
 
+        WMSLayer wmsLayer = null; //getLayer(obj);
+
+        if(obj instanceof CoverageInfo) {
+            CoverageInfo covInfo = (CoverageInfo) obj;
+            wmsLayer = getLayer(covInfo);
+        }
+        if(obj instanceof ResourceInfo) {
+            ResourceInfo resInfo = (ResourceInfo) obj;
+            wmsLayer = getLayer(resInfo);
+        }
+        if(obj instanceof LayerGroupInfo) {
+            LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
+            wmsLayer = getLayer(lgInfo);
+        }
+        
+        if (wmsLayer != null && this.list != null) {
+            updateList(wmsLayer);
+            layerDispatcher.getLayers();
+            layerDispatcher.update(wmsLayer);
+            log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
+        }
     }
 
     public void reloaded() {
@@ -142,16 +176,40 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         return "GeoServer Catalog Listener";
     }
 
-    public List<TileLayer> getTileLayers(boolean reload)
-            throws GeoWebCacheException {
+    public synchronized List<TileLayer> getTileLayers(boolean reload) 
+    throws GeoWebCacheException {
         
-        Iterator<LayerInfo> iter = cat.getLayers().iterator();
+        if(! reload && list != null) {
+            return list;
+        }
         
-        ArrayList<TileLayer> list = new ArrayList<TileLayer>(cat.getLayers().size());
+        list = new ArrayList<TileLayer>(cat.getLayers().size());
         
-        while(iter.hasNext()) {
-            LayerInfo li = iter.next();
-            TileLayer tl = getLayer(li);
+        // Adding vector layers
+        Iterator<LayerInfo> lIter = cat.getLayers().iterator();
+        while(lIter.hasNext()) {
+            LayerInfo li = lIter.next();            
+            TileLayer tl = getLayer(li.getResource());
+            //System.out.println(tl.getName());
+            list.add(tl);
+        }
+        
+        // Adding raster layers
+        Iterator<CoverageInfo> cIter = cat.getCoverages().iterator();
+        while(cIter.hasNext()) {
+            CoverageInfo ci = cIter.next();
+            TileLayer tl = getLayer(ci);
+            //System.out.println(tl.getName());
+            list.add(tl);
+        }
+        
+        // Adding layer groups 
+        Iterator<LayerGroupInfo> lgIter = cat.getLayerGroups().iterator();
+        while(lgIter.hasNext()) {
+            LayerGroupInfo lgi = lgIter.next();
+            
+            TileLayer tl = getLayer(lgi);
+            //System.out.println(tl.getName());
             list.add(tl);
         }
         
@@ -160,59 +218,97 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         return list;
     }
     
-    
-    private String getLayerName(Object obj) {
-        return getLayer(obj).getName();
+    synchronized private void updateList(WMSLayer wmsLayer) {
+        if(this.list != null) {
+            removeFromList(wmsLayer);
+            addToList(wmsLayer);
+        }
     }
     
-    private WMSLayer getLayer(Object obj) {
-        if(obj instanceof LayerInfo) {
-            obj = ((LayerInfo) obj).getResource();
-        }
-        
-        if(obj instanceof ResourceInfo) {
-            if(obj instanceof FeatureTypeInfo) {
-                FeatureTypeInfo fti = (FeatureTypeInfo) obj;
-              
-                WMSLayer retLayer = new WMSLayer(
-                        fti.getPrefixedName(),
-                        getWMSUrl(), 
-                        null, // Styles 
-                        fti.getPrefixedName(), 
-                        mimeFormats, 
-                        getGrids(fti.getLatLonBoundingBox()), 
-                        metaFactors,
-                        null);
-                retLayer.setBackendTimeout(120);
-                return retLayer;
-                
-            } else if(obj instanceof CoverageInfo) {
-                
-                CoverageInfo ci = (CoverageInfo) obj;
-                
-                WMSLayer retLayer = new WMSLayer(
-                        ci.getPrefixedName(),
-                        getWMSUrl(), 
-                        null, // Styles 
-                        ci.getPrefixedName(), 
-                        mimeFormats, 
-                        getGrids(ci.getLatLonBoundingBox()), 
-                        metaFactors,
-                        null);
-                
-                retLayer.setBackendTimeout(120);
-                return retLayer;
-                
-            } else {
-                log.fine("Unable to handle "  + obj.getClass());
+    synchronized private void removeFromList(WMSLayer wmsLayer) {
+        if(this.list != null) {
+            Iterator<TileLayer> iter = list.iterator();
+            int i = 0;
+            while(iter.hasNext()) {
+                TileLayer tl = iter.next();
+                if(tl.getName().equals(wmsLayer.getName())) {
+                    list.remove(i);
+                }
+                i++;
             }
-        } else {
-            log.fine("Unable to handle "  + obj.getClass());
         }
-        
-        return null;
     }
     
+    synchronized private void addToList(WMSLayer wmsLayer) {
+        if(this.list != null) {
+            list.add(wmsLayer);
+        }
+    }
+    
+    //private String getLayerName(Object obj) {
+    //    return getLayer(obj).getName();
+    //}
+    
+    //private WMSLayer getLayer(Object obj) {
+    //    
+    //}
+    
+    private WMSLayer getLayer(LayerGroupInfo lgi) {
+        ReferencedEnvelope latLonBounds = null;
+        try {
+            latLonBounds = lgi.getBounds().transform(CRS.decode("EPSG:4326"), true);
+        } catch (Exception e) {
+            log.warning(e.getMessage());
+        }
+        
+        if(latLonBounds == null) {
+            log.fine("GWCCatalogListener had problems reprojecting " 
+                    + lgi.getBounds() + " to EPSG:4326");
+        }
+        
+        WMSLayer retLayer = new WMSLayer(
+                lgi.getName(),
+                getWMSUrl(),
+                null, // Styles 
+                lgi.getName(), 
+                mimeFormats, 
+                getGrids(latLonBounds), 
+                metaFactors,
+                null);
+        
+        retLayer.setBackendTimeout(120);
+        return retLayer;
+    }
+    
+    private WMSLayer getLayer(ResourceInfo fti) {
+        WMSLayer retLayer = new WMSLayer(
+                fti.getPrefixedName(),
+                getWMSUrl(), 
+                null, // Styles 
+                fti.getPrefixedName(), 
+                mimeFormats, 
+                getGrids(fti.getLatLonBoundingBox()), 
+                metaFactors,
+                null);
+        retLayer.setBackendTimeout(120);
+        return retLayer;
+    }
+    
+    private WMSLayer getLayer(CoverageInfo ci) {
+        WMSLayer retLayer = new WMSLayer(
+                ci.getPrefixedName(),
+                getWMSUrl(), 
+                null, // Styles 
+                ci.getPrefixedName(), 
+                mimeFormats, 
+                getGrids(ci.getLatLonBoundingBox()), 
+                metaFactors,
+                null);
+        
+        retLayer.setBackendTimeout(120);
+        return retLayer;   
+    }
+
     private String[] getWMSUrl() {
         String[] strs = { wmsUrl };
         return strs;
