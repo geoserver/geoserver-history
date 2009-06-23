@@ -13,29 +13,27 @@ around the world.
 GeoServer is the reference implementation of the Open Geospatial
 Consortium (OGC) Web Feature Service (WFS) and Web Coverage Service
 (WCS) standards, as well as a high performance certified compliant Web
-Map Service (WMS). GeoServer forms a core component of the Geospatial
+Map Service (WMS). GeoServer forms a core component of the geospatial
 Web.
-
-.. todolist::
 
 
 .. toctree::
    :maxdepth: 2
 
-..   introduction/index
+   introduction/index
    installation/index
-   getting-started/index
-   data-directory/index
+   gettingstarted/index
+   datadirectory/index
    webadmin/index
    data/index
    styling/index
    services/index
+   advanced/index
    security/index
-   geowebcache/index
-   google-earth/index
    production/index
+   geowebcache/index
+   googleearth/index
    extensions/index
    tutorials/index
-   faq/index
-   advanced/index
+
 
