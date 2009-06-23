@@ -34,7 +34,7 @@ If you have a problem when working with GeoServer, then please let us know throu
 Translation
 -----------
 
-We would like GeoServer available in as many languages as possible, just as we want spatial data to be available to all. The two areas of GeoServer to translate are the text for the :ref:`Web Administration Tool <web_admin_quickstart>` and this documentation. Eventually we would even like to set up GeoServer community sites in different languages, if you are interested in this please let us know. 
+We would like GeoServer available in as many languages as possible, just as we want spatial data to be available to all. The two areas of GeoServer to translate are the text for the :ref:`web_admin` and this documentation. Eventually we would even like to set up GeoServer community sites in different languages.  If you are interested in this please let us know. 
 
 Suggest improvements
 --------------------

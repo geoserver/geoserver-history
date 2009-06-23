@@ -1,4 +1,15 @@
 .. _production:
 
-Running In A Production Environment
+Running in a Production Environment
 ===================================
+
+GeoServer is geared towards many different uses, from a simple test server to the enterprise-level data server.  While many optimizations for GeoServer are set by default, here are some extra considerations to keep in mind when running GeoServer in a production environment.
+
+.. toctree::
+   :maxdepth: 2
+
+   java
+   container
+   config
+   data
+   misc
