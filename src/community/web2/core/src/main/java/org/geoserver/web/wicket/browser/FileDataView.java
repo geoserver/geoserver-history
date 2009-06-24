@@ -159,5 +159,9 @@ public abstract class FileDataView extends Panel {
             throw new UnsupportedOperationException("This converter works only for strings");
         }
     }
+    
+    public FileProvider getProvider() {
+    	return provider;
+    }
 
 }

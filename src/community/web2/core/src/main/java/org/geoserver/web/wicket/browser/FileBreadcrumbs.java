@@ -61,6 +61,10 @@ public abstract class FileBreadcrumbs extends Panel {
     public void setRootFile(File root) {
         rootFile.setObject(root);
     }
+    
+    public void setSelection(File selection) {
+    	setModelObject(selection);
+    }
 
     protected abstract void pathItemClicked(File file,
             AjaxRequestTarget target);
