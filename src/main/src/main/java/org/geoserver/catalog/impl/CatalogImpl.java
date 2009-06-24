@@ -1452,6 +1452,9 @@ public class CatalogImpl implements Catalog {
 
     protected void resolve(LayerInfo layer) {
         setId(layer);
+        if (layer.getAttribution() == null) {
+            layer.setAttribution(getFactory().createAttribution());
+        }
         resolveCollections(layer);
     }
     

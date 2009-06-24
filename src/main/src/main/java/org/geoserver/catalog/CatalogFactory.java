@@ -55,6 +55,11 @@ public interface CatalogFactory {
     LegendInfo createLegend();
     
     /**
+     * Creates a new attribution record.
+     */
+    AttributionInfo createAttribution();
+
+    /**
      * Creates a new layer.
      */
     LayerInfo createLayer();

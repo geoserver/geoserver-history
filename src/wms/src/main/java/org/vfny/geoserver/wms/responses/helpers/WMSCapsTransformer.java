@@ -4,7 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
+import java.awt.Dimension;
 import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +15,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -22,6 +26,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerIdentityImpl;
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -682,6 +687,7 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Title", layer.getResource().getTitle());
             element("Abstract", layer.getResource().getAbstract());
             handleKeywordList(layer.getResource().getKeywords());
+            handleAttribution(layer);
 
             /**
              * @task REVISIT: should getSRS() return the full URL? no - the spec
@@ -803,6 +809,53 @@ public class WMSCapsTransformer extends TransformerBase {
                 // the default ones for each layer
 
                 end("Layer");
+            }
+        }
+
+        protected void handleAttribution(LayerInfo layer) {
+            AttributionInfo attribution = layer.getAttribution();
+
+            String title = attribution.getTitle();
+            String url = attribution.getHref();
+            String logoUrl = attribution.getLogoUrl();
+            String logoType = attribution.getLogoType();
+            int logoWidth = attribution.getLogoWidth();
+            int logoHeight = attribution.getLogoHeight();
+
+            boolean titleGood = (title != null),
+                    urlGood = (url != null),
+                    logoGood = (logoUrl != null && logoType != null && 
+                            logoWidth > 0 && logoHeight > 0);
+
+            if (titleGood || urlGood || logoGood) {
+                start("Attribution");
+                if (titleGood) element("Title", title);
+
+                if (urlGood) {
+                    AttributesImpl urlAttributes = new AttributesImpl();
+                    urlAttributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
+                    urlAttributes.addAttribute(XLINK_NS, "type", "xlink:type", "", "simple");
+                    urlAttributes.addAttribute(XLINK_NS, "href", "xlink:href", "", url);
+                    element("OnlineResource", null, urlAttributes);
+                }
+
+                if (logoGood) {
+                    AttributesImpl logoAttributes = new AttributesImpl();
+                    logoAttributes.addAttribute("", "", "height", "", "" + logoHeight);
+                    logoAttributes.addAttribute("", "", "width", "", "" + logoWidth);
+                    start("LogoURL", logoAttributes);
+                    element("Format", logoType);
+
+                    AttributesImpl urlAttributes = new AttributesImpl();
+                    urlAttributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
+                    urlAttributes.addAttribute(XLINK_NS, "type", "xlink:type", "", "simple");
+                    urlAttributes.addAttribute(XLINK_NS, "href", "xlink:href", "", logoUrl);
+
+                    element("OnlineResource", null, urlAttributes);
+                    end("LogoURL");
+                }
+
+                end("Attribution");
             }
         }
 
