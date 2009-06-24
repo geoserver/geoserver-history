@@ -5,6 +5,7 @@
 package org.geoserver.catalog.impl;
 
 import org.geoserver.catalog.AttributeTypeInfo;
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageDimensionInfo;
@@ -52,6 +53,10 @@ public class CatalogFactoryImpl implements CatalogFactory {
         return new FeatureTypeInfoImpl(catalog);
     }
 
+    public AttributionInfo createAttribution() {
+        return new AttributionInfoImpl();
+    }
+    
     public LayerInfo createLayer() {
         return new LayerInfoImpl();
     }

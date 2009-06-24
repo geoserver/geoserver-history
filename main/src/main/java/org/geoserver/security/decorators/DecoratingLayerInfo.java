@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
@@ -59,6 +60,10 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
         return delegate.getType();
     }
 
+    public AttributionInfo getAttribution() {
+        return delegate.getAttribution();
+    }
+
     public boolean isEnabled() {
         return delegate.isEnabled();
     }
@@ -93,6 +98,10 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
 
     public void setType(Type type) {
         delegate.setType(type);
+    }
+
+    public void setAttribution(AttributionInfo attr) {
+        delegate.setAttribution(attr);
     }
     
     public void accept(CatalogVisitor visitor) {

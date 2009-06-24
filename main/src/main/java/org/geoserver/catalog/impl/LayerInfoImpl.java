@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
@@ -38,6 +39,8 @@ public class LayerInfoImpl implements LayerInfo {
     boolean enabled;
 
     Map metadata = new HashMap();
+
+    AttributionInfo attribution;
     
     public String getId() {
         return id;
@@ -103,6 +106,14 @@ public class LayerInfoImpl implements LayerInfo {
         this.legend = legend;
     }
 
+    public AttributionInfo getAttribution() {
+        return attribution;
+    }
+
+    public void setAttribution(AttributionInfo attribution) {
+        this.attribution = attribution;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -148,6 +159,7 @@ public class LayerInfoImpl implements LayerInfo {
                 + ((resource == null) ? 0 : resource.hashCode());
         result = prime * result + ((styles == null) ? 0 : styles.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((type == null) ? 0 : attribution.hashCode());
         return result;
     }
 
@@ -201,6 +213,12 @@ public class LayerInfoImpl implements LayerInfo {
                 return false;
         } else if (!type.equals(other.getType()))
             return false;
+        if (attribution == null) {
+            if (other.getAttribution() != null)
+                return false;
+        } else if (!attribution.equals(other.getAttribution()))
+            return false;
+
         return true;
     }
 
