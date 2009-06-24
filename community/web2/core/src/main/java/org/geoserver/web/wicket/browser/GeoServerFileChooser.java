@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+import javax.swing.filechooser.FileSystemView;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -17,9 +20,12 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 public class GeoServerFileChooser extends Panel {
     FileBreadcrumbs breadcrumbs;
     FileDataView fileTable;
+    IModel file;
     
     public GeoServerFileChooser(String id, IModel file) {
         super(id, file);
+
+        this.file = file;
         
         // build the roots
         ArrayList<File> roots = new ArrayList<File>(Arrays.asList(File.listRoots()));
@@ -44,7 +50,7 @@ public class GeoServerFileChooser extends Panel {
         }
         
         // the root chooser
-        final DropDownChoice choice = new DropDownChoice("roots", new Model(selectionRoot), new Model(roots));
+        final DropDownChoice choice = new DropDownChoice("roots", new Model(selectionRoot), new Model(roots), new FileRenderer());
         choice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
             @Override
@@ -84,11 +90,11 @@ public class GeoServerFileChooser extends Panel {
     }
     
     void updateFileBrowser(File file, AjaxRequestTarget target) {
-        if(!file.isFile()) {
+        if(file.isDirectory()) {
             // explicitly change the root model, inform the other components the model has changed
-            GeoServerFileChooser.this.setModelObject(file);
-            fileTable.modelChanged();
-            breadcrumbs.modelChanged();
+            GeoServerFileChooser.this.file.setObject(file);
+            fileTable.getProvider().setDirectory(new Model(file));
+            breadcrumbs.setSelection(file);
             
             target.addComponent(fileTable);
             target.addComponent(breadcrumbs);
@@ -96,7 +102,7 @@ public class GeoServerFileChooser extends Panel {
     }
 
     private boolean isSubfile(File root, File selection) {
-        if(selection == null)
+        if(selection == null || "".equals(selection.getPath()))
             return false;
         if(selection.equals(root))
             return true;
@@ -110,5 +116,19 @@ public class GeoServerFileChooser extends Panel {
      */
     public void setFilter(IModel fileFilter) {
         fileTable.provider.setFileFilter(fileFilter);
+    }
+    
+    class FileRenderer implements IChoiceRenderer {
+
+		public Object getDisplayValue(Object o) {
+			File f = (File) o;
+			return FileSystemView.getFileSystemView().getSystemDisplayName(f);
+		}
+
+		public String getIdValue(Object o, int count) {
+			File f = (File) o;
+			return "" + count;
+		}
+    	
     }
 }
