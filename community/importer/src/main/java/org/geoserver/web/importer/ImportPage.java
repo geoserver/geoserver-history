@@ -81,8 +81,13 @@ public class ImportPage extends GeoServerSecuredPage {
                     @Override
                     protected Component getContents(String id) {
                         // use what the user currently typed
-                        GeoServerFileChooser chooser = new GeoServerFileChooser(id, new Model(new File(dirField.getInput())));
-                        chooser.setFilter(new Model(new DirectoryFilter()));
+                    	File file = null;
+                    	if(dirField.getInput().trim().equals("")) {
+                    		file = new File(dirField.getInput());
+                    	}
+                    		
+                        GeoServerFileChooser chooser = new GeoServerFileChooser(id, new Model(file));
+                        chooser.setFilter(new Model(new ShapefileFilter()));
                         return chooser;
                     }
 
@@ -206,9 +211,12 @@ public class ImportPage extends GeoServerSecuredPage {
         
     }
     
-    static class DirectoryFilter implements FileFilter, Serializable {
+    static class ShapefileFilter implements FileFilter, Serializable {
 
         public boolean accept(File pathname) {
+        	if(pathname.isFile()) {
+        		return pathname.getName().toUpperCase().endsWith(".SHP");
+        	}
             if(!pathname.isDirectory())
                 return false;
             if(pathname.isHidden())
