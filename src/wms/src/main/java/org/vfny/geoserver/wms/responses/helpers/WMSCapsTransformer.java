@@ -682,7 +682,7 @@ public class WMSCapsTransformer extends TransformerBase {
             AttributesImpl qatts = new AttributesImpl();
             qatts.addAttribute("", "queryable", "queryable", "", "1");
             start("Layer", qatts);
-            element("Name", layer.getName());
+            element("Name", layer.getResource().getNamespace().getPrefix() + ":" + layer.getName());
             //REVISIT: this is bad, layer should have title and anbstract by itself
             element("Title", layer.getResource().getTitle());
             element("Abstract", layer.getResource().getAbstract());
