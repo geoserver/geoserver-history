@@ -2,6 +2,10 @@ package org.geoserver.web.importer;
 
 import static org.geoserver.web.importer.ImportSummaryProvider.*;
 
+import java.io.IOException;
+import java.util.logging.Level;
+
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.ResourceReference;
@@ -13,6 +17,9 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.importer.ImportStatus;
 import org.geoserver.importer.ImportSummary;
 import org.geoserver.importer.LayerSummary;
@@ -23,6 +30,7 @@ import org.geoserver.web.demo.PreviewLayer;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
+import org.opengis.feature.type.GeometryDescriptor;
 
 @SuppressWarnings("serial")
 public class ImportSummaryPage extends GeoServerSecuredPage {
@@ -43,11 +51,12 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                     Property<LayerSummary> property) {
                 final LayerSummary layerSummary = (LayerSummary) itemModel.getObject();
                 final CatalogIconFactory icons = CatalogIconFactory.get();
-                if(property == LAYER) {
+                LayerInfo layer = layerSummary.getLayer();
+				if(property == LAYER) {
                     Fragment f = new Fragment(id, "edit", ImportSummaryPage.this);
                     
                     Link editLink = editLink(layerSummary);
-                    editLink.setEnabled(layerSummary.getLayer() != null);
+                    editLink.setEnabled(layer != null);
                     f.add(editLink);
                     
                     return f;
@@ -58,10 +67,12 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                     f.add(new Image("icon", icon));
                     return f;
                 } else if(property == TYPE) {
-                    if(layerSummary.getLayer() != null) {
-                        ResourceReference icon = icons.getSpecificLayerIcon(layerSummary.getLayer());
+                    if(layer != null) {
+                        ResourceReference icon = icons.getSpecificLayerIcon(layer);
                         Fragment f = new Fragment(id, "iconFragment", ImportSummaryPage.this);
-                        f.add(new Image("icon", icon));
+                        Image image = new Image("icon", icon);
+                        image.add(new AttributeModifier("title", true, new Model(getTypeTooltip(layer))));
+						f.add(image);
                         return f;
                     } else {
                         return new Label(id, "");
@@ -72,7 +83,7 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
                     ExternalLink link = new ExternalLink("preview", "#");
                     if(layerSummary.getStatus().successful()) {
                         // TODO: move the preview link generation ability to some utility object
-                        PreviewLayer preview = new PreviewLayer(layerSummary.getLayer());
+                        PreviewLayer preview = new PreviewLayer(layer);
                         String url = "window.open(\"" + preview.getWmsLink() + "&format=application/openlayers\")";
                         link.add(new AttributeAppender("onclick", new Model(url), ";"));
                     } else {
@@ -120,6 +131,24 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
             link.add(new Label("name", layerSummary.getLayerName()));
         
         return link;
+    }
+    
+    String getTypeTooltip(LayerInfo layer) {
+    	try {
+	    	String type = null;
+	    	FeatureTypeInfo fti = (FeatureTypeInfo) layer.getResource();
+	        GeometryDescriptor gd = fti.getFeatureType().getGeometryDescriptor();
+	        if(gd != null) {
+	            type = gd.getType().getBinding().getSimpleName();
+	        }
+	        if(type != null)
+	        	return new ParamResourceModel("geomtype." + type, ImportSummaryPage.this).getString();
+	        else
+	        	return "geomtype.null";
+    	} catch(Exception e) {
+    		LOGGER.log(Level.WARNING, "Could not compute the geom type tooltip", e);
+    		return "geomtype.error";
+    	}
     }
 
 }
