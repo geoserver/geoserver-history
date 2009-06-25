@@ -54,7 +54,7 @@ public class AttributionLayerConfigPanel extends LayerConfigurationPanel{
         add(href);
 
         final TextField logo = new TextField("wms.attribution.logo", 
-            new PropertyModel(model, "attribution.logoUrl")
+            new PropertyModel(model, "attribution.logoURL")
         );
         logo.add(new UrlValidator());
         logo.setOutputMarkupId(true);
