@@ -98,7 +98,7 @@ Create the resource class
 
       package org.geoserver.hellorest;
 
-      import java.util.Map;
+      import java.util.List;
       import org.geoserver.rest.AbstractResource;
       import org.geoserver.rest.format.DataFormat;
       import org.restlet.data.Request;
@@ -106,7 +106,7 @@ Create the resource class
 
       public class HelloResource extends AbstractResource {
          @Override
-         protected Map<String, DataFormat> createSupportedFormats(Request request, Response response) {
+         protected List<DataFormat> createSupportedFormats(Request request, Response response) {
 
             return null;
          }
@@ -119,11 +119,15 @@ Create the resource class
 
    .. code-block:: java
 
-      @Override
-      protected Map<String, DataFormat> createSupportedFormats(Request request, Response response) {
+      import java.util.ArrayList;
+      import org.geoserver.rest.format.StringFormat;
+      ...
 
-         HashMap formats = new HashMap();
-         formats.put( "txt", new StringFormat( MediaType.TEXT_PLAIN ));
+      @Override
+      protected List<DataFormat> createSupportedFormats(Request request, Response response) {
+
+         List<DataFormat> formats = new ArrayList();
+         formats.add(new StringFormat( MediaType.TEXT_PLAIN ));
 
          return formats;
       }
