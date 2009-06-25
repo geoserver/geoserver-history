@@ -7,6 +7,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;
+import org.geotools.util.Version;
 
 public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
 
@@ -54,6 +55,9 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
         gml = new GMLInfoImpl();
         gml.setSrsNameStyle(SrsNameStyle.URN);
         wfs.getGML().put( WFSInfo.Version.V_11 , gml );
+        
+        wfs.getVersions().add( new Version( "1.0.0" ) );
+        wfs.getVersions().add( new Version( "1.1.0" ) );
         
         return wfs;
     }

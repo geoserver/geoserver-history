@@ -5,6 +5,7 @@ import java.util.Map;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
+import org.geotools.util.Version;
 
 /**
  * Configuration loader for Web Coverage Service.
@@ -27,6 +28,8 @@ public class WCSLoader extends LegacyServiceLoader<WCSInfo> {
         readCommon( wcs, map, gs );
         
         //wcs.setGMLPrefixing((Boolean)map.get( "gmlPrefixing"));
+        wcs.getVersions().add( new Version( "1.0.0") );
+        wcs.getVersions().add( new Version( "1.1.1") );
         
         return wcs;
     }
