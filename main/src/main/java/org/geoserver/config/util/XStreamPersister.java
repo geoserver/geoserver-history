@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -34,6 +35,7 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
+import org.geoserver.catalog.impl.AttributionInfoImpl;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.CoverageInfoImpl;
@@ -226,6 +228,7 @@ public class XStreamPersister {
         xs.alias( "layerGroup", LayerGroupInfo.class, LayerGroupInfoImpl.class );
         xs.alias( "gridGeometry", GridGeometry2D.class);
         xs.alias( "projected", DefaultProjectedCRS.class);
+        xs.alias( "attribution", AttributionInfoImpl.class );
         xs.aliasField("abstract", ResourceInfoImpl.class, "_abstract" );
         
         //default implementations
@@ -233,6 +236,7 @@ public class XStreamPersister {
         xs.addDefaultImplementation(GridGeometry2D.class, GridGeometry.class );
         xs.addDefaultImplementation(DefaultGeographicCRS.class, CoordinateReferenceSystem.class);
         
+        xs.addDefaultImplementation(AttributionInfoImpl.class, AttributionInfo.class);
         xs.addDefaultImplementation(MetadataLinkInfoImpl.class, MetadataLinkInfo.class);
         xs.addDefaultImplementation(ContactInfoImpl.class, ContactInfo.class);
         xs.addDefaultImplementation(WorkspaceInfoImpl.class, WorkspaceInfo.class);

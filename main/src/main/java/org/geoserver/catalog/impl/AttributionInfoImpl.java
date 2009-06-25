@@ -13,7 +13,7 @@ public class AttributionInfoImpl implements AttributionInfo {
     private String id;
     private String title;
     private String href;
-    private String logoUrl;
+    private String logoURL;
     private int logoWidth;
     private int logoHeight;
     private String logoType;
@@ -26,8 +26,8 @@ public class AttributionInfoImpl implements AttributionInfo {
         return href;
     }
 
-    public String getLogoUrl() {
-        return logoUrl;
+    public String getLogoURL() {
+        return logoURL;
     }
 
     public String getLogoType() {
@@ -50,8 +50,8 @@ public class AttributionInfoImpl implements AttributionInfo {
         this.href = href;
     }
 
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
+    public void setLogoURL(String logoURL) {
+        this.logoURL = logoURL;
     }
 
     public void setLogoType(String type) {
@@ -100,10 +100,10 @@ public class AttributionInfoImpl implements AttributionInfo {
             if (!href.equals(attr.getHref())) return false;
         }
 
-        if (logoUrl == null) {
-           if (attr.getLogoUrl() != null) return false;
+        if (logoURL == null) {
+           if (attr.getLogoURL() != null) return false;
         } else {
-           if (!logoUrl.equals(attr.getLogoUrl())) return false;
+           if (!logoURL.equals(attr.getLogoURL())) return false;
         }
 
         if (logoWidth != attr.getLogoWidth()) return false;
@@ -127,7 +127,7 @@ public class AttributionInfoImpl implements AttributionInfo {
         result += prime * result + (title == null ? 0 : title.hashCode());
         result += prime * result + (logoType == null ? 0 : logoType.hashCode());
         result += prime * result + (href == null ? 0 : href.hashCode());
-        result += prime * result + (logoUrl == null ? 0 : logoUrl.hashCode());
+        result += prime * result + (logoURL == null ? 0 : logoURL.hashCode());
         result += prime * result + logoWidth;
         result += prime * result + logoHeight;
 

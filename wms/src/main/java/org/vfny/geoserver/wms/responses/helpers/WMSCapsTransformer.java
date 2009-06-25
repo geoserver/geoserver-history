@@ -817,14 +817,14 @@ public class WMSCapsTransformer extends TransformerBase {
 
             String title = attribution.getTitle();
             String url = attribution.getHref();
-            String logoUrl = attribution.getLogoUrl();
+            String logoURL = attribution.getLogoURL();
             String logoType = attribution.getLogoType();
             int logoWidth = attribution.getLogoWidth();
             int logoHeight = attribution.getLogoHeight();
 
             boolean titleGood = (title != null),
                     urlGood = (url != null),
-                    logoGood = (logoUrl != null && logoType != null && 
+                    logoGood = (logoURL != null && logoType != null && 
                             logoWidth > 0 && logoHeight > 0);
 
             if (titleGood || urlGood || logoGood) {
@@ -849,7 +849,7 @@ public class WMSCapsTransformer extends TransformerBase {
                     AttributesImpl urlAttributes = new AttributesImpl();
                     urlAttributes.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
                     urlAttributes.addAttribute(XLINK_NS, "type", "xlink:type", "", "simple");
-                    urlAttributes.addAttribute(XLINK_NS, "href", "xlink:href", "", logoUrl);
+                    urlAttributes.addAttribute(XLINK_NS, "href", "xlink:href", "", logoURL);
 
                     element("OnlineResource", null, urlAttributes);
                     end("LogoURL");

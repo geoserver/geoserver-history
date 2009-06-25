@@ -61,7 +61,7 @@ public class GetCapabilitiesTest extends WMSTestSupport {
 
         // Add logo to same layer
         attr = points.getAttribution();
-        attr.setLogoUrl("http://example.com/points/logo");
+        attr.setLogoURL("http://example.com/points/logo");
         attr.setLogoType("image/logo");
         attr.setLogoHeight(50);
         attr.setLogoWidth(50);
