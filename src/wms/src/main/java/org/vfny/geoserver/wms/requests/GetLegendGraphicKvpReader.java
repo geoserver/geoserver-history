@@ -4,8 +4,11 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
@@ -140,8 +143,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 CoverageInfo cvi = request.getWMS().getData().getCoverageInfo(layer);
                 mli.setCoverage(cvi);
 
-                FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
-                feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) cvi.getCoverage(null, null));
+                //it much safer to wrap a reader rather than a coverage in most cases, OOM can occur otherwise
+                final FeatureCollection<SimpleFeatureType, SimpleFeature> feature= FeatureUtilities.wrapGridCoverageReader((AbstractGridCoverage2DReader) cvi.createReader(GeoTools.getDefaultHints()));
                 request.setLayer(feature.getSchema());
             } catch (NoSuchElementException ne) {
                 throw new WmsException(ne, new StringBuffer(layer)

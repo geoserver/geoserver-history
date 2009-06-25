@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.renderer.i18n.ErrorKeys;
 import org.geotools.renderer.i18n.Errors;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -520,7 +521,7 @@ public class LegendUtils {
 			
 			//get the type
 			final PropertyType type=descriptor.getType();
-			if(type.getBinding().isAssignableFrom(GridCoverage2D.class))
+			if(type.getBinding().isAssignableFrom(GridCoverage2D.class)||type.getBinding().isAssignableFrom(AbstractGridCoverage2DReader.class))
 			{
 				found=true;
 				break;
