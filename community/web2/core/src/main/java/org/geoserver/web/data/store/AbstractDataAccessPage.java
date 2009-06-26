@@ -250,8 +250,10 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             if (paramName.equalsIgnoreCase("url")) {
                 tp.getFormComponent().add(new FileExistsValidator());
             }
-            // make sure the proper value is returned
-            tp.getFormComponent().setType(binding);
+            // make sure the proper value is returned, but don't set it for strings otherwise
+            // we incur in a wicket bug (the empty string is not converter back to a null)
+            if(binding != null && !String.class.equals(binding))
+            	tp.getFormComponent().setType(binding);
             parameterPanel = tp;
         }
         return parameterPanel;
