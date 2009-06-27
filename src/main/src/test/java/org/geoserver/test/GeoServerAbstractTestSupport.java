@@ -12,8 +12,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -1006,9 +1008,14 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             //check for any special characters
             if ( keyValuePair.length > 1 ) {
                 //replace any equals or & characters
-                keyValuePair[1] = keyValuePair[1].replaceAll( "%3D", "=" );
-                keyValuePair[1] = keyValuePair[1].replaceAll( "%3d", "=" );
-                keyValuePair[1] = keyValuePair[1].replaceAll( "%23", "&" );
+            	try {
+            		// if this one does not work first check if the url encoded content is really
+            		// properly encoded. I had good success with this: http://meyerweb.com/eric/tools/dencoder/
+            		keyValuePair[1] = URLDecoder.decode(keyValuePair[1], "ISO-8859-1");
+            	} catch(UnsupportedEncodingException e) {
+            		throw new RuntimeException("Totally unexpected... is your JVM busted?", e);
+            	}
+                
             }
             request.setupAddParameter(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1]: "");
         }
