@@ -596,23 +596,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     }
                 }
 
-                if (currLayer.getType() == MapLayerInfo.TYPE_VECTOR) {
-                    // currStyle = findStyleOf(request, currLayer,
-                    // styledLayers); // DJB: this looks like a bug, we should
-                    // get the style from styledLayers[i]
-
-                    // the correct thing to do its grab the style from
-                    // styledLayers[i]
-                    // inside the styledLayers[i] will either be :
-                    // a) nothing - in which case grab the layer's default style
-                    // b) a set of:
-                    // i) NameStyle -- grab it from the pre-loaded styles
-                    // ii)UserStyle -- grab it from the sld the user uploaded
-                    //
-                    // NOTE: we're going to get a set of layer->style pairs for
-                    // (b).
-                    addStyles(request, currLayer, styledLayers[i], layers, styles);
-                } else if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
+                if (currLayer.getType() == MapLayerInfo.TYPE_RASTER) {
                     try {
                         addStyles(request, currLayer, styledLayers[i], layers, styles);
                     } catch (WmsException wm) {
@@ -629,6 +613,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                         layers.add(currLayer);
                         styles.add(currStyle);
                     }
+                } else {
+                	addStyles(request, currLayer, styledLayers[i], layers, styles);
                 }
             }
         }
