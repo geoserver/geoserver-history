@@ -2,7 +2,6 @@ package org.geoserver.web.importer;
 
 import static org.geoserver.web.importer.ImportSummaryProvider.*;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
 import org.apache.wicket.AttributeModifier;
@@ -124,11 +123,17 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
             }
             
         };
+        
         // keep the last modified name if possible
+        String name;
         if(layerSummary.getLayer() != null)
-            link.add(new Label("name", layerSummary.getLayer().getName()));
+            name = layerSummary.getLayer().getName();
         else
-            link.add(new Label("name", layerSummary.getLayerName()));
+            name =  layerSummary.getLayerName();
+        link.add(new Label("name", name));
+        
+        // also set a tooltip explaining what this action does
+        link.add(new AttributeModifier("title", true, new ParamResourceModel("edit", this, name)));
         
         return link;
     }
