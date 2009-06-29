@@ -3,7 +3,7 @@
 CQL
 =======================
 
-CQL (Catalog Query Language) is a query language created by OGC for the `Catalogue WebServices specification <http://www.opengeospatial.org/standards/cat>`_. Unlike the OGC Filter specification, CQL is plain text, human readable, and thus well suited for manual construction as opposed to machine generation.
+CQL (OGC Common Query Language) is a query language created by OGC for the `Catalogue WebServices specification <http://www.opengeospatial.org/standards/cat>`_. Unlike the OGC Filter specification, CQL is plain text, human readable, and thus well suited for manual construction as opposed to machine generation.
 
 GeoServer supports the use of CQL in WMS and WFS requests, as well as in dynamic symbolizers. This tutorial introduces the language by example.
 
