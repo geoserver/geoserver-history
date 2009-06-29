@@ -1,7 +1,6 @@
 package org.geoserver.web;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxLink;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -67,6 +66,17 @@ public class DeveloperToolbar extends Panel {
                 target.addComponent(wicketPaths);
             }
 
+        });
+        
+        // controls wheter the ajax debug is enabled or not
+        add(new AjaxCheckBox("ajaxDebug", new PropertyModel(gsApp, "debugSettings.ajaxDebugModeEnabled")) {
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                // nothing to do
+                
+            }
+            
         });
 
     }
