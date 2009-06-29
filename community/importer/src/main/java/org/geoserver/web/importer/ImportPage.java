@@ -11,7 +11,6 @@ import java.util.logging.Level;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -63,7 +62,7 @@ public class ImportPage extends GeoServerSecuredPage {
         projectField.setRequired(true);
         projectField.add(new ProjectValidator());
         projectField.add(new PatternValidator("\\w+"));
-        projectField.add(new StringValidator.MaximumLengthValidator(10));
+        projectField.add(new StringValidator.MaximumLengthValidator(6));
         form.add(projectField);
 
         SubmitLink submitLink = submitLink();
