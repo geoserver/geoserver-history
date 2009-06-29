@@ -34,10 +34,19 @@
        <groupId>xalan</groupId>
        <artifactId>xalan</artifactId>
     </dependency>
-    <dependency>
+    <!-- start geoserver dependencies -->
+    <dependency>    
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>      
     </dependency>    
+    <dependency>    
+      <groupId>org.geoserver</groupId>
+      <artifactId>wms</artifactId>      
+    </dependency>    
+    <dependency>    
+      <groupId>org.geoserver</groupId>
+      <artifactId>wcs</artifactId>      
+    </dependency>           
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>

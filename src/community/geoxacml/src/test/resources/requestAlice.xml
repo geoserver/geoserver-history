@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Request xmlns="urn:oasis:names:tc:xacml:2.0:context:schema:os"
-                
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Request xmlns="urn:oasis:names:tc:xacml:2.0:context:schema:os"                
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:oasis:names:tc:xacml:2.0:context:schema:os
+	http://docs.oasis-open.org/xacml/2.0/access_control-xacml-2.0-context-schema-os.xsd	">
 	<Subject>
 		<Attribute
 		  AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
@@ -13,7 +14,8 @@
 		<Attribute
 		  AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
 		  DataType="http://www.w3.org/2001/XMLSchema#string">
-			<AttributeValue>streets</AttributeValue>	
+			<AttributeValue>streets</AttributeValue>
+			<AttributeValue>streets2</AttributeValue>	
 		</Attribute>
 	</Resource>
 	<Action>

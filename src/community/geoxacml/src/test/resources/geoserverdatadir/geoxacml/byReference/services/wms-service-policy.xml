@@ -35,12 +35,12 @@
 	</Target>
 	<Rule Effect="Permit" RuleId="urn:ogc:services:wms:geoserver:rule">
 		<Condition >		    		  	
-	 		<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:any-of-any">
+	 		<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:any-of-any">	 		                   
   	 		    <Function FunctionId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal"/>
 			 	<SubjectAttributeDesignator
                       AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role"
                        DataType="http://www.w3.org/2001/XMLSchema#anyURI"/>
-				<Apply FunctionId="urn:ogc:def:function:geoxacml:1.0:anyURI-bag">										
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:anyURI-bag">										
 					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">user</AttributeValue>
 					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">administrator</AttributeValue>					
 				</Apply>	
