@@ -931,6 +931,10 @@ display: block;
 height: 1px; /* IE < 7 */
 }
 
+.devtoolbar {
+	background-color: #EEEEEE;
+}
+
 /*-----------
 Add/remove icons for add/remove links
 -------------*/
