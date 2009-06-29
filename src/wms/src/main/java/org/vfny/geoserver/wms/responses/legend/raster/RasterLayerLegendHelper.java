@@ -171,8 +171,14 @@ public class RasterLayerLegendHelper {
 			for (ColorMapEntry ce : colorMapEntries)
 				if (ce != null)
 					cmapLegendBuilder.addColorMapEntry(ce);	
+
+			//check the additional options before proceeding
+			cmapLegendBuilder.checkAdditionalOptions();
 			
+			// instantiate the creator
 			cMapLegendCreator=cmapLegendBuilder.create();
+
+
 		}
 		else
 			cMapLegendCreator=null;

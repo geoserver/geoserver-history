@@ -166,7 +166,6 @@ class ColorMapLegendCreator {
 		 */
 		public void setAdditionalOptions(final Map<String,Object> legendOptions) {
 			this.additionalOptions.putAll(legendOptions);
-			checkAdditionalOptions();
 			
 		}
 
@@ -270,7 +269,7 @@ class ColorMapLegendCreator {
 			return new ColorMapLegendCreator(this);
 		}
 
-		private void checkAdditionalOptions() {
+		void checkAdditionalOptions() {
 				
 		        fontAntiAliasing = false;
 		        if (additionalOptions.get("fontAntiAliasing") instanceof String) {
