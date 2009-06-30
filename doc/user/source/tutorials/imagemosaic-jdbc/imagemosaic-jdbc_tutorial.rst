@@ -15,7 +15,7 @@ This tutorial will show one possible scenario, explaining step by step what to d
 Getting Started
 ---------------
 
-We use postgis/postgres as database engine, a database named "gis" and start with an image from openstreetmap. We also need an installation from `<http://www.gdal.org>`_
+We use postgis/postgres as database engine, a database named "gis" and start with an image from openstreetmap. We also need this utility  `<http://www.gdal.org/gdal_retile.html>`_ . The best way to install with all dependencies is downloading from here `<http://fwtools.maptools.org/>`_ 
 
 .. image:: start.png
 
