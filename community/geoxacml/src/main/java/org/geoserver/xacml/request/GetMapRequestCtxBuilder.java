@@ -13,6 +13,12 @@ import com.sun.xacml.ctx.RequestCtx;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
+/**
+ * GeoXACML request context builder for {@link GetMapRequest}
+ * 
+ * @author christian
+ *
+ */
 public class GetMapRequestCtxBuilder extends WMSRequestCtxBuilder {
 
     @Override
