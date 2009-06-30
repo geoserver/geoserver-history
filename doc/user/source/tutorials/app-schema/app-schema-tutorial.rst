@@ -1,4 +1,5 @@
 ..  _app_schema_tutorial:
+
 Application Schema Tutorial
 ===========================
 

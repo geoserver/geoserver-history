@@ -1,12 +1,13 @@
 ..  _data_access_integration:
+
 Application Schema Data Access Integration
 ==========================================
 
 This page assumes prior knowledge of :ref:`application schema <app_schema_tutorial>` and :ref:`feature chaining <feature_chaining>`. 
 To use feature chaining, the nested features can come from any complex feature data access, as long as:
- * it has valid data referred by the "container" feature type,
- * the data access is registered via DataAccessRegistry, 
- * if FEATURE_LINK is used as the link field, the feature types were created via ComplexFeatureTypeFactoryImpl
+* it has valid data referred by the "container" feature type,
+* the data access is registered via DataAccessRegistry, 
+* if FEATURE_LINK is used as the link field, the feature types were created via ComplexFeatureTypeFactoryImpl
 
 However, the "container" features must come from an application schema data access. The rest of this article describes how we can create an application data access from an existing non-application schema data access, in order to "chain" features.
 The input data access referred in this article is assumed to be the non-application schema data access. 

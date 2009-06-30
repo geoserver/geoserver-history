@@ -1,4 +1,5 @@
 ..  _feature_chaining:
+
 Feature Chaining User Guide
 ===========================
 
@@ -368,13 +369,13 @@ E.g. You can run the following filter on gsml:MappedFeatureUseCase2A::
   </ogc:Filter>
 
 Multi-valued properties by reference (*xlink:href*)
---------------------------------------------------
+---------------------------------------------------
 You may want to use feature chaining to set multi-valued properties by reference.
 This is particularly handy to avoid endless loop in circular relationships. 
 For example, you may have a circular relationship between gsml:MappedFeature and gsml:GeologicUnit.  
 E.g.   
-   * gsml:MappedFeature has gsml:GeologicUnit as gsml:specification
-   * gsml:GeologicUnit has gsml:MappedFeature as gsml:occurrence
+* gsml:MappedFeature has gsml:GeologicUnit as gsml:specification
+* gsml:GeologicUnit has gsml:MappedFeature as gsml:occurrence
 Obviously you can only encode one side of the relationship, or you'll end up with an endless loop.
 You would need to pick one side to "chain" and use xlink:href for the other side of the relationship. 
 
