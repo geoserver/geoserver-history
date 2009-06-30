@@ -10,6 +10,12 @@ import org.vfny.geoserver.wms.requests.WMSRequest;
 
 import com.sun.xacml.ctx.RequestCtx;
 
+/**
+ * GeoXACML request context builder for {@link WMSRequest}
+ * 
+ * @author christian
+ *
+ */
 public class WMSRequestCtxBuilder extends RequestCtxBuilder {
 
     @Override

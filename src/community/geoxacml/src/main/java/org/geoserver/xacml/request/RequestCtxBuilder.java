@@ -18,6 +18,14 @@ import com.sun.xacml.ctx.RequestCtx;
 import com.vividsolutions.jts.geom.Geometry;
 
 
+/**
+ * Base class for geoxacml request context builders
+ * The class inheritance structure is mirrored from {@link Request}
+ * 
+ * 
+ * @author Christian Mueller
+ *
+ */
 public abstract class RequestCtxBuilder extends Object {
     
     protected final static String URN_PREFIX="org:geoserver:";
@@ -25,8 +33,6 @@ public abstract class RequestCtxBuilder extends Object {
         read { public String toString() { return "read"; }},
         write { public String toString() { return "write"; }}
     };
-    protected final static String READ_ACTION="read";
-    protected final static String WRITE_ACTION="wirte";
     
     protected static URI SERVICE_ATTR_ID = null;
     protected static URI REQUEST_ATTR_ID = null;
@@ -37,7 +43,7 @@ public abstract class RequestCtxBuilder extends Object {
             SERVICE_ATTR_ID = new URI(URN_PREFIX+"service");
             REQUEST_ATTR_ID = new URI(URN_PREFIX+"request");
             ACTION_ATTR_ID = new URI(URN_PREFIX+"action");
-            ACTION_ATTR_ID = new URI(URN_PREFIX+"layer");
+            LAYER_ATTR_ID = new URI(URN_PREFIX+"layer");
         } catch (URISyntaxException e) {
             // should not happen
         }
@@ -58,13 +64,13 @@ public abstract class RequestCtxBuilder extends Object {
                 new StringAttribute(action.toString())));
         
     }
-    protected void fillRequestCtx(RequestCtx ctx, Request source) {
+    protected void fillRequestCtx(RequestCtx ctx, Request request) {
             Set<Attribute> resourceAttributes = ctx.getResource();
             
             resourceAttributes.add(new Attribute(SERVICE_ATTR_ID,null,null,
-                            new StringAttribute(source.getService())));
+                            new StringAttribute(request.getService())));
             resourceAttributes.add(new Attribute(REQUEST_ATTR_ID,null,null,
-                    new StringAttribute(source.getRequest())));
+                    new StringAttribute(request.getRequest())));
             
     }
         
