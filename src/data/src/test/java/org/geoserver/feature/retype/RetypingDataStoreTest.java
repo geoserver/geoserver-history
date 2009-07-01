@@ -275,4 +275,20 @@ public class RetypingDataStoreTest extends TestCase {
         assertEquals(1, fl2.lockFeatures(q));
     }
 
+    public void testQueryWithPropertyNames() throws Exception {
+        // check the schemas in feature source and feature collection
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs = rts.getFeatureSource(RENAMED);
+        DefaultQuery q = new DefaultQuery(RENAMED, Filter.INCLUDE, new String[] { "ADDRESS"} );
+        FeatureCollection<SimpleFeatureType,SimpleFeature> fc = fs.getFeatures( q );
+        assertEquals( 1, fc.getSchema().getAttributeCount() );
+        
+        // make sure the feature schema is good as well
+        FeatureIterator <SimpleFeature> it = fc.features();
+        SimpleFeature sf = it.next();
+        it.close();
+        
+        assertEquals( 1, sf.getAttributeCount() );
+        assertNull( sf.getAttribute( "FID" ) );
+        assertNotNull( sf.getAttribute( "ADDRESS"));
+    }
 }
