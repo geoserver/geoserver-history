@@ -18,6 +18,7 @@ import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -103,8 +104,15 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
             throw new IOException("Cannot query this feature source with " + query.getTypeName()
                     + " since it serves only " + typeMap.getName());
         }
-        return new RetypingFeatureCollection(wrapped.getFeatures(store.retypeQuery(query, typeMap)), typeMap
-                .getFeatureType());
+        
+        //GEOS-3210, if the query specifies a subset of property names we need to take that into 
+        // account
+        SimpleFeatureType target = typeMap.getFeatureType();
+        if ( query.getPropertyNames() != Query.ALL_NAMES ) {
+            target = SimpleFeatureTypeBuilder.retype(target, query.getPropertyNames());
+        }
+        return new RetypingFeatureCollection(wrapped.getFeatures(store.retypeQuery(query, typeMap)),
+                target);
     }
 
     public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Filter filter) throws IOException {
