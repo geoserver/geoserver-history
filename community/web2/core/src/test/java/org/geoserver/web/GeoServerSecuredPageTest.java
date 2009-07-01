@@ -6,7 +6,7 @@ public class GeoServerSecuredPageTest extends GeoServerWicketTestSupport {
     public void testSecuredPageGivesRedirectWhenLoggedOut() {
         logout();
         tester.startPage(LayerPage.class);
-        tester.assertRenderedPage(UnauthorizedPage.class);
+        tester.assertRenderedPage(GeoServerLoginPage.class);
     }
 
     public void testSecuredPageAllowsAccessWhenLoggedIn() {
