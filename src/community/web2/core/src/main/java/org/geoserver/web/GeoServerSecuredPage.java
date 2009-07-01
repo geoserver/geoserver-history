@@ -4,6 +4,8 @@
  */
 package org.geoserver.web;
 
+import org.acegisecurity.Authentication;
+
 
 /**
  * Base class for secured web pages. By default it only allows
@@ -17,8 +19,11 @@ public class GeoServerSecuredPage extends GeoServerBasePage {
 
     public GeoServerSecuredPage() {
         super();
-        if (!getPageAuthorizer().isAccessAllowed(this.getClass(), getSession().getAuthentication()))
-            setResponsePage(new UnauthorizedPage());
+        Authentication auth = getSession().getAuthentication();
+        if(auth == null || !auth.isAuthenticated())
+            setResponsePage(GeoServerLoginPage.class);
+        else if (!getPageAuthorizer().isAccessAllowed(this.getClass(), auth))
+            setResponsePage(UnauthorizedPage.class);
     }
 
     /**
