@@ -42,7 +42,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -361,7 +360,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
      *
      * @return a <code>List</code> of <code>CombinerParameter</code>s
      */
-    public List getCombiningParameters() {
+    public List<CombinerParameter> getCombiningParameters() {
         return parameters;
     }
 
@@ -401,7 +400,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
      *
      * @return a <code>List</code> of child nodes
      */
-    public List getChildren() {
+    public List<PolicyTreeElement> getChildren() {
         return children;
     }
 
@@ -413,7 +412,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
      *
      * @return a <code>List</code> of <code>CombinerElement</code>s
      */
-    public List getChildElements() {
+    public List<CombinerElement> getChildElements() {
         return childElements;
     }
 
@@ -422,7 +421,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
      *
      * @return the policy's obligations
      */
-    public Set getObligations() {
+    public Set<Obligation> getObligations() {
         return obligations;
     }
 
@@ -468,13 +467,9 @@ public abstract class AbstractPolicy implements PolicyTreeElement
             // NOTE: since this is only getting called by known child
             // classes we don't check that the types are all the same
             List<PolicyTreeElement> list = new ArrayList<PolicyTreeElement>();
-            Iterator it = children.iterator();
-
-            while (it.hasNext()) {
-                CombinerElement element = (CombinerElement)(it.next());
+            for (CombinerElement element : children)
                 list.add(element.getElement());
-            }
-
+            
             this.children = Collections.unmodifiableList(list);
             childElements = Collections.unmodifiableList(children);
         }
@@ -507,10 +502,8 @@ public abstract class AbstractPolicy implements PolicyTreeElement
             // we didn't permit/deny, so we never return obligations
             return result;
         }
-
-        Iterator it = obligations.iterator();
-        while (it.hasNext()) {
-            Obligation obligation = (Obligation)(it.next());
+        
+        for (Obligation obligation: obligations)  {             
             if (obligation.getFulfillOn() == effect)
                 result.addObligation(obligation);
         }
@@ -528,10 +521,9 @@ public abstract class AbstractPolicy implements PolicyTreeElement
      */
     protected void encodeCommonElements(OutputStream output,
                                         Indenter indenter) {
-        Iterator it = childElements.iterator();
-        while (it.hasNext()) {
-            ((CombinerElement)(it.next())).encode(output, indenter);
-        }
+        
+        for (CombinerElement elem : childElements)    
+            elem.encode(output, indenter);
 
         if (obligations.size() != 0) {
             PrintStream out = new PrintStream(output);
@@ -540,10 +532,8 @@ public abstract class AbstractPolicy implements PolicyTreeElement
             out.println(indent + "<Obligations>");
             indenter.in();
 
-            it = obligations.iterator();
-            while (it.hasNext()) {
-                ((Obligation)(it.next())).encode(output, indenter);
-            }
+            for (Obligation obligation: obligations)    
+                obligation.encode(output, indenter);
 
             out.println(indent + "</Obligations>");
             indenter.out();

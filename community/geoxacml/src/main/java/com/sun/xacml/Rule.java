@@ -255,8 +255,8 @@ public class Rule implements PolicyTreeElement
      *
      * @return a <code>List</code> with no elements
      */
-    public List getChildren() {
-        return Collections.EMPTY_LIST;
+    public List<PolicyTreeElement> getChildren() {
+        return Collections.emptyList();
     }
 
     /**

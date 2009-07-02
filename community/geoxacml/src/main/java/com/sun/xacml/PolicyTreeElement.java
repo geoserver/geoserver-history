@@ -64,7 +64,7 @@ public interface PolicyTreeElement
      *
      * @return the non-null <code>List</code> of children of this node
      */
-    public List getChildren();
+    public List<PolicyTreeElement> getChildren();
 
     /**
      * Returns the given description of this element or null if 

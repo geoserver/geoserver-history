@@ -40,7 +40,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Node;
@@ -135,7 +134,7 @@ public class TargetSection
      *
      * @return a <code>List</code> of <code>TargetMatchGroup</code>s
      */
-    public List getMatchGroups() {
+    public List<TargetMatchGroup> getMatchGroups() {
         return matchGroups;
     }
 
@@ -163,13 +162,12 @@ public class TargetSection
 
         // there are specific matching elements, so prepare to iterate
         // through the list
-        Iterator it = matchGroups.iterator();
         Status firstIndeterminateStatus = null;
 
         // in order for this section to match, one of the groups must match 
-        while (it.hasNext()) {
-            // get the next group and try matching it
-            TargetMatchGroup group = (TargetMatchGroup)(it.next());
+        for (TargetMatchGroup group : matchGroups) {
+         // get the next group and try matching it
+        
             MatchResult result = group.match(context);
 
             // we only need one match, so if this matched, then we're done
@@ -236,10 +234,8 @@ public class TargetSection
             // this has specific rules, so we can now encode them
             out.println(indent + "<" + name + "s>");
 
-            Iterator it = matchGroups.iterator();
             indenter.in();
-            while (it.hasNext()) {
-                TargetMatchGroup group = (TargetMatchGroup)(it.next());
+            for (TargetMatchGroup group : matchGroups) {                    
                 group.encode(output, indenter);
             }
             indenter.out();

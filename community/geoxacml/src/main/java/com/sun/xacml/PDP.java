@@ -41,7 +41,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -182,10 +181,9 @@ public class PDP
 
             // at this point, we need to go through all the resources we
             // successfully found and start collecting results
-            Iterator it = resourceResult.getResources().iterator();
-            while (it.hasNext()) {
-                // get the next resource, and set it in the EvaluationCtx
-                AttributeValue resource = (AttributeValue)(it.next());
+                
+            for (AttributeValue resource: resourceResult.getResources()) {
+             // get the next resource, and set it in the EvaluationCtx
                 context.setResourceId(resource);
                 
                 // do the evaluation, and set the resource in the result
@@ -198,13 +196,11 @@ public class PDP
 
             // now that we've done all the successes, we add all the failures
             // from the finder result
-            Map failureMap = resourceResult.getFailures();
-            it = failureMap.keySet().iterator();
-            while (it.hasNext()) {
-                // get the next resource, and use it to get its Status data
-                AttributeValue resource = (AttributeValue)(it.next());
-                Status status = (Status)(failureMap.get(resource));
-
+            Map<AttributeValue,Status> failureMap = resourceResult.getFailures();
+               
+            for (AttributeValue resource : failureMap.keySet()) {
+             // get the next resource, and use it to get its Status data
+                Status status = (failureMap.get(resource));
                 // add a new result
                 results.add(new Result(Result.DECISION_INDETERMINATE,
                                        status, resource.encode()));

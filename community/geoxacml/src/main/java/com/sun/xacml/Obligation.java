@@ -42,7 +42,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.NamedNodeMap;
@@ -185,7 +184,7 @@ public class Obligation
      *
      * @return the assignments
      */
-    public List getAssignments() {
+    public List<Attribute> getAssignments() {
         return assignments;
     }
 
@@ -214,11 +213,8 @@ public class Obligation
                     "\" FulfillOn=\"" + Result.DECISIONS[fulfillOn] + "\">");
 
         indenter.in();
-        
-        Iterator it = assignments.iterator();
-
-        while (it.hasNext()) {
-            Attribute attr = (Attribute)(it.next());
+                    
+        for (Attribute attr: assignments) {    
             out.println(indenter.makeString() +
                         "<AttributeAssignment AttributeId=\"" +
                         attr.getId().toString() + "\" DataType=\"" +

@@ -80,6 +80,6 @@ public interface Evaluatable extends Expression
      *
      * @return a <code>List</code> of <code>Evaluatable</code>s
      */
-    public List getChildren();
+    public List<Evaluatable> getChildren();
 
 }
