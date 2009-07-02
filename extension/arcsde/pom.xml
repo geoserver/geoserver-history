@@ -17,6 +17,10 @@
   <dependencies>
     <dependency>
       <groupId>org.geotools</groupId>
+      <artifactId>gt-arcsde-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geotools</groupId>
       <artifactId>gt-arcsde</artifactId>
     </dependency>
   </dependencies>
