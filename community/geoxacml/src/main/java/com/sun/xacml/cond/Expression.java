@@ -36,11 +36,10 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.Indenter;
-
+import java.io.OutputStream;
 import java.net.URI;
 
-import java.io.OutputStream;
+import com.sun.xacml.Indenter;
 
 
 /**

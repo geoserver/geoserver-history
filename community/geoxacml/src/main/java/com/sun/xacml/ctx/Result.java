@@ -36,13 +36,8 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.Indenter;
-import com.sun.xacml.Obligation;
-import com.sun.xacml.ParsingException;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -50,6 +45,10 @@ import java.util.Set;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.Indenter;
+import com.sun.xacml.Obligation;
+import com.sun.xacml.ParsingException;
 
 
 /**
@@ -100,7 +99,7 @@ public class Result
     private String resource = null;
 
     // the set of obligations which may be empty
-    private Set obligations;
+    private Set<Obligation> obligations;
     
     /**
      * Constructs a <code>Result</code> object with default status data (OK).
@@ -124,7 +123,7 @@ public class Result
      *
      * @throws IllegalArgumentException if decision is not valid
      */
-    public Result(int decision, Set obligations)
+    public Result(int decision, Set<Obligation> obligations)
         throws IllegalArgumentException
     {
         this(decision, null, null, obligations);
@@ -157,7 +156,7 @@ public class Result
      *
      * @throws IllegalArgumentException if decision is not valid
      */
-    public Result(int decision, Status status, Set obligations)
+    public Result(int decision, Status status, Set<Obligation> obligations)
         throws IllegalArgumentException
     {
         this(decision, status, null, obligations);
@@ -194,7 +193,7 @@ public class Result
      *
      * @throws IllegalArgumentException if decision is not valid
      */
-    public Result(int decision, String resource, Set obligations)
+    public Result(int decision, String resource, Set<Obligation> obligations)
         throws IllegalArgumentException
     {
         this(decision, null, resource, obligations);
@@ -230,7 +229,7 @@ public class Result
      * @throws IllegalArgumentException if decision is not valid
      */
     public Result(int decision, Status status, String resource,
-                  Set obligations)
+                  Set<Obligation> obligations)
         throws IllegalArgumentException
     {
         // check that decision is valid
@@ -248,7 +247,7 @@ public class Result
             this.status = status;
 
         if (obligations == null)
-            this.obligations = new HashSet();
+            this.obligations = new HashSet<Obligation>();
         else
             this.obligations = obligations;
     }
@@ -268,7 +267,7 @@ public class Result
         int decision = -1;
         Status status = null;
         String resource = null;
-        Set obligations = null;
+        Set<Obligation> obligations = null;
 
         NamedNodeMap attrs = root.getAttributes();
         Node resourceAttr = attrs.getNamedItem("ResourceId");
@@ -304,8 +303,8 @@ public class Result
     /**
      * Helper method that handles the obligations
      */
-    private static Set parseObligations(Node root) throws ParsingException {
-        Set set = new HashSet();
+    private static Set<Obligation> parseObligations(Node root) throws ParsingException {
+        Set<Obligation> set = new HashSet<Obligation>();
 
         NodeList nodes = root.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -376,7 +375,7 @@ public class Result
      *
      * @return the set of obligations
      */
-    public Set getObligations() {
+    public Set<Obligation> getObligations() {
         return obligations;
     }
 

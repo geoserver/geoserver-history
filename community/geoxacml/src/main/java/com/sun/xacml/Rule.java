@@ -36,22 +36,10 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.attr.BooleanAttribute;
-
-import com.sun.xacml.cond.Apply;
-import com.sun.xacml.cond.Condition;
-import com.sun.xacml.cond.EvaluationResult;
-import com.sun.xacml.cond.VariableManager;
-
-import com.sun.xacml.ctx.Result;
-import com.sun.xacml.ctx.Status;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +47,14 @@ import java.util.List;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.attr.BooleanAttribute;
+import com.sun.xacml.cond.Apply;
+import com.sun.xacml.cond.Condition;
+import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.cond.VariableManager;
+import com.sun.xacml.ctx.Result;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -68,6 +64,8 @@ import org.w3c.dom.NodeList;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class Rule implements PolicyTreeElement
 {
@@ -168,7 +166,7 @@ public class Rule implements PolicyTreeElement
         throws ParsingException
     {
         URI id = null;
-        String name = null;
+//        String name = null;
         int effect = 0;
         String description = null;
         Target target = null;
@@ -285,7 +283,7 @@ public class Rule implements PolicyTreeElement
      */
     public MatchResult match(EvaluationCtx context) {
         if (target == null) {
-            ArrayList code = new ArrayList();
+            ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_PROCESSING_ERROR);
             Status status = new Status(code, "no target available for " +
                                        "matching a rule");

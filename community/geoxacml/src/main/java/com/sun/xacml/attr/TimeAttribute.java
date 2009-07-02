@@ -36,20 +36,14 @@
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.ProcessingException;
-
 import java.net.URI;
-
 import java.text.ParseException;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.ProcessingException;
 
 
 /**
@@ -268,7 +262,7 @@ public class TimeAttribute extends AttributeValue
         Date dateValue = dateTime.getValue();
         int defaultedTimeZone = dateTime.getDefaultedTimeZone();
         if (dateTime.getTimeZone() == TZ_UNSPECIFIED) {
-            TimeZone localTZ = TimeZone.getDefault();
+            //TimeZone localTZ = TimeZone.getDefault();
             int newDefTimeZone =
                 DateTimeAttribute.getDefaultTZOffset(new Date());
             dateValue = new Date(dateValue.getTime() -

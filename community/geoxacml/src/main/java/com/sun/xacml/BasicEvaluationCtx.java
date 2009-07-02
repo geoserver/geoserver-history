@@ -36,26 +36,7 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.attr.AttributeDesignator;
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-import com.sun.xacml.attr.DateAttribute;
-import com.sun.xacml.attr.DateTimeAttribute;
-import com.sun.xacml.attr.StringAttribute;
-import com.sun.xacml.attr.TimeAttribute;
-
-import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.ctx.Attribute;
-import com.sun.xacml.ctx.RequestCtx;
-import com.sun.xacml.ctx.Status;
-import com.sun.xacml.ctx.Subject;
-
-import com.sun.xacml.finder.AttributeFinder;
-
 import java.net.URI;
-import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,11 +45,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.attr.AttributeDesignator;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.attr.DateAttribute;
+import com.sun.xacml.attr.DateTimeAttribute;
+import com.sun.xacml.attr.StringAttribute;
+import com.sun.xacml.attr.TimeAttribute;
+import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.ctx.Attribute;
+import com.sun.xacml.ctx.RequestCtx;
+import com.sun.xacml.ctx.Subject;
+import com.sun.xacml.finder.AttributeFinder;
 
 
 /**
@@ -88,6 +81,8 @@ import org.w3c.dom.Node;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class BasicEvaluationCtx implements EvaluationCtx
 {
@@ -98,10 +93,10 @@ public class BasicEvaluationCtx implements EvaluationCtx
     private Node requestRoot;
 
     // the 4 maps that contain the attribute data
-    private HashMap subjectMap;
-    private HashMap resourceMap;
-    private HashMap actionMap;
-    private HashMap environmentMap;
+    private HashMap<URI,Map<String,Set<Attribute>>> subjectMap;
+    private HashMap<String,Set<Attribute>> resourceMap;
+    private HashMap<String,Set<Attribute>> actionMap;
+    private HashMap<String,Set<Attribute>> environmentMap;
 
     // the resource and its scope
     private AttributeValue resourceId;
@@ -201,19 +196,19 @@ public class BasicEvaluationCtx implements EvaluationCtx
         currentDateTime = null;
 
         // get the subjects, make sure they're correct, and setup tables
-        subjectMap = new HashMap();
+        subjectMap = new HashMap<URI,Map<String,Set<Attribute>>>();
         setupSubjects(request.getSubjects());
 
         // next look at the Resource data, which needs to be handled specially
-        resourceMap = new HashMap();
+        resourceMap = new HashMap<String,Set<Attribute>>();
         setupResource(request.getResource());
         
         // setup the action data, which is generic
-        actionMap = new HashMap();
+        actionMap = new HashMap<String,Set<Attribute>>();
         mapAttributes(request.getAction(), actionMap);
 
         // finally, set up the environment data, which is also generic
-        environmentMap = new HashMap();
+        environmentMap = new HashMap<String,Set<Attribute>>();
         mapAttributes(request.getEnvironmentAttributes(), environmentMap);
     }
 
@@ -224,7 +219,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
      * Maps that in turn are indexed by id and keep the unique ctx.Attribute
      * objects.
      */
-    private void setupSubjects(Set subjects) throws ParsingException {
+    private void setupSubjects(Set<Subject> subjects) throws ParsingException {
         // make sure that there is at least one Subject
         if (subjects.size() == 0)
             throw new ParsingException("Request must a contain subject");
@@ -235,13 +230,13 @@ public class BasicEvaluationCtx implements EvaluationCtx
             Subject subject = (Subject)(it.next());
 
             URI category = subject.getCategory();
-            Map categoryMap = null;
+            Map <String,Set<Attribute>> categoryMap = null;
 
             // see if we've already got a map for the category
             if (subjectMap.containsKey(category)) {
-                categoryMap = (Map)(subjectMap.get(category));
+                categoryMap = subjectMap.get(category);
             } else {
-                categoryMap = new HashMap();
+                categoryMap = new HashMap<String,Set<Attribute>>();
                 subjectMap.put(category, categoryMap);
             }
 
@@ -254,11 +249,11 @@ public class BasicEvaluationCtx implements EvaluationCtx
 
                 if (categoryMap.containsKey(id)) {
                     // add to the existing set of Attributes w/this id
-                    Set existingIds = (Set)(categoryMap.get(id));
+                    Set <Attribute> existingIds = categoryMap.get(id);
                     existingIds.add(attr);
                 } else {
                     // this is the first Attr w/this id
-                    HashSet newIds = new HashSet();
+                    HashSet<Attribute> newIds = new HashSet<Attribute>();
                     newIds.add(attr);
                     categoryMap.put(id, newIds);
                 }
@@ -273,7 +268,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
      * there, and for the optional scope attribute, to see what the scope
      * of the attribute is
      */
-    private void setupResource(Set resource) throws ParsingException {
+    private void setupResource(Set<Attribute> resource) throws ParsingException {
         mapAttributes(resource, resourceMap);
 
         // make sure there resource-id attribute was included
@@ -336,17 +331,17 @@ public class BasicEvaluationCtx implements EvaluationCtx
      * by the String form of the attribute ids, and that contains Sets at
      * each entry with all attributes that have that id
      */
-    private void mapAttributes(Set input, Map output) {
+    private void mapAttributes(Set<Attribute> input, Map<String,Set<Attribute>> output) {
         Iterator it = input.iterator();
         while (it.hasNext()) {
             Attribute attr = (Attribute)(it.next());
             String id = attr.getId().toString();
 
             if (output.containsKey(id)) {
-                Set set = (Set)(output.get(id));
+                Set<Attribute> set = output.get(id);
                 set.add(attr);
             } else {
-                Set set = new HashSet();
+                Set<Attribute> set = new HashSet<Attribute>();
                 set.add(attr);
                 output.put(id, set);
             }
@@ -393,7 +388,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
         this.resourceId = resourceId;
 
         // there will always be exactly one value for this attribute
-        Set attrSet = (Set)(resourceMap.get(RESOURCE_ID));
+        Set<Attribute> attrSet = resourceMap.get(RESOURCE_ID);
         Attribute attr = (Attribute)(attrSet.iterator().next());
         
         // remove the old value...
@@ -618,7 +613,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
         }
 
         // now go through each, considering each Attribute object
-        List attributes = new ArrayList();
+        List<AttributeValue> attributes = new ArrayList<AttributeValue>();
         Iterator it = attrSet.iterator();
 
         while (it.hasNext()) {

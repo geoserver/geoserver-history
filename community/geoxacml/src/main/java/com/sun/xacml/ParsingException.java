@@ -47,6 +47,11 @@ public class ParsingException extends Exception
 {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Constructs a new <code>ParsingException</code> with no message
      * or cause.
      */

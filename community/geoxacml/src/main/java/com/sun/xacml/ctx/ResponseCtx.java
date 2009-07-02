@@ -36,26 +36,19 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-
 import java.io.InputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
 
 
 /**
@@ -64,12 +57,14 @@ import org.w3c.dom.NodeList;
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class ResponseCtx
 {
 
     // The set of Result objects returned by the PDP
-    private Set results = null;
+    private Set<Result> results = null;
 
     /**
      * Constructor that creates a new <code>ResponseCtx</code> with only a
@@ -78,7 +73,7 @@ public class ResponseCtx
      * @param result the single result in the response
      */
     public ResponseCtx(Result result) {
-        results = new HashSet();
+        results = new HashSet<Result>();
         results.add(result);
     }
     
@@ -89,8 +84,8 @@ public class ResponseCtx
      *
      * @param results a <code>Set</code> of <code>Result</code> objects
      */
-    public ResponseCtx(Set results) {
-        this.results = Collections.unmodifiableSet(new HashSet(results));
+    public ResponseCtx(Set<Result> results) {
+        this.results = Collections.unmodifiableSet(new HashSet<Result>(results));
     }
 
     /**
@@ -105,7 +100,7 @@ public class ResponseCtx
      * @throws ParsingException if the node is invalid
      */
     public static ResponseCtx getInstance(Node root) throws ParsingException {
-        Set results = new HashSet();
+        Set<Result> results = new HashSet<Result>();
         
         NodeList nodes = root.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -148,7 +143,7 @@ public class ResponseCtx
      * 
      * @return a <code>Set</code> of results
      */
-    public Set getResults() {
+    public Set<Result> getResults() {
         return results;
     }
 

@@ -36,14 +36,12 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
+import java.util.List;
 
+import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.attr.BooleanAttribute;
 import com.sun.xacml.attr.TimeAttribute;
-
-import java.util.List;
 
 
 /**

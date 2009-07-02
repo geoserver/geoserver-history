@@ -36,11 +36,12 @@
 
 package com.sun.xacml.cond.cluster;
 
-import com.sun.xacml.cond.NOfFunction;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import com.sun.xacml.cond.Function;
+import com.sun.xacml.cond.NOfFunction;
 
 
 /**
@@ -52,8 +53,8 @@ import java.util.Set;
 public class NOfFunctionCluster implements FunctionCluster
 {
 
-    public Set getSupportedFunctions() {
-        Set set = new HashSet();
+    public Set<Function> getSupportedFunctions() {
+        Set<Function> set = new HashSet<Function>();
         Iterator it = NOfFunction.getSupportedIdentifiers().iterator();
 
         while (it.hasNext())

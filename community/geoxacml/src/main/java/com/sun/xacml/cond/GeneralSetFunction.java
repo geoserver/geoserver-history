@@ -36,17 +36,16 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
 
 
 /**
@@ -55,6 +54,8 @@ import java.util.Set;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class GeneralSetFunction extends SetFunction
 {
@@ -64,16 +65,16 @@ public class GeneralSetFunction extends SetFunction
     private static final int ID_BASE_UNION = 1;
 
     // mapping of function name to its associated id and parameter type
-    private static HashMap idMap;
-    private static HashMap typeMap;
+    private static HashMap<String,Integer> idMap;
+    private static HashMap<String,String> typeMap;
 
     /**
      * Static initializer that sets up the paramater info for all the
      * supported functions.
      */
     static {
-        idMap = new HashMap();
-        typeMap = new HashMap();
+        idMap = new HashMap<String,Integer>();
+        typeMap = new HashMap<String,String>();
 
         idMap.put(NAME_BASE_INTERSECTION, new Integer(ID_BASE_INTERSECTION));
         idMap.put(NAME_BASE_UNION, new Integer(ID_BASE_UNION));
@@ -167,7 +168,7 @@ public class GeneralSetFunction extends SetFunction
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
+    public static Set<String> getSupportedIdentifiers() {
         return Collections.unmodifiableSet(idMap.keySet());
     }
 
@@ -195,7 +196,7 @@ public class GeneralSetFunction extends SetFunction
         bags[1] = (BagAttribute)(argValues[1]);
 
         AttributeValue result = null;
-        Set set = new HashSet();
+        Set<AttributeValue> set = new HashSet<AttributeValue>();
         
         switch(getFunctionId()) {
 
@@ -226,14 +227,14 @@ public class GeneralSetFunction extends SetFunction
             // create a bag with all the elements from both inputs, removing
             // all duplicate values
 
-            Iterator it0 = bags[0].iterator();
+            Iterator<AttributeValue> it0 = bags[0].iterator();
             while (it0.hasNext()) {
                 // first off, add all elements from the first bag...the set
                 // will ignore all duplicates
                 set.add(it0.next());
             }
             
-            Iterator it1 = bags[1].iterator();
+            Iterator<AttributeValue> it1 = bags[1].iterator();
             while (it1.hasNext()) {
                 // now add all the elements from the second bag...again, all
                 // duplicates will be ignored by the set

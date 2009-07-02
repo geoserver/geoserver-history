@@ -47,7 +47,7 @@ public class RBACPolicyFinder extends PolicyFinder {
      * @see com.sun.xacml.finder.PolicyFinder#getModules() throws nsupportedOperationException
      */
     @Override
-    public Set getModules() {
+    public Set<PolicyFinderModule> getModules() {
         throw new UnsupportedOperationException("Not available for RBAC");
     }
 
@@ -56,7 +56,7 @@ public class RBACPolicyFinder extends PolicyFinder {
      * UnsupportedOperationException
      */
     @Override
-    public void setModules(Set modules) {
+    public void setModules(Set<PolicyFinderModule> modules) {
         throw new UnsupportedOperationException("Not available for RBAC");
 
     }

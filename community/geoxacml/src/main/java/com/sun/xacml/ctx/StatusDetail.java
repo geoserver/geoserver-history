@@ -36,10 +36,7 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.ParsingException;
-
 import java.io.ByteArrayInputStream;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,6 +45,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
 
 
 /**

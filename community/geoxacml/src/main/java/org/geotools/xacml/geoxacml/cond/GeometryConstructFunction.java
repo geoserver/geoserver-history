@@ -23,6 +23,7 @@ import java.util.Set;
 
 import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 
+import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.cond.EvaluationResult;
 import com.vividsolutions.jts.geom.Geometry;
@@ -64,7 +65,7 @@ public abstract class GeometryConstructFunction extends GeoXACMLFunctionBase {
         } catch (URISyntaxException e) {
             // should not happen
         }
-        Set<GeometryAttribute> set = new HashSet<GeometryAttribute>();
+        Set<AttributeValue> set = new HashSet<AttributeValue>();
         set.add(resultGeomAttr);
         BagAttribute bag = new BagAttribute(resultGeomAttr.getType(), set);
         return new EvaluationResult(bag);

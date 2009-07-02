@@ -36,14 +36,13 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.Indenter;
-import com.sun.xacml.Rule;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.util.Iterator;
 import java.util.List;
+
+import com.sun.xacml.Indenter;
+import com.sun.xacml.Rule;
 
 
 /**
@@ -51,6 +50,8 @@ import java.util.List;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class RuleCombinerElement extends CombinerElement
 {
@@ -74,7 +75,7 @@ public class RuleCombinerElement extends CombinerElement
      *                   <code>CombinerParameter<code>s provided for general
      *                   use (for all pre-2.0 policies this must be empty)
      */
-    public RuleCombinerElement(Rule rule, List parameters) {
+    public RuleCombinerElement(Rule rule, List<CombinerParameter> parameters) {
         super(rule, parameters);
     }
 

@@ -36,15 +36,13 @@
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.ParsingException;
-
 import java.io.IOException;
-
 import java.net.URI;
-
 import java.util.Arrays;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
 
 
 /**

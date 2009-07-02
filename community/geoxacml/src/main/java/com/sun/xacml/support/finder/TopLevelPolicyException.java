@@ -49,7 +49,11 @@ import com.sun.xacml.ctx.Status;
 public class TopLevelPolicyException extends Exception
 {
 
-    // status explaining the error
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// status explaining the error
     private Status status;
 
     /**

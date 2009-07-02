@@ -36,29 +36,24 @@
 
 package com.sun.xacml.finder.impl;
 
+import java.net.URI;
+import java.util.ArrayList;
+
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.ParsingException;
 import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.UnknownIdentifierException;
-
 import com.sun.xacml.attr.AttributeFactory;
+import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BagAttribute;
-
 import com.sun.xacml.cond.EvaluationResult;
-
 import com.sun.xacml.ctx.Status;
-
 import com.sun.xacml.finder.AttributeFinderModule;
-
-import java.net.URI;
-
-import java.util.ArrayList;
-
-import org.apache.xpath.XPathAPI;
-
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -83,6 +78,8 @@ import org.w3c.dom.NodeList;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class SelectorModule extends AttributeFinderModule
 {
@@ -101,7 +98,7 @@ public class SelectorModule extends AttributeFinderModule
      * Private helper to create a new processing error status result
      */
     private EvaluationResult createProcessingError(String msg) {
-        ArrayList code = new ArrayList();
+        ArrayList<String> code = new ArrayList<String>();
         code.add(Status.STATUS_PROCESSING_ERROR);
         return new EvaluationResult(new Status(code, msg));
     }
@@ -203,7 +200,7 @@ public class SelectorModule extends AttributeFinderModule
 
         // there was at least one match, so try to generate the values
         try {
-            ArrayList list = new ArrayList();
+            ArrayList<AttributeValue> list = new ArrayList<AttributeValue>();
             AttributeFactory attrFactory = AttributeFactory.getInstance();
             
             for (int i = 0; i < matches.getLength(); i++) {

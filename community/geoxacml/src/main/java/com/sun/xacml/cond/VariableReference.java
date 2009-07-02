@@ -36,23 +36,19 @@
 
 package com.sun.xacml.cond;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
+import org.w3c.dom.Node;
+
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ParsingException;
 import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.ProcessingException;
-
-import com.sun.xacml.attr.AttributeValue;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
-
-import java.net.URI;
-
-import java.util.Collections;
-import java.util.List;
-
-import org.w3c.dom.Node;
 
 
 /**

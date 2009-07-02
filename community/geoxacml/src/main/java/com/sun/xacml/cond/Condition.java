@@ -36,18 +36,9 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-
-import com.sun.xacml.attr.BooleanAttribute;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -55,6 +46,12 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.attr.BooleanAttribute;
 
 
 /**
@@ -64,6 +61,8 @@ import org.w3c.dom.NodeList;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class Condition implements Evaluatable
 {
@@ -72,7 +71,7 @@ public class Condition implements Evaluatable
     private static URI booleanIdentifier;
 
     // regardless of version, this contains the Condition's children
-    private List children;
+    private List<Expression> children;
 
     // regardless of version, this is an expression that can be evaluated
     // directly
@@ -109,7 +108,7 @@ public class Condition implements Evaluatable
      *                                  if the function is invalid for use
      *                                  in a Condition
      */
-    public Condition(Function function, List expressions)
+    public Condition(Function function, List<Expression> expressions)
         throws IllegalArgumentException
     {
         isVersionOne = true;
@@ -148,7 +147,7 @@ public class Condition implements Evaluatable
         function = null;
 
         // store the expression as the child
-        List list  = new ArrayList();
+        List<Expression> list  = new ArrayList<Expression>();
         list.add(this.expression);
         children = Collections.unmodifiableList(list);
     }

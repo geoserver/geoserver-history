@@ -32,34 +32,30 @@
  *
  * You acknowledge that this software is not designed or intended for use in
  * the design, construction, operation or maintenance of any nuclear facility.
+ * 
  */
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-
-import com.sun.xacml.cond.Evaluatable;
-import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.ctx.Status;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.cond.Evaluatable;
+import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -70,6 +66,8 @@ import org.w3c.dom.Node;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class AttributeSelector implements Evaluatable
 {
@@ -347,7 +345,7 @@ public class AttributeSelector implements Evaluatable
                                     "value for a required attribute: " +
                                     contextPath);
 
-                    ArrayList code = new ArrayList();
+                    ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_MISSING_ATTRIBUTE);
                     String message = "couldn't resolve XPath expression " +
                         contextPath + " for type " + type.toString();

@@ -36,16 +36,13 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -74,10 +71,10 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
     private static StandardCombiningAlgFactory factoryInstance = null;
 
     // the algorithms supported by this factory
-    private static Set supportedAlgorithms = null;
+    private static Set<CombiningAlgorithm> supportedAlgorithms = null;
 
     // identifiers for the supported algorithms
-    private static Set supportedAlgIds;
+    private static Set<String> supportedAlgIds;
 
     // the logger we'll use for all messages
     private static final Logger logger =
@@ -97,8 +94,8 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
     private static void initAlgorithms() {
         logger.config("Initializing standard combining algorithms");
 
-        supportedAlgorithms = new HashSet();
-        supportedAlgIds = new HashSet();
+        supportedAlgorithms = new HashSet<CombiningAlgorithm>();
+        supportedAlgIds = new HashSet<String>();
         
         supportedAlgorithms.add(new DenyOverridesRuleAlg());
         supportedAlgIds.add(DenyOverridesRuleAlg.algId);

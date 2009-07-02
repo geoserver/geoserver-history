@@ -36,29 +36,22 @@
 
 package com.sun.xacml.support.finder;
 
-import com.sun.xacml.AbstractPolicy;
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.MatchResult;
-import com.sun.xacml.ParsingException;
-
-import com.sun.xacml.ctx.Status;
-
-import com.sun.xacml.finder.PolicyFinder;
-import com.sun.xacml.finder.PolicyFinderModule;
-import com.sun.xacml.finder.PolicyFinderResult;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.xacml.AbstractPolicy;
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
+import com.sun.xacml.finder.PolicyFinderResult;
 
 
 /**
@@ -85,6 +78,8 @@ import java.util.logging.Logger;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class FilePolicyModule extends PolicyFinderModule {
 
@@ -92,7 +87,7 @@ public class FilePolicyModule extends PolicyFinderModule {
     private File schemaFile = null;
 
     // the filenames for the files we'll load
-    private Set fileNames;
+    private Set<String> fileNames;
 
     // the actual loaded policies
     private PolicyCollection policies;
@@ -107,7 +102,7 @@ public class FilePolicyModule extends PolicyFinderModule {
      * retrieved property is null, then no schema validation will occur.
      */
     public FilePolicyModule() {
-        fileNames = new HashSet();
+        fileNames = new HashSet<String>();
         policies = new PolicyCollection();
 
         String schemaName =
@@ -126,7 +121,7 @@ public class FilePolicyModule extends PolicyFinderModule {
      *                   or null if schema validation is not desired.
      */
     public FilePolicyModule(File schemaFile) {
-        fileNames = new HashSet();
+        fileNames = new HashSet<String>();
         policies = new PolicyCollection();
 
         this.schemaFile = schemaFile;
@@ -153,7 +148,7 @@ public class FilePolicyModule extends PolicyFinderModule {
      * @param fileNames a <code>List</code> of <code>String</code>s that
      *                  identify policy files
      */
-    public FilePolicyModule(List fileNames) {
+    public FilePolicyModule(List<String> fileNames) {
         this();
 
         if (fileNames != null)
@@ -170,7 +165,7 @@ public class FilePolicyModule extends PolicyFinderModule {
      * @param schemaFile the schema file to validate policies against,
      *                   or null if schema validation is not desired.
      */
-    public FilePolicyModule(List fileNames, String schemaFile) {
+    public FilePolicyModule(List<String> fileNames, String schemaFile) {
         this(schemaFile);
 
         if (fileNames != null)

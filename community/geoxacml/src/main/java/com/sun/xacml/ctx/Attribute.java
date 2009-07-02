@@ -36,24 +36,20 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.Indenter;
-
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.UnknownIdentifierException;
-
-import com.sun.xacml.attr.AttributeFactory;
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.DateTimeAttribute;
-
-import java.io.PrintStream;
 import java.io.OutputStream;
-
+import java.io.PrintStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.UnknownIdentifierException;
+import com.sun.xacml.attr.AttributeFactory;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.DateTimeAttribute;
 
 
 /**

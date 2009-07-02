@@ -49,7 +49,7 @@ public class GeoSelectorModule extends AttributeFinderModule {
     }
 
     private EvaluationResult createProcessingError(String msg) {
-        ArrayList code = new ArrayList();
+        ArrayList<String> code = new ArrayList<String>();
         code.add(Status.STATUS_PROCESSING_ERROR);
         return new EvaluationResult(new Status(code, msg));
     }
@@ -153,7 +153,7 @@ public class GeoSelectorModule extends AttributeFinderModule {
 
         // there was at least one match, so try to generate the values
         try {
-            ArrayList list = new ArrayList();
+            ArrayList<AttributeValue> list = new ArrayList<AttributeValue>();
             AttributeFactory attrFactory = AttributeFactory.getInstance();
 
             for (int i = 0; i < matches.getLength(); i++) {

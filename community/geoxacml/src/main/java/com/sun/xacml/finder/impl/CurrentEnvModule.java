@@ -36,27 +36,21 @@
 
 package com.sun.xacml.finder.impl;
 
-import com.sun.xacml.EvaluationCtx;
+import java.net.URI;
+//import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeDesignator;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.attr.DateAttribute;
 import com.sun.xacml.attr.DateTimeAttribute;
 import com.sun.xacml.attr.TimeAttribute;
-
 import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.ctx.Status;
-
+//import com.sun.xacml.ctx.Status;
 import com.sun.xacml.finder.AttributeFinderModule;
-
-import java.net.URI;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 
 /**
@@ -73,6 +67,8 @@ import java.util.Set;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class CurrentEnvModule extends AttributeFinderModule
 {
@@ -112,8 +108,8 @@ public class CurrentEnvModule extends AttributeFinderModule
      * @return a <code>Set</code> with
      * <code>AttributeDesignator.ENVIRONMENT_TARGET</code> included
      */
-    public Set getSupportedDesignatorTypes() {
-        HashSet set = new HashSet();
+    public Set<Integer> getSupportedDesignatorTypes() {
+        HashSet<Integer> set = new HashSet<Integer>();
         set.add(new Integer(AttributeDesignator.ENVIRONMENT_TARGET));
         return set;
     }
@@ -211,17 +207,17 @@ public class CurrentEnvModule extends AttributeFinderModule
      * Private helper that generates a new processing error status and
      * includes the given string.
      */
-    private EvaluationResult makeProcessingError(String message) {
-        ArrayList code = new ArrayList();
-        code.add(Status.STATUS_PROCESSING_ERROR);
-        return new EvaluationResult(new Status(code, message));
-    }
+//    private EvaluationResult makeProcessingError(String message) {
+//        ArrayList<String> code = new ArrayList<String>();
+//        code.add(Status.STATUS_PROCESSING_ERROR);
+//        return new EvaluationResult(new Status(code, message));
+//    }
 
     /**
      * Private helper that makes a bag containing only the given attribute.
      */
     private EvaluationResult makeBag(AttributeValue attribute) {
-        Set set = new HashSet();
+        Set<AttributeValue> set = new HashSet<AttributeValue>();
         set.add(attribute);
 
         BagAttribute bag = new BagAttribute(attribute.getType(), set);

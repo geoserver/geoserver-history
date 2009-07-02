@@ -36,12 +36,8 @@
 
 package com.sun.xacml.attr;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
-
-import java.lang.Integer;
-
-import java.util.Arrays;
+import java.io.IOException;
 
 
 /**
@@ -76,7 +72,7 @@ class Base64
      * The character used to pad out a 4-character Base64-encoded block,
      * or "quantum".
      */
-    private static char PAD   = '=';
+    //private static char PAD   = '=';
 
     /*
      * String used for BASE64 encoding and decoding.

@@ -10,16 +10,14 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.PolicyMetaData;
+import org.w3c.dom.Node;
 
 import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.UnknownIdentifierException;
-
 import com.sun.xacml.attr.AttributeDesignator;
 import com.sun.xacml.attr.AttributeFactory;
 import com.sun.xacml.attr.AttributeSelector;
-
-import org.w3c.dom.Node;
 
 
 /**

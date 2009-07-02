@@ -36,13 +36,12 @@
 
 package com.sun.xacml.attr.proxy;
 
-import com.sun.xacml.ParsingException;
+import org.w3c.dom.Node;
 
+import com.sun.xacml.ParsingException;
 import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.DNSNameAttribute;
-
-import org.w3c.dom.Node;
 
 
 /**

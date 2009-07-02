@@ -36,42 +36,13 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.attr.AttributeFactory;
-import com.sun.xacml.attr.AttributeFactoryProxy;
-import com.sun.xacml.attr.AttributeProxy;
-import com.sun.xacml.attr.BaseAttributeFactory;
-import com.sun.xacml.attr.StandardAttributeFactory;
-
-import com.sun.xacml.combine.BaseCombiningAlgFactory;
-import com.sun.xacml.combine.CombiningAlgFactory;
-import com.sun.xacml.combine.CombiningAlgFactoryProxy;
-import com.sun.xacml.combine.CombiningAlgorithm;
-import com.sun.xacml.combine.StandardCombiningAlgFactory;
-
-import com.sun.xacml.cond.BaseFunctionFactory;
-import com.sun.xacml.cond.BasicFunctionFactoryProxy;
-import com.sun.xacml.cond.Function;
-import com.sun.xacml.cond.FunctionProxy;
-import com.sun.xacml.cond.FunctionFactory;
-import com.sun.xacml.cond.FunctionFactoryProxy;
-import com.sun.xacml.cond.StandardFunctionFactory;
-
-import com.sun.xacml.cond.cluster.FunctionCluster;
-
-import com.sun.xacml.finder.AttributeFinder;
-import com.sun.xacml.finder.PolicyFinder;
-import com.sun.xacml.finder.ResourceFinder;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -79,7 +50,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,13 +57,37 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.SAXException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.sun.xacml.attr.AttributeFactory;
+import com.sun.xacml.attr.AttributeFactoryProxy;
+import com.sun.xacml.attr.AttributeProxy;
+import com.sun.xacml.attr.BaseAttributeFactory;
+import com.sun.xacml.attr.StandardAttributeFactory;
+import com.sun.xacml.combine.BaseCombiningAlgFactory;
+import com.sun.xacml.combine.CombiningAlgFactory;
+import com.sun.xacml.combine.CombiningAlgFactoryProxy;
+import com.sun.xacml.combine.CombiningAlgorithm;
+import com.sun.xacml.combine.StandardCombiningAlgFactory;
+import com.sun.xacml.cond.BaseFunctionFactory;
+import com.sun.xacml.cond.BasicFunctionFactoryProxy;
+import com.sun.xacml.cond.Function;
+import com.sun.xacml.cond.FunctionFactory;
+import com.sun.xacml.cond.FunctionFactoryProxy;
+import com.sun.xacml.cond.FunctionProxy;
+import com.sun.xacml.cond.StandardFunctionFactory;
+import com.sun.xacml.cond.cluster.FunctionCluster;
+import com.sun.xacml.finder.AttributeFinder;
+import com.sun.xacml.finder.AttributeFinderModule;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
+import com.sun.xacml.finder.ResourceFinder;
+import com.sun.xacml.finder.ResourceFinderModule;
 
 
 /**
@@ -114,6 +108,8 @@ import org.w3c.dom.NodeList;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class ConfigurationStore
 {
@@ -126,19 +122,19 @@ public class ConfigurationStore
 
     // pdp elements
     private PDPConfig defaultPDPConfig;
-    private HashMap pdpConfigMap;
+    private HashMap<String,PDPConfig> pdpConfigMap;
 
     // attribute factory elements
     private AttributeFactory defaultAttributeFactory;
-    private HashMap attributeMap;
+    private HashMap<String,AttributeFactory> attributeMap;
 
     // combining algorithm factory elements
     private CombiningAlgFactory defaultCombiningFactory;
-    private HashMap combiningMap;
+    private HashMap<String,CombiningAlgFactory> combiningMap;
 
     // function factory elements
     private FunctionFactoryProxy defaultFunctionFactoryProxy;
-    private HashMap functionMap;
+    private HashMap<String,FunctionFactoryProxy> functionMap;
 
     // the classloader we'll use for loading classes
     private ClassLoader loader;
@@ -216,10 +212,10 @@ public class ConfigurationStore
         Node root = getRootNode(configFile);
         
         // initialize all the maps
-        pdpConfigMap = new HashMap();
-        attributeMap = new HashMap();
-        combiningMap = new HashMap();
-        functionMap = new HashMap();
+        pdpConfigMap = new HashMap<String,PDPConfig>();
+        attributeMap = new HashMap<String,AttributeFactory>();
+        combiningMap = new HashMap<String,CombiningAlgFactory>();
+        functionMap = new HashMap<String,FunctionFactoryProxy>();
 
         // get the default names
         NamedNodeMap attrs = root.getAttributes();
@@ -371,9 +367,9 @@ public class ConfigurationStore
      * Private helper that handles the pdp elements.
      */
     private PDPConfig parsePDPConfig(Node root) throws ParsingException {
-        ArrayList attrModules = new ArrayList();
-        HashSet policyModules = new HashSet();
-        ArrayList rsrcModules = new ArrayList();
+        ArrayList<AttributeFinderModule> attrModules = new ArrayList<AttributeFinderModule>();
+        HashSet<PolicyFinderModule> policyModules = new HashSet<PolicyFinderModule>();
+        ArrayList<ResourceFinderModule> rsrcModules = new ArrayList<ResourceFinderModule>();
 
         // go through all elements of the pdp, loading the specified modules
         NodeList children = root.getChildNodes();
@@ -382,11 +378,11 @@ public class ConfigurationStore
             String name = child.getNodeName();
 
             if (name.equals("policyFinderModule")) {
-                policyModules.add(loadClass("module", child));
+                policyModules.add((PolicyFinderModule)loadClass("module", child));
             } else if (name.equals("attributeFinderModule")) {
-                attrModules.add(loadClass("module", child));
+                attrModules.add((AttributeFinderModule)loadClass("module", child));
             } else if (name.equals("resourceFinderModule")) {
-                rsrcModules.add(loadClass("module", child));
+                rsrcModules.add((ResourceFinderModule)loadClass("module", child));
             }
         }
 
@@ -619,7 +615,7 @@ public class ConfigurationStore
             logger.config("Loading [ " + prefix + ": " + className + " ]");
 
         // load the given class using the local classloader
-        Class c = null;
+        Class<?> c = null;
         try {
             c = loader.loadClass(className);
         } catch (ClassNotFoundException cnfe) {
@@ -657,12 +653,12 @@ public class ConfigurationStore
             // match a parameter list containing ArrayList)
 
             // get the list of all available constructors
-            Constructor [] cons = c.getConstructors();
-            Constructor constructor = null;
+            Constructor<?> [] cons = c.getConstructors();
+            Constructor<?> constructor = null;
 
             for (int i = 0; i < cons.length; i++) {
                 // get the parameters for this constructor
-                Class [] params = cons[i].getParameterTypes();
+                Class<?> [] params = cons[i].getParameterTypes();
                 if (params.length == argLength) {
                     Iterator it = args.iterator();
                     int j = 0;
@@ -715,8 +711,8 @@ public class ConfigurationStore
      * add support for other types should that be needed. Right now, it's not
      * clear that there's any need for other types.
      */
-    private List getArgs(Node root) {
-        List args = new ArrayList();
+    private List<Object> getArgs(Node root) {
+        List<Object> args = new ArrayList<Object>();
         NodeList children = root.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {

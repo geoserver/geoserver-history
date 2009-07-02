@@ -36,14 +36,13 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.StringAttribute;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.StringAttribute;
 
 
 /**
@@ -51,6 +50,8 @@ import java.util.Set;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class StringFunction extends FunctionBase
 {
@@ -84,7 +85,7 @@ public class StringFunction extends FunctionBase
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set getSupportedIdentifiers() {
-        Set set = new HashSet();
+        Set<String> set = new HashSet<String>();
 
         set.add(NAME_STRING_CONCATENATE);
 

@@ -36,11 +36,7 @@
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.net.URI;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,6 +44,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -65,18 +64,20 @@ import org.w3c.dom.Node;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class BaseAttributeFactory extends AttributeFactory
 {
 
     // the map of proxies
-    private HashMap attributeMap;
+    private HashMap<String,AttributeProxy> attributeMap;
     
     /**
      * Default constructor.
      */
     public BaseAttributeFactory() {
-        attributeMap = new HashMap();
+        attributeMap = new HashMap<String,AttributeProxy>();
     }
 
     /**
@@ -90,7 +91,7 @@ public class BaseAttributeFactory extends AttributeFactory
      *                                  </code>AttributeProxy</code>s
      */
     public BaseAttributeFactory(Map attributes) {
-        attributeMap = new HashMap();
+        attributeMap = new HashMap<String,AttributeProxy>();
 
         Iterator it = attributes.keySet().iterator();
         while (it.hasNext()) {

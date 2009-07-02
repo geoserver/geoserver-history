@@ -36,31 +36,26 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.StringAttribute;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
 import com.sun.xacml.ctx.Status;
-
 import com.sun.xacml.finder.AttributeFinder;
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderResult;
 import com.sun.xacml.finder.ResourceFinder;
 import com.sun.xacml.finder.ResourceFinderResult;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -70,6 +65,8 @@ import java.util.logging.Logger;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class PDP
 {
@@ -129,7 +126,7 @@ public class PDP
             // there was something wrong with the request, so we return
             // Indeterminate with a status of syntax error...though this
             // may change if a more appropriate status type exists
-            ArrayList code = new ArrayList();
+            ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_SYNTAX_ERROR);
             Status status = new Status(code, pe.getMessage());
 
@@ -170,7 +167,7 @@ public class PDP
                 // this is a problem, since we couldn't find any resources
                 // to work on...the spec is not explicit about what kind of
                 // error this is, so we're treating it as a processing error
-                ArrayList code = new ArrayList();
+                ArrayList<String> code = new ArrayList<String>();
                 code.add(Status.STATUS_PROCESSING_ERROR);
                 String msg = "Couldn't find any resources to work on.";
                 
@@ -181,7 +178,7 @@ public class PDP
             }
 
             // setup a set to keep track of the results
-            HashSet results = new HashSet();
+            HashSet<Result> results = new HashSet<Result>();
 
             // at this point, we need to go through all the resources we
             // successfully found and start collecting results
@@ -270,7 +267,7 @@ public class PDP
             request = RequestCtx.getInstance(input);
         } catch (Exception pe) {
             // the request wasn't formed correctly
-            ArrayList code = new ArrayList();
+            ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_SYNTAX_ERROR);
             Status status = new Status(code, "invalid request: " +
                                        pe.getMessage());

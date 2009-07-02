@@ -36,13 +36,12 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.net.URI;
-
 import java.util.HashMap;
 import java.util.Set;
+
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -51,6 +50,8 @@ import java.util.Set;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public abstract class CombiningAlgFactory
 {
@@ -59,7 +60,7 @@ public abstract class CombiningAlgFactory
     private static CombiningAlgFactoryProxy defaultFactoryProxy;
 
     // the map of registered factories
-    private static HashMap registeredFactories;
+    private static HashMap<String,CombiningAlgFactoryProxy> registeredFactories;
 
     /**
      * static intialiazer that sets up the default factory proxy and
@@ -72,7 +73,7 @@ public abstract class CombiningAlgFactory
                 }
             };
 
-        registeredFactories = new HashMap();
+        registeredFactories = new HashMap<String,CombiningAlgFactoryProxy>();
         registeredFactories.put(PolicyMetaData.XACML_1_0_IDENTIFIER, proxy);
         registeredFactories.put(PolicyMetaData.XACML_2_0_IDENTIFIER, proxy);
 

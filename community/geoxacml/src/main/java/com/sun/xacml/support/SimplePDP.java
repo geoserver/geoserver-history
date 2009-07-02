@@ -36,38 +36,31 @@
 
 package com.sun.xacml.support;
 
-import com.sun.xacml.ConfigurationStore;
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PDP;
-import com.sun.xacml.PDPConfig;
-
-import com.sun.xacml.combine.PermitOverridesPolicyAlg;
-
-import com.sun.xacml.ctx.RequestCtx;
-import com.sun.xacml.ctx.ResponseCtx;
-
-import com.sun.xacml.finder.AttributeFinder;
-import com.sun.xacml.finder.PolicyFinder;
-
-import com.sun.xacml.finder.impl.CurrentEnvModule;
-import com.sun.xacml.finder.impl.SelectorModule;
-
-import com.sun.xacml.support.finder.StaticPolicyFinderModule;
-import com.sun.xacml.support.finder.StaticRefPolicyFinderModule;
-import com.sun.xacml.support.finder.URLPolicyFinderModule;
-
 import java.io.FileInputStream;
 import java.io.IOException;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.ConfigurationStore;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.PDP;
+import com.sun.xacml.PDPConfig;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.combine.PermitOverridesPolicyAlg;
+import com.sun.xacml.ctx.RequestCtx;
+import com.sun.xacml.ctx.ResponseCtx;
+import com.sun.xacml.finder.AttributeFinder;
+import com.sun.xacml.finder.AttributeFinderModule;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
+import com.sun.xacml.finder.impl.CurrentEnvModule;
+import com.sun.xacml.finder.impl.SelectorModule;
+import com.sun.xacml.support.finder.StaticPolicyFinderModule;
+import com.sun.xacml.support.finder.StaticRefPolicyFinderModule;
+import com.sun.xacml.support.finder.URLPolicyFinderModule;
 
 
 /**
@@ -90,6 +83,8 @@ import java.util.Set;
  *
  * @since 1.1
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class SimplePDP
 {
@@ -138,7 +133,7 @@ public class SimplePDP
 
         // next, setup the PolicyFinder that this PDP will use
         PolicyFinder policyFinder = new PolicyFinder();
-        Set policyModules = new HashSet();
+        Set<PolicyFinderModule> policyModules = new HashSet<PolicyFinderModule>();
         policyModules.add(staticModule);
         policyModules.add(staticRefModule);
         policyModules.add(urlModule);
@@ -154,7 +149,7 @@ public class SimplePDP
         // that unlike with the policy finder, the order matters here. See the
         // the javadocs for more details.
         AttributeFinder attributeFinder = new AttributeFinder();
-        List attributeModules = new ArrayList();
+        List<AttributeFinderModule> attributeModules = new ArrayList<AttributeFinderModule>();
         attributeModules.add(envAttributeModule);
         attributeModules.add(selectorAttributeModule);
         attributeFinder.setModules(attributeModules);

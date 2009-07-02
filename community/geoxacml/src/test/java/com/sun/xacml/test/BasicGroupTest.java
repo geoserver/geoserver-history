@@ -36,8 +36,6 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.PDP;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +43,8 @@ import java.util.List;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.PDP;
 
 
 /**
@@ -101,7 +101,7 @@ public class BasicGroupTest implements Test
 
         // now get all the elements
         NodeList children = root.getChildNodes();
-        ArrayList tests = new ArrayList();
+        ArrayList<Test> tests = new ArrayList<Test>();
 
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);

@@ -36,15 +36,15 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
 
 
 /**

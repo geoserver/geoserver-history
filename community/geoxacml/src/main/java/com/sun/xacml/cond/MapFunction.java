@@ -36,29 +36,24 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-
-import com.sun.xacml.ctx.Status;
-
-import java.net.URI;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+//import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -97,8 +92,8 @@ class MapFunction implements Function
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
-        Set set = new HashSet();
+    public static Set<String> getSupportedIdentifiers() {
+        Set<String> set = new HashSet<String>();
 
         set.add(NAME_MAP);
 
@@ -196,11 +191,11 @@ class MapFunction implements Function
     /**
      * Helper function to create a processing error message.
      */
-    private static EvaluationResult makeProcessingError(String message) {
-        ArrayList code = new ArrayList();
-        code.add(Status.STATUS_PROCESSING_ERROR);
-        return new EvaluationResult(new Status(code, message));
-    }
+//    private static EvaluationResult makeProcessingError(String message) {
+//        ArrayList<String> code = new ArrayList<String>();
+//        code.add(Status.STATUS_PROCESSING_ERROR);
+//        return new EvaluationResult(new Status(code, message));
+//    }
 
     /**
      * Evaluates the function given the input data. Map expects a
@@ -241,11 +236,11 @@ class MapFunction implements Function
         // the value and put the function result in a new bag that
         // is ultimately returned
 
-        Iterator it = bag.iterator();
-        List outputs = new ArrayList();
+        Iterator<AttributeValue> it = bag.iterator();
+        List<AttributeValue> outputs = new ArrayList<AttributeValue>();
 
         while (it.hasNext()) {
-            List params = new ArrayList();
+            List<AttributeValue> params = new ArrayList<AttributeValue>();
             params.add(it.next());
             result = function.evaluate(params, context);
 
@@ -293,7 +288,7 @@ class MapFunction implements Function
                                                "be a bag");
 
         // finally, check that the type in the bag is right for the function
-        List input = new ArrayList();
+        List<Object> input = new ArrayList<Object>();
         input.add(list[1]);
         function.checkInputsNoBag(input);
     }

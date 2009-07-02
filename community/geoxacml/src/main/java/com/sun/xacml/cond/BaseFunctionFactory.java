@@ -36,11 +36,7 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.net.URI;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,6 +44,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -69,12 +68,14 @@ import org.w3c.dom.Node;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class BaseFunctionFactory extends FunctionFactory
 {
 
     // the backing maps for the Function objects
-    private HashMap functionMap = null;
+    private HashMap<String,Object> functionMap = null;
 
     // the superset factory chained to this factory
     private FunctionFactory superset = null;
@@ -96,7 +97,7 @@ public class BaseFunctionFactory extends FunctionFactory
      * @param superset the superset factory or null
      */
     public BaseFunctionFactory(FunctionFactory superset) {
-        functionMap = new HashMap();
+        functionMap = new HashMap<String,Object>();
 
         this.superset = superset;
     }
@@ -212,8 +213,8 @@ public class BaseFunctionFactory extends FunctionFactory
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedFunctions() {
-        Set set = new HashSet(functionMap.keySet());
+    public Set<String> getSupportedFunctions() {
+        Set<String> set = new HashSet<String>(functionMap.keySet());
 
         if (superset != null)
             set.addAll(superset.getSupportedFunctions());

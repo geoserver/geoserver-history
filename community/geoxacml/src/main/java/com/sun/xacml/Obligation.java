@@ -36,18 +36,10 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.attr.AttributeFactory;
-import com.sun.xacml.attr.AttributeValue;
-
-import com.sun.xacml.ctx.Attribute;
-import com.sun.xacml.ctx.Result;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -57,6 +49,11 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.xacml.attr.AttributeFactory;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.ctx.Attribute;
+import com.sun.xacml.ctx.Result;
+
 
 /**
  * Represents the ObligationType XML type in XACML. This also stores all the
@@ -64,6 +61,8 @@ import org.w3c.dom.NodeList;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class Obligation
 {
@@ -75,7 +74,7 @@ public class Obligation
     private int fulfillOn;
 
     // the attribute assignments
-    private List assignments;
+    private List<Attribute> assignments;
 
     /**
      * Constructor that takes all the data associated with an obligation.
@@ -86,11 +85,11 @@ public class Obligation
      * @param fulfillOn the effect denoting when to fulfill this obligation
      * @param assignments a <code>List</code> of <code>Attribute</code>s
      */
-    public Obligation(URI id, int fulfillOn, List assignments) {
+    public Obligation(URI id, int fulfillOn, List<Attribute> assignments) {
         this.id = id;
         this.fulfillOn = fulfillOn;
         this.assignments = Collections.
-            unmodifiableList(new ArrayList(assignments));
+            unmodifiableList(new ArrayList<Attribute>(assignments));
     }
 
     /**
@@ -106,7 +105,7 @@ public class Obligation
     public static Obligation getInstance(Node root) throws ParsingException {
         URI id;
         int fulfillOn = -1;
-        List assignments = new ArrayList();
+        List<Attribute> assignments = new ArrayList<Attribute>();
 
         AttributeFactory attrFactory = AttributeFactory.getInstance();
         NamedNodeMap attrs = root.getAttributes();

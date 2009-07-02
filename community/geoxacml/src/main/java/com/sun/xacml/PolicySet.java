@@ -36,28 +36,23 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.combine.CombinerParameter;
-import com.sun.xacml.combine.PolicyCombinerElement;
-import com.sun.xacml.combine.PolicyCombiningAlgorithm;
-
-import com.sun.xacml.ctx.Result;
-
-import com.sun.xacml.finder.PolicyFinder;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.combine.CombinerElement;
+import com.sun.xacml.combine.CombinerParameter;
+import com.sun.xacml.combine.PolicyCombinerElement;
+import com.sun.xacml.combine.PolicyCombiningAlgorithm;
+import com.sun.xacml.finder.PolicyFinder;
 
 
 /**
@@ -99,7 +94,7 @@ public class PolicySet extends AbstractPolicy
      *                                  <code>AbstractPolicy</code>
      */
     public PolicySet(URI id, PolicyCombiningAlgorithm combiningAlg,
-                     Target target, List policies) {
+                     Target target, List<AbstractPolicy> policies) {
         this(id, null, combiningAlg, null, target, policies, null, null);
     }
 
@@ -122,7 +117,7 @@ public class PolicySet extends AbstractPolicy
      */
     public PolicySet(URI id, String version,
                      PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List policies) {
+                     String description, Target target, List<AbstractPolicy> policies) {
         this(id, version, combiningAlg, description, target, policies, null,
              null);
     }
@@ -147,7 +142,7 @@ public class PolicySet extends AbstractPolicy
      */
     public PolicySet(URI id, String version,
                      PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List policies,
+                     String description, Target target, List<AbstractPolicy> policies,
                      String defaultVersion) {
         this(id, version, combiningAlg, description, target, policies,
              defaultVersion, null);
@@ -174,16 +169,16 @@ public class PolicySet extends AbstractPolicy
      */
     public PolicySet(URI id, String version,
                      PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List policies,
-                     String defaultVersion, Set obligations) {
+                     String description, Target target, List<AbstractPolicy> policies,
+                     String defaultVersion, Set<Obligation> obligations) {
         super(id, version, combiningAlg, description, target, defaultVersion, 
               obligations, null);
 
-        List list = null;
+        List<PolicyCombinerElement> list = null;
 
         // check that the list contains only AbstractPolicy objects
         if (policies != null) {
-            list = new ArrayList();
+            list = new ArrayList<PolicyCombinerElement>();
             Iterator it = policies.iterator();
             while (it.hasNext()) {
                 Object o = it.next();
@@ -229,8 +224,8 @@ public class PolicySet extends AbstractPolicy
      */
     public PolicySet(URI id, String version,
                      PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List policyElements,
-                     String defaultVersion, Set obligations, List parameters) {
+                     String description, Target target, List<CombinerElement> policyElements,
+                     String defaultVersion, Set<Obligation> obligations, List<CombinerParameter> parameters) {
         super(id, version, combiningAlg, description, target, defaultVersion,
               obligations, parameters);
 
@@ -257,9 +252,9 @@ public class PolicySet extends AbstractPolicy
     private PolicySet(Node root, PolicyFinder finder) throws ParsingException {
         super(root, "PolicySet", "PolicyCombiningAlgId");
 
-        List policies = new ArrayList();
-        HashMap policyParameters = new HashMap();
-        HashMap policySetParameters = new HashMap();
+        List<AbstractPolicy> policies = new ArrayList<AbstractPolicy>();
+        HashMap<String,List<CombinerParameter>> policyParameters = new HashMap<String,List<CombinerParameter>>();
+        HashMap<String,List<CombinerParameter>> policySetParameters = new HashMap<String,List<CombinerParameter>>();
         PolicyMetaData metaData = getMetaData();
 
         // collect the PolicySet-specific elements
@@ -287,7 +282,7 @@ public class PolicySet extends AbstractPolicy
 
         // now make sure that we can match up any parameters we may have
         // found to a cooresponding Policy or PolicySet...
-        List elements = new ArrayList();
+        List<CombinerElement> elements = new ArrayList<CombinerElement>();
         Iterator it = policies.iterator();
 
         // right now we have to go though each policy and based on several
@@ -296,23 +291,23 @@ public class PolicySet extends AbstractPolicy
 
         while (it.hasNext()) {
             AbstractPolicy policy = (AbstractPolicy)(it.next());
-            List list = null;
+            List<CombinerParameter> list = null;
 
             if (policy instanceof Policy) {
-                list = (List)(policyParameters.remove(policy.getId().
-                                                      toString()));
+                list = policyParameters.remove(policy.getId().
+                                                      toString());
             } else if (policy instanceof PolicySet) {
-                list = (List)(policySetParameters.remove(policy.getId().
-                                                         toString()));
+                list = policySetParameters.remove(policy.getId().
+                                                         toString());
             } else {
                 PolicyReference ref = (PolicyReference)policy;
                 String id = ref.getReference().toString();
 
                 if (ref.getReferenceType() ==
                     PolicyReference.POLICY_REFERENCE)
-                    list = (List)(policyParameters.remove(id));
+                    list = policyParameters.remove(id);
                 else
-                    list = (List)(policySetParameters.remove(id));
+                    list = policySetParameters.remove(id);
             }
 
             elements.add(new PolicyCombinerElement(policy, list));
@@ -332,16 +327,16 @@ public class PolicySet extends AbstractPolicy
      * Private helper method that handles parsing a collection of
      * parameters
      */
-    private void paramaterHelper(HashMap parameters, Node root,
+    private void paramaterHelper(HashMap<String,List<CombinerParameter>> parameters, Node root,
                                  String prefix) throws ParsingException {
         String ref = root.getAttributes().getNamedItem(prefix + "IdRef").
             getNodeValue();
         
         if (parameters.containsKey(ref)) {
-            List list = (List)(parameters.get(ref));
+            List<CombinerParameter> list = parameters.get(ref);
             parseParameters(list, root);
         } else {
-            List list = new ArrayList();
+            List<CombinerParameter> list = new ArrayList<CombinerParameter>();
             parseParameters(list, root);
             parameters.put(ref, list);
         }
@@ -350,7 +345,7 @@ public class PolicySet extends AbstractPolicy
     /**
      * Private helper method that handles parsing a single parameter.
      */
-    private void parseParameters(List parameters, Node root)
+    private void parseParameters(List<CombinerParameter> parameters, Node root)
         throws ParsingException
     {
         NodeList nodes = root.getChildNodes();

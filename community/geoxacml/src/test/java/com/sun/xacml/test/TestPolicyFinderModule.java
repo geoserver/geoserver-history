@@ -36,25 +36,8 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.AbstractPolicy;
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.MatchResult;
-import com.sun.xacml.Policy;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.PolicyReference;
-import com.sun.xacml.PolicySet;
-import com.sun.xacml.VersionConstraints;
-
-import com.sun.xacml.ctx.Status;
-
-import com.sun.xacml.finder.PolicyFinder;
-import com.sun.xacml.finder.PolicyFinderModule;
-import com.sun.xacml.finder.PolicyFinderResult;
-
 import java.io.FileInputStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,6 +49,19 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.sun.xacml.AbstractPolicy;
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.MatchResult;
+import com.sun.xacml.Policy;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.PolicyReference;
+import com.sun.xacml.PolicySet;
+import com.sun.xacml.VersionConstraints;
+import com.sun.xacml.ctx.Status;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
+import com.sun.xacml.finder.PolicyFinderResult;
 
 
 /**
@@ -83,7 +79,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
     private PolicyFinder finder = null;
 
     // the policies we're currently using for request-based retrieval
-    private Set policies = null;
+    private Set<AbstractPolicy> policies = null;
 
     // a map of URIs to policies for the reference-based policies we're
     // currently providing, and the current namespace prefix
@@ -99,7 +95,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
      * Default constructor.
      */
     public TestPolicyFinderModule() {
-        policies = new HashSet();
+        policies = new HashSet<AbstractPolicy>();
     }
 
     /**
@@ -218,7 +214,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
                 // see if we previously found another match
                 if (selectedPolicy != null) {
                     // we found a match before, so this is an error
-                    ArrayList code = new ArrayList();
+                    ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
                     Status status = new Status(code, "too many applicable "
                                                + "top-level policies");
@@ -277,7 +273,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
  
         // if there was an error loading the policy, return the error
         if (policy == null) {
-            ArrayList code = new ArrayList();
+            ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_PROCESSING_ERROR);
             Status status = new Status(code,
                                        "couldn't load referenced policy");

@@ -36,25 +36,25 @@
 
 package com.sun.xacml.cond;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.sun.xacml.attr.AnyURIAttribute;
 import com.sun.xacml.attr.Base64BinaryAttribute;
 import com.sun.xacml.attr.BooleanAttribute;
+import com.sun.xacml.attr.DNSNameAttribute;
 import com.sun.xacml.attr.DateAttribute;
 import com.sun.xacml.attr.DateTimeAttribute;
 import com.sun.xacml.attr.DayTimeDurationAttribute;
-import com.sun.xacml.attr.DNSNameAttribute;
 import com.sun.xacml.attr.DoubleAttribute;
 import com.sun.xacml.attr.HexBinaryAttribute;
-import com.sun.xacml.attr.IntegerAttribute;
 import com.sun.xacml.attr.IPAddressAttribute;
+import com.sun.xacml.attr.IntegerAttribute;
 import com.sun.xacml.attr.RFC822NameAttribute;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.attr.TimeAttribute;
 import com.sun.xacml.attr.X500NameAttribute;
 import com.sun.xacml.attr.YearMonthDurationAttribute;
-
-import java.util.HashSet;
-import java.util.Set;
 
 
 /**
@@ -277,8 +277,8 @@ public abstract class BagFunction extends FunctionBase
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
-        Set set = new HashSet();
+    public static Set<String> getSupportedIdentifiers() {
+        Set<String> set = new HashSet<String>();
 
         set.addAll(ConditionBagFunction.getSupportedIdentifiers());
         set.addAll(GeneralBagFunction.getSupportedIdentifiers());

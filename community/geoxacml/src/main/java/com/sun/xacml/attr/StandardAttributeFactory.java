@@ -36,35 +36,29 @@
 
 package com.sun.xacml.attr;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.logging.Logger;
+
 import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.UnknownIdentifierException;
-
 import com.sun.xacml.attr.proxy.AnyURIAttributeProxy;
 import com.sun.xacml.attr.proxy.Base64BinaryAttributeProxy;
 import com.sun.xacml.attr.proxy.BooleanAttributeProxy;
+import com.sun.xacml.attr.proxy.DNSNameAttributeProxy;
 import com.sun.xacml.attr.proxy.DateAttributeProxy;
 import com.sun.xacml.attr.proxy.DateTimeAttributeProxy;
 import com.sun.xacml.attr.proxy.DayTimeDurationAttributeProxy;
-import com.sun.xacml.attr.proxy.DNSNameAttributeProxy;
 import com.sun.xacml.attr.proxy.DoubleAttributeProxy;
 import com.sun.xacml.attr.proxy.HexBinaryAttributeProxy;
-import com.sun.xacml.attr.proxy.IntegerAttributeProxy;
 import com.sun.xacml.attr.proxy.IPAddressAttributeProxy;
+import com.sun.xacml.attr.proxy.IntegerAttributeProxy;
 import com.sun.xacml.attr.proxy.RFC822NameAttributeProxy;
 import com.sun.xacml.attr.proxy.StringAttributeProxy;
 import com.sun.xacml.attr.proxy.TimeAttributeProxy;
-import com.sun.xacml.attr.proxy.YearMonthDurationAttributeProxy;
 import com.sun.xacml.attr.proxy.X500NameAttributeProxy;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import java.util.logging.Logger;
-
-import org.w3c.dom.Node;
+import com.sun.xacml.attr.proxy.YearMonthDurationAttributeProxy;
 
 
 /**
@@ -85,6 +79,8 @@ import org.w3c.dom.Node;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class StandardAttributeFactory extends BaseAttributeFactory
 {
@@ -93,7 +89,7 @@ public class StandardAttributeFactory extends BaseAttributeFactory
     private static StandardAttributeFactory factoryInstance = null;
 
     // the datatypes supported by this factory
-    private static HashMap supportedDatatypes = null;
+    private static HashMap<String,AttributeProxy> supportedDatatypes = null;
 
     // the supported identifiers for each version of XACML
     private static Set supportedV1Identifiers;
@@ -118,7 +114,7 @@ public class StandardAttributeFactory extends BaseAttributeFactory
     private static void initDatatypes() {
         logger.config("Initializing standard datatypes");
 
-        supportedDatatypes = new HashMap();
+        supportedDatatypes = new HashMap<String,AttributeProxy>();
 
         // the 1.x datatypes
         supportedDatatypes.put(BooleanAttribute.identifier,

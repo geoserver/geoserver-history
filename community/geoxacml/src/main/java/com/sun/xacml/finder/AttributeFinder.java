@@ -36,25 +36,21 @@
 
 package com.sun.xacml.finder;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeDesignator;
-import com.sun.xacml.attr.AttributeSelector;
-import com.sun.xacml.attr.BagAttribute;
-
-import com.sun.xacml.cond.EvaluationResult;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeDesignator;
+import com.sun.xacml.attr.AttributeSelector;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.cond.EvaluationResult;
 
 
 /**
@@ -74,18 +70,21 @@ import org.w3c.dom.Node;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
+ * 
  */
 public class AttributeFinder
 {
 
     // the list of all modules
-    private List allModules;
+    private List<AttributeFinderModule>allModules;
 
     //
-    private List designatorModules;
+    private List<AttributeFinderModule> designatorModules;
 
     //
-    private List selectorModules;
+    private List<AttributeFinderModule> selectorModules;
 
     // the logger we'll use for all messages
     private static final Logger logger =
@@ -95,9 +94,9 @@ public class AttributeFinder
      * Default constructor.
      */
     public AttributeFinder() {
-        allModules = new ArrayList();
-        designatorModules = new ArrayList();
-        selectorModules = new ArrayList();
+        allModules = new ArrayList<AttributeFinderModule>();
+        designatorModules = new ArrayList<AttributeFinderModule>();
+        selectorModules = new ArrayList<AttributeFinderModule>();
     }
 
     /**
@@ -107,8 +106,8 @@ public class AttributeFinder
      *
      * @return a list of <code>AttributeFinderModule</code>s
      */
-    public List getModules() {
-        return new ArrayList(allModules);
+    public List<AttributeFinderModule> getModules() {
+        return new ArrayList<AttributeFinderModule>(allModules);
     }
 
     /**
@@ -119,12 +118,12 @@ public class AttributeFinder
      * @param modules a list of
      *                <code>AttributeFinderModule</code>s
      */
-    public void setModules(List modules) {
+    public void setModules(List<AttributeFinderModule> modules) {
         Iterator it = modules.iterator();
 
-        allModules = new ArrayList(modules);
-        designatorModules = new ArrayList();
-        selectorModules = new ArrayList();
+        allModules = new ArrayList<AttributeFinderModule>(modules);
+        designatorModules = new ArrayList<AttributeFinderModule>();
+        selectorModules = new ArrayList<AttributeFinderModule>();
 
         while (it.hasNext()) {
             AttributeFinderModule module = (AttributeFinderModule)(it.next());

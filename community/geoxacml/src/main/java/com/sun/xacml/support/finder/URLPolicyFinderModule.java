@@ -36,6 +36,12 @@
 
 package com.sun.xacml.support.finder;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.logging.Logger;
+
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.ParsingException;
 import com.sun.xacml.Policy;
@@ -43,19 +49,9 @@ import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.PolicyReference;
 import com.sun.xacml.PolicySet;
 import com.sun.xacml.VersionConstraints;
-
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.PolicyFinderResult;
-
-import java.io.File;
-
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**

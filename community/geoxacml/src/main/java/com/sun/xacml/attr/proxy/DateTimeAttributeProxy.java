@@ -36,11 +36,11 @@
 
 package com.sun.xacml.attr.proxy;
 
+import org.w3c.dom.Node;
+
 import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.DateTimeAttribute;
-
-import org.w3c.dom.Node;
 
 
 /**

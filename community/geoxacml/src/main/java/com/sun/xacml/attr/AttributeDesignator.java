@@ -36,36 +36,25 @@
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-import com.sun.xacml.MatchResult;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.TargetMatch;
-
-import com.sun.xacml.cond.Evaluatable;
-import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.ctx.Attribute;
-import com.sun.xacml.ctx.Status;
-import com.sun.xacml.ctx.StatusDetail;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.cond.Evaluatable;
+import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -421,7 +410,7 @@ public class AttributeDesignator implements Evaluatable
                                 "value for a required attribute: " +
                                 id.toString());
 
-                ArrayList code = new ArrayList();
+                ArrayList<String> code = new ArrayList<String>();
                 code.add(Status.STATUS_MISSING_ATTRIBUTE);
                 
                 String message = "Couldn't find " + targetTypes[target] +

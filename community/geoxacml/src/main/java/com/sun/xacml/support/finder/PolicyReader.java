@@ -36,19 +36,10 @@
 
 package com.sun.xacml.support.finder;
 
-import com.sun.xacml.AbstractPolicy;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.Policy;
-import com.sun.xacml.PolicySet;
-
-import com.sun.xacml.finder.PolicyFinder;
-
 import java.io.File;
-import java.io.InputStream;
 import java.io.IOException;
-
+import java.io.InputStream;
 import java.net.URL;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,10 +49,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.sun.xacml.AbstractPolicy;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.Policy;
+import com.sun.xacml.PolicySet;
+import com.sun.xacml.finder.PolicyFinder;
 
 
 /**

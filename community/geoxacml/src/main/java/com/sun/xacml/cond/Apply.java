@@ -36,18 +36,9 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-
-import com.sun.xacml.attr.AttributeFactory;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -55,6 +46,11 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
 
 
 /**
@@ -74,6 +70,8 @@ import org.w3c.dom.NodeList;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class Apply implements Evaluatable
 {
@@ -82,7 +80,7 @@ public class Apply implements Evaluatable
     private Function function;
 
     // the paramaters to the function...ie, the contents of the apply
-    private List xprs;
+    private List<Expression> xprs;
 
     /**
      * Constructs an <code>Apply</code> instance.
@@ -96,7 +94,7 @@ public class Apply implements Evaluatable
      * @throws IllegalArgumentException if the input expressions don't
      *                                  match the signature of the function
      */
-    public Apply(Function function, List xprs)
+    public Apply(Function function, List<Expression> xprs)
         throws IllegalArgumentException
     {
         // check that the given inputs work for the function
@@ -104,7 +102,7 @@ public class Apply implements Evaluatable
 
         // if everything checks out, then store the inputs
         this.function = function;
-        this.xprs = Collections.unmodifiableList(new ArrayList(xprs));
+        this.xprs = Collections.unmodifiableList(new ArrayList<Expression>(xprs));
     }
 
     /**
@@ -127,7 +125,7 @@ public class Apply implements Evaluatable
      *                                  match the signature of the function or
      *                                  if <code>isCondition</code> is true
      */
-    public Apply(Function function, List xprs, boolean isCondition)
+    public Apply(Function function, List<Expression> xprs, boolean isCondition)
         throws IllegalArgumentException
     {
         // make sure that no is using this constructor to create a Condition
@@ -141,7 +139,7 @@ public class Apply implements Evaluatable
 
         // if everything checks out, then store the inputs
         this.function = function;
-        this.xprs = Collections.unmodifiableList(new ArrayList(xprs));
+        this.xprs = Collections.unmodifiableList(new ArrayList<Expression>(xprs));
     }
 
     /**
@@ -269,7 +267,7 @@ public class Apply implements Evaluatable
     {
         Function function =
             ExpressionHandler.getFunction(root, metaData, factory);
-        List xprs = new ArrayList();
+        List<Expression> xprs = new ArrayList<Expression>();
 
         NodeList nodes = root.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -299,7 +297,7 @@ public class Apply implements Evaluatable
      *
      * @return a <code>List</code> of <code>Expression</code>s
      */
-    public List getChildren() {
+    public List<Expression> getChildren() {
         return xprs;
     }
 

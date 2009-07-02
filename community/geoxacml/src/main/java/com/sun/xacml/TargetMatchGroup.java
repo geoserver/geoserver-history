@@ -38,14 +38,11 @@ package com.sun.xacml;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -58,19 +55,21 @@ import org.w3c.dom.NodeList;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class TargetMatchGroup
 {
 
     // the list of matches
-    private List matches;
+    private List<TargetMatch> matches;
 
     // the match type contained in this group
     private int matchType;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(Target.class.getName());
+//    private static final Logger logger =
+//        Logger.getLogger(Target.class.getName());
 
     /**
      * Constructor that creates a new <code>TargetMatchGroup</code> based
@@ -79,12 +78,12 @@ public class TargetMatchGroup
      * @param matchElements a <code>List</code> of <code>TargetMatch</code>
      * @param matchType the match type as defined in <code>TargetMatch</code>
      */
-    public TargetMatchGroup(List matchElements, int matchType) {
+    public TargetMatchGroup(List<TargetMatch> matchElements, int matchType) {
         if (matchElements == null)
-            matches = Collections.unmodifiableList(new ArrayList());
+            matches = Collections.unmodifiableList(new ArrayList<TargetMatch>());
         else
             matches =
-                Collections.unmodifiableList(new ArrayList(matchElements));
+                Collections.unmodifiableList(new ArrayList<TargetMatch>(matchElements));
         this.matchType = matchType;
     }
 
@@ -103,7 +102,7 @@ public class TargetMatchGroup
                                                PolicyMetaData metaData)
         throws ParsingException
     {
-        List matches = new ArrayList();
+        List<TargetMatch> matches = new ArrayList<TargetMatch>();
         NodeList children = root.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {

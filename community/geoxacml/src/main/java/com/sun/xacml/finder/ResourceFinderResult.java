@@ -42,6 +42,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.ctx.Status;
+
 
 /**
  * This is used to return Resource Ids from the ResourceFinder. Unlike the
@@ -52,15 +55,17 @@ import java.util.Set;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class ResourceFinderResult
 {
 
     // the set of resource identifiers
-    private Set resources;
+    private Set<AttributeValue> resources;
 
     // the map of failed identifiers to their failure status data
-    private Map failures;
+    private Map<AttributeValue,Status> failures;
 
     // a flag specifying whether or not result contains resource listings
     private boolean empty;
@@ -69,8 +74,8 @@ public class ResourceFinderResult
      * Creates an empty result.
      */
     public ResourceFinderResult() {
-        resources = Collections.unmodifiableSet(new HashSet());
-        failures = Collections.unmodifiableMap(new HashMap());
+        resources = Collections.unmodifiableSet(new HashSet<AttributeValue>());
+        failures = Collections.unmodifiableMap(new HashMap<AttributeValue,Status>());
         empty = true;
     }
 
@@ -83,8 +88,8 @@ public class ResourceFinderResult
      * @param resources a non-null <code>Set</code> of
      *                  <code>AttributeValue</code>s
      */
-    public ResourceFinderResult(Set resources) {
-        this(resources, new HashMap());
+    public ResourceFinderResult(Set<AttributeValue> resources) {
+        this(resources, new HashMap<AttributeValue,Status>());
     }
 
     /**
@@ -100,8 +105,8 @@ public class ResourceFinderResult
      *                 <code>AttributeValue</code> identifiers to their
      *                 <code>Status</code>
      */
-    public ResourceFinderResult(HashMap failures) {
-        this(new HashSet(), failures);
+    public ResourceFinderResult(HashMap<AttributeValue,Status> failures) {
+        this(new HashSet<AttributeValue>(), failures);
     }
 
     /**
@@ -114,9 +119,9 @@ public class ResourceFinderResult
      *                 <code>AttributeValue</code> identifiers to their
      *                 <code>Status</code>
      */
-    public ResourceFinderResult(Set resources, Map failures) {
-        this.resources = Collections.unmodifiableSet(new HashSet(resources));
-        this.failures = Collections.unmodifiableMap(new HashMap(failures));
+    public ResourceFinderResult(Set<AttributeValue> resources, Map<AttributeValue,Status> failures) {
+        this.resources = Collections.unmodifiableSet(new HashSet<AttributeValue>(resources));
+        this.failures = Collections.unmodifiableMap(new HashMap<AttributeValue,Status>(failures));
         empty = false;
     }
 
@@ -138,7 +143,7 @@ public class ResourceFinderResult
      *
      * @return a <code>Set</code> of <code>AttributeValue</code>s
      */
-    public Set getResources() {
+    public Set<AttributeValue> getResources() {
         return resources;
     }
 

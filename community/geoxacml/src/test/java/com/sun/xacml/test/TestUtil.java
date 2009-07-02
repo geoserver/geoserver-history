@@ -36,17 +36,16 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.Obligation;
-
-import com.sun.xacml.ctx.Attribute;
-import com.sun.xacml.ctx.ResponseCtx;
-import com.sun.xacml.ctx.Result;
-import com.sun.xacml.ctx.Status;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.Obligation;
+import com.sun.xacml.ctx.Attribute;
+import com.sun.xacml.ctx.ResponseCtx;
+import com.sun.xacml.ctx.Result;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -68,8 +67,8 @@ public class TestUtil
      */
     public static boolean areEquivalent(ResponseCtx response1,
                                         ResponseCtx response2) {
-        Set results1 = response1.getResults();
-        Set results2 = response2.getResults();
+        Set<Result> results1 = response1.getResults();
+        Set<Result> results2 = response2.getResults();
 
         // make sure the set of results in each response is the same size
         if (results1.size() != results2.size())
@@ -80,7 +79,7 @@ public class TestUtil
         
         // setup a temporary Set for the second set of Responses, so we can
         // remove the matching Result at each step
-        Set set2 = new HashSet(results2);
+        Set<Result> set2 = new HashSet<Result>(results2);
 
         // consider each Result in the first Response, and try to find an
         // equivalent one in the second Response
@@ -175,7 +174,7 @@ public class TestUtil
      *
      * @return true if the sets are equivalent, false otherwise
      */
-    public static boolean areEquivalent(Set obs1, Set obs2) {
+    public static boolean areEquivalent(Set<Obligation> obs1, Set<Obligation> obs2) {
         if (obs1.size() != obs2.size())
             return false;
 
@@ -184,7 +183,7 @@ public class TestUtil
 
         // setup a temporary Set for the second set of Obligations, so we can
         // remove the matching the Obligation at each step
-        HashSet set2 = new HashSet(obs2);
+        HashSet<Obligation> set2 = new HashSet<Obligation>(obs2);
 
         // consider each Obligation in the first set, and try to find an
         // equivalent one in the second set

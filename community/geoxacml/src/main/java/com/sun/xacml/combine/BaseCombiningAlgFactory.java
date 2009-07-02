@@ -36,14 +36,13 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.net.URI;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -61,18 +60,20 @@ import java.util.Set;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class BaseCombiningAlgFactory extends CombiningAlgFactory
 {
 
     // the map of available combining algorithms
-    private HashMap algMap;
+    private HashMap<String,CombiningAlgorithm> algMap;
 
     /**
      * Default constructor.
      */
     public BaseCombiningAlgFactory() {
-        algMap = new HashMap();
+        algMap = new HashMap<String,CombiningAlgorithm>();
     }
 
     /**
@@ -86,7 +87,7 @@ public class BaseCombiningAlgFactory extends CombiningAlgFactory
      *                                  </code>CombiningAlgorithm</code>s
      */
     public BaseCombiningAlgFactory(Set algorithms) {
-        algMap = new HashMap();
+        algMap = new HashMap<String,CombiningAlgorithm>();
 
         Iterator it = algorithms.iterator();
         while (it.hasNext()) {

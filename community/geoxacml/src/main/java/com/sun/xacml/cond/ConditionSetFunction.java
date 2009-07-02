@@ -36,18 +36,17 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-import com.sun.xacml.attr.BooleanAttribute;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.attr.BooleanAttribute;
 
 
 /**
@@ -57,6 +56,8 @@ import java.util.Set;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class ConditionSetFunction extends SetFunction
 {
@@ -67,19 +68,19 @@ public class ConditionSetFunction extends SetFunction
     private static final int ID_BASE_SET_EQUALS = 2;
 
     // mapping of function name to its associated id and parameter type
-    private static HashMap idMap;
-    private static HashMap typeMap;
+    private static HashMap<String,Integer> idMap;
+    private static HashMap<String,String> typeMap;
 
     // the actual supported ids
-    private static Set supportedIds;
+    private static Set<String> supportedIds;
 
     /**
      * Static initializer that sets up the paramater info for all the
      * supported functions.
      */
     static {
-        idMap = new HashMap();
-        typeMap = new HashMap();
+        idMap = new HashMap<String,Integer>();
+        typeMap = new HashMap<String,String>();
 
         for (int i = 0; i < baseTypes.length; i++) {
             String baseName = FUNCTION_NS + simpleTypes[i];
@@ -114,7 +115,7 @@ public class ConditionSetFunction extends SetFunction
         }
 
         supportedIds = Collections.
-            unmodifiableSet(new HashSet(idMap.keySet()));
+            unmodifiableSet(new HashSet<String>(idMap.keySet()));
 
         idMap.put(NAME_BASE_AT_LEAST_ONE_MEMBER_OF,
                   new Integer(ID_BASE_AT_LEAST_ONE_MEMBER_OF));
@@ -185,7 +186,7 @@ public class ConditionSetFunction extends SetFunction
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
+    public static Set<String> getSupportedIdentifiers() {
         return supportedIds;
     }
 

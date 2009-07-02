@@ -36,17 +36,15 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
+import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.attr.BooleanAttribute;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -55,19 +53,21 @@ import java.util.Set;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class ConditionBagFunction extends BagFunction
 {
 
     // mapping of function name to its associated argument type
-    private static HashMap argMap;
+    private static HashMap<String,String[]> argMap;
 
     /**
      * Static initializer that sets up the argument info for all the
      * supported functions.
      */
     static {
-        argMap = new HashMap();
+        argMap = new HashMap<String,String[]>();
 
         for (int i = 0; i < baseTypes.length; i++) {
             String [] args = { baseTypes[i], baseTypes[i] };
@@ -131,7 +131,7 @@ public class ConditionBagFunction extends BagFunction
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
+    public static Set<String> getSupportedIdentifiers() {
         return Collections.unmodifiableSet(argMap.keySet());
     }
 

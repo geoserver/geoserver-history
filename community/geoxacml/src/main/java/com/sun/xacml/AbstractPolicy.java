@@ -36,20 +36,9 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.combine.CombinerElement;
-import com.sun.xacml.combine.CombinerParameter;
-import com.sun.xacml.combine.CombiningAlgorithm;
-import com.sun.xacml.combine.CombiningAlgFactory;
-import com.sun.xacml.combine.PolicyCombiningAlgorithm;
-import com.sun.xacml.combine.RuleCombiningAlgorithm;
-
-import com.sun.xacml.ctx.Result;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -57,12 +46,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.combine.CombinerElement;
+import com.sun.xacml.combine.CombinerParameter;
+import com.sun.xacml.combine.CombiningAlgFactory;
+import com.sun.xacml.combine.CombiningAlgorithm;
+import com.sun.xacml.combine.PolicyCombiningAlgorithm;
+import com.sun.xacml.combine.RuleCombiningAlgorithm;
+import com.sun.xacml.ctx.Result;
 
 
 /**
@@ -71,6 +65,8 @@ import org.w3c.dom.NodeList;
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public abstract class AbstractPolicy implements PolicyTreeElement
 {
@@ -92,19 +88,19 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     // the child elements under this policy represented simply as the
     // PolicyTreeElements...
-    private List children;
+    private List<PolicyTreeElement> children;
     // ...or the CombinerElements that are passed to combining algorithms
-    private List childElements;
+    private List<CombinerElement> childElements;
 
     // any obligations held by this policy
-    private Set obligations;
+    private Set<Obligation> obligations;
 
     // the list of combiner parameters
-    private List parameters;
+    private List<CombinerParameter> parameters;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(AbstractPolicy.class.getName());
+    // private static final Logger logger =
+    //    Logger.getLogger(AbstractPolicy.class.getName());
 
     /**
      * Constructor used by <code>PolicyReference</code>, which supplies
@@ -164,8 +160,8 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     protected AbstractPolicy(URI id, String version,
                              CombiningAlgorithm combiningAlg,
                              String description, Target target,
-                             String defaultVersion, Set obligations,
-                             List parameters) {
+                             String defaultVersion, Set<Obligation> obligations,
+                             List<CombinerParameter> parameters) {
         idAttr = id;
         this.combiningAlg = combiningAlg;
         this.description = description;
@@ -181,16 +177,16 @@ public abstract class AbstractPolicy implements PolicyTreeElement
         metaData = null;
 
         if (obligations == null)
-            this.obligations = Collections.EMPTY_SET;
+            this.obligations = Collections.emptySet();
         else
             this.obligations = Collections.
-                unmodifiableSet(new HashSet(obligations));
+                unmodifiableSet(new HashSet<Obligation>(obligations));
 
         if (parameters == null)
-            this.parameters = Collections.EMPTY_LIST;
+            this.parameters = Collections.emptyList();
         else
             this.parameters = Collections.
-                unmodifiableList(new ArrayList(parameters));
+                unmodifiableList(new ArrayList<CombinerParameter>(parameters));
     }
 
     /**
@@ -251,7 +247,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
         // do an initial pass through the elements to pull out the
         // defaults, if any, so we can setup the meta-data
         NodeList children = root.getChildNodes();
-        String xpathVersion = null;
+        //String xpathVersion = null;
         
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
@@ -263,8 +259,8 @@ public abstract class AbstractPolicy implements PolicyTreeElement
         metaData = new PolicyMetaData(root.getNamespaceURI(), defaultVersion);
 
         // now read the remaining policy elements
-        obligations = new HashSet();
-        parameters = new ArrayList();
+        obligations = new HashSet<Obligation>();
+        parameters = new ArrayList<CombinerParameter>();
         children = root.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {
@@ -463,15 +459,15 @@ public abstract class AbstractPolicy implements PolicyTreeElement
      *                 representing the child elements used by the combining
      *                 algorithm
      */
-    protected void setChildren(List children) {
+    protected void setChildren(List<? extends CombinerElement> children) {
         // we always want a concrete list, since we're going to pass it to
         // a combiner that expects a non-null input
         if (children == null) {
-            this.children = Collections.EMPTY_LIST;
+            this.children = Collections.emptyList();
         } else {
             // NOTE: since this is only getting called by known child
             // classes we don't check that the types are all the same
-            List list = new ArrayList();
+            List<PolicyTreeElement> list = new ArrayList<PolicyTreeElement>();
             Iterator it = children.iterator();
 
             while (it.hasNext()) {

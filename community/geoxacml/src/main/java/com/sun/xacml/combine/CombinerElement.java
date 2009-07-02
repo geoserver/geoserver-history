@@ -36,15 +36,13 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.Indenter;
-import com.sun.xacml.PolicyTreeElement;
-
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import java.io.OutputStream;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.PolicyTreeElement;
 
 
 /**
@@ -53,6 +51,8 @@ import java.io.OutputStream;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public abstract class CombinerElement
 {
@@ -61,7 +61,7 @@ public abstract class CombinerElement
     private PolicyTreeElement element;
 
     // the parameters used with this element
-    private List parameters;
+    private List<CombinerParameter> parameters;
 
     /**
      * Constructor that only takes an element. No parameters are associated
@@ -82,14 +82,14 @@ public abstract class CombinerElement
      *                   <code>CombinerParameter<code>s provided for general
      *                   use (for all pre-2.0 policies this must be empty)
      */
-    public CombinerElement(PolicyTreeElement element, List parameters) {
+    public CombinerElement(PolicyTreeElement element, List<CombinerParameter> parameters) {
         this.element = element;
 
         if (parameters == null)
-            this.parameters = Collections.unmodifiableList(new ArrayList());
+            this.parameters = Collections.unmodifiableList(new ArrayList<CombinerParameter>());
         else
             this.parameters = Collections.
-                unmodifiableList(new ArrayList(parameters));
+                unmodifiableList(new ArrayList<CombinerParameter>(parameters));
     }
 
     /**

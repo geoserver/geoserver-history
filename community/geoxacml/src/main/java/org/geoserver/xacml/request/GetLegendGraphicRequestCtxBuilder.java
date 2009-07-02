@@ -8,7 +8,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
-import com.sun.xacml.attr.StringAttribute;
+//import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.RequestCtx;
 
 /**
@@ -24,7 +24,8 @@ public class GetLegendGraphicRequestCtxBuilder extends WMSRequestCtxBuilder {
         GetLegendGraphicRequest  legendGraphic = (GetLegendGraphicRequest) source;
         super.fillRequestCtx(ctx, legendGraphic);
         
-        ctx.getResource().add(new StringAttribute(legendGraphic.getLayer().getName().getLocalPart()));         ;                        
+        // TODO: Add attribute
+        // ctx.getResource().add(new StringAttribute(legendGraphic.getLayer().getName().getLocalPart()));         ;                        
     }    
     
 }

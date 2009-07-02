@@ -36,18 +36,17 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-import com.sun.xacml.attr.IntegerAttribute;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.attr.IntegerAttribute;
 
 
 /**
@@ -57,6 +56,8 @@ import java.util.Set;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class GeneralBagFunction extends BagFunction
 {
@@ -67,15 +68,15 @@ public class GeneralBagFunction extends BagFunction
     private static final int ID_BASE_BAG = 2;
 
     // mapping of function name to its associated parameters
-    private static HashMap paramMap;
-    private static Set supportedIds;
+    private static HashMap<String,BagParameters> paramMap;
+    private static Set<String> supportedIds;
 
     /**
      * Static initializer that sets up the paramater info for all the
      * supported functions.
      */
     static {
-        paramMap = new HashMap();
+        paramMap = new HashMap<String,BagParameters>();
 
         for (int i = 0; i < baseTypes.length; i++) {
             String baseType = baseTypes[i];
@@ -114,7 +115,7 @@ public class GeneralBagFunction extends BagFunction
         }
         
         supportedIds = Collections.
-            unmodifiableSet(new HashSet(paramMap.keySet()));
+            unmodifiableSet(new HashSet<String>(paramMap.keySet()));
 
         paramMap.put(NAME_BASE_ONE_AND_ONLY,
                      new BagParameters(ID_BASE_ONE_AND_ONLY, null, true, 1,
@@ -251,7 +252,7 @@ public class GeneralBagFunction extends BagFunction
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
+    public static Set<String> getSupportedIdentifiers() {
         return supportedIds;
     }
 
@@ -304,7 +305,7 @@ public class GeneralBagFunction extends BagFunction
             // *-bag takes any number of elements of baseType and
             // returns a bag containing those elements
         case ID_BASE_BAG: {
-            List argsList = Arrays.asList(argValues);
+            List<AttributeValue> argsList = Arrays.asList(argValues);
 
             attrResult = new BagAttribute(getReturnType(), argsList);
             break;
