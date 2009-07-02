@@ -149,8 +149,8 @@ public class ImportPage extends GeoServerSecuredPage {
                     builder.setWorkspace(ws);
                     DataStoreInfo si = builder.buildDataStore(project);
                     Map<String, Serializable> params = si.getConnectionParameters();
-                    params.put(DirectoryDataStoreFactory.URLP.key, new File(directory).toURL());
-                    params.put(DirectoryDataStoreFactory.NAMESPACE.key, new URI(ns));
+                    params.put(DirectoryDataStoreFactory.URLP.key, new File(directory).toURI().toURL().toString());
+                    params.put(DirectoryDataStoreFactory.NAMESPACE.key, new URI(ns).toString());
                     si.setEnabled(true);
                     si.setType(new DirectoryDataStoreFactory().getDisplayName());
                     getCatalog().add(si);
