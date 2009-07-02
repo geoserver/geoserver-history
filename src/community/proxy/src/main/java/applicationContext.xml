@@ -13,4 +13,11 @@
     </property>
   </bean>
   <bean id="proxyRestlet" class="org.geoserver.rest.proxy.ProxyRestlet"/>
+  <bean class="org.geoserver.web.MenuPageInfo" id="myPageLink">
+    <property name="id" value="proxyAdminPage"/>
+    <property name="titleKey" value="org.geoserver.web.proxy.ProxyAdminPage.page.title"/>
+    <property name="descriptionKey" value="org.geoserver.web.proxy.ProxyAdminPage.page.description"/>
+    <property name="componentClass" value="org.geoserver.web.proxy.ProxyAdminPage"/>
+  </bean>
+  
 </beans>
