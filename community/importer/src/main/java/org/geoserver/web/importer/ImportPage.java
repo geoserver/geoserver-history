@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.importer;
 
 import java.io.File;
@@ -35,6 +39,9 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.data.directory.DirectoryDataStoreFactory;
 
+/**
+ * Sets up the import process and starts it up delegating the progress to {@link ImportProgressPage}
+ */
 @SuppressWarnings("serial")
 public class ImportPage extends GeoServerSecuredPage {
     String directory = "";

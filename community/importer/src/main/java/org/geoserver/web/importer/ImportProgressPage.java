@@ -1,10 +1,13 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.importer;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AbstractAjaxTimerBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.Model;
@@ -14,6 +17,9 @@ import org.geoserver.importer.ImportSummary;
 import org.geoserver.importer.ImporterThreadManager;
 import org.geoserver.web.GeoServerSecuredPage;
 
+/**
+ * Reports the import progress, the current layer, and allows to end the import mid way
+ */
 public class ImportProgressPage extends GeoServerSecuredPage {
     String importerId;
     Label bar;
