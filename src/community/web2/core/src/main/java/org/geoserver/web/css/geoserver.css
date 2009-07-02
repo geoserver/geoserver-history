@@ -948,6 +948,11 @@ background: transparent url(../img/icons/silk/delete.png) scroll no-repeat left 
 padding: 2px 0px 2px 20px;
 }
 
+.computeLink { 
+display: block;
+margin-bottom: 1em;
+}
+
 /*----------------
   Page header
 -----------------*/
