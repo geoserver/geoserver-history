@@ -47,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -587,10 +586,9 @@ public class ConfigurationStore
                 FunctionCluster cluster =
                     (FunctionCluster)(loadClass("function cluster", child));
 
-                Iterator it = cluster.getSupportedFunctions().iterator();
-                while (it.hasNext()) {
+                for (Function function : cluster.getSupportedFunctions()) {    
                     try {
-                        factory.addFunction((Function)(it.next()));
+                        factory.addFunction(function);
                     } catch (IllegalArgumentException iae) {
                         throw new ParsingException("duplicate function", iae);
                     }
@@ -638,7 +636,7 @@ public class ConfigurationStore
             }
         } else {
             // parse the arguments to the constructor
-            List args = null;
+            List<Object> args = null;
             try {
                 args = getArgs(root);
             } catch (IllegalArgumentException iae) {
@@ -660,13 +658,13 @@ public class ConfigurationStore
                 // get the parameters for this constructor
                 Class<?> [] params = cons[i].getParameterTypes();
                 if (params.length == argLength) {
-                    Iterator it = args.iterator();
+                    
                     int j = 0;
 
                     // loop through the parameters and see if each one is
-                    // assignable from the coresponding input argument
-                    while (it.hasNext()) {
-                        if (! params[j].isAssignableFrom(it.next().getClass()))
+                    // assignable from the coresponding input argument                    
+                    for (Object obj : args) {
+                        if (! params[j].isAssignableFrom(obj.getClass()))
                             break;
                         j++;
                     }
@@ -790,7 +788,7 @@ public class ConfigurationStore
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedPDPConfigurations() {
+    public Set<String> getSupportedPDPConfigurations() {
         return Collections.unmodifiableSet(pdpConfigMap.keySet());
     }
 
@@ -828,7 +826,7 @@ public class ConfigurationStore
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedAttributeFactories() {
+    public Set<String> getSupportedAttributeFactories() {
         return Collections.unmodifiableSet(attributeMap.keySet());
     }
 
@@ -840,11 +838,8 @@ public class ConfigurationStore
      * by registering each factory individually.
      */
     public void registerAttributeFactories() {
-        Iterator it = attributeMap.keySet().iterator();
-
-        while (it.hasNext()) {
-            String id = (String)(it.next());
-            AttributeFactory af = (AttributeFactory)(attributeMap.get(id));
+        for (String id : attributeMap.keySet()) {    
+            AttributeFactory af = attributeMap.get(id);
 
             try {
                 AttributeFactory.registerFactory(id, new AFProxy(af));
@@ -889,7 +884,7 @@ public class ConfigurationStore
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedCombiningAlgFactories() {
+    public Set<String> getSupportedCombiningAlgFactories() {
         return Collections.unmodifiableSet(combiningMap.keySet());
     }
 
@@ -901,10 +896,8 @@ public class ConfigurationStore
      * by registering each factory individually.
      */
     public void registerCombiningAlgFactories() {
-        Iterator it = combiningMap.keySet().iterator();
 
-        while (it.hasNext()) {
-            String id = (String)(it.next());
+        for (String id: combiningMap.keySet()) {    
             CombiningAlgFactory cf =
                 (CombiningAlgFactory)(combiningMap.get(id));
 
@@ -952,7 +945,7 @@ public class ConfigurationStore
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedFunctionFactories() {
+    public Set<String> getSupportedFunctionFactories() {
         return Collections.unmodifiableSet(functionMap.keySet());
     }
 
@@ -964,10 +957,8 @@ public class ConfigurationStore
      * by registering each factory individually.
      */
     public void registerFunctionFactories() {
-        Iterator it = functionMap.keySet().iterator();
-
-        while (it.hasNext()) {
-            String id = (String)(it.next());
+        
+        for (String id: functionMap.keySet()) {    
             FunctionFactoryProxy ffp =
                 (FunctionFactoryProxy)(functionMap.get(id));
 

@@ -41,7 +41,6 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -179,16 +178,11 @@ public class PolicySet extends AbstractPolicy
         // check that the list contains only AbstractPolicy objects
         if (policies != null) {
             list = new ArrayList<PolicyCombinerElement>();
-            Iterator it = policies.iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                if (! (o instanceof AbstractPolicy))
-                    throw new IllegalArgumentException("non-AbstractPolicy " +
-                                                       "in policies");
-                list.add(new PolicyCombinerElement((AbstractPolicy)o));
-            }
+            
+           for (AbstractPolicy p : policies)     
+                list.add(new PolicyCombinerElement(p));
+            
         }
-
         setChildren(list);
     }
     
@@ -229,16 +223,6 @@ public class PolicySet extends AbstractPolicy
         super(id, version, combiningAlg, description, target, defaultVersion,
               obligations, parameters);
 
-        // check that the list contains only CombinerElements
-        if (policyElements != null) {
-            Iterator it = policyElements.iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                if (! (o instanceof PolicyCombinerElement))
-                    throw new IllegalArgumentException("non-AbstractPolicy " +
-                                                       "in policies");
-            }
-        }
 
         setChildren(policyElements);
     }
@@ -283,14 +267,12 @@ public class PolicySet extends AbstractPolicy
         // now make sure that we can match up any parameters we may have
         // found to a cooresponding Policy or PolicySet...
         List<CombinerElement> elements = new ArrayList<CombinerElement>();
-        Iterator it = policies.iterator();
 
         // right now we have to go though each policy and based on several
         // possible cases figure out what paranmeters might apply...but
         // there should be a better way to do this
 
-        while (it.hasNext()) {
-            AbstractPolicy policy = (AbstractPolicy)(it.next());
+        for (AbstractPolicy policy : policies) {    
             List<CombinerParameter> list = null;
 
             if (policy instanceof Policy) {

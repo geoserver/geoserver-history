@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -225,9 +224,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
             throw new ParsingException("Request must a contain subject");
 
         // now go through the subject attributes
-        Iterator it = subjects.iterator();
-        while (it.hasNext()) {
-            Subject subject = (Subject)(it.next());
+        for (Subject subject: subjects) {    
 
             URI category = subject.getCategory();
             Map <String,Set<Attribute>> categoryMap = null;
@@ -241,10 +238,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
             }
 
             // iterate over the set of attributes
-            Iterator attrIterator = subject.getAttributes().iterator();
-
-            while (attrIterator.hasNext()) {
-                Attribute attr = (Attribute)(attrIterator.next());
+            for (Attribute attr : subject.getAttributes()) {                         
                 String id = attr.getId().toString();
 
                 if (categoryMap.containsKey(id)) {
@@ -277,7 +271,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
             throw new ParsingException("resource missing resource-id");
         } else {
             // make sure there's only one value for this
-            Set set = (Set)(resourceMap.get(RESOURCE_ID));
+            Set<Attribute> set = resourceMap.get(RESOURCE_ID);
             if (set.size() > 1) {
                 System.err.println("Resource may contain only one " +
                                    "resource-id Attribute");
@@ -290,7 +284,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
 
         // see if a resource-scope attribute was included
         if (resourceMap.containsKey(RESOURCE_SCOPE)) {
-            Set set = (Set)(resourceMap.get(RESOURCE_SCOPE));
+            Set<Attribute> set = resourceMap.get(RESOURCE_SCOPE);
 
             // make sure there's only one value for resource-scope
             if (set.size() > 1) {
@@ -332,9 +326,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
      * each entry with all attributes that have that id
      */
     private void mapAttributes(Set<Attribute> input, Map<String,Set<Attribute>> output) {
-        Iterator it = input.iterator();
-        while (it.hasNext()) {
-            Attribute attr = (Attribute)(it.next());
+        for (Attribute attr : input) {    
             String id = attr.getId().toString();
 
             if (output.containsKey(id)) {
@@ -534,7 +526,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
                                                 URI category) {
         // This is the same as the other three lookups except that this
         // has an extra level of indirection that needs to be handled first
-        Map map = (Map)(subjectMap.get(category));
+        Map<String,Set<Attribute>> map = subjectMap.get(category);
 
         if (map == null) {
             // the request didn't have that category, so we should try asking
@@ -602,10 +594,10 @@ public class BasicEvaluationCtx implements EvaluationCtx
      * to get an attribute.
      */
     private EvaluationResult getGenericAttributes(URI type, URI id, URI issuer,
-                                                  Map map, URI category,
+                                                  Map<String,Set<Attribute>> map, URI category,
                                                   int designatorType) {
         // try to find the id
-        Set attrSet = (Set)(map.get(id.toString()));
+        Set<Attribute> attrSet = map.get(id.toString());
         if (attrSet == null) {
             // the request didn't have an attribute with that id, so we should
             // try asking the attribute finder
@@ -614,11 +606,7 @@ public class BasicEvaluationCtx implements EvaluationCtx
 
         // now go through each, considering each Attribute object
         List<AttributeValue> attributes = new ArrayList<AttributeValue>();
-        Iterator it = attrSet.iterator();
-
-        while (it.hasNext()) {
-            Attribute attr = (Attribute)(it.next());
-
+        for (Attribute attr: attrSet) {
             // make sure the type and issuer are correct
             if ((attr.getType().equals(type)) &&
                 ((issuer == null) ||

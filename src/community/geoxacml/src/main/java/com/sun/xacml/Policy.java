@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -216,13 +215,9 @@ public class Policy extends AbstractPolicy
 
         // check that the list contains only rules
         if (rules != null) {
-            list = new ArrayList<CombinerElement>();
-            Iterator it = rules.iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                if (! (o instanceof Rule))
-                    throw new IllegalArgumentException("non-Rule in rules");
-                list.add(new RuleCombinerElement((Rule)o));
+            list = new ArrayList<CombinerElement>();            
+            for (Rule rule: rules) {    
+                list.add(new RuleCombinerElement(rule));
           }
         }
 
@@ -276,15 +271,6 @@ public class Policy extends AbstractPolicy
         super(id, version, combiningAlg, description, target, defaultVersion,
               obligations, parameters);
 
-        // check that the list contains only RuleCombinerElements
-        if (ruleElements != null) {
-            Iterator it = ruleElements.iterator();
-            while (it.hasNext()) {
-                Object o = it.next();
-                if (! (o instanceof RuleCombinerElement))
-                    throw new IllegalArgumentException("non-Rule in rules");
-            }
-        }
 
         setChildren(ruleElements);
 
@@ -376,10 +362,7 @@ public class Policy extends AbstractPolicy
         // now make sure that we can match up any parameters we may have
         // found to a cooresponding Rule...
         List<CombinerElement> elements = new ArrayList<CombinerElement>();
-        Iterator it = rules.iterator();
-
-        while (it.hasNext()) {
-            Rule rule = (Rule)(it.next());
+        for (Rule rule: rules) {    
             String id = rule.getId().toString();
             List<CombinerParameter> list = parameters.remove(id);
 
@@ -433,7 +416,7 @@ public class Policy extends AbstractPolicy
      *
      * @return a <code>Set</code> of <code>VariableDefinition</code>s
      */
-    public Set getVariableDefinitions() {
+    public Set<VariableDefinition> getVariableDefinitions() {
         return definitions;
     }
 
@@ -480,9 +463,9 @@ public class Policy extends AbstractPolicy
 
         getTarget().encode(output, indenter);
 
-        Iterator it = definitions.iterator();
-        while (it.hasNext())
-            ((VariableDefinition)(it.next())).encode(output, indenter);
+                
+        for (VariableDefinition def : definitions)    
+            def.encode(output, indenter);
         
         encodeCommonElements(output, indenter);
 

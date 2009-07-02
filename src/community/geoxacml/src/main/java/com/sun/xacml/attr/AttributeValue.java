@@ -121,7 +121,7 @@ public abstract class AttributeValue implements Evaluatable
      * @return an empty <code>List</code>
      */
     public List getChildren() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /**

@@ -154,7 +154,7 @@ public class ResourceFinderResult
      * @return a <code>Map</code> of <code>AttributeValue</code>s to
      *         <code>Status</code>
      */
-    public Map getFailures() {
+    public Map<AttributeValue,Status> getFailures() {
         return failures;
     }
 

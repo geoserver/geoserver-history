@@ -297,7 +297,7 @@ public class Apply implements Evaluatable
      *
      * @return a <code>List</code> of <code>Expression</code>s
      */
-    public List<Expression> getChildren() {
+    public List getChildren() {
         return xprs;
     }
 

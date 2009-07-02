@@ -48,6 +48,7 @@ import java.util.logging.Logger;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+import com.sun.xacml.combine.CombinerElement;
 import com.sun.xacml.combine.CombiningAlgorithm;
 import com.sun.xacml.ctx.Result;
 import com.sun.xacml.ctx.Status;
@@ -355,7 +356,7 @@ public class PolicyReference extends AbstractPolicy
      *
      * @throws ProcessingException if the referenced policy can't be retrieved
      */
-    public List getChildren() {
+    public List<PolicyTreeElement> getChildren() {
         return resolvePolicy().getChildren();
     }
 
@@ -368,7 +369,7 @@ public class PolicyReference extends AbstractPolicy
      *
      * @throws ProcessingException if the referenced policy can't be retrieved
      */
-    public List getChildElements() {
+    public List<CombinerElement> getChildElements() {
         return resolvePolicy().getChildElements();
     }
 
@@ -381,7 +382,7 @@ public class PolicyReference extends AbstractPolicy
      *
      * @throws ProcessingException if the referenced policy can't be retrieved
      */
-    public Set getObligations() {
+    public Set<Obligation> getObligations() {
         return resolvePolicy().getObligations();
     }
 

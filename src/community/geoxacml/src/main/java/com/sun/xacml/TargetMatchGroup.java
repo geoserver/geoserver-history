@@ -40,7 +40,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 //import java.util.logging.Logger;
 
@@ -127,11 +126,9 @@ public class TargetMatchGroup
      * @return the result of trying to match the group with the context
      */
     public MatchResult match(EvaluationCtx context) {
-        Iterator it = matches.iterator();
         MatchResult result = null;
 
-        while (it.hasNext()) {
-            TargetMatch tm = (TargetMatch)(it.next());
+        for (TargetMatch tm : matches) {
             result = tm.match(context);
             if (result.getResult() != MatchResult.MATCH)
                 break;
@@ -162,14 +159,13 @@ public class TargetMatchGroup
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
-        Iterator it = matches.iterator();
         String name = TargetMatch.NAMES[matchType];
 
         out.println(indent + "<" + name + ">");
         indenter.in();
         
-        while (it.hasNext()) {
-            TargetMatch tm = (TargetMatch)(it.next());
+        
+        for (TargetMatch tm : matches) {
             tm.encode(output, indenter);
         }
         

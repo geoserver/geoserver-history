@@ -109,7 +109,7 @@ public class Subject
      *
      * @return the immutable <code>Set</code> of <code>Attribute</code>s
      */
-    public Set getAttributes() {
+    public Set<Attribute> getAttributes() {
         return attributes;
     }
 
