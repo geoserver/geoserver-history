@@ -1,9 +1,17 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.importer;
 
 import java.io.Serializable;
 
 import org.geoserver.catalog.LayerInfo;
 
+/**
+ * Single layer import summary information
+ */
+@SuppressWarnings("serial")
 public class LayerSummary implements Serializable {
 
     String layerName;

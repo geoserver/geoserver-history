@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.importer;
 
 import static org.geoserver.importer.ImportStatus.*;
@@ -14,6 +18,11 @@ import org.geoserver.catalog.ProjectionPolicy;
 import org.geotools.data.DataAccess;
 import org.opengis.feature.type.Name;
 
+/**
+ * <p>Tries to import all of the feature types in a datastore, provides the ability
+ * to observe the process and to stop it prematurely.</p>
+ * <p>It is advised to run it into its own thread</p> 
+ */
 public class FeatureTypeImporter  implements Runnable {
     DataStoreInfo storeInfo;
 
@@ -56,6 +65,8 @@ public class FeatureTypeImporter  implements Runnable {
                 try {
                     builder.setStore(storeInfo);
                     FeatureTypeInfo featureType = builder.buildFeatureType(name);
+                    builder.lookupSRS(featureType, true);
+                    builder.setupBounds(featureType);
                     layer = builder.buildLayer(featureType);
                     ImportStatus status = SUCCESS;
                     

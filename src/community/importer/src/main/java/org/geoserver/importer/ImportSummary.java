@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.importer;
 
 import java.io.Serializable;
@@ -7,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.geoserver.catalog.LayerInfo;
 
 /**
- * Contains summary information
+ * Contains summary information about the whole import process
  */
 @SuppressWarnings("serial")
 public class ImportSummary implements Serializable {

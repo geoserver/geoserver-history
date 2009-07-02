@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.importer;
 
 import java.rmi.server.UID;
@@ -11,6 +15,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 
 /**
+ * Manages importer threads with a pool
  * TODO: forcefully cleanup tasks if the UI did not do so within a certain
  * time of their conclusion
  */

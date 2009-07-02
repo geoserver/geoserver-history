@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.importer;
 
 import static org.geoserver.web.importer.ImportSummaryProvider.*;
@@ -16,7 +20,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.importer.ImportStatus;
@@ -31,6 +34,12 @@ import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.opengis.feature.type.GeometryDescriptor;
 
+/**
+ * Reports the import results in a table and allows the user to
+ * edit the and to preview the layers
+ * @author aaime
+ *
+ */
 @SuppressWarnings("serial")
 public class ImportSummaryPage extends GeoServerSecuredPage {
 
