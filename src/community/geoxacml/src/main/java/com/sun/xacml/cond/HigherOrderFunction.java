@@ -36,26 +36,22 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BagAttribute;
-import com.sun.xacml.attr.BooleanAttribute;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.attr.BooleanAttribute;
 
 
 /**
@@ -68,6 +64,8 @@ import java.util.Set;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class HigherOrderFunction implements Function
 {
@@ -117,7 +115,7 @@ public class HigherOrderFunction implements Function
     private static final int ID_ALL_OF_ALL = 5;
 
     // internal mapping of names to ids
-    private static HashMap idMap;
+    private static HashMap<String,Integer> idMap;
 
     // the internal identifier for each function
     private int functionId;
@@ -135,7 +133,7 @@ public class HigherOrderFunction implements Function
 
     // try to create the return type URI, and also setup the id map
     static {
-        idMap = new HashMap();
+        idMap = new HashMap<String,Integer>();
 
         idMap.put(NAME_ANY_OF, new Integer(ID_ANY_OF));
         idMap.put(NAME_ALL_OF, new Integer(ID_ALL_OF));
@@ -427,7 +425,7 @@ public class HigherOrderFunction implements Function
 
         // finally, we need to make sure that the given type will work on
         // the given function
-        List args = new ArrayList();
+        List<Evaluatable> args = new ArrayList<Evaluatable>();
         args.add(eval1);
         args.add(eval2);
         function.checkInputsNoBag(args);
@@ -476,10 +474,10 @@ public class HigherOrderFunction implements Function
                                              boolean allFunction,
                                              boolean argumentsAreSwapped) {
         BooleanAttribute attr = BooleanAttribute.getInstance(allFunction);
-        Iterator it = bag.iterator();
+        Iterator<AttributeValue> it = bag.iterator();
             
         while (it.hasNext()) {
-            List params = new ArrayList();
+            List<AttributeValue> params = new ArrayList<AttributeValue>();
 
             if (! argumentsAreSwapped) {
                 params.add(value);

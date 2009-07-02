@@ -39,7 +39,6 @@ package com.sun.xacml.attr;
 import java.net.URI;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**

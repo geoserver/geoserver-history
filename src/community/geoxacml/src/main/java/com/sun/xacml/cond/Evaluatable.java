@@ -36,16 +36,9 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-
-import com.sun.xacml.attr.AttributeValue;
-
-import java.io.OutputStream;
-
-import java.net.URI;
-
 import java.util.List;
+
+import com.sun.xacml.EvaluationCtx;
 
 
 /**

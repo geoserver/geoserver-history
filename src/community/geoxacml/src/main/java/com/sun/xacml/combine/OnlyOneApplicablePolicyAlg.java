@@ -36,19 +36,16 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.AbstractPolicy;
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.MatchResult;
-
-import com.sun.xacml.ctx.Result;
-import com.sun.xacml.ctx.Status;
-
 import java.net.URI;
-import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.sun.xacml.AbstractPolicy;
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.MatchResult;
+import com.sun.xacml.ctx.Result;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -58,6 +55,8 @@ import java.util.List;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm
 {
@@ -114,7 +113,7 @@ public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm
             if (result == MatchResult.MATCH) {
                 // if this isn't the first match, then this is an error
                 if (atLeastOne) {
-                    List code = new ArrayList();
+                    List<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
                     String message = "Too many applicable policies";
                     return new Result(Result.DECISION_INDETERMINATE,

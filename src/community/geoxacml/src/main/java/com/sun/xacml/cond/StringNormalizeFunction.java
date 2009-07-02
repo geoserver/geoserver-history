@@ -36,14 +36,13 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.StringAttribute;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.StringAttribute;
 
 
 /**
@@ -56,6 +55,8 @@ import java.util.Set;
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class StringNormalizeFunction extends FunctionBase
 {
@@ -110,7 +111,7 @@ public class StringNormalizeFunction extends FunctionBase
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set getSupportedIdentifiers() {
-        Set set = new HashSet();
+        Set<String> set = new HashSet<String>();
 
         set.add(NAME_STRING_NORMALIZE_SPACE);
         set.add(NAME_STRING_NORMALIZE_TO_LOWER_CASE);

@@ -36,25 +36,21 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.finder.AttributeFinderModule;
-
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeDesignator;
-import com.sun.xacml.attr.BagAttribute;
-import com.sun.xacml.attr.StringAttribute;
-
-import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.ctx.Status;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeDesignator;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
+import com.sun.xacml.attr.StringAttribute;
+import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.ctx.Status;
+import com.sun.xacml.finder.AttributeFinderModule;
 
 
 /**
@@ -108,8 +104,8 @@ public class TestAttributeFinderModule extends AttributeFinderModule
      * @return a <code>Set</code> with an <code>Integer</code> of value
      *         <code>AttributeDesignator.SUBJECT_TARGET</code>
      */
-    public Set getSupportedDesignatorTypes() {
-        Set set = new HashSet();
+    public Set<Integer> getSupportedDesignatorTypes() {
+        Set<Integer> set = new HashSet<Integer>();
 
         set.add(new Integer(AttributeDesignator.SUBJECT_TARGET));
 
@@ -121,8 +117,8 @@ public class TestAttributeFinderModule extends AttributeFinderModule
      *
      * @return a <code>Set</code> containing <code>ROLE_IDENTIFIER</code>
      */
-    public Set getSupportedIds() {
-        Set set = new HashSet();
+    public Set<String> getSupportedIds() {
+        Set<String> set = new HashSet<String>();
 
         set.add(ROLE_IDENTIFIER);
 
@@ -156,7 +152,7 @@ public class TestAttributeFinderModule extends AttributeFinderModule
         // check that we succeeded in getting the subject identifier
         BagAttribute bag = (BagAttribute)(result.getAttributeValue());
         if (bag.isEmpty()) {
-            ArrayList code = new ArrayList();
+            ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_MISSING_ATTRIBUTE);
             Status status = new Status(code, "missing subject-id");
             return new EvaluationResult(status);
@@ -169,7 +165,7 @@ public class TestAttributeFinderModule extends AttributeFinderModule
         while (it.hasNext()) {
             StringAttribute attr = (StringAttribute)(it.next());
             if (attr.getValue().equals("Julius Hibbert")) {
-                Set set = new HashSet();
+                Set<AttributeValue> set = new HashSet<AttributeValue>();
                 set.add(new StringAttribute("Physician"));
                 returnBag = new BagAttribute(attributeType, set);
                 break;

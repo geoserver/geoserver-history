@@ -36,8 +36,13 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
+import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BooleanAttribute;
 import com.sun.xacml.attr.DateAttribute;
@@ -47,13 +52,6 @@ import com.sun.xacml.attr.IntegerAttribute;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.attr.TimeAttribute;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 
 /**
  * A class that implements all of the standard comparison functions.
@@ -61,6 +59,8 @@ import java.util.Set;
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class ComparisonFunction extends FunctionBase
 {
@@ -241,14 +241,14 @@ public class ComparisonFunction extends FunctionBase
     private static final int ID_DATETIME_LESS_THAN_OR_EQUAL = 23;
 
     // mappings from name to private identifier and argument datatype
-    private static HashMap idMap;
-    private static HashMap typeMap;
+    private static HashMap<String,Integer> idMap;
+    private static HashMap<String,String> typeMap;
 
     /**
      * Static initializer to setup the two maps.
      */
     static {
-        idMap = new HashMap();
+        idMap = new HashMap<String,Integer>();
 
         idMap.put(NAME_INTEGER_GREATER_THAN,
                   new Integer(ID_INTEGER_GREATER_THAN));
@@ -299,7 +299,7 @@ public class ComparisonFunction extends FunctionBase
         idMap.put(NAME_DATETIME_LESS_THAN_OR_EQUAL,
                   new Integer(ID_DATETIME_LESS_THAN_OR_EQUAL));
 
-        typeMap = new HashMap();
+        typeMap = new HashMap<String,String>();
 
         typeMap.put(NAME_INTEGER_GREATER_THAN, IntegerAttribute.identifier);
         typeMap.put(NAME_INTEGER_GREATER_THAN_OR_EQUAL,

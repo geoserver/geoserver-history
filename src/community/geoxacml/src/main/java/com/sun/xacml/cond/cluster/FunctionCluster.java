@@ -38,6 +38,8 @@ package com.sun.xacml.cond.cluster;
 
 import java.util.Set;
 
+import com.sun.xacml.cond.Function;
+
 
 /**
  * Interface used by classes that support more than one function. It's a
@@ -64,7 +66,9 @@ public interface FunctionCluster
      * It may not be used to report abstract functions.
      *
      * @return the functions supported by this class
+     * 
+     * Adding generic type support by Christian Mueller (geotools)
      */
-    public Set getSupportedFunctions();
+    public Set<Function> getSupportedFunctions();
 
 }

@@ -100,7 +100,7 @@ public class TestResourceFinderModule extends ResourceFinderModule
             return new ResourceFinderResult();
 
         // add the root to the set of resolved resources
-        HashSet set = new HashSet();
+        HashSet<AttributeValue> set = new HashSet<AttributeValue>();
         set.add(root);
 
         // add the other resources, which are defined by the conformance tests
@@ -131,7 +131,7 @@ public class TestResourceFinderModule extends ResourceFinderModule
             return new ResourceFinderResult();
 
         // add the root to the set of resolved resources
-        HashSet set = new HashSet();
+        HashSet<AttributeValue> set = new HashSet<AttributeValue>();
         set.add(root);
 
         // add the other resources, which are defined by the conformance tests

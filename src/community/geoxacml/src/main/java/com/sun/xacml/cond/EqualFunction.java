@@ -36,31 +36,29 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
+import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AnyURIAttribute;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.Base64BinaryAttribute;
 import com.sun.xacml.attr.BooleanAttribute;
+import com.sun.xacml.attr.DNSNameAttribute;
 import com.sun.xacml.attr.DateAttribute;
 import com.sun.xacml.attr.DateTimeAttribute;
 import com.sun.xacml.attr.DayTimeDurationAttribute;
-import com.sun.xacml.attr.DNSNameAttribute;
 import com.sun.xacml.attr.DoubleAttribute;
 import com.sun.xacml.attr.HexBinaryAttribute;
-import com.sun.xacml.attr.IntegerAttribute;
 import com.sun.xacml.attr.IPAddressAttribute;
+import com.sun.xacml.attr.IntegerAttribute;
 import com.sun.xacml.attr.RFC822NameAttribute;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.attr.TimeAttribute;
-import com.sun.xacml.attr.YearMonthDurationAttribute;
 import com.sun.xacml.attr.X500NameAttribute;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.sun.xacml.attr.YearMonthDurationAttribute;
 
 
 /**
@@ -72,6 +70,8 @@ import java.util.Set;
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class EqualFunction extends FunctionBase
 {
@@ -173,14 +173,14 @@ public class EqualFunction extends FunctionBase
         FUNCTION_NS_2 + "dnsName-equal";
 
     // private mapping of standard functions to their argument types
-    private static HashMap typeMap;
+    private static HashMap<String,String> typeMap;
 
     /**
      * Static initializer sets up a map of standard function names to their
      * associated datatypes
      */
     static {
-        typeMap = new HashMap();
+        typeMap = new HashMap<String,String>();
 
         typeMap.put(NAME_STRING_EQUAL, StringAttribute.identifier);
         typeMap.put(NAME_BOOLEAN_EQUAL, BooleanAttribute.identifier);

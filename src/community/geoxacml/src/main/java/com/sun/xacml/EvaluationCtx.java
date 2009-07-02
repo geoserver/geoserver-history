@@ -36,18 +36,15 @@
 
 package com.sun.xacml;
 
+import java.net.URI;
+
+import org.w3c.dom.Node;
+
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.DateAttribute;
 import com.sun.xacml.attr.DateTimeAttribute;
 import com.sun.xacml.attr.TimeAttribute;
-
 import com.sun.xacml.cond.EvaluationResult;
-
-import com.sun.xacml.finder.AttributeFinder;
-
-import java.net.URI;
-
-import org.w3c.dom.Node;
 
 
 /**

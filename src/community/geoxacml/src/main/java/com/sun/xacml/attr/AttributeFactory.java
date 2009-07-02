@@ -32,21 +32,21 @@
  *
  * You acknowledge that this software is not designed or intended for use in
  * the design, construction, operation or maintenance of any nuclear facility.
+ * 
+ * 
  */
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.net.URI;
-
 import java.util.HashMap;
 import java.util.Set;
 
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -57,6 +57,8 @@ import org.w3c.dom.Node;
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public abstract class AttributeFactory
 {
@@ -65,7 +67,7 @@ public abstract class AttributeFactory
     private static AttributeFactoryProxy defaultFactoryProxy;
 
     // the map of registered factories
-    private static HashMap registeredFactories;
+    private static HashMap<String,AttributeFactoryProxy> registeredFactories;
 
     /**
      * static intialiazer that sets up the default factory proxy and
@@ -78,7 +80,7 @@ public abstract class AttributeFactory
                 }
             };
 
-        registeredFactories = new HashMap();
+        registeredFactories = new HashMap<String,AttributeFactoryProxy>();
         registeredFactories.put(PolicyMetaData.XACML_1_0_IDENTIFIER, proxy);
         registeredFactories.put(PolicyMetaData.XACML_2_0_IDENTIFIER, proxy);
 

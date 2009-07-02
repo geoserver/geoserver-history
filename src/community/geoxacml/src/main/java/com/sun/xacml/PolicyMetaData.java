@@ -38,10 +38,8 @@ package com.sun.xacml;
 
 import com.sun.xacml.attr.AttributeFactory;
 import com.sun.xacml.attr.AttributeFactoryProxy;
-
 import com.sun.xacml.combine.CombiningAlgFactory;
 import com.sun.xacml.combine.CombiningAlgFactoryProxy;
-
 import com.sun.xacml.cond.FunctionFactory;
 import com.sun.xacml.cond.FunctionFactoryProxy;
 

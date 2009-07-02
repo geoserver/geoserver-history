@@ -37,7 +37,6 @@
 package com.sun.xacml.attr;
 
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -58,12 +57,14 @@ import java.util.NoSuchElementException;
  * @since 1.0
  * @author Seth Proctor
  * @author Steve Hanna
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class BagAttribute extends AttributeValue
 {
 
     // The Collection of AttributeValues that this object encapsulates
-    private Collection bag;
+    private Collection<AttributeValue> bag;
 
     /**
      * Creates a new <code>BagAttribute</code> that represents
@@ -73,7 +74,7 @@ public class BagAttribute extends AttributeValue
      * @param type the data type of all the attributes in the set
      * @param bag a <code>Collection</code> of <code>AttributeValue</code>s
      */
-    public BagAttribute(URI type, Collection bag) {
+    public BagAttribute(URI type, Collection<AttributeValue> bag) {
         super(type);
 
         if (type == null)
@@ -83,7 +84,7 @@ public class BagAttribute extends AttributeValue
         // see if the bag is empty/null
         if ((bag == null) || (bag.size() == 0)) {
             // empty bag
-            this.bag = new ArrayList();
+            this.bag = new ArrayList<AttributeValue>();
         } else {
             // go through the collection to make sure it's a valid bag
             Iterator it = bag.iterator();
@@ -181,23 +182,23 @@ public class BagAttribute extends AttributeValue
     /**
      * Returns an iterator over te 
      */
-    public Iterator iterator() {
-        return new ImmutableIterator(bag.iterator());
+    public Iterator<AttributeValue> iterator() {
+        return new ImmutableIterator<AttributeValue>(bag.iterator());
     }
 
     /**
      * This is a version of Iterator that overrides the <code>remove</code>
      * method so that items can't be taken out of the bag.
      */
-    private class ImmutableIterator implements Iterator {
+    private class ImmutableIterator<E> implements Iterator<E> {
 
         // the iterator we're wrapping
-        private Iterator iterator;
+        private Iterator<E> iterator;
 
         /**
          * Create a new ImmutableIterator
          */
-        public ImmutableIterator(Iterator iterator) {
+        public ImmutableIterator(Iterator<E> iterator) {
             this.iterator = iterator;
         }
         
@@ -211,7 +212,7 @@ public class BagAttribute extends AttributeValue
         /**
          * Standard next method
          */
-        public Object next() throws NoSuchElementException {
+        public E next() throws NoSuchElementException {
             return iterator.next();
         }
 

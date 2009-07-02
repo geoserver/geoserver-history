@@ -36,30 +36,25 @@
 
 package com.sun.xacml.support.finder;
 
-import com.sun.xacml.AbstractPolicy;
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.UnknownIdentifierException;
-
-import com.sun.xacml.combine.CombiningAlgFactory;
-import com.sun.xacml.combine.PolicyCombiningAlgorithm;
-
-import com.sun.xacml.finder.PolicyFinder;
-import com.sun.xacml.finder.PolicyFinderModule;
-import com.sun.xacml.finder.PolicyFinderResult;
-
 import java.io.File;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.util.Iterator;
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.xacml.AbstractPolicy;
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.UnknownIdentifierException;
+import com.sun.xacml.combine.CombiningAlgFactory;
+import com.sun.xacml.combine.PolicyCombiningAlgorithm;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
+import com.sun.xacml.finder.PolicyFinderResult;
 
 
 /**

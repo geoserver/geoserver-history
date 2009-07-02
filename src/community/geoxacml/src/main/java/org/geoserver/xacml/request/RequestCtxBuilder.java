@@ -51,7 +51,7 @@ public abstract class RequestCtxBuilder extends Object {
     }
     
     protected void fillRequestCtxLayerInfo(RequestCtx ctx, MapLayerInfo[] layerInfo) {
-        Set<Attribute> resourceAttributes = ctx.getResource();
+//        Set<Attribute> resourceAttributes = ctx.getResource();
         // TODO, Multivalued attributes
         
     }

@@ -42,6 +42,7 @@ import com.sun.xacml.ConfigurationStore;
 import com.sun.xacml.PDP;
 import com.sun.xacml.PDPConfig;
 import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.test.BasicGroupTest;
 import com.sun.xacml.test.BasicTest;
 import com.sun.xacml.test.Test;
@@ -111,7 +112,7 @@ public class XACMLTest extends TestCase {
 	    // get the PDP configuration's policy finder modules...
 	    PDPConfig config = cs.getDefaultPDPConfig();
 	    PolicyFinder finder = config.getPolicyFinder();
-	    Set policyModules = finder.getModules();
+	    Set<PolicyFinderModule> policyModules = finder.getModules();
 	    
 	    // ...and add the module used by the tests
 	    policyModules.add(policyModule);
@@ -143,35 +144,35 @@ public class XACMLTest extends TestCase {
 	}
 	
 	public void testXACML() {
-//        policyModule = new TestPolicyFinderModule();
-//        tests = new ArrayList();
-//
-//        try {
-//        	configurePDP();
-//        	loadTests("target"+File.separator+"resources"+File.separator+"tests2.xml");
-//        } catch (Exception e) {
-//        	e.printStackTrace();
-//        	Assert.fail();
-//        	return;
-//        }
-//        
-//        Iterator it = tests.iterator();
-//        int errorCount = 0;
-//
-//        System.out.println("STARTING TESTS at " + new Date());
-//
-//        while (it.hasNext()) {
-//            Test test = (Test)(it.next());
-//            int error= test.run("target"+File.separator+"resources"+File.separator+"xml"+File.separator);
-//            if (error >0 ) {
-//            	System.out.println("FAILED: "+test.getName()); 
-//            }
-//            errorCount += error;
-//        }
-//
-//        System.out.println("FINISHED TESTS at " + new Date());
-//        System.out.println("Total Failed: " + errorCount);
-//
+        policyModule = new TestPolicyFinderModule();
+        tests = new ArrayList<Test>();
+
+        try {
+        	configurePDP();
+        	loadTests("target"+File.separator+"resources"+File.separator+"tests2.xml");
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	Assert.fail();
+        	return;
+        }
+        
+        Iterator it = tests.iterator();
+        int errorCount = 0;
+
+        System.out.println("STARTING TESTS at " + new Date());
+
+        while (it.hasNext()) {
+            Test test = (Test)(it.next());
+            int error= test.run("target"+File.separator+"resources"+File.separator+"xml"+File.separator);
+            if (error >0 ) {
+            	System.out.println("FAILED: "+test.getName()); 
+            }
+            errorCount += error;
+        }
+
+        System.out.println("FINISHED TESTS at " + new Date());
+        System.out.println("Total Failed: " + errorCount);
+
 	}
 		
 }

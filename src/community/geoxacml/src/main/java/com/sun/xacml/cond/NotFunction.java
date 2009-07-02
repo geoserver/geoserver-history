@@ -36,14 +36,13 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.BooleanAttribute;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BooleanAttribute;
 
 
 /**
@@ -55,6 +54,8 @@ import java.util.Set;
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class NotFunction extends FunctionBase
 {
@@ -87,8 +88,8 @@ public class NotFunction extends FunctionBase
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
-        Set set = new HashSet();
+    public static Set<String> getSupportedIdentifiers() {
+        Set<String> set = new HashSet<String>();
 
         set.add(NAME_NOT);
 

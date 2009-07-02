@@ -38,7 +38,6 @@ package com.sun.xacml.cond;
 
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BooleanAttribute;
-
 import com.sun.xacml.ctx.Status;
 
 

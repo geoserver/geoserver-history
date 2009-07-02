@@ -6,7 +6,6 @@
 
 package org.geoserver.xacml.request;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -14,7 +13,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.requests.WMSRequest;
 
-import com.sun.xacml.ctx.Attribute;
+//import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
 
 
@@ -89,14 +88,15 @@ public class RequestCtxFactory {
     		return null;
     	}
 
-    	RequestCtx ctx = new RequestCtx(
-    			new HashSet<Attribute>(),new HashSet<Attribute>(),
-    			new HashSet<Attribute>(),new HashSet<Attribute>());
-    	
-    	fillRequestCtxRoles(ctx, roles);
-    	builder.fillRequestCtx(ctx, request);
-    	 
-        return ctx;
+//    	RequestCtx ctx = new RequestCtx(
+//    			new HashSet<Attribute>(),new HashSet<Attribute>(),
+//    			new HashSet<Attribute>(),new HashSet<Attribute>());
+//    	
+//    	fillRequestCtxRoles(ctx, roles);
+//    	builder.fillRequestCtx(ctx, request);
+//    	 
+//        return ctx;
+    	return null;
     }
     
 }

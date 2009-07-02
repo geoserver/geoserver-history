@@ -18,7 +18,7 @@
 
 package org.geotools.xacml.geoxacml.test;
 
-import java.io.ByteArrayOutputStream;
+//import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;

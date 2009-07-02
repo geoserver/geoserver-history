@@ -36,11 +36,11 @@
 
 package com.sun.xacml.finder;
 
+import java.net.URI;
+
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.VersionConstraints;
-
-import java.net.URI;
 
 
 /**

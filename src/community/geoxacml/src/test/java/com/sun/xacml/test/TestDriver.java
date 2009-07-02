@@ -36,14 +36,7 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.ConfigurationStore;
-import com.sun.xacml.PDP;
-import com.sun.xacml.PDPConfig;
-
-import com.sun.xacml.finder.PolicyFinder;
-
 import java.io.FileInputStream;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -51,15 +44,17 @@ import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.ConfigurationStore;
+import com.sun.xacml.PDP;
+import com.sun.xacml.PDPConfig;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
 
 
 /**
@@ -77,7 +72,7 @@ public class TestDriver
     private TestPolicyFinderModule policyModule;
     
     // the tests themselves
-    private ArrayList tests;
+    private ArrayList<Test> tests;
 
     /**
      * Constructor that sets up the tests for running.
@@ -88,7 +83,7 @@ public class TestDriver
      */
     public TestDriver(String testFile) throws Exception {
         policyModule = new TestPolicyFinderModule();
-        tests = new ArrayList();
+        tests = new ArrayList<Test>();
 
         configurePDP();
         loadTests(testFile);
@@ -108,7 +103,7 @@ public class TestDriver
         // get the PDP configuration's policy finder modules...
         PDPConfig config = cs.getDefaultPDPConfig();
         PolicyFinder finder = config.getPolicyFinder();
-        Set policyModules = finder.getModules();
+        Set<PolicyFinderModule> policyModules = finder.getModules();
         
         // ...and add the module used by the tests
         policyModules.add(policyModule);

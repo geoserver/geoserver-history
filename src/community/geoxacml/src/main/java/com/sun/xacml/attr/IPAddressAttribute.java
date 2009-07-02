@@ -36,13 +36,13 @@
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.ParsingException;
-
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.net.URI;
+import java.net.UnknownHostException;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
 
 
 /**

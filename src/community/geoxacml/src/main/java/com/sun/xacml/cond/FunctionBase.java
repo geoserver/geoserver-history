@@ -36,28 +36,18 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.Indenter;
-
-import com.sun.xacml.attr.AttributeValue;
-
-import com.sun.xacml.ctx.Status;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
-import java.util.ArrayList;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -69,6 +59,8 @@ import java.util.Map;
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public abstract class FunctionBase implements Function
 {
@@ -86,7 +78,7 @@ public abstract class FunctionBase implements Function
         "urn:oasis:names:tc:xacml:2.0:function:";
 
     // A List used by makeProcessingError() to save some steps.
-    private static List processingErrList = null;
+    private static List<String> processingErrList = null;
 
     // the name of this function
     private String functionName;

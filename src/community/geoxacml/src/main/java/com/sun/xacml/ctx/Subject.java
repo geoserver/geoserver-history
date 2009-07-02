@@ -36,18 +36,12 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.Indenter;
-
-import com.sun.xacml.attr.AttributeDesignator;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.sun.xacml.attr.AttributeDesignator;
 
 
 /**
@@ -56,6 +50,8 @@ import java.util.Set;
  *
  * @since 1.1
  * @author seth proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class Subject
 {
@@ -64,7 +60,7 @@ public class Subject
     private URI category;
 
     // the attributes associated with the subject
-    private Set attributes;
+    private Set<Attribute> attributes;
 
     /**
      * <code>URI</code> form of the default subject category
@@ -78,7 +74,7 @@ public class Subject
      * @param attributes a non-null <code>Set</code> of <code>Attribute</code>
      *                   objects
      */
-    public Subject(Set attributes) {
+    public Subject(Set<Attribute> attributes) {
         this(null, attributes);
     }
 
@@ -90,13 +86,13 @@ public class Subject
      * @param attributes a non-null <code>Set</code> of <code>Attribute</code>
      *                   objects
      */
-    public Subject(URI category, Set attributes) {
+    public Subject(URI category, Set<Attribute> attributes) {
         if (category == null)
             this.category = DEFAULT_CATEGORY;
         else
             this.category = category;
 
-        this.attributes = Collections.unmodifiableSet(new HashSet(attributes));
+        this.attributes = Collections.unmodifiableSet(new HashSet<Attribute>(attributes));
     }
 
     /**

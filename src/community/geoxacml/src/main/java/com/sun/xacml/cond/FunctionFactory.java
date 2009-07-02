@@ -36,16 +36,15 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.UnknownIdentifierException;
-
 import java.net.URI;
-
 import java.util.HashMap;
 import java.util.Set;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.UnknownIdentifierException;
 
 
 /**
@@ -62,6 +61,8 @@ import org.w3c.dom.Node;
  * @since 1.0
  * @author Marco Barreno
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public abstract class FunctionFactory
 {
@@ -70,7 +71,7 @@ public abstract class FunctionFactory
     private static FunctionFactoryProxy defaultFactoryProxy;
 
     // the map of registered factories
-    private static HashMap registeredFactories;
+    private static HashMap<String,FunctionFactoryProxy> registeredFactories;
 
     /**
      * static intialiazer that sets up the default factory proxies and
@@ -89,7 +90,7 @@ public abstract class FunctionFactory
                 }
             };
 
-        registeredFactories = new HashMap();
+        registeredFactories = new HashMap<String,FunctionFactoryProxy>();
         registeredFactories.put(PolicyMetaData.XACML_1_0_IDENTIFIER, proxy);
         registeredFactories.put(PolicyMetaData.XACML_2_0_IDENTIFIER, proxy);
 
@@ -432,7 +433,7 @@ public abstract class FunctionFactory
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public abstract Set getSupportedFunctions();
+    public abstract Set<String> getSupportedFunctions();
 
     /**
      * Tries to get an instance of the specified function.

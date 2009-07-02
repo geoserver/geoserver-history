@@ -36,20 +36,17 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.ParsingException;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.ProcessingException;
-
 import java.net.URI;
-
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.ParsingException;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.ProcessingException;
 
 
 /**
@@ -68,12 +65,14 @@ import org.w3c.dom.NodeList;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class VariableManager
 {
     
     // the map from identifiers to internal data
-    private Map idMap;
+    private Map<Object,VariableState> idMap;
 
     // the meta-data for the containing policy
     private PolicyMetaData metaData;
@@ -98,7 +97,7 @@ public class VariableManager
      * @param metaData the meta-data associated with the containing policy
      */
     public VariableManager(Map variableIds, PolicyMetaData metaData) {
-        idMap = new HashMap();
+        idMap = new HashMap<Object,VariableState>();
 
         Iterator it = variableIds.keySet().iterator();
         while (it.hasNext()) {

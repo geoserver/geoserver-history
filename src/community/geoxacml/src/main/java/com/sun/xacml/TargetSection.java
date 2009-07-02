@@ -36,11 +36,8 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.ctx.Status;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -48,6 +45,8 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -57,12 +56,14 @@ import org.w3c.dom.NodeList;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class TargetSection
 {
 
     // the list of match groups
-    private List matchGroups;
+    private List<TargetMatchGroup> matchGroups;
 
     // the match type contained in this group
     private int matchType;
@@ -79,12 +80,12 @@ public class TargetSection
      * @param matchType the type as defined in <code>TargetMatch</code>
      * @param xacmlVersion the version XACML being used
      */
-    public TargetSection(List matchGroups, int matchType, int xacmlVersion) {
+    public TargetSection(List<TargetMatchGroup> matchGroups, int matchType, int xacmlVersion) {
         if (matchGroups == null)
-            this.matchGroups = Collections.unmodifiableList(new ArrayList());
+            this.matchGroups = Collections.unmodifiableList(new ArrayList<TargetMatchGroup>());
         else
             this.matchGroups = Collections.
-                unmodifiableList(new ArrayList(matchGroups));
+                unmodifiableList(new ArrayList<TargetMatchGroup>(matchGroups));
         this.matchType = matchType;
         this.xacmlVersion = xacmlVersion;
     }
@@ -104,7 +105,7 @@ public class TargetSection
                                             PolicyMetaData metaData)
         throws ParsingException
     {
-        List groups = new ArrayList();
+        List<TargetMatchGroup> groups = new ArrayList<TargetMatchGroup>();
         NodeList children = root.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++) {

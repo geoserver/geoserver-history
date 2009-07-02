@@ -36,9 +36,15 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.UnknownIdentifierException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
 
+import com.sun.xacml.UnknownIdentifierException;
 import com.sun.xacml.cond.cluster.AbsFunctionCluster;
 import com.sun.xacml.cond.cluster.AddFunctionCluster;
 import com.sun.xacml.cond.cluster.ComparisonFunctionCluster;
@@ -48,6 +54,7 @@ import com.sun.xacml.cond.cluster.DateMathFunctionCluster;
 import com.sun.xacml.cond.cluster.DivideFunctionCluster;
 import com.sun.xacml.cond.cluster.EqualFunctionCluster;
 import com.sun.xacml.cond.cluster.FloorFunctionCluster;
+//import com.sun.xacml.cond.cluster.FunctionCluster;
 import com.sun.xacml.cond.cluster.GeneralBagFunctionCluster;
 import com.sun.xacml.cond.cluster.GeneralSetFunctionCluster;
 import com.sun.xacml.cond.cluster.HigherOrderFunctionCluster;
@@ -62,18 +69,6 @@ import com.sun.xacml.cond.cluster.RoundFunctionCluster;
 import com.sun.xacml.cond.cluster.StringFunctionCluster;
 import com.sun.xacml.cond.cluster.StringNormalizeFunctionCluster;
 import com.sun.xacml.cond.cluster.SubtractFunctionCluster;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import java.util.logging.Logger;
 
 
 /**
@@ -94,7 +89,10 @@ import java.util.logging.Logger;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * FunctionCluster,Set<Function>
  */
+
 public class StandardFunctionFactory extends BaseFunctionFactory
 {
 
@@ -104,21 +102,21 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     private static StandardFunctionFactory generalFactory = null;
 
     // the three function sets/maps that we use internally
-    private static Set targetFunctions = null;
-    private static Set conditionFunctions = null;
-    private static Set generalFunctions = null;
+    private static Set<Function> targetFunctions = null;
+    private static Set<Function> conditionFunctions = null;
+    private static Set<Function> generalFunctions = null;
 
-    private static Map targetAbstractFunctions = null;
-    private static Map conditionAbstractFunctions = null;
-    private static Map generalAbstractFunctions = null;
+    private static Map<URI,MapFunctionProxy> targetAbstractFunctions = null;
+    private static Map<URI,MapFunctionProxy> conditionAbstractFunctions = null;
+    private static Map<URI,MapFunctionProxy> generalAbstractFunctions = null;
 
     // the static sets of supported identifiers for each XACML version
-    private static Set supportedV1Functions;
-    private static Set supportedV2Functions;
+//    private static Set<Function> supportedV1Functions;
+//    private static Set<Function> supportedV2Functions;
 
     // the set/map used by each singleton factory instance
-    private Set supportedFunctions = null;
-    private Map supportedAbstractFunctions = null;
+//    private Set<Function> supportedFunctions = null;
+//    private Map supportedAbstractFunctions = null;
 
     // the logger we'll use for all messages
     private static final Logger logger =
@@ -130,12 +128,12 @@ public class StandardFunctionFactory extends BaseFunctionFactory
      * so there is no notion of supersetting since that's only used for
      * correctly propagating new functions.
      */
-    private StandardFunctionFactory(Set supportedFunctions,
+    private StandardFunctionFactory(Set<Function> supportedFunctions,
                                     Map supportedAbstractFunctions) {
         super(supportedFunctions, supportedAbstractFunctions);
 
-        this.supportedFunctions = supportedFunctions;
-        this.supportedAbstractFunctions = supportedAbstractFunctions;
+//        this.supportedFunctions = supportedFunctions;
+//        this.supportedAbstractFunctions = supportedAbstractFunctions;
     }
 
     /**
@@ -145,7 +143,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     private static void initTargetFunctions() {
         logger.config("Initializing standard Target functions");
 
-        targetFunctions = new HashSet();
+        targetFunctions = new HashSet<Function>();
 
         // add EqualFunction
         targetFunctions.addAll((new EqualFunctionCluster()).
@@ -166,7 +164,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         targetFunctions.addAll((new MatchFunctionCluster()).
                                getSupportedFunctions());
 
-        targetAbstractFunctions = new HashMap();
+        targetAbstractFunctions = new HashMap<URI,MapFunctionProxy>();
     }
 
     /**
@@ -179,7 +177,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         if (targetFunctions == null)
             initTargetFunctions();
 
-        conditionFunctions = new HashSet(targetFunctions);
+        conditionFunctions = new HashSet<Function>(targetFunctions);
 
         // add condition function TimeInRange
         conditionFunctions.add(new TimeInRangeFunction());
@@ -193,7 +191,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         conditionFunctions.addAll((new HigherOrderFunctionCluster()).
                                   getSupportedFunctions());
 
-        conditionAbstractFunctions = new HashMap(targetAbstractFunctions);
+        conditionAbstractFunctions = new HashMap<URI,MapFunctionProxy>(targetAbstractFunctions);
     }
 
     /**
@@ -206,7 +204,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         if (conditionFunctions == null)
             initConditionFunctions();
 
-        generalFunctions = new HashSet(conditionFunctions);
+        generalFunctions = new HashSet<Function>(conditionFunctions);
 
         // add AddFunction
         generalFunctions.addAll((new AddFunctionCluster()).
@@ -252,7 +250,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
                                 getSupportedFunctions());
 
 
-        generalAbstractFunctions = new HashMap(conditionAbstractFunctions);
+        generalAbstractFunctions = new HashMap<URI,MapFunctionProxy>(conditionAbstractFunctions);
 
         // add the map function's proxy
         try {

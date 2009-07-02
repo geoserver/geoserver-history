@@ -36,20 +36,18 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.AbstractPolicy;
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.MatchResult;
-
-import com.sun.xacml.ctx.Result;
-import com.sun.xacml.ctx.Status;
-
 import java.net.URI;
-import java.net.URISyntaxException;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.AbstractPolicy;
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.MatchResult;
+import com.sun.xacml.Obligation;
+import com.sun.xacml.ctx.Result;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -61,6 +59,8 @@ import java.util.Set;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class PermitOverridesPolicyAlg extends PolicyCombiningAlgorithm
 {
@@ -106,7 +106,7 @@ public class PermitOverridesPolicyAlg extends PolicyCombiningAlgorithm
                           List policyElements) {
         boolean atLeastOneError = false;
         boolean atLeastOneDeny = false;
-        Set denyObligations = new HashSet();
+        Set<Obligation> denyObligations = new HashSet<Obligation>();
         Status firstIndeterminateStatus = null;
         Iterator it = policyElements.iterator();
 

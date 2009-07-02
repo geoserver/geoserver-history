@@ -50,7 +50,9 @@ import com.sun.xacml.Policy;
 import com.sun.xacml.Rule;
 import com.sun.xacml.cond.Apply;
 import com.sun.xacml.finder.AttributeFinder;
+import com.sun.xacml.finder.AttributeFinderModule;
 import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.impl.CurrentEnvModule;
 import com.sun.xacml.support.finder.BasicPolicyFinderModule;
 import com.sun.xacml.support.finder.FilePolicyModule;
@@ -145,7 +147,7 @@ public class TestSupport  {
 	   
 	   
 	   PolicyFinder policyFinder = new PolicyFinder();
-	   Set policyModules = new HashSet();
+	   Set<PolicyFinderModule> policyModules = new HashSet<PolicyFinderModule>();
 	   policyModules.add(policyModule);
 	   policyFinder.setModules(policyModules);
 
@@ -153,7 +155,7 @@ public class TestSupport  {
 	   GeoSelectorModule selectorModule = new GeoSelectorModule();
 	   
 	   AttributeFinder attrFinder = new AttributeFinder();
-	   List attrModules = new ArrayList();
+	   List<AttributeFinderModule> attrModules = new ArrayList<AttributeFinderModule>();
 	   attrModules.add(envModule);
 	   attrModules.add(selectorModule);
 	   attrFinder.setModules(attrModules);
@@ -170,7 +172,7 @@ public class TestSupport  {
 	   rpsPolicyModule.addPolicy(getFNFor("rbac", "RPSManager.xml"));
 
 	   
-	   Set policyModules = new HashSet();
+	   Set<PolicyFinderModule> policyModules = new HashSet<PolicyFinderModule>();
 	   policyModules.add(rpsPolicyModule);
 	   
 	   RBACPolicyFinder policyFinder = new RBACPolicyFinder();
@@ -195,7 +197,7 @@ public class TestSupport  {
 		}		   
 
 	   
-	   policyModules = new HashSet();
+	   policyModules = new HashSet<PolicyFinderModule>();
 	   policyModules.add(ppsPolicyModule);
 	   policyFinder.setPPSModules(policyModules);
 
@@ -203,7 +205,7 @@ public class TestSupport  {
 	   GeoSelectorModule selectorModule = new GeoSelectorModule();
 	   
 	   AttributeFinder attrFinder = new AttributeFinder();
-	   List attrModules = new ArrayList();
+	   List<AttributeFinderModule> attrModules = new ArrayList<AttributeFinderModule>();
 	   attrModules.add(envModule);
 	   attrModules.add(selectorModule);
 	   attrFinder.setModules(attrModules);

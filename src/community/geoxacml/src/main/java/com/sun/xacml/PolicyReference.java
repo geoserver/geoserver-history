@@ -36,29 +36,23 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.combine.CombiningAlgorithm;
-
-import com.sun.xacml.ctx.Result;
-import com.sun.xacml.ctx.Status;
-
-import com.sun.xacml.finder.PolicyFinder;
-import com.sun.xacml.finder.PolicyFinderResult;
-
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+import com.sun.xacml.combine.CombiningAlgorithm;
+import com.sun.xacml.ctx.Result;
+import com.sun.xacml.ctx.Status;
+import com.sun.xacml.finder.PolicyFinder;
+import com.sun.xacml.finder.PolicyFinderResult;
 
 
 /**
@@ -423,7 +417,7 @@ public class PolicyReference extends AbstractPolicy
             return getTarget().match(context);
         } catch (ProcessingException pe) {
             // this means that we couldn't resolve the policy
-            ArrayList code = new ArrayList();
+            ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_PROCESSING_ERROR);
             Status status = new Status(code, "couldn't resolve policy ref");
             return new MatchResult(MatchResult.INDETERMINATE, status);

@@ -36,17 +36,15 @@
 
 package com.sun.xacml.attr;
 
-import com.sun.xacml.ParsingException;
-
 import java.math.BigInteger;
-
 import java.net.URI;
-
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import java.util.regex.Matcher;
 
 import org.w3c.dom.Node;
+
+import com.sun.xacml.ParsingException;
 
 
 /**

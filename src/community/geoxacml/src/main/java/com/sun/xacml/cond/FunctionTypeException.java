@@ -49,6 +49,11 @@ public class FunctionTypeException extends Exception
 {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Constructs a new <code>FunctionTypeException</code> with no message
      * or cause.
      */

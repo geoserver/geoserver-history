@@ -36,13 +36,7 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.PDP;
-
-import com.sun.xacml.ctx.RequestCtx;
-import com.sun.xacml.ctx.ResponseCtx;
-
 import java.io.FileInputStream;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,6 +46,10 @@ import java.util.Set;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.sun.xacml.PDP;
+import com.sun.xacml.ctx.RequestCtx;
+import com.sun.xacml.ctx.ResponseCtx;
 
 
 /**
@@ -121,9 +119,9 @@ public class BasicTest implements Test
         boolean experimental = isAttrTrue(map, "experimental");
 
         // see if there's any content
-        Set policies = null;
-        Map policyRefs = null;
-        Map policySetRefs = null;
+        Set<String> policies = null;
+        Map<String,String> policyRefs = null;
+        Map<String,String> policySetRefs = null;
         if (root.hasChildNodes()) {
             NodeList children = root.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) {
@@ -132,17 +130,17 @@ public class BasicTest implements Test
                 
                 if (childName.equals("policy")) {
                     if (policies == null)
-                        policies = new HashSet();
+                        policies = new HashSet<String>();
                     policies.add(child.getFirstChild().getNodeValue());
                 } else if (childName.equals("policyReference")) {
                     if (policyRefs == null)
-                        policyRefs = new HashMap();
+                        policyRefs = new HashMap<String,String>();
                     policyRefs.put(child.getAttributes().getNamedItem("ref").
                                    getNodeValue(),
                                    child.getFirstChild().getNodeValue());
                 } else if (childName.equals("policySetReference")) {
                     if (policySetRefs == null)
-                        policySetRefs = new HashMap();
+                        policySetRefs = new HashMap<String,String>();
                     policySetRefs.put(child.getAttributes().
                                       getNamedItem("ref").getNodeValue(),
                                       child.getFirstChild().getNodeValue());
@@ -198,7 +196,7 @@ public class BasicTest implements Test
                 module.setPolicies(testPrefix + name + "Policy.xml");
             } else {
                 Iterator it = policies.iterator();
-                Set set = new HashSet();
+                Set<String> set = new HashSet<String>();
 
                 while (it.hasNext())
                     set.add(testPrefix + (String)(it.next()));

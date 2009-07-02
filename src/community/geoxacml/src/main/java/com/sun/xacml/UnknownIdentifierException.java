@@ -48,6 +48,11 @@ public class UnknownIdentifierException extends Exception
 {
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
      * Creates an <code>UnknownIdentifierException</code> with no data
      */
     public UnknownIdentifierException() {

@@ -36,13 +36,11 @@
 
 package com.sun.xacml.combine;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.ctx.Result;
-
 import java.net.URI;
-
 import java.util.List;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.ctx.Result;
 
 
 /**

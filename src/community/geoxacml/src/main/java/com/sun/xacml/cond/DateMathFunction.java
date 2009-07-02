@@ -36,23 +36,20 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.DateAttribute;
-import com.sun.xacml.attr.DateTimeAttribute;
-import com.sun.xacml.attr.DayTimeDurationAttribute;
-import com.sun.xacml.attr.YearMonthDurationAttribute;
-
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.DateAttribute;
+import com.sun.xacml.attr.DateTimeAttribute;
+import com.sun.xacml.attr.DayTimeDurationAttribute;
+import com.sun.xacml.attr.YearMonthDurationAttribute;
 
 
 /**
@@ -68,6 +65,8 @@ import java.util.Set;
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class DateMathFunction extends FunctionBase
 {
@@ -132,17 +131,17 @@ public class DateMathFunction extends FunctionBase
     private static final boolean bagParams [] = { false, false };
 
     // Argument types for this object
-    private String [] argTypes = null;
+    //private String [] argTypes = null;
 
     // mapping from name to provide identifiers and argument types
-    private static HashMap idMap;
-    private static HashMap typeMap;
+    private static HashMap<String,Integer> idMap;
+    private static HashMap<String,String[]> typeMap;
 
     /**
      * Static initializer to setup the id and type maps
      */
     static {
-        idMap = new HashMap();
+        idMap = new HashMap<String,Integer>();
 
         idMap.put(NAME_DATETIME_ADD_DAYTIMEDURATION,
                   new Integer(ID_DATETIME_ADD_DAYTIMEDURATION));
@@ -157,7 +156,7 @@ public class DateMathFunction extends FunctionBase
         idMap.put(NAME_DATE_SUBTRACT_YEARMONTHDURATION,
                   new Integer(ID_DATE_SUBTRACT_YEARMONTHDURATION));
 
-        typeMap = new HashMap();
+        typeMap = new HashMap<String,String[]>();
 
         typeMap.put(NAME_DATETIME_ADD_DAYTIMEDURATION,
                     dateTimeDayTimeDurationArgTypes);

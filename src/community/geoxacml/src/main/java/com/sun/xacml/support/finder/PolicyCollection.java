@@ -36,6 +36,14 @@
 
 package com.sun.xacml.support.finder;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
+
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.MatchResult;
@@ -47,19 +55,8 @@ import com.sun.xacml.Target;
 import com.sun.xacml.TargetMatch;
 import com.sun.xacml.TargetSection;
 import com.sun.xacml.VersionConstraints;
-
 import com.sun.xacml.combine.PolicyCombiningAlgorithm;
-
 import com.sun.xacml.ctx.Status;
-
-import java.net.URI;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 
 /**
@@ -90,12 +87,14 @@ import java.util.TreeSet;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class PolicyCollection
 {
 
     // the actual collection of policies
-    private HashMap policies;
+    private HashMap<String,TreeSet<AbstractPolicy>> policies;
 
     // the single instance of the comparator we'll use for managing versions
     private VersionComparator versionComparator = new VersionComparator();
@@ -130,7 +129,7 @@ public class PolicyCollection
      * when multiple policies match for a given request.
      */
     public PolicyCollection() {
-        policies = new HashMap();
+        policies = new HashMap<String,TreeSet<AbstractPolicy>>();
         combiningAlg = null;
     }
 
@@ -144,7 +143,7 @@ public class PolicyCollection
      */
     public PolicyCollection(PolicyCombiningAlgorithm combiningAlg,
                             URI parentPolicyId) {
-        policies = new HashMap();
+        policies = new HashMap<String,TreeSet<AbstractPolicy>>();
 
         this.combiningAlg = combiningAlg;
         this.parentId = parentPolicyId;
@@ -179,12 +178,12 @@ public class PolicyCollection
         if (policies.containsKey(identifier)) {
             // this identifier is already is use, so see if this version is
             // already in the set
-            TreeSet set = (TreeSet)(policies.get(identifier));
+            TreeSet<AbstractPolicy> set = policies.get(identifier);
             return set.add(policy);
         } else {
             // this identifier isn't already being used, so create a new
             // set in the map for it, and add the policy
-            TreeSet set = new TreeSet(versionComparator);
+            TreeSet<AbstractPolicy> set = new TreeSet<AbstractPolicy>(versionComparator);
             policies.put(identifier, set);
             return set.add(policy);
         }
@@ -209,7 +208,7 @@ public class PolicyCollection
         throws TopLevelPolicyException
     {
         // setup a list of matching policies
-        ArrayList list = new ArrayList();
+        ArrayList<AbstractPolicy> list = new ArrayList<AbstractPolicy>();
         // get an iterator over all the identifiers
         Iterator it = policies.values().iterator();
 
@@ -231,7 +230,7 @@ public class PolicyCollection
                 // ...first checking if this is the first match and if
                 // we automaticlly nest policies
                 if ((combiningAlg == null) && (list.size() > 0)) {
-                    ArrayList code = new ArrayList();
+                    ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
                     Status status = new Status(code, "too many applicable"
                                                + " top-level policies");
@@ -309,11 +308,11 @@ public class PolicyCollection
      * of the same policy, which in practice will probably happen far less
      * (from this class' point of view) than additions or fetches.
      */
-    class VersionComparator implements Comparator {
-        public int compare(Object o1, Object o2) {
+    class VersionComparator implements Comparator<AbstractPolicy> {
+        public int compare(AbstractPolicy o1, AbstractPolicy o2) {
             // we swap the parameters so that sorting goes largest to smallest
-            String v1 = ((AbstractPolicy)o2).getVersion();
-            String v2 = ((AbstractPolicy)o1).getVersion();
+            String v1 = o2.getVersion();
+            String v2 = o1.getVersion();
 
             // do a quick check to see if the strings are equal (note that
             // even if the strings aren't equal, the versions can still

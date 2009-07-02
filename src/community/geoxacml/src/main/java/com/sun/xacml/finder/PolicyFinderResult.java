@@ -37,7 +37,6 @@
 package com.sun.xacml.finder;
 
 import com.sun.xacml.AbstractPolicy;
-
 import com.sun.xacml.ctx.Status;
 
 

@@ -36,11 +36,8 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.ParsingException;
-
 import java.io.File;
 import java.io.InputStream;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,10 +47,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import com.sun.xacml.ParsingException;
 
 
 /**

@@ -36,36 +36,21 @@
 
 package com.sun.xacml.ctx;
 
-import com.sun.xacml.Indenter;
-import com.sun.xacml.ParsingException;
-
-import com.sun.xacml.attr.AttributeDesignator;
-
 import java.io.InputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.xml.sax.SAXException;
+import com.sun.xacml.Indenter;
+import com.sun.xacml.ParsingException;
 
 
 /**
@@ -75,21 +60,24 @@ import org.xml.sax.SAXException;
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
+ * 
+ * Adding generic type support by Christian Mueller (geotools) 
+ * 
  */
 public class RequestCtx
 {
 
     // There must be at least one subject
-    private Set subjects = null;
+    private Set<Subject> subjects = null;
 
     // There must be exactly one resource
-    private Set resource = null;
+    private Set<Attribute> resource = null;
 
     // There must be exactly one action
-    private Set action = null;
+    private Set<Attribute> action = null;
 
     // There may be any number of environment attributes
-    private Set environment = null;
+    private Set<Attribute> environment = null;
 
     // Hold onto the root of the document for XPath searches
     private Node documentRoot = null;
@@ -105,8 +93,8 @@ public class RequestCtx
      * @param action a <code>Set</code> of <code>Attribute</code>s
      * @param environment a <code>Set</code> of environment attributes
      */
-    public RequestCtx(Set subjects, Set resource, Set action,
-                      Set environment) {
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action,
+                      Set<Attribute> environment) {
         this(subjects, resource, action, environment, null, null);
     }
 
@@ -119,8 +107,8 @@ public class RequestCtx
      * @param environment a <code>Set</code> of environment attributes
      * @param documentRoot the root node of the DOM tree for this request
      */
-    public RequestCtx(Set subjects, Set resource, Set action, 
-                      Set environment, Node documentRoot) {
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action, 
+                      Set<Attribute> environment, Node documentRoot) {
         this(subjects, resource, action, environment, documentRoot, null);
     }
 
@@ -135,8 +123,8 @@ public class RequestCtx
      *                        for including in the RequestType, including the
      *                        root <code>RequestContent</code> node
      */
-    public RequestCtx(Set subjects, Set resource, Set action, 
-                      Set environment, String resourceContent) {
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action, 
+                      Set<Attribute> environment, String resourceContent) {
         this(subjects, resource, action, environment, null, resourceContent);
     }
 
@@ -154,8 +142,8 @@ public class RequestCtx
      *
      * @throws IllegalArgumentException if the inputs are not well formed
      */
-    public RequestCtx(Set subjects, Set resource, Set action, 
-                      Set environment, Node documentRoot,
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action, 
+                      Set<Attribute> environment, Node documentRoot,
                       String resourceContent) throws IllegalArgumentException {
       
         // make sure subjects is well formed
@@ -165,7 +153,7 @@ public class RequestCtx
                 throw new IllegalArgumentException("Subjects input is not " +
                                                    "well formed");
         }
-        this.subjects = Collections.unmodifiableSet(new HashSet(subjects));
+        this.subjects = Collections.unmodifiableSet(new HashSet<Subject>(subjects));
 
         // make sure resource is well formed
         Iterator rIter = resource.iterator();
@@ -174,7 +162,7 @@ public class RequestCtx
                 throw new IllegalArgumentException("Resource input is not " +
                                                    "well formed");
         }
-        this.resource = Collections.unmodifiableSet(new HashSet(resource));
+        this.resource = Collections.unmodifiableSet(new HashSet<Attribute>(resource));
 
         // make sure action is well formed
         Iterator aIter = action.iterator();
@@ -183,7 +171,7 @@ public class RequestCtx
                 throw new IllegalArgumentException("Action input is not " +
                                                    "well formed");
         }
-        this.action = Collections.unmodifiableSet(new HashSet(action));
+        this.action = Collections.unmodifiableSet(new HashSet<Attribute>(action));
         
         // make sure environment is well formed
         Iterator eIter = environment.iterator();
@@ -193,7 +181,7 @@ public class RequestCtx
                                                    " well formed");
         }
         this.environment =
-            Collections.unmodifiableSet(new HashSet(environment));
+            Collections.unmodifiableSet(new HashSet<Attribute>(environment));
 
         this.documentRoot = documentRoot;
         this.resourceContent = resourceContent;
@@ -212,11 +200,11 @@ public class RequestCtx
      * @throws ParsingException if the DOM node is invalid
      */
     public static RequestCtx getInstance(Node root) throws ParsingException {
-        Set newSubjects = new HashSet();
-        Set newResource = null;
-        Set newAction = null;
-        Set newEnvironment = null;
-        String resourceContent;
+        Set<Subject> newSubjects = new HashSet<Subject>();
+        Set<Attribute> newResource = null;
+        Set<Attribute> newAction = null;
+        Set<Attribute> newEnvironment = null;
+        //String resourceContent;
 
         // First check to be sure the node passed is indeed a Request node.
         String tagName = root.getNodeName();
@@ -248,7 +236,7 @@ public class RequestCtx
                 }
                 
                 // now we get the attributes
-                Set attributes = parseAttributes(node);
+                Set<Attribute> attributes = parseAttributes(node);
 
                 // finally, add the list to the set of subject attributes
                 newSubjects.add(new Subject(category, attributes));
@@ -270,7 +258,7 @@ public class RequestCtx
         // if we didn't have an environment section, the only optional section
         // of the four, then create a new empty set for it
         if (newEnvironment == null)
-            newEnvironment = new HashSet();
+            newEnvironment = new HashSet<Attribute>();
 
         // Now create and return the RequestCtx from the information
         // gathered
@@ -282,8 +270,8 @@ public class RequestCtx
      * Helper method that parses a set of Attribute types. The Subject,
      * Action and Environment sections all look like this.
      */
-    private static Set parseAttributes(Node root) throws ParsingException {
-        Set set = new HashSet();
+    private static Set<Attribute> parseAttributes(Node root) throws ParsingException {
+        Set<Attribute> set = new HashSet<Attribute>();
 
         // the Environment section is just a list of Attributes
         NodeList nodes = root.getChildNodes();
@@ -323,7 +311,7 @@ public class RequestCtx
      *
      * @return the request's subject attributes
      */
-    public Set getSubjects() {
+    public Set<Subject> getSubjects() {
         return subjects;
     }
 
@@ -332,7 +320,7 @@ public class RequestCtx
      *
      * @return the request's resource attributes
      */
-    public Set getResource() {
+    public Set<Attribute> getResource() {
         return resource;
     }
 
@@ -341,7 +329,7 @@ public class RequestCtx
      *
      * @return the request's action attributes
      */
-    public Set getAction() {
+    public Set<Attribute> getAction() {
         return action;
     }
 
@@ -350,7 +338,7 @@ public class RequestCtx
      *
      * @return the request's environment attributes
      */
-    public Set getEnvironmentAttributes() {
+    public Set<Attribute> getEnvironmentAttributes() {
         return environment;
     }
 

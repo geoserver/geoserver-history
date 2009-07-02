@@ -36,11 +36,12 @@
 
 package com.sun.xacml.cond.cluster;
 
-import com.sun.xacml.cond.MatchFunction;
-
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import com.sun.xacml.cond.Function;
+import com.sun.xacml.cond.MatchFunction;
 
 
 /**
@@ -48,12 +49,14 @@ import java.util.Set;
  *
  * @since 1.2
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class MatchFunctionCluster implements FunctionCluster
 {
 
-    public Set getSupportedFunctions() {
-        Set set = new HashSet();
+    public Set<Function> getSupportedFunctions() {
+        Set<Function> set = new HashSet<Function>();
         Iterator it = MatchFunction.getSupportedIdentifiers().iterator();
 
         while (it.hasNext())

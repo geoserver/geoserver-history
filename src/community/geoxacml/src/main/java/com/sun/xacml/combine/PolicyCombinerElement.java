@@ -36,17 +36,16 @@
 
 package com.sun.xacml.combine;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Iterator;
+import java.util.List;
+
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.Policy;
 import com.sun.xacml.PolicyReference;
 import com.sun.xacml.PolicySet;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
-
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -77,7 +76,7 @@ public class PolicyCombinerElement extends CombinerElement
      *                   <code>CombinerParameter<code>s provided for general
      *                   use (for all pre-2.0 policies this must be empty)
      */
-    public PolicyCombinerElement(AbstractPolicy policy, List parameters) {
+    public PolicyCombinerElement(AbstractPolicy policy, List<CombinerParameter> parameters) {
         super(policy, parameters);
     }
 

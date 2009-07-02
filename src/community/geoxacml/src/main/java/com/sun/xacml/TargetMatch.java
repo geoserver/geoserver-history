@@ -36,7 +36,16 @@
 
 package com.sun.xacml;
 
-import com.sun.xacml.EvaluationCtx;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.sun.xacml.attr.AttributeDesignator;
 import com.sun.xacml.attr.AttributeFactory;
@@ -44,28 +53,12 @@ import com.sun.xacml.attr.AttributeSelector;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.attr.BooleanAttribute;
-
 import com.sun.xacml.cond.Evaluatable;
 import com.sun.xacml.cond.EvaluationResult;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.FunctionFactory;
 import com.sun.xacml.cond.FunctionTypeException;
-
 import com.sun.xacml.ctx.Status;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 
 /**
@@ -77,6 +70,9 @@ import org.w3c.dom.NodeList;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
+ * 
  */
 public class TargetMatch
 {
@@ -258,7 +254,7 @@ public class TargetMatch
         }
 
         // finally, check that the inputs are valid for this function
-        List inputs = new ArrayList();
+        List<Evaluatable> inputs = new ArrayList<Evaluatable>();
         inputs.add(attrValue);
         inputs.add(eval);
         function.checkInputsNoBag(inputs);
@@ -330,12 +326,12 @@ public class TargetMatch
         if (! bag.isEmpty()) {
             // we got back a set of attributes, so we need to iterate through
             // them, seeing if at least one matches
-            Iterator it = bag.iterator();
+            Iterator<AttributeValue> it = bag.iterator();
             boolean atLeastOneError = false;
             Status firstIndeterminateStatus = null;
 
             while (it.hasNext()) {
-                ArrayList inputs = new ArrayList();
+                ArrayList<AttributeValue> inputs = new ArrayList<AttributeValue>();
 
                 inputs.add(attrValue);
                 inputs.add(it.next());

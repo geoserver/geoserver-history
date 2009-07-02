@@ -36,22 +36,19 @@
 
 package com.sun.xacml.finder;
 
-import com.sun.xacml.EvaluationCtx;
-import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.PolicyReference;
-import com.sun.xacml.VersionConstraints;
-
-import com.sun.xacml.ctx.Status;
-
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.PolicyMetaData;
+import com.sun.xacml.PolicyReference;
+import com.sun.xacml.VersionConstraints;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -79,18 +76,20 @@ import java.util.logging.Logger;
  *
  * @since 1.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class PolicyFinder
 {
 
     // all modules in this finder
-    private Set allModules;
+    private Set<PolicyFinderModule> allModules;
 
     // all the request modules
-    private Set requestModules;
+    private Set<PolicyFinderModule> requestModules;
 
     // all the reference modules
-    private Set referenceModules;
+    private Set<PolicyFinderModule> referenceModules;
 
     // the logger we'll use for all messages
     private static final Logger logger =
@@ -102,8 +101,8 @@ public class PolicyFinder
      *
      * @return a <code>Set</code> of <code>PolicyFinderModule</code>s
      */
-    public Set getModules() {
-        return new HashSet(allModules);
+    public Set<PolicyFinderModule> getModules() {
+        return new HashSet<PolicyFinderModule>(allModules);
     }
 
     /**
@@ -112,12 +111,12 @@ public class PolicyFinder
      *
      * @param modules a <code>Set</code> of <code>PolicyFinderModule</code>s
      */
-    public void setModules(Set modules) {
+    public void setModules(Set<PolicyFinderModule> modules) {
         Iterator it = modules.iterator();
 
-        allModules = new HashSet(modules);
-        requestModules = new HashSet();
-        referenceModules = new HashSet();
+        allModules = new HashSet<PolicyFinderModule>(modules);
+        requestModules = new HashSet<PolicyFinderModule>();
+        referenceModules = new HashSet<PolicyFinderModule>();
 
         while (it.hasNext()) {
             PolicyFinderModule module = (PolicyFinderModule)(it.next());
@@ -180,7 +179,7 @@ public class PolicyFinder
                     logger.info("More than one top-level applicable policy " +
                                 "for the request");
 
-                    ArrayList code = new ArrayList();
+                    ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
                     Status status = new Status(code, "too many applicable " +
                                                "top-level policies");
@@ -257,7 +256,7 @@ public class PolicyFinder
                     if (logger.isLoggable(Level.INFO))
                         logger.info("More than one policy applies for the " +
                                     "reference: " + idReference.toString());
-                    ArrayList code = new ArrayList();
+                    ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
                     Status status = new Status(code, "too many applicable " +
                                                "top-level policies");

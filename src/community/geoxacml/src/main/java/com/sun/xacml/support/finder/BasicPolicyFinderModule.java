@@ -36,22 +36,18 @@
 
 package com.sun.xacml.support.finder;
 
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.PolicyMetaData;
-import com.sun.xacml.PolicyReference;
 import com.sun.xacml.VersionConstraints;
-
 import com.sun.xacml.combine.PolicyCombiningAlgorithm;
-
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.PolicyFinderResult;
-
-import java.net.URI;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -72,6 +68,8 @@ import java.util.logging.Logger;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class BasicPolicyFinderModule extends PolicyFinderModule
 {
@@ -81,7 +79,7 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     private PolicyCollection refPolicies;
 
     // the combining alg, or null if none is used
-    private PolicyCombiningAlgorithm combiningAlg;
+    //private PolicyCombiningAlgorithm combiningAlg;
 
     // the policy identifier for any policy sets we dynamically create
     private static final String POLICY_ID =

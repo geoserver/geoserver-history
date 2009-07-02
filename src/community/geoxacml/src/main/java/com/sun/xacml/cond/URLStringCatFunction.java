@@ -36,20 +36,17 @@
 
 package com.sun.xacml.cond;
 
-import com.sun.xacml.EvaluationCtx;
-
-import com.sun.xacml.attr.AnyURIAttribute;
-import com.sun.xacml.attr.AttributeValue;
-import com.sun.xacml.attr.StringAttribute;
-
-import com.sun.xacml.ctx.Status;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.sun.xacml.EvaluationCtx;
+import com.sun.xacml.attr.AnyURIAttribute;
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.StringAttribute;
+import com.sun.xacml.ctx.Status;
 
 
 /**
@@ -57,6 +54,8 @@ import java.util.List;
  *
  * @since 2.0
  * @author Seth Proctor
+ * 
+ * Adding generic type support by Christian Mueller (geotools)
  */
 public class URLStringCatFunction extends FunctionBase
 {
@@ -153,7 +152,7 @@ public class URLStringCatFunction extends FunctionBase
         try {
             return new EvaluationResult(new AnyURIAttribute(new URI(str)));
         } catch (URISyntaxException use) {
-            List code = new ArrayList();
+            List<String> code = new ArrayList<String>();
             code.add(Status.STATUS_PROCESSING_ERROR);
             String message = NAME_URI_STRING_CONCATENATE + " didn't produce"
                 + " a valid URI: " + str;
