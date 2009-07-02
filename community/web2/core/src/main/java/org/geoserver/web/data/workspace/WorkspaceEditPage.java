@@ -17,8 +17,6 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.namespace.NamespaceDetachableModel;
-import org.geoserver.web.data.store.StorePanel;
-import org.geoserver.web.data.store.StoreProvider;
 
 /**
  * Allows editing a specific workspace
@@ -48,8 +46,8 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         form.add(new TextField("uRI"));
         
         //stores
-        StorePanel storePanel = new StorePanel("storeTable", new StoreProvider(ws), false);
-        form.add(storePanel);
+//        StorePanel storePanel = new StorePanel("storeTable", new StoreProvider(ws), false);
+//        form.add(storePanel);
         
         form.add(new SubmitLink("save"){
             @Override
