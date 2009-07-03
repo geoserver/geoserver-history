@@ -1,5 +1,7 @@
 package org.geoserver.wfs;
 
+import java.io.File;
+
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
@@ -96,7 +98,7 @@ public class GetFeatureTest extends WFSTestSupport {
         assertFalse(featureMembers.getLength() == 0);
 
     }
-
+    
     public void testPostWithFilter() throws Exception {
 
         String xml = "<wfs:GetFeature " + "service=\"WFS\" "
