@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
@@ -23,6 +25,7 @@ import org.geotools.filter.v1_1.OGC;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml2.GML;
 import org.geotools.gml2.GMLConfiguration;
+import org.geotools.util.logging.Logging;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -42,6 +45,11 @@ import org.vfny.geoserver.global.GeoServer;
  * TODO: this class duplicates a lot of what is is in the 1.1 configuration, merge them
  */
 public class WFSConfiguration extends Configuration {
+    /**
+     * logger
+     */
+    static Logger LOGGER = Logging.getLogger( "org.geoserver.wfs");
+    
     Data catalog;
     FeatureTypeSchemaBuilder schemaBuilder;
 
@@ -122,17 +130,26 @@ public class WFSConfiguration extends Configuration {
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
-        try {
-            Collection featureTypes = catalog.getFeatureTypeInfos().values();
+        Collection featureTypes = catalog.getFeatureTypeInfos().values();
 
-            for (Iterator f = featureTypes.iterator(); f.hasNext();) {
-                FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-                SimpleFeatureType featureType = meta.getFeatureType();
-
-                featureTypeCache.put(featureType);
+        for (Iterator f = featureTypes.iterator(); f.hasNext();) {
+            FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+            if ( !meta.isEnabled() ) {
+                continue;
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            
+            SimpleFeatureType featureType = null;
+            try {
+                featureType = meta.getFeatureType();
+            }
+            catch( Exception e ) {
+                LOGGER.log(Level.WARNING, "Could not load underlying feature type for type " 
+                    + meta.getName(), e);
+                continue;
+            }
+            
+
+            featureTypeCache.put(featureType);
         }
     }
 

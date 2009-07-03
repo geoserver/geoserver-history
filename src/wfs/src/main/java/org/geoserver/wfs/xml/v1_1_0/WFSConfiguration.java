@@ -24,6 +24,7 @@ import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.gml3.GML;
+import org.geotools.util.logging.Logging;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
 import org.geotools.xs.XS;
@@ -40,9 +41,15 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class WFSConfiguration extends Configuration {
+    /**
+     * logger
+     */
+    static Logger LOGGER = Logging.getLogger( "org.geoserver.wfs");
     /**
      * catalog
      */
@@ -169,19 +176,22 @@ public class WFSConfiguration extends Configuration {
         FeatureTypeCache featureTypeCache = (FeatureTypeCache) context
             .getComponentInstanceOfType(FeatureTypeCache.class);
 
-        try {
-            Collection featureTypes = catalog.getFeatureTypeInfos().values();
+        Collection featureTypes = catalog.getFeatureTypeInfos().values();
 
-            for (Iterator f = featureTypes.iterator(); f.hasNext();) {
-                FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-                if ( !meta.isEnabled() ) continue;
-                
-                SimpleFeatureType featureType = meta.getFeatureType();
-
-                featureTypeCache.put(featureType);
+        for (Iterator f = featureTypes.iterator(); f.hasNext();) {
+            FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
+            if ( !meta.isEnabled() ) continue;
+            
+            SimpleFeatureType featureType = null;
+            try {
+                featureType = meta.getFeatureType();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            catch( Exception e ) {
+                LOGGER.log(Level.WARNING, "Could not load underlying feature type for type " 
+                    + meta.getName(), e);
+                continue;
+            }
+            featureTypeCache.put(featureType);
         }
     }
 
