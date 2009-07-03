@@ -7,7 +7,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.7.5-SNAPSHOT</version>
+ <version>1.7.6-SNAPSHOT</version>
  <name>GeoServer</name>
 
  <scm>
@@ -951,7 +951,7 @@
       <descriptor>release/ext-geosearch.xml</descriptor>
       <descriptor>release/ext-charts.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.7.5-SNAPSHOT</finalName>
+     <finalName>geoserver-1.7.6-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -975,6 +975,8 @@
     <version>2.4</version>
     <configuration>
      <!--downloadSources>true</downloadSources-->
+     <!-- Use a different build directory, see GEOT-2576 -->
+     <buildOutputDirectory>./bin</buildOutputDirectory>
      <additionalProjectnatures>
       <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
      </additionalProjectnatures>
@@ -1164,7 +1166,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.7.5-SNAPSHOT</gs.version>
+  <gs.version>1.7.6-SNAPSHOT</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
   <spring.version>2.5.5</spring.version>
   <java.awt.headless>true</java.awt.headless>
