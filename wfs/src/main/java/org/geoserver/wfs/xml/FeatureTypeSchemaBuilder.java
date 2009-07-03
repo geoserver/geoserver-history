@@ -158,7 +158,12 @@ public abstract class FeatureTypeSchemaBuilder {
 
             //all types in same namespace, write out the schema
             for (int i = 0; i < featureTypeInfos.length; i++) {
-                buildSchemaContent(featureTypeInfos[i], schema, factory, importedNamespaces);
+                try {
+                    buildSchemaContent(featureTypeInfos[i], schema, factory, importedNamespaces);
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "Could not build xml schema for type: "
+                            + featureTypeInfos[i].getName(), e);
+                }
             }
         } else {
             //different namespaces, write out import statements
