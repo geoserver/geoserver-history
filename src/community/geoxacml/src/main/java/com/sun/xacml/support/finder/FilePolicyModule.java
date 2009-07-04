@@ -40,7 +40,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -208,9 +207,7 @@ public class FilePolicyModule extends PolicyFinderModule {
     public void init(PolicyFinder finder) {
         PolicyReader reader = new PolicyReader(finder, logger, schemaFile);
 
-        Iterator it = fileNames.iterator();
-        while (it.hasNext()) {
-            String fname = (String)(it.next());
+        for (String fname : fileNames) {            
             try {
                 AbstractPolicy policy =
                     reader.readPolicy(new FileInputStream(fname));

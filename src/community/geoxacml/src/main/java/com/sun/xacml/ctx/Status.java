@@ -174,7 +174,7 @@ public class Status
      *
      * @return the status code
      */
-    public List getCode() {
+    public List<String> getCode() {
         return code;
     }
 
@@ -305,9 +305,9 @@ public class Status
      * Encodes the object in XML
      */
     private void encodeStatusCode(PrintStream out, Indenter indenter,
-                                  Iterator iterator) {
+                                  Iterator<String> iterator) {
         String in = indenter.makeString();
-        String code = (String)(iterator.next());
+        String code = iterator.next();
 
         if (iterator.hasNext()) {
             indenter.in();

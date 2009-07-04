@@ -117,10 +117,15 @@ public class TestAttributeFinderModule extends AttributeFinderModule
      *
      * @return a <code>Set</code> containing <code>ROLE_IDENTIFIER</code>
      */
-    public Set<String> getSupportedIds() {
-        Set<String> set = new HashSet<String>();
+    public Set<URI> getSupportedIds() {
+        Set<URI> set = new HashSet<URI>();
 
-        set.add(ROLE_IDENTIFIER);
+        try {
+			set.add(new URI(ROLE_IDENTIFIER));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         return set;
     }

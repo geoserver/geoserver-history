@@ -37,7 +37,6 @@
 package com.sun.xacml.ctx;
 
 import java.io.ByteArrayInputStream;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -78,15 +77,12 @@ public class StatusDetail
      * @throws IllegalArgumentException if there is a problem encoding the
      *                                  <code>Attribute</code>s
      */
-    public StatusDetail(List attributes) throws IllegalArgumentException {
+    public StatusDetail(List<Attribute> attributes) throws IllegalArgumentException {
         detailText = "<StatusDetail>\n";
-        Iterator it = attributes.iterator();
-
-        while (it.hasNext()) {
-            Attribute attr = (Attribute)(it.next());
+        
+        for (Attribute attr: attributes)    
             detailText += attr.encode() + "\n";
-        }
-
+        
         detailText += "</StatusDetail>";
 
         try {

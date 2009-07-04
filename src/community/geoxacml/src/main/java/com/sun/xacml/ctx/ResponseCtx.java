@@ -41,7 +41,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.w3c.dom.Node;
@@ -179,13 +178,8 @@ public class ResponseCtx
         out.println(indent + "<Response>");
 
         // Go through all results
-        Iterator it = results.iterator();
-        indenter.in();
-
-        while (it.hasNext()) {
-            Result result = (Result)(it.next());
+        for (Result result: results)    
             result.encode(out, indenter);
-        }
 
         indenter.out();
 

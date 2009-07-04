@@ -43,7 +43,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.w3c.dom.Node;
@@ -146,40 +145,12 @@ public class RequestCtx
                       Set<Attribute> environment, Node documentRoot,
                       String resourceContent) throws IllegalArgumentException {
       
-        // make sure subjects is well formed
-        Iterator sIter = subjects.iterator();
-        while (sIter.hasNext()){
-            if (!(sIter.next() instanceof Subject))
-                throw new IllegalArgumentException("Subjects input is not " +
-                                                   "well formed");
-        }
         this.subjects = Collections.unmodifiableSet(new HashSet<Subject>(subjects));
 
-        // make sure resource is well formed
-        Iterator rIter = resource.iterator();
-        while (rIter.hasNext()){
-            if (!(rIter.next() instanceof Attribute))
-                throw new IllegalArgumentException("Resource input is not " +
-                                                   "well formed");
-        }
         this.resource = Collections.unmodifiableSet(new HashSet<Attribute>(resource));
 
-        // make sure action is well formed
-        Iterator aIter = action.iterator();
-        while (aIter.hasNext()){
-            if (!(aIter.next() instanceof Attribute))
-                throw new IllegalArgumentException("Action input is not " +
-                                                   "well formed");
-        }
         this.action = Collections.unmodifiableSet(new HashSet<Attribute>(action));
         
-        // make sure environment is well formed
-        Iterator eIter = environment.iterator();
-        while (eIter.hasNext()){
-            if (!(eIter.next() instanceof Attribute))
-                throw new IllegalArgumentException("Environment input is not" +
-                                                   " well formed");
-        }
         this.environment =
             Collections.unmodifiableSet(new HashSet<Attribute>(environment));
 
@@ -390,14 +361,12 @@ public class RequestCtx
         indenter.in();
 
         // first off, go through all subjects
-        Iterator it = subjects.iterator();
-        while (it.hasNext()) {
-            Subject subject = (Subject)(it.next());
+        for (Subject subject : subjects) {    
 
             out.print(indent + "<Subject SubjectCategory=\"" +
                       subject.getCategory().toString() + "\"");
 
-            Set subjectAttrs = subject.getAttributes();
+            Set<Attribute> subjectAttrs = subject.getAttributes();
             
             if (subjectAttrs.size() == 0) {
                 // there's nothing in this Subject, so just close the tag
@@ -450,13 +419,10 @@ public class RequestCtx
     /**
      * Private helper function to encode the attribute sets
      */
-    private void encodeAttributes(Set attributes, PrintStream out,
+    private void encodeAttributes(Set<Attribute> attributes, PrintStream out,
                                   Indenter indenter) {
-        Iterator it = attributes.iterator();
-        while (it.hasNext()) {
-            Attribute attr = (Attribute)(it.next());
+        for (Attribute attr: attributes)    
             attr.encode(out, indenter);
-        }
     }
 
 }
