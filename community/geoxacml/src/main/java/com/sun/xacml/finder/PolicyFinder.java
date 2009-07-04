@@ -39,7 +39,6 @@ package com.sun.xacml.finder;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -112,14 +111,12 @@ public class PolicyFinder
      * @param modules a <code>Set</code> of <code>PolicyFinderModule</code>s
      */
     public void setModules(Set<PolicyFinderModule> modules) {
-        Iterator it = modules.iterator();
 
         allModules = new HashSet<PolicyFinderModule>(modules);
         requestModules = new HashSet<PolicyFinderModule>();
         referenceModules = new HashSet<PolicyFinderModule>();
 
-        while (it.hasNext()) {
-            PolicyFinderModule module = (PolicyFinderModule)(it.next());
+        for (PolicyFinderModule module : modules) {    
 
             if (module.isRequestSupported())
                 requestModules.add(module);
@@ -135,12 +132,8 @@ public class PolicyFinder
     public void init() {
         logger.finer("Initializing PolicyFinder");
 
-        Iterator it = allModules.iterator();
-
-        while (it.hasNext()) {
-            PolicyFinderModule module = (PolicyFinderModule)(it.next());
-            module.init(this);
-        }
+         for (PolicyFinderModule module : allModules)    
+            module.init(this);        
     }
 
     /**
@@ -155,11 +148,9 @@ public class PolicyFinder
      */
     public PolicyFinderResult findPolicy(EvaluationCtx context) {
         PolicyFinderResult result = null;
-        Iterator it = requestModules.iterator();
 
         // look through all of the modules
-        while (it.hasNext()) {
-            PolicyFinderModule module = (PolicyFinderModule)(it.next());
+        for (PolicyFinderModule module: requestModules) {
             PolicyFinderResult newResult = module.findPolicy(context);
 
             // if there was an error, we stop right away
@@ -226,15 +217,13 @@ public class PolicyFinder
         throws IllegalArgumentException
     {
         PolicyFinderResult result = null;
-        Iterator it = referenceModules.iterator();
 
         if ((type != PolicyReference.POLICY_REFERENCE) &&
             (type != PolicyReference.POLICYSET_REFERENCE))
             throw new IllegalArgumentException("Unknown reference type");
 
         // look through all of the modules
-        while (it.hasNext()) {
-            PolicyFinderModule module = (PolicyFinderModule)(it.next());
+        for (PolicyFinderModule module : referenceModules) {    
             PolicyFinderResult newResult =
                 module.findPolicy(idReference, type, constraints,
                                   parentMetaData);

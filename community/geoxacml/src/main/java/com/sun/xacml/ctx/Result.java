@@ -39,7 +39,6 @@ package com.sun.xacml.ctx;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.w3c.dom.NamedNodeMap;
@@ -431,13 +430,11 @@ public class Result
         if (obligations.size() != 0) {
             out.println(indentNext + "<Obligations>");
             
-            Iterator it = obligations.iterator();
             indenter.in();
 
-            while (it.hasNext()) {
-                Obligation obligation = (Obligation)(it.next());
+            for (Obligation obligation: obligations)     
                 obligation.encode(output, indenter);
-            }
+            
 
             indenter.out();
             out.println(indentNext + "</Obligations>");

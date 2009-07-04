@@ -210,13 +210,12 @@ public class PolicyCollection
         // setup a list of matching policies
         ArrayList<AbstractPolicy> list = new ArrayList<AbstractPolicy>();
         // get an iterator over all the identifiers
-        Iterator it = policies.values().iterator();
+        Iterator<TreeSet<AbstractPolicy>> it = policies.values().iterator();
 
         while (it.hasNext()) {
             // for each identifier, get only the most recent policy
-            AbstractPolicy policy =
-                (AbstractPolicy)(((TreeSet)(it.next())).first());
-
+            AbstractPolicy policy = it.next().first();
+                
             // see if we match
             MatchResult match = policy.match(context);
             int result = match.getResult();
@@ -270,7 +269,7 @@ public class PolicyCollection
      */
     public AbstractPolicy getPolicy(String identifier, int type,
                                     VersionConstraints constraints) {
-        TreeSet set = (TreeSet)(policies.get(identifier));
+        TreeSet<AbstractPolicy> set = policies.get(identifier);
         
         // if we don't know about this identifier then there's nothing to do
         if (set == null)
@@ -278,9 +277,7 @@ public class PolicyCollection
 
         // walk through the set starting with the most recent version, looking
         // for a match until we exhaust all known versions
-        Iterator it = set.iterator();
-        while (it.hasNext()) {
-            AbstractPolicy policy = (AbstractPolicy)(it.next());
+        for (AbstractPolicy policy : set) {    
             if (constraints.meetsConstraint(policy.getVersion())) {
                 // we found a valid version, so see if it's the right kind,
                 // and if it is then we return it

@@ -40,7 +40,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,7 +84,7 @@ public class StaticRefPolicyFinderModule extends PolicyFinderModule
 {
 
     // the list of policy URLs passed to the constructor
-    private List policyList;
+    private List<String> policyList;
 
     // the map of policies
     private PolicyCollection policies;
@@ -108,7 +107,7 @@ public class StaticRefPolicyFinderModule extends PolicyFinderModule
      * @param policyList a <code>List</code> of <code>String</code>s that
      *                   represent URLs or files pointing to XACML policies
      */
-    public StaticRefPolicyFinderModule(List policyList) {
+    public StaticRefPolicyFinderModule(List<String> policyList) {
         this.policyList = policyList;
         this.policies = new PolicyCollection();
 
@@ -127,7 +126,7 @@ public class StaticRefPolicyFinderModule extends PolicyFinderModule
      * @param schemaFile the schema file to validate policies against,
      *                   or null if schema validation is not desired
      */
-    public StaticRefPolicyFinderModule(List policyList, String schemaFile) {
+    public StaticRefPolicyFinderModule(List<String> policyList, String schemaFile) {
         this.policyList = policyList;
         this.policies = new PolicyCollection();
         
@@ -156,9 +155,7 @@ public class StaticRefPolicyFinderModule extends PolicyFinderModule
         // now that we have the PolicyFinder, we can load the policies
         PolicyReader reader = new PolicyReader(finder, logger, schemaFile);
 
-        Iterator it = policyList.iterator();
-        while (it.hasNext()) {
-            String str = (String)(it.next());
+        for (String str : policyList) {            
             AbstractPolicy policy = null;
 
             try {

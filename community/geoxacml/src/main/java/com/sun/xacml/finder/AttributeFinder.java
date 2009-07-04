@@ -38,7 +38,6 @@ package com.sun.xacml.finder;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -119,14 +118,12 @@ public class AttributeFinder
      *                <code>AttributeFinderModule</code>s
      */
     public void setModules(List<AttributeFinderModule> modules) {
-        Iterator it = modules.iterator();
 
         allModules = new ArrayList<AttributeFinderModule>(modules);
         designatorModules = new ArrayList<AttributeFinderModule>();
         selectorModules = new ArrayList<AttributeFinderModule>();
 
-        while (it.hasNext()) {
-            AttributeFinderModule module = (AttributeFinderModule)(it.next());
+       for (AttributeFinderModule module : modules) {     
             
             if (module.isDesignatorSupported())
                 designatorModules.add(module);
@@ -159,14 +156,11 @@ public class AttributeFinder
                                           URI issuer, URI subjectCategory,
                                           EvaluationCtx context,
                                           int designatorType) {
-        Iterator it = designatorModules.iterator();
-
-        // go through each module in order
-        while (it.hasNext()) {
-            AttributeFinderModule module = (AttributeFinderModule)(it.next());
+            
+        for (AttributeFinderModule module : designatorModules) {    
             
             // see if the module supports this type
-            Set types = module.getSupportedDesignatorTypes();
+            Set<Integer> types = module.getSupportedDesignatorTypes();
             if ((types == null) || (types.
                                     contains(new Integer(designatorType)))) {
                 // see if the module can find an attribute value
@@ -222,12 +216,8 @@ public class AttributeFinder
                                           URI attributeType,
                                           EvaluationCtx context,
                                           String xpathVersion) {
-        Iterator it = selectorModules.iterator();
-
-        // go through each module in order
-        while (it.hasNext()) {
-            AttributeFinderModule module = (AttributeFinderModule)(it.next());
-            
+    	
+        for (AttributeFinderModule module : selectorModules) {    
             // see if the module can find an attribute value
             EvaluationResult result =
                 module.findAttribute(contextPath, namespaceNode, attributeType,

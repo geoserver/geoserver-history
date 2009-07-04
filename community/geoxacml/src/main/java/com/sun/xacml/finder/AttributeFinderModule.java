@@ -104,7 +104,7 @@ public abstract class AttributeFinderModule
      *
      * @return a <code>Set</code> of <code>Integer</code>s, or null
      */
-    public Set getSupportedDesignatorTypes() {
+    public Set<Integer> getSupportedDesignatorTypes() {
         return null;
     }
 
@@ -116,7 +116,7 @@ public abstract class AttributeFinderModule
      *
      * @return a <code>Set</code> of <code>URI</code>s, or null
      */
-    public Set getSupportedIds() {
+    public Set<URI> getSupportedIds() {
         return null;
     }
 
