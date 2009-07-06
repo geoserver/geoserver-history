@@ -36,11 +36,9 @@ public class FeatureChainingMockData extends AbstractAppSchemaMockData {
         putNamespace(EX_PREFIX, EX_URI);
         addFeatureType(GSML_PREFIX, "MappedFeature", "MappedFeaturePropertyfile.xml",
                 "MappedFeaturePropertyfile.properties");
-        addFeatureType(GSML_PREFIX, "GeologicUnit", "GeologicUnit.xml", "GeologicUnit.properties");
-        addFeatureType(GSML_PREFIX, "CompositionPart", "CompositionPart.xml",
-                "CompositionPart.properties");
-        addFeatureType(GSML_PREFIX, "CGI_TermValue", "CGITermValue.xml", "CGITermValue.properties");
-        addFeatureType(GSML_PREFIX, "ControlledConcept", "ControlledConcept.xml",
+        addFeatureType(GSML_PREFIX, "GeologicUnit", "GeologicUnit.xml", "GeologicUnit.properties",
+                "CGITermValue.xml", "CGITermValue.properties", "CompositionPart.xml",
+                "CompositionPart.properties", "ControlledConcept.xml",
                 "ControlledConcept.properties");
         // this is a mock type to test encoding complex type with simple content
         addFeatureType(EX_PREFIX, "FirstParentFeature", "ComplexTypeWithSimpleContent.xml",
