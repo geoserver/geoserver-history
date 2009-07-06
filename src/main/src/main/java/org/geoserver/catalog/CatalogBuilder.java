@@ -42,6 +42,7 @@ import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.Name;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.metadata.Identifier;
@@ -354,14 +355,14 @@ public class CatalogBuilder {
         ftinfo.setNativeBoundingBox( bounds );
         
         CoordinateReferenceSystem crs = featureType.getCoordinateReferenceSystem();
-        if ( crs == null ) {
+        if ( crs == null && bounds != null) {
             crs = bounds.getCoordinateReferenceSystem();
         }
         ftinfo.setNativeCRS(crs);
         
         // fix the native bounds if necessary, some datastores do
         // not build a proper referenced envelope
-        if(bounds.getCoordinateReferenceSystem() == null && crs != null) {
+        if(bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
             bounds = new ReferencedEnvelope(bounds, crs);
         }
         
@@ -770,7 +771,8 @@ public class CatalogBuilder {
     }
     
     /**
-     * Returns the default style for the specified resource
+     * Returns the default style for the specified resource, or null if the layer is vector
+     * and geometryless
      * @param resource
      * @return
      * @throws IOException
@@ -783,7 +785,11 @@ public class CatalogBuilder {
         // for vectors we depend on the the nature of the default geometry
         String styleName;
         FeatureTypeInfo featureType = (FeatureTypeInfo) resource;
-        Class gtype = featureType.getFeatureType().getGeometryDescriptor().getType().getBinding();
+        GeometryDescriptor gd = featureType.getFeatureType().getGeometryDescriptor();
+        if(gd == null)
+            return null;
+            
+        Class gtype = gd.getType().getBinding();
         if ( Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
             styleName = StyleInfo.DEFAULT_POINT;
         }
