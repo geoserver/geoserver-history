@@ -6,10 +6,11 @@ package org.geoserver.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -43,8 +44,6 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.acegi.GeoServerSession;
-import org.geoserver.web.data.layer.LayerPage;
-import org.geoserver.web.util.CompositeConverterLocator;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.GeoToolsConverterAdapter;
 import org.geoserver.web.util.converters.StringBBoxConverter;
@@ -307,14 +306,16 @@ public class GeoServerApplication extends SpringWebApplication {
      */
     protected IConverterLocator newConverterLocator() {
         // TODO: load converters from application context
-
-        List<IConverterLocator> converters = new ArrayList<IConverterLocator>();
-
-        converters.add(new DataDirectoryConverterLocator(getResourceLoader()));
-        converters.add(buildConverterLocator());
-        converters.add(super.newConverterLocator());
-
-        return new CompositeConverterLocator(converters);
+        ConverterLocator locator = new ConverterLocator();
+        locator.set(ReferencedEnvelope.class, 
+            new GeoToolsConverterAdapter(new StringBBoxConverter(), ReferencedEnvelope.class)
+        );
+        DataDirectoryConverterLocator dd = new DataDirectoryConverterLocator(getResourceLoader());
+        locator.set(File.class, dd.getConverter(File.class));
+        locator.set(URI.class, dd.getConverter(URI.class));
+        locator.set(URL.class, dd.getConverter(URL.class));
+        
+        return locator;
     }
 
     static class RequestCycleProcessor extends WebRequestCycleProcessor {
@@ -332,9 +333,7 @@ public class GeoServerApplication extends SpringWebApplication {
 
     private IConverterLocator buildConverterLocator(){
         ConverterLocator locator = new ConverterLocator();
-        locator.set(ReferencedEnvelope.class, 
-                new GeoToolsConverterAdapter(new StringBBoxConverter(), ReferencedEnvelope.class)
-                );
+        
 
         return locator;
     }
