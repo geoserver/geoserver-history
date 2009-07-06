@@ -8,6 +8,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.test.GeoServerTestSupport;
@@ -63,6 +64,24 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         assertEquals(CRS.decode("EPSG:32615", true), fti.getCRS());
         assertNotNull(fti.getNativeBoundingBox());
         assertNotNull(fti.getLatLonBoundingBox());
+    }
+    
+    public void testGeometryless() throws Exception {
+        // build a feature type (it's already in the catalog, but we just want to
+        // check it's built as expected
+        // LINES is a feature type with a native SRS, so we want the bounds to be there
+        Catalog cat = getCatalog();
+        CatalogBuilder cb = new CatalogBuilder(cat);
+        cb.setStore(cat.getDataStoreByName(MockData.GEOMETRYLESS.getPrefix()));
+        FeatureTypeInfo fti = cb.buildFeatureType(toName(MockData.GEOMETRYLESS));
+        LayerInfo layer = cb.buildLayer(fti);
+        
+        // perform basic checks
+        assertNull(fti.getCRS());
+        // ... not so sure about this one, null would seem more natural
+        assertTrue(fti.getNativeBoundingBox().isEmpty());
+        assertNull(fti.getLatLonBoundingBox());
+        assertNull(layer.getDefaultStyle());
     }
     
     public void testCoverage() throws Exception {
