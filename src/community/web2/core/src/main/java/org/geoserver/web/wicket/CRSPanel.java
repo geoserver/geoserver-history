@@ -50,6 +50,9 @@ public class CRSPanel extends FormComponentPanel {
     
     /** wkt label */
     Label wktLabel;
+
+    /** the wkt link that contains the wkt label **/
+    AjaxLink wktLink;
     
     /**
      * Constructs the CRS panel.
@@ -117,7 +120,7 @@ public class CRSPanel extends FormComponentPanel {
         };
         add(findLink);
         
-        AjaxLink wktLink = new AjaxLink( "wkt" ) {
+        wktLink = new AjaxLink( "wkt" ) {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 popupWindow.setInitialHeight( 375 );
@@ -129,6 +132,7 @@ public class CRSPanel extends FormComponentPanel {
                 popupWindow.show(target);
             }
         };
+        wktLink.setEnabled(getModelObject() != null);
         add(wktLink);
         
         wktLabel = new Label( "wktLabel", new Model());
@@ -142,6 +146,9 @@ public class CRSPanel extends FormComponentPanel {
         if ( crs != null ) {
             srsTextField.setModelObject( toSRS(crs) );
             wktLabel.setModelObject( crs.getName().toString() );    
+        } else {
+            wktLabel.setModelObject(null);
+            wktLink.setEnabled(false);
         }
         
         super.onBeforeRender();
@@ -232,7 +239,8 @@ public class CRSPanel extends FormComponentPanel {
                         
                         CoordinateReferenceSystem crs = fromSRS( srs );
                         wktLabel.setModelObject( crs.getName().toString() );
-                        target.addComponent( wktLabel );
+                        wktLink.setEnabled(true);
+                        target.addComponent( wktLink );
                     }
                 };
             }
