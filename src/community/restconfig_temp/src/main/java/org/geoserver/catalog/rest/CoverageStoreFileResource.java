@@ -3,30 +3,22 @@ package org.geoserver.catalog.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.restlet.data.Form;
-import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.StringRepresentation;
 
 public class CoverageStoreFileResource extends StoreFileResource {
 

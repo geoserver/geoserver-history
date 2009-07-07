@@ -13,7 +13,6 @@ import org.geoserver.rest.format.MediaTypes;
 import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.geotools.util.logging.Logging;
 import org.restlet.Context;
-import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.vfny.geoserver.global.Data;
@@ -24,7 +23,6 @@ import org.vfny.geoserver.global.dto.WMSDTO;
 import org.vfny.geoserver.global.xml.XMLConfigWriter;
 
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.AbstractXmlWriter;
 
 public abstract class CatalogResourceBase extends ReflectiveResource {
 

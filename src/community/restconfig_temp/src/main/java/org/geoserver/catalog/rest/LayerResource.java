@@ -35,7 +35,6 @@ public class LayerResource extends AbstractCatalogResource {
         }
         
         return catalog.getLayerByName( layer ); 
-        
     }
 
     @Override

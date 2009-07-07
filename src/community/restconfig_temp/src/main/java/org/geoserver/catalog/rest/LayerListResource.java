@@ -13,7 +13,6 @@ public class LayerListResource extends AbstractCatalogListResource {
     protected LayerListResource(Context context, Request request,
             Response response, Catalog catalog) {
         super(context, request, response, LayerInfo.class, catalog);
-        
     }
 
     @Override
