@@ -76,7 +76,7 @@ public class KMZMapProducer extends AbstractGetMapProducer implements GetMapProd
 	}
 
 	public String getContentDisposition() {
-	    return super.getContentDisposition(".kml");
+	    return super.getContentDisposition(".kmz");
 	}
 
 	public String getContentType() throws IllegalStateException {
