@@ -970,8 +970,6 @@
     <version>2.4</version>
     <configuration>
      <!--downloadSources>true</downloadSources-->
-     <!-- Use a different build directory, see GEOT-2576 -->
-     <buildOutputDirectory>./bin</buildOutputDirectory>
      <additionalProjectnatures>
       <projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
      </additionalProjectnatures>
