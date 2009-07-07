@@ -30,29 +30,26 @@
           <value>updateLayerResource</value>
         </entry>
         <entry>
-          <key><value>/sldservice/{featureType}/attributes</value></key>
-          <value>listAttributesRestlet</value>
+          <key><value>/sldservice/{layer}/attributes</value></key>
+          <value>layerAttributesFinder</value>
         </entry>
         <entry>
           <key><value>/sldservice/{featureType}/classify</value></key>
-          <value>classifierRestlet</value>
+          <value>classifierFinder</value>
         </entry>
       </map>
     </property>
   </bean>
 
-  <bean id="classifierRestlet"
-    class="org.geoserver.sldservice.resource.ClessifierResource">
-    <constructor-arg index="0" ref="catalog" />
-  </bean>
+  <!-- REFACTORED -->
+  <bean id="classifierFinder" class="org.geoserver.sldservice.finder.ClassifierResourceFinder" parent="abstractCatalogFinder"/>
 
+  <bean id="layerAttributesFinder" class="org.geoserver.sldservice.finder.LayerAttributesFinder" parent="abstractCatalogFinder"/>
+
+
+  <!-- TO BE REFACTORED -->
   <bean id="featureTypeStyleResource"
     class="org.geoserver.sldservice.resource.FeatureTypeStyleResource">
-    <constructor-arg index="0" ref="catalog" />
-  </bean>
-
-  <bean id="listAttributesRestlet"
-    class="org.geoserver.sldservice.resource.ListAttributes">
     <constructor-arg index="0" ref="catalog" />
   </bean>
 
