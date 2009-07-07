@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -106,6 +107,7 @@ public class GeoServerBasePage extends WebPage {
                     public void populateItem(ListItem item){
                         MenuPageInfo info = (MenuPageInfo)item.getModelObject();
                         BookmarkablePageLink link = new BookmarkablePageLink("link", info.getComponentClass());
+                        link.add(new AttributeModifier("title", true, new StringResourceModel(info.getDescriptionKey(), (Component) null, null)));
                         link.add(new Label("link.label", new StringResourceModel(info.getTitleKey(), (Component) null, null)));
                         if(info.getIcon() != null) {
                             link.add(new Image("link.icon", new ResourceReference(info.getComponentClass(), info.getIcon())));
@@ -121,9 +123,11 @@ public class GeoServerBasePage extends WebPage {
         add(new ListView("standalone", standalone){
                     public void populateItem(ListItem item){
                         MenuPageInfo info = (MenuPageInfo)item.getModelObject();
-                        item.add(new BookmarkablePageLink("link", info.getComponentClass())
-                            .add(new Label("link.label", new StringResourceModel(info.getTitleKey(), (Component) null, null)))
-                        );
+                        BookmarkablePageLink link = new BookmarkablePageLink("link", info.getComponentClass());
+                        link.add(new AttributeModifier("title", true, new StringResourceModel(info.getDescriptionKey(), (Component) null, null)));
+                        link.add(new Label("link.label", new StringResourceModel(info.getTitleKey(), (Component) null, null)));
+                        item.add(link);
+                        
                     }
                 }
         );
