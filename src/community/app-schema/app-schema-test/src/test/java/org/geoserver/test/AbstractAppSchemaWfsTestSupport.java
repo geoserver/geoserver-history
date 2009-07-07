@@ -93,7 +93,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     }  
     
     /**
-     * Deregister all data access from registry to avoid stale data access being used by other unit
+     * Unregister all data access from registry to avoid stale data access being used by other unit
      * tests.
      */
     @Override

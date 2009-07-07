@@ -68,8 +68,10 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
         assertXpathCount(3, "//gsml:GeologicUnit", doc);
 
         // GU:25699
-        assertXpathEvaluatesTo("er.25699", "//gsml:GeologicUnit[@gml:id='25699']/gml:name", doc);
-        assertXpathCount(0, "//gsml:GeologicUnit/FEATURE_LINK", doc);
+        assertXpathCount(2, "//gsml:GeologicUnit[@gml:id='25699']/gml:name", doc);
+        assertXpathEvaluatesTo("gu.25699", "//gsml:GeologicUnit[@gml:id='25699']/gml:name[1]", doc);
+        assertXpathEvaluatesTo("er.25699", "//gsml:GeologicUnit[@gml:id='25699']/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/FEATURE_LINK", doc);
         assertXpathCount(1,
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature", doc);
         // mf1
@@ -140,8 +142,10 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
         assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition[3]/gsml:CompositionPart/FEATURE_LINK", doc);
 
         // GU:25678
-        assertXpathEvaluatesTo("er.25678", "//gsml:GeologicUnit[@gml:id='25678']/gml:name", doc);
-        assertXpathCount(0, "//gsml:GeologicUnit/FEATURE_LINK", doc);
+        assertXpathCount(2, "//gsml:GeologicUnit[@gml:id='25678']/gml:name", doc);
+        assertXpathEvaluatesTo("gu.25678", "//gsml:GeologicUnit[@gml:id='25678']/gml:name[1]", doc);
+        assertXpathEvaluatesTo("er.25678", "//gsml:GeologicUnit[@gml:id='25678']/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25678']/FEATURE_LINK", doc);
         assertXpathEvaluatesTo(
                 "vein",
                 "//gsml:GeologicUnit[@gml:id='25678']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
@@ -196,8 +200,10 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
         assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25678']/gsml:composition/gsml:CompositionPart/FEATURE_LINK", doc);
 
         // GU:25682
-        assertXpathEvaluatesTo("er.25682", "//gsml:GeologicUnit[@gml:id='25682']/gml:name", doc);
-        assertXpathCount(0, "//gsml:GeologicUnit/FEATURE_LINK", doc);
+        assertXpathCount(2, "//gsml:GeologicUnit[@gml:id='25682']/gml:name", doc);
+        assertXpathEvaluatesTo("gu.25682", "//gsml:GeologicUnit[@gml:id='25682']/gml:name[1]", doc);
+        assertXpathEvaluatesTo("er.25682", "//gsml:GeologicUnit[@gml:id='25682']/gml:name[2]", doc);
+        assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25682']/FEATURE_LINK", doc);
         assertXpathEvaluatesTo(
                 "cross-cutting",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
