@@ -45,6 +45,11 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         // perform basic checks, this has no srs so no lat/lon bbox computation possible
         assertNull(fti.getSRS());
         assertNull(fti.getNativeCRS());
+        assertNull(fti.getNativeBoundingBox());
+        assertNull(fti.getLatLonBoundingBox());
+        
+        // force bounds computation
+        cb.setupBounds(fti);
         assertNotNull(fti.getNativeBoundingBox());
         assertNull(fti.getNativeBoundingBox().getCoordinateReferenceSystem());
         assertNull(fti.getLatLonBoundingBox());
@@ -62,7 +67,13 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         // perform basic checks
         assertEquals("EPSG:32615", fti.getSRS());
         assertEquals(CRS.decode("EPSG:32615", true), fti.getCRS());
+        assertNull(fti.getNativeBoundingBox());
+        assertNull(fti.getLatLonBoundingBox());
+        
+        // force bounds computation
+        cb.setupBounds(fti);
         assertNotNull(fti.getNativeBoundingBox());
+        assertNotNull(fti.getNativeBoundingBox().getCoordinateReferenceSystem());
         assertNotNull(fti.getLatLonBoundingBox());
     }
     
@@ -75,6 +86,7 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         cb.setStore(cat.getDataStoreByName(MockData.GEOMETRYLESS.getPrefix()));
         FeatureTypeInfo fti = cb.buildFeatureType(toName(MockData.GEOMETRYLESS));
         LayerInfo layer = cb.buildLayer(fti);
+        cb.setupBounds(fti);
         
         // perform basic checks
         assertNull(fti.getCRS());
