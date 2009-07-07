@@ -28,6 +28,7 @@ import org.apache.wicket.protocol.http.WebResponse;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.web.acegi.GeoServerSession;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -58,6 +59,9 @@ public class GeoServerBasePage extends WebPage {
 
 	@SuppressWarnings("serial")
     public GeoServerBasePage() {
+	    
+	    // page title
+	    add(new Label("pageTitle", getPageTitle()));
 
         // login form
         WebMarkupContainer loginForm = new WebMarkupContainer("loginform");
@@ -131,6 +135,20 @@ public class GeoServerBasePage extends WebPage {
     }
 	
 	/**
+	 * Gets the page title from the PageName.title resource, falling back on "GeoServer" if not found
+	 * @return
+	 */
+	String getPageTitle() {
+	    try {
+	        ParamResourceModel model = new ParamResourceModel("title", this);
+	        return "GeoServer: " + model.getString();
+	    } catch(Exception e) {
+	        LOGGER.warning(getClass().getSimpleName() + " does not have a title set");
+	    }
+	    return "GeoServer";
+    }
+
+    /**
      * The base page is built with an empty panel in the page-header section that can be filled by
      * subclasses calling this method
      * 
