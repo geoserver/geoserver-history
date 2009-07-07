@@ -102,6 +102,6 @@ public class KMZMapProducerTest extends WMSTestSupport {
     public void testContentDisposition() {
         String contentDisposition = mapProducer.getContentDisposition();
         assertTrue(contentDisposition.startsWith("attachment; filename="));
-        assertTrue(contentDisposition.endsWith(".kml"));
+        assertTrue(contentDisposition.endsWith(".kmz"));
     }
 }

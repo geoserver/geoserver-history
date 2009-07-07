@@ -88,9 +88,9 @@ public class KMZMapProducer extends AbstractGetMapProducer implements GetMapProd
 		}
 		if (sb.length() > 0) {
 			sb.setLength(sb.length() - 1);
-			return "attachment; filename=" + sb.toString() + ".kml";
+			return "attachment; filename=" + sb.toString() + ".kmz";
 		}
-		return "attachment; filename=geoserver.kml";
+		return "attachment; filename=geoserver.kmz";
 	}
 
 	public String getContentType() throws IllegalStateException {
