@@ -148,6 +148,9 @@ public class ResourcePool {
     public CoordinateReferenceSystem getCRS( String srsName )
         throws IOException {
         
+        if(srsName == null)
+            return null;
+        
         CoordinateReferenceSystem crs = crsCache.get( srsName );
         if ( crs == null ) {
             synchronized (crsCache) {
@@ -610,8 +613,7 @@ public class ResourcePool {
             
             if (ppolicy == ProjectionPolicy.NONE && nativeCRS != null) {
                 resultCRS = nativeCRS;
-            }
-            else {
+            } else {
                 resultCRS = getCRS(info.getSRS());
             }
 

@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.measure.unit.Unit;
 
@@ -37,6 +39,7 @@ import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.feature.Feature;
@@ -70,6 +73,8 @@ import com.vividsolutions.jts.geom.Polygon;
  *
  */
 public class CatalogBuilder {
+    
+    static final Logger LOGGER = Logging.getLogger(CatalogBuilder.class);
 
     /**
      * the catalog
@@ -321,13 +326,15 @@ public class CatalogBuilder {
     }
     
     /**
-     * Builds a feature type from a geotools feature source.
+     * Builds a feature type from a geotools feature source. The resulting {@link FeatureTypeInfo}
+     * will still miss the bounds and might miss the SRS. Use {@link #lookupSRS(FeatureTypeInfo, true)} and
+     * {@link #setupBounds(FeatureTypeInfo)} if you want to force them in (and spend time accordingly)
      * <p>
      * The resulting object is not added to the catalog, it must be done by the calling code
      * after the fact.
      * </p>
      */
-    public FeatureTypeInfo buildFeatureType( FeatureSource featureSource ) throws Exception {
+    public FeatureTypeInfo buildFeatureType( FeatureSource featureSource )  {
         if ( store == null || !( store instanceof DataStoreInfo ) ) {
             throw new IllegalStateException( "Data store not set.");
         }
@@ -350,51 +357,20 @@ public class CatalogBuilder {
         
         ftinfo.setNamespace( namespace );
         
-        // bounds
-        ReferencedEnvelope bounds = featureSource.getBounds();
-        ftinfo.setNativeBoundingBox( bounds );
-        
         CoordinateReferenceSystem crs = featureType.getCoordinateReferenceSystem();
-        if ( crs == null && bounds != null) {
-            crs = bounds.getCoordinateReferenceSystem();
+        if (crs == null && featureType.getGeometryDescriptor() != null) {
+            crs = featureType.getGeometryDescriptor().getCoordinateReferenceSystem();
         }
         ftinfo.setNativeCRS(crs);
         
-        // fix the native bounds if necessary, some datastores do
-        // not build a proper referenced envelope
-        if(bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
-            bounds = new ReferencedEnvelope(bounds, crs);
+        // srs look and set (by default we just use fast lookup)
+        try {
+            lookupSRS(ftinfo, false);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "SRS lookup failed", e);
         }
-        
-        ReferencedEnvelope boundsLatLon = null;
-        if ( crs != null ) {
-            if ( !CRS.equalsIgnoreMetadata( DefaultGeographicCRS.WGS84, crs ) ) {
-                //transform
-                try {
-                    boundsLatLon = bounds.transform( DefaultGeographicCRS.WGS84, true );
-                } 
-                catch( Exception e ) {
-                    throw (IOException) new IOException("transform error").initCause( e );
-                }
-            }
-            else {
-                boundsLatLon = new ReferencedEnvelope( bounds );
-            }
-        }
-        ftinfo.setLatLonBoundingBox( boundsLatLon );
-        
-        // srs
-        if ( crs != null ) {
-            try {
-                Integer code = CRS.lookupEpsgCode(crs, true);
-                if(code != null)
-                    ftinfo.setSRS("EPSG:" + code);
-            } catch (FactoryException e) {
-                throw (IOException) new IOException().initCause( e );
-            }
-        } 
         ftinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-        
+
         //attributes
         for ( PropertyDescriptor pd : featureType.getDescriptors() ) {
             if ( !( pd instanceof AttributeDescriptor ) ) {
@@ -414,9 +390,79 @@ public class CatalogBuilder {
     }
     
     /**
+     * Given a {@link FeatureTypeInfo} this method:
+     * <ul>
+     *   <li>computes, if missing, the native bounds (warning, this might be very expensive, 
+     *       cases in which this case take minutes are not uncommon if the data set is made
+     *       of million of features)</li>
+     *   <li>updates, if possible, the geographic bounds accordingly by 
+     *       re-projecting the native bounds into WGS84</li>
+     * @param ftinfo
+     * @throws IOException if computing the native bounds fails or if a transformation error occurs 
+     *         during the geographic bounds computation
+     */
+    public void setupBounds(FeatureTypeInfo ftinfo) throws IOException  {
+        // setup the native bbox if needed
+        if(ftinfo.getNativeBoundingBox() == null) {
+            // bounds
+            ReferencedEnvelope bounds = ftinfo.getFeatureSource(null, null).getBounds();
+            
+            // fix the native bounds if necessary, some datastores do
+            // not build a proper referenced envelope
+            CoordinateReferenceSystem crs = ftinfo.getNativeCRS();
+            if(bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
+                bounds = new ReferencedEnvelope(bounds, crs);
+            }
+            
+            ftinfo.setNativeBoundingBox( bounds );
+        }
+        
+        // setup the geographic bbox if missing and we have enough info
+        ReferencedEnvelope boundsLatLon = ftinfo.getLatLonBoundingBox();
+        ReferencedEnvelope nativeBounds = ftinfo.getNativeBoundingBox();
+        if(nativeBounds != null && ftinfo.getCRS() != null) {
+            // make sure we use the declared CRS, not the native one, the may differ
+            CoordinateReferenceSystem crs = ftinfo.getCRS();
+            if ( !CRS.equalsIgnoreMetadata( DefaultGeographicCRS.WGS84, crs) ) {
+                //transform
+                try {
+                    ReferencedEnvelope bounds = new ReferencedEnvelope(nativeBounds, crs); 
+                    boundsLatLon = bounds.transform( DefaultGeographicCRS.WGS84, true );
+                } catch( Exception e ) {
+                    throw (IOException) new IOException("transform error").initCause( e );
+                }
+            } else {
+                boundsLatLon = new ReferencedEnvelope(nativeBounds, DefaultGeographicCRS.WGS84);
+            }
+            ftinfo.setLatLonBoundingBox( boundsLatLon );
+        }
+        
+    }
+    
+    
+    /**
+     * Looks up and sets the SRS based on the feature type info native 
+     * {@link CoordinateReferenceSystem}
+     * @param ftinfo 
+     * @param extensive if true an extenstive lookup will be performed (more accurate, but 
+     *        might take various seconds)
+     * @throws IOException
+     */
+    public void lookupSRS(FeatureTypeInfo ftinfo, boolean extensive) throws IOException {
+        CoordinateReferenceSystem crs = ftinfo.getNativeCRS();
+        if ( crs != null ) {
+            try {
+                Integer code = CRS.lookupEpsgCode(crs, false);
+                if(code != null)
+                    ftinfo.setSRS("EPSG:" + code);
+            } catch (FactoryException e) {
+                throw (IOException) new IOException().initCause( e );
+            }
+        } 
+    }
+    
+    /**
      * Initializes a feature type object setting any info that has not been set.
-     * 
-     * TODO: sync this method up with {@link #buildFeatureType(FeatureSource)}.
      */
     public void initFeatureType(FeatureTypeInfo featureType) throws Exception {
         if ( featureType.getNativeName() == null && featureType.getName() != null ) {
@@ -425,59 +471,24 @@ public class CatalogBuilder {
         if ( featureType.getNativeName() != null && featureType.getName() == null ) {
             featureType.setName( featureType.getNativeName() );
         }
-         
-        if ( featureType.getLatLonBoundingBox() == null ) {
-            if ( featureType.getNativeBoundingBox() != null ) {
-                //back project into lat long
-                featureType.setLatLonBoundingBox(
-                    featureType.getNativeBoundingBox().transform( CRS.decode( "EPSG:4326" ), true ));
-            }
-        }
-        else {
-            if ( featureType.getNativeBoundingBox() == null ) {
-                //TODO: try to forward project
-            }
-            
+        
+        // setup the srs if missing
+        if ( featureType.getSRS() == null ) {
+            lookupSRS(featureType, true);
         }
         
-        if ( featureType.getNativeBoundingBox() == null ) {
-            //calculate it
-            FeatureSource source = catalog.getResourcePool().getFeatureSource( featureType, null );
-            ReferencedEnvelope bounds = source.getBounds();
-            if ( bounds == null ) {
-                //manually calculate it
-                //TODO: optimize to only load geometric attributes
-                FeatureCollection features = source.getFeatures();
-                FeatureIterator fi = features.features();
-                try {
-                    while( fi.hasNext() ) {
-                        Feature f = (Feature) fi.next();
-                        if ( bounds == null ) {
-                            bounds = new ReferencedEnvelope(f.getBounds());
-                        }
-                        else {
-                            bounds.include( f.getBounds() );
-                        }
-                    }
-                }
-                finally {
-                    features.close( fi );
-                }
-            }
-            
-            featureType.setNativeBoundingBox( bounds );
-            featureType.setLatLonBoundingBox( bounds.transform( CRS.decode( "EPSG:4326"), true ) );
-        }
-
-        if ( featureType.getSRS() == null ) {
-            FeatureType ft = catalog.getResourcePool().getFeatureType( featureType );
-            CoordinateReferenceSystem crs = ft.getCoordinateReferenceSystem();
-            if ( crs != null ) {
-                Integer epsgCode = CRS.lookupEpsgCode( crs, true );
-                if ( epsgCode != null ) {
-                    featureType.setSRS( "EPSG:" + epsgCode );
-                }
-            }
+        // deal with bounding boxes as possible
+        CoordinateReferenceSystem crs = featureType.getCRS();
+        if(featureType.getLatLonBoundingBox() == null && featureType.getNativeBoundingBox() == null) {
+            // both missing, we compute them
+            setupBounds(featureType);
+        } else if(featureType.getLatLonBoundingBox() == null) {
+            // native available but geographic to be computed
+            setupBounds(featureType);
+        } else if(featureType.getNativeBoundingBox() == null && crs != null) {
+            // we know the geographic and we can reproject back to native
+            ReferencedEnvelope boundsLatLon = featureType.getLatLonBoundingBox();
+            featureType.setNativeBoundingBox(boundsLatLon.transform(crs, true));
         }
     }
     
