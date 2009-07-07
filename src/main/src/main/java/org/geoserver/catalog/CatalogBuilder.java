@@ -33,8 +33,6 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -42,7 +40,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridEnvelope;
-import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -390,7 +387,7 @@ public class CatalogBuilder {
     }
     
     /**
-     * Given a {@link FeatureTypeInfo} this method:
+     * Given a {@link ResourceInfo} this method:
      * <ul>
      *   <li>computes, if missing, the native bounds (warning, this might be very expensive, 
      *       cases in which this case take minutes are not uncommon if the data set is made
@@ -401,11 +398,56 @@ public class CatalogBuilder {
      * @throws IOException if computing the native bounds fails or if a transformation error occurs 
      *         during the geographic bounds computation
      */
-    public void setupBounds(FeatureTypeInfo ftinfo) throws IOException  {
+    public void setupBounds(ResourceInfo rinfo) throws IOException  {
         // setup the native bbox if needed
-        if(ftinfo.getNativeBoundingBox() == null) {
+        if(rinfo.getNativeBoundingBox() == null) {
+            ReferencedEnvelope bounds = getNativeBounds(rinfo);
+            rinfo.setNativeBoundingBox(bounds);
+        }
+        
+        // setup the geographic bbox if missing and we have enough info
+        rinfo.setLatLonBoundingBox(getLatLonBounds(rinfo.getNativeBoundingBox(), rinfo.getCRS()));
+    }
+
+    /**
+     * Computes the geographic bounds of a {@link ResourceInfo} by reprojecting the
+     * available native bounds
+     * @param rinfo
+     * @return the geographic bounds, or null if the native bounds are not available 
+     * @throws IOException
+     */
+    public ReferencedEnvelope getLatLonBounds(ReferencedEnvelope nativeBounds, CoordinateReferenceSystem declaredCRS) throws IOException {
+        if(nativeBounds != null && declaredCRS != null) {
+            // make sure we use the declared CRS, not the native one, the may differ
+            if ( !CRS.equalsIgnoreMetadata( DefaultGeographicCRS.WGS84, declaredCRS) ) {
+                //transform
+                try {
+                    ReferencedEnvelope bounds = new ReferencedEnvelope(nativeBounds, declaredCRS); 
+                    return bounds.transform( DefaultGeographicCRS.WGS84, true );
+                } catch( Exception e ) {
+                    throw (IOException) new IOException("transform error").initCause( e );
+                }
+            } else {
+                return new ReferencedEnvelope(nativeBounds, DefaultGeographicCRS.WGS84);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Computes the native bounds of a {@link ResourceInfo} taking into account the nature
+     * of the data and the reprojection policy in act
+     * @param rinfo
+     * @return the native bounds, or null if the could not be computed
+     * @throws IOException
+     */
+    public ReferencedEnvelope getNativeBounds(ResourceInfo rinfo) throws IOException {
+        ReferencedEnvelope bounds = null;
+        if(rinfo instanceof FeatureTypeInfo) {
+            FeatureTypeInfo ftinfo = (FeatureTypeInfo) rinfo;
+            
             // bounds
-            ReferencedEnvelope bounds = ftinfo.getFeatureSource(null, null).getBounds();
+            bounds = ftinfo.getFeatureSource(null, null).getBounds();
             
             // fix the native bounds if necessary, some datastores do
             // not build a proper referenced envelope
@@ -413,30 +455,24 @@ public class CatalogBuilder {
             if(bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
                 bounds = new ReferencedEnvelope(bounds, crs);
             }
-            
-            ftinfo.setNativeBoundingBox( bounds );
+        } else if(rinfo instanceof CoverageInfo) {
+            // the coverage bounds computation path is a bit more linear, the
+            // readers always return the bounds and in the proper CRS (afaik)
+            CoverageInfo cinfo = (CoverageInfo) rinfo;
+            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(null, null); 
+            bounds = new ReferencedEnvelope(reader.getOriginalEnvelope());
         }
         
-        // setup the geographic bbox if missing and we have enough info
-        ReferencedEnvelope boundsLatLon = ftinfo.getLatLonBoundingBox();
-        ReferencedEnvelope nativeBounds = ftinfo.getNativeBoundingBox();
-        if(nativeBounds != null && ftinfo.getCRS() != null) {
-            // make sure we use the declared CRS, not the native one, the may differ
-            CoordinateReferenceSystem crs = ftinfo.getCRS();
-            if ( !CRS.equalsIgnoreMetadata( DefaultGeographicCRS.WGS84, crs) ) {
-                //transform
-                try {
-                    ReferencedEnvelope bounds = new ReferencedEnvelope(nativeBounds, crs); 
-                    boundsLatLon = bounds.transform( DefaultGeographicCRS.WGS84, true );
-                } catch( Exception e ) {
-                    throw (IOException) new IOException("transform error").initCause( e );
-                }
-            } else {
-                boundsLatLon = new ReferencedEnvelope(nativeBounds, DefaultGeographicCRS.WGS84);
+        // apply the bounds, taking into account the reprojection policy if need be 
+        if (rinfo.getProjectionPolicy() == ProjectionPolicy.REPROJECT_TO_DECLARED && bounds != null) {
+            try {
+                bounds = bounds.transform(rinfo.getCRS(), true);
+            } catch(Exception e) {
+                throw (IOException) new IOException("transform error").initCause(e);
             }
-            ftinfo.setLatLonBoundingBox( boundsLatLon );
-        }
+        } 
         
+        return bounds;
     }
     
     
