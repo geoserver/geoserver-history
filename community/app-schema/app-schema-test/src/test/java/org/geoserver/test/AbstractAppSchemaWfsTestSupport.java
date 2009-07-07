@@ -24,6 +24,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.geotools.data.complex.AppSchemaDataAccess;
+import org.geotools.data.complex.DataAccessRegistry;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -89,6 +90,16 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     @Override
     public NamespaceTestData getTestData() {
         return (NamespaceTestData) super.getTestData();
+    }  
+    
+    /**
+     * Deregister all data access from registry to avoid stale data access being used by other unit
+     * tests.
+     */
+    @Override
+    protected void oneTimeTearDown() throws Exception {
+        super.oneTimeTearDown();
+        DataAccessRegistry.unregisterAll();
     }
 
     /**
