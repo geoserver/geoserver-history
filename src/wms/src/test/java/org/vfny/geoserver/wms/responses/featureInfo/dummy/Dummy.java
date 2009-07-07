@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.featureinfo.dummy;
+package org.vfny.geoserver.wms.responses.featureInfo.dummy;
 
 public class Dummy {
 

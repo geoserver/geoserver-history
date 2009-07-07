@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.featureinfo;
+package org.vfny.geoserver.wms.responses.featureInfo;
 
 import junit.framework.Test;
 
