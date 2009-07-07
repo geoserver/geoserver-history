@@ -212,8 +212,8 @@ public class ClassifierResource extends AbstractCatalogResource {
 
     private List<Rule> generateClassifiedSLD(Map attributes, Form form) {
         /* Looks in attribute map if there is the featureType param */
-        if (attributes.containsKey("featureType")) {
-            final String featureTypeName = (String) attributes.get("featureType");
+        if (attributes.containsKey("layer")) {
+            final String layerName = (String) attributes.get("layer");
 
             final String property = form.getFirstValue("attribute");
             final String method = form.getFirstValue("method", "equalInterval");
@@ -224,7 +224,7 @@ public class ClassifierResource extends AbstractCatalogResource {
             if (property != null && property.length() > 0) {
                 /* First try to find as a FeatureType */
                 try {
-                	LayerInfo layerInfo = catalog.getLayerByName(featureTypeName);
+                	LayerInfo layerInfo = catalog.getLayerByName(layerName);
 					if (layerInfo != null) {
                         ResourceInfo obj = layerInfo.getResource();
                 		/* Check if it's feature type or coverage */

@@ -16,6 +16,7 @@ import org.fao.styling.impl.CustomColorRamp;
 import org.fao.styling.impl.GrayColorRamp;
 import org.fao.styling.impl.RandomColorRamp;
 import org.fao.styling.impl.RedColorRamp;
+import org.geoserver.sldservice.resource.exception.ParameterException;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.styling.FeatureTypeStyle;

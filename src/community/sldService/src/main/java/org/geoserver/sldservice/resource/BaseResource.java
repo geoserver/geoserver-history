@@ -165,9 +165,9 @@ public class BaseResource extends Resource {
 			symbolizerA=rule.getSymbolizers();
 			
 			ruleSz+=",'Symbolyzer':[";
-			ruleSz+=this.jsonSybolizer(symbolizerA[0]);
+			ruleSz+=this.jsonSymbolizer(symbolizerA[0]);
 			for(int i =1;i<symbolizerA.length;i++){
-				ruleSz+=","+this.jsonSybolizer(symbolizerA[i]);
+				ruleSz+=","+this.jsonSymbolizer(symbolizerA[i]);
 			}
 			ruleSz+="]";
 		}
@@ -231,7 +231,7 @@ public class BaseResource extends Resource {
 		return filterSz;
 		
 	}
-	protected String jsonSybolizer(Symbolizer symbolizer) {
+	protected String jsonSymbolizer(Symbolizer symbolizer) {
 		String symbolizerSz = null;
 		String xmlSymbolizer;
 		XMLSerializer xmlS = new XMLSerializer();

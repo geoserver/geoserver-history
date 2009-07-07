@@ -17,13 +17,13 @@ public class ClassifierResourceFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String featureType = (String) request.getAttributes().get( "featureType" );
+        String layer = (String) request.getAttributes().get( "layer" );
         
-        if ( featureType != null) {
+        if ( layer != null) {
             return new ClassifierResource(getContext(),request,response,catalog);
         }
         
-        throw new RestletException( "No such featureType: " + featureType, Status.CLIENT_ERROR_NOT_FOUND );
+        throw new RestletException( "No such layer: " + layer, Status.CLIENT_ERROR_NOT_FOUND );
     }
 
 }

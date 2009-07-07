@@ -26,15 +26,11 @@
           <value>rulesResource</value>
         </entry>
         <entry>
-          <key><value>/sldservice/updateLayer/{layerName}</value></key>
-          <value>updateLayerResource</value>
-        </entry>
-        <entry>
           <key><value>/sldservice/{layer}/attributes</value></key>
           <value>layerAttributesFinder</value>
         </entry>
         <entry>
-          <key><value>/sldservice/{featureType}/classify</value></key>
+          <key><value>/sldservice/{layer}/classify</value></key>
           <value>classifierFinder</value>
         </entry>
       </map>
@@ -61,12 +57,6 @@
   <bean id="rulesResource"
     class="org.geoserver.sldservice.resource.RulesResource">
     <constructor-arg index="0" ref="catalog" />
-  </bean>
-
-  <bean id="updateLayerResource"
-    class="org.geoserver.sldservice.resource.UpdateLayerResource">
-    <constructor-arg index="0" ref="dataConfig" />
-    <constructor-arg index="1" ref="catalog" />
   </bean>
 
   <bean id="userStyleResource"
