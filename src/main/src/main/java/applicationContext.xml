@@ -162,4 +162,10 @@
   <bean id="defaultCatalogSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureCatalogFactory"/>
   
   <bean id="disabledServiceChecker" class="org.geoserver.ows.DisabledServiceCheck"/>
+  
+  <!-- geotools repository adapter for catalog -->
+  <bean id="catalogRepository" class="org.geoserver.catalog.CatalogRepository">
+    <constructor-arg ref="catalog2"/>
+  </bean>
+  
 </beans>
