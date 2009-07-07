@@ -82,7 +82,7 @@ public class DescribeLayerTransformer extends TransformerBase {
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
         String dtdUrl = RequestUtils.proxifiedBaseURL(baseUrl,geoserver.getProxyBaseUrl());
-        dtdUrl += "schemas/wms/1_1_1/WMS_DescribeLayerResponse.dtd";
+        dtdUrl += "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd";
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;

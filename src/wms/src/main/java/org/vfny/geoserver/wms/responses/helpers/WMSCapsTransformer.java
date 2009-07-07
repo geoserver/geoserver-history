@@ -129,14 +129,10 @@ public class WMSCapsTransformer extends TransformerBase {
         Transformer transformer = super.createTransformer();
         GeoServer gs = (GeoServer)GeoServerExtensions.extensions(GeoServer.class, applicationContext).get(0);
         String dtdUrl = RequestUtils.proxifiedBaseURL(this.baseUrl,gs.getProxyBaseUrl()) +
-            "schemas/wms/1_1_1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
+            "schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
                                                                                   // point to correct
                                                                                   // location
 
-        if (dtdUrl.indexOf(":80/") > 0) {
-            dtdUrl = dtdUrl.replace(":80/", "/");
-        }
-        
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -233,13 +229,8 @@ public class WMSCapsTransformer extends TransformerBase {
             AttributesImpl orAtts = new AttributesImpl();
             orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "", "simple");
-            
-            String wmsUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),wms.getGeoServer().getProxyBaseUrl()) + "wms";
-            if (wmsUrl.indexOf(":80/") > 0) {
-                wmsUrl = wmsUrl.replace(":80/", "/");
-            }
-            orAtts.addAttribute("", "xlink:href", "xlink:href", "", wmsUrl);
-            
+            orAtts.addAttribute("", "xlink:href", "xlink:href", "",
+                RequestUtils.proxifiedBaseURL(request.getBaseUrl(),wms.getGeoServer().getProxyBaseUrl()) + "wms");
             element("OnlineResource", null, orAtts);
 
             handleContactInfo(wms.getGeoServer());
