@@ -22,15 +22,15 @@
     
   <bean id="demoRequests" class="org.geoserver.web.DemoLinkInfo">
     <property name="id" value="demoRequests"/>
-    <property name="titleKey" value="DemoRequestsPage.page.title"/>
-    <property name="descriptionKey" value="DemoRequestsPage.page.description"/>
+    <property name="titleKey" value="DemoRequestsPage.title"/>
+    <property name="descriptionKey" value="DemoRequestsPage.shortDescription"/>
     <property name="componentClass" value="org.geoserver.web.demo.DemoRequestsPage"/>
   </bean>
   
   <bean id="srsList" class="org.geoserver.web.DemoLinkInfo">
     <property name="id" value="demoRequests"/>
     <property name="titleKey" value="SRSListPage.title"/>
-    <property name="descriptionKey" value="SRSListPage.page.shortDescription"/>
+    <property name="descriptionKey" value="SRSListPage.shortDescription"/>
     <property name="componentClass" value="org.geoserver.web.demo.SRSListPage"/>
   </bean>
 </beans>
