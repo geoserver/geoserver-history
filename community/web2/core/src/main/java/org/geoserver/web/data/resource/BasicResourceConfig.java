@@ -19,10 +19,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
 import org.geoserver.web.wicket.KeywordsEditor;
@@ -30,6 +32,7 @@ import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.web.wicket.SRSToCRSModel;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * A generic configuration panel for all basic ResourceInfo properties
@@ -64,10 +67,17 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 
             @Override
             public void onSubmit(final AjaxRequestTarget target, Form form) {
+                // perform manual processing otherwise the component contents won't be updated
                 form.process();
                 ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getModelObject();
                 computeNative(nativeBBox, resource);
                 target.addComponent(nativeBBox);
+            }
+            
+            public boolean getDefaultFormProcessing() {
+                // disable the default processing or the link won't trigger
+                // when any validation fails
+                return false;
             }
 
         });
@@ -82,9 +92,17 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
-
-                computeLatLon(nativeBBox, latLonPanel);
+                // perform manual processing otherwise the component contents won't be updated
+                form.process();
+                ReferencedEnvelope nativeBounds = (ReferencedEnvelope) nativeBBox.getModelObject();
+                computeLatLon(latLonPanel, nativeBounds, declaredCRS.getCRS());
                 target.addComponent(latLonPanel);
+            }
+            
+            public boolean getDefaultFormProcessing() {
+                // disable the default processing or the link won't trigger
+                // when any validation fails
+                return false;
             }
         });
 
@@ -114,45 +132,26 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         refForm.add(projectionPolicy);
     }
 
-    void computeLatLon(final EnvelopePanel nativeBBox, final EnvelopePanel latLonPanel) {
-        ReferencedEnvelope env = (ReferencedEnvelope) nativeBBox.getModelObject();
-        // handle the declared srs if necessary
-        if (projectionPolicy.getModelObject() == ProjectionPolicy.FORCE_DECLARED) {
-            env = new ReferencedEnvelope(env, declaredCRS.getCRS());
-        }
-        // reproject to WGS84
+    void computeLatLon(final EnvelopePanel latLon, ReferencedEnvelope nativeBounds, CoordinateReferenceSystem declaredCRS) {
         try {
-            if (env != null) {
-                latLonPanel.setModelObject(env.transform(DefaultGeographicCRS.WGS84, true));
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Envelope reprojection error", e);
-            error("Could not reproject to WGS84: " + e.getMessage());
+            CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
+            latLon.setModelObject(cb.getLatLonBounds(nativeBounds, declaredCRS));
+        } catch(IOException e) {
+            LOGGER.log(Level.SEVERE, "Error computing the geographic BBOX", e);
+            error("Error computing the geographic bounds:" + e.getMessage());
         }
     }
 
     private void computeNative(final EnvelopePanel nativeBBox, ResourceInfo resource) {
-        ReferencedEnvelope re = null;
         try {
-            if (resource instanceof FeatureTypeInfo) {
-                re = ((FeatureTypeInfo) resource).getFeatureSource(null, null).getBounds();
-            } else if (resource instanceof CoverageInfo) {
-                // for coverages that should be always available.. shoulnd't it?
-                re = ((CoverageInfo) resource).getNativeBoundingBox();
-            }
-            if (projectionPolicy.getModelObject() == ProjectionPolicy.REPROJECT_TO_DECLARED) {
-                re = re.transform(declaredCRS.getCRS(), true);
-            }
-        } catch (IOException e) {
+            CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
+            ReferencedEnvelope bounds = cb.getNativeBounds(resource);
+            resource.setNativeBoundingBox(bounds);
+            nativeBBox.setModelObject(bounds);
+        } catch(IOException e) {
             LOGGER.log(Level.SEVERE, "Error computing the native BBOX", e);
             error("Error computing the native BBOX:" + e.getMessage());
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE,
-                    "Error transforming the native BBOX to the declared projection", ex);
-            error("Error transforming the native BBOX to the declared projection "
-                    + ex.getMessage());
         }
-        nativeBBox.setModelObject(re);
     }
 
     class ProjectionPolicyRenderer implements IChoiceRenderer {
