@@ -8,6 +8,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.form.TextArea;
 
+/**
+ * A wrapper around the Javascript 
+ * <a ref="http://www.cdolivet.com/index.php?page=editArea">EditArea</a> component  
+ */
+@SuppressWarnings("serial")
 public class XMLEditor extends Panel{
     public XMLEditor(String id, IModel model){
         super(id, model);
