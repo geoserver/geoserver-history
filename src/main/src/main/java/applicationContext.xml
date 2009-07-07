@@ -118,4 +118,9 @@
       </props>
     </property>
   </bean>
+  
+  <!-- geotools repository adapter for catalog -->
+  <bean id="catalogRepository" class="org.geoserver.catalog.CatalogRepository">
+    <constructor-arg ref="catalog"/>
+  </bean>
 </beans>
