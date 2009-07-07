@@ -21,7 +21,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -31,8 +30,6 @@ import org.geoserver.web.wicket.KeywordsEditor;
 import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.web.wicket.SRSToCRSModel;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * A generic configuration panel for all basic ResourceInfo properties
@@ -63,24 +60,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         final EnvelopePanel nativeBBox = new EnvelopePanel("nativeBoundingBox", nativeBBoxModel);
         nativeBBox.setOutputMarkupId(true);
         refForm.add(nativeBBox);
-        refForm.add(new AjaxSubmitLink("computeNative", refForm) {
-
-            @Override
-            public void onSubmit(final AjaxRequestTarget target, Form form) {
-                // perform manual processing otherwise the component contents won't be updated
-                form.process();
-                ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getModelObject();
-                computeNative(nativeBBox, resource);
-                target.addComponent(nativeBBox);
-            }
-            
-            public boolean getDefaultFormProcessing() {
-                // disable the default processing or the link won't trigger
-                // when any validation fails
-                return false;
-            }
-
-        });
+        refForm.add(computeNativeBoundsLink(refForm, nativeBBox));
 
         // lat/lon bbox
         final EnvelopePanel latLonPanel = new EnvelopePanel("latLonBoundingBox", new PropertyModel(
@@ -88,23 +68,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         latLonPanel.setOutputMarkupId(true);
         latLonPanel.setRequired(true);
         refForm.add(latLonPanel);
-        refForm.add(new AjaxSubmitLink("computeLatLon", refForm) {
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-                // perform manual processing otherwise the component contents won't be updated
-                form.process();
-                ReferencedEnvelope nativeBounds = (ReferencedEnvelope) nativeBBox.getModelObject();
-                computeLatLon(latLonPanel, nativeBounds, declaredCRS.getCRS());
-                target.addComponent(latLonPanel);
-            }
-            
-            public boolean getDefaultFormProcessing() {
-                // disable the default processing or the link won't trigger
-                // when any validation fails
-                return false;
-            }
-        });
+        refForm.add(computeLatLonBoundsLink(refForm, nativeBBox, latLonPanel));
 
         // native srs , declared srs, and srs handling dropdown
         CRSPanel nativeCRS = new CRSPanel("nativeSRS", new PropertyModel(model, "nativeCRS"));
@@ -132,26 +96,61 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         refForm.add(projectionPolicy);
     }
 
-    void computeLatLon(final EnvelopePanel latLon, ReferencedEnvelope nativeBounds, CoordinateReferenceSystem declaredCRS) {
-        try {
-            CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
-            latLon.setModelObject(cb.getLatLonBounds(nativeBounds, declaredCRS));
-        } catch(IOException e) {
-            LOGGER.log(Level.SEVERE, "Error computing the geographic BBOX", e);
-            error("Error computing the geographic bounds:" + e.getMessage());
-        }
+    AjaxSubmitLink computeNativeBoundsLink(final Form refForm,
+            final EnvelopePanel nativeBBox) {
+        return new AjaxSubmitLink("computeNative", refForm) {
+
+            @Override
+            public void onSubmit(final AjaxRequestTarget target, Form form) {
+                // perform manual processing otherwise the component contents won't be updated
+                form.process();
+                ResourceInfo resource = (ResourceInfo) BasicResourceConfig.this.getModelObject();
+                try {
+                    CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
+                    ReferencedEnvelope bounds = cb.getNativeBounds(resource);
+                    resource.setNativeBoundingBox(bounds);
+                    nativeBBox.setModelObject(bounds);
+                } catch(IOException e) {
+                    LOGGER.log(Level.SEVERE, "Error computing the native BBOX", e);
+                    error("Error computing the native BBOX:" + e.getMessage());
+                }
+                target.addComponent(nativeBBox);
+            }
+            
+            public boolean getDefaultFormProcessing() {
+                // disable the default processing or the link won't trigger
+                // when any validation fails
+                return false;
+            }
+
+        };
     }
 
-    private void computeNative(final EnvelopePanel nativeBBox, ResourceInfo resource) {
-        try {
-            CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
-            ReferencedEnvelope bounds = cb.getNativeBounds(resource);
-            resource.setNativeBoundingBox(bounds);
-            nativeBBox.setModelObject(bounds);
-        } catch(IOException e) {
-            LOGGER.log(Level.SEVERE, "Error computing the native BBOX", e);
-            error("Error computing the native BBOX:" + e.getMessage());
-        }
+    AjaxSubmitLink computeLatLonBoundsLink(final Form refForm,
+            final EnvelopePanel nativeBBox, final EnvelopePanel latLonPanel) {
+        return new AjaxSubmitLink("computeLatLon", refForm) {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                // perform manual processing otherwise the component contents won't be updated
+                form.process();
+                ReferencedEnvelope nativeBounds = (ReferencedEnvelope) nativeBBox.getModelObject();
+                try {
+                    CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
+                    latLonPanel.setModelObject(cb.getLatLonBounds(nativeBounds, declaredCRS.getCRS()));
+                } catch(IOException e) {
+                    LOGGER.log(Level.SEVERE, "Error computing the geographic BBOX", e);
+                    error("Error computing the geographic bounds:" + e.getMessage());
+                }
+                target.addComponent(latLonPanel);
+            }
+            
+            public boolean getDefaultFormProcessing() {
+                // disable the default processing or the link won't trigger
+                // when any validation fails
+                return false;
+            }
+        };
     }
 
     class ProjectionPolicyRenderer implements IChoiceRenderer {
