@@ -27,7 +27,7 @@ Committing
 
 In order to commit to the repository the following steps must be taken:
 
-#. Install this subversion `<config>`_ file. See additional notes below.
+#. Install this subversion :download:`config` file. See additional notes below.
 #. Register for commit access as described here.
 #. Switch the repository to the "https" protocol. Example::
 
