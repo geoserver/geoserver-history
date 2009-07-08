@@ -23,7 +23,8 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = []
+extensions = ['sphinx.ext.todo']
+todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['../../theme/_templates']
@@ -35,7 +36,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = u'GeoServer Developer Guide'
+project = u'GeoServer Developer Manual'
 copyright = u'2009, GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
@@ -142,7 +143,7 @@ html_last_updated_fmt = '%b %d, %Y'
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'GeoServerDeveloper'
+htmlhelp_basename = 'GeoServerDeveloperManual'
 
 
 # Options for LaTeX output

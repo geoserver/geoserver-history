@@ -6,4 +6,7 @@ Programming Guide
 .. toctree::
    :maxdepth: 1
 
-   wicket-pages/index.rst
+   ows-services/index.rst
+   rest-services/index.rst
+   web-ui/index.rst
+   extension_points/index.rst
