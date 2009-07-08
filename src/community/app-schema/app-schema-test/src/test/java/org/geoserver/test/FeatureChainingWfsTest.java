@@ -51,6 +51,22 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = getAsDOM("wfs?request=GetCapabilities");
         LOGGER.info("WFS GetCapabilities response:\n" + prettyString(doc));
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
+
+        // make sure non-feature types don't appear in FeatureTypeList
+        assertXpathCount(4, "//wfs:FeatureType", doc);
+        ArrayList<String> featureTypeNames = new ArrayList<String>(4);
+        featureTypeNames.add(evaluate("//wfs:FeatureType[1]/wfs:Name", doc));
+        featureTypeNames.add(evaluate("//wfs:FeatureType[2]/wfs:Name", doc));
+        featureTypeNames.add(evaluate("//wfs:FeatureType[3]/wfs:Name", doc));
+        featureTypeNames.add(evaluate("//wfs:FeatureType[4]/wfs:Name", doc));
+        // Mapped Feture
+        assertEquals(featureTypeNames.contains("MappedFeature"), true);
+        // Geologic Unit
+        assertEquals(featureTypeNames.contains("GeologicUnit"), true);
+        // FirstParentFeature
+        assertEquals(featureTypeNames.contains("FirstParentFeature"), true);
+        // SecondParentFeature
+        assertEquals(featureTypeNames.contains("SecondParentFeature"), true);
     }
 
     /**
@@ -196,6 +212,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
         LOGGER.info("WFS GetFeature&typename=gsml:MappedFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        // non-feature type should return nothing/exception
+        doc = getAsDOM("wfs?request=GetFeature&typename=gsml:CompositionPart");
+        LOGGER.info("WFS GetFeature&typename=gsml:CompositionPart response, exception expected:\n"
+                + prettyString(doc));
+        assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
     }
 
     /**
