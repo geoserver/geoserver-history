@@ -27,7 +27,16 @@ Mapping steps
 Create a mapping file for every complex type
 `````````````````````````````````````````````
 We need one mapping file per complex type that is going to be nested, including non features, e.g. gsml:CompositionPart.
-For Geoserver, these will be individual FeatureTypes that can be individually accessed as well as used in chaining. 
+
+Non-feature types that cannot be individually accessed (eg. CompositionPart as a Data Type) can still be mapped separately for its reusability. For this case, the containing feature type has to include these types in its mapping file. The include tag should contain the nested mapping file path relative to the location of the containing type mapping file.
+In :download:`GeologicUnit_MappingFile.xml`::
+
+  <includedTypes>	
+      <Include>CGITermValue_MappingFile.xml</Include>
+      <Include>CompositionPart_MappingFile.xml</Include>
+  </includedTypes>
+
+Feature types that can be individually accessed don't need to be explicitly included in the mapping file, as they would be configured for Geoserver to find. 
 
 **Example**:
 
