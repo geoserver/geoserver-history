@@ -15,9 +15,11 @@ import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -26,6 +28,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
@@ -33,6 +36,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourcePool;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.NamespacePanel;
@@ -57,6 +61,15 @@ import org.geotools.util.logging.Logging;
 abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
     protected static final Logger LOGGER = Logging.getLogger("org.geoserver.web.data.store");
+
+    /**
+     * Needed as an instance variable so if the DataAccess has a namespace parameter, it is
+     * automatically updated to match the workspace's namespace as per GEOS-3149 until the
+     * resource/publish split is finalized
+     */
+    private WorkspacePanel workspacePanel;
+
+    private NamespacePanel namespacePanel;
 
     public AbstractDataAccessPage() {
 
@@ -119,7 +132,6 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         paramsForm.add(new Label("storeType", dsFactory.getDisplayName()));
         paramsForm.add(new Label("storeTypeDescription", dsFactory.getDescription()));
 
-        final WorkspacePanel workspacePanel;
         {
             final IModel wsModel = new PropertyModel(model, "workspace");
             final IModel wsLabelModel = new ResourceModel("AbstractDataAccessPage.workspace");
@@ -177,7 +189,7 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                 super.onError(target, form);
                 target.addComponent(paramsForm);
             }
-            
+
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 try {
@@ -234,6 +246,10 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             IModel paramLabelModel = new ResourceModel(paramLabel, paramLabel);
             parameterPanel = new NamespacePanel(componentId, namespaceModel, paramLabelModel, true);
 
+            // save the namespace panel as an instance variable. Needed as per GEOS-3149
+            namespacePanel = (NamespacePanel) parameterPanel;
+            makeNamespaceSyncUpWithWorkspace();
+
         } else if (Boolean.class == binding) {
             // TODO Add prefix for better i18n?
             parameterPanel = new CheckBoxParamPanel(componentId, new MapModel(paramsModel,
@@ -252,11 +268,47 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             }
             // make sure the proper value is returned, but don't set it for strings otherwise
             // we incur in a wicket bug (the empty string is not converter back to a null)
-            if(binding != null && !String.class.equals(binding))
-            	tp.getFormComponent().setType(binding);
+            if (binding != null && !String.class.equals(binding))
+                tp.getFormComponent().setType(binding);
             parameterPanel = tp;
         }
         return parameterPanel;
+    }
+
+    /**
+     * Make the {@link #namespacePanel} model to synch up with the workspace whenever the
+     * {@link #workspacePanel} option changes.
+     * <p>
+     * This is so to maintain namespaces in synch with workspace while the resource/publish split is
+     * not finalized, as per GEOS-3149.
+     * </p>
+     * <p>
+     * Removing this method and the call to it on
+     * {@link #getInputComponent(String, IModel, ParamInfo)} is all that's needed to let the
+     * namespace be selectable independently of the workspace once the resource/publish split is
+     * done.
+     * </p>
+     */
+    private void makeNamespaceSyncUpWithWorkspace() {
+        // do not allow the namespace choice to be manually changed
+        namespacePanel.getFormComponent().setEnabled(false);
+
+        final DropDownChoice wsDropDown = (DropDownChoice) workspacePanel.getFormComponent();
+        // add an ajax onchange behaviour that keeps ws and ns in synch
+        wsDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                WorkspaceInfo ws = (WorkspaceInfo) wsDropDown.getModelObject();
+                String prefix = ws.getName();
+                NamespaceInfo namespaceInfo = getCatalog().getNamespaceByPrefix(prefix);
+                IModel nsModel = new Model(namespaceInfo);
+                DropDownChoice nsDropDown = namespacePanel.getFormComponent();
+                nsDropDown.setModel(nsModel);
+                target.addComponent(nsDropDown);
+            }
+        });
     }
 
     protected void clone(final DataStoreInfo source, DataStoreInfo target) {
