@@ -24,14 +24,15 @@ import org.geoserver.web.GeoServerSecuredPage;
 @SuppressWarnings("serial")
 public class StyleEditPage extends GeoServerSecuredPage {
     SLDEditorPanel sldEditorPanel;
+    TextField name;
     
     public StyleEditPage(final StyleInfo style){
         final Form theForm = new Form("theForm", new CompoundPropertyModel(style));
-        theForm.add(new TextField("name"));
+        theForm.add(name = new TextField("name"));
+        name.setRequired(true);
         
         sldEditorPanel = new SLDEditorPanel("sld", new Model() );
         
-        //final XMLEditor xmlEditor = new XMLEditor("sld", new PropertyModel(this, "rawSLD")); 
         theForm.add(sldEditorPanel);
         try {
             sldEditorPanel.setRawSLD( readFile( style ) );

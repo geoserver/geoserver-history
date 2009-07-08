@@ -29,6 +29,7 @@ import org.geotools.xml.Parser;
 public class SLDEditorPanel extends FormComponentPanel {
     
     private String rawSLD; // Accessed via a property model, don't remove
+    private XMLEditor editor;
 
     public SLDEditorPanel( String id ) {
         super(id);
@@ -43,11 +44,12 @@ public class SLDEditorPanel extends FormComponentPanel {
     }
     
     void initComponents() {
-        add( new XMLEditor("editor", new PropertyModel(this, "rawSLD")) );
+        add( editor = new XMLEditor("editor", new PropertyModel(this, "rawSLD")) );
         add(new SubmitLink("validate") {
             @Override
             public void onSubmit() {
                 Form form = getForm();
+                
                 if ( form != null ) {
                     List<Exception> errors = validateSLD();
                     
@@ -98,9 +100,8 @@ public class SLDEditorPanel extends FormComponentPanel {
     List<Exception> validateSLD() {
         Parser parser = new Parser(new SLDConfiguration());
         try {
-            parser.validate( new ByteArrayInputStream( rawSLD.getBytes() ) );
-        }
-        catch( Exception e ) {
+            parser.validate( new ByteArrayInputStream(editor.getInput().getBytes()) );
+        } catch( Exception e ) {
             return Arrays.asList( e );
         }
         
