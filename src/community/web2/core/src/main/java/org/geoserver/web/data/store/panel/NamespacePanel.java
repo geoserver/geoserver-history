@@ -20,6 +20,8 @@ import org.geoserver.web.data.namespace.NamespacesModel;
 @SuppressWarnings("serial")
 public class NamespacePanel extends Panel {
 
+    private final DropDownChoice choice;
+
     public NamespacePanel(final String componentId, final IModel selectedItemModel,
             final IModel paramLabelModel, final boolean required) {
         // make the value of the combo field the model of this panel, for easy
@@ -31,15 +33,20 @@ public class NamespacePanel extends Panel {
         add(label);
 
         // the drop down field, with a decorator for validations
-        DropDownChoice choice = new DropDownChoice("paramValue", selectedItemModel,
-                new NamespacesModel(), new NamespaceChoiceRenderer());
+        choice = new DropDownChoice("paramValue", selectedItemModel, new NamespacesModel(),
+                new NamespaceChoiceRenderer());
         choice.setRequired(required);
         // set the label to be the paramLabelModel otherwise a validation error would look like
         // "Parameter 'paramValue' is required"
         choice.setLabel(paramLabelModel);
+        choice.setOutputMarkupId(true);
 
         FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(choice);
         add(feedback);
+    }
+
+    public DropDownChoice getFormComponent(){
+        return choice;
     }
 }
