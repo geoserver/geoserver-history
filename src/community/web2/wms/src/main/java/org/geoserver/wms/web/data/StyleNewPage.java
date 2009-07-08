@@ -69,7 +69,8 @@ public class StyleNewPage extends GeoServerSecuredPage {
         form.setMarkupId("mainForm");
         add(form);
         
-        form.add( nameTextField = new TextField( "name", String.class ) );
+        form.add( nameTextField = new TextField( "name") );
+        nameTextField.setRequired(true);
         form.add( sldEditorPanel = new SLDEditorPanel( "sld", new Model() ) );
         sldEditorPanel.setOutputMarkupId( true );
         
