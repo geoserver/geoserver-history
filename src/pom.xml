@@ -258,6 +258,11 @@
    </dependency>
    <dependency>   
     <groupId>org.geotools</groupId>
+    <artifactId>gt-arcsde-common</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>   
+    <groupId>org.geotools</groupId>
     <artifactId>gt-arcsde</artifactId>
     <version>${gt.version}</version>
    </dependency>
