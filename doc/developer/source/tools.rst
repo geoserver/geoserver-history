@@ -19,8 +19,10 @@ Developing with GeoServer requires a Java Development Kit (JDK) 1.5 or greater, 
 Maven
 -----
 
-GeoServer uses a tool known as `Maven <http://maven.apache.org/>`_ to build. The 
-current version of Maven used is 2.0.9 and is available from `Apache <http://maven.apache.org/download.html>`_. 
+GeoServer uses a tool known as `Maven <http://maven.apache.org/>`_ to build. 
+The current recommended version of Maven is 2.1.0 and is available from 
+`Apache <http://maven.apache.org/download.html>`_. While 2.1.0 is recommended
+any version greather than 2.0.8 should also work.
 
 Subversion
 ----------
