@@ -88,8 +88,10 @@ public class ImportPage extends GeoServerSecuredPage {
                     protected Component getContents(String id) {
                         // use what the user currently typed
                     	File file = null;
-                    	if(dirField.getInput().trim().equals("")) {
+                    	if(!dirField.getInput().trim().equals("")) {
                     		file = new File(dirField.getInput());
+                    		if(!file.exists())
+                    		    file = null;
                     	}
                     		
                         GeoServerFileChooser chooser = new GeoServerFileChooser(id, new Model(file));
