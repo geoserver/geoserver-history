@@ -75,7 +75,9 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
             // lookup all configured layers, mark them as published in the resources
             List<ResourceInfo> configuredTypes = getCatalog().getResourcesByStore(store, ResourceInfo.class);
             for (ResourceInfo type : configuredTypes) {
-                Resource resource = resources.get(type.getName());
+                // compare with native name, which is what the DataStore provides through getNames()
+                // above
+                Resource resource = resources.get(type.getNativeName());
                 if(resource != null)
                     resource.setPublished(true);
             }
