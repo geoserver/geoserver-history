@@ -3,12 +3,17 @@ package org.geoserver.web.admin;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class StatusPageTest extends GeoServerWicketTestSupport {
-    public void testValues() {
+    
+    @Override
+    protected void setUpInternal() throws Exception {
         login();
-        // TODO: We get an NPE on loading the statuspage in the test environment,
-        // but it works when run normally.
-
-        //tester.startPage(StatusPage.class);
-        //tester.assertLabel("locks", "0");
+        tester.startPage(StatusPage.class);
+        
+        // print(tester.getLastRenderedPage(), true, true);
+    }
+    
+    public void testValues() {
+        tester.assertRenderedPage(StatusPage.class);
+        tester.assertLabel("locks", "0");
     }
 }
