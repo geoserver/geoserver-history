@@ -34,7 +34,8 @@ public class NewDataPageTest extends GeoServerWicketTestSupport {
         
         tester.assertNoErrorMessage();
         tester.assertRenderedPage(DataAccessNewPage.class);
-        print(tester.getLastRenderedPage(), true, true);
+        
+        // print(tester.getLastRenderedPage(), true, true);
         tester.assertModelValue("dataStoreForm:storeType", "Properties");
         
     }

@@ -188,44 +188,4 @@ public class ConfirmRemovalPanel extends Panel {
     protected StringResourceModel canRemove(CatalogInfo info) {
         return null;
     }
-    
-//    String workspaceNames(List<WorkspaceInfo> workspaces) {
-//        StringBuffer sb = new StringBuffer();
-//        for (int i = 0; i < workspaces.size(); i++) {
-//            sb.append(workspaces.get(i).getName());
-//            if(i < (workspaces.size() - 1))
-//                sb.append(", ");
-//        }
-//        return sb.toString();
-//    }
-//    
-//    String storeNames(List<StoreInfo> stores) {
-//        StringBuffer sb = new StringBuffer();
-//        for (int i = 0; i < stores.size(); i++) {
-//            sb.append(stores.get(i).getName());
-//            if(i < (stores.size() - 1))
-//                sb.append(", ");
-//        }
-//        return sb.toString();
-//    }
-//    
-//    String layerNames(List<LayerInfo> layers) {
-//        StringBuffer sb = new StringBuffer();
-//        for (int i = 0; i < layers.size(); i++) {
-//            sb.append(layers.get(i).getName());
-//            if(i < (layers.size() - 1))
-//                sb.append(", ");
-//        }
-//        return sb.toString();
-//    }
-//    
-//    String groupNames(List<LayerGroupInfo> groups) {
-//        StringBuffer sb = new StringBuffer();
-//        for (int i = 0; i < groups.size(); i++) {
-//            sb.append(groups.get(i).getName());
-//            if(i < (groups.size() - 1))
-//                sb.append(", ");
-//        }
-//        return sb.toString();
-//    }
 }
