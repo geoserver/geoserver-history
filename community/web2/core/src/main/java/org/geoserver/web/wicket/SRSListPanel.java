@@ -51,7 +51,7 @@ import org.geoserver.web.wicket.SRSProvider.SRS;
  * 
  */
 @SuppressWarnings("serial")
-public class SRSListPanel extends Panel {
+public abstract class SRSListPanel extends Panel {
 
     /**
      * Creates the new SRS list panel.
@@ -91,7 +91,7 @@ public class SRSListPanel extends Panel {
     /**
      * Creates a link for an epsgCode.
      * <p>
-     * Subclasses should override to perform an action when an epsg code has been selected. This
+     * Subclasses may override to perform an action when an epsg code has been selected. This
      * default implementation returns a link that does nothing.
      * </p>
      * 
@@ -102,12 +102,21 @@ public class SRSListPanel extends Panel {
      * 
      */
     protected Component createLinkForCode(String linkId, IModel itemModel) {
-        return new AjaxLink(linkId) {
+        return new SimpleAjaxLink(linkId, SRSProvider.CODE.getModel(itemModel)) {
+
             @Override
-            public void onClick(AjaxRequestTarget target) {
-                // do nothing
+            protected void onClick(AjaxRequestTarget target) {
+                onCodeClicked(target, getModelObjectAsString());
+                
             }
         };
     }
+    
+    /**
+     * Suclasses must override and perform whatever they see fit when a SRS code link is clicked 
+     * @param target
+     * @param modelObject
+     */
+    protected abstract void onCodeClicked(AjaxRequestTarget target, String epsgCode);
     
 }

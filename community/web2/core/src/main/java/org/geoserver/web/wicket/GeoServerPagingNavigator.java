@@ -8,6 +8,8 @@ import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.navigation.paging.IPageable;
+import org.apache.wicket.markup.html.navigation.paging.IPagingLabelProvider;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigation;
 
 /**
  * A custom navigator that sets classes for the elements
@@ -20,6 +22,14 @@ public class GeoServerPagingNavigator extends AjaxPagingNavigator {
     public GeoServerPagingNavigator(String id, IPageable pageable) {
         super(id, pageable);
         setOutputMarkupId(true);
+    }
+    
+    @Override
+    protected PagingNavigation newNavigation(IPageable pageable, IPagingLabelProvider labelProvider) {
+        // make sure we don't have too many links, it gets quite busy in popups
+        PagingNavigation navigation = super.newNavigation(pageable, labelProvider);
+        navigation.setViewSize(5);
+        return navigation;
     }
     
     @Override

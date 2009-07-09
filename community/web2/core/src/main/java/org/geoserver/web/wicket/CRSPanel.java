@@ -225,24 +225,19 @@ public class CRSPanel extends FormComponentPanel {
     @SuppressWarnings("serial")
     SRSListPanel srsListPanel() {
         return new SRSListPanel(popupWindow.getContentId()) {
+            
             @Override
-            protected Component createLinkForCode(String linkId, IModel itemModel) {
-                return new SimpleAjaxLink(linkId, SRSProvider.CODE.getModel(itemModel)) {
-                    @Override
-                    public void onClick(AjaxRequestTarget target) {
-                        popupWindow.close(target);
-                        
-                        String epsgCode = getModelObjectAsString();
-                        String srs =  "EPSG:" + epsgCode ;
-                        srsTextField.setModelObject( srs );
-                        target.addComponent( srsTextField );
-                        
-                        CoordinateReferenceSystem crs = fromSRS( srs );
-                        wktLabel.setModelObject( crs.getName().toString() );
-                        wktLink.setEnabled(true);
-                        target.addComponent( wktLink );
-                    }
-                };
+            protected void onCodeClicked(AjaxRequestTarget target, String epsgCode) {
+                popupWindow.close(target);
+                
+                String srs =  "EPSG:" + epsgCode ;
+                srsTextField.setModelObject( srs );
+                target.addComponent( srsTextField );
+                
+                CoordinateReferenceSystem crs = fromSRS( srs );
+                wktLabel.setModelObject( crs.getName().toString() );
+                wktLink.setEnabled(true);
+                target.addComponent( wktLink );
             }
         };
     }
