@@ -10,6 +10,7 @@ import junit.framework.Test;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
@@ -120,4 +121,44 @@ public class GetCapabilitiesTest extends WFSTestSupport {
         XMLAssert.assertXpathEvaluatesTo("1", "//ogc:FunctionName[text()=\"abs\"]/@nArgs", doc);
     }
 
+    public void testTypeNameCount() throws Exception {
+        // filter on an existing namespace
+        Document doc = getAsDOM("wfs?service=WFS&version=1.1.0&request=getCapabilities");
+        Element e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+
+        XpathEngine xpath = XMLUnit.newXpathEngine();
+
+        final List<FeatureTypeInfo> enabledTypes = getCatalog().getFeatureTypes();
+        for (Iterator<FeatureTypeInfo> it = enabledTypes.iterator(); it.hasNext();) {
+            FeatureTypeInfo ft = it.next();
+            if (!ft.isEnabled()) {
+                it.remove();
+            }
+        }
+        final int enabledCount = enabledTypes.size();
+
+        assertEquals(enabledCount, xpath.getMatchingNodes(
+                "/wfs:WFS_Capabilities/wfs:FeatureTypeList/wfs:FeatureType", doc).getLength());
+    }
+
+    public void testTypeNames() throws Exception {
+        // filter on an existing namespace
+        Document doc = getAsDOM("wfs?service=WFS&version=1.1.0&request=getCapabilities");
+        Element e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+
+        final List<FeatureTypeInfo> enabledTypes = getCatalog().getFeatureTypes();
+        for (Iterator<FeatureTypeInfo> it = enabledTypes.iterator(); it.hasNext();) {
+            FeatureTypeInfo ft = it.next();
+            if (ft.isEnabled()) {
+                String prefixedName = ft.getPrefixedName();
+
+                String xpathExpr = "/wfs:WFS_Capabilities/wfs:FeatureTypeList/"
+                        + "wfs:FeatureType/wfs:Name[text()=\"" + prefixedName + "\"]";
+
+                XMLAssert.assertXpathExists(xpathExpr, doc);
+            }
+        }
+    }
 }

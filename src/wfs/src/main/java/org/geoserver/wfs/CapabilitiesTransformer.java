@@ -4,7 +4,6 @@
  */
 package org.geoserver.wfs;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,10 +13,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.opengis.wfs.GetCapabilitiesType;
@@ -27,7 +24,6 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
@@ -44,6 +40,7 @@ import org.opengis.filter.expression.Function;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 
@@ -628,7 +625,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 bbox = info.getLatLonBoundingBox();
 
                 start("FeatureType");
-                element("Name", info.getName());
+                element("Name", info.getPrefixedName());
                 element("Title", info.getTitle());
                 element("Abstract", info.getAbstract());
                 handleKeywords(info.getKeywords());
@@ -1329,7 +1326,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 start("FeatureType", attributes(new String[] { "xmlns:" + prefix, uri }));
 
-                element("Name", featureType.getName());
+                element("Name", featureType.getPrefixedName());
                 element("Title", featureType.getTitle());
                 element("Abstract", featureType.getAbstract());
                 keywords(featureType.getKeywords());
