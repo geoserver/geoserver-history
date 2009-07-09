@@ -8,12 +8,9 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.context.SecurityContextImpl;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.wicket.Component;
-import org.apache.wicket.Component.IVisitor;
-import org.apache.wicket.markup.html.form.CheckGroup;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.IFormVisitorParticipant;
-import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.geoserver.test.GeoServerTestSupport;
@@ -95,5 +92,38 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
                 return Component.IVisitor.CONTINUE_TRAVERSAL;
             }
         });
+    }
+    
+    /**
+     * Finds the component whose model value equals to the specified content, and
+     * the component class is equal, subclass or implementor of the specified class
+     * @param root the component under which the search is to be performed
+     * @param content 
+     * @param componentClass the target class, or null if any component will do
+     * @return
+     */
+    public Component findComponentByContent(MarkupContainer root, Object content, Class componentClass) {
+        ComponentContentFinder finder = new ComponentContentFinder(content);
+        root.visitChildren(componentClass, finder);
+        return finder.candidate;
+    }
+    
+    class ComponentContentFinder implements Component.IVisitor {
+        Component candidate;
+        Object content;
+        
+        ComponentContentFinder(Object content) {
+            this.content = content;
+        }
+        
+
+        public Object component(Component component) {
+            if(content.equals(component.getModelObject())) {
+                this.candidate = component;
+                return Component.IVisitor.STOP_TRAVERSAL;
+            }
+            return Component.IVisitor.CONTINUE_TRAVERSAL;
+        }
+        
     }
 }

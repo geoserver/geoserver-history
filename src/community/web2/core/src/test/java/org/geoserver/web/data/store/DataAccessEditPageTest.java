@@ -9,12 +9,6 @@ import org.geoserver.web.GeoServerWicketTestSupport;
 public class DataAccessEditPageTest extends GeoServerWicketTestSupport {
 
     @Override
-    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
-        super.populateDataDirectory(dataDirectory);
-        dataDirectory.addWellKnownCoverageTypes();
-    }
-    
-    @Override
     protected void setUpInternal() throws Exception {
         DataStoreInfo store = getCatalog().getStoreByName(MockData.CITE_PREFIX, DataStoreInfo.class);
         tester.startPage(new DataAccessEditPage(store.getId()));
