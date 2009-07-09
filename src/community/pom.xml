@@ -78,5 +78,11 @@
         <module>wps</module>
       </modules>
     </profile>
+    <profile>
+      <id>dxf</id>
+      <modules>
+        <module>dxf</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

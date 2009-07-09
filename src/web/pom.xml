@@ -607,6 +607,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>dxf</id>
+      <dependencies>
+       <dependency>
+        <groupId>org.geoserver</groupId>
+        <artifactId>dxf</artifactId>
+        <version>1.7.6-SNAPSHOT</version>
+       </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>geosearch</id>
       <dependencies>
        <dependency>
