@@ -1,5 +1,9 @@
 package org.geoserver.web.data.table;
 
+import java.util.List;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.web.GeoServerWicketTestSupport;
@@ -43,4 +47,39 @@ public class NewLayerProviderTest extends GeoServerWicketTestSupport {
         assertEquals(0, provider.size());
     }
 
+    /**
+     * As per GEOS-3120, if a resource is published but it's name changed, it should still show up
+     * as published. It wasn't being the case due to comparing the resource's name instead of the
+     * nativeName against the name the DataStore provides
+     */
+    public void testPublishedUnpublishedWithChangedResourceName() {
+        Catalog catalog = getCatalog();
+        StoreInfo cite = catalog.getStoreByName(MockData.CITE_PREFIX, StoreInfo.class);
+
+        List<FeatureTypeInfo> resources = catalog.getResourcesByStore(cite, FeatureTypeInfo.class);
+        assertTrue(resources.size() > 0);
+
+        final int numberOfPublishedResources = resources.size();
+
+        NewLayerPageProvider provider = new NewLayerPageProvider();
+        provider.setStoreId(cite.getId());
+        provider.setShowPublished(false);
+        assertEquals(0, provider.size());
+
+        provider.setShowPublished(true);
+        assertEquals(numberOfPublishedResources, provider.size());
+
+        FeatureTypeInfo typeInfo = resources.get(0);
+        typeInfo.setName("notTheNativeName");
+        catalog.save(typeInfo);
+
+        provider = new NewLayerPageProvider();
+        provider.setStoreId(cite.getId());
+
+        provider.setShowPublished(true);
+        assertEquals(numberOfPublishedResources, provider.size());
+
+        provider.setShowPublished(false);
+        assertEquals(0, provider.size());
+    }
 }
