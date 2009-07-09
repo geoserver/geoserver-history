@@ -50,7 +50,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         final XpathEngine xpath = XMLUnit.newXpathEngine();
         String requestURL = "kml/wms?mode=refresh&layers=" + layerName;
         Document dom = getAsDOM(requestURL);
-        print(dom);
+        // print(dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder)", dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder/NetworkLink)", dom);
         assertXpathEvaluatesTo("1", "count(kml/Folder/LookAt)", dom);
@@ -79,7 +79,7 @@ public class KMLReflectorTest extends WMSTestSupport {
         final String layerName = MockData.BASIC_POLYGONS.getPrefix() + ":"
                + MockData.BASIC_POLYGONS.getLocalPart();
 
-        final String requestUrl = "kml/wms?layers=" + layerName + "&styles=&superoverlay=true";
+        final String requestUrl = "kml/wms?layers=" + layerName + "&styles=&mode=superoverlay";
         Document dom = getAsDOM(requestUrl);
         //print(dom);
         assertEquals("kml", dom.getDocumentElement().getLocalName());
