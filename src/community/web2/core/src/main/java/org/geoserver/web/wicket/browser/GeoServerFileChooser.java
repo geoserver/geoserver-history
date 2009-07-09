@@ -38,7 +38,7 @@ public class GeoServerFileChooser extends Panel {
         File selection = (File) file.getObject();
         File selectionRoot = null;
         for (File root : roots) {
-            if(isSubfile(root, selection))
+            if(isSubfile(root, selection.getAbsoluteFile()))
                 selectionRoot = root;
         }
         
