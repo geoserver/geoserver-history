@@ -9,6 +9,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.geoserver.web.wicket.WicketHierarchyPrinter;
 
 public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
 
@@ -30,11 +31,13 @@ public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
         one.createNewFile();
         two = new File(child, "two.sld");
         two.createNewFile();
-        
+    }
+    
+    public void setupChooser(final File file) {
         tester.startPage(new FormTestPage(new ComponentBuilder() {
             
             public Component buildComponent(String id) {
-                return new GeoServerFileChooser(id, new Model(root));
+                return new GeoServerFileChooser(id, new Model(file));
             }
         }));
         
@@ -42,11 +45,24 @@ public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
     }
     
     public void testLoad() {
+        setupChooser(root);
+        
         tester.assertRenderedPage(FormTestPage.class);
         tester.assertNoErrorMessage();
         
         tester.assertLabel("form:panel:fileTable:fileTable:files:1:nameLink:name", "child/");
         assertEquals(1, ((DataView) tester.getComponentFromLastRenderedPage("form:panel:fileTable:fileTable:files")).size());
     }
+    
+    public void testNullRoot() {
+        setupChooser(null);
+
+        // make sure it does not now blow out because of the null
+        tester.assertRenderedPage(FormTestPage.class);
+        tester.assertNoErrorMessage();
+        
+        tester.assertLabel("form:panel:breadcrumbs:path:0:pathItemLink:pathItem", getTestData().getDataDirectoryRoot().getName() + "/");
+    }
+    
     
 }

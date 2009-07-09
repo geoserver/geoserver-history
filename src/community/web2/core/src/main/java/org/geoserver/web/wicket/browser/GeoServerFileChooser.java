@@ -37,17 +37,24 @@ public class GeoServerFileChooser extends Panel {
         // find under which root the selection should be placed
         File selection = (File) file.getObject();
         File selectionRoot = null;
-        for (File root : roots) {
-            if(isSubfile(root, selection.getAbsoluteFile()))
-                selectionRoot = root;
-        }
-        
-        // if the file is not part of the known search paths, give up 
-        // and switch back to the data directory
-        if(selectionRoot == null) {
+        if(selection != null && selection.exists()) {
+            for (File root : roots) {
+                if(isSubfile(root, selection.getAbsoluteFile()))
+                    selectionRoot = root;
+            }
+            
+            // if the file is not part of the known search paths, give up 
+            // and switch back to the data directory
+            if(selectionRoot == null) {
+                selectionRoot = dataDirectory;
+                file = new Model(selectionRoot);
+            }
+        } else {
             selectionRoot = dataDirectory;
             file = new Model(selectionRoot);
         }
+        
+        
         
         // the root chooser
         final DropDownChoice choice = new DropDownChoice("roots", new Model(selectionRoot), new Model(roots), new FileRenderer());
