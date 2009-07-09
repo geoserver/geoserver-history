@@ -115,9 +115,7 @@ public class KMLReflector {
 
         String mode = caseInsensitiveParam(
                 request.getHttpServletRequest().getParameterMap(), 
-                "mode",
-                isRegionatingFriendly ? "superoverlay" : "refresh"
-                );
+                "mode", "refresh");
 
         if (!MODES.containsKey(mode)){
             throw new WmsException("Unknown KML mode: " + mode);
