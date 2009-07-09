@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -34,14 +35,10 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
                 Catalog catalog = getCatalog();
                 
                 WorkspaceInfo ws = (WorkspaceInfo) form.getModelObject();
-                String nsURI = nsUriTextField.getModelObjectAsString();
-                if ( nsURI == null || "".equals( nsURI ) ) {
-                    nsURI = "http://" + ws.getName();
-                }
                 
                 NamespaceInfo ns = catalog.getFactory().createNamespace();
                 ns.setPrefix ( ws.getName() );
-                ns.setURI( nsURI );
+                ns.setURI(nsUriTextField.getModelObjectAsString());
                 
                 catalog.add( ws );
                 catalog.add( ns );
@@ -52,10 +49,12 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
         };
         add(form);
         
-        TextField nameTextField = new TextField( "name", String.class );
+        TextField nameTextField = new TextField("name");
         form.add( nameTextField.setRequired(true) );
         
         nsUriTextField = new TextField( "uri", new Model() );
+        // maybe a bit too restrictive, but better than not validation at all
+        nsUriTextField.add(new UrlValidator());
         form.add( nsUriTextField );
         
         SubmitLink submitLink = new SubmitLink( "submit", form );

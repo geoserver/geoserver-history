@@ -4,7 +4,7 @@
  */
 package org.geoserver.web.data.workspace;
 
-import static org.geoserver.web.data.workspace.WorkspaceProvider.NAME;
+import static org.geoserver.web.data.workspace.WorkspaceProvider.*;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -14,7 +14,6 @@ import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
-import org.geoserver.web.data.layer.NewLayerPage;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;

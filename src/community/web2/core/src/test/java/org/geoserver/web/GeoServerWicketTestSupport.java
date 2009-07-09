@@ -1,5 +1,8 @@
 package org.geoserver.web;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.Locale;
 
 import org.acegisecurity.GrantedAuthority;
