@@ -5,7 +5,6 @@
 package org.geoserver.web.importer;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Collections;
@@ -34,6 +33,7 @@ import org.geoserver.importer.FeatureTypeImporter;
 import org.geoserver.importer.ImporterThreadManager;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.GeoServerDialog;
+import org.geoserver.web.wicket.browser.ExtensionFileFilter;
 import org.geoserver.web.wicket.browser.GeoServerFileChooser;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -93,7 +93,7 @@ public class ImportPage extends GeoServerSecuredPage {
                     	}
                     		
                         GeoServerFileChooser chooser = new GeoServerFileChooser(id, new Model(file));
-                        chooser.setFilter(new Model(new ShapefileFilter()));
+                        chooser.setFilter(new Model(new ExtensionFileFilter(".shp")));
                         return chooser;
                     }
 
@@ -217,18 +217,5 @@ public class ImportPage extends GeoServerSecuredPage {
         
     }
     
-    static class ShapefileFilter implements FileFilter, Serializable {
-
-        public boolean accept(File pathname) {
-        	if(pathname.isFile()) {
-        		return pathname.getName().toUpperCase().endsWith(".SHP");
-        	}
-            if(!pathname.isDirectory())
-                return false;
-            if(pathname.isHidden())
-                return false;
-            return true;
-        }
-        
-    }
+    
 }
