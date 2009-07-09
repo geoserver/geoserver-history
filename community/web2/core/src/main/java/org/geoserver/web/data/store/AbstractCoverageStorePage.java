@@ -78,6 +78,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         // cancel/submit buttons
         paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
         paramsForm.add(saveLink());
+        paramsForm.setDefaultButton(saveLink());
 
         // feedback panel for error messages
         paramsForm.add(new FeedbackPanel("feedback"));

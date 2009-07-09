@@ -70,6 +70,13 @@ class StoreNameValidator implements IFormValidator {
 
         WorkspaceInfo workspace = (WorkspaceInfo) wsComponent.getConvertedInput();
         String name = (String) nameComponent.getConvertedInput();
+        
+        if(name == null) {
+            ValidationError error = new ValidationError();
+            error.addMessageKey("StoreNameValidator.storeNameRequired");
+            nameComponent.error((IValidationError) error);
+            return;
+        }
 
         Catalog catalog = GeoServerApplication.get().getCatalog();
 
