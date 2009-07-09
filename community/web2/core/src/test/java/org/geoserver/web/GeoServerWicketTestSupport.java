@@ -1,8 +1,5 @@
 package org.geoserver.web;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.util.Locale;
 
 import org.acegisecurity.GrantedAuthority;
@@ -11,6 +8,13 @@ import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.context.SecurityContextImpl;
 import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.wicket.Component;
+import org.apache.wicket.Component.IVisitor;
+import org.apache.wicket.markup.html.form.CheckGroup;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.IFormVisitorParticipant;
+import org.apache.wicket.markup.html.form.RadioGroup;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.web.wicket.WicketHierarchyPrinter;
@@ -74,5 +78,22 @@ public abstract class GeoServerWicketTestSupport extends GeoServerTestSupport {
      */
     public void print(Component c, boolean dumpClass, boolean dumpValue) {
         WicketHierarchyPrinter.print(c, dumpClass, dumpValue);
+    }
+    
+    public void prefillForm(final FormTester tester) {
+        Form form = tester.getForm();
+        form.visitChildren(new Component.IVisitor() {
+            
+            public Object component(Component component) {
+                if(component instanceof FormComponent) {
+                    FormComponent fc = (FormComponent) component;
+                    String name = fc.getInputName();
+                    String value = fc.getValue();
+                    
+                    tester.setValue(name, value);
+                }
+                return Component.IVisitor.CONTINUE_TRAVERSAL;
+            }
+        });
     }
 }
