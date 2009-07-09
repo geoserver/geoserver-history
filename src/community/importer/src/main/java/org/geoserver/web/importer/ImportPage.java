@@ -33,6 +33,7 @@ import org.geoserver.importer.FeatureTypeImporter;
 import org.geoserver.importer.ImporterThreadManager;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.GeoServerDialog;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.browser.ExtensionFileFilter;
 import org.geoserver.web.wicket.browser.GeoServerFileChooser;
 import org.geotools.data.DataStore;
@@ -82,6 +83,7 @@ public class ImportPage extends GeoServerSecuredPage {
         AjaxSubmitLink link =  new AjaxSubmitLink("chooser") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
+                dialog.setTitle(new ParamResourceModel("chooseDirectory", this));
                 dialog.showOkCancel(target, new GeoServerDialog.DialogDelegate() {
 
                     @Override
