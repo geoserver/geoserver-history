@@ -1,16 +1,14 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:panel>
-    <h2><wicket:message key="confirm">ConfirmObjectRemoval</wicket:message></h2>
-
     <div wicket:id="rootObjects">
-      <p>
-      <wicket:message key="aboutRemove">About to remove</wicket:message>: <span wicket:id="rootObjectNames"></span>
-      </p>
+      <h3>
+      <wicket:message key="ConfirmRemovalPanel.aboutRemove">About to remove</wicket:message>: <span wicket:id="rootObjectNames"></span>
+      </h3>
     </div>
     
     <div wicket:id="notRemovedObjects">
-       <wicket:message key="notRemovedObject">The following objects could not be removed:</wicket:message>
+       <wicket:message key="ConfirmRemovalPanel.notRemovedObject">The following objects could not be removed:</wicket:message>
        <ul class="plain-ul">
          <li wicket:id="notRemovedList" ><span wicket:id="name"></span>: <span wicket:id="reason"></span></li>
        </ul>
@@ -18,26 +16,26 @@
     
     <div wicket:id="removedObjects">
         <wicket:message
-            key="removedObjects">The following objects will be removed</wicket:message>:
+            key="ConfirmRemovalPanel.removedObjects">The following objects will be removed</wicket:message>:
         <ul class="plain-ul">
             <li wicket:id="workspacesRemoved"><wicket:message
-                key="workspaces" />: <span wicket:id="workspaces"></span></li>
-            <li wicket:id="storesRemoved" class="plain-li"><wicket:message key="stores"/>:
+                key="ConfirmRemovalPanel.workspaces" />: <span wicket:id="workspaces"></span></li>
+            <li wicket:id="storesRemoved" class="plain-li"><wicket:message key="ConfirmRemovalPanel.stores"/>:
                 <span wicket:id="stores"></span></li>
-            <li wicket:id="layersRemoved"><wicket:message key="layers" />:
+            <li wicket:id="layersRemoved"><wicket:message key="ConfirmRemovalPanel.layers" />:
                 <span wicket:id="layers"></span></li>
-            <li wicket:id="groupsRemoved"><wicket:message key="groups" />:
+            <li wicket:id="groupsRemoved"><wicket:message key="ConfirmRemovalPanel.groups" />:
                 <span wicket:id="groups"></span></li>
         </ul>
     </div>
 
     <div wicket:id="modifiedObjects">
         <wicket:message
-            key="modifiedObjects">The following objects will be modified as a result</wicket:message>:
+            key="ConfirmRemovalPanel.modifiedObjects">The following objects will be modified as a result</wicket:message>:
         <ul class="plain-ul">
-            <li wicket:id="layersModified"><wicket:message key="layers" />:
+            <li wicket:id="layersModified"><wicket:message key="ConfirmRemovalPanel.layers" />:
                 <span wicket:id="layers"></span></li>
-            <li wicket:id="groupsModified"><wicket:message key="groups" />:
+            <li wicket:id="groupsModified"><wicket:message key="ConfirmRemovalPanel.groups" />:
                 <span wicket:id="groups"></span></li>
         </ul>
     </div>

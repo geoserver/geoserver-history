@@ -16,6 +16,7 @@ import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 
 /**
  * A reusable cascading, multiple removal link. Assumes the presence of a table
@@ -40,6 +41,8 @@ public class SelectionRemovalLink extends AjaxLink {
         final List<? extends CatalogInfo> selection = catalogObjects.getSelection();
         if(selection.size() == 0)
             return;
+        
+        dialog.setTitle(new ParamResourceModel("confirmRemoval", this));
         
         // if there is something to cancel, let's warn the user about what
         // could go wrong, and if the user accepts, let's delete what's needed

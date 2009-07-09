@@ -15,6 +15,7 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 /**
@@ -31,6 +32,14 @@ public class GeoServerDialog extends Panel {
     public GeoServerDialog(String id) {
         super(id);
         add(window = new ModalWindow("dialog"));
+    }
+    
+    /**
+     * Sets the window title
+     * @param title
+     */
+    public void setTitle(IModel title) {
+        window.setTitle(title);
     }
 
     /**
