@@ -7,15 +7,19 @@ import junit.framework.Test;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.data.Query;
 import org.geotools.feature.NameImpl;
 import org.geotools.referencing.CRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.feature.type.Name;
+
+import com.vividsolutions.jts.geom.Point;
 
 public class CatalogBuilderTest extends GeoServerTestSupport {
 
@@ -116,6 +120,22 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         Format format = CoverageStoreUtils.acquireFormat("GeoTIFF");
         assertEquals(1, fti.getMetadataLinks().size());
         assertEquals(format.getDocURL(), fti.getMetadataLinks().get(0).getContent());
+    }
+    
+    public void testEmptyBounds() throws Exception {
+        // test the bounds of a single point
+        Catalog cat = getCatalog();
+        FeatureTypeInfo fti = cat.getFeatureTypeByName(getLayerId(MockData.POINTS ));
+        assertEquals(Point.class, fti.getFeatureType().getGeometryDescriptor().getType().getBinding());
+        assertEquals(1, fti.getFeatureSource(null, null).getCount(Query.ALL));
+        
+        CatalogBuilder cb = new CatalogBuilder(cat);
+        cb.setStore(cat.getStoreByName(MockData.CGF_PREFIX, DataStoreInfo.class));
+        FeatureTypeInfo built = cb.buildFeatureType(fti.getQualifiedName());
+        cb.setupBounds(built);
+        
+        assertTrue(built.getNativeBoundingBox().getWidth() > 0);
+        assertTrue(built.getNativeBoundingBox().getHeight() > 0);
     }
     
     Name toName(QName qname) {

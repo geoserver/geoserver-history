@@ -49,6 +49,7 @@ import org.opengis.metadata.Identifier;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.GeographicCRS;
 import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -455,6 +456,16 @@ public class CatalogBuilder {
             if(bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
                 bounds = new ReferencedEnvelope(bounds, crs);
             }
+            
+            // expansion factor if the bounds are empty or one dimensional 
+            double expandBy = 1; // 1 meter
+            if(bounds.getCoordinateReferenceSystem() instanceof GeographicCRS) {
+                expandBy = 0.0001;
+            }
+            if(bounds.getWidth() == 0 || bounds.getHeight() == 0) {
+                bounds.expandBy(expandBy);
+            }
+            
         } else if(rinfo instanceof CoverageInfo) {
             // the coverage bounds computation path is a bit more linear, the
             // readers always return the bounds and in the proper CRS (afaik)
