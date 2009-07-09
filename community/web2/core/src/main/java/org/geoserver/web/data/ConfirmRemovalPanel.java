@@ -28,6 +28,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -44,7 +45,7 @@ public class ConfirmRemovalPanel extends Panel {
         super(id);
         this.roots = roots;
         
-        //track objects that could not be removed
+        // track objects that could not be removed
         Map<CatalogInfo, StringResourceModel> notRemoved = new HashMap();
         
         // collect the objects that will be removed (besides the roots)
@@ -77,7 +78,14 @@ public class ConfirmRemovalPanel extends Panel {
         
         // removed objects root (we show it if any removed object is on the list)
         WebMarkupContainer removed = new WebMarkupContainer("removedObjects");
-        removed.setVisible(visitor.getObjects(null, DELETE).size() > 0);
+        List<CatalogInfo> cascaded = visitor.getObjects(CatalogInfo.class, DELETE);
+        // remove the resources, they are cascaded, but won't be show in the UI
+        for (Iterator it = cascaded.iterator(); it.hasNext();) {
+            CatalogInfo catalogInfo = (CatalogInfo) it.next();
+            if(catalogInfo instanceof ResourceInfo)
+                it.remove();
+        }
+        removed.setVisible(cascaded.size() > 0);
         add(removed);
         
         // removed workspaces
