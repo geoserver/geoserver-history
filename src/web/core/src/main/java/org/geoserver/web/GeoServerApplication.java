@@ -167,6 +167,20 @@ public class GeoServerApplication extends SpringWebApplication {
     }
     
     @Override
+    public String getConfigurationType() {
+        String config = GeoServerExtensions.getProperty("wicket." + Application.CONFIGURATION, 
+                getApplicationContext());
+        if(config == null) {
+            return DEPLOYMENT;
+        } else if(!DEPLOYMENT.equalsIgnoreCase(config) && !DEVELOPMENT.equalsIgnoreCase(config)) {
+            LOGGER.warning("Unknown Wicket configuration value '" +  config + "', defaulting to DEPLOYMENT");
+            return DEPLOYMENT;
+        } else {
+            return config;
+        }
+    }
+    
+    @Override
     public Session newSession(Request request, Response response) {
         Session s = new GeoServerSession(request);
         if(s.getLocale() == null)
