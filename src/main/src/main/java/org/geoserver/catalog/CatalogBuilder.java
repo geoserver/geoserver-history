@@ -499,7 +499,7 @@ public class CatalogBuilder {
         CoordinateReferenceSystem crs = ftinfo.getNativeCRS();
         if ( crs != null ) {
             try {
-                Integer code = CRS.lookupEpsgCode(crs, false);
+                Integer code = CRS.lookupEpsgCode(crs, extensive);
                 if(code != null)
                     ftinfo.setSRS("EPSG:" + code);
             } catch (FactoryException e) {
