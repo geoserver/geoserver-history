@@ -92,16 +92,12 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo(GML.NAMESPACE, "//xsd:import[1]/@namespace", doc);
         assertXpathEvaluatesTo(BASE_URL + "schemas/gml/3.1.1/base/gml.xsd",
                 "//xsd:import[1]/@schemaLocation", doc);
-        // GSML import: a local file
+        // GSML import
         assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import[2]/@namespace",
                 doc);
-        File gsmlSchema = findFile("featureTypes/gsml_MappedFeature/"
-                + AbstractAppSchemaMockData.SCHEMAS_DIR + "/GeoSciML/geosciml.xsd", dataDir);
-        assertNotNull(gsmlSchema);
-        assertEquals(gsmlSchema.exists(), true);
-
-        assertXpathEvaluatesTo(gsmlSchema.toURI().toString(), "//xsd:import[2]/@schemaLocation",
-                doc);
+        // GSML schemaLocation
+        assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL,
+                "//xsd:import[2]/@schemaLocation", doc);
         // nothing else
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
@@ -675,6 +671,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                     + "/gsml:CompositionPart/gsml:lithology[2]/FEATURE_LINK", doc);
+        }
+        
+        if (false) { // disabled
+            // check for duplicate gml:id
+            assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25678']", doc);
         }
 
     }

@@ -46,6 +46,11 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
     public static final String GSML_URI = "http://www.cgi-iugs.org/xml/GeoSciML/2";
 
     /**
+     * Schema location URL for the the top-level gsml XSD.
+     */
+    public static final String GSML_SCHEMA_LOCATION_URL = "http://schemas.opengis.net/GeoSciML/geosciml.xsd";
+    
+    /**
      * The OASIS catalog file.
      */
     public static final String OASIS_CATALOG = "mappedPolygons.oasis.xml";
