@@ -72,6 +72,7 @@
 							Exclude tests with lines like this
 							<exclude>**/Whatever.java</exclude>
 						-->
+						<exclude>**/DataAccessIntegrationWfsTest.java</exclude>
 						<exclude>**/XYGeomTest.java</exclude>
 					</excludes>
 				</configuration>
