@@ -190,6 +190,22 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
     
     /**
+     * Returns pager above the table
+     * @return
+     */
+    public Pager getTopPager() {
+        return navigatorTop;
+    }
+    
+    /**
+     * Returns the pager below the table
+     * @return
+     */
+    public Pager getBottomPager() {
+        return navigatorBottom;
+    }
+    
+    /**
      * Returns the data provider feeding this table
      * @return
      */

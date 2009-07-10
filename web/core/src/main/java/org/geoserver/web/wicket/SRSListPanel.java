@@ -52,6 +52,8 @@ import org.geoserver.web.wicket.SRSProvider.SRS;
  */
 @SuppressWarnings("serial")
 public abstract class SRSListPanel extends Panel {
+    
+    GeoServerTablePanel<SRS> table;
 
     /**
      * Creates the new SRS list panel.
@@ -59,8 +61,7 @@ public abstract class SRSListPanel extends Panel {
     public SRSListPanel(String id) {
         super(id);
 
-        final GeoServerTablePanel<SRS> table = new GeoServerTablePanel<SRS>("table",
-                new SRSProvider()) {
+        table = new GeoServerTablePanel<SRS>("table", new SRSProvider()) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -86,6 +87,15 @@ public abstract class SRSListPanel extends Panel {
         };
 
         add(table);
+    }
+    
+    /**
+     * Hides the top pager so that the panel shows nicely in a small space (such as in a 
+     * popup window)
+     * @param compact
+     */
+    public void setCompactMode(boolean compact) {
+        table.getTopPager().setVisible(!compact);
     }
 
     /**
