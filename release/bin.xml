@@ -7,7 +7,7 @@
  <fileSets>
   <fileSet>
    <!-- the main webapp -->
-   <directory>community/web2/app/target/geoserver</directory>
+   <directory>web/app/target/geoserver</directory>
    <outputDirectory>geoserver-2.0-beta1/webapps/geoserver</outputDirectory>
    <includes>
     <include>**/*</include>
@@ -21,7 +21,7 @@
   </fileSet>
   <fileSet>
    <!-- the data directory -->
-   <directory>community/web2/app/target/geoserver/data</directory>
+   <directory>web/app/target/geoserver/data</directory>
    <outputDirectory>geoserver-2.0-beta1/data_dir</outputDirectory>
    <includes>
     <include>**/*</include>

@@ -7,7 +7,7 @@
  <fileSets>
   <fileSet>
    <!-- the war file -->
-   <directory>community/web2/app/target</directory>
+   <directory>web/app/target</directory>
    <outputDirectory></outputDirectory>
    <includes>
     <include>geoserver.war</include>

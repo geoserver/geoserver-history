@@ -47,14 +47,14 @@
    </includes>
   </fileSet>
   <fileSet>
-   <directory>community/web2/app/target/geoserver/data</directory>
+   <directory>web/app/target/geoserver/data</directory>
    <outputDirectory>data/release</outputDirectory>
    <includes>
     <include>**/*</include>
    </includes>
   </fileSet>
   <fileSet>
-   <directory>community/web2/app/minimal</directory>
+   <directory>web/app/minimal</directory>
    <outputDirectory>data/minimal</outputDirectory>
    <includes>
     <include>**/*</include>
