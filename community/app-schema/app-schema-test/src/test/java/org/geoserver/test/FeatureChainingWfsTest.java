@@ -60,13 +60,13 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         featureTypeNames.add(evaluate("//wfs:FeatureType[3]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[4]/wfs:Name", doc));
         // Mapped Feture
-        assertEquals(featureTypeNames.contains("MappedFeature"), true);
+        assertEquals(featureTypeNames.contains("gsml:MappedFeature"), true);
         // Geologic Unit
-        assertEquals(featureTypeNames.contains("GeologicUnit"), true);
+        assertEquals(featureTypeNames.contains("gsml:GeologicUnit"), true);
         // FirstParentFeature
-        assertEquals(featureTypeNames.contains("FirstParentFeature"), true);
+        assertEquals(featureTypeNames.contains("ex:FirstParentFeature"), true);
         // SecondParentFeature
-        assertEquals(featureTypeNames.contains("SecondParentFeature"), true);
+        assertEquals(featureTypeNames.contains("ex:SecondParentFeature"), true);
     }
 
     /**
