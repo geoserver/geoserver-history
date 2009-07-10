@@ -112,9 +112,8 @@ public class CRSPanel extends FormComponentPanel {
         findLink = new AjaxLink( "find" ) {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                popupWindow.setInitialHeight( 375 );
-                popupWindow.setInitialWidth( 525 );
                 popupWindow.setContent(srsListPanel());
+                popupWindow.setTitle(new ParamResourceModel("selectSRS", CRSPanel.this));
                 popupWindow.show(target);
             }
         };
@@ -224,7 +223,7 @@ public class CRSPanel extends FormComponentPanel {
      */
     @SuppressWarnings("serial")
     SRSListPanel srsListPanel() {
-        return new SRSListPanel(popupWindow.getContentId()) {
+        SRSListPanel srsList = new SRSListPanel(popupWindow.getContentId()) {
             
             @Override
             protected void onCodeClicked(AjaxRequestTarget target, String epsgCode) {
@@ -240,6 +239,8 @@ public class CRSPanel extends FormComponentPanel {
                 target.addComponent( wktLink );
             }
         };
+        srsList.setCompactMode(true);
+        return srsList;
     }
     
     /*
