@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.geoserver</groupId>
-    <artifactId>web2</artifactId>
+    <artifactId>web</artifactId>
     <version>2.0-SNAPSHOT</version>
   </parent>
   <groupId>org.geoserver.web</groupId>
@@ -206,7 +206,7 @@
     <profile>
       <id>release</id>
       <properties>
-        <configDirectory>${basedir}/../../../../data</configDirectory>
+        <configDirectory>${basedir}/../../../data</configDirectory>
         <configId>release</configId>
       </properties>
     </profile>
