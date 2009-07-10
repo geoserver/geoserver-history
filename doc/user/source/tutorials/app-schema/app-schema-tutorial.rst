@@ -21,7 +21,7 @@ The GeoServer data directory contains a folder called ``workspaces`` with the fo
        - gsml
            - SomeDataStore
                - SomeFeatureType
-                   - feature.xml
+                   - featuretype.xml
                - datastore.xml
                - SomeFeatureType-mapping-file.xml
 
