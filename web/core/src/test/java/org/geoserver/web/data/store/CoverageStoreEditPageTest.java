@@ -9,7 +9,6 @@ public class CoverageStoreEditPageTest extends GeoServerWicketTestSupport {
 
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
-        super.populateDataDirectory(dataDirectory);
         dataDirectory.addWellKnownCoverageTypes();
     }
     
