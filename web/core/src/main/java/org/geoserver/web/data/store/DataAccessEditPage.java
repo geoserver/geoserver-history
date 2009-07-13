@@ -6,6 +6,7 @@ package org.geoserver.web.data.store;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
@@ -13,6 +14,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geotools.data.DataAccess;
@@ -49,6 +52,10 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
         dialog = new GeoServerDialog("dialog");
         add(dialog);
         initUI(dataStoreInfo);
+
+        final String wsId = dataStoreInfo.getWorkspace().getId();
+        workspacePanel.getFormComponent().add(
+                new CheckExistingResourcesInWorkspaceValidator(dataStoreInfoId, wsId));
     }
 
     /**
@@ -137,10 +144,23 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
 
     private void doSaveStore(final DataStoreInfo info) {
         try {
-            Catalog catalog = getCatalog();
+            final Catalog catalog = getCatalog();
+
+            // The namespace may have changed, in which case we need to update the store resources
+            NamespaceInfo namespace = catalog.getNamespaceByPrefix(info.getWorkspace().getName());
+            List<FeatureTypeInfo> configuredResources = catalog.getResourcesByStore(info,
+                    FeatureTypeInfo.class);
+            for (FeatureTypeInfo alreadyConfigured : configuredResources) {
+                alreadyConfigured.setNamespace(namespace);
+            }
+
             ResourcePool resourcePool = catalog.getResourcePool();
             resourcePool.clear(info);
             catalog.save(info);
+            // save the resources after saving the store
+            for (FeatureTypeInfo alreadyConfigured : configuredResources) {
+                catalog.save(alreadyConfigured);
+            }
             LOGGER.finer("Saved store " + info.getName());
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error saving data store to catalog", e);

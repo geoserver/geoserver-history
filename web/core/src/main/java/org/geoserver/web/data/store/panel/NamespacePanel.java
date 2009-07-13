@@ -4,13 +4,17 @@
  */
 package org.geoserver.web.data.store.panel;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.web.data.namespace.NamespaceChoiceRenderer;
 import org.geoserver.web.data.namespace.NamespacesModel;
+import org.geoserver.web.util.MapModel;
 
 /**
  * A label + namespace dropdown form panel
@@ -20,8 +24,10 @@ import org.geoserver.web.data.namespace.NamespacesModel;
 @SuppressWarnings("serial")
 public class NamespacePanel extends Panel {
 
-    private final DropDownChoice choice;
+    //private final DropDownChoice choice;
 
+    private Label nsLabel;
+    
     public NamespacePanel(final String componentId, final IModel selectedItemModel,
             final IModel paramLabelModel, final boolean required) {
         // make the value of the combo field the model of this panel, for easy
@@ -32,6 +38,10 @@ public class NamespacePanel extends Panel {
         Label label = new Label("paramName", paramLabelModel);
         add(label);
 
+        nsLabel = new Label("paramValue", new PropertyModel(selectedItemModel, "URI"));
+        nsLabel.setOutputMarkupId(true);
+        add(nsLabel);
+        /*
         // the drop down field, with a decorator for validations
         choice = new DropDownChoice("paramValue", selectedItemModel, new NamespacesModel(),
                 new NamespaceChoiceRenderer());
@@ -44,9 +54,11 @@ public class NamespacePanel extends Panel {
         FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(choice);
         add(feedback);
+        */
     }
 
-    public DropDownChoice getFormComponent(){
-        return choice;
+    public Component getFormComponent() {
+        //return choice;
+        return nsLabel;
     }
 }
