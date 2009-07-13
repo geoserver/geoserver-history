@@ -27,7 +27,7 @@ Committing
 
 In order to commit to the repository the following steps must be taken:
 
-#. Install this subversion :download:`config` file. See additional notes below.
+#. Install this :download:`subversion config file <subversion/config>`. (Same as the `GeoTools subversion config file <http://svn.osgeo.org/geotools/trunk/build/subversion/config>`_.)
 #. Register for commit access as described here.
 #. Switch the repository to the "https" protocol. Example::
 
