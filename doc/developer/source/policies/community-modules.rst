@@ -1,4 +1,4 @@
-.. _community_modlues:
+.. _community_modules:
 
 Community Modules
 =================

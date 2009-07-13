@@ -8,6 +8,7 @@ Policies and Procedures
 
    comitting.rst
    code-review.rst
+   community-process.rst
    gsip.rst
    community-modules.rst
    
