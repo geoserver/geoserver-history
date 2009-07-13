@@ -104,7 +104,7 @@ new feature:
 
 #. The feature has a sponsor. This means either a developer willing to carry out
    the work or a customer who is paying for it
-#. The feature has has gone through the :ref:`gsip <GSIP>` process 
+#. The feature has has gone through the :ref:`GSIP <gsip>` process 
    **if necessary**. Whether a feature requires a GSIP is decided by the 
    community when the feature is proposed
 
