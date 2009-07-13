@@ -310,9 +310,9 @@
       <id>app-schema</id>
       <dependencies>
         <dependency>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-app-schema</artifactId> 
-          <version>${gt.version}</version>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>app-schema</artifactId> 
+          <version>${project.version}</version>
         </dependency>
       </dependencies>
     </profile>
