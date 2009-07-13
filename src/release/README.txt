@@ -1,3 +1,18 @@
+GeoServer 2.0-beta2 (July 13, 2009)
+-----------------------------------
+
+The second beta release for 2.0. The focus for this release cycle has been qa
+and continuing to hammer out the bugs with 75 issues resolved. This release also
+marks the official addition of the "app-schema" extension which allows GeoServer
+to serve up complex feature content and truly support GML application schemas.
+Special thanks to AuScope for all their hard work. 
+
+The entire changelog for this release can be found:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/15284
+
+This release is based on GeoTools 2.6.x (revision 33554)
+
 GeoServer 2.0-beta1 (May 25, 2009)
 ----------------------------------
 
