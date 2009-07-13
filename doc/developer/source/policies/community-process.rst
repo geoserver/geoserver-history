@@ -125,14 +125,3 @@ every month. However once a development branch has become stable the release
 cycle drops off to every few months. Similarly on an unstable development branch
 the release cycle can be every few months, until the branch becomes stable 
 enough for monthly releases.
-
-
-
-
-
-
-
-
-
-
-
