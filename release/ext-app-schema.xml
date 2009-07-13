@@ -17,6 +17,7 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>gt-app-schema-*.jar</include>
+                <include>xml-commons-resolver-*.jar</include>
             </includes>
         </fileSet>
         <fileSet>
