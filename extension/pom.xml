@@ -22,7 +22,16 @@
   </dependencies>
 
   <profiles>
+
     <!-- profiles for individual modules -->
+
+    <profile>
+      <id>app-schema</id>
+      <modules>
+        <module>app-schema</module>
+      </modules>
+    </profile>
+
     <profile>
       <id>arcsde</id>
       <modules>
@@ -97,6 +106,7 @@
     <profile>
       <id>allExtensions</id>
       <modules>
+        <module>app-schema</module>
         <module>arcsde</module>
         <module>h2</module>
         <module>oracle</module>
@@ -114,6 +124,7 @@
     <profile>
       <id>release</id>
       <modules>
+        <module>app-schema</module>
         <module>arcsde</module>
         <module>h2</module>
         <module>oracle</module>
@@ -126,5 +137,7 @@
         <module>charts</module>
       </modules>
     </profile>
+
   </profiles>
+
 </project>
