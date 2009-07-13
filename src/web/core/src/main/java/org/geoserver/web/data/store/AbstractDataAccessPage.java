@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.store;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
@@ -28,7 +29,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidator;
@@ -67,7 +67,7 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * automatically updated to match the workspace's namespace as per GEOS-3149 until the
      * resource/publish split is finalized
      */
-    private WorkspacePanel workspacePanel;
+    protected WorkspacePanel workspacePanel;
 
     private NamespacePanel namespacePanel;
 
@@ -193,8 +193,8 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 try {
-                    DataStoreInfo modelObject = (DataStoreInfo) form.getModelObject();
-                    onSaveDataStore(modelObject, target);
+                    DataStoreInfo dataStore = (DataStoreInfo) form.getModelObject();
+                    onSaveDataStore(dataStore, target);
                 } catch (IllegalArgumentException e) {
                     paramsForm.error(e.getMessage());
                     target.addComponent(paramsForm);
@@ -268,8 +268,10 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             }
             // make sure the proper value is returned, but don't set it for strings otherwise
             // we incur in a wicket bug (the empty string is not converter back to a null)
-            if (binding != null && !String.class.equals(binding))
+            // GR: it doesn't work for File neither.
+            if (binding != null && !String.class.equals(binding) && !File.class.equals(binding)){
                 tp.getFormComponent().setType(binding);
+            }
             parameterPanel = tp;
         }
         return parameterPanel;
@@ -291,11 +293,10 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      */
     private void makeNamespaceSyncUpWithWorkspace() {
         // do not allow the namespace choice to be manually changed
-        namespacePanel.getFormComponent().setEnabled(false);
 
         final DropDownChoice wsDropDown = (DropDownChoice) workspacePanel.getFormComponent();
         // add an ajax onchange behaviour that keeps ws and ns in synch
-        wsDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        wsDropDown.add(new OnChangeAjaxBehavior() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -303,10 +304,8 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                 WorkspaceInfo ws = (WorkspaceInfo) wsDropDown.getModelObject();
                 String prefix = ws.getName();
                 NamespaceInfo namespaceInfo = getCatalog().getNamespaceByPrefix(prefix);
-                IModel nsModel = new Model(namespaceInfo);
-                DropDownChoice nsDropDown = namespacePanel.getFormComponent();
-                nsDropDown.setModel(nsModel);
-                target.addComponent(nsDropDown);
+                namespacePanel.setModelObject(namespaceInfo);
+                target.addComponent(namespacePanel.getFormComponent());
             }
         });
     }

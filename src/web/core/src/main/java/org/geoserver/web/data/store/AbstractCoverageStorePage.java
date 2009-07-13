@@ -30,6 +30,8 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 @SuppressWarnings("serial")
 abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
 
+    protected WorkspacePanel workspacePanel;
+
     private Form paramsForm;
 
     void initUI(final CoverageStoreInfo store) {
@@ -64,7 +66,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
         paramsForm.add(new CheckBoxParamPanel("enabledPanel", new PropertyModel(model, "enabled"),
                 new ResourceModel("enabled", "Enabled")));
         // a custom converter will turn this into a namespace url
-        final WorkspacePanel workspacePanel = new WorkspacePanel("workspacePanel",
+        workspacePanel = new WorkspacePanel("workspacePanel",
                 new PropertyModel(model, "workspace"), new ResourceModel("workspace", "Workspace"),
                 true);
         paramsForm.add(workspacePanel);
@@ -96,6 +98,7 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
                 super.onError(target, form);
                 target.addComponent(paramsForm);
             }
+
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 CoverageStoreInfo info = (CoverageStoreInfo) form.getModelObject();
@@ -119,7 +122,8 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
      *             with an appropriate error message if the save action can't be successfully
      *             performed
      */
-    protected abstract void onSave(CoverageStoreInfo info, AjaxRequestTarget target) throws IllegalArgumentException;
+    protected abstract void onSave(CoverageStoreInfo info, AjaxRequestTarget target)
+            throws IllegalArgumentException;
 
     protected void clone(final CoverageStoreInfo source, CoverageStoreInfo target) {
         target.setDescription(source.getDescription());

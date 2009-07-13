@@ -5,13 +5,15 @@
 package org.geoserver.web.data.store;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -44,6 +46,10 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
         dialog = new GeoServerDialog("dialog");
         add(dialog);
         initUI(store);
+
+        String workspaceId = store.getWorkspace().getId();
+        workspacePanel.getFormComponent().add(
+                new CheckExistingResourcesInWorkspaceValidator(storeId, workspaceId));
     }
 
     @SuppressWarnings("deprecation")
@@ -130,9 +136,24 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
     private void doSaveStore(final CoverageStoreInfo info) {
         try {
             Catalog catalog = getCatalog();
+
+            final String prefix = info.getWorkspace().getName();
+            final NamespaceInfo namespace = catalog.getNamespaceByPrefix(prefix);
+
+            List<CoverageInfo> alreadyConfigured;
+            alreadyConfigured = catalog.getResourcesByStore(info, CoverageInfo.class);
+
+            for (CoverageInfo coverage : alreadyConfigured) {
+                coverage.setNamespace(namespace);
+            }
+
             ResourcePool resourcePool = catalog.getResourcePool();
             resourcePool.clear(info);
             catalog.save(info);
+
+            for (CoverageInfo coverage : alreadyConfigured) {
+                catalog.save(coverage);
+            }
             LOGGER.finer("Saved store " + info.getName());
         } catch (RuntimeException e) {
             LOGGER.log(Level.WARNING, "Saving the store for " + info.getURL(), e);

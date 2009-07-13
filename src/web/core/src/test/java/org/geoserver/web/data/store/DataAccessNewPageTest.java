@@ -89,13 +89,14 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
 
     public void testDefaultNamespace() {
 
-        final String namespacePath = "dataStoreForm:parameters:1:parameterPanel:border:paramValue";
+        //final String namespacePath = "dataStoreForm:parameters:1:parameterPanel:border:paramValue";
+        final String namespacePath = "dataStoreForm:parameters:1:parameterPanel:paramValue";
 
         startPage();
 
         NamespaceInfo defaultNs = getCatalog().getDefaultNamespace();
 
-        tester.assertModelValue(namespacePath, defaultNs);
+        tester.assertModelValue(namespacePath, defaultNs.getURI());
 
     }
 
