@@ -703,7 +703,7 @@ following extensions are supported:
      - GeoTIFF
    * - worldimage
      - Geo referenced image (JPEG,PNG,TIF)
-   * - mosaic
+   * - imagemosaic
      - Image mosaic
 
 .. list-table::
