@@ -67,15 +67,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<!--
-							Exclude tests with lines like this
-							<exclude>**/Whatever.java</exclude>
-						-->
-						<exclude>**/DataAccessIntegrationWfsTest.java</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 
