@@ -313,6 +313,7 @@
           <groupId>org.geoserver.extension</groupId>
           <artifactId>app-schema</artifactId> 
           <version>${project.version}</version>
+          <type>pom</type>
         </dependency>
       </dependencies>
     </profile>
