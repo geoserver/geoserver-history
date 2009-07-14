@@ -59,6 +59,7 @@ public class CoverageStoreNewPage extends AbstractCoverageStorePage {
         try {
             catalog.save(savedStore);
         } catch (RuntimeException e) {
+            LOGGER.log(Level.INFO, "Adding the store for " + info.getURL(), e);
             throw new IllegalArgumentException(
                     "The coverage store could not be saved. Failure message: " + e.getMessage());
         }
@@ -69,6 +70,7 @@ public class CoverageStoreNewPage extends AbstractCoverageStorePage {
         try {
             layerChooserPage = new NewLayerPage(savedStore.getId());
         } catch (RuntimeException e) {
+            LOGGER.log(Level.INFO, "Getting list of coverages for saved store " + info.getURL(), e);
             // doh, can't present the list of coverages, means saving the StoreInfo is meaningless.
             try {// be extra cautious
                 catalog.remove(savedStore);
