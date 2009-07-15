@@ -1,15 +1,21 @@
 package org.geoserver.wms.web.data;
 
-import java.io.File;
-import java.io.FileReader;
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
-import org.apache.commons.io.IOUtils;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.web.GeoServerWicketTestSupport;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
+import org.w3c.dom.Document;
 
 public class StyleEditPageTest extends GeoServerWicketTestSupport {
     
@@ -32,10 +38,19 @@ public class StyleEditPageTest extends GeoServerWicketTestSupport {
         tester.assertComponent("theForm:sld", SLDEditorPanel.class);
         
         tester.assertModelValue("theForm:name", "Buildings");
-        // for some reason an extra newline is added to the mix
+
         File styleFile = GeoserverDataDirectory.findStyleFile( buildingsStyle.getFilename() );
-        String style = IOUtils.toString(new FileReader(styleFile));
-        tester.assertModelValue("theForm:sld:editor", style);
+        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document d1 = db.parse( new FileInputStream(styleFile) );
+
+        //GEOS-3257, actually drag into xml and compare with xmlunit to avoid 
+        // line ending problems
+        String xml = tester.getComponentFromLastRenderedPage("theForm:sld:editor").getModelObjectAsString();
+        xml = xml.replaceAll("&lt;","<").replaceAll("&gt;",">").replaceAll("&quot;", "\"");
+        Document d2 = db.parse( new ByteArrayInputStream(xml
+            .getBytes()));
+
+        assertXMLEqual(d1, d2);
     }
     
     public void testMissingName() throws Exception {
