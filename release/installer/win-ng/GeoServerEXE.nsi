@@ -32,7 +32,7 @@ LangString TEXT_CREDS_TITLE ${LANG_ENGLISH} "GeoServer Administrator"
 LangString TEXT_CREDS_SUBTITLE ${LANG_ENGLISH} "Set administrator credentials"
 
 ;Interface Settings
-!define MUI_ICON "webapps\geoserver\images\gs.ico"
+!define MUI_ICON "gs.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
