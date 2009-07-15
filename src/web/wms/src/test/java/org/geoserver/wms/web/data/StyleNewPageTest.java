@@ -1,6 +1,12 @@
 package org.geoserver.wms.web.data;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+
+import java.io.ByteArrayInputStream;
 import java.io.FileReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.markup.html.form.TextField;
@@ -8,6 +14,7 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.w3c.dom.Document;
 
 public class StyleNewPageTest extends GeoServerWicketTestSupport {
     
@@ -27,9 +34,15 @@ public class StyleNewPageTest extends GeoServerWicketTestSupport {
         tester.assertComponent("uploadForm:filename", FileUploadField.class);
         
         tester.assertModelValue("form:name", null);
+        
         // for some reason an extra newline is added to the mix
-        String baseSld = IOUtils.toString(StyleNewPage.class.getResourceAsStream("template.sld")) + "\n";
-        tester.assertModelValue("form:sld:editor", baseSld);
+        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document d1 = db.parse( StyleNewPage.class.getResourceAsStream("template.sld"));
+        
+        String xml = tester.getComponentFromLastRenderedPage("form:sld:editor").getModelObjectAsString();
+        xml = xml.replaceAll("&lt;","<").replaceAll("&gt;",">").replaceAll("&quot;","\"");
+        Document d2 = db.parse( new ByteArrayInputStream(xml.getBytes()));
+        assertXMLEqual(d1, d2);
     }
     
     public void testUpload() throws Exception {
