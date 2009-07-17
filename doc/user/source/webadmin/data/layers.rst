@@ -183,6 +183,27 @@ paramters that are applied tothe http respinse when a client requests dat fro th
    * - Cache Time
      - 
 
+WMS Attribution
+```````````````
+
+The WMS Attribution section of the layer configuration page allows you to publish information about data providers.  The information is broken up into several fields:
+
+.. list-table::
+   :widths: 30 70
+
+   * - **Field**
+     - **Description**
+   * - Attribution Text
+     - Human-readable text describing the data provider.  This might be used as the text for a hyperlink to the data provider's web site.
+   * - Attribution Link
+     - A URL to the data provider's website.
+   * - Logo URL
+     - A URL to an image that serves as a logo for the data provider.
+   * - Logo Content Type, Width, and Height
+     - These fields provide information about the logo image that clients may use to assist with layout.  GeoServer will auto-detect these values if you click the :guilabel:`Auto-detect image size and type` link at the bottom of the section.
+
+The text, link, and logo are each advertised in the WMS Capabilities document if they are provided; some WMS clients will display this information to allow users to know which providers provide a particular dataset.  If you omit some of the fields, those that are provided will be published and those that are not will be omitted from the Capabilities document.
+
 WFS Settings
 ````````````
 vector: they control how geoserver of data when its being accesed via wfs.  per-request feature limit: that's the max number of geatures to return in wfs response.  if its 0 tht means there's no limit.  there's also the global setting which generally makes more sense if you're trying to limitt he bandwidth you're using on theserver. 
@@ -248,7 +269,8 @@ where you assign the style.  WMS settings. addiotnal stylesare ones to be advert
      
 Geosearch
 `````````
-whether to allow the google geo search cralwer, to index from thsi particular layer.  the geosearch stuff is included by devault.  http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=94554
+whether to allow the Google Geo search crawler, to index from this particular layer.  
+.. seealso:: http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=94554
 
 .. list-table::
    :widths: 30 70 
