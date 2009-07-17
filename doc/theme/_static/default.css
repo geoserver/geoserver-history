@@ -182,11 +182,11 @@ overflow: hidden;
 #logo a {
 margin: 19px 0 0;
 float: left;
-width: 353px;
+width: 419px;
 height: 112px;
 overflow: hidden;
 text-indent: -9999em;
-background: url(./chrome/geoserver-logo.png) no-repeat;
+background: url(./chrome/GeoExplorer_Logo.png) no-repeat;
 }
 
 #account-nav {
