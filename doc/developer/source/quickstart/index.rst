@@ -13,12 +13,26 @@ GeoServer development environment. This guide assumes that all the necessary
   For a more comprehensive guide see the :ref:`maven_guide` and the 
   :ref:`eclipse_guide`.
 
+.. contents:: :local::
+
 Check out source code
 ---------------------
 
-Check out the source code from the subversion repository::
+Check out the source code from the subversion repository. Choose ``trunk`` for
+the latest development, or a stable branch for
+versions less likely to change often.
 
-   svn co https://svn.codehaus.org/geoserver/branches/1.7.x geoserver_1.7.x
+Either::
+
+   svn co https://svn.codehaus.org/geoserver/trunk geoserver-trunk
+
+Or (stable ``1.7.x`` branch)::
+
+   svn co https://svn.codehaus.org/geoserver/branches/1.7.x geoserver-1.7.x
+
+In this example we will pretend that you checked the source out into a directory
+called ``geoserver``, but a more descriptive name is recommended.
+
 
 Build with Maven
 ----------------
@@ -26,10 +40,10 @@ Build with Maven
 Change directory to the root of the source tree and execute the maven build
 command::
 
-  cd geoserver_1.7.x/src
+  cd geoserver/src
   mvn clean install
 
-A successful build will result in the following output::
+A successful build will result in something like the following output::
 
   [INFO] 
   [INFO] 
@@ -71,7 +85,7 @@ Generate the eclipse ``.project`` and  ``.classpath`` files::
 Import modules into Eclipse
 ---------------------------
 
-#. Run the Eclipse ide
+#. Run the Eclipse IDE
 #. Open the Eclipse ``Preferences``
 #. Navigate to ``Java``, ``Build Path``, ``Classpath Variables`` and click 
    ``New...``
@@ -79,7 +93,7 @@ Import modules into Eclipse
    .. image:: m2repo1.jpg
 
 #. Create a classpath variable named "M2_REPO" and set the value to the location
-   of the local Maven repository, and click ```Ok``
+   of the local Maven repository, and click ``Ok``
 
    .. image:: m2repo2.jpg
 
@@ -94,7 +108,7 @@ Import modules into Eclipse
    .. image:: import2.jpg
       :width: 400
 
-#. Navigate to the ``geoserver_1.7.x/src`` directory 
+#. Navigate to the ``geoserver/src`` directory 
 #. Ensure all modules are selected and click ``Finish``
 
    .. image:: import3.jpg
@@ -103,14 +117,16 @@ Import modules into Eclipse
 Run GeoServer from Eclipse
 --------------------------
 
-#. From the ``Package Explorer`` select to the ``web`` module
-#. Navigate to the ``org.vfny.geoserver.jetty`` package 
+#. From the ``Package Explorer`` select the ``web-app`` module (``web`` in ``1.7.x`` or earlier)
+#. Navigate to the ``org.geoserver.web`` package (``org.vfny.geoserver.jetty`` in ``1.7.x`` or earlier)
 #. Right-click the ``Start`` class and navigate to ``Run as``, ``Java Application``
 
    .. image:: run1.jpg
       :width: 600
 
-A successful run should result with the following output on the ``Console``:
+Access GeoServer front page
+---------------------------
 
-  .. image:: run2.jpg
-     :width: 650
+* After a few seconds, GeoServer should be accessible at: `<http://localhost:8080/geoserver>`_
+* The default ``admin`` password is ``geoserver``.
+
