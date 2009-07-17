@@ -4,14 +4,17 @@
  */
 package org.geoserver.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.bio.SocketConnector;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.thread.BoundedThreadPool;
-import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.mortbay.xml.XmlConfiguration;
 
 
 /**
@@ -54,7 +57,13 @@ public class Start {
             jettyServer.setHandler(wah);
             wah.setTempDirectory(new File("target/work"));
 
-            jettyServer.start();
+            String jettyConfigFile = System.getProperty("jetty.config.file");
+            if (jettyConfigFile != null) {
+                log.info("Loading Jetty config from file: " + jettyConfigFile);
+                (new XmlConfiguration(new FileInputStream(jettyConfigFile))).configure(jettyServer);
+            }
+
+           jettyServer.start();
 
             // use this to test normal stop behaviour, that is, to check stuff that
             // need to be done on container shutdown (and yes, this will make 
