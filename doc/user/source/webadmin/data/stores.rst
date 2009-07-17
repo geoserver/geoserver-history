@@ -13,7 +13,7 @@ A store connects to a data source that contains raster or vector data. A data so
 While there are many potential formats for data source, there are only four types of stores.  For raster data, a store can be a file.  For vector data, a store can be a file, database, or server.  
 
 .. list-table::
-   :widths: 25 75 
+   :widths: 15 85 
 
    * - **Type Icon**
      - **Description**
@@ -31,7 +31,6 @@ Editing a Store
 ---------------
 
 In order to view and edit a store, click on a store name.  The exact contents of this page will depend on the specific format chosen.  (See the section on :ref:`data` for information about specific data formats.)  In the example below we have the contents of the ``nurc:ArcGridSample`` store.
-
 
 .. figure:: ../images/data_stores_edit.png
    :align: center
@@ -76,7 +75,7 @@ In order to remove a store, click on the store's corresponding check box.  Multi
 
 Click the :guilabel:`Remove selected Stores` button.  You will be asked to confirm the deletion of the the data within each store. Selecting :guilabel:`OK` removes the store(s), and will redirect to the main Stores page.
 
-.. figure:: ../images/data_stores_delete.png
+.. figure:: ../images/data_stores_delete_confirm.png
    :align: left
    
    *Confirm deletion of stores*

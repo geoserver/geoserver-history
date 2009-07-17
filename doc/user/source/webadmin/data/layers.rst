@@ -2,18 +2,18 @@
 
 Layers
 ======
-In Geoserver, the term layer refers to raster or vector data that contains geographic features.  Vector layers are analogous to featureTypes and raster layers are analogous to coverages.  Layers represents each individual feature that needs to be shown on the map. All layers have a source of data, called a Store.
+In Geoserver, the term layer refers to raster or vector data that contains geographic features.  Vector layers are analogous to featureTypes and raster layers are analogous to coverages.  Layers represent each feature that needs to be shown on the map. All layers have a source of data, called a Store.
 
-In the layers section, you can view and edit an existing layers, add (register) a new layer, or delete (unregister) a layer.  As previous View tables, the Layers View displays relevant dependencies, i.e., the layer with the store within the workspace.  The View page also displays the layer's status and native SRS (a.k.a. projection).
+In the layers section, you can view and edit an existing layers, add (register) a new layer, or delete (unregister) a layer.  As in previous View tables, the Layers View page displays relevant dependencies, i.e., the layer within the store within the workspace.  The View page also displays the layer's status and native SRS.
 
 .. figure:: ../images/data_layers.png
-   :align: left
+   :align: center
    
    *Layers View*
    
 Layer Types
 -----------
-Layers are organized into two types of data, raster and vector.  As described in the `Salmonid Habitat Restoration Planning Resource <http://www.cfses.org/salmonid/html/spatial/spatial.htm>`_ the difference between the two formats rests in how they each store spatial information.  Vector types store information about feature types as mathematical paths--a point as a single x,y coordinate, lines as a series of x,y coordinates, and polygons as a series of x,y coordinates that start and end on the same place. Raster format data is a cell-based representation of earth surface features. Each cell has a distinct value, and all cells with the same value represent a specific feature. Image and grid file types are stored in raster format 
+Layers are organized into two types of data, raster and vector.  The difference between the two formats rests in how they store spatial information.  Vector types store information about feature types as mathematical paths--a point as a single x,y coordinate, lines as a series of x,y coordinates, and polygons as a series of x,y coordinates that start and end on the same place. Raster format data is a cell-based representation of earth surface features. Each cell has a distinct value, and all cells with the same value represent a specific feature. 
 
 .. list-table::
    :widths: 5 70 
@@ -30,10 +30,10 @@ Layers are organized into two types of data, raster and vector.  As described in
 
 Edit Layer Data 
 ---------------
-Clicking the layer name opens a layer configuration panel.  The Data tab, activated by default, allows you to define and change data parameters for a layer.  
+Clicking the layer name opens a layer configuration panel.  The :guilabel:`Data` tab, activated by default, allows you to define and change data parameters for a layer.  
 
 .. figure:: ../images/data_layers_edit_data.png
-   :align: left
+   :align: center
    
    *Layers Data View*   
    
@@ -41,38 +41,32 @@ Basic Info
 ```````````
 The beginning sections--Basic Resource Info, Keywords and Metadata link are analogous to the :ref:`service_metadata` section for WCS, WFS and WMS. These sections provide "data about the data," specifically textual information that make the layer data easier to work with it. 
 
-**Name:**
-Identifier used to reference the layer in WMS requests. 
+**Name:** Identifier used to reference the layer in WMS requests. 
 
-**Title:**
- A human-readable description to briefly identify the layer to clients. (Required)   
+**Title:** A human-readable description to briefly identify the layer to clients. (Required)   
    
 **Abstract:**
 Provides a descriptive narrative with more information about the layer. 
    
 **Keywords:**
-List of short words associated with the service to aid in catalog searching.
+List of short words associated with the layer to aid in catalog searching.
  
 **Metadata Link:**
-Allows linking to external documents that describe the data layer. he standard to which the metadata complies. Currently only two standard format types are valid: TC211 and FGDC.  TC211 refers to the metadata structure established by the `ISO Technical Committee for Geographic Information/Geomatics <http://www.isotc211.org/>`_ (ISO/TC 211) while FGDC refers to those set out by the `Federal Geographic Data Committee <http://www.fgdc.gov/>`_ (FGDC) of the United States. 
+Allows linking to external documents that describe the data layer. Currently only two standard format types are valid: TC211 and FGDC.  TC211 refers to the metadata structure established by the `ISO Technical Committee for Geographic Information/Geomatics <http://www.isotc211.org/>`_ (ISO/TC 211) while FGDC refers to those set out by the `Federal Geographic Data Committee <http://www.fgdc.gov/>`_ (FGDC) of the United States. 
 
 .. figure:: ../images/data_layers_meta.png
-   :align: left
+   :align: center
    
    *Adding a metadata link n FGDC format*  
    
 Coordinate Reference Systems
 ````````````````````````````
-A coordinate reference system (CRS) defines how your georeferenced spatial data relates to real locations on the Earth’s surface.  CRSs are part of a more general model called Spatial Reference Systems (SRS), which includes referencing by coordinates and geographic identifiers.   To view all supported spatial reference systems visit the SRS in the Demos section.  
-
-The most commonly used SRS's can be specified via their EPSG (European Petroleum Survey Group) code. 
+A coordinate reference system (CRS) defines how your georeferenced spatial data relates to real locations on the Earth’s surface.  CRSs are part of a more general model called Spatial Reference Systems (SRS), which includes referencing by coordinates and geographic identifiers.   Geoserver needs to know what Coordinate Reference System of your data. This information is used for computing the latitude/longitude bounding box and reprojecting during both WMS and WFS requests
 
 .. figure:: ../images/data_layers_CRS.png
-   :align: left
+   :align: center
    
    *Adding a metadata link n FGDC format*  
-
-Geoserver needs to know what Coordinate Reference System (CRS) are your data expressed in. This information is used to compute the lat/lon data bounding box and re-project your data during both WMS and WFS requests
 
 **Native SRS:**
 Refers to the projection the layer is stored in. Clicking on the projection link displays a description of the SRS.
@@ -81,67 +75,31 @@ Refers to the projection the layer is stored in. Clicking on the projection link
 Refers to what GeoServer gives to clients. 
 
 **SRS Handling:**
- Determines how GeoServer should handle projection when the two SRS differ.  
+Determines how GeoServer should handle projection when the two SRS differ.  
 
 Bounding Boxes
 ``````````````
-The bounding box is automatically determined by taking the union of the bounds of the specified layers. In essence, it determines the extent of the map. By default, if you do not specify bbox, it will show you everything. If you have one layer of Los Angeles, and another of New York, it show you most of the United States. The bounding box, automatically set or specified, also determines the aspect ratio of the map. If you only specify one of width or height, the other will be determined based on the aspect ratio of the bounding box.  
+The bounding box is determines the extent of a layer. The :guilabel:`Native Bounding Box` are the bounds of the data projected in the Native SRS. You can generate these bounds by clicking the :guilabel:`Compute from data` button. The :guilabel:`Lat/Long Bounding Box` computes the bounds based on the standard lat/long.  These bounds can be generated by clicking the :guilabel:`Compute from native bounds` button.  
 
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - Native Bounding Box
-     - 
-   * - Compute
-     -      
-   * - Bounding Box
-     -      
-   * - Compute
-     -  
-     
- 
+.. figure:: ../images/data_layers_BB.png
+   :align: center
+   
+   *Bounding Box for sf:archsites*
 
 Coverage Parameters (Raster)
 ````````````````````````````
 
-Coverage parameters change depending on the type of data source. 
+Optional coverage parameters are possible for certain types of raster data.  WorldImage formats request a valid range of grid coordinates in 2 dimensions known as a :guilabel:`ReadGridGeometry2D.` For ImageMosaic, you can use :guilabel:`InputImageThresholdValue`, :guilabel:`InputTransparentColor`, and :guilabel:`OutputTransparentColor` to control the rendering of the mosaic in terms of thresholding and transparency.  
 
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - ReadGridGeometry2D
-     - WorldImage
-   * - InputImageThresholdValue
-     - ImageMosaic     
-   * - InputTransparentColor
-     - ImageMosaic 
-   * - OutputTransparentColor
-     - ImageMosaic 
      
 Feature Type Details (Vector)
 `````````````````````````````
-Instead of coverage parameters, vector layers have a listing of properties.
+Instead of coverage parameters, vector layers have a list of the :guilabel:`Feature Type Details`. These include the :guilabel:`Property` and :guilabel:`Type` of a data source.  For example, the ``sf:archsites`` layer show below includes a geometry, ``the_geom`` of type point. 
 
-.. list-table::
-   :widths: 30 70 
+.. figure:: ../images/data_layers_feature.png
+   :align: center
 
-   * - **Field**
-     - **Description**
-
-   * - Property
-     - Items within 
-   * - Type
-     - .       
-   * - Nillable
-     - whether it is required to have a value or can be left blank.  right now all fields are Nillable. This might change when complex featuretypes are added.
-   * - Min/Max Occurrences
-     - that's how many values that field is allowed ot have.  and right now because geoserver supports 1/0 but might be extended with the complex feature work.      
+The :guilabel:`Nillable` refers to whether the property requires a value or may be flagged as being null. Meanwhile :guilabel:`Min/Max Occurrences` refers to how many values a field is allowed to have.  Currently both :guilabel:`Nillable` and :guilabel:`Min/Max Occurrences` are set to ``true`` and ``0/1`` but might be   extended with future work on complex features.      
      
 
 Edit Publishing Information 
@@ -154,23 +112,9 @@ The publishing tab allows for configuration of HTTP and WCS settings.
    
    *Layers Data View*   
 
-Basic Settings
-``````````````
-
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - Name
-     - 
-   * - Enabled
-     - disable a layer. 
-
 HTTP Settings
 `````````````
-paramters that are applied tothe http respinse when a client requests dat fro this layter. right now its only cache stuff.  
+HTTP setting are parameters that are applied tothe http respinse when a client requests dat fro this layter. right now its only cache stuff.  
 
 .. list-table::
    :widths: 30 70 

@@ -49,6 +49,7 @@ WMS GetFeatureInfo requests retrieve information regarding a particular feature 
    
    *WMS GetFeatureInfo request*
 
+.. _srs_list:
 
 SRS
 ---
