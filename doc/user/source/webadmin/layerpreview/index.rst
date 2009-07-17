@@ -1,15 +1,16 @@
-.. _layerspreview:
+.. _layerpreview:
 
-Layers Preview
-==============
-The Layers Preview page provides layer views in various output formats.  Note, a layer must be enabled in order to be previewed.  
+Layer Preview
+=============
+
+This page provides layer views in various output formats.  Note, a layer must be enabled in order to be previewed.  
 
 .. figure:: ../images/preview_list.png
    :align: left
    
    *list of all layers and layer groups*
    
-Each layer row consists of a type, name, title and available formats for viewing.  The three types of layers include the previously discussed Raster and Vector :ref:`layer_types`, as well as the Layer Group type.  
+Each layer row consists of a type, name, title, and available formats for viewing.
 
 .. list-table::
    :widths: 5 95 
@@ -28,16 +29,18 @@ Name refers to the Workspace and Layer Name of a layer, while Title refers to th
 
 
 .. figure:: ../images/preview_row.png
-   :align: left
+   :align: center
    
    *Single Layer preview row*
 
 Output Formats
----------------
+--------------
+
 The Layer Preview page supports a variety of output formats for further use or  data sharing. You can preview all three layer types in the common OpenLayers and KML formats.  Similarly, using the "All formats" drop down menu you can preview all layer types in seven additional output formats--AtomPub, GIF, GeoRss, JPEG, KML (compressed), PDF, PNG, SVG, and TIFF.  Only Vector layers offer the WFS output previews, including the common GML as well as the CSV, GML3, GeoJSON and Shapefile formats.   The table below provides a brief description of all supported output formats, organized by output type: image, text or data.  
 
 Image Outputs
-``````````````
+`````````````
+
 All image outputs can be initiated from a WMS getMap request on either a raster,
 vector or coverage data.  WMS are methods that allows visual display of spatial data  without necessarily providing access to the features that comprise those data. 
 
@@ -70,7 +73,8 @@ vector or coverage data.  WMS are methods that allows visual display of spatial 
    *Sample Image Output-an OpenLayers preview of nurc:Pk50095*
 
 Text Outputs
-``````````````
+````````````
+
 .. list-table::
    :widths: 10 90 
 
@@ -108,6 +112,7 @@ A fragment of a simple GeoRSS for nurc:Pk50095 using Atom::
 
 Data Outputs
 ````````````
+
 All data outputs are initiated from a WFS GetFeature request on vector data.
 
 .. list-table::

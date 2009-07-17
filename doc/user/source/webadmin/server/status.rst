@@ -19,7 +19,7 @@ The following describes current status indicators
    * - **Option**
      - **Description**
    * - Locks
-     - A WFS has the ability to lock features to prevent more than one person from updating the feature at one time.   If data is locked, edits can be performed by a single WFS editor. When the edits are posted, the locks are released and features can be edited by other WFS editors. A zero in the locks field means all locks are released. If locks is non-zero, then pressing "free locks," releases all freature locks currently help by the server, and updates the field value to zero. 
+     - A WFS has the ability to lock features to prevent more than one person from updating the feature at one time.   If data is locked, edits can be performed by a single WFS editor. When the edits are posted, the locks are released and features can be edited by other WFS editors. A zero in the locks field means all locks are released. If locks is non-zero, then pressing "free locks," releases all feature locks currently help by the server, and updates the field value to zero. 
    * - Connections
      - Refers to the numbers of vector stores, in the above case 4, that were able to connect. 
    * - Memory Usage
@@ -27,7 +27,7 @@ The following describes current status indicators
    * - JVM Version
      - Denotes which version of the JVM (Java Virtual Machine) is been used to power the server.  Here the JVM is Apple Inc.: 1.5.0_16.
    * - JAI Available
-     - Geoserver uses `Java Advanced Imaging <http://java.sun.com/javase/technologies/desktop/media/jai/>`_ (JAI) framework for image rendering and coverage manipulation.  When properly installed (true), JAI makes WCS and WMS performace faster and more efficient.  
+     - GeoServer uses `Java Advanced Imaging <http://java.sun.com/javase/technologies/desktop/media/jai/>`_ (JAI) framework for image rendering and coverage manipulation.  When properly installed (true), JAI makes WCS and WMS performance faster and more efficient.  
    * - JAI Maximum Memory
      - Expresses in bytes the amount of memory available for tile cache, in this case 33325056 bytes. The JAI Maximum Memory value must be between 0.0 and {0}
    * - JAI Memory Usage
@@ -37,7 +37,7 @@ The following describes current status indicators
    * - Number of JAI Tile Threads
      - The number of parallel threads used by to scheduler to handle tiles. The value of JAI Tile Threads must fall between 0 and 100    
    * - JAI Tile Thread Priority
-     - Schedules the the global tile scheduler priority.  The priority value is defaults to 5, and must fall between 1 and 10.    
+     - Schedules the global tile scheduler priority.  The priority value is defaults to 5, and must fall between 1 and 10.    
    * - Update Sequence
      - Refers to the number of times (60) the server configuration has been modified. 
 

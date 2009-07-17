@@ -4,7 +4,7 @@ Layers
 ======
 In Geoserver, the term layer refers to raster or vector data that contains geographic features.  Vector layers are analogous to featureTypes and raster layers are analogous to coverages.  Layers represents each individual feature that needs to be shown on the map. All layers have a source of data, called a Store.
 
-In the layers section, you can view and edit an existing layers, add (register) a new layer, or delete (unregister) a layer.  As previous View tables, the Layers View displays relevant dependencies, i.e., the layer with the store within the workspace.  The View page also displays the layer's status and native :ref:`srs_list` (a.k.a. projection).
+In the layers section, you can view and edit an existing layers, add (register) a new layer, or delete (unregister) a layer.  As previous View tables, the Layers View displays relevant dependencies, i.e., the layer with the store within the workspace.  The View page also displays the layer's status and native SRS (a.k.a. projection).
 
 .. figure:: ../images/data_layers.png
    :align: left
@@ -63,7 +63,7 @@ Allows linking to external documents that describe the data layer. he standard t
    
 Coordinate Reference Systems
 ````````````````````````````
-A coordinate reference system (CRS) defines how your georeferenced spatial data relates to real locations on the Earth’s surface.  CRSs are part of a more general model called Spatial Reference Systems (SRS), which includes referencing by coordinates and geographic identifiers.   To view all supported spatial reference systems visit the :ref:`srs_list` in the Demos section.  
+A coordinate reference system (CRS) defines how your georeferenced spatial data relates to real locations on the Earth’s surface.  CRSs are part of a more general model called Spatial Reference Systems (SRS), which includes referencing by coordinates and geographic identifiers.   To view all supported spatial reference systems visit the SRS in the Demos section.  
 
 The most commonly used SRS's can be specified via their EPSG (European Petroleum Survey Group) code. 
 

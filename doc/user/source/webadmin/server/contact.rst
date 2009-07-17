@@ -2,7 +2,8 @@
 
 Contact Information
 ===================
-The Contact Information is used in the Capabilities document of the WMS server, and is publically accessibe.  We recommend filling out this form with appropriate information, in order for people to contact you. 
+
+The Contact Information is used in the Capabilities document of the WMS server, and is publically accessible.  We recommend filling out this form with appropriate information, in order for people to contact you.
 
 .. figure:: ../images/server_contact.png
    :align: center

@@ -1,17 +1,24 @@
-.. _WMS:
+.. _webadmin_wms:
 
 WMS
 ===
-In addition to the :ref:`service_metadata` outlined earlier, the Web Feature Service (WFS) page allows for configuration of features, service levels and GML ouput.  
+
+The Web Map Service (WMS) page allows for configuration of features, service levels, and GML output.  
 
 .. figure:: ../images/services_WMS.png
-   :align: left
+   :align: center
    
-   *WMS configuration options appended to the Service Metadata*
+   *WMS configuration options*
+
+Service Metadata
+----------------
+
+See the section on :ref:`service_metadata`.    
    
 Raster Rendering Options
 ------------------------
-The Web Map Service Interface Standard (WMS) provides a simple way to request and serve geo-registered map images.  During pan and zoom operations, WMS requests generate map images through a variety of raster rendering processes.  Such image manipulation is generally called resampling, interpolation or down-sampling.  Geoserver supports three resampling methods that determine how cell values of a raster are outputted.  These sampling methods--Nearest Neighbor, Bilinear Interpolation and Bicubic--are available on the Default Interpolation drop-down menu.
+
+The Web Map Service Interface Standard (WMS) provides a simple way to request and serve geo-registered map images.  During pan and zoom operations, WMS requests generate map images through a variety of raster rendering processes.  Such image manipulation is generally called resampling, interpolation, or down-sampling.  GeoServer supports three resampling methods that determine how cell values of a raster are outputted.  These sampling methods--Nearest Neighbor, Bilinear Interpolation and Bicubic--are available on the Default Interpolation drop-down menu.
 
 **Nearest Neighbor:**    
 Uses the center of nearest input cell to determine the value of the output cell.  Original values are retained and no new averages are created.  Because image values stay exactly the same, rendering is fast but possibly pixelated from sharp edge detail.  Nearest neighbor interpolation is recommended for categorical data such as land use classification.
@@ -24,13 +31,14 @@ Looks at the sixteen nearest cells and fits a smooth curve through the points to
 
 Watermark Settings
 ------------------
+
 Watermarking is the process of embedding an image into a map. Watermarks are usually used for branding, copyright and security measures. Configuring watermarking is done in the WMS watermark settings section.
 
 **Enable Watermark:**
 Turns on watermarking. When checked, all maps will render with the same watermark. It is not currently possible to specify watermarking on a per-layer or per-feature basis.
 
 **Watermark URL:**
-This is the location of the the graphic for the watermark. The graphic can be referenced as an absolute path (e.g., ``C:\geoserver\watermark.png``), a relative one inside Geoserver's data directory (e.g., ``watermark.png``), or a URL (e.g., ``hxxp://www.example.com/images/watermark.png/``).
+This is the location of the graphic for the watermark. The graphic can be referenced as an absolute path (e.g., :file:`C:\GeoServer\watermark.png`), a relative one inside GeoServer's data directory (e.g., :file:`watermark.png`), or a URL (e.g., ``http://www.example.com/images/watermark.png``).
 
 Each of these methods have their own advantages and disadvantages. When using an absolute or relative link, GeoServer keeps a cached copy of the graphic in memory, and won't continually link to the original file. This means that if the original file is subsequently deleted, GeoServer won't register it missing until the watermark settings are edited. Using a URL might seem more convenient, but it is more I/O intensive.  GeoServer will load the watermark image for every WMS request. Also, should the URL cease to be valid, the layer will not properly display.
 
@@ -43,37 +51,32 @@ Specifies the position of the watermark relative to the WMS request. The nine op
 Because each WMS request renders the watermark, a single tiled map positions *one* watermark relative to the view window while a tiled map positions the watermark for each tile.   The only layer specific aspect of watermarking occurs because a single tile map is one WMS request, whereas a tiled map contains many WMS requests.   (The latter watermark display resembles Google Maps faint copyright notice in their Satellite imagery.)  The following three examples demonstrate watermark position, transparency and tiling display, respectively.  
 
 .. figure:: ../images/services_WMS_watermark1.png
-   :align: left
+   :align: center
    
-   *Tasmania with single tile watermark (aligned top-right, transparency=0)*
+   *Single tile watermark (aligned top-right, transparency=0)*
  	
 .. figure:: ../images/services_WMS_watermark2.png
-   :align: left
+   :align: center
    
-   *Tasmania with single tile watermark (aligned top-right, transparency=90)* 	
+   *Single tile watermark (aligned top-right, transparency=90)* 	
  	
 .. figure:: ../images/services_WMS_watermark3.png
-   :align: left
+   :align: center
    
-   *Tasmania with tiled watermark (aligned top-right, transparency=90)* 	
+   *Tiled watermark (aligned top-right, transparency=90)* 	
  	
 SVG Options
 -----------
-The Geoserver WMS supports SVG (Scalable Vector Graphics) as an output format.  Geoserver currently supports two SVG renderers available on the SVG producer drop down menu. 
+
+The GeoServer WMS supports SVG (Scalable Vector Graphics) as an output format.  GeoServer currently supports two SVG renderers available on the SVG producer drop down menu. 
 
 **SVG Producer:**
 
-#. *Simple:* Known as the Simple SVG renderer. It has limited support for SLD styling. However it is very fast. 
-#. *Batik:* The second is known as the Batik renderer (as it uses the Batik SVG Framework). It has full support for SLD styling , but is slow.
+#. *Simple:* Simple SVG renderer. It has limited support for SLD styling, but is very fast. 
+#. *Batik:* Batik renderer (as it uses the Batik SVG Framework). It has full support for SLD styling, but is slower.
 
-**Enable Antialiasing**
-Anti Aliasing is a technique for making edges appear smoother and eliminating "jaggies" by filling in the edges of an object with pixels that are between the object's color and the background color. Anti-aliasing creates the illusion of smoother lines and smoother selections. Turning on Anti-aliasing will generally make your maps look nicer. But will increase the size of the images returned, and will take a slight bit longer. Note that if you are overlaying the anti-aliased map on top of others it can sometimes backfire with transparencies, since it mixes with the colors behind and can create a 'halo' effect.
-
-
-smoothing.  render line data into raster format, in general the line doesn't line up wiht pixels, antialisaingin sithe process of partially shading of pixels.  takes 4 times the space.    
-
-
-
+**Enable Anti-aliasing**
+Anti-aliasing is a technique for making edges appear smoother by filling in the edges of an object with pixels that are between the object's color and the background color. Anti-aliasing creates the illusion of smoother lines and smoother selections. Turning on anti-aliasing will generally make your maps look nicer, but will increase the size of the images returned, and will take a slight bit longer.  Note that if you are overlaying the anti-aliased map on top of others it can sometimes backfire with transparencies, since it mixes with the colors behind and can create a "halo" effect.
 
      
      

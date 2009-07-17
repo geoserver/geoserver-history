@@ -1,36 +1,38 @@
-.. _styles:
+.. _webadmin_styles:
 
 Styles
 ======
-Styles are methods of rendering geospatial data. Styles for GeoServer are written in Styled Layer Descriptor (SLD), a subset of XML. Please see the section on :ref:`styling` for more information on working with styles.  
 
-On this page, you can register or create a new style, edit (configure) an existing style, or delete (unregister) a style.
+Styles are the method of rendering geospatial data.  Styles for GeoServer are written in Styled Layer Descriptor (SLD), a subset of XML. Please see the section on :ref:`styling` for more information on working with styles.  
+
+On this page, you can register or create a new style, edit an existing style, or delete remove a style.
 
 .. figure:: ../images/data_style.png
-   :align: left
+   :align: center
    
-   *Styles View*
+   *Styles page*
 
 Edit Styles
-------------
-The Style Editor page presents options for configuring a style's name and code.  SLD names are specified at the top in the name field.  Typing or pasting of SLD code can be done in one of two modes. The first mode is an embedded `editarea <http://www.cdolivet.com/index.php?page=editArea&sess=2c779c1037faabdcd95326e6777b79c1>`_ for editing SLDs in a textarea.
+-----------
+
+The :guilabel:`Style Editor` page presents options for configuring a style's name and code.  SLD names are specified at the top in the name field.  Typing or pasting of SLD code can be done in one of two modes. The first mode is an embedded `EditArea <http://www.cdolivet.com/index.php?page=editArea>`_ a rich editor.  The second mode alternate mode is an unformatted text editor.  Check the :guilabel:`Toggle Editor` to switch between modes.
 
 .. figure:: ../images/data_style_editor.png
-   :align: left
+   :align: center
    
-   *Embedded style editarea*
+   *Rich text editor*
+
+.. figure:: ../images/data_style_editor_text.png
+   :align: center
    
-This editor is design for text formatting, search and replace, line numbering,  and real-time syntax highlighting.  You can also switch view to full-screen mode for a larger editing area. 
-
-
-Editarea Funcions
-`````````````````
-Edit area actions are listed below. 
+   *Plain text editor*
+   
+The rich editor is designed for text formatting, search and replace, line numbering, and real-time syntax highlighting.  You can also switch view to full-screen mode for a larger editing area. 
 
 .. list-table::
-   :widths: 5 70 
+   :widths: 25 75 
 
-   * - **Field**
+   * - **Button**
      - **Description**
 
    * - .. figure:: ../images/data_style_editor1.png
@@ -51,72 +53,45 @@ Edit area actions are listed below.
      - about
      
 
-The second editing mode is an unformatted text area.  The checkbox at the bottom of the page, labeled "Toggle editor" allows you to switch from the default editarea to the undformatted textarea.
+To confirm that the SLD code is fully compliant with the SLD schema, press the :guilabel:`Validate` button.  A message box will confirm whether the style has validation errors.
 
-.. figure:: ../images/data_style_editor_text.png
-   :align: left
-   
-   *Textarea for SLD editing*
-   
-To confirm that the SLD code is fully compliant with the SLD schema, press the "Validate" button.  Once clicked, a message box confirms either "no validation errors" or the first error encountered while processing. 
+.. note:: GeoServer will sometimes be able to render styles that fail validation, but this is not receommended. 
 
 .. figure:: ../images/data_style_editor_noerrors.png
-   :align: left
+   :align: center
    
    *No validation errors* 
    
 .. figure:: ../images/data_style_editor_error.png
-   :align: left
+   :align: center
    
    *Validation error message* 
 
-Add or Delete a Style
----------------------
-The buttons for adding and deleting a style can be found at the top of the Styles view page. 
+Add a Style
+-----------
+
+The buttons for adding and removing a style can be found at the top of the :guilabel:`Styles` page. 
 
 .. figure:: ../images/data_style_add_delete.png
-   :align: left
+   :align: center
 
-   *Buttons to add or delete a style*
+   *Buttons to add or remove a style*
    
-To add a new layer group, select the "Add a new style" button.  You will be redirected to an Style Editor with a blank name field and a basic point SLD with a 6px red square. A name is required for a new style.  
-
-This editor page provides two options for submitting an SLD. There is the option of typing/pasting the SLD code by the embedded editarea or textarea modes, as earlier described.  Or you can select and upload a local file that contains the SLD.
+To add a new layer group, select the :guilabel:`Add a new style` button.  You will be redirected to an editor page.  Enter a name for the style.  The editor page provides two options for submitting an SLD. You can paste the SLD directly into the editor, or you can select and upload a local file that contains the SLD.
 
 .. figure:: ../images/data_style_upload.png
-   :align: left
+   :align: center
 
-   *For a new style, you can upload an sld file from your local computer.*
+   *Uploading an SLD file from your local computer*
    
-Once a style is successfully sbumitted, you will be redirected to the styles view page where the latest style has been appended. 
+Once a style is successfully submitted, you will be redirected to the main :guilabel:`Styles` page where the style will be listed.
 
-In order to delete a style, click on the style's corresponding check box.  As with the layer deletion process, multiple layer groups can be checked for removal on a single results page.  Click the "remove selected style(s)" link at the top of the page.  As seen below, you will be asked to confirm or cancel the deletion, in this case both linetest and bob2.  Selecting "OK" successfully deletes the layer group. 
- 
+Remove a Style
+--------------
+
+In order to remove a style, click on the check box next to the style.  Multiple layer groups can be checked for batch removal.  Click the :guilabel:`Remove selected style(s)` link at the top of the page.  You will be asked to confirm or cancel the deletion.  Clicking :guilabel:`OK` removes the layer group. 
  
 .. figure:: ../images/data_style_delete.png
-   :align: left
+   :align: center
    
-   *Confirmation prompt to delete styles linetest and bob2*
-   
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   *Confirmation prompt for removing styles*
