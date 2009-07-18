@@ -83,7 +83,7 @@ public interface Function extends Expression
      *         when evaluating the function, or <code>Status</code>
      *         specifying some error condition
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context);
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context);
 
     /**
      * Returns the identifier of this function as known by the factories.
@@ -124,7 +124,7 @@ public interface Function extends Expression
      * @throws IllegalArgumentException if the inputs do match what the
      *                                  function accepts for evaluation
      */
-    public void checkInputs(List inputs) throws IllegalArgumentException;
+    public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException;
 
     /**
      * Checks that the given inputs are of the right types, in the right
@@ -146,7 +146,7 @@ public interface Function extends Expression
      * @throws IllegalArgumentException if the inputs do match what the
      *                                  function accepts for evaluation
      */
-    public void checkInputsNoBag(List inputs) throws IllegalArgumentException;
+    public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException;
  
     /**
      * Encodes this <code>Function</code> into its XML representation and

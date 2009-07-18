@@ -85,9 +85,9 @@ public class FirstApplicablePolicyAlg extends PolicyCombiningAlgorithm
      *
      * @return the result of running the combining algorithm
      */
-    public Result combine(EvaluationCtx context, List parameters,
-                          List policyElements) {
-        Iterator it = policyElements.iterator();
+    public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
+                          List<? extends CombinerElement> policyElements) {
+        Iterator<? extends CombinerElement> it = policyElements.iterator();
         
         while (it.hasNext()) {
             AbstractPolicy policy =

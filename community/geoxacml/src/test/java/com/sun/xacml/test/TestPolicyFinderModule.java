@@ -83,12 +83,12 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     // a map of URIs to policies for the reference-based policies we're
     // currently providing, and the current namespace prefix
-    private Map policyRefs = null;
+    private Map <String,String>policyRefs = null;
     private String policyRefPrefix;
 
     // a map of URIs to policies for the reference-based policy sets we're
     // currently providing, and the current namespace prefix
-    private Map policySetRefs = null;
+    private Map<String,String> policySetRefs = null;
     private String policySetRefPrefix;
     
     /**
@@ -152,13 +152,13 @@ public class TestPolicyFinderModule extends PolicyFinderModule
      *
      * @throws Exception if the any of the policies cannot be loaded
      */
-    public void setPolicies(Set policyFiles) throws Exception {
-        Iterator it = policyFiles.iterator();
+    public void setPolicies(Set<String> policyFiles) throws Exception {
+        Iterator<String> it = policyFiles.iterator();
         
         policies.clear();
 
         while (it.hasNext()) {
-            AbstractPolicy policy = loadPolicy((String)(it.next()), finder);
+            AbstractPolicy policy = loadPolicy(it.next(), finder);
             if (policy == null)
                 throw new Exception("failed to load policy");
 
@@ -172,7 +172,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
      * @param policyRefs the reference mapping
      * @param prefix the prefix for these references
      */
-    public void setPolicyRefs(Map policyRefs, String prefix) {
+    public void setPolicyRefs(Map<String,String> policyRefs, String prefix) {
         this.policyRefs = policyRefs;
         policyRefPrefix = prefix;
     }
@@ -183,7 +183,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
      * @param policySetRefs the reference mapping
      * @param prefix the prefix for these references
      */
-    public void setPolicySetRefs(Map policySetRefs, String prefix) {
+    public void setPolicySetRefs(Map<String,String> policySetRefs, String prefix) {
         this.policySetRefs = policySetRefs;
         policySetRefPrefix = prefix;
     }
@@ -197,11 +197,11 @@ public class TestPolicyFinderModule extends PolicyFinderModule
      */
     public PolicyFinderResult findPolicy(EvaluationCtx context) {
         AbstractPolicy selectedPolicy = null;
-        Iterator it = policies.iterator();
+        Iterator<AbstractPolicy> it = policies.iterator();
 
         // iterate through all the policies we currently have loaded
         while (it.hasNext()) {
-            AbstractPolicy policy = (AbstractPolicy)(it.next());
+            AbstractPolicy policy = it.next();
             MatchResult match = policy.match(context);
             int result = match.getResult();
 

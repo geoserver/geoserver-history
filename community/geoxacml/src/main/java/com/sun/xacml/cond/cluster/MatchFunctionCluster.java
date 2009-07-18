@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -57,10 +56,10 @@ public class MatchFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = MatchFunction.getSupportedIdentifiers().iterator();
+        
+        for (String fn : MatchFunction.getSupportedIdentifiers())
+            set.add(new MatchFunction(fn));
 
-        while (it.hasNext())
-            set.add(new MatchFunction((String)(it.next())));
 
         return set;
     }

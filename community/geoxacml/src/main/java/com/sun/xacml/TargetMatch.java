@@ -374,7 +374,7 @@ public class TargetMatch
     /**
      * Private helper that evaluates an individual match.
      */
-    private MatchResult evaluateMatch(List inputs, EvaluationCtx context) {
+    private MatchResult evaluateMatch(List<AttributeValue> inputs, EvaluationCtx context) {
         // first off, evaluate the function
         EvaluationResult result = function.evaluate(inputs, context);
 

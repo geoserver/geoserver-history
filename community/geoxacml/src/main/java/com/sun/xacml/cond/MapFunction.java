@@ -206,13 +206,13 @@ class MapFunction implements Function
      *
      * @return the result of evaluation
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // get the inputs, which we expect to be correct
-        Iterator iterator = inputs.iterator();
+        Iterator<? extends Expression> iterator = inputs.iterator();
         Function function = null;
 
-        Expression xpr = (Expression)(iterator.next());
+        Expression xpr = iterator.next();
         if (xpr instanceof Function) {
             function = (Function)xpr;
         } else {
@@ -260,8 +260,8 @@ class MapFunction implements Function
      *
      * @throws IllegalArgumentException if the inputs cannot be evaluated
      */
-    public void checkInputs(List inputs) throws IllegalArgumentException {
-        Object [] list = inputs.toArray();
+    public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException {
+        Expression [] list = inputs.toArray(new Expression[inputs.size()]);
 
         // check that we've got the right number of arguments
         if (list.length != 2)
@@ -282,13 +282,13 @@ class MapFunction implements Function
         if (function == null)
             throw new IllegalArgumentException("first argument to map must " +
                                                "be a Function");
-        Evaluatable eval = (Evaluatable)(list[1]);
+        Expression eval = list[1];
         if (! eval.returnsBag())
             throw new IllegalArgumentException("second argument to map must " +
                                                "be a bag");
 
         // finally, check that the type in the bag is right for the function
-        List<Object> input = new ArrayList<Object>();
+        List<Expression> input = new ArrayList<Expression>();
         input.add(list[1]);
         function.checkInputsNoBag(input);
     }
@@ -301,7 +301,7 @@ class MapFunction implements Function
      *
      * @throws IllegalArgumentException always
      */
-    public void checkInputsNoBag(List inputs) throws IllegalArgumentException {
+    public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException {
         throw new IllegalArgumentException("map requires a bag");
     }
 

@@ -378,7 +378,7 @@ public class ComparisonFunction extends FunctionBase
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
+    public static Set<String> getSupportedIdentifiers() {
         return Collections.unmodifiableSet(idMap.keySet());
     }
 
@@ -392,7 +392,7 @@ public class ComparisonFunction extends FunctionBase
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
         // Evaluate the arguments
         AttributeValue [] argValues = new AttributeValue [inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);

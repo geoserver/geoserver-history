@@ -183,7 +183,7 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
      *
      * @throws UnknownIdentifierException if the version string is unknown
      */
-    public static Set getStandardAlgorithms(String xacmlVersion)
+    public static Set<String> getStandardAlgorithms(String xacmlVersion)
         throws UnknownIdentifierException
     {
         if ((xacmlVersion.equals(PolicyMetaData.XACML_1_0_IDENTIFIER)) ||

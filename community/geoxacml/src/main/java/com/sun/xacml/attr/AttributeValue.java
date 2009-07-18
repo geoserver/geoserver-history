@@ -46,6 +46,7 @@ import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.cond.Evaluatable;
 import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.cond.Expression;
 
 
 /**
@@ -120,7 +121,7 @@ public abstract class AttributeValue implements Evaluatable
      *
      * @return an empty <code>List</code>
      */
-    public List getChildren() {
+    public List<Expression> getChildren() {
         return Collections.emptyList();
     }
 

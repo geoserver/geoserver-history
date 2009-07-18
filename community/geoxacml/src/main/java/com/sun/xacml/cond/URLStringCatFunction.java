@@ -81,11 +81,11 @@ public class URLStringCatFunction extends FunctionBase
      *
      * @throws IllegalArgumentException if the inputs won't work
      */
-    public void checkInputs(List inputs) throws IllegalArgumentException {
+    public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException {
         // scan the list to make sure nothing returns a bag
-        Iterator it = inputs.iterator();
+        Iterator<? extends Expression> it = inputs.iterator();
         while (it.hasNext()) {
-            if (((Expression)(it.next())).returnsBag())
+            if (it.next().returnsBag())
                 throw new IllegalArgumentException(NAME_URI_STRING_CONCATENATE
                                                    + " doesn't accept bags");
         }
@@ -101,17 +101,17 @@ public class URLStringCatFunction extends FunctionBase
      *
      * @throws IllegalArgumentException if the inputs won't work
      */
-    public void checkInputsNoBag(List inputs) throws IllegalArgumentException {
+    public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException {
         // make sure it's long enough
         if (inputs.size() < 2)
             throw new IllegalArgumentException("not enough args to " +
                                                NAME_URI_STRING_CONCATENATE);
 
         // check that the parameters are of the correct types...
-        Iterator it = inputs.iterator();
+        Iterator<? extends Expression> it = inputs.iterator();
         
         // ...the first argument must be a URI...
-        if (! ((Expression)(it.next())).getType().toString().
+        if (! (it.next()).getType().toString().
             equals(AnyURIAttribute.identifier))
             throw new IllegalArgumentException("illegal parameter");
 
@@ -134,7 +134,7 @@ public class URLStringCatFunction extends FunctionBase
      *
      * @return the result of evaluation
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
         // Evaluate the arguments
         AttributeValue [] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);

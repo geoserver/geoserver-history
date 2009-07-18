@@ -78,8 +78,8 @@ public abstract class CombiningAlgorithm
      *
      * @return a single unified result based on the combining logic
      */
-    public abstract Result combine(EvaluationCtx context, List parameters,
-                                   List inputs);
+    public abstract Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
+                                   List<? extends CombinerElement> inputs);
 
     /**
      * Returns the identifier for this algorithm.

@@ -62,6 +62,7 @@ import com.sun.xacml.attr.IntegerAttribute;
 public class NumericConvertFunction extends FunctionBase
 {
 
+
     /**
      * Standard identifier for the double-to-integer function.
      */
@@ -156,7 +157,7 @@ public class NumericConvertFunction extends FunctionBase
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
         
         // Evaluate the arguments
         AttributeValue [] argValues = new AttributeValue[inputs.size()];

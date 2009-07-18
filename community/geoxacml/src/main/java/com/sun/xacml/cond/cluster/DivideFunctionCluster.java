@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.DivideFunction;
@@ -57,10 +56,10 @@ public class DivideFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = DivideFunction.getSupportedIdentifiers().iterator();
         
-        while (it.hasNext())
-            set.add(new DivideFunction((String)(it.next())));
+        for (String fn : DivideFunction.getSupportedIdentifiers())
+            set.add(new DivideFunction(fn));
+
 
         return set;
     }

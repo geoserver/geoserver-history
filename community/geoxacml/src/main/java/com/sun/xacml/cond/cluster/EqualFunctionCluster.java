@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.EqualFunction;
@@ -57,10 +56,10 @@ public class EqualFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = EqualFunction.getSupportedIdentifiers().iterator();
+        
+        for (String fn : EqualFunction.getSupportedIdentifiers())
+            set.add(new EqualFunction(fn));
 
-        while (it.hasNext())
-            set.add(new EqualFunction((String)(it.next())));
 
         return set;
     }

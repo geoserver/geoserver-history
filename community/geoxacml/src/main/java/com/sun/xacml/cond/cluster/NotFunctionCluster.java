@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -57,10 +56,8 @@ public class NotFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = NotFunction.getSupportedIdentifiers().iterator();
-
-        while (it.hasNext())
-            set.add(new NotFunction((String)(it.next())));
+        for (String fn : NotFunction.getSupportedIdentifiers())
+            set.add(new NotFunction(fn));
 
         return set;
     }

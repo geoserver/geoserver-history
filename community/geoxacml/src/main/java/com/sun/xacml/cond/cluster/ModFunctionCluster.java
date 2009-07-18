@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -57,10 +56,9 @@ public class ModFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = ModFunction.getSupportedIdentifiers().iterator();
 
-        while (it.hasNext())
-            set.add(new ModFunction((String)(it.next())));
+        for (String fn : ModFunction.getSupportedIdentifiers())
+            set.add(new ModFunction(fn));
 
         return set;
     }

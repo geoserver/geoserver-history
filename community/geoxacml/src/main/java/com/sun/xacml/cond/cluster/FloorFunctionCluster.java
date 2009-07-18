@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.FloorFunction;
@@ -57,10 +56,10 @@ public class FloorFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = FloorFunction.getSupportedIdentifiers().iterator();
+        
+        for (String fn : FloorFunction.getSupportedIdentifiers())
+            set.add(new FloorFunction(fn));
 
-        while (it.hasNext())
-            set.add(new FloorFunction((String)(it.next())));
 
         return set;
     }

@@ -25,6 +25,7 @@ import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BooleanAttribute;
 import com.sun.xacml.attr.DoubleAttribute;
 import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.cond.Expression;
 
 /**
  * Checks isWithinDistance
@@ -43,7 +44,7 @@ public class GeometryIsWithinDistance extends GeometryScalarFunction {
 
     }
 
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);

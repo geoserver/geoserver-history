@@ -341,9 +341,9 @@ public abstract class FunctionBase implements Function
      * @return <code>null</code> if no errors were encountered, otherwise
      *         an <code>EvaluationResult</code> representing the error
      */
-    protected EvaluationResult evalArgs(List params, EvaluationCtx context,
+    protected EvaluationResult evalArgs(List<? extends Expression> params, EvaluationCtx context,
                                         AttributeValue [] args) {
-        Iterator it = params.iterator();
+        Iterator<? extends Expression> it = params.iterator();
         int index = 0;
 
         while (it.hasNext()) {
@@ -373,7 +373,7 @@ public abstract class FunctionBase implements Function
      *
      * @throws IllegalArgumentException if the inputs won't work
      */
-    public void checkInputs(List inputs) throws IllegalArgumentException {
+    public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException {
         // first off, see what kind of function we are
         if (singleType) {
             // first, check the length of the inputs, if appropriate
@@ -388,7 +388,7 @@ public abstract class FunctionBase implements Function
             }
 
             // now, make sure everything is of the same, correct type
-            Iterator it = inputs.iterator();
+            Iterator<? extends Expression> it = inputs.iterator();
             while (it.hasNext()) {
                 Evaluatable eval = (Evaluatable)(it.next());
 
@@ -403,7 +403,7 @@ public abstract class FunctionBase implements Function
                                                    " to " + functionName);
             
             // now, make sure everything is of the same, correct type
-            Iterator it = inputs.iterator();
+            Iterator<? extends Expression> it = inputs.iterator();
             int i = 0;
             while (it.hasNext()) {
                 Evaluatable eval = (Evaluatable)(it.next());
@@ -427,7 +427,7 @@ public abstract class FunctionBase implements Function
      *
      * @throws IllegalArgumentException if the inputs won't work
      */
-    public void checkInputsNoBag(List inputs) throws IllegalArgumentException {
+    public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException {
         // first off, see what kind of function we are
         if (singleType) {
             // first check to see if we need bags
@@ -447,7 +447,7 @@ public abstract class FunctionBase implements Function
             }
 
             // finally check param list
-            Iterator it = inputs.iterator();
+            Iterator<? extends Expression> it = inputs.iterator();
             while (it.hasNext()) {
                 Evaluatable eval = (Evaluatable)(it.next());
 
@@ -461,7 +461,7 @@ public abstract class FunctionBase implements Function
                                                    " to " + functionName);
 
             // now, make sure everything is of the same, correct type
-            Iterator it = inputs.iterator();
+            Iterator<? extends Expression> it = inputs.iterator();
             int i = 0;
             while (it.hasNext()) {
                 Evaluatable eval = (Evaluatable)(it.next());

@@ -96,13 +96,13 @@ public class VariableManager
      *                    cooresponding variable definition, or null
      * @param metaData the meta-data associated with the containing policy
      */
-    public VariableManager(Map variableIds, PolicyMetaData metaData) {
+    public VariableManager(Map<String,Node> variableIds, PolicyMetaData metaData) {
         idMap = new HashMap<Object,VariableState>();
 
-        Iterator it = variableIds.keySet().iterator();
+        Iterator<String> it = variableIds.keySet().iterator();
         while (it.hasNext()) {
-            Object key = it.next();
-            Node node = (Node)(variableIds.get(key));
+            String key = it.next();
+            Node node = variableIds.get(key);
             idMap.put(key, new VariableState(null, node, null, false, false));
         }
 

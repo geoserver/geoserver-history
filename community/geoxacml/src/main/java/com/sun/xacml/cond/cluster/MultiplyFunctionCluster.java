@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -57,10 +56,10 @@ public class MultiplyFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = MultiplyFunction.getSupportedIdentifiers().iterator();
+        
+        for (String fn : MultiplyFunction.getSupportedIdentifiers())
+            set.add(new MultiplyFunction(fn));
 
-        while (it.hasNext())
-            set.add(new MultiplyFunction((String)(it.next())));
 
         return set;
     }

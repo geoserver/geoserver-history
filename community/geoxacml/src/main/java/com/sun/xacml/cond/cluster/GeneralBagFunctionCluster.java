@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -57,10 +56,9 @@ public class GeneralBagFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = GeneralBagFunction.getSupportedIdentifiers().iterator();
 
-        while (it.hasNext())
-            set.add(new GeneralBagFunction((String)(it.next())));
+        for (String fn : GeneralBagFunction.getSupportedIdentifiers())
+            set.add(new GeneralBagFunction(fn));
 
         return set;
     }

@@ -214,7 +214,7 @@ public abstract class AttributeFactory
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public abstract Set getSupportedDatatypes();
+    public abstract Set<String> getSupportedDatatypes();
 
     /**
      * Creates a value based on the given DOM root node. The type of the

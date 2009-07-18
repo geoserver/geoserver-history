@@ -92,8 +92,8 @@ public class StandardAttributeFactory extends BaseAttributeFactory
     private static HashMap<String,AttributeProxy> supportedDatatypes = null;
 
     // the supported identifiers for each version of XACML
-    private static Set supportedV1Identifiers;
-    private static Set supportedV2Identifiers;
+    private static Set<String> supportedV1Identifiers;
+    private static Set<String> supportedV2Identifiers;
 
     // the logger we'll use for all messages
     private static final Logger logger =
@@ -214,7 +214,7 @@ public class StandardAttributeFactory extends BaseAttributeFactory
      *
      * @throws UnknownIdentifierException if the version string is unknown
      */
-    public static Set getStandardDatatypes(String xacmlVersion)
+    public static Set<String> getStandardDatatypes(String xacmlVersion)
         throws UnknownIdentifierException
     {
         if (xacmlVersion.equals(PolicyMetaData.XACML_1_0_IDENTIFIER)) {

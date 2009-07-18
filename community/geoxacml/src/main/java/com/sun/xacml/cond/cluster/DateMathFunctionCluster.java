@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.DateMathFunction;
@@ -57,10 +56,10 @@ public class DateMathFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = DateMathFunction.getSupportedIdentifiers().iterator();
         
-        while (it.hasNext())
-            set.add(new DateMathFunction((String)(it.next())));
+        for (String fn : DateMathFunction.getSupportedIdentifiers())
+            set.add(new DateMathFunction(fn));
+
 
         return set;
     }

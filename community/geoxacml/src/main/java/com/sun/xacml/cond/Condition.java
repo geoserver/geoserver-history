@@ -41,7 +41,6 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Node;
@@ -222,7 +221,7 @@ public class Condition implements Evaluatable
      *
      * @return a <code>List</code> of <code>Expression</code>s
      */
-    public List getChildren() {
+    public List<Expression> getChildren() {
         return children;
     }
 
@@ -308,11 +307,8 @@ public class Condition implements Evaluatable
                         function.getIdentifier() + "\">");
             indenter.in();
 
-            Iterator it = children.iterator();
-            while (it.hasNext()) {
-                Expression xpr = (Expression)(it.next());
+            for (Expression xpr : children)
                 xpr.encode(output, indenter);
-            }
         } else {
             out.println(indent + "<Condition>");
             indenter.in();
