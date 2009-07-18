@@ -99,173 +99,75 @@ Instead of coverage parameters, vector layers have a list of the :guilabel:`Feat
 .. figure:: ../images/data_layers_feature.png
    :align: center
 
+   *Feature Types Detaisl for sf:archsites*
+
 The :guilabel:`Nillable` refers to whether the property requires a value or may be flagged as being null. Meanwhile :guilabel:`Min/Max Occurrences` refers to how many values a field is allowed to have.  Currently both :guilabel:`Nillable` and :guilabel:`Min/Max Occurrences` are set to ``true`` and ``0/1`` but might be   extended with future work on complex features.      
-     
 
 Edit Publishing Information 
 ---------------------------
 The publishing tab allows for configuration of HTTP and WCS settings.
 
-
 .. figure:: ../images/data_layers_edit_publish.png
-   :align: left
+   :align: center
    
-   *Layers Data View*   
+   *Editing Publishing Data*   
 
-HTTP Settings
-`````````````
-HTTP setting are parameters that are applied tothe http respinse when a client requests dat fro this layter. right now its only cache stuff.  
+**HTTP Settings:** Cache parameters that apply to the HTTP response from client requests.  If :guilabel:`Response Cache Headers` is checked, GeoServer will not request the same tile twice within the time specified in :guilabel:`Cache Time`.  One hour measured in seconds (i.e., 3600), is the default value for :guilabel:`Cache Time`.
 
-.. list-table::
-   :widths: 30 70 
+**WMS Attribution:** Sets publishing information about data providers.  
 
-   * - **Field**
-     - **Description**
+.. figure:: ../images/data_layers_WMS.png
+   :align: center
+   
+   *WMS Attribution*
 
-   * - Response Cache Headers
-     - if checked, geoserver will request broweser viewing tiles form this server, will not request the same tile twice within the same time specified in cache time.  whch defaults to one hour (measured in seconds) 
-   * - Cache Time
-     - 
+* *Attribution Text*: Human-readable text describing the data provider.  This might be used as the text for a hyperlink to the data provider's web site.
+* *Attribution Link*: A URL to the data provider's website.
+* *Logo URL:* A URL to an image that serves as a logo for the data provider.
+* *Logo Content Type, Width, and Height:* These fields provide information about the logo image that clients may use to assist with layout.  GeoServer will auto-detect these values if you click the :guilabel:`Auto-detect image size and type` link at the bottom of the section.
 
-WMS Attribution
-```````````````
+The text, link, and URL are each advertised in the WMS Capabilities document if they are provided; some WMS clients will display this information to allow users to know which providers provide a particular dataset.  If you omit some of the fields, those that are provided will be published and those that are not will be omitted from the Capabilities document.
 
-The WMS Attribution section of the layer configuration page allows you to publish information about data providers.  The information is broken up into several fields:
+**WFS Settings:**
+For the layer, sets the maximum number of features a WFS GetFeature operation should generate, regardless of the actual number of query hits.
 
-.. list-table::
-   :widths: 30 70
+**WCS Settings:** Provides a list the SRS the layer can be converted to. :guilabel:`New Request SRS` allows you to add an SRS to that list. 
 
-   * - **Field**
-     - **Description**
-   * - Attribution Text
-     - Human-readable text describing the data provider.  This might be used as the text for a hyperlink to the data provider's web site.
-   * - Attribution Link
-     - A URL to the data provider's website.
-   * - Logo URL
-     - A URL to an image that serves as a logo for the data provider.
-   * - Logo Content Type, Width, and Height
-     - These fields provide information about the logo image that clients may use to assist with layout.  GeoServer will auto-detect these values if you click the :guilabel:`Auto-detect image size and type` link at the bottom of the section.
+**Interpolation Methods:** Sets the raster rendering process.  
 
-The text, link, and logo are each advertised in the WMS Capabilities document if they are provided; some WMS clients will display this information to allow users to know which providers provide a particular dataset.  If you omit some of the fields, those that are provided will be published and those that are not will be omitted from the Capabilities document.
+**Formats:** Lists which output formats a layers supports.  
 
-WFS Settings
-````````````
-vector: they control how geoserver of data when its being accesed via wfs.  per-request feature limit: that's the max number of geatures to return in wfs response.  if its 0 tht means there's no limit.  there's also the global setting which generally makes more sense if you're trying to limitt he bandwidth you're using on theserver. 
+**Default Title:** Assigns a style to a layer. Additional styles are ones published with the layer in the capabilities document. 
 
-WCS Settings
-````````````
+**Geosearch:** When enabled, allows for Google Geo search crawler, to index from this particular layer. See `What is a Geo Sitemap? <http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=94554>`_ for more information.
 
-.. list-table::
-   :widths: 30 70 
+**KML Format Settings:** Allows for limiting features based on certain criteria, otherwise known as *regionation*. Choose which feature should show up more prominently than others with the guilabel:`Default Regionating Attribute`. There are four types of :guilabel:`Regionating Methods`:
 
-   * - **Field**
-     - **Description**
-
-   * - Current Request SRS List
-     - those are the SRS's to advertsite that this layer can be converted to. 
-   * - New Request SRS
-     - add and srs to that link. 
-
-Interpolation Methods
-`````````````````````
-
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - Default Interpolation Method
-     - that's basic how geoserver should dcale image as you zoom in. the options are nearest neighbor, bilinera and bicubuc.  WCS server wide setting. layer settings override global settings.  
-   * - Current Interpolation Method
-     -
-
-Formats
-```````
-
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - Native Format
-     - which formatshold be advertsiing as supported by this layer.  there's really not that much reason to limit this.  double check with garbiel about. 
-   * - Supported Formats
-     - 
-
-Default Title
-`````````````
-where you assign the style.  WMS settings. addiotnal stylesare ones to be advertised with this later in the capabilities document. 
-
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - Default Style
-     -
-   * - Additional Styles
-     - 
-   * - Default WMS Path
-     - thats a prefix to the wms service. basically lets you expose different kind of groupings of layers.  so if the wms path is set, instead of geoserver/wms it will be whatever path is set. (that will probably go away)
-     
-Geosearch
-`````````
-whether to allow the Google Geo search crawler, to index from this particular layer.  
-.. seealso:: http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=94554
-
-.. list-table::
-   :widths: 30 70 
-
-   * - **Field**
-     - **Description**
-
-   * - Enable
-     -  
-   	 
-KML Format Settings (Vector)
-````````````````````````````
-
-.. list-table::
-   :widths: 40 60 
-
-   * - **Field**
-     - **Description**
-
-   * - Default Regionating Attribute
-     - regionating isthe proces of breaking up the data set so that geoserver can get back the largest or most iprtant features of a layer first and the win is that if you ahve milliosn of lines in it, then geoserve can only send the first 100 was you start with. and as you zoom if will fill out more detail. regionating param is the value the geoserver will look at from the data.  to decie whcih feature will show up first.  higher values of thatr attribute will be used first. proprtiest from data feature types. 
-   * - Default Regionating Method
-     - external-sorting means that geoserver will do the sorting itself, outsie od the data store. that's gaurenteed to work for any data set. but it will be slower then native storing.  post gis you should use native sorting, and for everything else use external. , geometry: sort by the size of the geom, if its polygon it uses the area, if its a line it usues the length. , native-sorting, random: just takes the data and generates some random value.  thats what you should use if you don't have any particular value.  to avoid clustering, because certain geptail data will use index will . too much detail.  
-   * - Features Per Regionated Tile
-     - controls number of features to be includd. the more complex your geomerties the lower that value should be.  10 is a pretty consertive value.  safe to go up to 100 for point data.  higher values for that, mean more data show up sooner so don't have to zoom in.   
+* *external-sorting:* Creates a temporary auxiliary database within GeoServer. It takes slightly extra time to build the index upon first request.
+* *geometry:* Externally sorts by length (if lines) or area (if polygons).
+* *native-sorting:* Uses the default sorting algorithm of the backend where the data is hosted. It is faster than external-sorting, but will only work with PostGIS datastores.
+* *random:* 	Uses the existing order of the data and does not sort.
 
 Add or Delete a Layer
 ---------------------     
-I just added a postgis table and i can choose which data i want to expose.  show data that's already there. its not new as int he sanese that it's not already there.  its new in the sense of that its not exposed. 
-
-
 At the upper left-hand corner of the layers view page there are two buttons for the adding and deletion of layers.  The green plus button allows you to add a new layer, here referred to as resource.  The red minus button allows you to remove selected layers.  
 
-
-
 .. figure:: ../images/data_layers_add_remove.png
-   :align: left
+   :align: center
    
    *Buttons to Add or Remove a Layer*  
 
-Clicking on the "Add a new resource" button brings up a "New Layer Chooser" panel.  The drop down menu displays all currently enabled stores.  From this menu, select the Store where the layer should be added.  
+Clicking on the :guilabel:`Add a new resource` button brings up a :guilabel:`New Layer Chooser` panel.  The drop down menu displays all currently enabled stores.  From this menu, select the Store where the layer should be added.  
 
 .. figure:: ../images/data_layers_add_chooser.png
-   :align: left
+   :align: center
    
    *List of all currently enabled stores* 
 
-Upon selection of a Store, a view table of existing layers within the selected store will be displayed.  In this example, giant_polygon, poi, poly_landmarks and tiger_roads are all layers within the NYC store. 
+Upon selection of a Store, a view table of existing layers within the selected store will be displayed.  In this example, ``giant_polygon``, ``poi``, ``poly_landmarks`` and ``tiger_roads`` are all layers within the NYC store. 
 
 .. figure:: ../images/data_layers_add_view.png
-   :align: left
+   :align: center
    
    *View of all layers* 
 
@@ -274,19 +176,19 @@ Upon selection of a layer name, you're redirected to a layer edit page. :ref:`ed
 In order to delete a layer, click on the check box on the left side of each layer row.  As shown below, multiple layers can be checked for removal on a single results page.  It should be noted, however, that selections for removal will not persist from one results pages to the next.  
   
 .. figure:: ../images/data_layers_delete.png
-   :align: left
+   :align: center
    
    *Layers nurc:Img_Sample, sf:restricted, sf:streams selected for deletion*
    
 All layers can be selected for removal by enabling the checkbox in the header row. 
 
 .. figure:: ../images/data_layers_delete_all.png
-   :align: left
+   :align: center
    
    *All layers selected to be deleted*
    
    
-Once layer(s) are checked, the "Remove selected resources" link is activated.  Upon clicking on the link, you will be asked to confirm or cancel the deletion.  Selecting "OK" successfully deletes the layer. 
+Once layer(s) are checked, the :guilabel:`Remove selected resources` link is activated.  Upon clicking on the link, you will be asked to confirm or cancel the deletion.  Selecting :guilabel:`OK` successfully deletes the layer. 
      
      
      
