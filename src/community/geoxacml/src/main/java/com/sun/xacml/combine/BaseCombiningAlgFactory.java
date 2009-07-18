@@ -39,7 +39,6 @@ package com.sun.xacml.combine;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.UnknownIdentifierException;
@@ -86,20 +85,11 @@ public class BaseCombiningAlgFactory extends CombiningAlgFactory
      * @throws IllegalArgumentException if any elements of the set are not
      *                                  </code>CombiningAlgorithm</code>s
      */
-    public BaseCombiningAlgFactory(Set algorithms) {
+    public BaseCombiningAlgFactory(Set<CombiningAlgorithm> algorithms) {
         algMap = new HashMap<String,CombiningAlgorithm>();
-
-        Iterator it = algorithms.iterator();
-        while (it.hasNext()) {
-            try {
-                CombiningAlgorithm alg = (CombiningAlgorithm)(it.next());
-                algMap.put(alg.getIdentifier().toString(), alg);
-            } catch (ClassCastException cce) {
-                throw new IllegalArgumentException("an element of the set " +
-                                                   "was not an instance of " +
-                                                   "CombiningAlgorithm");
-            }
-        }
+        
+        for (CombiningAlgorithm alg : algorithms) 
+        	algMap.put(alg.getIdentifier().toString(), alg);        
     }
 
     /**
@@ -128,7 +118,7 @@ public class BaseCombiningAlgFactory extends CombiningAlgFactory
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedAlgorithms() {
+    public Set<String> getSupportedAlgorithms() {
         return Collections.unmodifiableSet(algMap.keySet());
     }
 

@@ -182,7 +182,7 @@ public class GeneralSetFunction extends SetFunction
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // Evaluate the arguments
         AttributeValue [] argValues = new AttributeValue[inputs.size()];
@@ -206,7 +206,7 @@ public class GeneralSetFunction extends SetFunction
             // create a bag with the common elements of both inputs, removing
             // all duplicate values
 
-            Iterator it = bags[0].iterator();
+            Iterator<AttributeValue> it = bags[0].iterator();
 
             // find all the things in bags[0] that are also in bags[1]
             while (it.hasNext()) {

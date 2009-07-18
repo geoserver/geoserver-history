@@ -255,8 +255,8 @@ public class VariableReference implements Expression
      *
      * @return an empty <code>List</code>
      */
-    public List getChildren() {
-        return Collections.EMPTY_LIST;
+    public List<Expression> getChildren() {
+        return Collections.emptyList();
     }
 
     /**

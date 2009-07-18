@@ -62,7 +62,7 @@ public class BasicGroupTest implements Test
     private boolean experimental;
 
     // the tests contained in this group
-    private List tests;
+    private List<Test> tests;
 
     /**
      * Constructor that accepts all the required values
@@ -71,7 +71,7 @@ public class BasicGroupTest implements Test
      * @param experimental true if this is an experimental group
      * @param tests the groups of tests
      */
-    public BasicGroupTest(String name, boolean experimental, List tests) {
+    public BasicGroupTest(String name, boolean experimental, List<Test> tests) {
         this.name = name;
         this.experimental = experimental;
         this.tests = tests;
@@ -135,18 +135,18 @@ public class BasicGroupTest implements Test
      *
      * @return a <code>List</code> of <code>Test</code>s
      */
-    public List getTests() {
+    public List<Test> getTests() {
         return tests;
     }
 
     public int run(String testPrefix) {
-        Iterator it = tests.iterator();
+        Iterator<Test> it = tests.iterator();
         int errorCount = 0;
         
         System.out.println("Running group " + name);
 
         while (it.hasNext())
-            errorCount += ((Test)(it.next())).run(testPrefix + name);
+            errorCount += it.next().run(testPrefix + name);
 
         System.out.println("Finished group " + name +
                            " [failures: " + errorCount + "]");

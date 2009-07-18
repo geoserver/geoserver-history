@@ -39,7 +39,6 @@ package com.sun.xacml.cond;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -110,8 +109,8 @@ public class BaseFunctionFactory extends FunctionFactory
      * @param supportedAbstractFunctions a mapping from <code>URI</code> to
      *                                   <code>FunctionProxy</code>
      */
-    public BaseFunctionFactory(Set supportedFunctions,
-                               Map supportedAbstractFunctions) {
+    public BaseFunctionFactory(Set<Function> supportedFunctions,
+                               Map<URI,? extends FunctionProxy> supportedAbstractFunctions) {
         this(null, supportedFunctions, supportedAbstractFunctions);
     }
 
@@ -129,19 +128,15 @@ public class BaseFunctionFactory extends FunctionFactory
      *                                   <code>FunctionProxy</code>
      */
     public BaseFunctionFactory(FunctionFactory superset,
-                               Set supportedFunctions,
-                               Map supportedAbstractFunctions) {
+                               Set<Function> supportedFunctions,
+                               Map<URI,? extends FunctionProxy> supportedAbstractFunctions) {
         this(superset);
 
-        Iterator it = supportedFunctions.iterator();
-        while (it.hasNext()) {
-            Function function = (Function)(it.next());
+        for (Function function : supportedFunctions)    
             functionMap.put(function.getIdentifier().toString(), function);
-        }
+        
 
-        it = supportedAbstractFunctions.keySet().iterator();
-        while (it.hasNext()) {
-            URI id = (URI)(it.next());
+        for (URI id : supportedAbstractFunctions.keySet()) {   
             FunctionProxy proxy =
                 (FunctionProxy)(supportedAbstractFunctions.get(id));
             functionMap.put(id.toString(), proxy);

@@ -54,6 +54,7 @@ import com.sun.xacml.ParsingException;
 import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.cond.Evaluatable;
 import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.cond.Expression;
 import com.sun.xacml.ctx.Status;
 
 
@@ -362,8 +363,8 @@ public class AttributeDesignator implements Evaluatable
      *
      * @return an empty <code>List</code>
      */
-    public List getChildren() {
-        return Collections.EMPTY_LIST;
+    public List<Expression> getChildren() {
+        return Collections.emptyList();
     }
 
     /**

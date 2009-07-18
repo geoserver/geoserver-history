@@ -128,12 +128,12 @@ public class LogicalFunction extends FunctionBase
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // Evaluate the arguments one by one. As soon as we can
         // return a result, do so. Return Indeterminate if any argument
         // evaluated is indeterminate.
-        Iterator it = inputs.iterator();
+        Iterator<? extends Expression> it = inputs.iterator();
         while (it.hasNext()) {
             Evaluatable eval = (Evaluatable)(it.next());
 

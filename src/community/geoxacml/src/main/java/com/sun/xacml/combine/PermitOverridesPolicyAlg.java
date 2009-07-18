@@ -102,13 +102,13 @@ public class PermitOverridesPolicyAlg extends PolicyCombiningAlgorithm
      *
      * @return the result of running the combining algorithm
      */
-    public Result combine(EvaluationCtx context, List parameters,
-                          List policyElements) {
+    public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
+                          List<? extends CombinerElement> policyElements) {
         boolean atLeastOneError = false;
         boolean atLeastOneDeny = false;
         Set<Obligation> denyObligations = new HashSet<Obligation>();
         Status firstIndeterminateStatus = null;
-        Iterator it = policyElements.iterator();
+        Iterator<? extends CombinerElement> it = policyElements.iterator();
 
         while (it.hasNext()) {
             AbstractPolicy policy =

@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.ComparisonFunction;
@@ -56,11 +55,10 @@ public class ComparisonFunctionCluster implements FunctionCluster
 {
 
     public Set<Function> getSupportedFunctions() {
-        Set<Function> set = new HashSet<Function>();
-        Iterator it = ComparisonFunction.getSupportedIdentifiers().iterator();
+        Set<Function> set = new HashSet<Function>();        
 
-        while (it.hasNext())
-            set.add(new ComparisonFunction((String)(it.next())));
+        for (String fn : ComparisonFunction.getSupportedIdentifiers())
+            set.add(new ComparisonFunction(fn));
 
         return set;
     }

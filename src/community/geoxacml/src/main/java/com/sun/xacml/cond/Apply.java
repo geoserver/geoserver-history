@@ -41,7 +41,6 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Node;
@@ -297,7 +296,7 @@ public class Apply implements Evaluatable
      *
      * @return a <code>List</code> of <code>Expression</code>s
      */
-    public List getChildren() {
+    public List<Expression> getChildren() {
         return xprs;
     }
 
@@ -396,12 +395,9 @@ public class Apply implements Evaluatable
                     function.getIdentifier() + "\">");
         indenter.in();
 
-        Iterator it = xprs.iterator();
-        while (it.hasNext()) {
-            Expression xpr = (Expression)(it.next());
+        for (Expression xpr : xprs)	
             xpr.encode(output, indenter);
-        }
-
+        
         indenter.out();
         out.println(indent + "</Apply>");
     }

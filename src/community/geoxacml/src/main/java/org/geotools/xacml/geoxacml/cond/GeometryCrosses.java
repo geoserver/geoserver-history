@@ -23,6 +23,7 @@ import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.cond.EvaluationResult;
+import com.sun.xacml.cond.Expression;
 
 /**
  * Checks if 2 geoms cross
@@ -39,7 +40,7 @@ public class GeometryCrosses extends GeometryTopologicalFunction {
 
     }
 
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);

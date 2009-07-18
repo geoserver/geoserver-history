@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.AbsFunction;
@@ -57,11 +56,9 @@ public class AbsFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = AbsFunction.getSupportedIdentifiers().iterator();
-
-        while (it.hasNext())
-            set.add(new AbsFunction((String)(it.next())));
-
+        
+        for (String fn : AbsFunction.getSupportedIdentifiers())
+        	set.add(new AbsFunction(fn));
         return set;
     }
 

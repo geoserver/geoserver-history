@@ -202,7 +202,7 @@ public abstract class CombiningAlgFactory
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public abstract Set getSupportedAlgorithms();
+    public abstract Set<String> getSupportedAlgorithms();
 
     /**
      * Tries to return the correct combinging algorithm based on the

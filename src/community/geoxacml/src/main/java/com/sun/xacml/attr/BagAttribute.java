@@ -87,10 +87,10 @@ public class BagAttribute extends AttributeValue
             this.bag = new ArrayList<AttributeValue>();
         } else {
             // go through the collection to make sure it's a valid bag
-            Iterator it = bag.iterator();
+            Iterator<AttributeValue> it = bag.iterator();
             
             while (it.hasNext()) {
-                AttributeValue attr = (AttributeValue)(it.next());
+                AttributeValue attr = it.next();
 
                 // a bag cannot contain other bags, so make sure that each
                 // value isn't actually another bag

@@ -90,13 +90,13 @@ public class BaseAttributeFactory extends AttributeFactory
      * @throws IllegalArgumentException if any elements of the Map are not
      *                                  </code>AttributeProxy</code>s
      */
-    public BaseAttributeFactory(Map attributes) {
+    public BaseAttributeFactory(Map<String,AttributeProxy> attributes) {
         attributeMap = new HashMap<String,AttributeProxy>();
 
-        Iterator it = attributes.keySet().iterator();
+        Iterator<String> it = attributes.keySet().iterator();
         while (it.hasNext()) {
             try {
-                String id = (it.next()).toString();
+                String id = it.next();
                 AttributeProxy proxy = (AttributeProxy)(attributes.get(id));
                 attributeMap.put(id, proxy);
             } catch (ClassCastException cce) {
@@ -130,7 +130,7 @@ public class BaseAttributeFactory extends AttributeFactory
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public Set getSupportedDatatypes() {
+    public Set<String> getSupportedDatatypes() {
         return Collections.unmodifiableSet(attributeMap.keySet());
     }
 

@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.ConditionSetFunction;
@@ -57,11 +56,9 @@ public class ConditionSetFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = ConditionSetFunction.getSupportedIdentifiers().
-            iterator();
-
-        while (it.hasNext())
-            set.add(new ConditionSetFunction((String)(it.next())));
+        
+        for (String fn : ConditionSetFunction.getSupportedIdentifiers())
+            set.add(new ConditionSetFunction(fn));
 
         return set;
     }

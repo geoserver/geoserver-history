@@ -95,13 +95,13 @@ public class PermitOverridesRuleAlg extends RuleCombiningAlgorithm
      *
      * @return the result of running the combining algorithm
      */
-    public Result combine(EvaluationCtx context, List parameters,
-                          List ruleElements) {
+    public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
+                          List<? extends CombinerElement> ruleElements) {
         boolean atLeastOneError = false;
         boolean potentialPermit = false;
         boolean atLeastOneDeny = false;
         Result firstIndeterminateResult = null;
-        Iterator it = ruleElements.iterator();
+        Iterator<? extends CombinerElement> it = ruleElements.iterator();
 
         while (it.hasNext()) {
             Rule rule = ((RuleCombinerElement)(it.next())).getRule();

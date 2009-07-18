@@ -86,7 +86,7 @@ public abstract class PolicyCombiningAlgorithm extends CombiningAlgorithm
      *
      * @return a single unified result based on the combining logic
      */
-    public abstract Result combine(EvaluationCtx context, List parameters,
-                                   List policyElements);
+    public abstract Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
+                                   List<? extends CombinerElement> policyElements);
 
 }

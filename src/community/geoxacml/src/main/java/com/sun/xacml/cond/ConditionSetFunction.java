@@ -200,7 +200,7 @@ public class ConditionSetFunction extends SetFunction
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // Evaluate the arguments
         AttributeValue [] argValues = new AttributeValue[inputs.size()];
@@ -223,7 +223,7 @@ public class ConditionSetFunction extends SetFunction
             // second argument (using the *-is-in semantics)
 
             result = BooleanAttribute.getFalseInstance();
-            Iterator it = bags[0].iterator();
+            Iterator<AttributeValue> it = bags[0].iterator();
 
             while (it.hasNext()) {
                 if (bags[1].contains((AttributeValue)(it.next()))) {

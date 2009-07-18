@@ -166,7 +166,7 @@ public class TestAttributeFinderModule extends AttributeFinderModule
         // finally, look for the subject who has the role-mapping defined,
         // and if they're the identified subject, add their role
         BagAttribute returnBag = null;
-        Iterator it = bag.iterator();
+        Iterator<AttributeValue> it = bag.iterator();
         while (it.hasNext()) {
             StringAttribute attr = (StringAttribute)(it.next());
             if (attr.getValue().equals("Julius Hibbert")) {

@@ -178,7 +178,7 @@ public class HigherOrderFunction implements Function
      *
      * @return a <code>Set</code> of <code>String</code>s
      */
-    public static Set getSupportedIdentifiers() {
+    public static Set<String> getSupportedIdentifiers() {
         return Collections.unmodifiableSet(idMap.keySet());
     }
 
@@ -231,12 +231,12 @@ public class HigherOrderFunction implements Function
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
-        Iterator iterator = inputs.iterator();
+        Iterator<? extends Expression> iterator = inputs.iterator();
 
         // get the first arg, which is the function
-        Expression xpr = (Expression)(iterator.next());
+        Expression xpr = iterator.next();
         Function function = null;
 
         if (xpr instanceof Function) {
@@ -301,11 +301,11 @@ public class HigherOrderFunction implements Function
             // any evaluation is true return true, otherwise return false
 
             result = new EvaluationResult(BooleanAttribute.getInstance(false));
-            Iterator it = ((BagAttribute)args[0]).iterator();
+            Iterator<AttributeValue> it = ((BagAttribute)args[0]).iterator();
             BagAttribute bag = (BagAttribute)(args[1]);
             
             while (it.hasNext()) {
-                AttributeValue value = (AttributeValue)(it.next());
+                AttributeValue value = it.next();
                 result = any(value, bag, function, context, false);
                 
                 if (result.indeterminate())
@@ -353,11 +353,11 @@ public class HigherOrderFunction implements Function
             // function, then return true, otherwise return false
 
             result = new EvaluationResult(BooleanAttribute.getInstance(true));
-            Iterator it = ((BagAttribute)args[0]).iterator();
+            Iterator<AttributeValue> it = ((BagAttribute)args[0]).iterator();
             BagAttribute bag = (BagAttribute)(args[1]);
 
             while (it.hasNext()) {
-                AttributeValue value = (AttributeValue)(it.next());
+                AttributeValue value = it.next();
                 result = all(value, bag, function, context);
             
                 if (result.indeterminate())
@@ -382,7 +382,7 @@ public class HigherOrderFunction implements Function
      *
      * @throws IllegalArgumentException if the inputs are invalid
      */
-    public void checkInputs(List inputs) throws IllegalArgumentException {
+    public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException {
         Object [] list = inputs.toArray();
 
         // first off, check that we got the right number of paramaters
@@ -440,7 +440,7 @@ public class HigherOrderFunction implements Function
      *
      * @throws IllegalArgumentException always
      */
-    public void checkInputsNoBag(List inputs) throws IllegalArgumentException {
+    public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException {
         throw new IllegalArgumentException("higher-order functions require " +
                                            "use of bags");
     }
@@ -529,10 +529,10 @@ public class HigherOrderFunction implements Function
                                           Function function,
                                           EvaluationCtx context,
                                           boolean argumentsAreSwapped) {
-        Iterator it = allBag.iterator();
+        Iterator<AttributeValue> it = allBag.iterator();
 
         while (it.hasNext()) {
-            AttributeValue value = (AttributeValue)(it.next());
+            AttributeValue value = it.next();
             EvaluationResult result =
                 any(value, anyBag, function, context, argumentsAreSwapped);
             

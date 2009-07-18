@@ -75,7 +75,7 @@ public class TestUtil
             return false;
 
         // get an iterator for the first set of Responses
-        Iterator it1 = results1.iterator();
+        Iterator<Result> it1 = results1.iterator();
         
         // setup a temporary Set for the second set of Responses, so we can
         // remove the matching Result at each step
@@ -84,13 +84,13 @@ public class TestUtil
         // consider each Result in the first Response, and try to find an
         // equivalent one in the second Response
         while (it1.hasNext()) {
-            Result result1 = (Result)(it1.next());
-            Iterator it2 = set2.iterator();
+            Result result1 = it1.next();
+            Iterator<Result> it2 = set2.iterator();
             boolean matched = false;
 
             // go through the second list, and see if there's a matching Result
             while (it2.hasNext() && (! matched)) {
-                Result result2 = (Result)(it2.next());
+                Result result2 = it2.next();
                 
                 // two results are equivalent if they have the same decision,
                 // the same resource (or none in both cases), and if their
@@ -143,8 +143,8 @@ public class TestUtil
      *         otherwise
      */
     public static boolean areEquivalent(Status status1, Status status2) {
-        Iterator it1 = status1.getCode().iterator();
-        Iterator it2 = status2.getCode().iterator();
+        Iterator<String> it1 = status1.getCode().iterator();
+        Iterator<String> it2 = status2.getCode().iterator();
 
         // check that the same codes appear in each status
         while (it1.hasNext()) {
@@ -153,7 +153,7 @@ public class TestUtil
                 return false;
 
             // check that the specific code is the same at each step
-            if (! ((String)(it1.next())).equals((String)(it2.next())))
+            if (! (it1.next()).equals(it2.next()))
                 return false;
         }
 
@@ -179,7 +179,7 @@ public class TestUtil
             return false;
 
         // get an iterator for the first set of Obligations
-        Iterator it1 = obs1.iterator();
+        Iterator<Obligation> it1 = obs1.iterator();
 
         // setup a temporary Set for the second set of Obligations, so we can
         // remove the matching the Obligation at each step
@@ -188,8 +188,8 @@ public class TestUtil
         // consider each Obligation in the first set, and try to find an
         // equivalent one in the second set
         while (it1.hasNext()) {
-            Obligation o1 = (Obligation)(it1.next());
-            Iterator it2 = set2.iterator();
+            Obligation o1 = it1.next();
+            Iterator<Obligation> it2 = set2.iterator();
             boolean matched = false;
 
             // go through the second set, and see if there's a matching
@@ -202,17 +202,17 @@ public class TestUtil
                 if ((o1.getId().equals(o2.getId())) &&
                     (o1.getFulfillOn() == o2.getFulfillOn())) {
                     // get the assignments, and make sure they match
-                    List assignments1 = o1.getAssignments();
-                    List assignments2 = o2.getAssignments();
+                    List<Attribute> assignments1 = o1.getAssignments();
+                    List<Attribute> assignments2 = o2.getAssignments();
                     
                     if (assignments1.size() == assignments2.size()) {
-                        Iterator ait1 = assignments1.iterator();
-                        Iterator ait2 = assignments2.iterator();
+                        Iterator<Attribute> ait1 = assignments1.iterator();
+                        Iterator<Attribute> ait2 = assignments2.iterator();
                         boolean assignmentsMatch = true;
 
                         while (ait1.hasNext() && assignmentsMatch) {
-                            Attribute attr1 = (Attribute)(ait1.next());
-                            Attribute attr2 = (Attribute)(ait2.next());
+                            Attribute attr1 = ait1.next();
+                            Attribute attr2 = ait2.next();
 
                             if ((! attr1.getId().equals(attr2.getId())) ||
                                 (! attr1.getType().equals(attr2.getType())) ||

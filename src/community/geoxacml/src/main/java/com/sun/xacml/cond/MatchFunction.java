@@ -269,7 +269,7 @@ public class MatchFunction extends FunctionBase
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
         
         // Evaluate the arguments
         AttributeValue [] argValues = new AttributeValue[inputs.size()];

@@ -161,13 +161,13 @@ public class TestDriver
      * @param prefix the root directory of all the conformance test cases
      */
     public void runTests(String prefix) {
-        Iterator it = tests.iterator();
+        Iterator<Test> it = tests.iterator();
         int errorCount = 0;
 
         System.out.println("STARTING TESTS at " + new Date());
 
         while (it.hasNext()) {
-            Test test = (Test)(it.next());
+            Test test = it.next();
             errorCount += test.run(prefix);
         }
 

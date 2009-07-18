@@ -129,7 +129,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
      * correctly propagating new functions.
      */
     private StandardFunctionFactory(Set<Function> supportedFunctions,
-                                    Map supportedAbstractFunctions) {
+                                    Map<URI,? extends FunctionProxy> supportedAbstractFunctions) {
         super(supportedFunctions, supportedAbstractFunctions);
 
 //        this.supportedFunctions = supportedFunctions;
@@ -351,7 +351,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
      *
      * @throws UnknownIdentifierException if the version string is unknown
      */
-    public static Set getStandardFunctions(String xacmlVersion) {
+    public static Set<String> getStandardFunctions(String xacmlVersion) {
         // FIXME: collecting the identifiers needs to be implemented..
         throw new RuntimeException("This method isn't implemented yet.");
     }
@@ -363,7 +363,7 @@ public class StandardFunctionFactory extends BaseFunctionFactory
      * @return a <code>Map</code> mapping <code>URI</code>s to
      *         <code>FunctionProxy</code>s
      */
-    public static Map getStandardAbstractFunctions(String xacmlVersion) {
+    public static Map<URI, ? extends FunctionProxy> getStandardAbstractFunctions(String xacmlVersion) {
         // FIXME: collecting the identifiers needs to be implemented..
         throw new RuntimeException("This method isn't implemented yet.");
     }

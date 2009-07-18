@@ -100,7 +100,7 @@ public class TimeInRangeFunction extends FunctionBase
      *
      * @return an <code>EvaluationResult</code> containing true or false
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
         AttributeValue [] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
 

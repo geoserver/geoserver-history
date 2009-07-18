@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -57,11 +56,10 @@ public class NumericConvertFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = NumericConvertFunction.getSupportedIdentifiers().
-            iterator();
         
-        while (it.hasNext())
-            set.add(new NumericConvertFunction((String)(it.next())));
+        for (String fn : NumericConvertFunction.getSupportedIdentifiers())
+            set.add(new NumericConvertFunction(fn));
+
 
         return set;
     }

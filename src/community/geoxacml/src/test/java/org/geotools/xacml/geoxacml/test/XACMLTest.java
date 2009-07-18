@@ -156,13 +156,13 @@ public class XACMLTest extends TestCase {
         	return;
         }
         
-        Iterator it = tests.iterator();
+        Iterator<Test> it = tests.iterator();
         int errorCount = 0;
 
         System.out.println("STARTING TESTS at " + new Date());
 
         while (it.hasNext()) {
-            Test test = (Test)(it.next());
+            Test test = it.next();
             int error= test.run("target"+File.separator+"resources"+File.separator+"xml"+File.separator);
             if (error >0 ) {
             	System.out.println("FAILED: "+test.getName()); 

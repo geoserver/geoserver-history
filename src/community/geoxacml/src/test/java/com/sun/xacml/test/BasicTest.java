@@ -65,9 +65,9 @@ public class BasicTest implements Test
     private TestPolicyFinderModule module;
 
     // the policies and references used by this test
-    private Set policies;
-    private Map policyRefs;
-    private Map policySetRefs;
+    private Set<String> policies;
+    private Map<String,String> policyRefs;
+    private Map<String,String> policySetRefs;
 
     // meta-data associated with this test
     private String name;
@@ -87,8 +87,8 @@ public class BasicTest implements Test
      * @param errorExpected true if en error is expected from a normal run
      * @param experimental true if this is an experimental test
      */
-    public BasicTest(PDP pdp, TestPolicyFinderModule module, Set policies,
-                     Map policyRefs, Map policySetRefs, String name,
+    public BasicTest(PDP pdp, TestPolicyFinderModule module, Set<String> policies,
+                     Map<String,String> policyRefs, Map<String,String> policySetRefs, String name,
                      boolean errorExpected, boolean experimental) {
         this.pdp = pdp;
         this.module = module;
@@ -195,11 +195,11 @@ public class BasicTest implements Test
             if (policies == null) {
                 module.setPolicies(testPrefix + name + "Policy.xml");
             } else {
-                Iterator it = policies.iterator();
+                Iterator<String> it = policies.iterator();
                 Set<String> set = new HashSet<String>();
 
                 while (it.hasNext())
-                    set.add(testPrefix + (String)(it.next()));
+                    set.add(testPrefix + it.next());
 
                 module.setPolicies(set);
             }

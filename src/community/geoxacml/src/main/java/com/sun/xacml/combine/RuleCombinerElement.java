@@ -38,7 +38,6 @@ package com.sun.xacml.combine;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Iterator;
 import java.util.List;
 
 import com.sun.xacml.Indenter;
@@ -97,9 +96,8 @@ public class RuleCombinerElement extends CombinerElement
      * @param indenter an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
-        Iterator it = getParameters().iterator();
 
-        if (it.hasNext()) {
+        if (getParameters().size()>0) {
             PrintStream out = new PrintStream(output);
             String indent = indenter.makeString();
 
@@ -107,10 +105,8 @@ public class RuleCombinerElement extends CombinerElement
                         getRule().getId() + "\">");
             indenter.in();
             
-            while (it.hasNext()) {
-                CombinerParameter param = (CombinerParameter)(it.next());
-                param.encode(output, indenter);
-            }
+            for (CombinerParameter param : getParameters() )
+            	param.encode(output, indenter);
             
             out.println(indent + "</RuleCombinerParameters>");
             indenter.out();

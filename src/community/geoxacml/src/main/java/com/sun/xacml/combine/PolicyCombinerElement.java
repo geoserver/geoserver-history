@@ -38,7 +38,6 @@ package com.sun.xacml.combine;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Iterator;
 import java.util.List;
 
 import com.sun.xacml.AbstractPolicy;
@@ -130,16 +129,13 @@ public class PolicyCombinerElement extends CombinerElement
                                   String prefix, String id) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
-        Iterator it = getParameters().iterator();
 
         out.println(indent + "<" + prefix + "CombinerParameters " +
                     prefix + "IdRef=\"" + id + "\">");            
         indenter.in();
 
-        while (it.hasNext()) {
-            CombinerParameter param = (CombinerParameter)(it.next());
+        for (CombinerParameter param : getParameters())
             param.encode(output, indenter);
-        }
             
         out.println(indent + "</" + prefix + "CombinerParameters>");
         indenter.out();

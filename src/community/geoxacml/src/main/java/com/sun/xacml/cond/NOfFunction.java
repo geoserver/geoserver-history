@@ -114,12 +114,12 @@ public class NOfFunction extends FunctionBase
      * @return an <code>EvaluationResult</code> representing the
      *         function's result
      */
-    public EvaluationResult evaluate(List inputs, EvaluationCtx context) {
+    public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // Evaluate the arguments one by one. As soon as we can return
         // a result, do so. Return  Indeterminate if any argument
         // evaluated is indeterminate.
-        Iterator it = inputs.iterator();
+        Iterator<? extends Expression> it = inputs.iterator();
         Evaluatable eval = (Evaluatable)(it.next());
 
         // Evaluate the first argument
@@ -172,7 +172,7 @@ public class NOfFunction extends FunctionBase
     /**
      *
      */
-    public void checkInputs(List inputs) throws IllegalArgumentException {
+    public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException {
         // check that none of the inputs is a bag
         Object [] list = inputs.toArray();
         for (int i = 0; i < list.length; i++)
@@ -187,7 +187,7 @@ public class NOfFunction extends FunctionBase
     /**
      *
      */
-    public void checkInputsNoBag(List inputs) throws IllegalArgumentException {
+    public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException {
         Object [] list = inputs.toArray();
         
         // check that there is at least one arg

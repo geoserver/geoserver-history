@@ -84,9 +84,9 @@ public class FirstApplicableRuleAlg extends RuleCombiningAlgorithm
      *
      * @return the result of running the combining algorithm
      */
-    public Result combine(EvaluationCtx context, List parameters,
-                          List ruleElements) {
-        Iterator it = ruleElements.iterator();
+    public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
+                          List<? extends CombinerElement> ruleElements) {
+        Iterator<? extends CombinerElement> it = ruleElements.iterator();
         
         while (it.hasNext()) {
             Rule rule = ((RuleCombinerElement)(it.next())).getRule();

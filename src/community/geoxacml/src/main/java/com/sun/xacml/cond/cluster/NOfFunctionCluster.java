@@ -37,7 +37,6 @@
 package com.sun.xacml.cond.cluster;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.sun.xacml.cond.Function;
@@ -55,10 +54,9 @@ public class NOfFunctionCluster implements FunctionCluster
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        Iterator it = NOfFunction.getSupportedIdentifiers().iterator();
 
-        while (it.hasNext())
-            set.add(new NOfFunction((String)(it.next())));
+        for (String fn : NOfFunction.getSupportedIdentifiers())
+            set.add(new NOfFunction(fn));
 
         return set;
     }

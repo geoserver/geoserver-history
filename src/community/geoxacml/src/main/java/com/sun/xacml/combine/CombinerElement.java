@@ -107,7 +107,7 @@ public abstract class CombinerElement
      *
      * @return a <code>List</code> of <code>CombinerParameter</code>s
      */
-    public List getParameters() {
+    public List<CombinerParameter> getParameters() {
         return parameters;
     }
 
