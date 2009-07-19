@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 /**
  * Test for the time parameter in a WMS request.
  * 
- * @author Cédric Briançon
+ * @author Cedric Briancon
  */
 public class TimeKvpParserTest extends TestCase {
     /**
