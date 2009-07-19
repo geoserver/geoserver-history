@@ -34,6 +34,8 @@ public class ShapeZipTest extends WFSTestSupport {
     private static final QName ALL_TYPES = new QName(MockData.CITE_URI, "AllTypes", MockData.CITE_PREFIX);
     private static final QName GEOMMID = new QName(MockData.CITE_URI, "geommid", MockData.CITE_PREFIX);
     private static final QName NULLGEOM = new QName(MockData.CITE_URI, "nullgeom", MockData.CITE_PREFIX);
+    private static final QName DOTS = new QName(MockData.CITE_URI, "dots.in.name", MockData.CITE_PREFIX);
+
     private Operation op;
     private GetFeatureType gft;
     
@@ -45,6 +47,7 @@ public class ShapeZipTest extends WFSTestSupport {
         dataDirectory.addPropertiesType(ALL_TYPES, ShapeZipTest.class.getResource("AllTypes.properties"), params);
         dataDirectory.addPropertiesType(GEOMMID, ShapeZipTest.class.getResource("geommid.properties"), params);
         dataDirectory.addPropertiesType(NULLGEOM, ShapeZipTest.class.getResource("nullgeom.properties"), params);
+        dataDirectory.addPropertiesType(DOTS, ShapeZipTest.class.getResource("dots.in.name.properties"), params);
     }   
 
     @Override
@@ -118,6 +121,19 @@ public class ShapeZipTest extends WFSTestSupport {
         zip.write(fct, bos, op);
         
         final String[] expectedTypes = new String[] {"nullgeom"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
+    }
+    
+    public void testDots() throws Exception {
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        fs =  getFeatureSource(DOTS);
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fs.getFeatures());
+        zip.write(fct, bos, op);
+        
+        final String[] expectedTypes = new String[] {"dots.in.name"};
         checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
     }
 
