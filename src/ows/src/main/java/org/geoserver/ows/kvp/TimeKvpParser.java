@@ -20,7 +20,7 @@ import org.geoserver.ows.KvpParser;
  * Parses the {@code time} parameter of the request. The date, time and period
  * are expected to be formatted according ISO-8601 standard.
  *
- * @author Cédric Briancon
+ * @author Cï¿½dric Briancon
  * @author Martin Desruisseaux
  * @version $Id$
  */
@@ -42,11 +42,6 @@ public class TimeKvpParser extends KvpParser {
      * Amount of milliseconds in a day.
      */
     static final long MILLIS_IN_DAY = 24*60*60*1000;
-
-    /**
-     * Date formats to be used in order to parse the String given by the user in the request.
-     */
-    private final DateFormat[] formats = new DateFormat[PATTERNS.length];
 
     /**
      * Creates the parser specifying the name of the key to latch to.
@@ -120,17 +115,17 @@ public class TimeKvpParser extends KvpParser {
      * @throws ParseException if the string can not be parsed.
      */
     private Date getDate(final String value) throws ParseException {
-        for (int i=0; i<formats.length; i++) {
-            if (formats[i] == null) {
-                formats[i] = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
-            }
+        for (int i=0; i<PATTERNS.length; i++) {
+            // rebuild formats at each parse, date formats are not thread safe
+            SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
+
             /* We do not use the standard method DateFormat.parse(String), because if the parsing
              * stops before the end of the string, the remaining characters are just ignored and
              * no exception is thrown. So we have to ensure that the whole string is correct for
              * the format.
              */
             ParsePosition pos = new ParsePosition(0);
-            Date time = formats[i].parse(value, pos);
+            Date time = format.parse(value, pos);
             if (pos.getIndex() == value.length()) {
                 return time;
             }
