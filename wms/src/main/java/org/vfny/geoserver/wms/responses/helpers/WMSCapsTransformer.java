@@ -687,7 +687,6 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Title", layer.getResource().getTitle());
             element("Abstract", layer.getResource().getAbstract());
             handleKeywordList(layer.getResource().getKeywords());
-            handleAttribution(layer);
 
             /**
              * @task REVISIT: should getSRS() return the full URL? no - the spec
@@ -725,6 +724,10 @@ public class WMSCapsTransformer extends TransformerBase {
             if(bbox != null){
                 handleBBox(bbox, srs);
             }
+            
+            // handle data attribution
+            handleAttribution(layer);
+
             // handle metadata URLs
             handleMetadataList(layer.getResource().getMetadataLinks());
 
