@@ -218,6 +218,10 @@ color: #262523;
 padding: 0 0 250px 19px;
 }
 
+#ajaxFeedback {
+  position: fixed; right: 20px; top: 10px;
+}
+
 /*-----------------------
 Tables
 -----------------------*/
