@@ -7,6 +7,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.config.GeoServerInfo;
 import org.w3c.dom.Document;
 
 public class GetCapabilitiesTest extends WMSTestSupport {
@@ -34,6 +35,15 @@ public class GetCapabilitiesTest extends WMSTestSupport {
     }
 
     public void testAttribution() throws Exception {
+        // Uncomment the following lines if you want to use DTD validation for these tests
+        // (by passing false as the second param to getAsDOM())
+        // BUG: Currently, this doesn't seem to actually validate the document, although 
+        // 'validation' fails if the DTD is missing
+
+        // GeoServerInfo global = getGeoServer().getGlobal();
+        // global.setProxyBaseUrl("src/test/resources/geoserver");
+        // getGeoServer().save(global);
+
         Document doc = getAsDOM("wms?service=WMS&request=getCapabilities", true);
         assertXpathEvaluatesTo("0", "count(//Attribution)", doc);
 

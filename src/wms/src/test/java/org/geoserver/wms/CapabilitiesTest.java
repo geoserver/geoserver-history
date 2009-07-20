@@ -10,6 +10,7 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,6 +31,14 @@ public class CapabilitiesTest extends WMSTestSupport {
     }
 
     @Override
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
+        GeoServerInfo global = getGeoServer().getGlobal();
+        global.setProxyBaseUrl("src/test/resources/geoserver");
+        getGeoServer().save(global);
+    }
+
+    @Override
     protected void populateDataDirectory(MockData dataDirectory)
             throws Exception {
         super.populateDataDirectory(dataDirectory);
@@ -37,7 +46,7 @@ public class CapabilitiesTest extends WMSTestSupport {
     }
 
     public void testCapabilities() throws Exception {
-        Document dom = dom(get("wms?request=getCapabilities"), true);
+        Document dom = dom(get("wms?request=getCapabilities"), false);
         Element e = dom.getDocumentElement();
         assertEquals("WMT_MS_Capabilities", e.getLocalName());
     }
