@@ -7,17 +7,29 @@ package org.geoserver.web;
 import javax.servlet.http.HttpSession;
 
 import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
+import org.apache.wicket.Component;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.geoserver.web.wicket.ParamResourceModel;
 
+/**
+ * This is a simple login form shown when the user tries to access a secured page directly 
+ * @author aaime
+ */
 public class GeoServerLoginPage extends WebPage {
 
     public GeoServerLoginPage(PageParameters parameters) {
+        // backlink to the home page
+        add( new BookmarkablePageLink( "home", GeoServerHomePage.class )
+            .add( new Label( "label", new StringResourceModel( "home", (Component)null, null ) )  ) );
+        
         FeedbackPanel feedbackPanel;
         add(feedbackPanel = new FeedbackPanel("feedback"));
         feedbackPanel.setOutputMarkupId( true );
