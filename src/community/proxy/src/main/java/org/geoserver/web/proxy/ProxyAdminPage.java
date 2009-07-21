@@ -71,7 +71,7 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
         {
             // TODO: Add a submit button, and make it somehow call this vvv.
             
-            ProxyConfig.writeConfigToDisk(config);
+            //ProxyConfig.writeConfigToDisk(config);
         }
     }
 }
