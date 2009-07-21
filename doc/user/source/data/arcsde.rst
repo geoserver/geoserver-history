@@ -57,9 +57,7 @@ GeoServer files
 #. Download the ArcSDE extension from the `GeoServer download page 
    <http://geoserver.org/display/GEOS/Download>`_.
 
-   .. note:
-
-      Make sure you match the version of the extension to the version of GeoServer.
+   .. note:  Make sure you match the version of the extension to the version of GeoServer.
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of 
    the GeoServer installation.
@@ -67,22 +65,25 @@ GeoServer files
 Required external files
 ```````````````````````
 
-There are three files required that are not packaged with the GeoServer extension:
+There are two files that are required but are not packaged with the GeoServer extension:
 
 .. list-table::
    :widths: 20 80
 
    * - **File**
      - **Notes**
-   * - ``jsde_sdk.jar``
-     - Also known as ``jsde##_sdk.jar`` where ``##`` is the version number, such as ``92`` for ArcSDE version 9.2
-   * - ``jpe_sdk.jar``
-     - Also known as ``jpe##_sdk.jar`` where ``##`` is the version number, such as ``92`` for ArcSDE version 9.2
-   * - ``icu4j_3_2.jar``
-     - Only needed for ArcSDE version 9.2 and newer
-     
-The first two files can be downloaded from ESRI's website or copied from the ArcSDE
-installation media.  To download the JSDE/JPE JAR files from ESRI's website:
+   * - :file:`jsde_sdk.jar`
+     - Also known as :file:`jsde##_sdk.jar` where ``##`` is the version number, such as ``92`` for ArcSDE version 9.2
+   * - :file:`jpe_sdk.jar`
+     - Also known as :file:`jpe##_sdk.jar` where ``##`` is the version number, such as ``92`` for ArcSDE version 9.2
+
+You should always make sure the :file:`jsde_sdk.jar` and :file:`jpe_sdk.jar` versions match your ArcSDE server version, including 
+service pack, although client jar versions higher than the ArcSDE Server version usually work just fine.
+
+These two files are available on your installation of the ArcSDE Java SDK from the ArcSDE insatallation media
+(usually ``C:\Program Files\ArcGIS\ArcSDE\lib``).
+They may also be available on ESRI's website if there's a service pack containing them, but this is not
+guaranteed. To download these files from ESRI's website:
 
 #. Navigate to `<http://support.esri.com/index.cfm?fa=downloads.patchesServicePacks.listPatches&PID=66>`_
 #. Find the link to the latest service pack for your version of ArcSDE
@@ -90,16 +91,11 @@ installation media.  To download the JSDE/JPE JAR files from ESRI's website:
 #. Download any of the target files (but be sure to match 32/64 bit to your OS)
 #. Open the archive, and extract the appropriate JARs.
 
-.. note::
+.. note:: The JAR files may be in a nested archive inside this archive.
 
-   The JAR files may be in a nested archive inside this archive.
+.. note:: The :file:`icu4j##.jar` may also be on your ArcSDE Java SDK installation folder, but it is already included as part of the the GeoServer ArcSDE extension and is not necessary to install separately.
 
-To download the third file (``icu4j_3_2.jar``):
-
-#. Navigate to  `<ftp://ftp.software.ibm.com/software/globalization/icu/icu4j/3.2/>`_
-#. Download the file ``icu4j_3_2.jar``.
-
-When downloaded, copy all three files to the ``WEB-INF/lib`` directory of the GeoServer installation.
+#. When downloaded, copy the two files to the :file:`WEB-INF/lib` directory of the GeoServer installation.
 
 After all GeoServer files and external files have been downloaded and copied, restart GeoServer.
 
