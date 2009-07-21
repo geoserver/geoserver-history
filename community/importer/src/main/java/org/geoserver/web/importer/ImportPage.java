@@ -187,7 +187,7 @@ public class ImportPage extends GeoServerSecuredPage {
             Map<String, Serializable> params = new HashMap<String, Serializable>();
             try {
                 // check the store can be built (we need to provide the namespace as well
-                params.put(DirectoryDataStoreFactory.URLP.key, new File(directory).toURL());
+                params.put(DirectoryDataStoreFactory.URLP.key, new File(directory).toURI().toURL());
                 params.put(DirectoryDataStoreFactory.NAMESPACE.key, new URI("http://www.geoserver.org"));
                 store = DataStoreFinder.getDataStore(params);
                 if (store == null) {
