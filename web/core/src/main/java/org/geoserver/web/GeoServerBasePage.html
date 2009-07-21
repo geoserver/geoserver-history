@@ -18,8 +18,8 @@
 	</wicket:link>
 </wicket:head>
 <body>
-  <div id="header" class="selfclear">
-    <div class="wrap selfclear">
+  <div id="header">
+    <div class="wrap">
       <h2><a wicket:id="home" class="pngfix" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
       <div class="button-group selfclear">
       <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
@@ -67,14 +67,14 @@
       </ul>
       <div class="devtoolbar" wicket:id="devButtons" title="Developer helper actions. This bar must not be available in releases"></div>
     </div><!-- /#sidebar -->
-    <div id="page">
+    <div id="page" class="selfclear">
       <div class="page-header">
         <div id="feedback" wicket:id="feedback"></div>
         <h1><wicket:message key="title"></wicket:message></h1>
         <p><wicket:message key="description"></wicket:message></p>
         <div wicket:id="headerPanel" class="header-panel"></div>
       </div>
-      <div class="page-pane">
+      <div class="page-pane selfclear">
         <wicket:child></wicket:child>
       </div>
     </div><!-- /#page -->

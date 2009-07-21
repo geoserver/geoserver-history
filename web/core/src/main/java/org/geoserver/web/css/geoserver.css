@@ -539,7 +539,7 @@ margin: 0 0.58em 0 0;
 Header
 -----------------------*/
 
-#header {
+#header .wrap {
 text-align: right;
 }
 
@@ -559,6 +559,10 @@ text-align: left;
 margin: 0 0 -23px;
 }
 
+* html #header h2 a {
+cursor: pointer;
+position: relative;
+}
 
 #header .button-group {
 padding: 0.5em 0 0;
@@ -675,8 +679,24 @@ padding: 0 19px 250px 0;
 margin: 0 0 -250px 0;
 }
 
+* html #main .wrap { /* IE6 */
+background-position: 100% -2px;
+}
+
+*:first-child+html #main .wrap { /* IE7 */
+background-position: 100% -2px;
+}
+
 #page {
 background: #fff url(../img/page-bg.png) no-repeat;
+}
+
+* html #page { /* IE6 */
+background-position: 0 -2px;
+}
+
+*:first-child+html #page { /* IE7 */
+background-position: 0 -2px;
 }
 
 .page-header {
@@ -684,6 +704,13 @@ background: #fff url(../img/page-header-bg.png) repeat-x;
 margin-bottom: 1em;
 }
 
+* html .page-header { /* IE6 */
+background-position: 0 -2px;
+}
+
+*:first-child+html .page-header { /* IE7 */
+background-position: 0 -2px;
+}
 /*-----------------------
 Targeted Styles
 -----------------------*/
@@ -852,6 +879,13 @@ text-decoration: none;
 -moz-border-radius: 5px;
 -webkit-border-radius: 5px;
 border-radius: 5px;
+}
+
+*:first-child+html .paginator a, /* IE7 */
+*:first-child+html .paginator em, /* IE7 */
+* html .paginator a, /* IE6 */
+* html .paginator em { /*IE6 */
+padding: 0 6px
 }
 
 .paginator em {
