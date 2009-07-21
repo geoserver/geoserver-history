@@ -14,7 +14,6 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -32,24 +31,22 @@ import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.responses.MapDecoration;
 import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
 import org.geoserver.wms.responses.decoration.WatermarkDecoration;
-import org.geoserver.wms.DefaultWebMapService;
-import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.WatermarkInfo;
-import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
-import org.geotools.renderer.RenderListener;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
 import org.geotools.styling.visitor.DuplicatingStyleVisitor;
-import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -307,19 +304,6 @@ public abstract class DefaultRasterMapProducer extends
 		renderer = new ShapefileRenderer();
 		renderer.setContext(mapContext);
 		renderer.setJava2DHints(hints);
-		// shapefile renderer won't log rendering errors, sigh, we have to do it manually
-		if(renderer instanceof ShapefileRenderer && LOGGER.isLoggable(Level.FINE)) {
-		    renderer.addRenderListener(new RenderListener() {
-            
-                public void featureRenderer(SimpleFeature feature) {
-                }
-            
-                public void errorOccurred(Exception e) {
-                    LOGGER.log(Level.FINE, "Rendering error occurred", e);
-                }
-            
-            });
-		}
 
 		// setup the renderer hints
 		Map rendererParams = new HashMap();
@@ -381,6 +365,12 @@ public abstract class DefaultRasterMapProducer extends
 		int maxErrors = wms.getMaxRenderingErrors();
         MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
 		
+        // Add a render listener that ignores well known rendering exceptions and reports back non
+        // ignorable ones
+        final RenderExceptionStrategy nonIgnorableExceptionListener;
+        nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
+        renderer.addRenderListener(nonIgnorableExceptionListener);
+        
 		// setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
         int maxRenderingTime = wms.getMaxRenderingTime() * 1000;
         RenderingTimeoutEnforcer timeout = new RenderingTimeoutEnforcer(maxRenderingTime, renderer,
@@ -408,6 +398,12 @@ public abstract class DefaultRasterMapProducer extends
             throw new WmsException(
                     "This requested used more time than allowed and has been forcefully stopped. "
                             + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
+        }
+
+        //check if a non ignorable error occurred
+        if(nonIgnorableExceptionListener.exceptionOccurred()){
+            Exception renderError = nonIgnorableExceptionListener.getException();
+            throw new WmsException("Rendering process failed", "internalError", renderError);
         }
         
         // check if too many errors occurred
