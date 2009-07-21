@@ -190,12 +190,13 @@
         {% block body %}{% endblock %}
       {%- endblock %}
       {%- if (prev or next) %}
+      <hr />
       <div class="selfclear">
         {%- if prev %}
-          <div class="leftwise">Previous: <a href="{{ prev.link|e }}" title="previous chapter">{{ prev.title }}</a></div>
+          <div class="leftwise"><strong>Previous</strong>: <a href="{{ prev.link|e }}" title="previous chapter">{{ prev.title }}</a></div>
         {%- endif %}
         {%- if next %}
-          <div class="rightwise">Next: <a href="{{ next.link|e }}" title="next chapter">{{ next.title }}</a></div>
+          <div class="rightwise"><strong>Next</strong>: <a href="{{ next.link|e }}" title="next chapter">{{ next.title }}</a></div>
         {%- endif %}
       </div>
       {%- endif %}
