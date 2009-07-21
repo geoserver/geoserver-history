@@ -1,6 +1,8 @@
 package org.geoserver.wfs;
 
-import java.io.File;
+import java.util.Collections;
+
+import javax.xml.namespace.QName;
 
 import junit.framework.Test;
 
@@ -10,6 +12,21 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 public class GetFeatureTest extends WFSTestSupport {
+	
+    public static QName NULL_GEOMETRIES = new QName(MockData.CITE_URI, "NullGeometries", MockData.CITE_PREFIX);
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addPropertiesType(NULL_GEOMETRIES, 
+                ReprojectionTest.class.getResource("NullGeometries.properties"), Collections.EMPTY_MAP);
+    }
+    
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+    	super.oneTimeSetUp();
+    	getWFS().setFeatureBounding(true);
+    }
     
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -53,6 +70,16 @@ public class GetFeatureTest extends WFSTestSupport {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=youdontknowme:Fifteen&version=1.0.0&service=wfs");
         assertEquals("ServiceExceptionReport", doc.getDocumentElement()
                 .getNodeName());
+    }
+    
+    public void testGetNullGeometies() throws Exception {
+
+        Document doc;
+        doc = getAsDOM("wfs?request=GetFeature&typeName=" + getLayerId(NULL_GEOMETRIES) + "&version=1.0.0&service=wfs");
+        // print(doc);
+        
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//cite:NullGeometries[@fid=\"NullGeometries.1107531701010\"]/gml:boundedBy)", doc);
+        XMLAssert.assertXpathEvaluatesTo("0", "count(//cite:NullGeometries[@fid=\"NullGeometries.1107531701011\"]/boundedBy)", doc);
     }
     
     // see GEOS-1287
