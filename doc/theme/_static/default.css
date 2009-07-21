@@ -874,3 +874,8 @@ a.headerlink:hover {
 background-color: #ccc;
 color: #fff;
 }
+
+.pagination-nav {
+margin: 1em 0 0;
+border-top: 2px solid #e4f1d0;
+}
