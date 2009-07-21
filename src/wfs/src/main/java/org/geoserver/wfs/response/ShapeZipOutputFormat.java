@@ -3,23 +3,22 @@
  * application directory.
  */
 package org.geoserver.wfs.response;
-
+ 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.namespace.QName;
@@ -77,6 +76,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     private static final Logger LOGGER = Logging.getLogger(ShapeZipOutputFormat.class);
     private String outputFileName;
     private ApplicationContext applicationContext;
+    private Set<String> usedFieldNames=new HashSet<String>();
     
     /**
      * Tuple used when fanning out a collection with generic geometry types to multiple outputs 
@@ -147,9 +147,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                             + curCollection.getSchema() + " has no geometry field");
                 } 
                 Class geomType = curCollection.getSchema().getGeometryDescriptor().getType().getBinding();
-                if(GeometryCollection.class.equals(geomType)) {
-                    throw new WFSException("GeometryCollection is not a supported output type for shapefiles");
-                } else if(Geometry.class.equals(geomType)) {
+                if(GeometryCollection.class.equals(geomType) || Geometry.class.equals(geomType)) {
                     // in this case we fan out the output to multiple shapefiles
                     writeCollectionToShapefiles(curCollection, tempDir, getShapefileCharset(getFeature));
                 } else {
@@ -192,11 +190,21 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         FeatureStore<SimpleFeatureType, SimpleFeature> fstore = null;
         ShapefileDataStore dstore = null;
         try {
-            dstore = buildStore(tempDir, charset,  schema); 
+            // create attribute name mappings, to be compatible 
+            // with shapefile constraints:
+            //  - geometry field is always named the_geom
+            //  - field names have a max length of 10
+            Map<String,String> attributeMappings=createAttributeMappings(c.getSchema());
+            // wraps the original collection in a remapping wrapper
+            FeatureCollection remapped=new RemappingFeatureCollection(c,attributeMappings);
+            SimpleFeatureType remappedSchema=(SimpleFeatureType)remapped.getSchema();
+            dstore = buildStore(tempDir, charset,  remappedSchema); 
             fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource();
-            // the order of the attributes in the shapefile might not be the same as the original feature
-            FeatureCollection<SimpleFeatureType, SimpleFeature> retyped = new RetypingFeatureCollection(c, fstore.getSchema());
+            // we need retyping too, because the shapefile datastore
+            // could have sorted fields in a different order
+            FeatureCollection<SimpleFeatureType, SimpleFeature> retyped = new RetypingFeatureCollection(remapped, fstore.getSchema());
             fstore.addFeatures(retyped);
+          
         } catch (IOException ioe) {
             LOGGER.log(Level.WARNING,
                 "Error while writing featuretype '" + schema.getTypeName() + "' to shapefile.", ioe);
@@ -209,6 +217,48 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
     }
     
     /**
+     * Maps schema attributes to shapefile-compatible attributes.
+     * 
+     * @param schema
+     * @return
+     */
+    private Map<String, String> createAttributeMappings(SimpleFeatureType schema) {
+        Map<String,String> result=new HashMap<String,String>();
+        for(AttributeDescriptor attDesc : schema.getAttributeDescriptors()) {
+            if(attDesc instanceof GeometryDescriptor)
+                result.put(attDesc.getLocalName(), "the_geom");
+            else
+                result.put(attDesc.getLocalName(), getShapeCompatibleName(attDesc.getLocalName()));
+        }
+        return result;
+    }
+       
+    /**
+     * Gets a shapefile compatible version of the given
+     * field name.
+     * The field will have a max length of 10.
+     * Field names will be unique, also if truncated.
+     * @param name
+     * @return
+     */
+    private String getShapeCompatibleName(String name) {        
+        if(name.length()>10) {
+            String shortName=name.substring(0,10);
+            int counter=0;
+            // don't use an already assigned name, create a new
+            // unique name
+            while(usedFieldNames.contains(shortName)) {
+                String postfix=(counter++)+"";
+                shortName=shortName.substring(0,10-postfix.length())+postfix;
+            }
+            usedFieldNames.add(shortName);
+            return shortName;
+        }
+        usedFieldNames.add(name);
+        return name;
+    }
+
+    /**
      * Write one featurecollection to a group of appropriately named shapefiles, one per geometry
      * type. This method assume the features will have a Geometry type and the actual type of each
      * feature will be discovered during the scan. Each feature will be routed to a shapefile that
@@ -218,11 +268,17 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      */
     private void writeCollectionToShapefiles(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
         SimpleFeatureType schema = c.getSchema();
+        // create attribute name mappings, to be compatible 
+        // with shapefile constraints:
+        //  - geometry field is always named the_geom
+        //  - field names have a max length of 10
+        Map<String,String> attributeMappings=createAttributeMappings(schema);
+        FeatureCollection remapped=new RemappingFeatureCollection(c,attributeMappings);
         
         Map<Class, StoreWriter> writers = new HashMap<Class, StoreWriter>();
         FeatureIterator<SimpleFeature> it;
         try {
-            it = c.features(); 
+            it = remapped.features(); 
             while(it.hasNext()) {
                 SimpleFeature f = it.next();
                 
