@@ -20,14 +20,9 @@ public class DescribeLayerTest extends WMSTestSupport {
     protected void oneTimeSetUp() throws Exception {
         super.oneTimeSetUp();
 
-        // Uncomment the following lines if you want to enable DTD validation for this test 
-        // (by passing false as the second param to getAsDOM(). 
-        // BUG: Currently, this doesn't seem to actually validate the document, although 
-        // 'validation' fails if the DTD is missing.
-        
-        // GeoServerInfo global = getGeoServer().getGlobal();
-        // global.setProxyBaseUrl("src/test/resources/geoserver");
-        // getGeoServer().save(global);
+        GeoServerInfo global = getGeoServer().getGlobal();
+        global.setProxyBaseUrl("src/test/resources/geoserver");
+        getGeoServer().save(global);
     }
 
     public void testDescribeLayerVersion111() throws Exception {
