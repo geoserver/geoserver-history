@@ -61,15 +61,17 @@ public class ImportProgressPage extends GeoServerSecuredPage {
                 FeatureTypeImporter importer = getImporter();
                 
                 ImportSummary summary = importer.getSummary();
-                if(summary.isCompleted())
-                    setResponsePage(new ImportSummaryPage(summary));
-                
-                long perc = Math.round(100.0 * summary.getProcessedLayers() / summary.getTotalLayers());
-                widthModel.setObject("width: " + perc + "%;");
-                percentage.setModelObject(perc);
-                currentFile.setModelObject(summary.getCurrentLayer());
-                
-                target.addComponent(info);
+                if(summary != null) {
+                    if(summary.isCompleted())
+                        setResponsePage(new ImportSummaryPage(summary));
+                    
+                    long perc = Math.round(100.0 * summary.getProcessedLayers() / summary.getTotalLayers());
+                    widthModel.setObject("width: " + perc + "%;");
+                    percentage.setModelObject(perc);
+                    currentFile.setModelObject(summary.getCurrentLayer());
+                    
+                    target.addComponent(info);
+                }
             }
 
             

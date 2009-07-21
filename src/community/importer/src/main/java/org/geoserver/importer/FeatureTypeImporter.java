@@ -45,6 +45,7 @@ public class FeatureTypeImporter  implements Runnable {
     }
 
     public void run() {
+        summary = new ImportSummary(storeInfo.getName());
         DataAccess da = null;
         try {
             NamespaceInfo namespace = catalog.getNamespaceByPrefix(storeInfo.getWorkspace().getName());
@@ -55,7 +56,7 @@ public class FeatureTypeImporter  implements Runnable {
             // cast necessary due to some classpath oddity/geoapi issue, the compiler
             // complained about getNames() returning a List<Object>...
             List<Name> names = da.getNames();
-            summary = new ImportSummary(storeInfo.getName(), names.size());
+            summary.setTotalLayers(names.size());
             for (Name name : names) {
                 // start information
                 String layerName = name.getLocalPart();
