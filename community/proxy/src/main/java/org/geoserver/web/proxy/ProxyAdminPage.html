@@ -1,0 +1,27 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+	<body>
+		<wicket:extend>
+			<h2><wicket:message key="title">GeoServer Proxy Administration</wicket:message></h2>
+			<form wicket:id="proxyForm">
+				<span wicket:id="modes">
+					<input type="radio">mode 1</input>
+					<input type="radio">mode 2</input>
+				</span>
+<!--				<select wicket:id="hostnameRegexes">
+					<option>site 1</option>
+					<option>site 2</option>
+				</select>
+				<br/>
+				<select wicket:id="mimetypeRegexes">
+					<option>site 1</option>
+					<option>site 2</option>
+				</select>-->
+				<textarea wicket:id="hostnameRegexes" rows="6" cols="20">Input comes here</textarea>
+				<br/>
+				<textarea wicket:id="mimetypeRegexes" rows="6" cols="20">Input comes here</textarea>
+				<br/>
+				<input type = "submit" value = "Submit"/>
+			</form>
+		</wicket:extend>
+	</body>
+</html>

@@ -15,6 +15,7 @@ import org.geoserver.proxy.ProxyConfig;
 import org.geoserver.proxy.ProxyConfig.Mode;
 import org.geoserver.rest.RestletException;
 import org.geoserver.security.PropertyFileWatcher;
+import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -35,13 +36,46 @@ public class ProxyRestlet extends Restlet {
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(ProxyRestlet.class);
 
     private ProxyConfig config;
+    private boolean watcherWorks;
+    private PropertyFileWatcher configWatcher;
 
-    private PropertyFileWatcher configWatcher = new PropertyFileWatcher(ProxyConfig.proxyConfFile);
-
+    /*
+     * Initialize the proxy
+     */
+    public ProxyRestlet()
+    {
+        super();
+        init();
+    }
+    
+    /*
+     * Initialize the proxy with context to call parent with
+     */
+    public ProxyRestlet(Context context)
+    {
+        super(context);
+        init();
+    }
+    
+    /*
+     * Prepares the proxy's environment.
+     */
+    private void init()
+    {
+        try{
+            configWatcher = new PropertyFileWatcher(ProxyConfig.getConfigFile());
+            watcherWorks = true;
+        }
+        catch(Exception e){
+            LOGGER.log(Level.WARNING, "Proxy could not create configuration watcher.  Proxy will not be able to update its configuration when it is modified.  Exception:", e);
+            watcherWorks = false;
+        }
+    }
+    
     @Override
     public void handle(Request request, Response response) {
-        /* Check the proxy's config has been modified */
-        if (configWatcher.isStale()) {
+        /* Check the proxy's config has been modified if the watcher was created correctly*/
+        if (watcherWorks && configWatcher.isStale()) {
             config = ProxyConfig.loadConfFromDisk();
         }
         /* Grab the argument */
