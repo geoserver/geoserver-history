@@ -176,5 +176,10 @@ public class CSVOutputFormat extends WFSGetFeatureOutputFormat {
 		return mod;
     	
     }
+    
+    @Override
+    public String getCapabilitiesElementName() {
+    	return "CSV";
+    }
 
 }
