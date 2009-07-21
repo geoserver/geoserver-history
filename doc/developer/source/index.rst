@@ -1,8 +1,10 @@
 GeoServer Developer Manual
 ==========================
 
+Welcome to the GeoServer Developer Manual.  The manual is for those who want to help with the development process, including source code, software releasing, and other adminsitrative work.
+
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    introduction.rst
    tools.rst
@@ -12,4 +14,6 @@ GeoServer Developer Manual
    eclipse-guide/index.rst
    programming-guide/index.rst
    release-guide/index.rst
+   release-testing-checklist/index.rst
+   cite-test-guide/index.rst
    policies/index.rst

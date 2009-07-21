@@ -74,20 +74,19 @@ Create the page class
 
    .. code-block:: java
 
-      package org.geoserver.helloweb;o
+      package org.geoserver.helloweb;
      
       import org.geoserver.web.GeoServerBasePage;
 
       public class HelloPage extends GeoServerBasePage {
 
       }
-}
 
 #. The first task is to implement the constructor. In Wicket a page or component
    builds itself in its constructor. This page is basic and will simply create 
    a label which has the value "Hello World!":
 
-   .. code_block:: java
+   .. code-block:: java
 
       import org.apache.wicket.markup.html.basic.Label;
       ...
@@ -109,7 +108,7 @@ Create the page presentation
    the page. To do this create a file named ``HelloPage.html`` in the same 
    directory as the ``HelloPagejava`` class:
 
-   .. code-block:: 
+   .. code-block:: html
 
       <html>
         <body>
@@ -137,16 +136,13 @@ web application should be interationalized. In GeoServer, this is performed by
 creating an internationalization (i18n) file named 
 ``GeoServerApplication.properties``.
 
-#. Create the  (i18n) file 
-  ``GeoServerApplication.properties`` in the ``src/main/java`` directory:
-
-   .. code-block::
+#. Create the (i18n) file ``GeoServerApplication.properties`` in the ``src/main/java`` directory::
 
       HelloPage.page.title=Hello
       HelloPage.page.description=A page to say hello
 
-  The above i18n file declares two keys, one for the title of the page and one
-  for the description of the page.
+   The above i18n file declares two keys, one for the title of the page and one
+   for the description of the page.
 
 Create the application context
 -------------------------------

@@ -71,7 +71,7 @@ KML
 #. Go to the feature type editor page for the ``topp:states`` feature type
 
 #. Change the ``KML Regionating Attribute`` to "SAMP_POP" and change the ``KML
-   Regionating Strategy`` to "external-sorting"
+   Regionating Strategy`` to "external-sorting"::
 
    .. image:: states_kml_config.png
 

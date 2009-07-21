@@ -1,6 +1,6 @@
 .. _quickstart:
 
-QuickStart
+Quickstart
 ==========
 
 A step by step guide describing how to quickly get up and running with a 
@@ -13,7 +13,7 @@ GeoServer development environment. This guide assumes that all the necessary
   For a more comprehensive guide see the :ref:`maven_guide` and the 
   :ref:`eclipse_guide`.
 
-.. contents:: :local::
+.. contents:: :local:
 
 Check out source code
 ---------------------

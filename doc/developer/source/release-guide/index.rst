@@ -1,6 +1,5 @@
 .. _release_guide:
 
-
 Release Guide
 =============
 
@@ -9,11 +8,7 @@ This guide details the process of performing a GeoServer release.
 Notify developer lists
 ----------------------
 
-It is good practice to notify the GeoServer developer list of the intention
-to make the release a few days in advance, even though the release date has been
-agreed upon before hand. GeoServer releases are usually made in conjunction with
-GeoTools releases, so the GeoTools developer list should also be notified of the
-associated GeoTools release a few days in advance.
+It is good practice to notify the `GeoServer developer list <https://lists.sourceforge.net/lists/listinfo/geoserver-devel>`_ of the intention to make the release a few days in advance, even though the release date has been agreed upon before hand. GeoServer releases are usually made in conjunction with GeoTools releases, so the GeoTools developer list should also be notified of the associated GeoTools release a few days in advance.
 
 On the day the release is being made is it also good practice to send a warning
 to the list asking that developers refrain from committing until the release tag
@@ -26,13 +21,13 @@ The following are necessary to perform a GeoServer release:
 
    #. Commit access to `GeoServer svn <https://svn.codehaus.org/geoserver>`_
    #. Edit access to the `GeoServer wiki <http://geoserver.org>`_
-   #. Administration rights to the `GeoServer JIRA <http://jira.codehaus.org/browse/GEOS>`_
+   #. Administration rights to the `GeoServer bug tracker <http://jira.codehaus.org/browse/GEOS>`_
 
 For steps 2 and 3 above you may also ask someone on the developer list to 
 perform the associated steps.
 
-If a parallel GeoTools release is being preformed see the `GeoTools Release Guide <http://docs.codehaus.org/display/GEOT/How+to+cut+a+release>`_. Alternatively
-you can (nicely) ask one of the GeoTools developers to perform the release.
+If a parallel GeoTools release is being preformed, see the `GeoTools Release Guide <http://docs.codehaus.org/display/GEOT/How+to+cut+a+release>`_. Alternatively
+you can (nicely) ask one of the GeoTools developers to perform the release for you.
 
 Update source code
 ------------------
@@ -61,7 +56,7 @@ Update the README
    Example::
 
      GeoServer 1.7.1 (December 08, 2008)
-     ----------------------------------
+     -----------------------------------
 
      The second release of the 1.7.1 series includes some great KML and Google 
      Earth improvements, along with other new features and bug fixes. The new 
@@ -80,9 +75,9 @@ Update the README
 
     This release is based on GeoTools 2.5.2.
     
-  .. note::
+   .. note::
 
-     The "fixforversion" number for the JIRA changelog can be found by exploring the `GeoServer JIRA <http://jira.codehaus.org/browse/GEOS>`_ even before actually building the changelog.  See the links to the various unreleased versions.
+     The "fixforversion" number for the JIRA changelog can be found by exploring the `GeoServer JIRA <http://jira.codehaus.org/browse/GEOS>`_ before or after building the changelog.  See the links to the various unreleased versions.
 
 #. Commit changes to the README::
 
@@ -99,10 +94,7 @@ Create a release tag
 
      svn co https://svn.codehaus.org/geoserver/tags/[VERSION] 
 
-   .. note::
-
-      :command:`svn switch` may also be used to get to the release tag but caution must be
-      taken to switch back to the branch after the release has been performed. 
+   .. warning:: :command:`svn switch` may also be used to switch to the release tag but caution must be taken to switch back to the branch after the release has been performed.
 
 Update version numbers in tag
 -----------------------------
@@ -121,7 +113,7 @@ Update version numbers in tag
      doc/developer/source/conf.py
      
 
-   Example::
+   Example (using sed)::
 
      sed -i 's/1.7.1/1.7.2/g' release/installer/win/geoserver.nsi
 
@@ -144,7 +136,6 @@ Upgrade branch pom versions
 
       svn commit -m "Upgrading pom version to <NEWVERSION>-SNAPSHOT" .
 
-
 Set tag pom versions
 --------------------
 
@@ -163,10 +154,7 @@ Set tag pom versions
 Build release artifacts
 -----------------------
 
-.. warning::
-
-   All operations for the remainder of this guide must be performed from the
-   release tag, not the branch.
+.. warning:: All operations for the remainder of this guide must be performed from the release tag, not the branch.
 
 #. Compile from the root of the source tree with the following command::
 
@@ -191,7 +179,7 @@ Build documentation
 
      * `Sphinx <http://sphinx.pocoo.org/>`_, version 0.6 or greater
 
-   It is also helpful to have :command:`make` installed, although it is not required.
+   It is also helpful to have :command:`make` installed, although it is not required.  For Windows users a :file:`make.bat` files exists that performs the same function.
 
 HTML
 ````
@@ -243,7 +231,7 @@ HTML
    .. note:: When done, the zip file should contain two folders, one called :file:`user` containing the HTML output for the User Manual, and one called :file:`developer` containing the HTML output for the Developer Manual.
 
 PDF
-````
+```
 
 .. note:: Building PDF files from Sphinx is a two step process.  First, it is necessary to create LaTeX files from Sphinx.  Next, convert the LaTeX file to PDF using :command:`pdflatex`.
 
@@ -267,7 +255,7 @@ PDF
 
 #. Change directory to :file:`build/latex`.
 
-#. Convert the .tex file to .pdf
+#. Convert the .tex file to .pdf::
 
       pdflatex GeoServerUserManual.tex GeoServerUserManual.pdf
 
@@ -296,7 +284,6 @@ PDF
 #. Create a zip containing the two PDF files::
 
       zip -r geoserver-[VERSION]-pdfdoc.zip *.pdf
-
 
 CITE testing
 ------------

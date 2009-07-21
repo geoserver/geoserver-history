@@ -9,4 +9,5 @@ Programming Guide
    ows-services/index.rst
    rest-services/index.rst
    web-ui/index.rst
-   extension_points/index.rst
+   wicket-pages/index.rst
+   extension-points/index.rst

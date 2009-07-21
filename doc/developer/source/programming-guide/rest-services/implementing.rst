@@ -162,9 +162,7 @@ Create the application context
      [hello_rest]% mkdir src/main/resources
 
 
-#.  Add the following ``applicationContext.xml`` file to the
-   ``src/main/resources`` directory under the root of the ``hello_rest``
-    module.
+#. Add the following ``applicationContext.xml`` file to the ``src/main/resources`` directory under the root of the ``hello_rest`` module.
 
    .. code-block:: xml
 

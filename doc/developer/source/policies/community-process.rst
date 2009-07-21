@@ -40,7 +40,7 @@ Short term road map
 
 The short term road map is the most important part of the overall road map as it
 pertains specifically to what is going to be released in the near future. This
-road map is updated on a weekly basis based on a detailed :ref:`procedure <>`.
+road map is updated on a weekly basis.
 
 Items on the short term road map are described in JIRA as new features, 
 improvements, or high priority bug fixes.

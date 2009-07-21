@@ -173,8 +173,7 @@ The following properties must hold true in order to promote a community module:
    Every core and extension module requires a module maintainer. The job of 
    the maintainer is to fix bugs and address issues which arise with the 
    module. If a community module is promoted and the maintainer "drops off", 
-   the module is in danger of being demoted back to community status. See 
-   :ref:`demoting` for more details.
+   the module is in danger of being demoted back to community status.
 
 #. **The module is considered "stable" by the majority of the PSC**
 
