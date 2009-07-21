@@ -6,21 +6,16 @@ package org.geoserver.wms.web.data;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
-import org.geoserver.web.data.layer.NewLayerPage;
-import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
-import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -74,7 +69,7 @@ public class StylePage extends GeoServerSecuredPage {
         header.add(new BookmarkablePageLink("addNew", StyleNewPage.class));
         
         // the removal button
-        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog){
+        header.add(removal = new SelectionRemovalLink("removeSelected", table, dialog) {
             @Override
             protected StringResourceModel canRemove(CatalogInfo object) {
                 StyleInfo s = (StyleInfo) object;
@@ -100,29 +95,6 @@ public class StylePage extends GeoServerSecuredPage {
                 String sid = getModelObjectAsString();
                 StyleInfo style = getCatalog().getStyleByName( sid );
                 setResponsePage( new StyleEditPage( style ) );
-            }
-        };
-    }
-    
-    Component removeStyleLink(String id, IModel model) {
-        final StyleInfo style = (StyleInfo) model.getObject();
-
-        ResourceModel resRemove = new ResourceModel("removeStyle", "Remove");
-
-        ParamResourceModel confirmRemove = new ParamResourceModel(
-                "confirmRemoveStyleX", this, style.getName());
-
-        return new ConfirmationAjaxLink(id, null, resRemove, confirmRemove) {
-            @Override
-            protected void onClick(AjaxRequestTarget target) {
-                try {
-                    getCatalog().remove( style );
-                    setResponsePage( StylePage.this );    
-                }
-                catch( Exception e ) {
-                    StylePage.this.error( e );
-                    target.addComponent( feedbackPanel );
-                }
             }
         };
     }
