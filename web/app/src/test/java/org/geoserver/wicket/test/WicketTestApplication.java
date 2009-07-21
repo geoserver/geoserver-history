@@ -10,8 +10,10 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.WicketServlet;
 import org.apache.wicket.resource.Properties;
 import org.apache.wicket.resource.PropertiesFactory;
+import org.apache.wicket.resource.loader.ClassStringResourceLoader;
+import org.apache.wicket.resource.loader.ComponentStringResourceLoader;
 import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.GeoServerApplication.GeoServerLocalizer;
+import org.geoserver.web.GeoServerStringResourceLoader;
 import org.geoserver.web.GeoServerApplication.GeoServerResourceStreamLocator;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
@@ -42,7 +44,10 @@ public class WicketTestApplication extends WebApplication
         protected void init() {
             //JD: override some resource settings to allow for custom i18n lookups
             getResourceSettings().setResourceStreamLocator(new GeoServerResourceStreamLocator());
-            getResourceSettings().setLocalizer(new GeoServerLocalizer());
+            getResourceSettings().addStringResourceLoader(new GeoServerStringResourceLoader());
+            getResourceSettings().addStringResourceLoader(new ComponentStringResourceLoader());
+            getResourceSettings().addStringResourceLoader(new ClassStringResourceLoader(this.getClass()));
+
             getResourceSettings().setPropertiesFactory(new PropertiesFactory(this) {
                 @Override
                 public Properties load(Class clazz, String path) {

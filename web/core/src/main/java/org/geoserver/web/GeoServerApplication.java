@@ -33,6 +33,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
+import org.apache.wicket.resource.loader.ClassStringResourceLoader;
+import org.apache.wicket.resource.loader.ComponentStringResourceLoader;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.resource.AbstractResourceStream;
@@ -160,7 +162,9 @@ public class GeoServerApplication extends SpringWebApplication {
     	// enable GeoServer custom resource locators
         getResourceSettings().setResourceStreamLocator(
                 new GeoServerResourceStreamLocator());
-        getResourceSettings().setLocalizer(new GeoServerLocalizer());
+        getResourceSettings().addStringResourceLoader(new GeoServerStringResourceLoader());
+        getResourceSettings().addStringResourceLoader(new ComponentStringResourceLoader());
+        getResourceSettings().addStringResourceLoader(new ClassStringResourceLoader(this.getClass()));
         
         // we have our own application wide gzip compression filter 
         getResourceSettings().setDisableGZipCompression(true);
@@ -247,65 +251,6 @@ public class GeoServerApplication extends SpringWebApplication {
         }
     }
 
-    /**
-     * A custom localizer which prepends the name of the component to the key
-     * being accessed in some markup.
-     * <p>
-     * Consider a page class called 'ExamplePage'. In the markup for ExamplePage
-     * you can reference a localization key named 'page.title'. This will be
-     * look up in the i18n file as 'ExamplePage.page.title'.
-     * </p>
-     */
-    public static class GeoServerLocalizer extends Localizer {
-        public String getString(String key, Component component, IModel model,
-                String defaultValue) throws MissingResourceException {
-
-            // look for a component specific label
-            try {
-                Component c = component;
-                while(c != null) {
-                    String componentKey = key(key, c.getClass());
-                    String result = super.getString(componentKey, component, model,defaultValue);
-                    if(result != null && !result.equals(defaultValue))
-                        return result;
-                    c = c.getParent();
-                }
-            } catch(Exception e) {
-                
-            }
-            
-            // look for a page specific label
-            try {
-                if(component.getPage() != null) {
-                    String pageKey = key(key, component.getPage().getClass());
-                    String result = super.getString(pageKey, component, model,defaultValue);
-                    if(result != null && !result.equals(defaultValue))
-                        return result;
-                }
-            } catch(Exception e) {
-                
-            }
-            
-            // try to resolve against no component
-            try {
-                String result = super.getString(key, null, model,  defaultValue);
-                if(result != null && !result.equals(defaultValue))
-                    return result;
-            } catch (MissingResourceException e) {
-                
-            }
-            
-            // fall back on default behavior
-            return super.getString( key, component, model, defaultValue );
-        }
-
-        String key(String key, Class<?> clazz) {
-            String name = clazz.getSimpleName();
-            return name + "." + key;
-        }
-        
-    }
-    
     /*
      * Overrides to return a custom request cycle processor. This is done in
      * order to support "dynamic dispatching" from web.xml.
@@ -316,7 +261,7 @@ public class GeoServerApplication extends SpringWebApplication {
 
     /*
      * Overrides to return a custom converter locator which loads converters
-     * from teh GeoToools converter subsystem.
+     * from the GeoToools converter subsystem.
      */
     protected IConverterLocator newConverterLocator() {
         // TODO: load converters from application context
