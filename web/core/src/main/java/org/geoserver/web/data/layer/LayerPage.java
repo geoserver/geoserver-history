@@ -143,27 +143,5 @@ public class LayerPage extends GeoServerSecuredPage {
             }
         };
     }
-    
-    protected Component removeLink(String id, final IModel itemModel) {
-        LayerInfo info = (LayerInfo) itemModel.getObject();
-        
-        ResourceModel resRemove = new ResourceModel("removeLayer", "Remove");
-        ParamResourceModel confirmRemove = new ParamResourceModel(
-                "confirmRemoveLayerX", this, info.getName());
-        SimpleAjaxLink linkPanel = new ConfirmationAjaxLink(id, null,
-                resRemove, confirmRemove) {
-            public void onClick(AjaxRequestTarget target) {
-                LayerInfo layer = (LayerInfo) itemModel.getObject();
-                // at the moment both layer and resource need to go, 
-                // they are always created and removed togheter.
-                // When the resource/publish split is done, here we'll
-                // delete the layer only
-                getCatalog().remove(layer);
-                getCatalog().remove(layer.getResource());
-                target.addComponent(table);
-            }
-        };
-        return linkPanel;
-    }
 
 }
