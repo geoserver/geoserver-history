@@ -40,6 +40,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class ShapeZipTest extends WFSTestSupport {
 
     private static final QName ALL_TYPES = new QName(MockData.CITE_URI, "AllTypes", MockData.CITE_PREFIX);
+    private static final QName ALL_DOTS = new QName(MockData.CITE_URI, "All.Types.Dots", MockData.CITE_PREFIX);
     private static final QName GEOMMID = new QName(MockData.CITE_URI, "geommid", MockData.CITE_PREFIX);
     private static final QName LONGNAMES = new QName(MockData.CITE_URI, "longnames", MockData.CITE_PREFIX);
     private static final QName NULLGEOM = new QName(MockData.CITE_URI, "nullgeom", MockData.CITE_PREFIX);
@@ -54,6 +55,7 @@ public class ShapeZipTest extends WFSTestSupport {
         Map params = new HashMap();
         params.put(MockData.KEY_SRS_NUMBER, "4326");
         dataDirectory.addPropertiesType(ALL_TYPES, ShapeZipTest.class.getResource("AllTypes.properties"), params);
+        dataDirectory.addPropertiesType(ALL_DOTS, ShapeZipTest.class.getResource("All.Types.Dots.properties"), params);
         dataDirectory.addPropertiesType(GEOMMID, ShapeZipTest.class.getResource("geommid.properties"), params);
         dataDirectory.addPropertiesType(NULLGEOM, ShapeZipTest.class.getResource("nullgeom.properties"), params);
         dataDirectory.addPropertiesType(DOTS, ShapeZipTest.class.getResource("dots.in.name.properties"), params);
@@ -111,8 +113,22 @@ public class ShapeZipTest extends WFSTestSupport {
         checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
     }
     
+    public void testMultiTypeDots() throws Exception {
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        fs = getFeatureSource(ALL_DOTS);
+        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
+        fct.getFeature().add(fs.getFeatures());
+        zip.write(fct, bos, op);
+        
+        final String[] expectedTypes = new String[] {"All_Types_DotsPoint", "All_Types_DotsMPoint", 
+        		                                     "All_Types_DotsPolygon", "All_Types_DotsLine"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
+        checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
+    }
+    
     public void testGeometryInTheMiddle() throws Exception {
-        // http://jira.codehaus.org/browse/GEOS-2732
         FeatureSource<SimpleFeatureType, SimpleFeature> fs;
         fs = getFeatureSource(GEOMMID);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
@@ -156,7 +172,7 @@ public class ShapeZipTest extends WFSTestSupport {
         fct.getFeature().add(fs.getFeatures());
         zip.write(fct, bos, op);
         
-        final String[] expectedTypes = new String[] {"dots.in.name"};
+        final String[] expectedTypes = new String[] {"dots_in_name"};
         checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
         checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
     }

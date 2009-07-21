@@ -42,6 +42,7 @@ import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
@@ -186,6 +187,14 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      */
     private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
         SimpleFeatureType schema = c.getSchema();
+        if(schema.getTypeName().contains(".")) {
+        	// having dots in the name prevents various programs to recognize the file as a shapefile
+        	SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
+        	tb.init(c.getSchema());
+        	tb.setName(c.getSchema().getTypeName().replace('.', '_'));
+        	SimpleFeatureType renamed = tb.buildFeatureType();
+        	c = new RetypingFeatureCollection(c, renamed);
+        }
 
         FeatureStore<SimpleFeatureType, SimpleFeature> fstore = null;
         ShapefileDataStore dstore = null;
@@ -360,7 +369,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                     builder.add(d);
                 }
             }
-            builder.setName(original.getTypeName() + suffix);
+            builder.setName(original.getTypeName().replace('.', '_') + suffix);
             builder.setNamespaceURI(original.getName().getURI());
             SimpleFeatureType retyped = builder.buildFeatureType();
             
