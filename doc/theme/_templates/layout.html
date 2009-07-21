@@ -192,6 +192,16 @@
       {%- block document %}
         {% block body %}{% endblock %}
       {%- endblock %}
+      {%- if (prev or next) %}
+      <div class="selfclear">
+        {%- if prev %}
+          <div class="leftwise">Previous: <a href="{{ prev.link|e }}" title="previous chapter">{{ prev.title }}</a></div>
+        {%- endif %}
+        {%- if next %}
+          <div class="rightwise">Next: <a href="{{ next.link|e }}" title="next chapter">{{ next.title }}</a></div>
+        {%- endif %}
+      </div>
+      {%- endif %}
       </div><!-- /#content> -->
 {%- block sidebar %}{{ sidebar() }}{% endblock %}
   </div><!-- /.wrap> -->
