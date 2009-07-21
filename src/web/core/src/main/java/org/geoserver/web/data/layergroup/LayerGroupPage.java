@@ -83,28 +83,5 @@ public class LayerGroupPage extends GeoServerSecuredPage {
             }
         };
     }
-    
-    Component removeLayerGroupLink(String id, IModel itemModel) {
-        final LayerGroupInfo layerGroup = (LayerGroupInfo) itemModel
-                .getObject();
-
-        ResourceModel resRemove = new ResourceModel(
-                "removeLayerGroup","Remove");
-
-        ParamResourceModel confirmRemove = new ParamResourceModel(
-                "confirmRemoveLayerGroupX", this, layerGroup.getName());
-
-        return new ConfirmationAjaxLink(id, null, resRemove, confirmRemove) {
-            @Override
-            protected void onClick(AjaxRequestTarget target) {
-                try {
-                    getCatalog().remove(layerGroup);
-                    setResponsePage(LayerGroupPage.this);
-                } catch (Exception e) {
-                    LayerGroupPage.this.error(e);
-                    target.addComponent(feedbackPanel);
-                }
-            }
-        };
-    }
+   
 }
