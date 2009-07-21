@@ -184,7 +184,7 @@ public class CascadeRemovalReporter implements CatalogVisitor {
         // add users of this style among the related objects: layers
         List<LayerInfo> layer = catalog.getLayers();
         for (LayerInfo li : layer) {
-            if (li.getDefaultStyle().equals(style))
+            if (style.equals(li.getDefaultStyle()))
                 add(li, ModificationType.STYLE_RESET);
             else if(li.getStyles().contains(style))
                 add(li, ModificationType.EXTRA_STYLE_REMOVED);
