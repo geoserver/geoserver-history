@@ -61,4 +61,13 @@ public class StyleEditPageTest extends GeoServerWicketTestSupport {
         tester.assertRenderedPage(StyleEditPage.class);
         tester.assertErrorMessages(new String[] {"Field 'Name' is required."});
     }
+    
+    public void testChangeName() throws Exception {
+        FormTester form = tester.newFormTester("theForm");
+        form.setValue("name", "BuildingsNew");
+        form.submit("submit");
+        
+        assertNull(getCatalog().getStyleByName("Buildings"));
+        assertNotNull(getCatalog().getStyleByName("BuildingsNew"));
+    }
 }

@@ -40,11 +40,12 @@ public class StyleEditPage extends GeoServerSecuredPage {
         catch (IOException e) {
             throw new WicketRuntimeException( e );
         }
-        theForm.add(new SubmitLink("submit"){
+        SubmitLink submit = new SubmitLink("submit"){
             @Override
             public void onSubmit() {
-                //write out the file
+                //write out the file and save name modifications
                 try {
+                    getCatalog().save((StyleInfo) theForm.getModelObject());
                     writeFile( style, sldEditorPanel.getRawSLD() );
                     setResponsePage( StylePage.class );
                 }
@@ -52,7 +53,9 @@ public class StyleEditPage extends GeoServerSecuredPage {
                     theForm.error( e );
                 }
             }
-        });
+        };
+        theForm.add(submit);
+        theForm.setDefaultButton(submit);
         
         theForm.add(new SubmitLink("cancel"){
             @Override
@@ -60,6 +63,7 @@ public class StyleEditPage extends GeoServerSecuredPage {
                 setResponsePage( StylePage.class );
             }
         });
+        
         
         add(theForm);
     }
