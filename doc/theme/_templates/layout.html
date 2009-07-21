@@ -193,8 +193,7 @@
         {% block body %}{% endblock %}
       {%- endblock %}
       {%- if (prev or next) %}
-      <hr />
-      <div class="selfclear">
+      <div class="selfclear pagination-nav">
         {%- if prev %}
           <div class="leftwise"><strong>Previous</strong>: <a href="{{ prev.link|e }}" title="previous chapter">{{ prev.title }}</a></div>
         {%- endif %}
