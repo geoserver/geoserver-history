@@ -1,11 +1,14 @@
 package org.vfny.geoserver.wms.responses.map;
 
+import static org.geoserver.data.test.MockData.STREAMS;
+
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Panel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
@@ -22,16 +25,27 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.security.decorators.DecoratingFeatureSource;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.IllegalFilterException;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.FeatureSourceMapLayer;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+import org.vfny.geoserver.wms.responses.RenderExceptionStrategy;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -313,6 +327,85 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         String typeName = fSource.getSchema().getName().getLocalPart();
         assertNotBlank("testDefaultStyle " + typeName, this.rasterMapProducer);
     }
+    
+    /**
+     * Checks {@link DefaultRasterMapProducer} makes good use of {@link RenderExceptionStrategy}
+     */
+    @SuppressWarnings("deprecation")
+    public void testRenderingErrorsHandling() throws Exception {
+
+        //the ones that are ignorable by the renderer
+        assertNotNull(forceRenderingError(new TransformException("fake transform exception")));
+        assertNotNull(forceRenderingError(new NoninvertibleTransformException("fake non invertible exception")));
+        assertNotNull(forceRenderingError(new IllegalAttributeException("non illegal attribute exception")));
+        assertNotNull(forceRenderingError(new FactoryException("fake factory exception")));
+
+        //any other one should make the map producer fail
+        try{
+            forceRenderingError(new RuntimeException("fake runtime exception"));
+            fail("Expected WMSException");
+        }catch(WmsException e){
+            assertTrue(true);
+        }
+
+        try{
+            forceRenderingError(new IOException("fake IO exception"));
+            fail("Expected WMSException");
+        }catch(WmsException e){
+            assertTrue(true);
+        }
+        
+        try{
+            forceRenderingError(new IllegalArgumentException("fake IAE exception"));
+            fail("Expected WMSException");
+        }catch(WmsException e){
+            assertTrue(true);
+        }
+    }
+    
+    /**
+     * Sets up a rendering loop and throws {@code renderExceptionToThrow} wrapped to a
+     * RuntimeException when the renderer tries to get a Feature to render.
+     * <p>
+     * If the rendering succeeded returns the image, which is going to be a blank one but means the
+     * renderer didn't complain about the exception caught. Otherwise throws back the exception
+     * thrown by {@link DefaultRasterMapProducer#produceMap()}
+     * </p>
+     */
+    @SuppressWarnings("unchecked")
+    private RenderedImage forceRenderingError(final Exception renderExceptionToThrow) throws Exception {
+
+        final WMSMapContext map = new WMSMapContext();
+        map.setMapWidth(100);
+        map.setMapHeight(100);
+        map.setRequest(new GetMapRequest(getWMS()));
+        final ReferencedEnvelope bounds = new ReferencedEnvelope(-180, 180, -90, 90, DefaultGeographicCRS.WGS84);
+        map.setAreaOfInterest(bounds);
+
+        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(STREAMS.getNamespaceURI(), STREAMS.getLocalPart());
+
+        final FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) ftInfo.getFeatureSource(null, null);
+        
+        DecoratingFeatureSource<SimpleFeatureType, SimpleFeature> source;
+        // This source should make the renderer fail when asking for the features
+        source = new DecoratingFeatureSource<SimpleFeatureType, SimpleFeature>(featureSource) {
+            @Override
+            public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Query query)
+                    throws IOException {
+                throw new RuntimeException(renderExceptionToThrow);
+                // return delegate.getFeatures(query);
+            }
+        };
+        
+        StyleInfo someStyle = getCatalog().getStyles().get(0);
+        map.addLayer(source, someStyle.getStyle());
+        this.rasterMapProducer.setOutputFormat("image/gif");
+        this.rasterMapProducer.setMapContext(map);
+        this.rasterMapProducer.produceMap();
+
+        return this.rasterMapProducer.getImage();
+    }
+
 
     /**
      * This dummy producer adds no functionality to DefaultRasterMapProducer,
