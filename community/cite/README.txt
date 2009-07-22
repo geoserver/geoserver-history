@@ -1,43 +1,81 @@
 CITE Testing Instructions
--------------------------
+=========================
 
-A. Get Engine Sources
+Building the Engine
+-------------------
+
+1. Checkout Engine Sources
 
 Create a directory called 'engine', and check the out the teamengine sources
 into it.
 
   'mkdir engine'
-  'svn co -r 288 http://teamengine.svn.sourceforge.net/svnroot/teamengine/trunk
-engine'
+  'svn co -r 402 http://teamengine.svn.sourceforge.net/svnroot/teamengine/branches/team2 engine'
   
-*Note*: Revision 288 is the last verified version of the engine.
+*Note*: Revision 402 is the last verified version of the engine.
 
-B. Get Test Sources
+2. Checkout Test Sources
 
 Create a directory called 'tests', and check out the cite test sources into
 it.
 
+*Note*: You need an account to access the test sources. If you have an OGC
+        portal account that will work. If not simply ask on the developer
+        list and someone will send you a copy of the tests.
+
   'mkdir tests'
-  'svn co -r 2363 https://svn.opengeospatial.org:8443/ogc-projects/cite/trunk tests'
+  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wfs/1.0.0/trunk tests/wfs-1.0.0'
+  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wfs/1.1.0/trunk tests/wfs-1.1.0'
+  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wms/1.1.1/trunk tests/wms-1.1.1'
+  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wcs/1.0.0/trunk tests/wcs-1.0.0'
+  'svn co -r 2740 https://svn.opengeospatial.org:8443/ogc-projects/cite/scripts/wcs/1.1.1/trunk tests/wcs-1.1.1'
 
-*Note* : You will need a user name and password for the cite subversion
- repository. If you have a cite portal account, that will work.
+*Note* : Revision 2740 is the last verified version of the tests.
 
-*Note* : Revision 2363 is the last verified version of the tests.
+3. Patch the Test Engine Sources
 
-C. Build the Test Engine
+Patch the engine sources with the 'engine.patch' file.
+
+   'patch -p0 < engine.patch'
+
+4. Build the Test Engine
 
 The test engine is built with the following command: 
 
   'mvn clean install'
 
-D. Run the Test Suite
+The above command will build the engine with all the test suites which have
+been checked out into the 'tests' directory. To build the engine with only
+a subset of the test suites the following profiles are available:
+
+  'wfs-1.0.0'
+  'wfs-1.1.0'
+  'wms-1.1.1'
+  'wcs-1.0.0'
+  'wcs-1.1.1'
+
+For example, to build only the wfs-1.0.0 and wms-1.1.1 test suites:
+
+  'mvn clean install -P wfs-1.0.0,wms-1.1.1'
+
+Running the Engine with Jetty
+-----------------------------
+
+Change to the 'engine' directory and run the 'mvn jetty:run-exploded' command:
+
+  'cd engine'
+  'mvn jetty:run-exploded'
+
+Navigate to http://localhost:9090/teamengine in a web browser.
+
+Running the Engine from the Command Line
+----------------------------------------
 
 Running a test suite is done with the command:
 
-  'run.sh <profile>'
+  'run.sh <testsuite>'
 
-Where profile is one of the following:
+Where testsuite is one of the following:
 
   'wfs-1.0.0'
   'wfs-1.1.0'

@@ -6,7 +6,6 @@
 
   <groupId>org.geoserver</groupId>
   <artifactId>cite</artifactId>
-  <packaging>jar</packaging>
   <version>1.0</version>
   <name>Compliance + Interopability Testing + Evaluation (CITE) Module</name>
 
@@ -15,13 +14,23 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
-           <dependency>
+           <!--dependency>
               <groupId>sun.jdk</groupId>
               <artifactId>tools</artifactId>
               <version>1.5.0</version>
               <scope>system</scope>
               <systemPath>${java.home}/../lib/tools.jar</systemPath>
-            </dependency>
+            </dependency-->
+          <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.6.5</version>
+          </dependency>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
+          </dependency>
         </dependencies>
         <executions>
           <execution>
@@ -29,40 +38,96 @@
              <phase>process-sources</phase>
              <configuration>
                <tasks> 
-                  <!-- copy over env setup -->
-                  <copy todir="${basedir}/engine/bin">
-                    <fileset dir="${basedir}" includes="setenv.*"/> 
-                  </copy>
+                  <typedef resource="net/sf/antcontrib/antlib.xml">
+                   <classpath refid="maven.dependency.classpath"/>
+                  </typedef>
+
+                  <!-- copy the test scripts over -->
+                  <if>
+                    <and>
+                      <equals arg1="yes" arg2="${include.wfs-1.0.0}"/>
+                      <available file="${basedir}/tests/wfs-1.0.0"/>
+                    </and>
+                    <then>
+                      <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
+                        <fileset dir="${basedir}/tests/wfs-1.0.0" includes="**/*" excludes="**/.svn"/>
+                      </copy>
+                    </then>
+                  </if>
+
+                  <if>
+                    <and>
+                      <equals arg1="yes" arg2="${include.wfs-1.1.0}"/>
+                      <available file="${basedir}/tests/wfs-1.1.0"/>
+                    </and>
+                    <then>
+                      <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
+                        <fileset dir="${basedir}/tests/wfs-1.1.0" includes="**/*" excludes="**/.svn"/>
+                      </copy>
+                    </then>
+                  </if>
+
+                  <if>
+                    <and>
+                      <equals arg1="yes" arg2="${include.wms-1.1.1}"/>
+                      <available file="${basedir}/tests/wms-1.1.1"/>
+                    </and>
+                    <then>
+                      <copy todir="${basedir}/engine/scripts/wms-1.1.1">
+                        <fileset dir="${basedir}/tests/wms-1.1.1" includes="**/*" excludes="**/.svn"/>
+                      </copy>
+                    </then>
+                  </if>
+
+                  <if>
+                    <and>
+                      <equals arg1="yes" arg2="${include.wcs-1.0.0}"/>
+                      <available file="${basedir}/tests/wcs-1.0.0"/>
+                    </and>
+                    <then>
+                      <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
+                        <fileset dir="${basedir}/tests/wcs-1.0.0" includes="**/*" excludes="**/.svn"/>
+                      </copy>
+                    </then>
+                  </if>
+
+                  <if>
+                    <and>
+                      <equals arg1="yes" arg2="${include.wcs-1.1.1}"/>
+                      <available file="${basedir}/tests/wcs-1.1.1"/>
+                    </and>
+                    <then>
+                      <copy todir="${basedir}/engine/scripts/wcs-1.1.1">
+                        <fileset dir="${basedir}/tests/wcs-1.1.1" includes="**/*" excludes="**/.svn"/>
+                      </copy>
+                    </then>
+                  </if>
 
                   <!-- copy over cite1 component -->
                   <copy todir="${basedir}/engine/components">
-                     <fileset dir="${basedir}/tests/components" 
+                     <fileset dir="${basedir}" includes="cite1/**/*" 
                          excludes="/**/.svn"/>
                   </copy>
-                  <copy todir="${basedir}/engine/components/cite1"
-                      file="${basedir}/build.properties"/>
  
-                  <!-- copy over resources from test suite --> 
-                  <!--
-                  <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
-                    <fileset dir="${basedir}/tests/wfs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
-                  </copy>
-                  -->
-                  <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
-                    <fileset dir="${basedir}/tests/wfs/1.1.0/ets" includes="resources/**/*,ctl/**/*"/>
-                  </copy>
-                  <!--
-                  <copy todir="${basedir}/engine/scripts/wms-1.1.1">
-                    <fileset dir="${basedir}/tests/wms/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
-                  </copy>
-                  <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
-                    <fileset dir="${basedir}/tests/wcs/1.0.0/ets" includes="resources/**/*,ctl/**/*"/>
-                  </copy>
-                  <copy todir="${basedir}/engine/scripts/wcs-1.1.1">
-                    <fileset dir="${basedir}/tests/wcs/1.1.1/ets" includes="resources/**/*,ctl/**/*"/>
-                  </copy>
-		  -->
-                  <!-- create necessary directories -->
+                  <!-- create the engine build.properties file -->
+                  <property name="bp.file" value="${basedir}/engine/build.properties"/>
+                  <echo file="${bp.file}" message="usersdir "/>
+                  <echo file="${bp.file}" append="true">${basedir}/users${line.separator}</echo>
+                  <echo file="${bp.file}" append="true" message="workdir "/>
+                  <echo file="${bp.file}" append="true">${basedir}/target/work${line.separator}</echo>
+                  <echo file="${bp.file}" append="true" message="tomcat.dir "/>
+                  <echo file="${bp.file}" append="true">${basedir}/target</echo>
+
+                  <!-- copy over the pom and realm.properties file for the 
+                       engine -->
+                  <copy tofile="${basedir}/engine/pom.xml" file="${basedir}/pom-engine.xml"/> 
+                  <copy todir="${basedir}/engine" file="${basedir}/realm.properties"/> 
+
+                  <!-- create users and workdir -->
+                  <mkdir dir="${basedir}/target/work"/>
+                  <mkdir dir="${basedir}/target/logs"/>
+
+                  <!-- create "fake" tomcat directory -->
                   <mkdir dir="${basedir}/target/server/lib"/>
                   <mkdir dir="${basedir}/target/common/lib"/>
                </tasks> 
@@ -76,11 +141,6 @@
             <phase>clean</phase>
             <configuration>
               <tasks>
-                <!-- delete env setup -->
-                <delete>
-                  <fileset dir="${basedir}/engine/bin" includes="setenv.sh,setenv.bat"/> 
-                </delete>
-
                 <!-- clean the cite1 component -->
                 <delete dir="${basedir}/engine/components/cite1"/>
 
@@ -90,12 +150,7 @@
                 </delete>
 
                 <!-- clean the engine -->
-                <ant dir="${basedir}/engine/apps/engine" target="clean"/>
                 <ant dir="${basedir}/engine" target="clean"/>
-           
-                <delete>
-                  <fileset dir="${basedir}/engine/setup/UserFilesRealm" includes="UserFilesRealm.jar"/>       
-                </delete>
               </tasks>
             </configuration>
             <goals>
@@ -107,15 +162,7 @@
             <phase>compile</phase>
             <configuration>
               <tasks>
-                <property name="tomcat.dir" value="${basedir}/target"/>
-                <property name="java.dir" value="c:\programmi\java\jdk1.5.0_09"/>
-                <ant dir="${basedir}/engine/apps/engine" target="jar"/>
-                <ant dir="${basedir}/engine/apps/manager" target="jar"/>
-		<ant dir="${basedir}/engine" target="war"/>
-		<ant dir="${basedir}/engine" target="jar.realm"/>
-                <!--ant dir="${basedir}/engine" target="jar.realm"/-->
-                <!--ant dir="${basedir}/engine" target="jar.engine"/>
-                <ant dir="${basedir}/engine" target="jar.components"/-->
+                <ant dir="${basedir}/engine"/>
               </tasks>
             </configuration>
             <goals>
@@ -137,6 +184,14 @@
                   <overWrite>true</overWrite>
                   <outputDirectory>${basedir}/target/server/lib</outputDirectory>
                </artifactItem>
+               <artifactItem>
+                  <groupId>javax.servlet</groupId>
+                  <artifactId>servlet-api</artifactId>
+                  <version>2.4</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${basedir}/target/common/lib</outputDirectory>
+               </artifactItem>
             </artifactItems>
             <stripVersion>true</stripVersion>
          </configuration>
@@ -151,19 +206,78 @@
          </executions>
       </plugin> 
       <plugin>
-         <groupId>org.codehaus.mojo</groupId>
-         <artifactId>tomcat-maven-plugin</artifactId>
-         <configuration>
-           <path>/teamengine</path>
-           <port>9090</port>
-           <warSourceDirectory>${basedir}/engine/webapps/teamengine</warSourceDirectory>
-         </configuration>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty-plugin</artifactId>
+        <version>6.1.8</version>
+        <configuration>
+          <contextPath>teamengine</contextPath>
+          <webApp>${basedir}/engine/webapps/teamengine</webApp>
+          <connectors>
+            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+              <port>9090</port>
+              <maxIdleTime>10000</maxIdleTime>
+            </connector>
+          </connectors>
+		  <userRealms>
+            <userRealm implementation="org.mortbay.jetty.security.HashUserRealm">
+              <name>user</name>
+              <config>${basedir}/realm.properties</config>
+            </userRealm>
+          </userRealms>
+        </configuration>
       </plugin>
     </plugins>
   </build>
 
+  <profiles>
+   <profile>
+     <id>wfs-1.0.0</id>
+     <activation>
+       <activeByDefault>true</activeByDefault>
+     </activation>
+     <properties>
+       <include.wfs-1.0.0>yes</include.wfs-1.0.0>
+     </properties>
+   </profile>
+   <profile>
+     <id>wfs-1.1.0</id>
+     <activation>
+       <activeByDefault>true</activeByDefault>
+     </activation>
+     <properties>
+       <include.wfs-1.1.0>yes</include.wfs-1.1.0>
+     </properties>
+   </profile>
+   <profile>
+     <id>wms-1.1.1</id>
+     <activation>
+       <activeByDefault>true</activeByDefault>
+     </activation>
+     <properties>
+       <include.wms-1.1.1>yes</include.wms-1.1.1>
+     </properties>
+   </profile>
+   <profile>
+     <id>wcs-1.0.0</id>
+     <activation>
+       <activeByDefault>true</activeByDefault>
+     </activation>
+     <properties>
+       <include.wcs-1.0.0>yes</include.wcs-1.0.0>
+     </properties>
+   </profile>
+   <profile>
+     <id>wcs-1.1.1</id>
+     <activation>
+       <activeByDefault>true</activeByDefault>
+     </activation>
+     <properties>
+       <include.wcs-1.1.1>yes</include.wcs-1.1.1>
+     </properties>
+   </profile>
+  </profiles>
+
   <properties>
-     <cite.service>wfs</cite.service>
-     <cite.version>1.1.0</cite.version>
+    <all>yes</all>
   </properties>
 </project>
