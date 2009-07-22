@@ -153,7 +153,6 @@ public class StyleNewPage extends GeoServerSecuredPage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 // we need to force validation or the value won't be converted
-                form.process();
                 styles.validate();
                 StyleInfo style = (StyleInfo) styles.getConvertedInput();
     
@@ -161,6 +160,7 @@ public class StyleNewPage extends GeoServerSecuredPage {
                     try {
                         // same here, force validation or the field won't be udpated
                         sldEditorPanel.getTextArea().validate();
+                        sldEditorPanel.getTextArea().clearInput();
                         sldEditorPanel.setRawSLD( readFile( style ) );
                     } catch(Exception e) {
                         error("Errors occurred loading the '" + style.getName() + "' style");
