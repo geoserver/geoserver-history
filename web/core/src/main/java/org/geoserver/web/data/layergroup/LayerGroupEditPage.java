@@ -19,7 +19,6 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -156,6 +155,7 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
                     return new StyleDetachableModel( (StyleInfo) object );
                 }
             });
+            getTopPager().setVisible(false);
         }
 
         @Override
@@ -206,6 +206,7 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
                 }
 
             });
+            getTopPager().setVisible(false);
         }
         
         @Override
