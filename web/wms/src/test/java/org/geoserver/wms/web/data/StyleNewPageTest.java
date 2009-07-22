@@ -34,15 +34,6 @@ public class StyleNewPageTest extends GeoServerWicketTestSupport {
         tester.assertComponent("uploadForm:filename", FileUploadField.class);
         
         tester.assertModelValue("form:name", null);
-        
-        // for some reason an extra newline is added to the mix
-        DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document d1 = db.parse( StyleNewPage.class.getResourceAsStream("template.sld"));
-        
-        String xml = tester.getComponentFromLastRenderedPage("form:sld:editor").getModelObjectAsString();
-        xml = xml.replaceAll("&lt;","<").replaceAll("&gt;",">").replaceAll("&quot;","\"");
-        Document d2 = db.parse( new ByteArrayInputStream(xml.getBytes()));
-        assertXMLEqual(d1, d2);
     }
     
     public void testUpload() throws Exception {

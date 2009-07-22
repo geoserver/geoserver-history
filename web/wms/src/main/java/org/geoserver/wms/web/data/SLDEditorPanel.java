@@ -96,6 +96,7 @@ public class SLDEditorPanel extends FormComponentPanel {
         }
 
         this.rawSLD = builder.toString();
+        editor.setModelObject(rawSLD);
         in.close();
     }
     
