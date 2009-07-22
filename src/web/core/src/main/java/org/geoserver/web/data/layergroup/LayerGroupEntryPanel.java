@@ -25,6 +25,7 @@ import org.geoserver.web.data.layergroup.LayerGroupEditPage.StyleListPanel;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ImageAjaxLink;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -81,6 +82,7 @@ public class LayerGroupEntryPanel extends Panel {
             public void onClick(AjaxRequestTarget target) {
                 popupWindow.setInitialHeight( 375 );
                 popupWindow.setInitialWidth( 525 );
+                popupWindow.setTitle(new ParamResourceModel("chooseLayer", this));
                 popupWindow.setContent( new LayerListPanel(popupWindow.getContentId()) {
                     @Override
                     protected void handleLayer(LayerInfo layer, AjaxRequestTarget target) {
@@ -116,6 +118,7 @@ public class LayerGroupEntryPanel extends Panel {
             public void onClick(AjaxRequestTarget target) {
                 popupWindow.setInitialHeight( 375 );
                 popupWindow.setInitialWidth( 525 );
+                popupWindow.setTitle(new ParamResourceModel("chooseStyle", this));
                 popupWindow.setContent( new StyleListPanel( popupWindow.getContentId() ) {
                     @Override
                     protected void handleStyle(StyleInfo style, AjaxRequestTarget target) {
