@@ -6,26 +6,31 @@ fi
 #parse out service and version
 service=${1:0:3}
 version=${1:4:$#1}
+base=engine/scripts
 
 #find the control file
 ctl=""
-if [ -e tests/$service/$version/ets/ctl/main.xml ]; then
+if [ -e $base/$service-$version/ctl/main.xml ]; then
   ctl=main.xml
 else 
-  if [ -e tests/$service/$version/ets/ctl/main.ctl ]; then
+  if [ -e $base/$service-$version/ctl/main.ctl ]; then
     ctl=main.ctl
   else 
-    if [ -e tests/$service/$version/ets/ctl/$service.xml ]; then
+    if [ -e $base/$service-$version/ctl/$service.xml ]; then
       ctl=$service.xml
+    else 
+      if [ -e $base/$service-$version/ctl/all.xml ]; then
+       ctl=all.xml
+      fi
     fi
   fi
 fi
 
 if [ "$ctl" = "" ]; then
-  echo "Error: could not find control file 'main.xml' or '$service.xml' under 'tests/$service/$version/ets/ctl/'"
+  echo "Error: could not find control file 'main.xml' or '$service.xml' under 'tests/$service-$version/ctl/'"
   exit -1
 fi
-ctl=tests/$service/$version/ets/ctl/$ctl
+ctl=$base/$service-$version/ctl/$ctl
 
 mode=test
 if [ "$2" != "" ]; then
@@ -41,7 +46,7 @@ else
 fi
 
 if [ "$mode" = "resume" ]; then
-  sh engine/bin/test.sh -mode=$mode -source=$ctl -logdir=target/logs/ -session=$1
+  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=target/logs/ -session=$1
 else 
-  sh engine/bin/test.sh -mode=$mode -source=$ctl -logdir=target/logs/ -session=$1 $2
+  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=target/logs/ -session=$1 $2
 fi
