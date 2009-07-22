@@ -3,9 +3,15 @@
 <wicket:extend>
     <form wicket:id="form" id="mainForm">
     <ul>
-        <li><label for="name"><wicket:message key="name">Name</wicket:message></label>
-        <input wicket:id="name"></input></li>
         <li>
+            <label for="name"><wicket:message key="name">Name</wicket:message></label>
+            <input wicket:id="name"></input></li>
+        <li>
+        <li>
+            <label for="name"><wicket:message key="copyFrom">CopyFrom</wicket:message></label>
+            <select wicket:id="existingStyles"></select>
+            <a href="#" wicket:id="copy"><wicket:message key="copy">Copy</wicket:message></a>
+        </li>
         <div wicket:id="sld"></div>
         </li>
     </ul>
@@ -14,7 +20,7 @@
     <form wicket:id="uploadForm" id="uploadForm"><label
         for="filename"><wicket:message key="sldFile">SLD file</wicket:message></label>
     <input type="file" wicket:id="filename"></input> <a href="#"
-        onclick="document.forms['uploadForm'].submit()">Upload</a></form>
+        onclick="document.forms['uploadForm'].submit()"><wicket:message key="upload">Upload</wicket:message></a></form>
 
     <div class="button-group selfclear">
        <a href="#" onclick="document.forms['mainForm'].submit()"><wicket:message key="submit">Submit</wicket:message></a>
