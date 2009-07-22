@@ -96,7 +96,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 doc);
         assertXpathEvaluatesTo(
                 "urn:cgi:classifierScheme:GSV:GeologicalUnitType",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:classifier/gsml:ControlledConcept/gsml:preferredName",
+                "//gsml:GeologicUnit[@gml:id='25699']/gsml:classifier/gsml:ControlledConcept/gml:name",
                 doc);
         assertXpathCount(3, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition", doc);
         // cp.167775491936278844
@@ -152,7 +152,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 doc);
         assertXpathEvaluatesTo(
                 "urn:cgi:classifierScheme:GSV:GeologicalUnitType",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:classifier/gsml:ControlledConcept/gsml:preferredName",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:classifier/gsml:ControlledConcept/gml:name",
                 doc);
         assertXpathCount(2,
                 "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence/gsml:MappedFeature", doc);
@@ -210,7 +210,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 doc);
         assertXpathEvaluatesTo(
                 "urn:cgi:classifierScheme:GSV:GeologicalUnitType",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:classifier/gsml:ControlledConcept/gsml:preferredName",
+                "//gsml:GeologicUnit[@gml:id='25682']/gsml:classifier/gsml:ControlledConcept/gml:name",
                 doc);
         assertXpathCount(1,
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurence/gsml:MappedFeature", doc);

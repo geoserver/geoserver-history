@@ -336,6 +336,8 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
             // feature link shouldn't appear as it's not in the schema
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
@@ -421,9 +423,13 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Yellow", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
             assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
                     + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
@@ -519,12 +525,16 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("Yellow", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
                     + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
             assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
+            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
                     + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
@@ -612,6 +622,8 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             // exposureColor
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:exposureColor", doc);
+            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
             assertXpathEvaluatesTo("Red", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor"
                     + "/gsml:CGI_TermValue/gsml:value", doc);
