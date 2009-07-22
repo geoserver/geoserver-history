@@ -291,9 +291,11 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     
                     if (o instanceof LayerGroupInfo) {
                         LayerGroupInfo groupInfo = (LayerGroupInfo)o;
-                        for(LayerInfo layerInfo : groupInfo.getLayers()){
-                            StyleInfo defaultStyle = layerInfo.getDefaultStyle();
-                            newStyles.add(defaultStyle.getStyle());
+                        for(int j = 0; j < groupInfo.getStyles().size(); j++) {
+                            StyleInfo si = groupInfo.getStyles().get(j);
+                            if(si == null)
+                                si = groupInfo.getLayers().get(j).getDefaultStyle();
+                            newStyles.add(si.getStyle());
                         }
                         // expand the filter on the layer group to all its sublayers
                         if(filters != null) {
