@@ -182,11 +182,11 @@ overflow: hidden;
 #logo a {
 margin: 19px 0 0;
 float: left;
-width: 419px;
+width: 353px;
 height: 112px;
 overflow: hidden;
 text-indent: -9999em;
-background: url(./chrome/GeoExplorer_Logo.png) no-repeat;
+background: url(./chrome/geoserver-logo.png) no-repeat;
 }
 
 #account-nav {
@@ -479,15 +479,16 @@ content: ":";
 
 
 table.docutils {
-border: 1px solid #aaa;
-border-collapse: collapse;
+border: 0;
 }
 
 table.docutils td, table.docutils th {
-padding: 1px 8px 1px 3px;
-border: 1px solid #aaa;
+padding: 1px 8px 1px 0;
+border-top: 0;
+border-left: 0;
+border-right: 0;
+border-bottom: 1px solid #aaa;
 }
-
 
 table.field-list td, table.field-list th {
 border: 0 !important;

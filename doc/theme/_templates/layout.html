@@ -27,7 +27,7 @@
 
 {%- macro sidebar() %}
   {%- if builder != 'htmlhelp' %}
-  <div id="sidebar"{%- if display_toc %} class="contrast"{%- endif %}>
+  <div id="sidebar"{%- if pagename not in ['index', 'search'] %} class="contrast"{%- endif %}>
     {%- if display_toc %}
       {%- block sidebartoc %}
       <div id="toc" class="section">
@@ -37,7 +37,6 @@
       </div>
       {%- endblock %}
     {%- endif %}
-
       {%- block sidebarrel %}
         {%- if (prev or next) %}
         <div class="section">
@@ -162,13 +161,11 @@
     <div class="wrap selfclear">
       <div id="logo"><a href="{{ pathto('index') }}">{{ shorttitle }}</a></div>
       <ul id="top-nav">
-<!-- 
         <li class="first"><a href="http://geoserver.org/display/GEOS/What+is+Geoserver">About</a></li>
         <li><a href="http://blog.geoserver.org/">Blog</a></li>
         <li><a href="http://geoserver.org/display/GEOSDOC/FAQ">FAQ</a></li>
         <li><a href="http://geoserver.org/display/GEOS/Download">Download</a></li>
         <li><a href="{{ pathto('index') }}">Documentation</a></li>
- -->
       </ul>
       
       {%- block quicksearch %}
