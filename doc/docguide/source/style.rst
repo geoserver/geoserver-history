@@ -3,7 +3,7 @@
 Style Guidelines
 ================
 
-This document provides a set of guidelines to use for all GeoServer project documentation. The purpose of which is to ensure that all project documentation remains clear, consistent, and easy to read.
+This document provides a set of guidelines to use for all GeoServer project documentation. These guidelines will help to ensure that all project documentation remains clear, consistent, and easy to read.
 
 Content conventions
 -------------------
@@ -124,11 +124,3 @@ For shell scripts, new lines can be escaped with a backslash character (\). It i
    $ /org/jdk1.5.0*/bin/java \
       -cp /home/user/.m2/repository/org/geoserver/*/*.jar \
       org.geoserver.GeoServer -DGEOSERVER_DATA_DIR=/var/lib/geoserver_data/release
-
-User interface components
-`````````````````````````
-
-When describing a button or link or some other user interface component use monospaced text. When describing input surround it with "quotes"
-
-Example: Enter "foo" in the ``Alias`` text field. Enter "4326" in the ``SRS`` text field. Then click the ``Submit`` button. Then the ``Apply`` button.
-

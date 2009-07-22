@@ -5,15 +5,13 @@ Workflow
 
 GeoServer documentation aims to mirror the development process of the software itself.  The process for writing/editing documentation is as follows:
 
-* **Step 1**: Copy source locally using version control software
-* **Step 2**: Make any changes
-* **Step 3**: Test to make sure that changes are correct
-* **Step 4**: Commit changes back to the repository
+* **Step 1**: Check out source
+* **Step 2**: Make changes
+* **Step 3**: Build and test locally
+* **Step 4**: Commit changes
    
-
-
-Checking out source
--------------------
+Check out source
+----------------
 
 Repository
 ``````````
@@ -22,41 +20,107 @@ This documentation source code exists in the same repository as the GeoServer so
 
    https://svn.codehaus.org/geoserver/
 
-Within this path are the various ``branches`` and ``tags`` associated with releases.  So, for example, the documentation for the 1.7.x branch is found inside this path::
+Within this path are the various branches and tags associated with releases, and the documentation is always inside a :file:`doc` path.  So, for example, the documentation for the 1.7.x branch is found inside this path::
 
    https://svn.codehaus.org/geoserver/branches/1.7.x/doc/
    
-When making changes to the 1.7.x branch, this is the path to checkout.
+The documentation for GeoServer trunk can be found inside this path::
+
+   https://svn.codehaus.org/geoserver/trunk/doc/
+
+Make sure you are checking out the correct branch/tag.
+
+Regardless of which version is checked out, the repository will contain four directories::
+
+   user/
+   developer/
+   docguide/
+   theme/
+
+.. list-table::
+   :widths: 20 80
+
+   * - **Directory**
+     - **Description**
+   * - :file:`user`
+     - User Manual source files
+   * - :file:`developer`
+     - Developer Manual source files
+   * - :file:`docguide`
+     - Documentation Guide source files (this is what you are reading now)
+   * - :file:`theme`
+     - GeoServer Sphinx theme (common to all three projects)
 
 Software
 ````````
 
-You must use a version control software to retrieve files.  Most people use `Subversion <http://subversion.tigris.org/>`_ (aka "svn"), a command line utility for managing version control systems.  There also exists a shell-integrated version of Subversion for Windows called `TortoiseSVN <http://tortoisesvn.tigris.org/>`_
+You must use a version control software to retrieve files.  Most people use `Subversion <http://subversion.tigris.org/>`_ (aka :command:`svn`), a command line utility for managing version control systems.  There also exists a shell-integrated version of Subversion for Windows called `TortoiseSVN <http://tortoisesvn.tigris.org/>`_.
 
-.. warning:: Add info about installing/configuring SVN
+For example, to check out the documentation source tree for 1.7.x, run the following command::
+
+   svn checkout https://svn.codehaus.org/geoserver/branches/1.7.x/doc
 
 
-Making edits
+Make changes
 ------------
 
-Documentation in Sphinx is written in `reStructuredText <http://docutils.sourceforge.net/rst.htm>`_, a lightweight markup syntax.  For suggestions on writing reStructuredText for use with Sphinx, please see the section on :ref:`sphinx`.  For suggestions about writing style, please see the :ref:`style_guidelines`. 
+Documentation in Sphinx is written in `reStructuredText <http://docutils.sourceforge.net/rst.htm>`_, a lightweight markup syntax.  For suggestions on writing reStructuredText for use with Sphinx, please see the section on :ref:`sphinx`.  For suggestions about writing style, please see the :ref:`style_guidelines`.
 
 
-Testing locally
----------------
+Build and test locally
+----------------------
 
 You should install Sphinx on your local system to build the documentation locally and view any changes made.  Sphinx builds the reStructuredText files into HTML pages and PDF files.
 
-.. warning:: Add info about installing Sphinx and testing the build
+HTML
+````
 
-Committing changes
-------------------
+#. On a terminal, navigate to your GeoServer source checkout and change to the :file:`doc/user` directory (or whichever project you wish to build).
 
-The final step is to commit the changes to the official repository.  If you are using Subversion, the command to use is::
+#. Run the following command::
 
-   svn commit [path/files]
+      make html
+
+   The resulting HTML pages will be contained in :file:`doc/user/build/html`.
+
+#. Watch the output of the above command for any errors and warnings.  These could be indicative of problems with your markup.  Please fix any errors and warnings before continuing.
+
+PDF
+```
+
+#. On a terminal, navigate to your GeoServer source checkout and change to the :file:`doc/user` directory (or whichever project you wish to build).
+
+#. Run the following command::
+
+      make latex
+
+   The resulting LaTeX pages will be contained in :file:`doc/user/build/latex`.
+
+#. Change to the :file:`doc/user/build/latex` directory.
+
+#. Run the following command::
+
+      pdflatex [GeoServerProject].tex
+
+   This will create a PDF file called :file:`{GeoServerProject}.pdf` in the same directory
+
+   .. note:: The exact name of :file:`{GeoServerProject}` depends on which project is being built.  However, there will only be one file with the extension ``.tex`` in the :file:`doc/user/build/latex` directory, so there should hopefully be little confusion.
+
+   .. warning:: This command requires `LaTeX <http://www.latex-project.org/>`_ to be installed, and :command:`pdflatex` to be added to your Path.
+
+#. Watch the output of the above command for any errors and warnings.  These could be indicative of problems with your markup.  Please fix any errors and warnings before continuing.
+
+
+Commit changes
+--------------
+
+.. warning:: If you have any errors or warnings in your project, please fix them before committing!
+
+The final step is to commit the changes to the repository.  If you are using Subversion, the command to use is::
+
+   svn commit [path/file(s)]
    
-where ``[path/files]`` is the path and files you wish to commit back to the repository.
+where :file:`{path/file(s)}` is the path and file(s) you wish to commit to the repository.
 
 .. note:: You must have commit rights to do this.  Please see the section on :ref:`contributing_commit_rights` for details.
 
