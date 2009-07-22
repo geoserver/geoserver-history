@@ -3,7 +3,7 @@
 Writing a Tutorial
 ==================
 
-A tutorial should have a clear goal and present step by step commands to acheive that goal.
+A tutorial should have a clear goal and present step-by-step instructions to achieve that goal.
 
 Example Tutorial
 ----------------
@@ -28,7 +28,7 @@ State any introductory steps in this section. These might include:
 First section
 `````````````
 
-In a single sentence state what will be acheived in this section.
+In a single sentence, state what will be acheived in this section.
 
 #. Step one
 #. Step two
@@ -37,7 +37,7 @@ In a single sentence state what will be acheived in this section.
 Second section
 ``````````````
 
-In a single sentence state what will be acheived in this section.
+In a single sentence, state what will be acheived in this section.
 
 #. Step one
 #. Step two
