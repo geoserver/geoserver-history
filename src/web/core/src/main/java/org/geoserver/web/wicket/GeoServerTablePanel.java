@@ -427,7 +427,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
      * The two pages in the table panel. Includes a paging navigator and a status label telling the
      * user what she is seeing
      */
-    class Pager extends Panel {
+    protected class Pager extends Panel {
 
         GeoServerPagingNavigator navigator;
 
