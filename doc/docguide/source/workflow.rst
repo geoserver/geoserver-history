@@ -122,5 +122,5 @@ The final step is to commit the changes to the repository.  If you are using Sub
    
 where :file:`{path/file(s)}` is the path and file(s) you wish to commit to the repository.
 
-.. note:: You must have commit rights to do this.  Please see the section on :ref:`contributing_commit_rights` for details.
+.. note:: You must have commit rights to do this.  Please see the section on how to :ref:`commit_rights` for details.
 
