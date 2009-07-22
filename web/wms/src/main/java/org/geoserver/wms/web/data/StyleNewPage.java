@@ -3,14 +3,18 @@ package org.geoserver.wms.web.data;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
@@ -18,9 +22,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.lang.Bytes;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.ParamResourceModel;
+import org.geoserver.wms.web.publish.StylesModel;
 
 /**
  * Allows for editing a new style, includes file upload
@@ -31,6 +38,8 @@ public class StyleNewPage extends GeoServerSecuredPage {
     TextField nameTextField;
     SLDEditorPanel sldEditorPanel;
     FileUploadField fileUploadField;
+    private DropDownChoice styles;
+    private AjaxSubmitLink copyLink;
     
     public StyleNewPage() {
         StyleInfo s = getCatalog().getFactory().createStyle();
@@ -74,12 +83,22 @@ public class StyleNewPage extends GeoServerSecuredPage {
         form.add( sldEditorPanel = new SLDEditorPanel( "sld", new Model() ) );
         sldEditorPanel.setOutputMarkupId( true );
         
-        try {
-            sldEditorPanel.setRawSLD(getClass().getResourceAsStream( "template.sld"));
-        } 
-        catch (IOException e) {
-            throw new WicketRuntimeException( e );
-        }
+        // style copy functionality
+        styles = new DropDownChoice("existingStyles", new Model(), new StylesModel());
+        styles.setOutputMarkupId(true);
+        styles.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                styles.validate();
+                copyLink.setEnabled(styles.getConvertedInput() != null);
+                target.addComponent(copyLink);
+            }
+        });
+        form.add(styles);
+        copyLink = copyLink();
+        copyLink.setEnabled(false);
+        form.add(copyLink);
         
         Form uploadForm = new Form("uploadForm") {
           @Override
@@ -126,5 +145,53 @@ public class StyleNewPage extends GeoServerSecuredPage {
             }
         };
         add( cancelLink );
+    }
+    
+    private AjaxSubmitLink copyLink() {
+        return new AjaxSubmitLink("copy") {
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form form) {
+                // we need to force validation or the value won't be converted
+                form.process();
+                styles.validate();
+                StyleInfo style = (StyleInfo) styles.getConvertedInput();
+    
+                if(style != null) {
+                    try {
+                        // same here, force validation or the field won't be udpated
+                        sldEditorPanel.getTextArea().validate();
+                        sldEditorPanel.setRawSLD( readFile( style ) );
+                    } catch(Exception e) {
+                        error("Errors occurred loading the '" + style.getName() + "' style");
+                    }
+                    target.addComponent(sldEditorPanel);
+                }
+            }
+            
+            @Override
+            protected IAjaxCallDecorator getAjaxCallDecorator() {
+                return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
+
+                    @Override
+                    public CharSequence preDecorateScript(CharSequence script) {
+                        return "if(editAreaLoader.getValue('" + sldEditorPanel.getTextArea().getMarkupId() + "') != '' &&" +
+                                "!confirm('" + new ParamResourceModel("confirmOverwrite", StyleNewPage.this).getString()
+                                + "')) return false;" + script;
+                    }
+                };
+            }
+            
+            @Override
+            public boolean getDefaultFormProcessing() {
+                return false;
+            }
+            
+        };
+    }
+    
+    Reader readFile(StyleInfo style) throws IOException{
+        ResourcePool pool = getCatalog().getResourcePool();
+        return pool.readStyle( style );
     }
 }

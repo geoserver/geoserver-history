@@ -16,9 +16,10 @@ import java.util.List;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.SubmitLink;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.web.wicket.XMLEditor;
+import org.geoserver.web.wicket.EditAreaBehavior;
 import org.geotools.sld.SLDConfiguration;
 import org.geotools.xml.Parser;
 
@@ -29,7 +30,7 @@ import org.geotools.xml.Parser;
 public class SLDEditorPanel extends FormComponentPanel {
     
     private String rawSLD; // Accessed via a property model, don't remove
-    private XMLEditor editor;
+    private TextArea editor;
 
     public SLDEditorPanel( String id ) {
         super(id);
@@ -44,7 +45,8 @@ public class SLDEditorPanel extends FormComponentPanel {
     }
     
     void initComponents() {
-        add( editor = new XMLEditor("editor", new PropertyModel(this, "rawSLD")) );
+        add( editor = new TextArea("editor", new PropertyModel(this, "rawSLD")) );
+        editor.add(new EditAreaBehavior());
         add(new SubmitLink("validate") {
             @Override
             public void onSubmit() {
@@ -106,5 +108,9 @@ public class SLDEditorPanel extends FormComponentPanel {
         }
         
         return parser.getValidationErrors();
+    }
+    
+    public TextArea getTextArea() {
+        return editor;
     }
 }
