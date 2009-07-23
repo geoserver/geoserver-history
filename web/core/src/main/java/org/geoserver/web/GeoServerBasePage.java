@@ -110,11 +110,14 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
                         BookmarkablePageLink link = new BookmarkablePageLink("link", info.getComponentClass());
                         link.add(new AttributeModifier("title", true, new StringResourceModel(info.getDescriptionKey(), (Component) null, null)));
                         link.add(new Label("link.label", new StringResourceModel(info.getTitleKey(), (Component) null, null)));
+                        Image image;
                         if(info.getIcon() != null) {
-                            link.add(new Image("link.icon", new ResourceReference(info.getComponentClass(), info.getIcon())));
+                            image = new Image("link.icon", new ResourceReference(info.getComponentClass(), info.getIcon()));
                         } else {
-                            link.add(new Image("link.icon", new ResourceReference(GeoServerBasePage.class, "img/icons/silk/wrench.png")));
+                            image = new Image("link.icon", new ResourceReference(GeoServerBasePage.class, "img/icons/silk/wrench.png"));
                         }
+                        image.add(new AttributeModifier("alt", true, new ParamResourceModel(info.getTitleKey(), null)));
+                        link.add(image);
                         item.add(link);
                     }
                 });
