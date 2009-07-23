@@ -641,10 +641,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * Making sure attributes that are encoded as xlink:href can still be queried in filters.
      */
     public void testFilteringXlinkHref() {
-        if (true) {
-            // won't work yet
-            return;
-        }
         String xml = //
         "<wfs:GetFeature " //
                 + "service=\"WFS\" " //
