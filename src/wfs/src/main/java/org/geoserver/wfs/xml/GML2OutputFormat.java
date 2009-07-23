@@ -178,9 +178,6 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             }
         }
 
-        System.setProperty("javax.xml.transform.TransformerFactory",
-            "org.apache.xalan.processor.TransformerFactoryImpl");
-
         GeoServerInfo global = geoServer.getGlobal();
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
         transformer.setNumDecimals(global.getNumDecimals());
