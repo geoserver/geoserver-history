@@ -486,101 +486,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // gu.25678
-            assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
-            // description
-            assertXpathEvaluatesTo("Olivine basalt, tuff, microgabbro, minor sedimentary rocks",
-                    "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                            + "/gsml:GeologicUnit/gml:description", doc);
-            // name
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gml:name", doc);
-            assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gml:name[@codeSpace='urn:ietf:rfc:2141']", doc);
-            assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]", doc);
-            assertXpathEvaluatesTo("urn:ietf:rfc:2141", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]/@codeSpace", doc);
-            assertXpathEvaluatesTo("-Py", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
+            assertXpathEvaluatesTo("#gu.25678", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/@xlink:href", doc);
+            // make sure nothing else is encoded
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
-            // occurence [sic]
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gsml:occurence", doc);
-            assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurence[1]", doc);
-            assertXpathEvaluatesTo("urn:cgi:feature:MappedFeature:mf2",
-                    "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                            + "/gsml:GeologicUnit/gsml:occurence[1]/@xlink:href", doc);
-            assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurence[2]", doc);
-            assertXpathEvaluatesTo("urn:cgi:feature:MappedFeature:mf3",
-                    "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                            + "/gsml:GeologicUnit/gsml:occurence[2]/@xlink:href", doc);
-            // exposureColor
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gsml:exposureColor", doc);
-            assertXpathEvaluatesTo("Yellow", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
-                    + "/gsml:CGI_TermValue/gsml:value", doc);
-            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[1]"
-                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
-            assertXpathEvaluatesTo("Blue", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
-                    + "/gsml:CGI_TermValue/gsml:value", doc);
-            assertXpathEvaluatesTo("some:uri", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]/gsml:CGI_TermValue/gsml:value/@codeSpace", doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:exposureColor[2]"
-                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
-            // outcropCharacter
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gsml:outcropCharacter", doc);
-            assertXpathEvaluatesTo("y", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[1]"
-                    + "/gsml:CGI_TermValue/gsml:value", doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[1]"
-                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
-            assertXpathEvaluatesTo("x", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[2]"
-                    + "/gsml:CGI_TermValue/gsml:value", doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:outcropCharacter[2]"
-                    + "/gsml:CGI_TermValue/FEATURE_LINK", doc);
-            // composition
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gsml:composition", doc);
-            assertXpathEvaluatesTo("significant", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[1]"
-                    + "/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value", doc);
-            assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[1]"
-                    + "/gsml:CompositionPart/gsml:role", doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[1]"
-                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
-            assertXpathEvaluatesTo("minor", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
-                    + "/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value", doc);
-            assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
-                    + "/gsml:CompositionPart/gsml:role", doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition[2]"
-                    + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
-            // lithology
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
-                    doc);
-            assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
-                    + "/gsml:CompositionPart/gsml:lithology/FEATURE_LINK", doc);
+                    + "']/gsml:specification/gsml:GeologicUnit/gml:name", doc);
         }
 
         // mf4
@@ -685,13 +595,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     + "/gsml:CompositionPart/gsml:lithology[2]/FEATURE_LINK", doc);
         }
         
-        if (false) { // disabled
-            // check for duplicate gml:id
-            assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25678']", doc);
-        }
+        // check for duplicate gml:id
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25678']", doc);
 
     }
-
+    
     public void testGetFeaturePropertyFilter() {
         String xml = //
         "<wfs:GetFeature " //
@@ -727,6 +635,44 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("gu.25682", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
         }
+    }
+    
+    /**
+     * Making sure attributes that are encoded as xlink:href can still be queried in filters.
+     */
+    public void testFilteringXlinkHref() {
+        if (true) {
+            // won't work yet
+            return;
+        }
+        String xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:PropertyIsEqualTo>" //
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name[1]</ogc:PropertyName>" //
+                + "                <ogc:Literal>Yaugher Volcanic Group</ogc:Literal>" //
+                + "            </ogc:PropertyIsEqualTo>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        // there should be 3: 
+        // - mf1/gu.25699
+        // - mf2/gu.25678
+        // - mf3/gu.25678 which is encoded as xlink:href
+        assertXpathEvaluatesTo("3", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(3, "//gsml:MappedFeature", doc);
     }
 
 }
