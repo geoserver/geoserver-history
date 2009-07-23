@@ -13,6 +13,8 @@ As with all formats, adding a shapefile to GeoServer involves adding a new store
 Using default connection
 ````````````````````````
 
+To begin, navigate to :menuselection:`Stores --> Add a new store --> PostGIS NG`.
+
 .. figure:: images/postgis.png
    :align: center
 
@@ -62,15 +64,19 @@ Using default connection
    * - :guilabel:`preparedStatements`
      - Enables prepared statements.
 
+When finished, click :guilabel:`Save`.
+
 Using JNDI
 ``````````
 
-GeoServer can also connect to a PostGIS databse using Java Naming and Directory Interface (JNDI).
+GeoServer can also connect to a PostGIS database using `JNDI <http://java.sun.com/products/jndi/>`_ (Java Naming and Directory Interface).
+
+To begin, navigate to :menuselection:`Stores --> Add a new store --> PostGIS NG (JNDI)`.
 
 .. figure:: images/postgisjndi.png
    :align: center
 
-   *Configuring a PostGIS datastore (with JNDI)*
+   *Adding a PostGIS database (using JNDI)*
 
 .. list-table::
    :widths: 20 80
@@ -78,7 +84,7 @@ GeoServer can also connect to a PostGIS databse using Java Naming and Directory 
    * - **Option**
      - **Description**
    * - :guilabel:`Workspace`
-     - Name of the workspace to contain the database.  This will also be the prefix of any layer names created from tables in the database.
+     - Name of the workspace to contain the store.  This will also be the prefix of all of the layer names created from the store.
    * - :guilabel:`Data Source Name`
      - Name of the database.  This can be different from the name as known to PostgreSQL/PostGIS.
    * - :guilabel:`Description`
@@ -90,9 +96,16 @@ GeoServer can also connect to a PostGIS databse using Java Naming and Directory 
    * - :guilabel:`jndiReferenceName`
      - JNDI path to the database.
    * - :guilabel:`schema`
-     - Schema for the the above database.
+     - Schema for the above database.
    * - :guilabel:`namespace`
      - Namespace to be associated with the database.  This field is altered by changing the workspace name.
+
+When finished, click :guilabel:`Save`.
+
+Configuring PostGIS layers
+--------------------------
+
+When properly loaded, all tables in the database will be visible to GeoServer, but they will need to be individually configured before being served by GeoServer.  See the section on :ref:`webadmin_layers` for how to add and edit new layers.
 
 .. _loose_bbox:
 
@@ -131,7 +144,7 @@ GEOS
 Spatial indexing
 ````````````````
 
-It is strongly recommended to create a spatial index on tables with a spatial component (i.e. containg a geometry column).  Any table of which does not have a spatial index will likely respond slowly to queries.
+It is strongly recommended to create a spatial index on tables with a spatial component (i.e. containing a geometry column).  Any table of which does not have a spatial index will likely respond slowly to queries.
 
 Common problems
 ---------------
