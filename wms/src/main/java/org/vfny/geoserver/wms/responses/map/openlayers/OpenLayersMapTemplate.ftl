@@ -153,7 +153,7 @@
                         </#list>
                         format: format,
                         tiled: 'true',
-                        tilesOrigin : "${request.bbox.minX?c},${request.bbox.minY?c}"
+                        tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom  
                     },
                     {buffer: 0} 
                 );
