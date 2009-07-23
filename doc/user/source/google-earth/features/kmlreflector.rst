@@ -63,7 +63,7 @@ To specify a different bounding box, append the parameter to the request::
 Reflector modes
 ---------------
 
-The KML reflector can operate in one of three modes: **superoverlay**, **refresh**, and **download**.
+The KML reflector can operate in one of three modes: **refresh**, **superoverlay**, and **download**.
 
 The mode is set by appending the following parameter to the URL::
 
@@ -76,10 +76,10 @@ where ``<mode>`` is one of the three reflector modes.  The details for each mode
 
    * - **Mode**
      - **Description**
-   * - ``superoverlay``
-     - (*default for versions 1.7.1 and later*) Returns KML as a super-overlay. A super-overlay is a form of KML in which data is broken up into regions.  Please see the section on :ref:`ge_feature_kml_super_overlays` for more information.
    * - ``refresh``
-     - (*default for versions prior to 1.7.1*) Returns dynamic KML that can be refreshed/updated by the Google Earth client. Data is refreshed and new data/imagery is downloaded when zooming/panning stops. This mode can return either vector or raster (placemark or overlay) The decision to return either vector or raster data is determined by the value of ``kmscore``.  Please see the section on :ref:`ge_feature_kml_scoring` for more information.
+     - (*default for all versions except 1.7.1 through 1.7.5*) Returns dynamic KML that can be refreshed/updated by the Google Earth client. Data is refreshed and new data/imagery is downloaded when zooming/panning stops. This mode can return either vector or raster (placemark or overlay) The decision to return either vector or raster data is determined by the value of ``kmscore``.  Please see the section on :ref:`ge_feature_kml_scoring` for more information.
+   * - ``superoverlay``
+     - (*default for versions 1.7.1 through 1.7.5*) Returns KML as a super-overlay. A super-overlay is a form of KML in which data is broken up into regions.  Please see the section on :ref:`ge_feature_kml_super_overlays` for more information.
    * - ``download``
      - Returns KML which contains the entire data set. In the case of a vector layer, this will include a series of KML placemarks. With raster layers, this will include a single KML ground overlay. This is the only mode that doesn't dynamically request new data from the server, and thus is self-contained KML.
 
