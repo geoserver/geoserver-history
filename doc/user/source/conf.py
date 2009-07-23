@@ -37,7 +37,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = u'GeoServer User Manual'
+project = u'GeoServer'
+manual = u'User Manual'
 copyright = u'2009 GeoServer'
 
 # The default replacements for |version| and |release|, also used in various
@@ -89,7 +90,7 @@ html_style = 'default.css'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = html_title = project + " " + release + " " + manual
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
