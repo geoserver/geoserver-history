@@ -1,4 +1,4 @@
-.. _layers:
+.. _webadmin_layers:
 
 Layers
 ======
