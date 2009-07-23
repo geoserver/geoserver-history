@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/" xml:lang="en" lang="en">
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <wicket:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title wicket:id="pageTitle">GeoServer</title>
@@ -22,7 +22,7 @@
     <div class="wrap">
       <h2><a wicket:id="home" class="pngfix" href="#"><span wicket:id="label">GeoServer 2.0</span></a></h2>
       <div class="button-group selfclear">
-      <form wicket:id="loginform" method="POST" action="../j_acegi_security_check">
+      <form wicket:id="loginform" method="post" action="../j_acegi_security_check">
         <label class="noshow" for="username"><wicket:message key="username">Username</wicket:message></label>
         <input id="username" type="text" name="username" value="" title="username" />
         <label class="noshow" for="password"><wicket:message key="password">Password</wicket:message></label>
@@ -37,7 +37,7 @@
         </script>
       </form>
       <div wicket:id="logoutform">
-        <a class="button-logout icon" href="j_acegi_logout"><div><wicket:message key="logout">Logout</wicket:message></div></a>
+        <a class="button-logout icon" href="j_acegi_logout"><span><wicket:message key="logout">Logout</wicket:message></span></a>
         <span class="username"><wicket:message key="loggedInAs">Logged in as</wicket:message> <span wicket:id="username">User von Testenheimer</span></span>.
       </div>
       </div>
