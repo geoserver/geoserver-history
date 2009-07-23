@@ -507,8 +507,10 @@ background-image: url(../img/icons/silk/door_in.png);
 padding-left: 25px;
 }
 
-.button-group .button-logout div {
-background-image: url(../img/icons/silk/door_out.png);
+.button-group .button-logout span {
+background: url(../img/icons/silk/door_out.png) no-repeat;
+display: block;
+margin: 5px;
 padding-left: 25px;
 }
 

@@ -14,22 +14,18 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.apache.wicket.Application;
-import org.apache.wicket.Component;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.IRequestTarget;
-import org.apache.wicket.Localizer;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
@@ -52,6 +48,7 @@ import org.geoserver.web.util.converters.StringBBoxConverter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
 import org.springframework.context.ApplicationContext;
+import org.wicketstuff.htmlvalidator.HtmlValidationResponseFilter;
 
 /**
  * The GeoServer application, the main entry point for any Wicket application.
@@ -168,6 +165,16 @@ public class GeoServerApplication extends SpringWebApplication {
         
         // we have our own application wide gzip compression filter 
         getResourceSettings().setDisableGZipCompression(true);
+        
+        // enable toggable XHTML validation
+        if(DEVELOPMENT.equals(getConfigurationType())) {
+            getMarkupSettings().setStripWicketTags(true);
+            HtmlValidationResponseFilter htmlvalidator = 
+                new GeoServerHTMLValidatorResponseFilter();
+                htmlvalidator.setIgnoreAutocomplete(true);
+                htmlvalidator.setIgnoreKnownWicketBugs(true);
+                getRequestCycleSettings().addResponseFilter(htmlvalidator);
+        }
     }
     
     @Override

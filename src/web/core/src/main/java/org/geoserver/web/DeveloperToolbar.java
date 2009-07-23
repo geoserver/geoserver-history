@@ -16,6 +16,9 @@ import org.geoserver.config.GeoServerLoader;
 @SuppressWarnings("serial")
 public class DeveloperToolbar extends Panel {
 
+    private AjaxCheckBox wicketIds;
+    private AjaxCheckBox xhtml;
+
     public DeveloperToolbar(String id) {
         super(id);
 
@@ -55,9 +58,22 @@ public class DeveloperToolbar extends Panel {
         };
         wicketPaths.setOutputMarkupId(true);
         add(wicketPaths);
+        
+        // controls the xhtml validation filter
+        xhtml = new AjaxCheckBox("xhtml", new XHTMLModel()) {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                wicketIds.setModelObject(Boolean.FALSE);
+                wicketPaths.setModelObject(Boolean.FALSE);
+                target.addComponent(wicketIds);
+                target.addComponent(wicketPaths);
+            }
+        };
+        add(xhtml);
 
         // controls whether wicket ids are being generated
-        add(new AjaxCheckBox("wicketIds", new PropertyModel(gsApp,
+        wicketIds = new AjaxCheckBox("wicketIds", new PropertyModel(gsApp,
                 "markupSettings.stripWicketTags")) {
 
             @Override
@@ -66,15 +82,16 @@ public class DeveloperToolbar extends Panel {
                 target.addComponent(wicketPaths);
             }
 
-        });
+        };
+        wicketIds.setOutputMarkupId(true);
+        add(wicketIds);
         
-        // controls wheter the ajax debug is enabled or not
+        // controls whether the ajax debug is enabled or not
         add(new AjaxCheckBox("ajaxDebug", new PropertyModel(gsApp, "debugSettings.ajaxDebugModeEnabled")) {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                // nothing to do
-                
+                // nothing to do, the property binding does the work for us
             }
             
         });
@@ -92,6 +109,35 @@ public class DeveloperToolbar extends Panel {
             return GeoServerApplication.get();
         }
 
+    }
+    
+    static class XHTMLModel implements IModel {
+
+        public Object getObject() {
+            GeoServerApplication app = GeoServerApplication.get();
+            boolean enabled = false;
+            for (Object filter : app.getRequestCycleSettings().getResponseFilters()) {
+                if(filter instanceof GeoServerHTMLValidatorResponseFilter) {
+                    enabled = ((GeoServerHTMLValidatorResponseFilter) filter).enabled;
+                }
+            }
+            return enabled;
+        }
+
+        public void setObject(Object object) {
+            GeoServerApplication app = GeoServerApplication.get();
+            for (Object filter : app.getRequestCycleSettings().getResponseFilters()) {
+                if(filter instanceof GeoServerHTMLValidatorResponseFilter) {
+                    ((GeoServerHTMLValidatorResponseFilter) filter).enabled = (Boolean) object;
+                }
+            }
+            
+        }
+
+        public void detach() {
+            // nothing to do here
+        }
+        
     }
 
 }
