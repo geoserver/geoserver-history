@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community</artifactId>
-    <version>1.7.6-SNAPSHOT</version>
+    <version>1.7.7-SNAPSHOT</version>
   </parent>
   <groupId>org.geoserver</groupId>
   <artifactId>upload</artifactId>
   <packaging>jar</packaging>
-  <version>1.7.6-SNAPSHOT</version>
+  <version>1.7.7-SNAPSHOT</version>
   <name>RESTful File Upload</name>
   
   <repositories>
@@ -26,24 +26,24 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>rest</artifactId>
-      <version>1.7.6-SNAPSHOT</version>
+      <version>1.7.7-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.6-SNAPSHOT</version>
+      <version>1.7.7-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>data</artifactId>
-      <version>1.7.6-SNAPSHOT</version>
+      <version>1.7.7-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>1.7.6-SNAPSHOT</version>
+      <version>1.7.7-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>

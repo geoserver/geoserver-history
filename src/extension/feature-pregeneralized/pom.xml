@@ -7,25 +7,25 @@
   <parent>
     <groupId>org.geoserver</groupId>		
 	<artifactId>extension</artifactId>
-	<version>1.7.6-SNAPSHOT</version>
+	<version>1.7.7-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver.extension</groupId>
   <artifactId>feature-pregeneralized</artifactId>
   <packaging>jar</packaging>
-  <version>1.7.6-SNAPSHOT</version>
+  <version>1.7.7-SNAPSHOT</version>
   <name>Feature-pregeneralized Extension</name>
 
   <dependencies>
        <dependency>
 	    <groupId>org.geoserver</groupId>
             <artifactId>main</artifactId>
-            <version>1.7.6-SNAPSHOT</version>
+            <version>1.7.7-SNAPSHOT</version>
        </dependency>  
        <dependency>
 	    <groupId>org.geoserver</groupId>
             <artifactId>platform</artifactId>
-            <version>1.7.6-SNAPSHOT</version>
+            <version>1.7.7-SNAPSHOT</version>
        </dependency>
        <dependency>
             <groupId>org.geotools</groupId>
