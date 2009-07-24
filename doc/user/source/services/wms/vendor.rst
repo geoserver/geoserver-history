@@ -100,13 +100,13 @@ where ``x`` and ``y`` are the coordinates of the lower left corner (the "origin"
         "Layer name", "http://localhost:8080/geoserver/wms",
         {
             srs: 'EPSG:4326',
-            width: '391',
+            width: 391,
             styles: '',
-            height: '550',
-            layers: 'layer',
+            height: 550,
+            layers: 'layerName',
             format: 'image/png',
-            tiled: 'true',
-            tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom  
+            tiled: true,
+            tilesorigin: [map.maxExtent.left, map.maxExtent.bottom]  
         },
         {buffer: 0} 
     );
