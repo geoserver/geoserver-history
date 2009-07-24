@@ -1,3 +1,17 @@
+GeoServer 1.7.6 (July 24, 2009)
+-------------------------------
+
+The seventh release of 1.7.x brings the following new features:
+  * Improved support for ArcSDE including non-spatial tables and datastore versions
+  * Improvements to the shape-zip output format 
+  * Support for 3D output to kml
+
+And more. The entire change log can be found at:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/15369
+
+This release is based on GeoTools 2.5.7 
+
 GeoServer 1.7.5 (June 9, 2009)
 -------------------------------
 
