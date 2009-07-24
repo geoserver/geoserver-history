@@ -84,7 +84,33 @@ The ``tilesorigin`` parameter, also necessary for metatiling, is of the form::
 
    tilesorigin=x,y
    
-where ``x`` and ``y`` are the coordinates of the lower left corner (the "origin") of the layer in OpenLayers.
+where ``x`` and ``y`` are the coordinates of the lower left corner (the "origin") of the tile grid system in OpenLayers. A good way to setup the tilesorigin in OpenLayers is referencing the map  extents directly (if the max extents are modified dynamically, also remember to update the ``tilesorigin`` of each meta-tiled layer accordingly):
+
+.. code-block:: javascript 
+   :linenos: 
+
+    var options = {
+        ...
+        maxExtent: new OpenLayers.Bounds(-180, -90, 180, 90),
+        ...
+    };
+    map = new OpenLayers.Map('map', options);
+
+    tiled = new OpenLayers.Layer.WMS(
+        "Layer name", "http://localhost:8080/geoserver/wms",
+        {
+            srs: 'EPSG:4326',
+            width: '391',
+            styles: '',
+            height: '550',
+            layers: 'layer',
+            format: 'image/png',
+            tiled: 'true',
+            tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom  
+        },
+        {buffer: 0} 
+    );
+
 
 
 kmattr
