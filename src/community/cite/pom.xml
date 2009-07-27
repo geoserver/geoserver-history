@@ -217,16 +217,23 @@
         <os>
           <family>windows</family>
         </os>
-      </activation>   
-      <dependencies>
-        <dependency>
-          <groupId>sun.jdk</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.5.0</version>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-      </dependencies>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                 <groupId>sun.jdk</groupId>
+                 <artifactId>tools</artifactId>
+                 <version>1.5.0</version>
+                 <scope>system</scope>
+                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>linux</id>
@@ -235,15 +242,22 @@
           <family>linux</family>
         </os>
       </activation>
-      <dependencies>
-        <dependency>
-          <groupId>sun.jdk</groupId>
-          <artifactId>tools</artifactId>
-          <version>1.5.0</version>
-          <scope>system</scope>
-          <systemPath>${java.home}/../lib/tools.jar</systemPath>
-        </dependency>
-      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                 <groupId>sun.jdk</groupId>
+                 <artifactId>tools</artifactId>
+                 <version>1.5.0</version>
+                 <scope>system</scope>
+                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
