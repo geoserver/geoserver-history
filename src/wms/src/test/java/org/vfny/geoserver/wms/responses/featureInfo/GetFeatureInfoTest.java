@@ -188,7 +188,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=unknown/format&request=GetFeatureInfo&layers="
                 + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
         Document doc = dom(get(request), true);
-        print(doc);
+        // print(doc);
         assertXpathEvaluatesTo("1", "count(//ServiceExceptionReport/ServiceException)", doc);
         assertXpathEvaluatesTo("InvalidParameterValue", "/ServiceExceptionReport/ServiceException/@code", doc);
         assertXpathEvaluatesTo("info_format", "/ServiceExceptionReport/ServiceException/@locator", doc);
@@ -223,6 +223,19 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'RED_BAND'])", dom);
         assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'GREEN_BAND'])", dom);
         assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'BLUE_BAND'])", dom);
+    }
+    
+    public void testOutsideCoverage() throws Exception {
+        // a request which is way large on the west side, lots of blank space
+        String layer = getLayerId(TASMANIA_BM);
+        String request = "wms?service=wms&request=GetFeatureInfo&version=1.1.1" +
+                "&layers=" + layer + "&styles=raster&bbox=0,-90,148,-43" + 
+                "&info_format=text/html&query_layers=" + layer + "&width=300&height=300&x=10&y=150&srs=EPSG:4326";
+        
+        // this one should be blank, but not be a service exception
+        Document dom = getAsDOM(request + "");
+        assertXpathEvaluatesTo("1", "count(/html)", dom);
+        assertXpathEvaluatesTo("0", "count(/html/body/table/tr/th)", dom);
     }
     
     

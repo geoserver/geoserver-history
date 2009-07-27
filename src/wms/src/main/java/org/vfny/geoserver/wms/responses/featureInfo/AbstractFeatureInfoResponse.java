@@ -353,9 +353,9 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                         position=arbitraryToInternal;
                     }
                     //check that the provided point is inside the bbox for this coverage
-                    if(!reader.getOriginalEnvelope().contains(position))
-                    	throw new CannotEvaluateException("The position at which we should evaluate the coverage does not fall within the coverage's bbox");
-                    
+                    if(!reader.getOriginalEnvelope().contains(position)) {
+                        continue;
+                    }
                     
                     //now get the position in raster space using the world to grid related to corner
                     final MathTransform worldToGrid=reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER).inverse();
