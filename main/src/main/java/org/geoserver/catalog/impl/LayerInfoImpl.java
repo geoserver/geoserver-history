@@ -159,7 +159,7 @@ public class LayerInfoImpl implements LayerInfo {
                 + ((resource == null) ? 0 : resource.hashCode());
         result = prime * result + ((styles == null) ? 0 : styles.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
-        result = prime * result + ((type == null) ? 0 : attribution.hashCode());
+        result = prime * result + ((attribution == null) ? 0 : attribution.hashCode());
         return result;
     }
 
