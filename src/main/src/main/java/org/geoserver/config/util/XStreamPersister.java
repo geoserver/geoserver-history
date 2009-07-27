@@ -190,6 +190,11 @@ public class XStreamPersister {
     Callback callback;
     
     /**
+     * Flag controlling how references to objects are encoded.
+     */
+    boolean referenceByName = false;
+    
+    /**
      * Constructs the persister and underlyign xstream.
      */
     protected XStreamPersister(HierarchicalStreamDriver streamDriver) {
@@ -273,16 +278,13 @@ public class XStreamPersister {
         
         
         //WorkspaceInfo
-        //xs.omitField( WorkspaceInfoImpl.class, "id");
         xs.registerLocalConverter( WorkspaceInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         //NamespaceInfo
-        //xs.omitField( NamespaceInfoImpl.class, "id");
         xs.omitField( NamespaceInfoImpl.class, "catalog");
         xs.registerLocalConverter( NamespaceInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // StoreInfo
-        //xs.omitField(StoreInfoImpl.class, "id");
         xs.omitField(StoreInfoImpl.class, "catalog");
         //xs.omitField(StoreInfoImpl.class, "workspace"); //handled by StoreInfoConverter
         xs.registerLocalConverter(StoreInfoImpl.class, "workspace", new ReferenceConverter(WorkspaceInfo.class));
@@ -290,12 +292,10 @@ public class XStreamPersister {
         xs.registerLocalConverter(StoreInfoImpl.class, "metadata", new MetadataMapConverter());
         
         // StyleInfo
-        //xs.omitField(StyleInfoImpl.class, "id");
         xs.omitField(StyleInfoImpl.class, "catalog");
         xs.registerLocalConverter(StyleInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // ResourceInfo
-        //xs.omitField( ResourceInfoImpl.class, "id");
         xs.omitField( ResourceInfoImpl.class, "catalog");
         xs.omitField( ResourceInfoImpl.class, "crs" );
         xs.registerLocalConverter( ResourceInfoImpl.class, "nativeCRS", new CRSConverter());
@@ -315,7 +315,6 @@ public class XStreamPersister {
         xs.omitField( AttributeTypeInfoImpl.class, "attribute");
         
         // LayerInfo
-        //xs.omitField( LayerInfoImpl.class, "id");
         //xs.omitField( LayerInfoImpl.class, "resource");
         xs.registerLocalConverter( LayerInfoImpl.class, "resource", new ReferenceConverter( ResourceInfo.class ) );
         xs.registerLocalConverter( LayerInfoImpl.class, "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
@@ -323,7 +322,6 @@ public class XStreamPersister {
         xs.registerLocalConverter( LayerInfoImpl.class, "metadata", new MetadataMapConverter() );
         
         // LayerGroupInfo
-        //xs.omitField(LayerGroupInfoImpl.class, "id" );
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "layers", new ReferenceCollectionConverter( LayerInfo.class ));
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ));
         xs.registerLocalConverter(LayerGroupInfoImpl.class, "metadata", new MetadataMapConverter() );
@@ -367,6 +365,20 @@ public class XStreamPersister {
     
     public void setCallback(Callback callback) {
         this.callback = callback;
+    }
+    
+    public void setReferenceByName(boolean referenceByName) {
+        this.referenceByName = referenceByName;
+    }
+    
+    public void setExcludeIds() {
+        xs.omitField( WorkspaceInfoImpl.class, "id");
+        xs.omitField( NamespaceInfoImpl.class, "id");
+        xs.omitField(StoreInfoImpl.class, "id");
+        xs.omitField(StyleInfoImpl.class, "id");
+        xs.omitField( ResourceInfoImpl.class, "id");
+        xs.omitField( LayerInfoImpl.class, "id");
+        xs.omitField(LayerGroupInfoImpl.class, "id" );
     }
     
     /**
@@ -613,7 +625,7 @@ public class XStreamPersister {
             
             //gets its id
             String id = (String) OwsUtils.get( source, "id" );
-            if ( id != null ) {
+            if ( id != null && !referenceByName) {
                 writer.startNode("id");
                 writer.setValue( id );
                 writer.endNode();

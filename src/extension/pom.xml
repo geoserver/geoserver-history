@@ -102,6 +102,13 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>restconfig</id>
+      <modules>
+        <module>restconfig</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
@@ -117,6 +124,7 @@
         <module>excel</module>
         <module>validation</module>
         <module>charts</module>
+        <module>restconfig</module>
       </modules>
     </profile>
 
@@ -135,6 +143,7 @@
         <module>excel</module>
         <module>validation</module>
         <module>charts</module>
+        <module>restconfig</module>
       </modules>
     </profile>
 
