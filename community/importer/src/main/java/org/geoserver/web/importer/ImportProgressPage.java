@@ -84,5 +84,12 @@ public class ImportProgressPage extends GeoServerSecuredPage {
         FeatureTypeImporter importer = manager.getImporter(importerId);
         return importer;
     }
+    
+    /**
+     * We want the indicator always on
+     */
+    public String getAjaxIndicatorMarkupId() {
+        return null;
+    }
 
 }
