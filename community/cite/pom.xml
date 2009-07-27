@@ -14,13 +14,6 @@
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <dependencies>
-           <dependency>
-              <groupId>sun.jdk</groupId>
-              <artifactId>tools</artifactId>
-              <version>1.5.0</version>
-              <scope>system</scope>
-              <systemPath>${java.home}/../lib/tools.jar</systemPath>
-            </dependency>
           <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
@@ -44,10 +37,7 @@
 
                   <!-- copy the test scripts over -->
                   <if>
-                    <and>
-                      <equals arg1="yes" arg2="${include.wfs-1.0.0}"/>
-                      <available file="${basedir}/tests/wfs-1.0.0"/>
-                    </and>
+                    <available file="${basedir}/tests/wfs-1.0.0"/>
                     <then>
                       <copy todir="${basedir}/engine/scripts/wfs-1.0.0">
                         <fileset dir="${basedir}/tests/wfs-1.0.0" includes="**/*" excludes="**/.svn"/>
@@ -56,10 +46,7 @@
                   </if>
 
                   <if>
-                    <and>
-                      <equals arg1="yes" arg2="${include.wfs-1.1.0}"/>
-                      <available file="${basedir}/tests/wfs-1.1.0"/>
-                    </and>
+                    <available file="${basedir}/tests/wfs-1.1.0"/>
                     <then>
                       <copy todir="${basedir}/engine/scripts/wfs-1.1.0">
                         <fileset dir="${basedir}/tests/wfs-1.1.0" includes="**/*" excludes="**/.svn"/>
@@ -68,10 +55,7 @@
                   </if>
 
                   <if>
-                    <and>
-                      <equals arg1="yes" arg2="${include.wms-1.1.1}"/>
-                      <available file="${basedir}/tests/wms-1.1.1"/>
-                    </and>
+                    <available file="${basedir}/tests/wms-1.1.1"/>
                     <then>
                       <copy todir="${basedir}/engine/scripts/wms-1.1.1">
                         <fileset dir="${basedir}/tests/wms-1.1.1" includes="**/*" excludes="**/.svn"/>
@@ -80,10 +64,7 @@
                   </if>
 
                   <if>
-                    <and>
-                      <equals arg1="yes" arg2="${include.wcs-1.0.0}"/>
-                      <available file="${basedir}/tests/wcs-1.0.0"/>
-                    </and>
+                    <available file="${basedir}/tests/wcs-1.0.0"/>
                     <then>
                       <copy todir="${basedir}/engine/scripts/wcs-1.0.0">
                         <fileset dir="${basedir}/tests/wcs-1.0.0" includes="**/*" excludes="**/.svn"/>
@@ -92,10 +73,7 @@
                   </if>
 
                   <if>
-                    <and>
-                      <equals arg1="yes" arg2="${include.wcs-1.1.1}"/>
-                      <available file="${basedir}/tests/wcs-1.1.1"/>
-                    </and>
+                    <available file="${basedir}/tests/wcs-1.1.1"/>
                     <then>
                       <copy todir="${basedir}/engine/scripts/wcs-1.1.1">
                         <fileset dir="${basedir}/tests/wcs-1.1.1" includes="**/*" excludes="**/.svn"/>
@@ -117,6 +95,9 @@
                   <echo file="${bp.file}" append="true">${basedir}/target/work${line.separator}</echo>
                   <echo file="${bp.file}" append="true" message="tomcat.dir "/>
                   <echo file="${bp.file}" append="true">${basedir}/target</echo>
+
+				<!-- for windows, change \ to \\ -->
+                 <replace file="${basedir}/engine/build.properties" token="\" value="\\" />
 
                   <!-- copy over the pom and realm.properties file for the 
                        engine -->
@@ -230,54 +211,40 @@
   </build>
 
   <profiles>
-   <profile>
-     <id>wfs-1.0.0</id>
-     <activation>
-       <activeByDefault>true</activeByDefault>
-     </activation>
-     <properties>
-       <include.wfs-1.0.0>yes</include.wfs-1.0.0>
-     </properties>
-   </profile>
-   <profile>
-     <id>wfs-1.1.0</id>
-     <activation>
-       <activeByDefault>true</activeByDefault>
-     </activation>
-     <properties>
-       <include.wfs-1.1.0>yes</include.wfs-1.1.0>
-     </properties>
-   </profile>
-   <profile>
-     <id>wms-1.1.1</id>
-     <activation>
-       <activeByDefault>true</activeByDefault>
-     </activation>
-     <properties>
-       <include.wms-1.1.1>yes</include.wms-1.1.1>
-     </properties>
-   </profile>
-   <profile>
-     <id>wcs-1.0.0</id>
-     <activation>
-       <activeByDefault>true</activeByDefault>
-     </activation>
-     <properties>
-       <include.wcs-1.0.0>yes</include.wcs-1.0.0>
-     </properties>
-   </profile>
-   <profile>
-     <id>wcs-1.1.1</id>
-     <activation>
-       <activeByDefault>true</activeByDefault>
-     </activation>
-     <properties>
-       <include.wcs-1.1.1>yes</include.wcs-1.1.1>
-     </properties>
-   </profile>
+    <profile>
+      <id>windows</id>
+      <activation>   
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>   
+      <dependencies>
+        <dependency>
+          <groupId>sun.jdk</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5.0</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>sun.jdk</groupId>
+          <artifactId>tools</artifactId>
+          <version>1.5.0</version>
+          <scope>system</scope>
+          <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 
-  <properties>
-    <all>yes</all>
-  </properties>
 </project>

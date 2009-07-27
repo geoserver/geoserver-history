@@ -44,20 +44,6 @@ The test engine is built with the following command:
 
   'mvn clean install'
 
-The above command will build the engine with all the test suites which have
-been checked out into the 'tests' directory. To build the engine with only
-a subset of the test suites the following profiles are available:
-
-  'wfs-1.0.0'
-  'wfs-1.1.0'
-  'wms-1.1.1'
-  'wcs-1.0.0'
-  'wcs-1.1.1'
-
-For example, to build only the wfs-1.0.0 and wms-1.1.1 test suites:
-
-  'mvn clean install -P wfs-1.0.0,wms-1.1.1'
-
 Running the Engine with Jetty
 -----------------------------
 
