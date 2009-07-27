@@ -25,7 +25,7 @@ public class ClassProperties {
         for (Method method : methods) {
             final String name = method.getName();
             final Class<?>[] params = method.getParameterTypes();
-            if(name.startsWith("get") && params.length == 0) {
+            if((name.startsWith("get") || name.startsWith("is")) && params.length == 0) {
                 getters.add(method);
             } else if(name.startsWith("set") && params.length == 1) {
                 setters.add(method);
