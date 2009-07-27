@@ -10,15 +10,13 @@ import org.restlet.data.Method;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.NameSpaceInfo;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.geosearch.GeoServerProxyAwareRestlet;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.rest.DataFormat;
-import org.geoserver.rest.FreemarkerFormat;
-import org.geoserver.rest.RESTUtils;
+import org.geoserver.rest.format.DataFormat;
+import org.geoserver.rest.format.FreemarkerFormat;
+import org.geoserver.rest.util.RESTUtils;
 import org.geoserver.rest.RestletException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -39,20 +37,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import freemarker.template.SimpleHash;
+import freemarker.template.TemplateModelException;
 
 public class LayerAboutPage extends GeoServerProxyAwareRestlet {
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");	
+	private static final Logger 
+        LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.geosearch");	
 	
     private final DataFormat format =
         new FreemarkerFormat("layerpage.ftl", getClass(), MediaType.TEXT_HTML);
 
-    private Data catalog;
+    private Catalog catalog;
 
-    public void setCatalog(Data cat){
+    public void setCatalog(Catalog cat){
         catalog = cat;
     }
 
-    public Data getCatalog(){
+    public Catalog getCatalog(){
         return catalog;
     }
 
@@ -65,11 +65,18 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
         String namespace = (String)request.getAttributes().get("namespace");
         String layer = (String)request.getAttributes().get("layer");
 
-        response.setEntity(format.makeRepresentation(getContext(namespace, layer, request)));
+        response.setEntity(format.toRepresentation(getContext(namespace, layer, request)));
     }
     
     SimpleHash getContext(String namespace, String layer, Request request){
     	FeatureTypeInfo info = lookupType(namespace, layer);
+         
+        if (!(Boolean)info.getMetadata().get("indexingEnabled")) {
+            throw new RestletException(
+                    "Layer indexing disabled",
+                    Status.CLIENT_ERROR_FORBIDDEN
+                    );
+        }
     	
     	SimpleHash map = new SimpleHash();
     	
@@ -79,20 +86,30 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     	
     	//Metadata
     	map.put("keywords", info.getKeywords());
-		map.put("declaredCRS", info.getDeclaredCRS());	    	
+		map.put("declaredCRS", info.getCRS());	    	
 		map.put("metadataLinks", info.getMetadataLinks());
-		try{
-			map.put("nativeCRS", info.getNativeCRS());
-		}catch(Exception e){
-            LOGGER.log(Level.WARNING, "Error trying to get nativeCRS from " + info.getName() + "FeatureTypeInfo", e);
+		try {
+            Object o = info.getNativeCRS();
+            if (o != null) {
+                map.put("nativeCRS", info.getNativeCRS());
+            } else {
+                map.put("nativeCRS", "No native CRS configured for layer");
+            }
+		} catch (Exception e) {
+            LOGGER.log(Level.WARNING,
+                    "Error trying to get nativeCRS from " 
+                    + info.getName() 
+                    + "FeatureTypeInfo",
+                    e
+                    );
 		}
-    	
+
 		String baseUrl = RESTUtils.getBaseURL(request);
 		map.put("base", baseUrl);    			
 		
 		//general parameters for data requests
     	map.put("name", info.getName());
-    	map.put("srs", "EPSG:" + info.getSRS());
+    	map.put("srs", info.getSRS());
     	
     	ReferencedEnvelope bbox = getBBOX(info);
     	
@@ -103,15 +120,15 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     	map.put("tilesOrigin", bbox.getMinX()+","+bbox.getMinY());    	
     	
     	int[] imageBox = getMapWidthHeight(bbox);
-        map.put("width", String.valueOf(imageBox[0]));
-        map.put("height", String.valueOf(imageBox[1]));
+        map.put("width", imageBox[0]);
+        map.put("height", imageBox[1]);
     	
         map.put("maxResolution", getMaxResolution(bbox));
         
     	try{        	
-        	map.put("boundingBox", info.getBoundingBox());
-        	map.put("lonLatBoundingBox", info.getLatLongBoundingBox());
-    	}catch(IOException e){
+        	map.put("boundingBox", info.boundingBox());
+        	map.put("lonLatBoundingBox", info.getLatLonBoundingBox());
+    	} catch(Exception e) {
             LOGGER.log(Level.WARNING, "Error trying to access bounding box or lonLatBoundingBox for " + info.getName() + "FeatureTypeInfo", e);
     	}	
     	
@@ -127,23 +144,31 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     }
 
     private FeatureTypeInfo lookupType(String namespace, String layer){
-
-        NameSpaceInfo ns = catalog.getNameSpace(namespace);
-        if ( ns == null ) {
+        NamespaceInfo ns = catalog.getNamespaceByPrefix(namespace);
+        if (ns == null) {
             throw new RestletException(
-                    "No such namespace: " + namespace, Status.CLIENT_ERROR_NOT_FOUND 
+                    "No such namespace: " + namespace,
+                    Status.CLIENT_ERROR_NOT_FOUND 
                     );
         }
 
         FeatureTypeInfo featureType = null;
         try {
-            featureType = catalog.getFeatureTypeInfo(layer,ns.getUri());
-        } catch( Exception e ) {
+            featureType = catalog.getFeatureTypeByName(ns, layer);
+        } catch(Exception e) {
+            throw new RestletException(
+                "No such featuretype: " + namespace + ":" + layer,
+                 Status.CLIENT_ERROR_NOT_FOUND 
+            );
+        }
+
+        if (featureType == null) {
             throw new RestletException(
                     "No such featuretype: " + namespace + ":" + layer,
                      Status.CLIENT_ERROR_NOT_FOUND 
                     );
         }
+
         return featureType;
     }
     
@@ -168,7 +193,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
     	//yoinked from MapPreviewAction
         try {
 
-            CoordinateReferenceSystem layerCrs = layer.getDeclaredCRS();
+            CoordinateReferenceSystem layerCrs = layer.getCRS();
 
             /* A quick and efficient way to grab the bounding box is to get it
              * from the featuretype info where the lat/lon bbox is loaded
@@ -176,7 +201,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
              * We need to reproject the bounding box from lat/lon to the layer crs
              * for display
              */
-            Envelope orig_bbox = layer.getLatLongBoundingBox();
+            Envelope orig_bbox = layer.getLatLonBoundingBox();
 
             if ((orig_bbox.getWidth() == 0) || (orig_bbox.getHeight() == 0)) {
                 orig_bbox.expandBy(0.1);
@@ -186,7 +211,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
 
             if (!CRS.equalsIgnoreMetadata(layerCrs, latLonCrs)) {
                 // first check if we have a native bbox
-                bbox = layer.getBoundingBox();
+                bbox = layer.boundingBox();
             }
 
             // we now have a bounding box in the same CRS as the layer
