@@ -38,6 +38,10 @@ public class NamespaceInfoImpl implements NamespaceInfo {
         this.prefix = prefix;
     }
 
+    public String getName() {
+        return getPrefix();
+    }
+    
     public String getURI() {
         return uri;
     }

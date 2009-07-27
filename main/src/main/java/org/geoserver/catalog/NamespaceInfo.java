@@ -31,6 +31,11 @@ public interface NamespaceInfo extends CatalogInfo {
      * @uml.property name="prefix"
      */
     void setPrefix(String prefix);
+    
+    /**
+     * Returns the prefix of the namespace.  
+     */
+    String getName();
 
     /**
      * The uri of the namespace.
