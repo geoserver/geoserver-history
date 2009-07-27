@@ -49,12 +49,12 @@ public class LoggingInitializer implements GeoServerInitializer, ApplicationCont
                     String loggingLocation = logging.getLocation();
                     Boolean stdOutLogging = logging.isStdOutLogging();
                     
-                    if ( propertyNames.contains( "loggingLevel") ) {
-                        loggingLevel = (String) newValues.get( propertyNames.indexOf( "loggingLevel" ) );
+                    if ( propertyNames.contains( "level") ) {
+                        loggingLevel = (String) newValues.get( propertyNames.indexOf( "level" ) );
                         reload = true;
                     }
-                    if ( propertyNames.contains( "loggingLocation") ) {
-                        loggingLocation = (String) newValues.get( propertyNames.indexOf( "loggingLocation" ) );
+                    if ( propertyNames.contains( "location") ) {
+                        loggingLocation = (String) newValues.get( propertyNames.indexOf( "location" ) );
                         reload = true;
                     }
                     if ( propertyNames.contains( "stdOutLogging" ) ) {
