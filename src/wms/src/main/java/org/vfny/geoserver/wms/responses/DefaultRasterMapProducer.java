@@ -346,7 +346,7 @@ public abstract class DefaultRasterMapProducer extends
 		}
 		if(DefaultWebMapService.isNgLabellerEnabled()) {
 		    LabelCacheImpl labelCache = new LabelCacheImpl();
-		    labelCache.setOutlineRenderingEnabled(true);
+		    labelCache.setOutlineRenderingEnabled(!AA_NONE.equals(antialias));
 		    rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
 		}
 		if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
