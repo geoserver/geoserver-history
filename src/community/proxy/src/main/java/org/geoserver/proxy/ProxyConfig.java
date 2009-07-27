@@ -154,7 +154,7 @@ public class ProxyConfig implements java.io.Serializable{
         System.out.println(DEFAULT);
         //lol don't do this the data directory ain't init'd
         //ProxyConfig testConf = loadConfFromDisk();
-        System.out.println(testConf);
-        writeConfigToDisk(testConf);
+        //System.out.println(testConf);
+        //writeConfigToDisk(testConf);
     }
 }

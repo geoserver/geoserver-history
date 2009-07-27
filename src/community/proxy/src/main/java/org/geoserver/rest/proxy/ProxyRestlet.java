@@ -65,6 +65,7 @@ public class ProxyRestlet extends Restlet {
         try{
             configWatcher = new PropertyFileWatcher(ProxyConfig.getConfigFile());
             watcherWorks = true;
+            LOGGER.log(Level.INFO, "Proxy init'd pretty much ok.");
         }
         catch(Exception e){
             LOGGER.log(Level.WARNING, "Proxy could not create configuration watcher.  Proxy will not be able to update its configuration when it is modified.  Exception:", e);
@@ -74,6 +75,7 @@ public class ProxyRestlet extends Restlet {
     
     @Override
     public void handle(Request request, Response response) {
+        LOGGER.log(Level.INFO, "handling request " + request.toString());
         /* Check the proxy's config has been modified if the watcher was created correctly*/
         if (watcherWorks && configWatcher.isStale()) {
             config = ProxyConfig.loadConfFromDisk();
@@ -170,6 +172,13 @@ public class ProxyRestlet extends Restlet {
         }
         /* The request is not permitted to go through. */
         return false;
+    }
+    
+    
+    @Override
+    public Logger getLogger()
+    {
+        return LOGGER;
     }
 
     private void copyStream(InputStream in, OutputStream out) throws IOException {
