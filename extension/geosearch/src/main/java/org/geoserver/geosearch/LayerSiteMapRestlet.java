@@ -8,27 +8,32 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wms.MapLayerInfo;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.jdbc.JDBCUtils;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
+import org.restlet.resource.StringRepresentation;
 import org.springframework.jdbc.support.incrementer.H2SequenceMaxValueIncrementer;
-import org.vfny.geoserver.config.DataConfig;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.FeatureTypeInfo;
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.MapLayerInfo;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -36,9 +41,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
 
     private static Logger LOGGER = Logging.getLogger("org.geoserver.geosearch");
 
-    private Data myData;
-    private DataConfig myDataConfig;
-    private GeoServer myGeoserver;
+    private Catalog myCatalog;
     private String GEOSERVER_URL;
     
     private Namespace SITEMAP = Namespace.getNamespace("http://www.sitemaps.org/schemas/sitemap/0.9");
@@ -66,36 +69,22 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         }
     }
     
-    public void setData(Data d){
-        myData = d;
+    public void setCatalog(Catalog c){
+        myCatalog = c;
     }
 
-    public void setDataConfig(DataConfig dc){
-        myDataConfig = dc;
-    }
-
-    public void setGeoServer(GeoServer gs){
-        myGeoserver = gs;
-    }
-
-    public Data getData(){
-        return myData;
-    }
-
-    public DataConfig getDataConfig(){
-        return myDataConfig;
-    }
-
-    public GeoServer getGeoServer(){
-        return myGeoserver;
+    public Catalog getCatalog(){
+        return myCatalog;
     }
 
     public LayerSiteMapRestlet() {
     }
 
     public void handle(Request request, Response response){ 
-        GEOSERVER_URL = RequestUtils.proxifiedBaseURL(request.getRootRef().getParentRef().toString()
-                , getGeoServer().getProxyBaseUrl());
+        GEOSERVER_URL = RequestUtils.proxifiedBaseURL(
+            request.getRootRef().getParentRef().toString(),
+            getGeoServer().getGlobal().getProxyBaseUrl()
+        );
         
         if (request.getMethod().equals(Method.GET)){
             doGet(request, response);
@@ -116,35 +105,45 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
      */
     public void doGet(Request request, Response response){
         String layerName = (String)request.getAttributes().get("layer");
-        
-        MapLayerInfo mli = getLayer(layerName);
-        
-        // Check that we know the layer
-        if(mli == null) {
-            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            //TODO nice error message
-            return;
-        }
-        
-        // And that we allow people to index it
-        FeatureTypeInfo fti = mli.getFeature();
-        if(fti == null || ! fti.isIndexingEnabled()) {
-            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+        String page = request.getAttributes().containsKey("page") 
+            ? (String) request.getAttributes().get("page")
+            : null;
+
+        // Check that layer exists, and that we allow people to index it
+        FeatureTypeInfo fti = getCatalog().getFeatureTypeByName(layerName);
+        if(fti == null || ! (Boolean)fti.getMetadata().get("indexingEnabled")) {
+            response.setStatus(Status.CLIENT_ERROR_FORBIDDEN);
+            LOGGER.log(Level.FINE, "not allowed to publish layername: " + layerName);
             //TODO nice error message
             return;
         }
 
-        // Do we have a regionating strategy ?
-        if(fti.getRegionateAttribute() == null 
-                || fti.getRegionateAttribute().length() == 0) {
-            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-            //TODO nice error message
-            return;
+//        // Do we have a regionating strategy ?
+//        if(fti.getRegionateAttribute() == null 
+//                || fti.getRegionateAttribute().length() == 0) {
+//            response.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+//            //TODO nice error message
+//            return;
+//        }
+
+        if (page != null) { 
+            try {
+                Integer i = Integer.valueOf(page);
+                Document d = buildPagedSitemap(layerName, fti, i);
+                response.setEntity(new JDOMRepresentation(d));
+            } catch (NumberFormatException e) {
+                response.setEntity(
+                        new StringRepresentation(e.toString(),
+                            MediaType.TEXT_PLAIN
+                            )
+                        );
+                response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
+            }
+        } else { 
+            // All good, we're finally here:
+            Document d = buildSitemap(layerName, fti);
+            response.setEntity(new JDOMRepresentation(d));
         }
-        
-        // All good, we're finally here:
-        Document d = buildSitemap(layerName, fti);
-        response.setEntity(new JDOMRepresentation(d));
     }
     
     /**
@@ -158,18 +157,75 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
     private Document buildSitemap(String layerName, FeatureTypeInfo fti) {
         final Document d = new Document();
         
-        Element urlSet = new Element("urlset", SITEMAP);
-        urlSet.addNamespaceDeclaration(GEOSITEMAP);
-        d.setRootElement(urlSet);
+        Element sitemapindex = new Element("sitemapindex", SiteMapIndexRestlet.SITEMAP);
+        d.setRootElement(sitemapindex);
         
         try {
-            // Look for the actual tiles
-            getTilesFromDatababase(urlSet, fti);
+            int featurecount = fti.getFeatureSource(null, null).getFeatures().size();
+            int pagecount = featurecount / 50000;  // 50000 features per page
+            pagecount += featurecount % 50000 == 0 ? 0 : 1;
+            
+            for (int i = 1; i <= pagecount; i++) {
+                SiteMapIndexRestlet.addSitemap(
+                        sitemapindex, 
+                        GEOSERVER_URL + "rest/layers/" + layerName + "/sitemap-" + i + ".xml"
+                       );
+            }
         } catch (IOException ioe) {
             //TODO log
         }
         
         return d;
+    }
+
+    private Document buildPagedSitemap(String layername, FeatureTypeInfo fti, int page){
+        final Document d = new Document();
+        Element urlSet = new Element("urlset", SITEMAP);
+        urlSet.addNamespaceDeclaration(GEOSITEMAP);
+        d.setRootElement(urlSet);
+
+        try { 
+            DefaultQuery q = new DefaultQuery();
+            if (fti.getFeatureSource(null, null).getQueryCapabilities().isOffsetSupported()){
+                // surely no one would use a shapefile for more than 50000 features, right?
+                q.setStartIndex(1 + 50000 * (page - 1));
+                q.setMaxFeatures(50000);
+            }
+
+            FeatureCollection col = fti.getFeatureSource(null, null).getFeatures(q);
+            
+            Iterator fi = col.iterator();
+
+            while (fi.hasNext()){
+                try {
+                    SimpleFeature f = (SimpleFeature)fi.next();
+                    encodeFeatureLink(urlSet, layername, f);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // TODO: Log
+                }
+            } 
+
+            col.close(fi);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            // TODO log
+        }
+
+        return d;
+    }
+
+    private void encodeFeatureLink(Element urlSet, String layername, SimpleFeature f){
+        Element urlElement = new Element("url", SITEMAP);
+        Element loc = new Element("loc", SITEMAP);
+        loc.setText(GEOSERVER_URL + "rest/layers/" + layername + "/" + f.getID() + ".kml");
+        urlElement.addContent(loc);
+        Element geo = new Element("geo", GEOSITEMAP);
+        Element geoformat = new Element("format", GEOSITEMAP);
+        geoformat.setText("kml");
+        geo.addContent(geoformat);
+        urlElement.addContent(geo);
+        urlSet.addContent(urlElement);
     }
     
     /**
@@ -211,11 +267,13 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
      */
     private void getTilesFromDatababase(Element urlSet, FeatureTypeInfo fti) 
     throws IOException {        
-        String dataDir = this.myData.getDataDirectory().getCanonicalPath();
-        String tableName = fti.getTypeName() + "_" + fti.getRegionateAttribute();
+        String dataDir = getCatalog().getResourceLoader()
+            .findOrCreateDirectory("geosearch")
+            .getCanonicalPath();
 
-        //System.out.println("jdbc:h2:file:" + dataDir + "/geosearch/h2cache_" + tableName);
-        
+        String tableName = fti.getFeatureType().getName() + "_" 
+            + fti.getMetadata().get("kml.regionateAttribute");
+
         Connection conn = null;
         Statement st = null;
         ResultSet rs = null;
@@ -224,7 +282,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         
         try {
             conn = DriverManager.getConnection("jdbc:h2:file:" + dataDir
-                            + "/geosearch/h2cache_" + tableName, "geoserver", "geopass");
+                            + "/h2cache_" + tableName, "geoserver", "geopass");
             st = conn.createStatement();
             rs = st.executeQuery("SELECT x,y,z FROM TILECACHE WHERE FID IS NOT NULL GROUP BY x,y,z ORDER BY z ASC");
             
@@ -233,8 +291,6 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
                 coords[0] = rs.getLong(1);
                 coords[1] = rs.getLong(2);
                 coords[2] = rs.getLong(3);
-                
-                //System.out.println("x:"+coords[0]+" y:"+coords[1]+" z:"+coords[2]);
                 
                 updateMaxCoords(maxCoords, coords);
                 addTile(urlSet, makeUrl(coords, fti));
@@ -266,7 +322,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
     
     private long[][] zoomedOut(FeatureTypeInfo fti) {
         try {
-            Envelope env = fti.getLatLongBoundingBox();
+            Envelope env = fti.getLatLonBoundingBox();
             //double[] coords = {env.getMinX(), env.getMinY(), env.getMaxX(), env.getMaxY()};
             
             // World wide case
@@ -305,7 +361,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
             
             long[][] ret = {prevQuad};
             return ret;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -406,31 +462,13 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
             + "bbox=" + env.getMinX() + "," + env.getMinY() 
             + "," + env.getMaxX() + "," + env.getMaxY() + "&"
             + "srs=EPSG:4326&"
-            + "styles=" + fti.getDefaultStyle().getName() +"&"
+            // + "styles=" + fti.getDefaultStyle().getName() +"&"
             + "layers=" + fti.getName() + "&"
             + "tiled=FALSE&"
             + "width=256&"
             + "height=256";
         
         return url;
-    }
-    
-    /**
-     * Retrieves the requested layer object based on the name witth prefix
-     * 
-     * @param layerName the layer (with prefix) to look for
-     * @return the requested layer, otherwise null
-     */
-    private MapLayerInfo getLayer(String layerName){
-        Iterator it = getData().getFeatureTypeInfos().entrySet().iterator();
-        while (it.hasNext()){
-            Entry entry = (Entry) it.next();
-            String name = ((org.vfny.geoserver.global.FeatureTypeInfo) entry.getValue()).getName();
-            if (name.equalsIgnoreCase(layerName)){
-                return getData().getMapLayerInfo(name);
-            }
-        }
-        return null;
     }
 }
 

@@ -103,6 +103,13 @@
     </profile>
 
     <profile>
+      <id>geosearch</id>
+      <modules>
+        <module>geosearch</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>restconfig</id>
       <modules>
         <module>restconfig</module>
@@ -115,6 +122,7 @@
       <modules>
         <module>app-schema</module>
         <module>arcsde</module>
+        <module>geosearch</module>
         <module>h2</module>
         <module>oracle</module>
         <module>wfsv</module>
@@ -134,6 +142,7 @@
       <modules>
         <module>app-schema</module>
         <module>arcsde</module>
+        <module>geosearch</module>
         <module>h2</module>
         <module>oracle</module>
         <module>wfsv</module>

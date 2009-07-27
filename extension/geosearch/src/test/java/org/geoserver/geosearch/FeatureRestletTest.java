@@ -18,9 +18,15 @@ public class FeatureRestletTest extends GeoServerTestSupport {
     public void testSingleFeature() throws Exception{
         QName typename = MockData.BASIC_POLYGONS;
         final String path = 
-            "/rest/" + typename.getPrefix() + "/" + typename.getLocalPart() + "/1107531493630.kml";
+            "/rest/layers/" 
+            + typename.getPrefix() 
+            + ":" 
+            + typename.getLocalPart() 
+            + "/"
+            + typename.getLocalPart()
+            + ".1107531493630.kml";
 
-        getFeatureTypeInfo(typename).setIndexingEnabled(true);
+        getFeatureTypeInfo(typename).getMetadata().put("indexingEnabled", true);
 
         MockHttpServletResponse response = getAsServletResponse(path);
         assertEquals(200, response.getStatusCode());

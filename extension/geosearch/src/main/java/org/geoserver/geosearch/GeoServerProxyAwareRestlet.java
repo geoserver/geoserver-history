@@ -1,17 +1,14 @@
 package org.geoserver.geosearch;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.ows.util.RequestUtils;
+
 import org.restlet.Restlet;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Method;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
-
-import org.vfny.geoserver.global.GeoServer;
-import org.vfny.geoserver.global.Data;
-import org.vfny.geoserver.global.NameSpaceInfo;
-import org.vfny.geoserver.config.DataConfig;
-import org.geoserver.ows.util.RequestUtils;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -36,7 +33,7 @@ public class GeoServerProxyAwareRestlet extends Restlet {
 
     public String getBaseURL(Request req){
         String baseURL = req.getResourceRef().getBaseRef().toString();
-        baseURL = RequestUtils.proxifiedBaseURL(baseURL, getGeoServer().getProxyBaseUrl());
+        baseURL = RequestUtils.proxifiedBaseURL(baseURL, getGeoServer().getGlobal().getProxyBaseUrl());
         baseURL = getParentUrl(baseURL);
         return baseURL;
     }
