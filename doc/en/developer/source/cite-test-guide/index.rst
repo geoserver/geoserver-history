@@ -75,21 +75,6 @@ A successful build should result in the following output::
 	[INFO] Final Memory: 20M/36M
 	[INFO] ------------------------------------------------------------------------
 
-The above command will configure the engine with every test suite which has been
-checked out into the ``tests`` directory. To configure the engine with a subset
-of the available test suites the following profiles are available:
-
-* wfs-1.0.0
-* wfs-1.1.0
-* wms-1.1.1
-* wcs-1.0.0
-* wcs-1.1.1
-
-For example, to configure the engine with only the wfs-1.0.0 and wms-1.1.1 
-tests::
-
-  mvn -P wfs-1.0.0,wms-1.1.1 clean install  
-
 Run the test engine
 -------------------
 
