@@ -837,7 +837,8 @@ public class CatalogImpl implements Catalog {
             }
         }
        
-        if (!(layerGroup.getLayers().size() == layerGroup.getStyles().size()) ) {
+        if ( layerGroup.getStyles() != null && !layerGroup.getStyles().isEmpty() && 
+                !(layerGroup.getStyles().size() == layerGroup.getLayers().size()) ) {
             throw new IllegalArgumentException( "Layer group has different number of styles than layers");
         }
     }
