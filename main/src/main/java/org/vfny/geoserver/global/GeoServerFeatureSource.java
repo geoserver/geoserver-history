@@ -337,8 +337,10 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         try {
             //this is the raw "unprojected" feature collection
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures(newQuery);
-
-            return reprojectFeatureCollection(targetCRS, fc);
+            if ( targetCRS != null ) {
+                return reprojectFeatureCollection(targetCRS, fc);
+            }
+            return fc;
         } catch (Exception e) {
             throw new DataSourceException(e);
         }
