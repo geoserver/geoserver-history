@@ -59,10 +59,19 @@ public class ResolvingProxy extends ProxyBase {
             if ( h instanceof ResolvingProxy ) {
                 String ref = ((ResolvingProxy)h).getRef();
                 if ( object instanceof WorkspaceInfo ) {
-                    return (T) catalog.getWorkspace( ref );
+                    Object ws = catalog.getWorkspace( ref );
+                    if ( ws == null ) { 
+                        ws = catalog.getWorkspaceByName( ref );
+                    }
+                    return (T) ws;
                 }
                 if ( object instanceof NamespaceInfo ) {
-                    return (T) catalog.getNamespace( ref );
+                    
+                     Object ns = catalog.getNamespace( ref );
+                     if ( ns == null ) {
+                         ns = catalog.getNamespaceByPrefix( ref );
+                     }
+                     return (T) ns;
                 }
                 if ( object instanceof StoreInfo ) {
                     if ( object instanceof DataStoreInfo ) {
@@ -85,10 +94,18 @@ public class ResolvingProxy extends ProxyBase {
                     return (T) catalog.getResource( ref, ResourceInfo.class );
                 }
                 if ( object instanceof LayerInfo ) {
-                    return (T) catalog.getLayer( ref );
+                    Object l = catalog.getLayer( ref );
+                    if ( l == null ) {
+                        l = catalog.getLayerByName( ref );
+                    }
+                    return (T) l; 
                 }
                 if ( object instanceof StyleInfo ) {
-                    return (T) catalog.getStyle( ref );
+                    Object s = catalog.getStyle( ref );
+                    if ( s == null ) {
+                        s = catalog.getStyleByName( ref );
+                    }
+                    return (T) s;
                 }
             }
         }
