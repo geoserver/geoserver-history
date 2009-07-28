@@ -69,7 +69,6 @@ public class ThumbnailStorage implements FileStorage {
         }
 
         double newWidth = original.getWidth() * (max.getHeight() / original.getHeight());
-        double newHeight = original.getHeight() * (max.getWidth() / original.getWidth());
 
         if (newWidth > max.getWidth()){
             return max.getHeight() / original.getHeight();
