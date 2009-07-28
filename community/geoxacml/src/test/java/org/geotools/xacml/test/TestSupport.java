@@ -178,7 +178,7 @@ public class TestSupport  {
 	   RBACPolicyFinder policyFinder = new RBACPolicyFinder();
 	   policyFinder.setRPSModules(policyModules);
 	   	   
-	   PolicyReader reader = new PolicyReader(policyFinder.getPpsFinder(),Logger.global);
+	   PolicyReader reader = new PolicyReader(policyFinder.getPpsFinder(),Logger.getLogger(TestSupport.class.getName()));
 	   BasicPolicyFinderModule ppsPolicyModule = new BasicPolicyFinderModule();
 	   
 		try {
