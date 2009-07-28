@@ -1,66 +1,84 @@
 package org.geoserver.web.proxy;
 
 
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
-import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.proxy.ProxyConfig;
 import org.geoserver.proxy.ProxyConfig.Mode;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.GeoServerDialog;
+import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 public class ProxyAdminPage extends GeoServerSecuredPage {
+    /*NOTE & DANGER:
+     * There is nothing here that will guarantee any form of consistency in case of multiple people
+     * editing the proxy's configuration. Probably don't do that.
+     */
+    
     //GeoServerTablePanel<Pattern> hostnameFilterTable;
 
     //GeoServerTablePanel<Pattern> mimetypeFilterTable;
 
+    @SuppressWarnings("serial")
     public ProxyAdminPage() {
-        //HostRegexProvider hostProvider = new HostRegexProvider(); 
+        HostnameProvider hostnameProvider = new HostnameProvider(); 
         //GeoServerTablePanel<LayerGroupInfo> table;
+        GeoServerTablePanel <String> hostnameFilterTable;
         
         ProxyConfig config = ProxyConfig.loadConfFromDisk();
         
         ProxyForm proxyForm = new ProxyForm("proxyForm");
         add(proxyForm);
-                
         // Add radio buttons for mode
         RadioChoice modeChoices = new RadioChoice("modes", new PropertyModel(config, "mode"), Mode.modeNames());
         proxyForm.add(modeChoices);
         
-        //Make a list of 
+        // the add button
+        add(new BookmarkablePageLink("addNew", ProxyAdminPage.class));
         
-        proxyForm.add(new TextArea("hostnameRegexes", new PropertyModel(config, "hostnameWhitelist")));
-        proxyForm.add(new TextArea("mimetypeRegexes"));
-
-        /*ListChoice hostnameRegexes = new ListChoice("hostnameRegexes", config.hostnameWhitelist);
-        proxyForm.add(hostnameRegexes);
+        GeoServerDialog dialog = new GeoServerDialog("dialog");
+        add(dialog);
         
-        ListChoice mimetypeRegexes = new ListChoice("mimetypeRegexes", config.hostnameWhitelist);
-        proxyForm.add(mimetypeRegexes);*/
+        // the removal button
+        /*SelectionRemovalLink removal = 
+            new SelectionRemovalLink("removeSelected", hostnameFilterTable, dialog) {
+            @Override
+            protected StringResourceModel canRemove(CatalogInfo object) {
+                StyleInfo s = (StyleInfo) object;
+                if ( StyleInfo.DEFAULT_POINT.equals( s.getName() ) || 
+                    StyleInfo.DEFAULT_LINE.equals( s.getName() ) || 
+                    StyleInfo.DEFAULT_POLYGON.equals( s.getName() ) || 
+                    StyleInfo.DEFAULT_RASTER.equals( s.getName() ) ) {
+                    return new StringResourceModel("cantRemoveDefaultStyle", StylePage.this, null );
+                }
+                return null;
+            }
+        };
+        add(removal);
         
-        // TODO: Properly adapt this code
-        /*hostnameFilterTable = new GeoServerTablePanel<Pattern>("table", hostProvider, true) {
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);*/
+        hostnameFilterTable = 
+            new GeoServerTablePanel<String>("hostnameTable", hostnameProvider, true) {
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
-                    Property<Pattern> property) {
-                throw new IllegalArgumentException("Don't know a property named "
-                        + property.getName());
+                    Property<String> property) {
+                // TODO Auto-generated method stub
+                return new Label(id, property.getModel(itemModel));
             }
-
-            @Override
-            protected void onSelectionUpdate(AjaxRequestTarget target) {
-                // do some stuff here
-            }
-
         };
         hostnameFilterTable.setOutputMarkupId(true);
         add(hostnameFilterTable);
-        */
-        // TODO: Add a mimetype filter table
-        
 
     }
     
+    @SuppressWarnings("serial")
     public final class ProxyForm extends Form{
         public ProxyForm(final String componentName)
         {
@@ -74,4 +92,5 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
             //ProxyConfig.writeConfigToDisk(config);
         }
     }
+    
 }

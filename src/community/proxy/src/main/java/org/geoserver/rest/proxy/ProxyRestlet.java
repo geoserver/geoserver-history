@@ -8,8 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.geoserver.proxy.ProxyConfig;
 import org.geoserver.proxy.ProxyConfig.Mode;
@@ -38,7 +36,7 @@ public class ProxyRestlet extends Restlet {
     private ProxyConfig config;
     private boolean watcherWorks;
     private PropertyFileWatcher configWatcher;
-
+    
     /*
      * Initialize the proxy
      */
@@ -71,13 +69,18 @@ public class ProxyRestlet extends Restlet {
             LOGGER.log(Level.WARNING, "Proxy could not create configuration watcher.  Proxy will not be able to update its configuration when it is modified.  Exception:", e);
             watcherWorks = false;
         }
+        /*Load up the proxy configuration*/
+        config = ProxyConfig.loadConfFromDisk();
     }
     
+    /*
+     * Forwards a request if it is permitted by the proxy's rules as configured.
+     */
     @Override
     public void handle(Request request, Response response) {
-        LOGGER.log(Level.INFO, "handling request " + request.toString());
         /* Check the proxy's config has been modified if the watcher was created correctly*/
         if (watcherWorks && configWatcher.isStale()) {
+            //reload the config if it's stale
             config = ProxyConfig.loadConfFromDisk();
         }
         /* Grab the argument */
@@ -85,36 +88,37 @@ public class ProxyRestlet extends Restlet {
         /* The first argument should be the request for a URL to grab by proxy */
         String url = f.getFirstValue("url");
         try {
+            /*Construct the connection to the server*/
             URL resolved = new URL(url);
-            /* Allow the request to go through if it's in the list of allowed URLs */
-            if (this.checkURLPermission(resolved) == true) {
-                final HttpURLConnection connection = (HttpURLConnection) resolved.openConnection();
-                connection.setRequestMethod(request.getMethod().toString());
+            final HttpURLConnection connection = (HttpURLConnection) resolved.openConnection();
+            connection.setRequestMethod(request.getMethod().toString());
 
-                if (request.getMethod().equals(Method.PUT)
-                        || request.getMethod().equals(Method.POST)) {
-                    connection.setDoOutput(true);
-                    copyStream(request.getEntity().getStream(), connection.getOutputStream());
-                }
-
-                response.setEntity(new StreamRepresentation(new MediaType(connection
-                        .getContentType())) {
-                    @Override
-                    public void write(OutputStream out) throws IOException {
-                        copyStream(connection.getInputStream(), out);
-                    }
-
-                    @Override
-                    public InputStream getStream() throws IOException {
-                        throw new UnsupportedOperationException();
-                    }
-                });
-            }
-            /* Otherwise tell the client it can't do what it wanted to */
-            else {
-                throw new RestletException("Proxy only accepts HTTP requests",
+            /*Check if this request is permitted to be forwarded*/
+            if (checkPermission(resolved, connection.getContentType()) != true) {
+                throw new RestletException("Request for nonpermitted content type or hostname",
                         Status.CLIENT_ERROR_BAD_REQUEST);
             }
+                
+            /*Appropriately forward the message*/
+            if (request.getMethod().equals(Method.PUT)
+                    || request.getMethod().equals(Method.POST)) {
+                connection.setDoOutput(true);
+                copyStream(request.getEntity().getStream(), connection.getOutputStream());
+            }
+                
+            response.setEntity(new StreamRepresentation(new MediaType(connection
+                    .getContentType())) {
+                @Override
+                public void write(OutputStream out) throws IOException {
+                    copyStream(connection.getInputStream(), out);
+                }
+
+                @Override
+                public InputStream getStream() throws IOException {
+                    throw new UnsupportedOperationException();
+                }
+            });
+        /*If the request is broken, offer appropriate notice*/
         } catch (MalformedURLException e) {
             LOGGER.log(Level.WARNING, "Invalid proxy request. ", e);
             throw new RestletException("Invalid proxy request", Status.CLIENT_ERROR_BAD_REQUEST);
@@ -125,39 +129,20 @@ public class ProxyRestlet extends Restlet {
         }
     }
 
-    /*
-     * public void init(List<String> permissionRegexes){ //for }
-     */
-
-    /* Checks a URL against all regular expressions for permitted locations to connect */
-    private boolean checkURLPermission(URL locator) {
+    
+    private boolean checkPermission(URL locator, String contentType) {
         /* Check that the correct protocol is being used */
         if (locator.getProtocol().equals("http")) {
             boolean hostnameOk = false, mimetypeOk = false;
-            /* Check if the hostname matches a whitelist if configured to do so */
+            /* Check hostname and mimetype as appropriate to mode */
             if (config.mode == Mode.HOSTNAME || config.mode == Mode.HOSTNAMEANDMIMETYPE
                     || config.mode == Mode.HOSTNAMEORMIMETYPE) {
-                /* Iterate through the whitelist of hosts */
-                for (Pattern pattern : config.hostnameWhitelist) {
-                    /* Check if the regex matches the URL. */
-                    Matcher matcher = pattern.matcher(locator.toString());
-                    if (matcher.find()) {
-                        /* Then the URL is allowed. */
-                        hostnameOk = true;
-                    }
-                }
+                hostnameOk = checkHostnamePermission(locator);
             }
-            /* Check if the MIMEType matches a whitelist if configured to do so */
             if (config.mode == Mode.MIMETYPE || config.mode == Mode.HOSTNAMEANDMIMETYPE
                     || config.mode == Mode.HOSTNAMEORMIMETYPE) {
-                // TODO: Actually check the MIMEType
-                if (true) {
-                    mimetypeOk = true;
-                } else {
-                    mimetypeOk = false;
-                }
+                mimetypeOk = checkContentType(contentType);
             }
-
             /* Return whether an action is permitted based on how proxy is configured */
             switch (config.mode) {
             case MIMETYPE:
@@ -173,7 +158,43 @@ public class ProxyRestlet extends Restlet {
         /* The request is not permitted to go through. */
         return false;
     }
+
+    /* 
+     * Checks a URL for whether its hostname is permitted
+     * @param   locator         A URL to check the permission status of
+     * @return                  true if the hostname is permitted; otherwise false 
+     */
+    private boolean checkHostnamePermission(URL locator) {
+        /* Iterate through the whitelist of hosts */
+        for (String hostname : config.hostnameWhitelist) {
+            /* Check if the regex matches the URL. */
+            if (hostname.equalsIgnoreCase(locator.getHost())) {
+                /* Then the URL is allowed. */
+                return true;
+            }
+        }
+        //otherwise say no
+        return false;
+    }
     
+    /* 
+     * Checks whether the content-type of a request is permitted by the proxy
+     * @param   contentType     A content type
+     * @return                  true if the content-type is permitted; otherwise false 
+     */
+    private boolean checkContentType(String contentType) {
+        //Trim off extraneous information
+        String firstType = contentType.split(";")[0];
+        //Check off the content type provided vs. permitted content types
+        for (String legitContentType : config.mimetypeWhitelist) {
+            if (firstType.equalsIgnoreCase(legitContentType)) {
+                //if the content type is permitted, send the packet on through
+                return true;
+            }
+        }
+        //otherwise say no
+        return false;
+    }
     
     @Override
     public Logger getLogger()
@@ -188,4 +209,5 @@ public class ProxyRestlet extends Restlet {
             out.write(buff, 0, length);
         }
     }
+    
 }
