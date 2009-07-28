@@ -108,7 +108,7 @@ public class LayerAboutPage extends GeoServerProxyAwareRestlet {
 		map.put("base", baseUrl);    			
 		
 		//general parameters for data requests
-    	map.put("name", info.getName());
+    	map.put("name", info.getPrefixedName());
     	map.put("srs", info.getSRS());
     	
     	ReferencedEnvelope bbox = getBBOX(info);
