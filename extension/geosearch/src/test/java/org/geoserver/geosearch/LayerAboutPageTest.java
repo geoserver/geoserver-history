@@ -47,7 +47,7 @@ public class LayerAboutPageTest extends GeoServerTestSupport  {
         getFeatureTypeInfo(MockData.GENERICENTITY).getMetadata().put("indexingEnabled", true);
 		context = lap.getContext("sf", "GenericEntity", request);		
 
-		assertEquals("Unexpected value for 'name' in context", ((SimpleScalar) context.get("name")).getAsString(), "GenericEntity");
+		assertEquals("Unexpected value for 'name' in context", ((SimpleScalar) context.get("name")).getAsString(), "sf:GenericEntity");
 		assertEquals("Unexpected value for 'title' in context", ((SimpleScalar) context.get("title")).getAsString(), "GenericEntity");		
 		assertEquals("Unexpected value for 'abstract' in context", ((SimpleScalar) context.get("abstract")).getAsString(), "abstract about GenericEntity");
 		

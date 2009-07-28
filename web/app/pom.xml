@@ -328,6 +328,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>geosearch</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>geosearch</artifactId> 
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>restconfig</id>
       <dependencies>
         <dependency>
