@@ -39,6 +39,8 @@ package com.sun.xacml.ctx;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -49,6 +51,7 @@ import com.sun.xacml.ParsingException;
 import com.sun.xacml.UnknownIdentifierException;
 import com.sun.xacml.attr.AttributeFactory;
 import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.attr.DateTimeAttribute;
 
 
@@ -129,7 +132,8 @@ public class Attribute
         URI type = null;
         String issuer = null;
         DateTimeAttribute issueInstant = null;
-        AttributeValue value = null;
+        //AttributeValue value = null;
+        List<AttributeValue> valueList = new ArrayList<AttributeValue>();
 
         AttributeFactory attrFactory = AttributeFactory.getInstance();
 
@@ -176,13 +180,14 @@ public class Attribute
         for (int i = 0; i < nodes.getLength(); i++) {
             Node node = nodes.item(i);
             if (node.getNodeName().equals("AttributeValue")) {
-                // only one value can be in an Attribute
-                if (value != null)
-                    throw new ParsingException("Too many values in Attribute");
+                // only one value can be in an Attribute               
+                // if (value != null)
+                //   throw new ParsingException("Too many values in Attribute");
 
                 // now get the value
                 try {
-                    value = attrFactory.createValue(node, type);
+                    AttributeValue value = attrFactory.createValue(node, type);
+                    valueList.add(value);
                 } catch (UnknownIdentifierException uie) {
                     throw new ParsingException("Unknown AttributeId", uie);
                 }
@@ -190,10 +195,16 @@ public class Attribute
         }
 
         // make sure we got a value
-        if (value == null)
-            throw new ParsingException("Attribute must contain a value");
-
-        return new Attribute(id, type, issuer, issueInstant, value);
+//        if (value == null)
+//            throw new ParsingException("Attribute must contain a value");
+      if (valueList.isEmpty())
+          throw new ParsingException("Attribute must contain a value");
+      else if (valueList.size()==1)
+          return new Attribute(id, type, issuer, issueInstant, valueList.get(0));
+      else {
+          BagAttribute bag = new BagAttribute(type, valueList);
+          return new Attribute(id, type, issuer, issueInstant, bag);
+      }                
     }
 
     /**

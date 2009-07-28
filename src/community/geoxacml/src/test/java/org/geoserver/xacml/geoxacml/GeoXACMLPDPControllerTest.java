@@ -46,7 +46,7 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         File request = new File ("src/test/resources/requestAlice.xml");
         String xml = getXMLRequest(request);
         //InputStream resp = post("geoxacml?validate=true",xml);
-        InputStream resp = post("geoxacml",xml);
+        InputStream resp = post("security/geoxacml",xml);
         checkXACMLRepsonse(resp, "Permit");        
     }
     
@@ -54,8 +54,9 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         File request = new File ("src/test/resources/requestBob.xml");
         String xml = getXMLRequest(request);
         //InputStream resp = post("geoxacml?validate=true",xml);
-        InputStream resp = post("geoxacml",xml);
-        checkXACMLRepsonse(resp, "Deny");        
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "Deny");
+        //dumpResponse(resp);
     }
 
 
@@ -68,6 +69,7 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         Node statusNode = doc.getElementsByTagName("StatusCode").item(0);
         String statusCode = statusNode.getAttributes().getNamedItem("Value").getTextContent();
         assertEquals("urn:oasis:names:tc:xacml:1.0:status:ok",statusCode);
+        
         
     }
     

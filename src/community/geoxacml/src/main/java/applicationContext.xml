@@ -9,7 +9,7 @@
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
         <props>
-            <prop key="/geoxacml">geoxacml</prop>            
+            <prop key="/security/geoxacml">geoxacml</prop>            
         </props>
     </property>
 

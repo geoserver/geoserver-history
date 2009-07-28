@@ -226,12 +226,27 @@ public class BagAttribute extends AttributeValue
     }
 
     /**
-     * Because a bag cannot be included in a request/response or a 
-     * policy, this will always throw an
-     * <code>UnsupportedOperationException</code>.
-     */
+     * Not Specified 
+     * TODO 
+     * 
+    */
     public String encode() {
-        throw new UnsupportedOperationException("Bags cannot be encoded");
+        StringBuffer buff = new StringBuffer();
+        for (AttributeValue value : bag) 
+            buff.append(value.encode()).append(",");
+        if (buff.length()>1)
+            buff.setLength(buff.length()-1);
+        return buff.toString();
+        
+       // throw new UnsupportedOperationException("Bags cannot be encoded");
+    }
+
+    @Override
+    public String encodeWithTags(boolean includeType) {
+        StringBuffer buff = new StringBuffer();
+        for (AttributeValue value : bag)
+             buff.append(value.encodeWithTags(includeType));
+        return buff.toString();
     }
 
 }
