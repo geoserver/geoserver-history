@@ -117,7 +117,7 @@ public class GeometryAttribute extends AttributeValue {
         }
 
         if (gmlNode == null) {
-            Logger.global.severe("No GML node found");
+            Logger.getLogger(GeometryAttribute.class.getName()).severe("No GML node found");
             return null;
         }
 
