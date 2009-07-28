@@ -8,11 +8,10 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
@@ -49,6 +49,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.MapJSONFormat;
+import org.geoserver.rest.RestletException;
 
 /**
  * Restlet to allow uploading files and serving them back, possibly with some server-side filter
@@ -118,6 +119,8 @@ public class UploadRestlet extends Restlet {
                 doPost(request, response);
             } else if (request.getMethod().equals(Method.PUT)){
                 doPut(request, response);
+            } else if (request.getMethod().equals(Method.DELETE)) {
+                doDelete(request, response);
             } else {
                 response.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             }
@@ -185,7 +188,9 @@ public class UploadRestlet extends Restlet {
                 
                 if (uploadFilter.filter(file.getContentType(), temp)) {
                     doUpload(file.getContentType(), temp, req, resp);
-                    temp.delete();
+                    if (!temp.delete()) {
+                        LOG.log(Level.WARNING, "Failure to delete temp file in upload module");
+                    }
                 } else { 
                     resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
                 }
@@ -204,7 +209,9 @@ public class UploadRestlet extends Restlet {
             if (uploadFilter.filter(contentType, temp)) {
                 doUpload(contentType, temp, req, resp);
 
-                temp.delete();
+                if (!temp.delete()) {
+                    LOG.log(Level.WARNING, "Unable to delete temporary file from upload");
+                }
             } else { 
                 resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             }
@@ -239,7 +246,11 @@ public class UploadRestlet extends Restlet {
         }
 
         if (uploadFilter.filter(contentType, temp)) {
-            temp.renameTo(f);
+            if (!temp.renameTo(f)) {
+                throw new RestletException(
+                        "Unable to rename temp file to persisted file in upload restlet",
+                        Status.SERVER_ERROR_INTERNAL); 
+            }
         } else {
             resp.setStatus(Status.CLIENT_ERROR_BAD_REQUEST);
             return;
@@ -248,8 +259,10 @@ public class UploadRestlet extends Restlet {
 
     private void doUpload(String contentType, File content, Request req, Response resp) 
     throws IOException {
-        if (!rootPath.exists()) {
-            rootPath.mkdirs();
+        if (!rootPath.exists() && !rootPath.mkdirs()) {
+            throw new RestletException(
+                    "Unable to create storage directory for uploaded files",
+                    Status.SERVER_ERROR_INTERNAL); 
         }
 
         List<String> l = fileStorage.handleUpload(contentType, content, myIDGenerator, rootPath);
@@ -283,8 +296,7 @@ public class UploadRestlet extends Restlet {
                     writer.print(child.getName().replace("\"", "\\\""));
                     writer.print("\",config:");
 
-                    BufferedReader reader = 
-                        new BufferedReader(new InputStreamReader(new FileInputStream(child)));
+                    BufferedReader reader = new BufferedReader(new FileReader(child));
 
                     String line = null;
 
@@ -297,6 +309,8 @@ public class UploadRestlet extends Restlet {
                     if (i != children.length -1) {
                         writer.print(",");
                     };
+
+                    reader.close();
                 }
 
                 writer.print("]}");
@@ -305,6 +319,32 @@ public class UploadRestlet extends Restlet {
             }
         });
     }
+
+    /**
+     * Handle a DELETE request by simply deleting the file on disk.
+     *
+     * @param req the Request object being handled
+     * @param resp the Response to which the result should be written
+     */
+    protected void doDelete(Request req, Response resp)
+        throws Exception {
+            String file = (String)req.getAttributes().get("file");
+
+            File f = getSecuredFile(file);
+
+            if (!f.exists()){ 
+                resp.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+                return;
+            }
+
+            if (f.delete()) {
+                resp.setStatus(Status.SUCCESS_OK);
+            } else {
+                throw new RestletException("Unable to delete file on server", 
+                        Status.SERVER_ERROR_INTERNAL);
+            }
+    }
+
 
     /**
      * Ensure that files written and saved by this restlet are children of the target directory.

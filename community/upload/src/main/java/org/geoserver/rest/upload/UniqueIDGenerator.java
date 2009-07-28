@@ -8,7 +8,7 @@ public class UniqueIDGenerator {
     public UniqueIDGenerator(){
     }
 
-    public void setWatchedFolder(File dir){
+    public synchronized void setWatchedFolder(File dir){
         myWatchedDirectory = dir;
     }
 
