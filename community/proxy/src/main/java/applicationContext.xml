@@ -21,14 +21,4 @@
     <property name="componentClass" value="org.geoserver.web.proxy.ProxyAdminPage"/>
   </bean>
   
-  <!--<bean id="printingDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-  	<property name="alwaysUseFullPath" value="true"/>
-    <property name="mappings">
-      <props>
-        <prop key="/proxy">printingWrapper</prop>
-        <prop key="/proxy/**">printingWrapper</prop>
-      </props>
-    </property>
-  </bean>-->
-  
 </beans>
