@@ -20,17 +20,13 @@ This documentation source code exists in the same repository as the GeoServer so
 
    https://svn.codehaus.org/geoserver/
 
-Within this path are the various branches and tags associated with releases, and the documentation is always inside a :file:`doc` path.  So, for example, the documentation for the 1.7.x branch is found inside this path::
+Within this path are the various branches and tags associated with releases, and the documentation is always inside a :file:`doc` path.  Inside this path, the repository contains directories corresponding to different translations.  The languages are referred to by a two letter code, with ``en`` (English) being the default.
 
-   https://svn.codehaus.org/geoserver/branches/1.7.x/doc/
-   
-The documentation for GeoServer trunk can be found inside this path::
+For example, the path to check out the English docs from 1.7.x is::
 
-   https://svn.codehaus.org/geoserver/trunk/doc/
+   https://svn.codehaus.org/geoserver/branches/1.7.x/doc/en/
 
-Make sure you are checking out the correct branch/tag.
-
-Regardless of which version is checked out, the repository will contain four directories::
+Inside this directory, there are four directories::
 
    user/
    developer/
@@ -56,10 +52,15 @@ Software
 
 You must use a version control software to retrieve files.  Most people use `Subversion <http://subversion.tigris.org/>`_ (aka :command:`svn`), a command line utility for managing version control systems.  There also exists a shell-integrated version of Subversion for Windows called `TortoiseSVN <http://tortoisesvn.tigris.org/>`_.
 
-For example, to check out the documentation source tree for 1.7.x, run the following command::
+For example, to check out the entire English documentation source tree for 1.7.x, run the following command::
 
-   svn checkout https://svn.codehaus.org/geoserver/branches/1.7.x/doc
+   svn checkout https://svn.codehaus.org/geoserver/branches/1.7.x/doc/en/
 
+This will create a directory locally with the same name as the final directory of the checkout (in this case, ``en``).  To create with a different directory name, append the desired name to the end of the command::
+
+   svn checkout https://svn.codehaus.org/geoserver/branches/1.7.x/doc/en/ gs-17x-docs
+
+This will check out the source into a directory called :file:`gs-17x-docs`.
 
 Make changes
 ------------
@@ -75,28 +76,28 @@ You should install Sphinx on your local system to build the documentation locall
 HTML
 ````
 
-#. On a terminal, navigate to your GeoServer source checkout and change to the :file:`doc/user` directory (or whichever project you wish to build).
+#. On a terminal, navigate to your GeoServer source checkout and change to the :file:`doc/en/user` directory (or whichever project you wish to build).
 
 #. Run the following command::
 
       make html
 
-   The resulting HTML pages will be contained in :file:`doc/user/build/html`.
+   The resulting HTML pages will be contained in :file:`doc/en/user/build/html`.
 
 #. Watch the output of the above command for any errors and warnings.  These could be indicative of problems with your markup.  Please fix any errors and warnings before continuing.
 
 PDF
 ```
 
-#. On a terminal, navigate to your GeoServer source checkout and change to the :file:`doc/user` directory (or whichever project you wish to build).
+#. On a terminal, navigate to your GeoServer source checkout and change to the :file:`doc/en/user` directory (or whichever project you wish to build).
 
 #. Run the following command::
 
       make latex
 
-   The resulting LaTeX pages will be contained in :file:`doc/user/build/latex`.
+   The resulting LaTeX pages will be contained in :file:`doc/en/user/build/latex`.
 
-#. Change to the :file:`doc/user/build/latex` directory.
+#. Change to the :file:`doc/en/user/build/latex` directory.
 
 #. Run the following command::
 
@@ -104,7 +105,7 @@ PDF
 
    This will create a PDF file called :file:`{GeoServerProject}.pdf` in the same directory
 
-   .. note:: The exact name of :file:`{GeoServerProject}` depends on which project is being built.  However, there will only be one file with the extension ``.tex`` in the :file:`doc/user/build/latex` directory, so there should hopefully be little confusion.
+   .. note:: The exact name of :file:`{GeoServerProject}` depends on which project is being built.  However, there will only be one file with the extension ``.tex`` in the :file:`doc/en/user/build/latex` directory, so there should hopefully be little confusion.
 
    .. warning:: This command requires `LaTeX <http://www.latex-project.org/>`_ to be installed, and :command:`pdflatex` to be added to your Path.
 
