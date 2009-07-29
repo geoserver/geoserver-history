@@ -204,6 +204,10 @@
     </servlet-mapping>
     <servlet-mapping>
       <servlet-name>dispatcher</servlet-name>
+      <url-pattern>/security/*</url-pattern>
+    </servlet-mapping>    
+    <servlet-mapping>
+      <servlet-name>dispatcher</servlet-name>
       <url-pattern>/wms/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
