@@ -42,7 +42,13 @@ public class HostRemovalLink extends AjaxLink {
         
         //remove selected hostnames from list
         for (String hostname : selection) {
+            try{
             config.hostnameWhitelist.remove(hostname);
+            }
+            catch(Exception e)
+            {
+                
+            }
         }
         //write changes to disk
         ProxyConfig.writeConfigToDisk(config);
