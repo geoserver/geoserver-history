@@ -102,7 +102,7 @@ public class DataStoreConfig {
             throw new NullPointerException("Non null DataStoreInfoDTO required");
         }
 
-        factory = DataStoreUtils.aquireFactory(dto.getConnectionParams());
+        factory = DataStoreUtils.aquireFactory(DataStoreUtils.getParams(dto.getConnectionParams(), null));
 
         id = dto.getId();
         nameSpaceId = dto.getNameSpaceId();
