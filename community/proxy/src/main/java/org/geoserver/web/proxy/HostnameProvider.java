@@ -4,9 +4,9 @@
  */
 package org.geoserver.web.proxy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.proxy.ProxyConfig;
@@ -32,7 +32,7 @@ public class HostnameProvider extends GeoServerDataProvider<String> {
     
     @Override
     protected List<String> getItems() {
-        return ProxyConfig.loadConfFromDisk().hostnameWhitelist;
+        return new ArrayList<String>(ProxyConfig.loadConfFromDisk().hostnameWhitelist);
     }
 
     @Override

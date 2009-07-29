@@ -8,11 +8,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.geoserver.catalog.CascadeDeleteVisitor;
-import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.proxy.ProxyConfig;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 
@@ -22,8 +18,7 @@ import org.geoserver.web.wicket.GeoServerTablePanel;
  * for reporting the objects that will be affected by the removal
  */
 @SuppressWarnings("serial")
-public class HostRemovalLink extends AjaxLink {
-    
+public class HostRemovalLink extends AjaxLink {    
     GeoServerTablePanel<String> tableObjects;
     ProxyConfig config;
 
@@ -42,13 +37,7 @@ public class HostRemovalLink extends AjaxLink {
         
         //remove selected hostnames from list
         for (String hostname : selection) {
-            try{
             config.hostnameWhitelist.remove(hostname);
-            }
-            catch(Exception e)
-            {
-                
-            }
         }
         //write changes to disk
         ProxyConfig.writeConfigToDisk(config);
