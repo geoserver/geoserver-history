@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -62,10 +63,10 @@ public class ProxyConfig implements java.io.Serializable{
     public Mode mode;
 
     /* A list of regular expressions describing hostnames the proxy is permitted to forward to */
-    public List<String> hostnameWhitelist;
+    public LinkedHashSet<String> hostnameWhitelist;
 
     /* A list of regular expressions describing MIMETypes the proxy is permitted to forward */
-    public List<String> mimetypeWhitelist;
+    public LinkedHashSet<String> mimetypeWhitelist;
 
     /*The name of the directory where configuration is stored*/
     private static final String confDirName = "proxy";
@@ -88,9 +89,9 @@ public class ProxyConfig implements java.io.Serializable{
     static {
         DEFAULT = new ProxyConfig();
         DEFAULT.mode = Mode.HOSTNAMEORMIMETYPE;
-        DEFAULT.hostnameWhitelist = Arrays.asList(
-                "localhost");
-        DEFAULT.mimetypeWhitelist = Arrays.asList(
+        DEFAULT.hostnameWhitelist = new LinkedHashSet<String>(Arrays.asList(
+                "localhost"));
+        DEFAULT.mimetypeWhitelist = new LinkedHashSet<String>(Arrays.asList(
                 "application/xml", "text/xml",
                 "application/vnd.ogc.se_xml",           // OGC Service Exception 
                 "application/vnd.ogc.se+xml",           // OGC Service Exception
@@ -100,7 +101,7 @@ public class ProxyConfig implements java.io.Serializable{
                 "application/vnd.ogc.gml",              // GML
                 "application/vnd.ogc.sld+xml",          // SLD
                 "application/vnd.google-earth.kml+xml"  // KML;
-        );
+        ));
     }
 
     private static final Logger LOG = org.geotools.util.logging.Logging

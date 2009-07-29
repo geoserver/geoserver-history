@@ -165,13 +165,9 @@ public class ProxyRestlet extends Restlet {
      * @return                  true if the hostname is permitted; otherwise false 
      */
     private boolean checkHostnamePermission(URL locator) {
-        /* Iterate through the whitelist of hosts */
-        for (String hostname : config.hostnameWhitelist) {
-            /* Check if the regex matches the URL. */
-            if (hostname.equalsIgnoreCase(locator.getHost())) {
-                /* Then the URL is allowed. */
-                return true;
-            }
+        /* Check  the whitelist of hosts */
+        if (config.hostnameWhitelist.contains(locator.getHost())) {
+            return true;
         }
         //otherwise say no
         return false;
@@ -186,11 +182,8 @@ public class ProxyRestlet extends Restlet {
         //Trim off extraneous information
         String firstType = contentType.split(";")[0];
         //Check off the content type provided vs. permitted content types
-        for (String legitContentType : config.mimetypeWhitelist) {
-            if (firstType.equalsIgnoreCase(legitContentType)) {
-                //if the content type is permitted, send the packet on through
-                return true;
-            }
+        if (config.mimetypeWhitelist.contains(firstType)) {
+            return true;
         }
         //otherwise say no
         return false;

@@ -1,6 +1,5 @@
 package org.geoserver.web.proxy;
 
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -52,7 +51,7 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
         add(hostnameFilterTable);
         
         // the add button
-        add(new BookmarkablePageLink("addNew", ProxyAdminPage.class));
+        add(new BookmarkablePageLink("addNew", HostnameNewPage.class));
         // the removal button
         removal = new HostRemovalLink("removeSelected", hostnameFilterTable, config);
         add(removal);        
