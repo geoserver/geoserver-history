@@ -47,6 +47,13 @@
     </profile>
 
     <profile>
+      <id>sqlserver</id>
+      <modules>
+        <module>sqlserver</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>oracle</id>
       <modules>
         <module>oracle</module>
@@ -124,6 +131,7 @@
         <module>arcsde</module>
         <module>geosearch</module>
         <module>h2</module>
+        <module>sqlserver</module>
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
@@ -144,6 +152,7 @@
         <module>arcsde</module>
         <module>geosearch</module>
         <module>h2</module>
+        <module>sqlserver</module>
         <module>oracle</module>
         <module>wfsv</module>
         <module>db2</module>
