@@ -2,13 +2,17 @@
 	<body>
 		<wicket:extend>
 			<h2><wicket:message key="title">GeoServer Proxy Administration</wicket:message></h2>
-			<form wicket:id="proxyForm">
+			<!--<form wicket:id="proxyForm">
 				<span wicket:id="modes">
 					<input type="radio">mode 1</input>
 					<input type="radio">mode 2</input>
 				</span>
 				<input type = "submit" value = "Submit"/>
-			</form>
+			</form>-->
+		<ul>
+            <li><a class="add-link" href="#" wicket:id="addNew"><wicket:message key="addNew" /></a></li>
+            <li><a class="remove-link" href="#" wicket:id="removeSelected"><wicket:message key="removeSelected" /></a></li>
+        </ul>
 		<span wicket:id="hostnameTable" />	
 		</wicket:extend>
 	</body>
