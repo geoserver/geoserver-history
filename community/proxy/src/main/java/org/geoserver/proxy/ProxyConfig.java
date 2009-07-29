@@ -89,8 +89,7 @@ public class ProxyConfig implements java.io.Serializable{
     static {
         DEFAULT = new ProxyConfig();
         DEFAULT.mode = Mode.HOSTNAMEORMIMETYPE;
-        DEFAULT.hostnameWhitelist = new LinkedHashSet<String>(Arrays.asList(
-                "localhost"));
+        DEFAULT.hostnameWhitelist = new LinkedHashSet<String>();
         DEFAULT.mimetypeWhitelist = new LinkedHashSet<String>(Arrays.asList(
                 "application/xml", "text/xml",
                 "application/vnd.ogc.se_xml",           // OGC Service Exception 
