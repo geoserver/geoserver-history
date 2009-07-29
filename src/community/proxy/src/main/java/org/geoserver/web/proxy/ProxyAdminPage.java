@@ -1,7 +1,10 @@
 package org.geoserver.web.proxy;
 
+import java.util.List;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -74,5 +77,36 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
             //ProxyConfig.writeConfigToDisk(config);
         }
     }
-    
+ 
+    @SuppressWarnings("serial")
+    public class HostRemovalLink extends AjaxLink {    
+        GeoServerTablePanel<String> tableObjects;
+        ProxyConfig config;
+
+        public HostRemovalLink(String id, GeoServerTablePanel<String> tableObjects, ProxyConfig config) {
+            super(id);
+            this.tableObjects = tableObjects;
+            this.config = config;
+        }
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+            // see if the user selected anything
+            final List<String> selection = tableObjects.getSelection();
+            if(selection.size() == 0)
+                return;
+            
+            //remove selected hostnames from list
+            for (String hostname : selection) {
+                config.hostnameWhitelist.remove(hostname);
+            }
+            //write changes to disk
+            ProxyConfig.writeConfigToDisk(config);
+            
+            //disable the removal link, since nothing is selected any more
+            setEnabled(false);
+            target.addComponent(HostRemovalLink.this);
+            target.addComponent(tableObjects);
+        }
+    }
 }

@@ -90,7 +90,15 @@ public class ProxyRestlet extends Restlet {
         try {
             /*Construct the connection to the server*/
             URL resolved = new URL(url);
-            final HttpURLConnection connection = (HttpURLConnection) resolved.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) resolved.openConnection();;
+            
+            /*Set appropriately whether the connection does output.*/
+            if (request.getMethod().equals(Method.PUT)
+                    || request.getMethod().equals(Method.POST)) {
+                connection.setDoOutput(true);
+            }
+            
+            //connection 
             connection.setRequestMethod(request.getMethod().toString());
 
             /*Check if this request is permitted to be forwarded*/
@@ -102,7 +110,7 @@ public class ProxyRestlet extends Restlet {
             /*Appropriately forward the message*/
             if (request.getMethod().equals(Method.PUT)
                     || request.getMethod().equals(Method.POST)) {
-                connection.setDoOutput(true);
+                //connection.setDoOutput(true);
                 copyStream(request.getEntity().getStream(), connection.getOutputStream());
             }
                 
