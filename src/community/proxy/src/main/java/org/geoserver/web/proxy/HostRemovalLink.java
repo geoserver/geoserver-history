@@ -45,5 +45,6 @@ public class HostRemovalLink extends AjaxLink {
         //disable the removal link, since nothing is selected any more
         setEnabled(false);
         target.addComponent(HostRemovalLink.this);
+        target.addComponent(tableObjects);
     }
 }   
