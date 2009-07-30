@@ -6,7 +6,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.geoserver.proxy.ProxyConfig;
@@ -27,21 +26,19 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
 
 
     @SuppressWarnings("serial")
+    /*
+     * Provides a webpage for editing proxy settings
+     */
     public ProxyAdminPage() {
+        
+        //Grab configuration data
         HostnameProvider hostnameProvider = new HostnameProvider();
         MimetypeProvider mimetypeProvider = new MimetypeProvider(); 
-        
-        ProxyConfig config = ProxyConfig.loadConfFromDisk();
-        
-//        ProxyForm proxyForm = new ProxyForm("proxyForm");
-//        add(proxyForm);
-        // Add radio buttons for mode
-//        RadioChoice modeChoices = new RadioChoice("modes", new PropertyModel(config, "mode"), Mode.modeNames());
-//        proxyForm.add(modeChoices);
        
         //
         //HOSTNAME
         //
+        //Put together a table for editing what hostnames can go through the proxy
         hostnameFilterTable = 
             new GeoServerTablePanel<String>("hostnameTable", hostnameProvider, true) {
             @Override
@@ -63,7 +60,7 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
         // the add button
         add(new BookmarkablePageLink("addNewHost", HostnameNewPage.class));
         // the removal button
-        hostRemoval = new HostRemovalLink("removeSelectedHost", hostnameFilterTable, config);
+        hostRemoval = new HostRemovalLink("removeSelectedHost", hostnameFilterTable);
         add(hostRemoval);        
         hostRemoval.setOutputMarkupId(true);
         hostRemoval.setEnabled(false);
@@ -71,6 +68,7 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
         //
         //MIMETYPE
         //
+        //Put together a table for editing what MIMETypes can go through the proxy
         mimetypeFilterTable = 
             new GeoServerTablePanel<String>("mimetypeTable", mimetypeProvider, true) {
             @Override
@@ -91,42 +89,47 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
         // the add button
         add(new BookmarkablePageLink("addNewMimetype", MimetypeNewPage.class));
         // the removal button
-        mimetypeRemoval = new MimetypeRemovalLink("removeSelectedMimetype", mimetypeFilterTable, config);
+        mimetypeRemoval = new MimetypeRemovalLink("removeSelectedMimetype", mimetypeFilterTable);
         add(mimetypeRemoval);        
         mimetypeRemoval.setOutputMarkupId(true);
         mimetypeRemoval.setEnabled(false);
 
     }
     
-    @SuppressWarnings("serial")
-    public final class ProxyForm extends Form{
-        public ProxyForm(final String componentName)
-        {
-            super(componentName);
-        }
-        
-        public void onSubmit()
-        {
-            // TODO: Add a submit button, and make it somehow call this vvv.
-            
-            //ProxyConfig.writeConfigToDisk(config);
-        }
-    }
+    /*unneeded*/
+//    @SuppressWarnings("serial")
+//    public final class ProxyForm extends Form{
+//        public ProxyForm(final String componentName)
+//        {
+//            super(componentName);
+//        }
+//        
+//        public void onSubmit()
+//        {
+//            // TODO: Add a submit button, and make it somehow call this vvv.
+//            
+//            //ProxyConfig.writeConfigToDisk(config);
+//        }
+//    }
  
+    /*
+     * An AJAX link to get rid of hostnames
+     * @param id A Wicket id
+     * @param tableObjects a GeoServerTablePanel to remove hostnames from
+     */
     @SuppressWarnings("serial")
-    public class HostRemovalLink extends AjaxLink {    
+    private class HostRemovalLink extends AjaxLink {    
         GeoServerTablePanel<String> tableObjects;
-        ProxyConfig config;
 
-        public HostRemovalLink(String id, GeoServerTablePanel<String> tableObjects, ProxyConfig config) {
+        public HostRemovalLink(String id, GeoServerTablePanel<String> tableObjects) {
             super(id);
             this.tableObjects = tableObjects;
-            this.config = config;
         }
 
         @Override
         public void onClick(AjaxRequestTarget target) {
             // see if the user selected anything
+            ProxyConfig config = ProxyConfig.loadConfFromDisk();
             final List<String> selection = tableObjects.getSelection();
             if(selection.size() == 0)
                 return;
@@ -146,19 +149,24 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
     }
     
     @SuppressWarnings("serial")
-    public class MimetypeRemovalLink extends AjaxLink {    
+    private class MimetypeRemovalLink extends AjaxLink {    
         GeoServerTablePanel<String> tableObjects;
-        ProxyConfig config;
 
-        public MimetypeRemovalLink(String id, GeoServerTablePanel<String> tableObjects, ProxyConfig config) {
+        /*
+         * An AJAX link to get rid of hostnames
+         * @param id A Wicket id
+         * @param tableObjects a GeoServerTablePanel to remove hostnames from
+         */
+        public MimetypeRemovalLink(String id, GeoServerTablePanel<String> tableObjects) {
             super(id);
             this.tableObjects = tableObjects;
-            this.config = config;
         }
 
+        
         @Override
         public void onClick(AjaxRequestTarget target) {
             // see if the user selected anything
+            ProxyConfig config = ProxyConfig.loadConfFromDisk();
             final List<String> selection = tableObjects.getSelection();
             if(selection.size() == 0)
                 return;
