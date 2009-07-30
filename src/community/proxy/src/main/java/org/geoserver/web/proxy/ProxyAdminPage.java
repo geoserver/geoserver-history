@@ -21,12 +21,15 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
      */
     
     GeoServerTablePanel<String> hostnameFilterTable;
-    HostRemovalLink removal;
+    GeoServerTablePanel<String> mimetypeFilterTable;
+    HostRemovalLink hostRemoval;
+    MimetypeRemovalLink mimetypeRemoval;
 
 
     @SuppressWarnings("serial")
     public ProxyAdminPage() {
-        HostnameProvider hostnameProvider = new HostnameProvider(); 
+        HostnameProvider hostnameProvider = new HostnameProvider();
+        MimetypeProvider mimetypeProvider = new MimetypeProvider(); 
         
         ProxyConfig config = ProxyConfig.loadConfFromDisk();
         
@@ -36,6 +39,9 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
 //        RadioChoice modeChoices = new RadioChoice("modes", new PropertyModel(config, "mode"), Mode.modeNames());
 //        proxyForm.add(modeChoices);
        
+        //
+        //HOSTNAME
+        //
         hostnameFilterTable = 
             new GeoServerTablePanel<String>("hostnameTable", hostnameProvider, true) {
             @Override
@@ -46,20 +52,49 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
             //tell the table to enable the remove button when items are selected
             @Override
             protected void onSelectionUpdate(AjaxRequestTarget target) {
-                removal.setEnabled(hostnameFilterTable.getSelection().size() > 0);
-                target.addComponent(removal);
+                hostRemoval.setEnabled(hostnameFilterTable.getSelection().size() > 0);
+                target.addComponent(hostRemoval);
             }  
         };
         hostnameFilterTable.setOutputMarkupId(true);
         add(hostnameFilterTable);
         
+        
         // the add button
-        add(new BookmarkablePageLink("addNew", HostnameNewPage.class));
+        add(new BookmarkablePageLink("addNewHost", HostnameNewPage.class));
         // the removal button
-        removal = new HostRemovalLink("removeSelected", hostnameFilterTable, config);
-        add(removal);        
-        removal.setOutputMarkupId(true);
-        removal.setEnabled(false);
+        hostRemoval = new HostRemovalLink("removeSelectedHost", hostnameFilterTable, config);
+        add(hostRemoval);        
+        hostRemoval.setOutputMarkupId(true);
+        hostRemoval.setEnabled(false);
+        
+        //
+        //MIMETYPE
+        //
+        mimetypeFilterTable = 
+            new GeoServerTablePanel<String>("mimetypeTable", mimetypeProvider, true) {
+            @Override
+            protected Component getComponentForProperty(String id, IModel itemModel,
+                    Property<String> property) {
+                return new Label(id, property.getModel(itemModel));
+            }
+            //tell the table to enable the remove button when items are selected
+            @Override
+            protected void onSelectionUpdate(AjaxRequestTarget target) {
+                mimetypeRemoval.setEnabled(mimetypeFilterTable.getSelection().size() > 0);
+                target.addComponent(mimetypeRemoval);
+            }  
+        };
+        mimetypeFilterTable.setOutputMarkupId(true);
+        add(mimetypeFilterTable);
+        
+        // the add button
+        add(new BookmarkablePageLink("addNewMimetype", MimetypeNewPage.class));
+        // the removal button
+        mimetypeRemoval = new MimetypeRemovalLink("removeSelectedMimetype", mimetypeFilterTable, config);
+        add(mimetypeRemoval);        
+        mimetypeRemoval.setOutputMarkupId(true);
+        mimetypeRemoval.setEnabled(false);
 
     }
     
@@ -106,6 +141,38 @@ public class ProxyAdminPage extends GeoServerSecuredPage {
             //disable the removal link, since nothing is selected any more
             setEnabled(false);
             target.addComponent(HostRemovalLink.this);
+            target.addComponent(tableObjects);
+        }
+    }
+    
+    @SuppressWarnings("serial")
+    public class MimetypeRemovalLink extends AjaxLink {    
+        GeoServerTablePanel<String> tableObjects;
+        ProxyConfig config;
+
+        public MimetypeRemovalLink(String id, GeoServerTablePanel<String> tableObjects, ProxyConfig config) {
+            super(id);
+            this.tableObjects = tableObjects;
+            this.config = config;
+        }
+
+        @Override
+        public void onClick(AjaxRequestTarget target) {
+            // see if the user selected anything
+            final List<String> selection = tableObjects.getSelection();
+            if(selection.size() == 0)
+                return;
+            
+            //remove selected hostnames from list
+            for (String hostname : selection) {
+                config.mimetypeWhitelist.remove(hostname);
+            }
+            //write changes to disk
+            ProxyConfig.writeConfigToDisk(config);
+            
+            //disable the removal link, since nothing is selected any more
+            setEnabled(false);
+            target.addComponent(MimetypeRemovalLink.this);
             target.addComponent(tableObjects);
         }
     }
