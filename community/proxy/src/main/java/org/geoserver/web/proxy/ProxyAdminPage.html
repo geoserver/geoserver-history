@@ -9,11 +9,19 @@
 				</span>
 				<input type = "submit" value = "Submit"/>
 			</form>-->
+		Hostnames
 		<ul>
-            <li><a class="add-link" href="#" wicket:id="addNew"><wicket:message key="addNew" /></a></li>
-            <li><a class="remove-link" href="#" wicket:id="removeSelected"><wicket:message key="removeSelected" /></a></li>
+            <li><a class="add-link" href="#" wicket:id="addNewHost"><wicket:message key="addNew" /></a></li>
+            <li><a class="remove-link" href="#" wicket:id="removeSelectedHost"><wicket:message key="removeSelected" /></a></li>
         </ul>
-		<span wicket:id="hostnameTable" />	
+		<span wicket:id="hostnameTable" />
+		
+		Mimetypes
+		<ul>
+            <li><a class="add-link" href="#" wicket:id="addNewMimetype"><wicket:message key="addNew" /></a></li>
+            <li><a class="remove-link" href="#" wicket:id="removeSelectedMimetype"><wicket:message key="removeSelected" /></a></li>
+        </ul>
+		<span wicket:id="mimetypeTable" />
 		</wicket:extend>
 	</body>
 </html>
