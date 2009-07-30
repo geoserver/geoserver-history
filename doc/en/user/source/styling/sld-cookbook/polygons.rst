@@ -14,13 +14,13 @@ Simple polygon
 
 This example shows a polygon styled in blue.
 
-.. figure:: pix/simplepolygon.png
+.. figure:: images/simplepolygon.png
    :align: center
 
 Details
 ```````
 
-There is one ``<Rule>`` in one ``<FeatureTypeStyle>`` for this style, which is the simplest possible situation.  (All subsequent examples will share this characteristic unless otherwise specified.)  **Line 5** specifies the fill color of the polygon to be ``#000080``, or a muted blue.  The borders around the polygons as shown in the figure are an artifacts of the renderer.
+There is one ``<Rule>`` in one ``<FeatureTypeStyle>`` for this style, which is the simplest possible situation.  (All subsequent examples will share this characteristic unless otherwise specified.)  **Line 5** specifies the fill color of the polygon to be ``#000080``, or a muted blue.  The borders around the polygons as shown in the figure are artifacts of the renderer.
 
 Code
 ````
@@ -44,7 +44,7 @@ Code
 Simple polygon with stroke
 --------------------------
 
-This example shows the above polygon but adds a stroke of grey, with a one (5) pixel thickness.
+This example shows the above polygon but adds a stroke of grey, with a one (1) pixel thickness.
 
 .. warning:: Add code
 

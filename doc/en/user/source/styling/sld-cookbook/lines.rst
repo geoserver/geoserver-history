@@ -80,7 +80,7 @@ Label following line
 Repeated label
 --------------
 
-If the lines are very long, it may be advantageous to repeat the label in multiple places.  However, two many repeats can clutter up your map.  This example repets the label every one hundred (100) pixels.
+If the lines are very long, it may be advantageous to repeat the label in multiple places.  However, two many repeats can clutter up your map.  This example repeats the label every one hundred (100) pixels.
 
 .. warning:: Add code
 

@@ -7,7 +7,19 @@ The SLD Cook Book is a collection of SLD "recipes" for creating various types of
 
 These examples use four data sets created especially for each section.
 
-.. warning:: Add link to download shapefiles.
+.. list-table::
+   :widths: 20 80
+
+   * - **Data Type**
+     - **Shapefile**
+   * - Point
+     - :download:`sld_cookbook_point.zip <artifacts/sld_cookbook_point.zip>`
+   * - Line
+     - :download:`sld_cookbook_line.zip <artifacts/sld_cookbook_line.zip>`
+   * - Polygon
+     - :download:`sld_cookbook_polygon.zip <artifacts/sld_cookbook_polygon.zip>`
+   * - Raster
+     - *(Coming soon)*
 
 .. toctree::
    :maxdepth: 2
