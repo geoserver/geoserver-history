@@ -37,19 +37,12 @@ Create a new module
          <dependency>
            <groupId>org.geoserver</groupId>
            <artifactId>rest</artifactId>
-           <version>1.7.3-SNAPSHOT</version>
-         </dependency>
-         <dependency>
-           <groupId>org.geoserver</groupId>
-           <artifactId>data</artifactId>
-           <version>1.7.3-SNAPSHOT</version>
-           <classifier>tests</classifier>
-           <scope>test</scope>
+           <version>2.0-SNAPSHOT</version>
          </dependency>
          <dependency>
            <groupId>org.geoserver</groupId>
            <artifactId>main</artifactId>
-           <version>1.7.3-SNAPSHOT</version>
+           <version>2.0-SNAPSHOT</version>
            <classifier>tests</classifier>
            <scope>test</scope>
          </dependency>
