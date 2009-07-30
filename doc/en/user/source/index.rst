@@ -1,5 +1,5 @@
-GeoServer User Manual
-=====================
+Home
+====
 
 GeoServer is an open source software server written in Java that allows users to share and edit geospatial data. Designed for interoperability, it publishes data from any major spatial data source using open standards.
 
@@ -23,5 +23,6 @@ This **User Manual** is a comprehensive guide to all aspects of using GeoServer.
    googleearth/index
    extensions/index
    tutorials/index
+
 
 
