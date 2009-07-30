@@ -94,7 +94,7 @@ Eclipse
 -------
 
 The maven eclipse plugin is used to generate eclipse projects for a set of 
-modules:
+modules::
 
   mvn eclipse:eclipse
 
