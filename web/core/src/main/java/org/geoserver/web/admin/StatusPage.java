@@ -1,5 +1,6 @@
 package org.geoserver.web.admin;
 
+import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.media.jai.JAI;
+import javax.media.jai.operator.ClampDescriptor;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -16,6 +18,8 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.LockingManager;
 
+import com.sun.media.imageioimpl.common.PackageUtil;
+import com.sun.media.jai.mlib.MediaLibAccessor;
 import com.sun.media.jai.util.SunTileCache;
 
 public class StatusPage extends ServerAdminPage {
@@ -34,6 +38,8 @@ public class StatusPage extends ServerAdminPage {
     private static final String KEY_JVM_VERSION = "jvm_version";
 
     private static final String KEY_JAI_AVAILABLE = "jai_available";
+    private static final String KEY_JAI_IMAGEIO_AVAILABLE = "jai_imageio_available";
+    
 
     private static final String KEY_JAI_MAX_MEM = "jai_max_mem";
 
@@ -56,6 +62,7 @@ public class StatusPage extends ServerAdminPage {
         add(new Label("memory", new MapModel(values, KEY_MEMORY)));
         add(new Label("jvm.version", new MapModel(values, KEY_JVM_VERSION)));
         add(new Label("jai.available", new MapModel(values, KEY_JAI_AVAILABLE)));
+        add(new Label("jai.imageio.available", new MapModel(values, KEY_JAI_IMAGEIO_AVAILABLE)));
         add(new Label("jai.memory.available", new MapModel(values, KEY_JAI_MAX_MEM)));
         add(new Label("jai.memory.used", new MapModel(values, KEY_JAI_MEM_USAGE)));
         add(new Label("jai.memory.threshold", new MapModel(values, KEY_JAI_MEM_THRESHOLD)));
@@ -105,8 +112,9 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_MEMORY, formatUsedMemory());
         values.put(KEY_JVM_VERSION, System.getProperty("java.vendor") + ": "
                 + System.getProperty("java.version"));
-        values.put(KEY_JAI_AVAILABLE, Boolean.toString(ClassLoader.getSystemClassLoader()
-                .getResource("javax/media/jai/buildVersion") != null));
+        
+        values.put(KEY_JAI_AVAILABLE, Boolean.toString(isNativeJAIAvailable()));
+        values.put(KEY_JAI_IMAGEIO_AVAILABLE, Boolean.toString(PackageUtil.isCodecLibAvailable()));
 
         JAI jai =  getGeoServer().getGlobal().getJAI().getJAI();
         SunTileCache jaiCache = getGeoServer().getGlobal().getJAI().getTileCache();
@@ -119,6 +127,17 @@ public class StatusPage extends ServerAdminPage {
                 .getPriority()));
     }
 
+    boolean isNativeJAIAvailable() {
+        // we directly access the Mlib Image class, if in the classpath it will tell us if
+        // the native extensions are available, if not, an Error will be thrown
+        boolean available = true;
+        try {
+            return com.sun.medialib.mlib.Image.isAvailable();
+        } catch(Throwable e) {
+            return false;
+        }
+    }
+    
     /**
      * @return a human friendly string for the VM used memory
      */
