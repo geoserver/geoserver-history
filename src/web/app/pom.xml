@@ -398,6 +398,26 @@
       </dependencies>
     </profile>
     <profile>
+      <id>upload</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>upload</artifactId>
+          <version>${project.version}</version> 
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>scriptlet</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>scriptlet</artifactId>
+          <version>${project.version}</version> 
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>dxf</id>
       <dependencies>
         <dependency>

@@ -95,5 +95,11 @@
         <module>dxf</module>
       </modules>
     </profile>
+    <profile>
+      <id>scriptlet</id>
+      <modules>
+        <module>scriptlet</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
