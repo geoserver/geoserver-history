@@ -3,6 +3,8 @@
 Styling
 =======
 
+This section discusses the styling of geospatial data served through GeoServer.
+
 .. toctree::
    :maxdepth: 2
 

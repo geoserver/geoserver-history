@@ -1,8 +1,8 @@
-GeoServer Developer Manual
-==========================
+Home
+====
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    introduction.rst
    tools.rst
