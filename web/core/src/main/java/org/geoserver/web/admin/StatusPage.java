@@ -1,6 +1,5 @@
 package org.geoserver.web.admin;
 
-import java.awt.image.BufferedImage;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.media.jai.JAI;
-import javax.media.jai.operator.ClampDescriptor;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -19,7 +17,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.LockingManager;
 
 import com.sun.media.imageioimpl.common.PackageUtil;
-import com.sun.media.jai.mlib.MediaLibAccessor;
 import com.sun.media.jai.util.SunTileCache;
 
 public class StatusPage extends ServerAdminPage {
@@ -130,9 +127,9 @@ public class StatusPage extends ServerAdminPage {
     boolean isNativeJAIAvailable() {
         // we directly access the Mlib Image class, if in the classpath it will tell us if
         // the native extensions are available, if not, an Error will be thrown
-        boolean available = true;
         try {
-            return com.sun.medialib.mlib.Image.isAvailable();
+            Class image = Class.forName("com.sun.medialib.mlib.Image");
+            return (Boolean) image.getMethod("isAvailable").invoke(null);
         } catch(Throwable e) {
             return false;
         }
