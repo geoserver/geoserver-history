@@ -519,7 +519,9 @@ public class LegacyCatalogImporter {
                             schemaFile = new File( oldSchemaFile.getParentFile(), "schema.xsd");
                             BufferedWriter out = 
                                 new BufferedWriter(new OutputStreamWriter( new FileOutputStream( schemaFile ) ) );
-                            out.write( "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>");
+                            out.write( "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'");
+                            out.write( " xmlns:gml='http://www.opengis.net/gml'");
+                            out.write(">");
                             IOUtils.copy( new FileInputStream( oldSchemaFile ), out );
                             out.write( "</xs:schema>" );
                             out.flush();
