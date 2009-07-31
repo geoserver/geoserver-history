@@ -1,12 +1,6 @@
 package org.geoserver.wms.web.data;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-
-import java.io.ByteArrayInputStream;
 import java.io.FileReader;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.markup.html.form.TextField;
@@ -14,7 +8,6 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.web.GeoServerWicketTestSupport;
-import org.w3c.dom.Document;
 
 public class StyleNewPageTest extends GeoServerWicketTestSupport {
     
