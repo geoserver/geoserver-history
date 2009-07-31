@@ -4,24 +4,35 @@
  */
 package org.geoserver.wms.web;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.apache.wicket.validation.validator.NumberValidator;
 import org.geoserver.web.services.BaseServiceAdminPage;
 import org.geoserver.web.util.MapModel;
+import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
+import org.geotools.referencing.CRS;
 
 /**
  * Edits the WMS service details 
@@ -36,6 +47,18 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     }
     
     protected void build(IModel info, Form form) {
+        // limited srs list
+        TextArea srsList = new TextArea("srs", LiveCollectionModel.list(new PropertyModel(info, "sRS"))) {
+            @Override
+            public IConverter getConverter(Class type) {
+                return new SRSListConverter();
+            }
+                
+        };
+        srsList.add(new SRSListValidator());
+        srsList.setType(List.class);
+        form.add(srsList);
+
         // general
     	form.add(new DropDownChoice("interpolation", Arrays.asList(WMSInfo.WMSInterpolation.values()), new InterpolationRenderer()));
     	// resource limits
@@ -97,6 +120,49 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
 
         public String getIdValue(Object object, int index) {
             return (String) object;
+        }
+        
+    }
+    
+    private static class SRSListConverter implements IConverter {
+//            static final Pattern COMMA_SEPARATED = ; 
+            
+            public String convertToString(Object value, Locale locale) {
+                List<String> srsList = (List<String>) value;
+                if(srsList.isEmpty())
+                    return "";
+                    
+                StringBuffer sb = new StringBuffer();
+                for (String srs : srsList) {
+                    sb.append(srs).append(", ");
+                }
+                sb.setLength(sb.length() - 2);
+                return sb.toString();
+            }
+            
+            public Object convertToObject(String value, Locale locale) {
+                Pattern COMMA_SEPARATED = Pattern.compile("\\s*,\\s*", Pattern.MULTILINE);
+                return new ArrayList<String>(Arrays.asList(COMMA_SEPARATED.split(value)));
+            }
+    }
+    
+    private static class SRSListValidator extends AbstractValidator {
+
+        @Override
+        protected void onValidate(IValidatable validatable) {
+            List<String> srsList = (List<String>) validatable.getValue();
+            List<String> invalid = new ArrayList<String>();
+            for (String srs : srsList) {
+                try {
+                    CRS.decode("EPSG:" + srs);
+                } catch(Exception e) {
+                    invalid.add(srs);
+                }
+            }
+            
+            if(invalid.size() > 0)
+                error(validatable, "WMSAdminPage.unknownEPSGCodes", Collections.singletonMap("codes", invalid.toString()));
+            
         }
         
     }
