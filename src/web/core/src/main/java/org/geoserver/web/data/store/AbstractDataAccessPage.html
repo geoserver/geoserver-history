@@ -13,18 +13,18 @@
       <li>
         <fieldset>
           <legend><span><wicket:message key="basicStoreInfo">Basic Store Info</wicket:message></span></legend> 
-          <div><span wicket:id="workspacePanel"></span></div>
-        	<div><span wicket:id="dataStoreNamePanel"></span></div>
-        	<div><span wicket:id="dataStoreDescriptionPanel"></span></div>
-        	<div><span wicket:id="dataStoreEnabledPanel"></span></div>
+          <div wicket:id="workspacePanel"></div>
+        	<div wicket:id="dataStoreNamePanel"></div>
+        	<div wicket:id="dataStoreDescriptionPanel"></div>
+        	<div wicket:id="dataStoreEnabledPanel"></div>
 	      </fieldset>
       </li>
       <li>
         <fieldset>
           <legend><span><wicket:message key="connectionParameters">Connection Parameters</wicket:message></span></legend> 
-      	<div wicket:id="parameters">
-  		  <span wicket:id="parameterPanel">x</span>
-  		</div>
+      	<ul wicket:id="parameters">
+  		  <li wicket:id="parameterPanel">x</li>
+  		</ul>
 	  </fieldset>
       </li>
     </ul>
