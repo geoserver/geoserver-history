@@ -74,8 +74,21 @@ public class CoverageStoreNewPageTest extends GeoServerWicketTestSupport {
         tester.assertModelValue("rasterStoreForm:enabledPanel:paramValue", Boolean.TRUE);
         tester.assertModelValue("rasterStoreForm:workspacePanel:border:paramValue", getCatalog()
                 .getDefaultWorkspace());
-        tester.assertModelValue("rasterStoreForm:urlPanel:border:paramValue",
+        tester.assertModelValue("rasterStoreForm:parametersPanel:urlPanel:border:paramValue",
                 "file:data/example.extension");
     }
 
+    public void testMultipleResources() {
+
+        CoverageStoreNewPage page = startPage();
+
+        assertNull(page.getModelObject());
+
+        tester.assertModelValue("rasterStoreForm:enabledPanel:paramValue", Boolean.TRUE);
+        tester.assertModelValue("rasterStoreForm:workspacePanel:border:paramValue", getCatalog()
+                .getDefaultWorkspace());
+        tester.assertModelValue("rasterStoreForm:parametersPanel:urlPanel:border:paramValue",
+                "file:data/example.extension");
+
+    }
 }
