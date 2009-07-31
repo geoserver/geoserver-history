@@ -1,12 +1,15 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-<h2><wicket:message key="workspace">Workspace</wicket:message> <span wicket:id="name"></span></h2>
 <form wicket:id="form">
   <ul>
     <li>
+      <label for="name"><wicket:message key="name">Name</wicket:message></label>
+      <input wicket:id="name" id="name" type="text" size="10"/>
+    </li>
+    <li>
       <label for="uri"><wicket:message key="namespaceURI">Namespace URI</wicket:message></label>
-      <input wicket:id="uri" type="text" size="60"/>
+      <input wicket:id="uri" id="uri" type="text" size="60"/>
       <p class="instruct"><wicket:message key="namespaceUriAssocWithWorkspace">The namespace uri associated with this workspace</wicket:message></p>
     </li>
     <!-- Commented out waiting for a consistent work to be done on the other edit pages    

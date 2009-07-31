@@ -1,16 +1,15 @@
 <html xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
-<h2><wicket:message key="newWorkspace">New Workspace</wicket:message></h2>
 <form wicket:id="form">
   <ul>
     <li>
       <label for="name">Name</label>
-      <input wicket:id="name" type="text" size="20"/>
+      <input wicket:id="name" id="name" type="text" size="20"/>
     </li>
     <li>
-      <label for="uRI"><wicket:message key="namespaceURI">Namespace URI</wicket:message></label>
-      <input wicket:id="uri" type="text" size="60"/>
+      <label for="uri"><wicket:message key="namespaceURI">Namespace URI</wicket:message></label>
+      <input wicket:id="uri" id="uri" type="text" size="60"/>
       <p class="instruct"><wicket:message key="namespaceUriAssocWithWorkspace">The namespace uri associated with this workspace</wicket:message></p>
     </li>
     <li class="button-group selfclear">
