@@ -1,0 +1,35 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+<wicket:panel>
+	<fieldset>
+	  <legend><span><wicket:message key="connectionParameters">Connection Parameters</wicket:message></span></legend>
+	  <div><span wicket:id="server"></span></div>
+	  <div><span wicket:id="port"></span></div>
+	  <div><span wicket:id="instance"></span></div>
+	  <div><span wicket:id="user"></span></div>
+	  <div><span wicket:id="password"></span></div>
+    <div>
+      <li>
+        <span>
+          <label for="rasterTable"><span wicket:id="rasterTaleLabel">bar</span></label>
+          <table>
+            <tr>
+             <td>
+              <span wicket:id="border">
+                <select wicket:id="rasterTable" id="rasterTable" class="text" style="width: 100%"/>
+              </span>
+              </td>
+			       <td>
+			         <div class="button-group selfclear">
+			           <a href="#" wicket:id="refresh"><wicket:message key="refresh">Refresh</wicket:message></a>
+			         </div>
+			       </td>
+			      </tr>
+			    </table>
+			   </span>
+      </li>
+    </div>
+	</fieldset>
+</wicket:panel>
+</body>
+</html>
