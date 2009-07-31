@@ -53,7 +53,7 @@ public abstract class LiveCollectionModel implements IModel {
     }
     
     /**
-     * Returns a model for live lists
+     * Returns a model for live sets
      */
     public static LiveCollectionModel set(IModel wrapped) {
         return new LiveCollectionModel(wrapped) {
