@@ -269,7 +269,12 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             // make sure the proper value is returned, but don't set it for strings otherwise
             // we incur in a wicket bug (the empty string is not converter back to a null)
             // GR: it doesn't work for File neither.
-            if (binding != null && !String.class.equals(binding) && !File.class.equals(binding)){
+            // AA: better not mess with files, the converters turn data dir relative to 
+            // absolute and bye bye data dir portability
+            if (binding != null 
+                    && !String.class.equals(binding) 
+                    && !File.class.equals(binding) 
+                    && !URL.class.equals(binding)) {
                 tp.getFormComponent().setType(binding);
             }
             parameterPanel = tp;
