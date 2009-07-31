@@ -262,5 +262,13 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
    public String getAjaxIndicatorMarkupId() {
        return "ajaxFeedback";
    }
+   
+   /**
+    * Returns the feedback panel included in the GeoServer base page
+    * @return
+    */
+   public FeedbackPanel getFeedbackPanel() {
+       return feedbackPanel;
+   }
 
 }
