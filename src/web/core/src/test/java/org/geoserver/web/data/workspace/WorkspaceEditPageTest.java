@@ -19,7 +19,7 @@ public class WorkspaceEditPageTest extends GeoServerWicketTestSupport {
         tester.assertRenderedPage(WorkspaceEditPage.class);
         tester.assertNoErrorMessage();
         
-        tester.assertLabel("name", MockData.CITE_PREFIX);
+        tester.assertModelValue("form:name", MockData.CITE_PREFIX);
         tester.assertModelValue("form:uri", MockData.CITE_URI);
     }
     

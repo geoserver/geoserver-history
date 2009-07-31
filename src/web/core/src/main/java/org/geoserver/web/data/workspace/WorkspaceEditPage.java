@@ -31,7 +31,6 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
     public WorkspaceEditPage( WorkspaceInfo ws ) {
         
         wsModel = new WorkspaceDetachableModel( ws );
-        add( new Label("name", new PropertyModel( wsModel , "name" ) ) );
 
         NamespaceInfo ns = getCatalog().getNamespaceByPrefix( ws.getName() );
         nsModel = new NamespaceDetachableModel(ns);
@@ -45,6 +44,9 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
             }
         };
         add(form);
+        TextField name = new TextField("name", new PropertyModel(ws, "name"));
+        name.setEnabled(false);
+        form.add(name);
         TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"));
         uri.add(new UrlValidator());
         form.add(uri);
