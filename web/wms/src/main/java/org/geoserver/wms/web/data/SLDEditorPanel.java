@@ -49,6 +49,7 @@ public class SLDEditorPanel extends FormComponentPanel {
     
     void initComponents() {
         add( editor = new TextArea("editor", new PropertyModel(this, "rawSLD")) );
+        editor.setMarkupId("editor");
         editor.add(new EditAreaBehavior());
         add(new GeoServerAjaxFormLink("validate") {
             

@@ -34,10 +34,10 @@ public class StyleEditPageTest extends GeoServerWicketTestSupport {
         tester.assertRenderedPage(StyleEditPage.class);
         tester.assertNoErrorMessage();
         
-        tester.assertComponent("theForm:name", TextField.class);
-        tester.assertComponent("theForm:sld", SLDEditorPanel.class);
+        tester.assertComponent("form:name", TextField.class);
+        tester.assertComponent("form:sld", SLDEditorPanel.class);
         
-        tester.assertModelValue("theForm:name", "Buildings");
+        tester.assertModelValue("form:name", "Buildings");
 
         File styleFile = GeoserverDataDirectory.findStyleFile( buildingsStyle.getFilename() );
         DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -45,7 +45,7 @@ public class StyleEditPageTest extends GeoServerWicketTestSupport {
 
         //GEOS-3257, actually drag into xml and compare with xmlunit to avoid 
         // line ending problems
-        String xml = tester.getComponentFromLastRenderedPage("theForm:sld:editor").getModelObjectAsString();
+        String xml = tester.getComponentFromLastRenderedPage("form:sld:editor").getModelObjectAsString();
         xml = xml.replaceAll("&lt;","<").replaceAll("&gt;",">").replaceAll("&quot;", "\"");
         Document d2 = db.parse( new ByteArrayInputStream(xml
             .getBytes()));
@@ -54,7 +54,7 @@ public class StyleEditPageTest extends GeoServerWicketTestSupport {
     }
     
     public void testMissingName() throws Exception {
-        FormTester form = tester.newFormTester("theForm");
+        FormTester form = tester.newFormTester("form");
         form.setValue("name", "");
         form.submit();
         
@@ -63,7 +63,7 @@ public class StyleEditPageTest extends GeoServerWicketTestSupport {
     }
     
     public void testChangeName() throws Exception {
-        FormTester form = tester.newFormTester("theForm");
+        FormTester form = tester.newFormTester("form");
         form.setValue("name", "BuildingsNew");
         form.submit("submit");
         
