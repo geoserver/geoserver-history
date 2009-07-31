@@ -37,7 +37,7 @@ public class StyleNewPage extends AbstractStylePage {
         // write out the SLD
         try {
             catalog.getResourcePool().writeStyle(s,
-                    new ByteArrayInputStream(sldEditorPanel.getRawSLD().getBytes()));
+                    new ByteArrayInputStream(rawSLD.getBytes()));
         } catch (IOException e) {
             throw new WicketRuntimeException(e);
         }

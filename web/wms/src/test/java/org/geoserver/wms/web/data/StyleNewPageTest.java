@@ -3,6 +3,7 @@ package org.geoserver.wms.web.data;
 import java.io.FileReader;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.util.file.File;
@@ -23,7 +24,7 @@ public class StyleNewPageTest extends GeoServerWicketTestSupport {
         tester.assertNoErrorMessage();
         
         tester.assertComponent("form:name", TextField.class);
-        tester.assertComponent("form:sld", SLDEditorPanel.class);
+        tester.assertComponent("form:editor", TextArea.class);
         tester.assertComponent("uploadForm:filename", FileUploadField.class);
         
         tester.assertModelValue("form:name", null);
@@ -38,7 +39,7 @@ public class StyleNewPageTest extends GeoServerWicketTestSupport {
         upload.submit();
         
         tester.assertRenderedPage(StyleNewPage.class);
-        tester.assertModelValue("form:sld:editor", sld);
+        tester.assertModelValue("form:editor", sld);
     }
     
     public void testMissingName() throws Exception {
