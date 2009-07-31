@@ -153,7 +153,7 @@ public class StyleNewPage extends GeoServerSecuredPage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form form) {
                 // we need to force validation or the value won't be converted
-                styles.validate();
+                styles.processInput();
                 StyleInfo style = (StyleInfo) styles.getConvertedInput();
     
                 if(style != null) {
