@@ -15,7 +15,7 @@ import org.geoserver.web.data.store.panel.WorkspacePanel;
 import org.geotools.data.property.PropertyDataStoreFactory;
 
 /**
- * Test suite for {@link DataStoreConfiguration}
+ * Test suite for {@link DataAccessNewPage}
  * 
  * @author Gabriel Roldan
  */
@@ -89,7 +89,8 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
 
     public void testDefaultNamespace() {
 
-        //final String namespacePath = "dataStoreForm:parameters:1:parameterPanel:border:paramValue";
+        // final String namespacePath =
+        // "dataStoreForm:parameters:1:parameterPanel:border:paramValue";
         final String namespacePath = "dataStoreForm:parameters:1:parameterPanel:paramValue";
 
         startPage();

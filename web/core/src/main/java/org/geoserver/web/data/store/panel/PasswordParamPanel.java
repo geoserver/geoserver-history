@@ -19,12 +19,13 @@ public class PasswordParamPanel extends Panel {
 
     private static final long serialVersionUID = -7801141820174575611L;
 
+    private final PasswordTextField passwordField;
+
     public PasswordParamPanel(final String id, final IModel model, final IModel paramLabelModel,
             final boolean required) {
         super(id, model);
         add(new Label("paramName", paramLabelModel));
 
-        PasswordTextField passwordField;
         passwordField = new PasswordTextField("paramValue", model);
         passwordField.setRequired(required);
         // set the label to be the paramLabelModel otherwise a validation error would look like
@@ -40,6 +41,10 @@ public class PasswordParamPanel extends Panel {
         requiredFieldFeedback.add(passwordField);
 
         add(requiredFieldFeedback);
+    }
+
+    public PasswordTextField getFormComponent() {
+        return passwordField;
     }
 
 }

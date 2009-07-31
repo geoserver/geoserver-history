@@ -15,6 +15,8 @@ import org.geoserver.web.wicket.GeoServerDialog;
 /**
  * Page listing all the available stores. Follows the usual filter/sort/page approach, provides ways
  * to bulk delete stores and to add new ones
+ * 
+ * @see StorePanel
  */
 @SuppressWarnings("serial")
 public class StorePage extends GeoServerSecuredPage {

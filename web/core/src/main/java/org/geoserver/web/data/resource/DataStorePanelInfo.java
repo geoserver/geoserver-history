@@ -6,21 +6,20 @@ package org.geoserver.web.data.resource;
 
 import org.apache.wicket.Component;
 import org.geoserver.web.ComponentInfo;
+import org.geoserver.web.data.store.StoreEditPanel;
+import org.geotools.data.DataAccessFactory;
+import org.opengis.coverage.grid.Format;
 
 /**
- * Used to declare a data store panel information and its icon. Both are
- * optional, you can specify the configuration panel but not the icon, or the
- * opposite.
+ * Used to declare a data store panel information and its icon. Both are optional, you can specify
+ * the configuration panel but not the icon, or the opposite.
  * 
  * @author aaime
  * 
  */
-/*
- * TODO: specify the type of component that will fit in here
- */
 @SuppressWarnings("serial")
-public class DataStorePanelInfo extends ComponentInfo<Component> {
-    Class<Component> factoryClass;
+public class DataStorePanelInfo extends ComponentInfo<StoreEditPanel> {
+    Class<?> factoryClass;
 
     String icon;
 
@@ -39,8 +38,8 @@ public class DataStorePanelInfo extends ComponentInfo<Component> {
     }
 
     /**
-     * Used as the reference class to locate the datastore icon (since the
-     * component might not be there)
+     * Used as the reference class to locate the datastore icon (since the component might not be
+     * there)
      * 
      * @param iconBase
      */
@@ -48,12 +47,16 @@ public class DataStorePanelInfo extends ComponentInfo<Component> {
         this.iconBase = iconBase;
     }
 
-    public Class<Component> getFactoryClass() {
+    public Class<?> getFactoryClass() {
         return factoryClass;
     }
 
-    public void setFactoryClass(Class<Component> factoryClassName) {
+    /**
+     * 
+     * @param factoryClassName
+     *            either a {@link DataAccessFactory} or {@link Format} subclass
+     */
+    public void setFactoryClass(Class<?> factoryClassName) {
         this.factoryClass = factoryClassName;
     }
-
 }

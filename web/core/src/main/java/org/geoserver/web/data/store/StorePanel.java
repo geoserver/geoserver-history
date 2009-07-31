@@ -39,6 +39,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * @author Gabriel Roldan
  * @version $Id$
  * @see StorePage
+ * @see StoreProvider
  */
 public class StorePanel extends GeoServerTablePanel<StoreInfo> {
 

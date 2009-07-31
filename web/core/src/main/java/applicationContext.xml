@@ -206,18 +206,19 @@
    Data store panels. Used to set up custom icons for the different vector or raster store types
    -->
   <bean id="defaultDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
-    <!-- panel info used for a default vector store icon  -->
+    <!-- panel info used for a default vector store icon. This is mandatory as per StoreExtensionPoints requirements  -->
     <property name="id" value="defaultVector"/>
     <property name="factoryClass" value=""/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
   </bean>
   <bean id="defaultCoverageStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
-    <!-- panel info used for a default raster store icon  -->
+    <!-- panel info used for a default raster store icon. This is mandatory as per StoreExtensionPoints requirements  -->
     <property name="id" value="defaultRaster"/>
     <property name="factoryClass" value=""/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/page_white_raster.png"/>
+    <property name="componentClass" value="org.geoserver.web.data.store.DefaultCoverageStoreEditPanel"/>
   </bean>
 
   <bean id="postgisDataStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">

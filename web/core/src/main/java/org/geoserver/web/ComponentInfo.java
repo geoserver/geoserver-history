@@ -4,6 +4,7 @@
  */
 package org.geoserver.web;
 
+
 import java.io.Serializable;
 
 import org.apache.wicket.Component;
@@ -12,7 +13,7 @@ import org.apache.wicket.Component;
  * Information about a component being plugged into a user interface.
  * <p>
  * Subclasses of this class are used to implement user interface "extension points".
- * For an example see {@link MainPageInfo}.
+ * For an example see {@link MenuPageInfo}.
  * </p>
  * 
  * @author Andrea Aime, The Open Planning Project

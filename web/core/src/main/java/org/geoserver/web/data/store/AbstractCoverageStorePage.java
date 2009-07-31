@@ -15,17 +15,18 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
-import org.geoserver.web.wicket.FileExistsValidator;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 
 /**
  * Supports coverage store configuration
  * 
  * @author Andrea Aime
+ * @see StoreEditPanel
  */
 @SuppressWarnings("serial")
 abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
@@ -71,11 +72,18 @@ abstract class AbstractCoverageStorePage extends GeoServerSecuredPage {
                 true);
         paramsForm.add(workspacePanel);
 
-        // url
-        TextParamPanel url = new TextParamPanel("urlPanel", new PropertyModel(model, "URL"),
-                new ResourceModel("url", "URL"), true);
-        url.getFormComponent().add(new FileExistsValidator());
-        paramsForm.add(url);
+        final StoreEditPanel storeEditPanel;
+        {
+            /*
+             * Here's where the extension point is applied in order to give extensions a chance to
+             * provide custom behavior/components for the coverage form other than the default
+             * single "url" input field
+             */
+            GeoServerApplication app = getGeoServerApplication();
+            storeEditPanel = StoreExtensionPoints.getStoreEditPanel("parametersPanel", paramsForm,
+                    store, app);
+        }
+        paramsForm.add(storeEditPanel);
 
         // cancel/submit buttons
         paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
