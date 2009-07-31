@@ -13,13 +13,16 @@ import java.io.Reader;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.IAjaxCallDecorator;
+import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
-import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.wicket.EditAreaBehavior;
+import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geotools.sld.SLDConfiguration;
 import org.geotools.xml.Parser;
 
@@ -47,23 +50,32 @@ public class SLDEditorPanel extends FormComponentPanel {
     void initComponents() {
         add( editor = new TextArea("editor", new PropertyModel(this, "rawSLD")) );
         editor.add(new EditAreaBehavior());
-        add(new SubmitLink("validate") {
+        add(new GeoServerAjaxFormLink("validate") {
+            
             @Override
-            public void onSubmit() {
-                Form form = getForm();
+            protected void onClick(AjaxRequestTarget target, Form form) {
+                editor.validate();
+                List<Exception> errors = validateSLD();
                 
-                if ( form != null ) {
-                    List<Exception> errors = validateSLD();
-                    
-                    if ( errors.isEmpty() ) {
-                        form.info( "No validation errors.");
+                if ( errors.isEmpty() ) {
+                    form.info( "No validation errors.");
+                } else {
+                    for( Exception e : errors ) {
+                        form.error( e );
+                    }    
+                }        
+            }
+            
+            @Override
+            protected IAjaxCallDecorator getAjaxCallDecorator() {
+                // we need to force EditArea to update the textarea contents (which it hid)
+                // before submitting the form, otherwise the validation will go bye bye
+                return new AjaxCallDecorator() {
+                    @Override
+                    public CharSequence decorateScript(CharSequence script) {
+                        return "editAreaLoader.submit(arguments[0]);" + script;
                     }
-                    else {
-                        for( Exception e : errors ) {
-                            form.error( e );
-                        }    
-                    }        
-                }
+                };
             }
         });
     }
