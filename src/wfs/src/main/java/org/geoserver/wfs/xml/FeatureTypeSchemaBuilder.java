@@ -276,6 +276,9 @@ public abstract class FeatureTypeSchemaBuilder {
                 //look up the complex type
                 List contents = ftSchema.getContents();
 
+                //ensure that an element for the feature is present
+                boolean hasElement = false;
+                
                 for (Iterator i = contents.iterator(); i.hasNext();) {
                     XSDSchemaContent content = (XSDSchemaContent) i.next();
                     content.setElement(null);
@@ -287,6 +290,54 @@ public abstract class FeatureTypeSchemaBuilder {
                             i.remove();
                         }
                     }
+                    
+                    // check for element
+                    if ( !hasElement && content instanceof XSDElementDeclaration ) {
+                        XSDElementDeclaration element = (XSDElementDeclaration) content;
+                        if ( name.equals( element.getName() ) && 
+                            (featureTypeMeta.getNameSpace().getURI().equals( element.getTargetNamespace() ) 
+                            || element.getTargetNamespace() == null ) ) {
+                            hasElement = true;
+                        }
+                    }
+                }
+                
+                if ( !hasElement ) {
+                    //need to create an element declaration in the schema
+                    XSDElementDeclaration element = factory.createXSDElementDeclaration();
+                    element.setName( featureTypeMeta.getName() );
+                    element.setTargetNamespace( featureTypeMeta.getNameSpace().getURI() );
+                    element.setSubstitutionGroupAffiliation(
+                        schema.resolveElementDeclaration(gmlNamespace, substitutionGroup));
+                    
+                    //find the type of the element
+                    List<XSDComplexTypeDefinition> candidates = new ArrayList<XSDComplexTypeDefinition>();
+                    for ( Iterator t = ftSchema.getTypeDefinitions().iterator(); t.hasNext(); ) {
+                        XSDTypeDefinition type = (XSDTypeDefinition) t.next();
+                        if ( type instanceof XSDComplexTypeDefinition ) {
+                            XSDTypeDefinition base = type.getBaseType();
+                            while(base != null ) {
+                                if ( baseType.equals(base.getName())
+                                    && gmlNamespace.equals( base.getTargetNamespace() ) ) {
+                                    
+                                    candidates.add( (XSDComplexTypeDefinition) type );
+                                    break;
+                                }   
+                                if ( base.equals( base.getBaseType() ) ) {
+                                    break;
+                                }
+                                base = base.getBaseType();
+                            }
+                        }
+                    }
+                    
+                    if ( candidates.size() != 1 ) {
+                        throw new IllegalStateException("Could not determine feature type for " +
+                        "generated element. Must specify explicitly in schema.xsd.");
+                    }
+                    
+                    element.setTypeDefinition( candidates.get(0));
+                    schema.getContents().add(element);
                 }
 
                 schema.getContents().addAll(contents);
