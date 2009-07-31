@@ -16,6 +16,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.geoserver.web</groupId>
+      <artifactId>web-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-arcsde-common</artifactId>
     </dependency>
