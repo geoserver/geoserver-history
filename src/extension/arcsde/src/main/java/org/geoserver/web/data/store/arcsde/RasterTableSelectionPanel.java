@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.store.arcsde;
 
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.CONNECTION_TIMEOUT_PARAM_NAME;
@@ -39,6 +43,13 @@ import com.esri.sde.sdk.client.SeConnection;
 import com.esri.sde.sdk.client.SeException;
 import com.esri.sde.sdk.client.SeRasterColumn;
 
+/**
+ * A panel for {@link ArcSDECoverageStoreEditPanel} that shows a drop down list where to choose the
+ * raster table to create the coverage store for, and a refresh button to populate the list of
+ * available raster tables based on the form's connection input fields.
+ * 
+ * @author Gabriel Roldan
+ */
 public class RasterTableSelectionPanel extends Panel {
 
     private static final long serialVersionUID = 343924350476584166L;
