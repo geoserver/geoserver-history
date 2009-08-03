@@ -1042,7 +1042,8 @@ public class CatalogBuilder {
             attach(layer);
         }
         for (StyleInfo style : groupInfo.getStyles()) {
-            attach(style);
+            if(style != null)
+                attach(style);
         }
     }
     

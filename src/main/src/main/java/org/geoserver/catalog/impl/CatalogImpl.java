@@ -813,7 +813,8 @@ public class CatalogImpl implements Catalog {
         
         if ( layerGroup.getStyles().isEmpty() ) {
             for ( LayerInfo l : layerGroup.getLayers() ) {
-                layerGroup.getStyles().add( l.getDefaultStyle() );
+                // default style
+                layerGroup.getStyles().add(null);
             }    
         }
         
@@ -1472,8 +1473,10 @@ public class CatalogImpl implements Catalog {
         
         for ( int i = 0; i < lg.getStyles().size(); i++ ) {
             StyleInfo s = lg.getStyles().get( i );
-            StyleInfo resolved = ResolvingProxy.resolve( this, s );
-            lg.getStyles().set( i, resolved );
+            if(s != null) {
+                StyleInfo resolved = ResolvingProxy.resolve( this, s );
+                lg.getStyles().set( i, resolved );
+            }
         }
         
     }

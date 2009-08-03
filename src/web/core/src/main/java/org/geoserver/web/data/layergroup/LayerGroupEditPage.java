@@ -74,8 +74,8 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
                 // build a layer group with the current contents of the group
                 LayerGroupInfo lg = getCatalog().getFactory().createLayerGroup();
                 for ( LayerGroupEntry entry : lgEntryPanel.getEntries() ) {
-                    lg.getLayers().add( entry.getLayer() );
-                    lg.getStyles().add( entry.getStyle() );
+                    lg.getLayers().add(entry.getLayer());
+                    lg.getStyles().add(entry.getStyle());
                 }
                 
                 try {
@@ -123,8 +123,8 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
                 lg.getStyles().clear();
                 
                 for ( LayerGroupEntry entry : lgEntryPanel.getEntries() ) {
-                    lg.getLayers().add( entry.getLayer() );
-                    lg.getStyles().add( entry.getStyle() );
+                    lg.getLayers().add(entry.getLayer());
+                    lg.getStyles().add(entry.getStyle());
                 }
                 
                 getCatalog().save( lg );

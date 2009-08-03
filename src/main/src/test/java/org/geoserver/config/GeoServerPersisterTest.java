@@ -354,6 +354,11 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         lg.setName("lg");
         lg.getLayers().add( catalog.getLayerByName( "foolayer") );
         lg.getStyles().add( catalog.getStyleByName( "foostyle") );
+        lg.getLayers().add( catalog.getLayerByName( "foolayer") );
+        lg.getStyles().add( /* default style */ null);
+        lg.getLayers().add( catalog.getLayerByName( "foolayer") );
+        lg.getStyles().add( catalog.getStyleByName( "foostyle"));
+
         catalog.add( lg );
         
         assertTrue( f.exists() );
