@@ -685,7 +685,8 @@ public class XStreamPersister {
                 elementName = cam.serializedClass( item.getClass() );
             }
             writer.startNode(elementName);
-            context.convertAnother( item, new ReferenceConverter( clazz ) );
+            if(item != null)
+                context.convertAnother( item, new ReferenceConverter( clazz ) );
             writer.endNode();
         }
         

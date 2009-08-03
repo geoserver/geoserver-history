@@ -20,15 +20,34 @@ public class LayerGroupEntry implements Serializable {
     String lid;
     
     public LayerGroupEntry( LayerInfo layer, StyleInfo style ) {
-        this.sid = style.getId();
-        this.lid = layer.getId();
+        setLayer(layer);
+        setStyle(style);
     }
     
     public StyleInfo getStyle() {
-        return GeoServerApplication.get().getCatalog().getStyle( sid );
+        if(sid == null)
+            return null;
+        else
+            return GeoServerApplication.get().getCatalog().getStyle( sid );
     }
+    
+    public boolean isDefaultStyle() {
+        return sid == null;
+    }
+    
+    public void setDefaultStyle(boolean defaultStyle) {
+        if(defaultStyle) {
+            setStyle(null);
+        } else {
+            setStyle(getLayer().getDefaultStyle());
+        }
+    }
+    
     public void setStyle( StyleInfo style ) {
-        sid = style.getId();
+        if(style == null)
+            sid = null;
+        else
+            sid = style.getId();
     }
     
     public LayerInfo getLayer() {
@@ -39,32 +58,4 @@ public class LayerGroupEntry implements Serializable {
         lid = layer.getId();
     }
     
-    /*
-    public LoadableDetachableModel toDetachableModel() {
-        return new LayerGroupEntryModel( this );
-    }
-    
-    
-    public static class LayerGroupEntryModel extends LoadableDetachableModel {
-
-        String lid;
-        String sid;
-        int index;
-        
-        public LayerGroupEntryModel( LayerGroupEntry entry ) {
-            lid = entry.layer.getId();
-            sid = entry.style.getId();
-            index = entry.index;
-        }
-        
-        @Override
-        protected Object load() {
-            Catalog catalog = GeoServerApplication.get().getCatalog();
-            LayerInfo l = catalog.getLayer( lid );
-            StyleInfo s = catalog.getStyle( sid );
-            return new LayerGroupEntry( l, s, index );
-        }
-        
-    }
-    */
 }

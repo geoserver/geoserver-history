@@ -113,7 +113,7 @@ public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
                 if ( styleNames.isEmpty() ) {
                     //use defaults
                     for ( LayerInfo l : bm.getLayers() ) {
-                        bm.getStyles().add( l.getDefaultStyle() );
+                        bm.getStyles().add(null);
                     }
                 }
                 else {
@@ -123,16 +123,10 @@ public class WMSLoader extends LegacyServiceLoader<WMSInfo> {
                         
                         StyleInfo style = null;
                         if ( "".equals( styleName ) ) {
-                            style = bm.getLayers().get(i).getDefaultStyle();
+                            style = null;
                         }
                         else {
                             style = catalog.getStyleByName( styleName );    
-                        }
-                        
-                        if ( style == null ) {
-                            LOGGER.warning( "Ignoring layer group '" + bm.getName() + 
-                                    "', style '" + styleName + "' does not exist.");
-                            continue O;
                         }
                         bm.getStyles().add( style );
                     }    

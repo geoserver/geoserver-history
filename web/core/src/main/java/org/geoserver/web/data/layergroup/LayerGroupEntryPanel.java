@@ -11,10 +11,15 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerGroupInfo;
@@ -61,6 +66,9 @@ public class LayerGroupEntryPanel extends Panel {
                     Property<LayerGroupEntry> property) {
                 if ( property == LayerGroupEntryProvider.LAYER ) {
                     return layerLink( id, itemModel );
+                }
+                if ( property == LayerGroupEntryProvider.DEFAULT_STYLE) {
+                    return defaultStyleCheckbox( id, itemModel );
                 }
                 if ( property == LayerGroupEntryProvider.STYLE ) {
                     return styleLink( id, itemModel );
@@ -110,9 +118,40 @@ public class LayerGroupEntryPanel extends Panel {
         return new Label( id, entry.getLayer().getName() );
     }
     
+    Component defaultStyleCheckbox(String id, IModel itemModel) {
+        final LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
+        Fragment f = new Fragment(id, "defaultStyle", this);
+        CheckBox ds = new CheckBox("checkbox", new Model(entry.isDefaultStyle()));
+        ds.add(new OnChangeAjaxBehavior() {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                Boolean useDefault = (Boolean) getComponent().getModelObject();
+                entry.setDefaultStyle(useDefault);
+                target.addComponent(layerTable);
+                
+            }
+        });
+        f.add(ds);
+        return f;
+    }
+    
     Component styleLink(String id, final IModel itemModel) {
+        // decide if the style is the default and the current style name
         LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
-        return new SimpleAjaxLink( id, new Model( entry.getStyle().getName() )) {
+        String styleName;
+        boolean defaultStyle = true;
+        if(entry.getStyle() != null) {
+            styleName = entry.getStyle().getName();
+            defaultStyle = false;
+        } else if(entry.getLayer().getDefaultStyle() != null) {
+            styleName = entry.getLayer().getDefaultStyle().getName();
+        } else {
+            styleName = null;
+        }
+            
+        // build and returns the link, but disable it if the style is the default
+        SimpleAjaxLink link = new SimpleAjaxLink( id, new Model(styleName)) {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -135,6 +174,8 @@ public class LayerGroupEntryPanel extends Panel {
             }
 
         };
+        link.getLink().setEnabled(!defaultStyle);
+        return link;
     }
     
     Component removeLink(String id, IModel itemModel) {
@@ -157,6 +198,9 @@ public class LayerGroupEntryPanel extends Panel {
 
         public static Property<LayerGroupEntry> LAYER = 
             new PropertyPlaceholder<LayerGroupEntry>( "layer" );
+        
+        public static Property<LayerGroupEntry> DEFAULT_STYLE = 
+            new PropertyPlaceholder<LayerGroupEntry>( "defaultStyle" );
 
         public static Property<LayerGroupEntry> STYLE = 
             new PropertyPlaceholder<LayerGroupEntry>( "style" );
@@ -167,7 +211,7 @@ public class LayerGroupEntryPanel extends Panel {
         public static Property<LayerGroupEntry> POSITION = 
             new PropertyPlaceholder<LayerGroupEntry>( "position" );
 
-        static List PROPERTIES = Arrays.asList( LAYER, STYLE, REMOVE, POSITION );
+        static List PROPERTIES = Arrays.asList( LAYER, DEFAULT_STYLE, STYLE, REMOVE, POSITION );
         
         List<LayerGroupEntry> items;
         
