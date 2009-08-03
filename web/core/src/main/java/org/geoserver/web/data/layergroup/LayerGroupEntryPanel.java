@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -19,7 +19,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerGroupInfo;
@@ -180,7 +179,7 @@ public class LayerGroupEntryPanel extends Panel {
     
     Component removeLink(String id, IModel itemModel) {
         final LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
-        return new ImageAjaxLink( id, new ResourceReference( getClass(), "../../img/icons/silk/delete.png") ) {
+        ImageAjaxLink link = new ImageAjaxLink( id, new ResourceReference( getClass(), "../../img/icons/silk/delete.png") ) {
             @Override
             protected void onClick(AjaxRequestTarget target) {
                 
@@ -188,6 +187,8 @@ public class LayerGroupEntryPanel extends Panel {
                 target.addComponent( layerTable );
             }
         };
+        link.getImage().add(new AttributeModifier("alt", true, new ParamResourceModel("LayerGroupEditPage.th.remove", link)));
+        return link;
     }
     
     Component positionPanel(String id, IModel itemModel) {
@@ -242,7 +243,7 @@ public class LayerGroupEntryPanel extends Panel {
             this.entry = entry;
             
             if ( items.indexOf( entry ) > 0 ) {
-                add( new ImageAjaxLink( "up", new ResourceReference( getClass(), "../../img/icons/silk/arrow_up.png") ) {
+                ImageAjaxLink upLink = new ImageAjaxLink( "up", new ResourceReference( getClass(), "../../img/icons/silk/arrow_up.png") ) {
                     @Override
                     protected void onClick(AjaxRequestTarget target) {
                         int index = items.indexOf( PositionPanel.this.entry );
@@ -250,18 +251,22 @@ public class LayerGroupEntryPanel extends Panel {
                         items.add( index-1, PositionPanel.this.entry );
                         target.addComponent( layerTable );
                     }
-                });
+                };
+                upLink.getImage().add(new AttributeModifier("alt", true, new ParamResourceModel("up", upLink)));
+                add( upLink);
             }
             else {
-                add( new ImageAjaxLink( "up", new ResourceReference( getClass(), "../../img/icons/blank.png") ) {
+                ImageAjaxLink blankLink = new ImageAjaxLink( "up", new ResourceReference( getClass(), "../../img/icons/blank.png") ) {
                     @Override
                     protected void onClick(AjaxRequestTarget target) {
                     }
-                });
+                };
+                blankLink.getImage().add(new AttributeModifier("alt", true, new Model("")));
+                add(blankLink);
             }
             
             if ( items.indexOf( entry ) < items.size() - 1 ) {
-                add( new ImageAjaxLink( "down", new ResourceReference( getClass(), "../../img/icons/silk/arrow_down.png") ) {
+                ImageAjaxLink downLink = new ImageAjaxLink( "down", new ResourceReference( getClass(), "../../img/icons/silk/arrow_down.png") ) {
                     @Override
                     protected void onClick(AjaxRequestTarget target) {
                         int index = items.indexOf( PositionPanel.this.entry );
@@ -269,15 +274,19 @@ public class LayerGroupEntryPanel extends Panel {
                         items.add( index+1, PositionPanel.this.entry );
                         target.addComponent( layerTable );
                     }
-                });
+                };
+                downLink.getImage().add(new AttributeModifier("alt", true, new ParamResourceModel("down", downLink)));
+                add( downLink);
             }
             else {
-                add( new ImageAjaxLink( "down", new ResourceReference( getClass(), "../../img/icons/blank.png") ) {
+                ImageAjaxLink blankLink = new ImageAjaxLink( "down", new ResourceReference( getClass(), "../../img/icons/blank.png") ) {
                     @Override
                     protected void onClick(AjaxRequestTarget target) {
                         
                     }
-                });
+                };
+                blankLink.getImage().add(new AttributeModifier("alt", true, new Model("")));
+                add( blankLink);
             }
         }
     }
