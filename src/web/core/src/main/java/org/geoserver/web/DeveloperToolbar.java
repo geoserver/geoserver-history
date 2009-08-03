@@ -64,7 +64,7 @@ public class DeveloperToolbar extends Panel {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                wicketIds.setModelObject(Boolean.FALSE);
+                wicketIds.setModelObject(Boolean.TRUE);
                 wicketPaths.setModelObject(Boolean.FALSE);
                 target.addComponent(wicketIds);
                 target.addComponent(wicketPaths);
