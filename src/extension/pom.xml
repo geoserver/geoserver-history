@@ -137,13 +137,6 @@
       </modules>
     </profile>
 
-    <profile>
-      <id>feature-pregeneralized</id>
-      <modules>
-        <module>feature-pregeneralized</module>
-      </modules>
-    </profile>
-
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
