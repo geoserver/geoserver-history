@@ -106,8 +106,8 @@ public class LayerGroupTest extends CatalogRESTTestSupport {
         assertEquals( "Forests", lg.getLayers().get( 1 ).getName() );
         
         assertEquals( 2, lg.getStyles().size() );
-        assertEquals( "Ponds", lg.getStyles().get( 0 ).getName() );
-        assertEquals( "Forests", lg.getStyles().get( 1 ).getName() );
+        assertNull(lg.getStyles().get( 0 ));
+        assertNull(lg.getStyles().get( 1 ));
     }
     
     public void testPut() throws Exception {
