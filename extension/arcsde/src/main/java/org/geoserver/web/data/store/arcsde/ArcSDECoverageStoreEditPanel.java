@@ -4,6 +4,11 @@
  */
 package org.geoserver.web.data.store.arcsde;
 
+import static org.geotools.arcsde.ArcSDEDataStoreFactory.INSTANCE_PARAM;
+import static org.geotools.arcsde.ArcSDEDataStoreFactory.PASSWORD_PARAM;
+import static org.geotools.arcsde.ArcSDEDataStoreFactory.PORT_PARAM;
+import static org.geotools.arcsde.ArcSDEDataStoreFactory.SERVER_PARAM;
+import static org.geotools.arcsde.ArcSDEDataStoreFactory.USER_PARAM;
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.CONNECTION_TIMEOUT_PARAM_NAME;
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.INSTANCE_NAME_PARAM_NAME;
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.MAX_CONNECTIONS_PARAM_NAME;
@@ -25,6 +30,7 @@ import java.util.logging.Logger;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -49,6 +55,7 @@ import org.geotools.arcsde.session.ISessionPool;
 import org.geotools.arcsde.session.ISessionPoolFactory;
 import org.geotools.arcsde.session.SessionPoolFactory;
 import org.geotools.arcsde.session.UnavailableConnectionException;
+import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
 
 import com.esri.sde.sdk.client.SeConnection;
@@ -108,10 +115,10 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         final IModel paramsModel = new PropertyModel(model, "connectionParameters");
 
         // server, port, instance, user, pwd
-        final TextParamPanel serverPanel = addServerPanel(paramsModel);
-        final TextParamPanel portPanel = addPortPanel(paramsModel);
-        final TextParamPanel instancePanel = addInstancePanel(paramsModel);
-        final TextParamPanel userPanel = addUserPanel(paramsModel);
+        final TextParamPanel serverPanel = addTextPanel(paramsModel, SERVER_PARAM);
+        final TextParamPanel portPanel = addTextPanel(paramsModel, PORT_PARAM);
+        final TextParamPanel instancePanel = addTextPanel(paramsModel, INSTANCE_PARAM);
+        final TextParamPanel userPanel = addTextPanel(paramsModel, USER_PARAM);
         final PasswordParamPanel pwdPanel = addPasswordPanel(paramsModel);
         final DropDownChoice choice = addTableChoice(paramsModel);
 
@@ -229,47 +236,44 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
     }
 
     private PasswordParamPanel addPasswordPanel(final IModel paramsModel) {
-        final PasswordParamPanel pwdPanel = new PasswordParamPanel("password", new MapModel(
-                paramsModel, PASSWORD_PARAM_NAME), new ResourceModel(PASSWORD_PARAM_NAME,
-                PASSWORD_PARAM_NAME), true);
+
+        final String paramName = PASSWORD_PARAM.key;
+        final String resourceKey = getClass().getSimpleName() + "." + paramName;
+
+        final PasswordParamPanel pwdPanel = new PasswordParamPanel(paramName, new MapModel(
+                paramsModel, paramName), new ResourceModel(resourceKey, paramName), true);
         add(pwdPanel);
+
+        String defaultTitle = String.valueOf(PASSWORD_PARAM.title);
+
+        ResourceModel titleModel = new ResourceModel(resourceKey + ".title", defaultTitle);
+        String title = String.valueOf(titleModel.getObject());
+
+        pwdPanel.getFormComponent().add(new SimpleAttributeModifier("title", title));
+
         return pwdPanel;
     }
 
-    private TextParamPanel addUserPanel(final IModel paramsModel) {
-        final TextParamPanel userPanel = new TextParamPanel("user", new MapModel(paramsModel,
-                USER_NAME_PARAM_NAME),
-                new ResourceModel(USER_NAME_PARAM_NAME, USER_NAME_PARAM_NAME), true);
-        userPanel.getFormComponent().setType(String.class);
-        add(userPanel);
-        return userPanel;
-    }
+    private TextParamPanel addTextPanel(final IModel paramsModel, final Param param) {
 
-    private TextParamPanel addInstancePanel(final IModel paramsModel) {
-        final TextParamPanel instancePanel = new TextParamPanel("instance", new MapModel(
-                paramsModel, INSTANCE_NAME_PARAM_NAME), new ResourceModel(INSTANCE_NAME_PARAM_NAME,
-                INSTANCE_NAME_PARAM_NAME), false);
-        instancePanel.getFormComponent().setType(String.class);
-        add(instancePanel);
-        return instancePanel;
-    }
+        final String paramName = param.key;
+        final String resourceKey = getClass().getSimpleName() + "." + paramName;
 
-    private TextParamPanel addPortPanel(final IModel paramsModel) {
-        final TextParamPanel portPanel = new TextParamPanel("port", new MapModel(paramsModel,
-                PORT_NUMBER_PARAM_NAME), new ResourceModel(PORT_NUMBER_PARAM_NAME,
-                PORT_NUMBER_PARAM_NAME), true);
-        portPanel.getFormComponent().setType(Integer.class);
-        add(portPanel);
-        return portPanel;
-    }
+        final boolean required = param.required;
 
-    private TextParamPanel addServerPanel(final IModel paramsModel) {
-        final TextParamPanel serverPanel = new TextParamPanel("server", new MapModel(paramsModel,
-                SERVER_NAME_PARAM_NAME), new ResourceModel(SERVER_NAME_PARAM_NAME,
-                SERVER_NAME_PARAM_NAME), true);
-        serverPanel.getFormComponent().setType(String.class);
-        add(serverPanel);
-        return serverPanel;
+        final TextParamPanel textParamPanel = new TextParamPanel(paramName, new MapModel(
+                paramsModel, paramName), new ResourceModel(resourceKey, paramName), required);
+        textParamPanel.getFormComponent().setType(param.type);
+
+        String defaultTitle = String.valueOf(param.title);
+
+        ResourceModel titleModel = new ResourceModel(resourceKey + ".title", defaultTitle);
+        String title = String.valueOf(titleModel.getObject());
+
+        textParamPanel.getFormComponent().add(new SimpleAttributeModifier("title", title));
+
+        add(textParamPanel);
+        return textParamPanel;
     }
 
     /**
