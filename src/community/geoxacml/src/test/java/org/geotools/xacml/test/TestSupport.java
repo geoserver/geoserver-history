@@ -29,7 +29,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -44,7 +43,6 @@ import org.w3c.dom.Element;
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.PDP;
 import com.sun.xacml.PDPConfig;
-import com.sun.xacml.ParsingException;
 import com.sun.xacml.Policy;
 import com.sun.xacml.Rule;
 import com.sun.xacml.cond.Apply;
@@ -53,9 +51,7 @@ import com.sun.xacml.finder.AttributeFinderModule;
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.impl.CurrentEnvModule;
-import com.sun.xacml.support.finder.BasicPolicyFinderModule;
 import com.sun.xacml.support.finder.FilePolicyModule;
-import com.sun.xacml.support.finder.PolicyReader;
 
 /**
  * @author Christian Mueller
