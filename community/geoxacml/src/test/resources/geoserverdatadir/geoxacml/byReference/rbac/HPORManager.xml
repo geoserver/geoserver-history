@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HasPrivilegesOfRole Policy for manager role -->
+<Policy  xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:oasis:names:tc:xacml:2.0:policy:schema:os http://docs.oasis-open.org/xacml/2.0/access_control-xacml-2.0-policy-schema-os.xsd"
+	PolicyId="Permission:to:have:manager:role:permissions"
+	RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:permit-overrides">
+
+	<Target/>
+	<!-- Permission to have manager role permissions -->
+	<Rule RuleId="Permission:to:have:manager:permissions"
+		Effect="Permit">
+		<Condition>
+			<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:and">
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:anyURI-is-in">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">urn:example:role-values:manager</AttributeValue>
+					<ResourceAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role"
+						DataType="http://www.w3.org/2001/XMLSchema#anyURI" />
+				</Apply>
+				<Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:anyURI-is-in">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">urn:oasis:names:tc:xacml:2.0:actions:hasPrivilegesofRole</AttributeValue>
+					<ActionAttributeDesignator
+						AttributeId="urn:oasis:names:tc:xacml:1.0:action:action-id" DataType="http://www.w3.org/2001/XMLSchema#anyURI" />
+				</Apply>
+			</Apply>
+		</Condition>
+	</Rule>
+</Policy>
