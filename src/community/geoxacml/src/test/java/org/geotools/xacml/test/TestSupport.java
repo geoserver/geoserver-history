@@ -38,7 +38,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 import org.geotools.xacml.geoxacml.finder.impl.GeoSelectorModule;
-import org.geotools.xacml.rbac.RBACPolicyFinder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -164,55 +163,6 @@ public class TestSupport  {
 	   return pdp;
    }
    
-   static public  PDP getRBAC_PDP() {
-	   
-	   FilePolicyModule rpsPolicyModule = new FilePolicyModule();
-	   //rpsPolicyModule.addPolicy(rpsFileName);
-	   rpsPolicyModule.addPolicy(getFNFor("rbac", "RPSEmployee.xml"));
-	   rpsPolicyModule.addPolicy(getFNFor("rbac", "RPSManager.xml"));
-
-	   
-	   Set<PolicyFinderModule> policyModules = new HashSet<PolicyFinderModule>();
-	   policyModules.add(rpsPolicyModule);
-	   
-	   RBACPolicyFinder policyFinder = new RBACPolicyFinder();
-	   policyFinder.setRPSModules(policyModules);
-	   	   
-	   PolicyReader reader = new PolicyReader(policyFinder.getPpsFinder(),Logger.getLogger(TestSupport.class.getName()));
-	   BasicPolicyFinderModule ppsPolicyModule = new BasicPolicyFinderModule();
-	   
-		try {
-			AbstractPolicy policy = reader.readPolicy(new File(getFNFor("rbac", "PPSEmployee.xml")));
-			ppsPolicyModule.addPolicyOnlyRef(policy);
-			policy = reader.readPolicy(new File(getFNFor("rbac", "PPSManager.xml")));
-			ppsPolicyModule.addPolicyOnlyRef(policy);
-			policy = reader.readPolicy(new File(getFNFor("rbac", "HPOREmployee.xml")));
-			ppsPolicyModule.addPolicyOnlyRef(policy);
-			policy = reader.readPolicy(new File(getFNFor("rbac", "HPORManager.xml")));
-			ppsPolicyModule.addPolicyOnlyRef(policy);
-			
-
-		} catch (ParsingException e) {
-			e.printStackTrace();
-		}		   
-
-	   
-	   policyModules = new HashSet<PolicyFinderModule>();
-	   policyModules.add(ppsPolicyModule);
-	   policyFinder.setPPSModules(policyModules);
-
-	   CurrentEnvModule envModule = new CurrentEnvModule();
-	   GeoSelectorModule selectorModule = new GeoSelectorModule();
-	   
-	   AttributeFinder attrFinder = new AttributeFinder();
-	   List<AttributeFinderModule> attrModules = new ArrayList<AttributeFinderModule>();
-	   attrModules.add(envModule);
-	   attrModules.add(selectorModule);
-	   attrFinder.setModules(attrModules);
-    
-	   PDP pdp = new PDP(new PDPConfig(attrFinder, policyFinder, null));
-	   return pdp;
-   }
 
    
    static public String getGeoXACMLFNFor(String resourceDir,String fn) {

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicySet xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	PolicySetId="urn:oasis:names:tc:xacml:2.0:gis:PolicySetForBob"
+	PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:permit-overrides">
+	<Target>
+			<Subjects>
+			<Subject>
+				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Bob</AttributeValue>
+					<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+						DataType="http://www.w3.org/2001/XMLSchema#string" />
+				</SubjectMatch>
+			</Subject>
+		</Subjects>
+	</Target>
+	<PolicyIdReference>urn:oasis:names:tc:xacml:2.0:gis:DenyAll</PolicyIdReference>
+</PolicySet>

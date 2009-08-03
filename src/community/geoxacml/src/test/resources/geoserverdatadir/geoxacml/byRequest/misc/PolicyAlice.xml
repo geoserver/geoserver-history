@@ -3,7 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	PolicySetId="urn:oasis:names:tc:xacml:2.0:gis:PolicySetForAlice"
 	PolicyCombiningAlgId="urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:permit-overrides">
-	<Target></Target>
+	<Target>
+			<Subjects>
+			<Subject>
+				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Alice</AttributeValue>
+					<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:1.0:subject:subject-id"
+						DataType="http://www.w3.org/2001/XMLSchema#string" />
+				</SubjectMatch>
+			</Subject>
+		</Subjects>
+	</Target>
 	<PolicyIdReference>urn:oasis:names:tc:xacml:2.0:gis:PermitAlice</PolicyIdReference>
 	<PolicyIdReference>urn:oasis:names:tc:xacml:2.0:gis:DenyAll</PolicyIdReference>
 </PolicySet>

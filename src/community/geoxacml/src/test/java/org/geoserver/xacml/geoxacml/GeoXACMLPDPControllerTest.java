@@ -43,7 +43,7 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
     }
     
     public void testAlice() throws Exception {
-        File request = new File ("src/test/resources/requestAlice.xml");
+        File request = new File ("src/test/resources/requests/misc/requestAlice.xml");
         String xml = getXMLRequest(request);
         //InputStream resp = post("geoxacml?validate=true",xml);
         InputStream resp = post("security/geoxacml",xml);
@@ -51,7 +51,7 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
     }
     
     public void testBob() throws Exception {
-        File request = new File ("src/test/resources/requestBob.xml");
+        File request = new File ("src/test/resources/requests/misc/requestBob.xml");
         String xml = getXMLRequest(request);
         //InputStream resp = post("geoxacml?validate=true",xml);
         InputStream resp = post("security/geoxacml",xml);
@@ -59,7 +59,72 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         //dumpResponse(resp);
     }
 
+    public void testEmployee() throws Exception{
+        File request = new File ("src/test/resources/requests/rbac/EmployeeRequest.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "Permit");                
+    }
 
+    public void testIsEmployee1() throws Exception {
+        File request = new File ("src/test/resources/requests/rbac/EmployeeRequest1.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "NotApplicable");                
+    }
+
+    public void testIsEmployee2() throws Exception {
+        File request = new File ("src/test/resources/requests/rbac/EmployeeRequest2.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "NotApplicable");                
+    }
+    
+    
+    public void testIsEmployee3() throws Exception {
+        File request = new File ("src/test/resources/requests/rbac/EmployeeRequest3.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "NotApplicable");                
+    }
+    
+    public void testManagerJunior() throws Exception{
+        
+        File request = new File ("src/test/resources/requests/rbac/ManagerRequestJunior.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "Permit");                
+    }
+
+    public void testManagerSenior() throws Exception{
+        
+        File request = new File ("src/test/resources/requests/rbac/ManagerRequestSenior.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "Permit");                
+    }
+    
+    
+    public void testHPORAliceManager() throws Exception{
+        
+        File request = new File ("src/test/resources/requests/rbac/HPORAliceManagerRequest.xml");
+        String xml = getXMLRequest(request);
+        InputStream resp = post("security/geoxacml",xml);
+        checkXACMLRepsonse(resp, "NotApplicable");                       
+    }
+
+    
+    // TODO, is not working
+//    public void testHPORAliceEmployee() throws Exception {
+//        
+//        File request = new File ("src/test/resources/requests/rbac/HPORAliceEmployeeRequest.xml");
+//        String xml = getXMLRequest(request);
+//        InputStream resp = post("security/geoxacml",xml);
+//        checkXACMLRepsonse(resp, "Permit");                       
+//        
+//    }
+
+    
     
     protected void checkXACMLRepsonse(InputStream resp,String decision) throws Exception{
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

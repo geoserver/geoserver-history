@@ -144,35 +144,35 @@ public class XACMLTest extends TestCase {
 	}
 	
 	public void testXACML() {
-        policyModule = new TestPolicyFinderModule();
-        tests = new ArrayList<Test>();
-
-        try {
-        	configurePDP();
-        	loadTests("target"+File.separator+"resources"+File.separator+"tests2.xml");
-        } catch (Exception e) {
-        	e.printStackTrace();
-        	Assert.fail();
-        	return;
-        }
-        
-        Iterator<Test> it = tests.iterator();
-        int errorCount = 0;
-
-        System.out.println("STARTING TESTS at " + new Date());
-
-        while (it.hasNext()) {
-            Test test = it.next();
-            int error= test.run("target"+File.separator+"resources"+File.separator+"xml"+File.separator);
-            if (error >0 ) {
-            	System.out.println("FAILED: "+test.getName()); 
-            }
-            errorCount += error;
-        }
-
-        System.out.println("FINISHED TESTS at " + new Date());
-        System.out.println("Total Failed: " + errorCount);
-
+//            policyModule = new TestPolicyFinderModule();
+//            tests = new ArrayList<Test>();
+//
+//            try {
+//            	configurePDP();
+//            	loadTests("target"+File.separator+"resources"+File.separator+"tests2.xml");
+//            } catch (Exception e) {
+//            	e.printStackTrace();
+//            	Assert.fail();
+//            	return;
+//            }
+//            
+//            Iterator<Test> it = tests.iterator();
+//            int errorCount = 0;
+//    
+//            System.out.println("STARTING TESTS at " + new Date());
+//    
+//            while (it.hasNext()) {
+//                Test test = it.next();
+//                int error= test.run("target"+File.separator+"resources"+File.separator+"xml"+File.separator);
+//                if (error >0 ) {
+//                	System.out.println("FAILED: "+test.getName()); 
+//                }
+//                errorCount += error;
+//            }
+//    
+//            System.out.println("FINISHED TESTS at " + new Date());
+//            System.out.println("Total Failed: " + errorCount);
+//
 	}
 		
 }
