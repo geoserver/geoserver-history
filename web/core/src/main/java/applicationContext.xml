@@ -211,6 +211,7 @@
     <property name="factoryClass" value=""/>
     <property name="iconBase" value="org.geoserver.web.GeoServerApplication"/>
     <property name="icon" value="img/icons/geosilk/database_vector.png"/>
+    <property name="componentClass" value="org.geoserver.web.data.store.DefaultDataStoreEditPanel"/>
   </bean>
   <bean id="defaultCoverageStorePanel" class="org.geoserver.web.data.resource.DataStorePanelInfo">
     <!-- panel info used for a default raster store icon. This is mandatory as per StoreExtensionPoints requirements  -->

@@ -4,29 +4,20 @@
  */
 package org.geoserver.web.data.store;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
@@ -37,16 +28,13 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.NamespacePanel;
-import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
-import org.geoserver.web.util.MapModel;
-import org.geoserver.web.wicket.FileExistsValidator;
 import org.geotools.data.DataAccessFactory;
-import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -77,12 +65,12 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
     /**
      * 
-     * @param info
+     * @param storeInfo
      * @throws IllegalArgumentException
      */
-    protected final void initUI(final DataStoreInfo info) throws IllegalArgumentException {
+    protected final void initUI(final DataStoreInfo storeInfo) throws IllegalArgumentException {
 
-        if (info.getWorkspace() == null) {
+        if (storeInfo.getWorkspace() == null) {
             throw new IllegalArgumentException("Workspace not provided");
         }
 
@@ -90,41 +78,17 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         final ResourcePool resourcePool = catalog.getResourcePool();
         DataAccessFactory dsFactory;
         try {
-            dsFactory = resourcePool.getDataStoreFactory(info);
+            dsFactory = resourcePool.getDataStoreFactory(storeInfo);
         } catch (IOException e) {
             throw new IllegalArgumentException("Can't locate a datastore factory for '"
-                    + info.getType() + "'. " + e.getMessage());
+                    + storeInfo.getType() + "'. " + e.getMessage());
         }
         if (dsFactory == null) {
             throw new IllegalArgumentException("Can't locate a datastore factory for '"
-                    + info.getType() + "'");
+                    + storeInfo.getType() + "'");
         }
 
-        final Map<String, ParamInfo> paramsMetadata = new LinkedHashMap<String, ParamInfo>();
-
-        {
-            final boolean isNew = null == info.getId();
-            final Param[] dsParams = dsFactory.getParametersInfo();
-            for (Param p : dsParams) {
-                ParamInfo paramInfo = new ParamInfo(p);
-                paramsMetadata.put(p.key, paramInfo);
-
-                if (isNew) {
-                    // set default value
-                    Serializable defValue;
-                    if ("namespace".equals(paramInfo.getName())) {
-                        defValue = catalog.getDefaultNamespace().getURI();
-                    } else if (URL.class == paramInfo.getBinding()) {
-                        defValue = "file:data/example.extension";
-                    } else {
-                        defValue = paramInfo.getValue();
-                    }
-                    info.getConnectionParameters().put(paramInfo.getName(), defValue);
-                }
-            }
-        }
-
-        final IModel model = new CompoundPropertyModel(info);
+        final IModel model = new CompoundPropertyModel(storeInfo);
 
         final Form paramsForm = new Form("dataStoreForm", model);
         add(paramsForm);
@@ -153,31 +117,26 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         paramsForm.add(new CheckBoxParamPanel("dataStoreEnabledPanel", new PropertyModel(model,
                 "enabled"), new ResourceModel("enabled", "Enabled")));
 
-        final List<String> keys = new ArrayList<String>(paramsMetadata.keySet());
-        final IModel paramsModel = new PropertyModel(model, "connectionParameters");
+        final StoreEditPanel storeEditPanel;
+        {
+            /*
+             * Here's where the extension point is applied in order to give extensions a chance to
+             * provide custom behavior/components for the coverage form other than the default
+             * single "url" input field
+             */
+            GeoServerApplication app = getGeoServerApplication();
+            storeEditPanel = StoreExtensionPoints.getStoreEditPanel("parametersPanel", paramsForm,
+                    storeInfo, app);
+        }
+        paramsForm.add(storeEditPanel);
 
-        ListView paramsList = new ListView("parameters", keys) {
-            private static final long serialVersionUID = 1L;
+        paramsForm.add(new FeedbackPanel("feedback"));
 
-            @Override
-            protected void populateItem(ListItem item) {
-                String paramName = item.getModelObjectAsString();
-                ParamInfo paramMetadata = paramsMetadata.get(paramName);
-
-                Component inputComponent;
-                inputComponent = getInputComponent("parameterPanel", paramsModel, paramMetadata);
-
-                String description = paramMetadata.getTitle();
-                if (description != null) {
-                    inputComponent.add(new SimpleAttributeModifier("title", description));
-                }
-                item.add(inputComponent);
-            }
-        };
-        // needed for form components not to loose state
-        paramsList.setReuseItems(true);
-
-        paramsForm.add(paramsList);
+        // validate the selected workspace does not already contain a store with the same name
+        final String dataStoreInfoId = storeInfo.getId();
+        StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
+                .getFormComponent(), dataStoreNamePanel.getFormComponent(), dataStoreInfoId);
+        paramsForm.add(storeNameValidator);
 
         paramsForm.add(new BookmarkablePageLink("cancel", StorePage.class));
 
@@ -202,13 +161,8 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             }
         });
 
-        paramsForm.add(new FeedbackPanel("feedback"));
-
-        // validate the selected workspace does not already contain a store with the same name
-        final String dataStoreInfoId = info.getId();
-        StoreNameValidator storeNameValidator = new StoreNameValidator(workspacePanel
-                .getFormComponent(), dataStoreNamePanel.getFormComponent(), dataStoreInfoId);
-        paramsForm.add(storeNameValidator);
+        // save the namespace panel as an instance variable. Needed as per GEOS-3149
+        makeNamespaceSyncUpWithWorkspace();
     }
 
     /**
@@ -226,63 +180,6 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
             AjaxRequestTarget requestTarget) throws IllegalArgumentException;
 
     /**
-     * Creates a form input component for the given datastore param based on its type and metadata
-     * properties.
-     * 
-     * @param paramMetadata
-     * @return
-     */
-    private Panel getInputComponent(final String componentId, final IModel paramsModel,
-            final ParamInfo paramMetadata) {
-
-        final String paramName = paramMetadata.getName();
-        final String paramLabel = paramMetadata.getName();
-        final boolean required = paramMetadata.isRequired();
-        final Class<?> binding = paramMetadata.getBinding();
-
-        Panel parameterPanel;
-        if ("namespace".equals(paramName)) {
-            IModel namespaceModel = new NamespaceParamModel(paramsModel, paramName);
-            IModel paramLabelModel = new ResourceModel(paramLabel, paramLabel);
-            parameterPanel = new NamespacePanel(componentId, namespaceModel, paramLabelModel, true);
-
-            // save the namespace panel as an instance variable. Needed as per GEOS-3149
-            namespacePanel = (NamespacePanel) parameterPanel;
-            makeNamespaceSyncUpWithWorkspace();
-
-        } else if (Boolean.class == binding) {
-            // TODO Add prefix for better i18n?
-            parameterPanel = new CheckBoxParamPanel(componentId, new MapModel(paramsModel,
-                    paramName), new ResourceModel(paramLabel, paramLabel));
-
-        } else if (String.class == binding && paramMetadata.isPassword()) {
-            parameterPanel = new PasswordParamPanel(componentId, new MapModel(paramsModel,
-                    paramName), new ResourceModel(paramLabel, paramLabel), required);
-        } else {
-            TextParamPanel tp = new TextParamPanel(componentId,
-                    new MapModel(paramsModel, paramName),
-                    new ResourceModel(paramLabel, paramLabel), required);
-            // if it can be a reference to the local filesystem make sure it's valid
-            if (paramName.equalsIgnoreCase("url")) {
-                tp.getFormComponent().add(new FileExistsValidator());
-            }
-            // make sure the proper value is returned, but don't set it for strings otherwise
-            // we incur in a wicket bug (the empty string is not converter back to a null)
-            // GR: it doesn't work for File neither.
-            // AA: better not mess with files, the converters turn data dir relative to 
-            // absolute and bye bye data dir portability
-            if (binding != null 
-                    && !String.class.equals(binding) 
-                    && !File.class.equals(binding) 
-                    && !URL.class.equals(binding)) {
-                tp.getFormComponent().setType(binding);
-            }
-            parameterPanel = tp;
-        }
-        return parameterPanel;
-    }
-
-    /**
      * Make the {@link #namespacePanel} model to synch up with the workspace whenever the
      * {@link #workspacePanel} option changes.
      * <p>
@@ -297,8 +194,8 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * </p>
      */
     private void makeNamespaceSyncUpWithWorkspace() {
-        // do not allow the namespace choice to be manually changed
 
+        // do not allow the namespace choice to be manually changed
         final DropDownChoice wsDropDown = (DropDownChoice) workspacePanel.getFormComponent();
         // add an ajax onchange behaviour that keeps ws and ns in synch
         wsDropDown.add(new OnChangeAjaxBehavior() {
@@ -306,6 +203,18 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
+                // see if the namespace param is tied to a NamespacePanel and save it
+                if (namespacePanel == null) {
+                    Component paramsPanel = AbstractDataAccessPage.this
+                            .get("dataStoreForm:parametersPanel");
+                    namespacePanel = findNamespacePanel((MarkupContainer) paramsPanel);
+
+                    if (namespacePanel == null) {
+                        // nothing to do
+                        return;
+                    }
+                }
+
                 WorkspaceInfo ws = (WorkspaceInfo) wsDropDown.getModelObject();
                 String prefix = ws.getName();
                 NamespaceInfo namespaceInfo = getCatalog().getNamespaceByPrefix(prefix);
@@ -313,6 +222,23 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
                 target.addComponent(namespacePanel.getFormComponent());
             }
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    private NamespacePanel findNamespacePanel(MarkupContainer c) {
+        Component child;
+        for (Iterator<Component> it = ((MarkupContainer) c).iterator(); it.hasNext();) {
+            child = it.next();
+            if (child instanceof NamespacePanel) {
+                return (NamespacePanel) child;
+            } else if (child instanceof MarkupContainer) {
+                NamespacePanel panel = findNamespacePanel((MarkupContainer) child);
+                if (panel != null) {
+                    return panel;
+                }
+            }
+        }
+        return null;
     }
 
     protected void clone(final DataStoreInfo source, DataStoreInfo target) {
@@ -324,33 +250,5 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
 
         target.getConnectionParameters().clear();
         target.getConnectionParameters().putAll(source.getConnectionParameters());
-    }
-
-    /**
-     * Model to wrap and unwrap a {@link NamespaceInfo} to and from a String for the Datastore's
-     * "namespace" parameter
-     * 
-     */
-    private final class NamespaceParamModel extends MapModel {
-
-        private static final long serialVersionUID = 6767931873085302114L;
-
-        private NamespaceParamModel(IModel model, String expression) {
-            super(model, expression);
-        }
-
-        @Override
-        public Object getObject() {
-            String nsUri = (String) super.getObject();
-            NamespaceInfo namespaceInfo = getCatalog().getNamespaceByURI(nsUri);
-            return namespaceInfo;
-        }
-
-        @Override
-        public void setObject(Object object) {
-            NamespaceInfo namespaceInfo = (NamespaceInfo) object;
-            String nsUri = namespaceInfo.getURI();
-            super.setObject(nsUri);
-        }
     }
 }

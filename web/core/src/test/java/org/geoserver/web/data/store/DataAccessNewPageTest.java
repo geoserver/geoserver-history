@@ -91,7 +91,7 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
 
         // final String namespacePath =
         // "dataStoreForm:parameters:1:parameterPanel:border:paramValue";
-        final String namespacePath = "dataStoreForm:parameters:1:parameterPanel:paramValue";
+        final String namespacePath = "dataStoreForm:parametersPanel:parameters:1:parameterPanel:paramValue";
 
         startPage();
 
@@ -104,7 +104,7 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
     public void testDataStoreParametersAreCreated() {
         startPage();
         List parametersListViewValues = Arrays.asList(new Object[] { "directory", "namespace" });
-        tester.assertListView("dataStoreForm:parameters", parametersListViewValues);
+        tester.assertListView("dataStoreForm:parametersPanel:parameters", parametersListViewValues);
     }
 
     /**
