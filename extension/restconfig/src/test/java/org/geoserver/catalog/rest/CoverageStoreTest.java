@@ -172,7 +172,7 @@ public class CoverageStoreTest extends CatalogRESTTestSupport {
             "{'coverageStore':{" +
                 "'name':'newCoverageStore'," +
                 "'type': 'WorldImage'," + 
-                "'url':'" + f.getAbsolutePath()  + "'," +
+                "'url':'" + f.getAbsolutePath().replace('\\','/')  + "'," +
                 "'workspace':'wcs'," +
               "}" +
             "}";

@@ -158,7 +158,7 @@ public class DataStoreTest extends CatalogRESTTestSupport {
             "{'dataStore':{" +
                "'connectionParameters': {" +
                    "'namespace': {'string':'sf'}," +
-                   "'directory': {'string':'" + dir.getAbsolutePath()  + "'}" +
+                   "'directory': {'string':'" + dir.getAbsolutePath().replace('\\','/')  + "'}" +
                 "}," +
                 "'workspace':'sf'," +
                 "'name':'newDataStore'," +
