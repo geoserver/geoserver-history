@@ -8,9 +8,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -265,9 +267,23 @@ public class DefaultDataAccessManager implements DataAccessManager {
         return roles;
     }
 
-    private String[] parseElements(String path) {
-        // regexp: ignore extra spaces
-        return path.split("\\s*\\.\\s*");
+    static String[] parseElements(String path) {
+        String[] rawParse = path.trim().split("\\s*\\.\\s*");
+        List<String> result = new ArrayList<String>();
+        String prefix = null;
+        for (String raw : rawParse) {
+            if(prefix != null)
+                raw = prefix + "."  + raw;
+            // just assume the escape is invalid char besides \. and check it once only
+            if (raw.endsWith("\\")) {
+                prefix = raw.substring(0, raw.length() - 1);
+            } else {
+                result.add(raw);
+                prefix = null;
+            }
+        }
+        
+        return (String[]) result.toArray(new String[result.size()]);
     }
 
 }
