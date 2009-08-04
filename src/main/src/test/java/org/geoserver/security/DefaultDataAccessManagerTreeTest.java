@@ -102,7 +102,7 @@ public class DefaultDataAccessManagerTreeTest extends TestCase {
         SecureTreeNode root = buildTree("complex.properties");
 
         // first off, evaluate tree structure
-        assertEquals(1, root.children.size());
+        assertEquals(2, root.children.size());
         SecureTreeNode topp = root.getChild("topp");
         assertNotNull(topp);
         assertEquals(3, topp.children.size());

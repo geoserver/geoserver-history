@@ -97,7 +97,8 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
         roadsLayer = buildLayer("roads", toppWs, FeatureTypeInfo.class);
         landmarksLayer = buildLayer("landmarks", toppWs, FeatureTypeInfo.class);
         basesLayer = buildLayer("bases", toppWs, FeatureTypeInfo.class);
-        arcGridLayer = buildLayer("arcgrid", nurcWs, CoverageInfo.class);
+        // let's add one with a dot inside the name
+        arcGridLayer = buildLayer("arc.grid", nurcWs, CoverageInfo.class);
 
         // resources
         states = (FeatureTypeInfo) statesLayer.getResource();

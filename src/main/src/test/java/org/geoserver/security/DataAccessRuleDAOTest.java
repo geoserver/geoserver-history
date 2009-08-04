@@ -77,4 +77,26 @@ public class DataAccessRuleDAOTest extends TestCase {
         }
     }
     
+    public void testParsePlain() {
+        DataAccessRule rule = dao.parseDataAccessRule("a.b.r", "ROLE_WHO_CARES");
+        assertEquals("a", rule.getWorkspace());
+        assertEquals("b", rule.getLayer());
+        assertEquals(AccessMode.READ, rule.getAccessMode());
+    }
+    
+    public void testParseSpaces() {
+        DataAccessRule rule = dao.parseDataAccessRule(" a  . b . r ", "ROLE_WHO_CARES");
+        assertEquals("a", rule.getWorkspace());
+        assertEquals("b", rule.getLayer());
+        assertEquals(AccessMode.READ, rule.getAccessMode());
+    }
+    
+    public void testParseEscapedDots() {
+        DataAccessRule rule = dao.parseDataAccessRule("w. a\\.b . r ", "ROLE_WHO_CARES");
+        assertEquals("w", rule.getWorkspace());
+        assertEquals("a.b", rule.getLayer());
+        assertEquals(AccessMode.READ, rule.getAccessMode());
+
+    }
+    
 }
