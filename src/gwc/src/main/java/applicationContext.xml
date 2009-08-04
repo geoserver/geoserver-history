@@ -70,6 +70,10 @@
     <constructor-arg ref="gwcStorageBroker"/>
     <constructor-arg ref="gwcTLDispatcher"/>
   </bean>
+  <bean id="gwcServiceTMS" class="org.geowebcache.service.tms.TMSConverter">
+ 	<constructor-arg ref="gwcStorageBroker"/>
+ 	<constructor-arg ref="gwcTLDispatcher"/>    
+  </bean>
  
   <!-- WFS based services -->
   <bean id="gwcServiceWFS" class="org.geowebcache.service.wfs.WFSService">
@@ -104,7 +108,13 @@
     <property name="XMLConfiguration" ref="gwcXmlConfig"/>
     <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
   </bean>
-  
+  <bean id="gwcBoundsRestlet" class="org.geowebcache.rest.bounds.BoundsRestlet">
+    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+  </bean>
+  <bean id="gwcFilterUpdateRestlet" class="org.geowebcache.rest.filter.FilterUpdateRestlet">
+    <constructor-arg  ref="gwcTLDispatcher"/>
+  </bean>
+
   <!-- REST Dispatcher -->
   <bean id="gwcRestDispatcher" class="org.geowebcache.rest.RESTDispatcher">
     <constructor-arg type="java.util.Map">
@@ -125,6 +135,14 @@
           <key><value>/rest/layers/{layer}.{extension}</value></key>
           <ref bean="gwcTileLayerRestlet" />
         </entry>
+        <entry>
+           <key><value>/rest/bounds/{layer}/{srs}/{type}</value></key>
+           <ref bean="gwcBoundsRestlet" />
+         </entry>
+         <entry>
+           <key><value>/rest/filter/{filterName}/update/{updateType}</value></key>
+           <ref bean="gwcFilterUpdateRestlet" />
+         </entry>
       </map>
     </constructor-arg>
   </bean>

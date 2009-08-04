@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -21,7 +20,6 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
-import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
@@ -58,6 +56,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     
     ArrayList<TileLayer> list;
    
+    //TODO Maybe all this coverageinfo business is a waster of time?
     
     /**
      * Constructor for Spring
@@ -77,7 +76,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         mimeFormats.add("image/jpeg"); 
         mimeFormats.add("application/vnd.google-earth.kml+xml");
         
-        wmsUrl = ctxProv.getSystemVar(GeoServerConfiguration.GEOSERVER_WMS_URL, "http://localhost:8080/geoserver/wms");
+        wmsUrl = ctxProv.getSystemVar(
+                GeoServerConfiguration.GEOSERVER_WMS_URL, 
+                "http://localhost:8080/geoserver/wms" );
         
         cat.addListener(this);
         
@@ -190,18 +191,19 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         while(lIter.hasNext()) {
             LayerInfo li = lIter.next();            
             TileLayer tl = getLayer(li.getResource());
-            //System.out.println(tl.getName());
+            //System.out.println(tl.getName() + " layerinfo");
             list.add(tl);
         }
         
+        /** These seem to get duplicated as layerinfo objects anyway **/
         // Adding raster layers
-        Iterator<CoverageInfo> cIter = cat.getCoverages().iterator();
-        while(cIter.hasNext()) {
-            CoverageInfo ci = cIter.next();
-            TileLayer tl = getLayer(ci);
-            //System.out.println(tl.getName());
-            list.add(tl);
-        }
+        //Iterator<CoverageInfo> cIter = cat.getCoverages().iterator();
+        //while(cIter.hasNext()) {
+        //    CoverageInfo ci = cIter.next();
+        //    TileLayer tl = getLayer(ci);
+        //    System.out.println(tl.getName() + " coverageinfo");
+        //    list.add(tl);
+        //}
         
         // Adding layer groups 
         Iterator<LayerGroupInfo> lgIter = cat.getLayerGroups().iterator();
@@ -209,7 +211,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
             LayerGroupInfo lgi = lgIter.next();
             
             TileLayer tl = getLayer(lgi);
-            //System.out.println(tl.getName());
+            //System.out.println(tl.getName() + " layergroupinfo");
             list.add(tl);
         }
         
@@ -274,7 +276,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 mimeFormats, 
                 getGrids(latLonBounds), 
                 metaFactors,
-                null);
+                null,
+                true);
         
         retLayer.setBackendTimeout(120);
         return retLayer;
@@ -289,7 +292,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 mimeFormats, 
                 getGrids(fti.getLatLonBoundingBox()), 
                 metaFactors,
-                null);
+                null,
+                true);
         retLayer.setBackendTimeout(120);
         return retLayer;
     }
@@ -303,7 +307,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 mimeFormats, 
                 getGrids(ci.getLatLonBoundingBox()), 
                 metaFactors,
-                null);
+                null, 
+                false);
         
         retLayer.setBackendTimeout(120);
         return retLayer;   
