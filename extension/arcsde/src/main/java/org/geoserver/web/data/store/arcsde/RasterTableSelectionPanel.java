@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -32,16 +31,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.arcsde.session.ArcSDEConnectionConfig;
-import org.geotools.arcsde.session.Command;
 import org.geotools.arcsde.session.ISession;
 import org.geotools.arcsde.session.ISessionPool;
 import org.geotools.arcsde.session.ISessionPoolFactory;
 import org.geotools.arcsde.session.SessionPoolFactory;
 import org.geotools.arcsde.session.UnavailableConnectionException;
-
-import com.esri.sde.sdk.client.SeConnection;
-import com.esri.sde.sdk.client.SeException;
-import com.esri.sde.sdk.client.SeRasterColumn;
 
 /**
  * A panel for {@link ArcSDECoverageStoreEditPanel} that shows a drop down list where to choose the
@@ -53,6 +47,8 @@ import com.esri.sde.sdk.client.SeRasterColumn;
 public class RasterTableSelectionPanel extends Panel {
 
     private static final long serialVersionUID = 343924350476584166L;
+
+    private transient ISessionPoolFactory sessionPoolFactory;
 
     /**
      * temporary parameter name used to hold the raster table selected by the drop down into the
@@ -136,7 +132,7 @@ public class RasterTableSelectionPanel extends Panel {
                 final String user = userComponent.getValue();
                 final String password = passwordComponent.getValue();
 
-                final ISessionPoolFactory sessionFac = SessionPoolFactory.getInstance();
+                final ISessionPoolFactory sessionFac = getSessionFactory();
 
                 List<String> rasterColumns;
                 try {
@@ -159,6 +155,18 @@ public class RasterTableSelectionPanel extends Panel {
 
     public DropDownChoice getFormComponent() {
         return choice;
+    }
+
+    private ISessionPoolFactory getSessionFactory() {
+        if (this.sessionPoolFactory == null) {
+            final ISessionPoolFactory sessionFac = SessionPoolFactory.getInstance();
+            this.sessionPoolFactory = sessionFac;
+        }
+        return this.sessionPoolFactory;
+    }
+
+    void setSessionFactory(final ISessionPoolFactory factory) {
+        this.sessionPoolFactory = factory;
     }
 
     /**
@@ -207,22 +215,7 @@ public class RasterTableSelectionPanel extends Panel {
 
         final List<String> rasterTables;
         try {
-            rasterTables = session.issue(new Command<List<String>>() {
-
-                @SuppressWarnings("unchecked")
-                @Override
-                public List<String> execute(final ISession session, final SeConnection connection)
-                        throws SeException, IOException {
-                    Vector<SeRasterColumn> rasterColumns = connection.getRasterColumns();
-                    List<String> rasterTables = new ArrayList<String>(rasterColumns.size());
-                    for (SeRasterColumn col : rasterColumns) {
-                        String qualifiedTableName = col.getQualifiedTableName();
-                        rasterTables.add(qualifiedTableName.toUpperCase());
-                    }
-                    Collections.sort(rasterTables);
-                    return rasterTables;
-                }
-            });
+            rasterTables = session.getRasterColumns();
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         } finally {
