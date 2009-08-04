@@ -5,7 +5,16 @@
 package org.geoserver.security;
 
 import static org.geoserver.security.DataAccessRule.ANY;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -152,7 +161,4 @@ public class DefaultDataAccessManager implements DataAccessManager {
         
         return root;
     }
-
-   
-
 }
