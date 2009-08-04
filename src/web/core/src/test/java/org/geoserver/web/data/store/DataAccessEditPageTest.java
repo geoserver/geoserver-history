@@ -33,7 +33,8 @@ public class DataAccessEditPageTest extends GeoServerWicketTestSupport {
         tester.assertLabel("dataStoreForm:storeType", "Properties");
         tester.assertModelValue("dataStoreForm:dataStoreNamePanel:border:paramValue", "cite");
         String expectedPath = new File(getTestData().getDataDirectoryRoot(), "cite").getPath();
-        tester.assertModelValue("dataStoreForm:parameters:0:parameterPanel:border:paramValue",
+        tester.assertModelValue(
+                "dataStoreForm:parametersPanel:parameters:0:parameterPanel:border:paramValue",
                 expectedPath);
     }
 
@@ -70,10 +71,10 @@ public class DataAccessEditPageTest extends GeoServerWicketTestSupport {
      */
     public void _testWorkspaceSyncsUpWithNamespace() {
         final FormTester formTester = tester.newFormTester("dataStoreForm");
-
+        print(tester.getLastRenderedPage(), true, true);
         final String wsDropdownPath = "dataStoreForm:workspacePanel:border:paramValue";
-        final String namespaceParamPath = "dataStoreForm:parameters:1:parameterPanel:paramValue";
-        final String directoryParamPath = "dataStoreForm:parameters:0:parameterPanel:border:paramValue";
+        final String namespaceParamPath = "dataStoreForm:parametersPanel:parameters:1:parameterPanel:paramValue";
+        final String directoryParamPath = "dataStoreForm:parametersPanel:parameters:0:parameterPanel:border:paramValue";
 
         final Catalog catalog = getCatalog();
         tester.assertModelValue(wsDropdownPath, catalog.getWorkspaceByName(MockData.CITE_PREFIX));
@@ -108,6 +109,7 @@ public class DataAccessEditPageTest extends GeoServerWicketTestSupport {
         // print(tester.getLastRenderedPage(), true, true);
         final boolean isAjax = true;
         tester.clickLink("dataStoreForm:save", isAjax);
+
         // did the save finish normally?
         tester.assertRenderedPage(StorePage.class);
 
