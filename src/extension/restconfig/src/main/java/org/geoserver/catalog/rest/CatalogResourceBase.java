@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.PageInfo;
@@ -69,6 +70,22 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
     }
     
     /**
+     * Method that reloads the catalog and configuration
+     */
+    protected static void reloadCatalogAndConfiguration() throws Exception {
+        GeoServerLoader loader = GeoServerExtensions.bean( GeoServerLoader.class );
+        try {
+            synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+                loader.reload();
+                LOGGER.info("Catalog and configuration reloaded.");
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException( e );
+        }
+    }
+    
+    /**
      * Static method to persist the catalog to be called by non subclasses. 
      */
     protected static void saveCatalog( Catalog catalog ) throws Exception {
@@ -83,7 +100,17 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
         fireGeoServerChange();
     }
     
+    /**
+     * Persists the configuration.
+     */
     protected void saveConfiguration() throws Exception {
+        saveConfiguration(catalog);
+    }
+    
+    /**
+     * Static method to persist the configuration to be called by non subclasses.
+     */
+    protected static void saveConfiguration( Catalog catalog ) throws Exception {
         org.vfny.geoserver.global.GeoServer global = 
             (org.vfny.geoserver.global.GeoServer) GeoServerExtensions.bean( "geoServer");
         Service wfs = (Service) GeoServerExtensions.bean( "wfs" );
