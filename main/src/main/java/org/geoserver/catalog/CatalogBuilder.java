@@ -497,6 +497,9 @@ public class CatalogBuilder {
      */
     public void lookupSRS(FeatureTypeInfo ftinfo, boolean extensive) throws IOException {
         CoordinateReferenceSystem crs = ftinfo.getNativeCRS();
+        if ( crs == null ) {
+            crs = ftinfo.getFeatureType().getCoordinateReferenceSystem();
+        }
         if ( crs != null ) {
             try {
                 Integer code = CRS.lookupEpsgCode(crs, extensive);
@@ -512,6 +515,9 @@ public class CatalogBuilder {
      * Initializes a feature type object setting any info that has not been set.
      */
     public void initFeatureType(FeatureTypeInfo featureType) throws Exception {
+        if ( featureType.getCatalog() == null ) {
+            featureType.setCatalog( catalog );
+        }
         if ( featureType.getNativeName() == null && featureType.getName() != null ) {
             featureType.setNativeName( featureType.getName() );
         }

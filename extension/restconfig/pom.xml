@@ -44,14 +44,20 @@
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>main</artifactId>
-   <version>2.0-SNAPSHOT</version>
+   <version>${project.version}</version>
    <classifier>tests</classifier>
    <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>wcs1_1</artifactId>
-   <version>2.0-SNAPSHOT</version>
+   <version>${project.version}</version>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>h2</artifactId>
+   <version>${project.version}</version>
    <scope>test</scope>
   </dependency>
   <dependency>
