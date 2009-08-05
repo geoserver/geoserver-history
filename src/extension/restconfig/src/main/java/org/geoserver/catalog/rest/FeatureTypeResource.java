@@ -173,7 +173,7 @@ public class FeatureTypeResource extends AbstractCatalogResource {
                 }
                 if ( obj instanceof DataStoreInfo ) {
                     DataStoreInfo ds = (DataStoreInfo) obj;
-                    encodeLink( "/workspaces/" + ds.getWorkspace().getName() + "/datastores" + 
+                    encodeLink( "/workspaces/" + ds.getWorkspace().getName() + "/datastores/" + 
                         ds.getName(), writer );
                 }
             }
