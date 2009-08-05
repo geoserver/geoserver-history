@@ -62,8 +62,10 @@ public class NamespaceInfoImpl implements NamespaceInfo {
         visitor.visit( this );
     }
     
+    @Override
     public String toString() {
-        return prefix;
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(prefix).append(':')
+                .append(uri).append(']').toString();
     }
 
     public int hashCode() {

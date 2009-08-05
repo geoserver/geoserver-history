@@ -329,6 +329,10 @@ public class ServiceInfoImpl implements ServiceInfo {
             return false;
         return true;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
+                .toString();
+    }
 }

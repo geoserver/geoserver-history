@@ -54,8 +54,10 @@ public abstract class AbstractDecorator<D> implements Wrapper {
         return delegate.hashCode();
     }
 
+    @Override
     public String toString() {
-        return delegate.toString();
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(delegate).append(
+                ']').toString();
     }
 
 }

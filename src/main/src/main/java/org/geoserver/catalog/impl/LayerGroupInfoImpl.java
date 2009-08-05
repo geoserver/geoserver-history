@@ -140,7 +140,9 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
         return true;
     }
     
+    @Override
     public String toString() {
-        return name;
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
+                .toString();
     }
 }

@@ -279,4 +279,10 @@ public class GeoServerInfoImpl implements GeoServerInfo {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(title).append(']')
+                .toString();
+    }
 }

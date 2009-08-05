@@ -133,4 +133,10 @@ public class AttributionInfoImpl implements AttributionInfo {
 
         return result;
     }
+    
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(title).append(']')
+                .toString();
+    }
 }

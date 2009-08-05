@@ -100,7 +100,8 @@ public class StyleInfoImpl implements StyleInfo {
 
     @Override
     public String toString() {
-        return name;
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
+                .toString();
     }
     
 }

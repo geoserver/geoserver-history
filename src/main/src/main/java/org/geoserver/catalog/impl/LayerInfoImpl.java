@@ -222,8 +222,9 @@ public class LayerInfoImpl implements LayerInfo {
         return true;
     }
 
+    @Override
     public String toString() {
-        return getResource() != null ? 
-            getResource().getNamespace().getPrefix() + ":" + name : name;
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(
+                ", resource:").append(resource).append(']').toString();
     }
 }

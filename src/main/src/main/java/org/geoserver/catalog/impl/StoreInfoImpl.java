@@ -134,8 +134,10 @@ public abstract class StoreInfoImpl implements StoreInfo {
         return null;
     }
 
+    @Override
     public String toString() {
-        return name;
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
+                .toString();
     }
 
     public Throwable getError() {
