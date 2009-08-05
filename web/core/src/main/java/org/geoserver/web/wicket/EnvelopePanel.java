@@ -6,6 +6,7 @@ package org.geoserver.web.wicket;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
+import org.apache.wicket.markup.html.form.IFormVisitorParticipant;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -97,9 +98,17 @@ public class EnvelopePanel extends FormComponentPanel {
     
     @Override
     protected void onModelChanged() {
-        super.onModelChanged();
         // when the client programmatically changed the model, update the fields
         // so that the textfields will change too
         updateFields();
+        visitChildren(TextField.class, new Component.IVisitor() {
+            
+            public Object component(Component component) {
+                ((TextField) component).clearInput();
+                return CONTINUE_TRAVERSAL;
+            }
+        });
     }
+    
+    
 }
