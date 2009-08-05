@@ -10,10 +10,12 @@ import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -55,7 +57,7 @@ public class CRSPanel extends FormComponentPanel {
     Label wktLabel;
 
     /** the wkt link that contains the wkt label **/
-    AjaxLink wktLink;
+    GeoServerAjaxFormLink wktLink;
     
     /**
      * Constructs the CRS panel.
@@ -112,6 +114,25 @@ public class CRSPanel extends FormComponentPanel {
         add( srsTextField );
         srsTextField.setOutputMarkupId( true );
         
+        srsTextField.add(new AjaxFormComponentUpdatingBehavior("onblur") {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                convertInput();
+                
+                CoordinateReferenceSystem crs = (CoordinateReferenceSystem) getConvertedInput();
+                if(crs != null) {
+                    setModelObject(crs);
+                    wktLabel.setModelObject(crs.getName().toString());
+                    wktLink.setEnabled(true);
+                } else {
+                    wktLabel.setModelObject(null);
+                    wktLink.setEnabled(false);
+                }
+                target.addComponent(wktLink);
+            }
+        });
+        
         findLink = new AjaxLink( "find" ) {
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -122,9 +143,9 @@ public class CRSPanel extends FormComponentPanel {
         };
         add(findLink);
         
-        wktLink = new AjaxLink( "wkt" ) {
+        wktLink = new GeoServerAjaxFormLink("wkt") {
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(AjaxRequestTarget target, Form form) {
                 popupWindow.setInitialHeight( 375 );
                 popupWindow.setInitialWidth( 525 );
                 popupWindow.setContent(new WKTPanel( popupWindow.getContentId(), getCRS()));
@@ -158,7 +179,7 @@ public class CRSPanel extends FormComponentPanel {
 
     @Override
     protected void convertInput() {
-        String srs = srsTextField.getModelObjectAsString();
+        String srs = srsTextField.getInput();
         CoordinateReferenceSystem crs = null;
         if ( srs != null && !"".equals(srs)) {
             if ( "UNKNOWN".equals( srs ) ) {

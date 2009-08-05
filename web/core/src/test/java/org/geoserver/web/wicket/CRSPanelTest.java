@@ -64,7 +64,7 @@ public class CRSPanelTest extends GeoServerWicketTestSupport {
         ModalWindow window = (ModalWindow) tester.getComponentFromLastRenderedPage("form:crs:popup");
         assertFalse(window.isShown());
         
-        AjaxLink link = (AjaxLink) tester.getComponentFromLastRenderedPage("form:crs:wkt");
+        GeoServerAjaxFormLink link = (GeoServerAjaxFormLink) tester.getComponentFromLastRenderedPage("form:crs:wkt");
         assertFalse(link.isEnabled());
     }
     
