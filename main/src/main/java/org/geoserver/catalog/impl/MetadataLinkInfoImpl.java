@@ -104,5 +104,11 @@ public class MetadataLinkInfoImpl implements MetadataLinkInfo {
         return true;
     }
     
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append("[type:").append(type).append(
+                ", metadataType:").append(metadataType).append(", content:").append(content)
+                .append(']').toString();
+    }
     
 }

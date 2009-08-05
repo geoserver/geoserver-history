@@ -62,4 +62,10 @@ public class DecoratingLayerGroupINfo extends AbstractDecorator<LayerGroupInfo> 
     public void accept(CatalogVisitor visitor) {
         delegate.accept(visitor);
     }
+    
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(delegate).append(
+                ']').toString();
+    }
 }

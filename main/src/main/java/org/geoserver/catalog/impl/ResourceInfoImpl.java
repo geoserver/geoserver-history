@@ -256,8 +256,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
         return null;
     }
 
+    @Override
     public String toString() {
-        return name;
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
+                .toString();
     }
 
     public List<String> getAlias() {

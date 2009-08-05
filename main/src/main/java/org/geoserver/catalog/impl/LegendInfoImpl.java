@@ -59,4 +59,10 @@ public class LegendInfoImpl implements LegendInfo {
         this.onlineResource = onlineResource;
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append("[width:").append(width)
+                .append(", height:").append(height).append(", format:").append(format).append(
+                        ", onlineResource:").append(onlineResource).append(']').toString();
+    }
 }

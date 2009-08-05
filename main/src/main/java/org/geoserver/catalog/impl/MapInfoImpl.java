@@ -59,4 +59,10 @@ public class MapInfoImpl implements MapInfo {
     public void accept(CatalogVisitor visitor) {
         throw new UnsupportedOperationException();
     }
+    
+    @Override
+    public String toString() {
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(']')
+                .toString();
+    }
 }
