@@ -133,6 +133,8 @@
     <profile>
       <id>restconfig</id>
       <modules>
+        <!-- h2 used for testing, drag it in -->
+        <module>h2</module>
         <module>restconfig</module>
       </modules>
     </profile>
