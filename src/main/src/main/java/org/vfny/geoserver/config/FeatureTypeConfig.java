@@ -440,7 +440,7 @@ public class FeatureTypeConfig {
         // override the dir name to make sure 
         if(alias != null)
             f.setDirName(dataStoreId + "_" + alias);
-        else if(dirName.endsWith(name))
+        else if(name.equals( dirName ))
             f.setDirName(dirName);
         else
             f.setDirName(dataStoreId + "_" + name);
