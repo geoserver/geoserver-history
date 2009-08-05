@@ -5,6 +5,8 @@
 package org.geoserver.web.wicket;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -19,6 +21,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -36,7 +39,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  */
 @SuppressWarnings("serial")
 public class CRSPanel extends FormComponentPanel {
-    
+    private static Logger LOGGER = Logging.getLogger(CRSPanel.class);
     private static final long serialVersionUID = -6677103383336166008L;
 
     /** pop-up window for WKT and SRS list */
@@ -202,6 +205,7 @@ public class CRSPanel extends FormComponentPanel {
             return epsgCode != null ? "EPSG:" + epsgCode : "UNKNOWN";
         } 
         catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Could not succesffully lookup an EPSG code", e);
             return null;
         }
     }
@@ -214,6 +218,7 @@ public class CRSPanel extends FormComponentPanel {
             return CRS.decode( srs );
         } 
         catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Unknown EPSG code " + srs, e);
             return null;
         }
     }
