@@ -10,7 +10,6 @@ import java.util.List;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -28,6 +27,7 @@ import org.geoserver.web.data.layer.LayerDetachableModel;
 import org.geoserver.web.data.style.StyleDetachableModel;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
+import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
@@ -68,9 +68,12 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         crsPanel.setOutputMarkupId( true );
         crsPanel.setRequired(true);
         
-        form.add(new AjaxLink( "generateBounds") {
+        form.add(new GeoServerAjaxFormLink( "generateBounds") {
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            public void onClick(AjaxRequestTarget target, Form form) {
+                // force update of the crs panel contents
+                crsPanel.processInput();
+                
                 // build a layer group with the current contents of the group
                 LayerGroupInfo lg = getCatalog().getFactory().createLayerGroup();
                 for ( LayerGroupEntry entry : lgEntryPanel.getEntries() ) {
@@ -90,13 +93,11 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
                     }
                     
                     envelopePanel.setModelObject( lg.getBounds() );
-                    envelopePanel.modelChanged();
                     target.addComponent( envelopePanel );
                     
                     if ( crs == null ) {
                         //update the crs as well
                         crsPanel.setModelObject( lg.getBounds().getCoordinateReferenceSystem() );
-                        crsPanel.modelChanged();
                         target.addComponent( crsPanel );
                     }
                     
