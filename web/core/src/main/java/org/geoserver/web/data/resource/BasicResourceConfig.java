@@ -26,6 +26,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
+import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.KeywordsEditor;
 import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.web.wicket.SRSToCRSModel;
@@ -126,14 +127,16 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         };
     }
 
-    AjaxSubmitLink computeLatLonBoundsLink(final Form refForm,
+    GeoServerAjaxFormLink computeLatLonBoundsLink(final Form refForm,
             final EnvelopePanel nativeBBox, final EnvelopePanel latLonPanel) {
-        return new AjaxSubmitLink("computeLatLon", refForm) {
+        return new GeoServerAjaxFormLink("computeLatLon", refForm) {
 
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form form) {
-                // perform manual processing otherwise the component contents won't be updated
-                form.process();
+            protected void onClick(AjaxRequestTarget target, Form form) {
+                // perform manual processing of the required fields
+                nativeBBox.processInput();
+                declaredCRS.processInput();
+                
                 ReferencedEnvelope nativeBounds = (ReferencedEnvelope) nativeBBox.getModelObject();
                 try {
                     CatalogBuilder cb = new CatalogBuilder(GeoServerApplication.get().getCatalog());
@@ -143,12 +146,6 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
                     error("Error computing the geographic bounds:" + e.getMessage());
                 }
                 target.addComponent(latLonPanel);
-            }
-            
-            public boolean getDefaultFormProcessing() {
-                // disable the default processing or the link won't trigger
-                // when any validation fails
-                return false;
             }
         };
     }
