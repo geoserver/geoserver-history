@@ -25,6 +25,10 @@ where:
 * **permission** is the type of access permission (**r** for read access, **w** for write access).
 * **role[,role2,...]** is the name(s) of predefined roles. The wildcard * is used to indicate the permission is applied to all users, including anonymous users.
 
+Starting with GeoServer 1.7.7, if a namespace or layer name is supposed to contain dots they can be escaped using ``\\``. For example, if a rule must refere ``layer.with.dots`` the following syntax can be used::
+
+  topp.layer\\.with\\.dots.r=ROLE1,ROLE2,...
+
 Each entry must have a unique combination of namespace, layer, and permission values.  If a permission at the global level is not specified, global permissions are assumed to allow read/write access.  If a permission for a namespace is not specified, it inherits permissions from the global specification.  If a permission for a layer is not specified, it inherits permissions from its namespace specification.  If a user belongs to multiple roles, the **least restrictive** permission they inherit will apply.
 
 The ``layers.properties`` file may contain a further directive that specifies the way in which GeoServer will advertise secured layers and behave when a secured layer is accessed without the necessary privileges. The line is::
