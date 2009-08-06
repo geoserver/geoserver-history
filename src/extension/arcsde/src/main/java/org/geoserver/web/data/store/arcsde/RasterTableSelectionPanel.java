@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -29,6 +30,7 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.arcsde.session.ArcSDEConnectionConfig;
 import org.geotools.arcsde.session.ISession;
@@ -54,7 +56,10 @@ public class RasterTableSelectionPanel extends Panel {
      * temporary parameter name used to hold the raster table selected by the drop down into the
      * store's connectionParameters
      */
-    public static final String TABLE_NAME = "table";
+    public static final String TABLE_NAME = "tableName";
+
+    private static final String RESOURCE_KEY_PREFIX = RasterTableSelectionPanel.class
+            .getSimpleName();
 
     private final DropDownChoice choice;
 
@@ -110,8 +115,14 @@ public class RasterTableSelectionPanel extends Panel {
         final FormComponentFeedbackBorder feedback = new FormComponentFeedbackBorder("border");
         feedback.add(choice);
         add(feedback);
+        {
+            final String titleKey = RESOURCE_KEY_PREFIX + ".tableNameChoice.title";
+            ResourceModel titleModel = new ResourceModel(titleKey);
+            String title = String.valueOf(titleModel.getObject());
+            choice.add(new SimpleAttributeModifier("title", title));
+        }
 
-        add(new AjaxSubmitLink("refresh", storeEditForm) {
+        final AjaxSubmitLink refreshTablesLink = new AjaxSubmitLink("refresh", storeEditForm) {
             private static final long serialVersionUID = 1L;
 
             /**
@@ -149,8 +160,14 @@ public class RasterTableSelectionPanel extends Panel {
                 target.addComponent(choice);
                 // do nothing else, so we return to the same page...
             }
-        });
-
+        };
+        add(refreshTablesLink);
+        {
+            final String titleKey = RESOURCE_KEY_PREFIX + ".refresh.title";
+            ResourceModel titleModel = new ResourceModel(titleKey);
+            String title = String.valueOf(titleModel.getObject());
+            refreshTablesLink.add(new SimpleAttributeModifier("title", title));
+        }
     }
 
     public DropDownChoice getFormComponent() {
