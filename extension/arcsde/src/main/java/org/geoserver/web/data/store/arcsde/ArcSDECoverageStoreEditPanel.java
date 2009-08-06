@@ -66,6 +66,9 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.data.store.arcsde");
 
+    private static final String RESOURCE_KEY_PREFIX = ArcSDECoverageStoreEditPanel.class
+            .getSimpleName();
+
     final FormComponent server;
 
     final FormComponent port;
@@ -100,17 +103,14 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         instance = addTextPanel(paramsModel, INSTANCE_PARAM);
         user = addTextPanel(paramsModel, USER_PARAM);
         password = addPasswordPanel(paramsModel);
-        
+
         server.setOutputMarkupId(true);
         port.setOutputMarkupId(true);
         instance.setOutputMarkupId(true);
         user.setOutputMarkupId(true);
         password.setOutputMarkupId(true);
-        
 
-        add(new Label("rasterTaleLabel", new ResourceModel("rasterTable", "Raster table:")));
-        boolean isNew = storeInfo.getId() == null;
-        table = addTableNameComponent(paramsModel, isNew);
+        table = addRasterTable(storeInfo, paramsModel);
 
         /*
          * Listen to form submission and update the model's URL
@@ -147,6 +147,17 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         });
     }
 
+    private FormComponent addRasterTable(final CoverageStoreInfo storeInfo, final IModel paramsModel) {
+
+        final String resourceKey = RESOURCE_KEY_PREFIX + "." + TABLE_NAME;
+
+        Label label = new Label("rasterTaleLabel", new ResourceModel(resourceKey, "Raster table:"));
+        add(label);
+        boolean isNew = storeInfo.getId() == null;
+        FormComponent tableComponent = addTableNameComponent(paramsModel, isNew);
+        return tableComponent;
+    }
+
     /**
      * 
      * @param paramsModel
@@ -169,12 +180,13 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
             tableNameComponent = tableDropDown;
         } else {
             /*
-             * We're editing an existing store. Don't allow to change the table name, it could
+             * We're editing an existing store. Don't allow to change the table name, it could be
              * catastrophic for the Catalog/ResourcePool as ability to get to the coverage is really
              * based on the Store's URL and the CoverageInfo is tied to it
              */
             final IModel paramValue = new MapModel(paramsModel, TABLE_NAME);
-            final IModel paramLabelModel = new ResourceModel(TABLE_NAME, TABLE_NAME);
+            final String resourceKey = RESOURCE_KEY_PREFIX + "." + TABLE_NAME;
+            final IModel paramLabelModel = new ResourceModel(resourceKey, TABLE_NAME);
             final boolean required = true;
             TextParamPanel tableNamePanel;
             tableNamePanel = new TextParamPanel(panelId, paramValue, paramLabelModel, required);
@@ -182,14 +194,21 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
             tableNameComponent = tableNamePanel.getFormComponent();
             tableNameComponent.setEnabled(false);
+
+            final String titleKey = resourceKey + ".title";
+            ResourceModel titleModel = new ResourceModel(titleKey);
+            String title = String.valueOf(titleModel.getObject());
+
+            tableNamePanel.add(new SimpleAttributeModifier("title", title));
         }
+
         return tableNameComponent;
     }
 
     private FormComponent addPasswordPanel(final IModel paramsModel) {
 
         final String paramName = PASSWORD_PARAM.key;
-        final String resourceKey = getClass().getSimpleName() + "." + paramName;
+        final String resourceKey = RESOURCE_KEY_PREFIX + "." + paramName;
 
         final PasswordParamPanel pwdPanel = new PasswordParamPanel(paramName, new MapModel(
                 paramsModel, paramName), new ResourceModel(resourceKey, paramName), true);
@@ -200,7 +219,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         ResourceModel titleModel = new ResourceModel(resourceKey + ".title", defaultTitle);
         String title = String.valueOf(titleModel.getObject());
 
-        pwdPanel.getFormComponent().add(new SimpleAttributeModifier("title", title));
+        pwdPanel.add(new SimpleAttributeModifier("title", title));
 
         return pwdPanel.getFormComponent();
     }
@@ -221,7 +240,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
         ResourceModel titleModel = new ResourceModel(resourceKey + ".title", defaultTitle);
         String title = String.valueOf(titleModel.getObject());
 
-        textParamPanel.getFormComponent().add(new SimpleAttributeModifier("title", title));
+        textParamPanel.add(new SimpleAttributeModifier("title", title));
 
         add(textParamPanel);
         return textParamPanel.getFormComponent();
@@ -229,18 +248,18 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
     private void addConnectionPrototypePanel(final CoverageStoreInfo storeInfo) {
 
-        Label label = new Label("prototypeLabel", new ResourceModel("prototypeLabel",
-                "Same connection parameters as:"));
-        SimpleAttributeModifier title = new SimpleAttributeModifier("title",
-                "Select an existing ArcSDE coverage to reuse the connection options");
-        label.add(title);
+        final String resourceKey = RESOURCE_KEY_PREFIX + ".prototype";
+        Label label = new Label("prototypeLabel", new ResourceModel(resourceKey));
+        final String title = String.valueOf(new ResourceModel(resourceKey + ".title").getObject());
+        final SimpleAttributeModifier titleSetter = new SimpleAttributeModifier("title", title);
+        label.add(titleSetter);
         add(label);
 
         final DropDownChoice existingArcSDECoverages;
         existingArcSDECoverages = new DropDownChoice("connectionPrototype", new Model(),
                 new ArcSDEStoreListModel(), new ArcSDEStoreListChoiceRenderer());
 
-        existingArcSDECoverages.add(title);
+        existingArcSDECoverages.add(titleSetter);
         add(existingArcSDECoverages);
 
         existingArcSDECoverages.add(new OnChangeAjaxBehavior() {
@@ -259,7 +278,7 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
                         instance.setModelObject(connParams.get(INSTANCE_NAME_PARAM_NAME));
                         user.setModelObject(connParams.get(USER_NAME_PARAM_NAME));
                         password.setModelObject(connParams.get(PASSWORD_PARAM_NAME));
-                        
+
                         target.addComponent(server);
                         target.addComponent(port);
                         target.addComponent(instance);
