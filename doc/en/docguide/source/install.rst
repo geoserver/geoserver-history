@@ -53,6 +53,46 @@ Ubuntu
   
    This should generate HTML pages in the :file:`doc/user/build/html` directory.
 
-OS X
-----
+Mac OS X
+--------
 
+Installing Sphinx on Mac OS X is nearly identical to installing Sphinx on a 
+Linux system. 
+
+Easy install
+^^^^^^^^^^^^
+
+If the XCode extensions are installed on the system 
+:command:`easy_install` should already be available. 
+
+To install Sphinx open a terminal window and execute the command::
+
+  sudo easy_install sphinx
+
+Depending on the configuration of the system, problems installing Sphinx with 
+:command:`easy_install` have been known to occur. If this is the case Sphinx can
+be installed manually.
+
+Manual install
+^^^^^^^^^^^^^^
+
+When installing Sphinx manually the templating library it depends on, Jinja2, 
+must also be installed manually. To install Jinja:
+
+#. Go to http://pypi.python.org/pypi/Jinja2
+#. Download the source tarball :file:`Jinja2-2.1.1.tar.gz`
+#. Unpack the source tarball and install Jinja::
+
+    tar xzvf Jinja2-2.1.1-tar.gz
+    cd Jinja2-2.1.1.
+    python setup.py install
+
+After Jinja is installed follow a similar process to install Sphinx:
+
+#. Go to http://pypi.python.org/pypi/Sphinx
+#. Download the source tarbell :file:`Sphinx-0.6.2.tar.gz`
+#. Unpack the source tarball and install Sphinx::
+
+   tar xzvf Sphinx-0.6.2.tar.gz
+   cd Sphinx-0.6.2
+   python setup.py install
