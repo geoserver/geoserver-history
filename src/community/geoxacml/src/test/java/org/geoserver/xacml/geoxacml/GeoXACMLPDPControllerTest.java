@@ -15,25 +15,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.acegisecurity.Authentication;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.providers.AuthenticationProvider;
+import org.acegisecurity.providers.ProviderManager;
+import org.acegisecurity.providers.TestingAuthenticationProvider;
+import org.acegisecurity.providers.TestingAuthenticationToken;
+import org.apache.harmony.security.fortress.PolicyUtils.SecurityPropertyAccessor;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerTestSupport;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
+public class GeoXACMLPDPControllerTest extends XACMLTestSupport {
 
     
     @Override
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
-        File dir = new File( testData.getDataDirectoryRoot(), DataDirPolicyFinderModlule.BASE_DIR );
-        deleteDirectory(dir);
-        File srcDir = new File("src/test/resources/geoserverdatadir/"+DataDirPolicyFinderModlule.BASE_DIR);
-        copyDirectory(srcDir, dir);    
-        
+        geoserverDataDirFromTest();
+                                                        
     }
     
     public void testDirExists() throws Exception {
@@ -161,47 +170,5 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         return null;
     }
     
-    private boolean deleteDirectory(File path) {
-        if( path.exists() ) {
-          File[] files = path.listFiles();
-          for(int i=0; i<files.length; i++) {
-             if(files[i].isDirectory()) {
-               deleteDirectory(files[i]);
-             }
-             else {
-               files[i].delete();
-             }
-          }
-        }
-        return( path.delete() );
-      }
-    
-    private void copyDirectory(File sourceLocation , File targetLocation) throws IOException {
-        
-        if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists()) {
-                targetLocation.mkdir();
-            }
-            
-            String[] children = sourceLocation.list();
-            for (int i=0; i<children.length; i++) {
-                copyDirectory(new File(sourceLocation, children[i]),
-                        new File(targetLocation, children[i]));
-            }
-        } else {
-            
-            InputStream in = new FileInputStream(sourceLocation);
-            OutputStream out = new FileOutputStream(targetLocation);
-            
-            // Copy the bits from instream to outstream
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            in.close();
-            out.close();
-        }
-    }
     
 }
