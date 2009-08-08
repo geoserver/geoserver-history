@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.impl.GeoServerImpl;
+import org.geotools.data.DataUtilities;
 
 public class LegacyLoggingImporterTest extends TestCase {
 
@@ -17,8 +18,7 @@ public class LegacyLoggingImporterTest extends TestCase {
         
         importer = new LegacyLoggingImporter();
         importer.imprt( 
-            new File( getClass().getResource("services.xml").getFile() ).getParentFile()
-        );
+        		DataUtilities.urlToFile(getClass().getResource("services.xml")).getParentFile());
     }
     
     public void test() throws Exception {

@@ -5,6 +5,7 @@
 package org.geoserver.data;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -247,7 +248,7 @@ public class CatalogWriter {
             Transformer tx = TransformerFactory.newInstance().newTransformer();
             tx.setOutputProperty(OutputKeys.INDENT, "yes");
             DOMSource source = new DOMSource(document);
-            StreamResult result = new StreamResult(file);
+            StreamResult result = new StreamResult(new FileOutputStream(file));
 
             tx.transform(source, result);
         } catch (Exception e) {

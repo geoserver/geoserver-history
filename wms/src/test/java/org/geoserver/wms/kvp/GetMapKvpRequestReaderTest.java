@@ -7,6 +7,7 @@ package org.geoserver.wms.kvp;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -190,7 +191,8 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         // no style name, no default, we should fall back on the server default
         HashMap kvp = new HashMap();
         URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryNoDefault.sld");
-        kvp.put("sld", url.toString());
+        // the kvp should be already in decoded form
+        kvp.put("sld", URLDecoder.decode(url.toExternalForm(), "UTF-8"));
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
@@ -208,7 +210,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         // no style name, but the sld has a default for that layer
         HashMap kvp = new HashMap();
         URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryDefault.sld");
-        kvp.put("sld", url.toString());
+        kvp.put("sld", URLDecoder.decode(url.toExternalForm(), "UTF-8"));
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
@@ -225,7 +227,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         // style name matching one in the sld
         HashMap kvp = new HashMap();
         URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryNoDefault.sld");
-        kvp.put("sld", url.toString());
+        kvp.put("sld", URLDecoder.decode(url.toExternalForm(), "UTF-8"));
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
         kvp.put("styles", "TheLibraryModeStyle");
 
@@ -243,7 +245,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         // nothing matches the required style name
         HashMap kvp = new HashMap();
         URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsLibraryNoDefault.sld");
-        kvp.put("sld", url.toString());
+        kvp.put("sld", URLDecoder.decode(url.toExternalForm(), "UTF-8"));
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
         kvp.put("styles", "ThisStyleDoesNotExists");
 
@@ -261,7 +263,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         // no styles, no layer, the full definition is in the sld
         HashMap kvp = new HashMap();
         URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsFeatureTypeConstaint.sld");
-        kvp.put("sld", url.toString());
+        kvp.put("sld", URLDecoder.decode(url.toExternalForm(), "UTF-8"));
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
@@ -286,7 +288,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         // no styles, no layer, the full definition is in the sld
         HashMap kvp = new HashMap();
         URL url = GetMapKvpRequestReader.class.getResource("BasicPolygonsFeatureTypeConstaint.sld");
-        kvp.put("sld", url.toString());
+        kvp.put("sld", URLDecoder.decode(url.toExternalForm(), "UTF-8"));
         kvp.put("layers", MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart());
         kvp.put("styles", "TheLibraryModeStyle");
 
