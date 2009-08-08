@@ -7,6 +7,7 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.util.LegacyConfigurationImporter;
+import org.geotools.data.DataUtilities;
 
 import junit.framework.TestCase;
 
@@ -19,9 +20,7 @@ public class LegacyConfigurationImporterTest extends TestCase {
         gs.setFactory( new GeoServerFactoryImpl(gs) );
         
         importer = new LegacyConfigurationImporter( gs );
-        importer.imprt( 
-            new File( getClass().getResource("services.xml").getFile() ).getParentFile()
-        );
+        importer.imprt(DataUtilities.urlToFile(getClass().getResource("services.xml")).getParentFile());
     }
     
     public void testGlobal() throws Exception {
