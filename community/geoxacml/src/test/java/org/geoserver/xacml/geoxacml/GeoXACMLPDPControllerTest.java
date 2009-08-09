@@ -10,28 +10,13 @@ package org.geoserver.xacml.geoxacml;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.AuthenticationProvider;
-import org.acegisecurity.providers.ProviderManager;
-import org.acegisecurity.providers.TestingAuthenticationProvider;
-import org.acegisecurity.providers.TestingAuthenticationToken;
-import org.apache.harmony.security.fortress.PolicyUtils.SecurityPropertyAccessor;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

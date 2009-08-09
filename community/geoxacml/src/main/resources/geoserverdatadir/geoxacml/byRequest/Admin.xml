@@ -7,11 +7,18 @@
 	<Target>
 		<Subjects>
 			<Subject>
+			<!-- 
 				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal">
 					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">ROLE_ADMINISTRATOR</AttributeValue>					                                                                         
 					<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role"
 						DataType="http://www.w3.org/2001/XMLSchema#anyURI" />
 				</SubjectMatch>
+			 -->
+				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">ROLE_ADMINISTRATOR</AttributeValue>					                                                                         
+					<SubjectAttributeDesignator AttributeId="org:geoserver:role:ROLE_ADMINISTRATOR"
+						DataType="http://www.w3.org/2001/XMLSchema#anyURI" />
+				</SubjectMatch>			 	
 			</Subject>
 		</Subjects>
 	</Target>

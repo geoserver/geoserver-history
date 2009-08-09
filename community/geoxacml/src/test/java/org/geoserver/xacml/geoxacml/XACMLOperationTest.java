@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,15 +23,7 @@ import org.acegisecurity.Authentication;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.AuthenticationProvider;
-import org.acegisecurity.providers.ProviderManager;
-import org.acegisecurity.providers.TestingAuthenticationProvider;
 import org.acegisecurity.providers.TestingAuthenticationToken;
-import org.apache.harmony.security.fortress.PolicyUtils.SecurityPropertyAccessor;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -54,6 +44,17 @@ public class XACMLOperationTest extends XACMLTestSupport {
         assertTrue( dir.exists() );
         
     }
+
+    public void testURL() throws Exception {
+        //Authentication anonymous = new TestingAuthenticationToken("anonymous", null, null);
+        Authentication admin = new TestingAuthenticationToken("admin", "geoserver", new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_ADMINISTRATOR") });
+        
+        SecurityContextHolder.getContext().setAuthentication(admin);
+        
+        InputStream resp = get("security/geoxacml");
+        
+    }
+    
     
     public void testWMS() throws Exception {
         //Authentication anonymous = new TestingAuthenticationToken("anonymous", null, null);

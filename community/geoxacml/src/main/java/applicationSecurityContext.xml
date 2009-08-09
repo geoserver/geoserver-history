@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	
+  <!-- 
+    Adding a security interceptor for GeoXACML    
+  -->
+
+    <bean id="xacmlOperationSecurityInterceptor"
+    class="org.geoserver.xacml.acegi.XACMLOperationSecurityInterceptor">
+    <property name="authenticationManager" ref="authenticationManager" />
+    <property name="accessDecisionManager">
+      <bean class="org.geoserver.xacml.acegi.XACMLOperationAccessDecisionManager">
+        <property name="allowIfAllAbstainDecisions" value="false" />
+        <property name="decisionVoters">
+
+          <list>
+            <bean class="org.geoserver.xacml.acegi.XACMLOperationDecisionVoter" />
+          </list>
+        </property>
+      </bean>
+    </property>
+  </bean>
+
+</beans>
