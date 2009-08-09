@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.acegisecurity.Authentication;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.intercept.AbstractSecurityInterceptor;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -33,9 +37,12 @@ import com.sun.xacml.ctx.ResponseCtx;
 public class GeoXACMLPDPController extends AbstractController {
 
     public static final String VALIDATE_PARAM = "validate";
+    
+    AbstractSecurityInterceptor interceptor = null;
 
     public GeoXACMLPDPController() {
         setSupportedMethods(new String[] { METHOD_POST });
+        //interceptor = (AbstractSecurityInterceptor)GeoServerExtensions.bean("xacmlOperationSecurityInterceptor");
     }
 
     @Override
@@ -43,6 +50,10 @@ public class GeoXACMLPDPController extends AbstractController {
             throws Exception {
 
         PDP pdp = GeoXACMLConfig.getPDP();
+        if (interceptor!=null) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            interceptor.getAccessDecisionManager().decide(auth, req, null);            
+        }    
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setIgnoringComments(true);
         factory.setIgnoringElementContentWhitespace(true);

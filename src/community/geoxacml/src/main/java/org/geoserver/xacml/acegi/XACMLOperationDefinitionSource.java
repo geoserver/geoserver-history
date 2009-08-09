@@ -8,11 +8,8 @@ package org.geoserver.xacml.acegi;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.acegisecurity.ConfigAttribute;
 import org.acegisecurity.ConfigAttributeDefinition;
-import org.acegisecurity.SecurityConfig;
 import org.acegisecurity.intercept.ObjectDefinitionSource;
-import org.geoserver.platform.Operation;
 
 /**
  * Acegi ObjectDefinitonSource  implementation for Services
@@ -34,7 +31,7 @@ public class XACMLOperationDefinitionSource implements ObjectDefinitionSource {
     }
 
     public boolean supports(Class aClass) {
-        return Operation.class.isAssignableFrom(aClass);
+        return true;
     }
 
 }

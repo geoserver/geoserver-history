@@ -7,14 +7,27 @@ package org.geoserver.xacml.request;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
+import org.acegisecurity.Authentication;
+import org.geoserver.security.AccessMode;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
+import org.geoserver.xacml.geoxacml.XACMLConstants;
+import org.geoserver.xacml.role.Role;
+import org.geoserver.xacml.role.RoleAssignmentAuthority;
 import org.vfny.geoserver.Request;
 
+import com.sun.xacml.attr.AnyURIAttribute;
+import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
+import com.sun.xacml.ctx.Subject;
 import com.vividsolutions.jts.geom.Geometry;
 
 
@@ -28,50 +41,73 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public abstract class RequestCtxBuilder extends Object {
     
-    protected final static String URN_PREFIX="org:geoserver:";
-    protected enum Action {
-        read { public String toString() { return "read"; }},
-        write { public String toString() { return "write"; }}
-    };
+                
+    private Role role;
     
-    protected static URI SERVICE_ATTR_ID = null;
-    protected static URI REQUEST_ATTR_ID = null;
-    protected static URI ACTION_ATTR_ID = null;
-    protected static URI LAYER_ATTR_ID = null;
-    static {
+    public Role getRole() {
+        return role;
+    }
+
+
+    protected RequestCtxBuilder(Role role) {
+        this.role=role;
+    }
+    
+    
+    protected void addRole(Set<Subject> subjects) {
+        
+            
+        URI roleIdURI = null,roleURI=null;
         try {
-            SERVICE_ATTR_ID = new URI(URN_PREFIX+"service");
-            REQUEST_ATTR_ID = new URI(URN_PREFIX+"request");
-            ACTION_ATTR_ID = new URI(URN_PREFIX+"action");
-            LAYER_ATTR_ID = new URI(URN_PREFIX+"layer");
+            roleIdURI=new URI(XACMLConstants.RoleIdPrefix+role.getId());
+            roleURI=new URI(role.getId());
         } catch (URISyntaxException e) {
-            // should not happen
+            throw new RuntimeException(e);
         }
         
+        Set<Attribute> subjectAttributes = new HashSet<Attribute>(1+role.getAttributes().size());
+        
+        AttributeValue roleAttributeValue = new AnyURIAttribute(roleURI);
+        Attribute roleAttribute= new Attribute(roleIdURI,null,null,roleAttributeValue);
+        subjectAttributes.add(roleAttribute);
+        
+        for (Entry<String,Object> paramEntry: role.getAttributes().entrySet()) {
+            URI paramURI = null;
+            try {
+                paramURI=new URI(XACMLConstants.RoleIdPrefix+role.getId()+XACMLConstants.RoleParamIdInfix+paramEntry.getKey());
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            // TODO, not anything is a string
+            AttributeValue paramValue = new StringAttribute(paramEntry.getValue().toString());
+            Attribute paramAttribute = new Attribute(paramURI,null,null,paramValue);
+            subjectAttributes.add(paramAttribute);
+        }
+                
+        Subject subject = new Subject(subjectAttributes);
+        subjects.add(subject);
+
     }
     
-    protected void fillRequestCtxLayerInfo(RequestCtx ctx, MapLayerInfo[] layerInfo) {
-//        Set<Attribute> resourceAttributes = ctx.getResource();
-        // TODO, Multivalued attributes
+    protected void addAction(Set<Attribute> actions, AccessMode mode ) {
+        actions.add(new Attribute(XACMLConstants.ActionAttributeURI,null,null,
+                new StringAttribute(mode.toString())));        
+    }
+
+    
+    
+    protected void addResource(Set<Attribute> resources, String name) {
+        resources.add(new Attribute(XACMLConstants.ResourceAttributeURI,null,null,
+                new StringAttribute(name)));        
+
         
     }
-    protected void fillRequestCtxGeometry(RequestCtx ctx, Geometry g, String srsName) {
+    protected void addGeometry(RequestCtx ctx, Geometry g, String srsName) {
         // TDOO
     }
     
-    protected void fillRequestCtxAction(RequestCtx ctx, Action action ) {
-        ctx.getAction().add(new Attribute(ACTION_ATTR_ID,null,null,
-                new StringAttribute(action.toString())));
+    abstract public RequestCtx createRequestCtx();
         
-    }
-    protected void fillRequestCtx(RequestCtx ctx, Request request) {
-            Set<Attribute> resourceAttributes = ctx.getResource();
-            
-            resourceAttributes.add(new Attribute(SERVICE_ATTR_ID,null,null,
-                            new StringAttribute(request.getService())));
-            resourceAttributes.add(new Attribute(REQUEST_ATTR_ID,null,null,
-                    new StringAttribute(request.getRequest())));
-            
-    }
+
         
 }
