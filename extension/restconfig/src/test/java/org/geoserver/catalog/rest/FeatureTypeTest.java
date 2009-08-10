@@ -61,6 +61,35 @@ public class FeatureTypeTest extends CatalogRESTTestSupport {
         put( "/rest/workspaces/gs/datastores/pds/file.properties?" + q, zbytes.toByteArray(), "application/zip");
     }
     
+    void addGeomlessPropertyDataStore(boolean configureFeatureType) throws Exception {
+        ByteArrayOutputStream zbytes = new ByteArrayOutputStream();
+        ZipOutputStream zout = new ZipOutputStream( zbytes );
+        
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        BufferedWriter writer = new BufferedWriter( new OutputStreamWriter( bytes ) );
+        writer.write( "_=name:String,intProperty:Integer\n" );
+        writer.write( "ngpdsa.0='zero'|0\n");
+        writer.write( "ngpdsa.1='one'|1\n");
+        writer.flush();
+        
+        zout.putNextEntry( new ZipEntry( "ngpdsa.properties") );
+        zout.write( bytes.toByteArray() );
+        bytes.reset();
+        
+        writer.write( "_=name:String,intProperty:Integer\n" );
+        writer.write( "ngpdsb.0='two'|2\n");
+        writer.write( "ngpdsb.1='trhee'|3\n");
+        writer.flush();
+        zout.putNextEntry( new ZipEntry( "ngpdsb.properties" ) );
+        zout.write( bytes.toByteArray() );
+        
+        zout.flush();
+        zout.close();
+        
+        String q = "configure=" + (configureFeatureType ? "all" : "none"); 
+        put( "/rest/workspaces/gs/datastores/ngpds/file.properties?" + q, zbytes.toByteArray(), "application/zip");
+    }
+    
     public void testGetAllByDataStore() throws Exception {
       
         addPropertyDataStore(true);
@@ -243,5 +272,20 @@ public class FeatureTypeTest extends CatalogRESTTestSupport {
     public void testDeleteNonExistant() throws Exception {
         assertEquals( 404,  
             deleteAsServletResponse( "/rest/workspaces/sf/datastores/sf/featuretypes/NonExistant").getStatusCode());
+    }
+    
+    public void testPostGeometrylessFeatureType() throws Exception {
+        addGeomlessPropertyDataStore(false);
+        
+        String xml = 
+            "<featureType>" + 
+              "<name>ngpdsa</name>" +
+            "</featureType>";
+        
+      MockHttpServletResponse response = 
+          postAsServletResponse("/rest/workspaces/gs/datastores/ngpds/featuretypes", xml, "text/xml");
+      assertEquals( 201, response.getStatusCode() );
+      assertNotNull( response.getHeader( "Location") );
+      assertTrue( response.getHeader("Location").endsWith( "/workspaces/gs/datastores/ngpds/featuretypes/ngpdsa" ) );
     }
 }

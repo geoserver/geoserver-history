@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.data.test.MockData;
+import org.geotools.data.DataStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.h2.H2DataStoreFactory;
@@ -110,5 +111,54 @@ public class JDBCTest extends CatalogRESTTestSupport {
         //do a get feature for a sanity check
         Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:widgets");
         assertEquals( 2, dom.getElementsByTagName( "gs:widgets" ).getLength() );
+    }
+    
+    public void testCreateGeometrylessFeatureType() throws Exception {
+        testCreateDataStore();
+        
+        DataStoreInfo dsinfo = catalog.getDataStoreByName( "gs", "acme");
+        assertNull( catalog.getFeatureTypeByDataStore(dsinfo, "widgetsNG"));
+        
+        DataStore ds = (DataStore) dsinfo.getDataStore(null);
+        try {
+            if ( ds.getSchema("widgetsNG") != null ) {
+                return;
+            }
+        }
+        catch( Exception e ) {}
+        
+        SimpleFeatureTypeBuilder tb = new SimpleFeatureTypeBuilder();
+        tb.setName( "widgetsNG" );
+        tb.add( "name", String.class );
+        
+        ds.createSchema( tb.buildFeatureType() );
+        
+        FeatureWriter fw = ds.getFeatureWriterAppend( "widgetsNG", Transaction.AUTO_COMMIT );
+        fw.hasNext();
+        SimpleFeature sf = (SimpleFeature) fw.next();
+        sf.setAttribute( "name", "one");
+        fw.write();
+        
+        fw.hasNext();
+        sf = (SimpleFeature) fw.next();
+        sf.setAttribute( "name", "two");
+        fw.write();
+        
+        fw.close();
+        
+        String xml = 
+            "<featureType>" +
+              "<name>widgetsNG</name>" + 
+            "</featureType>";
+        
+        MockHttpServletResponse resp = 
+            postAsServletResponse("/rest/workspaces/gs/datastores/acme/featuretypes", xml );
+        assertEquals( 201, resp.getStatusCode() );
+        
+        assertNotNull( catalog.getFeatureTypeByDataStore(dsinfo, "widgetsNG"));
+        
+        //do a get feature for a sanity check
+        Document dom = getAsDOM( "wfs?request=getfeature&typename=gs:widgetsNG");
+        assertEquals( 2, dom.getElementsByTagName( "gs:widgetsNG" ).getLength() );
     }
 }
