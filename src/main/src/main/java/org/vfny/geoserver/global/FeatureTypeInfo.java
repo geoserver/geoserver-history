@@ -519,7 +519,10 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
             dto.setSchemaName(getTypeName() + "_Type");
         }
 
-        dto.setSRS(Integer.parseInt( getSRS() ));
+        if (getSRS() != null) {
+            dto.setSRS(Integer.parseInt( getSRS() ));    
+        }
+        
         dto.setSRSHandling(getSrsHandling());
         dto.setTitle(getTitle());
         dto.setMaxFeatures(getMaxFeatures());
@@ -1005,6 +1008,9 @@ public class FeatureTypeInfo extends GlobalLayerSupertype {
      */
     public String getSRS() {
         try {
+            if (featureType.getSRS() == null) {
+               return null;
+            }
             CoordinateReferenceSystem crs = CRS.decode( featureType.getSRS() ); 
             return CRS.lookupEpsgCode(crs, true).toString();
         } 

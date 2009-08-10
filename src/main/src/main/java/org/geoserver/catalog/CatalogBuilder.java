@@ -37,6 +37,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.coverage.grid.Format;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.metadata.Identifier;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
@@ -391,28 +392,33 @@ public class CatalogBuilder {
             FeatureSource source = catalog.getResourcePool().getFeatureSource( featureType, null );
             ReferencedEnvelope bounds = source.getBounds();
             if ( bounds == null ) {
-                //manually calculate it
-                //TODO: optimize to only load geometric attributes
-                FeatureCollection features = source.getFeatures();
-                FeatureIterator fi = features.features();
-                try {
-                    while( fi.hasNext() ) {
-                        SimpleFeature f = (SimpleFeature) fi.next();
-                        if ( bounds == null ) {
-                            bounds = new ReferencedEnvelope(f.getBounds());
-                        }
-                        else {
-                            bounds.include( f.getBounds() );
+                //check if this feature is geometryless, if so skip bounds computation
+                if (source.getSchema().getGeometryDescriptor() != null) {
+                    //manually calculate it
+                    //TODO: optimize to only load geometric attributes
+                    FeatureCollection features = source.getFeatures();
+                    FeatureIterator fi = features.features();
+                    try {
+                        while( fi.hasNext() ) {
+                            SimpleFeature f = (SimpleFeature) fi.next();
+                            if ( bounds == null ) {
+                                bounds = new ReferencedEnvelope(f.getBounds());
+                            }
+                            else {
+                                bounds.include( f.getBounds() );
+                            }
                         }
                     }
-                }
-                finally {
-                    features.close( fi );
+                    finally {
+                        features.close( fi );
+                    }
                 }
             }
             
-            featureType.setNativeBoundingBox( bounds );
-            featureType.setLatLonBoundingBox( bounds.transform( CRS.decode( "EPSG:4326"), true ) );
+            if (bounds != null) {
+                featureType.setNativeBoundingBox( bounds );
+                featureType.setLatLonBoundingBox( bounds.transform( CRS.decode( "EPSG:4326"), true ) );
+            }
         }
 
         if ( featureType.getSRS() == null ) {
@@ -677,24 +683,27 @@ public class CatalogBuilder {
         //styles
         String styleName = null;
         
-        Class gtype = featureType.getFeatureType().getGeometryDescriptor().getType().getBinding();
-        if ( Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
-            styleName = StyleInfo.DEFAULT_POINT;
+        GeometryDescriptor gd = featureType.getFeatureType().getGeometryDescriptor();
+        if (gd != null) {
+            Class gtype = gd.getType().getBinding();
+            if ( Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
+                styleName = StyleInfo.DEFAULT_POINT;
+            }
+            else if ( LineString.class.isAssignableFrom(gtype) || MultiLineString.class.isAssignableFrom(gtype)) {
+                styleName = StyleInfo.DEFAULT_LINE;
+            }
+            else if ( Polygon.class.isAssignableFrom(gtype) || MultiPolygon.class.isAssignableFrom(gtype)) {
+                styleName = StyleInfo.DEFAULT_POLYGON;
+            }
+            else {
+                //fall back to point
+                styleName = StyleInfo.DEFAULT_POINT;
+            }
+            
+            StyleInfo style = catalog.getStyleByName( styleName );
+            layer.setDefaultStyle(style);
+            layer.getStyles().add( style );
         }
-        else if ( LineString.class.isAssignableFrom(gtype) || MultiLineString.class.isAssignableFrom(gtype)) {
-            styleName = StyleInfo.DEFAULT_LINE;
-        }
-        else if ( Polygon.class.isAssignableFrom(gtype) || MultiPolygon.class.isAssignableFrom(gtype)) {
-            styleName = StyleInfo.DEFAULT_POLYGON;
-        }
-        else {
-            //fall back to point
-            styleName = StyleInfo.DEFAULT_POINT;
-        }
-        
-        StyleInfo style = catalog.getStyleByName( styleName );
-        layer.setDefaultStyle(style);
-        layer.getStyles().add( style );
         
         return layer;
     }
