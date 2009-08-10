@@ -222,8 +222,8 @@ public class DataStoreFileResource extends StoreFileResource {
                 if ( add ) {
                     //auto configure the feature type as well
                     ftinfo = builder.buildFeatureType(fs);
-                    builder.setupBounds(ftinfo);
                     builder.lookupSRS(ftinfo, true);
+                    builder.setupBounds(ftinfo);
                 }
                 else {
                     ftinfo = catalog.getFeatureTypeByName( namespace.getPrefix(), featureTypeNames[i] );
