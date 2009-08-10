@@ -2,10 +2,10 @@
 <Policy xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os"	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="urn:oasis:names:tc:xacml:2.0:policy:schema:os
         http://docs.oasis-open.org/xacml/2.0/access_control-xacml-2.0-policy-schema-os.xsd"
-	PolicyId="urn:oasis:names:tc:xacml:2.0:gis:DenyAll"
+	PolicyId="urn:oasis:names:tc:xacml:2.0:gis:PermitAlice"	
 	RuleCombiningAlgId="urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:deny-overrides">
 	<Target />
-	<Rule Effect="Deny"
-		RuleId="urn:oasis:names:tc:xacml:2.0:rule:DenayAll" >
+	<Rule Effect="Permit"
+		RuleId="urn:oasis:names:tc:xacml:2.0:rule:PermitAll" >
 	</Rule>
 </Policy>

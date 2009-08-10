@@ -32,7 +32,7 @@ public class GeoXACMLPDPControllerTest extends XACMLTestSupport {
     
     public void testDirExists() throws Exception {
         File dir = new File( testData.getDataDirectoryRoot(), DataDirPolicyFinderModlule.BASE_DIR );
-        assertTrue( dir.exists() );
+        assertTrue( dir.exists() );        
         
     }
     

@@ -21,6 +21,11 @@
 					<ResourceAttributeDesignator
 							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string" />
 				</ResourceMatch>
+				<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
+					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">CatalogType</AttributeValue>
+					<ResourceAttributeDesignator
+							AttributeId="org:geoserver:resource:type" DataType="http://www.w3.org/2001/XMLSchema#string" />
+				</ResourceMatch>				
 			</Resource>
 		</Resources>		
 	</Target>
@@ -28,11 +33,9 @@
 	</Rule>
 	<Obligations>
 		<Obligation FulfillOn="Permit" ObligationId="org:geoserver:obligation:CatalogMode">
-			<AttributeAssignment DataType="http://www.w3.org/2001/XMLSchema#string" AttributeId="org:geoserver:obligation:CatalogMode:assignment:Mode">
-				<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">HIDE</AttributeValue>
-				<!-- <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">CHALLENGE</AttributeValue>  -->
-				<!-- <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">MIXED</AttributeValue>  -->
-			</AttributeAssignment>
+			<AttributeAssignment DataType="http://www.w3.org/2001/XMLSchema#string" 
+			  AttributeId="org:geoserver:obligation:CatalogMode:assignment:Mode">HIDE</AttributeAssignment>
+				<!-- possible values HIDE or CHALLENGE or MIXED > -->			
 		</Obligation>
 	</Obligations>
 			

@@ -43,14 +43,16 @@ public abstract class RequestCtxBuilder extends Object {
     
                 
     private Role role;
+    private AccessMode mode;
     
     public Role getRole() {
         return role;
     }
 
 
-    protected RequestCtxBuilder(Role role) {
+    protected RequestCtxBuilder(Role role,AccessMode mode) {
         this.role=role;
+        this.mode=mode;
     }
     
     
@@ -89,18 +91,18 @@ public abstract class RequestCtxBuilder extends Object {
 
     }
     
-    protected void addAction(Set<Attribute> actions, AccessMode mode ) {
+    protected void addAction(Set<Attribute> actions) {
         actions.add(new Attribute(XACMLConstants.ActionAttributeURI,null,null,
                 new StringAttribute(mode.toString())));        
     }
 
     
     
-    protected void addResource(Set<Attribute> resources, String name) {
+    protected void addResource(Set<Attribute> resources, String name, String type) {
         resources.add(new Attribute(XACMLConstants.ResourceAttributeURI,null,null,
                 new StringAttribute(name)));        
-
-        
+        resources.add(new Attribute(XACMLConstants.ResourceTypeURI,null,null,
+                new StringAttribute(type)));                       
     }
     protected void addGeometry(RequestCtx ctx, Geometry g, String srsName) {
         // TDOO

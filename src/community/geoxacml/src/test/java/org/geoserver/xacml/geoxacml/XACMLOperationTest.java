@@ -24,6 +24,9 @@ import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.TestingAuthenticationToken;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.security.DataAccessManager;
+import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -53,6 +56,12 @@ public class XACMLOperationTest extends XACMLTestSupport {
         
         InputStream resp = get("security/geoxacml");
         
+    }
+    
+    public void testGetMode() {
+        DataAccessManager m = (DataAccessManager) GeoServerExtensions.bean(DataAccessManager.class);
+        CatalogMode mode = m.getMode();
+        assertEquals (mode, CatalogMode.HIDE);
     }
     
     

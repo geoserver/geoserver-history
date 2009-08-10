@@ -37,17 +37,24 @@ public class XACMLConstants {
      * Predefined Role definitions
      */
     // role for geoserver itself
-    public final static String GeoServerRole=RoleIdPrefix+"ROLE_GEOSERVER";
-    public static URI GeoServerRoleURI;
-    public final static String AdminRole=RoleIdPrefix+"ROLE_ADMINISTRATOR";
-    public static URI AdminRoleURI;
-    public final static String AnonymousRole=RoleIdPrefix+"ROLE_ANONYMOUS";
-    public static URI AnonymousRoleURI;
+    public final static String GeoServerRole="ROLE_GEOSERVER";
+    public final static String AdminRole="ROLE_ADMINISTRATOR";
+    public final static String AnonymousRole="ROLE_ANONYMOUS";
 
     /*
      * Some common resouce names 
      */    
     public static String CatalogResouceName = "Catalog";
+    
+    /*
+     * Some common resouce type names 
+     */    
+    public static String CatalogResourceType="CatalogType";
+    public static String URLResourceType="URL";
+    public static String WorkSpaceResourceType="Workspace";
+    public static String LayerResourceType="Layer";
+    public static String ResourceResourceType="Resource";
+    
     
     /*
      * Some common obligation Ids 
@@ -66,9 +73,6 @@ public class XACMLConstants {
             ResourceTypeURI = new URI(ResourceTypeId);
             // RoleAttributeURI = new URI(RoleAttributeId);
             
-            GeoServerRoleURI = new URI(GeoServerRole);
-            AdminRoleURI = new URI(AdminRole);
-            AnonymousRoleURI = new URI(AnonymousRole);
         } catch (URISyntaxException e) {
             // should not happen
         }

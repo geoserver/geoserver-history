@@ -8,6 +8,8 @@ package org.geoserver.xacml.request;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.geoserver.security.AccessMode;
+import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.Role;
 
 import com.sun.xacml.ctx.Attribute;
@@ -28,8 +30,8 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
         return urlString;
     }
 
-    public URLMatchRequestCtxBuilder(Role role, String urlString) {
-        super(role);
+    public URLMatchRequestCtxBuilder(Role role, String urlString,AccessMode mode) {
+        super(role,mode);
         this.urlString = urlString;
     }
 
@@ -40,9 +42,11 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
         addRole(subjects);
 
         Set<Attribute> resources = new HashSet<Attribute>(1);
-        addResource(resources, urlString);
+        addResource(resources, urlString,XACMLConstants.URLResourceType);
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
+        addAction(actions);
+        
         Set<Attribute> environment = new HashSet<Attribute>(1);
 
         RequestCtx ctx = new RequestCtx(subjects, resources, actions, environment);
