@@ -47,7 +47,9 @@ public class DataAccessNewPageTest extends GeoServerWicketTestSupport {
             new DataAccessNewPage(dataStoreFactoryDisplayName);
             fail("Expected IAE on invalid datastore factory name");
         } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().startsWith("Can't locate a datastore factory"));
+            // hum.. change the assertion if the text changes in GeoserverApplication.properties...
+            // but I still want to assert the reason for failure is the expected one..
+            assertTrue(e.getMessage().startsWith("Can't find the factory"));
         }
     }
 
