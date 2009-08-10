@@ -33,6 +33,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.wicket.EditAreaBehavior;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -170,6 +171,10 @@ public class DemoRequestsPage extends GeoServerBasePage {
         testWfsPostForm.add(urlTextField);
 
         TextArea body = new TextArea("body", new PropertyModel(model, "requestBody"));
+        // force the id otherwise this blasted thing won't be usable from other forms
+        body.setMarkupId("body");
+        body.setOutputMarkupId(true);
+        body.add(new EditAreaBehavior());
         testWfsPostForm.add(body);
 
         TextField username = new TextField("username", new PropertyModel(model, "userName"));
