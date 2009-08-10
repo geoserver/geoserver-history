@@ -253,8 +253,8 @@ public class MatchFunction extends FunctionBase
         set.add(NAME_ANYURI_REGEXP_MATCH);
         set.add(NAME_IPADDRESS_REGEXP_MATCH);
         set.add(NAME_DNSNAME_REGEXP_MATCH);
-        set.add(NAME_RFC822NAME_MATCH);
-        set.add(NAME_X500NAME_MATCH);
+        set.add(NAME_RFC822NAME_REGEXP_MATCH);
+        set.add(NAME_X500NAME_REGEXP_MATCH);
 
         return set;
     }
