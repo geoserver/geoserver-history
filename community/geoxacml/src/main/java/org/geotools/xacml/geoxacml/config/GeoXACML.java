@@ -22,7 +22,7 @@ import java.net.URL;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.geotools.xacml.extensions.WildCardFunction;
+import org.geotools.xacml.extensions.WildCardFunctionCluster;
 import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 import org.geotools.xacml.geoxacml.attr.proxy.GeometryAttributeProxy;
 import org.geotools.xacml.geoxacml.cond.ConvertToMetre;
@@ -56,6 +56,7 @@ import com.sun.xacml.attr.AttributeFactory;
 import com.sun.xacml.attr.AttributeFactoryProxy;
 import com.sun.xacml.attr.StandardAttributeFactory;
 import com.sun.xacml.cond.BagFunction;
+import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.FunctionFactory;
 import com.sun.xacml.cond.FunctionFactoryProxy;
 import com.sun.xacml.cond.SetFunction;
@@ -140,7 +141,10 @@ public class GeoXACML {
 
         // FunctionFactory factory = FunctionFactory.getTargetInstance();
         
-        factory.addFunction(new WildCardFunction());
+        // add wildcard functions        
+        for (Function wildCardFunction : new WildCardFunctionCluster().getSupportedFunctions()) {
+            factory.addFunction(wildCardFunction);
+        }                       
 
         factory.addFunction(new GeometryEquals());
         factory.addFunction(new GeometryDisjoint());
