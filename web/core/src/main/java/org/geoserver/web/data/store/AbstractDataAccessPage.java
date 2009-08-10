@@ -80,12 +80,15 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
         try {
             dsFactory = resourcePool.getDataStoreFactory(storeInfo);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Can't locate a datastore factory for '"
-                    + storeInfo.getType() + "'. " + e.getMessage());
+            String msg = (String) new ResourceModel(
+                    "AbstractDataAccessPage.cantGetDataStoreFactory").getObject();
+            msg += ": " + e.getMessage();
+            throw new IllegalArgumentException(msg);
         }
         if (dsFactory == null) {
-            throw new IllegalArgumentException("Can't locate a datastore factory for '"
-                    + storeInfo.getType() + "'");
+            String msg = (String) new ResourceModel(
+                    "AbstractDataAccessPage.cantGetDataStoreFactory").getObject();
+            throw new IllegalArgumentException(msg);
         }
 
         final IModel model = new CompoundPropertyModel(storeInfo);
