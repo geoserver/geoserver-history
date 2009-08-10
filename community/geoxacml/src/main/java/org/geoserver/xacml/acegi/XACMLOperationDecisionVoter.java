@@ -15,6 +15,7 @@ import org.acegisecurity.ConfigAttributeDefinition;
 import org.acegisecurity.vote.AccessDecisionVoter;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
+import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.request.URLMatchRequestCtxBuilder;
@@ -65,7 +66,7 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
 
         for (String roleId : raa.getRoleIdsFor(auth)) {
             URLMatchRequestCtxBuilder builder = new URLMatchRequestCtxBuilder(new Role(roleId),
-                    urlPath);
+                    urlPath,AccessMode.READ);
             RequestCtx requestCtx = builder.createRequestCtx();
             XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);

@@ -12,6 +12,11 @@
 	</Subject>
 	<Resource>
 		<Attribute
+		  AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-type"
+		  DataType="http://www.w3.org/2001/XMLSchema#string">
+			<AttributeValue>layer</AttributeValue>				
+		</Attribute>	
+		<Attribute
 		  AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id"
 		  DataType="http://www.w3.org/2001/XMLSchema#string">
 			<AttributeValue>streets</AttributeValue>

@@ -8,8 +8,9 @@ package org.geoserver.xacml.request;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.Role;
 
@@ -18,39 +19,40 @@ import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.Subject;
 
 /**
- * Builds a request for testing access of geoserver to the catalog (always Permit)
- * The idea here is to pass back the {@link CatalogMode} in an XACML obligation.
+ * Builds a request for layer info access control
+ * 
  * 
  * @author Christian Mueller
- *
+ * 
  */
-public class CatalogRequestCtxBuilder extends RequestCtxBuilder {
-    public final static Role GeoServerRole = new Role(XACMLConstants.GeoServerRole);
-    
-    public CatalogRequestCtxBuilder(Role role,AccessMode mode) {
+public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
+    private String resourceName = null;
+
+    public String getResouceName() {
+        return resourceName;
+    }
+
+    public ResourceInfoRequestCtxBuilder(Role role, ResourceInfo resourceInfo,AccessMode mode) {
         super(role,mode);
+        this.resourceName = resourceInfo.getName();
     }
 
     @Override
     public RequestCtx createRequestCtx() {
-        
+
         Set<Subject> subjects = new HashSet<Subject>(1);
         addRole(subjects);
-        
+
         Set<Attribute> resources = new HashSet<Attribute>(1);
-        addResource(resources, XACMLConstants.CatalogResouceName, XACMLConstants.CatalogResourceType);
-        
+        addResource(resources, resourceName,XACMLConstants.ResourceResourceType);
+
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);
         
         Set<Attribute> environment = new HashSet<Attribute>(1);
-        
-        
-        RequestCtx ctx = new RequestCtx(subjects,resources,actions,environment); 
-        return ctx;
 
-        
+        RequestCtx ctx = new RequestCtx(subjects, resources, actions, environment);
+        return ctx;
     }
-    
-    
+
 }
