@@ -33,7 +33,7 @@
   <dependency>
    <groupId>org.opengeo</groupId>
    <artifactId>geowebcache</artifactId>
-   <version>1.1.5a</version>
+   <version>1.1.5b</version>
    <exclusions>
    <!-- GeoServer - This doesn't actually do anything, specified in
         community/pom.xml -->
