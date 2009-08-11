@@ -7,12 +7,12 @@ import org.geoserver.security.DataAccessManager.CatalogMode;
 public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest {
 
     public void testWideOpen() throws Exception {
-        DefaultDataAccessManager manager = buildManager("wideOpen.properties");
+        DataAccessManager manager = buildManager("wideOpen.properties");
         checkUserAccessFlat(manager, anonymous, true, true);
     }
 
     public void testLockedDown() throws Exception {
-        DefaultDataAccessManager manager = buildManager("lockedDown.properties");
+        DataAccessManager manager = buildManager("lockedDown.properties");
         checkUserAccessFlat(manager, anonymous, false, false);
         checkUserAccessFlat(manager, roUser, false, false);
         checkUserAccessFlat(manager, rwUser, true, true);
@@ -20,14 +20,14 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
     }
     
     public void testPublicRead() throws Exception {
-        DefaultDataAccessManager manager = buildManager("publicRead.properties");
+        DataAccessManager manager = buildManager("publicRead.properties");
         checkUserAccessFlat(manager, anonymous, true, false);
         checkUserAccessFlat(manager, roUser, true, false);
         checkUserAccessFlat(manager, rwUser, true, true);
         checkUserAccessFlat(manager, root, true, true);
     }
     
-    private void checkUserAccessFlat(DefaultDataAccessManager manager, Authentication user, boolean expectedRead, boolean expectedWrite) {
+    private void checkUserAccessFlat(DataAccessManager manager, Authentication user, boolean expectedRead, boolean expectedWrite) {
         // states as a layer
         assertEquals(expectedRead, manager.canAccess(user, statesLayer, AccessMode.READ));
         assertEquals(expectedWrite, manager.canAccess(user, statesLayer, AccessMode.WRITE));
@@ -41,7 +41,7 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
     }
     
     public void testComplex() throws Exception {
-        DefaultDataAccessManager wo = buildManager("complex.properties");
+        DataAccessManager wo = buildManager("complex.properties");
         
         // check non configured ws inherits root configuration, auth read, nobody write
         assertFalse(wo.canAccess(anonymous, nurcWs, AccessMode.READ));
@@ -100,27 +100,27 @@ public class DefaultDataAccessManagerAuthTest extends AbstractAuthorizationTest 
     }
     
     public void testDefaultMode() throws Exception {
-        DefaultDataAccessManager wo = buildManager("lockedDown.properties");
+        DataAccessManager wo = buildManager("lockedDown.properties");
         assertEquals(CatalogMode.HIDE, wo.getMode());
     }
     
     public void testHideMode() throws Exception {
-        DefaultDataAccessManager wo = buildManager("lockedDownHide.properties");
+        DataAccessManager wo = buildManager("lockedDownHide.properties");
         assertEquals(CatalogMode.HIDE, wo.getMode());
     }
     
     public void testChallengeMode() throws Exception {
-        DefaultDataAccessManager wo = buildManager("lockedDownChallenge.properties");
+        DataAccessManager wo = buildManager("lockedDownChallenge.properties");
         assertEquals(CatalogMode.CHALLENGE, wo.getMode());
     }
     
     public void testMixedMode() throws Exception {
-        DefaultDataAccessManager wo = buildManager("lockedDownMixed.properties");
+        DataAccessManager wo = buildManager("lockedDownMixed.properties");
         assertEquals(CatalogMode.MIXED, wo.getMode());
     }
     
     public void testUnknownMode() throws Exception {
-        DefaultDataAccessManager wo = buildManager("lockedDownUnknown.properties");
+        DataAccessManager wo = buildManager("lockedDownUnknown.properties");
         // should fall back on the default and complain in the logger
         assertEquals(CatalogMode.HIDE, wo.getMode());
     }
