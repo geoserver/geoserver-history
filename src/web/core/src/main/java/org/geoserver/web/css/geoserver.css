@@ -660,6 +660,17 @@ width: 16px;
 }
 
 /*-----------------------
+Welcome / Overview
+-------------------------*/
+#welcome {
+float: left;
+max-width: 500px;
+}
+#welcome table {
+margin-bottom: 1em;
+}
+
+/*-----------------------
 Capabilities
 -------------------------*/
 
