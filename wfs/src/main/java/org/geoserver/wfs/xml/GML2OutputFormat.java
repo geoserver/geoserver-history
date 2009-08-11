@@ -135,6 +135,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         //TODO: the srs is a back, it only will work property when there is 
         // one type, we really need to set it on the feature level
         int srs = -1;
+        int numDecimals = -1;
         for (int i = 0; i < results.getFeature().size(); i++) {
             //FeatureResults features = (FeatureResults) f.next();
             FeatureCollection<SimpleFeatureType, SimpleFeature> features;
@@ -176,11 +177,23 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
                 LOGGER.log(Level.WARNING, "Problem encoding:" + query.getSrsName(), e);
                 
             }
+            
+            //track num decimals, in cases where the query has multiple types we choose the max
+            // of all the values
+            if (meta.getNumDecimals() > 0) {
+                numDecimals = numDecimals == -1 ? meta.getNumDecimals() 
+                    : Math.max(numDecimals,meta.getNumDecimals());
+            }
         }
 
         GeoServerInfo global = geoServer.getGlobal();
+        
+        if (numDecimals == -1) {
+            numDecimals = global.getNumDecimals();
+        }
+        
         transformer.setIndentation(wfs.isVerbose() ? INDENT_SIZE : (NO_FORMATTING));
-        transformer.setNumDecimals(global.getNumDecimals());
+        transformer.setNumDecimals(numDecimals);
         transformer.setFeatureBounding(wfs.isFeatureBounding());
         transformer.setCollectionBounding(wfs.isFeatureBounding());
         transformer.setEncoding(Charset.forName(global.getCharset()));
