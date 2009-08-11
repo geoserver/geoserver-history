@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.acegisecurity.Authentication;
 import org.acegisecurity.GrantedAuthority;
+import org.geoserver.xacml.geoxacml.XACMLConstants;
 
 
 /**
@@ -24,13 +25,20 @@ public class DefaultRoleAssignmentAuthority implements RoleAssignmentAuthority {
         
         Set<String> result = new HashSet<String>();
         
-        for (GrantedAuthority gAut: auth.getAuthorities()) {
-            result.add(gAut.getAuthority());
+        if (auth==null)
+            result.add(XACMLConstants.AnonymousRole);
+        else {
+            for (GrantedAuthority gAut: auth.getAuthorities()) {
+                result.add(gAut.getAuthority());
+            }         
         }
         return result;
     }
 
     public boolean isCallerInRole(Authentication auth, String roleId) {
+        if (auth==null) {
+            return XACMLConstants.AnonymousRole.equals(roleId);
+        }
         for (GrantedAuthority gAut: auth.getAuthorities()) {
             if (roleId.equals(gAut.getAuthority())) return true;
         }

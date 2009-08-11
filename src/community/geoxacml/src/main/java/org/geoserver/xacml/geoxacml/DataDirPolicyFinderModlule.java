@@ -55,6 +55,8 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
     protected PolicyCollection policiesByRequest;
 
     protected boolean validate;
+    protected String baseDir;
+
 
     private static final Logger logger = Logger.getLogger(DataDirPolicyFinderModlule.class
             .getName());
@@ -116,8 +118,15 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
     }
 
     private List<String> getXMLFileNames(String subdir) {
-        String parent = "file:" + BASE_DIR + "/" + subdir;
-        File parentDir = GeoserverDataDirectory.findDataFile(parent);
+        
+        File parentDir = null;
+        if (baseDir==null) {
+            String parent = "file:" + BASE_DIR + "/" + subdir;
+            parentDir = GeoserverDataDirectory.findDataFile(parent);
+        } else {
+            parentDir=new File(baseDir,BASE_DIR + "/" + subdir);
+        }
+        
         List<String> fileNames = new ArrayList<String>();
         collectXMLFiles(parentDir, fileNames);
         return fileNames;
@@ -181,5 +190,14 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
     public boolean isRequestSupported() {
         return true;
     }
+    
+    public String getBaseDir() {
+        return baseDir;
+    }
+
+    public void setBaseDir(String baseDir) {
+        this.baseDir = baseDir;
+    }
+
 
 }

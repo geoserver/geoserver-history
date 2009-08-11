@@ -52,7 +52,7 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
         }
 
         List<RequestCtx> requestCtxts = buildRequestCtxList(auth, urlPath);
-        List<ResponseCtx> responseCtxts = GeoXACMLConfig.evaluateRequestCtxList(requestCtxts);
+        List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
 
         int xacmlDecision = XACMLUtil.getDecisionFromResponseCtxList(responseCtxts);
         return XACMLDecisionMapper.Exact.getAcegiDecisionFor(xacmlDecision);
@@ -61,7 +61,7 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
 
     private List<RequestCtx> buildRequestCtxList(Authentication auth, String urlPath) {
 
-        List<RequestCtx> resultList = new ArrayList<RequestCtx>(auth.getAuthorities().length);
+        List<RequestCtx> resultList = new ArrayList<RequestCtx>();
         RoleAssignmentAuthority raa = GeoXACMLConfig.getRoleAssignmentAuthority();
 
         for (String roleId : raa.getRoleIdsFor(auth)) {

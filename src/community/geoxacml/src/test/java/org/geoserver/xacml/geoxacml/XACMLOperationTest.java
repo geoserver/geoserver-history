@@ -71,7 +71,7 @@ public class XACMLOperationTest extends XACMLTestSupport {
         
         SecurityContextHolder.getContext().setAuthentication(admin);
         
-        InputStream resp = get("wms?service=WMS&version=1.1.1&request=GetMap");
+        InputStream resp = get("wms?service=WMS&version=1.1.1&request=GetCapabilities");
         
     }
 

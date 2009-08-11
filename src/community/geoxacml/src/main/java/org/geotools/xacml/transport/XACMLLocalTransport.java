@@ -26,7 +26,7 @@ import com.sun.xacml.ctx.ResponseCtx;
 
 /**
  * Transport Object for a local PDP. Since XACML requests are independent of each other, it is
- * possible to start each request of a request list as a single thread
+ * possible to start each request of a request list as a single thread. This class is threadsafe
  * 
  * @author Christian Muller
  * 
