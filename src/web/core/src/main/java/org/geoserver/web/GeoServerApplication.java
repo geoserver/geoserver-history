@@ -167,7 +167,7 @@ public class GeoServerApplication extends SpringWebApplication {
         getResourceSettings().setDisableGZipCompression(true);
         
         // enable toggable XHTML validation
-        if(DEVELOPMENT.equals(getConfigurationType())) {
+        if(DEVELOPMENT.equalsIgnoreCase(getConfigurationType())) {
             getMarkupSettings().setStripWicketTags(true);
             HtmlValidationResponseFilter htmlvalidator = 
                 new GeoServerHTMLValidatorResponseFilter();
