@@ -83,7 +83,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
     }
 
     public void testWideOpen() throws Exception {
-        DefaultDataAccessManager manager = buildManager("wideOpen.properties");
+        DataAccessManager manager = buildManager("wideOpen.properties");
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // use no user at all
@@ -101,7 +101,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
     }
 
     public void testLockedDown() throws Exception {
-        DefaultDataAccessManager manager = buildManager("lockedDown.properties");
+        DataAccessManager manager = buildManager("lockedDown.properties");
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // try with read only user
@@ -134,7 +134,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
     }
     
     public void testLockedChallenge() throws Exception {
-        DefaultDataAccessManager manager = buildManager("lockedDownChallenge.properties");
+        DataAccessManager manager = buildManager("lockedDownChallenge.properties");
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // try with read only user
@@ -207,7 +207,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
     }
     
     public void testLockedMixed() throws Exception {
-        DefaultDataAccessManager manager = buildManager("lockedDownMixed.properties");
+        DataAccessManager manager = buildManager("lockedDownMixed.properties");
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // try with read only user and GetFeatures request
@@ -296,7 +296,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
     }
 
     public void testPublicRead() throws Exception {
-        DefaultDataAccessManager manager = buildManager("publicRead.properties");
+        DataAccessManager manager = buildManager("publicRead.properties");
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // try with read only user
@@ -336,7 +336,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
     }
 
     public void testComplex() throws Exception {
-        DefaultDataAccessManager manager = buildManager("complex.properties");
+        DataAccessManager manager = buildManager("complex.properties");
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // try with anonymous user
