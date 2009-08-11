@@ -31,7 +31,7 @@ import com.sun.xacml.ctx.ResponseCtx;
 /**
  * Transport Object for a remote PDP reachable by an http POST request. Since XACML requests are
  * independent of each other, it is possible to start each request of a request list as a single
- * thread
+ * thread. This class itself is threadsafe
  * 
  * @author Christian Mueller
  * 
