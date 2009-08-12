@@ -170,6 +170,21 @@ Build release artifacts
 
 At this point the release artifacts will be located in ``target/release``.
 
+.. note::
+
+     Due to an `issue <http://jira.codehaus.org/browse/GEOS-2875>`_ with the 
+     version of the maven assembly plugin currently used, the source artifact
+     contains :file:`target` directories containing compiled classes and jars
+     for each module, which increases its size significantly. The source 
+     artifact should be unpacked, the directories removed, and re-archived::
+
+       unzip geoserver-1.7.1-src.zip
+       rm geoserver-1.7.1-src.zip
+       cd geoserver-1.7.1
+       find . -name target -exec rm -rf {} \;
+       cd ..
+       zip -r geoserver-1.7.1-src.zip geoserver-1.7.1
+
 Build documentation
 -------------------
 
