@@ -21,7 +21,6 @@ import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.request.CatalogRequestCtxBuilder;
-import org.geoserver.xacml.request.LayerInfoRequestCtxBuilder;
 import org.geoserver.xacml.request.RequestCtxBuilder;
 import org.geoserver.xacml.request.ResourceInfoRequestCtxBuilder;
 import org.geoserver.xacml.request.WorkspaceRequestCtxBuilder;
@@ -58,10 +57,10 @@ public class XACMLDataAccessManager implements DataAccessManager {
 
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
 
-        List<RequestCtx> requestCtxts = buildWorkspaceRequestCtxList(user, workspace, mode);
+        List<RequestCtx> requestCtxts = buildWorkspaceRequestCtxListFromRoles(user, workspace, mode);
         List<ResponseCtx> responseCtxts =GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
 
-        int xacmlDecision = XACMLUtil.getDecisionFromResponseCtxList(responseCtxts);
+        int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
 
         if (xacmlDecision == Result.DECISION_PERMIT)
             return true;
@@ -69,21 +68,22 @@ public class XACMLDataAccessManager implements DataAccessManager {
     }
 
     public boolean canAccess(Authentication user, LayerInfo layer, AccessMode mode) {
-        List<RequestCtx> requestCtxts = buildLayerInfoRequestCtxList(user, layer, mode);
-        List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
-
-        int xacmlDecision = XACMLUtil.getDecisionFromResponseCtxList(responseCtxts);
-
-        if (xacmlDecision == Result.DECISION_PERMIT)
-            return true;
-        return false;
+        return canAccess(user, layer.getResource(), mode);
+//        List<RequestCtx> requestCtxts = buildLayerInfoRequestCtxListFromRoles(user, layer, mode);
+//        List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
+//
+//        int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
+//
+//        if (xacmlDecision == Result.DECISION_PERMIT)
+//            return true;
+//        return false;
     }
 
     public boolean canAccess(Authentication user, ResourceInfo resource, AccessMode mode) {
-        List<RequestCtx> requestCtxts = buildResourceInfoRequestCtxList(user, resource, mode);
+        List<RequestCtx> requestCtxts = buildResourceInfoRequestCtxListFromRoles(user, resource, mode);
         List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
 
-        int xacmlDecision = XACMLUtil.getDecisionFromResponseCtxList(responseCtxts);
+        int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
 
         if (xacmlDecision == Result.DECISION_PERMIT)
             return true;
@@ -137,7 +137,7 @@ public class XACMLDataAccessManager implements DataAccessManager {
         return mode;
     }
     
-    private List<RequestCtx> buildWorkspaceRequestCtxList(Authentication auth,
+    private List<RequestCtx> buildWorkspaceRequestCtxListFromRoles(Authentication auth,
             WorkspaceInfo workspaceInfo, AccessMode mode) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
@@ -154,24 +154,24 @@ public class XACMLDataAccessManager implements DataAccessManager {
         return resultList;
     }
 
-    private List<RequestCtx> buildLayerInfoRequestCtxList(Authentication auth, LayerInfo layerInfo,
-            AccessMode mode) {
+//    private List<RequestCtx> buildLayerInfoRequestCtxListFromRoles(Authentication auth, LayerInfo layerInfo,
+//            AccessMode mode) {
+//
+//        List<RequestCtx> resultList = new ArrayList<RequestCtx>();
+//        RoleAssignmentAuthority raa = GeoXACMLConfig.getRoleAssignmentAuthority();
+//
+//        for (String roleId : raa.getRoleIdsFor(auth)) {
+//            LayerInfoRequestCtxBuilder builder = new LayerInfoRequestCtxBuilder(new Role(roleId),
+//                    layerInfo, mode);
+//            RequestCtx requestCtx = builder.createRequestCtx();
+//            XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
+//            resultList.add(requestCtx);
+//        }
+//
+//        return resultList;
+//    }
 
-        List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        RoleAssignmentAuthority raa = GeoXACMLConfig.getRoleAssignmentAuthority();
-
-        for (String roleId : raa.getRoleIdsFor(auth)) {
-            LayerInfoRequestCtxBuilder builder = new LayerInfoRequestCtxBuilder(new Role(roleId),
-                    layerInfo, mode);
-            RequestCtx requestCtx = builder.createRequestCtx();
-            XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
-            resultList.add(requestCtx);
-        }
-
-        return resultList;
-    }
-
-    private List<RequestCtx> buildResourceInfoRequestCtxList(Authentication auth,
+    private List<RequestCtx> buildResourceInfoRequestCtxListFromRoles(Authentication auth,
             ResourceInfo resourceInfo, AccessMode mode) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();

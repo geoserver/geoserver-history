@@ -43,7 +43,8 @@ public class WorkspaceRequestCtxBuilder extends RequestCtxBuilder {
         addRole(subjects);
 
         Set<Attribute> resources = new HashSet<Attribute>(1);
-        addResource(resources, workspaceName,XACMLConstants.WorkSpaceResourceType);
+        addGeoserverResource(resources);
+        addResource(resources, XACMLConstants.WorkspaceURI,workspaceName);
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);

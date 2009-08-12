@@ -12,21 +12,7 @@ import org.geoserver.xacml.security.XACMLDataAccessManager;
 
 public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
 
-    @Override
-    public void testComplex() throws Exception {
-        //TODO
-    }
-
-    @Override
-    public void testLockedChallenge() throws Exception {
-      //TODO
-    }
-
-    @Override
-    public void testPublicRead() throws Exception {
-      //TODO
-    }
-
+    
 
     @Override
     protected DataAccessManager buildManager(String propertyFile) throws Exception {
@@ -34,20 +20,40 @@ public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
         
         if ("wideOpen.properties".equals(propertyFile)) {
             GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/wideOpen/");
+        }
+        if ("publicRead.properties".equals(propertyFile)) {
+            GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/publicRead/");
+        }
+        if ("lockedDownMixed.properties".equals(propertyFile)) {
+            GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/lockedDownMixed/");
         }        
+        if ("lockedDownChallenge.properties".equals(propertyFile)) {
+            GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/lockedDownChallenge/");
+        }        
+        if ("lockedDown.properties".equals(propertyFile)) {
+            GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/lockedDown/");
+        }        
+        if ("complex.properties".equals(propertyFile)) {
+            GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/complex/");
+        }        
+
+        
+
         GeoXACMLConfig.reset();
         return new XACMLDataAccessManager();
         
     }
 
     @Override
-    public void testLockedDown() throws Exception {
-        //TODO
+    public void testComplex() throws Exception {
+        super.testComplex();
     }
 
     @Override
-    public void testLockedMixed() throws Exception {
-        //TODO
+    public void testWideOpen() throws Exception {
+        super.testWideOpen();
     }
+
+
 
 }

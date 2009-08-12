@@ -19,13 +19,8 @@
 				<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
 					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">Catalog</AttributeValue>
 					<ResourceAttributeDesignator
-							AttributeId="urn:oasis:names:tc:xacml:1.0:resource:resource-id" DataType="http://www.w3.org/2001/XMLSchema#string" />
+							AttributeId="org:geoserver:resource:type:CatalogType" DataType="http://www.w3.org/2001/XMLSchema#string" />							             
 				</ResourceMatch>
-				<ResourceMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:string-equal">
-					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">CatalogType</AttributeValue>
-					<ResourceAttributeDesignator
-							AttributeId="org:geoserver:resource:type" DataType="http://www.w3.org/2001/XMLSchema#string" />
-				</ResourceMatch>				
 			</Resource>
 		</Resources>		
 	</Target>

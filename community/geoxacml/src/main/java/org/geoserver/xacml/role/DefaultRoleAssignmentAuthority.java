@@ -27,6 +27,8 @@ public class DefaultRoleAssignmentAuthority implements RoleAssignmentAuthority {
         
         if (auth==null)
             result.add(XACMLConstants.AnonymousRole);
+        else if (auth.getAuthorities()==null) 
+            result.add(XACMLConstants.AnonymousRole);        
         else {
             for (GrantedAuthority gAut: auth.getAuthorities()) {
                 result.add(gAut.getAuthority());

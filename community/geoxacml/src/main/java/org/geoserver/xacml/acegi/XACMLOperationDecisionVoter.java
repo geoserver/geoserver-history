@@ -51,15 +51,15 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
             urlPath = owsRequest.getHttpRequest().getPathInfo();
         }
 
-        List<RequestCtx> requestCtxts = buildRequestCtxList(auth, urlPath);
+        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath);
         List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
 
-        int xacmlDecision = XACMLUtil.getDecisionFromResponseCtxList(responseCtxts);
+        int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
         return XACMLDecisionMapper.Exact.getAcegiDecisionFor(xacmlDecision);
 
     }
 
-    private List<RequestCtx> buildRequestCtxList(Authentication auth, String urlPath) {
+    private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
         RoleAssignmentAuthority raa = GeoXACMLConfig.getRoleAssignmentAuthority();

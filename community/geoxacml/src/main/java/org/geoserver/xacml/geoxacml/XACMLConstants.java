@@ -21,8 +21,21 @@ public class XACMLConstants {
     public static URI ActionAttributeURI;
     public final static String ResourceAttributeId= "urn:oasis:names:tc:xacml:1.0:resource:resource-id";
     public static URI ResourceAttributeURI;
-    public final static String ResourceTypeId= GeoServerPrefix+"resource:type";
-    public static URI ResourceTypeURI; 
+    public final static String ResourceTypePrefix= GeoServerPrefix+"resource:type:";
+    
+    public final static String WorkspaceId= ResourceTypePrefix+"workspace";
+    public static URI WorkspaceURI;
+    public final static String GeoserverResouceId= ResourceTypePrefix+"gsresource";
+    public static URI GeoServerResouceURI;
+    public final static String URLResouceId= ResourceTypePrefix+"url";
+    public static URI URlURI;
+    public final static String CatalogResouceId= ResourceTypePrefix+"CatalogType";
+    public static URI CatalogURI;
+
+
+    
+    
+
     
 //    Only needed if we would use roles without role attributes
 //    public final static String RoleAttributeId= "urn:oasis:names:tc:xacml:2.0:subject:role";
@@ -42,20 +55,14 @@ public class XACMLConstants {
     public final static String AnonymousRole="ROLE_ANONYMOUS";
 
     /*
-     * Some common resouce names 
+     * Resource Name for the catalog 
      */    
     public static String CatalogResouceName = "Catalog";
     
     /*
      * Some common resouce type names 
      */    
-    public static String CatalogResourceType="CatalogType";
-    public static String URLResourceType="URL";
-    public static String WorkSpaceResourceType="Workspace";
-    public static String LayerResourceType="Layer";
-    public static String ResourceResourceType="Resource";
-    
-    
+        
     /*
      * Some common obligation Ids 
      */
@@ -70,7 +77,10 @@ public class XACMLConstants {
         try {
             ActionAttributeURI = new URI(ActionAttributeId);
             ResourceAttributeURI = new URI(ResourceAttributeId);
-            ResourceTypeURI = new URI(ResourceTypeId);
+            WorkspaceURI = new URI(WorkspaceId);
+            GeoServerResouceURI = new URI(GeoserverResouceId);
+            URlURI = new URI(URLResouceId);
+            CatalogURI = new URI(CatalogResouceId);
             // RoleAttributeURI = new URI(RoleAttributeId);
             
         } catch (URISyntaxException e) {
