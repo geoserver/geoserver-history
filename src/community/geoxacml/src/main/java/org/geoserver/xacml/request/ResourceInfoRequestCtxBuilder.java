@@ -27,14 +27,21 @@ import com.sun.xacml.ctx.Subject;
  */
 public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
     private String resourceName = null;
+    private String workspaceName = null;
 
     public String getResouceName() {
         return resourceName;
     }
+    
+    public String getWorkspaceName() {
+        return workspaceName;
+    }
+
 
     public ResourceInfoRequestCtxBuilder(Role role, ResourceInfo resourceInfo,AccessMode mode) {
         super(role,mode);
         this.resourceName = resourceInfo.getName();
+        this.workspaceName = resourceInfo.getStore().getWorkspace().getName();
     }
 
     @Override
@@ -44,7 +51,11 @@ public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
         addRole(subjects);
 
         Set<Attribute> resources = new HashSet<Attribute>(1);
-        addResource(resources, resourceName,XACMLConstants.ResourceResourceType);
+        addGeoserverResource(resources);
+        addResource(resources, XACMLConstants.WorkspaceURI,workspaceName);
+        addResource(resources, XACMLConstants.GeoServerResouceURI,resourceName);
+        
+
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);

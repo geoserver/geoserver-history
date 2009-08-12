@@ -96,14 +96,17 @@ public abstract class RequestCtxBuilder extends Object {
                 new StringAttribute(mode.toString())));        
     }
 
-    
-    
-    protected void addResource(Set<Attribute> resources, String name, String type) {
-        resources.add(new Attribute(XACMLConstants.ResourceAttributeURI,null,null,
-                new StringAttribute(name)));        
-        resources.add(new Attribute(XACMLConstants.ResourceTypeURI,null,null,
-                new StringAttribute(type)));                       
+
+    protected void addResource(Set<Attribute> resources, URI id, String resourceName) {
+        resources.add(new Attribute(id,null,null,new StringAttribute(resourceName)));
     }
+
+    protected void addGeoserverResource(Set<Attribute> resources) {
+        resources.add(new Attribute(XACMLConstants.ResourceAttributeURI,null,null,new StringAttribute("GeoServer")));
+    }
+    
+    
+
     protected void addGeometry(RequestCtx ctx, Geometry g, String srsName) {
         // TDOO
     }

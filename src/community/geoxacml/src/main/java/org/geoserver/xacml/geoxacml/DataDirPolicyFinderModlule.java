@@ -106,10 +106,14 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
         for (String fileName : fileNames) {
             try {
                 AbstractPolicy policy = reader.readPolicy(new File(fileName));
-                if (!coll.addPolicy(policy))
+                if (!coll.addPolicy(policy)) {
                     if (logger.isLoggable(Level.WARNING))
                         logger.log(Level.WARNING, "tried to load the same "
                                 + "policy multiple times: " + fileName);
+                } else {
+                    logger.info("Read policy(Set) "+policy.getId()+" from "+ fileName.toString() );
+                }
+                
             } catch (ParsingException e) {
                 if (logger.isLoggable(Level.WARNING))
                     logger.log(Level.WARNING, "Error reading policy: " + fileName, e);

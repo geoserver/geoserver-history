@@ -24,7 +24,6 @@
 	</Target>
 
 
-	<!-- Admin is able to do anything -->
 	<PolicyIdReference>org:geoserver:policy:PermitAll</PolicyIdReference>
 	
 </PolicySet>

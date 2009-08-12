@@ -51,6 +51,10 @@ public class GeoXACMLConfig {
         synchronized (pdpLock) {
             pdp=null;
         }
+        synchronized (transportFactoryLock) {
+            transportFactory=null;
+        }
+
     }
     
     static public void setPolicyRepsoitoryBaseDir(String baseDir) {

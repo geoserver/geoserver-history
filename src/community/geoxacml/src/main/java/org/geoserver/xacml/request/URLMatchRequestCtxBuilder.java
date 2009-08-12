@@ -42,7 +42,8 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
         addRole(subjects);
 
         Set<Attribute> resources = new HashSet<Attribute>(1);
-        addResource(resources, urlString,XACMLConstants.URLResourceType);
+        addGeoserverResource(resources);
+        addResource(resources, XACMLConstants.URlURI,urlString);
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);
