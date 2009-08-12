@@ -100,7 +100,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         filterForm = new Form("filterForm");
         add(filterForm);
         filterForm.add(filter = new TextField("filter", new Model()));
-        //filter.add(new SimpleAttributeModifier("title", String.valueOf(new ResourceModel("GeoServerTablePanel.search").getObject())));
+        filter.add(new SimpleAttributeModifier("title", String.valueOf(new ResourceModel(
+                "GeoServerTablePanel.search", "Search").getObject())));
         filterForm.add(hiddenSubmit = hiddenSubmit());
         filterForm.setDefaultButton(hiddenSubmit);
 
