@@ -4,6 +4,9 @@
  */
 package org.geoserver.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
@@ -11,6 +14,9 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.config.ContactInfo;
@@ -39,7 +45,16 @@ public class GeoServerHomePage extends GeoServerBasePage {
         //add some contact info
         add(new ExternalLink("contactURL", contact.getOnlineResource())
             .add( new Label("contactName", contact.getContactOrganization())));
-        add(new ExternalLink("contactEmail", "mailto:"+contact.getContactEmail()));
+        {
+            String version = String.valueOf(new ResourceModel("version").getObject());
+            String contactEmail = contact.getContactEmail();
+            HashMap<String, String>params = new HashMap<String, String>();
+            params.put("version", version);
+            params.put("contactEmail", contactEmail);
+            Label label = new Label("footerMessage", new StringResourceModel("GeoServerHomePage.footer", this, new Model(params)));
+            label.setEscapeModelStrings(false);
+            add(label);
+        }
         
         Catalog catalog = getCatalog();
         add(new BookmarkablePageLink("layersLink", LayerPage.class)

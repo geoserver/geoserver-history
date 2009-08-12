@@ -151,8 +151,6 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
 
         final String resourceKey = RESOURCE_KEY_PREFIX + "." + TABLE_NAME;
 
-        Label label = new Label("rasterTaleLabel", new ResourceModel(resourceKey, "Raster table:"));
-        add(label);
         boolean isNew = storeInfo.getId() == null;
         FormComponent tableComponent = addTableNameComponent(paramsModel, isNew);
         return tableComponent;

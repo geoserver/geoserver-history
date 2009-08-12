@@ -3,7 +3,7 @@
 <wicket:extend>
 <div id="welcome">
 <p>
-This GeoServer belongs to <a wicket:id="contactURL"><span wicket:id="contactName"></span></a>.
+<wicket:message key="GeoServerHomePage.belongsTo">This GeoServer belongs to</wicket:message> <a wicket:id="contactURL"><span wicket:id="contactName"></span></a>.
 </p>
 <table>
  <thead>
@@ -31,8 +31,7 @@ This GeoServer belongs to <a wicket:id="contactURL"><span wicket:id="contactName
  </tr>
 </table>
 <p>
-This GeoServer instance is running version <strong><wicket:message key="version"/></strong>. For 
-more information please contact the <a wicket:id="contactEmail">administrator</a>.
+  <span wicket:id="footerMessage"></span>
 </p>
 </div>
 <div id="capabilities">
