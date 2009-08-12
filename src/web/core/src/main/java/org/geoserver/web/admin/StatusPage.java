@@ -8,8 +8,11 @@ import java.util.Map;
 
 import javax.media.jai.JAI;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataAccess;
@@ -98,6 +101,21 @@ public class StatusPage extends ServerAdminPage {
             }
         });
 
+        add(new AjaxLink("clear.resourceCache") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                Catalog cat = getCatalog();
+                try {
+                    cat.getResourcePool().dispose();
+                    info(getLocalizer().getString("resourceCacheClearedSuccessfully", this));
+                }
+                catch( Exception e ) {
+                    error(e);
+                }
+                target.addComponent(feedbackPanel);
+            }
+        });
+        
         add(new Label("reload.date.geoserver", "Jul 14, 3:07 PM"));
         add(new Label("reload.date.configuration", "Jul 14, 3:07 PM"));
         add(new Label("reload.date.xml", "Mar 14, 2:15 PM"));
