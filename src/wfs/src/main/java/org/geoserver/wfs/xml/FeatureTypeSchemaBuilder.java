@@ -305,7 +305,7 @@ public abstract class FeatureTypeSchemaBuilder {
                 if ( !hasElement ) {
                     //need to create an element declaration in the schema
                     XSDElementDeclaration element = factory.createXSDElementDeclaration();
-                    element.setName( featureTypeMeta.getName() );
+                    element.setName( name );
                     element.setTargetNamespace( featureTypeMeta.getNameSpace().getURI() );
                     element.setSubstitutionGroupAffiliation(
                         schema.resolveElementDeclaration(gmlNamespace, substitutionGroup));
