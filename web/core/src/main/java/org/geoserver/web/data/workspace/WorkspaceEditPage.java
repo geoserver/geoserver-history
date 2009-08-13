@@ -57,8 +57,8 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
             }
         };
         add(form);
-        TextField name = new TextField("name", new PropertyModel(ws, "name"));
-        name.setEnabled(false);
+        TextField name = new TextField("name", new PropertyModel(wsModel, "name"));
+        //name.setEnabled(false);
         form.add(name);
         TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"));
         uri.add(new UrlValidator());
@@ -79,14 +79,17 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
 
         NamespaceInfo namespaceInfo = (NamespaceInfo) nsModel.getObject();
         WorkspaceInfo workspaceInfo = (WorkspaceInfo) wsModel.getObject();
-
+        
+        //sync up workspace name with namespace prefix, temp measure
+        namespaceInfo.setPrefix(workspaceInfo.getName());
+        
         DataStoreNamespaceUpdatingListener listener = new DataStoreNamespaceUpdatingListener(
                 workspaceInfo, catalog);
         catalog.addListener(listener);
 
         try {
-            catalog.save(namespaceInfo);
             catalog.save(workspaceInfo);
+            catalog.save(namespaceInfo);
         } finally {
             catalog.removeListener(listener);
         }
