@@ -16,6 +16,7 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
@@ -65,9 +66,16 @@ public class WFSConfiguration extends Configuration {
         catalog.addListener(new CatalogListener() {
 
             public void handleAddEvent(CatalogAddEvent event) {
+                if (event.getSource() instanceof FeatureTypeInfo) {
+                    reloaded();
+                }
             }
 
             public void handleModifyEvent(CatalogModifyEvent event) {
+                if (event.getSource() instanceof FeatureTypeInfo || 
+                    event.getSource() instanceof NamespaceInfo) {
+                    reloaded();
+                }
             }
 
             public void handlePostModifyEvent(CatalogPostModifyEvent event) {
