@@ -87,6 +87,7 @@ public class SecureCatalogImplTest extends AbstractAuthorizationTest {
         SecureCatalogImpl sc = new SecureCatalogImpl(catalog, manager);
 
         // use no user at all
+        SecurityContextHolder.getContext().setAuthentication(null);
         assertSame(states, sc.getFeatureTypeByName("topp:states"));
         assertSame(arcGrid, sc.getCoverageByName("nurc:arcgrid"));
         assertSame(states, sc.getResourceByName("topp:states", FeatureTypeInfo.class));
