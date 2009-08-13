@@ -6,10 +6,10 @@
 package org.geoserver.xacml.geoxacml;
 
 import org.geoserver.security.DataAccessManager;
-import org.geoserver.security.SecureCatalogImplTest;
+import org.geoserver.security.DefaultDataAccessManagerAuthTest;
 import org.geoserver.xacml.security.XACMLDataAccessManager;
 
-public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
+public class XACMLDefaultDataAccessManagerAuthTest extends DefaultDataAccessManagerAuthTest {
 
     @Override
     protected DataAccessManager buildManager(String propertyFile) throws Exception {
@@ -19,6 +19,9 @@ public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
         }
         if ("publicRead.properties".equals(propertyFile)) {
             GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/publicRead/");
+        }
+        if ("lockedDownHide.properties".equals(propertyFile)) {
+            GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/lockedDownHide/");
         }
         if ("lockedDownMixed.properties".equals(propertyFile)) {
             GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/lockedDownMixed/");
@@ -36,6 +39,11 @@ public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
         GeoXACMLConfig.reset();
         return new XACMLDataAccessManager();
 
+    }
+
+    @Override
+    public void testUnknownMode() throws Exception {
+        // already tested with "lockedDown"
     }
 
 }

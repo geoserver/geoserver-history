@@ -5,6 +5,11 @@
 
 package org.geoserver.xacml.geoxacml;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +21,9 @@ import org.geoserver.xacml.role.RoleAssignmentAuthority;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
 import org.geotools.xacml.geoxacml.finder.impl.GeoSelectorModule;
 import org.geotools.xacml.transport.XACMLTransport;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
+
+import sun.security.action.GetLongAction;
 
 import com.sun.xacml.PDP;
 import com.sun.xacml.PDPConfig;
@@ -137,4 +145,57 @@ public class GeoXACMLConfig {
         }
 
     }
+    
+    public static void createDefaultRepositoryIfNotExisting() {
+        File geoServerDataDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+        
+        if (geoServerDataDir==null) {
+            return;
+        }
+        
+        createDirectoryIfNotExisting(new File(geoServerDataDir,DataDirPolicyFinderModlule.BASE_DIR));
+        String byRequestDir = DataDirPolicyFinderModlule.BASE_DIR+"/"+DataDirPolicyFinderModlule.BY_REQUEST_DIR;
+        String byReferenceDir = DataDirPolicyFinderModlule.BASE_DIR+"/"+DataDirPolicyFinderModlule.BY_REFERENCE_DIR;
+        String commonDir = byReferenceDir+"/common";
+        String anonymousDir=byReferenceDir+"/anonymous";
+        
+        createDirectoryIfNotExisting(new File(geoServerDataDir,byRequestDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir,byReferenceDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir,commonDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir,anonymousDir));
+
+        copyFileIfNotExisting(geoServerDataDir, commonDir+"/PermitAll.xml");
+        copyFileIfNotExisting(geoServerDataDir, commonDir+"/DenyAll.xml");
+        copyFileIfNotExisting(geoServerDataDir, anonymousDir+"/PAnonymous.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Admin.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Catalog.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Anonymous.xml");
+    }
+
+    private static void createDirectoryIfNotExisting(File dir) {
+        if (dir.exists()) return;
+        dir.mkdir();
+    }
+    
+    private static void copyFileIfNotExisting(File geoServerDataDir, String relativePath) {
+        File file =  new File(geoServerDataDir,relativePath);
+        if (file.exists()) return ;
+        
+        URL sourceURL = GeoXACMLConfig.class.getResource("/geoserverdatadir/"+relativePath);
+        try {
+        InputStream in = sourceURL.openStream();
+        OutputStream out = new FileOutputStream(file);
+        byte[] buffer = new byte[4096];
+        int bytesread = 0;
+        while ((bytesread = in.read(buffer))>0) 
+            out.write(buffer, 0, bytesread);
+        in.close();
+        out.close();
+        } catch (Exception e) {
+            XACMLUtil.getXACMLLogger().severe("Could not create default repository file "+ relativePath);
+            throw new RuntimeException(e);
+        }
+    }
+
+    
 }

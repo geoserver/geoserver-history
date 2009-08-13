@@ -8,7 +8,6 @@ package org.geoserver.xacml.request;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
@@ -27,19 +26,19 @@ import com.sun.xacml.ctx.Subject;
  */
 public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
     private String resourceName = null;
+
     private String workspaceName = null;
 
     public String getResouceName() {
         return resourceName;
     }
-    
+
     public String getWorkspaceName() {
         return workspaceName;
     }
 
-
-    public ResourceInfoRequestCtxBuilder(Role role, ResourceInfo resourceInfo,AccessMode mode) {
-        super(role,mode);
+    public ResourceInfoRequestCtxBuilder(Role role, ResourceInfo resourceInfo, AccessMode mode) {
+        super(role, mode);
         this.resourceName = resourceInfo.getName();
         this.workspaceName = resourceInfo.getStore().getWorkspace().getName();
     }
@@ -52,14 +51,13 @@ public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
 
         Set<Attribute> resources = new HashSet<Attribute>(1);
         addGeoserverResource(resources);
-        addResource(resources, XACMLConstants.WorkspaceURI,workspaceName);
-        addResource(resources, XACMLConstants.GeoServerResouceURI,resourceName);
-        
-
+        addOWSService(resources);
+        addResource(resources, XACMLConstants.WorkspaceURI, workspaceName);
+        addResource(resources, XACMLConstants.GeoServerResouceURI, resourceName);
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);
-        
+
         Set<Attribute> environment = new HashSet<Attribute>(1);
 
         RequestCtx ctx = new RequestCtx(subjects, resources, actions, environment);

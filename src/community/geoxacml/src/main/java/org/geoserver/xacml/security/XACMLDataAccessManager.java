@@ -53,6 +53,8 @@ public class XACMLDataAccessManager implements DataAccessManager {
     public XACMLDataAccessManager() {
         if (Log == null)
             Log = Logger.getLogger(this.getClass().getName());
+        
+        GeoXACMLConfig.createDefaultRepositoryIfNotExisting();
     }
 
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {

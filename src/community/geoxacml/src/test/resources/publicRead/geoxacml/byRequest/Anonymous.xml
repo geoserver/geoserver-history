@@ -25,6 +25,6 @@
 
 
 	
-	<PolicyIdReference>org:geoserver:policySet:permission:anonymous</PolicyIdReference>
+	<PolicySetIdReference>org:geoserver:policySet:permission:anonymous</PolicySetIdReference>
 	
 </PolicySet>

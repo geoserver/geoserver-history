@@ -28,14 +28,15 @@ public class XACMLConstants {
     public final static String GeoserverResouceId= ResourceTypePrefix+"gsresource";
     public static URI GeoServerResouceURI;
     public final static String URLResouceId= ResourceTypePrefix+"url";
-    public static URI URlURI;
+    public static URI URlResourceURI;
     public final static String CatalogResouceId= ResourceTypePrefix+"CatalogType";
-    public static URI CatalogURI;
+    public static URI CatalogResourceURI;
+    public final static String OWSServiceResouceId= ResourceTypePrefix+"OWSService";
+    public static URI OWSServiceResourceURI;
+    public final static String OWSRequestResouceId= ResourceTypePrefix+"OWSRequest";
+    public static URI OWSRequestResourceURI;
 
-
-    
-    
-
+       
     
 //    Only needed if we would use roles without role attributes
 //    public final static String RoleAttributeId= "urn:oasis:names:tc:xacml:2.0:subject:role";
@@ -79,9 +80,10 @@ public class XACMLConstants {
             ResourceAttributeURI = new URI(ResourceAttributeId);
             WorkspaceURI = new URI(WorkspaceId);
             GeoServerResouceURI = new URI(GeoserverResouceId);
-            URlURI = new URI(URLResouceId);
-            CatalogURI = new URI(CatalogResouceId);
-            // RoleAttributeURI = new URI(RoleAttributeId);
+            URlResourceURI = new URI(URLResouceId);
+            CatalogResourceURI = new URI(CatalogResouceId);
+            OWSServiceResourceURI=new URI(OWSServiceResouceId);
+            OWSRequestResourceURI=new URI(OWSRequestResouceId);
             
         } catch (URISyntaxException e) {
             // should not happen
