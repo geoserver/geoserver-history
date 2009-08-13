@@ -1,3 +1,18 @@
+GeoServer 2.0-RC1 (August 14, 2009)
+-----------------------------------
+The first release candidate version for 2.0. The focus for this release has been
+mostly on the user interface brush up to ensure a really nice user experience. With
+55 issues fixed, including 30 bug fixes and 12 improvements, this first Release Candidate
+is called to become the 2.0 milestone.
+Thanks to all the developers for the hard work and specially the user community for
+the bug reports.
+
+The entire changelog for this release can be found:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/15379
+
+This release is based on GeoTools 2.6.x (revision 33745)
+
 GeoServer 2.0-beta2 (July 13, 2009)
 -----------------------------------
 
