@@ -7,19 +7,14 @@ package org.geoserver.xacml.request;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.acegisecurity.Authentication;
+import org.geoserver.ows.Dispatcher;
 import org.geoserver.security.AccessMode;
-import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.Role;
-import org.geoserver.xacml.role.RoleAssignmentAuthority;
 import org.vfny.geoserver.Request;
 
 import com.sun.xacml.attr.AnyURIAttribute;
@@ -105,6 +100,12 @@ public abstract class RequestCtxBuilder extends Object {
         resources.add(new Attribute(XACMLConstants.ResourceAttributeURI,null,null,new StringAttribute("GeoServer")));
     }
     
+    protected void addOWSService(Set<Attribute> resources) {
+        org.geoserver.ows.Request owsRequest = Dispatcher.REQUEST.get();
+        if (owsRequest==null) return;
+        resources.add(new Attribute(XACMLConstants.OWSRequestResourceURI,null,null,new StringAttribute(owsRequest.getRequest())));
+        resources.add(new Attribute(XACMLConstants.OWSServiceResourceURI,null,null,new StringAttribute(owsRequest.getService())));        
+    }
     
 
     protected void addGeometry(RequestCtx ctx, Geometry g, String srsName) {

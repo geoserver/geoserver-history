@@ -61,7 +61,7 @@ public class WildCardTest extends TestCase {
 	
 	
 	
-	public void WildCard() {
+	public void testWildCard() {
 		
 	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("wildcard", "WildCardPolicy.xml"));
 	    	    	    	    	    
@@ -79,7 +79,7 @@ public class WildCardTest extends TestCase {
 	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
 	}
 	
-	public void testIsBag2() {
+	public void testWildCard1() {
 		
 	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("wildcard", "WildCardPolicy.xml"));
 	    	    	    	    

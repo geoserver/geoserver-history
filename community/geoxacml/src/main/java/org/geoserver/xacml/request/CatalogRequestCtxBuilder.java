@@ -39,7 +39,7 @@ public class CatalogRequestCtxBuilder extends RequestCtxBuilder {
         
         Set<Attribute> resources = new HashSet<Attribute>(1);
         addGeoserverResource(resources);
-        addResource(resources, XACMLConstants.CatalogURI,XACMLConstants.CatalogResouceName);
+        addResource(resources, XACMLConstants.CatalogResourceURI,XACMLConstants.CatalogResouceName);
         
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);
