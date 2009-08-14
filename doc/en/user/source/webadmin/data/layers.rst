@@ -21,9 +21,9 @@ Layers are organized into two types of data, raster and vector.  The difference 
    * - **Field**
      - **Description**
 
-   * - .. figure:: ../images/data_layers_type1.png
+   * - .. image:: ../images/data_layers_type1.png
      - raster (grid)
-   * - .. figure:: ../images/data_layers_type2.png
+   * - .. image:: ../images/data_layers_type2.png
      - vector (feature)  
      
 .. _edit_layer_data:

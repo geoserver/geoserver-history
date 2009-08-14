@@ -18,11 +18,11 @@ Each layer row consists of a type, name, title, and available formats for viewin
    * - **Field**
      - **Description**
 
-   * - .. figure:: ../images/data_layers_type1.png
+   * - .. image:: ../images/data_layers_type1.png
      - Raster (grid) layer
-   * - .. figure:: ../images/data_layers_type2.png
+   * - .. image:: ../images/data_layers_type2.png
      - Vector (feature) layer  
-   * - .. figure:: ../images/preview_layergroup.png
+   * - .. image:: ../images/preview_layergroup.png
      - Layer group 
 
 Name refers to the Workspace and Layer Name of a layer, while Title refers to the brief description configured in the :ref:`edit_layer_data` panel.  In the following example, nurc refers to the Workspace, Arc_Sample refers to the Layer Name and "A sample ArcGrid field" is specified from Edit Later Data panel.

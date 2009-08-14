@@ -35,21 +35,21 @@ The rich editor is designed for text formatting, search and replace, line number
    * - **Button**
      - **Description**
 
-   * - .. figure:: ../images/data_style_editor1.png
+   * - .. image:: ../images/data_style_editor1.png
      - search
-   * - .. figure:: ../images/data_style_editor2.png
+   * - .. image:: ../images/data_style_editor2.png
      - go to line   
-   * - .. figure:: ../images/data_style_editor3.png
+   * - .. image:: ../images/data_style_editor3.png
      - fullscreen mode
-   * - .. figure:: ../images/data_style_editor4.png
+   * - .. image:: ../images/data_style_editor4.png
      - undo     
-   * - .. figure:: ../images/data_style_editor5.png
+   * - .. image:: ../images/data_style_editor5.png
      - redo
-   * - .. figure:: ../images/data_style_editor6.png
+   * - .. image:: ../images/data_style_editor6.png
      - toggle syntax highlight on/off
-   * - .. figure:: ../images/data_style_editor7.png
+   * - .. image:: ../images/data_style_editor7.png
      - reset highlight (if desynchronized from text)
-   * - .. figure:: ../images/data_style_editor8.png
+   * - .. image:: ../images/data_style_editor8.png
      - about
      
 

@@ -17,13 +17,13 @@ While there are many potential formats for data source, there are only four type
 
    * - **Type Icon**
      - **Description**
-   * - .. figure:: ../images/data_stores_type1.png
+   * - .. image:: ../images/data_stores_type1.png
      - raster data in a file
-   * - .. figure:: ../images/data_stores_type3.png
+   * - .. image:: ../images/data_stores_type3.png
      - vector data in a file
-   * - .. figure:: ../images/data_stores_type2.png
+   * - .. image:: ../images/data_stores_type2.png
      - vector data in a database 
-   * - .. figure:: ../images/data_stores_type5.png
+   * - .. image:: ../images/data_stores_type5.png
      - vector server (web feature server)
      
 
