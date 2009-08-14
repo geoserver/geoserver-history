@@ -4,6 +4,10 @@
  */
 package org.geoserver.xacml.geoxacml;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -18,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.w3c.dom.Document;
 
+import com.sun.xacml.Indenter;
 import com.sun.xacml.PDP;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
@@ -38,11 +43,9 @@ public class GeoXACMLPDPController extends AbstractController {
 
     public static final String VALIDATE_PARAM = "validate";
     
-    AbstractSecurityInterceptor interceptor = null;
 
     public GeoXACMLPDPController() {
         setSupportedMethods(new String[] { METHOD_POST });
-        //interceptor = (AbstractSecurityInterceptor)GeoServerExtensions.bean("xacmlOperationSecurityInterceptor");
     }
 
     @Override
@@ -50,10 +53,6 @@ public class GeoXACMLPDPController extends AbstractController {
             throws Exception {
 
         PDP pdp = GeoXACMLConfig.getPDP();
-        if (interceptor!=null) {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            interceptor.getAccessDecisionManager().decide(auth, req, null);            
-        }    
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setIgnoringComments(true);
         factory.setIgnoringElementContentWhitespace(true);
@@ -73,8 +72,15 @@ public class GeoXACMLPDPController extends AbstractController {
         RequestCtx request = RequestCtx.getInstance(doc.getDocumentElement());
         ResponseCtx response = pdp.evaluate(request);
 
-        response.encode(resp.getOutputStream());
+        response.encode(resp.getOutputStream(),new Indenter(0),true);
         return null;
     }
 
+    @SuppressWarnings("unused")
+    private void dumpXACMLRequest(HttpServletRequest req) throws IOException {
+        BufferedReader r = req.getReader();
+        String line = null;
+        while ((line=r.readLine())!=null)
+            System.out.println(line);        
+    }
 }

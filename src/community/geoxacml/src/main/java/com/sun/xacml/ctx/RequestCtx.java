@@ -336,6 +336,9 @@ public class RequestCtx
         encode(output, new Indenter(0));
     }
 
+    public void encode(OutputStream output, Indenter indenter) {
+        encode(output, indenter, false);
+    }
     /**
      * Encodes this context into its XML representation and writes
      * this encoding to the given <code>OutputStream</code> with
@@ -344,10 +347,12 @@ public class RequestCtx
      * @param output a stream into which the XML-encoded data is written
      * @param indenter an object that creates indentation strings
      */
-    public void encode(OutputStream output, Indenter indenter) {
+    public void encode(OutputStream output, Indenter indenter, boolean header) {
 
         // Make a PrintStream for a nicer printing interface
         PrintStream out = new PrintStream(output);
+        if (header)
+            out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 
         // Prepare the indentation string
         String topIndent = indenter.makeString();
@@ -424,5 +429,6 @@ public class RequestCtx
         for (Attribute attr: attributes)    
             attr.encode(out, indenter);
     }
+    
 
 }

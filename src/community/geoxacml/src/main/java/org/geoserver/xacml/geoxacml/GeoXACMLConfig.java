@@ -20,7 +20,9 @@ import org.geoserver.xacml.role.DefaultRoleAssignmentAuthority;
 import org.geoserver.xacml.role.RoleAssignmentAuthority;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
 import org.geotools.xacml.geoxacml.finder.impl.GeoSelectorModule;
+import org.geotools.xacml.transport.XACMLLocalTransportFactory;
 import org.geotools.xacml.transport.XACMLTransport;
+import org.geotools.xacml.transport.XACMLTransportFactory;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import sun.security.action.GetLongAction;
@@ -140,7 +142,7 @@ public class GeoXACMLConfig {
                 return transportFactory;
             transportFactory = GeoServerExtensions.bean(XACMLTransportFactory.class);
             if (transportFactory == null)
-                transportFactory = new DefaultXACMLTransportFactory(getPDP(), true);
+                transportFactory = new XACMLLocalTransportFactory(getPDP(), true);
             return transportFactory;
         }
 

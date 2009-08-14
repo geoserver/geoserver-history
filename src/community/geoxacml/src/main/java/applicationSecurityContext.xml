@@ -23,5 +23,14 @@
       </bean>
     </property>
   </bean>
-
+  
+   <!-- XACMLHttpTransportFactory -->
+   <!-- using a remote PDP, first param is remote URL, second if multithreaded (recommended)
+     
+  <bean id="xacmlHttpTransportFactory" class="org.geotools.xacml.transport.XACMLHttpTransportFactory">     
+    <constructor-arg index="0" value="http://localhost:8080/geoserver/security/geoxacml"/>
+    <constructor-arg index="1" value="true"/> 
+  </bean>
+   -->
+    
 </beans>
