@@ -26,7 +26,8 @@ import junit.framework.TestCase;
 
 import org.geotools.xacml.geoxacml.config.GeoXACML;
 import org.geotools.xacml.test.TestSupport;
-import org.geotools.xacml.transport.XACMLLocalTransport;
+import org.geotools.xacml.transport.XACMLLocalTransportFactory;
+import org.geotools.xacml.transport.XACMLTransport;
 
 import com.sun.xacml.PDP;
 import com.sun.xacml.ctx.RequestCtx;
@@ -40,14 +41,14 @@ import com.sun.xacml.ctx.Status;
  *         Tests for bag functions
  * 
  */
-public class XACMTransporterTest extends TestCase {
+public class XACMLTransporterTest extends TestCase {
 
-    public XACMTransporterTest() {
+    public XACMLTransporterTest() {
         super();
 
     }
 
-    public XACMTransporterTest(String arg0) {
+    public XACMLTransporterTest(String arg0) {
         super(arg0);
 
     }
@@ -73,7 +74,8 @@ public class XACMTransporterTest extends TestCase {
         }
 
         // serial
-        XACMLLocalTransport transport = new XACMLLocalTransport(pdp, false);
+        
+        XACMLTransport transport = new XACMLLocalTransportFactory(pdp,false).getXACMLTransport();
         ResponseCtx response = transport.evaluateRequestCtx(request);
 
         Result result = (Result) response.getResults().iterator().next();
@@ -82,7 +84,7 @@ public class XACMTransporterTest extends TestCase {
 
         // multithreaded transporter, one request
 
-        transport = new XACMLLocalTransport(pdp, true);
+        transport = new XACMLLocalTransportFactory(pdp,true).getXACMLTransport();
         response = transport.evaluateRequestCtx(request);
 
         result = (Result) response.getResults().iterator().next();
@@ -95,7 +97,7 @@ public class XACMTransporterTest extends TestCase {
 
         PDP pdp = TestSupport
                 .getPDP(TestSupport.getGeoXACMLFNFor("wildcard", "WildCardPolicy.xml"));
-        XACMLLocalTransport transport = new XACMLLocalTransport(pdp, false);
+        XACMLTransport transport = new XACMLLocalTransportFactory(pdp,false).getXACMLTransport();
         List<RequestCtx> requestList = createRequestList();
         List<ResponseCtx> responseList = transport.evaluateRequestCtxList(requestList);
         checkResponseList(responseList);
@@ -106,7 +108,7 @@ public class XACMTransporterTest extends TestCase {
 
         PDP pdp = TestSupport
                 .getPDP(TestSupport.getGeoXACMLFNFor("wildcard", "WildCardPolicy.xml"));
-        XACMLLocalTransport transport = new XACMLLocalTransport(pdp, true);
+        XACMLTransport transport = new XACMLLocalTransportFactory(pdp,true).getXACMLTransport();
         List<RequestCtx> requestList = createRequestList();
         List<ResponseCtx> responseList = transport.evaluateRequestCtxList(requestList);
         checkResponseList(responseList);

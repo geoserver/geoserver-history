@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.sun.xacml.Indenter;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
 
@@ -44,9 +45,13 @@ public class XACMLHttpTransport implements XACMLTransport {
      * 
      */
     public class HttpThread extends Thread {
-        private RequestCtx requestCtx = null;;
-
+        private RequestCtx requestCtx = null;
         private ResponseCtx responseCtx = null;
+        private RuntimeException runtimeException =null;
+
+        public RuntimeException getRuntimeException() {
+            return runtimeException;
+        }
 
         public ResponseCtx getResponseCtx() {
             return responseCtx;
@@ -58,18 +63,21 @@ public class XACMLHttpTransport implements XACMLTransport {
 
         @Override
         public void run() {
-            responseCtx = sendHttpPost(requestCtx);
+            try {
+                responseCtx = sendHttpPost(requestCtx);
+            } catch (RuntimeException ex) {
+                this.runtimeException=ex;
+            }
         }
 
     }
 
     private URL pdpURL;
-
     private boolean multiThreaded = false;
 
     public XACMLHttpTransport(URL pdpURL, boolean multiThreaded) {
         this.multiThreaded = multiThreaded;
-        this.pdpURL = pdpURL;
+        this.pdpURL=pdpURL;
     }
 
     public ResponseCtx evaluateRequestCtx(RequestCtx request) {
@@ -105,7 +113,10 @@ public class XACMLHttpTransport implements XACMLTransport {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            resultList.add(t.getResponseCtx());
+            if (t.getRuntimeException()==null)
+                resultList.add(t.getResponseCtx());
+            else 
+                throw t.getRuntimeException();
         }
         return resultList;
 
@@ -115,18 +126,16 @@ public class XACMLHttpTransport implements XACMLTransport {
         try {
             HttpURLConnection conn = (HttpURLConnection) pdpURL.openConnection();
             conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-type", "text/xml, application/xml");            
             conn.setDoOutput(true);
             OutputStream out = conn.getOutputStream();
-            requestCtx.encode(out);
+            requestCtx.encode(out,new Indenter(0),true);
             out.close();
             InputStream in = conn.getInputStream();
             ResponseCtx result = ResponseCtx.getInstance(in);
             in.close();
             return result;
         } catch (Exception e) {
-            Logger log = Logger.getLogger(this.getClass().getName());
-            log.severe("XACML Communication error");
-            log.severe(e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }
