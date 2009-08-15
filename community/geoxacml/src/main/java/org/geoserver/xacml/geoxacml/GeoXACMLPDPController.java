@@ -6,17 +6,12 @@ package org.geoserver.xacml.geoxacml;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.acegisecurity.Authentication;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.intercept.AbstractSecurityInterceptor;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -30,7 +25,7 @@ import com.sun.xacml.ctx.ResponseCtx;
 /**
  * Controller which acts as GeoXACML Policy Decision Point
  * 
- * Accepts onyl HTTP POST requests containing an XACML Request
+ * Accepts only HTTP POST requests containing an XACML Request
  * 
  * Supported Parameters:
  * 
@@ -42,7 +37,6 @@ import com.sun.xacml.ctx.ResponseCtx;
 public class GeoXACMLPDPController extends AbstractController {
 
     public static final String VALIDATE_PARAM = "validate";
-    
 
     public GeoXACMLPDPController() {
         setSupportedMethods(new String[] { METHOD_POST });
@@ -72,7 +66,7 @@ public class GeoXACMLPDPController extends AbstractController {
         RequestCtx request = RequestCtx.getInstance(doc.getDocumentElement());
         ResponseCtx response = pdp.evaluate(request);
 
-        response.encode(resp.getOutputStream(),new Indenter(0),true);
+        response.encode(resp.getOutputStream(), new Indenter(0), true);
         return null;
     }
 
@@ -80,7 +74,7 @@ public class GeoXACMLPDPController extends AbstractController {
     private void dumpXACMLRequest(HttpServletRequest req) throws IOException {
         BufferedReader r = req.getReader();
         String line = null;
-        while ((line=r.readLine())!=null)
-            System.out.println(line);        
+        while ((line = r.readLine()) != null)
+            System.out.println(line);
     }
 }

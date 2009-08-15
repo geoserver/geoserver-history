@@ -15,6 +15,12 @@ import org.geoserver.ows.Dispatcher;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.Role;
+import org.geotools.data.shapefile.shp.JTSUtilities;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.xacml.geoxacml.attr.GML3Support;
+import org.geotools.xacml.geoxacml.attr.GMLVersion;
+import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
 import org.vfny.geoserver.Request;
 
 import com.sun.xacml.attr.AnyURIAttribute;
@@ -23,7 +29,14 @@ import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.Subject;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -108,8 +121,41 @@ public abstract class RequestCtxBuilder extends Object {
     }
     
 
-    protected void addGeometry(RequestCtx ctx, Geometry g, String srsName) {
-        // TDOO
+    protected void addGeometry(Set<Attribute> resources,  URI attributeURI, Geometry g, String srsName) {
+        
+        String gmlType=null;
+        if (g instanceof Point) gmlType=GML3Support.GML_POINT;
+        if (g instanceof LineString) gmlType=GML3Support.GML_LINESTRING;
+        if (g instanceof Polygon) gmlType=GML3Support.GML_POLYGON;
+        if (g instanceof MultiPoint) gmlType=GML3Support.GML_MULTIPOINT;
+        if (g instanceof MultiLineString) gmlType=GML3Support.GML_MULTICURVE;
+        if (g instanceof MultiPolygon) gmlType=GML3Support.GML_MULTISURFACE;
+        
+        if (gmlType==null) {
+            throw new RuntimeException("No GML type for " + g.getClass().getName());
+        }
+        
+        GeometryAttribute geomAttr = null;
+        try {
+            geomAttr = new GeometryAttribute(g,srsName,null,GMLVersion.Version3,gmlType);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }            
+        resources.add(new Attribute(attributeURI,null,null,geomAttr));
+    }
+    
+    protected void addBbox(Set<Attribute> resources) {
+        org.geoserver.ows.Request owsRequest = Dispatcher.REQUEST.get();
+        if (owsRequest==null) return;
+
+        ReferencedEnvelope env = (ReferencedEnvelope) owsRequest.getKvp().get("BBOX");
+        if (env == null) return;
+        
+        String srsName =  (String) owsRequest.getKvp().get("SRS");
+        Geometry geom = JTS.toGeometry((Envelope)env);
+        
+        addGeometry(resources,XACMLConstants.BBoxResourceURI,geom,srsName);
+                
     }
     
     abstract public RequestCtx createRequestCtx();

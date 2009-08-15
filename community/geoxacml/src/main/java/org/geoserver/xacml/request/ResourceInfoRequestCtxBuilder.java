@@ -40,7 +40,13 @@ public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
     public ResourceInfoRequestCtxBuilder(Role role, ResourceInfo resourceInfo, AccessMode mode) {
         super(role, mode);
         this.resourceName = resourceInfo.getName();
-        this.workspaceName = resourceInfo.getStore().getWorkspace().getName();
+        if (resourceInfo.getNamespace()!=null) {
+            this.workspaceName=resourceInfo.getNamespace().getName();
+            if (this.workspaceName==null) this.workspaceName=resourceInfo.getNamespace().getURI();
+        }
+        else {
+            this.workspaceName = resourceInfo.getStore().getWorkspace().getName();            
+        } 
     }
 
     @Override
@@ -54,6 +60,7 @@ public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
         addOWSService(resources);
         addResource(resources, XACMLConstants.WorkspaceURI, workspaceName);
         addResource(resources, XACMLConstants.GeoServerResouceURI, resourceName);
+        addBbox(resources);
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);

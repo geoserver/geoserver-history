@@ -186,8 +186,8 @@ public class AttributeFinder
 
         // if we got here then there were no errors but there were also no
         // matches, so we have to return an empty bag
-        if (logger.isLoggable(Level.INFO))
-            logger.info("Failed to resolve any values for " +
+        if (logger.isLoggable(Level.FINE))
+            logger.fine("Failed to resolve any values for " +
                         attributeId.toString());
 
         return new EvaluationResult(BagAttribute.
@@ -239,8 +239,8 @@ public class AttributeFinder
 
         // if we got here then there were no errors but there were also no
         // matches, so we have to return an empty bag
-        if (logger.isLoggable(Level.INFO))
-            logger.info("Failed to resolve any values for " + contextPath);
+        if (logger.isLoggable(Level.FINE))
+            logger.fine("Failed to resolve any values for " + contextPath);
 
         return new EvaluationResult(BagAttribute.
                                     createEmptyBag(attributeType));
