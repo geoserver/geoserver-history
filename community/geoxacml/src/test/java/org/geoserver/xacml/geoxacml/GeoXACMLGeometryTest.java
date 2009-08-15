@@ -19,7 +19,7 @@ import org.geoserver.ows.Request;
 import org.geoserver.security.AccessMode;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.xacml.request.ResourceInfoRequestCtxBuilder;
-import org.geoserver.xacml.role.Role;
+import org.geoserver.xacml.role.XACMLRole;
 import org.geoserver.xacml.security.XACMLDataAccessManager;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xacml.geoxacml.attr.GeometryAttribute;
@@ -58,7 +58,7 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
     ResourceInfo europe;
     ResourceInfo asia;
     XACMLDataAccessManager accessManager;
-    Role role;
+    XACMLRole role;
 
     @Override
     protected void setUpInternal() throws Exception {
@@ -82,7 +82,7 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
         GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/publicReadGeoRestricted/");
         GeoXACMLConfig.reset();
         accessManager= new XACMLDataAccessManager();
-        role = new Role(GeoXACMLConfig.getRoleAssignmentAuthority().getRoleIdsFor(null).iterator().next());
+        role = GeoXACMLConfig.getXACMLRoleAuthority().getRolesFor(null).iterator().next();
     }
     
     public void testLayerAccessStates() {

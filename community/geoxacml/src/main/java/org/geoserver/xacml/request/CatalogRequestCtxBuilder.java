@@ -11,7 +11,7 @@ import java.util.Set;
 import org.geoserver.security.AccessMode;
 import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
-import org.geoserver.xacml.role.Role;
+import org.geoserver.xacml.role.XACMLRole;
 
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
@@ -25,10 +25,10 @@ import com.sun.xacml.ctx.Subject;
  *
  */
 public class CatalogRequestCtxBuilder extends RequestCtxBuilder {
-    public final static Role GeoServerRole = new Role(XACMLConstants.GeoServerRole);
+    public final static XACMLRole GeoServerRole = new XACMLRole(XACMLConstants.GeoServerRole);
     
-    public CatalogRequestCtxBuilder(Role role,AccessMode mode) {
-        super(role,mode);
+    public CatalogRequestCtxBuilder(AccessMode mode) {
+        super(GeoServerRole,mode);
     }
 
     @Override

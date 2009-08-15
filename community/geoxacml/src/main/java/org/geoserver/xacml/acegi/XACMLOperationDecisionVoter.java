@@ -19,11 +19,12 @@ import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.request.URLMatchRequestCtxBuilder;
-import org.geoserver.xacml.role.Role;
-import org.geoserver.xacml.role.RoleAssignmentAuthority;
+import org.geoserver.xacml.role.XACMLRole;
+import org.geoserver.xacml.role.XACMLRoleAuthority;
 
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
+import com.sun.xacml.ctx.Result;
 
 /**
  * Acegi Decision Voter using XACML policies
@@ -52,6 +53,9 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
         }
 
         List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath);
+        if (requestCtxts.isEmpty())
+            return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
+            
         List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
 
         int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
@@ -62,10 +66,10 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
     private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        RoleAssignmentAuthority raa = GeoXACMLConfig.getRoleAssignmentAuthority();
+        XACMLRoleAuthority raa = GeoXACMLConfig.getXACMLRoleAuthority();
 
-        for (String roleId : raa.getRoleIdsFor(auth)) {
-            URLMatchRequestCtxBuilder builder = new URLMatchRequestCtxBuilder(new Role(roleId),
+        for (XACMLRole role : raa.getRolesFor(auth)) {
+            URLMatchRequestCtxBuilder builder = new URLMatchRequestCtxBuilder(role,
                     urlPath,AccessMode.READ);
             RequestCtx requestCtx = builder.createRequestCtx();
             XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));

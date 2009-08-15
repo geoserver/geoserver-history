@@ -8,13 +8,14 @@ package org.geoserver.xacml.request;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
-import org.geoserver.xacml.role.Role;
+import org.geoserver.xacml.role.XACMLRole;
 import org.geotools.data.shapefile.shp.JTSUtilities;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -50,15 +51,15 @@ import com.vividsolutions.jts.geom.Polygon;
 public abstract class RequestCtxBuilder extends Object {
     
                 
-    private Role role;
+    private XACMLRole role;
     private AccessMode mode;
     
-    public Role getRole() {
+    public XACMLRole getRole() {
         return role;
     }
 
 
-    protected RequestCtxBuilder(Role role,AccessMode mode) {
+    protected RequestCtxBuilder(XACMLRole role,AccessMode mode) {
         this.role=role;
         this.mode=mode;
     }
@@ -148,10 +149,13 @@ public abstract class RequestCtxBuilder extends Object {
         org.geoserver.ows.Request owsRequest = Dispatcher.REQUEST.get();
         if (owsRequest==null) return;
 
-        ReferencedEnvelope env = (ReferencedEnvelope) owsRequest.getKvp().get("BBOX");
+        Map kvp = owsRequest.getKvp();
+        if (kvp==null) return;
+        
+        ReferencedEnvelope env = (ReferencedEnvelope) kvp.get("BBOX");
         if (env == null) return;
         
-        String srsName =  (String) owsRequest.getKvp().get("SRS");
+        String srsName =  (String) kvp.get("SRS");
         Geometry geom = JTS.toGeometry((Envelope)env);
         
         addGeometry(resources,XACMLConstants.BBoxResourceURI,geom,srsName);
