@@ -29,7 +29,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.AccessMode;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.xacml.request.WorkspaceRequestCtxBuilder;
-import org.geoserver.xacml.role.Role;
+import org.geoserver.xacml.role.XACMLRole;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -80,10 +80,9 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
     private List<RequestCtx> createRequestCtxList() {
         List<RequestCtx> result = new ArrayList<RequestCtx>();
         for (WorkspaceInfo wsInfo : getCatalog().getWorkspaces()) {
-            Set<String> roleStrings = GeoXACMLConfig.getRoleAssignmentAuthority().getRoleIdsFor(
+            Set<XACMLRole> roles = GeoXACMLConfig.getXACMLRoleAuthority().getRolesFor(
                     SecurityContextHolder.getContext().getAuthentication());
-            for (String roleString : roleStrings) {
-                Role role = new Role(roleString);
+            for (XACMLRole role : roles) {                
                 WorkspaceRequestCtxBuilder b = new WorkspaceRequestCtxBuilder(role, wsInfo,
                         AccessMode.READ);
                 RequestCtx rctx = b.createRequestCtx();

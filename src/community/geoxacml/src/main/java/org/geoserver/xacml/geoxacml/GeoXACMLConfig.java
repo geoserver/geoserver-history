@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.xacml.role.DefaultRoleAssignmentAuthority;
-import org.geoserver.xacml.role.RoleAssignmentAuthority;
+import org.geoserver.xacml.role.XACMLDefaultRoleAuthority;
+import org.geoserver.xacml.role.XACMLRoleAuthority;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
 import org.geotools.xacml.geoxacml.finder.impl.GeoSelectorModule;
 import org.geotools.xacml.transport.XACMLLocalTransportFactory;
@@ -50,7 +50,7 @@ public class GeoXACMLConfig {
 
     private static Object transportFactoryLock = new Object();
 
-    private static RoleAssignmentAuthority raa;
+    private static XACMLRoleAuthority raa;
 
     private static Object raaLock = new Object();
 
@@ -110,18 +110,18 @@ public class GeoXACMLConfig {
     }
 
     /**
-     * Use GeoserverExtensions to create a {@link RoleAssignmentAuthority} If nothing is configured,
-     * use {@link DefaultRoleAssignmentAuthority}
+     * Use GeoserverExtensions to create a {@link XACMLRoleAuthority} If nothing is configured,
+     * use {@link XACMLDefaultRoleAuthority}
      * 
      * @return a RoleAssignmentAuthorty
      */
-    static public RoleAssignmentAuthority getRoleAssignmentAuthority() {
+    static public XACMLRoleAuthority getXACMLRoleAuthority() {
         synchronized (raaLock) {
             if (raa != null)
                 return raa;
-            raa = GeoServerExtensions.bean(RoleAssignmentAuthority.class);
+            raa = GeoServerExtensions.bean(XACMLRoleAuthority.class);
             if (raa == null) {
-                raa = new DefaultRoleAssignmentAuthority();
+                raa = new XACMLDefaultRoleAuthority();
             }
             return raa;
         }
@@ -174,6 +174,7 @@ public class GeoXACMLConfig {
         
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Admin.xml");
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Catalog.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Role.xml");
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Anonymous.xml");
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Authenticated.xml");
     }

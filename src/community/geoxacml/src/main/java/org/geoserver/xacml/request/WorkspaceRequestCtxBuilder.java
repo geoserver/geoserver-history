@@ -11,7 +11,7 @@ import java.util.Set;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
-import org.geoserver.xacml.role.Role;
+import org.geoserver.xacml.role.XACMLRole;
 
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
@@ -31,7 +31,7 @@ public class WorkspaceRequestCtxBuilder extends RequestCtxBuilder {
         return workspaceName;
     }
 
-    public WorkspaceRequestCtxBuilder(Role role, WorkspaceInfo workspace,AccessMode mode) {
+    public WorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo workspace,AccessMode mode) {
         super(role,mode);
         this.workspaceName = workspace.getName();
     }

@@ -20,17 +20,17 @@ import java.util.Map;
  *  this class is NOT used for role assignment 
  *
  */
-public class Role {
+public class XACMLRole {
        
 
     private String id;
     private Map<String,Object> attributes;
     
-    public Role(String id) {
+    public XACMLRole(String id) {
      this(id, null);   
     }
     
-    public Role(String id , Map<String,Object> attributes) {
+    public XACMLRole(String id , Map<String,Object> attributes) {
         this.id=id;
         this.attributes=attributes;
     }    
