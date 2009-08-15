@@ -53,7 +53,7 @@ public class GeometryAttribute extends AttributeValue {
 
     private GMLVersion gmlVersion;
 
-    private int srsDimension;
+    private int srsDimension = 2; // default Value
 
     /**
      * Constructor

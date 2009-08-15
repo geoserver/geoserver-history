@@ -35,6 +35,9 @@ public class XACMLConstants {
     public static URI OWSServiceResourceURI;
     public final static String OWSRequestResouceId= ResourceTypePrefix+"OWSRequest";
     public static URI OWSRequestResourceURI;
+    public final static String BBoxResouceId= ResourceTypePrefix+"BBox";
+    public static URI BBoxResourceURI;
+
 
        
     
@@ -54,6 +57,7 @@ public class XACMLConstants {
     public final static String GeoServerRole="ROLE_GEOSERVER";
     public final static String AdminRole="ROLE_ADMINISTRATOR";
     public final static String AnonymousRole="ROLE_ANONYMOUS";
+    public final static String Authenticated="ROLE_AUTHENTICATED";
 
     /*
      * Resource Name for the catalog 
@@ -84,6 +88,7 @@ public class XACMLConstants {
             CatalogResourceURI = new URI(CatalogResouceId);
             OWSServiceResourceURI=new URI(OWSServiceResouceId);
             OWSRequestResourceURI=new URI(OWSRequestResouceId);
+            BBoxResourceURI=new URI(BBoxResouceId);
             
         } catch (URISyntaxException e) {
             // should not happen

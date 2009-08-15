@@ -111,7 +111,7 @@ public class DataDirPolicyFinderModlule extends PolicyFinderModule {
                         logger.log(Level.WARNING, "tried to load the same "
                                 + "policy multiple times: " + fileName);
                 } else {
-                    logger.info("Read policy(Set) "+policy.getId()+" from "+ fileName.toString() );
+                    logger.fine("Read policy(Set) "+policy.getId()+" from "+ fileName.toString() );
                 }
                 
             } catch (ParsingException e) {
