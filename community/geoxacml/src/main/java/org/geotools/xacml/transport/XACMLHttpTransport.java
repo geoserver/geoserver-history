@@ -100,8 +100,15 @@ public class XACMLHttpTransport implements XACMLTransport {
     }
 
     private List<ResponseCtx> evaluateRequestCtxListMultiThreaded(List<RequestCtx> requests) {
-        List<ResponseCtx> resultList = new ArrayList<ResponseCtx>(requests.size());
+        List<ResponseCtx> resultList = new ArrayList<ResponseCtx>(requests.size());                
         List<HttpThread> threadList = new ArrayList<HttpThread>(requests.size());
+        
+        if (requests.size()==1) { //no threading for only one request
+            resultList.add(evaluateRequestCtx(requests.get(0)));
+            return resultList;
+        }
+
+        
         for (RequestCtx request : requests) {
             HttpThread t = new HttpThread(request);
             t.start();

@@ -57,7 +57,6 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
     ResourceInfo states;
     ResourceInfo europe;
     ResourceInfo asia;
-    XACMLDataAccessManager accessManager;
     XACMLRole role;
 
     @Override
@@ -81,7 +80,6 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
                 
         GeoXACMLConfig.setPolicyRepsoitoryBaseDir("src/test/resources/publicReadGeoRestricted/");
         GeoXACMLConfig.reset();
-        accessManager= new XACMLDataAccessManager();
         role = GeoXACMLConfig.getXACMLRoleAuthority().getRolesFor(null).iterator().next();
     }
     
