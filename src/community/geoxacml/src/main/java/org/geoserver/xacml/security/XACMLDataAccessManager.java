@@ -152,7 +152,7 @@ public class XACMLDataAccessManager implements DataAccessManager {
             WorkspaceRequestCtxBuilder builder = new WorkspaceRequestCtxBuilder(role,
                     workspaceInfo, mode);
             RequestCtx requestCtx = builder.createRequestCtx();
-            XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
+//            XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
 
@@ -185,7 +185,7 @@ public class XACMLDataAccessManager implements DataAccessManager {
         for (XACMLRole role : raa.getRolesFor(auth)) {
             ResourceInfoRequestCtxBuilder builder = new ResourceInfoRequestCtxBuilder(role, resourceInfo, mode);
             RequestCtx requestCtx = builder.createRequestCtx();
-            XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
+            //XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
 

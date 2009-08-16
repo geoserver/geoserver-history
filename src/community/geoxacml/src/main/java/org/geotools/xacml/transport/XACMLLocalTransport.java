@@ -89,6 +89,12 @@ public class XACMLLocalTransport implements XACMLTransport {
     private List<ResponseCtx> evaluateRequestCtxListMultiThreaded(List<RequestCtx> requests) {
         List<ResponseCtx> resultList = new ArrayList<ResponseCtx>(requests.size());
         List<LocalThread> threadList = new ArrayList<LocalThread>(requests.size());
+        
+        if (requests.size()==1) { //no threading for only one request
+            resultList.add(evaluateRequestCtx(requests.get(0)));
+            return resultList;
+        }
+        
         for (RequestCtx request : requests) {
             LocalThread t = new LocalThread(request);
             t.start();
