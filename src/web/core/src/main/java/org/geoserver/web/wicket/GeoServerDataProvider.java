@@ -141,8 +141,9 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
 
         // global sorting
         Comparator<T> comparator = getComparator(getSort());
-        if (comparator != null)
+        if (comparator != null) {
             Collections.sort(items, comparator);
+        }
 
         // in memory paging
         int last = first + count;
@@ -163,8 +164,10 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         // if needed, filter
         if (keywords != null && keywords.length > 0) {
             return filterByKeywords(items);
+        } else {
+            // make a deep copy anyways, the catalog does not do that for us
+            return new ArrayList<T>(items);
         }
-        return items;
     }
 
     /**
