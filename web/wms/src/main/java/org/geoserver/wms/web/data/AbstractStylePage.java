@@ -22,7 +22,6 @@ import org.apache.wicket.ajax.calldecorator.AjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -38,6 +37,7 @@ import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.data.style.StyleDetachableModel;
 import org.geoserver.web.wicket.EditAreaBehavior;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.ParamResourceModel;
@@ -72,7 +72,7 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
     }
 
     public AbstractStylePage(StyleInfo style) {
-        styleForm = new Form("form", new CompoundPropertyModel(style != null ? style : getCatalog().getFactory().createStyle())) {
+        styleForm = new Form("form", new CompoundPropertyModel(style != null ? new StyleDetachableModel(style) : getCatalog().getFactory().createStyle())) {
             @Override
             protected void onSubmit() {
                 onStyleFormSubmit();
