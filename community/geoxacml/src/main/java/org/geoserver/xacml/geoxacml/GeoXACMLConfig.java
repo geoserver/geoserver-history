@@ -160,17 +160,20 @@ public class GeoXACMLConfig {
         String commonDir = byReferenceDir+"/common";
         String anonymousDir=byReferenceDir+"/anonymous";
         String authenticatedDir=byReferenceDir+"/authenticated";
+        String roleDir=byReferenceDir+"/role";
         
         createDirectoryIfNotExisting(new File(geoServerDataDir,byRequestDir));
         createDirectoryIfNotExisting(new File(geoServerDataDir,byReferenceDir));
         createDirectoryIfNotExisting(new File(geoServerDataDir,commonDir));
         createDirectoryIfNotExisting(new File(geoServerDataDir,anonymousDir));
         createDirectoryIfNotExisting(new File(geoServerDataDir,authenticatedDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir,roleDir));
 
         copyFileIfNotExisting(geoServerDataDir, commonDir+"/PermitAll.xml");
         copyFileIfNotExisting(geoServerDataDir, commonDir+"/DenyAll.xml");
         copyFileIfNotExisting(geoServerDataDir, anonymousDir+"/PAnonymous.xml");
         copyFileIfNotExisting(geoServerDataDir, authenticatedDir+"/PAuthenticated.xml");
+        copyFileIfNotExisting(geoServerDataDir, roleDir+"/PRole.xml");
         
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Admin.xml");
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Catalog.xml");

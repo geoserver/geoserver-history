@@ -5,7 +5,7 @@
 
 package org.geoserver.xacml.role;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,7 +38,8 @@ public class XACMLRole {
         return id;
     }
     public Map<String, Object> getAttributes() {
-        if (attributes==null) return Collections.emptyMap();
+        if (attributes==null) 
+            attributes=new HashMap<String,Object>();
         return attributes;
     }
     

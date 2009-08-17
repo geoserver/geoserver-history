@@ -17,6 +17,9 @@ public class XACMLConstants {
     
     public final static String GeoServerPrefix = "org:geoserver:" ;
     
+    
+    public final static String RoleAttributeId="urn:oasis:names:tc:xacml:2.0:subject:role";
+    public static URI RoleAttributeURI;
     public final static String ActionAttributeId= "urn:oasis:names:tc:xacml:1.0:action:action-id";
     public static URI ActionAttributeURI;
     public final static String ResourceAttributeId= "urn:oasis:names:tc:xacml:1.0:resource:resource-id";
@@ -49,7 +52,6 @@ public class XACMLConstants {
 //    public static URI RoleAttributeURI;
 
     
-    public final static String RoleIdPrefix=GeoServerPrefix+"role:";
     public final static String RoleParamIdInfix=":param:";
     public final static String ObligationPrefix=GeoServerPrefix+"obligation:";
     
@@ -76,6 +78,7 @@ public class XACMLConstants {
      * Some common obligation Ids 
      */
     public final static String CatalogModeObligationId=ObligationPrefix+"CatalogMode";
+    public final static String UserPropertyObligationId=ObligationPrefix+"userproperty";
     
     /*
      * 
@@ -94,6 +97,7 @@ public class XACMLConstants {
             OWSRequestResourceURI=new URI(OWSRequestResouceId);
             BBoxResourceURI=new URI(BBoxResouceId);
             RoleEnablemetnResourceURI=new URI(RoleEnablementResouceId);
+            RoleAttributeURI=new URI(RoleAttributeId);
             
         } catch (URISyntaxException e) {
             // should not happen

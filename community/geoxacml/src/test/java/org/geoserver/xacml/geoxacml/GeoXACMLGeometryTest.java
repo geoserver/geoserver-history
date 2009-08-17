@@ -5,10 +5,21 @@
 
 package org.geoserver.xacml.geoxacml;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.acegisecurity.Authentication;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.GrantedAuthorityImpl;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.providers.AuthenticationProvider;
+import org.acegisecurity.providers.ProviderManager;
+import org.acegisecurity.providers.TestingAuthenticationProvider;
+import org.acegisecurity.providers.TestingAuthenticationToken;
+import org.acegisecurity.providers.dao.DaoAuthenticationProvider;
 import org.easymock.classextension.EasyMock;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -16,9 +27,11 @@ import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.AccessMode;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.xacml.request.ResourceInfoRequestCtxBuilder;
+import org.geoserver.xacml.role.GeometryRoleParam;
 import org.geoserver.xacml.role.XACMLRole;
 import org.geoserver.xacml.security.XACMLDataAccessManager;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -29,6 +42,11 @@ import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
+import com.sun.xacml.ctx.Subject;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 
@@ -63,6 +81,8 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
         
+
+        
         nameSpace = new NamespaceInfoImpl();
         nameSpace.setURI("topp");
         
@@ -84,50 +104,50 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
     }
     
     public void testLayerAccessStates() {
-        
+        SecurityContextHolder.getContext().setAuthentication(null);
         ReferencedEnvelope env = new ReferencedEnvelope(10,20,40,60,null);
         setDispatcherRequest("GetMap",env,null);
         
         ResourceInfoRequestCtxBuilder b = new ResourceInfoRequestCtxBuilder(role,states,AccessMode.READ);
         RequestCtx request = b.createRequestCtx();
-        dumpRequestCtx(request);
+        //dumpRequestCtx(request);
         ResponseCtx response = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtx(request);
         assertTrue(response.getResults().iterator().next().getDecision()==Result.DECISION_PERMIT);
         checkForObligation(response);
     }
     public void testLayerAccessAsia() {
-        
+        SecurityContextHolder.getContext().setAuthentication(null);
         ReferencedEnvelope env = new ReferencedEnvelope(10,20,40,60,null);
         setDispatcherRequest("GetFeatureInfo",env,"EPSG:4326");
         
         ResourceInfoRequestCtxBuilder b = new ResourceInfoRequestCtxBuilder(role,asia,AccessMode.READ);
         RequestCtx request = b.createRequestCtx();
-        dumpRequestCtx(request);        
+        //dumpRequestCtx(request);        
         ResponseCtx response = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtx(request);
         assertTrue(response.getResults().iterator().next().getDecision()==Result.DECISION_DENY);
     }
     
     public void testLayerAccessEuropePermit() {
-        
+        SecurityContextHolder.getContext().setAuthentication(null);
         ReferencedEnvelope env = new ReferencedEnvelope(12,17,12,17,null);
         setDispatcherRequest("GetFeatureInfo",env,"EPSG:4326");
         
         ResourceInfoRequestCtxBuilder b = new ResourceInfoRequestCtxBuilder(role,europe,AccessMode.READ);
         RequestCtx request = b.createRequestCtx();
-        dumpRequestCtx(request);        
+        //dumpRequestCtx(request);        
         ResponseCtx response = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtx(request);
         assertTrue(response.getResults().iterator().next().getDecision()==Result.DECISION_PERMIT);
         checkForObligation(response);
     }
     
     public void testLayerAccessEuropeDeny() {
-        
+        SecurityContextHolder.getContext().setAuthentication(null);   
         ReferencedEnvelope env = new ReferencedEnvelope(6,8,6,8,null);
         setDispatcherRequest("GetFeatureInfo",env,"EPSG:4326");
         
         ResourceInfoRequestCtxBuilder b = new ResourceInfoRequestCtxBuilder(role,europe,AccessMode.READ);
         RequestCtx request = b.createRequestCtx();
-        dumpRequestCtx(request);        
+        //dumpRequestCtx(request);        
         ResponseCtx response = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtx(request);
         assertTrue(response.getResults().iterator().next().getDecision()==Result.DECISION_DENY);
     }
@@ -151,7 +171,7 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
     }
 
     private void setDispatcherRequest(String requestName,ReferencedEnvelope env, String srsName) {
-        
+                
         Map<String,Object> kvp = new HashMap<String,Object>();
         if (env!=null)
             kvp.put("BBOX", env);
@@ -166,4 +186,39 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
         Dispatcher.REQUEST.set(owsRequest);
     }
     
+    public void testRoleAttributes() {
+        
+        UserDetailsImpl readerDetails= new UserDetailsImpl("reader","pwreader");;
+        readerDetails.setPersNr(4711);
+        GeometryFactory fac = new GeometryFactory();
+        LinearRing r = fac.createLinearRing(new Coordinate[]{ 
+                    new Coordinate(11,11),
+                    new Coordinate(14,11),
+                    new Coordinate(14,14),
+                    new Coordinate(11,14),
+                    new Coordinate(11,11),
+                    });
+       readerDetails.setGeometryRestriction(fac.createPolygon(r, new LinearRing[]{}));
+        
+        Authentication reader = new TestingAuthenticationToken(readerDetails, "pwreader",
+                    new GrantedAuthority[] { new GrantedAuthorityImpl("READER") });
+        
+        SecurityContextHolder.getContext().setAuthentication(reader);        
+        XACMLRole readerRole= GeoXACMLConfig.getXACMLRoleAuthority().getRolesFor(reader).iterator().next();
+        assertTrue(readerRole.getAttributes().get("persNr").equals(new Integer(4711)));
+        assertTrue(readerRole.getAttributes().get("geometryRestriction") instanceof GeometryRoleParam);
+        
+        ResourceInfoRequestCtxBuilder b = new ResourceInfoRequestCtxBuilder(readerRole,europe,AccessMode.READ);
+        RequestCtx request = b.createRequestCtx();
+        
+        Subject subject = request.getSubjects().iterator().next();
+        int count = 0;
+        for (Attribute attr: subject.getAttributes()) {
+            if (attr.getId().toString().equals(XACMLConstants.RoleAttributeId+XACMLConstants.RoleParamIdInfix+"persNr")) count++;
+            if (attr.getId().toString().equals(XACMLConstants.RoleAttributeId+XACMLConstants.RoleParamIdInfix+"geometryRestriction")) count++;
+        }
+        assertTrue(count==2);
+        //System.out.println(XACMLUtil.asXMLString(request));
+   
+    }
 }

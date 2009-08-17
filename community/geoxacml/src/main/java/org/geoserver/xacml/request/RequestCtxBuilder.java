@@ -7,6 +7,7 @@ package org.geoserver.xacml.request;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import java.util.Map.Entry;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
+import org.geoserver.xacml.role.GeometryRoleParam;
 import org.geoserver.xacml.role.XACMLRole;
 import org.geotools.data.shapefile.shp.JTSUtilities;
 import org.geotools.geometry.jts.JTS;
@@ -26,6 +28,10 @@ import org.vfny.geoserver.Request;
 
 import com.sun.xacml.attr.AnyURIAttribute;
 import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.BooleanAttribute;
+import com.sun.xacml.attr.DateTimeAttribute;
+import com.sun.xacml.attr.DoubleAttribute;
+import com.sun.xacml.attr.IntegerAttribute;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
@@ -68,9 +74,8 @@ public abstract class RequestCtxBuilder extends Object {
     protected void addRole(Set<Subject> subjects) {
         
             
-        URI roleIdURI = null,roleURI=null;
-        try {
-            roleIdURI=new URI(XACMLConstants.RoleIdPrefix+role.getId());
+        URI roleURI=null;
+        try {            
             roleURI=new URI(role.getId());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -79,18 +84,18 @@ public abstract class RequestCtxBuilder extends Object {
         Set<Attribute> subjectAttributes = new HashSet<Attribute>(1+role.getAttributes().size());
         
         AttributeValue roleAttributeValue = new AnyURIAttribute(roleURI);
-        Attribute roleAttribute= new Attribute(roleIdURI,null,null,roleAttributeValue);
+        Attribute roleAttribute= new Attribute(XACMLConstants.RoleAttributeURI,null,null,roleAttributeValue);
         subjectAttributes.add(roleAttribute);
         
         for (Entry<String,Object> paramEntry: role.getAttributes().entrySet()) {
             URI paramURI = null;
             try {
-                paramURI=new URI(XACMLConstants.RoleIdPrefix+role.getId()+XACMLConstants.RoleParamIdInfix+paramEntry.getKey());
+                paramURI=new URI(XACMLConstants.RoleAttributeId+XACMLConstants.RoleParamIdInfix+paramEntry.getKey());
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
             // TODO, not anything is a string
-            AttributeValue paramValue = new StringAttribute(paramEntry.getValue().toString());
+            AttributeValue paramValue = createFromObject(paramEntry.getValue()); 
             Attribute paramAttribute = new Attribute(paramURI,null,null,paramValue);
             subjectAttributes.add(paramAttribute);
         }
@@ -98,6 +103,31 @@ public abstract class RequestCtxBuilder extends Object {
         Subject subject = new Subject(subjectAttributes);
         subjects.add(subject);
 
+    }
+    
+    protected AttributeValue createFromObject(Object object) {
+        AttributeValue retVal=null;
+        
+        //if (object instanceof Geometry) retVal= new GeometryAttribute((Geometry)object);
+        
+        if (object instanceof String) retVal= new StringAttribute((String)object);
+        if (object instanceof URI) retVal= new AnyURIAttribute((URI)object);
+        if (object instanceof Boolean) retVal= ((Boolean)object)  ? BooleanAttribute.getTrueInstance() : BooleanAttribute.getFalseInstance();
+        if (object instanceof Double) retVal = new DoubleAttribute((Double) object);
+        if (object instanceof Float) retVal = new DoubleAttribute((Float) object);
+        if (object instanceof Integer) retVal = new IntegerAttribute((Integer) object);
+        if (object instanceof Date) retVal = new DateTimeAttribute((Date) object);
+        if (object instanceof GeometryRoleParam) {
+            GeometryRoleParam temp = (GeometryRoleParam) object;
+            String gmlType = getGMLTypeFor(temp.getGeometry());
+            try {
+                retVal= new GeometryAttribute(temp.getGeometry(),temp.getSrsName(),null,GMLVersion.Version3,gmlType);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        return retVal;
     }
     
     protected void addAction(Set<Attribute> actions) {
@@ -122,8 +152,7 @@ public abstract class RequestCtxBuilder extends Object {
     }
     
 
-    protected void addGeometry(Set<Attribute> resources,  URI attributeURI, Geometry g, String srsName) {
-        
+    private String getGMLTypeFor(Geometry g) {
         String gmlType=null;
         if (g instanceof Point) gmlType=GML3Support.GML_POINT;
         if (g instanceof LineString) gmlType=GML3Support.GML_LINESTRING;
@@ -135,6 +164,12 @@ public abstract class RequestCtxBuilder extends Object {
         if (gmlType==null) {
             throw new RuntimeException("No GML type for " + g.getClass().getName());
         }
+        return gmlType;
+    }
+    
+    protected void addGeometry(Set<Attribute> resources,  URI attributeURI, Geometry g, String srsName) {
+        
+        String gmlType=getGMLTypeFor(g) ;
         
         GeometryAttribute geomAttr = null;
         try {

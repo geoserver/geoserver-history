@@ -4,6 +4,11 @@
  */
 package org.geoserver.xacml.role;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,9 +22,13 @@ import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.request.XACMLRoleRequestCtxBuilder;
 
+import com.sun.xacml.Obligation;
+import com.sun.xacml.attr.StringAttribute;
+import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
+import com.vividsolutions.jts.geom.Geometry;
 
 
 /**
@@ -46,7 +55,7 @@ public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
             }         
         }
                         
-        return filterEnabledRoles(result);
+        return filterEnabledRoles(result,auth);
     }
 
     public boolean isCallerInRole(Authentication auth, String roleId) {
@@ -69,7 +78,7 @@ public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
        
     }
     
-    Set<XACMLRole> filterEnabledRoles(Set<XACMLRole> roles) {
+    Set<XACMLRole> filterEnabledRoles(Set<XACMLRole> roles,Authentication auth) {
         List<RequestCtx> requests = new ArrayList<RequestCtx>(roles.size());
         List<XACMLRole> roleList = new ArrayList<XACMLRole>(roles.size());
         
@@ -81,12 +90,55 @@ public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
         }
         
         List<ResponseCtx> responses =  GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requests);
-        Set<XACMLRole> result = new HashSet<XACMLRole>();
+        Set<XACMLRole> resultSet = new HashSet<XACMLRole>();
         for (int i = 0; i < responses.size();i++) {
             ResponseCtx response = responses.get(i);
-            if (response.getResults().iterator().next().getDecision()==Result.DECISION_PERMIT)
-                result.add(roleList.get(i));
+            for (Result result: response.getResults()){
+                if (result.getDecision()!=Result.DECISION_PERMIT) continue;
+                XACMLRole role = roleList.get(i);
+                for (Obligation obligation: result.getObligations()){
+                    if (XACMLConstants.UserPropertyObligationId.equals(obligation.getId().toString())) {
+                        setUserProperties(auth, obligation.getAssignments(),role);
+                    }
+                }
+                resultSet.add(role);
+            }
+                
         }        
-        return result;
+        return resultSet;
+    }
+    
+    private void setUserProperties(Authentication auth, List<Attribute> assignments,XACMLRole role) {
+        Object  userDetails = auth.getPrincipal();
+        if (userDetails==null) return;
+        if (userDetails instanceof String) return; // this is only the username
+        BeanInfo bi = null;
+        try {
+            bi=Introspector.getBeanInfo(userDetails.getClass());
+        } catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
+        for (Attribute attr: assignments) {
+            String propertyName=((StringAttribute)attr.getValue()).getValue();
+            for (PropertyDescriptor pd : bi.getPropertyDescriptors()) {
+                if (pd.getName().equals(propertyName)) {                    
+                 Object value=null;
+                try {
+                    value = pd.getReadMethod().invoke(userDetails,new Object[0]);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } 
+                // special code for geometries
+                if (value instanceof Geometry) {
+                    GeometryRoleParam  temp = new GeometryRoleParam(); 
+                    temp.setGeometry((Geometry)value);
+                    temp.setSrsName(attr.getId().toString());
+                    value=temp;
+                }
+                
+                role.getAttributes().put(propertyName, value);
+                }
+            }
+        }
     }
 }

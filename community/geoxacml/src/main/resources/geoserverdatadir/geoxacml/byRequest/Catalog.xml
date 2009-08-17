@@ -9,7 +9,7 @@
 			<Subject>
 				<SubjectMatch MatchId="urn:oasis:names:tc:xacml:1.0:function:anyURI-equal">
 					<AttributeValue DataType="http://www.w3.org/2001/XMLSchema#anyURI">ROLE_GEOSERVER</AttributeValue>					                                                                         
-					<SubjectAttributeDesignator AttributeId="org:geoserver:role:ROLE_GEOSERVER"
+					<SubjectAttributeDesignator AttributeId="urn:oasis:names:tc:xacml:2.0:subject:role"
 						DataType="http://www.w3.org/2001/XMLSchema#anyURI" />
 				</SubjectMatch>			 	
 			</Subject>
