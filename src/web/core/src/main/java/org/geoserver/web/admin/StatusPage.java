@@ -36,7 +36,7 @@ public class StatusPage extends ServerAdminPage {
     private static final String KEY_MEMORY = "memory";
 
     private static final String KEY_JVM_VERSION = "jvm_version";
-
+    
     private static final String KEY_JAI_AVAILABLE = "jai_available";
     private static final String KEY_JAI_IMAGEIO_AVAILABLE = "jai_imageio_available";
     
@@ -126,7 +126,7 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_CONNECTIONS, Long.toString(getConnectionCount()));
         values.put(KEY_MEMORY, formatUsedMemory());
         values.put(KEY_JVM_VERSION, System.getProperty("java.vendor") + ": "
-                + System.getProperty("java.version"));
+                + System.getProperty("java.version") + " (" + System.getProperty("java.vm.name") + ")");
         
         values.put(KEY_JAI_AVAILABLE, Boolean.toString(isNativeJAIAvailable()));
         values.put(KEY_JAI_IMAGEIO_AVAILABLE, Boolean.toString(PackageUtil.isCodecLibAvailable()));
