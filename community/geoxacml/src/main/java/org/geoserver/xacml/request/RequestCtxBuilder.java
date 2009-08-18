@@ -5,6 +5,7 @@
 
 package org.geoserver.xacml.request;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
@@ -75,7 +76,7 @@ public abstract class RequestCtxBuilder extends Object {
             
         URI roleURI=null;
         try {            
-            roleURI=new URI(role.getId());
+            roleURI=new URI(role.getAuthority());
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
@@ -86,7 +87,7 @@ public abstract class RequestCtxBuilder extends Object {
         Attribute roleAttribute= new Attribute(XACMLConstants.RoleAttributeURI,null,null,roleAttributeValue);
         subjectAttributes.add(roleAttribute);
         
-        for (Entry<String,Object> paramEntry: role.getAttributes().entrySet()) {
+        for (Entry<String,Serializable> paramEntry: role.getAttributes().entrySet()) {
             URI paramURI = null;
             try {
                 paramURI=new URI(XACMLConstants.RoleAttributeId+XACMLConstants.RoleParamIdInfix+paramEntry.getKey());

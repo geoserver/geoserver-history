@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.acegisecurity.Authentication;
 import org.acegisecurity.ConfigAttribute;
 import org.acegisecurity.ConfigAttributeDefinition;
+import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.vote.AccessDecisionVoter;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
@@ -66,11 +67,10 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
     private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        XACMLRoleAuthority raa = GeoXACMLConfig.getXACMLRoleAuthority();
 
-        for (XACMLRole role : raa.getRolesFor(auth)) {
+        for (GrantedAuthority role : auth.getAuthorities()) {
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getURLMatchRequestCtxBuilder(role, urlPath, AccessMode.READ)
+                    .getURLMatchRequestCtxBuilder((XACMLRole)role, urlPath, AccessMode.READ)
                     .createRequestCtx();
             XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);

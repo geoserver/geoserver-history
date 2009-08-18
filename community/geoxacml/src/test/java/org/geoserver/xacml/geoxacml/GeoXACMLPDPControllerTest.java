@@ -11,14 +11,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.acegisecurity.Authentication;
 import org.acegisecurity.GrantedAuthority;
-import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.acegisecurity.providers.AuthenticationProvider;
 import org.acegisecurity.providers.ProviderManager;
@@ -48,7 +46,7 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         providerManager.setProviders(list);
 
         Authentication admin = new TestingAuthenticationToken("admin", "geoserver",
-                new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_ADMINISTRATOR") });
+                new GrantedAuthority[] { new XACMLRole("ROLE_ADMINISTRATOR") });
         // Authentication anonymous = new TestingAuthenticationToken("anonymous", null, null);
         SecurityContextHolder.getContext().setAuthentication(admin);
 
@@ -75,11 +73,9 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
     private List<RequestCtx> createRequestCtxList() {
         List<RequestCtx> result = new ArrayList<RequestCtx>();
         for (WorkspaceInfo wsInfo : getCatalog().getWorkspaces()) {
-            Set<XACMLRole> roles = GeoXACMLConfig.getXACMLRoleAuthority().getRolesFor(
-                    SecurityContextHolder.getContext().getAuthentication());
-            for (XACMLRole role : roles) {
+            for (GrantedAuthority role : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
                 RequestCtx rctx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                        .getWorkspaceRequestCtxBuilder(role, wsInfo, AccessMode.READ)
+                        .getWorkspaceRequestCtxBuilder((XACMLRole)role, wsInfo, AccessMode.READ)
                         .createRequestCtx();
                 result.add(rctx);
             }

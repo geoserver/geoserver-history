@@ -42,7 +42,7 @@ public class XACMLRoleRequestCtxBuilder extends RequestCtxBuilder {
         
         Set<Attribute> resources = new HashSet<Attribute>(1);
         addGeoserverResource(resources);
-        addResource(resources, XACMLConstants.RoleEnablemetnResourceURI,targetRole.getId());
+        addResource(resources, XACMLConstants.RoleEnablemetnResourceURI,targetRole.getAuthority());
         
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);

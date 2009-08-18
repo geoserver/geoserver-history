@@ -32,5 +32,9 @@
     <constructor-arg index="1" value="true"/> 
   </bean>
    -->
+   
+  <bean id="userDetailsService" class="org.geoserver.xacml.security.XACMLGeoserverUserDao">
+    <property name="geoServer" ref="geoServer" />
+  </bean>
     
 </beans>

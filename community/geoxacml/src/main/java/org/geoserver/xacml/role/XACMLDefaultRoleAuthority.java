@@ -8,13 +8,14 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.acegisecurity.Authentication;
 import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.userdetails.UserDetails;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 
@@ -35,46 +36,27 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
 
-    public Set<XACMLRole> getRolesFor(Authentication auth) {
+    
+    public XACMLRole[] getXACMLRolesFor (UserDetails details, GrantedAuthority[] authorities) {
 
-        Set<XACMLRole> result = new HashSet<XACMLRole>();
+        Set<XACMLRole> candidates = new HashSet<XACMLRole>();
 
-        if (auth == null)
-            result.add(new XACMLRole(XACMLConstants.AnonymousRole));
-        else if (auth.getAuthorities() == null)
-            result.add(new XACMLRole(XACMLConstants.AnonymousRole));
+        if (authorities == null)
+            candidates.add(new XACMLRole(XACMLConstants.AnonymousRole));
+        else if (authorities.length == 0)
+            candidates.add(new XACMLRole(XACMLConstants.AnonymousRole));
         else {
-            for (GrantedAuthority gAut : auth.getAuthorities()) {
-                result.add(new XACMLRole(gAut.getAuthority()));
+            for (GrantedAuthority gAut : authorities) {
+                candidates.add(new XACMLRole(gAut.getAuthority()));
             }
         }
 
-        return filterEnabledRoles(result, auth);
+        Set<XACMLRole> filteredCandidates = filterEnabledRoles(candidates, details);
+        return filteredCandidates.toArray(new XACMLRole[filteredCandidates.size()]);
     }
 
-    public boolean isCallerInRole(Authentication auth, String roleId) {
 
-        if (auth == null && XACMLConstants.AnonymousRole.equals(roleId)) {
-            return roleIsEnabled(new XACMLRole(XACMLConstants.AnonymousRole));
-        }
-        for (GrantedAuthority gAut : auth.getAuthorities()) {
-            if (roleId.equals(gAut.getAuthority())) {
-                if (roleIsEnabled(new XACMLRole(roleId)))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean roleIsEnabled(XACMLRole role) {
-        RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                .getXACMLRoleRequestCtxBuilder(role).createRequestCtx();
-        ResponseCtx response = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtx(requestCtx);
-        return response.getResults().iterator().next().getDecision() == Result.DECISION_PERMIT;
-
-    }
-
-    Set<XACMLRole> filterEnabledRoles(Set<XACMLRole> roles, Authentication auth) {
+    Set<XACMLRole> filterEnabledRoles(Set<XACMLRole> roles, UserDetails details) {
         List<RequestCtx> requests = new ArrayList<RequestCtx>(roles.size());
         List<XACMLRole> roleList = new ArrayList<XACMLRole>(roles.size());
 
@@ -98,7 +80,7 @@ public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
                 for (Obligation obligation : result.getObligations()) {
                     if (XACMLConstants.UserPropertyObligationId.equals(obligation.getId()
                             .toString())) {
-                        setUserProperties(auth, obligation.getAssignments(), role);
+                        setUserProperties(details, obligation.getAssignments(), role);
                     }
                 }
                 resultSet.add(role);
@@ -108,12 +90,10 @@ public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
         return resultSet;
     }
 
-    private void setUserProperties(Authentication auth, List<Attribute> assignments, XACMLRole role) {
-        Object userDetails = auth.getPrincipal();
+    private void setUserProperties(UserDetails userDetails, List<Attribute> assignments, XACMLRole role) {        
         if (userDetails == null)
             return;
-        if (userDetails instanceof String)
-            return; // this is only the username
+        
         BeanInfo bi = null;
         try {
             bi = Introspector.getBeanInfo(userDetails.getClass());
@@ -124,9 +104,14 @@ public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
             String propertyName = ((StringAttribute) attr.getValue()).getValue();
             for (PropertyDescriptor pd : bi.getPropertyDescriptors()) {
                 if (pd.getName().equals(propertyName)) {
-                    Object value = null;
+                    Serializable value = null;
                     try {
-                        value = pd.getReadMethod().invoke(userDetails, new Object[0]);
+                        Object tmp = pd.getReadMethod().invoke(userDetails, new Object[0]);
+                        if (tmp==null) continue;
+                        if (tmp instanceof Serializable == false) {
+                            throw new RuntimeException("Role params must be serializable, "+tmp.getClass()+ " is not");
+                        }
+                        value=(Serializable)tmp;
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
