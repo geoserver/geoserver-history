@@ -44,59 +44,6 @@
       <groupId>org.geotools</groupId>
       <artifactId>gt-wfs</artifactId>
     </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-svggen</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-awt-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-util</artifactId>
-    </dependency>
-    <!-- SVG rendering markers support
-	     These dependencies need to be declared here as they're marked
-		 as optional in the geotools renderer module and thus are not
-		 transitive 
-		 -->
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-dom</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-bridge</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-gvt</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-svg-dom</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-css</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-ext</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-xml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-script</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>batik</groupId>
-      <artifactId>batik-parser</artifactId>
-    </dependency>
     <!-- end of SVG rendering markers support -->
     <dependency>
       <groupId>com.lowagie</groupId>
