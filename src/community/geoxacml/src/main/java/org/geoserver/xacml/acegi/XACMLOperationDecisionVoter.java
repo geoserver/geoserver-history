@@ -18,7 +18,6 @@ import org.geoserver.ows.Request;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
-import org.geoserver.xacml.request.URLMatchRequestCtxBuilder;
 import org.geoserver.xacml.role.XACMLRole;
 import org.geoserver.xacml.role.XACMLRoleAuthority;
 
@@ -55,8 +54,9 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
         List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath);
         if (requestCtxts.isEmpty())
             return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
-            
-        List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(requestCtxts);
+
+        List<ResponseCtx> responseCtxts = GeoXACMLConfig.getXACMLTransport()
+                .evaluateRequestCtxList(requestCtxts);
 
         int xacmlDecision = XACMLUtil.getDecisionFromRoleResponses(responseCtxts);
         return XACMLDecisionMapper.Exact.getAcegiDecisionFor(xacmlDecision);
@@ -69,9 +69,9 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
         XACMLRoleAuthority raa = GeoXACMLConfig.getXACMLRoleAuthority();
 
         for (XACMLRole role : raa.getRolesFor(auth)) {
-            URLMatchRequestCtxBuilder builder = new URLMatchRequestCtxBuilder(role,
-                    urlPath,AccessMode.READ);
-            RequestCtx requestCtx = builder.createRequestCtx();
+            RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
+                    .getURLMatchRequestCtxBuilder(role, urlPath, AccessMode.READ)
+                    .createRequestCtx();
             XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
