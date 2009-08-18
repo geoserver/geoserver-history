@@ -49,7 +49,6 @@ public class ImportSummary implements Serializable {
 
     public void newLayer(String currentLayer) {
         this.currentLayer = currentLayer;
-        processedLayers++;
     }
 
     void end(Exception error) {
@@ -97,12 +96,14 @@ public class ImportSummary implements Serializable {
 
     void completeLayer(String layerName, LayerInfo layer, ImportStatus status) {
         layers.add(new LayerSummary(layerName, layer, status));
+        processedLayers++;
         if(!status.successful())
             failures++;
     }
     
     void completeLayer(String layerName, LayerInfo layer, Exception error) {
         layers.add(new LayerSummary(layerName, layer, error));
+        processedLayers++;
         failures++;
     }
 
