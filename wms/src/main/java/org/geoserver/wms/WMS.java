@@ -21,6 +21,7 @@ import org.geoserver.config.JAIInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
+import org.geotools.util.Converters;
 import org.geotools.util.Version;
 import org.opengis.feature.type.Name;
 
@@ -233,7 +234,7 @@ public class WMS {
 
     public boolean isSvgAntiAlias() {
         WMSInfo serviceInfo = getServiceInfo();
-        Boolean svgAntiAlias = (Boolean) serviceInfo.getMetadata().get("svgAntiAlias");
+        Boolean svgAntiAlias = Converters.convert(serviceInfo.getMetadata().get("svgAntiAlias"), Boolean.class);
         return svgAntiAlias == null ? true : svgAntiAlias.booleanValue();
     }
 
