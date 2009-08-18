@@ -28,7 +28,7 @@ public class CatalogRequestCtxBuilder extends RequestCtxBuilder {
     public final static XACMLRole GeoServerRole = new XACMLRole(XACMLConstants.GeoServerRole);
     
     public CatalogRequestCtxBuilder() {
-        super(GeoServerRole,AccessMode.READ);
+        super(GeoServerRole,AccessMode.READ.toString());
     }
 
     @Override

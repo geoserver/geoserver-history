@@ -17,7 +17,7 @@ import org.acegisecurity.vote.AccessDecisionVoter;
  * @author Christian Mueller
  *
  */
-public class XACMLOperationAccessDecisionManager extends AbstractAccessDecisionManager {
+public class XACMLFilterAccessDecisionManager extends AbstractAccessDecisionManager {
 
     public void decide(Authentication auth, Object arg1, ConfigAttributeDefinition arg2)
             throws AccessDeniedException, InsufficientAuthenticationException {

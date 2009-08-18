@@ -7,20 +7,16 @@ package org.geoserver.xacml.acegi;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.acegisecurity.Authentication;
 import org.acegisecurity.ConfigAttribute;
 import org.acegisecurity.ConfigAttributeDefinition;
 import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.intercept.web.FilterInvocation;
 import org.acegisecurity.vote.AccessDecisionVoter;
-import org.geoserver.ows.Dispatcher;
-import org.geoserver.ows.Request;
 import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.role.XACMLRole;
-import org.geoserver.xacml.role.XACMLRoleAuthority;
 
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
@@ -32,7 +28,7 @@ import com.sun.xacml.ctx.Result;
  * @author Christian Mueller
  * 
  */
-public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
+public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
 
     public boolean supports(ConfigAttribute attr) {
         return true;
@@ -44,15 +40,10 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
 
     public int vote(Authentication auth, Object request, ConfigAttributeDefinition arg2) {
 
-        String urlPath = null;
-        if (request instanceof HttpServletRequest) {
-            urlPath = ((HttpServletRequest) request).getPathInfo();
-        } else {
-            Request owsRequest = Dispatcher.REQUEST.get();
-            urlPath = owsRequest.getHttpRequest().getPathInfo();
-        }
+        String urlPath = ((FilterInvocation) request).getRequestUrl();        
+        String method = ((FilterInvocation) request).getHttpRequest().getMethod();
 
-        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath);
+        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath,method);
         if (requestCtxts.isEmpty())
             return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
 
@@ -64,13 +55,14 @@ public class XACMLOperationDecisionVoter implements AccessDecisionVoter {
 
     }
 
-    private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath) {
+    private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,String method) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
 
         for (GrantedAuthority role : auth.getAuthorities()) {
+            XACMLRole xacmlRole = role instanceof XACMLRole ? (XACMLRole) role : new XACMLRole(role.getAuthority()); 
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getURLMatchRequestCtxBuilder((XACMLRole)role, urlPath, AccessMode.READ)
+                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method)
                     .createRequestCtx();
             XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);

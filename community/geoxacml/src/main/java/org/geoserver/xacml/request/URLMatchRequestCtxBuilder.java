@@ -30,8 +30,8 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
         return urlString;
     }
 
-    public URLMatchRequestCtxBuilder(XACMLRole role, String urlString,AccessMode mode) {
-        super(role,mode);
+    public URLMatchRequestCtxBuilder(XACMLRole role, String urlString,String method) {
+        super(role,method);
         this.urlString = urlString;
     }
 

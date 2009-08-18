@@ -3,27 +3,28 @@
 
 <beans>
 
-	
   <!-- 
     Adding a security interceptor for GeoXACML    
   -->
-
-    <bean id="xacmlOperationSecurityInterceptor"
-    class="org.geoserver.xacml.acegi.XACMLOperationSecurityInterceptor">
+			
+	<bean id="filterInvocationInterceptor"
+    class="org.geoserver.xacml.acegi.XACMLFilterSecurityInterceptor">
     <property name="authenticationManager" ref="authenticationManager" />
-    <property name="accessDecisionManager">
-      <bean class="org.geoserver.xacml.acegi.XACMLOperationAccessDecisionManager">
+        <property name="accessDecisionManager">
+      <bean class="org.geoserver.xacml.acegi.XACMLFilterAccessDecisionManager">
         <property name="allowIfAllAbstainDecisions" value="false" />
         <property name="decisionVoters">
-
           <list>
-            <bean class="org.geoserver.xacml.acegi.XACMLOperationDecisionVoter" />
+            <bean class="org.geoserver.xacml.acegi.XACMLFilterDecisionVoter" />
           </list>
         </property>
       </bean>
-    </property>
-  </bean>
-  
+    </property>    
+  </bean> 
+	
+	
+	
+	  
    <!-- XACMLHttpTransportFactory -->
    <!-- using a remote PDP, first param is remote URL, second if multithreaded (recommended)
      

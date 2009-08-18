@@ -58,16 +58,16 @@ public abstract class RequestCtxBuilder extends Object {
     
                 
     private XACMLRole role;
-    private AccessMode mode;
+    private String action;
     
     public XACMLRole getRole() {
         return role;
     }
 
 
-    protected RequestCtxBuilder(XACMLRole role,AccessMode mode) {
+    protected RequestCtxBuilder(XACMLRole role,String action) {
         this.role=role;
-        this.mode=mode;
+        this.action=action;
     }
     
     
@@ -132,7 +132,7 @@ public abstract class RequestCtxBuilder extends Object {
     
     protected void addAction(Set<Attribute> actions) {
         actions.add(new Attribute(XACMLConstants.ActionAttributeURI,null,null,
-                new StringAttribute(mode.toString())));        
+                new StringAttribute(action)));        
     }
 
 

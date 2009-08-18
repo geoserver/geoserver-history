@@ -38,7 +38,7 @@ public class ResourceInfoRequestCtxBuilder extends RequestCtxBuilder {
     }
 
     public ResourceInfoRequestCtxBuilder(XACMLRole role, ResourceInfo resourceInfo, AccessMode mode) {
-        super(role, mode);
+        super(role, mode.toString());
         this.resourceName = resourceInfo.getName();
         if (resourceInfo.getNamespace()!=null) {
             this.workspaceName=resourceInfo.getNamespace().getName();
