@@ -29,8 +29,8 @@ public class XACMLRoleRequestCtxBuilder extends RequestCtxBuilder {
     
     XACMLRole targetRole = null;
     
-    public XACMLRoleRequestCtxBuilder(AccessMode mode,XACMLRole targetRole) {
-        super(RoleEnablementRole,mode);
+    public XACMLRoleRequestCtxBuilder(XACMLRole targetRole) {
+        super(RoleEnablementRole,AccessMode.READ);
         this.targetRole=targetRole;
     }
 

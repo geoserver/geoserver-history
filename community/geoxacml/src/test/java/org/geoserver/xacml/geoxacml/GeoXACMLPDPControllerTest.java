@@ -28,7 +28,6 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.AccessMode;
 import org.geoserver.test.GeoServerTestSupport;
-import org.geoserver.xacml.request.WorkspaceRequestCtxBuilder;
 import org.geoserver.xacml.role.XACMLRole;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -37,9 +36,6 @@ import com.sun.xacml.Indenter;
 import com.sun.xacml.ctx.RequestCtx;
 
 public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
-
-
-
 
     @Override
     protected void setUpInternal() throws Exception {
@@ -76,16 +72,15 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
         }
     }
 
-
     private List<RequestCtx> createRequestCtxList() {
         List<RequestCtx> result = new ArrayList<RequestCtx>();
         for (WorkspaceInfo wsInfo : getCatalog().getWorkspaces()) {
             Set<XACMLRole> roles = GeoXACMLConfig.getXACMLRoleAuthority().getRolesFor(
                     SecurityContextHolder.getContext().getAuthentication());
-            for (XACMLRole role : roles) {                
-                WorkspaceRequestCtxBuilder b = new WorkspaceRequestCtxBuilder(role, wsInfo,
-                        AccessMode.READ);
-                RequestCtx rctx = b.createRequestCtx();
+            for (XACMLRole role : roles) {
+                RequestCtx rctx = GeoXACMLConfig.getRequestCtxBuilderFactory()
+                        .getWorkspaceRequestCtxBuilder(role, wsInfo, AccessMode.READ)
+                        .createRequestCtx();
                 result.add(rctx);
             }
         }

@@ -27,8 +27,8 @@ import com.sun.xacml.ctx.Subject;
 public class CatalogRequestCtxBuilder extends RequestCtxBuilder {
     public final static XACMLRole GeoServerRole = new XACMLRole(XACMLConstants.GeoServerRole);
     
-    public CatalogRequestCtxBuilder(AccessMode mode) {
-        super(GeoServerRole,mode);
+    public CatalogRequestCtxBuilder() {
+        super(GeoServerRole,AccessMode.READ);
     }
 
     @Override

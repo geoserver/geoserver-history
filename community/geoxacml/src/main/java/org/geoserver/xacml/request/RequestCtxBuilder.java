@@ -18,7 +18,6 @@ import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.GeometryRoleParam;
 import org.geoserver.xacml.role.XACMLRole;
-import org.geotools.data.shapefile.shp.JTSUtilities;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xacml.geoxacml.attr.GML3Support;

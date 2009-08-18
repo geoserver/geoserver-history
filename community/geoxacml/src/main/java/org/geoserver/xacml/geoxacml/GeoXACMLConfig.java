@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.xacml.request.RequestCtxBuilderFactory;
+import org.geoserver.xacml.request.RequestCtxBuilderFactoryImpl;
 import org.geoserver.xacml.role.XACMLDefaultRoleAuthority;
 import org.geoserver.xacml.role.XACMLRoleAuthority;
 import org.geotools.xacml.geoxacml.config.GeoXACML;
@@ -53,6 +55,9 @@ public class GeoXACMLConfig {
     private static XACMLRoleAuthority raa;
 
     private static Object raaLock = new Object();
+    
+    private static RequestCtxBuilderFactory requstCtxBuilderFactory; 
+    private static Object requstCtxBuilderFactoryLock = new Object();
 
     private static String repositoryBaseDir = null;
     
@@ -146,6 +151,22 @@ public class GeoXACMLConfig {
         }
 
     }
+    
+    static public RequestCtxBuilderFactory getRequestCtxBuilderFactory() {
+        if (requstCtxBuilderFactory != null)
+            return requstCtxBuilderFactory;
+
+        synchronized (requstCtxBuilderFactoryLock) {
+            if (requstCtxBuilderFactory != null)
+                return requstCtxBuilderFactory;
+            requstCtxBuilderFactory = GeoServerExtensions.bean(RequestCtxBuilderFactory.class);
+            if (requstCtxBuilderFactory == null)
+                requstCtxBuilderFactory = new RequestCtxBuilderFactoryImpl();;
+            return requstCtxBuilderFactory;
+        }
+
+    }
+
     
     public static void createDefaultRepositoryIfNotExisting() {
         File geoServerDataDir = GeoserverDataDirectory.getGeoserverDataDirectory();
