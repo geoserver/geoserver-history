@@ -65,7 +65,7 @@ public class ImportProgressPage extends GeoServerSecuredPage {
                     if(summary.isCompleted())
                         setResponsePage(new ImportSummaryPage(summary));
                     
-                    long perc = Math.round(100.0 * summary.getProcessedLayers() / summary.getTotalLayers());
+                    long perc = Math.round(100.0 * (summary.getProcessedLayers() + 1) / summary.getTotalLayers());
                     widthModel.setObject("width: " + perc + "%;");
                     percentage.setModelObject(perc);
                     currentFile.setModelObject(summary.getCurrentLayer());

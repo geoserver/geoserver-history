@@ -45,11 +45,27 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
 
     public ImportSummaryPage(ImportSummary summary) {
         // the synthetic results
-        if(summary.getFailures() > 0) {
-            add(new Label("summary", new ParamResourceModel("summaryFailures", this, summary.getTotalLayers(), summary.getFailures())));
+        IModel summaryMessage;
+        if(summary.getProcessedLayers() == 0) {
+            summaryMessage = new ParamResourceModel("summaryCancelled", this);
         } else {
-            add(new Label("summary", new ParamResourceModel("summarySuccess", this, summary.getTotalLayers())));
+            if(summary.getFailures() > 0) {
+                if(summary.isCompleted()) {
+                    summaryMessage = new ParamResourceModel("summaryFailures", this, summary.getTotalLayers(), summary.getFailures()); 
+                } else {
+                    summaryMessage = new ParamResourceModel("summaryPartialFailures", this, summary.getTotalLayers(), 
+                            summary.getProcessedLayers(), summary.getFailures());
+                }
+            } else {
+                if(summary.isCompleted()) {
+                    summaryMessage = new ParamResourceModel("summarySuccess", this, summary.getTotalLayers());
+                } else {
+                    summaryMessage = new ParamResourceModel("summaryPartialSuccess", this, summary.getTotalLayers(), 
+                            summary.getProcessedLayers());
+                }
+            }
         }
+        add(new Label("summary", summaryMessage));
 
         GeoServerTablePanel<LayerSummary> table = new GeoServerTablePanel<LayerSummary>("importSummary", new ImportSummaryProvider(
                 summary.getLayers())) {
