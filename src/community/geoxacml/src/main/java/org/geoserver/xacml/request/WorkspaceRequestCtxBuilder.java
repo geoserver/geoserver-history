@@ -32,7 +32,7 @@ public class WorkspaceRequestCtxBuilder extends RequestCtxBuilder {
     }
 
     public WorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo workspace,AccessMode mode) {
-        super(role,mode);
+        super(role,mode.toString());
         this.workspaceName = workspace.getName();
     }
 

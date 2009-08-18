@@ -17,10 +17,10 @@ import org.acegisecurity.intercept.ObjectDefinitionSource;
  * @author Christian Mueller
  *
  */
-public class XACMLOperationDefinitionSource implements ObjectDefinitionSource {
+public class XACMLFilterDefinitionSource implements ObjectDefinitionSource {
     
     private static  final ConfigAttributeDefinition ConfigDef = new ConfigAttributeDefinition();        
-    public final static XACMLOperationDefinitionSource Singleton = new XACMLOperationDefinitionSource();  
+    public final static XACMLFilterDefinitionSource Singleton = new XACMLFilterDefinitionSource();  
 
     public ConfigAttributeDefinition getAttributes(Object obj) throws IllegalArgumentException {        
         return ConfigDef;

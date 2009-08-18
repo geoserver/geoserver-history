@@ -27,8 +27,8 @@ public class RequestCtxBuilderFactoryImpl implements RequestCtxBuilderFactory {
     public RequestCtxBuilder getWorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo info, AccessMode mode) {
         return new WorkspaceRequestCtxBuilder(role,info,mode);
     }
-    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, AccessMode mode) {
-        return new URLMatchRequestCtxBuilder(role,urlString,mode);
+    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String action) {
+        return new URLMatchRequestCtxBuilder(role,urlString,action);
     }
     public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role, ResourceInfo resourceInfo, AccessMode mode) {
         return new ResourceInfoRequestCtxBuilder(role, resourceInfo, mode); 
