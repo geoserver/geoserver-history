@@ -5,8 +5,10 @@
 
 package org.geoserver.xacml.geoxacml;
 
+import org.acegisecurity.providers.TestingAuthenticationToken;
 import org.geoserver.security.DataAccessManager;
 import org.geoserver.security.SecureCatalogImplTest;
+import org.geoserver.xacml.role.XACMLRole;
 import org.geoserver.xacml.security.XACMLDataAccessManager;
 
 public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
@@ -35,6 +37,21 @@ public class XACMLSecureCatalogImplTest extends SecureCatalogImplTest {
 
         GeoXACMLConfig.reset();
         return new XACMLDataAccessManager();
+
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        
+        rwUser = new TestingAuthenticationToken("rw", "supersecret", new XACMLRole[] {
+                new XACMLRole("READER"), new XACMLRole("WRITER") });
+        roUser = new TestingAuthenticationToken("ro", "supersecret",
+                new XACMLRole[] { new XACMLRole("READER") });
+        anonymous = new TestingAuthenticationToken("anonymous", null, null);
+        milUser = new TestingAuthenticationToken("military", "supersecret",
+                new XACMLRole[] { new XACMLRole("MILITARY") });
+        root = new TestingAuthenticationToken("admin", "geoserver", new XACMLRole[] { new XACMLRole("ROLE_ADMINISTRATOR") });
 
     }
 

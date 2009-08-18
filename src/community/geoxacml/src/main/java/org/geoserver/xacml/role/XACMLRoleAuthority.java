@@ -6,13 +6,12 @@
 
 package org.geoserver.xacml.role;
 
-import java.util.Set;
-
-import org.acegisecurity.Authentication;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.userdetails.UserDetails;
 
 /**
  * A RoleAssignmentAuthority is NOT responsible for assignment from roles to subjects
- * The Authentication object has already roles roles assigned (GrantedAuthorities)
+ * 
  * 
  * The purpose of this Authority is
  * 
@@ -26,7 +25,6 @@ import org.acegisecurity.Authentication;
  */
 public interface XACMLRoleAuthority {
         
-    public Set<XACMLRole> getRolesFor (Authentication auth);        
-    public boolean isCallerInRole (Authentication auth, String roleId);
+    public XACMLRole[] getXACMLRolesFor (UserDetails details, GrantedAuthority[] authorities);        
         
 }

@@ -8,9 +8,16 @@
 
 package org.geoserver.xacml.role;
 
+import java.io.Serializable;
+
 import com.vividsolutions.jts.geom.Geometry;
 
-public class GeometryRoleParam {
+public class GeometryRoleParam implements Serializable {
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     
     private Geometry geometry;
     private String srsName;

@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
+import org.acegisecurity.GrantedAuthority;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
@@ -21,7 +22,6 @@ import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.role.XACMLRole;
-import org.geoserver.xacml.role.XACMLRoleAuthority;
 
 import com.sun.xacml.Obligation;
 import com.sun.xacml.attr.StringAttribute;
@@ -38,6 +38,8 @@ public class XACMLDataAccessManager implements DataAccessManager {
 
     private Logger Log;
 
+    private static XACMLRole[] AnonymousRoles=new XACMLRole[]{ new XACMLRole("ROLE_ANONYMOUS")};
+    
     private static Map<String, CatalogMode> CatalogModeMap;
     static {
         CatalogModeMap = new HashMap<String, CatalogMode>(3);
@@ -150,11 +152,14 @@ public class XACMLDataAccessManager implements DataAccessManager {
             WorkspaceInfo workspaceInfo, AccessMode mode) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        XACMLRoleAuthority raa = GeoXACMLConfig.getXACMLRoleAuthority();
+        GrantedAuthority[] roles = handleMissingAuthorizationInfo(auth);
+        if (roles==null) roles=auth.getAuthorities();
 
-        for (XACMLRole role : raa.getRolesFor(auth)) {
+
+        for (GrantedAuthority role : roles) {
+            XACMLRole xacmlRole= role instanceof XACMLRole ?  (XACMLRole)role : new XACMLRole(role.getAuthority());
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getWorkspaceRequestCtxBuilder(role, workspaceInfo, mode).createRequestCtx();
+                    .getWorkspaceRequestCtxBuilder(xacmlRole, workspaceInfo, mode).createRequestCtx();
             // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
@@ -184,16 +189,26 @@ public class XACMLDataAccessManager implements DataAccessManager {
             ResourceInfo resourceInfo, AccessMode mode) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        XACMLRoleAuthority raa = GeoXACMLConfig.getXACMLRoleAuthority();
-
-        for (XACMLRole role : raa.getRolesFor(auth)) {
+        
+        GrantedAuthority[] roles = handleMissingAuthorizationInfo(auth);
+        if (roles==null) roles=auth.getAuthorities();
+        
+        for (GrantedAuthority role : roles) {
+            XACMLRole xacmlRole= role instanceof XACMLRole ?  (XACMLRole)role : new XACMLRole(role.getAuthority());
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getResourceInfoRequestCtxBuilder(role, resourceInfo, mode).createRequestCtx();
+                    .getResourceInfoRequestCtxBuilder(xacmlRole, resourceInfo, mode).createRequestCtx();
             // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
 
         return resultList;
+    }
+    
+    private XACMLRole[] handleMissingAuthorizationInfo(Authentication auth) {
+                        
+        if (auth ==  null) return AnonymousRoles; 
+        if (auth.getAuthorities()==null) return AnonymousRoles;
+        return null;
     }
 
 }
