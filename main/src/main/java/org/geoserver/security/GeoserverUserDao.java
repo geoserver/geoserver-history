@@ -261,8 +261,7 @@ public class GeoserverUserDao implements UserDetailsService {
             // if the parsing succeeded turn that into a user object
             UserAttribute attr = (UserAttribute) configAttribEd.getValue();
             if (attr != null) {
-                User user = new User(username, attr.getPassword(), attr.isEnabled(), true, true,
-                        true, attr.getAuthorities());
+                User user = createUserObject(username, attr.getPassword(), attr.isEnabled(), attr.getAuthorities());
                 users.put(username, user);
             }
         }
@@ -270,6 +269,12 @@ public class GeoserverUserDao implements UserDetailsService {
         return users;
     }
 
+    protected User createUserObject(String username,String password, boolean isEnabled,GrantedAuthority[] authorities) {
+       return new User(username, password, isEnabled, true, true,
+                true, authorities);
+    }
+    
+    
     /**
      * Stores the provided user map into a properties object
      * 
