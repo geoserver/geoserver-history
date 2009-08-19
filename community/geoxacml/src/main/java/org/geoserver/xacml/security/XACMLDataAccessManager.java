@@ -38,7 +38,6 @@ public class XACMLDataAccessManager implements DataAccessManager {
 
     private Logger Log;
 
-    private static XACMLRole[] AnonymousRoles=new XACMLRole[]{ new XACMLRole("ROLE_ANONYMOUS")};
     
     private static Map<String, CatalogMode> CatalogModeMap;
     static {
@@ -56,7 +55,7 @@ public class XACMLDataAccessManager implements DataAccessManager {
     }
 
     public boolean canAccess(Authentication user, WorkspaceInfo workspace, AccessMode mode) {
-
+        GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(user);
         List<RequestCtx> requestCtxts = buildWorkspaceRequestCtxListFromRoles(user, workspace, mode);
         if (requestCtxts.isEmpty())
             return false;
@@ -85,6 +84,7 @@ public class XACMLDataAccessManager implements DataAccessManager {
     }
 
     public boolean canAccess(Authentication user, ResourceInfo resource, AccessMode mode) {
+        GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(user);
         List<RequestCtx> requestCtxts = buildResourceInfoRequestCtxListFromRoles(user, resource,
                 mode);
         if (requestCtxts.isEmpty())
@@ -152,49 +152,29 @@ public class XACMLDataAccessManager implements DataAccessManager {
             WorkspaceInfo workspaceInfo, AccessMode mode) {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        GrantedAuthority[] roles = handleMissingAuthorizationInfo(auth);
-        if (roles==null) roles=auth.getAuthorities();
 
 
-        for (GrantedAuthority role : roles) {
-            XACMLRole xacmlRole= role instanceof XACMLRole ?  (XACMLRole)role : new XACMLRole(role.getAuthority());
+        for (GrantedAuthority role : auth.getAuthorities()) {
+            XACMLRole xacmlRole=  (XACMLRole)role;  
+            if (xacmlRole.isEnabled()==false) continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
                     .getWorkspaceRequestCtxBuilder(xacmlRole, workspaceInfo, mode).createRequestCtx();
-            // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
+            // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));            
             resultList.add(requestCtx);
         }
 
         return resultList;
     }
 
-    // private List<RequestCtx> buildLayerInfoRequestCtxListFromRoles(Authentication auth, LayerInfo
-    // layerInfo,
-    // AccessMode mode) {
-    //
-    // List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-    // RoleAssignmentAuthority raa = GeoXACMLConfig.getRoleAssignmentAuthority();
-    //
-    // for (String roleId : raa.getRoleIdsFor(auth)) {
-    // LayerInfoRequestCtxBuilder builder = new LayerInfoRequestCtxBuilder(new Role(roleId),
-    // layerInfo, mode);
-    // RequestCtx requestCtx = builder.createRequestCtx();
-    // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
-    // resultList.add(requestCtx);
-    // }
-    //
-    // return resultList;
-    // }
 
     private List<RequestCtx> buildResourceInfoRequestCtxListFromRoles(Authentication auth,
             ResourceInfo resourceInfo, AccessMode mode) {
 
-        List<RequestCtx> resultList = new ArrayList<RequestCtx>();
+        List<RequestCtx> resultList = new ArrayList<RequestCtx>();        
         
-        GrantedAuthority[] roles = handleMissingAuthorizationInfo(auth);
-        if (roles==null) roles=auth.getAuthorities();
-        
-        for (GrantedAuthority role : roles) {
-            XACMLRole xacmlRole= role instanceof XACMLRole ?  (XACMLRole)role : new XACMLRole(role.getAuthority());
+        for (GrantedAuthority role : auth.getAuthorities()) {
+            XACMLRole xacmlRole= (XACMLRole)role ;
+            if (xacmlRole.isEnabled()==false) continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
                     .getResourceInfoRequestCtxBuilder(xacmlRole, resourceInfo, mode).createRequestCtx();
             // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
@@ -204,11 +184,5 @@ public class XACMLDataAccessManager implements DataAccessManager {
         return resultList;
     }
     
-    private XACMLRole[] handleMissingAuthorizationInfo(Authentication auth) {
-                        
-        if (auth ==  null) return AnonymousRoles; 
-        if (auth.getAuthorities()==null) return AnonymousRoles;
-        return null;
-    }
 
 }

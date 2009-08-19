@@ -7,11 +7,14 @@ package org.geoserver.xacml.geoxacml;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.acegisecurity.Authentication;
 import org.acegisecurity.ConfigAttributeDefinition;
 import org.acegisecurity.intercept.web.FilterInvocation;
+import org.acegisecurity.providers.TestingAuthenticationToken;
 import org.acegisecurity.vote.AccessDecisionVoter;
 import org.easymock.EasyMock;
 import org.geoserver.xacml.acegi.XACMLFilterDecisionVoter;
+import org.geoserver.xacml.role.XACMLRole;
 
 import junit.framework.TestCase;
 
@@ -23,10 +26,13 @@ import junit.framework.TestCase;
  * 
  */
 public class XACMLURLMatchingTest extends TestCase {
+    Authentication anonymous; 
 
     @Override
     protected void setUp() throws Exception {
+        
         super.setUp();
+        anonymous= new TestingAuthenticationToken("anonymous", null, new XACMLRole[] { new XACMLRole("ROLE_ANONYMOUS") });
     }
 
 
@@ -41,7 +47,7 @@ public class XACMLURLMatchingTest extends TestCase {
         org.easymock.classextension.EasyMock.replay(filter);
         
         XACMLFilterDecisionVoter voter = new XACMLFilterDecisionVoter();
-        int result = voter.vote(null, filter, new ConfigAttributeDefinition());
+        int result = voter.vote(anonymous, filter, new ConfigAttributeDefinition());
         assertTrue(AccessDecisionVoter.ACCESS_GRANTED==result);
     }
 

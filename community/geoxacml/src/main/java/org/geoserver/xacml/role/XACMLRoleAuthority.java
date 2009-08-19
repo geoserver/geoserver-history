@@ -6,6 +6,7 @@
 
 package org.geoserver.xacml.role;
 
+import org.acegisecurity.Authentication;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
 
@@ -25,6 +26,7 @@ import org.acegisecurity.userdetails.UserDetails;
  */
 public interface XACMLRoleAuthority {
         
-    public XACMLRole[] getXACMLRolesFor (UserDetails details, GrantedAuthority[] authorities);        
+    public void prepareRoles (Authentication auth);
+    public <T extends UserDetails>  void  transformUserDetails (T details);
         
 }

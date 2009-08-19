@@ -57,10 +57,14 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
 
     private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,String method) {
 
+        GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(auth);
+        
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-
+        
+        
         for (GrantedAuthority role : auth.getAuthorities()) {
-            XACMLRole xacmlRole = role instanceof XACMLRole ? (XACMLRole) role : new XACMLRole(role.getAuthority()); 
+            XACMLRole xacmlRole =  (XACMLRole) role;
+            if (xacmlRole.isEnabled()==false) continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
                     .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method)
                     .createRequestCtx();
