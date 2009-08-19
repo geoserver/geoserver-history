@@ -31,12 +31,18 @@ public class ImportSummary implements Serializable {
     
     String project;
     
+    boolean workspaceNew;
+    
+    boolean storeNew;
+    
     // concurrent list so that we can manipulate it while it's being iterated over
     List<LayerSummary> layers = new CopyOnWriteArrayList<LayerSummary>();
 
-    public ImportSummary(String project) {
+    public ImportSummary(String project, boolean workspaceNew, boolean storeNew) {
         this.project = project;
         this.startTime = System.currentTimeMillis();
+        this.workspaceNew = workspaceNew;
+        this.storeNew = storeNew;
     }
     
     void setTotalLayers(int totalLayers) {
@@ -106,5 +112,14 @@ public class ImportSummary implements Serializable {
         processedLayers++;
         failures++;
     }
+    
+    public boolean isWorkspaceNew() {
+        return workspaceNew;
+    }
+
+    public boolean isStoreNew() {
+        return storeNew;
+    }
+
 
 }
