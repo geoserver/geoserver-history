@@ -3,8 +3,14 @@
 <wicket:extend>
 
     <p wicket:id="summary"></p>
-
+    
     <div wicket:id="importSummary"></div>
+    
+    <div class="button-group selfclear" style="margin-top: 2em">
+        <wicket:message key="rollbackDescription"/>
+        <span wicket:id="rollback"></span>
+    </div>
+    
     
     <wicket:fragment wicket:id="iconFragment">
         <img wicket:id="icon" />

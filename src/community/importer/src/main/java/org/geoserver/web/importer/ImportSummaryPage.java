@@ -11,7 +11,10 @@ import java.util.logging.Level;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
@@ -20,8 +23,12 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.CascadeDeleteVisitor;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.importer.ImportStatus;
 import org.geoserver.importer.ImportSummary;
 import org.geoserver.importer.LayerSummary;
@@ -29,6 +36,7 @@ import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.demo.PreviewLayer;
+import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
@@ -43,7 +51,7 @@ import org.opengis.feature.type.GeometryDescriptor;
 @SuppressWarnings("serial")
 public class ImportSummaryPage extends GeoServerSecuredPage {
 
-    public ImportSummaryPage(ImportSummary summary) {
+    public ImportSummaryPage(final ImportSummary summary) {
         // the synthetic results
         IModel summaryMessage;
         if(summary.getProcessedLayers() == 0) {
@@ -66,7 +74,8 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
             }
         }
         add(new Label("summary", summaryMessage));
-
+        
+        // the list of imported layers
         GeoServerTablePanel<LayerSummary> table = new GeoServerTablePanel<LayerSummary>("importSummary", new ImportSummaryProvider(
                 summary.getLayers())) {
 
@@ -125,6 +134,35 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
         table.setOutputMarkupId(true);
         table.setFilterable(false);
         add(table);
+        
+        // the rollback command
+        add(new ConfirmationAjaxLink("rollback", null, 
+                new ParamResourceModel("rollback", this), 
+                new ParamResourceModel("confirmRollback", this)) {
+            
+            @Override
+            protected void onClick(AjaxRequestTarget target) {
+                Catalog catalog = getCatalog();
+                CascadeDeleteVisitor deleteVisitor = new CascadeDeleteVisitor(catalog);
+                String project = summary.getProject();
+                if(summary.isWorkspaceNew()) {
+                    WorkspaceInfo ws = catalog.getWorkspaceByName(project);
+                    if(ws != null)
+                        ws.accept(deleteVisitor);
+                } else if(summary.isStoreNew()) {
+                    StoreInfo si = catalog.getStoreByName(project, project, StoreInfo.class);
+                    if(si != null)
+                        si.accept(deleteVisitor);
+                } else {
+                    // just remove the layers we created
+                    for (LayerSummary layer : summary.getLayers()) {
+                        catalog.remove(layer.getLayer());
+                        catalog.remove(layer.getLayer().getResource());
+                    }
+                }
+                setResponsePage(ImportPage.class, new PageParameters("afterCleanup=true"));
+            }
+        });
     }
     
     Link editLink(final LayerSummary layerSummary) {
