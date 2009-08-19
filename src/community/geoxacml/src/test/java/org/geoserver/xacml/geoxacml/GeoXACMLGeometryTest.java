@@ -175,18 +175,23 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
 
     public void testRoleAttributes() {
 
-        UserDetailsImpl readerDetails = new UserDetailsImpl("reader", "pwreader");        
+        UserDetailsImpl readerDetails = new UserDetailsImpl("reader", "pwreader",new GrantedAuthority[] { new GrantedAuthorityImpl("READER") });        
         readerDetails.setPersNr(4711);
         GeometryFactory fac = new GeometryFactory();
         LinearRing r = fac.createLinearRing(new Coordinate[] { new Coordinate(11, 11),
                 new Coordinate(14, 11), new Coordinate(14, 14), new Coordinate(11, 14),
                 new Coordinate(11, 11), });
         readerDetails.setGeometryRestriction(fac.createPolygon(r, new LinearRing[] {}));
-        XACMLRole[] readerRoles = GeoXACMLConfig.getXACMLRoleAuthority().getXACMLRolesFor(readerDetails, new GrantedAuthority[] { new GrantedAuthorityImpl("READER") });
-
-        Authentication reader = new TestingAuthenticationToken(readerDetails, "pwreader",readerRoles);                
-        SecurityContextHolder.getContext().setAuthentication(reader);
         
+        GeoXACMLConfig.getXACMLRoleAuthority().transformUserDetails(readerDetails);
+        
+
+        Authentication reader = new TestingAuthenticationToken(readerDetails, "pwreader",readerDetails.getAuthorities());                
+        SecurityContextHolder.getContext().setAuthentication(reader);
+        /////////
+        GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(reader);
+        
+        ////////
         XACMLRole readerRole = (XACMLRole)reader.getAuthorities()[0];
         assertTrue(readerRole.getAttributes().get("persNr").equals(new Integer(4711)));
         assertTrue(readerRole.getAttributes().get("geometryRestriction") instanceof GeometryRoleParam);

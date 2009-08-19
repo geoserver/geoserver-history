@@ -14,14 +14,16 @@ public class UserDetailsImpl implements UserDetails {
     Geometry geometryRestriction;
     int persNr;
     String username,password;
+    GrantedAuthority[] authorities = null;
     
-    public UserDetailsImpl(String name,String pw) {
+    public UserDetailsImpl(String name,String pw,GrantedAuthority[] authorities) {
         username=name;
         password=pw;
+        this.authorities=authorities;
     }
     
     public GrantedAuthority[] getAuthorities() {
-        return null;
+        return authorities;
     }
 
     public String getPassword() {

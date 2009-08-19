@@ -23,6 +23,12 @@
   </bean> 
 	
 	
+  <bean id="anonymousProcessingFilter"
+    class="org.geoserver.xacml.acegi.XACMLAnonymousProcessingFilter">
+    <property name="key" value="geoserver" />
+    <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS" />
+  </bean>
+	
 	
 	  
    <!-- XACMLHttpTransportFactory -->

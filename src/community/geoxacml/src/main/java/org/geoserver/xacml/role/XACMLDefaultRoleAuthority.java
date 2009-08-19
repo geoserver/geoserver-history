@@ -10,10 +10,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import org.acegisecurity.Authentication;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
@@ -36,96 +35,91 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class XACMLDefaultRoleAuthority implements XACMLRoleAuthority {
 
-    
-    public XACMLRole[] getXACMLRolesFor (UserDetails details, GrantedAuthority[] authorities) {
-
-        Set<XACMLRole> candidates = new HashSet<XACMLRole>();
-
-        if (authorities == null)
-            candidates.add(new XACMLRole(XACMLConstants.AnonymousRole));
-        else if (authorities.length == 0)
-            candidates.add(new XACMLRole(XACMLConstants.AnonymousRole));
-        else {
-            for (GrantedAuthority gAut : authorities) {
-                candidates.add(new XACMLRole(gAut.getAuthority()));
-            }
+    public <T extends UserDetails> void transformUserDetails(T details) {
+        for (int i = 0; i < details.getAuthorities().length; i++) {
+            details.getAuthorities()[i] = new XACMLRole(details.getAuthorities()[i].getAuthority());
         }
-
-        Set<XACMLRole> filteredCandidates = filterEnabledRoles(candidates, details);
-        return filteredCandidates.toArray(new XACMLRole[filteredCandidates.size()]);
     }
 
 
-    Set<XACMLRole> filterEnabledRoles(Set<XACMLRole> roles, UserDetails details) {
-        List<RequestCtx> requests = new ArrayList<RequestCtx>(roles.size());
-        List<XACMLRole> roleList = new ArrayList<XACMLRole>(roles.size());
+    public void prepareRoles(Authentication auth) {
 
-        for (XACMLRole role : roles) {
-            RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getXACMLRoleRequestCtxBuilder(role).createRequestCtx();
-            // System.out.println(XACMLUtil.asXMLString(b.createRequestCtx()));
-            requests.add(requestCtx);
-            roleList.add(role);
+        List<RequestCtx> requests = new ArrayList<RequestCtx>(auth.getAuthorities().length);
+
+        for (GrantedAuthority ga : auth.getAuthorities()) {
+            requests.add(GeoXACMLConfig.getRequestCtxBuilderFactory()
+                    .getXACMLRoleRequestCtxBuilder((XACMLRole) ga).createRequestCtx());
         }
 
         List<ResponseCtx> responses = GeoXACMLConfig.getXACMLTransport().evaluateRequestCtxList(
                 requests);
-        Set<XACMLRole> resultSet = new HashSet<XACMLRole>();
-        for (int i = 0; i < responses.size(); i++) {
+
+        outer: for (int i = 0; i < responses.size(); i++) {
             ResponseCtx response = responses.get(i);
+            XACMLRole role = (XACMLRole) auth.getAuthorities()[i];
             for (Result result : response.getResults()) {
-                if (result.getDecision() != Result.DECISION_PERMIT)
-                    continue;
-                XACMLRole role = roleList.get(i);
-                for (Obligation obligation : result.getObligations()) {
-                    if (XACMLConstants.UserPropertyObligationId.equals(obligation.getId()
-                            .toString())) {
-                        setUserProperties(details, obligation.getAssignments(), role);
-                    }
+                if (result.getDecision() != Result.DECISION_PERMIT) {
+                    role.setEnabled(false);
+                    continue outer;
                 }
-                resultSet.add(role);
+                role.setEnabled(true);
+                setUserProperties(auth, result, role);
             }
 
         }
-        return resultSet;
     }
 
-    private void setUserProperties(UserDetails userDetails, List<Attribute> assignments, XACMLRole role) {        
-        if (userDetails == null)
+    private void setUserProperties(Authentication auth, Result result, XACMLRole role) {
+
+        if (role.isRoleAttributesProcessed())
+            return; // already done
+
+        if (auth.getPrincipal() == null || auth.getPrincipal() instanceof String) {
+            role.setRoleAttributesProcessed(true);
             return;
-        
+        }
+
         BeanInfo bi = null;
         try {
-            bi = Introspector.getBeanInfo(userDetails.getClass());
+            bi = Introspector.getBeanInfo(auth.getPrincipal().getClass());
         } catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }
-        for (Attribute attr : assignments) {
-            String propertyName = ((StringAttribute) attr.getValue()).getValue();
-            for (PropertyDescriptor pd : bi.getPropertyDescriptors()) {
-                if (pd.getName().equals(propertyName)) {
-                    Serializable value = null;
-                    try {
-                        Object tmp = pd.getReadMethod().invoke(userDetails, new Object[0]);
-                        if (tmp==null) continue;
-                        if (tmp instanceof Serializable == false) {
-                            throw new RuntimeException("Role params must be serializable, "+tmp.getClass()+ " is not");
-                        }
-                        value=(Serializable)tmp;
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    // special code for geometries
-                    if (value instanceof Geometry) {
-                        GeometryRoleParam temp = new GeometryRoleParam();
-                        temp.setGeometry((Geometry) value);
-                        temp.setSrsName(attr.getId().toString());
-                        value = temp;
-                    }
 
-                    role.getAttributes().put(propertyName, value);
+        for (Obligation obligation : result.getObligations()) {
+            if (XACMLConstants.UserPropertyObligationId.equals(obligation.getId().toString())) {
+                for (Attribute attr : obligation.getAssignments()) {
+                    String propertyName = ((StringAttribute) attr.getValue()).getValue();
+                    for (PropertyDescriptor pd : bi.getPropertyDescriptors()) {
+                        if (pd.getName().equals(propertyName)) {
+                            Serializable value = null;
+                            try {
+                                Object tmp = pd.getReadMethod().invoke(auth.getPrincipal(),
+                                        new Object[0]);
+                                if (tmp == null)
+                                    continue;
+                                if (tmp instanceof Serializable == false) {
+                                    throw new RuntimeException("Role params must be serializable, "
+                                            + tmp.getClass() + " is not");
+                                }
+                                value = (Serializable) tmp;
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            // special code for geometries
+                            if (value instanceof Geometry) {
+                                GeometryRoleParam temp = new GeometryRoleParam();
+                                temp.setGeometry((Geometry) value);
+                                temp.setSrsName(attr.getId().toString());
+                                value = temp;
+                            }
+
+                            role.getAttributes().put(propertyName, value);
+                        }
+                    }
                 }
             }
         }
+        role.setRoleAttributesProcessed(true);
     }
 }
