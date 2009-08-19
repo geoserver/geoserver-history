@@ -41,6 +41,7 @@ import org.geoserver.web.data.style.StyleDetachableModel;
 import org.geoserver.web.wicket.EditAreaBehavior;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geoserver.web.wicket.ParamResourceModel;
+import org.geoserver.wms.web.publish.StyleChoiceRenderer;
 import org.geoserver.wms.web.publish.StylesModel;
 import org.geotools.sld.SLDConfiguration;
 import org.geotools.xml.Parser;
@@ -100,7 +101,7 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
         }
 
         // style copy functionality
-        styles = new DropDownChoice("existingStyles", new Model(), new StylesModel());
+        styles = new DropDownChoice("existingStyles", new Model(), new StylesModel(), new StyleChoiceRenderer());
         styles.setOutputMarkupId(true);
         styles.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
