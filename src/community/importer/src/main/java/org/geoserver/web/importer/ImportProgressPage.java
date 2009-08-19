@@ -20,6 +20,7 @@ import org.geoserver.web.GeoServerSecuredPage;
 /**
  * Reports the import progress, the current layer, and allows to end the import mid way
  */
+ @SuppressWarnings("serial")
 public class ImportProgressPage extends GeoServerSecuredPage {
     String importerId;
     Label bar;
@@ -53,7 +54,8 @@ public class ImportProgressPage extends GeoServerSecuredPage {
             }
             
         });
-        
+
+        // comment this out if you need to hack on the HTML of a live page
         info.add(new AbstractAjaxTimerBehavior(Duration.milliseconds(500)) {
 
             @Override
@@ -62,10 +64,14 @@ public class ImportProgressPage extends GeoServerSecuredPage {
                 
                 ImportSummary summary = importer.getSummary();
                 if(summary != null) {
-                    if(summary.isCompleted())
+                    if(summary.isCompleted()) {
                         setResponsePage(new ImportSummaryPage(summary));
+                    }
                     
                     long perc = Math.round(100.0 * (summary.getProcessedLayers() + 1) / summary.getTotalLayers());
+                    if(perc > 100) {
+                        perc = 100;
+                    }
                     widthModel.setObject("width: " + perc + "%;");
                     percentage.setModelObject(perc);
                     currentFile.setModelObject(summary.getCurrentLayer());
