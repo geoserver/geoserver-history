@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.Form;
@@ -53,7 +54,10 @@ public class ImportPage extends GeoServerSecuredPage {
 
     private TextField dirField;
     
-    public ImportPage() {
+   
+    public ImportPage(PageParameters params) {
+        if("TRUE".equalsIgnoreCase((String) params.getString("afterCleanup")))
+            info(new ParamResourceModel("rollbackSuccessful", this).getString());
         add(dialog = new GeoServerDialog("dialog"));
         
         Form form = new Form("form", new CompoundPropertyModel(this));
@@ -138,7 +142,9 @@ public class ImportPage extends GeoServerSecuredPage {
                     
                     // build the workspace
                     WorkspaceInfo ws = getCatalog().getWorkspaceByName(project);
+                    boolean workspaceNew = false;
                     if (ws == null) {
+                        workspaceNew = true;
                         ws = getCatalog().getFactory().createWorkspace();
                         ws.setName(project);
                         NamespaceInfo nsi = getCatalog().getFactory().createNamespace();
@@ -147,20 +153,42 @@ public class ImportPage extends GeoServerSecuredPage {
                         getCatalog().add(ws);
                         getCatalog().add(nsi);
                     }
-
-                    // build the store info and save it (TODO: check the store is not already there)
-                    CatalogBuilder builder = new CatalogBuilder(getCatalog());
-                    builder.setWorkspace(ws);
-                    DataStoreInfo si = builder.buildDataStore(project);
-                    Map<String, Serializable> params = si.getConnectionParameters();
+                    
+                    // build/reuse the store
+                    String storeType = new DirectoryDataStoreFactory().getDisplayName();
+                    Map<String, Serializable> params = new HashMap<String, Serializable>();
                     params.put(DirectoryDataStoreFactory.URLP.key, new File(directory).toURI().toURL().toString());
                     params.put(DirectoryDataStoreFactory.NAMESPACE.key, new URI(ns).toString());
-                    si.setEnabled(true);
-                    si.setType(new DirectoryDataStoreFactory().getDisplayName());
-                    getCatalog().add(si);
+                    
+                    DataStoreInfo si;
+                    StoreInfo preExisting = getCatalog().getStoreByName(ws, project, StoreInfo.class);
+                    boolean storeNew = false;
+                    if(preExisting != null) {
+                        if(!(preExisting instanceof DataStoreInfo)) {
+                            error(new ParamResourceModel("storeExistsNotVector", this, project));
+                            return;
+                        } 
+                        si = (DataStoreInfo) preExisting;
+                        if(!si.getType().equals(storeType) || !si.getConnectionParameters().equals(params)) {
+                            error(new ParamResourceModel("storeExistsNotSame", this, project));
+                            return;
+                        } 
+                        // make sure it's enabled, we just verified the directory exists
+                        si.setEnabled(true);
+                    } else {
+                        storeNew = true;
+                        CatalogBuilder builder = new CatalogBuilder(getCatalog());
+                        builder.setWorkspace(ws);
+                        si = builder.buildDataStore(project);
+                        si.getConnectionParameters().putAll(params);
+                        si.setEnabled(true);
+                        si.setType(storeType);
+                        
+                        getCatalog().add(si);
+                    }
                     
                     // build and run the importer
-                    FeatureTypeImporter importer = new FeatureTypeImporter(si, null, getCatalog());
+                    FeatureTypeImporter importer = new FeatureTypeImporter(si, null, getCatalog(), workspaceNew, storeNew);
                     ImporterThreadManager manager = (ImporterThreadManager) getGeoServerApplication().getBean("importerPool");
                     String importerKey = manager.startImporter(importer);
                     
