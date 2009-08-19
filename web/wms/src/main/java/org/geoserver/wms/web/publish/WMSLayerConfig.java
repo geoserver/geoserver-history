@@ -26,7 +26,7 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
         // default style chooser. A default style is required
         StylesModel styles = new StylesModel();
         DropDownChoice defaultStyle = new DropDownChoice("defaultStyle", 
-                    new PropertyModel(layerModel, "defaultStyle"), styles);
+                    new PropertyModel(layerModel, "defaultStyle"), styles, new StyleChoiceRenderer());
         defaultStyle.setRequired(true);
         add(defaultStyle);
 
