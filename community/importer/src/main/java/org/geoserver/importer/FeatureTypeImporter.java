@@ -34,10 +34,11 @@ public class FeatureTypeImporter  implements Runnable {
     
     boolean cancelled;
 
-    public FeatureTypeImporter(DataStoreInfo store, String defaultSRS, Catalog catalog) {
+    public FeatureTypeImporter(DataStoreInfo store, String defaultSRS, Catalog catalog, boolean workspaceNew, boolean storeNew) {
         this.storeInfo = store;
         this.defaultSRS = defaultSRS;
         this.catalog = catalog;
+        this.summary = new ImportSummary(storeInfo.getName(), workspaceNew, storeNew);
     }
     
     public String getProject() {
@@ -45,7 +46,6 @@ public class FeatureTypeImporter  implements Runnable {
     }
 
     public void run() {
-        summary = new ImportSummary(storeInfo.getName());
         DataAccess da = null;
         try {
             NamespaceInfo namespace = catalog.getNamespaceByPrefix(storeInfo.getWorkspace().getName());
