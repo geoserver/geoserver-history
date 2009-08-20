@@ -16,7 +16,7 @@ The other way for tiles to be generated is by **seeding**.  Seeding is the proce
 Seeding options
 ---------------
 
-The :ref:`gwc_demo` contains a link next to each layer entitled **Seed this layer**. This link will trigger authentication with the GeoServer configuration.  Use the same username and password that you would use to log in to the :ref:`web_admin`.  (See :ref:`web_admin_config_intro` for more information.)  After a successful login, a new page shows up with seeding options.
+The :ref:`gwc_demo` contains a link next to each layer entitled **Seed this layer**. This link will trigger authentication with the GeoServer configuration.  Use the same username and password that you would use to log in to the :ref:`web_admin`.  (See :ref:`webadmin_basics` for more information.)  After a successful login, a new page shows up with seeding options.
 
 .. warning:: Add screenshot for seeding options page
 

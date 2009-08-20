@@ -21,7 +21,7 @@ To point GeoWebCache elsewhere, you will need to specify the location of your Ge
 
 Make sure to replace the URL inside ``<param-value>`` with your GeoServer instance's WMS GetCapabilities path.  Restart GeoServer when done.
 
-.. note:: There is a quick link to the WMS GetCapabilities path accessible from the Welcome page of the :ref:`web_admin`.  (See :ref:`web_admin_intro` for details.)
+.. note:: There is a quick link to the WMS GetCapabilities path accessible from the Welcome page of the :ref:`web_admin`.  (See :ref:`webadmin_basics` for details.)
 
 Setting the directory for cached data
 -------------------------------------
@@ -43,11 +43,10 @@ GeoWebCache with multiple GeoServer instances
 GeoWebCache does not work when multiple GeoServer instances are configured to use the same data directory. The H2 database crashes during initialization when t\
 he second instance is started.
 
-Two possible workarounds:
-..
-   1) Delete gwc*.jar in WEB-INF/lib and restart GeoServer. This disables GeoWebCache. If you wish, you can run a separate instance in front of all your GeoSer\
+Two possible workarounds::
+
+   #. Delete gwc*.jar in WEB-INF/lib and restart GeoServer. This disables GeoWebCache. If you wish, you can run a separate instance in front of all your GeoSer\
 ver instances.
-..
-   2) Set the variable GEOWEBCACHE_CACHE_DIR, described above, to point to a local directory for each instance.
+   #. Set the variable GEOWEBCACHE_CACHE_DIR, described above, to point to a local directory for each instance.
 
 
