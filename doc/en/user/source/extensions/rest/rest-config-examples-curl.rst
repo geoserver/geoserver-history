@@ -83,8 +83,8 @@ The following retrieves the created data store as XML::
      </featureTypes>
    </dataStore>
 
-By default when a Shapefile is uploaded a feature type is automatically created.
-See :ref:`web_admin_config_featuretypes`_ for details on how to control this behaviour. The following 
+By default when a shapefile is uploaded a feature type is automatically created.
+See :ref:`webadmin_layers` page for details on how to control this behaviour. The following 
 retrieves the created feature type as XML:: 
 
   curl -XGET 
@@ -135,7 +135,7 @@ created for it. The following retrieves the layer as XML::
    </layer>
 
 When the layer is created a default style named ``polygon`` is assigned to 
-it. This style can viewed with a WMS `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:roads>`_.
+it. This style can viewed with a WMS GetMap request (http://localhost:8080/geoserver/wms/reflect?layers=acme:roads)
 
 In this example a new style will be created and assigned to the layer 
 created in the previous example. The following creates a new style named
@@ -151,7 +151,7 @@ previous example::
     -d '<layer><defaultStyle><name>roads_style</name></defaultStyle></layer>' \
     http://localhost:8080/geoserver/rest/layers/acme:roads
 
-The new style can be viewed with the same `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:roads>`_ as above.
+The new style can be viewed with the same GetMap request (http://localhost:8080/geoserver/wms/reflect?layers=acme:roads) as above.
 
 Adding a PostGIS database
 -------------------------
@@ -202,7 +202,7 @@ The following retrieves the created feature type::
 
   curl -XGET http://localhost:8080/geoserver/rest/workspaces/acme/datastores/nyc/featuretypes/buildings.xml
 
-This `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:buildings>`_ 
+This GetMap request (http://localhost:8080/geoserver/wms/reflect?layers=acme:buildings) 
 shows the rendered buildings layer.
 
 The following adds the table ``parks`` as a new feature type::
@@ -211,7 +211,7 @@ The following adds the table ``parks`` as a new feature type::
     -d '<featureType><name>parks</name></featureType>' \
     http://localhost:8080/geoserver/rest/workspaces/acme/datastores/nyc/featuretypes
 
-This `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=acme:parks>`_ 
+This GetMap request (http://localhost:8080/geoserver/wms/reflect?layers=acme:parks) 
 shows the rendered parks layer.
 
 Creating a layer group
@@ -253,6 +253,6 @@ the new layer group::
   curl -u admin:geoserver -XPOST -d @nycLayerGroup.xml -H 'Content-type: text/xml' \
      http://localhost:8080/geoserver/rest/layergroups
 
-This `GetMap request <http://localhost:8080/geoserver/wms/reflect?layers=nyc>`_
+This GetMap request (http://localhost:8080/geoserver/wms/reflect?layers=nyc)
 shows the rendered layer group. 
 

@@ -108,9 +108,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <workspaces_html>`
-- :ref:`XML <workspaces_xml>`
-- :ref:`JSON <workspaces_json>`
+- :download:`HTML <representations/workspaces_html.txt>`
+- :download:`XML <representations/workspaces_xml.txt>`
+- :download:`JSON <representations/workspaces_json.txt>`
 
 ``/workspaces/<ws>[.<format>]``
 
@@ -145,9 +145,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <workspace_html>`
-- :ref:`XML <workspace_xml>`
-- :ref:`JSON <workspace_json>`
+- :download:`HTML <representations/workspace_html.txt>`
+- :download:`XML <representations/workspace_xml.txt>`
+- :download:`JSON <representations/workspace_json.txt>`
 
 
 *Exceptions*:
@@ -236,9 +236,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <namespaces_html>`
-- :ref:`XML <namespaces_xml>`
-- :ref:`JSON <namespaces_json>`
+- :download:`HTML <representations/namespaces_html.txt>`
+- :download:`XML <representations/namespaces_xml.txt>`
+- :download:`JSON <representations/namespaces_json.txt>`
 
 
 ``/namespaces/<ns>[.<format>]``
@@ -274,9 +274,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <namespace_html>`
-- :ref:`XML <namespace_xml>`
-- :ref:`JSON <namespace_json>`
+- :download:`HTML <representations/namespace_html.txt>`
+- :download:`XML <representations/namespace_xml.txt>`
+- :download:`JSON <representations/namespace_json.txt>`
 
 *Exceptions*:
 
@@ -358,9 +358,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <datastores_html>`
-- :ref:`XML <datastores_xml>`
-- :ref:`JSON <datastores_json>`
+- :download:`HTML <representations/datastores_html.txt>`
+- :download:`XML <representations/datastores_xml.txt>`
+- :download:`JSON <representations/datastores_json.txt>`
 
 ``/workspaces/<ws>/datastores/<ds>[.<format>]``
 
@@ -395,9 +395,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <datastore_html>`
-- :ref:`XML <datastore_xml>`
-- :ref:`JSON <datastore_json>`
+- :download:`HTML <representations/datastore_html.txt>`
+- :download:`XML <representations/datastore_xml.txt>`
+- :download:`JSON <representations/datastore_json.txt>`
 
 *Exceptions*:
 
@@ -535,9 +535,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <featuretypes_html>`
-- :ref:`XML <featuretypes_xml>`
-- :ref:`JSON <featuretypes_json>`
+- :download:`HTML <representations/featuretypes_html.txt>`
+- :download:`XML <representations/featuretypes_xml.txt>`
+- :download:`JSON <representations/featuretypes_json.txt>`
 
 *Exceptions*:
 
@@ -589,9 +589,9 @@ are returned. It can take one of the three values "configured", "available", or 
 
 *Representations*:
 
-- :ref:`HTML <featuretype_html>`
-- :ref:`XML <featuretype_xml>`
-- :ref:`JSON <featuretype_json>`
+- :download:`HTML <representations/featuretype_html.txt>`
+- :download:`XML <representations/featuretype_xml.txt>`
+- :download:`JSON <representations/featuretype_json.txt>`
 
 *Exceptions*:
 
@@ -641,9 +641,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <coveragestores_html>`
-- :ref:`XML <coveragestores_xml>`
-- :ref:`JSON <coveragestores_json>`
+- :download:`HTML <representations/coveragestores_html.txt>`
+- :download:`XML <representations/coveragestores_xml.txt>`
+- :download:`JSON <representations/coveragestores_json.txt>`
 
 ``/workspaces/<ws>/coveragestores/<cs>[.<format>]``
 
@@ -678,9 +678,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <coveragestore_html>`
-- :ref:`XML <coveragestore_xml>`
-- :ref:`JSON <coveragestore_json>`
+- :download:`HTML <representations/coveragestore_html.txt>`
+- :download:`XML <representations/coveragestore_xml.txt>`
+- :download:`JSON <representations/coveragestore_json.txt>`
 
 *Exceptions*:
 
@@ -812,9 +812,9 @@ Operations
    
 *Representations*:
 
-- :ref:`HTML <coverages_html>`
-- :ref:`XML <coverages_xml>`
-- :ref:`JSON <coverages_json>`
+- :download:`HTML <representations/coverages_html.txt>`
+- :download:`XML <representations/coverages_xml.txt>`
+- :download:`JSON <representations/coverages_json.txt>`
 
 ``/workspaces/<ws>/coveragestores/<cs>/coverages/<c>[.<format>]``
 
@@ -849,9 +849,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <coverage_html>`
-- :ref:`XML <coverage_xml>`
-- :ref:`JSON <coverage_json>`
+- :download:`HTML <representations/coverage_html.txt>`
+- :download:`XML <representations/coverage_xml.txt>`
+- :download:`JSON <representations/coverage_json.txt>`
 
 *Exceptions*:
 
@@ -908,9 +908,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <styles_html>`
-- :ref:`XML <styles_xml>`
-- :ref:`JSON <styles_json>`
+- :download:`HTML <representations/styles_html.txt>`
+- :download:`XML <representations/styles_xml.txt>`
+- :download:`JSON <representations/styles_json.txt>`
 
 .. _sld_post_put:
 
@@ -957,10 +957,10 @@ name can be not be inferred from the SLD itself.
 
 *Representations*:
 
-- :ref:`SLD <style_sld>`
-- :ref:`HTML <style_html>`
-- :ref:`XML <style_xml>`
-- :ref:`JSON <style_json>`
+- :download:`SLD <representations/style_sld.txt>`
+- :download:`HTML <representations/style_html.txt>`
+- :download:`XML <representations/style_xml.txt>`
+- :download:`JSON <representations/style_json.txt>`
 
 *Exceptions*:
 
@@ -1016,9 +1016,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <layers_html>`
-- :ref:`XML <layers_xml>`
-- :ref:`JSON <layers_json>`
+- :download:`HTML <representations/layers_html.txt>`
+- :download:`XML <representations/layers_xml.txt>`
+- :download:`JSON <representations/layers_json.txt>`
 
 ``/layers/<l>[.<format>]``
 
@@ -1053,9 +1053,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <layer_html>`
-- :ref:`XML <layer_xml>`
-- :ref:`JSON <layer_json>`
+- :download:`HTML <representations/layer_html.txt>`
+- :download:`XML <representations/layer_xml.txt>`
+- :download:`JSON <representations/layer_json.txt>`
 
 *Exceptions*:
 
@@ -1137,9 +1137,9 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <layergroups_html>`
-- :ref:`XML <layergroups_xml>`
-- :ref:`JSON <layergroups_json>`
+- :download:`HTML <representations/layergroups_html.txt>`
+- :download:`XML <representations/layergroups_xml.txt>`
+- :download:`JSON <representations/layergroups_json.txt>`
 
 ``/layergroups/<lg>[.<format>]``
 
@@ -1174,13 +1174,14 @@ Operations
 
 *Representations*:
 
-- :ref:`HTML <layergroup_html>`
-- :ref:`XML <layergroup_xml>`
-- :ref:`JSON <layergroup_json>`
+- :download:`HTML <representations/layergroup_html.txt>`
+- :download:`XML <representations/layergroup_xml.txt>`
+- :download:`JSON <representations/layergroup_json.txt>`
 
 *Exceptions*:
 
 - GET for a layer group that does not exist -> 404
 - POST that specifies layer group with no layers -> 400
 - PUT that changes name of layer group -> 403 
+
 
