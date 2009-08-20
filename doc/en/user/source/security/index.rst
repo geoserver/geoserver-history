@@ -1,4 +1,0 @@
-.. _security:
-
-Security
-========
