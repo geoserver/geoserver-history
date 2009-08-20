@@ -1,9 +1,9 @@
 .. _data_dir_structure:
 
-.. warning:: This data structure is a bit out of date, as it is ported straight from 1.7.x.  The directory structure is mostly the same, but a lot of the contents have changed.
-
 Structure of the Data Directory
-==================================
+===============================
+
+.. warning:: This data structure is a bit out of date, as it is ported straight from 1.7.x.  The directory structure is mostly the same, but a lot of the contents have changed.
 
 The following figure shows the structure of a "vanilla" GeoServer data directory::
 
