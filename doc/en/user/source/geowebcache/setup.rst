@@ -45,8 +45,7 @@ he second instance is started.
 
 Two possible workarounds::
 
-   #. Delete gwc*.jar in WEB-INF/lib and restart GeoServer. This disables GeoWebCache. If you wish, you can run a separate instance in front of all your GeoSer\
-ver instances.
+   #. Delete gwc*.jar in WEB-INF/lib and restart GeoServer. This disables GeoWebCache. If you wish, you can run a separate instance in front of all your GeoServer instances.
    #. Set the variable GEOWEBCACHE_CACHE_DIR, described above, to point to a local directory for each instance.
 
 
