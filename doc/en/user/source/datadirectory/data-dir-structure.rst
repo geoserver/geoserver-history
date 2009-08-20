@@ -127,7 +127,7 @@ The ``value`` attribute is re-written to be relative. In this way the entire dat
 demo
 ----
 
-The ``demo`` directory contains files which define the *sample requests* available in the *Sample Request Tool* (http://localhost:8080/geoserver/demoRequest.do). For more information see the :ref:`sample_request_tool` section for more information.
+The ``demo`` directory contains files which define the *sample requests* available in the *Sample Request Tool* (http://localhost:8080/geoserver/demoRequest.do). For more information see the :ref:`webadmin_demos` page for more information.
 
 palettes
 --------
