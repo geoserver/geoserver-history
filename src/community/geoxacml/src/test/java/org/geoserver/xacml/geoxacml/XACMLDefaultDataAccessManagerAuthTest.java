@@ -56,10 +56,10 @@ public class XACMLDefaultDataAccessManagerAuthTest extends DefaultDataAccessMana
                 new XACMLRole("READER"), new XACMLRole("WRITER") });
         roUser = new TestingAuthenticationToken("ro", "supersecret",
                 new XACMLRole[] { new XACMLRole("READER") });
-        anonymous = new TestingAuthenticationToken("anonymous", null, new XACMLRole[] { new XACMLRole("ROLE_ANONYMOUS") });
+        anonymous = new TestingAuthenticationToken("anonymous", "", new XACMLRole[] { new XACMLRole(XACMLConstants.AnonymousRole) });
         milUser = new TestingAuthenticationToken("military", "supersecret",
                 new XACMLRole[] { new XACMLRole("MILITARY") });
-        root = new TestingAuthenticationToken("admin", "geoserver", new XACMLRole[] { new XACMLRole("ROLE_ADMINISTRATOR") });
+        root = new TestingAuthenticationToken("admin", "geoserver", new XACMLRole[] { new XACMLRole(XACMLConstants.AdminRole) });
 
     }
 }

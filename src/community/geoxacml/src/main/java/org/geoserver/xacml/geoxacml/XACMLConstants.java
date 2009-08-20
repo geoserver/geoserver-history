@@ -52,7 +52,7 @@ public class XACMLConstants {
 //    public static URI RoleAttributeURI;
 
     
-    public final static String RoleParamIdInfix=":param:";
+    public final static String RoleParamPrefix=RoleAttributeId+"param:";
     public final static String ObligationPrefix=GeoServerPrefix+"obligation:";
     
     /*
@@ -78,7 +78,8 @@ public class XACMLConstants {
      * Some common obligation Ids 
      */
     public final static String CatalogModeObligationId=ObligationPrefix+"CatalogMode";
-    public final static String UserPropertyObligationId=ObligationPrefix+"userproperty";
+    public final static String UserPropertyObligationId=ObligationPrefix+"userproperties";
+    public final static String RoleConstantObligationId=ObligationPrefix+"roleconstants";
     
     /*
      * 

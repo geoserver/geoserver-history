@@ -13,7 +13,6 @@ import org.acegisecurity.ConfigAttributeDefinition;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.intercept.web.FilterInvocation;
 import org.acegisecurity.vote.AccessDecisionVoter;
-import org.geoserver.security.AccessMode;
 import org.geoserver.xacml.geoxacml.GeoXACMLConfig;
 import org.geoserver.xacml.geoxacml.XACMLUtil;
 import org.geoserver.xacml.role.XACMLRole;
@@ -40,10 +39,10 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
 
     public int vote(Authentication auth, Object request, ConfigAttributeDefinition arg2) {
 
-        String urlPath = ((FilterInvocation) request).getRequestUrl();        
+        String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();
         String method = ((FilterInvocation) request).getHttpRequest().getMethod();
 
-        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath,method);
+        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath, method);
         if (requestCtxts.isEmpty())
             return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
 
@@ -55,20 +54,20 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
 
     }
 
-    private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,String method) {
+    private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,
+            String method) {
 
         GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(auth);
-        
+
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
-        
-        
+
         for (GrantedAuthority role : auth.getAuthorities()) {
-            XACMLRole xacmlRole =  (XACMLRole) role;
-            if (xacmlRole.isEnabled()==false) continue;
+            XACMLRole xacmlRole = (XACMLRole) role;
+            if (xacmlRole.isEnabled() == false)
+                continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method)
-                    .createRequestCtx();
-            XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
+                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method).createRequestCtx();
+            // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
 

@@ -11,10 +11,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.geotools.xacml.geoxacml.attr.GML3Support;
+
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Some utility methods
@@ -83,5 +92,21 @@ public class XACMLUtil {
     public static Logger getXACMLLogger() {
         return Logger.getLogger("XACML");
     }
+    
+    public static  String getGMLTypeFor(Geometry g) {
+        String gmlType=null;
+        if (g instanceof Point) gmlType=GML3Support.GML_POINT;
+        if (g instanceof LineString) gmlType=GML3Support.GML_LINESTRING;
+        if (g instanceof Polygon) gmlType=GML3Support.GML_POLYGON;
+        if (g instanceof MultiPoint) gmlType=GML3Support.GML_MULTIPOINT;
+        if (g instanceof MultiLineString) gmlType=GML3Support.GML_MULTICURVE;
+        if (g instanceof MultiPolygon) gmlType=GML3Support.GML_MULTISURFACE;
+        
+        if (gmlType==null) {
+            throw new RuntimeException("No GML type for " + g.getClass().getName());
+        }
+        return gmlType;
+    }
+
 
 }

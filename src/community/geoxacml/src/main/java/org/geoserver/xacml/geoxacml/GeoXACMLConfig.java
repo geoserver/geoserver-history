@@ -193,7 +193,9 @@ public class GeoXACMLConfig {
         copyFileIfNotExisting(geoServerDataDir, commonDir+"/PermitAll.xml");
         copyFileIfNotExisting(geoServerDataDir, commonDir+"/DenyAll.xml");
         copyFileIfNotExisting(geoServerDataDir, anonymousDir+"/PAnonymous.xml");
+        copyFileIfNotExisting(geoServerDataDir, anonymousDir+"/URLAnonymous.xml");
         copyFileIfNotExisting(geoServerDataDir, authenticatedDir+"/PAuthenticated.xml");
+        copyFileIfNotExisting(geoServerDataDir, authenticatedDir+"/URLAuthenticated.xml");
         copyFileIfNotExisting(geoServerDataDir, roleDir+"/PRole.xml");
         
         copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Admin.xml");
