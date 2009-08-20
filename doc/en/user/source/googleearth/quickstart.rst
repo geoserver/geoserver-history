@@ -8,9 +8,9 @@ Quickstart
 Viewing a layer
 ---------------
 
-Once GeoServer is installed and running, open up a web browser and navigate to the :ref:`web_admin_welcome`.  Navigate to the :ref:`web_admin_map_preview` by clicking **Demo** then **Map Preview**. You will be presented with a list of the currently configured layers in your GeoServer instance. Find the row that says ``topp:states``. To the right of the layer click on the link that says **KML**. 
+Once GeoServer is installed and running, open up a web browser and go to the web admin console (:ref:`webadmin_basics#welcome-page`).  Navigate to the :ref:`layerpreview` by clicking on the Layer Preview link at the bottom of the left sidebar. You will be presented with a list of the currently configured layers in your GeoServer instance. Find the row that says ``topp:states``. To the right of the layer click on the link that says **KML**. 
 
-   .. figure:: demopage.png
+   .. figure:: ../webadmin/images/preview_list.png
       :align: center
 	  
       *The Map Preview page*

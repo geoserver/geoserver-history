@@ -31,24 +31,16 @@ Contents
 Basic SLD Creation Wizard
 -------------------------
 
-GeoServer includes a very basic wizard for creating styles from scratch. This wizard can be accessed from your GeoServer's admin page by going to the FeatureType editor. From the Welcome page, navigate to **Config** -> **Data** -> **FeatureTypes** -> **Edit**) Click the button that says **Create new SLD**.
+Basic SLD styling can be accomplished with the coming `GeoExt Styler <http://geoserver.org/display/GEOS/GeoExt+Styler>`_.  It provides a GUI to create new styles.  These styles will work seamlessly with KML output from GeoServer.
 
-.. figure:: FeatureType.jpg
-   :align: center
-
-   *Figure 1: Invoking the SLD creation wizard*
-
-A new screen will appear that allows you to customize how your data will appear on a map. (Figure 2 refers to what will be seen when styling line data; styling polygons and points will make this page look slightly different.) Fill in all the required fields. When finished, click **Apply Style** and then **Finished**.
-
-.. figure:: CreateNewFeatureType.jpg
-   :align: center
-
-   *Figure 2: Using the SLD creation wizard to style line data*
-
-.. _kml-styling-sld-structure:
+Creating SLD by hand
+--------------------
+One can edit the SLD files directly instead of using the Styler GUI.  For the most complete exploration of editing SLDs see the :ref:`styling` section.  The examples below show how some of the basic styles show up in Google Earth.
 
 SLD Structure
 -------------
+
+
 
 The following is a skeleton of a SLD document. It can be used as a base on which to expand upon to create more interesting and complicated styles.
 
