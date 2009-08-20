@@ -35,14 +35,14 @@ Basic SLD Creation Wizard
 
 Basic SLD styling can be accomplished with the coming `GeoExt Styler <http://geoserver.org/display/GEOS/GeoExt+Styler>`_.  It provides a GUI to create new styles.  These styles will work seamlessly with KML output from GeoServer.
 
-.. _kml-styling-hand:
+.. _kml-styling-sld-hand:
 
 Creating SLD by hand
 --------------------
 One can edit the SLD files directly instead of using the Styler GUI.  For the most complete exploration of editing SLDs see the :ref:`styling` section.  The examples below show how some of the basic styles show up in Google Earth.
 
 
-.. _kml-styling-structure:
+.. _kml-styling-sld-structure:
 
 SLD Structure
 -------------
