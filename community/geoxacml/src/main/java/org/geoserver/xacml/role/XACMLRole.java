@@ -5,11 +5,12 @@
 
 package org.geoserver.xacml.role;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.acegisecurity.GrantedAuthority;
+
+import com.sun.xacml.ctx.Attribute;
 
 /**
  * @author Christian Mueller
@@ -35,7 +36,7 @@ public class XACMLRole implements GrantedAuthority {
      */
     private static final long serialVersionUID = 1L;
     private String authority;
-    private Map<String,Serializable> attributes;
+    private Set<Attribute> attributes;
     private boolean enabled;
     private boolean roleAttributesProcessed;
     public boolean isRoleAttributesProcessed() {
@@ -58,7 +59,7 @@ public class XACMLRole implements GrantedAuthority {
      this(authority, null);   
     }
     
-    public XACMLRole(String authority , Map<String,Serializable> attributes) {
+    public XACMLRole(String authority , Set<Attribute> attributes) {
         this.authority=authority;
         this.attributes=attributes;
         this.enabled=true;
@@ -67,9 +68,9 @@ public class XACMLRole implements GrantedAuthority {
     public String getAuthority() {
         return authority;
     }
-    public Map<String,Serializable> getAttributes() {
+    public Set<Attribute> getAttributes() {
         if (attributes==null) 
-            attributes=new HashMap<String,Serializable>();
+            attributes=new HashSet<Attribute>();
         return attributes;
     }
     

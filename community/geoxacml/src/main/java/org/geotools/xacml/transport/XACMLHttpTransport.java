@@ -21,10 +21,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.jvm.util.ByteArrayOutputStream;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
@@ -44,10 +50,15 @@ public class XACMLHttpTransport implements XACMLTransport {
      * @author Christian Mueller
      * 
      */
+
+    private static InheritableThreadLocal<Map<String, ResponseCtx>> DigestMap = new InheritableThreadLocal<Map<String, ResponseCtx>>();;
+
     public class HttpThread extends Thread {
         private RequestCtx requestCtx = null;
+
         private ResponseCtx responseCtx = null;
-        private RuntimeException runtimeException =null;
+
+        private RuntimeException runtimeException = null;
 
         public RuntimeException getRuntimeException() {
             return runtimeException;
@@ -66,25 +77,28 @@ public class XACMLHttpTransport implements XACMLTransport {
             try {
                 responseCtx = sendHttpPost(requestCtx);
             } catch (RuntimeException ex) {
-                this.runtimeException=ex;
+                this.runtimeException = ex;
             }
         }
 
     }
 
     private URL pdpURL;
+
     private boolean multiThreaded = false;
 
     public XACMLHttpTransport(URL pdpURL, boolean multiThreaded) {
         this.multiThreaded = multiThreaded;
-        this.pdpURL=pdpURL;
+        this.pdpURL = pdpURL;
     }
 
     public ResponseCtx evaluateRequestCtx(RequestCtx request) {
+        initDigestMap();
         return sendHttpPost(request);
     }
 
     public List<ResponseCtx> evaluateRequestCtxList(List<RequestCtx> requests) {
+        initDigestMap();
         if (multiThreaded)
             return evaluateRequestCtxListMultiThreaded(requests);
         else
@@ -100,15 +114,14 @@ public class XACMLHttpTransport implements XACMLTransport {
     }
 
     private List<ResponseCtx> evaluateRequestCtxListMultiThreaded(List<RequestCtx> requests) {
-        List<ResponseCtx> resultList = new ArrayList<ResponseCtx>(requests.size());                
+        List<ResponseCtx> resultList = new ArrayList<ResponseCtx>(requests.size());
         List<HttpThread> threadList = new ArrayList<HttpThread>(requests.size());
-        
-        if (requests.size()==1) { //no threading for only one request
+
+        if (requests.size() == 1) { // no threading for only one request
             resultList.add(evaluateRequestCtx(requests.get(0)));
             return resultList;
         }
 
-        
         for (RequestCtx request : requests) {
             HttpThread t = new HttpThread(request);
             t.start();
@@ -120,31 +133,63 @@ public class XACMLHttpTransport implements XACMLTransport {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if (t.getRuntimeException()==null)
+            if (t.getRuntimeException() == null)
                 resultList.add(t.getResponseCtx());
-            else 
+            else
                 throw t.getRuntimeException();
         }
         return resultList;
 
     }
 
+    private void initDigestMap() {
+        if (DigestMap.get() == null)
+            DigestMap.set(new HashMap<String, ResponseCtx>());
+    }
+
     private ResponseCtx sendHttpPost(RequestCtx requestCtx) {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        requestCtx.encode(bout, new Indenter(0), true);
+        byte[] byteArray = bout.toByteArray();
+        byte[] msgDigest = getDigestBytes(byteArray);
+
+        if (msgDigest != null) {
+            ResponseCtx responseCtx = DigestMap.get().get(new String(msgDigest));
+            if (responseCtx != null) {
+                return responseCtx;
+            }
+        }
+
         try {
             HttpURLConnection conn = (HttpURLConnection) pdpURL.openConnection();
             conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-type", "text/xml, application/xml");            
+            conn.setRequestProperty("Content-type", "text/xml, application/xml");
             conn.setDoOutput(true);
             OutputStream out = conn.getOutputStream();
-            requestCtx.encode(out,new Indenter(0),true);
+            out.write(byteArray);
             out.close();
             InputStream in = conn.getInputStream();
             ResponseCtx result = ResponseCtx.getInstance(in);
             in.close();
+            if (msgDigest != null)
+                DigestMap.get().put(new String(msgDigest), result);
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    byte[] getDigestBytes(byte[] bytes) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            Logger.getLogger(this.getClass().getName()).log(Level.WARNING,
+                    "No MD5 Algorithm available");
+            return null;
+        }
+        md.update(bytes);
+        return md.digest();
     }
 
 }

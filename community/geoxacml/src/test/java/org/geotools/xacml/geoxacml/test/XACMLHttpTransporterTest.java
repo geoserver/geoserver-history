@@ -20,9 +20,7 @@ package org.geotools.xacml.geoxacml.test;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.net.ConnectException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -65,13 +63,14 @@ public class XACMLHttpTransporterTest extends TestCase {
 
     private String getPDPUrl() {
         try {
-            //URL url = getClass().getResource("remotePDP.properties");
-            BufferedReader in = new BufferedReader(new FileReader("src/test/resources/remotePDP.properties"));
+            // URL url = getClass().getResource("remotePDP.properties");
+            BufferedReader in = new BufferedReader(new FileReader(
+                    "src/test/resources/remotePDP.properties"));
             String urlString = in.readLine();
             return urlString;
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private String getNoRemoteGeoserverMsg() {

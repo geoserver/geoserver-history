@@ -7,7 +7,6 @@
 package org.geoserver.xacml.role;
 
 import org.acegisecurity.Authentication;
-import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.userdetails.UserDetails;
 
 /**
@@ -18,8 +17,17 @@ import org.acegisecurity.userdetails.UserDetails;
  * 
  * 1) add needed role parameters 
  * 2) check against the XACML repository if the role is enabled 
- *    (e.g if the role is enabled only between 8:00 and 16:00)  
+ *    (e.g  the role is enabled only between 8:00 and 16:00)  
  * 
+ * Some important notes about the XACML RBAC role specification
+ * 
+ * 1) Each role has a "role permission set". Roles for themselves are not hierarchical, 
+ * but the permission sets are. Permission sets can also use multiple inheritance.
+ * 
+ * 2) According to 1) if a parent role is disabled (e.g time constraints), the current role is not
+ * 
+ * 3) According to 1) role parameters are not inherited, you have to specify the whole set of role parameters
+ * for each role
  * 
  * @author Christian Mueller
  *
