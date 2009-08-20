@@ -12,6 +12,8 @@ Contents
 ````````
 
    :ref:`kml-styling-basic`
+
+   :ref:`kml-styling-sld-hand`
    
    :ref:`kml-styling-sld-structure` 
 
