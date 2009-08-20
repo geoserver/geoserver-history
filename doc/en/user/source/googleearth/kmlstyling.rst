@@ -6,7 +6,7 @@ KML Styling
 Introduction
 ------------
 
-Keyhole Markup Langauge (KML), when created and output by GeoServer, is styled using `Styled Layer Descriptors <http://en.wikipedia.org/wiki/Styled_Layer_Descriptor>`_ (SLD). This is the same approach used to style standard WMS output formats, but is a bit different from how Google Earth is normally styled, behaving more like Cascading Style Sheets (CSS). The style of the map is specified in the SLD file as a series of rules, and then the data matching those rules is styled appropriately in the KML output. For those unfamiliar with SLD, a goo place to start is the :ref:`sld_intro`. The remainder of this guide contains information about how to construct SLD documents in order to impact the look of KML produced by GeoServer.
+Keyhole Markup Langauge (KML), when created and output by GeoServer, is styled using `Styled Layer Descriptors <http://en.wikipedia.org/wiki/Styled_Layer_Descriptor>`_ (SLD). This is the same approach used to style standard WMS output formats, but is a bit different from how Google Earth is normally styled, behaving more like Cascading Style Sheets (CSS). The style of the map is specified in the SLD file as a series of rules, and then the data matching those rules is styled appropriately in the KML output. For those unfamiliar with SLD, a good place to start is the :ref:`sld_intro`. The remainder of this guide contains information about how to construct SLD documents in order to impact the look of KML produced by GeoServer.
 
 Contents
 ````````
