@@ -3,6 +3,9 @@
 Setting up a JNDI connection pool with Tomcat
 =============================================
 
+
+.. warning:: The screenshots on this tutorial have not yet been updated for the 2.0.x user interface.  But most all the rest of the information should be valid, and the user interface is roughly the same.
+
 This tutorial walks the reader through the procedures necessary to setup a Oracle JNDI connection pool in Tomcat 6 and how to retrieve it from GeoServer
 
 Tomcat setup

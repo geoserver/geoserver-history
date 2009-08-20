@@ -3,6 +3,8 @@
 Using the GeoTools feature-pregeneralized module
 ================================================
 
+.. warning:: The screenshots on this tutorial have not yet been updated for the 2.0.x user interface.  But most all the rest of the information should be valid, and the user interface is roughly the same, but a bit more easy to use.
+
 Introduction
 ------------
 
