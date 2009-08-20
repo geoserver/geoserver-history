@@ -60,7 +60,7 @@ To begin, navigate to :menuselection:`Stores --> Add a new store --> PostGIS NG`
    * - :guilabel:`validate connections`
      - Checks the connection is alive before using it.
    * - :guilabel:`Loose bbox`
-     - Performs only the primary filter on the bounding box.  See the section on :ref:`loose_bbox` for details.
+     - Performs only the primary filter on the bounding box.  See the section on :ref:`postgis_loose_bbox` for details.
    * - :guilabel:`preparedStatements`
      - Enables prepared statements.
 
@@ -107,7 +107,7 @@ Configuring PostGIS layers
 
 When properly loaded, all tables in the database will be visible to GeoServer, but they will need to be individually configured before being served by GeoServer.  See the section on :ref:`webadmin_layers` for how to add and edit new layers.
 
-.. _loose_bbox:
+.. _postgis_loose_bbox:
 
 Using loose bounding box
 ------------------------
