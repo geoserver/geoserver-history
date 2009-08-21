@@ -21,7 +21,6 @@ import org.geotools.data.DataUtilities;
  * @author Rini Angreani, Curtin University of Technology
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
  */
-@SuppressWarnings("serial")
 public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
 
     /**
