@@ -69,6 +69,12 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
             checkXACMLRepsonse(resp, "Permit");
         }
     }
+    
+    public void testCatalogReload() throws Exception {
+        assertEquals( GeoXACMLRESTRepositoryReloader.ReloadedMsg, 
+                getAsString("/rest/reloadXACML.txt"));
+    }
+
 
     private List<RequestCtx> createRequestCtxList() {
         List<RequestCtx> result = new ArrayList<RequestCtx>();
