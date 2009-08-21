@@ -55,7 +55,7 @@ public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
         Map<String, Serializable> params = new HashMap<String, Serializable>();
         params.put("dbtype", "mo-data-access");
         try {
-            params.put("directory", new URL(getFeatureTypesBaseDir().toURI().toASCIIString()
+            params.put("directory", new URL(getFeatureTypesBaseDir().toURI().toString()
                     + getDataStoreName(GSML_PREFIX, "GeologicUnit")));
             // side effect is to register in AppSchemaDataAccessRegistry
             DataAccessFinder.getDataStore(params);
