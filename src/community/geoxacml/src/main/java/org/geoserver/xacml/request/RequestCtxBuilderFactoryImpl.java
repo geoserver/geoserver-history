@@ -5,6 +5,8 @@
 
 package org.geoserver.xacml.request;
 
+import java.util.Map;
+
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.security.AccessMode;
@@ -27,8 +29,8 @@ public class RequestCtxBuilderFactoryImpl implements RequestCtxBuilderFactory {
     public RequestCtxBuilder getWorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo info, AccessMode mode) {
         return new WorkspaceRequestCtxBuilder(role,info,mode);
     }
-    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String action) {
-        return new URLMatchRequestCtxBuilder(role,urlString,action);
+    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String action,Map<String,String> httpParams) {
+        return new URLMatchRequestCtxBuilder(role,urlString,action, httpParams);
     }
     public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role, ResourceInfo resourceInfo, AccessMode mode) {
         return new ResourceInfoRequestCtxBuilder(role, resourceInfo, mode); 

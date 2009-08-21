@@ -5,6 +5,9 @@
 
 package org.geoserver.xacml.geoxacml;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.acegisecurity.Authentication;
@@ -15,6 +18,10 @@ import org.acegisecurity.vote.AccessDecisionVoter;
 import org.easymock.EasyMock;
 import org.geoserver.xacml.acegi.XACMLFilterDecisionVoter;
 import org.geoserver.xacml.role.XACMLRole;
+
+import com.sun.xacml.attr.StringAttribute;
+import com.sun.xacml.ctx.Attribute;
+import com.sun.xacml.ctx.RequestCtx;
 
 import junit.framework.TestCase;
 
@@ -64,20 +71,45 @@ public class XACMLURLMatchingTest extends TestCase {
             assertTrue(AccessDecisionVoter.ACCESS_DENIED==executeFor(anonymous,"/rest/", method));
             assertTrue(AccessDecisionVoter.ACCESS_GRANTED==executeFor(authenticated,"/rest/", method));
             assertTrue(AccessDecisionVoter.ACCESS_GRANTED==executeFor(admin,"/rest/", method));
-        }   
-
-        
+        }           
     }
+    
+    public void testHttpParams() {
+        Map<String,String> paramMap = new HashMap<String,String> ();
+        paramMap.put("param1", "value1");
+        paramMap.put("param2", "value2");
+        RequestCtx request = GeoXACMLConfig.getRequestCtxBuilderFactory().getURLMatchRequestCtxBuilder(
+                (XACMLRole) anonymous.getAuthorities()[0],"/rest/", "GET", paramMap).createRequestCtx();
+        
+        //System.out.println(XACMLUtil.asXMLString(request));
+        int count = 0;
+        for (Attribute attr : request.getResource()) {
+            if (attr.getId().toString().equals(XACMLConstants.URLParamPrefix+"param1")) {
+                assertTrue(((StringAttribute)attr.getValue()).getValue().equals("value1"));
+                count++;
+            }
+            if (attr.getId().toString().equals(XACMLConstants.URLParamPrefix+"param2")) {
+                assertTrue(((StringAttribute)attr.getValue()).getValue().equals("value2"));
+                count++;
+            }
+        }
+        assertTrue(count==2);
+
+    }
+    
 
     
     private int executeFor(Authentication aut,String path, String method) {
+        
         HttpServletRequest mockRequest = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mockRequest.getMethod()).andReturn(method).anyTimes();
+        EasyMock.expect(mockRequest.getParameterMap()).andReturn(null).anyTimes();
         EasyMock.replay(mockRequest);
         
         FilterInvocation filter = org.easymock.classextension.EasyMock.createMock(FilterInvocation.class);
         org.easymock.classextension.EasyMock.expect(filter.getRequestUrl()).andReturn(path).anyTimes();
         org.easymock.classextension.EasyMock.expect(filter.getHttpRequest()).andReturn(mockRequest).anyTimes();
+        
         org.easymock.classextension.EasyMock.replay(filter);
         
         XACMLFilterDecisionVoter voter = new XACMLFilterDecisionVoter();

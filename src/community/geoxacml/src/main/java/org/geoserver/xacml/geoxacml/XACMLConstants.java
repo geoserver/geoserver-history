@@ -52,7 +52,8 @@ public class XACMLConstants {
 //    public static URI RoleAttributeURI;
 
     
-    public final static String RoleParamPrefix=RoleAttributeId+"param:";
+    public final static String RoleParamPrefix=RoleAttributeId+":param:";
+    public final static String URLParamPrefix=URLResouceId+":param:";
     public final static String ObligationPrefix=GeoServerPrefix+"obligation:";
     
     /*

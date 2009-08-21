@@ -24,7 +24,7 @@ import com.sun.xacml.ctx.ResponseCtx;
 
 /**
  * Since XACML says nothing about the communication between PEP and PDP, this interface offers the
- * possibility to implement differnt means of communication (local, remote using http,....)
+ * possibility to implement different means of communication (local, remote using http,....)
  * 
  * @author Christian Mueller
  * 
