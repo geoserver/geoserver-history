@@ -15,4 +15,5 @@ Or to learn how to create a directory for a GeoServer installation jump to the :
    data-dir-creating/
    data-dir-setting/
    data-dir-structure/
+   migrating/
    
