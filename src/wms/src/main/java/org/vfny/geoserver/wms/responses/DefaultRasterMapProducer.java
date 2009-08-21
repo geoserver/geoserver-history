@@ -14,7 +14,6 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,15 +30,14 @@ import javax.media.jai.JAI;
 import javax.media.jai.LookupTableJAI;
 import javax.media.jai.operator.LookupDescriptor;
 
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WatermarkInfo;
 import org.geoserver.wms.responses.MapDecoration;
 import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
 import org.geoserver.wms.responses.decoration.WatermarkDecoration;
-import org.geoserver.wms.DefaultWebMapService;
-import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.WatermarkInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.RenderListener;
@@ -56,7 +54,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.config.WMSConfig;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.global.WMS;
-import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -92,33 +89,33 @@ import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
  * @version $Id$
  */
 public abstract class DefaultRasterMapProducer extends
-		AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware {
-	private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
+AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware {
+    private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
 
-	private final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
+    private final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
 
-	private final static Interpolation BIC_INTERPOLATION = new InterpolationBicubic2(
-			0);
+    private final static Interpolation BIC_INTERPOLATION = new InterpolationBicubic2(
+            0);
 
-	// antialiasing settings, no antialias, only text, full antialias
-	private final static String AA_NONE = "NONE";
+    // antialiasing settings, no antialias, only text, full antialias
+    private final static String AA_NONE = "NONE";
 
-	private final static String AA_TEXT = "TEXT";
+    private final static String AA_TEXT = "TEXT";
 
-	private final static String AA_FULL = "FULL";
+    private final static String AA_FULL = "FULL";
 
-	private final static List AA_SETTINGS = Arrays.asList(new String[] {
-			AA_NONE, AA_TEXT, AA_FULL });
-	
-	/**
-	 * The size of a megabyte
-	 */
-	private static final int KB = 1024;
+    private final static List AA_SETTINGS = Arrays.asList(new String[] {
+            AA_NONE, AA_TEXT, AA_FULL });
 
-	/**
-	 * The lookup table used for data type transformation (it's really the identity one)
-	 */
-	private static LookupTableJAI IDENTITY_TABLE = new LookupTableJAI(getTable());
+    /**
+     * The size of a megabyte
+     */
+    private static final int KB = 1024;
+
+    /**
+     * The lookup table used for data type transformation (it's really the identity one)
+     */
+    private static LookupTableJAI IDENTITY_TABLE = new LookupTableJAI(getTable());
     private static byte[] getTable() {
         byte[] arr = new byte[256];
         for (int i = 0; i < arr.length; i++) {
@@ -172,32 +169,32 @@ public abstract class DefaultRasterMapProducer extends
         this.wms = wms;
     }
 
-	/**
-	 * Writes the image to the client.
-	 * 
-	 * @param out
-	 *            The output stream to write to.
-	 * 
-	 * @throws org.vfny.geoserver.ServiceException
-	 *             DOCUMENT ME!
-	 * @throws java.io.IOException
-	 *             DOCUMENT ME!
-	 */
-	public void writeTo(OutputStream out)
-	    throws ServiceException, java.io.IOException {
-	        formatImageOutputStream(this.image, out);
-	    }
+    /**
+     * Writes the image to the client.
+     * 
+     * @param out
+     *            The output stream to write to.
+     * 
+     * @throws org.vfny.geoserver.ServiceException
+     *             DOCUMENT ME!
+     * @throws java.io.IOException
+     *             DOCUMENT ME!
+     */
+    public void writeTo(OutputStream out)
+    throws ServiceException, java.io.IOException {
+        formatImageOutputStream(this.image, out);
+    }
 
-	/**
-	 * Performs the execute request using geotools rendering.
-	 * 
-	 * @param map
-	 *            The information on the types requested.
-	 * 
-	 * @throws WmsException
-	 *             For any problems.
-	 */
-	public void produceMap() throws WmsException {
+    /**
+     * Performs the execute request using geotools rendering.
+     * 
+     * @param map
+     *            The information on the types requested.
+     * 
+     * @throws WmsException
+     *             For any problems.
+     */
+    public void produceMap() throws WmsException {
         try {
             findDecorationLayout(mapContext);
         } catch (Exception e) { 
@@ -205,40 +202,40 @@ public abstract class DefaultRasterMapProducer extends
         }
 
         Rectangle paintArea = new Rectangle(
-            0, 0, 
-            mapContext.getMapWidth(), mapContext.getMapHeight()
+                0, 0, 
+                mapContext.getMapWidth(), mapContext.getMapHeight()
         );
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("setting up " + paintArea.width + "x" + paintArea.height + " image");
         }
-        
-		// extra antialias setting
-		final GetMapRequest request = mapContext.getRequest();
-        String antialias = (String) request.getFormatOptions().get("antialias");
-		if (antialias != null)
-			antialias = antialias.toUpperCase();
 
-		// figure out a palette for buffered image creation
-		IndexColorModel palette = null;
-		final InverseColorMapOp paletteInverter = mapContext
-				.getPaletteInverter();
-		final boolean transparent = mapContext.isTransparent();
+        // extra antialias setting
+        final GetMapRequest request = mapContext.getRequest();
+        String antialias = (String) request.getFormatOptions().get("antialias");
+        if (antialias != null)
+            antialias = antialias.toUpperCase();
+
+        // figure out a palette for buffered image creation
+        IndexColorModel palette = null;
+        final InverseColorMapOp paletteInverter = mapContext
+        .getPaletteInverter();
+        final boolean transparent = mapContext.isTransparent();
         final Color bgColor = mapContext.getBgColor();
         if (paletteInverter != null && AA_NONE.equals(antialias)) {
-			palette = paletteInverter.getIcm();
-		} else if (AA_NONE.equals(antialias)) {
-			PaletteExtractor pe = new PaletteExtractor(transparent ? null : bgColor);
-			MapLayer[] layers = mapContext.getLayers();
-			for (int i = 0; i < layers.length; i++) {
-				pe.visit(layers[i].getStyle());
-				if (!pe.canComputePalette())
-					break;
-			}
-			if (pe.canComputePalette())
-				palette = pe.getPalette();
-		}
-        
+            palette = paletteInverter.getIcm();
+        } else if (AA_NONE.equals(antialias)) {
+            PaletteExtractor pe = new PaletteExtractor(transparent ? null : bgColor);
+            MapLayer[] layers = mapContext.getLayers();
+            for (int i = 0; i < layers.length; i++) {
+                pe.visit(layers[i].getStyle());
+                if (!pe.canComputePalette())
+                    break;
+            }
+            if (pe.canComputePalette())
+                palette = pe.getPalette();
+        }
+
         // before even preparing the rendering surface, check it's not too big,
         // if so, throw a service exception
         long maxMemory = wms.getInfo().getMaxRequestMemory() * KB;
@@ -256,102 +253,102 @@ public abstract class DefaultRasterMapProducer extends
                     "maximum memory allowed is " + kbMax + "KB");
         }
 
-		// we use the alpha channel if the image is transparent or if the meta tiler
-		// is enabled, since apparently the Crop operation inside the meta-tiler
-		// generates striped images in that case (see GEOS-
-		boolean useAlpha = transparent || MetatileMapProducer.isRequestTiled(request, this);
+        // we use the alpha channel if the image is transparent or if the meta tiler
+        // is enabled, since apparently the Crop operation inside the meta-tiler
+        // generates striped images in that case (see GEOS-
+        boolean useAlpha = transparent || MetatileMapProducer.isRequestTiled(request, this);
         final RenderedImage preparedImage = prepareImage(paintArea.width, paintArea.height, 
-            palette, useAlpha);
+                palette, useAlpha);
         final Map hintsMap = new HashMap();
 
         final Graphics2D graphic = ImageUtils.prepareTransparency(transparent, bgColor,
                 preparedImage, hintsMap);
 
-		// set up the antialias hints
-		if (AA_NONE.equals(antialias)) {
-			hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_OFF);
-			if (preparedImage.getColorModel() instanceof IndexColorModel) {
-				// otherwise we end up with dithered colors where the match is
-				// not 100%
-				hintsMap.put(RenderingHints.KEY_DITHERING,
-						RenderingHints.VALUE_DITHER_DISABLE);
-			}
-		} else if (AA_TEXT.equals(antialias)) {
-			hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_OFF);
-			hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING,
-					RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		} else {
-			if (antialias != null && !AA_FULL.equals(antialias)) {
-				LOGGER.warning("Unrecognized antialias setting '" + antialias
-						+ "', valid values are " + AA_SETTINGS);
-			}
-			hintsMap.put(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-		}
+        // set up the antialias hints
+        if (AA_NONE.equals(antialias)) {
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_OFF);
+            if (preparedImage.getColorModel() instanceof IndexColorModel) {
+                // otherwise we end up with dithered colors where the match is
+                // not 100%
+                hintsMap.put(RenderingHints.KEY_DITHERING,
+                        RenderingHints.VALUE_DITHER_DISABLE);
+            }
+        } else if (AA_TEXT.equals(antialias)) {
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_OFF);
+            hintsMap.put(RenderingHints.KEY_TEXT_ANTIALIASING,
+                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        } else {
+            if (antialias != null && !AA_FULL.equals(antialias)) {
+                LOGGER.warning("Unrecognized antialias setting '" + antialias
+                        + "', valid values are " + AA_SETTINGS);
+            }
+            hintsMap.put(RenderingHints.KEY_ANTIALIASING,
+                    RenderingHints.VALUE_ANTIALIAS_ON);
+        }
 
-		// turn off/on interpolation rendering hint
-		if ((wms != null)
-				&& WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
-			hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-		} else if ((wms != null)
-				&& WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
-			hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		} else if ((wms != null)
-				&& WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
-			hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
-			hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		}
-		// line look better with this hint, they are less blurred
-		hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
+        // turn off/on interpolation rendering hint
+        if ((wms != null)
+                && WMSConfig.INT_NEAREST.equals(wms.getAllowInterpolation())) {
+            hintsMap.put(JAI.KEY_INTERPOLATION, NN_INTERPOLATION);
+            hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        } else if ((wms != null)
+                && WMSConfig.INT_BIlINEAR.equals(wms.getAllowInterpolation())) {
+            hintsMap.put(JAI.KEY_INTERPOLATION, BIL_INTERPOLATION);
+            hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        } else if ((wms != null)
+                && WMSConfig.INT_BICUBIC.equals(wms.getAllowInterpolation())) {
+            hintsMap.put(JAI.KEY_INTERPOLATION, BIC_INTERPOLATION);
+            hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        }
+        // line look better with this hint, they are less blurred
+        hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
-		// make sure the hints are set before we start rendering the map
-		graphic.setRenderingHints(hintsMap);
+        // make sure the hints are set before we start rendering the map
+        graphic.setRenderingHints(hintsMap);
 
-		RenderingHints hints = new RenderingHints(hintsMap);
-		renderer = new ShapefileRenderer();
-		renderer.setContext(mapContext);
-		renderer.setJava2DHints(hints);
-		// shapefile renderer won't log rendering errors, sigh, we have to do it manually
-		if(renderer instanceof ShapefileRenderer && LOGGER.isLoggable(Level.FINE)) {
-		    renderer.addRenderListener(new RenderListener() {
-            
+        RenderingHints hints = new RenderingHints(hintsMap);
+        renderer = new ShapefileRenderer();
+        renderer.setContext(mapContext);
+        renderer.setJava2DHints(hints);
+        // shapefile renderer won't log rendering errors, sigh, we have to do it manually
+        if(renderer instanceof ShapefileRenderer && LOGGER.isLoggable(Level.FINE)) {
+            renderer.addRenderListener(new RenderListener() {
+
                 public void featureRenderer(SimpleFeature feature) {
                 }
-            
+
                 public void errorOccurred(Exception e) {
                     LOGGER.log(Level.FINE, "Rendering error occurred", e);
                 }
-            
-            });
-		}
 
-		// setup the renderer hints
-		Map rendererParams = new HashMap();
-		rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
-		rendererParams.put("renderingBuffer", new Integer(mapContext
-				.getBuffer()));
-		rendererParams.put("maxFiltersToSendToDatastore", new Integer(20));
-		rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY,
-				ShapefileRenderer.SCALE_OGC);
-		if(AA_NONE.equals(antialias)) {
-		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
-		            ShapefileRenderer.TEXT_RENDERING_STRING);
-		} else {
-		    rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
+            });
+        }
+
+        // setup the renderer hints
+        Map rendererParams = new HashMap();
+        rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
+        rendererParams.put("renderingBuffer", new Integer(mapContext
+                .getBuffer()));
+        rendererParams.put("maxFiltersToSendToDatastore", new Integer(20));
+        rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY,
+                ShapefileRenderer.SCALE_OGC);
+        if(AA_NONE.equals(antialias)) {
+            rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
+                    ShapefileRenderer.TEXT_RENDERING_STRING);
+        } else {
+            rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
-		}
-		if(DefaultWebMapService.isNgLabellerEnabled()) {
-		    LabelCacheImpl labelCache = new LabelCacheImpl();
-		    labelCache.setOutlineRenderingEnabled(!AA_NONE.equals(antialias));
-		    rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
-		}
-		if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
-		    rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
-		}
+        }
+        if(DefaultWebMapService.isNgLabellerEnabled()) {
+            LabelCacheImpl labelCache = new LabelCacheImpl();
+            labelCache.setOutlineRenderingEnabled(!AA_NONE.equals(antialias));
+            rendererParams.put(ShapefileRenderer.LABEL_CACHE_KEY, labelCache);
+        }
+        if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
+        }
 
         boolean kmplacemark = false;
         if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
@@ -382,28 +379,28 @@ public abstract class DefaultRasterMapProducer extends
                 layers[i].setStyle(copy);
             }
         }
-		renderer.setRendererHints(rendererParams);
-		
-		// if abort already requested bail out
-		if (this.abortRequested) {
-			graphic.dispose();
-			return;
-		}
-		
-		// enforce no more than x rendering errors
-		int maxErrors = wms.getInfo().getMaxRenderingErrors();
+        renderer.setRendererHints(rendererParams);
+
+        // if abort already requested bail out
+        if (this.abortRequested) {
+            graphic.dispose();
+            return;
+        }
+
+        // enforce no more than x rendering errors
+        int maxErrors = wms.getInfo().getMaxRenderingErrors();
         MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
-		
-		// setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
+
+        // setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
         int maxRenderingTime = wms.getInfo().getMaxRenderingTime() * 1000;
         RenderingTimeoutEnforcer timeout = new RenderingTimeoutEnforcer(maxRenderingTime, renderer,
                 graphic);
         timeout.start();
         try {
-    		// finally render the image
-    		final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-    		renderer.paint(graphic, paintArea, dataArea);
-    		
+            // finally render the image
+            final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
+            renderer.paint(graphic, paintArea, dataArea);
+
             // apply watermarking
             try {
                 if (layout != null)
@@ -415,27 +412,27 @@ public abstract class DefaultRasterMapProducer extends
             timeout.stop();
             graphic.dispose();
         }
-        
+
         // check if the request did timeout
         if (timeout.isTimedOut()) {
             throw new WmsException(
                     "This requested used more time than allowed and has been forcefully stopped. "
-                            + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
+                    + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
         }
-        
+
         // check if too many errors occurred
         if(errorChecker.exceedsMaxErrors()) {
             throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out.", 
                     "internalError", errorChecker.getLastException());
         }
-		
-		if (!this.abortRequested) {
+
+        if (!this.abortRequested) {
             if(palette != null && palette.getMapSize() < 256)
                 this.image = optimizeSampleModel(preparedImage);
             else 
                 this.image = preparedImage;
-		}
-	}
+        }
+    }
 
     /**
      * Set the Watermark Painter.
@@ -456,8 +453,8 @@ public abstract class DefaultRasterMapProducer extends
         if (layoutName != null){
             try {
                 File layoutDir = GeoserverDataDirectory.findConfigDir(
-                    GeoserverDataDirectory.getGeoserverDataDirectory(),
-                    "layouts"
+                        GeoserverDataDirectory.getGeoserverDataDirectory(),
+                        "layouts"
                 );
 
                 if (layoutDir != null) {
@@ -478,8 +475,8 @@ public abstract class DefaultRasterMapProducer extends
 
         if (layout == null){
             layout = tiled 
-                ? new MetatiledMapDecorationLayout()
-                : new MapDecorationLayout();
+            ? new MetatiledMapDecorationLayout()
+            : new MapDecorationLayout();
         }
 
         WMS wms = mapContext.getRequest().getWMS();
@@ -497,7 +494,7 @@ public abstract class DefaultRasterMapProducer extends
             Map<String, String> options = new HashMap<String,String>();
             options.put("url", watermark.getURL());
             options.put("opacity", Float.toString((255f - watermark.getTransparency())/ 2.55f));
-            
+
             MapDecoration d = new WatermarkDecoration();
             try {
                 d.loadOptions(options);
@@ -507,40 +504,40 @@ public abstract class DefaultRasterMapProducer extends
             }
 
             MapDecorationLayout.Block.Position p = null;
-            
+
             WatermarkInfo.Position wmPos = watermark.getPosition();
             switch (watermark.getPosition()) {
-                case TOP_LEFT:
-                    p = MapDecorationLayout.Block.Position.UL;
-                    break;
-                case TOP_CENTER:
-                    p = MapDecorationLayout.Block.Position.UC;
-                    break;
-                case TOP_RIGHT:
-                    p = MapDecorationLayout.Block.Position.UR;
-                    break;
-                case MID_LEFT:
-                    p = MapDecorationLayout.Block.Position.CL;
-                    break;
-                case MID_CENTER:
-                    p = MapDecorationLayout.Block.Position.CC;
-                    break;
-                case MID_RIGHT:
-                    p = MapDecorationLayout.Block.Position.CR;
-                    break;
-                case BOT_LEFT:
-                    p = MapDecorationLayout.Block.Position.LL;
-                    break;
-                case BOT_CENTER:
-                    p = MapDecorationLayout.Block.Position.LC;
-                    break;
-                case BOT_RIGHT:
-                    p = MapDecorationLayout.Block.Position.LR;
-                    break;
-                default:
-                    throw new WmsException(
+            case TOP_LEFT:
+                p = MapDecorationLayout.Block.Position.UL;
+                break;
+            case TOP_CENTER:
+                p = MapDecorationLayout.Block.Position.UC;
+                break;
+            case TOP_RIGHT:
+                p = MapDecorationLayout.Block.Position.UR;
+                break;
+            case MID_LEFT:
+                p = MapDecorationLayout.Block.Position.CL;
+                break;
+            case MID_CENTER:
+                p = MapDecorationLayout.Block.Position.CC;
+                break;
+            case MID_RIGHT:
+                p = MapDecorationLayout.Block.Position.CR;
+                break;
+            case BOT_LEFT:
+                p = MapDecorationLayout.Block.Position.LL;
+                break;
+            case BOT_CENTER:
+                p = MapDecorationLayout.Block.Position.LC;
+                break;
+            case BOT_RIGHT:
+                p = MapDecorationLayout.Block.Position.LR;
+                break;
+            default:
+                throw new WmsException(
                         "Unknown WatermarkInfo.Position value.  Something is seriously wrong."
-                    );
+                );
             }
 
             return new MapDecorationLayout.Block(d, p, null, new Point(0,0));
@@ -566,40 +563,40 @@ public abstract class DefaultRasterMapProducer extends
      * @param paletteInverter
      * @return
      */
-	protected RenderedImage prepareImage(int width, int height,
-			IndexColorModel palette, boolean transparent) {
-	    return ImageUtils.createImage(width, height, palette, transparent);
-	}
-	
-	/**
-	 * When you override {@link #prepareImage(int, int, IndexColorModel, boolean)} remember
-	 * to override this one as well
-	 * @param width
-	 * @param height
-	 * @param palette
-	 * @param transparent
-	 * @return
-	 */
-	protected long getDrawingSurfaceMemoryUse(int width, int height,
+    protected RenderedImage prepareImage(int width, int height,
             IndexColorModel palette, boolean transparent) {
-	    return ImageUtils.getDrawingSurfaceMemoryUse(width, height, palette, transparent);
-	}
+        return ImageUtils.createImage(width, height, palette, transparent);
+    }
 
-	/**
-	 * @param originalImage
-	 * @return
-	 */
-	protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
+    /**
+     * When you override {@link #prepareImage(int, int, IndexColorModel, boolean)} remember
+     * to override this one as well
+     * @param width
+     * @param height
+     * @param palette
+     * @param transparent
+     * @return
+     */
+    protected long getDrawingSurfaceMemoryUse(int width, int height,
+            IndexColorModel palette, boolean transparent) {
+        return ImageUtils.getDrawingSurfaceMemoryUse(width, height, palette, transparent);
+    }
+
+    /**
+     * @param originalImage
+     * @return
+     */
+    protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
         return ImageUtils.forceIndexed8Bitmask(originalImage, mapContext.getPaletteInverter());
-	}
-    
-	/**
-	 * This takes an image with an indexed color model that uses
-	 * less than 256 colors and has a 8bit sample model, and transforms it to
-	 * one that has the optimal sample model (for example, 1bit if the palette only has 2 colors)
-	 * @param source
-	 * @return
-	 */
+    }
+
+    /**
+     * This takes an image with an indexed color model that uses
+     * less than 256 colors and has a 8bit sample model, and transforms it to
+     * one that has the optimal sample model (for example, 1bit if the palette only has 2 colors)
+     * @param source
+     * @return
+     */
     private RenderedImage optimizeSampleModel(RenderedImage source) {
         int w = source.getWidth();
         int h = source.getHeight();
@@ -618,6 +615,6 @@ public abstract class DefaultRasterMapProducer extends
         this.applicationContext = applicationContext;
     }
 
-    
-        
+
+
 }
