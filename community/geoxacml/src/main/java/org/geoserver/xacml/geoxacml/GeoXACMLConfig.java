@@ -71,6 +71,11 @@ public class GeoXACMLConfig {
 
     }
     
+    static public void reload() {
+        reset();
+        getPDP();
+    }
+    
     static public void setPolicyRepsoitoryBaseDir(String baseDir) {
         repositoryBaseDir=baseDir;
     }

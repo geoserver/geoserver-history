@@ -17,9 +17,22 @@
     </bean>
     
     <!-- Inject the XACML Data access manager which replaces the default one -->
-    <bean id="xacmlDataAccessManager" class="org.geoserver.xacml.security.XACMLDataAccessManager"/>    
+    <bean id="xacmlDataAccessManager" class="org.geoserver.xacml.security.XACMLDataAccessManager"/>
+    
+    <!-- adding REST reload repository configuration -->
+    <bean id="reloadXACMLRepository" class="org.geoserver.xacml.geoxacml.GeoXACMLRESTRepositoryReloader"/>
 
-
+    <bean id="reloadXACMLRepositoryMapping" class="org.geoserver.rest.RESTMapping">
+       <property name="routes">
+          <map>
+            <entry>
+              <key><value>/reloadXACML.{format}</value></key>
+              <value>reloadXACMLRepository</value>
+            </entry>
+         </map>
+      </property>
+    </bean>
+        
   <!-- 
     Adding a security interceptor for GeoXACML providing access control for URLs
     with the XACML repositiory.  
