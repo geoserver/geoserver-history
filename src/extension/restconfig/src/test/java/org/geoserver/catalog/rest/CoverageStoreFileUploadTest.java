@@ -5,11 +5,11 @@
 package org.geoserver.catalog.rest;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.data.DataUtilities;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -18,7 +18,7 @@ public class CoverageStoreFileUploadTest extends GeoServerTestSupport {
 
     public void testWorldImageUploadZipped() throws Exception {
         URL zip = getClass().getResource( "test-data/usa.zip" );
-        byte[] bytes = FileUtils.readFileToByteArray( new File( zip.getFile() ) );
+        byte[] bytes = FileUtils.readFileToByteArray( DataUtilities.urlToFile(zip) );
         
         MockHttpServletResponse response = 
             putAsServletResponse( "/rest/workspaces/gs/coveragestores/usa/file.worldimage", bytes, "application/zip");

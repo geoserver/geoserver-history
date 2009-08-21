@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
+import org.geotools.data.DataUtilities;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -37,7 +38,7 @@ public class CoverageTest extends CatalogRESTTestSupport {
     
     void addCoverageStore(boolean autoConfigureCoverage) throws Exception {
         URL zip = getClass().getResource( "test-data/usa.zip" );
-        byte[] bytes = FileUtils.readFileToByteArray( new File( zip.getFile() ) );
+        byte[] bytes = FileUtils.readFileToByteArray( DataUtilities.urlToFile(zip)  );
         
         MockHttpServletResponse response = 
             putAsServletResponse( "/rest/workspaces/gs/coveragestores/usaWorldImage/file.worldimage" + 
