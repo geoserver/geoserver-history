@@ -115,6 +115,7 @@ public class GeoXACMLConfig {
             attrFinder.setModules(attrModules);
 
             pdp = new PDP(new PDPConfig(attrFinder, policyFinder, null));
+            XACMLUtil.getXACMLLogger().config("GeoXACML Repository loaded ");
             return pdp;
         }
     }

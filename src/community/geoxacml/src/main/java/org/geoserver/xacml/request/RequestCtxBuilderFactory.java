@@ -26,6 +26,6 @@ public interface RequestCtxBuilderFactory {
     public RequestCtxBuilder getCatalogRequestCtxBuilder();
     public RequestCtxBuilder getXACMLRoleRequestCtxBuilder(XACMLRole targetRole);
     public RequestCtxBuilder getWorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo info, AccessMode mode);
-    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String method,Map<String,String> httpParams);
+    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String method,Map<String,Object> httpParams);
     public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role, ResourceInfo resourceInfo, AccessMode mode);
 }

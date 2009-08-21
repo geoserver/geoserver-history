@@ -29,7 +29,7 @@ public class RequestCtxBuilderFactoryImpl implements RequestCtxBuilderFactory {
     public RequestCtxBuilder getWorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo info, AccessMode mode) {
         return new WorkspaceRequestCtxBuilder(role,info,mode);
     }
-    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String action,Map<String,String> httpParams) {
+    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String action,Map<String,Object> httpParams) {
         return new URLMatchRequestCtxBuilder(role,urlString,action, httpParams);
     }
     public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role, ResourceInfo resourceInfo, AccessMode mode) {

@@ -5,8 +5,11 @@
 package org.geoserver.xacml.acegi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.acegisecurity.Authentication;
 import org.acegisecurity.ConfigAttribute;
@@ -40,9 +43,11 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
 
     public int vote(Authentication auth, Object request, ConfigAttributeDefinition arg2) {
 
-        String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();
-        String method = ((FilterInvocation) request).getHttpRequest().getMethod();
-        Map<String,String> httpParams =  ((FilterInvocation) request).getHttpRequest().getParameterMap();
+        HttpServletRequest httpRequest = ((FilterInvocation) request).getHttpRequest();
+        String urlPath = httpRequest.getServletPath().toLowerCase();
+        //String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();                
+        String method = httpRequest.getMethod();                
+        Map<String,Object> httpParams =  httpRequest.getParameterMap();
 
         List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath, method,httpParams);
         if (requestCtxts.isEmpty())
@@ -57,7 +62,7 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
     }
 
     private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,
-            String method, Map<String,String> httpParams) {
+            String method, Map<String,Object> httpParams) {
 
         GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(auth);
 
