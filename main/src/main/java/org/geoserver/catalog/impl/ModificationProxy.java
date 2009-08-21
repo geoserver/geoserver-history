@@ -358,10 +358,10 @@ public class ModificationProxy implements InvocationHandler, Serializable {
     public static <T> T create( T proxyObject, Class<T> clazz ) {
         InvocationHandler h = new ModificationProxy( proxyObject );
         
-        //proxy all interfaces implemented by the source object
-        List<Class> proxyInterfaces = (List) Arrays.asList( proxyObject.getClass().getInterfaces() );
+        // proxy all interfaces implemented by the source object
+        List<Class> proxyInterfaces = Arrays.asList( proxyObject.getClass().getInterfaces() );
         
-        //ensure that the specified class is included
+        // ensure that the specified class is included
         boolean add = true;
         for ( Class interfce : proxyObject.getClass().getInterfaces() ) {
             if ( clazz.isAssignableFrom( interfce) ) {
@@ -370,6 +370,8 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             }
         }
         if( add ) {
+            // make the list mutable (Arrays.asList is not) and then add the extra interfaces
+            proxyInterfaces = new ArrayList<Class>(proxyInterfaces);
             proxyInterfaces.add( clazz );
         }
         
