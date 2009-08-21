@@ -7,13 +7,19 @@ package org.geoserver.xacml.geoxacml;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.acegisecurity.Authentication;
+import org.acegisecurity.GrantedAuthority;
+import org.acegisecurity.context.SecurityContextHolder;
+import org.acegisecurity.userdetails.UserDetails;
 import org.geotools.xacml.geoxacml.attr.GML3Support;
 
 import com.sun.xacml.Indenter;
+import com.sun.xacml.Obligation;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
@@ -45,8 +51,16 @@ public class XACMLUtil {
         return out.toString();
     }
 
+    /**
+     * One Permit is enough, but all responses must be checked
+     * if there was a processing error 
+     * 
+     * @param responses from role requests
+     * @return XACML decision
+     */
     public static int getDecisionFromRoleResponses(List<ResponseCtx> responses) {
         boolean hasPermit = false;
+        
         for (ResponseCtx responseCtx : responses) {
             int decision = getDecisionFromResponseContext(responseCtx);
             if (decision == Result.DECISION_INDETERMINATE) // Error
@@ -56,39 +70,77 @@ public class XACMLUtil {
         }
         return hasPermit ? Result.DECISION_PERMIT : Result.DECISION_DENY;
 
-        // int permitCount=0,denyCount=0, notApplicableCount=0;
-        // for (ResponseCtx responseCtx: responses) {
-        // int decision = getDecisionFromResponseContext(responseCtx);
-        // if (decision==Result.DECISION_INDETERMINATE) // Error
-        // return decision;
-        // if (decision==Result.DECISION_DENY) denyCount++;
-        // if (decision==Result.DECISION_PERMIT) permitCount++;
-        // if (decision==Result.DECISION_NOT_APPLICABLE) notApplicableCount++;
-        // }
-        // if (permitCount > 0 && denyCount > 0) {
-        // Logger log = getXACMLLogger();
-        // log.severe("GeoXACML Error: having "+permitCount+ " permits and "+ denyCount +
-        // " denies");
-        // return Result.DECISION_INDETERMINATE;
-        // }
-        // if (permitCount > 0) return Result.DECISION_PERMIT;
-        // if (denyCount > 0) return Result.DECISION_DENY;
-        // return Result.DECISION_NOT_APPLICABLE;
 
     }
 
     public static int getDecisionFromResponseContext(ResponseCtx responseCtx) {
         Set<Result> results = responseCtx.getResults();
-        if (results.size() != 1) {
-            Logger log = getXACMLLogger();
-            log.severe("GeoXACML Error: Response has more than one result");
-            log.severe(XACMLUtil.asXMLString(responseCtx));
+//        Set<Obligation> permitObligations = new HashSet<Obligation>();
+//        Set<Obligation> denyObligations = new HashSet<Obligation>();
+        Set<String> resources = new HashSet<String>();
+        
+        boolean hasPermit=false, hasDeny = false;
+        for (Result result : results) {
+            int decision = result.getDecision();
+            resources.add(result.getResource());
+            if (decision==Result.DECISION_INDETERMINATE)
+                return Result.DECISION_INDETERMINATE; // error
+            if (decision==Result.DECISION_DENY) {
+                hasDeny=true;
+//                denyObligations.addAll(result.getObligations());
+            }
+            if (decision==Result.DECISION_PERMIT) {
+                hasPermit=true;
+//                permitObligations.addAll(result.getObligations());
+            }                
+        }
+        if (hasDeny && hasPermit) {
+            logDecision(Result.DECISION_INDETERMINATE, resources);
             return Result.DECISION_INDETERMINATE;
         }
-        Result result = results.iterator().next();
-        return result.getDecision();
+        if (!hasDeny && !hasPermit) {
+            logDecision(Result.DECISION_NOT_APPLICABLE, resources);
+            return Result.DECISION_NOT_APPLICABLE;
+        }
+        if (hasDeny) {
+            logDecision(Result.DECISION_DENY, resources);          
+            return Result.DECISION_DENY;
+        }
+        
+        return Result.DECISION_PERMIT;
     }
 
+    private static void logDecision(int decision, Set<String> resources) {
+        StringBuffer buff = new StringBuffer("User: ");
+        buff.append(authenticationAsString());
+        buff.append(" resource: " );
+        for (String resource: resources) {
+            buff.append(resource).append(",");
+        }
+        if (resources.size()>1)
+            buff.setLength(buff.length()-1);
+        buff.append(" ");
+        buff.append(Result.DECISIONS[decision]);
+        getXACMLLogger().info(buff.toString());
+    }
+    
+    private static String authenticationAsString() {
+        
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth==null) return "anonymous";
+        String userName = auth.getCredentials() instanceof UserDetails ? 
+                                ((UserDetails) auth.getPrincipal()).getUsername() : auth.getCredentials().toString();
+        StringBuffer buff = new StringBuffer(userName);
+        buff.append(" [ ");
+        for (GrantedAuthority ga : auth.getAuthorities()) {
+            buff.append(ga.getAuthority()).append(",");            
+        }
+        if (auth.getAuthorities().length>0)
+            buff.setLength(buff.length()-1);
+        buff.append(" ] ");
+        return buff.toString();
+    }
+    
     public static Logger getXACMLLogger() {
         return Logger.getLogger("XACML");
     }

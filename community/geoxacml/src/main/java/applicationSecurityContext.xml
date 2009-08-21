@@ -3,10 +3,28 @@
 
 <beans>
 
+	<!-- Controller for XACML requests received as http POST requests -->
+    <bean id="geoxacml" class="org.geoserver.xacml.geoxacml.GeoXACMLPDPController"/>      
+    
+    <!-- bind the controller to urls starting with /security/geomxacml -->
+    <bean id="geoxacmlDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="alwaysUseFullPath" value="true"/>
+    <property name="mappings">
+        <props>
+            <prop key="/security/geoxacml">geoxacml</prop>            
+        </props>
+    </property>              
+    </bean>
+    
+    <!-- Inject the XACML Data access manager which replaces the default one -->
+    <bean id="xacmlDataAccessManager" class="org.geoserver.xacml.security.XACMLDataAccessManager"/>    
+
+
   <!-- 
-    Adding a security interceptor for GeoXACML    
-  -->
-			
+    Adding a security interceptor for GeoXACML providing access control for URLs
+    with the XACML repositiory.  
+    Disable this bean in the main applicationSecurityContext.xml    
+  -->			
 	<bean id="filterInvocationInterceptor"
     class="org.geoserver.xacml.acegi.XACMLFilterSecurityInterceptor">
     <property name="authenticationManager" ref="authenticationManager" />
@@ -22,7 +40,9 @@
     </property>    
   </bean> 
 	
-	
+   <!-- Need a special implementation for creating an Authentication object for anonynmous users. 
+   The purpose it to crate XACMLRole objects instead of acegi GrantedAuthorities, 
+   disable this bean in the main applicationSecurityContext.xml  -->	
   <bean id="anonymousProcessingFilter"
     class="org.geoserver.xacml.acegi.XACMLAnonymousProcessingFilter">
     <property name="key" value="geoserver" />
@@ -31,17 +51,31 @@
 	
 	
 	  
-   <!-- XACMLHttpTransportFactory -->
-   <!-- using a remote PDP, first param is remote URL, second if multithreaded (recommended)
+   <!-- Default transport mechanism is local, any implementation of 
+   org.geotools.xacml.transport.XACMLTransport.XACMLTransportFactory
+   can be injected here, as an example XACMLHttpTransportFactory        
+   using a remote PDP, first param is a remote URL, second if multithreaded (recommended)
+   TODO: make the http implementation configurable from geoserver data dir instead of injecting -->
      
-  <bean id="xacmlHttpTransportFactory" class="org.geotools.xacml.transport.XACMLHttpTransportFactory">     
+  <!-- <bean id="xacmlHttpTransportFactory" class="org.geotools.xacml.transport.XACMLHttpTransportFactory">     
     <constructor-arg index="0" value="http://localhost:8080/geoserver/security/geoxacml"/>
     <constructor-arg index="1" value="true"/> 
   </bean>
    -->
    
+   <!-- Need a special implementation for the UserDetailsService to crate XACMLRole objects
+   instead of acegi GrantedAuthorities, disable this bean in the main applicationSecurityContext.xml  -->
   <bean id="userDetailsService" class="org.geoserver.xacml.security.XACMLGeoserverUserDao">
     <property name="geoServer" ref="geoServer" />
   </bean>
+  
+  <!-- Possibility to inject a new RequestBuilderFactory to use an own request builder. The class must implement
+  org.geoserver.xacml.request.RequestCtxBuilderFactory
+  !!!!!!! EXPERTS ONLY !!!!!!!!!!!
+   -->
+  <!-- <bean id="myXACMLRequestBuilderFactory" class="my.company.RequestBuilderFactory">     
+  </bean>
+   -->
+  
     
 </beans>

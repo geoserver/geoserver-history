@@ -43,7 +43,7 @@ import com.sun.xacml.ctx.ResponseCtx;
  * @author Christian Mueller
  * 
  */
-public class XACMLHttpTransport implements XACMLTransport {
+public class XACMLHttpTransport extends XACMLAbstractTransport {
     /**
      * Thread class for evaluating a XACML request
      * 
@@ -55,6 +55,10 @@ public class XACMLHttpTransport implements XACMLTransport {
 
     public class HttpThread extends Thread {
         private RequestCtx requestCtx = null;
+
+        public RequestCtx getRequestCtx() {
+            return requestCtx;
+        }
 
         private ResponseCtx responseCtx = null;
 
@@ -94,7 +98,11 @@ public class XACMLHttpTransport implements XACMLTransport {
 
     public ResponseCtx evaluateRequestCtx(RequestCtx request) {
         initDigestMap();
-        return sendHttpPost(request);
+        log(request);
+        ResponseCtx response = sendHttpPost(request);
+        log(response);
+        return response;
+
     }
 
     public List<ResponseCtx> evaluateRequestCtxList(List<RequestCtx> requests) {
@@ -108,7 +116,10 @@ public class XACMLHttpTransport implements XACMLTransport {
     private List<ResponseCtx> evaluateRequestCtxListSerial(List<RequestCtx> requests) {
         List<ResponseCtx> resultList = new ArrayList<ResponseCtx>();
         for (RequestCtx request : requests) {
-            resultList.add(sendHttpPost(request));
+            log(request);
+            ResponseCtx response = sendHttpPost(request);
+            log(response);
+            resultList.add(response);
         }
         return resultList;
     }
@@ -133,8 +144,11 @@ public class XACMLHttpTransport implements XACMLTransport {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            if (t.getRuntimeException() == null)
+            log(t.getRequestCtx());
+            if (t.getRuntimeException() == null) {
+                log(t.getResponseCtx());
                 resultList.add(t.getResponseCtx());
+            }
             else
                 throw t.getRuntimeException();
         }

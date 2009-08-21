@@ -26,12 +26,12 @@ import com.sun.xacml.ctx.ResponseCtx;
 
 /**
  * Transport Object for a local PDP. Since XACML requests are independent of each other, it is
- * possible to start each request of a request list as a single thread. This class is threadsafe
+ * possible to start each request of a request list as a single thread. This class is thread safe
  * 
  * @author Christian Muller
  * 
  */
-public class XACMLLocalTransport implements XACMLTransport {
+public class XACMLLocalTransport extends XACMLAbstractTransport {
     /**
      * Thread class for evaluating a XACML request
      * 
@@ -40,6 +40,10 @@ public class XACMLLocalTransport implements XACMLTransport {
      */
     public class LocalThread extends Thread {
         private RequestCtx requestCtx = null;;
+
+        public RequestCtx getRequestCtx() {
+            return requestCtx;
+        }
 
         private ResponseCtx responseCtx = null;
 
@@ -68,7 +72,10 @@ public class XACMLLocalTransport implements XACMLTransport {
     }
 
     public ResponseCtx evaluateRequestCtx(RequestCtx request) {
-        return pdp.evaluate(request);
+        log(request);
+        ResponseCtx response = pdp.evaluate(request);
+        log(response);
+        return response;
     }
 
     public List<ResponseCtx> evaluateRequestCtxList(List<RequestCtx> requests) {
@@ -81,7 +88,11 @@ public class XACMLLocalTransport implements XACMLTransport {
     private List<ResponseCtx> evaluateRequestCtxListSerial(List<RequestCtx> requests) {
         List<ResponseCtx> resultList = new ArrayList<ResponseCtx>();
         for (RequestCtx request : requests) {
-            resultList.add(pdp.evaluate(request));
+            log(request);
+            ResponseCtx response = pdp.evaluate(request);             
+            log(response);
+            resultList.add(response);
+
         }
         return resultList;
     }
@@ -106,6 +117,8 @@ public class XACMLLocalTransport implements XACMLTransport {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            log(t.getRequestCtx());
+            log(t.getResponseCtx());
             resultList.add(t.getResponseCtx());
         }
         return resultList;
