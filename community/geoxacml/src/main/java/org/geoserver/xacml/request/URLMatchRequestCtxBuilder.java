@@ -30,14 +30,14 @@ import com.sun.xacml.ctx.Subject;
 public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
     private String urlString = null;
 
-    private Map<String, String> httpParams;
+    private Map<String, Object> httpParams;
 
     public String getUrlString() {
         return urlString;
     }
 
     public URLMatchRequestCtxBuilder(XACMLRole role, String urlString, String method,
-            Map<String, String> httpParams) {
+            Map<String, Object> httpParams) {
         super(role, method);
         this.urlString = urlString;
         this.httpParams = httpParams;
@@ -53,14 +53,22 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
         addGeoserverResource(resources);
         addResource(resources, XACMLConstants.URlResourceURI, urlString);
         if (httpParams != null && httpParams.size() > 0) {
-            for (Entry<String, String> entry : httpParams.entrySet()) {
+            for (Entry<String, Object> entry : httpParams.entrySet()) {
                 URI paramURI = null;
                 try {
                     paramURI = new URI(XACMLConstants.URLParamPrefix + entry.getKey());
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e); // should never happen
                 }
-                addResource(resources, paramURI, entry.getValue());
+                if (entry.getValue() instanceof String[]) {
+                    for (String value : (String[]) entry.getValue()) {
+                        addResource(resources, paramURI, value);
+                    }
+                }
+                else {
+                    addResource(resources, paramURI, entry.getValue().toString());
+                }
+                
             }
         }
 

@@ -75,9 +75,9 @@ public class XACMLURLMatchingTest extends TestCase {
     }
     
     public void testHttpParams() {
-        Map<String,String> paramMap = new HashMap<String,String> ();
+        Map<String,Object> paramMap = new HashMap<String,Object> ();
         paramMap.put("param1", "value1");
-        paramMap.put("param2", "value2");
+        paramMap.put("param2", new String[] { "value2" });
         RequestCtx request = GeoXACMLConfig.getRequestCtxBuilderFactory().getURLMatchRequestCtxBuilder(
                 (XACMLRole) anonymous.getAuthorities()[0],"/rest/", "GET", paramMap).createRequestCtx();
         
@@ -103,6 +103,7 @@ public class XACMLURLMatchingTest extends TestCase {
         
         HttpServletRequest mockRequest = EasyMock.createMock(HttpServletRequest.class);
         EasyMock.expect(mockRequest.getMethod()).andReturn(method).anyTimes();
+        EasyMock.expect(mockRequest.getServletPath()).andReturn(path).anyTimes();
         EasyMock.expect(mockRequest.getParameterMap()).andReturn(null).anyTimes();
         EasyMock.replay(mockRequest);
         

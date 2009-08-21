@@ -35,8 +35,13 @@
         
   <!-- 
     Adding a security interceptor for GeoXACML providing access control for URLs
-    with the XACML repositiory.  
-    Disable this bean in the main applicationSecurityContext.xml    
+    using the XACML repositiory.  
+    1) Disable the bean named "filterInvocationInterceptor" in the main applicationSecurityContext.xml
+    2) In the following line in applicationSecurityContext  
+    
+    /rest/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,restFilterInvocationInterceptor
+    
+    replace restFilterInvocationInterceptor  with filterInvocationInterceptor    
   -->			
 	<bean id="filterInvocationInterceptor"
     class="org.geoserver.xacml.acegi.XACMLFilterSecurityInterceptor">
