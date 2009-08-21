@@ -6,12 +6,13 @@
 
 package org.geoserver.test;
 
+import java.io.File;
 import java.io.Serializable;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.geotools.data.DataAccessFinder;
+import org.geotools.data.DataUtilities;
 
 /**
  * Mock data for DataAccessIntegrationWfsTest.
@@ -55,8 +56,8 @@ public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
         Map<String, Serializable> params = new HashMap<String, Serializable>();
         params.put("dbtype", "mo-data-access");
         try {
-            params.put("directory", new URL(getFeatureTypesBaseDir().toURI().toString()
-                    + getDataStoreName(GSML_PREFIX, "GeologicUnit")));
+            params.put("directory", DataUtilities.fileToURL(new File(getFeatureTypesBaseDir(),
+                    getDataStoreName(GSML_PREFIX, "GeologicUnit"))));
             // side effect is to register in AppSchemaDataAccessRegistry
             DataAccessFinder.getDataStore(params);
         } catch (Exception e) {
