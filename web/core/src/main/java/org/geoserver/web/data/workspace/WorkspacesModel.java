@@ -4,6 +4,9 @@
  */
 package org.geoserver.web.data.workspace;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -19,7 +22,18 @@ public class WorkspacesModel extends LoadableDetachableModel {
     @Override
     protected Object load() {
         Catalog catalog = GeoServerApplication.get().getCatalog();
-        List<WorkspaceInfo> workspaces = catalog.getWorkspaces();
+        List<WorkspaceInfo> workspaces = new ArrayList<WorkspaceInfo>(catalog.getWorkspaces());
+        Collections.sort(workspaces, new WorkspaceComparator());
         return workspaces;
+    }
+    
+    class WorkspaceComparator implements Comparator<WorkspaceInfo> {
+
+        public int compare(WorkspaceInfo w1, WorkspaceInfo w2) {
+            return w1.getName().compareTo(w2.getName());
+        }
+
+        
+        
     }
 }
