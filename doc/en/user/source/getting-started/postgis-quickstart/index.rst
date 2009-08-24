@@ -40,81 +40,123 @@ The first step is to create a *data store* for the PostGIS database "nyc". The d
 
     #. In a web browser navigate to http://localhost:8080/geoserver.
 
-    #. Navigate to :menuselection:`Config-->Data-->DataStores`.
+    #. Navigate to :menuselection:`Data-->Stores`.
 
-       .. figure:: 11-datastores.png
-          :alt: Data stores
+	.. figure:: datastores.png
+	   :align: center
 
-    #. Create a new data store by clicking the ``New`` link.
+	   *Adding a New Data Source*
 
-       .. figure:: 12-new-datastore.png
-          :alt: Creating a new data store
+    #. Create a new data store by clicking the ``PostGIS NG`` link.
 
-    #. Select ``PostGIS`` from the drop down and enter "nyc_postgis" in the text field. Then click the ``New`` button.
+    #. Keeping the default :guilabel:`Workspace` enter :guilabel:`Basic Store Info` of Name and Description.
 
-       .. figure:: 13-new-postgis.png
-          :alt: Adding a new PostGIS database
+	.. figure:: basicStore.png
+	   :align: center
 
-    #. Specify the PostGIS database connection parameters:
+	   *Basic Store Info*
+
+    #. Specify the PostGIS database :guilabel:`Connection Parameters`
 
        .. list-table::
 
+          * - ``dbtype``
+            - postgisng
           * - ``host``
             - localhost
-          * - ``port``
+          * - ``post``
             - 5432
-          * - ``schema``
-            - public
           * - ``database``
             - nyc
+          * - ``schema``
+            - public
+          * - ``user``
+            - postgres
+          * - ``passwd``
+            - enter postgres password
+          * - ``validate connections``
+            - enable with check box
 
-       .. warning::
+       .. note::
 
           The **username** and **password** parameters specific to the user who created the postgis database. Depending on how PostgreSQL is configured the password parameter may be unnecessary.
            
-       .. figure:: 14-postgis-connect.png
-          :alt: Specifying PostGIS connection parameters
+		.. figure:: connectionParameters.png
+		   :align: center
 
-    #. Click the ``Submit`` button.
+		   *Connection Parameters*
 
-    #. Click the ``Apply`` button located in the upper left hand corner of the page.
+    #. Click the ``Save`` button.
 
-       .. figure:: apply.png
+Layer Configuration 
+-------------------
 
+    #. Navigate to :menuselection:`Data-->Layers`.
 
-Create a new feature type
--------------------------
+    #. Select :guilabel:`Add a new resource` button.
+	
+    #. From the :guilabel:`New Layer chooser` drop down menu, select cite:nyc_buidings.
+	
+	.. figure:: newlayerchooser.png
+	   :align: center
 
-The next step is to configure the *feature type* for the ``nyc_buildings`` table. The feature type tells GeoServer how the table should be published. 
+	   *New Layer drop down selection*	
+	
+    #. On the resulting layer row, select the Layer name nyc_buildings. 
 
-    #. Set the *style* by selecting ``polygon`` from the ``Style`` drop down list.
+	.. figure:: layerrow.png
+	   :align: center
 
-       .. figure:: 21-style.png
-          :alt: Setting style
+	   *New Layer row*
+	
+    #. The following configurations define the data and publishing parameters for a layer. Enter the :guilabel:`Basic Resource Info` for nyc_buildings.  
+	
+	.. figure:: basicInfo.png
+	   :align: center
 
-    #. Generate the *bounds* by clicking the ``Generate`` button.
+	   *Basic Resource Info*
+	
+    #. Generate the database *bounds* by clicking the :guilabel:`Compute from data` and then :guilabel:`Compute from Native bounds.`
+	
+	.. figure:: boundingbox.png
+	   :align: center
 
-       .. figure:: 22-bounds.png
-          :alt: Generating bounds
+	   *Generate Bounding Box*
+	
+    #. Set the layer's *style* by first moving over to the :guilabel:`Publishing` tab.  
 
-    #. Scroll to the bottom of the and click the ``Submit`` button.
+    #. The select :guilabel:`polygon` from the :guilabel:`Default Style` drop down list.
 
-    #. Finalize changes by clicking the ``Apply`` button in the upper left hand corner of the page.
+	.. figure:: style.png
+	   :align: center
 
-       .. figure:: apply.png
-          :alt: Applying changes
+	   *Select Default Style*
 
+    #. Finalize your data and publishing configuration by scrolling to the bottom and clicking :guilabel:`Save`.
 
-Preview the layer
+Preview the Layer
 -----------------
 
-The final step is to verify that the table has been published properly. To do this :ref:`map_preview` will be used.
+    #. In order to verify that the nyc_building is probably published we will preview the layer.  Navigate to the :guilabel:`Map Preview` and search for the cite:nyc_buildings link.
 
-Navigate to the map preview and select the ``topp:nyc_buildings`` link.
+	.. figure:: layer-preview.png
+	   :align: center
 
-    .. figure:: 32-nyc_buildings-preview-link.png
+	   *Layer Preview*
 
-If the table was added properly the result should be an OpenLayers map:
+    #. Click on the :guilabel:`OpenLayers` link under the :guilabel:`Common Formats` column. 
 
-    .. figure:: 33-nyc_buildings-preview.png
+    #. Success! An OpenLayers map should load with the default polygon style. 
 
+	.. figure:: openlayers.png
+	   :align: center
+
+	   *OpenLayers map of nyc_buildings*
+	
+	
+	
+	
+	
+	
+	
+	
