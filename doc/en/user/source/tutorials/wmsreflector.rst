@@ -1,4 +1,4 @@
-.. WMSReflector:
+.. tutorials_wmsreflector:
 
 WMS Reflector
 =============

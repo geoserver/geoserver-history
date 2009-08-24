@@ -7,7 +7,7 @@ Tutorials
 .. toctree::
    :maxdepth: 2
 
-   KMLPlacemark/index
+   kmlplacemark/index
    heighttemplates.rst
    timetemplates.rst
    superoverlaysgwc.rst

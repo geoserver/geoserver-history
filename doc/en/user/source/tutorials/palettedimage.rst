@@ -1,4 +1,4 @@
-.. _PalettedImages:
+.. _tutorials_palettedimages:
 
 Paletted Images
 ===============

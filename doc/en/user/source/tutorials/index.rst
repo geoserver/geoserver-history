@@ -7,13 +7,13 @@ Tutorials
    :maxdepth: 2
 
    freemarker
-   GeoRSS
+   georss
    GetFeatureInfo/index.rst
-   KMLHeights
-   PalattedImages
-   Time
-   StaticFiles
-   WMSReflector
+   kmlheights
+   palettedimage
+   time
+   staticfiles
+   wmsreflector
    cql/cql_tutorial
    app-schema/index
    freemarker

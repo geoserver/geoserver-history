@@ -1,4 +1,4 @@
-.. _StaticFiles:
+.. _tutorials_staticfiles:
 
 Serving Static Files
 ====================

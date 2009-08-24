@@ -1,4 +1,4 @@
-.. _KMLHeights:
+.. _tutorials_kmlheights:
 
 KML Heights Templates
 =====================
