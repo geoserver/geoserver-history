@@ -1,4 +1,3 @@
-
 /*
  * @(#)AbsFunctionCluster.java
  *
@@ -42,23 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.AbsFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>AbsFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class AbsFunctionCluster implements FunctionCluster
-{
+public class AbsFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : AbsFunction.getSupportedIdentifiers())
-        	set.add(new AbsFunction(fn));
+            set.add(new AbsFunction(fn));
         return set;
     }
 

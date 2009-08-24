@@ -12,20 +12,21 @@ import org.acegisecurity.ConfigAttributeDefinition;
 import org.acegisecurity.intercept.ObjectDefinitionSource;
 
 /**
- * Acegi ObjectDefinitonSource  implementation for Services
+ * Acegi ObjectDefinitonSource implementation for Services
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class XACMLFilterDefinitionSource implements ObjectDefinitionSource {
-    
-    private static  final ConfigAttributeDefinition ConfigDef = new ConfigAttributeDefinition();        
-    public final static XACMLFilterDefinitionSource Singleton = new XACMLFilterDefinitionSource();  
 
-    public ConfigAttributeDefinition getAttributes(Object obj) throws IllegalArgumentException {        
+    private static final ConfigAttributeDefinition ConfigDef = new ConfigAttributeDefinition();
+
+    public final static XACMLFilterDefinitionSource Singleton = new XACMLFilterDefinitionSource();
+
+    public ConfigAttributeDefinition getAttributes(Object obj) throws IllegalArgumentException {
         return ConfigDef;
     }
-    
+
     public Iterator getConfigAttributeDefinitions() {
         return Collections.EMPTY_SET.iterator();
     }

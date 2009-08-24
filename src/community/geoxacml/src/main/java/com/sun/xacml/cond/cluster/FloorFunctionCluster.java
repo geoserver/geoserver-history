@@ -1,4 +1,3 @@
-
 /*
  * @(#)FloorFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.FloorFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>FloorFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class FloorFunctionCluster implements FunctionCluster
-{
+public class FloorFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : FloorFunction.getSupportedIdentifiers())
             set.add(new FloorFunction(fn));
-
 
         return set;
     }

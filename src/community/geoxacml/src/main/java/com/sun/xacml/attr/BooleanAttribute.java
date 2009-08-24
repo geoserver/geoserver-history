@@ -1,4 +1,3 @@
-
 /*
  * @(#)BooleanAttribute.java
  *
@@ -42,24 +41,20 @@ import org.w3c.dom.Node;
 
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Representation of an xs:boolean value. This class supports parsing
- * xs:boolean values. All objects of this class are immutable and
- * all methods of the class are thread-safe.
- *
+ * Representation of an xs:boolean value. This class supports parsing xs:boolean values. All objects
+ * of this class are immutable and all methods of the class are thread-safe.
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Steve Hanna
  */
-public class BooleanAttribute extends AttributeValue
-{
-   
+public class BooleanAttribute extends AttributeValue {
+
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/2001/XMLSchema#boolean";
+    public static final String identifier = "http://www.w3.org/2001/XMLSchema#boolean";
 
     /**
      * URI version of name for this type
@@ -67,14 +62,14 @@ public class BooleanAttribute extends AttributeValue
     private static final URI identifierURI = URI.create(identifier);
 
     /**
-     * Single instance of BooleanAttribute that represents true.
-     * Initialized by the static initializer below.
+     * Single instance of BooleanAttribute that represents true. Initialized by the static
+     * initializer below.
      */
     private static BooleanAttribute trueInstance = new BooleanAttribute(true);
 
     /**
-     * Single instance of BooleanAttribute that represents false.
-     * Initialized by the static initializer below.
+     * Single instance of BooleanAttribute that represents false. Initialized by the static
+     * initializer below.
      */
     private static BooleanAttribute falseInstance = new BooleanAttribute(false);
 
@@ -84,14 +79,12 @@ public class BooleanAttribute extends AttributeValue
     private boolean value;
 
     /**
-     * Creates a new <code>BooleanAttribute</code> that represents
-     * the boolean value supplied.
+     * Creates a new <code>BooleanAttribute</code> that represents the boolean value supplied.
      * <p>
-     * This constructor is private because it should not be used by
-     * anyone other than the static initializer in this class.
-     * Instead, please use one of the getInstance methods, which
-     * will ensure that only two BooleanAttribute objects are created,
-     * thus avoiding excess object creation.
+     * This constructor is private because it should not be used by anyone other than the static
+     * initializer in this class. Instead, please use one of the getInstance methods, which will
+     * ensure that only two BooleanAttribute objects are created, thus avoiding excess object
+     * creation.
      */
     private BooleanAttribute(boolean value) {
         super(identifierURI);
@@ -100,30 +93,28 @@ public class BooleanAttribute extends AttributeValue
     }
 
     /**
-     * Returns a <code>BooleanAttribute</code> that represents
-     * the xs:boolean at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a <code>BooleanAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
+     * Returns a <code>BooleanAttribute</code> that represents the xs:boolean at a particular DOM
+     * node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a <code>BooleanAttribute</code> representing the appropriate value (null if there is
+     *         a parsing error)
      */
-    public static BooleanAttribute getInstance(Node root)
-        throws ParsingException
-    {
+    public static BooleanAttribute getInstance(Node root) throws ParsingException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a <code>BooleanAttribute</code> that represents
-     * the xs:boolean value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a <code>BooleanAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
+     * Returns a <code>BooleanAttribute</code> that represents the xs:boolean value indicated by the
+     * string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a <code>BooleanAttribute</code> representing the appropriate value (null if there is
+     *         a parsing error)
      */
-    public static BooleanAttribute getInstance(String value)
-        throws ParsingException
-    {
+    public static BooleanAttribute getInstance(String value) throws ParsingException {
         if (value.equals("true"))
             return trueInstance;
         if (value.equals("false"))
@@ -133,12 +124,11 @@ public class BooleanAttribute extends AttributeValue
     }
 
     /**
-     * Returns a <code>BooleanAttribute</code> that represents
-     * the boolean value provided.
-     *
-     * @param value a boolean representing the desired value
-     * @return a <code>BooleanAttribute</code> representing the
-     *         appropriate value
+     * Returns a <code>BooleanAttribute</code> that represents the boolean value provided.
+     * 
+     * @param value
+     *            a boolean representing the desired value
+     * @return a <code>BooleanAttribute</code> representing the appropriate value
      */
     public static BooleanAttribute getInstance(boolean value) {
 
@@ -149,11 +139,9 @@ public class BooleanAttribute extends AttributeValue
     }
 
     /**
-     * Returns a <code>BooleanAttribute</code> that represents
-     * a true value.
-     *
-     * @return a <code>BooleanAttribute</code> representing a
-     *         true value
+     * Returns a <code>BooleanAttribute</code> that represents a true value.
+     * 
+     * @return a <code>BooleanAttribute</code> representing a true value
      */
     public static BooleanAttribute getTrueInstance() {
 
@@ -161,11 +149,9 @@ public class BooleanAttribute extends AttributeValue
     }
 
     /**
-     * Returns a <code>BooleanAttribute</code> that represents
-     * a false value.
-     *
-     * @return a <code>BooleanAttribute</code> representing a
-     *         false value
+     * Returns a <code>BooleanAttribute</code> that represents a false value.
+     * 
+     * @return a <code>BooleanAttribute</code> representing a false value
      */
     public static BooleanAttribute getFalseInstance() {
 
@@ -174,7 +160,7 @@ public class BooleanAttribute extends AttributeValue
 
     /**
      * Returns the <code>boolean</code> value represented by this object.
-     *
+     * 
      * @return the <code>boolean</code> value
      */
     public boolean getValue() {
@@ -182,27 +168,27 @@ public class BooleanAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof BooleanAttribute))
+        if (!(o instanceof BooleanAttribute))
             return false;
 
-        BooleanAttribute other = (BooleanAttribute)o;
+        BooleanAttribute other = (BooleanAttribute) o;
 
         return (value == other.value);
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {

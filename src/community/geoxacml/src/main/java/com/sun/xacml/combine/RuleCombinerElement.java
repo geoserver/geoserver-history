@@ -1,4 +1,3 @@
-
 /*
  * @(#)RuleCombinerElement.java
  *
@@ -43,35 +42,36 @@ import java.util.List;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.Rule;
 
-
 /**
  * Specific version of <code>CombinerElement</code> used for rule combining.
- *
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class RuleCombinerElement extends CombinerElement
-{
+public class RuleCombinerElement extends CombinerElement {
 
     /**
      * Constructor that only takes a <code>Rule</code. No parameters are
      * associated with this <code>Rule</code> when combining.
-     *
-     * @param rule a <code>Rule</code> to use in combining
+     * 
+     * @param rule
+     *            a <code>Rule</code> to use in combining
      */
     public RuleCombinerElement(Rule rule) {
         super(rule);
     }
-    
+
     /**
-     * Constructor that takes both the <code>Rule</code> to combine and its
-     * associated combiner parameters.
-     *
-     * @param rule a <code>Rule</code> to use in combining
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s provided for general
+     * Constructor that takes both the <code>Rule</code> to combine and its associated combiner
+     * parameters.
+     * 
+     * @param rule
+     *            a <code>Rule</code> to use in combining
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of
+     *            <code>CombinerParameter<code>s provided for general
      *                   use (for all pre-2.0 policies this must be empty)
      */
     public RuleCombinerElement(Rule rule, List<CombinerParameter> parameters) {
@@ -80,34 +80,36 @@ public class RuleCombinerElement extends CombinerElement
 
     /**
      * Returns the <code>Rule</code> in this element.
-     *
+     * 
      * @return the element's <code>Rule</code>
      */
     public Rule getRule() {
-        return (Rule)(getElement());
+        return (Rule) (getElement());
     }
 
     /**
-     * Encodes this element's <code>Rule</code> and parameters into their
-     * XML representation and writes this encoding to the given
-     * <code>OutputStream</code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this element's <code>Rule</code> and parameters into their XML representation and
+     * writes this encoding to the given <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
 
-        if (getParameters().size()>0) {
+        if (getParameters().size() > 0) {
             PrintStream out = new PrintStream(output);
             String indent = indenter.makeString();
 
-            out.println(indent + "<RuleCombinerParameters RuleIdRef=\"" +
-                        getRule().getId() + "\">");
+            out
+                    .println(indent + "<RuleCombinerParameters RuleIdRef=\"" + getRule().getId()
+                            + "\">");
             indenter.in();
-            
-            for (CombinerParameter param : getParameters() )
-            	param.encode(output, indenter);
-            
+
+            for (CombinerParameter param : getParameters())
+                param.encode(output, indenter);
+
             out.println(indent + "</RuleCombinerParameters>");
             indenter.out();
         }

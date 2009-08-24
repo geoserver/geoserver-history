@@ -1,4 +1,3 @@
-
 /*
  * @(#)GeneralBagFunctionCluster.java
  *
@@ -42,17 +41,15 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.GeneralBagFunction;
 
-
 /**
  * Clusters all the functions supported by <code>GeneralBagFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class GeneralBagFunctionCluster implements FunctionCluster
-{
+public class GeneralBagFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();

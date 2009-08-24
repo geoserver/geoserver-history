@@ -1,4 +1,3 @@
-
 /*
  * @(#)AddFunctionCluster.java
  *
@@ -42,22 +41,20 @@ import java.util.Set;
 import com.sun.xacml.cond.AddFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>AddFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class AddFunctionCluster implements FunctionCluster
-{
+public class AddFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
-        for (String fn : AddFunction.getSupportedIdentifiers())                
+
+        for (String fn : AddFunction.getSupportedIdentifiers())
             set.add(new AddFunction(fn));
 
         return set;

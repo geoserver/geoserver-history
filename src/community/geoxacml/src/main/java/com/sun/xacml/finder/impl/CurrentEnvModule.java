@@ -1,4 +1,3 @@
-
 /*
  * @(#)CurrentEnvModule.java
  *
@@ -37,7 +36,6 @@
 package com.sun.xacml.finder.impl;
 
 import java.net.URI;
-//import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,51 +47,43 @@ import com.sun.xacml.attr.DateAttribute;
 import com.sun.xacml.attr.DateTimeAttribute;
 import com.sun.xacml.attr.TimeAttribute;
 import com.sun.xacml.cond.EvaluationResult;
-//import com.sun.xacml.ctx.Status;
 import com.sun.xacml.finder.AttributeFinderModule;
 
-
 /**
- * Supports the current date, time, and dateTime values. The XACML
- * specification states that these three values must always be available to
- * a PDP. They may be included in the request, but if they're not, a PDP
- * must be able to recognize the attribute and generate a correct value.
+ * Supports the current date, time, and dateTime values. The XACML specification states that these
+ * three values must always be available to a PDP. They may be included in the request, but if
+ * they're not, a PDP must be able to recognize the attribute and generate a correct value.
  * <p>
- * The XACML specification doesn't require that values be cached (ie,
- * remain consistent within an evaluation), but does allow it. Any caching,
- * as well as details of which time to use (time at the PEP, PDP, etc.) is
- * taken care of by the <code>EvaluationCtx</code> which is used to supply
- * the current values.
- *
+ * The XACML specification doesn't require that values be cached (ie, remain consistent within an
+ * evaluation), but does allow it. Any caching, as well as details of which time to use (time at the
+ * PEP, PDP, etc.) is taken care of by the <code>EvaluationCtx</code> which is used to supply the
+ * current values.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class CurrentEnvModule extends AttributeFinderModule
-{
-    
+public class CurrentEnvModule extends AttributeFinderModule {
+
     /**
      * Standard environment variable that represents the current time
      */
-    public static final String ENVIRONMENT_CURRENT_TIME =
-        "urn:oasis:names:tc:xacml:1.0:environment:current-time";
+    public static final String ENVIRONMENT_CURRENT_TIME = "urn:oasis:names:tc:xacml:1.0:environment:current-time";
 
     /**
      * Standard environment variable that represents the current date
      */
-    public static final String ENVIRONMENT_CURRENT_DATE =
-        "urn:oasis:names:tc:xacml:1.0:environment:current-date";
+    public static final String ENVIRONMENT_CURRENT_DATE = "urn:oasis:names:tc:xacml:1.0:environment:current-date";
 
     /**
      * Standard environment variable that represents the current date and time
      */
-    public static final String ENVIRONMENT_CURRENT_DATETIME =
-        "urn:oasis:names:tc:xacml:1.0:environment:current-dateTime";
+    public static final String ENVIRONMENT_CURRENT_DATETIME = "urn:oasis:names:tc:xacml:1.0:environment:current-dateTime";
 
     /**
      * Returns true always because this module supports designators.
-     *
+     * 
      * @return true always
      */
     public boolean isDesignatorSupported() {
@@ -101,12 +91,10 @@ public class CurrentEnvModule extends AttributeFinderModule
     }
 
     /**
-     * Returns a <code>Set</code> with a single <code>Integer</code>
-     * specifying that environment attributes are supported by this
-     * module.
-     *
-     * @return a <code>Set</code> with
-     * <code>AttributeDesignator.ENVIRONMENT_TARGET</code> included
+     * Returns a <code>Set</code> with a single <code>Integer</code> specifying that environment
+     * attributes are supported by this module.
+     * 
+     * @return a <code>Set</code> with <code>AttributeDesignator.ENVIRONMENT_TARGET</code> included
      */
     public Set<Integer> getSupportedDesignatorTypes() {
         HashSet<Integer> set = new HashSet<Integer>();
@@ -115,35 +103,34 @@ public class CurrentEnvModule extends AttributeFinderModule
     }
 
     /**
-     * Used to get the current time, date, or dateTime. If one of those
-     * values isn't being asked for, or if the types are wrong, then an
-     * empty bag is returned.
-     *
-     * @param attributeType the datatype of the attributes to find, which
-     *                      must be time, date, or dateTime for this module
-     *                      to resolve a value
-     * @param attributeId the identifier of the attributes to find, which
-     *                    must be one of the three ENVIRONMENT_* fields for
-     *                    this module to resolve a value
-     * @param issuer the issuer of the attributes, or null if unspecified
-     * @param subjectCategory the category of the attribute or null, which
-     *                        ignored since this only handles non-subjects
-     * @param context the representation of the request data
-     * @param designatorType the type of designator, which must be
-     *                       ENVIRONMENT_TARGET for this module to resolve
-     *                       a value
-     *
-     * @return the result of attribute retrieval, which will be a bag with
-     *         a single attribute, an empty bag, or an error
+     * Used to get the current time, date, or dateTime. If one of those values isn't being asked
+     * for, or if the types are wrong, then an empty bag is returned.
+     * 
+     * @param attributeType
+     *            the datatype of the attributes to find, which must be time, date, or dateTime for
+     *            this module to resolve a value
+     * @param attributeId
+     *            the identifier of the attributes to find, which must be one of the three
+     *            ENVIRONMENT_* fields for this module to resolve a value
+     * @param issuer
+     *            the issuer of the attributes, or null if unspecified
+     * @param subjectCategory
+     *            the category of the attribute or null, which ignored since this only handles
+     *            non-subjects
+     * @param context
+     *            the representation of the request data
+     * @param designatorType
+     *            the type of designator, which must be ENVIRONMENT_TARGET for this module to
+     *            resolve a value
+     * 
+     * @return the result of attribute retrieval, which will be a bag with a single attribute, an
+     *         empty bag, or an error
      */
-    public EvaluationResult findAttribute(URI attributeType, URI attributeId,
-                                          URI issuer, URI subjectCategory,
-                                          EvaluationCtx context,
-                                          int designatorType) {
+    public EvaluationResult findAttribute(URI attributeType, URI attributeId, URI issuer,
+            URI subjectCategory, EvaluationCtx context, int designatorType) {
         // we only know about environment attributes
         if (designatorType != AttributeDesignator.ENVIRONMENT_TARGET)
-            return new EvaluationResult(BagAttribute.
-                                        createEmptyBag(attributeType));
+            return new EvaluationResult(BagAttribute.createEmptyBag(attributeType));
 
         // figure out which attribute we're looking for
         String attrName = attributeId.toString();
@@ -157,33 +144,28 @@ public class CurrentEnvModule extends AttributeFinderModule
         }
 
         // if we got here, then it's an attribute that we don't know
-        return new EvaluationResult(BagAttribute.
-                                    createEmptyBag(attributeType));
+        return new EvaluationResult(BagAttribute.createEmptyBag(attributeType));
     }
 
     /**
      * Handles requests for the current Time.
      */
-    private EvaluationResult handleTime(URI type, URI issuer,
-                                        EvaluationCtx context) {
+    private EvaluationResult handleTime(URI type, URI issuer, EvaluationCtx context) {
         // make sure they're asking for a time attribute
-        if (! type.toString().equals(TimeAttribute.identifier))
-            return new EvaluationResult(BagAttribute.
-                                        createEmptyBag(type));
+        if (!type.toString().equals(TimeAttribute.identifier))
+            return new EvaluationResult(BagAttribute.createEmptyBag(type));
 
         // get the value from the context
         return makeBag(context.getCurrentTime());
     }
-    
+
     /**
      * Handles requests for the current Date.
      */
-    private EvaluationResult handleDate(URI type, URI issuer,
-                                        EvaluationCtx context) {
+    private EvaluationResult handleDate(URI type, URI issuer, EvaluationCtx context) {
         // make sure they're asking for a date attribute
-        if (! type.toString().equals(DateAttribute.identifier))
-            return new EvaluationResult(BagAttribute.
-                                        createEmptyBag(type));
+        if (!type.toString().equals(DateAttribute.identifier))
+            return new EvaluationResult(BagAttribute.createEmptyBag(type));
 
         // get the value from the context
         return makeBag(context.getCurrentDate());
@@ -192,27 +174,23 @@ public class CurrentEnvModule extends AttributeFinderModule
     /**
      * Handles requests for the current DateTime.
      */
-    private EvaluationResult handleDateTime(URI type, URI issuer,
-                                            EvaluationCtx context) {
+    private EvaluationResult handleDateTime(URI type, URI issuer, EvaluationCtx context) {
         // make sure they're asking for a dateTime attribute
-        if (! type.toString().equals(DateTimeAttribute.identifier))
-            return new EvaluationResult(BagAttribute.
-                                        createEmptyBag(type));
+        if (!type.toString().equals(DateTimeAttribute.identifier))
+            return new EvaluationResult(BagAttribute.createEmptyBag(type));
 
         // get the value from the context
         return makeBag(context.getCurrentDateTime());
     }
 
     /**
-     * Private helper that generates a new processing error status and
-     * includes the given string.
+     * Private helper that generates a new processing error status and includes the given string.
      */
-//    private EvaluationResult makeProcessingError(String message) {
-//        ArrayList<String> code = new ArrayList<String>();
-//        code.add(Status.STATUS_PROCESSING_ERROR);
-//        return new EvaluationResult(new Status(code, message));
-//    }
-
+    // private EvaluationResult makeProcessingError(String message) {
+    // ArrayList<String> code = new ArrayList<String>();
+    // code.add(Status.STATUS_PROCESSING_ERROR);
+    // return new EvaluationResult(new Status(code, message));
+    // }
     /**
      * Private helper that makes a bag containing only the given attribute.
      */

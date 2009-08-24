@@ -15,17 +15,16 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.geoxacml.test;
 
 //import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
-import org.geotools.xacml.geoxacml.config.GeoXACML;
-import org.geotools.xacml.test.TestSupport;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import com.sun.xacml.PDP;
 import com.sun.xacml.ctx.RequestCtx;
@@ -36,55 +35,48 @@ import com.sun.xacml.ctx.Status;
 /**
  * @author Christian Mueller
  * 
- * Tests for bag functions
- *
+ *         Tests for bag functions
+ * 
  */
 public class XPathTest extends TestCase {
 
+    public XPathTest() {
+        super();
 
+    }
 
-	
-	
-	public XPathTest() {
-		super();
-						
-	}
+    public XPathTest(String arg0) {
+        super(arg0);
 
-	public XPathTest(String arg0) {
-		super(arg0);
-		
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-		GeoXACML.initialize();
-		TestSupport.initOutputDir();
-	}
-	
-	
-	
-	
-	public void testXPath() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("xpath","XPathPolicy.xml"));
-	    	    	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("xpath","XPathRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    
-//	    ByteArrayOutputStream out = new ByteArrayOutputStream();	    
-//	    response.encode(out);
-//	    System.out.println(new String(out.toByteArray()));
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        GeoXACML.initialize();
+        TestSupport.initOutputDir();
+    }
+
+    public void testXPath() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("xpath", "XPathPolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "xpath", "XPathRequest.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+
+        // ByteArrayOutputStream out = new ByteArrayOutputStream();
+        // response.encode(out);
+        // System.out.println(new String(out.toByteArray()));
+        assertTrue(result.getDecision() == Result.DECISION_PERMIT);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
 }

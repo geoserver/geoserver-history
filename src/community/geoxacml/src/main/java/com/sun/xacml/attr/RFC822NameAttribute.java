@@ -1,4 +1,3 @@
-
 /*
  * @(#)RFC822NameAttribute.java
  *
@@ -40,21 +39,18 @@ import java.net.URI;
 
 import org.w3c.dom.Node;
 
-
 /**
  * Representation of an rfc822Name (ie, an email address).
- *
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class RFC822NameAttribute extends AttributeValue
-{
+public class RFC822NameAttribute extends AttributeValue {
 
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "urn:oasis:names:tc:xacml:1.0:data-type:rfc822Name";
+    public static final String identifier = "urn:oasis:names:tc:xacml:1.0:data-type:rfc822Name";
 
     /**
      * URI version of name for this type
@@ -65,17 +61,17 @@ public class RFC822NameAttribute extends AttributeValue
     private String value;
 
     /**
-     * Creates a new <code>RFC822NameAttribute</code> that represents the
-     * value supplied.
-     *
-     * @param value the email address to be represented
+     * Creates a new <code>RFC822NameAttribute</code> that represents the value supplied.
+     * 
+     * @param value
+     *            the email address to be represented
      */
     public RFC822NameAttribute(String value) {
-         super(identifierURI);
+        super(identifierURI);
 
         // check that the string is an address, ie, that it has one and only
         // one '@' character in it
-        String [] parts = value.split("@");
+        String[] parts = value.split("@");
         if (parts.length != 2) {
             // this is malformed input
             throw new IllegalArgumentException("invalid RFC822Name: " + value);
@@ -86,24 +82,24 @@ public class RFC822NameAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>RFC822NameAttribute</code> that represents
-     * the email address at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>RFC822NameAttribute</code> representing the
-     *         appropriate value
+     * Returns a new <code>RFC822NameAttribute</code> that represents the email address at a
+     * particular DOM node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>RFC822NameAttribute</code> representing the appropriate value
      */
     public static RFC822NameAttribute getInstance(Node root) {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a new <code>RFC822NameAttribute</code> that represents
-     * the email address value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>RFC822NameAttribute</code> representing the
-     *         appropriate value
+     * Returns a new <code>RFC822NameAttribute</code> that represents the email address value
+     * indicated by the string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>RFC822NameAttribute</code> representing the appropriate value
      */
     public static RFC822NameAttribute getInstance(String value) {
         return new RFC822NameAttribute(value);
@@ -111,7 +107,7 @@ public class RFC822NameAttribute extends AttributeValue
 
     /**
      * Returns the name value represented by this object
-     *
+     * 
      * @return the name
      */
     public String getValue() {
@@ -119,27 +115,27 @@ public class RFC822NameAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof RFC822NameAttribute))
+        if (!(o instanceof RFC822NameAttribute))
             return false;
 
-        RFC822NameAttribute other = (RFC822NameAttribute)o;
+        RFC822NameAttribute other = (RFC822NameAttribute) o;
 
         return value.equals(other.value);
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -152,5 +148,5 @@ public class RFC822NameAttribute extends AttributeValue
     public String encode() {
         return value;
     }
-    
+
 }

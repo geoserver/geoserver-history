@@ -5,7 +5,6 @@
 package org.geoserver.xacml.acegi;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,11 +44,12 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
 
         HttpServletRequest httpRequest = ((FilterInvocation) request).getHttpRequest();
         String urlPath = httpRequest.getServletPath().toLowerCase();
-        //String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();                
-        String method = httpRequest.getMethod();                
-        Map<String,Object> httpParams =  httpRequest.getParameterMap();
+        // String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();
+        String method = httpRequest.getMethod();
+        Map<String, Object> httpParams = httpRequest.getParameterMap();
 
-        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath, method,httpParams);
+        List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath, method,
+                httpParams);
         if (requestCtxts.isEmpty())
             return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
 
@@ -62,7 +62,7 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
     }
 
     private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,
-            String method, Map<String,Object> httpParams) {
+            String method, Map<String, Object> httpParams) {
 
         GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(auth);
 
@@ -73,7 +73,8 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
             if (xacmlRole.isEnabled() == false)
                 continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method,httpParams).createRequestCtx();
+                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method, httpParams)
+                    .createRequestCtx();
             // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }

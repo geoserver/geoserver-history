@@ -1,4 +1,3 @@
-
 /*
  * @(#)NumericConvertFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.NumericConvertFunction;
 
-
 /**
  * Clusters all the functions supported by <code>NumericConvertFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class NumericConvertFunctionCluster implements FunctionCluster
-{
+public class NumericConvertFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : NumericConvertFunction.getSupportedIdentifiers())
             set.add(new NumericConvertFunction(fn));
-
 
         return set;
     }

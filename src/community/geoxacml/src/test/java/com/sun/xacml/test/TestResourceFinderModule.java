@@ -1,4 +1,3 @@
-
 /*
  * @(#)TestResourceFinderModule.java
  *
@@ -36,28 +35,23 @@
 
 package com.sun.xacml.test;
 
-import com.sun.xacml.EvaluationCtx;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
 
+import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AnyURIAttribute;
 import com.sun.xacml.attr.AttributeValue;
-
 import com.sun.xacml.finder.ResourceFinderModule;
 import com.sun.xacml.finder.ResourceFinderResult;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.HashSet;
-
-
 /**
- * A <code>ResourceFinderModule</code> used to handle the hierarchical
- * resources in the conformance tests.
- *
+ * A <code>ResourceFinderModule</code> used to handle the hierarchical resources in the conformance
+ * tests.
+ * 
  * @author Seth Proctor
  */
-public class TestResourceFinderModule extends ResourceFinderModule
-{
+public class TestResourceFinderModule extends ResourceFinderModule {
 
     /**
      * Default constructor.
@@ -68,7 +62,7 @@ public class TestResourceFinderModule extends ResourceFinderModule
 
     /**
      * Always returns true, since child resource resolution is supported.
-     *
+     * 
      * @return true
      */
     public boolean isChildSupported() {
@@ -77,7 +71,7 @@ public class TestResourceFinderModule extends ResourceFinderModule
 
     /**
      * Always returns true, since descendant resource resolution is supported.
-     *
+     * 
      * @return true
      */
     public boolean isDescendantSupported() {
@@ -85,18 +79,19 @@ public class TestResourceFinderModule extends ResourceFinderModule
     }
 
     /**
-     * Finds the children resources associated with the given root,
-     * assuming the hierarchy is one that this module handles.
-     *
-     * @param root the root resource in the hierarchy
-     * @param context the evaluation's context
-     *
+     * Finds the children resources associated with the given root, assuming the hierarchy is one
+     * that this module handles.
+     * 
+     * @param root
+     *            the root resource in the hierarchy
+     * @param context
+     *            the evaluation's context
+     * 
      * @return the resource hierarchy
      */
-    public ResourceFinderResult findChildResources(AttributeValue root,
-                                                   EvaluationCtx context) {
+    public ResourceFinderResult findChildResources(AttributeValue root, EvaluationCtx context) {
         // make sure we can handle this hierarchy
-        if (! requestApplies(root))
+        if (!requestApplies(root))
             return new ResourceFinderResult();
 
         // add the root to the set of resolved resources
@@ -115,19 +110,19 @@ public class TestResourceFinderModule extends ResourceFinderModule
     }
 
     /**
-     * Finds the children resources associated with the given root,
-     * assuming the hierarchy is one that this module handles.
-     *
-     * @param root the root resource in the hierarchy
-     * @param context the evaluation's context
-     *
+     * Finds the children resources associated with the given root, assuming the hierarchy is one
+     * that this module handles.
+     * 
+     * @param root
+     *            the root resource in the hierarchy
+     * @param context
+     *            the evaluation's context
+     * 
      * @return the resource hierarchy
      */
-    public ResourceFinderResult findDescendantResources(AttributeValue root,
-                                                        EvaluationCtx
-                                                        context) {
+    public ResourceFinderResult findDescendantResources(AttributeValue root, EvaluationCtx context) {
         // make sure we can handle this hierarchy
-        if (! requestApplies(root))
+        if (!requestApplies(root))
             return new ResourceFinderResult();
 
         // add the root to the set of resolved resources
@@ -137,15 +132,11 @@ public class TestResourceFinderModule extends ResourceFinderModule
         // add the other resources, which are defined by the conformance tests
         try {
             set.add(new AnyURIAttribute(new URI("urn:root:child1")));
-            set.add(new AnyURIAttribute(new
-                                        URI("urn:root:child1:descendant1")));
-            set.add(new AnyURIAttribute(new
-                                        URI("urn:root:child1:descendant2")));
+            set.add(new AnyURIAttribute(new URI("urn:root:child1:descendant1")));
+            set.add(new AnyURIAttribute(new URI("urn:root:child1:descendant2")));
             set.add(new AnyURIAttribute(new URI("urn:root:child2")));
-            set.add(new AnyURIAttribute(new
-                                        URI("urn:root:child2:descendant1")));
-            set.add(new AnyURIAttribute(new
-                                        URI("urn:root:child2:descendant2")));
+            set.add(new AnyURIAttribute(new URI("urn:root:child2:descendant1")));
+            set.add(new AnyURIAttribute(new URI("urn:root:child2:descendant2")));
         } catch (URISyntaxException urise) {
             // this will never happen
         }
@@ -154,16 +145,16 @@ public class TestResourceFinderModule extends ResourceFinderModule
     }
 
     /**
-     * Private helper method that checks if the given resource is the root
-     * of a hierarchy that we know how to handle.
+     * Private helper method that checks if the given resource is the root of a hierarchy that we
+     * know how to handle.
      */
     private boolean requestApplies(AttributeValue root) {
         // make sure the resource-id is a URI
-        if (! root.getType().toString().equals(AnyURIAttribute.identifier))
+        if (!root.getType().toString().equals(AnyURIAttribute.identifier))
             return false;
 
         // make sure that the root is urn:root
-        if (! ((AnyURIAttribute)root).getValue().toString().equals("urn:root"))
+        if (!((AnyURIAttribute) root).getValue().toString().equals("urn:root"))
             return false;
 
         return true;

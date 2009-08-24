@@ -1,4 +1,3 @@
-
 /*
  * @(#)ConditionSetFunctionCluster.java
  *
@@ -42,21 +41,19 @@ import java.util.Set;
 import com.sun.xacml.cond.ConditionSetFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>ConditionSetFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class ConditionSetFunctionCluster implements FunctionCluster
-{
+public class ConditionSetFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : ConditionSetFunction.getSupportedIdentifiers())
             set.add(new ConditionSetFunction(fn));
 

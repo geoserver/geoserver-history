@@ -1,4 +1,3 @@
-
 /*
  * @(#)BasicPolicyFinderModule.java
  *
@@ -49,46 +48,41 @@ import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.PolicyFinderResult;
 
-
 /**
- * This is a basic implementation of <code>PolicyFinderModule</code> that
- * accepts already created <code>AbstractPolicy</code>s and supports
- * finding by context and reference. All policies are held forever once
- * added to this module, and cannot be refreshed or removed. New policies
- * may be added at any point. You may optionally specify a combining
- * algorithm to use when more than one applicable policy is found, and then
- * a new PolicySet is wrapped around the policies using this algorithm. If
- * no combining algorithm is provided, then an error is returned if more
- * than one policy matches.
+ * This is a basic implementation of <code>PolicyFinderModule</code> that accepts already created
+ * <code>AbstractPolicy</code>s and supports finding by context and reference. All policies are held
+ * forever once added to this module, and cannot be refreshed or removed. New policies may be added
+ * at any point. You may optionally specify a combining algorithm to use when more than one
+ * applicable policy is found, and then a new PolicySet is wrapped around the policies using this
+ * algorithm. If no combining algorithm is provided, then an error is returned if more than one
+ * policy matches.
  * <p>
- * This module is provided as an example, but is still fully functional, and
- * should be useful for many simple applications. This is provided in the
- * <code>support</code> package rather than the core codebase because it
- * implements non-standard behavior.
- *
+ * This module is provided as an example, but is still fully functional, and should be useful for
+ * many simple applications. This is provided in the <code>support</code> package rather than the
+ * core codebase because it implements non-standard behavior.
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class BasicPolicyFinderModule extends PolicyFinderModule
-{
+public class BasicPolicyFinderModule extends PolicyFinderModule {
 
     // the collections used to handle both kinds of policies
     private PolicyCollection ctxPolicies;
+
     private PolicyCollection refPolicies;
 
     // the combining alg, or null if none is used
-    //private PolicyCombiningAlgorithm combiningAlg;
+    // private PolicyCombiningAlgorithm combiningAlg;
 
     // the policy identifier for any policy sets we dynamically create
-    private static final String POLICY_ID =
-        "urn:com:sun:xacml:support:finder:dynamic-policy-set";
+    private static final String POLICY_ID = "urn:com:sun:xacml:support:finder:dynamic-policy-set";
+
     private static URI policyId = null;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(BasicPolicyFinderModule.class.getName());
+    private static final Logger logger = Logger.getLogger(BasicPolicyFinderModule.class.getName());
 
     static {
         try {
@@ -109,11 +103,11 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Creates a <code>BasicPolicyFinderModule</code> that can combine
-     * multiple applicable policies under a single, dynamic PolicySet.
-     *
-     * @param combiningAlg the algorithm to use in a new PolicySet when more
-     *                     than one policy applies
+     * Creates a <code>BasicPolicyFinderModule</code> that can combine multiple applicable policies
+     * under a single, dynamic PolicySet.
+     * 
+     * @param combiningAlg
+     *            the algorithm to use in a new PolicySet when more than one policy applies
      */
     public BasicPolicyFinderModule(PolicyCombiningAlgorithm combiningAlg) {
         ctxPolicies = new PolicyCollection(combiningAlg, policyId);
@@ -121,13 +115,13 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Adds a policy that will be available both by reference and by
-     * matching to a context. The policy's identifier is used for finding
-     * by reference. If a policy with the same identifier and version is
-     * already handled by this module, then the policy is not added.
-     *
-     * @param policy the policy to add
-     *
+     * Adds a policy that will be available both by reference and by matching to a context. The
+     * policy's identifier is used for finding by reference. If a policy with the same identifier
+     * and version is already handled by this module, then the policy is not added.
+     * 
+     * @param policy
+     *            the policy to add
+     * 
      * @return true if the policy was added, false otherwise
      */
     public synchronized boolean addPolicy(AbstractPolicy policy) {
@@ -138,12 +132,12 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Adds a policy that will be available only by matching to a context.
-     * If a policy with the same identifier and version is already handled
-     * by this module, then the policy is not added.
-     *
-     * @param policy the policy to add
-     *
+     * Adds a policy that will be available only by matching to a context. If a policy with the same
+     * identifier and version is already handled by this module, then the policy is not added.
+     * 
+     * @param policy
+     *            the policy to add
+     * 
      * @return true if the policy was added, false otherwise
      */
     public synchronized boolean addPolicyNoRef(AbstractPolicy policy) {
@@ -151,13 +145,13 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Adds a policy that will be available only by reference. The policy's
-     * identifier is used for finding by reference. If a policy with the
-     * same identifier and version is already handled by this module, then
-     * the policy is not added.
-     *
-     * @param policy the policy to add
-     *
+     * Adds a policy that will be available only by reference. The policy's identifier is used for
+     * finding by reference. If a policy with the same identifier and version is already handled by
+     * this module, then the policy is not added.
+     * 
+     * @param policy
+     *            the policy to add
+     * 
      * @return true if the policy was added, false otherwise
      */
     public synchronized boolean addPolicyOnlyRef(AbstractPolicy policy) {
@@ -165,9 +159,9 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Always returns <code>true</code> since this module does support
-     * finding policies based on context matching.
-     *
+     * Always returns <code>true</code> since this module does support finding policies based on
+     * context matching.
+     * 
      * @return true
      */
     public boolean isRequestSupported() {
@@ -175,9 +169,9 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Always returns <code>true</code> since this module does support
-     * finding policies based on reference.
-     *
+     * Always returns <code>true</code> since this module does support finding policies based on
+     * reference.
+     * 
      * @return true
      */
     public boolean isIdReferenceSupported() {
@@ -185,23 +179,24 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Initialize this module. Typically this is called by
-     * <code>PolicyFinder</code> when a PDP is created.
-     *
-     * @param finder the <code>PolicyFinder</code> using this module
+     * Initialize this module. Typically this is called by <code>PolicyFinder</code> when a PDP is
+     * created.
+     * 
+     * @param finder
+     *            the <code>PolicyFinder</code> using this module
      */
     public void init(PolicyFinder finder) {
         // we don't need to do anything here
     }
 
     /**
-     * Finds a policy based on a request's context. If more than one policy
-     * matches, then this either returns an error or a new policy wrapping
-     * the multiple policies (depending on which constructor was used to
-     * construct this instance).
-     *
-     * @param context the representation of the request data
-     *
+     * Finds a policy based on a request's context. If more than one policy matches, then this
+     * either returns an error or a new policy wrapping the multiple policies (depending on which
+     * constructor was used to construct this instance).
+     * 
+     * @param context
+     *            the representation of the request data
+     * 
      * @return the result of trying to find an applicable policy
      */
     public PolicyFinderResult findPolicy(EvaluationCtx context) {
@@ -218,27 +213,26 @@ public class BasicPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Attempts to find a policy by reference, based on the provided
-     * parameters.
-     *
-     * @param idReference an identifier specifying some policy
-     * @param type type of reference (policy or policySet) as identified by
-     *             the fields in <code>PolicyReference</code>
-     * @param constraints any optional constraints on the version of the
-     *                    referenced policy (this will never be null, but
-     *                    it may impose no constraints, and in fact will
-     *                    never impose constraints when used from a pre-2.0
-     *                    XACML policy)
-     * @param parentMetaData the meta-data from the parent policy, which
-     *                       provides XACML version, factories, etc.
-     *
+     * Attempts to find a policy by reference, based on the provided parameters.
+     * 
+     * @param idReference
+     *            an identifier specifying some policy
+     * @param type
+     *            type of reference (policy or policySet) as identified by the fields in
+     *            <code>PolicyReference</code>
+     * @param constraints
+     *            any optional constraints on the version of the referenced policy (this will never
+     *            be null, but it may impose no constraints, and in fact will never impose
+     *            constraints when used from a pre-2.0 XACML policy)
+     * @param parentMetaData
+     *            the meta-data from the parent policy, which provides XACML version, factories,
+     *            etc.
+     * 
      * @return the result of looking for a matching policy
      */
-    public PolicyFinderResult findPolicy(URI idReference, int type,
-                                         VersionConstraints constraints,
-                                         PolicyMetaData parentMetaData) {
-        AbstractPolicy policy =
-            refPolicies.getPolicy(idReference.toString(), type, constraints);
+    public PolicyFinderResult findPolicy(URI idReference, int type, VersionConstraints constraints,
+            PolicyMetaData parentMetaData) {
+        AbstractPolicy policy = refPolicies.getPolicy(idReference.toString(), type, constraints);
 
         if (policy == null)
             return new PolicyFinderResult();

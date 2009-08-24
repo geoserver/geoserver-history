@@ -1,4 +1,3 @@
-
 /*
  * @(#)TimeInRangeFunction.java
  *
@@ -43,22 +42,19 @@ import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BooleanAttribute;
 import com.sun.xacml.attr.TimeAttribute;
 
-
 /**
- * This class implements the time-in-range function, which takes
- * three time values and returns true if the first value falls between the
- * second and the third value. This function was introduced in XACML 2.0.
+ * This class implements the time-in-range function, which takes three time values and returns true
+ * if the first value falls between the second and the third value. This function was introduced in
+ * XACML 2.0.
  * <p>
- * Note that this function allows any time ranges less than 24 hours. In
- * other words, it is not bound by normal day boundries (midnight GMT), but
- * by the minimum time in the range. This means that ranges like 9am-5pm
- * are supported, as are ranges like 5pm-9am.
- *
+ * Note that this function allows any time ranges less than 24 hours. In other words, it is not
+ * bound by normal day boundries (midnight GMT), but by the minimum time in the range. This means
+ * that ranges like 9am-5pm are supported, as are ranges like 5pm-9am.
+ * 
  * @since 2.0
  * @author seth proctor
  */
-public class TimeInRangeFunction extends FunctionBase
-{
+public class TimeInRangeFunction extends FunctionBase {
 
     /**
      * The identifier for this function
@@ -79,29 +75,27 @@ public class TimeInRangeFunction extends FunctionBase
      * Default constructor.
      */
     public TimeInRangeFunction() {
-        super(NAME, 0, TimeAttribute.identifier, false, 3,
-              BooleanAttribute.identifier, false);
+        super(NAME, 0, TimeAttribute.identifier, false, 3, BooleanAttribute.identifier, false);
     }
 
     /**
-     * Evaluates the time-in-range function, which takes three
-     * <code>TimeAttribute</code> values. This function return true
-     * if the first value falls between the second and third values
-     * (ie., on or after the second time and on or before the third
-     * time). If no time zone is specified for the second and/or third
-     * time value, then the timezone from the first time value is
-     * used. This lets you say time-in-range(current-time, 9am, 5pm)
-     * and always have the evaluation happen in your current-time
-     * timezone.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context the respresentation of the request
-     *
+     * Evaluates the time-in-range function, which takes three <code>TimeAttribute</code> values.
+     * This function return true if the first value falls between the second and third values (ie.,
+     * on or after the second time and on or before the third time). If no time zone is specified
+     * for the second and/or third time value, then the timezone from the first time value is used.
+     * This lets you say time-in-range(current-time, 9am, 5pm) and always have the evaluation happen
+     * in your current-time timezone.
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            the respresentation of the request
+     * 
      * @return an <code>EvaluationResult</code> containing true or false
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
-        AttributeValue [] argValues = new AttributeValue[inputs.size()];
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
 
         // check if any errors occured while resolving the inputs
@@ -109,11 +103,11 @@ public class TimeInRangeFunction extends FunctionBase
             return result;
 
         // get the three time values
-        TimeAttribute attr = (TimeAttribute)(argValues[0]);
+        TimeAttribute attr = (TimeAttribute) (argValues[0]);
         long middleTime = attr.getMilliseconds();
-        long minTime = resolveTime(attr, (TimeAttribute)(argValues[1]));
-        long maxTime = resolveTime(attr, (TimeAttribute)(argValues[2]));
-        
+        long minTime = resolveTime(attr, (TimeAttribute) (argValues[1]));
+        long maxTime = resolveTime(attr, (TimeAttribute) (argValues[2]));
+
         // first off, if the min and max are the same, then this can only
         // be true is the middle is also the same value
         if (minTime == maxTime)
@@ -138,20 +132,17 @@ public class TimeInRangeFunction extends FunctionBase
         // shift the maxTime and the middleTime
         maxTime = maxTime + shiftSpan;
         middleTime = handleWrap(middleTime + shiftSpan);
-        
+
         // we're in the range if the middle is now between 0 and maxTime
-        return EvaluationResult.
-            getInstance((middleTime >= 0) && (middleTime <= maxTime));
+        return EvaluationResult.getInstance((middleTime >= 0) && (middleTime <= maxTime));
     }
-    
+
     /**
-     * Private helper method that is used to resolve the correct values for
-     * min and max. If an explicit timezone is provided for either, then
-     * that value gets used. Otherwise we need to pick the timezone the
-     * middle time is using, and move the other time into that timezone.
+     * Private helper method that is used to resolve the correct values for min and max. If an
+     * explicit timezone is provided for either, then that value gets used. Otherwise we need to
+     * pick the timezone the middle time is using, and move the other time into that timezone.
      */
-    private long resolveTime(TimeAttribute middleTime,
-                             TimeAttribute otherTime) {
+    private long resolveTime(TimeAttribute middleTime, TimeAttribute otherTime) {
         long time = otherTime.getMilliseconds();
         int tz = otherTime.getTimeZone();
 
@@ -182,8 +173,8 @@ public class TimeInRangeFunction extends FunctionBase
     }
 
     /**
-     * Private helper method that handles when a time value wraps no more
-     * than 24 hours either above 23:59:59 or below 00:00:00.
+     * Private helper method that handles when a time value wraps no more than 24 hours either above
+     * 23:59:59 or below 00:00:00.
      */
     private long handleWrap(long time) {
         if (time < 0) {
@@ -195,7 +186,7 @@ public class TimeInRangeFunction extends FunctionBase
             // if it's more than 24 hours, subtract one day
             return time - MILLIS_PER_DAY;
         }
-        
+
         return time;
     }
 

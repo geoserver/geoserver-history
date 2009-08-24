@@ -1,4 +1,3 @@
-
 /*
  * @(#)PDPConfig.java
  *
@@ -40,19 +39,16 @@ import com.sun.xacml.finder.AttributeFinder;
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.ResourceFinder;
 
-
 /**
- * This class is used as a container that holds configuration
- * information for the PDP, which includes the <code>AttributeFinder</code>,
- * <code>PolicyFinder</code>, and <code>ResourceFinder</code> that the
- * PDP should use.
- *
+ * This class is used as a container that holds configuration information for the PDP, which
+ * includes the <code>AttributeFinder</code>, <code>PolicyFinder</code>, and
+ * <code>ResourceFinder</code> that the PDP should use.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
  */
-public class PDPConfig
-{
+public class PDPConfig {
 
     //
     private AttributeFinder attributeFinder;
@@ -65,17 +61,19 @@ public class PDPConfig
 
     /**
      * Constructor that creates a <code>PDPConfig</code> from components.
-     *
-     * @param attributeFinder the <code>AttributeFinder</code> that the PDP
-     *                        should use, or null if it shouldn't use any
-     * @param policyFinder the <code>PolicyFinder</code> that the PDP
-     *                     should use, or null if it shouldn't use any
-     * @param resourceFinder the <code>ResourceFinder</code> that the PDP
-     *                       should use, or null if it shouldn't use any
+     * 
+     * @param attributeFinder
+     *            the <code>AttributeFinder</code> that the PDP should use, or null if it shouldn't
+     *            use any
+     * @param policyFinder
+     *            the <code>PolicyFinder</code> that the PDP should use, or null if it shouldn't use
+     *            any
+     * @param resourceFinder
+     *            the <code>ResourceFinder</code> that the PDP should use, or null if it shouldn't
+     *            use any
      */
-    public PDPConfig(AttributeFinder attributeFinder,
-                     PolicyFinder policyFinder,
-                     ResourceFinder resourceFinder) {
+    public PDPConfig(AttributeFinder attributeFinder, PolicyFinder policyFinder,
+            ResourceFinder resourceFinder) {
         if (attributeFinder != null)
             this.attributeFinder = attributeFinder;
         else
@@ -93,9 +91,8 @@ public class PDPConfig
     }
 
     /**
-     * Returns the <code>AttributeFinder</code> that was configured, or
-     * null if none was configured
-     *
+     * Returns the <code>AttributeFinder</code> that was configured, or null if none was configured
+     * 
      * @return the <code>AttributeFinder</code> or null
      */
     public AttributeFinder getAttributeFinder() {
@@ -103,9 +100,8 @@ public class PDPConfig
     }
 
     /**
-     * Returns the <code>PolicyFinder</code> that was configured, or
-     * null if none was configured
-     *
+     * Returns the <code>PolicyFinder</code> that was configured, or null if none was configured
+     * 
      * @return the <code>PolicyFinder</code> or null
      */
     public PolicyFinder getPolicyFinder() {
@@ -113,9 +109,8 @@ public class PDPConfig
     }
 
     /**
-     * Returns the <code>ResourceFinder</code> that was configured, or
-     * null if none was configured
-     *
+     * Returns the <code>ResourceFinder</code> that was configured, or null if none was configured
+     * 
      * @return the <code>ResourceFinder</code> or null
      */
     public ResourceFinder getResourceFinder() {

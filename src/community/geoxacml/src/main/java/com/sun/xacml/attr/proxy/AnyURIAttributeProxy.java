@@ -1,4 +1,3 @@
-
 /*
  * @(#)AnyURIAttributeProxy.java
  *
@@ -42,16 +41,13 @@ import com.sun.xacml.attr.AnyURIAttribute;
 import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 
-
 /**
- * A proxy class that is provided mainly for the run-time configuration
- * code to use.
- *
+ * A proxy class that is provided mainly for the run-time configuration code to use.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class AnyURIAttributeProxy implements AttributeProxy
-{
+public class AnyURIAttributeProxy implements AttributeProxy {
 
     public AttributeValue getInstance(Node root) throws Exception {
         return AnyURIAttribute.getInstance(root);

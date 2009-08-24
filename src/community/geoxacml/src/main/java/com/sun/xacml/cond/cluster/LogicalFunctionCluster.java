@@ -1,4 +1,3 @@
-
 /*
  * @(#)LogicalFunctionCluster.java
  *
@@ -42,24 +41,22 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.LogicalFunction;
 
-
 /**
  * Clusters all the functions supported by <code>LogicalFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class LogicalFunctionCluster implements FunctionCluster
-{
+public class LogicalFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
 
         for (String fn : LogicalFunction.getSupportedIdentifiers())
             set.add(new LogicalFunction(fn));
-        
+
         return set;
     }
 

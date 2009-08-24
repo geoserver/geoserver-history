@@ -1,4 +1,3 @@
-
 /*
  * @(#)Subject.java
  *
@@ -43,18 +42,16 @@ import java.util.Set;
 
 import com.sun.xacml.attr.AttributeDesignator;
 
-
 /**
- * This class represents the collection of <code>Attribute</code>s associated
- * with a particular subject.
- *
+ * This class represents the collection of <code>Attribute</code>s associated with a particular
+ * subject.
+ * 
  * @since 1.1
  * @author seth proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class Subject
-{
+public class Subject {
 
     // the subject's category
     private URI category;
@@ -65,26 +62,26 @@ public class Subject
     /**
      * <code>URI</code> form of the default subject category
      */
-    public static final URI DEFAULT_CATEGORY = URI.create(AttributeDesignator.SUBJECT_CATEGORY_DEFAULT);
+    public static final URI DEFAULT_CATEGORY = URI
+            .create(AttributeDesignator.SUBJECT_CATEGORY_DEFAULT);
 
     /**
-     * Creates a new collection of subject attributes using the default
-     * subject cateorgy.
-     *
-     * @param attributes a non-null <code>Set</code> of <code>Attribute</code>
-     *                   objects
+     * Creates a new collection of subject attributes using the default subject cateorgy.
+     * 
+     * @param attributes
+     *            a non-null <code>Set</code> of <code>Attribute</code> objects
      */
     public Subject(Set<Attribute> attributes) {
         this(null, attributes);
     }
 
     /**
-     * Creates a new collection of subject attributes using the given
-     * subject category.
-     *
-     * @param category the subject category or null for the default category
-     * @param attributes a non-null <code>Set</code> of <code>Attribute</code>
-     *                   objects
+     * Creates a new collection of subject attributes using the given subject category.
+     * 
+     * @param category
+     *            the subject category or null for the default category
+     * @param attributes
+     *            a non-null <code>Set</code> of <code>Attribute</code> objects
      */
     public Subject(URI category, Set<Attribute> attributes) {
         if (category == null)
@@ -97,7 +94,7 @@ public class Subject
 
     /**
      * Returns the category of this subject's attributes.
-     *
+     * 
      * @return the category
      */
     public URI getCategory() {
@@ -106,7 +103,7 @@ public class Subject
 
     /**
      * Returns the <code>Attribute</code>s associated with this subject.
-     *
+     * 
      * @return the immutable <code>Set</code> of <code>Attribute</code>s
      */
     public Set<Attribute> getAttributes() {

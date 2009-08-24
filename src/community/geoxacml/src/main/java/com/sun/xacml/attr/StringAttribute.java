@@ -1,4 +1,3 @@
-
 /*
  * @(#)StringAttribute.java
  *
@@ -40,34 +39,28 @@ import java.net.URI;
 
 import org.w3c.dom.Node;
 
-
 /**
- * Representation of an xs:string value. This class supports parsing
- * xs:string values. All objects of this class are immutable and
- * all methods of the class are thread-safe.
+ * Representation of an xs:string value. This class supports parsing xs:string values. All objects
+ * of this class are immutable and all methods of the class are thread-safe.
  * <p>
- * Note that there was some confusion in the XACML specification
- * about whether this datatype should be able to handle XML elements (ie,
- * whether &lt;AttributeValue DataType="...string"&gt;&lt;foo/&gt;
- * &lt;/AttributeValue&gt; is valid). This has been clarified to provide
- * the correct requirement that a string may not contain mixed content (ie,
- * the example provided here is invalid). If you need to specify something
- * like this with the string datatype, then you must escape the
- * <code>&lt;</code> and <code>&gt;</code> characters.
- *
+ * Note that there was some confusion in the XACML specification about whether this datatype should
+ * be able to handle XML elements (ie, whether &lt;AttributeValue
+ * DataType="...string"&gt;&lt;foo/&gt; &lt;/AttributeValue&gt; is valid). This has been clarified
+ * to provide the correct requirement that a string may not contain mixed content (ie, the example
+ * provided here is invalid). If you need to specify something like this with the string datatype,
+ * then you must escape the <code>&lt;</code> and <code>&gt;</code> characters.
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Seth Proctor
  * @author Steve Hanna
  */
-public class StringAttribute extends AttributeValue
-{
+public class StringAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/2001/XMLSchema#string";
- 
+    public static final String identifier = "http://www.w3.org/2001/XMLSchema#string";
+
     /**
      * URI version of name for this type
      */
@@ -79,10 +72,10 @@ public class StringAttribute extends AttributeValue
     private String value;
 
     /**
-     * Creates a new <code>StringAttribute</code> that represents
-     * the String value supplied.
-     *
-     * @param value the <code>String</code> value to be represented
+     * Creates a new <code>StringAttribute</code> that represents the String value supplied.
+     * 
+     * @param value
+     *            the <code>String</code> value to be represented
      */
     public StringAttribute(String value) {
         super(identifierURI);
@@ -96,12 +89,13 @@ public class StringAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>StringAttribute</code> that represents
-     * the xs:string at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>StringAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
+     * Returns a new <code>StringAttribute</code> that represents the xs:string at a particular DOM
+     * node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>StringAttribute</code> representing the appropriate value (null if there
+     *         is a parsing error)
      */
     public static StringAttribute getInstance(Node root) {
         Node node = root.getFirstChild();
@@ -115,8 +109,8 @@ public class StringAttribute extends AttributeValue
         short type = node.getNodeType();
 
         // now see if we have (effectively) a simple string value
-        if ((type == Node.TEXT_NODE) || (type == Node.CDATA_SECTION_NODE) ||
-            (type == Node.COMMENT_NODE)) {
+        if ((type == Node.TEXT_NODE) || (type == Node.CDATA_SECTION_NODE)
+                || (type == Node.COMMENT_NODE)) {
             return getInstance(node.getNodeValue());
         }
 
@@ -127,12 +121,12 @@ public class StringAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>StringAttribute</code> that represents
-     * the xs:string value indicated by the <code>String</code> provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>StringAttribute</code> representing the
-     *         appropriate value
+     * Returns a new <code>StringAttribute</code> that represents the xs:string value indicated by
+     * the <code>String</code> provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>StringAttribute</code> representing the appropriate value
      */
     public static StringAttribute getInstance(String value) {
         return new StringAttribute(value);
@@ -140,7 +134,7 @@ public class StringAttribute extends AttributeValue
 
     /**
      * Returns the <code>String</code> value represented by this object.
-     *
+     * 
      * @return the <code>String</code> value
      */
     public String getValue() {
@@ -148,27 +142,27 @@ public class StringAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof StringAttribute))
+        if (!(o instanceof StringAttribute))
             return false;
 
-        StringAttribute other = (StringAttribute)o;
+        StringAttribute other = (StringAttribute) o;
 
         return value.equals(other.value);
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -177,7 +171,7 @@ public class StringAttribute extends AttributeValue
 
     /**
      * Converts to a String representation.
-     *
+     * 
      * @return the String representation
      */
     public String toString() {

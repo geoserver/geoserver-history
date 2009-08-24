@@ -1,4 +1,3 @@
-
 /*
  * @(#)DateTimeAttributeProxy.java
  *
@@ -42,16 +41,13 @@ import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.DateTimeAttribute;
 
-
 /**
- * A proxy class that is provided mainly for the run-time configuration
- * code to use.
- *
+ * A proxy class that is provided mainly for the run-time configuration code to use.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class DateTimeAttributeProxy implements AttributeProxy
-{
+public class DateTimeAttributeProxy implements AttributeProxy {
 
     public AttributeValue getInstance(Node root) throws Exception {
         return DateTimeAttribute.getInstance(root);

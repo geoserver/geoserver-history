@@ -1,4 +1,3 @@
-
 /*
  * @(#)StandardFunctionFactory.java
  *
@@ -54,7 +53,6 @@ import com.sun.xacml.cond.cluster.DateMathFunctionCluster;
 import com.sun.xacml.cond.cluster.DivideFunctionCluster;
 import com.sun.xacml.cond.cluster.EqualFunctionCluster;
 import com.sun.xacml.cond.cluster.FloorFunctionCluster;
-//import com.sun.xacml.cond.cluster.FunctionCluster;
 import com.sun.xacml.cond.cluster.GeneralBagFunctionCluster;
 import com.sun.xacml.cond.cluster.GeneralSetFunctionCluster;
 import com.sun.xacml.cond.cluster.HigherOrderFunctionCluster;
@@ -70,75 +68,73 @@ import com.sun.xacml.cond.cluster.StringFunctionCluster;
 import com.sun.xacml.cond.cluster.StringNormalizeFunctionCluster;
 import com.sun.xacml.cond.cluster.SubtractFunctionCluster;
 
-
 /**
- * This factory supports the standard set of functions specified in XACML
- * 1.x and 2.0. It is the default factory used by the system, and imposes
- * a singleton pattern insuring that there is only ever one instance of
- * this class.
+ * This factory supports the standard set of functions specified in XACML 1.x and 2.0. It is the
+ * default factory used by the system, and imposes a singleton pattern insuring that there is only
+ * ever one instance of this class.
  * <p>
- * Note that because this supports only the standard functions, this
- * factory does not allow the addition of any other functions. If you call
- * <code>addFunction</code> on an instance of this class, an exception
- * will be thrown. If you need a standard factory that is modifiable,
- * you can either create a new <code>BaseFunctionFactory</code> (or some
- * other implementation of <code>FunctionFactory</code>) populated with
- * the standard functions from <code>getStandardFunctions</code> or
- * you can use <code>getNewFactoryProxy</code> to get a proxy containing
- * a new, modifiable set of factories.
- *
+ * Note that because this supports only the standard functions, this factory does not allow the
+ * addition of any other functions. If you call <code>addFunction</code> on an instance of this
+ * class, an exception will be thrown. If you need a standard factory that is modifiable, you can
+ * either create a new <code>BaseFunctionFactory</code> (or some other implementation of
+ * <code>FunctionFactory</code>) populated with the standard functions from
+ * <code>getStandardFunctions</code> or you can use <code>getNewFactoryProxy</code> to get a proxy
+ * containing a new, modifiable set of factories.
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * FunctionCluster,Set<Function>
+ *         FunctionCluster,Set<Function>
  */
 
-public class StandardFunctionFactory extends BaseFunctionFactory
-{
+public class StandardFunctionFactory extends BaseFunctionFactory {
 
     // the three singleton instances
     private static StandardFunctionFactory targetFactory = null;
+
     private static StandardFunctionFactory conditionFactory = null;
+
     private static StandardFunctionFactory generalFactory = null;
 
     // the three function sets/maps that we use internally
     private static Set<Function> targetFunctions = null;
+
     private static Set<Function> conditionFunctions = null;
+
     private static Set<Function> generalFunctions = null;
 
-    private static Map<URI,MapFunctionProxy> targetAbstractFunctions = null;
-    private static Map<URI,MapFunctionProxy> conditionAbstractFunctions = null;
-    private static Map<URI,MapFunctionProxy> generalAbstractFunctions = null;
+    private static Map<URI, MapFunctionProxy> targetAbstractFunctions = null;
+
+    private static Map<URI, MapFunctionProxy> conditionAbstractFunctions = null;
+
+    private static Map<URI, MapFunctionProxy> generalAbstractFunctions = null;
 
     // the static sets of supported identifiers for each XACML version
-//    private static Set<Function> supportedV1Functions;
-//    private static Set<Function> supportedV2Functions;
+    // private static Set<Function> supportedV1Functions;
+    // private static Set<Function> supportedV2Functions;
 
     // the set/map used by each singleton factory instance
-//    private Set<Function> supportedFunctions = null;
-//    private Map supportedAbstractFunctions = null;
+    // private Set<Function> supportedFunctions = null;
+    // private Map supportedAbstractFunctions = null;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(StandardFunctionFactory.class.getName());
+    private static final Logger logger = Logger.getLogger(StandardFunctionFactory.class.getName());
 
     /**
-     * Creates a new StandardFunctionFactory, making sure that the default
-     * maps are initialized correctly. Standard factories can't be modified,
-     * so there is no notion of supersetting since that's only used for
-     * correctly propagating new functions.
+     * Creates a new StandardFunctionFactory, making sure that the default maps are initialized
+     * correctly. Standard factories can't be modified, so there is no notion of supersetting since
+     * that's only used for correctly propagating new functions.
      */
     private StandardFunctionFactory(Set<Function> supportedFunctions,
-                                    Map<URI,? extends FunctionProxy> supportedAbstractFunctions) {
+            Map<URI, ? extends FunctionProxy> supportedAbstractFunctions) {
         super(supportedFunctions, supportedAbstractFunctions);
 
-//        this.supportedFunctions = supportedFunctions;
-//        this.supportedAbstractFunctions = supportedAbstractFunctions;
+        // this.supportedFunctions = supportedFunctions;
+        // this.supportedAbstractFunctions = supportedAbstractFunctions;
     }
 
     /**
-     * Private initializer for the target functions. This is only ever
-     * called once.
+     * Private initializer for the target functions. This is only ever called once.
      */
     private static void initTargetFunctions() {
         logger.config("Initializing standard Target functions");
@@ -146,30 +142,23 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         targetFunctions = new HashSet<Function>();
 
         // add EqualFunction
-        targetFunctions.addAll((new EqualFunctionCluster()).
-                               getSupportedFunctions());
+        targetFunctions.addAll((new EqualFunctionCluster()).getSupportedFunctions());
         // add LogicalFunction
-        targetFunctions.addAll((new LogicalFunctionCluster()).
-                               getSupportedFunctions());
+        targetFunctions.addAll((new LogicalFunctionCluster()).getSupportedFunctions());
         // add NOfFunction
-        targetFunctions.addAll((new NOfFunctionCluster()).
-                               getSupportedFunctions());
+        targetFunctions.addAll((new NOfFunctionCluster()).getSupportedFunctions());
         // add NotFunction
-        targetFunctions.addAll((new NotFunctionCluster()).
-                               getSupportedFunctions());
+        targetFunctions.addAll((new NotFunctionCluster()).getSupportedFunctions());
         // add ComparisonFunction
-        targetFunctions.addAll((new ComparisonFunctionCluster()).
-                               getSupportedFunctions());
+        targetFunctions.addAll((new ComparisonFunctionCluster()).getSupportedFunctions());
         // add MatchFunction
-        targetFunctions.addAll((new MatchFunctionCluster()).
-                               getSupportedFunctions());
+        targetFunctions.addAll((new MatchFunctionCluster()).getSupportedFunctions());
 
-        targetAbstractFunctions = new HashMap<URI,MapFunctionProxy>();
+        targetAbstractFunctions = new HashMap<URI, MapFunctionProxy>();
     }
 
     /**
-     * Private initializer for the condition functions. This is only ever
-     * called once.
+     * Private initializer for the condition functions. This is only ever called once.
      */
     private static void initConditionFunctions() {
         logger.config("Initializing standard Condition functions");
@@ -182,21 +171,17 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         // add condition function TimeInRange
         conditionFunctions.add(new TimeInRangeFunction());
         // add condition functions from BagFunction
-        conditionFunctions.addAll((new ConditionBagFunctionCluster()).
-                                  getSupportedFunctions());
+        conditionFunctions.addAll((new ConditionBagFunctionCluster()).getSupportedFunctions());
         // add condition functions from SetFunction
-        conditionFunctions.addAll((new ConditionSetFunctionCluster()).
-                                  getSupportedFunctions());
+        conditionFunctions.addAll((new ConditionSetFunctionCluster()).getSupportedFunctions());
         // add condition functions from HigherOrderFunction
-        conditionFunctions.addAll((new HigherOrderFunctionCluster()).
-                                  getSupportedFunctions());
+        conditionFunctions.addAll((new HigherOrderFunctionCluster()).getSupportedFunctions());
 
-        conditionAbstractFunctions = new HashMap<URI,MapFunctionProxy>(targetAbstractFunctions);
+        conditionAbstractFunctions = new HashMap<URI, MapFunctionProxy>(targetAbstractFunctions);
     }
 
     /**
-     * Private initializer for the general functions. This is only ever
-     * called once.
+     * Private initializer for the general functions. This is only ever called once.
      */
     private static void initGeneralFunctions() {
         logger.config("Initializing standard General functions");
@@ -207,55 +192,39 @@ public class StandardFunctionFactory extends BaseFunctionFactory
         generalFunctions = new HashSet<Function>(conditionFunctions);
 
         // add AddFunction
-        generalFunctions.addAll((new AddFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new AddFunctionCluster()).getSupportedFunctions());
         // add SubtractFunction
-        generalFunctions.addAll((new SubtractFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new SubtractFunctionCluster()).getSupportedFunctions());
         // add MultiplyFunction
-        generalFunctions.addAll((new MultiplyFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new MultiplyFunctionCluster()).getSupportedFunctions());
         // add DivideFunction
-        generalFunctions.addAll((new DivideFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new DivideFunctionCluster()).getSupportedFunctions());
         // add ModFunction
-        generalFunctions.addAll((new ModFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new ModFunctionCluster()).getSupportedFunctions());
         // add AbsFunction
-        generalFunctions.addAll((new AbsFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new AbsFunctionCluster()).getSupportedFunctions());
         // add RoundFunction
-        generalFunctions.addAll((new RoundFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new RoundFunctionCluster()).getSupportedFunctions());
         // add FloorFunction
-        generalFunctions.addAll((new FloorFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new FloorFunctionCluster()).getSupportedFunctions());
         // add DateMathFunction
-        generalFunctions.addAll((new DateMathFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new DateMathFunctionCluster()).getSupportedFunctions());
         // add general functions from BagFunction
-        generalFunctions.addAll((new GeneralBagFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new GeneralBagFunctionCluster()).getSupportedFunctions());
         // add NumericConvertFunction
-        generalFunctions.addAll((new NumericConvertFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new NumericConvertFunctionCluster()).getSupportedFunctions());
         // add StringNormalizeFunction
-        generalFunctions.addAll((new StringNormalizeFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new StringNormalizeFunctionCluster()).getSupportedFunctions());
         // add general functions from SetFunction
-        generalFunctions.addAll((new GeneralSetFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new GeneralSetFunctionCluster()).getSupportedFunctions());
         // add the XACML 2.0 string functions
-        generalFunctions.addAll((new StringFunctionCluster()).
-                                getSupportedFunctions());
+        generalFunctions.addAll((new StringFunctionCluster()).getSupportedFunctions());
 
-
-        generalAbstractFunctions = new HashMap<URI,MapFunctionProxy>(conditionAbstractFunctions);
+        generalAbstractFunctions = new HashMap<URI, MapFunctionProxy>(conditionAbstractFunctions);
 
         // add the map function's proxy
         try {
-            generalAbstractFunctions.put(new URI(MapFunction.NAME_MAP),
-                                         new MapFunctionProxy());
+            generalAbstractFunctions.put(new URI(MapFunction.NAME_MAP), new MapFunctionProxy());
         } catch (URISyntaxException e) {
             // this shouldn't ever happen, but just in case...
             throw new IllegalArgumentException("invalid function name");
@@ -263,13 +232,11 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     }
 
     /**
-     * Returns a FunctionFactory that will only provide those functions that
-     * are usable in Target matching. This method enforces a singleton
-     * model, meaning that this always returns the same instance, creating
-     * the factory if it hasn't been requested before. This is the default
-     * model used by the <code>FunctionFactory</code>, ensuring quick
-     * access to this factory.
-     *
+     * Returns a FunctionFactory that will only provide those functions that are usable in Target
+     * matching. This method enforces a singleton model, meaning that this always returns the same
+     * instance, creating the factory if it hasn't been requested before. This is the default model
+     * used by the <code>FunctionFactory</code>, ensuring quick access to this factory.
+     * 
      * @return a <code>FunctionFactory</code> for target functions
      */
     public static StandardFunctionFactory getTargetFactory() {
@@ -278,9 +245,8 @@ public class StandardFunctionFactory extends BaseFunctionFactory
                 if (targetFunctions == null)
                     initTargetFunctions();
                 if (targetFactory == null)
-                    targetFactory =
-                        new StandardFunctionFactory(targetFunctions,
-                                                    targetAbstractFunctions);
+                    targetFactory = new StandardFunctionFactory(targetFunctions,
+                            targetAbstractFunctions);
             }
         }
 
@@ -288,14 +254,12 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     }
 
     /**
-     * Returns a FuntionFactory that will only provide those functions that
-     * are usable in the root of the Condition. These Functions are a
-     * superset of the Target functions. This method enforces a singleton
-     * model, meaning that this always returns the same instance, creating
-     * the factory if it hasn't been requested before. This is the default
-     * model used by the <code>FunctionFactory</code>, ensuring quick
-     * access to this factory.
-     *
+     * Returns a FuntionFactory that will only provide those functions that are usable in the root
+     * of the Condition. These Functions are a superset of the Target functions. This method
+     * enforces a singleton model, meaning that this always returns the same instance, creating the
+     * factory if it hasn't been requested before. This is the default model used by the
+     * <code>FunctionFactory</code>, ensuring quick access to this factory.
+     * 
      * @return a <code>FunctionFactory</code> for condition functions
      */
     public static StandardFunctionFactory getConditionFactory() {
@@ -304,9 +268,8 @@ public class StandardFunctionFactory extends BaseFunctionFactory
                 if (conditionFunctions == null)
                     initConditionFunctions();
                 if (conditionFactory == null)
-                    conditionFactory =
-                        new StandardFunctionFactory(conditionFunctions,
-                                                    conditionAbstractFunctions);
+                    conditionFactory = new StandardFunctionFactory(conditionFunctions,
+                            conditionAbstractFunctions);
             }
         }
 
@@ -314,13 +277,12 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     }
 
     /**
-     * Returns a FunctionFactory that provides access to all the functions.
-     * These Functions are a superset of the Condition functions. This method
-     * enforces a singleton model, meaning that this always returns the same
-     * instance, creating the factory if it hasn't been requested before.
-     * This is the default model used by the <code>FunctionFactory</code>,
-     * ensuring quick access to this factory.
-     *
+     * Returns a FunctionFactory that provides access to all the functions. These Functions are a
+     * superset of the Condition functions. This method enforces a singleton model, meaning that
+     * this always returns the same instance, creating the factory if it hasn't been requested
+     * before. This is the default model used by the <code>FunctionFactory</code>, ensuring quick
+     * access to this factory.
+     * 
      * @return a <code>FunctionFactory</code> for all functions
      */
     public static StandardFunctionFactory getGeneralFactory() {
@@ -328,28 +290,27 @@ public class StandardFunctionFactory extends BaseFunctionFactory
             synchronized (StandardFunctionFactory.class) {
                 if (generalFunctions == null) {
                     initGeneralFunctions();
-                    generalFactory =
-                        new StandardFunctionFactory(generalFunctions,
-                                                    generalAbstractFunctions);
+                    generalFactory = new StandardFunctionFactory(generalFunctions,
+                            generalAbstractFunctions);
                 }
             }
         }
-        
+
         return generalFactory;
     }
 
     /**
-     * Returns the identifiers supported for the given version of XACML.
-     * Because this factory supports identifiers from all versions of the
-     * XACML specifications, this method is useful for getting a list of
-     * which specific identifiers are supported by a given version of XACML.
-     *
-     * @param xacmlVersion a standard XACML identifier string, as provided
-     *                     in <code>PolicyMetaData</code>
-     *
+     * Returns the identifiers supported for the given version of XACML. Because this factory
+     * supports identifiers from all versions of the XACML specifications, this method is useful for
+     * getting a list of which specific identifiers are supported by a given version of XACML.
+     * 
+     * @param xacmlVersion
+     *            a standard XACML identifier string, as provided in <code>PolicyMetaData</code>
+     * 
      * @return a <code>Set</code> of identifiers
-     *
-     * @throws UnknownIdentifierException if the version string is unknown
+     * 
+     * @throws UnknownIdentifierException
+     *             if the version string is unknown
      */
     public static Set<String> getStandardFunctions(String xacmlVersion) {
         // FIXME: collecting the identifiers needs to be implemented..
@@ -357,11 +318,10 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     }
 
     /**
-     * Returns the set of abstract functions that this standard factory
-     * supports as a mapping of identifier to proxy.
-     *
-     * @return a <code>Map</code> mapping <code>URI</code>s to
-     *         <code>FunctionProxy</code>s
+     * Returns the set of abstract functions that this standard factory supports as a mapping of
+     * identifier to proxy.
+     * 
+     * @return a <code>Map</code> mapping <code>URI</code>s to <code>FunctionProxy</code>s
      */
     public static Map<URI, ? extends FunctionProxy> getStandardAbstractFunctions(String xacmlVersion) {
         // FIXME: collecting the identifiers needs to be implemented..
@@ -369,65 +329,60 @@ public class StandardFunctionFactory extends BaseFunctionFactory
     }
 
     /**
-     * A convenience method that returns a proxy containing newly created
-     * instances of <code>BaseFunctionFactory</code>s that are correctly
-     * supersetted and contain the standard functions and abstract functions.
-     * These factories allow adding support for new functions.
-     *
-     * @return a new proxy containing new factories supporting the standard
-     *         functions
+     * A convenience method that returns a proxy containing newly created instances of
+     * <code>BaseFunctionFactory</code>s that are correctly supersetted and contain the standard
+     * functions and abstract functions. These factories allow adding support for new functions.
+     * 
+     * @return a new proxy containing new factories supporting the standard functions
      */
     public static FunctionFactoryProxy getNewFactoryProxy() {
         // first off, make sure everything's been initialized
         getGeneralFactory();
 
         // now create the new instances
-        FunctionFactory newGeneral =
-            new BaseFunctionFactory(generalFunctions,
-                                    generalAbstractFunctions);
+        FunctionFactory newGeneral = new BaseFunctionFactory(generalFunctions,
+                generalAbstractFunctions);
 
-        FunctionFactory newCondition =
-            new BaseFunctionFactory(newGeneral, conditionFunctions,
-                                    conditionAbstractFunctions);
+        FunctionFactory newCondition = new BaseFunctionFactory(newGeneral, conditionFunctions,
+                conditionAbstractFunctions);
 
-        FunctionFactory newTarget =
-            new BaseFunctionFactory(newCondition, targetFunctions,
-                                    targetAbstractFunctions);
+        FunctionFactory newTarget = new BaseFunctionFactory(newCondition, targetFunctions,
+                targetAbstractFunctions);
 
-        return new BasicFunctionFactoryProxy(newTarget, newCondition,
-                                             newGeneral);
+        return new BasicFunctionFactoryProxy(newTarget, newCondition, newGeneral);
     }
 
     /**
-     * Always throws an exception, since support for new functions may not be
-     * added to a standard factory.
-     *
-     * @param function the <code>Function</code> to add to the factory
-     *
-     * @throws UnsupportedOperationException always
+     * Always throws an exception, since support for new functions may not be added to a standard
+     * factory.
+     * 
+     * @param function
+     *            the <code>Function</code> to add to the factory
+     * 
+     * @throws UnsupportedOperationException
+     *             always
      */
-    public void addFunction(Function function)
-        throws IllegalArgumentException
-    {
-        throw new UnsupportedOperationException("a standard factory cannot " +
-                                                "support new functions");
+    public void addFunction(Function function) throws IllegalArgumentException {
+        throw new UnsupportedOperationException("a standard factory cannot "
+                + "support new functions");
     }
 
     /**
-     * Always throws an exception, since support for new functions may not be
-     * added to a standard factory.
-     *
-     * @param proxy the <code>FunctionProxy</code> to add to the factory
-     * @param identity the function's identifier
-     *
-     * @throws UnsupportedOperationException always
+     * Always throws an exception, since support for new functions may not be added to a standard
+     * factory.
+     * 
+     * @param proxy
+     *            the <code>FunctionProxy</code> to add to the factory
+     * @param identity
+     *            the function's identifier
+     * 
+     * @throws UnsupportedOperationException
+     *             always
      */
-    public void addAbstractFunction(FunctionProxy proxy,
-                                    URI identity)
-        throws IllegalArgumentException
-    {
-        throw new UnsupportedOperationException("a standard factory cannot " +
-                                                "support new functions");
+    public void addAbstractFunction(FunctionProxy proxy, URI identity)
+            throws IllegalArgumentException {
+        throw new UnsupportedOperationException("a standard factory cannot "
+                + "support new functions");
     }
 
 }

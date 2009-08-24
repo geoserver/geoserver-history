@@ -16,24 +16,31 @@ import org.geoserver.xacml.role.XACMLRole;
  * Default implementation for {@link RequestCtxBuilderFactory}
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class RequestCtxBuilderFactoryImpl implements RequestCtxBuilderFactory {
 
     public RequestCtxBuilder getCatalogRequestCtxBuilder() {
         return new CatalogRequestCtxBuilder();
     }
-    public RequestCtxBuilder getXACMLRoleRequestCtxBuilder(XACMLRole targetRole) {
-        return new XACMLRoleRequestCtxBuilder(targetRole);
+
+    public RequestCtxBuilder getXACMLRoleRequestCtxBuilder(XACMLRole targetRole, String userName) {
+        return new XACMLRoleRequestCtxBuilder(targetRole, userName);
     }
-    public RequestCtxBuilder getWorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo info, AccessMode mode) {
-        return new WorkspaceRequestCtxBuilder(role,info,mode);
+
+    public RequestCtxBuilder getWorkspaceRequestCtxBuilder(XACMLRole role, WorkspaceInfo info,
+            AccessMode mode) {
+        return new WorkspaceRequestCtxBuilder(role, info, mode);
     }
-    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString, String action,Map<String,Object> httpParams) {
-        return new URLMatchRequestCtxBuilder(role,urlString,action, httpParams);
+
+    public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString,
+            String action, Map<String, Object> httpParams) {
+        return new URLMatchRequestCtxBuilder(role, urlString, action, httpParams);
     }
-    public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role, ResourceInfo resourceInfo, AccessMode mode) {
-        return new ResourceInfoRequestCtxBuilder(role, resourceInfo, mode); 
+
+    public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role,
+            ResourceInfo resourceInfo, AccessMode mode) {
+        return new ResourceInfoRequestCtxBuilder(role, resourceInfo, mode);
     }
-    
+
 }

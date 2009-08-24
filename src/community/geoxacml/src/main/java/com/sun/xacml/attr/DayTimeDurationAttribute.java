@@ -1,4 +1,3 @@
-
 /*
  * @(#)DayTimeDurationAttribute.java
  *
@@ -46,25 +45,21 @@ import org.w3c.dom.Node;
 
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Representation of an xf:dayTimeDuration value. This class supports parsing
- * xd:dayTimeDuration values. All objects of this class are immutable and
- * thread-safe. The <code>Date</code> objects returned are not, but
- * these objects are cloned before being returned.
- *
+ * Representation of an xf:dayTimeDuration value. This class supports parsing xd:dayTimeDuration
+ * values. All objects of this class are immutable and thread-safe. The <code>Date</code> objects
+ * returned are not, but these objects are cloned before being returned.
+ * 
  * @since 1.0
  * @author Steve Hanna
  */
-public class DayTimeDurationAttribute extends AttributeValue
-{
+public class DayTimeDurationAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/TR/2002/WD-xquery-operators-20020816#" +
-        "dayTimeDuration";
- 
+    public static final String identifier = "http://www.w3.org/TR/2002/WD-xquery-operators-20020816#"
+            + "dayTimeDuration";
+
     /**
      * URI version of name for this type
      */
@@ -73,8 +68,7 @@ public class DayTimeDurationAttribute extends AttributeValue
     /**
      * Regular expression for dayTimeDuration (a la java.util.regex)
      */
-    private static final String patternString = 
-        "(\\-)?P((\\d+)?D)?(T((\\d+)?H)?((\\d+)?M)?((\\d+)?(.(\\d+)?)?S)?)?";
+    private static final String patternString = "(\\-)?P((\\d+)?D)?(T((\\d+)?H)?((\\d+)?M)?((\\d+)?(.(\\d+)?)?S)?)?";
 
     /**
      * The index of the capturing group for the negative sign.
@@ -107,14 +101,16 @@ public class DayTimeDurationAttribute extends AttributeValue
     private static final int GROUP_NANOSECONDS = 12;
 
     /**
-     * Static BigInteger values. We only use these if one of
-     * the components is bigger than Integer.MAX_LONG and we
-     * want to detect overflow, so we don't initialize these
-     * until they're needed.
+     * Static BigInteger values. We only use these if one of the components is bigger than
+     * Integer.MAX_LONG and we want to detect overflow, so we don't initialize these until they're
+     * needed.
      */
     private static BigInteger big24;
+
     private static BigInteger big60;
+
     private static BigInteger big1000;
+
     private static BigInteger bigMaxLong;
 
     /**
@@ -163,22 +159,25 @@ public class DayTimeDurationAttribute extends AttributeValue
     private String encodedValue = null;
 
     /**
-     * Creates a new <code>DayTimeDurationAttribute</code> that represents
-     * the duration supplied.
-     *
-     * @param negative true if the duration is negative, false otherwise
-     * @param days the number of days in the duration
-     * @param hours the number of hours in the duration
-     * @param minutes the number of minutes in the duration
-     * @param seconds the number of seconds in the duration
-     * @param nanoseconds the number of nanoseconds in the duration
-     * @throws IllegalArgumentException if the total number of milliseconds
-     *                                  exceeds Long.MAX_LONG
+     * Creates a new <code>DayTimeDurationAttribute</code> that represents the duration supplied.
+     * 
+     * @param negative
+     *            true if the duration is negative, false otherwise
+     * @param days
+     *            the number of days in the duration
+     * @param hours
+     *            the number of hours in the duration
+     * @param minutes
+     *            the number of minutes in the duration
+     * @param seconds
+     *            the number of seconds in the duration
+     * @param nanoseconds
+     *            the number of nanoseconds in the duration
+     * @throws IllegalArgumentException
+     *             if the total number of milliseconds exceeds Long.MAX_LONG
      */
-    public DayTimeDurationAttribute(boolean negative, long days, long hours,
-                                    long minutes, long seconds,
-                                    int nanoseconds)
-        throws IllegalArgumentException {
+    public DayTimeDurationAttribute(boolean negative, long days, long hours, long minutes,
+            long seconds, int nanoseconds) throws IllegalArgumentException {
         super(identifierURI);
 
         this.negative = negative;
@@ -193,8 +192,8 @@ public class DayTimeDurationAttribute extends AttributeValue
         // If any of the components is big (too big to be an int),
         // use the BigInteger class to do the math so we can detect
         // overflow.
-        if ((days > Integer.MAX_VALUE) || (hours > Integer.MAX_VALUE) ||
-            (minutes > Integer.MAX_VALUE) || (seconds > Integer.MAX_VALUE)) {
+        if ((days > Integer.MAX_VALUE) || (hours > Integer.MAX_VALUE)
+                || (minutes > Integer.MAX_VALUE) || (seconds > Integer.MAX_VALUE)) {
             if (big24 == null) {
                 big24 = BigInteger.valueOf(24);
                 big60 = BigInteger.valueOf(60);
@@ -206,58 +205,54 @@ public class DayTimeDurationAttribute extends AttributeValue
             BigInteger bigMinutes = BigInteger.valueOf(minutes);
             BigInteger bigSeconds = BigInteger.valueOf(seconds);
 
-            BigInteger bigTotal = bigDays.multiply(big24).add(bigHours)
-                .multiply(big60).add(bigMinutes).multiply(big60)
-                .add(bigSeconds).multiply(big1000);
+            BigInteger bigTotal = bigDays.multiply(big24).add(bigHours).multiply(big60).add(
+                    bigMinutes).multiply(big60).add(bigSeconds).multiply(big1000);
 
             // If the result is bigger than Long.MAX_VALUE, we have an
             // overflow. Indicate an error (should be a processing error,
             // since it can be argued that we should handle gigantic
             // values for this).
             if (bigTotal.compareTo(bigMaxLong) == 1)
-                throw new IllegalArgumentException("total number of " +
-                                                   "milliseconds " +
-                                                   "exceeds Long.MAX_VALUE");
+                throw new IllegalArgumentException("total number of " + "milliseconds "
+                        + "exceeds Long.MAX_VALUE");
             // If no overflow, convert to a long.
             totalMillis = bigTotal.longValue();
         } else {
             // The numbers are small, so do it the fast way.
-            totalMillis = ((((((days * 24) + hours) * 60) + minutes) * 60) +
-                seconds) * 1000;
+            totalMillis = ((((((days * 24) + hours) * 60) + minutes) * 60) + seconds) * 1000;
         }
     }
 
     /**
-     * Returns a new <code>DayTimeDurationAttribute</code> that represents
-     * the xf:dayTimeDuration at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>DayTimeDurationAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
+     * Returns a new <code>DayTimeDurationAttribute</code> that represents the xf:dayTimeDuration at
+     * a particular DOM node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>DayTimeDurationAttribute</code> representing the appropriate value (null
+     *         if there is a parsing error)
      */
-    public static DayTimeDurationAttribute getInstance(Node root)
-        throws ParsingException, NumberFormatException
-    {
+    public static DayTimeDurationAttribute getInstance(Node root) throws ParsingException,
+            NumberFormatException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns the long value for the capturing group groupNumber.
-     * This method takes a Matcher that has been used to match a
-     * Pattern against a String, fetches the value for the specified
-     * capturing group, converts that value to an long, and returns
-     * the value. If that group did not match, 0 is returned.
-     * If the matched value is not a valid long, NumberFormatException
-     * is thrown.
-     *
-     * @param matcher the Matcher from which to fetch the group
-     * @param groupNumber the group number to fetch
+     * Returns the long value for the capturing group groupNumber. This method takes a Matcher that
+     * has been used to match a Pattern against a String, fetches the value for the specified
+     * capturing group, converts that value to an long, and returns the value. If that group did not
+     * match, 0 is returned. If the matched value is not a valid long, NumberFormatException is
+     * thrown.
+     * 
+     * @param matcher
+     *            the Matcher from which to fetch the group
+     * @param groupNumber
+     *            the group number to fetch
      * @return the long value for that groupNumber
-     * @throws NumberFormatException if the string value for that
-     * groupNumber is not a valid long
+     * @throws NumberFormatException
+     *             if the string value for that groupNumber is not a valid long
      */
-    private static long parseGroup(Matcher matcher, int groupNumber)
-        throws NumberFormatException {
+    private static long parseGroup(Matcher matcher, int groupNumber) throws NumberFormatException {
         long groupLong = 0;
 
         if (matcher.start(groupNumber) != -1) {
@@ -268,16 +263,16 @@ public class DayTimeDurationAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>DayTimeDurationAttribute</code> that represents
-     * the xf:dayTimeDuration value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>DayTimeDurationAttribute</code> representing the
-     *         desired value (null if there is a parsing error)
+     * Returns a new <code>DayTimeDurationAttribute</code> that represents the xf:dayTimeDuration
+     * value indicated by the string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>DayTimeDurationAttribute</code> representing the desired value (null if
+     *         there is a parsing error)
      */
-    public static DayTimeDurationAttribute getInstance(String value)
-        throws ParsingException, NumberFormatException
-    {
+    public static DayTimeDurationAttribute getInstance(String value) throws ParsingException,
+            NumberFormatException {
         boolean negative = false;
         long days = 0;
         long hours = 0;
@@ -353,19 +348,17 @@ public class DayTimeDurationAttribute extends AttributeValue
         // items are absent. So the string can't end in 'T'.
         // Note that we don't have to worry about a zero length
         // string, since the pattern won't allow that.
-        if (value.charAt(value.length()-1) == 'T')
-            throw new ParsingException("'T' must be absent if all" +
-                                       "time items are absent");
+        if (value.charAt(value.length() - 1) == 'T')
+            throw new ParsingException("'T' must be absent if all" + "time items are absent");
 
         // If parsing went OK, create a new DayTimeDurationAttribute object and
         // return it.
-        return new DayTimeDurationAttribute(negative, days, hours, minutes,
-                                            seconds, nanoseconds);
+        return new DayTimeDurationAttribute(negative, days, hours, minutes, seconds, nanoseconds);
     }
 
     /**
      * Returns true if the duration is negative.
-     *
+     * 
      * @return true if the duration is negative, false otherwise
      */
     public boolean isNegative() {
@@ -374,7 +367,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of days.
-     *
+     * 
      * @return the number of days
      */
     public long getDays() {
@@ -383,7 +376,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of hours.
-     *
+     * 
      * @return the number of hours
      */
     public long getHours() {
@@ -392,7 +385,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of minutes.
-     *
+     * 
      * @return the number of minutes
      */
     public long getMinutes() {
@@ -401,7 +394,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of seconds.
-     *
+     * 
      * @return the number of seconds
      */
     public long getSeconds() {
@@ -410,7 +403,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of nanoseconds.
-     *
+     * 
      * @return the number of nanoseconds
      */
     public int getNanoseconds() {
@@ -419,7 +412,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Gets the total number of round seconds (in milliseconds).
-     *
+     * 
      * @return the total number of seconds (in milliseconds)
      */
     public long getTotalSeconds() {
@@ -427,29 +420,27 @@ public class DayTimeDurationAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof DayTimeDurationAttribute))
+        if (!(o instanceof DayTimeDurationAttribute))
             return false;
 
-        DayTimeDurationAttribute other = (DayTimeDurationAttribute)o;
+        DayTimeDurationAttribute other = (DayTimeDurationAttribute) o;
 
-        return ((totalMillis == other.totalMillis) &&
-                (nanoseconds == other.nanoseconds) &&
-                (negative == other.negative));
+        return ((totalMillis == other.totalMillis) && (nanoseconds == other.nanoseconds) && (negative == other.negative));
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -457,7 +448,7 @@ public class DayTimeDurationAttribute extends AttributeValue
         // by the equals method, so it's best if the hashCode is derived
         // from all of those fields.
         int hashCode = (int) totalMillis ^ (int) (totalMillis >> 32);
-        hashCode = 31*hashCode + nanoseconds;
+        hashCode = 31 * hashCode + nanoseconds;
         if (negative)
             hashCode = -hashCode;
         return hashCode;
@@ -465,7 +456,7 @@ public class DayTimeDurationAttribute extends AttributeValue
 
     /**
      * Converts to a String representation.
-     *
+     * 
      * @return the String representation
      */
     public String toString() {
@@ -485,11 +476,10 @@ public class DayTimeDurationAttribute extends AttributeValue
     }
 
     /**
-     * Encodes the value in a form suitable for including in XML data like
-     * a request or an obligation. This must return a value that could in
-     * turn be used by the factory to create a new instance with the same
-     * value.
-     *
+     * Encodes the value in a form suitable for including in XML data like a request or an
+     * obligation. This must return a value that could in turn be used by the factory to create a
+     * new instance with the same value.
+     * 
      * @return a <code>String</code> form of the value
      */
     public String encode() {
@@ -506,8 +496,7 @@ public class DayTimeDurationAttribute extends AttributeValue
             buf.append(Long.toString(days));
             buf.append('D');
         }
-        if ((hours != 0) || (minutes != 0)
-            || (seconds != 0) || (nanoseconds != 0)) {
+        if ((hours != 0) || (minutes != 0) || (seconds != 0) || (nanoseconds != 0)) {
             // Only include the T if there are some time fields
             buf.append('T');
         } else {

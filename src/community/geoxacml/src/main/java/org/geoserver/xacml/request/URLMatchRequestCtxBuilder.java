@@ -20,8 +20,8 @@ import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.Subject;
 
 /**
- * Builds a request for URL Matching against regular expressions
- * Http parameters are encoded as resources
+ * Builds a request for URL Matching against regular expressions Http parameters are encoded as
+ * resources
  * 
  * 
  * @author Christian Mueller
@@ -64,11 +64,10 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
                     for (String value : (String[]) entry.getValue()) {
                         addResource(resources, paramURI, value);
                     }
-                }
-                else {
+                } else {
                     addResource(resources, paramURI, entry.getValue().toString());
                 }
-                
+
             }
         }
 

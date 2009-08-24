@@ -1,4 +1,3 @@
-
 /*
  * @(#)PolicySet.java
  *
@@ -53,192 +52,202 @@ import com.sun.xacml.combine.PolicyCombinerElement;
 import com.sun.xacml.combine.PolicyCombiningAlgorithm;
 import com.sun.xacml.finder.PolicyFinder;
 
-
 /**
- * Represents one of the two top-level constructs in XACML, the PolicySetType.
- * This can contain other policies and policy sets, and can also contain
- * URIs that point to policies and policy sets.
- *
+ * Represents one of the two top-level constructs in XACML, the PolicySetType. This can contain
+ * other policies and policy sets, and can also contain URIs that point to policies and policy sets.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class PolicySet extends AbstractPolicy
-{
+public class PolicySet extends AbstractPolicy {
 
     /**
      * Creates a new <code>PolicySet</code> with only the required elements.
-     *
-     * @param id the policy set identifier
-     * @param combiningAlg the <code>CombiningAlgorithm</code> used on the
-     *                     policies in this set
-     * @param target the <code>Target</code> for this set
+     * 
+     * @param id
+     *            the policy set identifier
+     * @param combiningAlg
+     *            the <code>CombiningAlgorithm</code> used on the policies in this set
+     * @param target
+     *            the <code>Target</code> for this set
      */
-    public PolicySet(URI id, PolicyCombiningAlgorithm combiningAlg,
-                     Target target) {
+    public PolicySet(URI id, PolicyCombiningAlgorithm combiningAlg, Target target) {
         this(id, null, combiningAlg, null, target, null, null, null);
     }
 
     /**
-     * Creates a new <code>PolicySet</code> with only the required elements,
-     * plus some policies.
-     *
-     * @param id the policy set identifier
-     * @param combiningAlg the <code>CombiningAlgorithm</code> used on the
-     *                     policies in this set
-     * @param target the <code>Target</code> for this set
-     * @param policies a list of <code>AbstractPolicy</code> objects
-     *
-     * @throws IllegalArgumentException if the <code>List</code> of policies
-     *                                  contains an object that is not an
-     *                                  <code>AbstractPolicy</code>
+     * Creates a new <code>PolicySet</code> with only the required elements, plus some policies.
+     * 
+     * @param id
+     *            the policy set identifier
+     * @param combiningAlg
+     *            the <code>CombiningAlgorithm</code> used on the policies in this set
+     * @param target
+     *            the <code>Target</code> for this set
+     * @param policies
+     *            a list of <code>AbstractPolicy</code> objects
+     * 
+     * @throws IllegalArgumentException
+     *             if the <code>List</code> of policies contains an object that is not an
+     *             <code>AbstractPolicy</code>
      */
-    public PolicySet(URI id, PolicyCombiningAlgorithm combiningAlg,
-                     Target target, List<AbstractPolicy> policies) {
+    public PolicySet(URI id, PolicyCombiningAlgorithm combiningAlg, Target target,
+            List<AbstractPolicy> policies) {
         this(id, null, combiningAlg, null, target, policies, null, null);
     }
 
     /**
-     * Creates a new <code>PolicySet</code> with the required elements plus
-     * some policies and a String description.
-     *
-     * @param id the policy set identifier
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the <code>CombiningAlgorithm</code> used on the
-     *                     policies in this set
-     * @param description a <code>String</code> describing the policy
-     * @param target the <code>Target</code> for this set
-     * @param policies a list of <code>AbstractPolicy</code> objects
-     *
-     * @throws IllegalArgumentException if the <code>List</code> of policies
-     *                                  contains an object that is not an
-     *                                  <code>AbstractPolicy</code>
+     * Creates a new <code>PolicySet</code> with the required elements plus some policies and a
+     * String description.
+     * 
+     * @param id
+     *            the policy set identifier
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the <code>CombiningAlgorithm</code> used on the policies in this set
+     * @param description
+     *            a <code>String</code> describing the policy
+     * @param target
+     *            the <code>Target</code> for this set
+     * @param policies
+     *            a list of <code>AbstractPolicy</code> objects
+     * 
+     * @throws IllegalArgumentException
+     *             if the <code>List</code> of policies contains an object that is not an
+     *             <code>AbstractPolicy</code>
      */
-    public PolicySet(URI id, String version,
-                     PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List<AbstractPolicy> policies) {
-        this(id, version, combiningAlg, description, target, policies, null,
-             null);
+    public PolicySet(URI id, String version, PolicyCombiningAlgorithm combiningAlg,
+            String description, Target target, List<AbstractPolicy> policies) {
+        this(id, version, combiningAlg, description, target, policies, null, null);
     }
 
     /**
-     * Creates a new <code>PolicySet</code> with the required elements plus
-     * some policies, a String description, and policy defaults.
-     *
-     * @param id the policy set identifier
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the <code>CombiningAlgorithm</code> used on the
-     *                     policies in this set
-     * @param description a <code>String</code> describing the policy
-     * @param target the <code>Target</code> for this set
-     * @param policies a list of <code>AbstractPolicy</code> objects
-     * @param defaultVersion the XPath version to use
-     *
-     * @throws IllegalArgumentException if the <code>List</code> of policies
-     *                                  contains an object that is not an
-     *                                  <code>AbstractPolicy</code>
+     * Creates a new <code>PolicySet</code> with the required elements plus some policies, a String
+     * description, and policy defaults.
+     * 
+     * @param id
+     *            the policy set identifier
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the <code>CombiningAlgorithm</code> used on the policies in this set
+     * @param description
+     *            a <code>String</code> describing the policy
+     * @param target
+     *            the <code>Target</code> for this set
+     * @param policies
+     *            a list of <code>AbstractPolicy</code> objects
+     * @param defaultVersion
+     *            the XPath version to use
+     * 
+     * @throws IllegalArgumentException
+     *             if the <code>List</code> of policies contains an object that is not an
+     *             <code>AbstractPolicy</code>
      */
-    public PolicySet(URI id, String version,
-                     PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List<AbstractPolicy> policies,
-                     String defaultVersion) {
-        this(id, version, combiningAlg, description, target, policies,
-             defaultVersion, null);
+    public PolicySet(URI id, String version, PolicyCombiningAlgorithm combiningAlg,
+            String description, Target target, List<AbstractPolicy> policies, String defaultVersion) {
+        this(id, version, combiningAlg, description, target, policies, defaultVersion, null);
     }
 
     /**
-     * Creates a new <code>PolicySet</code> with the required elements plus
-     * some policies, a String description, policy defaults, and obligations.
-     *
-     * @param id the policy set identifier
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the <code>CombiningAlgorithm</code> used on the
-     *                     policies in this set
-     * @param description a <code>String</code> describing the policy
-     * @param target the <code>Target</code> for this set
-     * @param policies a list of <code>AbstractPolicy</code> objects
-     * @param defaultVersion the XPath version to use
-     * @param obligations a set of <code>Obligation</code> objects
-     *
-     * @throws IllegalArgumentException if the <code>List</code> of policies
-     *                                  contains an object that is not an
-     *                                  <code>AbstractPolicy</code>
+     * Creates a new <code>PolicySet</code> with the required elements plus some policies, a String
+     * description, policy defaults, and obligations.
+     * 
+     * @param id
+     *            the policy set identifier
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the <code>CombiningAlgorithm</code> used on the policies in this set
+     * @param description
+     *            a <code>String</code> describing the policy
+     * @param target
+     *            the <code>Target</code> for this set
+     * @param policies
+     *            a list of <code>AbstractPolicy</code> objects
+     * @param defaultVersion
+     *            the XPath version to use
+     * @param obligations
+     *            a set of <code>Obligation</code> objects
+     * 
+     * @throws IllegalArgumentException
+     *             if the <code>List</code> of policies contains an object that is not an
+     *             <code>AbstractPolicy</code>
      */
-    public PolicySet(URI id, String version,
-                     PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List<AbstractPolicy> policies,
-                     String defaultVersion, Set<Obligation> obligations) {
-        super(id, version, combiningAlg, description, target, defaultVersion, 
-              obligations, null);
+    public PolicySet(URI id, String version, PolicyCombiningAlgorithm combiningAlg,
+            String description, Target target, List<AbstractPolicy> policies,
+            String defaultVersion, Set<Obligation> obligations) {
+        super(id, version, combiningAlg, description, target, defaultVersion, obligations, null);
 
         List<PolicyCombinerElement> list = null;
 
         // check that the list contains only AbstractPolicy objects
         if (policies != null) {
             list = new ArrayList<PolicyCombinerElement>();
-            
-           for (AbstractPolicy p : policies)     
+
+            for (AbstractPolicy p : policies)
                 list.add(new PolicyCombinerElement(p));
-            
+
         }
         setChildren(list);
     }
-    
-    /**
-     * Creates a new <code>PolicySet</code> with the required and optional
-     * elements. If you need to provide combining algorithm parameters, you
-     * need to use this constructor. Note that unlike the other constructors
-     * in this class, the policies list is actually a list of
-     * <code>CombinerElement</code>s used to match a policy with any
-     * combiner parameters it may have.
-     *
-     * @param id the policy set identifier
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the <code>CombiningAlgorithm</code> used on the
-     *                     rules in this set
-     * @param description a <code>String</code> describing the policy or
-     *                    null if there is no description
-     * @param target the <code>Target</code> for this policy
-     * @param policyElements a list of <code>CombinerElement</code> objects or
-     *                       null if there are no policies
-     * @param defaultVersion the XPath version to use or null if there is
-     *                       no default version
-     * @param obligations a set of <code>Obligations</code> objects or null
-     *                    if there are no obligations
-     * @param parameters the <code>List</code> of
-     *                   <code>CombinerParameter</code>s provided for general
-     *                   use by the combining algorithm
-     *
-     * @throws IllegalArgumentException if the <code>List</code> of rules
-     *                                  contains an object that is not a
-     *                                  <code>Rule</code>
-     */
-    public PolicySet(URI id, String version,
-                     PolicyCombiningAlgorithm combiningAlg,
-                     String description, Target target, List<CombinerElement> policyElements,
-                     String defaultVersion, Set<Obligation> obligations, List<CombinerParameter> parameters) {
-        super(id, version, combiningAlg, description, target, defaultVersion,
-              obligations, parameters);
 
+    /**
+     * Creates a new <code>PolicySet</code> with the required and optional elements. If you need to
+     * provide combining algorithm parameters, you need to use this constructor. Note that unlike
+     * the other constructors in this class, the policies list is actually a list of
+     * <code>CombinerElement</code>s used to match a policy with any combiner parameters it may
+     * have.
+     * 
+     * @param id
+     *            the policy set identifier
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the <code>CombiningAlgorithm</code> used on the rules in this set
+     * @param description
+     *            a <code>String</code> describing the policy or null if there is no description
+     * @param target
+     *            the <code>Target</code> for this policy
+     * @param policyElements
+     *            a list of <code>CombinerElement</code> objects or null if there are no policies
+     * @param defaultVersion
+     *            the XPath version to use or null if there is no default version
+     * @param obligations
+     *            a set of <code>Obligations</code> objects or null if there are no obligations
+     * @param parameters
+     *            the <code>List</code> of <code>CombinerParameter</code>s provided for general use
+     *            by the combining algorithm
+     * 
+     * @throws IllegalArgumentException
+     *             if the <code>List</code> of rules contains an object that is not a
+     *             <code>Rule</code>
+     */
+    public PolicySet(URI id, String version, PolicyCombiningAlgorithm combiningAlg,
+            String description, Target target, List<CombinerElement> policyElements,
+            String defaultVersion, Set<Obligation> obligations, List<CombinerParameter> parameters) {
+        super(id, version, combiningAlg, description, target, defaultVersion, obligations,
+                parameters);
 
         setChildren(policyElements);
     }
 
     /**
-     * Creates a new PolicySet based on the given root node. This is 
-     * private since every class is supposed to use a getInstance() method
-     * to construct from a Node, but since we want some common code in the
-     * parent class, we need this functionality in a constructor.
+     * Creates a new PolicySet based on the given root node. This is private since every class is
+     * supposed to use a getInstance() method to construct from a Node, but since we want some
+     * common code in the parent class, we need this functionality in a constructor.
      */
     private PolicySet(Node root, PolicyFinder finder) throws ParsingException {
         super(root, "PolicySet", "PolicyCombiningAlgId");
 
         List<AbstractPolicy> policies = new ArrayList<AbstractPolicy>();
-        HashMap<String,List<CombinerParameter>> policyParameters = new HashMap<String,List<CombinerParameter>>();
-        HashMap<String,List<CombinerParameter>> policySetParameters = new HashMap<String,List<CombinerParameter>>();
+        HashMap<String, List<CombinerParameter>> policyParameters = new HashMap<String, List<CombinerParameter>>();
+        HashMap<String, List<CombinerParameter>> policySetParameters = new HashMap<String, List<CombinerParameter>>();
         PolicyMetaData metaData = getMetaData();
 
         // collect the PolicySet-specific elements
@@ -252,11 +261,9 @@ public class PolicySet extends AbstractPolicy
             } else if (name.equals("Policy")) {
                 policies.add(Policy.getInstance(child));
             } else if (name.equals("PolicySetIdReference")) {
-                policies.add(PolicyReference.getInstance(child, finder,
-                                                         metaData));
+                policies.add(PolicyReference.getInstance(child, finder, metaData));
             } else if (name.equals("PolicyIdReference")) {
-                policies.add(PolicyReference.getInstance(child, finder,
-                                                         metaData));
+                policies.add(PolicyReference.getInstance(child, finder, metaData));
             } else if (name.equals("PolicyCombinerParameters")) {
                 paramaterHelper(policyParameters, child, "Policy");
             } else if (name.equals("PolicySetCombinerParameters")) {
@@ -272,21 +279,18 @@ public class PolicySet extends AbstractPolicy
         // possible cases figure out what paranmeters might apply...but
         // there should be a better way to do this
 
-        for (AbstractPolicy policy : policies) {    
+        for (AbstractPolicy policy : policies) {
             List<CombinerParameter> list = null;
 
             if (policy instanceof Policy) {
-                list = policyParameters.remove(policy.getId().
-                                                      toString());
+                list = policyParameters.remove(policy.getId().toString());
             } else if (policy instanceof PolicySet) {
-                list = policySetParameters.remove(policy.getId().
-                                                         toString());
+                list = policySetParameters.remove(policy.getId().toString());
             } else {
-                PolicyReference ref = (PolicyReference)policy;
+                PolicyReference ref = (PolicyReference) policy;
                 String id = ref.getReference().toString();
 
-                if (ref.getReferenceType() ==
-                    PolicyReference.POLICY_REFERENCE)
+                if (ref.getReferenceType() == PolicyReference.POLICY_REFERENCE)
                     list = policyParameters.remove(id);
                 else
                     list = policySetParameters.remove(id);
@@ -296,9 +300,9 @@ public class PolicySet extends AbstractPolicy
         }
 
         // ...and that there aren't extra parameters
-        if (! policyParameters.isEmpty())
+        if (!policyParameters.isEmpty())
             throw new ParsingException("Unmatched parameters in Policy");
-        if (! policySetParameters.isEmpty())
+        if (!policySetParameters.isEmpty())
             throw new ParsingException("Unmatched parameters in PolicySet");
 
         // finally, set the list of Rules
@@ -306,14 +310,12 @@ public class PolicySet extends AbstractPolicy
     }
 
     /**
-     * Private helper method that handles parsing a collection of
-     * parameters
+     * Private helper method that handles parsing a collection of parameters
      */
-    private void paramaterHelper(HashMap<String,List<CombinerParameter>> parameters, Node root,
-                                 String prefix) throws ParsingException {
-        String ref = root.getAttributes().getNamedItem(prefix + "IdRef").
-            getNodeValue();
-        
+    private void paramaterHelper(HashMap<String, List<CombinerParameter>> parameters, Node root,
+            String prefix) throws ParsingException {
+        String ref = root.getAttributes().getNamedItem(prefix + "IdRef").getNodeValue();
+
         if (parameters.containsKey(ref)) {
             List<CombinerParameter> list = parameters.get(ref);
             parseParameters(list, root);
@@ -328,8 +330,7 @@ public class PolicySet extends AbstractPolicy
      * Private helper method that handles parsing a single parameter.
      */
     private void parseParameters(List<CombinerParameter> parameters, Node root)
-        throws ParsingException
-    {
+            throws ParsingException {
         NodeList nodes = root.getChildNodes();
 
         for (int i = 0; i < nodes.getLength(); i++) {
@@ -340,82 +341,83 @@ public class PolicySet extends AbstractPolicy
     }
 
     /**
-     * Creates an instance of a <code>PolicySet</code> object based on a
-     * DOM node. The node must be the root of PolicySetType XML object,
-     * otherwise an exception is thrown. This <code>PolicySet</code> will
-     * not support references because it has no <code>PolicyFinder</code>.
-     *
-     * @param root the DOM root of a PolicySetType XML type
-     *
-     * @throws ParsingException if the PolicySetType is invalid
+     * Creates an instance of a <code>PolicySet</code> object based on a DOM node. The node must be
+     * the root of PolicySetType XML object, otherwise an exception is thrown. This
+     * <code>PolicySet</code> will not support references because it has no
+     * <code>PolicyFinder</code>.
+     * 
+     * @param root
+     *            the DOM root of a PolicySetType XML type
+     * 
+     * @throws ParsingException
+     *             if the PolicySetType is invalid
      */
     public static PolicySet getInstance(Node root) throws ParsingException {
         return getInstance(root, null);
     }
 
     /**
-     * Creates an instance of a <code>PolicySet</code> object based on a
-     * DOM node. The node must be the root of PolicySetType XML object,
-     * otherwise an exception is thrown. The finder is used to handle
-     * policy references.
-     *
-     * @param root the DOM root of a PolicySetType XML type
-     * @param finder the <code>PolicyFinder</code> used to handle references
-     *
-     * @throws ParsingException if the PolicySetType is invalid
+     * Creates an instance of a <code>PolicySet</code> object based on a DOM node. The node must be
+     * the root of PolicySetType XML object, otherwise an exception is thrown. The finder is used to
+     * handle policy references.
+     * 
+     * @param root
+     *            the DOM root of a PolicySetType XML type
+     * @param finder
+     *            the <code>PolicyFinder</code> used to handle references
+     * 
+     * @throws ParsingException
+     *             if the PolicySetType is invalid
      */
-    public static PolicySet getInstance(Node root, PolicyFinder finder)
-        throws ParsingException
-    {
+    public static PolicySet getInstance(Node root, PolicyFinder finder) throws ParsingException {
         // first off, check that it's the right kind of node
-        if (! root.getNodeName().equals("PolicySet")) {
-            throw new ParsingException("Cannot create PolicySet from root of" +
-                                       " type " + root.getNodeName());
+        if (!root.getNodeName().equals("PolicySet")) {
+            throw new ParsingException("Cannot create PolicySet from root of" + " type "
+                    + root.getNodeName());
         }
 
         return new PolicySet(root, finder);
     }
 
     /**
-     * Encodes this <code>PolicySet</code> into its XML representation and
-     * writes this encoding to the given <code>OutputStream</code> with no
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this <code>PolicySet</code> into its XML representation and writes this encoding to
+     * the given <code>OutputStream</code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this <code>PolicySet</code> into its XML representation and
-     * writes this encoding to the given <code>OutputStream</code> with
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this <code>PolicySet</code> into its XML representation and writes this encoding to
+     * the given <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
 
-        out.println(indent + "<PolicySet PolicySetId=\"" + getId().toString() +
-                    "\" PolicyCombiningAlgId=\"" +
-                    getCombiningAlg().getIdentifier().toString() +
-                    "\">");
-        
+        out.println(indent + "<PolicySet PolicySetId=\"" + getId().toString()
+                + "\" PolicyCombiningAlgId=\"" + getCombiningAlg().getIdentifier().toString()
+                + "\">");
+
         indenter.in();
         String nextIndent = indenter.makeString();
 
         String description = getDescription();
         if (description != null)
-            out.println(nextIndent + "<Description>" + description +
-                        "</Description>");
+            out.println(nextIndent + "<Description>" + description + "</Description>");
 
         String version = getDefaultVersion();
         if (version != null)
-            out.println("<PolicySetDefaults><XPathVersion>" + version +
-                        "</XPathVersion></PolicySetDefaults>");
+            out.println("<PolicySetDefaults><XPathVersion>" + version
+                    + "</XPathVersion></PolicySetDefaults>");
 
         getTarget().encode(output, indenter);
         encodeCommonElements(output, indenter);

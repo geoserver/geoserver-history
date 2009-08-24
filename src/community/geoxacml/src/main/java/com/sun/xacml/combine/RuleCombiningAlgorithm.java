@@ -1,4 +1,3 @@
-
 /*
  * @(#)RuleCombiningAlgorithm.java
  *
@@ -42,38 +41,39 @@ import java.util.List;
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.ctx.Result;
 
-
 /**
  * The base type for all Rule combining algorithms.
- *
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
  */
-public abstract class RuleCombiningAlgorithm extends CombiningAlgorithm
-{
+public abstract class RuleCombiningAlgorithm extends CombiningAlgorithm {
 
     /**
      * Constructor that takes the algorithm's identifier.
-     *
-     * @param identifier the algorithm's identifier
+     * 
+     * @param identifier
+     *            the algorithm's identifier
      */
     public RuleCombiningAlgorithm(URI identifier) {
         super(identifier);
     }
-    
+
     /**
-     * Combines the rules based on the context to produce some unified
-     * result. This is the one function of a combining algorithm.
-     *
-     * @param context the representation of the request
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s
-     * @param ruleElements a <code>List</code> of <code>CombinerElement<code>s
-     *
+     * Combines the rules based on the context to produce some unified result. This is the one
+     * function of a combining algorithm.
+     * 
+     * @param context
+     *            the representation of the request
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of <code>CombinerParameter<code>s
+     * @param ruleElements
+     *            a <code>List</code> of <code>CombinerElement<code>s
+     * 
      * @return a single unified result based on the combining logic
      */
     public abstract Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
-                                   List<? extends CombinerElement> ruleElements);
+            List<? extends CombinerElement> ruleElements);
 
 }

@@ -15,30 +15,33 @@ import com.sun.xacml.ctx.Attribute;
 /**
  * @author Christian Mueller
  * 
- * Class for holding a security role, roles can have attributes.
- * This role class is intended for building a role object for an xacml
- * request.
+ *         Class for holding a security role, roles can have attributes. This role class is intended
+ *         for building a role object for an xacml request.
  * 
- * According to the RBAC XACML specification, roles can be disabled. 
+ *         According to the RBAC XACML specification, roles can be disabled.
  * 
- * An example for a role is  "EMPLOYEE" with a role parameter PERSONAL_NUMBER
- *  
- * For integration into acegi security framework, this class implements the
- * acegi GrantedAuthority interface. 
- *   
- *
+ *         An example for a role is "EMPLOYEE" with a role parameter PERSONAL_NUMBER
+ * 
+ *         For integration into acegi security framework, this class implements the acegi
+ *         GrantedAuthority interface.
+ * 
+ * 
  */
 public class XACMLRole implements GrantedAuthority {
-       
 
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
+
     private String authority;
+
     private Set<Attribute> attributes;
+
     private boolean enabled;
+
     private boolean roleAttributesProcessed;
+
     public boolean isRoleAttributesProcessed() {
         return roleAttributesProcessed;
     }
@@ -56,26 +59,28 @@ public class XACMLRole implements GrantedAuthority {
     }
 
     public XACMLRole(String authority) {
-     this(authority, null);   
+        this(authority, null);
     }
-    
-    public XACMLRole(String authority , Set<Attribute> attributes) {
-        this.authority=authority;
-        this.attributes=attributes;
-        this.enabled=true;
-        this.roleAttributesProcessed=false;
-    }    
+
+    public XACMLRole(String authority, Set<Attribute> attributes) {
+        this.authority = authority;
+        this.attributes = attributes;
+        this.enabled = true;
+        this.roleAttributesProcessed = false;
+    }
+
     public String getAuthority() {
         return authority;
     }
+
     public Set<Attribute> getAttributes() {
-        if (attributes==null) 
-            attributes=new HashSet<Attribute>();
+        if (attributes == null)
+            attributes = new HashSet<Attribute>();
         return attributes;
     }
-    
+
     public boolean hasAttributes() {
-        return attributes!=null && attributes.isEmpty()==false;
+        return attributes != null && attributes.isEmpty() == false;
     }
 
 }

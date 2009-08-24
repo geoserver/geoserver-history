@@ -1,4 +1,3 @@
-
 /*
  * @(#)Test.java
  *
@@ -36,43 +35,41 @@
 
 package com.sun.xacml.test;
 
-
 /**
  * Simple interface that defines what a single test does.
- *
+ * 
  * @author Seth Proctor
  */
-public interface Test
-{
+public interface Test {
 
     /**
      * Runs the test.
-     *
-     * @param testPrefix the namespace containing this test
-     *
+     * 
+     * @param testPrefix
+     *            the namespace containing this test
+     * 
      * @return the number of failures that occured
      */
     public int run(String testPrefix);
 
     /**
      * Returns the name of this test.
-     *
+     * 
      * @return the name
      */
     public String getName();
 
     /**
-     * Returns whether an error is expected to happen (and is therefore a
-     * success case).
-     *
+     * Returns whether an error is expected to happen (and is therefore a success case).
+     * 
      * @return true if an error is expected, false otherwise
      */
     public boolean isErrorExpected();
 
     /**
-     * Returns whether or not this is an experimental test, and therefore
-     * not part of the required test cases.
-     *
+     * Returns whether or not this is an experimental test, and therefore not part of the required
+     * test cases.
+     * 
      * @return true if this test is experimental, false otherwise
      */
     public boolean isExperimental();

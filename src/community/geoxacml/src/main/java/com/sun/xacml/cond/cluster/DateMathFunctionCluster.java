@@ -1,4 +1,3 @@
-
 /*
  * @(#)DateMathFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.DateMathFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>DateMathFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class DateMathFunctionCluster implements FunctionCluster
-{
+public class DateMathFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : DateMathFunction.getSupportedIdentifiers())
             set.add(new DateMathFunction(fn));
-
 
         return set;
     }

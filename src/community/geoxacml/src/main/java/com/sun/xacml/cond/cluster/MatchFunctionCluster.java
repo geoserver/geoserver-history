@@ -1,4 +1,3 @@
-
 /*
  * @(#)MatchFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.MatchFunction;
 
-
 /**
  * Clusters all the functions supported by <code>MatchFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class MatchFunctionCluster implements FunctionCluster
-{
+public class MatchFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : MatchFunction.getSupportedIdentifiers())
             set.add(new MatchFunction(fn));
-
 
         return set;
     }

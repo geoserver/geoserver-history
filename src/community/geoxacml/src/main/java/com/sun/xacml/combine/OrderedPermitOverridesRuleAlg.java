@@ -1,4 +1,3 @@
-
 /*
  * @(#)OrderedPermitOverridesRuleAlg.java
  *
@@ -38,25 +37,21 @@ package com.sun.xacml.combine;
 
 import java.net.URI;
 
-
 /**
- * This is the standard Ordered Permit Overrides rule combining algorithm. It
- * allows a single evaluation of Permit to take precedence over any number
- * of deny, not applicable or indeterminate results. Note that this uses
- * the regular Permit Overrides implementation since it is also orderd.
- *
+ * This is the standard Ordered Permit Overrides rule combining algorithm. It allows a single
+ * evaluation of Permit to take precedence over any number of deny, not applicable or indeterminate
+ * results. Note that this uses the regular Permit Overrides implementation since it is also orderd.
+ * 
  * @since 1.1
  * @author seth proctor
  */
-public class OrderedPermitOverridesRuleAlg extends PermitOverridesRuleAlg
-{
+public class OrderedPermitOverridesRuleAlg extends PermitOverridesRuleAlg {
 
     /**
      * The standard URN used to identify this algorithm
      */
-    public static final String algId =
-        "urn:oasis:names:tc:xacml:1.1:rule-combining-algorithm:" +
-        "ordered-permit-overrides";
+    public static final String algId = "urn:oasis:names:tc:xacml:1.1:rule-combining-algorithm:"
+            + "ordered-permit-overrides";
 
     // a URI form of the identifier
     private static final URI identifierURI = URI.create(algId);

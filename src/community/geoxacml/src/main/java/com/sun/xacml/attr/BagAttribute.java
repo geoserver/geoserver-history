@@ -1,4 +1,3 @@
-
 /*
  * @(#)BagAttribute.java
  *
@@ -42,44 +41,41 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-
 /**
- * Represents a bag used in the XACML spec as return values from functions
- * and designators/selectors that provide more than one value. All values in
- * the bag are of the same type, and the bag may be empty. The bag is
- * immutable, although its contents may not be.
+ * Represents a bag used in the XACML spec as return values from functions and designators/selectors
+ * that provide more than one value. All values in the bag are of the same type, and the bag may be
+ * empty. The bag is immutable, although its contents may not be.
  * <p>
- * NOTE: This is the one standard attribute type that can't be created from
- * the factory, since you can't have this in an XML block (it is used only
- * in return values & dynamic inputs). I think this is right, but we may need
- * to add some functionality to let this go into the factory.
- *
+ * NOTE: This is the one standard attribute type that can't be created from the factory, since you
+ * can't have this in an XML block (it is used only in return values & dynamic inputs). I think this
+ * is right, but we may need to add some functionality to let this go into the factory.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Steve Hanna
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class BagAttribute extends AttributeValue
-{
+public class BagAttribute extends AttributeValue {
 
     // The Collection of AttributeValues that this object encapsulates
     private Collection<AttributeValue> bag;
 
     /**
-     * Creates a new <code>BagAttribute</code> that represents
-     * the <code>Collection</code> of <code>AttributeValue</code>s supplied.
-     * If the set is null or empty, then the new bag is empty.
-     *
-     * @param type the data type of all the attributes in the set
-     * @param bag a <code>Collection</code> of <code>AttributeValue</code>s
+     * Creates a new <code>BagAttribute</code> that represents the <code>Collection</code> of
+     * <code>AttributeValue</code>s supplied. If the set is null or empty, then the new bag is
+     * empty.
+     * 
+     * @param type
+     *            the data type of all the attributes in the set
+     * @param bag
+     *            a <code>Collection</code> of <code>AttributeValue</code>s
      */
     public BagAttribute(URI type, Collection<AttributeValue> bag) {
         super(type);
 
         if (type == null)
-            throw new IllegalArgumentException("Bags require a non-null " +
-                                               "type be provided");
+            throw new IllegalArgumentException("Bags require a non-null " + "type be provided");
 
         // see if the bag is empty/null
         if ((bag == null) || (bag.size() == 0)) {
@@ -88,21 +84,19 @@ public class BagAttribute extends AttributeValue
         } else {
             // go through the collection to make sure it's a valid bag
             Iterator<AttributeValue> it = bag.iterator();
-            
+
             while (it.hasNext()) {
                 AttributeValue attr = it.next();
 
                 // a bag cannot contain other bags, so make sure that each
                 // value isn't actually another bag
                 if (attr.isBag())
-                    throw new IllegalArgumentException("bags cannot contain " +
-                                                       "other bags");
-                    
+                    throw new IllegalArgumentException("bags cannot contain " + "other bags");
+
                 // make sure that they're all the same type
-                if (! type.equals(attr.getType()))
-                    throw new
-                        IllegalArgumentException("Bag items must all be of " +
-                                                 "the same type");
+                if (!type.equals(attr.getType()))
+                    throw new IllegalArgumentException("Bag items must all be of "
+                            + "the same type");
             }
 
             // if we get here, then they're all the same type
@@ -112,7 +106,7 @@ public class BagAttribute extends AttributeValue
 
     /**
      * Overrides the default method to always return true.
-     *
+     * 
      * @return a value of true
      */
     public boolean isBag() {
@@ -121,9 +115,10 @@ public class BagAttribute extends AttributeValue
 
     /**
      * Convenience function that returns a bag with no elements
-     *
-     * @param type the types contained in the bag
-     *
+     * 
+     * @param type
+     *            the types contained in the bag
+     * 
      * @return a new empty bag
      */
     public static BagAttribute createEmptyBag(URI type) {
@@ -131,9 +126,9 @@ public class BagAttribute extends AttributeValue
     }
 
     /**
-     * A convenience function that returns whether or not the bag is empty
-     * (ie, whether or not the size of the bag is zero)
-     *
+     * A convenience function that returns whether or not the bag is empty (ie, whether or not the
+     * size of the bag is zero)
+     * 
      * @return whether or not the bag is empty
      */
     public boolean isEmpty() {
@@ -142,7 +137,7 @@ public class BagAttribute extends AttributeValue
 
     /**
      * Returns the number of elements in this bag
-     *
+     * 
      * @return the number of elements in this bag
      */
     public int size() {
@@ -150,14 +145,14 @@ public class BagAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if this set contains the specified value. More formally,
-     * returns true if and only if this bag contains a value v such that
-     * (value==null ? v==null : value.equals(v)). Note that this will only
-     * work correctly if the <code>AttributeValue</code> has overridden the
+     * Returns true if this set contains the specified value. More formally, returns true if and
+     * only if this bag contains a value v such that (value==null ? v==null : value.equals(v)). Note
+     * that this will only work correctly if the <code>AttributeValue</code> has overridden the
      * <code>equals</code> method.
-     *
-     * @param value the value to look for
-     *
+     * 
+     * @param value
+     *            the value to look for
+     * 
      * @return true if the value is in the bag
      */
     public boolean contains(AttributeValue value) {
@@ -165,30 +160,29 @@ public class BagAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if this bag contains all of the values of the specified bag.
-     * Note that this will only work correctly if the
-     * <code>AttributeValue</code> type contained in the bag has overridden
-     * the <code>equals</code> method.
-     *
-     * @param bag the bag to compare
-     *
+     * Returns true if this bag contains all of the values of the specified bag. Note that this will
+     * only work correctly if the <code>AttributeValue</code> type contained in the bag has
+     * overridden the <code>equals</code> method.
+     * 
+     * @param bag
+     *            the bag to compare
+     * 
      * @return true if the input is a subset of this bag
      */
     public boolean containsAll(BagAttribute bag) {
         return this.bag.containsAll(bag.bag);
     }
 
-
     /**
-     * Returns an iterator over te 
+     * Returns an iterator over te
      */
     public Iterator<AttributeValue> iterator() {
         return new ImmutableIterator<AttributeValue>(bag.iterator());
     }
 
     /**
-     * This is a version of Iterator that overrides the <code>remove</code>
-     * method so that items can't be taken out of the bag.
+     * This is a version of Iterator that overrides the <code>remove</code> method so that items
+     * can't be taken out of the bag.
      */
     private class ImmutableIterator<E> implements Iterator<E> {
 
@@ -201,7 +195,7 @@ public class BagAttribute extends AttributeValue
         public ImmutableIterator(Iterator<E> iterator) {
             this.iterator = iterator;
         }
-        
+
         /**
          * Standard hasNext method
          */
@@ -222,30 +216,29 @@ public class BagAttribute extends AttributeValue
         public void remove() throws UnsupportedOperationException {
             throw new UnsupportedOperationException();
         }
-        
+
     }
 
     /**
-     * Not Specified 
-     * TODO 
+     * Not Specified TODO
      * 
-    */
+     */
     public String encode() {
         StringBuffer buff = new StringBuffer();
-        for (AttributeValue value : bag) 
+        for (AttributeValue value : bag)
             buff.append(value.encode()).append(",");
-        if (buff.length()>1)
-            buff.setLength(buff.length()-1);
+        if (buff.length() > 1)
+            buff.setLength(buff.length() - 1);
         return buff.toString();
-        
-       // throw new UnsupportedOperationException("Bags cannot be encoded");
+
+        // throw new UnsupportedOperationException("Bags cannot be encoded");
     }
 
     @Override
     public String encodeWithTags(boolean includeType) {
         StringBuffer buff = new StringBuffer();
         for (AttributeValue value : bag)
-             buff.append(value.encodeWithTags(includeType));
+            buff.append(value.encodeWithTags(includeType));
         return buff.toString();
     }
 

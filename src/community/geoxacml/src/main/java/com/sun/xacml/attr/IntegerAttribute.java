@@ -1,4 +1,3 @@
-
 /*
  * @(#)IntegerAttribute.java
  *
@@ -40,24 +39,20 @@ import java.net.URI;
 
 import org.w3c.dom.Node;
 
-
 /**
- * Representation of an xs:integer value. This class supports parsing
- * xs:integer values. All objects of this class are immutable and
- * all methods of the class are thread-safe.
- *
+ * Representation of an xs:integer value. This class supports parsing xs:integer values. All objects
+ * of this class are immutable and all methods of the class are thread-safe.
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Steve Hanna
  */
-public class IntegerAttribute extends AttributeValue
-{
+public class IntegerAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/2001/XMLSchema#integer";
- 
+    public static final String identifier = "http://www.w3.org/2001/XMLSchema#integer";
+
     /**
      * URI version of name for this type
      */
@@ -69,10 +64,10 @@ public class IntegerAttribute extends AttributeValue
     private long value;
 
     /**
-     * Creates a new <code>IntegerAttribute</code> that represents
-     * the long value supplied.
-     *
-     * @param value the <code>long</code> value to be represented
+     * Creates a new <code>IntegerAttribute</code> that represents the long value supplied.
+     * 
+     * @param value
+     *            the <code>long</code> value to be represented
      */
     public IntegerAttribute(long value) {
         super(identifierURI);
@@ -80,32 +75,32 @@ public class IntegerAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>IntegerAttribute</code> that represents
-     * the xs:integer at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>IntegerAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
-     * @throws NumberFormatException if the string form isn't a number
+     * Returns a new <code>IntegerAttribute</code> that represents the xs:integer at a particular
+     * DOM node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>IntegerAttribute</code> representing the appropriate value (null if there
+     *         is a parsing error)
+     * @throws NumberFormatException
+     *             if the string form isn't a number
      */
-    public static IntegerAttribute getInstance(Node root)
-        throws NumberFormatException
-    {
+    public static IntegerAttribute getInstance(Node root) throws NumberFormatException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a new <code>IntegerAttribute</code> that represents
-     * the xs:integer value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>IntegerAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
-     * @throws NumberFormatException if the string isn't a number
+     * Returns a new <code>IntegerAttribute</code> that represents the xs:integer value indicated by
+     * the string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>IntegerAttribute</code> representing the appropriate value (null if there
+     *         is a parsing error)
+     * @throws NumberFormatException
+     *             if the string isn't a number
      */
-    public static IntegerAttribute getInstance(String value)
-        throws NumberFormatException
-    {
+    public static IntegerAttribute getInstance(String value) throws NumberFormatException {
         // Leading '+' is allowed per XML schema and not
         // by Long.parseLong. Strip it, if present.
         if ((value.length() >= 1) && (value.charAt(0) == '+'))
@@ -115,7 +110,7 @@ public class IntegerAttribute extends AttributeValue
 
     /**
      * Returns the <code>long</code> value represented by this object.
-     *
+     * 
      * @return the <code>long</code> value
      */
     public long getValue() {
@@ -123,31 +118,31 @@ public class IntegerAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof IntegerAttribute))
+        if (!(o instanceof IntegerAttribute))
             return false;
 
-        IntegerAttribute other = (IntegerAttribute)o;
+        IntegerAttribute other = (IntegerAttribute) o;
 
         return (value == other.value);
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
-        return (int)value;
+        return (int) value;
     }
 
     /**

@@ -1,4 +1,3 @@
-
 /*
  * @(#)SubtractFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.SubtractFunction;
 
-
 /**
  * Clusters all the functions supported by <code>SubtractFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class SubtractFunctionCluster implements FunctionCluster
-{
+public class SubtractFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : SubtractFunction.getSupportedIdentifiers())
             set.add(new SubtractFunction(fn));
-
 
         return set;
     }

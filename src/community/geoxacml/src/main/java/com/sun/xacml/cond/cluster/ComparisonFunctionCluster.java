@@ -1,4 +1,3 @@
-
 /*
  * @(#)ComparisonFunctionCluster.java
  *
@@ -42,20 +41,18 @@ import java.util.Set;
 import com.sun.xacml.cond.ComparisonFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>ComparisonFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class ComparisonFunctionCluster implements FunctionCluster
-{
+public class ComparisonFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
-        Set<Function> set = new HashSet<Function>();        
+        Set<Function> set = new HashSet<Function>();
 
         for (String fn : ComparisonFunction.getSupportedIdentifiers())
             set.add(new ComparisonFunction(fn));

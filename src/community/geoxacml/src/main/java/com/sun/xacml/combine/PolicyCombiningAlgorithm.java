@@ -1,4 +1,3 @@
-
 /*
  * @(#)PolicyCombiningAlgorithm.java
  *
@@ -42,51 +41,48 @@ import java.util.List;
 import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.ctx.Result;
 
-
 /**
- * The base type for all Policy combining algorithms. Unlike in Rule 
- * Combining Algorithms, each policy must be matched before they're evaluated
- * to make sure they apply. Also, in combining policies, obligations must be
- * handled correctly. Specifically, no obligation may be included in the
- * <code>Result</code> that doesn't match the effect being returned. So, if
- * INDETERMINATE or NOT_APPLICABLE is the returned effect, no obligations
- * may be included in the result. If the effect of the combining algorithm
- * is PERMIT or DENY, then obligations with a matching fulfillOn effect
- * are also included in the result.
- *
+ * The base type for all Policy combining algorithms. Unlike in Rule Combining Algorithms, each
+ * policy must be matched before they're evaluated to make sure they apply. Also, in combining
+ * policies, obligations must be handled correctly. Specifically, no obligation may be included in
+ * the <code>Result</code> that doesn't match the effect being returned. So, if INDETERMINATE or
+ * NOT_APPLICABLE is the returned effect, no obligations may be included in the result. If the
+ * effect of the combining algorithm is PERMIT or DENY, then obligations with a matching fulfillOn
+ * effect are also included in the result.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
  */
-public abstract class PolicyCombiningAlgorithm extends CombiningAlgorithm
-{
+public abstract class PolicyCombiningAlgorithm extends CombiningAlgorithm {
 
     /**
      * Constructor that takes the algorithm's identifier.
-     *
-     * @param identifier the algorithm's identifier
+     * 
+     * @param identifier
+     *            the algorithm's identifier
      */
     public PolicyCombiningAlgorithm(URI identifier) {
         super(identifier);
     }
 
     /**
-     * Combines the policies based on the context to produce some unified
-     * result. This is the one function of a combining algorithm.
+     * Combines the policies based on the context to produce some unified result. This is the one
+     * function of a combining algorithm.
      * <p>
-     * Note that unlike in the RuleCombiningAlgorithms, here you must
-     * explicitly match the sub-policies to make sure that you should
-     * consider them, and you must handle Obligations.
-     *
-     * @param context the representation of the request
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s
-     * @param policyElements a <code>List</code> of
-     *                       <code>CombinerElement<code>s
-     *
+     * Note that unlike in the RuleCombiningAlgorithms, here you must explicitly match the
+     * sub-policies to make sure that you should consider them, and you must handle Obligations.
+     * 
+     * @param context
+     *            the representation of the request
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of <code>CombinerParameter<code>s
+     * @param policyElements
+     *            a <code>List</code> of <code>CombinerElement<code>s
+     * 
      * @return a single unified result based on the combining logic
      */
     public abstract Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
-                                   List<? extends CombinerElement> policyElements);
+            List<? extends CombinerElement> policyElements);
 
 }

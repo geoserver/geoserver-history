@@ -1,4 +1,3 @@
-
 /*
  * @(#)BasicGroupTest.java
  *
@@ -46,14 +45,12 @@ import org.w3c.dom.NodeList;
 
 import com.sun.xacml.PDP;
 
-
 /**
  * A basic implementation of a group of tests.
- *
+ * 
  * @author Seth Proctor
  */
-public class BasicGroupTest implements Test
-{
+public class BasicGroupTest implements Test {
 
     // the name of this test
     private String name;
@@ -66,10 +63,13 @@ public class BasicGroupTest implements Test
 
     /**
      * Constructor that accepts all the required values
-     *
-     * @param name the name of this group
-     * @param experimental true if this is an experimental group
-     * @param tests the groups of tests
+     * 
+     * @param name
+     *            the name of this group
+     * @param experimental
+     *            true if this is an experimental group
+     * @param tests
+     *            the groups of tests
      */
     public BasicGroupTest(String name, boolean experimental, List<Test> tests) {
         this.name = name;
@@ -79,18 +79,20 @@ public class BasicGroupTest implements Test
 
     /**
      * Creates an instance of a group of tests from its XML representation.
-     *
-     * @param root the root of the XML-encoded data for this group
-     * @param pdp the <code>PDP</code> used by any sub-tests
-     * @param module the module used for any policies loaded by sub-tests
+     * 
+     * @param root
+     *            the root of the XML-encoded data for this group
+     * @param pdp
+     *            the <code>PDP</code> used by any sub-tests
+     * @param module
+     *            the module used for any policies loaded by sub-tests
      */
-    public static BasicGroupTest getInstance(Node root, PDP pdp,
-                                             TestPolicyFinderModule module) {
+    public static BasicGroupTest getInstance(Node root, PDP pdp, TestPolicyFinderModule module) {
         NamedNodeMap map = root.getAttributes();
 
         // the name is required
         String name = map.getNamedItem("name").getNodeValue();
-        
+
         // the experimental tag isn't
         boolean experimental = false;
         Node attrNode = map.getNamedItem("experimental");
@@ -132,7 +134,7 @@ public class BasicGroupTest implements Test
 
     /**
      * Returns the tests contained in this group.
-     *
+     * 
      * @return a <code>List</code> of <code>Test</code>s
      */
     public List<Test> getTests() {
@@ -142,14 +144,13 @@ public class BasicGroupTest implements Test
     public int run(String testPrefix) {
         Iterator<Test> it = tests.iterator();
         int errorCount = 0;
-        
+
         System.out.println("Running group " + name);
 
         while (it.hasNext())
             errorCount += it.next().run(testPrefix + name);
 
-        System.out.println("Finished group " + name +
-                           " [failures: " + errorCount + "]");
+        System.out.println("Finished group " + name + " [failures: " + errorCount + "]");
 
         return errorCount;
     }

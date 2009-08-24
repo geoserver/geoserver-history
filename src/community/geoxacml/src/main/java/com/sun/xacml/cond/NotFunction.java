@@ -1,4 +1,3 @@
-
 /*
  * @(#)NotFunction.java
  *
@@ -44,21 +43,18 @@ import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BooleanAttribute;
 
-
 /**
- * A class that implements the not function. This function takes
- * one boolean argument and returns the logical negation of that
- * value. If the argument evaluates to indeterminate, an
- * indeterminate result is returned.
- *
+ * A class that implements the not function. This function takes one boolean argument and returns
+ * the logical negation of that value. If the argument evaluates to indeterminate, an indeterminate
+ * result is returned.
+ * 
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class NotFunction extends FunctionBase
-{
+public class NotFunction extends FunctionBase {
 
     /**
      * Standard identifier for the not function.
@@ -67,25 +63,25 @@ public class NotFunction extends FunctionBase
 
     /**
      * Creates a new <code>NotFunction</code> object.
-     *
-     * @param functionName the standard XACML name of the function to be
-     *                     handled by this object, including the full namespace
-     *
-     * @throws IllegalArgumentException if the function is unknown
+     * 
+     * @param functionName
+     *            the standard XACML name of the function to be handled by this object, including
+     *            the full namespace
+     * 
+     * @throws IllegalArgumentException
+     *             if the function is unknown
      */
     public NotFunction(String functionName) {
-        super(NAME_NOT, 0, BooleanAttribute.identifier, false, 1,
-              BooleanAttribute.identifier, false);
+        super(NAME_NOT, 0, BooleanAttribute.identifier, false, 1, BooleanAttribute.identifier,
+                false);
 
-        if (! functionName.equals(NAME_NOT))
-            throw new IllegalArgumentException("unknown not function: "
-                                               + functionName);
+        if (!functionName.equals(NAME_NOT))
+            throw new IllegalArgumentException("unknown not function: " + functionName);
     }
-    
+
     /**
-     * Returns a <code>Set</code> containing all the function identifiers
-     * supported by this class.
-     *
+     * Returns a <code>Set</code> containing all the function identifiers supported by this class.
+     * 
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set<String> getSupportedIdentifiers() {
@@ -98,18 +94,19 @@ public class NotFunction extends FunctionBase
 
     /**
      * Evaluate the function, using the specified parameters.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context an <code>EvaluationCtx</code> so that the
-     *                <code>Evaluatable</code> objects can be evaluated
-     * @return an <code>EvaluationResult</code> representing the
-     *         function's result
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            an <code>EvaluationCtx</code> so that the <code>Evaluatable</code> objects can be
+     *            evaluated
+     * @return an <code>EvaluationResult</code> representing the function's result
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // Evaluate the arguments
-        AttributeValue [] argValues = new AttributeValue[inputs.size()];
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
         if (result != null)
             return result;

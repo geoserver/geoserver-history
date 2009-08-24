@@ -27,7 +27,6 @@ import org.geotools.xacml.transport.XACMLTransport;
 import org.geotools.xacml.transport.XACMLTransportFactory;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
-
 import com.sun.xacml.PDP;
 import com.sun.xacml.PDPConfig;
 import com.sun.xacml.finder.AttributeFinder;
@@ -55,32 +54,32 @@ public class GeoXACMLConfig {
     private static XACMLRoleAuthority raa;
 
     private static Object raaLock = new Object();
-    
-    private static RequestCtxBuilderFactory requstCtxBuilderFactory; 
+
+    private static RequestCtxBuilderFactory requstCtxBuilderFactory;
+
     private static Object requstCtxBuilderFactoryLock = new Object();
 
     private static String repositoryBaseDir = null;
-    
+
     static public void reset() {
         synchronized (pdpLock) {
-            pdp=null;
+            pdp = null;
         }
         synchronized (transportFactoryLock) {
-            transportFactory=null;
+            transportFactory = null;
         }
 
     }
-    
+
     static public void reload() {
         reset();
         getPDP();
     }
-    
+
     static public void setPolicyRepsoitoryBaseDir(String baseDir) {
-        repositoryBaseDir=baseDir;
+        repositoryBaseDir = baseDir;
     }
 
-    
     /**
      * @return a XAMCL PDP (Policy Declision Point) for the geoserver environment
      */
@@ -94,7 +93,7 @@ public class GeoXACMLConfig {
             GeoXACML.initialize();
 
             DataDirPolicyFinderModlule policyModule = new DataDirPolicyFinderModlule();
-            if (repositoryBaseDir!=null)
+            if (repositoryBaseDir != null)
                 policyModule.setBaseDir(repositoryBaseDir);
 
             PolicyFinder policyFinder = new PolicyFinder();
@@ -115,14 +114,14 @@ public class GeoXACMLConfig {
             attrFinder.setModules(attrModules);
 
             pdp = new PDP(new PDPConfig(attrFinder, policyFinder, null));
-            XACMLUtil.getXACMLLogger().config("GeoXACML Repository loaded ");
+            XACMLUtil.getXACMLLogger().info("GeoXACML repository loaded ");
             return pdp;
         }
     }
 
     /**
-     * Use GeoserverExtensions to create a {@link XACMLRoleAuthority} If nothing is configured,
-     * use {@link XACMLDefaultRoleAuthority}
+     * Use GeoserverExtensions to create a {@link XACMLRoleAuthority} If nothing is configured, use
+     * {@link XACMLDefaultRoleAuthority}
      * 
      * @return a RoleAssignmentAuthorty
      */
@@ -157,7 +156,7 @@ public class GeoXACMLConfig {
         }
 
     }
-    
+
     static public RequestCtxBuilderFactory getRequestCtxBuilderFactory() {
         if (requstCtxBuilderFactory != null)
             return requstCtxBuilderFactory;
@@ -167,74 +166,85 @@ public class GeoXACMLConfig {
                 return requstCtxBuilderFactory;
             requstCtxBuilderFactory = GeoServerExtensions.bean(RequestCtxBuilderFactory.class);
             if (requstCtxBuilderFactory == null)
-                requstCtxBuilderFactory = new RequestCtxBuilderFactoryImpl();;
+                requstCtxBuilderFactory = new RequestCtxBuilderFactoryImpl();
+            ;
             return requstCtxBuilderFactory;
         }
 
     }
 
-    
     public static void createDefaultRepositoryIfNotExisting() {
         File geoServerDataDir = GeoserverDataDirectory.getGeoserverDataDirectory();
-        
-        if (geoServerDataDir==null) {
+
+        if (geoServerDataDir == null) {
             return;
         }
-        
-        createDirectoryIfNotExisting(new File(geoServerDataDir,DataDirPolicyFinderModlule.BASE_DIR));
-        String byRequestDir = DataDirPolicyFinderModlule.BASE_DIR+"/"+DataDirPolicyFinderModlule.BY_REQUEST_DIR;
-        String byReferenceDir = DataDirPolicyFinderModlule.BASE_DIR+"/"+DataDirPolicyFinderModlule.BY_REFERENCE_DIR;
-        String commonDir = byReferenceDir+"/common";
-        String anonymousDir=byReferenceDir+"/anonymous";
-        String authenticatedDir=byReferenceDir+"/authenticated";
-        String roleDir=byReferenceDir+"/role";
-        
-        createDirectoryIfNotExisting(new File(geoServerDataDir,byRequestDir));
-        createDirectoryIfNotExisting(new File(geoServerDataDir,byReferenceDir));
-        createDirectoryIfNotExisting(new File(geoServerDataDir,commonDir));
-        createDirectoryIfNotExisting(new File(geoServerDataDir,anonymousDir));
-        createDirectoryIfNotExisting(new File(geoServerDataDir,authenticatedDir));
-        createDirectoryIfNotExisting(new File(geoServerDataDir,roleDir));
 
-        copyFileIfNotExisting(geoServerDataDir, commonDir+"/PermitAll.xml");
-        copyFileIfNotExisting(geoServerDataDir, commonDir+"/DenyAll.xml");
-        copyFileIfNotExisting(geoServerDataDir, anonymousDir+"/PAnonymous.xml");
-        copyFileIfNotExisting(geoServerDataDir, anonymousDir+"/URLAnonymous.xml");
-        copyFileIfNotExisting(geoServerDataDir, authenticatedDir+"/PAuthenticated.xml");
-        copyFileIfNotExisting(geoServerDataDir, authenticatedDir+"/URLAuthenticated.xml");
-        copyFileIfNotExisting(geoServerDataDir, roleDir+"/PRole.xml");
-        
-        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Admin.xml");
-        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Catalog.xml");
-        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Role.xml");
-        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Anonymous.xml");
-        copyFileIfNotExisting(geoServerDataDir, byRequestDir+"/Authenticated.xml");
+        createDirectoryIfNotExisting(new File(geoServerDataDir, DataDirPolicyFinderModlule.BASE_DIR));
+        String byRequestDir = DataDirPolicyFinderModlule.BASE_DIR + "/"
+                + DataDirPolicyFinderModlule.BY_REQUEST_DIR;
+        String byReferenceDir = DataDirPolicyFinderModlule.BASE_DIR + "/"
+                + DataDirPolicyFinderModlule.BY_REFERENCE_DIR;
+        String commonDir = byReferenceDir + "/common";
+        String anonymousDir = byReferenceDir + "/anonymous";
+        String authenticatedDir = byReferenceDir + "/authenticated";
+        String roleDir = byReferenceDir + "/role";
+        String demoDir = "demo";
+
+        createDirectoryIfNotExisting(new File(geoServerDataDir, byRequestDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir, byReferenceDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir, commonDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir, anonymousDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir, authenticatedDir));
+        createDirectoryIfNotExisting(new File(geoServerDataDir, roleDir));
+
+        copyFileIfNotExisting(geoServerDataDir, commonDir + "/PermitAll.xml");
+        copyFileIfNotExisting(geoServerDataDir, commonDir + "/DenyAll.xml");
+        copyFileIfNotExisting(geoServerDataDir, anonymousDir + "/PAnonymous.xml");
+        copyFileIfNotExisting(geoServerDataDir, anonymousDir + "/URLAnonymous.xml");
+        copyFileIfNotExisting(geoServerDataDir, authenticatedDir + "/PAuthenticated.xml");
+        copyFileIfNotExisting(geoServerDataDir, authenticatedDir + "/URLAuthenticated.xml");
+        copyFileIfNotExisting(geoServerDataDir, roleDir + "/PRole.xml");
+
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir + "/Admin.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir + "/Catalog.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir + "/Role.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir + "/Anonymous.xml");
+        copyFileIfNotExisting(geoServerDataDir, byRequestDir + "/Authenticated.xml");
+
+        // copy demo urls if demo dir exists
+        if (new File(geoServerDataDir, demoDir).exists()) {
+            copyFileIfNotExisting(geoServerDataDir, demoDir + "/XACML_reloadRepository.url");
+        }
+
     }
 
     private static void createDirectoryIfNotExisting(File dir) {
-        if (dir.exists()) return;
+        if (dir.exists())
+            return;
         dir.mkdir();
     }
-    
+
     private static void copyFileIfNotExisting(File geoServerDataDir, String relativePath) {
-        File file =  new File(geoServerDataDir,relativePath);
-        if (file.exists()) return ;
-        
-        URL sourceURL = GeoXACMLConfig.class.getResource("/geoserverdatadir/"+relativePath);
+        File file = new File(geoServerDataDir, relativePath);
+        if (file.exists())
+            return;
+
+        URL sourceURL = GeoXACMLConfig.class.getResource("/geoserverdatadir/" + relativePath);
         try {
-        InputStream in = sourceURL.openStream();
-        OutputStream out = new FileOutputStream(file);
-        byte[] buffer = new byte[4096];
-        int bytesread = 0;
-        while ((bytesread = in.read(buffer))>0) 
-            out.write(buffer, 0, bytesread);
-        in.close();
-        out.close();
+            InputStream in = sourceURL.openStream();
+            OutputStream out = new FileOutputStream(file);
+            byte[] buffer = new byte[4096];
+            int bytesread = 0;
+            while ((bytesread = in.read(buffer)) > 0)
+                out.write(buffer, 0, bytesread);
+            in.close();
+            out.close();
         } catch (Exception e) {
-            XACMLUtil.getXACMLLogger().severe("Could not create default repository file "+ relativePath);
+            XACMLUtil.getXACMLLogger().severe(
+                    "Could not create default repository file " + relativePath);
             throw new RuntimeException(e);
         }
     }
 
-    
 }

@@ -1,4 +1,3 @@
-
 /*
  * @(#)TestUtil.java
  *
@@ -47,26 +46,25 @@ import com.sun.xacml.ctx.ResponseCtx;
 import com.sun.xacml.ctx.Result;
 import com.sun.xacml.ctx.Status;
 
-
 /**
- * Simple utility class that provides some equality methods for testing
- * whether evaluation results match.
- *
+ * Simple utility class that provides some equality methods for testing whether evaluation results
+ * match.
+ * 
  * @author Seth Proctor
  */
-public class TestUtil
-{
+public class TestUtil {
 
     /**
      * Returns whether two XACML Responses are equivalent.
-     *
-     * @param response1 an XACML Response
-     * @param response2 an XACML Response
-     *
+     * 
+     * @param response1
+     *            an XACML Response
+     * @param response2
+     *            an XACML Response
+     * 
      * @return true if the responses are equivalent, false otherwise
      */
-    public static boolean areEquivalent(ResponseCtx response1,
-                                        ResponseCtx response2) {
+    public static boolean areEquivalent(ResponseCtx response1, ResponseCtx response2) {
         Set<Result> results1 = response1.getResults();
         Set<Result> results2 = response2.getResults();
 
@@ -76,7 +74,7 @@ public class TestUtil
 
         // get an iterator for the first set of Responses
         Iterator<Result> it1 = results1.iterator();
-        
+
         // setup a temporary Set for the second set of Responses, so we can
         // remove the matching Result at each step
         Set<Result> set2 = new HashSet<Result>(results2);
@@ -89,17 +87,16 @@ public class TestUtil
             boolean matched = false;
 
             // go through the second list, and see if there's a matching Result
-            while (it2.hasNext() && (! matched)) {
+            while (it2.hasNext() && (!matched)) {
                 Result result2 = it2.next();
-                
+
                 // two results are equivalent if they have the same decision,
                 // the same resource (or none in both cases), and if their
                 // status and obligations are also equivalent
-                if ((result1.getDecision() == result2.getDecision()) &&
-                    (equals(result1.getResource(), result2.getResource())) &&
-                    areEquivalent(result1.getStatus(), result2.getStatus()) &&
-                    areEquivalent(result1.getObligations(),
-                                  result2.getObligations())) {
+                if ((result1.getDecision() == result2.getDecision())
+                        && (equals(result1.getResource(), result2.getResource()))
+                        && areEquivalent(result1.getStatus(), result2.getStatus())
+                        && areEquivalent(result1.getObligations(), result2.getObligations())) {
                     matched = true;
                 }
             }
@@ -132,15 +129,15 @@ public class TestUtil
     /**
      * Compares two XACML Status elements to see if they're equivalent.
      * <p>
-     * NOTE: there's no clear way to support comparing status detail or
-     * messages, since they're both non-standard and can contain
-     * arbitrary content. As a result, this isn't supported at present.
-     *
-     * @param status1 status data
-     * @param status2 status data
-     *
-     * @return true if the two sets of status data are equivalent, false
-     *         otherwise
+     * NOTE: there's no clear way to support comparing status detail or messages, since they're both
+     * non-standard and can contain arbitrary content. As a result, this isn't supported at present.
+     * 
+     * @param status1
+     *            status data
+     * @param status2
+     *            status data
+     * 
+     * @return true if the two sets of status data are equivalent, false otherwise
      */
     public static boolean areEquivalent(Status status1, Status status2) {
         Iterator<String> it1 = status1.getCode().iterator();
@@ -149,11 +146,11 @@ public class TestUtil
         // check that the same codes appear in each status
         while (it1.hasNext()) {
             // if we already ran out, then they're not equal
-            if (! it2.hasNext())
+            if (!it2.hasNext())
                 return false;
 
             // check that the specific code is the same at each step
-            if (! (it1.next()).equals(it2.next()))
+            if (!(it1.next()).equals(it2.next()))
                 return false;
         }
 
@@ -165,13 +162,15 @@ public class TestUtil
 
         return true;
     }
-    
+
     /**
      * Compares two sets to see if they contain equivalent obligations
-     *
-     * @param obs1 a <code>Set</code> of <code>Obligation</code>s
-     * @param obs2 a <code>Set</code> of <code>Obligation</code>s
-     *
+     * 
+     * @param obs1
+     *            a <code>Set</code> of <code>Obligation</code>s
+     * @param obs2
+     *            a <code>Set</code> of <code>Obligation</code>s
+     * 
      * @return true if the sets are equivalent, false otherwise
      */
     public static boolean areEquivalent(Set<Obligation> obs1, Set<Obligation> obs2) {
@@ -194,17 +193,16 @@ public class TestUtil
 
             // go through the second set, and see if there's a matching
             // Obligation
-            while (it2.hasNext() && (! matched)) {
-                Obligation o2 = (Obligation)(it2.next());
+            while (it2.hasNext() && (!matched)) {
+                Obligation o2 = (Obligation) (it2.next());
 
                 // to be equivalent, they need to have the same identifier
                 // and the same fulfillOn setting
-                if ((o1.getId().equals(o2.getId())) &&
-                    (o1.getFulfillOn() == o2.getFulfillOn())) {
+                if ((o1.getId().equals(o2.getId())) && (o1.getFulfillOn() == o2.getFulfillOn())) {
                     // get the assignments, and make sure they match
                     List<Attribute> assignments1 = o1.getAssignments();
                     List<Attribute> assignments2 = o2.getAssignments();
-                    
+
                     if (assignments1.size() == assignments2.size()) {
                         Iterator<Attribute> ait1 = assignments1.iterator();
                         Iterator<Attribute> ait2 = assignments2.iterator();
@@ -214,9 +212,9 @@ public class TestUtil
                             Attribute attr1 = ait1.next();
                             Attribute attr2 = ait2.next();
 
-                            if ((! attr1.getId().equals(attr2.getId())) ||
-                                (! attr1.getType().equals(attr2.getType())) ||
-                                (! attr1.getValue().equals(attr2.getValue())))
+                            if ((!attr1.getId().equals(attr2.getId()))
+                                    || (!attr1.getType().equals(attr2.getType()))
+                                    || (!attr1.getValue().equals(attr2.getValue())))
                                 assignmentsMatch = false;
                         }
 
@@ -232,7 +230,7 @@ public class TestUtil
             else
                 return false;
         }
-        
+
         // if we got here then the Obligations are equivalent
         return true;
     }

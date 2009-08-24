@@ -1,4 +1,3 @@
-
 /*
  * @(#)TestDriver.java
  *
@@ -56,30 +55,30 @@ import com.sun.xacml.PDPConfig;
 import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 
-
 /**
  * Simple driver class that sets up and runs the tests.
- *
+ * 
  * @author Seth Proctor
  */
-public class TestDriver
-{
+public class TestDriver {
 
     // the pdp we use to do all evaluations
     private PDP pdp;
 
     // the module we use to manage all policy management
     private TestPolicyFinderModule policyModule;
-    
+
     // the tests themselves
     private ArrayList<Test> tests;
 
     /**
      * Constructor that sets up the tests for running.
-     *
-     * @param testFile the XML file defining which tests to run
-     *
-     * @throws Exception if any error occurred during setup
+     * 
+     * @param testFile
+     *            the XML file defining which tests to run
+     * 
+     * @throws Exception
+     *             if any error occurred during setup
      */
     public TestDriver(String testFile) throws Exception {
         policyModule = new TestPolicyFinderModule();
@@ -90,8 +89,8 @@ public class TestDriver
     }
 
     /**
-     * Private helper that configures the pdp and the factories based on the
-     * settings in the run-time configuration file.
+     * Private helper that configures the pdp and the factories based on the settings in the
+     * run-time configuration file.
      */
     private void configurePDP() throws Exception {
         // load the configuration
@@ -104,7 +103,7 @@ public class TestDriver
         PDPConfig config = cs.getDefaultPDPConfig();
         PolicyFinder finder = config.getPolicyFinder();
         Set<PolicyFinderModule> policyModules = finder.getModules();
-        
+
         // ...and add the module used by the tests
         policyModules.add(policyModule);
         finder.setModules(policyModules);
@@ -119,7 +118,7 @@ public class TestDriver
     private void loadTests(String testFile) throws Exception {
         // load the test file
         Node root = getRootNode(testFile);
-        
+
         // go through each of the top-level tests, and handle as appropriate
         NodeList children = root.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
@@ -127,8 +126,7 @@ public class TestDriver
             String childName = child.getNodeName();
 
             if (childName.equals("group"))
-                tests.add(BasicGroupTest.getInstance(child, pdp,
-                                                     policyModule));
+                tests.add(BasicGroupTest.getInstance(child, pdp, policyModule));
             else if (childName.equals("test"))
                 tests.add(BasicTest.getInstance(child, pdp, policyModule));
         }
@@ -138,8 +136,7 @@ public class TestDriver
      * Private helper that parses the file and sets up the DOM tree.
      */
     private Node getRootNode(String configFile) throws Exception {
-        DocumentBuilderFactory dbFactory =
-            DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 
         dbFactory.setIgnoringComments(true);
         dbFactory.setNamespaceAware(false);
@@ -149,7 +146,7 @@ public class TestDriver
         Document doc = db.parse(new FileInputStream(configFile));
         Element root = doc.getDocumentElement();
 
-        if (! root.getTagName().equals("tests"))
+        if (!root.getTagName().equals("tests"))
             throw new Exception("unknown document type: " + root.getTagName());
 
         return root;
@@ -157,8 +154,9 @@ public class TestDriver
 
     /**
      * Runs the tests, in order, using the given location of the test data.
-     *
-     * @param prefix the root directory of all the conformance test cases
+     * 
+     * @param prefix
+     *            the root directory of all the conformance test cases
      */
     public void runTests(String prefix) {
         Iterator<Test> it = tests.iterator();
@@ -176,17 +174,16 @@ public class TestDriver
     }
 
     /**
-     * Main-line. The first argument is the file contaning the tests to run,
-     * and the second argument is the location of the conformance tests.
-     * Both arguments are required.
+     * Main-line. The first argument is the file contaning the tests to run, and the second argument
+     * is the location of the conformance tests. Both arguments are required.
      */
-    public static void main(String [] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         TestDriver testDriver = new TestDriver(args[0]);
         String testDir = "./";
 
         if (args.length != 1)
             testDir = args[1] + "/";
-        
+
         testDriver.runTests(testDir);
     }
 

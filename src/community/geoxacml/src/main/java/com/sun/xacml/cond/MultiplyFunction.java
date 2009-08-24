@@ -1,4 +1,3 @@
-
 /*
  * @(#)MultiplyFunction.java
  *
@@ -45,54 +44,51 @@ import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.DoubleAttribute;
 import com.sun.xacml.attr.IntegerAttribute;
 
-
 /**
- * A class that implements all the *-multiply functions. It takes two
- * operands of the appropriate type and returns the product of the
- * operands. If either of the operands is indeterminate, an indeterminate
- * result is returned.
- *
+ * A class that implements all the *-multiply functions. It takes two operands of the appropriate
+ * type and returns the product of the operands. If either of the operands is indeterminate, an
+ * indeterminate result is returned.
+ * 
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class MultiplyFunction extends FunctionBase
-{
+public class MultiplyFunction extends FunctionBase {
 
     /**
      * Standard identifier for the integer-multiply function.
      */
-    public static final String NAME_INTEGER_MULTIPLY =
-        FUNCTION_NS + "integer-multiply";
+    public static final String NAME_INTEGER_MULTIPLY = FUNCTION_NS + "integer-multiply";
 
     /**
      * Standard identifier for the double-multiply function.
      */
-    public static final String NAME_DOUBLE_MULTIPLY =
-        FUNCTION_NS + "double-multiply";
+    public static final String NAME_DOUBLE_MULTIPLY = FUNCTION_NS + "double-multiply";
 
     // inernal identifiers for each of the supported functions
     private static final int ID_INTEGER_MULTIPLY = 0;
+
     private static final int ID_DOUBLE_MULTIPLY = 1;
 
     /**
      * Creates a new <code>MultiplyFunction</code> object.
-     *
-     * @param functionName the standard XACML name of the function to be
-     *                     handled by this object, including the full namespace
-     *
-     * @throws IllegalArgumentException if the function is unknown
+     * 
+     * @param functionName
+     *            the standard XACML name of the function to be handled by this object, including
+     *            the full namespace
+     * 
+     * @throws IllegalArgumentException
+     *             if the function is unknown
      */
     public MultiplyFunction(String functionName) {
-        super(functionName, getId(functionName), getArgumentType(functionName),
-              false, 2, getArgumentType(functionName), false);
+        super(functionName, getId(functionName), getArgumentType(functionName), false, 2,
+                getArgumentType(functionName), false);
     }
 
     /**
-     * Private helper that returns the internal identifier used for the
-     * given standard function.
+     * Private helper that returns the internal identifier used for the given standard function.
      */
     private static int getId(String functionName) {
         if (functionName.equals(NAME_INTEGER_MULTIPLY))
@@ -100,15 +96,13 @@ public class MultiplyFunction extends FunctionBase
         else if (functionName.equals(NAME_DOUBLE_MULTIPLY))
             return ID_DOUBLE_MULTIPLY;
         else
-            throw new IllegalArgumentException("unknown multiply function " +
-                                               functionName);
+            throw new IllegalArgumentException("unknown multiply function " + functionName);
     }
 
     /**
-     * Private helper that returns the type used for the given standard
-     * function. Note that this doesn't check on the return value since the
-     * method always is called after getId, so we assume that the function
-     * is present.
+     * Private helper that returns the type used for the given standard function. Note that this
+     * doesn't check on the return value since the method always is called after getId, so we assume
+     * that the function is present.
      */
     private static String getArgumentType(String functionName) {
         if (functionName.equals(NAME_INTEGER_MULTIPLY))
@@ -118,9 +112,8 @@ public class MultiplyFunction extends FunctionBase
     }
 
     /**
-     * Returns a <code>Set</code> containing all the function identifiers
-     * supported by this class.
-     *
+     * Returns a <code>Set</code> containing all the function identifiers supported by this class.
+     * 
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set<String> getSupportedIdentifiers() {
@@ -134,18 +127,19 @@ public class MultiplyFunction extends FunctionBase
 
     /**
      * Evaluate the function, using the specified parameters.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context an <code>EvaluationCtx</code> so that the
-     *                <code>Evaluatable</code> objects can be evaluated
-     * @return an <code>EvaluationResult</code> representing the
-     *         function's result
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            an <code>EvaluationCtx</code> so that the <code>Evaluatable</code> objects can be
+     *            evaluated
+     * @return an <code>EvaluationResult</code> representing the function's result
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
-        
+
         // Evaluate the arguments
-        AttributeValue [] argValues = new AttributeValue[inputs.size()];
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
         if (result != null)
             return result;

@@ -1,4 +1,3 @@
-
 /*
  * @(#)RoundFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.RoundFunction;
 
-
 /**
  * Clusters all the functions supported by <code>RoundFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class RoundFunctionCluster implements FunctionCluster
-{
+public class RoundFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : RoundFunction.getSupportedIdentifiers())
             set.add(new RoundFunction(fn));
-
 
         return set;
     }

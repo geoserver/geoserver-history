@@ -1,4 +1,3 @@
-
 /*
  * @(#)ConditionBagFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.ConditionBagFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>ConditionBagFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class ConditionBagFunctionCluster implements FunctionCluster
-{
+public class ConditionBagFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : ConditionBagFunction.getSupportedIdentifiers())
             set.add(new ConditionBagFunction(fn));
-
 
         return set;
     }

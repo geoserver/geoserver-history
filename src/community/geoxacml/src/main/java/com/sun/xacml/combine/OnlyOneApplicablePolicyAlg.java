@@ -1,4 +1,3 @@
-
 /*
  * @(#)OnlyOneApplicablePolicyAlg.java
  *
@@ -47,26 +46,22 @@ import com.sun.xacml.MatchResult;
 import com.sun.xacml.ctx.Result;
 import com.sun.xacml.ctx.Status;
 
-
 /**
- * This is the standard Only One Applicable Policy combining algorithm. This
- * is a special algorithm used at the root of a policy/pdp to make sure that
- * pdp only selects one policy per request.
- *
+ * This is the standard Only One Applicable Policy combining algorithm. This is a special algorithm
+ * used at the root of a policy/pdp to make sure that pdp only selects one policy per request.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm
-{
+public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm {
 
     /**
      * The standard URN used to identify this algorithm
      */
-    public static final String algId =
-        "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:" +
-        "only-one-applicable";
+    public static final String algId = "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:"
+            + "only-one-applicable";
 
     // a URI form of the identifier
     private static final URI identifierURI = URI.create(algId);
@@ -79,25 +74,25 @@ public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm
     }
 
     /**
-     * Applies the combining rule to the set of policies based on the
-     * evaluation context.
-     *
-     * @param context the context from the request
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s
-     * @param policyElements the policies to combine
-     *
+     * Applies the combining rule to the set of policies based on the evaluation context.
+     * 
+     * @param context
+     *            the context from the request
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of <code>CombinerParameter<code>s
+     * @param policyElements
+     *            the policies to combine
+     * 
      * @return the result of running the combining algorithm
      */
     public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
-                          List<? extends CombinerElement> policyElements) {
+            List<? extends CombinerElement> policyElements) {
         boolean atLeastOne = false;
         AbstractPolicy selectedPolicy = null;
         Iterator<? extends CombinerElement> it = policyElements.iterator();
 
         while (it.hasNext()) {
-            AbstractPolicy policy =
-                ((PolicyCombinerElement)(it.next())).getPolicy();
+            AbstractPolicy policy = ((PolicyCombinerElement) (it.next())).getPolicy();
 
             // see if the policy matches the context
             MatchResult match = policy.match(context);
@@ -106,19 +101,17 @@ public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm
             // if there is an error in trying to match any of the targets,
             // we always return INDETERMINATE immediately
             if (result == MatchResult.INDETERMINATE)
-                return new Result(Result.DECISION_INDETERMINATE,
-                                  match.getStatus(),
-                                  context.getResourceId().encode());
-            
+                return new Result(Result.DECISION_INDETERMINATE, match.getStatus(), context
+                        .getResourceId().encode());
+
             if (result == MatchResult.MATCH) {
                 // if this isn't the first match, then this is an error
                 if (atLeastOne) {
                     List<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
                     String message = "Too many applicable policies";
-                    return new Result(Result.DECISION_INDETERMINATE,
-                                      new Status(code, message),
-                                      context.getResourceId().encode());
+                    return new Result(Result.DECISION_INDETERMINATE, new Status(code, message),
+                            context.getResourceId().encode());
                 }
 
                 // if this was the first applicable policy in the set, then
@@ -134,8 +127,7 @@ public class OnlyOneApplicablePolicyAlg extends PolicyCombiningAlgorithm
             return selectedPolicy.evaluate(context);
 
         // if we didn't find a matching policy, then we don't apply
-        return new Result(Result.DECISION_NOT_APPLICABLE,
-                          context.getResourceId().encode());
+        return new Result(Result.DECISION_NOT_APPLICABLE, context.getResourceId().encode());
     }
 
 }

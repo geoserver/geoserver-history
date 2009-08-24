@@ -1,4 +1,3 @@
-
 /*
  * @(#)TestPolicyFinderModule.java
  *
@@ -63,17 +62,14 @@ import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.PolicyFinderResult;
 
-
 /**
- * A <code>PolicyFinderModule</code> used to handle all policies in the
- * conformance tests. It supports retrevial for requests and for references,
- * but is tightly coupled with the structure of the conformance tests, and
- * is definately not thread-safe.
- *
+ * A <code>PolicyFinderModule</code> used to handle all policies in the conformance tests. It
+ * supports retrevial for requests and for references, but is tightly coupled with the structure of
+ * the conformance tests, and is definately not thread-safe.
+ * 
  * @author Seth Proctor
  */
-public class TestPolicyFinderModule extends PolicyFinderModule
-{
+public class TestPolicyFinderModule extends PolicyFinderModule {
 
     // the finder that owns this module
     private PolicyFinder finder = null;
@@ -83,14 +79,16 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     // a map of URIs to policies for the reference-based policies we're
     // currently providing, and the current namespace prefix
-    private Map <String,String>policyRefs = null;
+    private Map<String, String> policyRefs = null;
+
     private String policyRefPrefix;
 
     // a map of URIs to policies for the reference-based policy sets we're
     // currently providing, and the current namespace prefix
-    private Map<String,String> policySetRefs = null;
+    private Map<String, String> policySetRefs = null;
+
     private String policySetRefPrefix;
-    
+
     /**
      * Default constructor.
      */
@@ -100,8 +98,9 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     /**
      * Initializes this module with the given finder.
-     *
-     * @param finder the <code>PolicyFinder</code> that owns this module
+     * 
+     * @param finder
+     *            the <code>PolicyFinder</code> that owns this module
      */
     public void init(PolicyFinder finder) {
         this.finder = finder;
@@ -109,7 +108,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     /**
      * Always returns true, since request-based retrieval is supported.
-     *
+     * 
      * @return true
      */
     public boolean isRequestSupported() {
@@ -118,7 +117,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     /**
      * Always returns true, since reference-based retrieval is supported.
-     *
+     * 
      * @return true
      */
     public boolean isIdReferenceSupported() {
@@ -126,12 +125,13 @@ public class TestPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Re-sets the policies known to this module to the single policy
-     * provided in the given file.
-     *
-     * @param policyFile a file containing a policy or policy set
-     *
-     * @throws Exception if the policy cannot be loaded
+     * Re-sets the policies known to this module to the single policy provided in the given file.
+     * 
+     * @param policyFile
+     *            a file containing a policy or policy set
+     * 
+     * @throws Exception
+     *             if the policy cannot be loaded
      */
     public void setPolicies(String policyFile) throws Exception {
         policies.clear();
@@ -144,17 +144,17 @@ public class TestPolicyFinderModule extends PolicyFinderModule
     }
 
     /**
-     * Re-sets the policies known to this module to those contained in the
-     * given files.
-     *
-     * @param policyFiles <code>String</code>s specifying files that contain
-     *                    policies or policy sets
-     *
-     * @throws Exception if the any of the policies cannot be loaded
+     * Re-sets the policies known to this module to those contained in the given files.
+     * 
+     * @param policyFiles
+     *            <code>String</code>s specifying files that contain policies or policy sets
+     * 
+     * @throws Exception
+     *             if the any of the policies cannot be loaded
      */
     public void setPolicies(Set<String> policyFiles) throws Exception {
         Iterator<String> it = policyFiles.iterator();
-        
+
         policies.clear();
 
         while (it.hasNext()) {
@@ -168,31 +168,36 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     /**
      * Re-sets the policy reference mapping used for policies.
-     *
-     * @param policyRefs the reference mapping
-     * @param prefix the prefix for these references
+     * 
+     * @param policyRefs
+     *            the reference mapping
+     * @param prefix
+     *            the prefix for these references
      */
-    public void setPolicyRefs(Map<String,String> policyRefs, String prefix) {
+    public void setPolicyRefs(Map<String, String> policyRefs, String prefix) {
         this.policyRefs = policyRefs;
         policyRefPrefix = prefix;
     }
 
     /**
      * Re-sets the policy reference mapping used for policy sets.
-     *
-     * @param policySetRefs the reference mapping
-     * @param prefix the prefix for these references
+     * 
+     * @param policySetRefs
+     *            the reference mapping
+     * @param prefix
+     *            the prefix for these references
      */
-    public void setPolicySetRefs(Map<String,String> policySetRefs, String prefix) {
+    public void setPolicySetRefs(Map<String, String> policySetRefs, String prefix) {
         this.policySetRefs = policySetRefs;
         policySetRefPrefix = prefix;
     }
 
     /**
      * Finds the applicable policy (if there is one) for the given context.
-     *
-     * @param context the evaluation context
-     *
+     * 
+     * @param context
+     *            the evaluation context
+     * 
      * @return an applicable policy, if one exists, or an error
      */
     public PolicyFinderResult findPolicy(EvaluationCtx context) {
@@ -216,8 +221,7 @@ public class TestPolicyFinderModule extends PolicyFinderModule
                     // we found a match before, so this is an error
                     ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
-                    Status status = new Status(code, "too many applicable "
-                                               + "top-level policies");
+                    Status status = new Status(code, "too many applicable " + "top-level policies");
                     return new PolicyFinderResult(status);
                 }
 
@@ -232,30 +236,32 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
     /**
      * Resolves the reference to a policy or policy set, if possible.
-     *
-     * @param idReference the reference to resolve
-     * @param type policy or policy set
-     * @param constraints ignored since this test uses only pre-2.0 policies
-     *
+     * 
+     * @param idReference
+     *            the reference to resolve
+     * @param type
+     *            policy or policy set
+     * @param constraints
+     *            ignored since this test uses only pre-2.0 policies
+     * 
      * @return the referenced policy, if one exists, or an error
      */
-    public PolicyFinderResult findPolicy(URI idReference, int type,
-                                         VersionConstraints constraints,
-                                         PolicyMetaData metaData) {
+    public PolicyFinderResult findPolicy(URI idReference, int type, VersionConstraints constraints,
+            PolicyMetaData metaData) {
         String fileName = null;
-        
+
         // based on the type, see if we have any references available, and
         // if we do then get the filename
         if (type == PolicyReference.POLICY_REFERENCE) {
             if (policyRefs == null)
                 return new PolicyFinderResult();
 
-            fileName = (String)(policyRefs.get(idReference.toString()));
+            fileName = (String) (policyRefs.get(idReference.toString()));
         } else {
             if (policySetRefs == null)
                 return new PolicyFinderResult();
 
-            fileName = (String)(policySetRefs.get(idReference.toString()));
+            fileName = (String) (policySetRefs.get(idReference.toString()));
         }
 
         // if we had no mapping available, return with no referenced policy
@@ -270,47 +276,46 @@ public class TestPolicyFinderModule extends PolicyFinderModule
 
         // load the referenced policy
         AbstractPolicy policy = loadPolicy(fileName, finder);
- 
+
         // if there was an error loading the policy, return the error
         if (policy == null) {
             ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_PROCESSING_ERROR);
-            Status status = new Status(code,
-                                       "couldn't load referenced policy");
+            Status status = new Status(code, "couldn't load referenced policy");
             return new PolicyFinderResult(status);
         }
-        
+
         // return the referenced policy
         return new PolicyFinderResult(policy);
     }
 
     /**
-     * Private helper that tries to load the given file-based policy, and
-     * returns null if any error occurs.
+     * Private helper that tries to load the given file-based policy, and returns null if any error
+     * occurs.
      */
     private AbstractPolicy loadPolicy(String filename, PolicyFinder finder) {
         try {
             // create the factory
-            DocumentBuilderFactory factory =
-                DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setIgnoringComments(true);
             factory.setNamespaceAware(true);
             factory.setValidating(false);
-            
+
             // create a builder based on the factory & try to load the policy
             DocumentBuilder db = factory.newDocumentBuilder();
             Document doc = db.parse(new FileInputStream(filename));
-            
+
             // handle the policy, if it's a known type
             Element root = doc.getDocumentElement();
             String name = root.getLocalName();
-            
+
             if (name.equals("Policy")) {
                 return Policy.getInstance(root);
             } else if (name.equals("PolicySet")) {
                 return PolicySet.getInstance(root, finder);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         // a default fall-through in the case of an error
         return null;

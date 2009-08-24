@@ -1,4 +1,3 @@
-
 /*
  * @(#)DateTimeAttribute.java
  *
@@ -50,31 +49,26 @@ import org.w3c.dom.Node;
 
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Representation of an xs:dateTime value. This class supports parsing
- * xs:dateTime values. All objects of this class are immutable and
- * thread-safe. The <code>Date</code> objects returned are not, but
- * these objects are cloned before being returned.
- *
+ * Representation of an xs:dateTime value. This class supports parsing xs:dateTime values. All
+ * objects of this class are immutable and thread-safe. The <code>Date</code> objects returned are
+ * not, but these objects are cloned before being returned.
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Seth Proctor
  * @author Steve Hanna
  */
-public class DateTimeAttribute extends AttributeValue
-{
+public class DateTimeAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/2001/XMLSchema#dateTime";
- 
+    public static final String identifier = "http://www.w3.org/2001/XMLSchema#dateTime";
+
     /**
      * URI version of name for this type
      * <p>
-     * This object is used for synchronization whenever we need
-     * protection across this whole class.
+     * This object is used for synchronization whenever we need protection across this whole class.
      */
     private static final URI identifierURI = URI.create(identifier);
 
@@ -83,12 +77,10 @@ public class DateTimeAttribute extends AttributeValue
      * <p>
      * This field is only initialized if needed (by initParsers()).
      * <p>
-     * NOTE: This object should only be accessed from code that
-     * has synchronized on it, since SimpleDateFormat objects are not
-     * thread-safe. If this is causing performance problems, we could
-     * easily make this a method variable in methods that use it
-     * instead of a class field. But that would mean we'd need to
-     * spend a lot more time creating these objects.
+     * NOTE: This object should only be accessed from code that has synchronized on it, since
+     * SimpleDateFormat objects are not thread-safe. If this is causing performance problems, we
+     * could easily make this a method variable in methods that use it instead of a class field. But
+     * that would mean we'd need to spend a lot more time creating these objects.
      */
     private static DateFormat simpleParser;
 
@@ -97,58 +89,51 @@ public class DateTimeAttribute extends AttributeValue
      * <p>
      * This field is only initialized if needed (by initParsers()).
      * <p>
-     * NOTE: This object should only be accessed from code that
-     * has synchronized on it, since SimpleDateFormat objects are not
-     * thread-safe.
+     * NOTE: This object should only be accessed from code that has synchronized on it, since
+     * SimpleDateFormat objects are not thread-safe.
      */
     private static DateFormat zoneParser;
 
     /**
      * Calendar for GMT
      * <p>
-     * NOTE: This object should only be accessed from code that
-     * has a lock on it, since Calendar objects are not generally
-     * thread-safe.
+     * NOTE: This object should only be accessed from code that has a lock on it, since Calendar
+     * objects are not generally thread-safe.
      */
     private static Calendar gmtCalendar;
 
     /**
-     * Time zone value that indicates that the time zone was not
-     * specified.
+     * Time zone value that indicates that the time zone was not specified.
      */
     public static final int TZ_UNSPECIFIED = -1000000;
 
     /**
-     * The actual date and time that this object represents (in GMT,
-     * as with all Date objects). If no time zone was specified, the
-     * local time zone is used to convert to GMT.
+     * The actual date and time that this object represents (in GMT, as with all Date objects). If
+     * no time zone was specified, the local time zone is used to convert to GMT.
      * <p>
-     * This Date does not include fractions of a second. Those are
-     * handled by the separate nanoseconds field, since Date only
-     * provides millisecond accuracy and the XML Query spec requires
-     * at least 100 nanosecond accuracy.
+     * This Date does not include fractions of a second. Those are handled by the separate
+     * nanoseconds field, since Date only provides millisecond accuracy and the XML Query spec
+     * requires at least 100 nanosecond accuracy.
      */
     private Date value;
 
     /**
-     * The number of nanoseconds beyond the Date given by the value
-     * field. The XML Query document says that fractional seconds
-     * must be supported down to at least 100 nanosecond resolution.
-     * The Date class only supports milliseconds, so we include here
-     * support for nanosecond resolution.
+     * The number of nanoseconds beyond the Date given by the value field. The XML Query document
+     * says that fractional seconds must be supported down to at least 100 nanosecond resolution.
+     * The Date class only supports milliseconds, so we include here support for nanosecond
+     * resolution.
      */
     private int nanoseconds;
 
     /**
-     * The time zone specified for this object (or TZ_UNSPECIFIED if
-     * unspecified). The offset to GMT, in minutes.
+     * The time zone specified for this object (or TZ_UNSPECIFIED if unspecified). The offset to
+     * GMT, in minutes.
      */
     private int timeZone;
 
     /**
-     * The time zone actually used for this object (if it was
-     * originally unspecified, the default time zone used).
-     * The offset to GMT, in minutes.
+     * The time zone actually used for this object (if it was originally unspecified, the default
+     * time zone used). The offset to GMT, in minutes.
      */
     private int defaultedTimeZone;
 
@@ -158,22 +143,21 @@ public class DateTimeAttribute extends AttributeValue
     private String encodedValue = null;
 
     /**
-     * Creates a new <code>DateTimeAttribute</code> that represents
-     * the current date in the default time zone.
+     * Creates a new <code>DateTimeAttribute</code> that represents the current date in the default
+     * time zone.
      */
     public DateTimeAttribute() {
         this(new Date());
     }
 
     /**
-     * Creates a new <code>DateTimeAttribute</code> that represents
-     * the supplied date but uses default timezone and offset values.
-     *
-     * @param dateTime a <code>Date</code> object representing the
-     *                 specified date and time down to second
-     *                 resolution. If this object has non-zero
-     *                 milliseconds, they are combined
-     *                 with the nanoseconds parameter.
+     * Creates a new <code>DateTimeAttribute</code> that represents the supplied date but uses
+     * default timezone and offset values.
+     * 
+     * @param dateTime
+     *            a <code>Date</code> object representing the specified date and time down to second
+     *            resolution. If this object has non-zero milliseconds, they are combined with the
+     *            nanoseconds parameter.
      */
     public DateTimeAttribute(Date dateTime) {
         super(identifierURI);
@@ -183,26 +167,22 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Creates a new <code>DateTimeAttribute</code> that represents
-     * the date supplied.
-     *
-     * @param dateTime a <code>Date</code> object representing the
-     *                 specified date and time down to second
-     *                 resolution. If this object has non-zero
-     *                 milliseconds, they are combined
-     *                 with the nanoseconds parameter.
-     * @param nanoseconds the number of nanoseconds beyond the
-     *                    Date specified in the date parameter
-     * @param timeZone the time zone specified for this object
-     *                 (or TZ_UNSPECIFIED if unspecified). The
-     *                 offset to GMT, in minutes.
-     * @param defaultedTimeZone the time zone actually used for this
-     *                          object (if it was originally unspecified,
-     *                          the default time zone used).
-     *                          The offset to GMT, in minutes.
+     * Creates a new <code>DateTimeAttribute</code> that represents the date supplied.
+     * 
+     * @param dateTime
+     *            a <code>Date</code> object representing the specified date and time down to second
+     *            resolution. If this object has non-zero milliseconds, they are combined with the
+     *            nanoseconds parameter.
+     * @param nanoseconds
+     *            the number of nanoseconds beyond the Date specified in the date parameter
+     * @param timeZone
+     *            the time zone specified for this object (or TZ_UNSPECIFIED if unspecified). The
+     *            offset to GMT, in minutes.
+     * @param defaultedTimeZone
+     *            the time zone actually used for this object (if it was originally unspecified, the
+     *            default time zone used). The offset to GMT, in minutes.
      */
-    public DateTimeAttribute(Date dateTime, int nanoseconds, int timeZone,
-                             int defaultedTimeZone) {
+    public DateTimeAttribute(Date dateTime, int nanoseconds, int timeZone, int defaultedTimeZone) {
         super(identifierURI);
 
         init(dateTime, nanoseconds, timeZone, defaultedTimeZone);
@@ -210,24 +190,21 @@ public class DateTimeAttribute extends AttributeValue
 
     /**
      * Initialization code shared by constructors.
-     *
-     * @param date a <code>Date</code> object representing the
-     *             specified date and time down to second
-     *             resolution. If this object has non-zero
-     *             milliseconds, they are combined
-     *             with the nanoseconds parameter.
-     * @param nanoseconds the number of nanoseconds beyond the
-     *                    Date specified in the date parameter
-     * @param timeZone the time zone specified for this object
-     *                 (or TZ_UNSPECIFIED if unspecified). The
-     *                 offset to GMT, in minutes.
-     * @param defaultedTimeZone the time zone actually used for this
-     *                          object (if it was originally unspecified,
-     *                          the default time zone used).
-     *                          The offset to GMT, in minutes.
+     * 
+     * @param date
+     *            a <code>Date</code> object representing the specified date and time down to second
+     *            resolution. If this object has non-zero milliseconds, they are combined with the
+     *            nanoseconds parameter.
+     * @param nanoseconds
+     *            the number of nanoseconds beyond the Date specified in the date parameter
+     * @param timeZone
+     *            the time zone specified for this object (or TZ_UNSPECIFIED if unspecified). The
+     *            offset to GMT, in minutes.
+     * @param defaultedTimeZone
+     *            the time zone actually used for this object (if it was originally unspecified, the
+     *            default time zone used). The offset to GMT, in minutes.
      */
-    private void init(Date date, int nanoseconds, int timeZone,
-                             int defaultedTimeZone) {
+    private void init(Date date, int nanoseconds, int timeZone, int defaultedTimeZone) {
 
         // Make a new Date object
         this.value = (Date) date.clone();
@@ -238,34 +215,35 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>DateTimeAttribute</code> that represents
-     * the xs:dateTime at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>DateTimeAttribute</code> representing the
-     *         appropriate value
-     * @throws ParsingException if any problems occurred while parsing
+     * Returns a new <code>DateTimeAttribute</code> that represents the xs:dateTime at a particular
+     * DOM node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>DateTimeAttribute</code> representing the appropriate value
+     * @throws ParsingException
+     *             if any problems occurred while parsing
      */
-    public static DateTimeAttribute getInstance(Node root)
-        throws ParsingException, NumberFormatException, ParseException
-    {
+    public static DateTimeAttribute getInstance(Node root) throws ParsingException,
+            NumberFormatException, ParseException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a new <code>DateTimeAttribute</code> that represents
-     * the xs:dateTime value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>DateTimeAttribute</code> representing the
-     *         desired value
-     * @throws ParsingException if the text is formatted incorrectly
-     * @throws NumberFormatException if the nanosecond format is incorrect
+     * Returns a new <code>DateTimeAttribute</code> that represents the xs:dateTime value indicated
+     * by the string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>DateTimeAttribute</code> representing the desired value
+     * @throws ParsingException
+     *             if the text is formatted incorrectly
+     * @throws NumberFormatException
+     *             if the nanosecond format is incorrect
      * @throws ParseException
      */
-    public static DateTimeAttribute getInstance(String value)
-        throws ParsingException, NumberFormatException, ParseException
-    {
+    public static DateTimeAttribute getInstance(String value) throws ParsingException,
+            NumberFormatException, ParseException {
         Date dateValue = null;
         int nanoseconds = 0;
         int timeZone;
@@ -276,15 +254,14 @@ public class DateTimeAttribute extends AttributeValue
         // If string ends with Z, it's in GMT. Chop off the Z and
         // add +00:00 to make the time zone explicit.
         if (value.endsWith("Z"))
-            value = value.substring(0, value.length()-1) + "+00:00";
+            value = value.substring(0, value.length() - 1) + "+00:00";
 
         // Figure out if the string has a time zone.
         // If string ends with +XX:XX or -XX:XX, it must have
         // a time zone or be invalid.
         int len = value.length(); // This variable is often not up-to-date
-        boolean hasTimeZone = ((value.charAt(len-3) == ':') &&
-                               ((value.charAt(len-6) == '-') ||
-                                (value.charAt(len-6) == '+')));
+        boolean hasTimeZone = ((value.charAt(len - 3) == ':') && ((value.charAt(len - 6) == '-') || (value
+                .charAt(len - 6) == '+')));
 
         // If string contains a period, it must have fractional
         // seconds (or be invalid). Strip them out and put the
@@ -296,9 +273,9 @@ public class DateTimeAttribute extends AttributeValue
             if (hasTimeZone)
                 secondsEnd -= 6;
             // Copy the fractional seconds out of the string.
-            String nanoString = value.substring(dotIndex+1, secondsEnd);
+            String nanoString = value.substring(dotIndex + 1, secondsEnd);
             // Check that all those characters are ASCII digits.
-            for (int i = nanoString.length()-1; i >= 0; i--) {
+            for (int i = nanoString.length() - 1; i >= 0; i--) {
                 char c = nanoString.charAt(i);
                 if ((c < '0') || (c > '9'))
                     throw new ParsingException("non-ascii digit found");
@@ -316,8 +293,7 @@ public class DateTimeAttribute extends AttributeValue
             nanoseconds = Integer.parseInt(nanoString);
 
             // Remove the fractional seconds from the string.
-            value = value.substring(0, dotIndex) +
-                value.substring(secondsEnd, value.length());
+            value = value.substring(0, dotIndex) + value.substring(secondsEnd, value.length());
         }
 
         // this is the code that may trow a ParseException
@@ -326,16 +302,13 @@ public class DateTimeAttribute extends AttributeValue
             // left is a valid unzoned date and time (by parsing in GMT).
             // If so, reformat the time zone by stripping out the colon
             // and parse the revised string with the timezone parser.
-            
+
             len = value.length();
-            
-            Date gmtValue = strictParse(zoneParser,
-                                        value.substring(0,len-6) + "+0000");
-            value = value.substring(0, len-3) +
-                value.substring(len-2, len);
+
+            Date gmtValue = strictParse(zoneParser, value.substring(0, len - 6) + "+0000");
+            value = value.substring(0, len - 3) + value.substring(len - 2, len);
             dateValue = strictParse(zoneParser, value);
-            timeZone =
-                (int) (gmtValue.getTime() - dateValue.getTime());
+            timeZone = (int) (gmtValue.getTime() - dateValue.getTime());
             timeZone = timeZone / 60000;
             defaultedTimeZone = timeZone;
         } else {
@@ -344,30 +317,26 @@ public class DateTimeAttribute extends AttributeValue
             timeZone = TZ_UNSPECIFIED;
             // Figure out what time zone was used.
             Date gmtValue = strictParse(zoneParser, value + "+0000");
-            defaultedTimeZone =
-                (int) (gmtValue.getTime() - dateValue.getTime());
+            defaultedTimeZone = (int) (gmtValue.getTime() - dateValue.getTime());
             defaultedTimeZone = defaultedTimeZone / 60000;
         }
 
         // If parsing went OK, create a new DateTimeAttribute object and
         // return it.
 
-        DateTimeAttribute attr = new DateTimeAttribute(dateValue, nanoseconds,
-                                                       timeZone,
-                                                       defaultedTimeZone);
+        DateTimeAttribute attr = new DateTimeAttribute(dateValue, nanoseconds, timeZone,
+                defaultedTimeZone);
         return attr;
     }
 
     /**
-     * Parse a String using a DateFormat parser, requiring that
-     * the entire String be consumed by the parser. On success,
-     * return a Date. On failure, throw a ParseException.
+     * Parse a String using a DateFormat parser, requiring that the entire String be consumed by the
+     * parser. On success, return a Date. On failure, throw a ParseException.
      * <p>
-     * Synchronize on the parser object when using it, since we
-     * assume they're the shared static objects in this class.
+     * Synchronize on the parser object when using it, since we assume they're the shared static
+     * objects in this class.
      */
-    private static Date strictParse(DateFormat parser, String str)
-        throws ParseException {
+    private static Date strictParse(DateFormat parser, String str) throws ParseException {
         ParsePosition pos = new ParsePosition(0);
         Date ret;
         synchronized (parser) {
@@ -400,17 +369,14 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Gets the date and time represented by this object. The return
-     * value is a <code>Date</code> object representing the
-     * specified date and time down to second resolution.
-     * Subsecond values are handled by the
-     * {@link #getNanoseconds getNanoseconds} method.
+     * Gets the date and time represented by this object. The return value is a <code>Date</code>
+     * object representing the specified date and time down to second resolution. Subsecond values
+     * are handled by the {@link #getNanoseconds getNanoseconds} method.
      * <p>
-     * <b>NOTE:</b> The <code>Date</code> object is cloned before it
-     * is returned to avoid unauthorized changes.
-     *
-     * @return a <code>Date</code> object representing the date and
-     *         time represented by this object
+     * <b>NOTE:</b> The <code>Date</code> object is cloned before it is returned to avoid
+     * unauthorized changes.
+     * 
+     * @return a <code>Date</code> object representing the date and time represented by this object
      */
     public Date getValue() {
         return (Date) value.clone();
@@ -418,7 +384,7 @@ public class DateTimeAttribute extends AttributeValue
 
     /**
      * Gets the nanoseconds of this object.
-     *
+     * 
      * @return the number of nanoseconds
      */
     public int getNanoseconds() {
@@ -426,9 +392,8 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Gets the time zone of this object (or TZ_UNSPECIFIED if
-     * unspecified).
-     *
+     * Gets the time zone of this object (or TZ_UNSPECIFIED if unspecified).
+     * 
      * @return the offset to GMT in minutes (positive or negative)
      */
     public int getTimeZone() {
@@ -436,9 +401,9 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Gets the time zone actually used for this object (if it was
-     * originally unspecified, the default time zone used).
-     *
+     * Gets the time zone actually used for this object (if it was originally unspecified, the
+     * default time zone used).
+     * 
      * @return the offset to GMT in minutes (positive or negative)
      */
     public int getDefaultedTimeZone() {
@@ -446,32 +411,32 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
      * <p>
-     * Two <code>DateTimeAttribute</code>s are equal if and only if the
-     * dates and times represented are identical (down to the nanosecond).
-     *
-     * @param o the object to compare
-     *
+     * Two <code>DateTimeAttribute</code>s are equal if and only if the dates and times represented
+     * are identical (down to the nanosecond).
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof DateTimeAttribute))
+        if (!(o instanceof DateTimeAttribute))
             return false;
 
-        DateTimeAttribute other = (DateTimeAttribute)o;
+        DateTimeAttribute other = (DateTimeAttribute) o;
 
         // Since the value field is normalized into GMT, this is a
         // good way to compare.
-        return (value.equals(other.value) &&
-                (nanoseconds == other.nanoseconds));
+        return (value.equals(other.value) && (nanoseconds == other.nanoseconds));
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -479,13 +444,13 @@ public class DateTimeAttribute extends AttributeValue
         // by the equals method, so it's best if the hashCode is derived
         // from both of those fields.
         int hashCode = value.hashCode();
-        hashCode = 31*hashCode + nanoseconds;
+        hashCode = 31 * hashCode + nanoseconds;
         return hashCode;
     }
 
     /**
      * Converts to a String representation.
-     *
+     * 
      * @return the String representation
      */
     public String toString() {
@@ -502,11 +467,10 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Encodes the value in a form suitable for including in XML data like
-     * a request or an obligation. This must return a value that could in
-     * turn be used by the factory to create a new instance with the same
-     * value.
-     *
+     * Encodes the value in a form suitable for including in XML data like a request or an
+     * obligation. This must return a value that could in turn be used by the factory to create a
+     * new instance with the same value.
+     * 
      * @return a <code>String</code> form of the value
      */
     public String encode() {
@@ -521,8 +485,7 @@ public class DateTimeAttribute extends AttributeValue
                 encodedValue = simpleParser.format(value);
             }
             if (nanoseconds != 0) {
-                encodedValue = encodedValue + "." +
-                    DateAttribute.zeroPadInt(nanoseconds, 9);
+                encodedValue = encodedValue + "." + DateAttribute.zeroPadInt(nanoseconds, 9);
             }
         } else {
             // If a time zone was specified, don't use SimpleParser
@@ -537,9 +500,9 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Encodes the value of this object as an xsi:dateTime.
-     * Only for use when the time zone is specified.
-     *
+     * Encodes the value of this object as an xsi:dateTime. Only for use when the time zone is
+     * specified.
+     * 
      * @return a <code>String</code> form of the value
      */
     private String formatDateTimeWithTZ() {
@@ -608,10 +571,10 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Gets the offset in minutes between the default time zone and
-     * UTC for the specified date.
-     *
-     * @param the <code>Date</code> whose offset is desired
+     * Gets the offset in minutes between the default time zone and UTC for the specified date.
+     * 
+     * @param the
+     *            <code>Date</code> whose offset is desired
      * @return the offset in minutes
      */
     static int getDefaultTZOffset(Date date) {
@@ -621,16 +584,15 @@ public class DateTimeAttribute extends AttributeValue
     }
 
     /**
-     * Combines a number of nanoseconds with a <code>Date</code>
-     * so that the Date has no fractional seconds and the number
-     * of nanoseconds is non-negative and less than a second.
+     * Combines a number of nanoseconds with a <code>Date</code> so that the Date has no fractional
+     * seconds and the number of nanoseconds is non-negative and less than a second.
      * <p>
-     * <b>WARNING</b>: This function changes the value stored in
-     * the date parameter!
-     *
-     * @param date the <code>Date</code> to be combined
-     *             (<b>value may be modified!</b>)
-     * @param nanos the nanoseconds to be combined
+     * <b>WARNING</b>: This function changes the value stored in the date parameter!
+     * 
+     * @param date
+     *            the <code>Date</code> to be combined (<b>value may be modified!</b>)
+     * @param nanos
+     *            the nanoseconds to be combined
      * @return the resulting number of nanoseconds
      */
     static int combineNanos(Date date, int nanoseconds) {
@@ -639,7 +601,7 @@ public class DateTimeAttribute extends AttributeValue
 
         // If nothing needs fixing, get out quick
         if ((milliCarry == 0) && (nanoseconds > 0)
-            && (nanoseconds < DateAttribute.NANOS_PER_SECOND))
+                && (nanoseconds < DateAttribute.NANOS_PER_SECOND))
             return nanoseconds;
 
         // Remove any non-zero milliseconds from the date.

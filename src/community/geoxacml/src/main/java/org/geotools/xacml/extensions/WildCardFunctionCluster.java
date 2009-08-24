@@ -23,22 +23,19 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.cluster.FunctionCluster;
 
-
 /**
  * Clusters all the functions supported by {@link WildCardFunction}.
- *
+ * 
  * @author Christian Mueller
  * 
  */
-public class WildCardFunctionCluster implements FunctionCluster
-{
+public class WildCardFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : WildCardFunction.getSupportedIdentifiers())
             set.add(new WildCardFunction(fn));
-
 
         return set;
     }

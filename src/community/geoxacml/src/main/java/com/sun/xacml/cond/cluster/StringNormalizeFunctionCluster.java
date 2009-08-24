@@ -1,4 +1,3 @@
-
 /*
  * @(#)StringNormalizeFunctionCluster.java
  *
@@ -42,23 +41,19 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.StringNormalizeFunction;
 
-
 /**
- * Clusters all the functions supported by
- * <code>StringNormalizeFunction</code>.
- *
+ * Clusters all the functions supported by <code>StringNormalizeFunction</code>.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class StringNormalizeFunctionCluster implements FunctionCluster
-{
+public class StringNormalizeFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : StringNormalizeFunction.getSupportedIdentifiers())
             set.add(new StringNormalizeFunction(fn));
-
 
         return set;
     }

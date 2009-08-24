@@ -1,4 +1,3 @@
-
 /*
  * @(#)BasicFunctionFactoryProxy.java
  *
@@ -36,31 +35,33 @@
 
 package com.sun.xacml.cond;
 
-
 /**
  * A simple utility class that manages triples of function factories.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class BasicFunctionFactoryProxy implements FunctionFactoryProxy
-{
+public class BasicFunctionFactoryProxy implements FunctionFactoryProxy {
 
     // the triple of factories
     private FunctionFactory targetFactory;
+
     private FunctionFactory conditionFactory;
+
     private FunctionFactory generalFactory;
 
     /**
      * Creates a new proxy.
-     *
-     * @param targetFactory the target factory provided by this proxy
-     * @param conditionFactory the target condition provided by this proxy
-     * @param generalFactory the general factory provided by this proxy
+     * 
+     * @param targetFactory
+     *            the target factory provided by this proxy
+     * @param conditionFactory
+     *            the target condition provided by this proxy
+     * @param generalFactory
+     *            the general factory provided by this proxy
      */
     public BasicFunctionFactoryProxy(FunctionFactory targetFactory,
-                                     FunctionFactory conditionFactory,
-                                     FunctionFactory generalFactory) {
+            FunctionFactory conditionFactory, FunctionFactory generalFactory) {
         this.targetFactory = targetFactory;
         this.conditionFactory = conditionFactory;
         this.generalFactory = generalFactory;

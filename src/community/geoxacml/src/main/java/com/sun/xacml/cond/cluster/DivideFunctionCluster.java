@@ -1,4 +1,3 @@
-
 /*
  * @(#)DivideFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.DivideFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>DivideFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class DivideFunctionCluster implements FunctionCluster
-{
+public class DivideFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : DivideFunction.getSupportedIdentifiers())
             set.add(new DivideFunction(fn));
-
 
         return set;
     }

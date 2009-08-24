@@ -1,4 +1,3 @@
-
 /*
  * @(#)MatchFunction.java
  *
@@ -53,136 +52,132 @@ import com.sun.xacml.attr.RFC822NameAttribute;
 import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.attr.X500NameAttribute;
 
-
 /**
  * Implements the standard matching and regular expression functions.
- *
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Yassir Elley
  * 
- * Adding generic type support by Christian Mueller (geotools) 
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class MatchFunction extends FunctionBase
-{
+public class MatchFunction extends FunctionBase {
 
     /**
      * Standard identifier for the regexp-string-match function.
      */
-    public static final String NAME_REGEXP_STRING_MATCH =
-        FUNCTION_NS + "regexp-string-match";
+    public static final String NAME_REGEXP_STRING_MATCH = FUNCTION_NS + "regexp-string-match";
 
     /**
      * Standard identifier for the x500Name-match function.
      */
-    public static final String NAME_X500NAME_MATCH =
-        FUNCTION_NS + "x500Name-match";
+    public static final String NAME_X500NAME_MATCH = FUNCTION_NS + "x500Name-match";
 
     /**
      * Standard identifier for the rfc822Name-match function.
      */
-    public static final String NAME_RFC822NAME_MATCH =
-        FUNCTION_NS + "rfc822Name-match";
+    public static final String NAME_RFC822NAME_MATCH = FUNCTION_NS + "rfc822Name-match";
 
     /**
-     * Standard identifier for the string-regexp-match function. NOTE: this
-     * in the 1.0 namespace right now because of a bug in the XACML 2.0
-     * specification, but this will be changed to the 2.0 namespace as soon
-     * as the errata is recognized.
+     * Standard identifier for the string-regexp-match function. NOTE: this in the 1.0 namespace
+     * right now because of a bug in the XACML 2.0 specification, but this will be changed to the
+     * 2.0 namespace as soon as the errata is recognized.
      */
-    public static final String NAME_STRING_REGEXP_MATCH =
-        FUNCTION_NS + "string-regexp-match";
-    
+    public static final String NAME_STRING_REGEXP_MATCH = FUNCTION_NS + "string-regexp-match";
+
     /**
      * Standard identifier for the anyURI-regexp-match function.
      */
-    public static final String NAME_ANYURI_REGEXP_MATCH =
-        FUNCTION_NS_2 + "anyURI-regexp-match";
+    public static final String NAME_ANYURI_REGEXP_MATCH = FUNCTION_NS_2 + "anyURI-regexp-match";
 
     /**
      * Standard identifier for the ipAddress-regexp-match function.
      */
-    public static final String NAME_IPADDRESS_REGEXP_MATCH =
-        FUNCTION_NS_2 + "ipAddress-regexp-match";
+    public static final String NAME_IPADDRESS_REGEXP_MATCH = FUNCTION_NS_2
+            + "ipAddress-regexp-match";
 
     /**
      * Standard identifier for the dnsName-regexp-match function.
      */
-    public static final String NAME_DNSNAME_REGEXP_MATCH =
-        FUNCTION_NS_2 + "dnsName-regexp-match";
+    public static final String NAME_DNSNAME_REGEXP_MATCH = FUNCTION_NS_2 + "dnsName-regexp-match";
 
     /**
      * Standard identifier for the rfc822Name-regexp-match function.
      */
-    public static final String NAME_RFC822NAME_REGEXP_MATCH =
-        FUNCTION_NS_2 + "rfc822Name-regexp-match";
+    public static final String NAME_RFC822NAME_REGEXP_MATCH = FUNCTION_NS_2
+            + "rfc822Name-regexp-match";
 
     /**
      * Standard identifier for the x500Name-regexp-match function.
      */
-    public static final String NAME_X500NAME_REGEXP_MATCH =
-        FUNCTION_NS_2 + "x500Name-regexp-match";
+    public static final String NAME_X500NAME_REGEXP_MATCH = FUNCTION_NS_2 + "x500Name-regexp-match";
 
     // private identifiers for the supported functions
     private static final int ID_REGEXP_STRING_MATCH = 0;
+
     private static final int ID_X500NAME_MATCH = 1;
+
     private static final int ID_RFC822NAME_MATCH = 2;
+
     private static final int ID_STRING_REGEXP_MATCH = 3;
+
     private static final int ID_ANYURI_REGEXP_MATCH = 4;
+
     private static final int ID_IPADDRESS_REGEXP_MATCH = 5;
+
     private static final int ID_DNSNAME_REGEXP_MATCH = 6;
+
     private static final int ID_RFC822NAME_REGEXP_MATCH = 7;
+
     private static final int ID_X500NAME_REGEXP_MATCH = 8;
 
     // private mappings for the input arguments
-    private static final String regexpParams [] = {
-        StringAttribute.identifier,
-        StringAttribute.identifier };
-    private static final String x500Params [] = {
-        X500NameAttribute.identifier,
-        X500NameAttribute.identifier };
-    private static final String rfc822Params [] = {
-        StringAttribute.identifier,
-        RFC822NameAttribute.identifier};
-    private static final String stringRegexpParams [] = {
-        StringAttribute.identifier,
-        StringAttribute.identifier};
-    private static final String anyURIRegexpParams [] = {
-        StringAttribute.identifier,
-        AnyURIAttribute.identifier};
-    private static final String ipAddressRegexpParams [] = {
-        StringAttribute.identifier,
-        IPAddressAttribute.identifier};
-    private static final String dnsNameRegexpParams [] = {
-        StringAttribute.identifier,
-        DNSNameAttribute.identifier};
-    private static final String rfc822NameRegexpParams [] = {
-        StringAttribute.identifier,
-        RFC822NameAttribute.identifier};
-    private static final String x500NameRegexpParams [] = {
-        StringAttribute.identifier,
-        X500NameAttribute.identifier};
+    private static final String regexpParams[] = { StringAttribute.identifier,
+            StringAttribute.identifier };
+
+    private static final String x500Params[] = { X500NameAttribute.identifier,
+            X500NameAttribute.identifier };
+
+    private static final String rfc822Params[] = { StringAttribute.identifier,
+            RFC822NameAttribute.identifier };
+
+    private static final String stringRegexpParams[] = { StringAttribute.identifier,
+            StringAttribute.identifier };
+
+    private static final String anyURIRegexpParams[] = { StringAttribute.identifier,
+            AnyURIAttribute.identifier };
+
+    private static final String ipAddressRegexpParams[] = { StringAttribute.identifier,
+            IPAddressAttribute.identifier };
+
+    private static final String dnsNameRegexpParams[] = { StringAttribute.identifier,
+            DNSNameAttribute.identifier };
+
+    private static final String rfc822NameRegexpParams[] = { StringAttribute.identifier,
+            RFC822NameAttribute.identifier };
+
+    private static final String x500NameRegexpParams[] = { StringAttribute.identifier,
+            X500NameAttribute.identifier };
 
     // private mapping for bag input options
-    private static final boolean bagParams [] = { false, false };
+    private static final boolean bagParams[] = { false, false };
 
     /**
      * Creates a new <code>MatchFunction</code> based on the given name.
-     *
-     * @param functionName the name of the standard match function, including
-     *                     the complete namespace
-     *
-     * @throws IllegalArgumentException if the function is unknown
+     * 
+     * @param functionName
+     *            the name of the standard match function, including the complete namespace
+     * 
+     * @throws IllegalArgumentException
+     *             if the function is unknown
      */
     public MatchFunction(String functionName) {
-        super(functionName, getId(functionName),
-              getArgumentTypes(functionName), bagParams,
-              BooleanAttribute.identifier, false);
+        super(functionName, getId(functionName), getArgumentTypes(functionName), bagParams,
+                BooleanAttribute.identifier, false);
     }
 
     /**
-     * Private helper that returns the internal identifier used for the
-     * given standard function.
+     * Private helper that returns the internal identifier used for the given standard function.
      */
     private static int getId(String functionName) {
         if (functionName.equals(NAME_REGEXP_STRING_MATCH))
@@ -204,17 +199,15 @@ public class MatchFunction extends FunctionBase
         else if (functionName.equals(NAME_X500NAME_REGEXP_MATCH))
             return ID_X500NAME_REGEXP_MATCH;
 
-        throw new IllegalArgumentException("unknown match function: " +
-                                           functionName);
+        throw new IllegalArgumentException("unknown match function: " + functionName);
     }
 
     /**
-     * Private helper that returns the types used for the given standard
-     * function. Note that this doesn't check on the return value since the
-     * method always is called after getId, so we assume that the function
-     * is present.
+     * Private helper that returns the types used for the given standard function. Note that this
+     * doesn't check on the return value since the method always is called after getId, so we assume
+     * that the function is present.
      */
-    private static String [] getArgumentTypes(String functionName) {
+    private static String[] getArgumentTypes(String functionName) {
         if (functionName.equals(NAME_REGEXP_STRING_MATCH))
             return regexpParams;
         else if (functionName.equals(NAME_X500NAME_MATCH))
@@ -238,9 +231,8 @@ public class MatchFunction extends FunctionBase
     }
 
     /**
-     * Returns a <code>Set</code> containing all the function identifiers
-     * supported by this class.
-     *
+     * Returns a <code>Set</code> containing all the function identifiers supported by this class.
+     * 
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set<String> getSupportedIdentifiers() {
@@ -261,24 +253,25 @@ public class MatchFunction extends FunctionBase
 
     /**
      * Evaluate the function, using the specified parameters.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context an <code>EvaluationCtx</code> so that the
-     *                <code>Evaluatable</code> objects can be evaluated
-     * @return an <code>EvaluationResult</code> representing the
-     *         function's result
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            an <code>EvaluationCtx</code> so that the <code>Evaluatable</code> objects can be
+     *            evaluated
+     * @return an <code>EvaluationResult</code> representing the function's result
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
-        
+
         // Evaluate the arguments
-        AttributeValue [] argValues = new AttributeValue[inputs.size()];
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
 
         // make sure we didn't get an error in processing the args
         if (result != null)
             return result;
-        
+
         // now that we're setup, we can do the matching operations
 
         boolean boolResult = false;
@@ -288,8 +281,8 @@ public class MatchFunction extends FunctionBase
         case ID_REGEXP_STRING_MATCH:
         case ID_STRING_REGEXP_MATCH: {
             // arg0 is a regular expression; arg1 is a general string
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((StringAttribute)(argValues[1])).getValue();
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((StringAttribute) (argValues[1])).getValue();
 
             boolResult = regexpHelper(arg0, arg1);
 
@@ -297,20 +290,18 @@ public class MatchFunction extends FunctionBase
         }
 
         case ID_X500NAME_MATCH: {
-            X500Principal arg0 =
-                ((X500NameAttribute)(argValues[0])).getValue();
-            X500Principal arg1 =
-                ((X500NameAttribute)(argValues[1])).getValue();
+            X500Principal arg0 = ((X500NameAttribute) (argValues[0])).getValue();
+            X500Principal arg1 = ((X500NameAttribute) (argValues[1])).getValue();
 
-            boolResult = arg1.getName(X500Principal.CANONICAL).
-                endsWith(arg0.getName(X500Principal.CANONICAL));
+            boolResult = arg1.getName(X500Principal.CANONICAL).endsWith(
+                    arg0.getName(X500Principal.CANONICAL));
 
             break;
         }
 
         case ID_RFC822NAME_MATCH: {
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((RFC822NameAttribute)(argValues[1])).getValue();
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((RFC822NameAttribute) (argValues[1])).getValue();
 
             if (arg0.indexOf('@') != -1) {
                 // this is case #1 : a whole address
@@ -324,54 +315,54 @@ public class MatchFunction extends FunctionBase
                 String mailDomain = arg1.substring(arg1.indexOf('@') + 1);
                 boolResult = arg0.toLowerCase().equals(mailDomain);
             }
-            
+
             break;
         }
 
-        case ID_ANYURI_REGEXP_MATCH:  {
+        case ID_ANYURI_REGEXP_MATCH: {
             // arg0 is a regular expression; arg1 is a general string
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((AnyURIAttribute)(argValues[1])).encode();
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((AnyURIAttribute) (argValues[1])).encode();
 
             boolResult = regexpHelper(arg0, arg1);
 
             break;
         }
 
-        case ID_IPADDRESS_REGEXP_MATCH:  {
+        case ID_IPADDRESS_REGEXP_MATCH: {
             // arg0 is a regular expression; arg1 is a general string
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((IPAddressAttribute)(argValues[1])).encode();
-
-            boolResult = regexpHelper(arg0, arg1);
-
-            break;
-        }  
-
-        case ID_DNSNAME_REGEXP_MATCH:  {
-            // arg0 is a regular expression; arg1 is a general string
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((DNSNameAttribute)(argValues[1])).encode();
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((IPAddressAttribute) (argValues[1])).encode();
 
             boolResult = regexpHelper(arg0, arg1);
 
             break;
         }
 
-        case ID_RFC822NAME_REGEXP_MATCH:  {
+        case ID_DNSNAME_REGEXP_MATCH: {
             // arg0 is a regular expression; arg1 is a general string
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((RFC822NameAttribute)(argValues[1])).encode();
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((DNSNameAttribute) (argValues[1])).encode();
 
             boolResult = regexpHelper(arg0, arg1);
 
             break;
         }
 
-        case ID_X500NAME_REGEXP_MATCH:  {
+        case ID_RFC822NAME_REGEXP_MATCH: {
             // arg0 is a regular expression; arg1 is a general string
-            String arg0 = ((StringAttribute)(argValues[0])).getValue();
-            String arg1 = ((X500NameAttribute)(argValues[1])).encode();
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((RFC822NameAttribute) (argValues[1])).encode();
+
+            boolResult = regexpHelper(arg0, arg1);
+
+            break;
+        }
+
+        case ID_X500NAME_REGEXP_MATCH: {
+            // arg0 is a regular expression; arg1 is a general string
+            String arg0 = ((StringAttribute) (argValues[0])).getValue();
+            String arg1 = ((X500NameAttribute) (argValues[1])).encode();
 
             boolResult = regexpHelper(arg0, arg1);
 
@@ -394,7 +385,7 @@ public class MatchFunction extends FunctionBase
         // the XACML syntax into a semantically equivalent Pattern syntax
 
         StringBuffer buf = new StringBuffer(xpr);
-        
+
         // in order to handle the requirement that the string is
         // considered to match the pattern if any substring matches
         // the pattern, we prepend ".*" and append ".*" to the reg exp,
@@ -406,33 +397,33 @@ public class MatchFunction extends FunctionBase
         if (xpr.charAt(xpr.length() - 1) != '$')
             buf = buf.insert(buf.length(), ".*");
 
-        // in order to handle Unicode blocks, we replace all 
+        // in order to handle Unicode blocks, we replace all
         // instances of "\p{Is" with "\p{In" in the reg exp
 
         int idx = -1;
         idx = buf.indexOf("\\p{Is", 0);
-        while (idx != -1){
-            buf = buf.replace(idx, idx+5, "\\p{In");
+        while (idx != -1) {
+            buf = buf.replace(idx, idx + 5, "\\p{In");
             idx = buf.indexOf("\\p{Is", idx);
         }
 
-        // in order to handle Unicode blocks, we replace all instances 
+        // in order to handle Unicode blocks, we replace all instances
         // of "\P{Is" with "\P{In" in the reg exp
 
         idx = -1;
         idx = buf.indexOf("\\P{Is", 0);
-        while (idx != -1){
-            buf = buf.replace(idx, idx+5, "\\P{In");
+        while (idx != -1) {
+            buf = buf.replace(idx, idx + 5, "\\P{In");
             idx = buf.indexOf("\\P{Is", idx);
         }
-        
+
         // in order to handle character class subtraction, we
         // replace all instances of "-[" with "&&[^" in the reg exp
 
         idx = -1;
         idx = buf.indexOf("-[", 0);
-        while (idx != -1){
-            buf = buf.replace(idx, idx+2, "&&[^");
+        while (idx != -1) {
+            buf = buf.replace(idx, idx + 2, "&&[^");
             idx = buf.indexOf("-[", idx);
         }
 

@@ -69,19 +69,20 @@ public class GeoXACMLPDPControllerTest extends GeoServerTestSupport {
             checkXACMLRepsonse(resp, "Permit");
         }
     }
-    
+
     public void testCatalogReload() throws Exception {
-        assertEquals( GeoXACMLRESTRepositoryReloader.ReloadedMsg, 
+        // System.out.println(getAsString("/rest/reloadXACML.txt"));
+        assertEquals(GeoXACMLRESTRepositoryReloader.ReloadedMsg,
                 getAsString("/rest/reloadXACML.txt"));
     }
-
 
     private List<RequestCtx> createRequestCtxList() {
         List<RequestCtx> result = new ArrayList<RequestCtx>();
         for (WorkspaceInfo wsInfo : getCatalog().getWorkspaces()) {
-            for (GrantedAuthority role : SecurityContextHolder.getContext().getAuthentication().getAuthorities()) {
+            for (GrantedAuthority role : SecurityContextHolder.getContext().getAuthentication()
+                    .getAuthorities()) {
                 RequestCtx rctx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                        .getWorkspaceRequestCtxBuilder((XACMLRole)role, wsInfo, AccessMode.READ)
+                        .getWorkspaceRequestCtxBuilder((XACMLRole) role, wsInfo, AccessMode.READ)
                         .createRequestCtx();
                 result.add(rctx);
             }

@@ -74,8 +74,8 @@ public class XACMLTransporterTest extends TestCase {
         }
 
         // serial
-        
-        XACMLTransport transport = new XACMLLocalTransportFactory(pdp,false).getXACMLTransport();
+
+        XACMLTransport transport = new XACMLLocalTransportFactory(pdp, false).getXACMLTransport();
         ResponseCtx response = transport.evaluateRequestCtx(request);
 
         Result result = (Result) response.getResults().iterator().next();
@@ -84,7 +84,7 @@ public class XACMLTransporterTest extends TestCase {
 
         // multithreaded transporter, one request
 
-        transport = new XACMLLocalTransportFactory(pdp,true).getXACMLTransport();
+        transport = new XACMLLocalTransportFactory(pdp, true).getXACMLTransport();
         response = transport.evaluateRequestCtx(request);
 
         result = (Result) response.getResults().iterator().next();
@@ -97,7 +97,7 @@ public class XACMLTransporterTest extends TestCase {
 
         PDP pdp = TestSupport
                 .getPDP(TestSupport.getGeoXACMLFNFor("wildcard", "WildCardPolicy.xml"));
-        XACMLTransport transport = new XACMLLocalTransportFactory(pdp,false).getXACMLTransport();
+        XACMLTransport transport = new XACMLLocalTransportFactory(pdp, false).getXACMLTransport();
         List<RequestCtx> requestList = createRequestList();
         List<ResponseCtx> responseList = transport.evaluateRequestCtxList(requestList);
         checkResponseList(responseList);
@@ -108,7 +108,7 @@ public class XACMLTransporterTest extends TestCase {
 
         PDP pdp = TestSupport
                 .getPDP(TestSupport.getGeoXACMLFNFor("wildcard", "WildCardPolicy.xml"));
-        XACMLTransport transport = new XACMLLocalTransportFactory(pdp,true).getXACMLTransport();
+        XACMLTransport transport = new XACMLLocalTransportFactory(pdp, true).getXACMLTransport();
         List<RequestCtx> requestList = createRequestList();
         List<ResponseCtx> responseList = transport.evaluateRequestCtxList(requestList);
         checkResponseList(responseList);

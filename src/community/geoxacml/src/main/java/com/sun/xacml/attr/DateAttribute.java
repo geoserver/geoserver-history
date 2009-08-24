@@ -1,4 +1,3 @@
-
 /*
  * @(#)DateAttribute.java
  *
@@ -48,31 +47,26 @@ import java.util.TimeZone;
 
 import org.w3c.dom.Node;
 
-
 /**
- * Representation of an xs:date value. This class supports parsing
- * xs:date values. All objects of this class are immutable and
- * thread-safe. The <code>Date</code> objects returned are not, but
+ * Representation of an xs:date value. This class supports parsing xs:date values. All objects of
+ * this class are immutable and thread-safe. The <code>Date</code> objects returned are not, but
  * these objects are cloned before being returned.
- *
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Seth Proctor
  * @author Steve Hanna
  */
-public class DateAttribute extends AttributeValue
-{
+public class DateAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/2001/XMLSchema#date";
- 
+    public static final String identifier = "http://www.w3.org/2001/XMLSchema#date";
+
     /**
      * URI version of name for this type
      * <p>
-     * This object is used for synchronization whenever we need
-     * protection across this whole class.
+     * This object is used for synchronization whenever we need protection across this whole class.
      */
     private static final URI identifierURI = URI.create(identifier);
 
@@ -81,12 +75,10 @@ public class DateAttribute extends AttributeValue
      * <p>
      * This field is only initialized if needed (by initParsers()).
      * <p>
-     * NOTE: This object should only be accessed from code that
-     * has synchronized on it, since SimpleDateFormat objects are not
-     * thread-safe. If this is causing performance problems, we could
-     * easily make this a method variable in methods that use it
-     * instead of a class field. But that would mean we'd need to
-     * spend a lot more time creating these objects.
+     * NOTE: This object should only be accessed from code that has synchronized on it, since
+     * SimpleDateFormat objects are not thread-safe. If this is causing performance problems, we
+     * could easily make this a method variable in methods that use it instead of a class field. But
+     * that would mean we'd need to spend a lot more time creating these objects.
      */
     private static DateFormat simpleParser;
 
@@ -95,100 +87,84 @@ public class DateAttribute extends AttributeValue
      * <p>
      * This field is only initialized if needed (by initParsers()).
      * <p>
-     * NOTE: This object should only be accessed from code that
-     * has a lock on it, since SimpleDateFormat objects are not
-     * thread-safe.
+     * NOTE: This object should only be accessed from code that has a lock on it, since
+     * SimpleDateFormat objects are not thread-safe.
      */
     private static DateFormat zoneParser;
 
     /**
      * Calendar for GMT
      * <p>
-     * NOTE: This object should only be accessed from code that
-     * has a lock on it, since Calendar objects are not generally
-     * thread-safe.
+     * NOTE: This object should only be accessed from code that has a lock on it, since Calendar
+     * objects are not generally thread-safe.
      */
     private static Calendar gmtCalendar;
 
     /**
-     * Number of nanoseconds per millisecond
-     * (shared by other classes in this package)
+     * Number of nanoseconds per millisecond (shared by other classes in this package)
      */
     static final int NANOS_PER_MILLI = 1000000;
 
     /**
-     * Number of milliseconds per second
-     * (shared by other classes in this package)
+     * Number of milliseconds per second (shared by other classes in this package)
      */
     static final int MILLIS_PER_SECOND = 1000;
 
     /**
-     * Number of seconds in a minute
-     * (shared by other classes in this package)
+     * Number of seconds in a minute (shared by other classes in this package)
      */
     static final int SECONDS_PER_MINUTE = 60;
 
     /**
-     * Number of minutes in an hour
-     * (shared by other classes in this package)
+     * Number of minutes in an hour (shared by other classes in this package)
      */
     static final int MINUTES_PER_HOUR = 60;
 
     /**
-     * Number of hours in a day
-     * (shared by other classes in this package)
+     * Number of hours in a day (shared by other classes in this package)
      */
     static final int HOURS_PER_DAY = 24;
 
     /**
-     * Number of nanoseconds per second
-     * (shared by other classes in this package)
+     * Number of nanoseconds per second (shared by other classes in this package)
      */
     static final int NANOS_PER_SECOND = NANOS_PER_MILLI * MILLIS_PER_SECOND;
 
     /**
-     * Number of milliseconds in a minute
-     * (shared by other classes in this package)
+     * Number of milliseconds in a minute (shared by other classes in this package)
      */
-    static final int MILLIS_PER_MINUTE =
-        MILLIS_PER_SECOND * SECONDS_PER_MINUTE;
+    static final int MILLIS_PER_MINUTE = MILLIS_PER_SECOND * SECONDS_PER_MINUTE;
 
     /**
-     * Number of milliseconds in an hour
-     * (shared by other classes in this package)
+     * Number of milliseconds in an hour (shared by other classes in this package)
      */
-    static final int MILLIS_PER_HOUR =
-        MILLIS_PER_MINUTE * MINUTES_PER_HOUR;
+    static final int MILLIS_PER_HOUR = MILLIS_PER_MINUTE * MINUTES_PER_HOUR;
 
     /**
-     * Number of milliseconds in a day
-     * (shared by other classes in this package)
+     * Number of milliseconds in a day (shared by other classes in this package)
      */
     static final long MILLIS_PER_DAY = MILLIS_PER_HOUR * HOURS_PER_DAY;
 
     /**
-     * Time zone value that indicates that the time zone was not
-     * specified.
+     * Time zone value that indicates that the time zone was not specified.
      */
     public static final int TZ_UNSPECIFIED = -1000000;
 
     /**
-     * The instant (in GMT) at which the specified date began (midnight)
-     * in the specified time zone. If no time zone was specified,
-     * the local time zone is used.
+     * The instant (in GMT) at which the specified date began (midnight) in the specified time zone.
+     * If no time zone was specified, the local time zone is used.
      */
     private Date value;
 
     /**
-     * The time zone specified for this object (or TZ_UNSPECIFIED if
-     * unspecified). The offset to GMT, in minutes.
+     * The time zone specified for this object (or TZ_UNSPECIFIED if unspecified). The offset to
+     * GMT, in minutes.
      */
     private int timeZone;
 
     /**
-     * The time zone actually used for this object (if it was
-     * originally unspecified, the default time zone used).
-     * The offset to GMT, in minutes.
+     * The time zone actually used for this object (if it was originally unspecified, the default
+     * time zone used). The offset to GMT, in minutes.
      */
     private int defaultedTimeZone;
 
@@ -198,21 +174,21 @@ public class DateAttribute extends AttributeValue
     private String encodedValue = null;
 
     /**
-     * Creates a new <code>TimeAttribute</code> that represents
-     * the current date in the default time zone.
+     * Creates a new <code>TimeAttribute</code> that represents the current date in the default time
+     * zone.
      */
     public DateAttribute() {
         this(new Date());
     }
 
     /**
-     * Creates a new <code>TimeAttribute</code> that represents
-     * the given date with default timezone values.
-     *
-     * @param date a <code>Date</code> object representing the
-     *             instant at which the specified date began (midnight)
-     *             in the specified time zone (the actual time value
-     *             will be forced to midnight)
+     * Creates a new <code>TimeAttribute</code> that represents the given date with default timezone
+     * values.
+     * 
+     * @param date
+     *            a <code>Date</code> object representing the instant at which the specified date
+     *            began (midnight) in the specified time zone (the actual time value will be forced
+     *            to midnight)
      */
     public DateAttribute(Date date) {
         super(identifierURI);
@@ -229,26 +205,24 @@ public class DateAttribute extends AttributeValue
         millis += currOffset * MILLIS_PER_MINUTE;
         // Reset to last GMT midnight
         millis -= millis % MILLIS_PER_DAY;
-        // Skip forward by time zone offset. 
+        // Skip forward by time zone offset.
         millis -= currOffset * MILLIS_PER_MINUTE;
         date.setTime(millis);
         init(date, currOffset, currOffset);
     }
 
     /**
-     * Creates a new <code>DateAttribute</code> that represents
-     * the date supplied.
-     *
-     * @param date a <code>Date</code> object representing the
-     *             instant at which the specified date began (midnight)
-     *             in the specified time zone
-     * @param timeZone the time zone specified for this object
-     *                 (or TZ_UNSPECIFIED if unspecified). The
-     *                 offset to GMT, in minutes.
-     * @param defaultedTimeZone the time zone actually used for this
-     *                          object (if it was originally unspecified,
-     *                          the default time zone used).
-     *                          The offset to GMT, in minutes.
+     * Creates a new <code>DateAttribute</code> that represents the date supplied.
+     * 
+     * @param date
+     *            a <code>Date</code> object representing the instant at which the specified date
+     *            began (midnight) in the specified time zone
+     * @param timeZone
+     *            the time zone specified for this object (or TZ_UNSPECIFIED if unspecified). The
+     *            offset to GMT, in minutes.
+     * @param defaultedTimeZone
+     *            the time zone actually used for this object (if it was originally unspecified, the
+     *            default time zone used). The offset to GMT, in minutes.
      */
     public DateAttribute(Date date, int timeZone, int defaultedTimeZone) {
         super(identifierURI);
@@ -258,17 +232,16 @@ public class DateAttribute extends AttributeValue
 
     /**
      * Initialization code shared by constructors.
-     *
-     * @param date a <code>Date</code> object representing the
-     *             instant at which the specified date began (midnight)
-     *             in the specified time zone.
-     * @param timeZone the time zone specified for this object
-     *                 (or TZ_UNSPECIFIED if unspecified). The
-     *                 offset to GMT, in minutes.
-     * @param defaultedTimeZone the time zone actually used for this
-     *                          object (if it was originally unspecified,
-     *                          the default time zone used).
-     *                          The offset to GMT, in minutes.
+     * 
+     * @param date
+     *            a <code>Date</code> object representing the instant at which the specified date
+     *            began (midnight) in the specified time zone.
+     * @param timeZone
+     *            the time zone specified for this object (or TZ_UNSPECIFIED if unspecified). The
+     *            offset to GMT, in minutes.
+     * @param defaultedTimeZone
+     *            the time zone actually used for this object (if it was originally unspecified, the
+     *            default time zone used). The offset to GMT, in minutes.
      */
     private void init(Date date, int timeZone, int defaultedTimeZone) {
 
@@ -278,30 +251,28 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>DateAttribute</code> that represents
-     * the xs:date at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>DateAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
+     * Returns a new <code>DateAttribute</code> that represents the xs:date at a particular DOM
+     * node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>DateAttribute</code> representing the appropriate value (null if there is
+     *         a parsing error)
      */
-    public static DateAttribute getInstance(Node root)
-        throws ParseException
-    {
+    public static DateAttribute getInstance(Node root) throws ParseException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a new <code>DateAttribute</code> that represents
-     * the xs:date value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>DateAttribute</code> representing the
-     *         desired value (null if there is a parsing error)
+     * Returns a new <code>DateAttribute</code> that represents the xs:date value indicated by the
+     * string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>DateAttribute</code> representing the desired value (null if there is a
+     *         parsing error)
      */
-    public static DateAttribute getInstance(String value)
-        throws ParseException
-    {
+    public static DateAttribute getInstance(String value) throws ParseException {
         Date dateValue = null;
         int timeZone;
         int defaultedTimeZone;
@@ -313,7 +284,7 @@ public class DateAttribute extends AttributeValue
         // add +0000 to make the time zone explicit, then parse it
         // with the timezone parser.
         if (value.endsWith("Z")) {
-            value = value.substring(0, value.length()-1) + "+0000";
+            value = value.substring(0, value.length() - 1) + "+0000";
             dateValue = strictParse(zoneParser, value);
             timeZone = 0;
             defaultedTimeZone = 0;
@@ -324,16 +295,12 @@ public class DateAttribute extends AttributeValue
             // reformat the time zone by stripping out the colon
             // and parse the whole thing with the timezone parser.
             int len = value.length();
-            
-            if ((len > 6) && (value.charAt(len-3) == ':')) {
-                Date gmtValue = strictParse(zoneParser,
-                                            value.substring(0,len-6) +
-                                            "+0000");
-                value = value.substring(0, len-3) +
-                    value.substring(len-2, len);
+
+            if ((len > 6) && (value.charAt(len - 3) == ':')) {
+                Date gmtValue = strictParse(zoneParser, value.substring(0, len - 6) + "+0000");
+                value = value.substring(0, len - 3) + value.substring(len - 2, len);
                 dateValue = strictParse(zoneParser, value);
-                timeZone =
-                    (int) (gmtValue.getTime() - dateValue.getTime());
+                timeZone = (int) (gmtValue.getTime() - dateValue.getTime());
                 timeZone = timeZone / 60000;
                 defaultedTimeZone = timeZone;
             } else {
@@ -341,29 +308,25 @@ public class DateAttribute extends AttributeValue
                 dateValue = strictParse(simpleParser, value);
                 timeZone = TZ_UNSPECIFIED;
                 Date gmtValue = strictParse(zoneParser, value + "+0000");
-                defaultedTimeZone =
-                    (int) (gmtValue.getTime() - dateValue.getTime());
+                defaultedTimeZone = (int) (gmtValue.getTime() - dateValue.getTime());
                 defaultedTimeZone = defaultedTimeZone / 60000;
             }
         }
 
         // If parsing went OK, create a new DateAttribute object and
         // return it.
-        DateAttribute attr = new DateAttribute(dateValue, timeZone,
-                                               defaultedTimeZone);
+        DateAttribute attr = new DateAttribute(dateValue, timeZone, defaultedTimeZone);
         return attr;
     }
 
     /**
-     * Parse a String using a DateFormat parser, requiring that
-     * the entire String be consumed by the parser. On success,
-     * return a Date. On failure, throw a ParseException.
+     * Parse a String using a DateFormat parser, requiring that the entire String be consumed by the
+     * parser. On success, return a Date. On failure, throw a ParseException.
      * <p>
-     * Synchronize on the parser object when using it, since we
-     * assume they're the shared static objects in this class.
+     * Synchronize on the parser object when using it, since we assume they're the shared static
+     * objects in this class.
      */
-    private static Date strictParse(DateFormat parser, String str)
-        throws ParseException {
+    private static Date strictParse(DateFormat parser, String str) throws ParseException {
         ParsePosition pos = new ParsePosition(0);
         Date ret;
         synchronized (parser) {
@@ -396,25 +359,21 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Gets the date represented by this object. The return value is
-     * a <code>Date</code> object representing the
-     * instant at which the specified date began (midnight)
-     * in the time zone.
+     * Gets the date represented by this object. The return value is a <code>Date</code> object
+     * representing the instant at which the specified date began (midnight) in the time zone.
      * <p>
-     * <b>NOTE:</b> The <code>Date</code> object is cloned before it
-     * is returned to avoid unauthorized changes.
-     *
-     * @return a <code>Date</code> object representing the instant
-     *         at which the date began
+     * <b>NOTE:</b> The <code>Date</code> object is cloned before it is returned to avoid
+     * unauthorized changes.
+     * 
+     * @return a <code>Date</code> object representing the instant at which the date began
      */
     public Date getValue() {
         return (Date) value.clone();
     }
 
     /**
-     * Gets the specified time zone of this object (or
-     * TZ_UNSPECIFIED if unspecified).
-     *
+     * Gets the specified time zone of this object (or TZ_UNSPECIFIED if unspecified).
+     * 
      * @return the offset to GMT in minutes (positive or negative)
      */
     public int getTimeZone() {
@@ -422,9 +381,9 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Gets the time zone actually used for this object (if it was
-     * originally unspecified, the default time zone used).
-     *
+     * Gets the time zone actually used for this object (if it was originally unspecified, the
+     * default time zone used).
+     * 
      * @return the offset to GMT in minutes (positive or negative)
      */
     public int getDefaultedTimeZone() {
@@ -432,30 +391,30 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
      * <p>
-     * Two <code>DateAttribute</code>s are equal if and only if the
-     * instant on which the date began is equal. This means that they
-     * must have the same time zone.
-     *
-     * @param o the object to compare
-     *
+     * Two <code>DateAttribute</code>s are equal if and only if the instant on which the date began
+     * is equal. This means that they must have the same time zone.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof DateAttribute))
+        if (!(o instanceof DateAttribute))
             return false;
 
-        DateAttribute other = (DateAttribute)o;
+        DateAttribute other = (DateAttribute) o;
 
         return value.equals(other.value);
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -466,7 +425,7 @@ public class DateAttribute extends AttributeValue
 
     /**
      * Converts to a String representation.
-     *
+     * 
      * @return the String representation
      */
     public String toString() {
@@ -482,11 +441,10 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Encodes the value in a form suitable for including in XML data like
-     * a request or an obligation. This must return a value that could in
-     * turn be used by the factory to create a new instance with the same
-     * value.
-     *
+     * Encodes the value in a form suitable for including in XML data like a request or an
+     * obligation. This must return a value that could in turn be used by the factory to create a
+     * new instance with the same value.
+     * 
      * @return a <code>String</code> form of the value
      */
     public String encode() {
@@ -513,9 +471,9 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Encodes the value of this object as an xsi:date.
-     * Only for use when the time zone is specified.
-     *
+     * Encodes the value of this object as an xsi:date. Only for use when the time zone is
+     * specified.
+     * 
      * @return a <code>String</code> form of the value
      */
     private String formatDateWithTZ() {
@@ -572,15 +530,14 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Takes a String representation of an integer (an optional
-     * sign followed by digits) and pads it with zeros on the left
-     * until it has at least the specified number of digits.
-     * Note that this function will work for an integer of
-     * any size: int, long, etc.
-     *
-     * @param unpadded the unpadded <code>String</code>
-     *                 (must have length of at least one)
-     * @param minDigits the minimum number of digits desired
+     * Takes a String representation of an integer (an optional sign followed by digits) and pads it
+     * with zeros on the left until it has at least the specified number of digits. Note that this
+     * function will work for an integer of any size: int, long, etc.
+     * 
+     * @param unpadded
+     *            the unpadded <code>String</code> (must have length of at least one)
+     * @param minDigits
+     *            the minimum number of digits desired
      * @return the padded <code>String</code>
      */
     static String zeroPadIntString(String unpadded, int minDigits) {
@@ -626,14 +583,15 @@ public class DateAttribute extends AttributeValue
     }
 
     /**
-     * Converts an integer to a base 10 string and pads it with
-     * zeros on the left until it has at least the specified
-     * number of digits. Note that the length of the resulting
-     * string will be greater than minDigits if the number is
-     * negative since the string will start with a minus sign.
-     *
-     * @param intValue the integer to convert
-     * @param minDigits the minimum number of digits desired
+     * Converts an integer to a base 10 string and pads it with zeros on the left until it has at
+     * least the specified number of digits. Note that the length of the resulting string will be
+     * greater than minDigits if the number is negative since the string will start with a minus
+     * sign.
+     * 
+     * @param intValue
+     *            the integer to convert
+     * @param minDigits
+     *            the minimum number of digits desired
      * @return the padded <code>String</code>
      */
     static String zeroPadInt(int intValue, int minDigits) {

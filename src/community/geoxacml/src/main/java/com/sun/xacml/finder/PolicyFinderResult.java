@@ -1,4 +1,3 @@
-
 /*
  * @(#)PolicyFinderResult.java
  *
@@ -39,21 +38,18 @@ package com.sun.xacml.finder;
 import com.sun.xacml.AbstractPolicy;
 import com.sun.xacml.ctx.Status;
 
-
 /**
- * This is used as the return value for the findPolicy() methods in the
- * <code>PolicyFinder</code>. It communicates either a found policy that
- * applied to the request (eg, the target matches), an Indeterminate state,
- * or no applicable policies.
+ * This is used as the return value for the findPolicy() methods in the <code>PolicyFinder</code>.
+ * It communicates either a found policy that applied to the request (eg, the target matches), an
+ * Indeterminate state, or no applicable policies.
  * <p>
- * The OnlyOneApplicable combining logic is used in looking for a policy,
- * so the result from calling findPolicy can never be more than one policy.
- *
+ * The OnlyOneApplicable combining logic is used in looking for a policy, so the result from calling
+ * findPolicy can never be more than one policy.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class PolicyFinderResult
-{
+public class PolicyFinderResult {
 
     // the single policy being returned
     private AbstractPolicy policy;
@@ -71,8 +67,9 @@ public class PolicyFinderResult
 
     /**
      * Creates a result containing a single applicable policy.
-     *
-     * @param policy the applicable policy
+     * 
+     * @param policy
+     *            the applicable policy
      */
     public PolicyFinderResult(AbstractPolicy policy) {
         this.policy = policy;
@@ -81,8 +78,9 @@ public class PolicyFinderResult
 
     /**
      * Create a result of Indeterminate, including Status data.
-     *
-     * @param status the error information
+     * 
+     * @param status
+     *            the error information
      */
     public PolicyFinderResult(Status status) {
         policy = null;
@@ -91,7 +89,7 @@ public class PolicyFinderResult
 
     /**
      * Returns true if the result was NotApplicable.
-     *
+     * 
      * @return true if the result was NotApplicable
      */
     public boolean notApplicable() {
@@ -100,7 +98,7 @@ public class PolicyFinderResult
 
     /**
      * Returns true if the result was Indeterminate.
-     *
+     * 
      * @return true if there was an error
      */
     public boolean indeterminate() {
@@ -108,9 +106,8 @@ public class PolicyFinderResult
     }
 
     /**
-     * Returns the found policy, or null if there was an error or no policy
-     * was found.
-     *
+     * Returns the found policy, or null if there was an error or no policy was found.
+     * 
      * @return the applicable policy or null
      */
     public AbstractPolicy getPolicy() {
@@ -119,7 +116,7 @@ public class PolicyFinderResult
 
     /**
      * Returns the status if there was an error, or null if no error occurred.
-     *
+     * 
      * @return the error status data or null
      */
     public Status getStatus() {

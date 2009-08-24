@@ -1,4 +1,3 @@
-
 /*
  * @(#)PortRange.java
  *
@@ -36,18 +35,15 @@
 
 package com.sun.xacml.attr;
 
-
 /**
- * This class represents a port range as specified in the XACML 2.0 description
- * of <code>dnsName</code> and <code>ipAddress</code>. The range may have
- * upper and lower bounds, be specified by a single port number, or may be
- * unbound.
- *
+ * This class represents a port range as specified in the XACML 2.0 description of
+ * <code>dnsName</code> and <code>ipAddress</code>. The range may have upper and lower bounds, be
+ * specified by a single port number, or may be unbound.
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class PortRange
-{
+public class PortRange {
 
     /**
      * Constant used to specify that the range is unbound on one side.
@@ -56,33 +52,36 @@ public class PortRange
 
     // the port bound values
     private int lowerBound;
+
     private int upperBound;
-    
+
     /**
-     * Default constructor used to represent an unbound range. This is
-     * typically used when an address has no port information.
+     * Default constructor used to represent an unbound range. This is typically used when an
+     * address has no port information.
      */
     public PortRange() {
         this(UNBOUND, UNBOUND);
     }
 
     /**
-     * Creates a <code>PortRange</code> that represents a single port value
-     * instead of a range of values.
-     *
-     * @param singlePort the single port number
+     * Creates a <code>PortRange</code> that represents a single port value instead of a range of
+     * values.
+     * 
+     * @param singlePort
+     *            the single port number
      */
     public PortRange(int singlePort) {
         this(singlePort, singlePort);
     }
 
     /**
-     * Creates a <code>PortRange</code> with upper and lower bounds. Either
-     * of the parameters may have the value <code>UNBOUND</code> meaning
-     * that there is no bound at the respective end.
-     *
-     * @param lowerBound the lower-bound port number or <code>UNBOUND</code>
-     * @param upperBound the upper-bound port number or <code>UNBOUND</code>
+     * Creates a <code>PortRange</code> with upper and lower bounds. Either of the parameters may
+     * have the value <code>UNBOUND</code> meaning that there is no bound at the respective end.
+     * 
+     * @param lowerBound
+     *            the lower-bound port number or <code>UNBOUND</code>
+     * @param upperBound
+     *            the upper-bound port number or <code>UNBOUND</code>
      */
     public PortRange(int lowerBound, int upperBound) {
         this.lowerBound = lowerBound;
@@ -91,12 +90,14 @@ public class PortRange
 
     /**
      * Creates an instance of <code>PortRange</code> based on the given value.
-     *
-     * @param value a <code>String</code> representing the range
-     *
+     * 
+     * @param value
+     *            a <code>String</code> representing the range
+     * 
      * @return a new <code>PortRange</code>
-     *
-     * @throws NumberFormatException if a port value isn't an integer
+     * 
+     * @throws NumberFormatException
+     *             if a port value isn't an integer
      */
     public static PortRange getInstance(String value) {
         int lowerBound = UNBOUND;
@@ -123,8 +124,7 @@ public class PortRange
             // ... and see if there is a second port number
             if (dashPos != (len - 1)) {
                 // the dash wasn't at the end, so there's an upper-bound
-                upperBound = Integer.parseInt(value.substring(dashPos + 1,
-                                                              len));
+                upperBound = Integer.parseInt(value.substring(dashPos + 1, len));
             }
         }
 
@@ -132,11 +132,10 @@ public class PortRange
     }
 
     /**
-     * Returns the lower-bound port value. If the range is not lower-bound,
-     * then this returns <code>UNBOUND</code>. If the range is actually a
-     * single port number, then this returns the same value as
-     * <code>getUpperBound</code>.
-     *
+     * Returns the lower-bound port value. If the range is not lower-bound, then this returns
+     * <code>UNBOUND</code>. If the range is actually a single port number, then this returns the
+     * same value as <code>getUpperBound</code>.
+     * 
      * @return the upper-bound
      */
     public int getLowerBound() {
@@ -144,11 +143,10 @@ public class PortRange
     }
 
     /**
-     * Returns the upper-bound port value. If the range is not upper-bound,
-     * then this returns <code>UNBOUND</code>. If the range is actually a
-     * single port number, then this returns the same value as
-     * <code>getLowerBound</code>.
-     *
+     * Returns the upper-bound port value. If the range is not upper-bound, then this returns
+     * <code>UNBOUND</code>. If the range is actually a single port number, then this returns the
+     * same value as <code>getLowerBound</code>.
+     * 
      * @return the upper-bound
      */
     public int getUpperBound() {
@@ -157,7 +155,7 @@ public class PortRange
 
     /**
      * Returns whether the range is bounded by a lower port number.
-     *
+     * 
      * @return true if lower-bounded, false otherwise
      */
     public boolean isLowerBounded() {
@@ -166,7 +164,7 @@ public class PortRange
 
     /**
      * Returns whether the range is bounded by an upper port number.
-     *
+     * 
      * @return true if upper-bounded, false otherwise
      */
     public boolean isUpperBounded() {
@@ -175,7 +173,7 @@ public class PortRange
 
     /**
      * Returns whether the range is actually a single port number.
-     *
+     * 
      * @return true if the range is a single port number, false otherwise
      */
     public boolean isSinglePort() {
@@ -183,10 +181,9 @@ public class PortRange
     }
 
     /**
-     * Returns whether the range is unbound, which means that it specifies
-     * no port number or range. This is typically used with addresses that
-     * include no port information.
-     *
+     * Returns whether the range is unbound, which means that it specifies no port number or range.
+     * This is typically used with addresses that include no port information.
+     * 
      * @return true if the range is unbound, false otherwise
      */
     public boolean isUnbound() {
@@ -194,18 +191,19 @@ public class PortRange
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof PortRange))
+        if (!(o instanceof PortRange))
             return false;
 
-        PortRange other = (PortRange)o;
+        PortRange other = (PortRange) o;
 
         if (lowerBound != other.lowerBound)
             return false;
@@ -226,12 +224,12 @@ public class PortRange
         if (isSinglePort())
             return String.valueOf(lowerBound);
 
-        if (! isLowerBounded())
+        if (!isLowerBounded())
             return "-" + String.valueOf(upperBound);
 
-        if (! isUpperBounded())
+        if (!isUpperBounded())
             return String.valueOf(lowerBound) + "-";
-        
+
         return String.valueOf(lowerBound) + "-" + String.valueOf(upperBound);
     }
 

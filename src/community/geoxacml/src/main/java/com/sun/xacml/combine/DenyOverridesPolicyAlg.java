@@ -1,4 +1,3 @@
-
 /*
  * @(#)DenyOverridesPolicyAlg.java
  *
@@ -48,28 +47,24 @@ import com.sun.xacml.MatchResult;
 import com.sun.xacml.Obligation;
 import com.sun.xacml.ctx.Result;
 
-
 /**
- * This is the standard Deny Overrides policy combining algorithm. It
- * allows a single evaluation of Deny to take precedence over any number
- * of permit, not applicable or indeterminate results. Note that since
- * this implementation does an ordered evaluation, this class also
- * supports the Ordered Deny Overrides algorithm.
- *
+ * This is the standard Deny Overrides policy combining algorithm. It allows a single evaluation of
+ * Deny to take precedence over any number of permit, not applicable or indeterminate results. Note
+ * that since this implementation does an ordered evaluation, this class also supports the Ordered
+ * Deny Overrides algorithm.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class DenyOverridesPolicyAlg extends PolicyCombiningAlgorithm
-{
+public class DenyOverridesPolicyAlg extends PolicyCombiningAlgorithm {
 
     /**
      * The standard URN used to identify this algorithm
      */
-    public static final String algId =
-        "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:" +
-        "deny-overrides";
+    public static final String algId = "urn:oasis:names:tc:xacml:1.0:policy-combining-algorithm:"
+            + "deny-overrides";
 
     // a URI form of the identifier
     private static final URI identifierURI = URI.create(algId);
@@ -83,54 +78,52 @@ public class DenyOverridesPolicyAlg extends PolicyCombiningAlgorithm
 
     /**
      * Protected constructor used by the ordered version of this algorithm.
-     *
-     * @param identifier the algorithm's identifier
+     * 
+     * @param identifier
+     *            the algorithm's identifier
      */
     protected DenyOverridesPolicyAlg(URI identifier) {
         super(identifier);
     }
 
     /**
-     * Applies the combining rule to the set of policies based on the
-     * evaluation context.
-     *
-     * @param context the context from the request
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s
-     * @param policyElements the policies to combine
-     *
+     * Applies the combining rule to the set of policies based on the evaluation context.
+     * 
+     * @param context
+     *            the context from the request
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of <code>CombinerParameter<code>s
+     * @param policyElements
+     *            the policies to combine
+     * 
      * @return the result of running the combining algorithm
      */
     public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
-                          List<? extends CombinerElement> policyElements) {
+            List<? extends CombinerElement> policyElements) {
         boolean atLeastOnePermit = false;
         Set<Obligation> permitObligations = new HashSet<Obligation>();
         Iterator<? extends CombinerElement> it = policyElements.iterator();
 
         while (it.hasNext()) {
-            AbstractPolicy policy =
-                ((PolicyCombinerElement)(it.next())).getPolicy();
+            AbstractPolicy policy = ((PolicyCombinerElement) (it.next())).getPolicy();
 
             // make sure that the policy matches the context
             MatchResult match = policy.match(context);
 
             if (match.getResult() == MatchResult.INDETERMINATE)
-                return new Result(Result.DECISION_DENY,
-                                  context.getResourceId().encode());
+                return new Result(Result.DECISION_DENY, context.getResourceId().encode());
 
             if (match.getResult() == MatchResult.MATCH) {
                 // evaluate the policy
                 Result result = policy.evaluate(context);
                 int effect = result.getDecision();
-                
+
                 // unlike in the RuleCombining version of this alg, we always
                 // return DENY if any Policy returns DENY or INDETERMINATE
-                if ((effect == Result.DECISION_DENY) ||
-                    (effect == Result.DECISION_INDETERMINATE))
-                    return new Result(Result.DECISION_DENY,
-                                      context.getResourceId().encode(),
-                                      result.getObligations());
-                
+                if ((effect == Result.DECISION_DENY) || (effect == Result.DECISION_INDETERMINATE))
+                    return new Result(Result.DECISION_DENY, context.getResourceId().encode(),
+                            result.getObligations());
+
                 // remember if at least one Policy said PERMIT
                 if (effect == Result.DECISION_PERMIT) {
                     atLeastOnePermit = true;
@@ -138,15 +131,13 @@ public class DenyOverridesPolicyAlg extends PolicyCombiningAlgorithm
                 }
             }
         }
-        
+
         // if we got a PERMIT, return it, otherwise it's NOT_APPLICABLE
         if (atLeastOnePermit)
-            return new Result(Result.DECISION_PERMIT,
-                              context.getResourceId().encode(),
-                              permitObligations);
+            return new Result(Result.DECISION_PERMIT, context.getResourceId().encode(),
+                    permitObligations);
         else
-            return new Result(Result.DECISION_NOT_APPLICABLE,
-                              context.getResourceId().encode());
+            return new Result(Result.DECISION_NOT_APPLICABLE, context.getResourceId().encode());
     }
 
 }

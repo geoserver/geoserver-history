@@ -1,4 +1,3 @@
-
 /*
  * @(#)Obligation.java
  *
@@ -53,18 +52,16 @@ import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.Result;
 
-
 /**
- * Represents the ObligationType XML type in XACML. This also stores all the
- * AttriubteAssignmentType XML types.
- *
+ * Represents the ObligationType XML type in XACML. This also stores all the AttriubteAssignmentType
+ * XML types.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class Obligation
-{
+public class Obligation {
 
     // the obligation id
     private URI id;
@@ -76,30 +73,33 @@ public class Obligation
     private List<Attribute> assignments;
 
     /**
-     * Constructor that takes all the data associated with an obligation.
-     * The attribute assignment list contains <code>Attribute</code> objects,
-     * but only the fields used by the AttributeAssignmentType are used.
-     *
-     * @param id the obligation's id
-     * @param fulfillOn the effect denoting when to fulfill this obligation
-     * @param assignments a <code>List</code> of <code>Attribute</code>s
+     * Constructor that takes all the data associated with an obligation. The attribute assignment
+     * list contains <code>Attribute</code> objects, but only the fields used by the
+     * AttributeAssignmentType are used.
+     * 
+     * @param id
+     *            the obligation's id
+     * @param fulfillOn
+     *            the effect denoting when to fulfill this obligation
+     * @param assignments
+     *            a <code>List</code> of <code>Attribute</code>s
      */
     public Obligation(URI id, int fulfillOn, List<Attribute> assignments) {
         this.id = id;
         this.fulfillOn = fulfillOn;
-        this.assignments = Collections.
-            unmodifiableList(new ArrayList<Attribute>(assignments));
+        this.assignments = Collections.unmodifiableList(new ArrayList<Attribute>(assignments));
     }
 
     /**
-     * Creates an instance of <code>Obligation</code> based on the DOM root
-     * node.
-     *
-     * @param root the DOM root of the ObligationType XML type
-     *
+     * Creates an instance of <code>Obligation</code> based on the DOM root node.
+     * 
+     * @param root
+     *            the DOM root of the ObligationType XML type
+     * 
      * @return an instance of an obligation
-     *
-     * @throws ParsingException if the structure isn't valid
+     * 
+     * @throws ParsingException
+     *             if the structure isn't valid
      */
     public static Obligation getInstance(Node root) throws ParsingException {
         URI id;
@@ -112,8 +112,7 @@ public class Obligation
         try {
             id = new URI(attrs.getNamedItem("ObligationId").getNodeValue());
         } catch (Exception e) {
-            throw new ParsingException("Error parsing required attriubte " +
-                                       "ObligationId", e);
+            throw new ParsingException("Error parsing required attriubte " + "ObligationId", e);
         }
 
         String effect = null;
@@ -121,8 +120,7 @@ public class Obligation
         try {
             effect = attrs.getNamedItem("FulfillOn").getNodeValue();
         } catch (Exception e) {
-            throw new ParsingException("Error parsing required attriubte " +
-                                       "FulfillOn", e);
+            throw new ParsingException("Error parsing required attriubte " + "FulfillOn", e);
         }
 
         if (effect.equals("Permit")) {
@@ -138,29 +136,26 @@ public class Obligation
             Node node = nodes.item(i);
             if (node.getNodeName().equals("AttributeAssignment")) {
                 try {
-                    URI attrId =
-                        new URI(node.getAttributes().
-                                getNamedItem("AttributeId").getNodeValue());
+                    URI attrId = new URI(node.getAttributes().getNamedItem("AttributeId")
+                            .getNodeValue());
                     AttributeValue attrValue = attrFactory.createValue(node);
-                    assignments.add(new Attribute(attrId, null, null,
-                                                  attrValue));
+                    assignments.add(new Attribute(attrId, null, null, attrValue));
                 } catch (URISyntaxException use) {
                     throw new ParsingException("Error parsing URI", use);
                 } catch (UnknownIdentifierException uie) {
                     throw new ParsingException("Unknown AttributeId", uie);
                 } catch (Exception e) {
-                    throw new ParsingException("Error parsing attribute " +
-                                               "assignments", e);
+                    throw new ParsingException("Error parsing attribute " + "assignments", e);
                 }
             }
         }
 
         return new Obligation(id, fulfillOn, assignments);
     }
-    
+
     /**
      * Returns the id of this obligation
-     *
+     * 
      * @return the id
      */
     public URI getId() {
@@ -168,9 +163,8 @@ public class Obligation
     }
 
     /**
-     * Returns effect that will cause this obligation to be included in a
-     * response
-     *
+     * Returns effect that will cause this obligation to be included in a response
+     * 
      * @return the fulfillOn effect
      */
     public int getFulfillOn() {
@@ -178,10 +172,9 @@ public class Obligation
     }
 
     /**
-     * Returns the attribute assignment data in this obligation. The
-     * <code>List</code> contains objects of type <code>Attribute</code>
-     * with only the correct attribute fields being used.
-     *
+     * Returns the attribute assignment data in this obligation. The <code>List</code> contains
+     * objects of type <code>Attribute</code> with only the correct attribute fields being used.
+     * 
      * @return the assignments
      */
     public List<Attribute> getAssignments() {
@@ -189,38 +182,38 @@ public class Obligation
     }
 
     /**
-     * Encodes this <code>Obligation</code> into its XML form and writes this
-     * out to the provided <code>OutputStream<code> with no indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this <code>Obligation</code> into its XML form and writes this out to the provided
+     * <code>OutputStream<code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this <code>Obligation</code> into its XML form and writes this
-     * out to the provided <code>OutputStream<code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this <code>Obligation</code> into its XML form and writes this out to the provided
+     * <code>OutputStream<code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
-        
-        out.println(indent + "<Obligation ObligationId=\"" + id.toString() +
-                    "\" FulfillOn=\"" + Result.DECISIONS[fulfillOn] + "\">");
+
+        out.println(indent + "<Obligation ObligationId=\"" + id.toString() + "\" FulfillOn=\""
+                + Result.DECISIONS[fulfillOn] + "\">");
 
         indenter.in();
-                    
-        for (Attribute attr: assignments) {    
-            out.println(indenter.makeString() +
-                        "<AttributeAssignment AttributeId=\"" +
-                        attr.getId().toString() + "\" DataType=\"" +
-                        attr.getType().toString() + "\">" +
-                        attr.getValue().encode() +
-                        "</AttributeAssignment>");
+
+        for (Attribute attr : assignments) {
+            out.println(indenter.makeString() + "<AttributeAssignment AttributeId=\""
+                    + attr.getId().toString() + "\" DataType=\"" + attr.getType().toString()
+                    + "\">" + attr.getValue().encode() + "</AttributeAssignment>");
         }
 
         indenter.out();

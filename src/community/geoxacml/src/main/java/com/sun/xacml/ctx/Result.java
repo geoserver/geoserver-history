@@ -1,4 +1,3 @@
-
 /*
  * @(#)Result.java
  *
@@ -49,19 +48,16 @@ import com.sun.xacml.Indenter;
 import com.sun.xacml.Obligation;
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Represents the ResultType XML object from the Context schema. Any number
- * of these may included in a <code>ResponseCtx</code>. This class encodes the
- * decision effect, as well as an optional resource identifier and optional
- * status data. Any number of obligations may also be included.
- *
+ * Represents the ResultType XML object from the Context schema. Any number of these may included in
+ * a <code>ResponseCtx</code>. This class encodes the decision effect, as well as an optional
+ * resource identifier and optional status data. Any number of obligations may also be included.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
  */
-public class Result
-{
+public class Result {
 
     /**
      * The decision to permit the request
@@ -84,9 +80,7 @@ public class Result
     public static final int DECISION_NOT_APPLICABLE = 3;
 
     // string versions of the 4 Decision types used for encoding
-    public static final String [] DECISIONS = { "Permit", "Deny", 
-                                                "Indeterminate",
-                                                "NotApplicable" };
+    public static final String[] DECISIONS = { "Permit", "Deny", "Indeterminate", "NotApplicable" };
 
     // the decision effect
     private int decision = -1;
@@ -99,142 +93,155 @@ public class Result
 
     // the set of obligations which may be empty
     private Set<Obligation> obligations;
-    
+
     /**
      * Constructs a <code>Result</code> object with default status data (OK).
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
     public Result(int decision) throws IllegalArgumentException {
         this(decision, null, null, null);
     }
-    
+
     /**
-     * Constructs a <code>Result</code> object with default status data (OK),
-     * and obligations, but no resource identifier.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param obligations the obligations the PEP must handle
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with default status data (OK), and obligations, but
+     * no resource identifier.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param obligations
+     *            the obligations the PEP must handle
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
-    public Result(int decision, Set<Obligation> obligations)
-        throws IllegalArgumentException
-    {
+    public Result(int decision, Set<Obligation> obligations) throws IllegalArgumentException {
         this(decision, null, null, obligations);
     }
 
     /**
-     * Constructs a <code>Result</code> object with status data but without a
-     * resource identifier. Typically the decision is DECISION_INDETERMINATE
-     * in this case, though that's not always true.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param status the <code>Status</code> to include in this result
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with status data but without a resource identifier.
+     * Typically the decision is DECISION_INDETERMINATE in this case, though that's not always true.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param status
+     *            the <code>Status</code> to include in this result
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
     public Result(int decision, Status status) throws IllegalArgumentException {
         this(decision, status, null, null);
     }
 
     /**
-     * Constructs a <code>Result</code> object with status data and obligations
-     * but without a resource identifier. Typically the decision is
-     * DECISION_INDETERMINATE in this case, though that's not always true.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param status the <code>Status</code> to include in this result
-     * @param obligations the obligations the PEP must handle
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with status data and obligations but without a
+     * resource identifier. Typically the decision is DECISION_INDETERMINATE in this case, though
+     * that's not always true.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param status
+     *            the <code>Status</code> to include in this result
+     * @param obligations
+     *            the obligations the PEP must handle
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
     public Result(int decision, Status status, Set<Obligation> obligations)
-        throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         this(decision, status, null, obligations);
     }
 
     /**
-     * Constructs a <code>Result</code> object with a resource identifier,
-     * but default status data (OK). The resource being named must match
-     * the resource (or a descendent of the resource in the case of a
-     * hierarchical resource) from the associated request.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param resource a <code>String</code> naming the resource
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with a resource identifier, but default status data
+     * (OK). The resource being named must match the resource (or a descendent of the resource in
+     * the case of a hierarchical resource) from the associated request.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param resource
+     *            a <code>String</code> naming the resource
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
-    public Result(int decision, String resource)
-        throws IllegalArgumentException
-    {
+    public Result(int decision, String resource) throws IllegalArgumentException {
         this(decision, null, resource, null);
     }
 
     /**
-     * Constructs a <code>Result</code> object with a resource identifier,
-     * and obligations, but default status data (OK). The resource being named
-     * must match the resource (or a descendent of the resource in the case of
-     * a hierarchical resource) from the associated request.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param resource a <code>String</code> naming the resource
-     * @param obligations the obligations the PEP must handle
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with a resource identifier, and obligations, but
+     * default status data (OK). The resource being named must match the resource (or a descendent
+     * of the resource in the case of a hierarchical resource) from the associated request.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param resource
+     *            a <code>String</code> naming the resource
+     * @param obligations
+     *            the obligations the PEP must handle
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
     public Result(int decision, String resource, Set<Obligation> obligations)
-        throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         this(decision, null, resource, obligations);
     }
 
     /**
-     * Constructs a <code>Result</code> object with status data and a
-     * resource identifier.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param status the <code>Status</code> to include in this result
-     * @param resource a <code>String</code> naming the resource
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with status data and a resource identifier.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param status
+     *            the <code>Status</code> to include in this result
+     * @param resource
+     *            a <code>String</code> naming the resource
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
-    public Result(int decision, Status status, String resource)
-        throws IllegalArgumentException
-    {
+    public Result(int decision, Status status, String resource) throws IllegalArgumentException {
         this(decision, status, resource, null);
     }
 
     /**
-     * Constructs a <code>Result</code> object with status data, a
-     * resource identifier, and obligations.
-     *
-     * @param decision the decision effect to include in this result. This
-     *                 must be one of the four fields in this class.
-     * @param status the <code>Status</code> to include in this result
-     * @param resource a <code>String</code> naming the resource
-     * @param obligations the obligations the PEP must handle
-     *
-     * @throws IllegalArgumentException if decision is not valid
+     * Constructs a <code>Result</code> object with status data, a resource identifier, and
+     * obligations.
+     * 
+     * @param decision
+     *            the decision effect to include in this result. This must be one of the four fields
+     *            in this class.
+     * @param status
+     *            the <code>Status</code> to include in this result
+     * @param resource
+     *            a <code>String</code> naming the resource
+     * @param obligations
+     *            the obligations the PEP must handle
+     * 
+     * @throws IllegalArgumentException
+     *             if decision is not valid
      */
-    public Result(int decision, Status status, String resource,
-                  Set<Obligation> obligations)
-        throws IllegalArgumentException
-    {
+    public Result(int decision, Status status, String resource, Set<Obligation> obligations)
+            throws IllegalArgumentException {
         // check that decision is valid
-        if ((decision != DECISION_PERMIT) && (decision != DECISION_DENY) &&
-            (decision != DECISION_INDETERMINATE) &&
-            (decision != DECISION_NOT_APPLICABLE))
+        if ((decision != DECISION_PERMIT) && (decision != DECISION_DENY)
+                && (decision != DECISION_INDETERMINATE) && (decision != DECISION_NOT_APPLICABLE))
             throw new IllegalArgumentException("invalid decision value");
 
         this.decision = decision;
@@ -252,15 +259,16 @@ public class Result
     }
 
     /**
-     * Creates a new instance of a <code>Result</code> based on the given
-     * DOM root node. A <code>ParsingException</code> is thrown if the DOM
-     * root doesn't represent a valid ResultType.
-     *
-     * @param root the DOM root of a ResultType
-     *
+     * Creates a new instance of a <code>Result</code> based on the given DOM root node. A
+     * <code>ParsingException</code> is thrown if the DOM root doesn't represent a valid ResultType.
+     * 
+     * @param root
+     *            the DOM root of a ResultType
+     * 
      * @return a new <code>Result</code>
-     *
-     * @throws ParsingException if the node is invalid
+     * 
+     * @throws ParsingException
+     *             if the node is invalid
      */
     public static Result getInstance(Node root) throws ParsingException {
         int decision = -1;
@@ -314,25 +322,24 @@ public class Result
 
         if (set.size() == 0)
             throw new ParsingException("ObligationsType must not be empty");
-        
+
         return set;
     }
 
     /**
-     * Returns the decision associated with this <code>Result</code>. This
-     * will be one of the four <code>DECISION_*</code> fields in this class.
-     *
+     * Returns the decision associated with this <code>Result</code>. This will be one of the four
+     * <code>DECISION_*</code> fields in this class.
+     * 
      * @return the decision effect
      */
     public int getDecision() {
-        return decision; 
+        return decision;
     }
 
     /**
-     * Returns the status data included in this <code>Result</code>.
-     * Typically this will be <code>STATUS_OK</code> except when the decision
-     * is <code>INDETERMINATE</code>.
-     *
+     * Returns the status data included in this <code>Result</code>. Typically this will be
+     * <code>STATUS_OK</code> except when the decision is <code>INDETERMINATE</code>.
+     * 
      * @return status associated with this Result
      */
     public Status getStatus() {
@@ -340,9 +347,8 @@ public class Result
     }
 
     /**
-     * Returns the resource to which this Result applies, or null if none
-     * is specified.
-     *
+     * Returns the resource to which this Result applies, or null if none is specified.
+     * 
      * @return a resource identifier or null
      */
     public String getResource() {
@@ -350,14 +356,14 @@ public class Result
     }
 
     /**
-     * Sets the resource identifier if it has not already been set before.
-     * The core code does not set the resource identifier, so this is useful
-     * if you want to write wrapper code that needs this information.
-     *
-     * @param resource the resource identifier
-     *
-     * @return true if the resource identifier was set, false if it already
-     *         had a value
+     * Sets the resource identifier if it has not already been set before. The core code does not
+     * set the resource identifier, so this is useful if you want to write wrapper code that needs
+     * this information.
+     * 
+     * @param resource
+     *            the resource identifier
+     * 
+     * @return true if the resource identifier was set, false if it already had a value
      */
     public boolean setResource(String resource) {
         if (this.resource != null)
@@ -369,9 +375,8 @@ public class Result
     }
 
     /**
-     * Returns the set of obligations that the PEP must fulfill, which may
-     * be empty.
-     *
+     * Returns the set of obligations that the PEP must fulfill, which may be empty.
+     * 
      * @return the set of obligations
      */
     public Set<Obligation> getObligations() {
@@ -380,8 +385,9 @@ public class Result
 
     /**
      * Adds an obligation to the set of obligations that the PEP must fulfill
-     *
-     * @param obligation the <code>Obligation</code> to add
+     * 
+     * @param obligation
+     *            the <code>Obligation</code> to add
      */
     public void addObligation(Obligation obligation) {
         if (obligation != null)
@@ -389,21 +395,24 @@ public class Result
     }
 
     /**
-     * Encodes this <code>Result</code> into its XML form and writes this
-     * out to the provided <code>OutputStream<code> with no indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this <code>Result</code> into its XML form and writes this out to the provided
+     * <code>OutputStream<code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this <code>Result</code> into its XML form and writes this
-     * out to the provided <code>OutputStream<code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this <code>Result</code> into its XML form and writes this out to the provided
+     * <code>OutputStream<code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
@@ -419,9 +428,8 @@ public class Result
             out.println(indent + "<Result ResourceId=\"" + resource + "\">");
 
         // encode the decision
-        out.println(indentNext + "<Decision>" + DECISIONS[decision] +
-                    "</Decision>");
-        
+        out.println(indentNext + "<Decision>" + DECISIONS[decision] + "</Decision>");
+
         // encode the status
         if (status != null)
             status.encode(output, indenter);
@@ -429,12 +437,11 @@ public class Result
         // encode the obligations
         if (obligations.size() != 0) {
             out.println(indentNext + "<Obligations>");
-            
+
             indenter.in();
 
-            for (Obligation obligation: obligations)     
+            for (Obligation obligation : obligations)
                 obligation.encode(output, indenter);
-            
 
             indenter.out();
             out.println(indentNext + "</Obligations>");

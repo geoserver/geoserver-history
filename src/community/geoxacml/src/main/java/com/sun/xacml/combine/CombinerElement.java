@@ -1,4 +1,3 @@
-
 /*
  * @(#)CombinerElement.java
  *
@@ -44,18 +43,16 @@ import java.util.List;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.PolicyTreeElement;
 
-
 /**
- * Represents one input (a Rule, Policy, PolicySet, or reference) to a
- * combining algorithm and combiner parameters associated with that input.
- *
+ * Represents one input (a Rule, Policy, PolicySet, or reference) to a combining algorithm and
+ * combiner parameters associated with that input.
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public abstract class CombinerElement
-{
+public abstract class CombinerElement {
 
     // the element to be combined
     private PolicyTreeElement element;
@@ -64,22 +61,24 @@ public abstract class CombinerElement
     private List<CombinerParameter> parameters;
 
     /**
-     * Constructor that only takes an element. No parameters are associated
-     * with this element when combining.
-     *
-     * @param element a <code>PolicyTreeElement</code> to use in combining
+     * Constructor that only takes an element. No parameters are associated with this element when
+     * combining.
+     * 
+     * @param element
+     *            a <code>PolicyTreeElement</code> to use in combining
      */
     public CombinerElement(PolicyTreeElement element) {
         this(element, null);
     }
 
     /**
-     * Constructor that takes both the element to combine and its associated
-     * combiner parameters.
-     *
-     * @param element a <code>PolicyTreeElement</code> to use in combining
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s provided for general
+     * Constructor that takes both the element to combine and its associated combiner parameters.
+     * 
+     * @param element
+     *            a <code>PolicyTreeElement</code> to use in combining
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of
+     *            <code>CombinerParameter<code>s provided for general
      *                   use (for all pre-2.0 policies this must be empty)
      */
     public CombinerElement(PolicyTreeElement element, List<CombinerParameter> parameters) {
@@ -88,13 +87,13 @@ public abstract class CombinerElement
         if (parameters == null)
             this.parameters = Collections.unmodifiableList(new ArrayList<CombinerParameter>());
         else
-            this.parameters = Collections.
-                unmodifiableList(new ArrayList<CombinerParameter>(parameters));
+            this.parameters = Collections.unmodifiableList(new ArrayList<CombinerParameter>(
+                    parameters));
     }
 
     /**
      * Returns the <code>PolicyTreeElement</code> in this element.
-     *
+     * 
      * @return the <code>PolicyTreeElement</code>
      */
     public PolicyTreeElement getElement() {
@@ -102,9 +101,8 @@ public abstract class CombinerElement
     }
 
     /**
-     * Returns the <code>CombinerParameter</code>s associated with this
-     * element.
-     *
+     * Returns the <code>CombinerParameter</code>s associated with this element.
+     * 
      * @return a <code>List</code> of <code>CombinerParameter</code>s
      */
     public List<CombinerParameter> getParameters() {
@@ -112,12 +110,14 @@ public abstract class CombinerElement
     }
 
     /**
-     * Encodes the element and parameters in this <code>CombinerElement</code>
-     * into their XML representation and writes this encoding to the given
-     * <code>OutputStream</code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes the element and parameters in this <code>CombinerElement</code> into their XML
+     * representation and writes this encoding to the given <code>OutputStream</code> with
+     * indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public abstract void encode(OutputStream output, Indenter indenter);
 

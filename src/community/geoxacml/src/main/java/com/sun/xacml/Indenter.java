@@ -1,4 +1,3 @@
-
 /*
  * @(#)Indenter.java
  *
@@ -38,18 +37,16 @@ package com.sun.xacml;
 
 import java.util.Arrays;
 
-
 /**
- * Provides flexible indenting for XML encoding.  This class generates
- * strings of spaces to be prepended to lines of XML.  The strings are
- * formed according to a specified indent width and the given depth.
- *
+ * Provides flexible indenting for XML encoding. This class generates strings of spaces to be
+ * prepended to lines of XML. The strings are formed according to a specified indent width and the
+ * given depth.
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Seth Proctor
  */
-public class Indenter
-{
+public class Indenter {
 
     /**
      * The default indentation width
@@ -63,18 +60,17 @@ public class Indenter
     private int depth;
 
     /**
-     * Constructs an <code>Indenter</code> with the default indent
-     * width.
+     * Constructs an <code>Indenter</code> with the default indent width.
      */
     public Indenter() {
         this(DEFAULT_WIDTH);
     }
 
     /**
-     * Constructs an <code>Indenter</code> with a user-supplied indent
-     * width.
-     *
-     * @param userWidth the number of spaces to use for each indentation level
+     * Constructs an <code>Indenter</code> with a user-supplied indent width.
+     * 
+     * @param userWidth
+     *            the number of spaces to use for each indentation level
      */
     public Indenter(int userWidth) {
         width = userWidth;
@@ -96,9 +92,8 @@ public class Indenter
     }
 
     /**
-     * Create a <code>String</code> of spaces for indentation based on the
-     * current depth.
-     *
+     * Create a <code>String</code> of spaces for indentation based on the current depth.
+     * 
      * @return an indent string to prepend to lines of XML
      */
     public String makeString() {
