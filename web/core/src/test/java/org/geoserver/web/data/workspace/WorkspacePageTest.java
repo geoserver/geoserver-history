@@ -22,6 +22,6 @@ public class WorkspacePageTest extends GeoServerWicketTestSupport {
         DataView dv = (DataView) tester.getComponentFromLastRenderedPage("table:listContainer:items");
         assertEquals(dv.size(), getCatalog().getWorkspaces().size());
         WorkspaceInfo ws = (WorkspaceInfo) dv.getDataProvider().iterator(0, 1).next();
-        assertEquals(getCatalog().getWorkspaces().get(0), ws);
+        assertEquals("cdf", ws.getName());
     }
 }
