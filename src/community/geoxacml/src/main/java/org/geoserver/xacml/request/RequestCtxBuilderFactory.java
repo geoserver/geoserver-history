@@ -29,7 +29,7 @@ public interface RequestCtxBuilderFactory {
             AccessMode mode);
 
     public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString,
-            String method, Map<String, Object> httpParams);
+            String method, Map<String, Object> httpParams,String remoteIP,String remoteHost);
 
     public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role,
             ResourceInfo resourceInfo, AccessMode mode);

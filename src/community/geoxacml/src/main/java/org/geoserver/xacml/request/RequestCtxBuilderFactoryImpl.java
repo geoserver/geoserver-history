@@ -34,8 +34,8 @@ public class RequestCtxBuilderFactoryImpl implements RequestCtxBuilderFactory {
     }
 
     public RequestCtxBuilder getURLMatchRequestCtxBuilder(XACMLRole role, String urlString,
-            String action, Map<String, Object> httpParams) {
-        return new URLMatchRequestCtxBuilder(role, urlString, action, httpParams);
+            String action, Map<String, Object> httpParams,String remoteIP,String remoteHost)  {
+        return new URLMatchRequestCtxBuilder(role, urlString, action, httpParams,remoteIP,remoteHost);
     }
 
     public RequestCtxBuilder getResourceInfoRequestCtxBuilder(XACMLRole role,

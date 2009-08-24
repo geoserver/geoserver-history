@@ -229,10 +229,14 @@ public class DNSNameAttribute extends AttributeValue {
      */
     public int hashCode() {
 
-        // FIXME: what should the hashcode be?
-
-        return 0;
-    }
+        // added by Mueller Christian
+        
+        int hash = 1;
+        hash = hash * 31 + hostname.hashCode();
+        hash = hash * 31 + (range== null ? 0 : range.hashCode());
+        return hash;
+        
+     }
 
     /**
      * Converts to a String representation.
