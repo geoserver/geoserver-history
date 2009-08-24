@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -26,7 +25,7 @@ import org.springframework.jdbc.support.nativejdbc.XAPoolNativeJdbcExtractor;
 /**
  * Wires up the rich set of Spring native connection and statements un-wrappers to the
  * GeoTools UnWrapper API, whose model is different (they assume you know in advance
- * which unwrapper you'll need, each unwrapper works only in the enviroment it was
+ * which un-wrapper you'll need, each un-wrapper works only in the environment it was
  * designed for)
  * @author Andrea Aime - OpenGeo
  */
@@ -42,28 +41,28 @@ public class SpringUnWrapper implements UnWrapper {
         // guard their initialization and just skip them 
         try {
             extractors.add(new CommonsDbcpNativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new JBossNativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new Jdbc4NativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new SimpleNativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new WebLogicNativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new WebSphereNativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new XAPoolNativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         try {
             extractors.add(new C3P0NativeJdbcExtractor());
-        } catch(Exception e) {};
+        } catch(Throwable e) {};
         
         // use a concurrent enabled data structure so that we can modify
         // the order of extractors at run time, in a way that the extractors
