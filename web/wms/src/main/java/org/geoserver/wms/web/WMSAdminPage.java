@@ -125,7 +125,7 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     }
     
     private static class SRSListConverter implements IConverter {
-//            static final Pattern COMMA_SEPARATED = ; 
+            static final Pattern COMMA_SEPARATED = Pattern.compile("\\s*,\\s*", Pattern.MULTILINE); 
             
             public String convertToString(Object value, Locale locale) {
                 List<String> srsList = (List<String>) value;
@@ -141,7 +141,8 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
             }
             
             public Object convertToObject(String value, Locale locale) {
-                Pattern COMMA_SEPARATED = Pattern.compile("\\s*,\\s*", Pattern.MULTILINE);
+                if(value == null || value.trim().equals(""))
+                    return Collections.emptyList();
                 return new ArrayList<String>(Arrays.asList(COMMA_SEPARATED.split(value)));
             }
     }
