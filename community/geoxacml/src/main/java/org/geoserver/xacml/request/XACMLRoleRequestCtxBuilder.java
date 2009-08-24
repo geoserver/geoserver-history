@@ -13,6 +13,7 @@ import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.XACMLRole;
 
+import com.sun.xacml.attr.StringAttribute;
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.Subject;
@@ -48,15 +49,16 @@ public class XACMLRoleRequestCtxBuilder extends RequestCtxBuilder {
         addGeoserverResource(resources);
         addResource(resources, XACMLConstants.RoleEnablemetnResourceURI, targetRole.getAuthority());
 
-        if (userName != null) {
-            addResource(resources, XACMLConstants.UserResourceURI, userName);
-        }
 
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);
 
         Set<Attribute> environment = new HashSet<Attribute>(1);
+        if (userName != null) {
+            environment.add(new Attribute(XACMLConstants.UserEnvironmentURI,null,null,new StringAttribute(userName)));            
+        }
 
+        
         RequestCtx ctx = new RequestCtx(subjects, resources, actions, environment);
         return ctx;
 

@@ -47,9 +47,13 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
         // String urlPath = ((FilterInvocation) request).getRequestUrl().toLowerCase();
         String method = httpRequest.getMethod();
         Map<String, Object> httpParams = httpRequest.getParameterMap();
+        
+        String remoteIP = httpRequest.getRemoteAddr();
+        String remoteHost = httpRequest.getRemoteHost();
+        
 
         List<RequestCtx> requestCtxts = buildRequestCtxListFromRoles(auth, urlPath, method,
-                httpParams);
+                httpParams, remoteIP,remoteHost);
         if (requestCtxts.isEmpty())
             return XACMLDecisionMapper.Exact.getAcegiDecisionFor(Result.DECISION_DENY);
 
@@ -62,7 +66,7 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
     }
 
     private List<RequestCtx> buildRequestCtxListFromRoles(Authentication auth, String urlPath,
-            String method, Map<String, Object> httpParams) {
+            String method, Map<String, Object> httpParams,String remoteIP,String remoteHost) {
 
         GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(auth);
 
@@ -73,7 +77,7 @@ public class XACMLFilterDecisionVoter implements AccessDecisionVoter {
             if (xacmlRole.isEnabled() == false)
                 continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method, httpParams)
+                    .getURLMatchRequestCtxBuilder(xacmlRole, urlPath, method, httpParams,remoteIP,remoteHost)
                     .createRequestCtx();
             // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);

@@ -88,9 +88,9 @@ public class XACMLURLMatchingTest extends TestCase {
         paramMap.put("param2", new String[] { "value2" });
         RequestCtx request = GeoXACMLConfig.getRequestCtxBuilderFactory()
                 .getURLMatchRequestCtxBuilder((XACMLRole) anonymous.getAuthorities()[0], "/rest/",
-                        "GET", paramMap).createRequestCtx();
+                        "GET", paramMap,"127.0.0.1", "localhost").createRequestCtx();
 
-        // System.out.println(XACMLUtil.asXMLString(request));
+        //System.out.println(XACMLUtil.asXMLString(request));
         int count = 0;
         for (Attribute attr : request.getResource()) {
             if (attr.getId().toString().equals(XACMLConstants.URLParamPrefix + "param1")) {
@@ -112,6 +112,8 @@ public class XACMLURLMatchingTest extends TestCase {
         EasyMock.expect(mockRequest.getMethod()).andReturn(method).anyTimes();
         EasyMock.expect(mockRequest.getServletPath()).andReturn(path).anyTimes();
         EasyMock.expect(mockRequest.getParameterMap()).andReturn(null).anyTimes();
+        EasyMock.expect(mockRequest.getRemoteHost()).andReturn("localhost").anyTimes();
+        EasyMock.expect(mockRequest.getRemoteAddr()).andReturn("127.0.0.1").anyTimes();
         EasyMock.replay(mockRequest);
 
         FilterInvocation filter = org.easymock.classextension.EasyMock

@@ -5,6 +5,9 @@
 
 package org.geoserver.xacml.request;
 
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
@@ -15,6 +18,10 @@ import java.util.Map.Entry;
 import org.geoserver.xacml.geoxacml.XACMLConstants;
 import org.geoserver.xacml.role.XACMLRole;
 
+import com.sun.xacml.attr.AttributeValue;
+import com.sun.xacml.attr.DNSNameAttribute;
+import com.sun.xacml.attr.IPv4AddressAttribute;
+import com.sun.xacml.attr.IPv6AddressAttribute;
 import com.sun.xacml.ctx.Attribute;
 import com.sun.xacml.ctx.RequestCtx;
 import com.sun.xacml.ctx.Subject;
@@ -28,7 +35,7 @@ import com.sun.xacml.ctx.Subject;
  * 
  */
 public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
-    private String urlString = null;
+    private String urlString = null, remoteHost = null, remoteIP = null;
 
     private Map<String, Object> httpParams;
 
@@ -37,10 +44,12 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
     }
 
     public URLMatchRequestCtxBuilder(XACMLRole role, String urlString, String method,
-            Map<String, Object> httpParams) {
+            Map<String, Object> httpParams, String remoteIP, String remoteHost) {
         super(role, method);
         this.urlString = urlString;
         this.httpParams = httpParams;
+        this.remoteHost = remoteHost;
+        this.remoteIP = remoteIP;
     }
 
     @Override
@@ -71,10 +80,31 @@ public class URLMatchRequestCtxBuilder extends RequestCtxBuilder {
             }
         }
 
+
         Set<Attribute> actions = new HashSet<Attribute>(1);
         addAction(actions);
 
         Set<Attribute> environment = new HashSet<Attribute>(1);
+        try {
+            if (remoteHost != null) {
+                environment.add(new Attribute(XACMLConstants.DNSNameEnvironmentURI, null, null,
+                        new DNSNameAttribute(remoteHost)));
+            }
+            if (remoteIP != null) {
+                InetAddress addr = InetAddress.getByName(remoteIP);
+                if (addr instanceof Inet4Address)
+                    environment.add(new Attribute(XACMLConstants.IPAddressEnvironmentURI, null, null,
+                            new IPv4AddressAttribute(addr)));
+                if (addr instanceof Inet6Address) {
+                    environment.add(new Attribute(XACMLConstants.IPAddressEnvironmentURI, null, null,
+                            new IPv6AddressAttribute(addr)));
+                }
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex); // should not happen
+        }
+        
+        
 
         RequestCtx ctx = new RequestCtx(subjects, resources, actions, environment);
         return ctx;

@@ -30,6 +30,8 @@ public class XACMLConstants {
     public static URI ResourceAttributeURI;
 
     public final static String ResourceTypePrefix = GeoServerPrefix + "resource:type:";
+    
+    public final static String EnvironmentPrefix = GeoServerPrefix + "environment:";
 
     public final static String WorkspaceId = ResourceTypePrefix + "workspace";
 
@@ -51,9 +53,9 @@ public class XACMLConstants {
 
     public static URI RoleEnablemetnResourceURI;
 
-    public final static String UserResouceId = ResourceTypePrefix + "user";
+    public final static String UserEnvironmentId = EnvironmentPrefix + "user";
 
-    public static URI UserResourceURI;
+    public static URI UserEnvironmentURI;
 
     public final static String OWSServiceResouceId = ResourceTypePrefix + "OWSService";
 
@@ -66,6 +68,16 @@ public class XACMLConstants {
     public final static String BBoxResouceId = ResourceTypePrefix + "BBox";
 
     public static URI BBoxResourceURI;
+    
+    public final static String DNSNameEnvironmentId = EnvironmentPrefix + "DNSName";
+
+    public static URI DNSNameEnvironmentURI;
+    
+    public final static String IPAddressEnvironmentId = EnvironmentPrefix + "IPAddress";
+
+    public static URI IPAddressEnvironmentURI;
+
+
 
     // Only needed if we would use roles without role attributes
     // public final static String RoleAttributeId= "urn:oasis:names:tc:xacml:2.0:subject:role";
@@ -127,7 +139,9 @@ public class XACMLConstants {
             BBoxResourceURI = new URI(BBoxResouceId);
             RoleEnablemetnResourceURI = new URI(RoleEnablementResouceId);
             RoleAttributeURI = new URI(RoleAttributeId);
-            UserResourceURI = new URI(UserResouceId);
+            UserEnvironmentURI = new URI(UserEnvironmentId);
+            DNSNameEnvironmentURI = new URI(DNSNameEnvironmentId);
+            IPAddressEnvironmentURI = new URI(IPAddressEnvironmentId);
 
         } catch (URISyntaxException e) {
             // should not happen

@@ -206,9 +206,13 @@ public abstract class IPAddressAttribute extends AttributeValue {
      */
     public int hashCode() {
 
-        // FIXME: what should the hashcode be?
-
-        return 0;
+        // added by Mueller Christian
+        
+        int hash = 1;
+        hash = hash * 31 + address.hashCode();
+        hash = hash * 31 + (range== null ? 0 : range.hashCode());
+        hash = hash * 31 + (mask== null ? 0 : mask.hashCode());
+        return hash;
     }
 
     /**
