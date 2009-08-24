@@ -5,7 +5,7 @@ Data
 
 
 
-This section is the largest and perhaps the most important section of the Web Administration Interface.  Each subsection links directly to a data type page with ability to edit, add, and delete.
+This section is the largest and perhaps the most important section of the Web Administration Interface.  Each subsection links directly to a data type page with add, edit and delete capabilities.
 
 As seen in the example below, the data view page displays a table of indexed data. 
 

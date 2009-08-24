@@ -6,9 +6,9 @@ Layer Preview
 This page provides layer views in various output formats.  Note, a layer must be enabled in order to be previewed.  
 
 .. figure:: ../images/preview_list.png
-   :align: left
+   :align: center
    
-   *list of all layers and layer groups*
+   *Layer's Preview Page*
    
 Each layer row consists of a type, name, title, and available formats for viewing.
 

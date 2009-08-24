@@ -1,0 +1,4 @@
+.. _PalettedImages:
+
+Paletted Images
+===============

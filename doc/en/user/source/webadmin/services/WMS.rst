@@ -3,7 +3,7 @@
 WMS
 ===
 
-The Web Map Service (WMS) page allows for configuration of features, service levels, and GML output.  
+The Web Map Service (WMS) page allows for configuration of raster rendering and SVG options. 
 
 .. figure:: ../images/services_WMS.png
    :align: center

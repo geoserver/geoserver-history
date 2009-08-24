@@ -54,7 +54,7 @@ WMS GetFeatureInfo requests retrieve information regarding a particular feature 
 SRS
 ---
 
-GeoServer natively supports almost 4,000 Spatial Referencing Systems (SRS), also known as **projections**, and more can be added. A spatial reference system defines an ellipsoid, a datum using that ellipsoid, and either a geocentric, geographic or projection coordinate system.  This page  lists all SRS info known to GeoServer.
+GeoServer natively supports almost 4,000 Spatial Referencing Systems (SRS), also known as **projections**, and more can be added. A spatial reference system defines an ellipsoid, a datum using that ellipsoid, and either a geocentric, geographic or projection coordinate system.  This page lists all SRS info known to GeoServer.
 
 .. figure:: ../images/demos_SRS.png
    :align: left

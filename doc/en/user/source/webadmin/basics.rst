@@ -16,7 +16,7 @@ When using most common installations, GeoServer will start a web server on local
 
 When correctly configured, a welcome page will show up in your browser.
 
-.. figure:: images/8080welcome.png
+.. figure:: images/web-admin.png
    :align: center
    
    *Welcome Page*
