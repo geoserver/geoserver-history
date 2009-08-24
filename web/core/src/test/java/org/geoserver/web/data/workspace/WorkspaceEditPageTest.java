@@ -2,6 +2,8 @@ package org.geoserver.web.data.workspace;
 
 import java.util.List;
 
+import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.form.ValidationErrorFeedback;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
@@ -47,7 +49,9 @@ public class WorkspaceEditPageTest extends GeoServerWicketTestSupport {
         form.submit();
 
         tester.assertRenderedPage(WorkspaceEditPage.class);
-        tester.assertErrorMessages(new String[] { "'not a valid uri' is not a valid URL." });
+        List<ValidationErrorFeedback> messages = tester.getMessages(FeedbackMessage.ERROR);
+        assertEquals(1, messages.size());
+        assertEquals("Invalid URI syntax: not a valid uri", messages.get(0).getMessage());
     }
 
     /**

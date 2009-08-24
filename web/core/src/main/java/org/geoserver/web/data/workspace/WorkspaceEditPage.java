@@ -27,6 +27,7 @@ import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.namespace.NamespaceDetachableModel;
+import org.geoserver.web.wicket.URIValidator;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -61,7 +62,7 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         //name.setEnabled(false);
         form.add(name);
         TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"));
-        uri.add(new UrlValidator());
+        uri.add(new URIValidator());
         form.add(uri);
         
         //stores
