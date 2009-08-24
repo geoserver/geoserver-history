@@ -906,7 +906,7 @@ public class XStreamPersister {
             
             CoordinateReferenceSystem crs = null;
             if ( "crs".equals( reader.getNodeName() ) ) {
-                context.convertAnother( null, CoordinateReferenceSystem.class, 
+                crs = (CoordinateReferenceSystem) context.convertAnother( null, CoordinateReferenceSystem.class, 
                     new SingleValueConverterWrapper( new SRSConverter() ));
                 reader.moveUp();
             }
