@@ -1,4 +1,3 @@
-
 /*
  * @(#)PolicyFinder.java
  *
@@ -49,18 +48,15 @@ import com.sun.xacml.PolicyReference;
 import com.sun.xacml.VersionConstraints;
 import com.sun.xacml.ctx.Status;
 
-
 /**
- * This class is used by the PDP to find all policies used in evaluation. A
- * PDP is given a pre-configured <code>PolicyFinder</code> on construction.
- * The <code>PolicyFinder</code> provides the functionality both to find
- * policies based on a request (ie, retrieve policies and match against the
- * target) and based on an idReference (as can be included in a PolicySet).
+ * This class is used by the PDP to find all policies used in evaluation. A PDP is given a
+ * pre-configured <code>PolicyFinder</code> on construction. The <code>PolicyFinder</code> provides
+ * the functionality both to find policies based on a request (ie, retrieve policies and match
+ * against the target) and based on an idReference (as can be included in a PolicySet).
  * <p>
- * While this class is typically used by the PDP, it is intentionally
- * designed to support stand-alone use, so it could be the base for a
- * distributed service, or for some application that needs just this
- * functionality. There is nothing in the <code>PolicyFinder</code that
+ * While this class is typically used by the PDP, it is intentionally designed to support
+ * stand-alone use, so it could be the base for a distributed service, or for some application that
+ * needs just this functionality. There is nothing in the <code>PolicyFinder</code that
  * relies on the functionality in the PDP. An example of this is a PDP
  * that offloads all policy work by passing requests to another server
  * that does all the retrieval, and passes back the applicable policy.
@@ -72,14 +68,13 @@ import com.sun.xacml.ctx.Status;
  * that is added to this finder will be evaluated each time a policy is
  * requested. This means that you should think carefully about how many
  * modules you include, and how they can cache policy data.
- *
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class PolicyFinder
-{
+public class PolicyFinder {
 
     // all modules in this finder
     private Set<PolicyFinderModule> allModules;
@@ -91,13 +86,12 @@ public class PolicyFinder
     private Set<PolicyFinderModule> referenceModules;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(PolicyFinder.class.getName());
+    private static final Logger logger = Logger.getLogger(PolicyFinder.class.getName());
 
     /**
-     * Returns the unordered <code>Set</code> of
-     * <code>PolicyFinderModule</code>s used by this class to find policies.
-     *
+     * Returns the unordered <code>Set</code> of <code>PolicyFinderModule</code>s used by this class
+     * to find policies.
+     * 
      * @return a <code>Set</code> of <code>PolicyFinderModule</code>s
      */
     public Set<PolicyFinderModule> getModules() {
@@ -105,10 +99,11 @@ public class PolicyFinder
     }
 
     /**
-     * Sets the unordered <code>Set</code> of <code>PolicyFinderModule</code>s
-     * used by this class to find policies.
-     *
-     * @param modules a <code>Set</code> of <code>PolicyFinderModule</code>s
+     * Sets the unordered <code>Set</code> of <code>PolicyFinderModule</code>s used by this class to
+     * find policies.
+     * 
+     * @param modules
+     *            a <code>Set</code> of <code>PolicyFinderModule</code>s
      */
     public void setModules(Set<PolicyFinderModule> modules) {
 
@@ -116,7 +111,7 @@ public class PolicyFinder
         requestModules = new HashSet<PolicyFinderModule>();
         referenceModules = new HashSet<PolicyFinderModule>();
 
-        for (PolicyFinderModule module : modules) {    
+        for (PolicyFinderModule module : modules) {
 
             if (module.isRequestSupported())
                 requestModules.add(module);
@@ -132,48 +127,46 @@ public class PolicyFinder
     public void init() {
         logger.finer("Initializing PolicyFinder");
 
-         for (PolicyFinderModule module : allModules)    
-            module.init(this);        
+        for (PolicyFinderModule module : allModules)
+            module.init(this);
     }
 
     /**
-     * Finds a policy based on a request's context. This may involve using
-     * the request data as indexing data to lookup a policy. This will always
-     * do a Target match to make sure that the given policy applies. If more
-     * than one applicable policy is found, this will return an error.
-     *
-     * @param context the representation of the request data
-     *
+     * Finds a policy based on a request's context. This may involve using the request data as
+     * indexing data to lookup a policy. This will always do a Target match to make sure that the
+     * given policy applies. If more than one applicable policy is found, this will return an error.
+     * 
+     * @param context
+     *            the representation of the request data
+     * 
      * @return the result of trying to find an applicable policy
      */
     public PolicyFinderResult findPolicy(EvaluationCtx context) {
         PolicyFinderResult result = null;
 
         // look through all of the modules
-        for (PolicyFinderModule module: requestModules) {
+        for (PolicyFinderModule module : requestModules) {
             PolicyFinderResult newResult = module.findPolicy(context);
 
             // if there was an error, we stop right away
             if (newResult.indeterminate()) {
                 if (logger.isLoggable(Level.INFO))
-                    logger.info("An error occured while trying to find a " +
-                                "single applicable policy for a request: " +
-                                newResult.getStatus().getMessage());
+                    logger.info("An error occured while trying to find a "
+                            + "single applicable policy for a request: "
+                            + newResult.getStatus().getMessage());
 
                 return newResult;
             }
 
             // if we found a policy...
-            if (! newResult.notApplicable()) {
+            if (!newResult.notApplicable()) {
                 // ...if we already had found a policy, this is an error...
                 if (result != null) {
-                    logger.info("More than one top-level applicable policy " +
-                                "for the request");
+                    logger.info("More than one top-level applicable policy " + "for the request");
 
                     ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
-                    Status status = new Status(code, "too many applicable " +
-                                               "top-level policies");
+                    Status status = new Status(code, "too many applicable " + "top-level policies");
                     return new PolicyFinderResult(status);
                 }
 
@@ -181,7 +174,7 @@ public class PolicyFinder
                 result = newResult;
             }
         }
-        
+
         // if we got here then we didn't have any errors, so the only
         // question is whether or not we found anything
         if (result != null) {
@@ -194,61 +187,58 @@ public class PolicyFinder
     }
 
     /**
-     * Finds a policy based on an id reference. This may involve using
-     * the reference as indexing data to lookup a policy. This will always
-     * do a Target match to make sure that the given policy applies. If more
-     * than one applicable policy is found, this will return an error.
-     *
-     * @param idReference the identifier used to resolve a policy
-     * @param type type of reference (policy or policySet) as identified by
-     *             the fields in <code>PolicyReference</code>
-     * @param constraints any optional constraints on the version of the
-     *                    referenced policy
-     * @param parentMetaData the meta-data from the parent policy, which
-     *                       provides XACML version, factories, etc.
-     *
+     * Finds a policy based on an id reference. This may involve using the reference as indexing
+     * data to lookup a policy. This will always do a Target match to make sure that the given
+     * policy applies. If more than one applicable policy is found, this will return an error.
+     * 
+     * @param idReference
+     *            the identifier used to resolve a policy
+     * @param type
+     *            type of reference (policy or policySet) as identified by the fields in
+     *            <code>PolicyReference</code>
+     * @param constraints
+     *            any optional constraints on the version of the referenced policy
+     * @param parentMetaData
+     *            the meta-data from the parent policy, which provides XACML version, factories,
+     *            etc.
+     * 
      * @return the result of trying to find an applicable policy
-     *
-     * @throws IllegalArgumentException if <code>type</code> is invalid
+     * 
+     * @throws IllegalArgumentException
+     *             if <code>type</code> is invalid
      */
-    public PolicyFinderResult findPolicy(URI idReference, int type,
-                                         VersionConstraints constraints,
-                                         PolicyMetaData parentMetaData)
-        throws IllegalArgumentException
-    {
+    public PolicyFinderResult findPolicy(URI idReference, int type, VersionConstraints constraints,
+            PolicyMetaData parentMetaData) throws IllegalArgumentException {
         PolicyFinderResult result = null;
 
-        if ((type != PolicyReference.POLICY_REFERENCE) &&
-            (type != PolicyReference.POLICYSET_REFERENCE))
+        if ((type != PolicyReference.POLICY_REFERENCE)
+                && (type != PolicyReference.POLICYSET_REFERENCE))
             throw new IllegalArgumentException("Unknown reference type");
 
         // look through all of the modules
-        for (PolicyFinderModule module : referenceModules) {    
-            PolicyFinderResult newResult =
-                module.findPolicy(idReference, type, constraints,
-                                  parentMetaData);
+        for (PolicyFinderModule module : referenceModules) {
+            PolicyFinderResult newResult = module.findPolicy(idReference, type, constraints,
+                    parentMetaData);
 
             // if there was an error, we stop right away
             if (newResult.indeterminate()) {
                 if (logger.isLoggable(Level.INFO))
-                    logger.info("An error occured while trying to find the " +
-                                "referenced policy " + idReference.toString() +
-                                ": " + newResult.getStatus().getMessage());
-                
+                    logger.info("An error occured while trying to find the " + "referenced policy "
+                            + idReference.toString() + ": " + newResult.getStatus().getMessage());
+
                 return newResult;
             }
 
             // if we found a policy...
-            if (! newResult.notApplicable()) {
+            if (!newResult.notApplicable()) {
                 // ...if we already had found a policy, this is an error...
                 if (result != null) {
                     if (logger.isLoggable(Level.INFO))
-                        logger.info("More than one policy applies for the " +
-                                    "reference: " + idReference.toString());
+                        logger.info("More than one policy applies for the " + "reference: "
+                                + idReference.toString());
                     ArrayList<String> code = new ArrayList<String>();
                     code.add(Status.STATUS_PROCESSING_ERROR);
-                    Status status = new Status(code, "too many applicable " +
-                                               "top-level policies");
+                    Status status = new Status(code, "too many applicable " + "top-level policies");
                     return new PolicyFinderResult(status);
                 }
 
@@ -256,15 +246,15 @@ public class PolicyFinder
                 result = newResult;
             }
         }
-        
+
         // if we got here then we didn't have any errors, so the only
         // question is whether or not we found anything
         if (result != null) {
             return result;
         } else {
             if (logger.isLoggable(Level.INFO))
-                logger.info("No policies were resolved for the reference: " +
-                            idReference.toString());
+                logger.info("No policies were resolved for the reference: "
+                        + idReference.toString());
 
             return new PolicyFinderResult();
         }

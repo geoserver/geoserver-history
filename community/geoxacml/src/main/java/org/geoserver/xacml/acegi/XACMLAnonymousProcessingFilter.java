@@ -20,7 +20,7 @@ import org.geoserver.xacml.role.XACMLRole;
  * Creating an AnoynmaAuthenticationToken with XACML Roles
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class XACMLAnonymousProcessingFilter extends AnonymousProcessingFilter {
 

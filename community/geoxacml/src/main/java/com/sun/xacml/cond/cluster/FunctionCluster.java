@@ -1,4 +1,3 @@
-
 /*
  * @(#)FunctionCluster.java
  *
@@ -40,34 +39,29 @@ import java.util.Set;
 
 import com.sun.xacml.cond.Function;
 
-
 /**
- * Interface used by classes that support more than one function. It's a
- * common design model to have a single class support more than one XACML
- * function. In those cases, you should provide a proxy that implements
- * <code>FunctionCluster</code> in addition to the <code>Function</code>.
- * This is particularly important for the run-time configuration system,
- * which uses this interface to create "clusters" of functions and therefore
- * can use a smaller configuration file.
- *
+ * Interface used by classes that support more than one function. It's a common design model to have
+ * a single class support more than one XACML function. In those cases, you should provide a proxy
+ * that implements <code>FunctionCluster</code> in addition to the <code>Function</code>. This is
+ * particularly important for the run-time configuration system, which uses this interface to create
+ * "clusters" of functions and therefore can use a smaller configuration file.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public interface FunctionCluster
-{
+public interface FunctionCluster {
 
     /**
-     * Returns a single instance of each of the functions supported by
-     * some class. The <code>Set</code> must contain instances of
-     * <code>Function</code>, and it must be both non-null and non-empty.
-     * It may contain only a single <code>Function</code>.
+     * Returns a single instance of each of the functions supported by some class. The
+     * <code>Set</code> must contain instances of <code>Function</code>, and it must be both
+     * non-null and non-empty. It may contain only a single <code>Function</code>.
      * <p>
-     * Note that this is only used to return concrete <code>Function</code>s.
-     * It may not be used to report abstract functions.
-     *
+     * Note that this is only used to return concrete <code>Function</code>s. It may not be used to
+     * report abstract functions.
+     * 
      * @return the functions supported by this class
      * 
-     * Adding generic type support by Christian Mueller (geotools)
+     *         Adding generic type support by Christian Mueller (geotools)
      */
     public Set<Function> getSupportedFunctions();
 

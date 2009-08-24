@@ -1,4 +1,3 @@
-
 /*
  * @(#)RoundFunction.java
  *
@@ -44,20 +43,18 @@ import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.DoubleAttribute;
 
-
 /**
- * A class that implements the round function. It takes one double
- * operand, rounds that value to an integer and returns that integer.
- * If the operand is indeterminate, an indeterminate result is returned.
- *
+ * A class that implements the round function. It takes one double operand, rounds that value to an
+ * integer and returns that integer. If the operand is indeterminate, an indeterminate result is
+ * returned.
+ * 
  * @since 1.0
  * @author Steve Hanna
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class RoundFunction extends FunctionBase
-{
+public class RoundFunction extends FunctionBase {
 
     /**
      * Standard identifier for the round function.
@@ -66,25 +63,25 @@ public class RoundFunction extends FunctionBase
 
     /**
      * Creates a new <code>RoundFunction</code> object.
-     *
-     * @param functionName the standard XACML name of the function to be
-     *                     handled by this object, including the full namespace
-     *
-     * @throws IllegalArgumentException if the function is unknown
+     * 
+     * @param functionName
+     *            the standard XACML name of the function to be handled by this object, including
+     *            the full namespace
+     * 
+     * @throws IllegalArgumentException
+     *             if the function is unknown
      */
     public RoundFunction(String functionName) {
-        super(NAME_ROUND, 0, DoubleAttribute.identifier, false, 1,
-              DoubleAttribute.identifier, false);
+        super(NAME_ROUND, 0, DoubleAttribute.identifier, false, 1, DoubleAttribute.identifier,
+                false);
 
-        if (! functionName.equals(NAME_ROUND))
-            throw new IllegalArgumentException("unknown round function: "
-                                               + functionName);
+        if (!functionName.equals(NAME_ROUND))
+            throw new IllegalArgumentException("unknown round function: " + functionName);
     }
 
     /**
-     * Returns a <code>Set</code> containing all the function identifiers
-     * supported by this class.
-     *
+     * Returns a <code>Set</code> containing all the function identifiers supported by this class.
+     * 
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set<String> getSupportedIdentifiers() {
@@ -97,18 +94,19 @@ public class RoundFunction extends FunctionBase
 
     /**
      * Evaluate the function, using the specified parameters.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context an <code>EvaluationCtx</code> so that the
-     *                <code>Evaluatable</code> objects can be evaluated
-     * @return an <code>EvaluationResult</code> representing the
-     *         function's result
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            an <code>EvaluationCtx</code> so that the <code>Evaluatable</code> objects can be
+     *            evaluated
+     * @return an <code>EvaluationResult</code> representing the function's result
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
         // Evaluate the arguments
-        AttributeValue [] argValues = new AttributeValue[inputs.size()];
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
         if (result != null)
             return result;
@@ -116,7 +114,7 @@ public class RoundFunction extends FunctionBase
         // Now that we have real values, perform the round operation
         double arg = ((DoubleAttribute) argValues[0]).getValue();
         double roundValue = Math.round(arg);
-        
+
         // Make it round half even, not round nearest
         double lower = Math.floor(arg);
         double higher = lower + 1;
@@ -127,7 +125,7 @@ public class RoundFunction extends FunctionBase
             else
                 roundValue = higher;
         }
-        
+
         return new EvaluationResult(new DoubleAttribute(roundValue));
     }
 }

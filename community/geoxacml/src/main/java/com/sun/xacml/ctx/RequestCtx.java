@@ -1,4 +1,3 @@
-
 /*
  * @(#)RequestCtx.java
  *
@@ -51,20 +50,18 @@ import org.w3c.dom.NodeList;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Represents a request made to the PDP. This is the class that contains all
- * the data used to start a policy evaluation.
- *
+ * Represents a request made to the PDP. This is the class that contains all the data used to start
+ * a policy evaluation.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
  * 
- * Adding generic type support by Christian Mueller (geotools) 
+ *         Adding generic type support by Christian Mueller (geotools)
  * 
  */
-public class RequestCtx
-{
+public class RequestCtx {
 
     // There must be at least one subject
     private Set<Subject> subjects = null;
@@ -86,104 +83,124 @@ public class RequestCtx
 
     /**
      * Constructor that creates a <code>RequestCtx</code> from components.
-     *
-     * @param subjects a <code>Set</code> of <code>Subject</code>s
-     * @param resource a <code>Set</code> of <code>Attribute</code>s
-     * @param action a <code>Set</code> of <code>Attribute</code>s
-     * @param environment a <code>Set</code> of environment attributes
+     * 
+     * @param subjects
+     *            a <code>Set</code> of <code>Subject</code>s
+     * @param resource
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param action
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param environment
+     *            a <code>Set</code> of environment attributes
      */
     public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action,
-                      Set<Attribute> environment) {
+            Set<Attribute> environment) {
         this(subjects, resource, action, environment, null, null);
     }
 
     /**
      * Constructor that creates a <code>RequestCtx</code> from components.
-     *
-     * @param subjects a <code>Set</code> of <code>Subject</code>s
-     * @param resource a <code>Set</code> of <code>Attribute</code>s
-     * @param action a <code>Set</code> of <code>Attribute</code>s
-     * @param environment a <code>Set</code> of environment attributes
-     * @param documentRoot the root node of the DOM tree for this request
+     * 
+     * @param subjects
+     *            a <code>Set</code> of <code>Subject</code>s
+     * @param resource
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param action
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param environment
+     *            a <code>Set</code> of environment attributes
+     * @param documentRoot
+     *            the root node of the DOM tree for this request
      */
-    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action, 
-                      Set<Attribute> environment, Node documentRoot) {
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action,
+            Set<Attribute> environment, Node documentRoot) {
         this(subjects, resource, action, environment, documentRoot, null);
     }
 
     /**
      * Constructor that creates a <code>RequestCtx</code> from components.
-     *
-     * @param subjects a <code>Set</code> of <code>Subject</code>s
-     * @param resource a <code>Set</code> of <code>Attribute</code>s
-     * @param action a <code>Set</code> of <code>Attribute</code>s
-     * @param environment a <code>Set</code> of environment attributes
-     * @param resourceContent a text-encoded version of the content, suitable
-     *                        for including in the RequestType, including the
-     *                        root <code>RequestContent</code> node
+     * 
+     * @param subjects
+     *            a <code>Set</code> of <code>Subject</code>s
+     * @param resource
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param action
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param environment
+     *            a <code>Set</code> of environment attributes
+     * @param resourceContent
+     *            a text-encoded version of the content, suitable for including in the RequestType,
+     *            including the root <code>RequestContent</code> node
      */
-    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action, 
-                      Set<Attribute> environment, String resourceContent) {
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action,
+            Set<Attribute> environment, String resourceContent) {
         this(subjects, resource, action, environment, null, resourceContent);
     }
 
     /**
      * Constructor that creates a <code>RequestCtx</code> from components.
-     *
-     * @param subjects a <code>Set</code> of <code>Subject</code>s
-     * @param resource a <code>Set</code> of <code>Attribute</code>s
-     * @param action a <code>Set</code> of <code>Attribute</code>s
-     * @param environment a <code>Set</code> of environment attributes
-     * @param documentRoot the root node of the DOM tree for this request
-     * @param resourceContent a text-encoded version of the content, suitable
-     *                        for including in the RequestType, including the
-     *                        root <code>RequestContent</code> node
-     *
-     * @throws IllegalArgumentException if the inputs are not well formed
+     * 
+     * @param subjects
+     *            a <code>Set</code> of <code>Subject</code>s
+     * @param resource
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param action
+     *            a <code>Set</code> of <code>Attribute</code>s
+     * @param environment
+     *            a <code>Set</code> of environment attributes
+     * @param documentRoot
+     *            the root node of the DOM tree for this request
+     * @param resourceContent
+     *            a text-encoded version of the content, suitable for including in the RequestType,
+     *            including the root <code>RequestContent</code> node
+     * 
+     * @throws IllegalArgumentException
+     *             if the inputs are not well formed
      */
-    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action, 
-                      Set<Attribute> environment, Node documentRoot,
-                      String resourceContent) throws IllegalArgumentException {
-      
+    public RequestCtx(Set<Subject> subjects, Set<Attribute> resource, Set<Attribute> action,
+            Set<Attribute> environment, Node documentRoot, String resourceContent)
+            throws IllegalArgumentException {
+
         this.subjects = Collections.unmodifiableSet(new HashSet<Subject>(subjects));
 
         this.resource = Collections.unmodifiableSet(new HashSet<Attribute>(resource));
 
         this.action = Collections.unmodifiableSet(new HashSet<Attribute>(action));
-        
-        this.environment =
-            Collections.unmodifiableSet(new HashSet<Attribute>(environment));
+
+        this.environment = Collections.unmodifiableSet(new HashSet<Attribute>(environment));
 
         this.documentRoot = documentRoot;
         this.resourceContent = resourceContent;
     }
 
     /**
-     * Create a new <code>RequestCtx</code> by parsing a node.  This
-     * node should be created by schema-verified parsing of an
-     * <code>XML</code> document.
-     *
-     * @param root the node to parse for the <code>RequestCtx</code>
-     *
+     * Create a new <code>RequestCtx</code> by parsing a node. This node should be created by
+     * schema-verified parsing of an <code>XML</code> document.
+     * 
+     * @param root
+     *            the node to parse for the <code>RequestCtx</code>
+     * 
      * @return a new <code>RequestCtx</code> constructed by parsing
-     *
-     * @throws URISyntaxException if there is a badly formed URI
-     * @throws ParsingException if the DOM node is invalid
+     * 
+     * @throws URISyntaxException
+     *             if there is a badly formed URI
+     * @throws ParsingException
+     *             if the DOM node is invalid
      */
     public static RequestCtx getInstance(Node root) throws ParsingException {
         Set<Subject> newSubjects = new HashSet<Subject>();
         Set<Attribute> newResource = null;
         Set<Attribute> newAction = null;
         Set<Attribute> newEnvironment = null;
-        //String resourceContent;
+        // String resourceContent;
 
         // First check to be sure the node passed is indeed a Request node.
         String tagName = root.getNodeName();
-        if (! tagName.equals("Request")) {
-            throw new ParsingException("Request cannot be constructed using " +
-                                       "type: " + root.getNodeName());
+        if (!tagName.equals("Request")) {
+            throw new ParsingException("Request cannot be constructed using " + "type: "
+                    + root.getNodeName());
         }
-        
+
         // Now go through its child nodes, finding Subject,
         // Resource, Action, and Environment data
         NodeList children = root.getChildNodes();
@@ -194,8 +211,7 @@ public class RequestCtx
 
             if (tag.equals("Subject")) {
                 // see if there is a category
-                Node catNode =
-                    node.getAttributes().getNamedItem("SubjectCategory");
+                Node catNode = node.getAttributes().getNamedItem("SubjectCategory");
                 URI category = null;
 
                 if (catNode != null) {
@@ -205,7 +221,7 @@ public class RequestCtx
                         throw new ParsingException("Invalid Category URI", e);
                     }
                 }
-                
+
                 // now we get the attributes
                 Set<Attribute> attributes = parseAttributes(node);
 
@@ -233,13 +249,12 @@ public class RequestCtx
 
         // Now create and return the RequestCtx from the information
         // gathered
-        return new RequestCtx(newSubjects, newResource,
-                              newAction, newEnvironment, root);
+        return new RequestCtx(newSubjects, newResource, newAction, newEnvironment, root);
     }
 
-    /* 
-     * Helper method that parses a set of Attribute types. The Subject,
-     * Action and Environment sections all look like this.
+    /*
+     * Helper method that parses a set of Attribute types. The Subject, Action and Environment
+     * sections all look like this.
      */
     private static Set<Attribute> parseAttributes(Node root) throws ParsingException {
         Set<Attribute> set = new HashSet<Attribute>();
@@ -256,30 +271,27 @@ public class RequestCtx
     }
 
     /**
-     * Creates a new <code>RequestCtx</code> by parsing XML from an
-     * input stream. Note that this a convenience method, and it will
-     * not do schema validation by default. You should be parsing the data
-     * yourself, and then providing the root node to the other
-     * <code>getInstance</code> method. If you use this convenience
-     * method, you probably want to turn on validation by setting the
-     * context schema file (see the programmer guide for more information
-     * on this).
-     *
-     * @param input a stream providing the XML data
-     *
+     * Creates a new <code>RequestCtx</code> by parsing XML from an input stream. Note that this a
+     * convenience method, and it will not do schema validation by default. You should be parsing
+     * the data yourself, and then providing the root node to the other <code>getInstance</code>
+     * method. If you use this convenience method, you probably want to turn on validation by
+     * setting the context schema file (see the programmer guide for more information on this).
+     * 
+     * @param input
+     *            a stream providing the XML data
+     * 
      * @return a new <code>RequestCtx</code>
-     *
-     * @throws ParserException if there is an error parsing the input
+     * 
+     * @throws ParserException
+     *             if there is an error parsing the input
      */
-    public static RequestCtx getInstance(InputStream input)
-        throws ParsingException
-    {
+    public static RequestCtx getInstance(InputStream input) throws ParsingException {
         return getInstance(InputParser.parseInput(input, "Request"));
     }
 
     /**
      * Returns a <code>Set</code> containing <code>Subject</code> objects.
-     *
+     * 
      * @return the request's subject attributes
      */
     public Set<Subject> getSubjects() {
@@ -288,7 +300,7 @@ public class RequestCtx
 
     /**
      * Returns a <code>Set</code> containing <code>Attribute</code> objects.
-     *
+     * 
      * @return the request's resource attributes
      */
     public Set<Attribute> getResource() {
@@ -297,7 +309,7 @@ public class RequestCtx
 
     /**
      * Returns a <code>Set</code> containing <code>Attribute</code> objects.
-     *
+     * 
      * @return the request's action attributes
      */
     public Set<Attribute> getAction() {
@@ -306,7 +318,7 @@ public class RequestCtx
 
     /**
      * Returns a <code>Set</code> containing <code>Attribute</code> objects.
-     *
+     * 
      * @return the request's environment attributes
      */
     public Set<Attribute> getEnvironmentAttributes() {
@@ -314,11 +326,10 @@ public class RequestCtx
     }
 
     /**
-     * Returns the root DOM node of the document used to create this
-     * object, or null if this object was created by hand (ie, not through
-     * the <code>getInstance</code> method) or if the root node was not
-     * provided to the constructor.
-     *
+     * Returns the root DOM node of the document used to create this object, or null if this object
+     * was created by hand (ie, not through the <code>getInstance</code> method) or if the root node
+     * was not provided to the constructor.
+     * 
      * @return the root DOM node or null
      */
     public Node getDocumentRoot() {
@@ -326,11 +337,11 @@ public class RequestCtx
     }
 
     /**
-     * Encodes this context into its XML representation and writes this
-     * encoding to the given <code>OutputStream</code>.  No
-     * indentation is used.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this context into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code>. No indentation is used.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
@@ -339,13 +350,15 @@ public class RequestCtx
     public void encode(OutputStream output, Indenter indenter) {
         encode(output, indenter, false);
     }
+
     /**
-     * Encodes this context into its XML representation and writes
-     * this encoding to the given <code>OutputStream</code> with
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this context into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter, boolean header) {
 
@@ -366,13 +379,13 @@ public class RequestCtx
         indenter.in();
 
         // first off, go through all subjects
-        for (Subject subject : subjects) {    
+        for (Subject subject : subjects) {
 
-            out.print(indent + "<Subject SubjectCategory=\"" +
-                      subject.getCategory().toString() + "\"");
+            out.print(indent + "<Subject SubjectCategory=\"" + subject.getCategory().toString()
+                    + "\"");
 
             Set<Attribute> subjectAttrs = subject.getAttributes();
-            
+
             if (subjectAttrs.size() == 0) {
                 // there's nothing in this Subject, so just close the tag
                 out.println("/>");
@@ -381,7 +394,7 @@ public class RequestCtx
                 out.println(">");
 
                 encodeAttributes(subjectAttrs, out, indenter);
-            
+
                 out.println(indent + "</Subject>");
             }
         }
@@ -390,8 +403,8 @@ public class RequestCtx
         if ((resource.size() != 0) || (resourceContent != null)) {
             out.println(indent + "<Resource>");
             if (resourceContent != null)
-                out.println(indenter.makeString() + "<ResourceContent>" +
-                            resourceContent + "</ResourceContent>");
+                out.println(indenter.makeString() + "<ResourceContent>" + resourceContent
+                        + "</ResourceContent>");
             encodeAttributes(resource, out, indenter);
             out.println(indent + "</Resource>");
         } else {
@@ -417,18 +430,16 @@ public class RequestCtx
         // we're back to the top
         indenter.out();
         indenter.out();
-        
+
         out.println(topIndent + "</Request>");
     }
 
     /**
      * Private helper function to encode the attribute sets
      */
-    private void encodeAttributes(Set<Attribute> attributes, PrintStream out,
-                                  Indenter indenter) {
-        for (Attribute attr: attributes)    
+    private void encodeAttributes(Set<Attribute> attributes, PrintStream out, Indenter indenter) {
+        for (Attribute attr : attributes)
             attr.encode(out, indenter);
     }
-    
 
 }

@@ -15,16 +15,15 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.geoxacml.test;
 
 import java.io.FileInputStream;
 
-import org.geotools.xacml.geoxacml.config.GeoXACML;
-import org.geotools.xacml.test.TestSupport;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import com.sun.xacml.PDP;
 import com.sun.xacml.ctx.RequestCtx;
@@ -34,139 +33,139 @@ import com.sun.xacml.ctx.Status;
 
 /**
  * @author Christian Mueller
- *
- * Test for gemotry check functions
+ * 
+ *         Test for gemotry check functions
  */
 public class CheckTest extends TestCase {
 
-	
-		
-	public CheckTest() {
-		super();
-						
-	}
+    public CheckTest() {
+        super();
 
-	public CheckTest(String arg0) {
-		super(arg0);
-		
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-		GeoXACML.initialize();
-		TestSupport.initOutputDir();
-	}
-	
-	
-	
-	
-	public void testIsClosed() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsClosedPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsClosedRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testIsClosed1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsClosedPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsClosedRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testIsSimple() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsSimplePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsSimpleRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testIsSimple1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsSimplePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsSimpleRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	
-	public void testIsValid() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsValidPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsValidRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testIsValid1() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check","IsValidPolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("check","IsValidRequest1.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_NOT_APPLICABLE);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
+    }
+
+    public CheckTest(String arg0) {
+        super(arg0);
+
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        GeoXACML.initialize();
+        TestSupport.initOutputDir();
+    }
+
+    public void testIsClosed() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check", "IsClosedPolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "check", "IsClosedRequest.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_PERMIT);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
+    public void testIsClosed1() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check", "IsClosedPolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "check", "IsClosedRequest1.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_NOT_APPLICABLE);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
+    public void testIsSimple() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check", "IsSimplePolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "check", "IsSimpleRequest.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_PERMIT);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
+    public void testIsSimple1() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check", "IsSimplePolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "check", "IsSimpleRequest1.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_NOT_APPLICABLE);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
+    public void testIsValid() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check", "IsValidPolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "check", "IsValidRequest.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_PERMIT);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
+    public void testIsValid1() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("check", "IsValidPolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "check", "IsValidRequest1.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_NOT_APPLICABLE);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
 
 }

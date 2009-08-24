@@ -1,4 +1,3 @@
-
 /*
  * @(#)Status.java
  *
@@ -50,42 +49,35 @@ import org.w3c.dom.NodeList;
 import com.sun.xacml.Indenter;
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Represents the status data that is included in a ResultType. By default,
- * the status is OK.
- *
+ * Represents the status data that is included in a ResultType. By default, the status is OK.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class Status
-{
+public class Status {
 
     /**
      * Standard identifier for the OK status
      */
-    public static final String STATUS_OK =
-        "urn:oasis:names:tc:xacml:1.0:status:ok";
+    public static final String STATUS_OK = "urn:oasis:names:tc:xacml:1.0:status:ok";
 
     /**
      * Standard identifier for the MissingAttribute status
      */
-    public static final String STATUS_MISSING_ATTRIBUTE =
-        "urn:oasis:names:tc:xacml:1.0:status:missing-attribute";
-    
+    public static final String STATUS_MISSING_ATTRIBUTE = "urn:oasis:names:tc:xacml:1.0:status:missing-attribute";
+
     /**
      * Standard identifier for the SyntaxError status
      */
-    public static final String STATUS_SYNTAX_ERROR =
-        "urn:oasis:names:tc:xacml:1.0:status:syntax-error";
+    public static final String STATUS_SYNTAX_ERROR = "urn:oasis:names:tc:xacml:1.0:status:syntax-error";
 
     /**
      * Standard identifier for the ProcessingError status
      */
-    public static final String STATUS_PROCESSING_ERROR =
-        "urn:oasis:names:tc:xacml:1.0:status:processing-error";
+    public static final String STATUS_PROCESSING_ERROR = "urn:oasis:names:tc:xacml:1.0:status:processing-error";
 
     // the status code
     private List<String> code;
@@ -108,60 +100,58 @@ public class Status
 
     /**
      * Constructor that takes only the status code.
-     *
-     * @param code a <code>List</code> of <code>String</code> codes, typically
-     *             just one code, but this may contain any number of minor
-     *             codes after the first item in the list, which is the major
-     *             code
+     * 
+     * @param code
+     *            a <code>List</code> of <code>String</code> codes, typically just one code, but
+     *            this may contain any number of minor codes after the first item in the list, which
+     *            is the major code
      */
     public Status(List<String> code) {
         this(code, null, null);
     }
 
     /**
-     * Constructor that takes both the status code and a message to include
-     * with the status.
-     *
-     * @param code a <code>List</code> of <code>String</code> codes, typically
-     *             just one code, but this may contain any number of minor
-     *             codes after the first item in the list, which is the major
-     *             code
-     * @param message a message to include with the code
+     * Constructor that takes both the status code and a message to include with the status.
+     * 
+     * @param code
+     *            a <code>List</code> of <code>String</code> codes, typically just one code, but
+     *            this may contain any number of minor codes after the first item in the list, which
+     *            is the major code
+     * @param message
+     *            a message to include with the code
      */
     public Status(List<String> code, String message) {
         this(code, message, null);
     }
 
     /**
-     * Constructor that takes the status code, an optional message, and some
-     * detail to include with the status. Note that the specification 
-     * explicitly says that a status code of OK, SyntaxError or
-     * ProcessingError may not appear with status detail, so an exception is
-     * thrown if one of these status codes is used and detail is included.
-     *
-     * @param code a <code>List</code> of <code>String</code> codes, typically
-     *             just one code, but this may contain any number of minor
-     *             codes after the first item in the list, which is the major
-     *             code
-     * @param message a message to include with the code, or null if there
-     *                should be no message
-     * @param detail the status detail to include, or null if there is no
-     *               detail
-     *
-     * @throws IllegalArgumentException if detail is included for a status
-     *                                  code that doesn't allow detail
+     * Constructor that takes the status code, an optional message, and some detail to include with
+     * the status. Note that the specification explicitly says that a status code of OK, SyntaxError
+     * or ProcessingError may not appear with status detail, so an exception is thrown if one of
+     * these status codes is used and detail is included.
+     * 
+     * @param code
+     *            a <code>List</code> of <code>String</code> codes, typically just one code, but
+     *            this may contain any number of minor codes after the first item in the list, which
+     *            is the major code
+     * @param message
+     *            a message to include with the code, or null if there should be no message
+     * @param detail
+     *            the status detail to include, or null if there is no detail
+     * 
+     * @throws IllegalArgumentException
+     *             if detail is included for a status code that doesn't allow detail
      */
     public Status(List<String> code, String message, StatusDetail detail)
-        throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         // if the code is ok, syntax error or processing error, there
         // must not be any detail included
         if (detail != null) {
-            String c = (String)(code.iterator().next());
-            if (c.equals(STATUS_OK) || c.equals(STATUS_SYNTAX_ERROR) ||
-                c.equals(STATUS_PROCESSING_ERROR))
-                throw new IllegalArgumentException("status detail cannot be " +
-                                                   "included with " + c);
+            String c = (String) (code.iterator().next());
+            if (c.equals(STATUS_OK) || c.equals(STATUS_SYNTAX_ERROR)
+                    || c.equals(STATUS_PROCESSING_ERROR))
+                throw new IllegalArgumentException("status detail cannot be " + "included with "
+                        + c);
         }
 
         this.code = Collections.unmodifiableList(new ArrayList<String>(code));
@@ -171,7 +161,7 @@ public class Status
 
     /**
      * Returns the status code.
-     *
+     * 
      * @return the status code
      */
     public List<String> getCode() {
@@ -180,7 +170,7 @@ public class Status
 
     /**
      * Returns the status message or null if there is none.
-     *
+     * 
      * @return the status message or null
      */
     public String getMessage() {
@@ -189,7 +179,7 @@ public class Status
 
     /**
      * Returns the status detail or null if there is none.
-     *
+     * 
      * @return a <code>StatusDetail</code> or null
      */
     public StatusDetail getDetail() {
@@ -197,10 +187,9 @@ public class Status
     }
 
     /**
-     * Gets a <code>Status</code> instance that has the OK status and no
-     * other information. This is the default status data for all responses
-     * except Indeterminate ones.
-     *
+     * Gets a <code>Status</code> instance that has the OK status and no other information. This is
+     * the default status data for all responses except Indeterminate ones.
+     * 
      * @return an instance with <code>STATUS_OK</code>
      */
     public static Status getOkInstance() {
@@ -208,15 +197,16 @@ public class Status
     }
 
     /**
-     * Creates a new instance of <code>Status</code> based on the given
-     * DOM root node. A <code>ParsingException</code> is thrown if the DOM
-     * root doesn't represent a valid StatusType.
-     *
-     * @param root the DOM root of a StatusType
-     *
+     * Creates a new instance of <code>Status</code> based on the given DOM root node. A
+     * <code>ParsingException</code> is thrown if the DOM root doesn't represent a valid StatusType.
+     * 
+     * @param root
+     *            the DOM root of a StatusType
+     * 
      * @return a new <code>Status</code>
-     *
-     * @throws ParsingException if the node is invalid
+     * 
+     * @throws ParsingException
+     *             if the node is invalid
      */
     public static Status getInstance(Node root) throws ParsingException {
         List<String> code = null;
@@ -250,34 +240,34 @@ public class Status
         code.add(val);
 
         // now get the list of all sub-codes, and work through them
-        NodeList list = ((Element)root).getElementsByTagName("StatusCode");
+        NodeList list = ((Element) root).getElementsByTagName("StatusCode");
         for (int i = 0; i < list.getLength(); i++) {
             Node node = list.item(i);
-            code.add(node.getAttributes().getNamedItem("Value").
-                     getNodeValue());
+            code.add(node.getAttributes().getNamedItem("Value").getNodeValue());
         }
 
         return code;
     }
 
     /**
-     * Encodes this status data into its XML representation and writes
-     * this encoding to the given <code>OutputStream</code> with no
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this status data into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this status data into its XML representation and writes
-     * this encoding to the given <code>OutputStream</code> with
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this status data into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
@@ -288,14 +278,13 @@ public class Status
         indenter.in();
 
         encodeStatusCode(out, indenter, code.iterator());
-        
+
         if (message != null)
-            out.println(indenter.makeString() + "<StatusMessage>" +
-                        message + "</StatusMessage>");
+            out.println(indenter.makeString() + "<StatusMessage>" + message + "</StatusMessage>");
 
         if (detail != null)
             out.println(detail.getEncoded());
-        
+
         indenter.out();
 
         out.println(indent + "</Status>");
@@ -304,8 +293,7 @@ public class Status
     /**
      * Encodes the object in XML
      */
-    private void encodeStatusCode(PrintStream out, Indenter indenter,
-                                  Iterator<String> iterator) {
+    private void encodeStatusCode(PrintStream out, Indenter indenter, Iterator<String> iterator) {
         String in = indenter.makeString();
         String code = iterator.next();
 

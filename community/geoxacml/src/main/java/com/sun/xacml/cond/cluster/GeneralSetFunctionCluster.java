@@ -1,4 +1,3 @@
-
 /*
  * @(#)GeneralSetFunctionCluster.java
  *
@@ -42,17 +41,15 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.GeneralSetFunction;
 
-
 /**
  * Clusters all the functions supported by <code>GeneralSetFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class GeneralSetFunctionCluster implements FunctionCluster
-{
+public class GeneralSetFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();

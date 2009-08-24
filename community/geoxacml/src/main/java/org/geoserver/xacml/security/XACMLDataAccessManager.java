@@ -38,7 +38,6 @@ public class XACMLDataAccessManager implements DataAccessManager {
 
     private Logger Log;
 
-    
     private static Map<String, CatalogMode> CatalogModeMap;
     static {
         CatalogModeMap = new HashMap<String, CatalogMode>(3);
@@ -153,36 +152,37 @@ public class XACMLDataAccessManager implements DataAccessManager {
 
         List<RequestCtx> resultList = new ArrayList<RequestCtx>();
 
-
         for (GrantedAuthority role : auth.getAuthorities()) {
-            XACMLRole xacmlRole=  (XACMLRole)role;  
-            if (xacmlRole.isEnabled()==false) continue;
+            XACMLRole xacmlRole = (XACMLRole) role;
+            if (xacmlRole.isEnabled() == false)
+                continue;
             RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getWorkspaceRequestCtxBuilder(xacmlRole, workspaceInfo, mode).createRequestCtx();
-            // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));            
-            resultList.add(requestCtx);
-        }
-
-        return resultList;
-    }
-
-
-    private List<RequestCtx> buildResourceInfoRequestCtxListFromRoles(Authentication auth,
-            ResourceInfo resourceInfo, AccessMode mode) {
-
-        List<RequestCtx> resultList = new ArrayList<RequestCtx>();        
-        
-        for (GrantedAuthority role : auth.getAuthorities()) {
-            XACMLRole xacmlRole= (XACMLRole)role ;
-            if (xacmlRole.isEnabled()==false) continue;
-            RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                    .getResourceInfoRequestCtxBuilder(xacmlRole, resourceInfo, mode).createRequestCtx();
+                    .getWorkspaceRequestCtxBuilder(xacmlRole, workspaceInfo, mode)
+                    .createRequestCtx();
             // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
             resultList.add(requestCtx);
         }
 
         return resultList;
     }
-    
+
+    private List<RequestCtx> buildResourceInfoRequestCtxListFromRoles(Authentication auth,
+            ResourceInfo resourceInfo, AccessMode mode) {
+
+        List<RequestCtx> resultList = new ArrayList<RequestCtx>();
+
+        for (GrantedAuthority role : auth.getAuthorities()) {
+            XACMLRole xacmlRole = (XACMLRole) role;
+            if (xacmlRole.isEnabled() == false)
+                continue;
+            RequestCtx requestCtx = GeoXACMLConfig.getRequestCtxBuilderFactory()
+                    .getResourceInfoRequestCtxBuilder(xacmlRole, resourceInfo, mode)
+                    .createRequestCtx();
+            // XACMLUtil.getXACMLLogger().info(XACMLUtil.asXMLString(requestCtx));
+            resultList.add(requestCtx);
+        }
+
+        return resultList;
+    }
 
 }

@@ -1,4 +1,3 @@
-
 /*
  * @(#)FilePolicyModule.java
  *
@@ -52,33 +51,28 @@ import com.sun.xacml.finder.PolicyFinder;
 import com.sun.xacml.finder.PolicyFinderModule;
 import com.sun.xacml.finder.PolicyFinderResult;
 
-
 /**
- * This module represents a collection of files containing polices,
- * each of which will be searched through when trying to find a
- * policy that is applicable to a specific request. It does not support
- * policy references.
+ * This module represents a collection of files containing polices, each of which will be searched
+ * through when trying to find a policy that is applicable to a specific request. It does not
+ * support policy references.
  * <p>
- * Note that this class used to be provided in the
- * <code>com.sun.xacml.finder.impl</code> package with a warning that it
- * would move out of the core packages eventually. This is partly because
- * this class doesn't represent standard functionality, and partly because
- * it isn't designed to be generally useful as anything more than an
- * example. Because so many people have used this class, however, it stayed
- * in place until the 2.0 release.
+ * Note that this class used to be provided in the <code>com.sun.xacml.finder.impl</code> package
+ * with a warning that it would move out of the core packages eventually. This is partly because
+ * this class doesn't represent standard functionality, and partly because it isn't designed to be
+ * generally useful as anything more than an example. Because so many people have used this class,
+ * however, it stayed in place until the 2.0 release.
  * <p>
- * As of the 2.0 release, you may still use this class (in its new location),
- * but you are encouraged to migrate to the new support modules that are
- * much richer and designed for general-purpose use. Also, note that the
- * <code>loadPolicy</code> methods that used to be available from this class
- * have been removed. That functionality has been replaced by the much more
- * useful <code>PolicyReader</code> class. If you need to load policies
- * directly, you should consider that new class.
- *
+ * As of the 2.0 release, you may still use this class (in its new location), but you are encouraged
+ * to migrate to the new support modules that are much richer and designed for general-purpose use.
+ * Also, note that the <code>loadPolicy</code> methods that used to be available from this class
+ * have been removed. That functionality has been replaced by the much more useful
+ * <code>PolicyReader</code> class. If you need to load policies directly, you should consider that
+ * new class.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
 public class FilePolicyModule extends PolicyFinderModule {
 
@@ -92,32 +86,30 @@ public class FilePolicyModule extends PolicyFinderModule {
     private PolicyCollection policies;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(FilePolicyModule.class.getName());
+    private static final Logger logger = Logger.getLogger(FilePolicyModule.class.getName());
 
     /**
-     * Constructor which retrieves the schema file to validate policies against
-     * from the <code>PolicyReader.POLICY_SCHEMA_PROPERTY</code>. If the
-     * retrieved property is null, then no schema validation will occur.
+     * Constructor which retrieves the schema file to validate policies against from the
+     * <code>PolicyReader.POLICY_SCHEMA_PROPERTY</code>. If the retrieved property is null, then no
+     * schema validation will occur.
      */
     public FilePolicyModule() {
         fileNames = new HashSet<String>();
         policies = new PolicyCollection();
 
-        String schemaName =
-            System.getProperty(PolicyReader.POLICY_SCHEMA_PROPERTY);
+        String schemaName = System.getProperty(PolicyReader.POLICY_SCHEMA_PROPERTY);
 
         if (schemaName != null)
             schemaFile = new File(schemaName);
     }
 
     /**
-     * Constructor that uses the specified <code>File</code> as the schema
-     * file for XML validation. If schema validation is not desired, a null
-     * value should be used.
-     *
-     * @param schemaFile the schema file to validate policies against,
-     *                   or null if schema validation is not desired.
+     * Constructor that uses the specified <code>File</code> as the schema file for XML validation.
+     * If schema validation is not desired, a null value should be used.
+     * 
+     * @param schemaFile
+     *            the schema file to validate policies against, or null if schema validation is not
+     *            desired.
      */
     public FilePolicyModule(File schemaFile) {
         fileNames = new HashSet<String>();
@@ -127,25 +119,24 @@ public class FilePolicyModule extends PolicyFinderModule {
     }
 
     /**
-     * Constructor that uses the specified <code>String</code> as the schema
-     * file for XML validation. If schema validation is not desired, a null
-     * value should be used.
-     *
-     * @param schemaFile the schema file to validate policies against,
-     *                   or null if schema validation is not desired.
+     * Constructor that uses the specified <code>String</code> as the schema file for XML
+     * validation. If schema validation is not desired, a null value should be used.
+     * 
+     * @param schemaFile
+     *            the schema file to validate policies against, or null if schema validation is not
+     *            desired.
      */
     public FilePolicyModule(String schemaFile) {
         this((schemaFile != null) ? new File(schemaFile) : null);
     }
 
     /**
-     * Constructor that specifies a set of initial policy files to use. This
-     * retrieves the schema file to validate policies against from the
-     * <code>PolicyReader.POLICY_SCHEMA_PROPERTY</code>. If the retrieved
-     * property is null, then no schema validation will occur.
-     *
-     * @param fileNames a <code>List</code> of <code>String</code>s that
-     *                  identify policy files
+     * Constructor that specifies a set of initial policy files to use. This retrieves the schema
+     * file to validate policies against from the <code>PolicyReader.POLICY_SCHEMA_PROPERTY</code>.
+     * If the retrieved property is null, then no schema validation will occur.
+     * 
+     * @param fileNames
+     *            a <code>List</code> of <code>String</code>s that identify policy files
      */
     public FilePolicyModule(List<String> fileNames) {
         this();
@@ -155,14 +146,14 @@ public class FilePolicyModule extends PolicyFinderModule {
     }
 
     /**
-     * Constructor that specifies a set of initial policy files to use and
-     * the schema file used to validate the policies. If schema validation is
-     * not desired, a null value should be used.
-     *
-     * @param fileNames a <code>List</code> of <code>String</code>s that
-     *                  identify policy files
-     * @param schemaFile the schema file to validate policies against,
-     *                   or null if schema validation is not desired.
+     * Constructor that specifies a set of initial policy files to use and the schema file used to
+     * validate the policies. If schema validation is not desired, a null value should be used.
+     * 
+     * @param fileNames
+     *            a <code>List</code> of <code>String</code>s that identify policy files
+     * @param schemaFile
+     *            the schema file to validate policies against, or null if schema validation is not
+     *            desired.
      */
     public FilePolicyModule(List<String> fileNames, String schemaFile) {
         this(schemaFile);
@@ -172,24 +163,22 @@ public class FilePolicyModule extends PolicyFinderModule {
     }
 
     /**
-     * Adds a file (containing a policy) to the collection of filenames
-     * associated with this module. Note that this doesn't actually load the
-     * policy file. Policies aren't loaded from their files until the
-     * module is initialized through the <code>init</code> method (which
-     * is called automatically by the <code>PolicyFinder</code> when the
-     * system comes up).
-     *
-     * @param filename the file to add to this module's collection of files
+     * Adds a file (containing a policy) to the collection of filenames associated with this module.
+     * Note that this doesn't actually load the policy file. Policies aren't loaded from their files
+     * until the module is initialized through the <code>init</code> method (which is called
+     * automatically by the <code>PolicyFinder</code> when the system comes up).
+     * 
+     * @param filename
+     *            the file to add to this module's collection of files
      */
     public boolean addPolicy(String filename) {
         return fileNames.add(filename);
     }
 
     /**
-     * Indicates whether this module supports finding policies based on
-     * a request (target matching). Since this module does support
-     * finding policies based on requests, it returns true.
-     *
+     * Indicates whether this module supports finding policies based on a request (target matching).
+     * Since this module does support finding policies based on requests, it returns true.
+     * 
      * @return true, since finding policies based on requests is supported
      */
     public boolean isRequestSupported() {
@@ -197,42 +186,39 @@ public class FilePolicyModule extends PolicyFinderModule {
     }
 
     /**
-     * Initializes the <code>FilePolicyModule</code> by loading
-     * the policies contained in the collection of files associated
-     * with this module. This method also uses the specified 
+     * Initializes the <code>FilePolicyModule</code> by loading the policies contained in the
+     * collection of files associated with this module. This method also uses the specified
      * <code>PolicyFinder</code> to help in instantiating PolicySets.
-     *
-     * @param finder a PolicyFinder used to help in instantiating PolicySets
+     * 
+     * @param finder
+     *            a PolicyFinder used to help in instantiating PolicySets
      */
     public void init(PolicyFinder finder) {
         PolicyReader reader = new PolicyReader(finder, logger, schemaFile);
 
-        for (String fname : fileNames) {            
+        for (String fname : fileNames) {
             try {
-                AbstractPolicy policy =
-                    reader.readPolicy(new FileInputStream(fname));
+                AbstractPolicy policy = reader.readPolicy(new FileInputStream(fname));
                 policies.addPolicy(policy);
             } catch (FileNotFoundException fnfe) {
                 if (logger.isLoggable(Level.WARNING))
-                    logger.log(Level.WARNING, "File couldn't be read: "
-                               + fname, fnfe);
+                    logger.log(Level.WARNING, "File couldn't be read: " + fname, fnfe);
             } catch (ParsingException pe) {
                 if (logger.isLoggable(Level.WARNING))
-                    logger.log(Level.WARNING, "Error reading policy from file "
-                               + fname, pe);
+                    logger.log(Level.WARNING, "Error reading policy from file " + fname, pe);
             }
         }
     }
 
     /**
-     * Finds a policy based on a request's context. If more than one
-     * applicable policy is found, this will return an error. Note that
-     * this is basically just a subset of the OnlyOneApplicable Policy
-     * Combining Alg that skips the evaluation step. See comments in there
-     * for details on this algorithm.
-     *
-     * @param context the representation of the request data
-     *
+     * Finds a policy based on a request's context. If more than one applicable policy is found,
+     * this will return an error. Note that this is basically just a subset of the OnlyOneApplicable
+     * Policy Combining Alg that skips the evaluation step. See comments in there for details on
+     * this algorithm.
+     * 
+     * @param context
+     *            the representation of the request data
+     * 
      * @return the result of trying to find an applicable policy
      */
     public PolicyFinderResult findPolicy(EvaluationCtx context) {

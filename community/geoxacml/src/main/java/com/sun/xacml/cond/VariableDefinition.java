@@ -1,4 +1,3 @@
-
 /*
  * @(#)VariableDefinition.java
  *
@@ -46,19 +45,16 @@ import com.sun.xacml.Indenter;
 import com.sun.xacml.ParsingException;
 import com.sun.xacml.PolicyMetaData;
 
-
 /**
- * This class supports the VariableDefinitionType type introuced in XACML
- * 2.0. It allows a Policy to pre-define any number of expression blocks for
- * general use. Note that it's legal (though not usually useful) to define
- * expressions that don't get referenced within the Policy. It is illegal to
- * have more than one definition with the same identifier within a Policy.
- *
+ * This class supports the VariableDefinitionType type introuced in XACML 2.0. It allows a Policy to
+ * pre-define any number of expression blocks for general use. Note that it's legal (though not
+ * usually useful) to define expressions that don't get referenced within the Policy. It is illegal
+ * to have more than one definition with the same identifier within a Policy.
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class VariableDefinition
-{
+public class VariableDefinition {
 
     // the identitifer for this definition
     private String variableId;
@@ -67,11 +63,12 @@ public class VariableDefinition
     private Expression expression;
 
     /**
-     * Creates a new <code>VariableDefinition</code> with the given
-     * identifier and expression.
-     *
-     * @param variableId the identifier for this definition
-     * @param expression the expression defined here
+     * Creates a new <code>VariableDefinition</code> with the given identifier and expression.
+     * 
+     * @param variableId
+     *            the identifier for this definition
+     * @param expression
+     *            the expression defined here
      */
     public VariableDefinition(String variableId, Expression expression) {
         this.variableId = variableId;
@@ -79,24 +76,22 @@ public class VariableDefinition
     }
 
     /**
-     * Returns a new instance of the <code>VariableDefinition</code> class
-     * based on a DOM node. The node must be the root of an XML
-     * VariableDefinitionType.
-     *
-     * @param root the DOM root of a VariableDefinitionType XML type
-     * @param metaData the meta-data associated with the containing policy
-     * @param manager <code>VariableManager</code> used to connect references
-     *                to this definition
-     *
-     * @throws ParsingException if the VariableDefinitionType is invalid
+     * Returns a new instance of the <code>VariableDefinition</code> class based on a DOM node. The
+     * node must be the root of an XML VariableDefinitionType.
+     * 
+     * @param root
+     *            the DOM root of a VariableDefinitionType XML type
+     * @param metaData
+     *            the meta-data associated with the containing policy
+     * @param manager
+     *            <code>VariableManager</code> used to connect references to this definition
+     * 
+     * @throws ParsingException
+     *             if the VariableDefinitionType is invalid
      */
-    public static VariableDefinition getInstance(Node root,
-                                                 PolicyMetaData metaData,
-                                                 VariableManager manager)
-        throws ParsingException
-    {
-        String variableId = root.getAttributes().getNamedItem("VariableId").
-            getNodeValue();
+    public static VariableDefinition getInstance(Node root, PolicyMetaData metaData,
+            VariableManager manager) throws ParsingException {
+        String variableId = root.getAttributes().getNamedItem("VariableId").getNodeValue();
 
         // get the first element, which is the expression node
         NodeList nodes = root.getChildNodes();
@@ -106,15 +101,14 @@ public class VariableDefinition
             xprNode = nodes.item(i++);
 
         // use that node to get the expression
-        Expression xpr = ExpressionHandler.
-            parseExpression(xprNode, metaData, manager);
+        Expression xpr = ExpressionHandler.parseExpression(xprNode, metaData, manager);
 
         return new VariableDefinition(variableId, xpr);
     }
 
     /**
      * Returns the identifier for this definition.
-     *
+     * 
      * @return the definition's identifier
      */
     public String getVariableId() {
@@ -123,36 +117,38 @@ public class VariableDefinition
 
     /**
      * Returns the expression provided by this definition.
-     *
+     * 
      * @return the definition's expression
      */
     public Expression getExpression() {
         return expression;
     }
-    
+
     /**
-     * Encodes this class into its XML representation and writes this
-     * encoding to the given <code>OutputStream</code> with no indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this class into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this class into its XML representation and  writes this
-     * encoding to the given <code>OutputStream</code> with  indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this class into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
 
-        out.println(indent + "<VariableDefinition VariableId=\"" +
-                    variableId + "\">");
+        out.println(indent + "<VariableDefinition VariableId=\"" + variableId + "\">");
         indenter.in();
 
         expression.encode(output, indenter);

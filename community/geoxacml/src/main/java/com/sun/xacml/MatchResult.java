@@ -1,4 +1,3 @@
-
 /*
  * @(#)MatchResult.java
  *
@@ -38,17 +37,15 @@ package com.sun.xacml;
 
 import com.sun.xacml.ctx.Status;
 
-
 /**
- * This is used as the return value for the various target matching functions.
- * It communicates that either the target matches the input request, the
- * target doesn't match the input request, or the result is Indeterminate.
- *
+ * This is used as the return value for the various target matching functions. It communicates that
+ * either the target matches the input request, the target doesn't match the input request, or the
+ * result is Indeterminate.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class MatchResult
-{
+public class MatchResult {
 
     /**
      * An integer value indicating the the target matches the request
@@ -67,44 +64,43 @@ public class MatchResult
 
     //
     private int result;
+
     private Status status;
 
     /**
      * Constructor that creates a <code>MatchResult</code> with no Status
-     *
-     * @param result the applicable result
+     * 
+     * @param result
+     *            the applicable result
      */
     public MatchResult(int result) {
         this(result, null);
     }
 
     /**
-     * Constructor that creates a <code>MatchResult</code>, including Status 
-     * data
-     *
-     * @param result the applicable result
-     * @param status the error information
+     * Constructor that creates a <code>MatchResult</code>, including Status data
      * 
-     * @throws IllegalArgumentException if the input result isn't a valid value
+     * @param result
+     *            the applicable result
+     * @param status
+     *            the error information
+     * 
+     * @throws IllegalArgumentException
+     *             if the input result isn't a valid value
      */
-    public MatchResult(int result, Status status)
-        throws IllegalArgumentException
-    {
-        
+    public MatchResult(int result, Status status) throws IllegalArgumentException {
+
         // check if input result is a valid value
-        if ((result != MATCH) && 
-            (result != NO_MATCH) &&
-            (result != INDETERMINATE))
-            throw new IllegalArgumentException("Input result is not a valid" +
-                                               "value");
-        
+        if ((result != MATCH) && (result != NO_MATCH) && (result != INDETERMINATE))
+            throw new IllegalArgumentException("Input result is not a valid" + "value");
+
         this.result = result;
         this.status = status;
     }
 
     /**
      * Returns the applicable result
-     *
+     * 
      * @return the applicable result
      */
     public int getResult() {
@@ -113,11 +109,11 @@ public class MatchResult
 
     /**
      * Returns the status if there was an error, or null if no error occurred
-     *
+     * 
      * @return the error status data or null
      */
     public Status getStatus() {
         return status;
     }
-    
+
 }

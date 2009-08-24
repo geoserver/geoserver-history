@@ -1,4 +1,3 @@
-
 /*
  * @(#)HigherOrderFunction.java
  *
@@ -53,69 +52,64 @@ import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.attr.BooleanAttribute;
 
-
 /**
- * Represents all of the higher order bag functions, except map, which has
- * its own class due to the issues with its return type. Unlike the other
- * functions that are designed to work over any types (the type-* functions)
- * these functions don't use specific names to describe what type they
- * operate over, so you don't need to install new instances for any new
- * datatypes you define.
- *
+ * Represents all of the higher order bag functions, except map, which has its own class due to the
+ * issues with its return type. Unlike the other functions that are designed to work over any types
+ * (the type-* functions) these functions don't use specific names to describe what type they
+ * operate over, so you don't need to install new instances for any new datatypes you define.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class HigherOrderFunction implements Function
-{
+public class HigherOrderFunction implements Function {
 
     /**
      * Standard identifier for the any-of function.
      */
-    public static final String NAME_ANY_OF =
-        FunctionBase.FUNCTION_NS + "any-of";
+    public static final String NAME_ANY_OF = FunctionBase.FUNCTION_NS + "any-of";
 
     /**
      * Standard identifier for the all-of function.
      */
-    public static final String NAME_ALL_OF =
-        FunctionBase.FUNCTION_NS + "all-of";
+    public static final String NAME_ALL_OF = FunctionBase.FUNCTION_NS + "all-of";
 
     /**
      * Standard identifier for the any-of-any function.
      */
-    public static final String NAME_ANY_OF_ANY =
-        FunctionBase.FUNCTION_NS + "any-of-any";
+    public static final String NAME_ANY_OF_ANY = FunctionBase.FUNCTION_NS + "any-of-any";
 
     /**
      * Standard identifier for the all-of-any function.
      */
-    public static final String NAME_ALL_OF_ANY =
-        FunctionBase.FUNCTION_NS + "all-of-any";
+    public static final String NAME_ALL_OF_ANY = FunctionBase.FUNCTION_NS + "all-of-any";
 
     /**
      * Standard identifier for the any-of-all function.
      */
-    public static final String NAME_ANY_OF_ALL =
-        FunctionBase.FUNCTION_NS + "any-of-all";
+    public static final String NAME_ANY_OF_ALL = FunctionBase.FUNCTION_NS + "any-of-all";
 
     /**
      * Standard identifier for the all-of-all function.
      */
-    public static final String NAME_ALL_OF_ALL =
-        FunctionBase.FUNCTION_NS + "all-of-all";
+    public static final String NAME_ALL_OF_ALL = FunctionBase.FUNCTION_NS + "all-of-all";
 
     // internal identifiers for each of the supported functions
     private static final int ID_ANY_OF = 0;
+
     private static final int ID_ALL_OF = 1;
+
     private static final int ID_ANY_OF_ANY = 2;
+
     private static final int ID_ALL_OF_ANY = 3;
+
     private static final int ID_ANY_OF_ALL = 4;
+
     private static final int ID_ALL_OF_ALL = 5;
 
     // internal mapping of names to ids
-    private static HashMap<String,Integer> idMap;
+    private static HashMap<String, Integer> idMap;
 
     // the internal identifier for each function
     private int functionId;
@@ -133,7 +127,7 @@ public class HigherOrderFunction implements Function
 
     // try to create the return type URI, and also setup the id map
     static {
-        idMap = new HashMap<String,Integer>();
+        idMap = new HashMap<String, Integer>();
 
         idMap.put(NAME_ANY_OF, new Integer(ID_ANY_OF));
         idMap.put(NAME_ALL_OF, new Integer(ID_ALL_OF));
@@ -145,17 +139,18 @@ public class HigherOrderFunction implements Function
 
     /**
      * Creates a new instance of the given function.
-     *
-     * @param functionName the function to create
-     *
-     * @throws IllegalArgumentException if the function is unknown
+     * 
+     * @param functionName
+     *            the function to create
+     * 
+     * @throws IllegalArgumentException
+     *             if the function is unknown
      */
     public HigherOrderFunction(String functionName) {
         // try to get the function's identifier
-        Integer i = (Integer)(idMap.get(functionName));
+        Integer i = (Integer) (idMap.get(functionName));
         if (i == null)
-            throw new IllegalArgumentException("unknown function: " +
-                                               functionName);
+            throw new IllegalArgumentException("unknown function: " + functionName);
         functionId = i.intValue();
 
         // setup the URI form of this function's idenitity
@@ -173,9 +168,8 @@ public class HigherOrderFunction implements Function
     }
 
     /**
-     * Returns a <code>Set</code> containing all the function identifiers
-     * supported by this class.
-     *
+     * Returns a <code>Set</code> containing all the function identifiers supported by this class.
+     * 
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set<String> getSupportedIdentifiers() {
@@ -184,7 +178,7 @@ public class HigherOrderFunction implements Function
 
     /**
      * Returns the full identifier of this function, as known by the factories.
-     *
+     * 
      * @return the function's identifier
      */
     public URI getIdentifier() {
@@ -192,9 +186,9 @@ public class HigherOrderFunction implements Function
     }
 
     /**
-     * Returns the same value as <code>getReturnType</code>. This is here
-     * to support the <code>Expression</code> interface.
-     *
+     * Returns the same value as <code>getReturnType</code>. This is here to support the
+     * <code>Expression</code> interface.
+     * 
      * @return the return type
      */
     public URI getType() {
@@ -202,9 +196,8 @@ public class HigherOrderFunction implements Function
     }
 
     /**
-     * Returns the type of attribute value that will be returned by
-     * this function.
-     *
+     * Returns the type of attribute value that will be returned by this function.
+     * 
      * @return the return type
      */
     public URI getReturnType() {
@@ -212,9 +205,8 @@ public class HigherOrderFunction implements Function
     }
 
     /**
-     * Returns whether or not this function will actually return a bag
-     * of values.
-     *
+     * Returns whether or not this function will actually return a bag of values.
+     * 
      * @return true if the function returns a bag of values, otherwise false
      */
     public boolean returnsBag() {
@@ -223,13 +215,14 @@ public class HigherOrderFunction implements Function
 
     /**
      * Evaluates the function, using the specified parameters.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context an <code>EvaluationCtx</code> so that the
-     *                <code>Evaluatable</code> objects can be evaluated
-     * @return an <code>EvaluationResult</code> representing the
-     *         function's result
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            an <code>EvaluationCtx</code> so that the <code>Evaluatable</code> objects can be
+     *            evaluated
+     * @return an <code>EvaluationResult</code> representing the function's result
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
 
@@ -240,43 +233,42 @@ public class HigherOrderFunction implements Function
         Function function = null;
 
         if (xpr instanceof Function) {
-            function = (Function)xpr;
+            function = (Function) xpr;
         } else {
-            function = (Function)(((VariableReference)xpr).
-                                  getReferencedDefinition().getExpression());
+            function = (Function) (((VariableReference) xpr).getReferencedDefinition()
+                    .getExpression());
         }
 
         // get the two inputs, and if anything is INDETERMINATE, then we
         // stop right away
-        AttributeValue [] args = new AttributeValue[2];
+        AttributeValue[] args = new AttributeValue[2];
 
-        Evaluatable eval = (Evaluatable)(iterator.next());
+        Evaluatable eval = (Evaluatable) (iterator.next());
         EvaluationResult result = eval.evaluate(context);
         if (result.indeterminate())
             return result;
-        args[0] = (AttributeValue)(result.getAttributeValue());
+        args[0] = (AttributeValue) (result.getAttributeValue());
 
-        eval = (Evaluatable)(iterator.next());
+        eval = (Evaluatable) (iterator.next());
         result = eval.evaluate(context);
         if (result.indeterminate())
             return result;
-        args[1] = (AttributeValue)(result.getAttributeValue());
+        args[1] = (AttributeValue) (result.getAttributeValue());
 
         // now we're ready to do the evaluation
         result = null;
 
-        switch(functionId) {
-            
+        switch (functionId) {
+
         case ID_ANY_OF: {
-            
+
             // param: boolean-function, single value, bag of same type
             // return: boolean
             // using the function, iterate through the bag, and if one
             // of the bag elements matches the single value, return
             // true, otherwise return false
 
-            result = any(args[0], (BagAttribute)(args[1]), function, context,
-                         false);
+            result = any(args[0], (BagAttribute) (args[1]), function, context, false);
             break;
         }
 
@@ -288,7 +280,7 @@ public class HigherOrderFunction implements Function
             // of the bag elements match the single value, return
             // true, otherwise return false
 
-            result =  all(args[0], (BagAttribute)(args[1]), function, context);
+            result = all(args[0], (BagAttribute) (args[1]), function, context);
             break;
         }
 
@@ -301,18 +293,17 @@ public class HigherOrderFunction implements Function
             // any evaluation is true return true, otherwise return false
 
             result = new EvaluationResult(BooleanAttribute.getInstance(false));
-            Iterator<AttributeValue> it = ((BagAttribute)args[0]).iterator();
-            BagAttribute bag = (BagAttribute)(args[1]);
-            
+            Iterator<AttributeValue> it = ((BagAttribute) args[0]).iterator();
+            BagAttribute bag = (BagAttribute) (args[1]);
+
             while (it.hasNext()) {
                 AttributeValue value = it.next();
                 result = any(value, bag, function, context, false);
-                
+
                 if (result.indeterminate())
                     return result;
-            
-                if (((BooleanAttribute)(result.
-                                        getAttributeValue())).getValue())
+
+                if (((BooleanAttribute) (result.getAttributeValue())).getValue())
                     break;
             }
             break;
@@ -326,8 +317,7 @@ public class HigherOrderFunction implements Function
             // one of the values in the second bag matches then return true,
             // otherwise return false
 
-            result = allOfAny((BagAttribute)(args[1]), (BagAttribute)(args[0]),
-                              function, context);
+            result = allOfAny((BagAttribute) (args[1]), (BagAttribute) (args[0]), function, context);
             break;
         }
 
@@ -339,8 +329,7 @@ public class HigherOrderFunction implements Function
             // one of the values in the first bag matches then return true,
             // otherwise return false
 
-            result = anyOfAll((BagAttribute)(args[0]), (BagAttribute)(args[1]),
-                              function, context);
+            result = anyOfAll((BagAttribute) (args[0]), (BagAttribute) (args[1]), function, context);
             break;
         }
 
@@ -353,18 +342,17 @@ public class HigherOrderFunction implements Function
             // function, then return true, otherwise return false
 
             result = new EvaluationResult(BooleanAttribute.getInstance(true));
-            Iterator<AttributeValue> it = ((BagAttribute)args[0]).iterator();
-            BagAttribute bag = (BagAttribute)(args[1]);
+            Iterator<AttributeValue> it = ((BagAttribute) args[0]).iterator();
+            BagAttribute bag = (BagAttribute) (args[1]);
 
             while (it.hasNext()) {
                 AttributeValue value = it.next();
                 result = all(value, bag, function, context);
-            
+
                 if (result.indeterminate())
                     return result;
-            
-                if (! ((BooleanAttribute)(result.
-                                          getAttributeValue())).getValue())
+
+                if (!((BooleanAttribute) (result.getAttributeValue())).getValue())
                     break;
             }
             break;
@@ -377,13 +365,15 @@ public class HigherOrderFunction implements Function
 
     /**
      * Checks that the given inputs are valid for this function.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>s
-     *
-     * @throws IllegalArgumentException if the inputs are invalid
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code>s
+     * 
+     * @throws IllegalArgumentException
+     *             if the inputs are invalid
      */
     public void checkInputs(List<? extends Expression> inputs) throws IllegalArgumentException {
-        Object [] list = inputs.toArray();
+        Object[] list = inputs.toArray();
 
         // first off, check that we got the right number of paramaters
         if (list.length != 3)
@@ -393,34 +383,33 @@ public class HigherOrderFunction implements Function
         Function function = null;
 
         if (list[0] instanceof Function) {
-            function = (Function)(list[0]);
+            function = (Function) (list[0]);
         } else if (list[0] instanceof VariableReference) {
-            Expression xpr = ((VariableReference)(list[0])).
-                getReferencedDefinition().getExpression();
+            Expression xpr = ((VariableReference) (list[0])).getReferencedDefinition()
+                    .getExpression();
             if (xpr instanceof Function)
-                function = (Function)xpr;
+                function = (Function) xpr;
         }
 
         if (function == null)
-            throw new IllegalArgumentException("first arg to higher-order " +
-                                               " function must be a function");
-        
+            throw new IllegalArgumentException("first arg to higher-order "
+                    + " function must be a function");
+
         // check that the function returns a boolean
-        if (! function.getReturnType().toString().
-            equals(BooleanAttribute.identifier))
-            throw new IllegalArgumentException("higher-order function must " +
-                                               "use a boolean function");
+        if (!function.getReturnType().toString().equals(BooleanAttribute.identifier))
+            throw new IllegalArgumentException("higher-order function must "
+                    + "use a boolean function");
 
         // get the two inputs
-        Evaluatable eval1 = (Evaluatable)(list[1]);
-        Evaluatable eval2 = (Evaluatable)(list[2]);
+        Evaluatable eval1 = (Evaluatable) (list[1]);
+        Evaluatable eval2 = (Evaluatable) (list[2]);
 
         // the first arg might be a bag
-        if (secondIsBag && (! eval1.returnsBag()))
+        if (secondIsBag && (!eval1.returnsBag()))
             throw new IllegalArgumentException("first arg has to be a bag");
 
         // the second arg must be a bag
-        if (! eval2.returnsBag())
+        if (!eval2.returnsBag())
             throw new IllegalArgumentException("second arg has to be a bag");
 
         // finally, we need to make sure that the given type will work on
@@ -432,68 +421,63 @@ public class HigherOrderFunction implements Function
     }
 
     /**
-     * Checks that the given inputs are valid for this function if all
-     * inputs are considered to not be bags. This always throws an
-     * exception, since this function by definition must work on bags.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>s
-     *
-     * @throws IllegalArgumentException always
+     * Checks that the given inputs are valid for this function if all inputs are considered to not
+     * be bags. This always throws an exception, since this function by definition must work on
+     * bags.
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code>s
+     * 
+     * @throws IllegalArgumentException
+     *             always
      */
     public void checkInputsNoBag(List<? extends Expression> inputs) throws IllegalArgumentException {
-        throw new IllegalArgumentException("higher-order functions require " +
-                                           "use of bags");
+        throw new IllegalArgumentException("higher-order functions require " + "use of bags");
     }
 
     /**
-     * Private helper function that performs the any function, but lets you
-     * swap the argument order (so it can be used by any-of-all)
+     * Private helper function that performs the any function, but lets you swap the argument order
+     * (so it can be used by any-of-all)
      */
-    private EvaluationResult any(AttributeValue value, BagAttribute bag,
-                                 Function function, EvaluationCtx context,
-                                 boolean argumentsAreSwapped) {
-        return anyAndAllHelper(value, bag, function, context, false,
-                               argumentsAreSwapped);
+    private EvaluationResult any(AttributeValue value, BagAttribute bag, Function function,
+            EvaluationCtx context, boolean argumentsAreSwapped) {
+        return anyAndAllHelper(value, bag, function, context, false, argumentsAreSwapped);
     }
-    
+
     /**
      * Private helper function that performs the all function
      */
-    private EvaluationResult all(AttributeValue value, BagAttribute bag,
-                                 Function function, EvaluationCtx context) {
+    private EvaluationResult all(AttributeValue value, BagAttribute bag, Function function,
+            EvaluationCtx context) {
         return anyAndAllHelper(value, bag, function, context, true, false);
     }
 
     /**
      * Private helper for any & all functions
      */
-    private EvaluationResult anyAndAllHelper(AttributeValue value,
-                                             BagAttribute bag,
-                                             Function function,
-                                             EvaluationCtx context,
-                                             boolean allFunction,
-                                             boolean argumentsAreSwapped) {
+    private EvaluationResult anyAndAllHelper(AttributeValue value, BagAttribute bag,
+            Function function, EvaluationCtx context, boolean allFunction,
+            boolean argumentsAreSwapped) {
         BooleanAttribute attr = BooleanAttribute.getInstance(allFunction);
         Iterator<AttributeValue> it = bag.iterator();
-            
+
         while (it.hasNext()) {
             List<AttributeValue> params = new ArrayList<AttributeValue>();
 
-            if (! argumentsAreSwapped) {
+            if (!argumentsAreSwapped) {
                 params.add(value);
-                params.add((AttributeValue)(it.next()));
+                params.add((AttributeValue) (it.next()));
             } else {
-                params.add((AttributeValue)(it.next()));
+                params.add((AttributeValue) (it.next()));
                 params.add(value);
             }
-            
+
             EvaluationResult result = function.evaluate(params, context);
 
             if (result.indeterminate())
                 return result;
-            
-            BooleanAttribute bool =
-                (BooleanAttribute)(result.getAttributeValue());
+
+            BooleanAttribute bool = (BooleanAttribute) (result.getAttributeValue());
             if (bool.getValue() != allFunction) {
                 attr = bool;
                 break;
@@ -506,41 +490,34 @@ public class HigherOrderFunction implements Function
     /**
      * any-of-all
      */
-    private EvaluationResult anyOfAll(BagAttribute anyBag, BagAttribute allBag,
-                                      Function function,
-                                      EvaluationCtx context) {
+    private EvaluationResult anyOfAll(BagAttribute anyBag, BagAttribute allBag, Function function,
+            EvaluationCtx context) {
         return allAnyHelper(anyBag, allBag, function, context, true);
     }
 
     /**
-     *  all-of-any
+     * all-of-any
      */
-    private EvaluationResult allOfAny(BagAttribute anyBag, BagAttribute allBag,
-                                      Function function,
-                                      EvaluationCtx context) {
+    private EvaluationResult allOfAny(BagAttribute anyBag, BagAttribute allBag, Function function,
+            EvaluationCtx context) {
         return allAnyHelper(anyBag, allBag, function, context, false);
     }
 
     /**
      * Private helper for the all-of-any and any-of-all functions
      */
-    private EvaluationResult allAnyHelper(BagAttribute anyBag,
-                                          BagAttribute allBag,
-                                          Function function,
-                                          EvaluationCtx context,
-                                          boolean argumentsAreSwapped) {
+    private EvaluationResult allAnyHelper(BagAttribute anyBag, BagAttribute allBag,
+            Function function, EvaluationCtx context, boolean argumentsAreSwapped) {
         Iterator<AttributeValue> it = allBag.iterator();
 
         while (it.hasNext()) {
             AttributeValue value = it.next();
-            EvaluationResult result =
-                any(value, anyBag, function, context, argumentsAreSwapped);
-            
+            EvaluationResult result = any(value, anyBag, function, context, argumentsAreSwapped);
+
             if (result.indeterminate())
                 return result;
-            
-            if (! ((BooleanAttribute)(result.
-                                      getAttributeValue())).getValue())
+
+            if (!((BooleanAttribute) (result.getAttributeValue())).getValue())
                 return result;
         }
 
@@ -548,28 +525,29 @@ public class HigherOrderFunction implements Function
     }
 
     /**
-     * Encodes this <code>HigherOrderFunction</code> into its XML
-     * representation and writes this encoding to the given
-     * <code>OutputStream</code> with no  indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this <code>HigherOrderFunction</code> into its XML representation and writes this
+     * encoding to the given <code>OutputStream</code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this <code>HigherOrderFunction</code> into its XML
-     * representation and writes this encoding to the given
-     * <code>OutputStream</code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this <code>HigherOrderFunction</code> into its XML representation and writes this
+     * encoding to the given <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
-        out.println(indenter.makeString() + "<Function FunctionId=\"" +
-                    getIdentifier().toString() + "\"/>");
+        out.println(indenter.makeString() + "<Function FunctionId=\"" + getIdentifier().toString()
+                + "\"/>");
     }
 
 }

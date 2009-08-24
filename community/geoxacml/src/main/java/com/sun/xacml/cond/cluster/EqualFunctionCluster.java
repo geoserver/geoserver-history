@@ -1,4 +1,3 @@
-
 /*
  * @(#)EqualFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.EqualFunction;
 import com.sun.xacml.cond.Function;
 
-
 /**
  * Clusters all the functions supported by <code>EqualFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class EqualFunctionCluster implements FunctionCluster
-{
+public class EqualFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : EqualFunction.getSupportedIdentifiers())
             set.add(new EqualFunction(fn));
-
 
         return set;
     }

@@ -1,4 +1,3 @@
-
 /*
  * @(#)IPAddressAttributeProxy.java
  *
@@ -43,16 +42,13 @@ import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.IPAddressAttribute;
 
-
 /**
- * A proxy class that is provided mainly for the run-time configuration
- * code to use.
- *
+ * A proxy class that is provided mainly for the run-time configuration code to use.
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class IPAddressAttributeProxy implements AttributeProxy
-{
+public class IPAddressAttributeProxy implements AttributeProxy {
 
     public AttributeValue getInstance(Node root) throws ParsingException {
         return IPAddressAttribute.getInstance(root);

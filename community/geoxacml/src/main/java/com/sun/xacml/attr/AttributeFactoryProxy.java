@@ -1,4 +1,3 @@
-
 /*
  * @(#)AttributeFactoryProxy.java
  *
@@ -36,21 +35,17 @@
 
 package com.sun.xacml.attr;
 
-
 /**
- * A simple proxy interface used to install new
- * <code>AttributeFactory</code>s.
- *
+ * A simple proxy interface used to install new <code>AttributeFactory</code>s.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public interface AttributeFactoryProxy
-{
+public interface AttributeFactoryProxy {
 
     /**
-     * Returns an instance of the <code>AttributeFactory</code> for which
-     * this is a proxy.
-     *
+     * Returns an instance of the <code>AttributeFactory</code> for which this is a proxy.
+     * 
      * @return an <code>AttributeFactory</code> instance
      */
     public AttributeFactory getFactory();

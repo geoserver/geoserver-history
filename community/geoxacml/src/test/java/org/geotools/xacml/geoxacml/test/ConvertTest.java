@@ -15,17 +15,15 @@
  *    Lesser General Public License for more details.
  */
 
-
-
 package org.geotools.xacml.geoxacml.test;
 
 import java.io.FileInputStream;
 
-import org.geotools.xacml.geoxacml.config.GeoXACML;
-import org.geotools.xacml.test.TestSupport;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.geotools.xacml.geoxacml.config.GeoXACML;
+import org.geotools.xacml.test.TestSupport;
 
 import com.sun.xacml.PDP;
 import com.sun.xacml.ctx.RequestCtx;
@@ -35,68 +33,65 @@ import com.sun.xacml.ctx.Status;
 
 /**
  * @author Christian Mueller
- *
- * Test for converting untis to metres or square metres
+ * 
+ *         Test for converting untis to metres or square metres
  */
 public class ConvertTest extends TestCase {
 
+    public ConvertTest() {
+        super();
 
-	
-	
-	public ConvertTest() {
-		super();
-						
-	}
+    }
 
-	public ConvertTest(String arg0) {
-		super(arg0);
-		
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-		GeoXACML.initialize();
-		TestSupport.initOutputDir();
-	}
-	
-	
-	
-	
-	public void testConvertToSquareMetre() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("convert","ConvertToSquareMetrePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("convert","ConvertToSquareMetreRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
-	
-	public void testConvertToMetre() {
-		
-	    PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("convert","ConvertToMetrePolicy.xml"));
-	    	    	    	    
-	    RequestCtx request = null;
-		try {
-			request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor("convert","ConvertToMetreRequest.xml")));
-		} catch (Exception e) {
-			e.printStackTrace();
-			Assert.fail(e.getMessage());
-		}
-		
-	    ResponseCtx response= pdp.evaluate(request);
-	    Result result = (Result)response.getResults().iterator().next();
-	    assertTrue(result.getDecision()==Result.DECISION_PERMIT);
-	    assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
-	}
+    public ConvertTest(String arg0) {
+        super(arg0);
 
-	
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        GeoXACML.initialize();
+        TestSupport.initOutputDir();
+    }
+
+    public void testConvertToSquareMetre() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("convert",
+                "ConvertToSquareMetrePolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "convert", "ConvertToSquareMetreRequest.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_PERMIT);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
+    public void testConvertToMetre() {
+
+        PDP pdp = TestSupport.getPDP(TestSupport.getGeoXACMLFNFor("convert",
+                "ConvertToMetrePolicy.xml"));
+
+        RequestCtx request = null;
+        try {
+            request = RequestCtx.getInstance(new FileInputStream(TestSupport.getGeoXACMLFNFor(
+                    "convert", "ConvertToMetreRequest.xml")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail(e.getMessage());
+        }
+
+        ResponseCtx response = pdp.evaluate(request);
+        Result result = (Result) response.getResults().iterator().next();
+        assertTrue(result.getDecision() == Result.DECISION_PERMIT);
+        assertTrue(result.getStatus().getCode().iterator().next().equals(Status.STATUS_OK));
+    }
+
 }

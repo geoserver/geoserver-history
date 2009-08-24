@@ -1,4 +1,3 @@
-
 /*
  * @(#)VersionConstraints.java
  *
@@ -38,40 +37,42 @@ package com.sun.xacml;
 
 import java.util.StringTokenizer;
 
-
 /**
- * Supports the three version constraints that can be included with a
- * policy reference. This class also provides a simple set of comparison
- * methods for matching against the constraints. Note that this feature
- * was introduced in XACML 2.0, which means that constraints are never
- * used in pre-2.0 policy references.
- *
+ * Supports the three version constraints that can be included with a policy reference. This class
+ * also provides a simple set of comparison methods for matching against the constraints. Note that
+ * this feature was introduced in XACML 2.0, which means that constraints are never used in pre-2.0
+ * policy references.
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class VersionConstraints
-{
+public class VersionConstraints {
 
     // internal identifiers used to specify the kind of match
     private static final int COMPARE_EQUAL = 0;
+
     private static final int COMPARE_LESS = 1;
+
     private static final int COMPARE_GREATER = 2;
 
     // the three constraint strings
     private String version;
+
     private String earliest;
+
     private String latest;
 
     /**
-     * Creates a <code>VersionConstraints</code> with the three optional
-     * constraint strings. Each of the three strings must conform to the
-     * VersionMatchType type defined in the XACML schema. Any of the
-     * strings may be null to specify that the given constraint is not
-     * used.
-     *
-     * @param version a matching constraint on the version or null
-     * @param earliest a lower-bound constraint on the version or null
-     * @param latest an upper-bound constraint on the version or null
+     * Creates a <code>VersionConstraints</code> with the three optional constraint strings. Each of
+     * the three strings must conform to the VersionMatchType type defined in the XACML schema. Any
+     * of the strings may be null to specify that the given constraint is not used.
+     * 
+     * @param version
+     *            a matching constraint on the version or null
+     * @param earliest
+     *            a lower-bound constraint on the version or null
+     * @param latest
+     *            an upper-bound constraint on the version or null
      */
     public VersionConstraints(String version, String earliest, String latest) {
         this.version = version;
@@ -80,9 +81,9 @@ public class VersionConstraints
     }
 
     /**
-     * Returns the matching constraint string, which will be null if there
-     * is no constraint on matching the version.
-     *
+     * Returns the matching constraint string, which will be null if there is no constraint on
+     * matching the version.
+     * 
      * @return the version constraint
      */
     public String getVersionConstraint() {
@@ -90,9 +91,9 @@ public class VersionConstraints
     }
 
     /**
-     * Returns the lower-bound constraint string, which will be null if there
-     * is no lower-bound constraint on the version.
-     *
+     * Returns the lower-bound constraint string, which will be null if there is no lower-bound
+     * constraint on the version.
+     * 
      * @return the lower-bound constraint
      */
     public String getEarliestConstraint() {
@@ -100,9 +101,9 @@ public class VersionConstraints
     }
 
     /**
-     * Returns the upper-bound constraint string, which will be null if there
-     * is no upper-bound constraint on the version.
-     *
+     * Returns the upper-bound constraint string, which will be null if there is no upper-bound
+     * constraint on the version.
+     * 
      * @return the upper-bound constraint
      */
     public String getLatestConstraint() {
@@ -111,24 +112,25 @@ public class VersionConstraints
 
     /**
      * Checks if the given version string meets all three constraints.
-     *
-     * @param version the version to compare, which is formatted as a
-     *                VersionType XACML type
-     *
+     * 
+     * @param version
+     *            the version to compare, which is formatted as a VersionType XACML type
+     * 
      * @return true if the given version meets all the constraints
      */
     public boolean meetsConstraint(String version) {
-        return (matches(version, this.version) &&
-                isEarlier(version, latest) &&
-                isLater(version, earliest));
+        return (matches(version, this.version) && isEarlier(version, latest) && isLater(version,
+                earliest));
     }
 
     /**
      * Checks if the given version string matches the constraint string.
-     *
-     * @param version the version string to check
-     * @param constraint a constraint string to use in matching
-     *
+     * 
+     * @param version
+     *            the version string to check
+     * @param constraint
+     *            a constraint string to use in matching
+     * 
      * @return true if the version string matches the constraint
      */
     public static boolean matches(String version, String constraint) {
@@ -136,12 +138,13 @@ public class VersionConstraints
     }
 
     /**
-     * Checks if the given version string is less-than or equal-to the
-     * constraint string.
-     *
-     * @param version the version string to check
-     * @param constraint a constraint string to use in matching
-     *
+     * Checks if the given version string is less-than or equal-to the constraint string.
+     * 
+     * @param version
+     *            the version string to check
+     * @param constraint
+     *            a constraint string to use in matching
+     * 
      * @return true if the version string is earlier than the constraint
      */
     public static boolean isEarlier(String version, String constraint) {
@@ -149,23 +152,23 @@ public class VersionConstraints
     }
 
     /**
-     * Checks if the given version string is greater-than or equal-to the
-     * constraint string.
-     *
-     * @param version the version string to check
-     * @param constraint a constraint string to use in matching
-     *
+     * Checks if the given version string is greater-than or equal-to the constraint string.
+     * 
+     * @param version
+     *            the version string to check
+     * @param constraint
+     *            a constraint string to use in matching
+     * 
      * @return true if the version string is later than the constraint
      */
     public static boolean isLater(String version, String constraint) {
         return compareHelper(version, constraint, COMPARE_GREATER);
     }
-    
+
     /**
      * Private helper that handles all three comparisons.
      */
-    private static boolean compareHelper(String version, String constraint,
-                                         int type) {
+    private static boolean compareHelper(String version, String constraint, int type) {
         // check that a constraint was provided...
         if (constraint == null)
             return true;
@@ -184,7 +187,7 @@ public class VersionConstraints
         while (vtok.hasMoreTokens()) {
             // if there's nothing left in the constraint, then this means
             // we didn't match, unless this is the greater-than function
-            if (! ctok.hasMoreTokens()) {
+            if (!ctok.hasMoreTokens()) {
                 if (type == COMPARE_GREATER)
                     return true;
                 else
@@ -193,16 +196,16 @@ public class VersionConstraints
 
             // get the next constraint token...
             String c = ctok.nextToken();
-            
+
             // ...and if it's a + then it's done and we match
             if (c.equals("+"))
                 return true;
             String v = vtok.nextToken();
 
             // if it's a * then we always match, otherwise...
-            if (! c.equals("*")) {
+            if (!c.equals("*")) {
                 // if it's a match then we just keep going, otherwise...
-                if (! v.equals(c)) {
+                if (!v.equals(c)) {
                     // if we're matching on equality, then we failed
                     if (type == COMPARE_EQUAL)
                         return false;

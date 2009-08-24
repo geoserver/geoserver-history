@@ -19,32 +19,32 @@ import org.restlet.data.Response;
  * Rest Service for reloading the GeoXACML repository
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class GeoXACMLRESTRepositoryReloader extends AbstractResource {
 
-    public final static String ReloadedMsg = "GeoXACML repository reloaded";
-    
+    public final static String ReloadedMsg = "<info>GeoXACML repository reloaded</info>";
+
     @Override
     protected List<DataFormat> createSupportedFormats(Request request, Response response) {
-        
+
         List<DataFormat> formats = new ArrayList<DataFormat>();
-        formats.add(new StringFormat( MediaType.TEXT_PLAIN ));
+        // formats.add(new StringFormat( MediaType.TEXT_PLAIN ));
+        formats.add(new StringFormat(MediaType.TEXT_XML));
         return formats;
 
     }
 
     @Override
     public void handleGet() {
-        
-        GeoXACMLConfig.reload();
-        
-       //get the appropriate format
-       DataFormat format = getFormatGet();
 
-       //transform the string "Hello World" to the appropriate response
-       getResponse().setEntity(format.toRepresentation(ReloadedMsg));
+        GeoXACMLConfig.reload();
+
+        // get the appropriate format
+        DataFormat format = getFormatGet();
+
+        // transform the string "Hello World" to the appropriate response
+        getResponse().setEntity(format.toRepresentation(ReloadedMsg));
     }
-    
-    
+
 }

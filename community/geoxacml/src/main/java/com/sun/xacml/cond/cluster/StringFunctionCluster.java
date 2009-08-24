@@ -1,4 +1,3 @@
-
 /*
  * @(#)StringFunctionCluster.java
  *
@@ -43,25 +42,22 @@ import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.StringFunction;
 import com.sun.xacml.cond.URLStringCatFunction;
 
-
 /**
- * Clusters all the functions supported by <code>StringFunction</code>
- * and <code>URLStringCatFunction</code>.
- *
+ * Clusters all the functions supported by <code>StringFunction</code> and
+ * <code>URLStringCatFunction</code>.
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class StringFunctionCluster implements FunctionCluster
-{
+public class StringFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : StringFunction.getSupportedIdentifiers())
             set.add(new StringFunction(fn));
-
 
         set.add(new URLStringCatFunction());
 

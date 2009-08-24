@@ -140,11 +140,11 @@ public class GeoXACML {
         FunctionFactory factory = factoryProxy.getTargetFactory();
 
         // FunctionFactory factory = FunctionFactory.getTargetInstance();
-        
-        // add wildcard functions        
+
+        // add wildcard functions
         for (Function wildCardFunction : new WildCardFunctionCluster().getSupportedFunctions()) {
             factory.addFunction(wildCardFunction);
-        }                       
+        }
 
         factory.addFunction(new GeometryEquals());
         factory.addFunction(new GeometryDisjoint());

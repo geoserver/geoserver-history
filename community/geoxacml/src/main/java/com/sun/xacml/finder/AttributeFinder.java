@@ -1,4 +1,3 @@
-
 /*
  * @(#)AttributeFinder.java
  *
@@ -51,33 +50,28 @@ import com.sun.xacml.attr.AttributeSelector;
 import com.sun.xacml.attr.BagAttribute;
 import com.sun.xacml.cond.EvaluationResult;
 
-
 /**
- * This class is used by the PDP to find attribute values that weren't
- * originally supplied in the request. It can be called with the data supplied
- * in {@link AttributeDesignator}s or {@link AttributeSelector}s.
- * Because the modules in this finder may themselves need attribute data
- * to search for attribute data, it's possible that the modules will look
- * for values in the {@link EvaluationCtx}, which may in turn result
- * in the invocation of this finder again, so module writers need to be
- * careful about how they build their modules.
+ * This class is used by the PDP to find attribute values that weren't originally supplied in the
+ * request. It can be called with the data supplied in {@link AttributeDesignator}s or
+ * {@link AttributeSelector}s. Because the modules in this finder may themselves need attribute data
+ * to search for attribute data, it's possible that the modules will look for values in the
+ * {@link EvaluationCtx}, which may in turn result in the invocation of this finder again, so module
+ * writers need to be careful about how they build their modules.
  * <p>
- * Note that unlike the PolicyFinder, this class doesn't always need to
- * use every module it has to find a value. The ordering is maintained,
- * however, so it will always start with the first module, and proceed
- * in order until it finds a value or runs out of modules.
- *
+ * Note that unlike the PolicyFinder, this class doesn't always need to use every module it has to
+ * find a value. The ordering is maintained, however, so it will always start with the first module,
+ * and proceed in order until it finds a value or runs out of modules.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  * 
  */
-public class AttributeFinder
-{
+public class AttributeFinder {
 
     // the list of all modules
-    private List<AttributeFinderModule>allModules;
+    private List<AttributeFinderModule> allModules;
 
     //
     private List<AttributeFinderModule> designatorModules;
@@ -86,8 +80,7 @@ public class AttributeFinder
     private List<AttributeFinderModule> selectorModules;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(AttributeFinder.class.getName());
+    private static final Logger logger = Logger.getLogger(AttributeFinder.class.getName());
 
     /**
      * Default constructor.
@@ -99,10 +92,9 @@ public class AttributeFinder
     }
 
     /**
-     * Returns the ordered list of
-     * {@link AttributeFinderModule}s used by this class to find
+     * Returns the ordered list of {@link AttributeFinderModule}s used by this class to find
      * attribute values.
-     *
+     * 
      * @return a list of <code>AttributeFinderModule</code>s
      */
     public List<AttributeFinderModule> getModules() {
@@ -110,12 +102,11 @@ public class AttributeFinder
     }
 
     /**
-     * Sets the ordered list of
-     * {@link AttributeFinderModule}s used by this class to find
-     * attribute values. The ordering will be maintained.
-     *
-     * @param modules a list of
-     *                <code>AttributeFinderModule</code>s
+     * Sets the ordered list of {@link AttributeFinderModule}s used by this class to find attribute
+     * values. The ordering will be maintained.
+     * 
+     * @param modules
+     *            a list of <code>AttributeFinderModule</code>s
      */
     public void setModules(List<AttributeFinderModule> modules) {
 
@@ -123,8 +114,8 @@ public class AttributeFinder
         designatorModules = new ArrayList<AttributeFinderModule>();
         selectorModules = new ArrayList<AttributeFinderModule>();
 
-       for (AttributeFinderModule module : modules) {     
-            
+        for (AttributeFinderModule module : modules) {
+
             if (module.isDesignatorSupported())
                 designatorModules.add(module);
 
@@ -134,52 +125,50 @@ public class AttributeFinder
     }
 
     /**
-     * Tries to find attribute values based on the given designator data.
-     * The result, if successful, will always contain a
-     * {@link BagAttribute}, even if only one value was found. If no
-     * values were found, but no other error occurred, an empty bag is
-     * returned.
-     *
-     * @param attributeType the datatype of the attributes to find
-     * @param attributeId the identifier of the attributes to find
-     * @param issuer the issuer of the attributes, or null if unspecified
-     * @param subjectCategory the category of the attribute if the
-     *                        designatorType is {@link AttributeDesignator#SUBJECT_TARGET}, otherwise null
-     * @param context the representation of the request data
-     * @param designatorType the type of designator as named by the *_TARGET
-     *                       fields in {@link AttributeDesignator}
-     *
-     * @return the result of attribute retrieval, which will be a bag of
-     *         attributes or an error
+     * Tries to find attribute values based on the given designator data. The result, if successful,
+     * will always contain a {@link BagAttribute}, even if only one value was found. If no values
+     * were found, but no other error occurred, an empty bag is returned.
+     * 
+     * @param attributeType
+     *            the datatype of the attributes to find
+     * @param attributeId
+     *            the identifier of the attributes to find
+     * @param issuer
+     *            the issuer of the attributes, or null if unspecified
+     * @param subjectCategory
+     *            the category of the attribute if the designatorType is
+     *            {@link AttributeDesignator#SUBJECT_TARGET}, otherwise null
+     * @param context
+     *            the representation of the request data
+     * @param designatorType
+     *            the type of designator as named by the *_TARGET fields in
+     *            {@link AttributeDesignator}
+     * 
+     * @return the result of attribute retrieval, which will be a bag of attributes or an error
      */
-    public EvaluationResult findAttribute(URI attributeType, URI attributeId,
-                                          URI issuer, URI subjectCategory,
-                                          EvaluationCtx context,
-                                          int designatorType) {
-            
-        for (AttributeFinderModule module : designatorModules) {    
-            
+    public EvaluationResult findAttribute(URI attributeType, URI attributeId, URI issuer,
+            URI subjectCategory, EvaluationCtx context, int designatorType) {
+
+        for (AttributeFinderModule module : designatorModules) {
+
             // see if the module supports this type
             Set<Integer> types = module.getSupportedDesignatorTypes();
-            if ((types == null) || (types.
-                                    contains(new Integer(designatorType)))) {
+            if ((types == null) || (types.contains(new Integer(designatorType)))) {
                 // see if the module can find an attribute value
-                EvaluationResult result =
-                    module.findAttribute(attributeType, attributeId, issuer,
-                                         subjectCategory, context,
-                                         designatorType);
+                EvaluationResult result = module.findAttribute(attributeType, attributeId, issuer,
+                        subjectCategory, context, designatorType);
 
                 // if there was an error, we stop right away
                 if (result.indeterminate()) {
                     if (logger.isLoggable(Level.INFO))
-                        logger.info("Error while trying to resolve values: " +
-                                    result.getStatus().getMessage());
+                        logger.info("Error while trying to resolve values: "
+                                + result.getStatus().getMessage());
                     return result;
                 }
 
                 // if the result wasn't empty, then return the result
-                BagAttribute bag = (BagAttribute)(result.getAttributeValue());
-                if (! bag.isEmpty())
+                BagAttribute bag = (BagAttribute) (result.getAttributeValue());
+                if (!bag.isEmpty())
                     return result;
             }
         }
@@ -187,53 +176,49 @@ public class AttributeFinder
         // if we got here then there were no errors but there were also no
         // matches, so we have to return an empty bag
         if (logger.isLoggable(Level.FINE))
-            logger.fine("Failed to resolve any values for " +
-                        attributeId.toString());
+            logger.fine("Failed to resolve any values for " + attributeId.toString());
 
-        return new EvaluationResult(BagAttribute.
-                                    createEmptyBag(attributeType));
+        return new EvaluationResult(BagAttribute.createEmptyBag(attributeType));
     }
 
     /**
-     * Tries to find attribute values based on the given selector data.
-     * The result, if successful, must always contain a
-     * {@link BagAttribute}, even if only one value was found. If no
-     * values were found, but no other error occurred, an empty bag is
-     * returned.
-     *
-     * @param contextPath the XPath expression to search against
-     * @param namespaceNode the DOM node defining namespace mappings to use,
-     *                      or null if mappings come from the context root
-     * @param attributeType the datatype of the attributes to find
-     * @param context the representation of the request data
-     * @param xpathVersion the XPath version to use
-     *
-     * @return the result of attribute retrieval, which will be a bag of
-     *         attributes or an error
+     * Tries to find attribute values based on the given selector data. The result, if successful,
+     * must always contain a {@link BagAttribute}, even if only one value was found. If no values
+     * were found, but no other error occurred, an empty bag is returned.
+     * 
+     * @param contextPath
+     *            the XPath expression to search against
+     * @param namespaceNode
+     *            the DOM node defining namespace mappings to use, or null if mappings come from the
+     *            context root
+     * @param attributeType
+     *            the datatype of the attributes to find
+     * @param context
+     *            the representation of the request data
+     * @param xpathVersion
+     *            the XPath version to use
+     * 
+     * @return the result of attribute retrieval, which will be a bag of attributes or an error
      */
-    public EvaluationResult findAttribute(String contextPath,
-                                          Node namespaceNode,
-                                          URI attributeType,
-                                          EvaluationCtx context,
-                                          String xpathVersion) {
-    	
-        for (AttributeFinderModule module : selectorModules) {    
+    public EvaluationResult findAttribute(String contextPath, Node namespaceNode,
+            URI attributeType, EvaluationCtx context, String xpathVersion) {
+
+        for (AttributeFinderModule module : selectorModules) {
             // see if the module can find an attribute value
-            EvaluationResult result =
-                module.findAttribute(contextPath, namespaceNode, attributeType,
-                                     context, xpathVersion);
+            EvaluationResult result = module.findAttribute(contextPath, namespaceNode,
+                    attributeType, context, xpathVersion);
 
             // if there was an error, we stop right away
             if (result.indeterminate()) {
                 if (logger.isLoggable(Level.INFO))
-                    logger.info("Error while trying to resolve values: " +
-                                result.getStatus().getMessage());
+                    logger.info("Error while trying to resolve values: "
+                            + result.getStatus().getMessage());
                 return result;
             }
 
             // if the result wasn't empty, then return the result
-            BagAttribute bag = (BagAttribute)(result.getAttributeValue());
-            if (! bag.isEmpty())
+            BagAttribute bag = (BagAttribute) (result.getAttributeValue());
+            if (!bag.isEmpty())
                 return result;
         }
 
@@ -242,8 +227,7 @@ public class AttributeFinder
         if (logger.isLoggable(Level.FINE))
             logger.fine("Failed to resolve any values for " + contextPath);
 
-        return new EvaluationResult(BagAttribute.
-                                    createEmptyBag(attributeType));
+        return new EvaluationResult(BagAttribute.createEmptyBag(attributeType));
     }
 
 }

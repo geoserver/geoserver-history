@@ -31,19 +31,21 @@ import com.sun.xacml.ctx.ResponseCtx;
  * Common base class for {@link XACMLTransport} implementations
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public abstract class XACMLAbstractTransport implements XACMLTransport {
 
-    protected Logger logger = Logger.getLogger(this.getClass().getName()); 
-    
+    protected Logger logger = Logger.getLogger(this.getClass().getName());
+
     public abstract ResponseCtx evaluateRequestCtx(RequestCtx request);
+
     public abstract List<ResponseCtx> evaluateRequestCtxList(List<RequestCtx> requests);
-    
+
     protected void log(RequestCtx ctx) {
-        
-        if (logger.isLoggable(Level.FINE)==false) return;
-        ByteArrayOutputStream out = new ByteArrayOutputStream(); 
+
+        if (logger.isLoggable(Level.FINE) == false)
+            return;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
         ctx.encode(out, new Indenter(2), true);
         logger.fine(out.toString());
         try {
@@ -51,22 +53,22 @@ public abstract class XACMLAbstractTransport implements XACMLTransport {
         } catch (IOException e) {
             // do nothing
         }
-        
-    }
-    
-    protected void log(ResponseCtx ctx) {
-        
-        if (logger.isLoggable(Level.FINE)==false) return;
-        ByteArrayOutputStream out = new ByteArrayOutputStream(); 
-        ctx.encode(out, new Indenter(2), true);
-        logger.fine(out.toString());
-        try {
-            out.close();
-        } catch (IOException e) {
-            // do nothing
-        }
-        
+
     }
 
+    protected void log(ResponseCtx ctx) {
+
+        if (logger.isLoggable(Level.FINE) == false)
+            return;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ctx.encode(out, new Indenter(2), true);
+        logger.fine(out.toString());
+        try {
+            out.close();
+        } catch (IOException e) {
+            // do nothing
+        }
+
+    }
 
 }

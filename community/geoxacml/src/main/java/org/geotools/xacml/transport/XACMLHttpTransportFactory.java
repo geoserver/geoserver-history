@@ -20,9 +20,6 @@ package org.geotools.xacml.transport;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.geotools.xacml.transport.XACMLHttpTransport;
-import org.geotools.xacml.transport.XACMLTransport;
-
 /**
  * Factory creating transport objects for a remote PDP using http POST requests
  * 
@@ -34,12 +31,12 @@ public class XACMLHttpTransportFactory implements XACMLTransportFactory {
     XACMLTransport transport;
 
     public XACMLHttpTransportFactory(String urlString, boolean multithreaded) {
-        URL pdpURL=null;
+        URL pdpURL = null;
         try {
             pdpURL = new URL(urlString);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
-        }        
+        }
         transport = new XACMLHttpTransport(pdpURL, multithreaded);
     }
 

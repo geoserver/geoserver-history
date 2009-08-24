@@ -1,4 +1,3 @@
-
 /*
  * @(#)X500NameAttributeProxy.java
  *
@@ -42,16 +41,13 @@ import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.X500NameAttribute;
 
-
 /**
- * A proxy class that is provided mainly for the run-time configuration
- * code to use.
- *
+ * A proxy class that is provided mainly for the run-time configuration code to use.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class X500NameAttributeProxy implements AttributeProxy
-{
+public class X500NameAttributeProxy implements AttributeProxy {
 
     public AttributeValue getInstance(Node root) throws Exception {
         return X500NameAttribute.getInstance(root);

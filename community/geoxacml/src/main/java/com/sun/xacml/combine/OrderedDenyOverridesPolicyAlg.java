@@ -1,4 +1,3 @@
-
 /*
  * OrderedDenyOverridesPolicyAlg.java
  *
@@ -38,25 +37,21 @@ package com.sun.xacml.combine;
 
 import java.net.URI;
 
-
 /**
- * This is the standard Ordered Deny Overrides policy combining algorithm. It
- * allows a single evaluation of Deny to take precedence over any number
- * of permit, not applicable or indeterminate results. Note that this uses
- * the regular Deny Overrides implementation since it is also orderd.
- *
+ * This is the standard Ordered Deny Overrides policy combining algorithm. It allows a single
+ * evaluation of Deny to take precedence over any number of permit, not applicable or indeterminate
+ * results. Note that this uses the regular Deny Overrides implementation since it is also orderd.
+ * 
  * @since 1.1
  * @author seth proctor
  */
-public class OrderedDenyOverridesPolicyAlg extends DenyOverridesPolicyAlg
-{
+public class OrderedDenyOverridesPolicyAlg extends DenyOverridesPolicyAlg {
 
     /**
      * The standard URN used to identify this algorithm
      */
-    public static final String algId =
-        "urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:" +
-        "ordered-deny-overrides";
+    public static final String algId = "urn:oasis:names:tc:xacml:1.1:policy-combining-algorithm:"
+            + "ordered-deny-overrides";
 
     // a URI form of the identifier
     private static final URI identifierURI = URI.create(algId);

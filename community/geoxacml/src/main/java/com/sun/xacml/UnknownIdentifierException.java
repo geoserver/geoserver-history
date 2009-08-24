@@ -1,4 +1,3 @@
-
 /*
  * @(#)UnknownIdentifierException.java
  *
@@ -36,23 +35,21 @@
 
 package com.sun.xacml;
 
-
 /**
- * Exception that gets thrown if an unknown identifier was used, such as the
- * identifier used in any of the standard factories.
- *
+ * Exception that gets thrown if an unknown identifier was used, such as the identifier used in any
+ * of the standard factories.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class UnknownIdentifierException extends Exception
-{
+public class UnknownIdentifierException extends Exception {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
+    /**
      * Creates an <code>UnknownIdentifierException</code> with no data
      */
     public UnknownIdentifierException() {
@@ -61,8 +58,9 @@ public class UnknownIdentifierException extends Exception
 
     /**
      * Creates an <code>UnknownIdentifierException</code> with a message
-     *
-     * @param message the message
+     * 
+     * @param message
+     *            the message
      */
     public UnknownIdentifierException(String message) {
         super(message);

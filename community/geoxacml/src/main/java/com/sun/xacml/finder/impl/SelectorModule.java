@@ -1,4 +1,3 @@
-
 /*
  * @(#)SelectorModule.java
  *
@@ -55,39 +54,34 @@ import com.sun.xacml.cond.EvaluationResult;
 import com.sun.xacml.ctx.Status;
 import com.sun.xacml.finder.AttributeFinderModule;
 
-
 /**
- * This module implements the basic behavior of the AttributeSelectorType,
- * looking for attribute values in the physical request document using the
- * given XPath expression. This is implemented as a separate module (instead
- * of being implemented directly in <code>AttributeSelector</code> so that
- * programmers can remove this functionality if they want (it's optional in
- * the spec), so they can replace this code with more efficient, specific
- * code as needed, and so they can easily swap in different XPath libraries.
+ * This module implements the basic behavior of the AttributeSelectorType, looking for attribute
+ * values in the physical request document using the given XPath expression. This is implemented as
+ * a separate module (instead of being implemented directly in <code>AttributeSelector</code> so
+ * that programmers can remove this functionality if they want (it's optional in the spec), so they
+ * can replace this code with more efficient, specific code as needed, and so they can easily swap
+ * in different XPath libraries.
  * <p>
- * Note that if no matches are found, this module will return an empty bag
- * (unless some error occurred). The <code>AttributeSelector</code> is still
- * deciding what to return to the policy based on the MustBePresent
- * attribute.
+ * Note that if no matches are found, this module will return an empty bag (unless some error
+ * occurred). The <code>AttributeSelector</code> is still deciding what to return to the policy
+ * based on the MustBePresent attribute.
  * <p>
- * This module uses the Xalan XPath implementation, and supports only version
- * 1.0 of XPath. It is a fully functional, correct implementation of XACML's
- * AttributeSelector functionality, but is not designed for environments
- * that make significant use of XPath queries. Developers for any such
+ * This module uses the Xalan XPath implementation, and supports only version 1.0 of XPath. It is a
+ * fully functional, correct implementation of XACML's AttributeSelector functionality, but is not
+ * designed for environments that make significant use of XPath queries. Developers for any such
  * environment should consider implementing their own module.
- *
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class SelectorModule extends AttributeFinderModule
-{
+public class SelectorModule extends AttributeFinderModule {
 
     /**
-     * Returns true since this module supports retrieving attributes based on
-     * the data provided in an AttributeSelectorType.
-     *
+     * Returns true since this module supports retrieving attributes based on the data provided in
+     * an AttributeSelectorType.
+     * 
      * @return true
      */
     public boolean isSelectorSupported() {
@@ -104,26 +98,28 @@ public class SelectorModule extends AttributeFinderModule
     }
 
     /**
-     * Tries to find attribute values based on the given selector data.
-     * The result, if successful, always contains a <code>BagAttribute</code>,
-     * even if only one value was found. If no values were found, but no other
-     * error occurred, an empty bag is returned.
-     *
-     * @param path the XPath expression to search against
-     * @param namespaceNode the DOM node defining namespace mappings to use,
-     *                      or null if mappings come from the context root
-     * @param type the datatype of the attributes to find
-     * @param context the representation of the request data
-     * @param xpathVersion the XPath version to use
-     *
-     * @return the result of attribute retrieval, which will be a bag of
-     *         attributes or an error
+     * Tries to find attribute values based on the given selector data. The result, if successful,
+     * always contains a <code>BagAttribute</code>, even if only one value was found. If no values
+     * were found, but no other error occurred, an empty bag is returned.
+     * 
+     * @param path
+     *            the XPath expression to search against
+     * @param namespaceNode
+     *            the DOM node defining namespace mappings to use, or null if mappings come from the
+     *            context root
+     * @param type
+     *            the datatype of the attributes to find
+     * @param context
+     *            the representation of the request data
+     * @param xpathVersion
+     *            the XPath version to use
+     * 
+     * @return the result of attribute retrieval, which will be a bag of attributes or an error
      */
-    public EvaluationResult findAttribute(String path, Node namespaceNode,
-                                          URI type, EvaluationCtx context,
-                                          String xpathVersion) {
+    public EvaluationResult findAttribute(String path, Node namespaceNode, URI type,
+            EvaluationCtx context, String xpathVersion) {
         // we only support 1.0
-        if (! xpathVersion.equals(PolicyMetaData.XPATH_1_0_IDENTIFIER))
+        if (!xpathVersion.equals(PolicyMetaData.XPATH_1_0_IDENTIFIER))
             return new EvaluationResult(BagAttribute.createEmptyBag(type));
 
         // get the DOM root of the request document
@@ -142,7 +138,7 @@ public class SelectorModule extends AttributeFinderModule
 
             // see if the request root is in a namespace
             String namespace = root.getNamespaceURI();
-            
+
             if (namespace == null) {
                 // no namespacing, so we're done
                 rootPath = "/" + rootName + "/";
@@ -178,8 +174,8 @@ public class SelectorModule extends AttributeFinderModule
                 // if the rootPath is still null, then we don't have any
                 // definitions for the namespace
                 if (rootPath == null)
-                    return createProcessingError("Failed to map a namespace" +
-                                                 " in an XPath expression");
+                    return createProcessingError("Failed to map a namespace"
+                            + " in an XPath expression");
             }
         }
 
@@ -202,7 +198,7 @@ public class SelectorModule extends AttributeFinderModule
         try {
             ArrayList<AttributeValue> list = new ArrayList<AttributeValue>();
             AttributeFactory attrFactory = AttributeFactory.getInstance();
-            
+
             for (int i = 0; i < matches.getLength(); i++) {
                 String text = null;
                 Node node = matches.item(i);
@@ -210,10 +206,8 @@ public class SelectorModule extends AttributeFinderModule
 
                 // see if this is straight text, or a node with data under
                 // it and then get the values accordingly
-                if ((nodeType == Node.CDATA_SECTION_NODE) ||
-                    (nodeType == Node.COMMENT_NODE) ||
-                    (nodeType == Node.TEXT_NODE) ||
-                    (nodeType == Node.ATTRIBUTE_NODE)) {
+                if ((nodeType == Node.CDATA_SECTION_NODE) || (nodeType == Node.COMMENT_NODE)
+                        || (nodeType == Node.TEXT_NODE) || (nodeType == Node.ATTRIBUTE_NODE)) {
                     // there is no child to this node
                     text = node.getNodeValue();
                 } else {
@@ -223,7 +217,7 @@ public class SelectorModule extends AttributeFinderModule
 
                 list.add(attrFactory.createValue(type, text));
             }
-            
+
             return new EvaluationResult(new BagAttribute(type, list));
         } catch (ParsingException pe) {
             return createProcessingError(pe.getMessage());

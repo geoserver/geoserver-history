@@ -1,4 +1,3 @@
-
 /*
  * @(#)InputParser.java
  *
@@ -53,16 +52,14 @@ import org.xml.sax.SAXParseException;
 
 import com.sun.xacml.ParsingException;
 
-
 /**
- * A package-private helper that provides a single static routine for
- * parsing input based on the context schema.
- *
+ * A package-private helper that provides a single static routine for parsing input based on the
+ * context schema.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-class InputParser implements ErrorHandler
-{
+class InputParser implements ErrorHandler {
 
     // the schema file, if provided
     private File schemaFile;
@@ -71,31 +68,26 @@ class InputParser implements ErrorHandler
     private static InputParser ipReference = null;
 
     // the property string to set to turn on validation
-    private static final String CONTEXT_SCHEMA_PROPERTY =
-        "com.sun.xacml.ContextSchema";
+    private static final String CONTEXT_SCHEMA_PROPERTY = "com.sun.xacml.ContextSchema";
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(InputParser.class.getName());
+    private static final Logger logger = Logger.getLogger(InputParser.class.getName());
 
     // standard strings for setting validation
 
-    private static final String JAXP_SCHEMA_LANGUAGE =
-        "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-    
-    private static final String W3C_XML_SCHEMA =
-        "http://www.w3.org/2001/XMLSchema";
+    private static final String JAXP_SCHEMA_LANGUAGE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
 
-    private static final String JAXP_SCHEMA_SOURCE =
-        "http://java.sun.com/xml/jaxp/properties/schemaSource";
+    private static final String W3C_XML_SCHEMA = "http://www.w3.org/2001/XMLSchema";
+
+    private static final String JAXP_SCHEMA_SOURCE = "http://java.sun.com/xml/jaxp/properties/schemaSource";
 
     /**
-     * Look for the property that names the schema, and if it exists get
-     * the file name and create a single InputParser instance
+     * Look for the property that names the schema, and if it exists get the file name and create a
+     * single InputParser instance
      */
     static {
         String schemaName = System.getProperty(CONTEXT_SCHEMA_PROPERTY);
-        
+
         if (schemaName != null)
             ipReference = new InputParser(new File(schemaName));
     };
@@ -106,25 +98,25 @@ class InputParser implements ErrorHandler
     private InputParser(File schemaFile) {
         this.schemaFile = schemaFile;
     }
-    
+
     /**
      * Tries to Parse the given output as a Context document.
-     *
-     * @param input the stream to parse
-     * @param rootTage either "Request" or "Response"
-     *
+     * 
+     * @param input
+     *            the stream to parse
+     * @param rootTage
+     *            either "Request" or "Response"
+     * 
      * @return the root node of the request/response
-     *
-     * @throws ParsingException if a problem occurred parsing the document
+     * 
+     * @throws ParsingException
+     *             if a problem occurred parsing the document
      */
-    static Node parseInput(InputStream input, String rootTag)
-        throws ParsingException
-    {
+    static Node parseInput(InputStream input, String rootTag) throws ParsingException {
         NodeList nodes = null;
 
         try {
-            DocumentBuilderFactory factory =
-                DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setIgnoringComments(true);
 
             DocumentBuilder builder = null;
@@ -142,9 +134,8 @@ class InputParser implements ErrorHandler
                 factory.setValidating(true);
 
                 factory.setAttribute(JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA);
-                factory.setAttribute(JAXP_SCHEMA_SOURCE,
-                                     ipReference.schemaFile);
-                
+                factory.setAttribute(JAXP_SCHEMA_SOURCE, ipReference.schemaFile);
+
                 builder = factory.newDocumentBuilder();
                 builder.setErrorHandler(ipReference);
             }
@@ -152,54 +143,58 @@ class InputParser implements ErrorHandler
             Document doc = builder.parse(input);
             nodes = doc.getElementsByTagName(rootTag);
         } catch (Exception e) {
-            throw new ParsingException("Error tring to parse " + rootTag +
-                                       "Type", e);
+            throw new ParsingException("Error tring to parse " + rootTag + "Type", e);
         }
 
         if (nodes.getLength() != 1)
             throw new ParsingException("Only one " + rootTag + "Type allowed "
-                                       + "at the root of a Context doc");
+                    + "at the root of a Context doc");
 
         return nodes.item(0);
     }
 
     /**
      * Standard handler routine for the XML parsing.
-     *
-     * @param exception information on what caused the problem
+     * 
+     * @param exception
+     *            information on what caused the problem
      */
     public void warning(SAXParseException exception) throws SAXException {
         if (logger.isLoggable(Level.WARNING))
-            logger.warning("Warning on line " + exception.getLineNumber() +
-                           ": " + exception.getMessage());
+            logger.warning("Warning on line " + exception.getLineNumber() + ": "
+                    + exception.getMessage());
     }
 
     /**
      * Standard handler routine for the XML parsing.
-     *
-     * @param exception information on what caused the problem
-     *
-     * @throws SAXException always to halt parsing on errors
+     * 
+     * @param exception
+     *            information on what caused the problem
+     * 
+     * @throws SAXException
+     *             always to halt parsing on errors
      */
     public void error(SAXParseException exception) throws SAXException {
         if (logger.isLoggable(Level.WARNING))
-            logger.warning("Error on line " + exception.getLineNumber() +
-                           ": " + exception.getMessage());
-        
+            logger.warning("Error on line " + exception.getLineNumber() + ": "
+                    + exception.getMessage());
+
         throw new SAXException("invalid context document");
     }
 
     /**
      * Standard handler routine for the XML parsing.
-     *
-     * @param exception information on what caused the problem
-     *
-     * @throws SAXException always to halt parsing on errors
+     * 
+     * @param exception
+     *            information on what caused the problem
+     * 
+     * @throws SAXException
+     *             always to halt parsing on errors
      */
     public void fatalError(SAXParseException exception) throws SAXException {
         if (logger.isLoggable(Level.WARNING))
-            logger.warning("FatalError on line " + exception.getLineNumber() +
-                           ": " + exception.getMessage());
+            logger.warning("FatalError on line " + exception.getLineNumber() + ": "
+                    + exception.getMessage());
 
         throw new SAXException("invalid context document");
     }

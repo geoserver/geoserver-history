@@ -1,4 +1,3 @@
-
 /*
  * @(#)DenyOverridesRuleAlg.java
  *
@@ -44,26 +43,22 @@ import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.Rule;
 import com.sun.xacml.ctx.Result;
 
-
 /**
- * This is the standard Deny Overrides rule combining algorithm. It
- * allows a single evaluation of Deny to take precedence over any number
- * of permit, not applicable or indeterminate results. Note that since
- * this implementation does an ordered evaluation, this class also
- * supports the Ordered Deny Overrides algorithm.
- *
+ * This is the standard Deny Overrides rule combining algorithm. It allows a single evaluation of
+ * Deny to take precedence over any number of permit, not applicable or indeterminate results. Note
+ * that since this implementation does an ordered evaluation, this class also supports the Ordered
+ * Deny Overrides algorithm.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class DenyOverridesRuleAlg extends RuleCombiningAlgorithm
-{
+public class DenyOverridesRuleAlg extends RuleCombiningAlgorithm {
 
     /**
      * The standard URN used to identify this algorithm
      */
-    public static final String algId =
-        "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:" +
-        "deny-overrides";
+    public static final String algId = "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:"
+            + "deny-overrides";
 
     // a URI form of the identifier
     private static final URI identifierURI = URI.create(algId);
@@ -77,26 +72,28 @@ public class DenyOverridesRuleAlg extends RuleCombiningAlgorithm
 
     /**
      * Protected constructor used by the ordered version of this algorithm.
-     *
-     * @param identifier the algorithm's identifier
+     * 
+     * @param identifier
+     *            the algorithm's identifier
      */
     protected DenyOverridesRuleAlg(URI identifier) {
         super(identifier);
     }
 
     /**
-     * Applies the combining rule to the set of rules based on the
-     * evaluation context.
-     *
-     * @param context the context from the request
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s
-     * @param ruleElements the rules to combine
-     *
+     * Applies the combining rule to the set of rules based on the evaluation context.
+     * 
+     * @param context
+     *            the context from the request
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of <code>CombinerParameter<code>s
+     * @param ruleElements
+     *            the rules to combine
+     * 
      * @return the result of running the combining algorithm
      */
     public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
-                          List<? extends CombinerElement> ruleElements) {
+            List<? extends CombinerElement> ruleElements) {
         boolean atLeastOneError = false;
         boolean potentialDeny = false;
         boolean atLeastOnePermit = false;
@@ -104,15 +101,15 @@ public class DenyOverridesRuleAlg extends RuleCombiningAlgorithm
         Iterator<? extends CombinerElement> it = ruleElements.iterator();
 
         while (it.hasNext()) {
-            Rule rule = ((RuleCombinerElement)(it.next())).getRule();
+            Rule rule = ((RuleCombinerElement) (it.next())).getRule();
             Result result = rule.evaluate(context);
             int value = result.getDecision();
-            
+
             // if there was a value of DENY, then regardless of what else
             // we've seen, we always return DENY
             if (value == Result.DECISION_DENY)
                 return result;
-            
+
             // if it was INDETERMINATE, then we couldn't figure something
             // out, so we keep track of these cases...
             if (value == Result.DECISION_INDETERMINATE) {
@@ -135,27 +132,25 @@ public class DenyOverridesRuleAlg extends RuleCombiningAlgorithm
                     atLeastOnePermit = true;
             }
         }
-        
+
         // we didn't explicitly DENY, but we might have had some Rule
         // been evaluated, so we have to return INDETERMINATE
         if (potentialDeny)
             return firstIndeterminateResult;
-        
+
         // some Rule said PERMIT, so since nothing could have denied,
         // we return PERMIT
         if (atLeastOnePermit)
-            return new Result(Result.DECISION_PERMIT,
-                              context.getResourceId().encode());
-        
+            return new Result(Result.DECISION_PERMIT, context.getResourceId().encode());
+
         // we didn't find anything that said PERMIT, but if we had a
         // problem with one of the Rules, then we're INDETERMINATE
         if (atLeastOneError)
             return firstIndeterminateResult;
-        
+
         // if we hit this point, then none of the rules actually applied
         // to us, so we return NOT_APPLICABLE
-        return new Result(Result.DECISION_NOT_APPLICABLE,
-                          context.getResourceId().encode());
+        return new Result(Result.DECISION_NOT_APPLICABLE, context.getResourceId().encode());
     }
 
 }

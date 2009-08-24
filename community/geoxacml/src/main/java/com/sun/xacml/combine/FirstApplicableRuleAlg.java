@@ -1,4 +1,3 @@
-
 /*
  * @(#)FirstApplicableRuleAlg.java
  *
@@ -44,24 +43,20 @@ import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.Rule;
 import com.sun.xacml.ctx.Result;
 
-
 /**
- * This is the standard First Applicable rule combining algorithm. It looks
- * through the set of rules, finds the first one that applies, and returns
- * that evaluation result.
- *
+ * This is the standard First Applicable rule combining algorithm. It looks through the set of
+ * rules, finds the first one that applies, and returns that evaluation result.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public class FirstApplicableRuleAlg extends RuleCombiningAlgorithm
-{
+public class FirstApplicableRuleAlg extends RuleCombiningAlgorithm {
 
     /**
      * The standard URN used to identify this algorithm
      */
-    public static final String algId =
-        "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:" +
-        "first-applicable";
+    public static final String algId = "urn:oasis:names:tc:xacml:1.0:rule-combining-algorithm:"
+            + "first-applicable";
 
     // a URI form of the identifier
     private static final URI identifierURI = URI.create(algId);
@@ -74,25 +69,26 @@ public class FirstApplicableRuleAlg extends RuleCombiningAlgorithm
     }
 
     /**
-     * Applies the combining rule to the set of rules based on the
-     * evaluation context.
-     *
-     * @param context the context from the request
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s
-     * @param ruleElements the rules to combine
-     *
+     * Applies the combining rule to the set of rules based on the evaluation context.
+     * 
+     * @param context
+     *            the context from the request
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of <code>CombinerParameter<code>s
+     * @param ruleElements
+     *            the rules to combine
+     * 
      * @return the result of running the combining algorithm
      */
     public Result combine(EvaluationCtx context, List<CombinerParameter> parameters,
-                          List<? extends CombinerElement> ruleElements) {
+            List<? extends CombinerElement> ruleElements) {
         Iterator<? extends CombinerElement> it = ruleElements.iterator();
-        
+
         while (it.hasNext()) {
-            Rule rule = ((RuleCombinerElement)(it.next())).getRule();
+            Rule rule = ((RuleCombinerElement) (it.next())).getRule();
             Result result = rule.evaluate(context);
             int value = result.getDecision();
-            
+
             // in the case of PERMIT, DENY, or INDETERMINATE, we always
             // just return that result, so only on a rule that doesn't
             // apply do we keep going...
@@ -101,8 +97,7 @@ public class FirstApplicableRuleAlg extends RuleCombiningAlgorithm
         }
 
         // if we got here, then none of the rules applied
-        return new Result(Result.DECISION_NOT_APPLICABLE,
-                          context.getResourceId().encode());
+        return new Result(Result.DECISION_NOT_APPLICABLE, context.getResourceId().encode());
     }
 
 }

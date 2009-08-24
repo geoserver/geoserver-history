@@ -176,7 +176,8 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
 
     public void testRoleAttributes() {
 
-        UserDetailsImpl readerDetails = new UserDetailsImpl("reader", "pwreader",new GrantedAuthority[] { new GrantedAuthorityImpl("READER") });        
+        UserDetailsImpl readerDetails = new UserDetailsImpl("reader", "pwreader",
+                new GrantedAuthority[] { new GrantedAuthorityImpl("READER") });
         readerDetails.setPersNr(4711);
         GeometryFactory fac = new GeometryFactory();
         LinearRing r = fac.createLinearRing(new Coordinate[] { new Coordinate(11, 11),
@@ -185,40 +186,38 @@ public class GeoXACMLGeometryTest extends GeoServerTestSupport {
         Polygon poly = fac.createPolygon(r, new LinearRing[] {});
         poly.setUserData("EPSG:4326");
         readerDetails.setGeometryRestriction(poly);
-        
-        GeoXACMLConfig.getXACMLRoleAuthority().transformUserDetails(readerDetails);
-        
 
-        Authentication reader = new TestingAuthenticationToken(readerDetails, "pwreader",readerDetails.getAuthorities());                
+        GeoXACMLConfig.getXACMLRoleAuthority().transformUserDetails(readerDetails);
+
+        Authentication reader = new TestingAuthenticationToken(readerDetails, "pwreader",
+                readerDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(reader);
-        /////////
+        // ///////
         GeoXACMLConfig.getXACMLRoleAuthority().prepareRoles(reader);
-        
-        ////////
-        XACMLRole readerRole = (XACMLRole)reader.getAuthorities()[0];
+
+        // //////
+        XACMLRole readerRole = (XACMLRole) reader.getAuthorities()[0];
 
         RequestCtx request = GeoXACMLConfig.getRequestCtxBuilderFactory()
-                .getResourceInfoRequestCtxBuilder(readerRole, europe, AccessMode.READ)         
+                .getResourceInfoRequestCtxBuilder(readerRole, europe, AccessMode.READ)
                 .createRequestCtx();
 
-        //System.out.println(XACMLUtil.asXMLString(request));
+        // System.out.println(XACMLUtil.asXMLString(request));
 
         Subject subject = request.getSubjects().iterator().next();
         for (Attribute attr : subject.getAttributes()) {
+            if (attr.getId().toString().equals(XACMLConstants.RoleParamPrefix + "persNr"))
+                assertTrue(((IntegerAttribute) attr.getValue()).getValue() == 4711);
             if (attr.getId().toString().equals(
-                    XACMLConstants.RoleParamPrefix + "persNr"))
-                    assertTrue(((IntegerAttribute)attr.getValue()).getValue()==4711);
-            if (attr.getId().toString().equals(
-                    XACMLConstants.RoleParamPrefix+ "geometryRestriction"))
-                    assertTrue(attr.getValue() instanceof GeometryAttribute);
-            if (attr.getId().toString().equals(
-                    XACMLConstants.RoleParamPrefix + "persNr2"))
-                assertTrue(((IntegerAttribute)attr.getValue()).getValue()==4712);
-            if (attr.getId().toString().equals(
-                    XACMLConstants.RoleParamPrefix+ "geometryRestriction2"))
+                    XACMLConstants.RoleParamPrefix + "geometryRestriction"))
                 assertTrue(attr.getValue() instanceof GeometryAttribute);
-            
+            if (attr.getId().toString().equals(XACMLConstants.RoleParamPrefix + "persNr2"))
+                assertTrue(((IntegerAttribute) attr.getValue()).getValue() == 4712);
+            if (attr.getId().toString().equals(
+                    XACMLConstants.RoleParamPrefix + "geometryRestriction2"))
+                assertTrue(attr.getValue() instanceof GeometryAttribute);
+
         }
-                
+
     }
 }

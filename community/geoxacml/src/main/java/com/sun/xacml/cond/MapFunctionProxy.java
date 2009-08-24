@@ -1,4 +1,3 @@
-
 /*
  * @(#)MapFunctionProxy.java
  *
@@ -38,16 +37,14 @@ package com.sun.xacml.cond;
 
 import org.w3c.dom.Node;
 
-
 /**
- * A basic proxy class that supports map, the only standard abstract function.
- * This is useful if you're configuring the PDP at runtime.
- *
+ * A basic proxy class that supports map, the only standard abstract function. This is useful if
+ * you're configuring the PDP at runtime.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class MapFunctionProxy implements FunctionProxy
-{
+public class MapFunctionProxy implements FunctionProxy {
 
     /**
      * Default constructor.
@@ -56,9 +53,7 @@ public class MapFunctionProxy implements FunctionProxy
 
     }
 
-    public Function getInstance(Node root, String xpathVersion)
-        throws Exception
-    {
+    public Function getInstance(Node root, String xpathVersion) throws Exception {
         return MapFunction.getInstance(root);
     }
 

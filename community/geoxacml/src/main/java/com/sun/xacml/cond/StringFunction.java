@@ -1,4 +1,3 @@
-
 /*
  * @(#)StringFunction.java
  *
@@ -44,44 +43,42 @@ import com.sun.xacml.EvaluationCtx;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.StringAttribute;
 
-
 /**
  * This class implements the string-concatenate function from XACML 2.0.
- *
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class StringFunction extends FunctionBase
-{
+public class StringFunction extends FunctionBase {
 
     /**
      * Standard identifier for the string-concatenate function.
      */
-    public static final String NAME_STRING_CONCATENATE =
-        FUNCTION_NS_2 + "string-concatenate";
+    public static final String NAME_STRING_CONCATENATE = FUNCTION_NS_2 + "string-concatenate";
 
     // private identifiers for the supported functions
     private static final int ID_STRING_CONCATENATE = 0;
 
     /**
      * Creates a new <code>StringFunction</code> object.
-     *
-     * @param functionName the standard XACML name of the function to be
-     *                     handled by this object, including the full namespace
-     *
-     * @throws IllegalArgumentException if the function is unknown
+     * 
+     * @param functionName
+     *            the standard XACML name of the function to be handled by this object, including
+     *            the full namespace
+     * 
+     * @throws IllegalArgumentException
+     *             if the function is unknown
      */
     public StringFunction(String functionName) {
-        super(functionName, ID_STRING_CONCATENATE, StringAttribute.identifier,
-              false, -1, 2, StringAttribute.identifier, false);
+        super(functionName, ID_STRING_CONCATENATE, StringAttribute.identifier, false, -1, 2,
+                StringAttribute.identifier, false);
     }
 
     /**
-     * Returns a <code>Set</code> containing all the function identifiers
-     * supported by this class.
-     *
+     * Returns a <code>Set</code> containing all the function identifiers supported by this class.
+     * 
      * @return a <code>Set</code> of <code>String</code>s
      */
     public static Set<String> getSupportedIdentifiers() {
@@ -94,27 +91,28 @@ public class StringFunction extends FunctionBase
 
     /**
      * Evaluate the function, using the specified parameters.
-     *
-     * @param inputs a <code>List</code> of <code>Evaluatable</code>
-     *               objects representing the arguments passed to the function
-     * @param context an <code>EvaluationCtx</code> so that the
-     *                <code>Evaluatable</code> objects can be evaluated
-     * @return an <code>EvaluationResult</code> representing the
-     *         function's result
+     * 
+     * @param inputs
+     *            a <code>List</code> of <code>Evaluatable</code> objects representing the arguments
+     *            passed to the function
+     * @param context
+     *            an <code>EvaluationCtx</code> so that the <code>Evaluatable</code> objects can be
+     *            evaluated
+     * @return an <code>EvaluationResult</code> representing the function's result
      */
     public EvaluationResult evaluate(List<? extends Expression> inputs, EvaluationCtx context) {
         // Evaluate the arguments
-        AttributeValue [] argValues = new AttributeValue[inputs.size()];
+        AttributeValue[] argValues = new AttributeValue[inputs.size()];
         EvaluationResult result = evalArgs(inputs, context, argValues);
         if (result != null)
             return result;
 
         switch (getFunctionId()) {
         case ID_STRING_CONCATENATE:
-            String str = ((StringAttribute)argValues[0]).getValue();
+            String str = ((StringAttribute) argValues[0]).getValue();
 
             for (int i = 1; i < argValues.length; i++)
-                str += ((StringAttribute)(argValues[i])).getValue();
+                str += ((StringAttribute) (argValues[i])).getValue();
 
             result = new EvaluationResult(new StringAttribute(str));
 

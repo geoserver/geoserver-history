@@ -1,4 +1,3 @@
-
 /*
  * @(#)CombinerParameter.java
  *
@@ -47,16 +46,14 @@ import com.sun.xacml.UnknownIdentifierException;
 import com.sun.xacml.attr.AttributeFactory;
 import com.sun.xacml.attr.AttributeValue;
 
-
 /**
- * Represents a single named parameter to a combining algorithm. Parameters
- * are only used by XACML 2.0 and later policies.
- *
+ * Represents a single named parameter to a combining algorithm. Parameters are only used by XACML
+ * 2.0 and later policies.
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class CombinerParameter
-{
+public class CombinerParameter {
 
     // the name of this parameter
     private String name;
@@ -66,9 +63,11 @@ public class CombinerParameter
 
     /**
      * Creates a new CombinerParameter.
-     *
-     * @param name the parameter's name
-     * @param value the parameter's value
+     * 
+     * @param name
+     *            the parameter's name
+     * @param value
+     *            the parameter's value
      */
     public CombinerParameter(String name, AttributeValue value) {
         this.name = name;
@@ -76,20 +75,18 @@ public class CombinerParameter
     }
 
     /**
-     * Returns a new instance of the <code>CombinerParameter</code> class
-     * based on a DOM node. The node must be the root of an XML
-     * CombinerParameterType.
-     *
-     * @param root the DOM root of a CombinerParameterType XML type
-     *
-     * @throws ParsingException if the CombinerParameterType is invalid
+     * Returns a new instance of the <code>CombinerParameter</code> class based on a DOM node. The
+     * node must be the root of an XML CombinerParameterType.
+     * 
+     * @param root
+     *            the DOM root of a CombinerParameterType XML type
+     * 
+     * @throws ParsingException
+     *             if the CombinerParameterType is invalid
      */
-    public static CombinerParameter getInstance(Node root)
-        throws ParsingException
-    {
+    public static CombinerParameter getInstance(Node root) throws ParsingException {
         // get the name, which is a required attribute
-        String name = root.getAttributes().getNamedItem("ParameterName").
-            getNodeValue();
+        String name = root.getAttributes().getNamedItem("ParameterName").getNodeValue();
 
         // get the attribute value, the only child of this element
         AttributeFactory attrFactory = AttributeFactory.getInstance();
@@ -100,13 +97,13 @@ public class CombinerParameter
         } catch (UnknownIdentifierException uie) {
             throw new ParsingException("Unknown AttributeId", uie);
         }
-        
+
         return new CombinerParameter(name, value);
     }
 
     /**
      * Returns the name of this parameter.
-     *
+     * 
      * @return the name of this parameter
      */
     public String getName() {
@@ -115,7 +112,7 @@ public class CombinerParameter
 
     /**
      * Returns the value provided by this parameter.
-     *
+     * 
      * @return the value provided by this parameter
      */
     public AttributeValue getValue() {
@@ -123,18 +120,19 @@ public class CombinerParameter
     }
 
     /**
-     * Encodes this parameter into its  XML representation and writes this
-     * encoding to the given <code>OutputStream</code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this parameter into its XML representation and writes this encoding to the given
+     * <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
 
-        out.println(indent + "<CombinerParameter ParameterName=\"" +
-                    getName() + "\">");
+        out.println(indent + "<CombinerParameter ParameterName=\"" + getName() + "\">");
         indenter.in();
 
         getValue().encode(output, indenter);

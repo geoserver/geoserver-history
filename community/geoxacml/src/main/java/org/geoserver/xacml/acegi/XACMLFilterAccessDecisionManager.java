@@ -15,17 +15,17 @@ import org.acegisecurity.vote.AccessDecisionVoter;
  * Acegi AccessDecsionsManger implementation for Services
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class XACMLFilterAccessDecisionManager extends AbstractAccessDecisionManager {
 
     public void decide(Authentication auth, Object arg1, ConfigAttributeDefinition arg2)
             throws AccessDeniedException, InsufficientAuthenticationException {
-        
+
         AccessDecisionVoter voter = (AccessDecisionVoter) this.getDecisionVoters().get(0);
         int decision = voter.vote(auth, arg1, arg2);
-        if (decision!=AccessDecisionVoter.ACCESS_GRANTED) {
-            throw new AccessDeniedException("Access Denied: "+arg1.toString());
+        if (decision != AccessDecisionVoter.ACCESS_GRANTED) {
+            throw new AccessDeniedException("Access Denied: " + arg1.toString());
         }
     }
 

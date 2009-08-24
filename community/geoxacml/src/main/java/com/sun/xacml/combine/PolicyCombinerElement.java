@@ -1,4 +1,3 @@
-
 /*
  * @(#)PolicyCombinerElement.java
  *
@@ -46,33 +45,34 @@ import com.sun.xacml.Policy;
 import com.sun.xacml.PolicyReference;
 import com.sun.xacml.PolicySet;
 
-
 /**
  * Specific version of <code>CombinerElement</code> used for policy combining.
- *
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class PolicyCombinerElement extends CombinerElement
-{
+public class PolicyCombinerElement extends CombinerElement {
 
     /**
      * Constructor that only takes an <code>AbstractPolicy</code. No parameters
      * are associated with this <code>AbstractPolicy</code> when combining.
-     *
-     * @param policy an <code>AbstractPolicy</code> to use in combining
+     * 
+     * @param policy
+     *            an <code>AbstractPolicy</code> to use in combining
      */
     public PolicyCombinerElement(AbstractPolicy policy) {
         super(policy);
     }
-    
+
     /**
-     * Constructor that takes both the <code>AbstractPolicy</code> to combine
-     * and its associated combiner parameters.
-     *
-     * @param policy an <code>AbstractPolicy</code> to use in combining
-     * @param parameters a (possibly empty) non-null <code>List</code> of
-     *                   <code>CombinerParameter<code>s provided for general
+     * Constructor that takes both the <code>AbstractPolicy</code> to combine and its associated
+     * combiner parameters.
+     * 
+     * @param policy
+     *            an <code>AbstractPolicy</code> to use in combining
+     * @param parameters
+     *            a (possibly empty) non-null <code>List</code> of
+     *            <code>CombinerParameter<code>s provided for general
      *                   use (for all pre-2.0 policies this must be empty)
      */
     public PolicyCombinerElement(AbstractPolicy policy, List<CombinerParameter> parameters) {
@@ -81,41 +81,39 @@ public class PolicyCombinerElement extends CombinerElement
 
     /**
      * Returns the <code>AbstractPolicy</code> in this element.
-     *
+     * 
      * @return the element's <code>AbstractPolicy</code>
      */
     public AbstractPolicy getPolicy() {
-        return (AbstractPolicy)(getElement());
+        return (AbstractPolicy) (getElement());
     }
 
     /**
-     * Encodes this element's <code>AbstractPolicy</code> and parameters into
-     * their XML representation and writes this encoding to the given
-     * <code>OutputStream</code> with indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this element's <code>AbstractPolicy</code> and parameters into their XML
+     * representation and writes this encoding to the given <code>OutputStream</code> with
+     * indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
-        if (! getParameters().isEmpty()) {
+        if (!getParameters().isEmpty()) {
             AbstractPolicy policy = getPolicy();
 
             // FIXME: This is ugly and happens in several places...maybe this
             // should get folded into the AbstractPolicy API?
             if (policy instanceof Policy) {
-                encodeParamaters(output, indenter, "Policy",
-                                 policy.getId().toString());
+                encodeParamaters(output, indenter, "Policy", policy.getId().toString());
             } else if (policy instanceof PolicySet) {
-                encodeParamaters(output, indenter, "PolicySet",
-                                 policy.getId().toString());
+                encodeParamaters(output, indenter, "PolicySet", policy.getId().toString());
             } else {
-                PolicyReference ref = (PolicyReference)policy;
+                PolicyReference ref = (PolicyReference) policy;
                 if (ref.getReferenceType() == PolicyReference.POLICY_REFERENCE)
-                    encodeParamaters(output, indenter, "Policy",
-                                     ref.getReference().toString());
+                    encodeParamaters(output, indenter, "Policy", ref.getReference().toString());
                 else
-                    encodeParamaters(output, indenter, "PolicySet",
-                                     ref.getReference().toString());
+                    encodeParamaters(output, indenter, "PolicySet", ref.getReference().toString());
             }
         }
 
@@ -125,18 +123,17 @@ public class PolicyCombinerElement extends CombinerElement
     /**
      * Private helper that encodes the parameters based on the type
      */
-    private void encodeParamaters(OutputStream output, Indenter indenter,
-                                  String prefix, String id) {
+    private void encodeParamaters(OutputStream output, Indenter indenter, String prefix, String id) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
 
-        out.println(indent + "<" + prefix + "CombinerParameters " +
-                    prefix + "IdRef=\"" + id + "\">");            
+        out.println(indent + "<" + prefix + "CombinerParameters " + prefix + "IdRef=\"" + id
+                + "\">");
         indenter.in();
 
         for (CombinerParameter param : getParameters())
             param.encode(output, indenter);
-            
+
         out.println(indent + "</" + prefix + "CombinerParameters>");
         indenter.out();
     }

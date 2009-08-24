@@ -1,4 +1,3 @@
-
 /*
  * @(#)DNSNameAttribute.java
  *
@@ -42,22 +41,19 @@ import org.w3c.dom.Node;
 
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Represents the DNSName datatype introduced in XACML 2.0. All objects of
- * this class are immutable and all methods of the class are thread-safe.
- *
+ * Represents the DNSName datatype introduced in XACML 2.0. All objects of this class are immutable
+ * and all methods of the class are thread-safe.
+ * 
  * @since 2.0
  * @author Seth Proctor
  */
-public class DNSNameAttribute extends AttributeValue
-{
+public class DNSNameAttribute extends AttributeValue {
 
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "urn:oasis:names:tc:xacml:2.0:data-type:dnsName";
+    public static final String identifier = "urn:oasis:names:tc:xacml:2.0:data-type:dnsName";
 
     /**
      * URI version of name for this type
@@ -74,34 +70,35 @@ public class DNSNameAttribute extends AttributeValue
     private boolean isSubdomain = false;
 
     /**
-     * Creates the new <code>DNSNameAttribute</code> with only the required
-     * hostname component.
-     *
-     * @param hostname the host name component of the address
-     *
-     * @throws ParsingException if the hostname is invalid
+     * Creates the new <code>DNSNameAttribute</code> with only the required hostname component.
+     * 
+     * @param hostname
+     *            the host name component of the address
+     * 
+     * @throws ParsingException
+     *             if the hostname is invalid
      */
     public DNSNameAttribute(String hostname) throws ParsingException {
         this(hostname, new PortRange());
     }
 
     /**
-     * Creates the new <code>DNSNameAttribute</code> with the optional
-     * port range component.
-     *
-     * @param hostname the host name component of the address
-     * @param range the port range
-     *
-     * @throws ParsingException if the hostname is invalid
+     * Creates the new <code>DNSNameAttribute</code> with the optional port range component.
+     * 
+     * @param hostname
+     *            the host name component of the address
+     * @param range
+     *            the port range
+     * 
+     * @throws ParsingException
+     *             if the hostname is invalid
      */
-    public DNSNameAttribute(String hostname, PortRange range)
-        throws ParsingException
-    {
+    public DNSNameAttribute(String hostname, PortRange range) throws ParsingException {
         super(identifierURI);
 
         // verify that the hostname is valid before we store it
         // FIXME: What the heck does the System.out do here?
-        if (! isValidHostName(hostname))
+        if (!isValidHostName(hostname))
             System.out.println("FIXME: throw error about bad hostname");
 
         // see if it started with a '*' character
@@ -117,49 +114,47 @@ public class DNSNameAttribute extends AttributeValue
      */
     private boolean isValidHostName(String hostname) {
         /*
-          hostname      =  *( domainlabel "." ) toplabel [ "." ]
-          domainlabel   =  alphanum | alphanum *( alphanum | "-" ) alphanum
-          toplabel      =  alpha | alpha *( alphanum | "-" ) alphanum
-        */
-        
+         * hostname = *( domainlabel "." ) toplabel [ "." ] domainlabel = alphanum | alphanum *(
+         * alphanum | "-" ) alphanum toplabel = alpha | alpha *( alphanum | "-" ) alphanum
+         */
+
         String domainlabel = "\\w[[\\w|\\-]*\\w]?";
         String toplabel = "[a-zA-Z][[\\w|\\-]*\\w]?";
-        String pattern = "[\\*\\.]?[" + domainlabel + "\\.]*" + toplabel +
-            "\\.?";
-        
+        String pattern = "[\\*\\.]?[" + domainlabel + "\\.]*" + toplabel + "\\.?";
+
         return hostname.matches(pattern);
     }
 
     /**
-     * Returns a new <code>DNSNameAttribute</code> that represents
-     * the name at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     *
-     * @return a new <code>DNSNameAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
-     *
-     * @throws ParsingException if the hostname is invalid
+     * Returns a new <code>DNSNameAttribute</code> that represents the name at a particular DOM
+     * node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * 
+     * @return a new <code>DNSNameAttribute</code> representing the appropriate value (null if there
+     *         is a parsing error)
+     * 
+     * @throws ParsingException
+     *             if the hostname is invalid
      */
-    public static DNSNameAttribute getInstance(Node root)
-        throws ParsingException
-    {
+    public static DNSNameAttribute getInstance(Node root) throws ParsingException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a new <code>DNSNameAttribute</code> that represents
-     * the name indicated by the <code>String</code> provided.
-     *
-     * @param value a string representing the name
-     *
+     * Returns a new <code>DNSNameAttribute</code> that represents the name indicated by the
+     * <code>String</code> provided.
+     * 
+     * @param value
+     *            a string representing the name
+     * 
      * @return a new <code>DNSNameAttribute</code>
-     *
-     * @throws ParsingException if the hostname is invalid
+     * 
+     * @throws ParsingException
+     *             if the hostname is invalid
      */
-    public static DNSNameAttribute getInstance(String value)
-        throws ParsingException
-    {
+    public static DNSNameAttribute getInstance(String value) throws ParsingException {
         int portSep = value.indexOf(':');
 
         if (portSep == -1) {
@@ -168,16 +163,14 @@ public class DNSNameAttribute extends AttributeValue
         } else {
             // split the name and the port range
             String hostname = value.substring(0, portSep);
-            PortRange range =
-                PortRange.getInstance(value.substring(portSep + 1,
-                                                      value.length()));
+            PortRange range = PortRange.getInstance(value.substring(portSep + 1, value.length()));
             return new DNSNameAttribute(hostname, range);
         }
     }
 
     /**
      * Returns the host name represented by this object.
-     *
+     * 
      * @return the host name
      */
     public String getHostName() {
@@ -185,9 +178,9 @@ public class DNSNameAttribute extends AttributeValue
     }
 
     /**
-     * Returns the port range represented by this object which will be
-     * unbound if no range was specified.
-     *
+     * Returns the port range represented by this object which will be unbound if no range was
+     * specified.
+     * 
      * @return the port range
      */
     public PortRange getPortRange() {
@@ -195,9 +188,9 @@ public class DNSNameAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the leading character in the hostname is a '*', and
-     * therefore represents a matching subdomain, or false otherwise.
-     *
+     * Returns true if the leading character in the hostname is a '*', and therefore represents a
+     * matching subdomain, or false otherwise.
+     * 
      * @return true if the name represents a subdomain, false otherwise
      */
     public boolean isSubdomain() {
@@ -205,32 +198,33 @@ public class DNSNameAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof DNSNameAttribute))
+        if (!(o instanceof DNSNameAttribute))
             return false;
 
-        DNSNameAttribute other = (DNSNameAttribute)o;
+        DNSNameAttribute other = (DNSNameAttribute) o;
 
-        if (! hostname.toUpperCase().equals(other.hostname.toUpperCase()))
+        if (!hostname.toUpperCase().equals(other.hostname.toUpperCase()))
             return false;
 
-        if (! range.equals(other.range))
+        if (!range.equals(other.range))
             return false;
 
         return true;
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -242,7 +236,7 @@ public class DNSNameAttribute extends AttributeValue
 
     /**
      * Converts to a String representation.
-     *
+     * 
      * @return the String representation
      */
     public String toString() {

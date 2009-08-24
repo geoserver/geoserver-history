@@ -1,8 +1,4 @@
-
 package org.geotools.xacml.transport;
-
-import org.geotools.xacml.transport.XACMLLocalTransport;
-import org.geotools.xacml.transport.XACMLTransport;
 
 import com.sun.xacml.PDP;
 

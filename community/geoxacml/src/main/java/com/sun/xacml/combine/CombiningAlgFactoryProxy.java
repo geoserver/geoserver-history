@@ -1,4 +1,3 @@
-
 /*
  * @(#)CombiningAlgFactoryProxy.java
  *
@@ -36,21 +35,17 @@
 
 package com.sun.xacml.combine;
 
-
 /**
- * A simple proxy interface used to install new
- * <code>CombiningAlgFactory</code>s.
- *
+ * A simple proxy interface used to install new <code>CombiningAlgFactory</code>s.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public interface CombiningAlgFactoryProxy
-{
+public interface CombiningAlgFactoryProxy {
 
     /**
-     * Returns an instance of the <code>CombiningAlgFactory</code> for which
-     * this is a proxy.
-     *
+     * Returns an instance of the <code>CombiningAlgFactory</code> for which this is a proxy.
+     * 
      * @return a <code>CombiningAlgFactory</code> instance
      */
     public CombiningAlgFactory getFactory();

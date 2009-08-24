@@ -1,4 +1,3 @@
-
 /*
  * @(#)NotFunctionCluster.java
  *
@@ -42,17 +41,15 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.NotFunction;
 
-
 /**
  * Clusters all the functions supported by <code>NotFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class NotFunctionCluster implements FunctionCluster
-{
+public class NotFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();

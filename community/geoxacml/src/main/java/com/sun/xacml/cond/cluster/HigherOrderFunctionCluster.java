@@ -1,4 +1,3 @@
-
 /*
  * @(#)HigherOrderFunctionCluster.java
  *
@@ -42,24 +41,21 @@ import java.util.Set;
 import com.sun.xacml.cond.Function;
 import com.sun.xacml.cond.HigherOrderFunction;
 
-
 /**
  * Clusters all the functions supported by <code>HigherOrderFunction</code>.
- *
+ * 
  * @since 1.2
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class HigherOrderFunctionCluster implements FunctionCluster
-{
+public class HigherOrderFunctionCluster implements FunctionCluster {
 
     public Set<Function> getSupportedFunctions() {
         Set<Function> set = new HashSet<Function>();
-        
+
         for (String fn : HigherOrderFunction.getSupportedIdentifiers())
             set.add(new HigherOrderFunction(fn));
-
 
         return set;
     }

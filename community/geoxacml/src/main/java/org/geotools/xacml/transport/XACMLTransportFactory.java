@@ -15,16 +15,13 @@
  *    Lesser General Public License for more details.
  */
 
-
 package org.geotools.xacml.transport;
-
-import org.geotools.xacml.transport.XACMLTransport;
 
 /**
  * Inteface for creating transpoert objects
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public interface XACMLTransportFactory {
     XACMLTransport getXACMLTransport();

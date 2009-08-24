@@ -1,4 +1,3 @@
-
 /*
  * @(#)FunctionFactoryProxy.java
  *
@@ -36,39 +35,36 @@
 
 package com.sun.xacml.cond;
 
-
 /**
- * A simple proxy interface used to install new <code>FunctionFactory</code>s.
- * The three kinds of factory (Target, Condition, and General) are tied
- * together in this interface because implementors writing new factories
- * should always implement all three types and provide them together.
- *
+ * A simple proxy interface used to install new <code>FunctionFactory</code>s. The three kinds of
+ * factory (Target, Condition, and General) are tied together in this interface because implementors
+ * writing new factories should always implement all three types and provide them together.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public interface FunctionFactoryProxy
-{
+public interface FunctionFactoryProxy {
 
     /**
-     * Returns the Target version of an instance of the
-     * <code>FunctionFactory</code> for which this is a proxy.
-     *
+     * Returns the Target version of an instance of the <code>FunctionFactory</code> for which this
+     * is a proxy.
+     * 
      * @return a <code>FunctionFactory</code> instance
      */
     public FunctionFactory getTargetFactory();
 
     /**
-     * Returns the Condition version of an instance of the
-     * <code>FunctionFactory</code> for which this is a proxy.
-     *
+     * Returns the Condition version of an instance of the <code>FunctionFactory</code> for which
+     * this is a proxy.
+     * 
      * @return a <code>FunctionFactory</code> instance
      */
     public FunctionFactory getConditionFactory();
 
     /**
-     * Returns the General version of an instance of the
-     * <code>FunctionFactory</code> for which this is a proxy.
-     *
+     * Returns the General version of an instance of the <code>FunctionFactory</code> for which this
+     * is a proxy.
+     * 
      * @return a <code>FunctionFactory</code> instance
      */
     public FunctionFactory getGeneralFactory();

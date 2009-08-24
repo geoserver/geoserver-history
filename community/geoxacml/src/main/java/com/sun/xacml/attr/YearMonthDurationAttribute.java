@@ -1,4 +1,3 @@
-
 /*
  * @(#)YearMonthDurationAttribute.java
  *
@@ -46,25 +45,21 @@ import org.w3c.dom.Node;
 
 import com.sun.xacml.ParsingException;
 
-
 /**
- * Representation of an xf:yearMonthDuration value. This class supports parsing
- * xd:yearMonthDuration values. All objects of this class are immutable and
- * thread-safe. The <code>Date</code> objects returned are not, but
- * these objects are cloned before being returned.
+ * Representation of an xf:yearMonthDuration value. This class supports parsing xd:yearMonthDuration
+ * values. All objects of this class are immutable and thread-safe. The <code>Date</code> objects
+ * returned are not, but these objects are cloned before being returned.
  * 
  * @since 1.0
  * @author Steve Hanna
  */
-public class YearMonthDurationAttribute extends AttributeValue
-{
+public class YearMonthDurationAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/TR/2002/WD-xquery-operators-20020816#" +
-        "yearMonthDuration";
- 
+    public static final String identifier = "http://www.w3.org/TR/2002/WD-xquery-operators-20020816#"
+            + "yearMonthDuration";
+
     /**
      * URI version of name for this type
      */
@@ -73,8 +68,7 @@ public class YearMonthDurationAttribute extends AttributeValue
     /**
      * Regular expression for yearMonthDuration (a la java.util.regex)
      */
-    private static final String patternString = 
-        "(\\-)?P((\\d+)?Y)?((\\d+)?M)?";
+    private static final String patternString = "(\\-)?P((\\d+)?Y)?((\\d+)?M)?";
 
     /**
      * The index of the capturing group for the negative sign.
@@ -92,12 +86,12 @@ public class YearMonthDurationAttribute extends AttributeValue
     private static final int GROUP_MONTHS = 5;
 
     /**
-     * Static BigInteger values. We only use these if one of
-     * the components is bigger than Integer.MAX_LONG and we
-     * want to detect overflow, so we don't initialize these
-     * until they're needed.
+     * Static BigInteger values. We only use these if one of the components is bigger than
+     * Integer.MAX_LONG and we want to detect overflow, so we don't initialize these until they're
+     * needed.
      */
     private static BigInteger big12;
+
     private static BigInteger bigMaxLong;
 
     /**
@@ -131,19 +125,20 @@ public class YearMonthDurationAttribute extends AttributeValue
     private String encodedValue = null;
 
     /**
-     * Creates a new <code>YearMonthDurationAttribute</code> that represents
-     * the duration supplied.
-     *
-     * @param negative true if the duration is negative, false otherwise
-     * @param years the number of years in the duration (must be positive)
-     * @param months the number of months in the duration (must be positive)
-     * @throws IllegalArgumentException if the total number of months
-     *                                  exceeds Long.MAX_LONG or the number
-     *                                  of months or years is negative
+     * Creates a new <code>YearMonthDurationAttribute</code> that represents the duration supplied.
+     * 
+     * @param negative
+     *            true if the duration is negative, false otherwise
+     * @param years
+     *            the number of years in the duration (must be positive)
+     * @param months
+     *            the number of months in the duration (must be positive)
+     * @throws IllegalArgumentException
+     *             if the total number of months exceeds Long.MAX_LONG or the number of months or
+     *             years is negative
      */
-    public YearMonthDurationAttribute(boolean negative, long years,
-                                      long months)
-        throws IllegalArgumentException {
+    public YearMonthDurationAttribute(boolean negative, long years, long months)
+            throws IllegalArgumentException {
         super(identifierURI);
         this.negative = negative;
         this.years = years;
@@ -169,13 +164,12 @@ public class YearMonthDurationAttribute extends AttributeValue
             // since it can be argued that we should handle gigantic
             // values for this).
             if (bigTotal.compareTo(bigMaxLong) == 1)
-                throw new IllegalArgumentException("total number of " +
-                                                   "months " +
-                                                   "exceeds Long.MAX_VALUE");
+                throw new IllegalArgumentException("total number of " + "months "
+                        + "exceeds Long.MAX_VALUE");
             // If no overflow, convert to a long.
             totalMonths = bigTotal.longValue();
             if (negative)
-                totalMonths = - totalMonths;
+                totalMonths = -totalMonths;
         } else {
             // The numbers are small, so do it the fast way.
             totalMonths = ((years * 12) + months) * (negative ? -1 : 1);
@@ -183,37 +177,35 @@ public class YearMonthDurationAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>YearMonthDurationAttribute</code> that represents
-     * the xf:yearMonthDuration at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>YearMonthDurationAttribute</code> representing the
-     *         appropriate value
-     * @throws ParsingException if any problems occurred while parsing
+     * Returns a new <code>YearMonthDurationAttribute</code> that represents the
+     * xf:yearMonthDuration at a particular DOM node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>YearMonthDurationAttribute</code> representing the appropriate value
+     * @throws ParsingException
+     *             if any problems occurred while parsing
      */
-    public static YearMonthDurationAttribute getInstance(Node root)
-        throws ParsingException
-    {
+    public static YearMonthDurationAttribute getInstance(Node root) throws ParsingException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns the long value for the capturing group groupNumber.
-     * This method takes a Matcher that has been used to match a
-     * Pattern against a String, fetches the value for the specified
-     * capturing group, converts that value to an long, and returns
-     * the value. If that group did not match, 0 is returned.
-     * If the matched value is not a valid long, NumberFormatException
-     * is thrown.
-     *
-     * @param matcher the Matcher from which to fetch the group
-     * @param groupNumber the group number to fetch
+     * Returns the long value for the capturing group groupNumber. This method takes a Matcher that
+     * has been used to match a Pattern against a String, fetches the value for the specified
+     * capturing group, converts that value to an long, and returns the value. If that group did not
+     * match, 0 is returned. If the matched value is not a valid long, NumberFormatException is
+     * thrown.
+     * 
+     * @param matcher
+     *            the Matcher from which to fetch the group
+     * @param groupNumber
+     *            the group number to fetch
      * @return the long value for that groupNumber
-     * @throws NumberFormatException if the string value for that
-     * groupNumber is not a valid long
+     * @throws NumberFormatException
+     *             if the string value for that groupNumber is not a valid long
      */
-    private static long parseGroup(Matcher matcher, int groupNumber)
-        throws NumberFormatException {
+    private static long parseGroup(Matcher matcher, int groupNumber) throws NumberFormatException {
         long groupLong = 0;
 
         if (matcher.start(groupNumber) != -1) {
@@ -224,19 +216,18 @@ public class YearMonthDurationAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>YearMonthDurationAttribute</code> that represents
-     * the xf:yearMonthDuration value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     *
-     * @return a new <code>YearMonthDurationAttribute</code> representing the
-     *         desired value
-     *
-     * @throws ParsingException if any problems occurred while parsing
+     * Returns a new <code>YearMonthDurationAttribute</code> that represents the
+     * xf:yearMonthDuration value indicated by the string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * 
+     * @return a new <code>YearMonthDurationAttribute</code> representing the desired value
+     * 
+     * @throws ParsingException
+     *             if any problems occurred while parsing
      */
-    public static YearMonthDurationAttribute getInstance(String value)
-        throws ParsingException
-    {
+    public static YearMonthDurationAttribute getInstance(String value) throws ParsingException {
         boolean negative = false;
         long years = 0;
         long months = 0;
@@ -284,7 +275,7 @@ public class YearMonthDurationAttribute extends AttributeValue
 
     /**
      * Returns true if the duration is negative.
-     *
+     * 
      * @return true if the duration is negative, false otherwise
      */
     public boolean isNegative() {
@@ -293,7 +284,7 @@ public class YearMonthDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of years.
-     *
+     * 
      * @return the number of years
      */
     public long getYears() {
@@ -302,7 +293,7 @@ public class YearMonthDurationAttribute extends AttributeValue
 
     /**
      * Gets the number of months.
-     *
+     * 
      * @return the number of months
      */
     public long getMonths() {
@@ -310,27 +301,27 @@ public class YearMonthDurationAttribute extends AttributeValue
     }
 
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof YearMonthDurationAttribute))
+        if (!(o instanceof YearMonthDurationAttribute))
             return false;
 
-        YearMonthDurationAttribute other = (YearMonthDurationAttribute)o;
+        YearMonthDurationAttribute other = (YearMonthDurationAttribute) o;
 
         return (totalMonths == other.totalMonths);
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
@@ -339,7 +330,7 @@ public class YearMonthDurationAttribute extends AttributeValue
 
     /**
      * Converts to a String representation.
-     *
+     * 
      * @return the String representation
      */
     public String toString() {
@@ -354,11 +345,10 @@ public class YearMonthDurationAttribute extends AttributeValue
     }
 
     /**
-     * Encodes the value in a form suitable for including in XML data like
-     * a request or an obligation. This must return a value that could in
-     * turn be used by the factory to create a new instance with the same
-     * value.
-     *
+     * Encodes the value in a form suitable for including in XML data like a request or an
+     * obligation. This must return a value that could in turn be used by the factory to create a
+     * new instance with the same value.
+     * 
      * @return a <code>String</code> form of the value
      */
     public String encode() {

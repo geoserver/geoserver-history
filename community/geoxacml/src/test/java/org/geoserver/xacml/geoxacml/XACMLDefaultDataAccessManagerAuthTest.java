@@ -51,15 +51,17 @@ public class XACMLDefaultDataAccessManagerAuthTest extends DefaultDataAccessMana
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         rwUser = new TestingAuthenticationToken("rw", "supersecret", new XACMLRole[] {
                 new XACMLRole("READER"), new XACMLRole("WRITER") });
         roUser = new TestingAuthenticationToken("ro", "supersecret",
                 new XACMLRole[] { new XACMLRole("READER") });
-        anonymous = new TestingAuthenticationToken("anonymous", "", new XACMLRole[] { new XACMLRole(XACMLConstants.AnonymousRole) });
+        anonymous = new TestingAuthenticationToken("anonymous", "",
+                new XACMLRole[] { new XACMLRole(XACMLConstants.AnonymousRole) });
         milUser = new TestingAuthenticationToken("military", "supersecret",
                 new XACMLRole[] { new XACMLRole("MILITARY") });
-        root = new TestingAuthenticationToken("admin", "geoserver", new XACMLRole[] { new XACMLRole(XACMLConstants.AdminRole) });
+        root = new TestingAuthenticationToken("admin", "geoserver",
+                new XACMLRole[] { new XACMLRole(XACMLConstants.AdminRole) });
 
     }
 }

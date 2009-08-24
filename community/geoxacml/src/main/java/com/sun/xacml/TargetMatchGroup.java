@@ -1,4 +1,3 @@
-
 /*
  * @(#)TargetMatchGroup.java
  *
@@ -41,24 +40,20 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-//import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 /**
- * This class contains a group of <code>TargetMatch</code> instances and
- * represents the Subject, Resource, Action, and Environment elements in
- * an XACML Target.
- *
+ * This class contains a group of <code>TargetMatch</code> instances and represents the Subject,
+ * Resource, Action, and Environment elements in an XACML Target.
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class TargetMatchGroup
-{
+public class TargetMatchGroup {
 
     // the list of matches
     private List<TargetMatch> matches;
@@ -67,40 +62,42 @@ public class TargetMatchGroup
     private int matchType;
 
     // the logger we'll use for all messages
-//    private static final Logger logger =
-//        Logger.getLogger(Target.class.getName());
+    // private static final Logger logger =
+    // Logger.getLogger(Target.class.getName());
 
     /**
-     * Constructor that creates a new <code>TargetMatchGroup</code> based
-     * on the given elements.
-     *
-     * @param matchElements a <code>List</code> of <code>TargetMatch</code>
-     * @param matchType the match type as defined in <code>TargetMatch</code>
+     * Constructor that creates a new <code>TargetMatchGroup</code> based on the given elements.
+     * 
+     * @param matchElements
+     *            a <code>List</code> of <code>TargetMatch</code>
+     * @param matchType
+     *            the match type as defined in <code>TargetMatch</code>
      */
     public TargetMatchGroup(List<TargetMatch> matchElements, int matchType) {
         if (matchElements == null)
             matches = Collections.unmodifiableList(new ArrayList<TargetMatch>());
         else
-            matches =
-                Collections.unmodifiableList(new ArrayList<TargetMatch>(matchElements));
+            matches = Collections.unmodifiableList(new ArrayList<TargetMatch>(matchElements));
         this.matchType = matchType;
     }
 
     /**
      * Creates a <code>Target</code> based on its DOM node.
-     *
-     * @param root the node to parse for the target group
-     * @param matchType the type of the match
-     * @param metaData meta-date associated with the policy
-     *
+     * 
+     * @param root
+     *            the node to parse for the target group
+     * @param matchType
+     *            the type of the match
+     * @param metaData
+     *            meta-date associated with the policy
+     * 
      * @return a new <code>TargetMatchGroup</code> constructed by parsing
-     *
-     * @throws ParsingException if the DOM node is invalid
+     * 
+     * @throws ParsingException
+     *             if the DOM node is invalid
      */
-    public static TargetMatchGroup getInstance(Node root, int matchType,
-                                               PolicyMetaData metaData)
-        throws ParsingException
-    {
+    public static TargetMatchGroup getInstance(Node root, int matchType, PolicyMetaData metaData)
+            throws ParsingException {
         List<TargetMatch> matches = new ArrayList<TargetMatch>();
         NodeList children = root.getChildNodes();
 
@@ -109,8 +106,7 @@ public class TargetMatchGroup
             String name = child.getNodeName();
 
             if (name.equals(TargetMatch.NAMES[matchType] + "Match")) {
-                matches.add(TargetMatch.getInstance(child, matchType,
-                                                    metaData));
+                matches.add(TargetMatch.getInstance(child, matchType, metaData));
             }
         }
 
@@ -118,11 +114,12 @@ public class TargetMatchGroup
     }
 
     /**
-     * Determines whether this <code>TargetMatchGroup</code> matches
-     * the input request (whether it is applicable). 
+     * Determines whether this <code>TargetMatchGroup</code> matches the input request (whether it
+     * is applicable).
      * 
-     * @param context the representation of the request
-     *
+     * @param context
+     *            the representation of the request
+     * 
      * @return the result of trying to match the group with the context
      */
     public MatchResult match(EvaluationCtx context) {
@@ -138,23 +135,24 @@ public class TargetMatchGroup
     }
 
     /**
-     * Encodes this <code>TargetMatchGroup</code> into its XML representation
-     * and writes this encoding to the given <code>OutputStream</code> with no
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this <code>TargetMatchGroup</code> into its XML representation and writes this
+     * encoding to the given <code>OutputStream</code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this <code>TargetMatchGroup</code> into its XML representation
-     * and writes this encoding to the given <code>OutputStream</code> with
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this <code>TargetMatchGroup</code> into its XML representation and writes this
+     * encoding to the given <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
@@ -163,12 +161,11 @@ public class TargetMatchGroup
 
         out.println(indent + "<" + name + ">");
         indenter.in();
-        
-        
+
         for (TargetMatch tm : matches) {
             tm.encode(output, indenter);
         }
-        
+
         out.println(indent + "</" + name + ">");
         indenter.out();
     }

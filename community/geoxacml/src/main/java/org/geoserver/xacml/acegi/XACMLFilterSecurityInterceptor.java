@@ -5,7 +5,6 @@
 
 package org.geoserver.xacml.acegi;
 
-
 import org.acegisecurity.intercept.ObjectDefinitionSource;
 import org.acegisecurity.intercept.web.FilterSecurityInterceptor;
 
@@ -14,10 +13,9 @@ import org.acegisecurity.intercept.web.FilterSecurityInterceptor;
  * 
  * 
  * @author Christian Mueller
- *
+ * 
  */
 public class XACMLFilterSecurityInterceptor extends FilterSecurityInterceptor {
-
 
     @Override
     public ObjectDefinitionSource obtainObjectDefinitionSource() {

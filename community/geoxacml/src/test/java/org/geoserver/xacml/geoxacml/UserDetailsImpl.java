@@ -11,23 +11,27 @@ public class UserDetailsImpl implements UserDetails {
      * 
      */
     private static final long serialVersionUID = 1L;
+
     Geometry geometryRestriction;
+
     int persNr;
-    String username,password;
+
+    String username, password;
+
     GrantedAuthority[] authorities = null;
-    
-    public UserDetailsImpl(String name,String pw,GrantedAuthority[] authorities) {
-        username=name;
-        password=pw;
-        this.authorities=authorities;
+
+    public UserDetailsImpl(String name, String pw, GrantedAuthority[] authorities) {
+        username = name;
+        password = pw;
+        this.authorities = authorities;
     }
-    
+
     public GrantedAuthority[] getAuthorities() {
         return authorities;
     }
 
     public String getPassword() {
-         return password;
+        return password;
     }
 
     public String getUsername() {

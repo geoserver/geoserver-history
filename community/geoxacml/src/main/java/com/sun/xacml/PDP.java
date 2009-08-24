@@ -1,4 +1,3 @@
-
 /*
  * @(#)PDP.java
  *
@@ -56,19 +55,16 @@ import com.sun.xacml.finder.PolicyFinderResult;
 import com.sun.xacml.finder.ResourceFinder;
 import com.sun.xacml.finder.ResourceFinderResult;
 
-
 /**
- * This is the core class for the XACML engine, providing the starting point
- * for request evaluation. To build an XACML policy engine, you start by
- * instantiating this object.
- *
+ * This is the core class for the XACML engine, providing the starting point for request evaluation.
+ * To build an XACML policy engine, you start by instantiating this object.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class PDP
-{
+public class PDP {
 
     // the single attribute finder that can be used to find external values
     private AttributeFinder attributeFinder;
@@ -83,11 +79,11 @@ public class PDP
     private static final Logger logger = Logger.getLogger(PDP.class.getName());
 
     /**
-     * Constructs a new <code>PDP</code> object with the given configuration
-     * information.
-     *
-     * @param config user configuration data defining how to find policies,
-     *               resolve external attributes, etc.
+     * Constructs a new <code>PDP</code> object with the given configuration information.
+     * 
+     * @param config
+     *            user configuration data defining how to find policies, resolve external
+     *            attributes, etc.
      */
     public PDP(PDPConfig config) {
         logger.fine("creating a PDP");
@@ -101,18 +97,17 @@ public class PDP
     }
 
     /**
-     * Attempts to evaluate the request against the policies known to this
-     * PDP. This is really the core method of the entire XACML specification,
-     * and for most people will provide what you want. If you need any special
-     * handling, you should look at the version of this method that takes an
-     * <code>EvaluationCtx</code>.
+     * Attempts to evaluate the request against the policies known to this PDP. This is really the
+     * core method of the entire XACML specification, and for most people will provide what you
+     * want. If you need any special handling, you should look at the version of this method that
+     * takes an <code>EvaluationCtx</code>.
      * <p>
-     * Note that if the request is somehow invalid (it was missing a required
-     * attribute, it was using an unsupported scope, etc), then the result
-     * will be a decision of INDETERMINATE.
-     *
-     * @param request the request to evaluate
-     *
+     * Note that if the request is somehow invalid (it was missing a required attribute, it was
+     * using an unsupported scope, etc), then the result will be a decision of INDETERMINATE.
+     * 
+     * @param request
+     *            the request to evaluate
+     * 
      * @return a response paired to the request
      */
     public ResponseCtx evaluate(RequestCtx request) {
@@ -129,23 +124,20 @@ public class PDP
             code.add(Status.STATUS_SYNTAX_ERROR);
             Status status = new Status(code, pe.getMessage());
 
-            return new ResponseCtx(new Result(Result.DECISION_INDETERMINATE,
-                                              status));
+            return new ResponseCtx(new Result(Result.DECISION_INDETERMINATE, status));
         }
     }
 
     /**
-     * Uses the given <code>EvaluationCtx</code> against the available
-     * policies to determine a response. If you are starting with a standard
-     * XACML Request, then you should use the version of this method that
-     * takes a <code>RequestCtx</code>. This method should be used only if
-     * you have a real need to directly construct an evaluation context (or
-     * if you need to use an <code>EvaluationCtx</code> implementation other
-     * than <code>BasicEvaluationCtx</code>).
-     *
-     * @param context representation of the request and the context used 
-     *                for evaluation
-     *
+     * Uses the given <code>EvaluationCtx</code> against the available policies to determine a
+     * response. If you are starting with a standard XACML Request, then you should use the version
+     * of this method that takes a <code>RequestCtx</code>. This method should be used only if you
+     * have a real need to directly construct an evaluation context (or if you need to use an
+     * <code>EvaluationCtx</code> implementation other than <code>BasicEvaluationCtx</code>).
+     * 
+     * @param context
+     *            representation of the request and the context used for evaluation
+     * 
      * @return a response based on the contents of the context
      */
     public ResponseCtx evaluate(EvaluationCtx context) {
@@ -155,11 +147,9 @@ public class PDP
             ResourceFinderResult resourceResult = null;
 
             if (context.getScope() == EvaluationCtx.SCOPE_CHILDREN)
-                resourceResult =
-                    resourceFinder.findChildResources(parent, context);
+                resourceResult = resourceFinder.findChildResources(parent, context);
             else
-                resourceResult =
-                    resourceFinder.findDescendantResources(parent, context);
+                resourceResult = resourceFinder.findDescendantResources(parent, context);
 
             // see if we actually found anything
             if (resourceResult.isEmpty()) {
@@ -169,11 +159,9 @@ public class PDP
                 ArrayList<String> code = new ArrayList<String>();
                 code.add(Status.STATUS_PROCESSING_ERROR);
                 String msg = "Couldn't find any resources to work on.";
-                
-                return new
-                    ResponseCtx(new Result(Result.DECISION_INDETERMINATE,
-                                           new Status(code, msg),
-                                           context.getResourceId().encode()));
+
+                return new ResponseCtx(new Result(Result.DECISION_INDETERMINATE, new Status(code,
+                        msg), context.getResourceId().encode()));
             }
 
             // setup a set to keep track of the results
@@ -181,11 +169,11 @@ public class PDP
 
             // at this point, we need to go through all the resources we
             // successfully found and start collecting results
-                
-            for (AttributeValue resource: resourceResult.getResources()) {
-             // get the next resource, and set it in the EvaluationCtx
+
+            for (AttributeValue resource : resourceResult.getResources()) {
+                // get the next resource, and set it in the EvaluationCtx
                 context.setResourceId(resource);
-                
+
                 // do the evaluation, and set the resource in the result
                 Result result = evaluateContext(context);
                 result.setResource(resource.encode());
@@ -196,14 +184,13 @@ public class PDP
 
             // now that we've done all the successes, we add all the failures
             // from the finder result
-            Map<AttributeValue,Status> failureMap = resourceResult.getFailures();
-               
+            Map<AttributeValue, Status> failureMap = resourceResult.getFailures();
+
             for (AttributeValue resource : failureMap.keySet()) {
-             // get the next resource, and use it to get its Status data
+                // get the next resource, and use it to get its Status data
                 Status status = (failureMap.get(resource));
                 // add a new result
-                results.add(new Result(Result.DECISION_INDETERMINATE,
-                                       status, resource.encode()));
+                results.add(new Result(Result.DECISION_INDETERMINATE, status, resource.encode()));
             }
 
             // return the set of results
@@ -216,8 +203,8 @@ public class PDP
     }
 
     /**
-     * A private helper routine that resolves a policy for the given 
-     * context, and then tries to evaluate based on the policy
+     * A private helper routine that resolves a policy for the given context, and then tries to
+     * evaluate based on the policy
      */
     private Result evaluateContext(EvaluationCtx context) {
         // first off, try to find a policy
@@ -225,34 +212,31 @@ public class PDP
 
         // see if there weren't any applicable policies
         if (finderResult.notApplicable())
-            return new Result(Result.DECISION_NOT_APPLICABLE,
-                              context.getResourceId().encode());
+            return new Result(Result.DECISION_NOT_APPLICABLE, context.getResourceId().encode());
 
         // see if there were any errors in trying to get a policy
         if (finderResult.indeterminate())
-            return new Result(Result.DECISION_INDETERMINATE,
-                              finderResult.getStatus(),
-                              context.getResourceId().encode());
+            return new Result(Result.DECISION_INDETERMINATE, finderResult.getStatus(), context
+                    .getResourceId().encode());
 
         // we found a valid policy, so we can do the evaluation
         return finderResult.getPolicy().evaluate(context);
     }
-    
+
     /**
-     * A utility method that wraps the functionality of the other evaluate
-     * method with input and output streams. This is useful if you've got
-     * a PDP that is taking inputs from some stream and is returning
-     * responses through the same stream system. If the Request is invalid,
-     * then this will always return a decision of INDETERMINATE.
-     *
-     * @deprecated As of 1.2 this method should not be used. Instead, you
-     *             should do your own stream handling, and then use one of
-     *             the other <code>evaluate</code> methods. The problem
-     *             with this method is that it often doesn't handle stream
-     *             termination correctly (eg, with sockets).
-     *
-     * @param input a stream that contains an XML RequestType
-     *
+     * A utility method that wraps the functionality of the other evaluate method with input and
+     * output streams. This is useful if you've got a PDP that is taking inputs from some stream and
+     * is returning responses through the same stream system. If the Request is invalid, then this
+     * will always return a decision of INDETERMINATE.
+     * 
+     * @deprecated As of 1.2 this method should not be used. Instead, you should do your own stream
+     *             handling, and then use one of the other <code>evaluate</code> methods. The
+     *             problem with this method is that it often doesn't handle stream termination
+     *             correctly (eg, with sockets).
+     * 
+     * @param input
+     *            a stream that contains an XML RequestType
+     * 
      * @return a stream that contains an XML ResponseType
      */
     public OutputStream evaluate(InputStream input) {
@@ -265,12 +249,9 @@ public class PDP
             // the request wasn't formed correctly
             ArrayList<String> code = new ArrayList<String>();
             code.add(Status.STATUS_SYNTAX_ERROR);
-            Status status = new Status(code, "invalid request: " +
-                                       pe.getMessage());
+            Status status = new Status(code, "invalid request: " + pe.getMessage());
 
-            response =
-                new ResponseCtx(new Result(Result.DECISION_INDETERMINATE,
-                                           status));
+            response = new ResponseCtx(new Result(Result.DECISION_INDETERMINATE, status));
         }
 
         // if we didn't have a problem above, then we should go ahead

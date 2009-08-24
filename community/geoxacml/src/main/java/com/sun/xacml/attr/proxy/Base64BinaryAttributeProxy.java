@@ -1,4 +1,3 @@
-
 /*
  * @(#)Base64BinaryAttributeProxy.java
  *
@@ -42,16 +41,13 @@ import com.sun.xacml.attr.AttributeProxy;
 import com.sun.xacml.attr.AttributeValue;
 import com.sun.xacml.attr.Base64BinaryAttribute;
 
-
 /**
- * A proxy class that is provided mainly for the run-time configuration
- * code to use.
- *
+ * A proxy class that is provided mainly for the run-time configuration code to use.
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class Base64BinaryAttributeProxy implements AttributeProxy
-{
+public class Base64BinaryAttributeProxy implements AttributeProxy {
 
     public AttributeValue getInstance(Node root) throws Exception {
         return Base64BinaryAttribute.getInstance(root);

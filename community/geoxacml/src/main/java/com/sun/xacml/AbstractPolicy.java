@@ -1,4 +1,3 @@
-
 /*
  * @(#)AbstractPolicy.java
  *
@@ -57,26 +56,27 @@ import com.sun.xacml.combine.PolicyCombiningAlgorithm;
 import com.sun.xacml.combine.RuleCombiningAlgorithm;
 import com.sun.xacml.ctx.Result;
 
-
 /**
- * Represents an instance of an XACML policy. 
- *
+ * Represents an instance of an XACML policy.
+ * 
  * @since 1.0
  * @author Seth Proctor
  * @author Marco Barreno
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public abstract class AbstractPolicy implements PolicyTreeElement
-{
+public abstract class AbstractPolicy implements PolicyTreeElement {
 
     // atributes associated with this policy
     private URI idAttr;
+
     private String version;
+
     private CombiningAlgorithm combiningAlg;
 
     // the elements in the policy
     private String description;
+
     private Target target;
 
     // the value in defaults, or null if there was no default value
@@ -88,6 +88,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     // the child elements under this policy represented simply as the
     // PolicyTreeElements...
     private List<PolicyTreeElement> children;
+
     // ...or the CombinerElements that are passed to combining algorithms
     private List<CombinerElement> childElements;
 
@@ -99,11 +100,11 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     // the logger we'll use for all messages
     // private static final Logger logger =
-    //    Logger.getLogger(AbstractPolicy.class.getName());
+    // Logger.getLogger(AbstractPolicy.class.getName());
 
     /**
-     * Constructor used by <code>PolicyReference</code>, which supplies
-     * its own values for the methods in this class.
+     * Constructor used by <code>PolicyReference</code>, which supplies its own values for the
+     * methods in this class.
      */
     protected AbstractPolicy() {
 
@@ -111,56 +112,68 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     /**
      * Constructor used to create a policy from concrete components.
-     *
-     * @param id the policy id
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the combining algorithm to use
-     * @param description describes the policy or null if there is none
-     * @param target the policy's target
+     * 
+     * @param id
+     *            the policy id
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the combining algorithm to use
+     * @param description
+     *            describes the policy or null if there is none
+     * @param target
+     *            the policy's target
      */
-    protected AbstractPolicy(URI id, String version,
-                             CombiningAlgorithm combiningAlg,
-                             String description, Target target) {
+    protected AbstractPolicy(URI id, String version, CombiningAlgorithm combiningAlg,
+            String description, Target target) {
         this(id, version, combiningAlg, description, target, null);
     }
 
     /**
      * Constructor used to create a policy from concrete components.
-     *
-     * @param id the policy id
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the combining algorithm to use
-     * @param description describes the policy or null if there is none
-     * @param target the policy's target
-     * @param defaultVersion the XPath version to use for selectors
+     * 
+     * @param id
+     *            the policy id
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the combining algorithm to use
+     * @param description
+     *            describes the policy or null if there is none
+     * @param target
+     *            the policy's target
+     * @param defaultVersion
+     *            the XPath version to use for selectors
      */
-    protected AbstractPolicy(URI id, String version,
-                             CombiningAlgorithm combiningAlg,
-                             String description, Target target,
-                             String defaultVersion) {
-        this(id, version, combiningAlg, description, target, defaultVersion,
-             null, null);
+    protected AbstractPolicy(URI id, String version, CombiningAlgorithm combiningAlg,
+            String description, Target target, String defaultVersion) {
+        this(id, version, combiningAlg, description, target, defaultVersion, null, null);
     }
 
     /**
      * Constructor used to create a policy from concrete components.
-     *
-     * @param id the policy id
-     * @param version the policy version or null for the default (this is
-     *                always null for pre-2.0 policies)
-     * @param combiningAlg the combining algorithm to use
-     * @param description describes the policy or null if there is none
-     * @param target the policy's target
-     * @param defaultVersion the XPath version to use for selectors
-     * @param obligations the policy's obligations
+     * 
+     * @param id
+     *            the policy id
+     * @param version
+     *            the policy version or null for the default (this is always null for pre-2.0
+     *            policies)
+     * @param combiningAlg
+     *            the combining algorithm to use
+     * @param description
+     *            describes the policy or null if there is none
+     * @param target
+     *            the policy's target
+     * @param defaultVersion
+     *            the XPath version to use for selectors
+     * @param obligations
+     *            the policy's obligations
      */
-    protected AbstractPolicy(URI id, String version,
-                             CombiningAlgorithm combiningAlg,
-                             String description, Target target,
-                             String defaultVersion, Set<Obligation> obligations,
-                             List<CombinerParameter> parameters) {
+    protected AbstractPolicy(URI id, String version, CombiningAlgorithm combiningAlg,
+            String description, Target target, String defaultVersion, Set<Obligation> obligations,
+            List<CombinerParameter> parameters) {
         idAttr = id;
         this.combiningAlg = combiningAlg;
         this.description = description;
@@ -178,38 +191,38 @@ public abstract class AbstractPolicy implements PolicyTreeElement
         if (obligations == null)
             this.obligations = Collections.emptySet();
         else
-            this.obligations = Collections.
-                unmodifiableSet(new HashSet<Obligation>(obligations));
+            this.obligations = Collections.unmodifiableSet(new HashSet<Obligation>(obligations));
 
         if (parameters == null)
             this.parameters = Collections.emptyList();
         else
-            this.parameters = Collections.
-                unmodifiableList(new ArrayList<CombinerParameter>(parameters));
+            this.parameters = Collections.unmodifiableList(new ArrayList<CombinerParameter>(
+                    parameters));
     }
 
     /**
-     * Constructor used by child classes to initialize the shared data from
-     * a DOM root node.
-     *
-     * @param root the DOM root of the policy
-     * @param policyPrefix either "Policy" or "PolicySet"
-     * @param combiningName name of the field naming the combining alg
-     *
-     * @throws ParsingException if the policy is invalid
+     * Constructor used by child classes to initialize the shared data from a DOM root node.
+     * 
+     * @param root
+     *            the DOM root of the policy
+     * @param policyPrefix
+     *            either "Policy" or "PolicySet"
+     * @param combiningName
+     *            name of the field naming the combining alg
+     * 
+     * @throws ParsingException
+     *             if the policy is invalid
      */
-    protected AbstractPolicy(Node root, String policyPrefix,
-                             String combiningName) throws ParsingException {
+    protected AbstractPolicy(Node root, String policyPrefix, String combiningName)
+            throws ParsingException {
         // get the attributes, all of which are common to Policies
         NamedNodeMap attrs = root.getAttributes();
 
         try {
             // get the attribute Id
-            idAttr = new URI(attrs.getNamedItem(policyPrefix + "Id").
-                             getNodeValue());
+            idAttr = new URI(attrs.getNamedItem(policyPrefix + "Id").getNodeValue());
         } catch (Exception e) {
-            throw new ParsingException("Error parsing required attribute " +
-                                       policyPrefix + "Id", e);
+            throw new ParsingException("Error parsing required attribute " + policyPrefix + "Id", e);
         }
 
         // see if there's a version
@@ -223,31 +236,28 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
         // now get the combining algorithm...
         try {
-            URI algId = new URI(attrs.getNamedItem(combiningName).
-                                getNodeValue());
+            URI algId = new URI(attrs.getNamedItem(combiningName).getNodeValue());
             CombiningAlgFactory factory = CombiningAlgFactory.getInstance();
             combiningAlg = factory.createAlgorithm(algId);
         } catch (Exception e) {
-            throw new ParsingException("Error parsing combining algorithm" +
-                                       " in " + policyPrefix, e);
+            throw new ParsingException("Error parsing combining algorithm" + " in " + policyPrefix,
+                    e);
         }
-        
+
         // ...and make sure it's the right kind
         if (policyPrefix.equals("Policy")) {
-            if (! (combiningAlg instanceof RuleCombiningAlgorithm))
-                throw new ParsingException("Policy must use a Rule " +
-                                           "Combining Algorithm");
+            if (!(combiningAlg instanceof RuleCombiningAlgorithm))
+                throw new ParsingException("Policy must use a Rule " + "Combining Algorithm");
         } else {
-            if (! (combiningAlg instanceof PolicyCombiningAlgorithm))
-                throw new ParsingException("PolicySet must use a Policy " +
-                                           "Combining Algorithm");
+            if (!(combiningAlg instanceof PolicyCombiningAlgorithm))
+                throw new ParsingException("PolicySet must use a Policy " + "Combining Algorithm");
         }
 
         // do an initial pass through the elements to pull out the
         // defaults, if any, so we can setup the meta-data
         NodeList children = root.getChildNodes();
-        //String xpathVersion = null;
-        
+        // String xpathVersion = null;
+
         for (int i = 0; i < children.getLength(); i++) {
             Node child = children.item(i);
             if (child.getNodeName().equals(policyPrefix + "Defaults"))
@@ -297,10 +307,9 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * There used to be multiple things in the defaults type, but now
-     * there's just the one string that must be a certain value, so it
-     * doesn't seem all that useful to have a class for this...we could
-     * always bring it back, however, if it started to do more
+     * There used to be multiple things in the defaults type, but now there's just the one string
+     * that must be a certain value, so it doesn't seem all that useful to have a class for
+     * this...we could always bring it back, however, if it started to do more
      */
     private void handleDefaults(Node root) throws ParsingException {
         defaultVersion = null;
@@ -328,7 +337,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     /**
      * Returns the id of this policy
-     *
+     * 
      * @return the policy id
      */
     public URI getId() {
@@ -336,9 +345,9 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Returns the version of this policy. If this is an XACML 1.x policy
-     * then this will always return <code>"1.0"</code>.
-     *
+     * Returns the version of this policy. If this is an XACML 1.x policy then this will always
+     * return <code>"1.0"</code>.
+     * 
      * @return the policy version
      */
     public String getVersion() {
@@ -347,7 +356,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     /**
      * Returns the combining algorithm used by this policy
-     *
+     * 
      * @return the combining algorithm
      */
     public CombiningAlgorithm getCombiningAlg() {
@@ -355,9 +364,9 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Returns the list of input parameters for the combining algorithm. If
-     * this is an XACML 1.x policy then the list will always be empty.
-     *
+     * Returns the list of input parameters for the combining algorithm. If this is an XACML 1.x
+     * policy then the list will always be empty.
+     * 
      * @return a <code>List</code> of <code>CombinerParameter</code>s
      */
     public List<CombinerParameter> getCombiningParameters() {
@@ -365,9 +374,8 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Returns the given description of this policy or null if there is no
-     * description
-     *
+     * Returns the given description of this policy or null if there is no description
+     * 
      * @return the description or null
      */
     public String getDescription() {
@@ -376,7 +384,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     /**
      * Returns the target for this policy
-     *
+     * 
      * @return the policy's target
      */
     public Target getTarget() {
@@ -385,7 +393,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     /**
      * Returns the XPath version to use or null if none was specified
-     *
+     * 
      * @return XPath version or null
      */
     public String getDefaultVersion() {
@@ -393,11 +401,10 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Returns the <code>List</code> of children under this node in the
-     * policy tree. Depending on what kind of policy this node represents
-     * the children will either be <code>AbstractPolicy</code> objects
-     * or <code>Rule</code>s.
-     *
+     * Returns the <code>List</code> of children under this node in the policy tree. Depending on
+     * what kind of policy this node represents the children will either be
+     * <code>AbstractPolicy</code> objects or <code>Rule</code>s.
+     * 
      * @return a <code>List</code> of child nodes
      */
     public List<PolicyTreeElement> getChildren() {
@@ -405,11 +412,10 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Returns the <code>List</code> of <code>CombinerElement</code>s that
-     * is provided to the combining algorithm. This returns the same set
-     * of children that <code>getChildren</code> provides along with any
-     * associated combiner parameters.
-     *
+     * Returns the <code>List</code> of <code>CombinerElement</code>s that is provided to the
+     * combining algorithm. This returns the same set of children that <code>getChildren</code>
+     * provides along with any associated combiner parameters.
+     * 
      * @return a <code>List</code> of <code>CombinerElement</code>s
      */
     public List<CombinerElement> getChildElements() {
@@ -418,7 +424,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
 
     /**
      * Returns the Set of obligations for this policy, which may be empty
-     *
+     * 
      * @return the policy's obligations
      */
     public Set<Obligation> getObligations() {
@@ -433,14 +439,14 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Given the input context sees whether or not the request matches this
-     * policy. This must be called by combining algorithms before they
-     * evaluate a policy. This is also used in the initial policy finding
-     * operation to determine which top-level policies might apply to the
+     * Given the input context sees whether or not the request matches this policy. This must be
+     * called by combining algorithms before they evaluate a policy. This is also used in the
+     * initial policy finding operation to determine which top-level policies might apply to the
      * request.
-     *
-     * @param context the representation of the request
-     *
+     * 
+     * @param context
+     *            the representation of the request
+     * 
      * @return the result of trying to match the policy and the request
      */
     public MatchResult match(EvaluationCtx context) {
@@ -448,15 +454,14 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Sets the child policy tree elements for this node, which are passed
-     * to the combining algorithm on evaluation. The <code>List</code> must
-     * contain <code>CombinerElement</code>s, which in turn will contain
-     * <code>Rule</code>s or <code>AbstractPolicy</code>s, but may not
+     * Sets the child policy tree elements for this node, which are passed to the combining
+     * algorithm on evaluation. The <code>List</code> must contain <code>CombinerElement</code>s,
+     * which in turn will contain <code>Rule</code>s or <code>AbstractPolicy</code>s, but may not
      * contain both types of elements.
-     *
-     * @param children a <code>List</code> of <code>CombinerElement</code>s
-     *                 representing the child elements used by the combining
-     *                 algorithm
+     * 
+     * @param children
+     *            a <code>List</code> of <code>CombinerElement</code>s representing the child
+     *            elements used by the combining algorithm
      */
     protected void setChildren(List<? extends CombinerElement> children) {
         // we always want a concrete list, since we're going to pass it to
@@ -469,26 +474,25 @@ public abstract class AbstractPolicy implements PolicyTreeElement
             List<PolicyTreeElement> list = new ArrayList<PolicyTreeElement>();
             for (CombinerElement element : children)
                 list.add(element.getElement());
-            
+
             this.children = Collections.unmodifiableList(list);
             childElements = Collections.unmodifiableList(children);
         }
     }
 
     /**
-     * Tries to evaluate the policy by calling the combining algorithm on
-     * the given policies or rules. The <code>match</code> method must always
-     * be called first, and must always return MATCH, before this method
-     * is called.
-     *
-     * @param context the representation of the request
-     *
+     * Tries to evaluate the policy by calling the combining algorithm on the given policies or
+     * rules. The <code>match</code> method must always be called first, and must always return
+     * MATCH, before this method is called.
+     * 
+     * @param context
+     *            the representation of the request
+     * 
      * @return the result of evaluation
      */
     public Result evaluate(EvaluationCtx context) {
         // evaluate
-        Result result = combiningAlg.combine(context, parameters,
-                                             childElements);
+        Result result = combiningAlg.combine(context, parameters, childElements);
 
         // if we have no obligations, we're done
         if (obligations.size() == 0)
@@ -497,13 +501,12 @@ public abstract class AbstractPolicy implements PolicyTreeElement
         // now, see if we should add any obligations to the set
         int effect = result.getDecision();
 
-        if ((effect == Result.DECISION_INDETERMINATE) ||
-            (effect == Result.DECISION_NOT_APPLICABLE)) {
+        if ((effect == Result.DECISION_INDETERMINATE) || (effect == Result.DECISION_NOT_APPLICABLE)) {
             // we didn't permit/deny, so we never return obligations
             return result;
         }
-        
-        for (Obligation obligation: obligations)  {             
+
+        for (Obligation obligation : obligations) {
             if (obligation.getFulfillOn() == effect)
                 result.addObligation(obligation);
         }
@@ -513,16 +516,17 @@ public abstract class AbstractPolicy implements PolicyTreeElement
     }
 
     /**
-     * Routine used by <code>Policy</code> and <code>PolicySet</code> to
-     * encode some common elements.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Routine used by <code>Policy</code> and <code>PolicySet</code> to encode some common
+     * elements.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
-    protected void encodeCommonElements(OutputStream output,
-                                        Indenter indenter) {
-        
-        for (CombinerElement elem : childElements)    
+    protected void encodeCommonElements(OutputStream output, Indenter indenter) {
+
+        for (CombinerElement elem : childElements)
             elem.encode(output, indenter);
 
         if (obligations.size() != 0) {
@@ -532,7 +536,7 @@ public abstract class AbstractPolicy implements PolicyTreeElement
             out.println(indent + "<Obligations>");
             indenter.in();
 
-            for (Obligation obligation: obligations)    
+            for (Obligation obligation : obligations)
                 obligation.encode(output, indenter);
 
             out.println(indent + "</Obligations>");

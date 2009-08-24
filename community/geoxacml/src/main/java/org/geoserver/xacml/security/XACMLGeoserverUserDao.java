@@ -15,9 +15,9 @@ public class XACMLGeoserverUserDao extends GeoserverUserDao {
     @Override
     protected User createUserObject(String username, String password, boolean isEnabled,
             GrantedAuthority[] authorities) {
-        User user = super.createUserObject(username, password, isEnabled, authorities);        
+        User user = super.createUserObject(username, password, isEnabled, authorities);
         GeoXACMLConfig.getXACMLRoleAuthority().transformUserDetails(user);
-        return user;        
+        return user;
     }
 
 }

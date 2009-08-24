@@ -148,8 +148,7 @@ public class XACMLHttpTransport extends XACMLAbstractTransport {
             if (t.getRuntimeException() == null) {
                 log(t.getResponseCtx());
                 resultList.add(t.getResponseCtx());
-            }
-            else
+            } else
                 throw t.getRuntimeException();
         }
         return resultList;

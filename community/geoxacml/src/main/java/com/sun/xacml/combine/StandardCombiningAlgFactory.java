@@ -1,4 +1,3 @@
-
 /*
  * @(#)StandardCombiningAlgFactory.java
  *
@@ -44,28 +43,22 @@ import java.util.logging.Logger;
 import com.sun.xacml.PolicyMetaData;
 import com.sun.xacml.UnknownIdentifierException;
 
-
 /**
- * This factory supports the standard set of algorithms specified in XACML
- * 1.x and 2.0. It is the default factory used by the system, and imposes
- * a singleton pattern insuring that there is only ever one instance of
- * this class.
+ * This factory supports the standard set of algorithms specified in XACML 1.x and 2.0. It is the
+ * default factory used by the system, and imposes a singleton pattern insuring that there is only
+ * ever one instance of this class.
  * <p>
- * Note that because this supports only the standard algorithms, this
- * factory does not allow the addition of any other algorithms. If you call
- * <code>addAlgorithm</code> on an instance of this class, an exception
- * will be thrown. If you need a standard factory that is modifiable, you
- * should create a new <code>BaseCombiningAlgFactory</code> (or some other
- * <code>CombiningAlgFactory</code>) and configure it with the standard
- * algorithms using <code>getStandardAlgorithms</code> (or, in the case of
- * <code>BaseAttributeFactory</code>, by providing the datatypes in the
- * constructor).
- *
+ * Note that because this supports only the standard algorithms, this factory does not allow the
+ * addition of any other algorithms. If you call <code>addAlgorithm</code> on an instance of this
+ * class, an exception will be thrown. If you need a standard factory that is modifiable, you should
+ * create a new <code>BaseCombiningAlgFactory</code> (or some other <code>CombiningAlgFactory</code>
+ * ) and configure it with the standard algorithms using <code>getStandardAlgorithms</code> (or, in
+ * the case of <code>BaseAttributeFactory</code>, by providing the datatypes in the constructor).
+ * 
  * @since 1.2
  * @author Seth Proctor
  */
-public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
-{
+public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory {
 
     // the single factory instance
     private static StandardCombiningAlgFactory factoryInstance = null;
@@ -77,8 +70,8 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
     private static Set<String> supportedAlgIds;
 
     // the logger we'll use for all messages
-    private static final Logger logger =
-        Logger.getLogger(StandardCombiningAlgFactory.class.getName());
+    private static final Logger logger = Logger.getLogger(StandardCombiningAlgFactory.class
+            .getName());
 
     /**
      * Default constructor.
@@ -88,15 +81,15 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
     }
 
     /**
-     * Private initializer for the supported algorithms. This isn't called
-     * until something needs these values, and is only called once.
+     * Private initializer for the supported algorithms. This isn't called until something needs
+     * these values, and is only called once.
      */
     private static void initAlgorithms() {
         logger.config("Initializing standard combining algorithms");
 
         supportedAlgorithms = new HashSet<CombiningAlgorithm>();
         supportedAlgIds = new HashSet<String>();
-        
+
         supportedAlgorithms.add(new DenyOverridesRuleAlg());
         supportedAlgIds.add(DenyOverridesRuleAlg.algId);
         supportedAlgorithms.add(new DenyOverridesPolicyAlg());
@@ -106,22 +99,22 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
         supportedAlgIds.add(OrderedDenyOverridesRuleAlg.algId);
         supportedAlgorithms.add(new OrderedDenyOverridesPolicyAlg());
         supportedAlgIds.add(OrderedDenyOverridesPolicyAlg.algId);
-        
+
         supportedAlgorithms.add(new PermitOverridesRuleAlg());
         supportedAlgIds.add(PermitOverridesRuleAlg.algId);
         supportedAlgorithms.add(new PermitOverridesPolicyAlg());
         supportedAlgIds.add(PermitOverridesPolicyAlg.algId);
-        
+
         supportedAlgorithms.add(new OrderedPermitOverridesRuleAlg());
         supportedAlgIds.add(OrderedPermitOverridesRuleAlg.algId);
         supportedAlgorithms.add(new OrderedPermitOverridesPolicyAlg());
         supportedAlgIds.add(OrderedPermitOverridesPolicyAlg.algId);
-        
+
         supportedAlgorithms.add(new FirstApplicableRuleAlg());
         supportedAlgIds.add(FirstApplicableRuleAlg.algId);
         supportedAlgorithms.add(new FirstApplicablePolicyAlg());
         supportedAlgIds.add(FirstApplicablePolicyAlg.algId);
-        
+
         supportedAlgorithms.add(new OnlyOneApplicablePolicyAlg());
         supportedAlgIds.add(OnlyOneApplicablePolicyAlg.algId);
 
@@ -129,12 +122,11 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
     }
 
     /**
-     * Returns an instance of this factory. This method enforces a singleton
-     * model, meaning that this always returns the same instance, creating
-     * the factory if it hasn't been requested before. This is the default
-     * model used by the <code>CombiningAlgFactory</code>, ensuring quick
-     * access to this factory.
-     *
+     * Returns an instance of this factory. This method enforces a singleton model, meaning that
+     * this always returns the same instance, creating the factory if it hasn't been requested
+     * before. This is the default model used by the <code>CombiningAlgFactory</code>, ensuring
+     * quick access to this factory.
+     * 
      * @return the factory instance
      */
     public static StandardCombiningAlgFactory getFactory() {
@@ -146,20 +138,18 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
                 }
             }
         }
-        
+
         return factoryInstance;
     }
 
     /**
-     * A convenience method that returns a new instance of a
-     * <code>CombiningAlgFactory</code> that supports all of the standard
-     * algorithms. The new factory allows adding support for new algorithms.
-     * This method should only be used when you need a new, mutable instance
-     * (eg, when you want to create a new factory that extends the set of
-     * supported algorithms). In general, you should use
-     * <code>getFactory</code> which is more efficient and enforces a
-     * singleton pattern.
-     *
+     * A convenience method that returns a new instance of a <code>CombiningAlgFactory</code> that
+     * supports all of the standard algorithms. The new factory allows adding support for new
+     * algorithms. This method should only be used when you need a new, mutable instance (eg, when
+     * you want to create a new factory that extends the set of supported algorithms). In general,
+     * you should use <code>getFactory</code> which is more efficient and enforces a singleton
+     * pattern.
+     * 
      * @return a new factory supporting the standard algorithms
      */
     public static CombiningAlgFactory getNewFactory() {
@@ -171,40 +161,40 @@ public class StandardCombiningAlgFactory extends BaseCombiningAlgFactory
     }
 
     /**
-     * Returns the identifiers supported for the given version of XACML.
-     * Because this factory supports identifiers from all versions of the
-     * XACML specifications, this method is useful for getting a list of
-     * which specific identifiers are supported by a given version of XACML.
-     *
-     * @param xacmlVersion a standard XACML identifier string, as provided
-     *                     in <code>PolicyMetaData</code>
-     *
+     * Returns the identifiers supported for the given version of XACML. Because this factory
+     * supports identifiers from all versions of the XACML specifications, this method is useful for
+     * getting a list of which specific identifiers are supported by a given version of XACML.
+     * 
+     * @param xacmlVersion
+     *            a standard XACML identifier string, as provided in <code>PolicyMetaData</code>
+     * 
      * @return a <code>Set</code> of identifiers
-     *
-     * @throws UnknownIdentifierException if the version string is unknown
+     * 
+     * @throws UnknownIdentifierException
+     *             if the version string is unknown
      */
     public static Set<String> getStandardAlgorithms(String xacmlVersion)
-        throws UnknownIdentifierException
-    {
-        if ((xacmlVersion.equals(PolicyMetaData.XACML_1_0_IDENTIFIER)) ||
-            (xacmlVersion.equals(PolicyMetaData.XACML_2_0_IDENTIFIER)))
+            throws UnknownIdentifierException {
+        if ((xacmlVersion.equals(PolicyMetaData.XACML_1_0_IDENTIFIER))
+                || (xacmlVersion.equals(PolicyMetaData.XACML_2_0_IDENTIFIER)))
             return supportedAlgIds;
 
-        throw new UnknownIdentifierException("Unknown XACML version: " +
-                                             xacmlVersion);
+        throw new UnknownIdentifierException("Unknown XACML version: " + xacmlVersion);
     }
 
     /**
-     * Throws an <code>UnsupportedOperationException</code> since you are not
-     * allowed to modify what a standard factory supports.
-     *
-     * @param alg the combining algorithm to add
-     *
-     * @throws UnsupportedOperationException always
+     * Throws an <code>UnsupportedOperationException</code> since you are not allowed to modify what
+     * a standard factory supports.
+     * 
+     * @param alg
+     *            the combining algorithm to add
+     * 
+     * @throws UnsupportedOperationException
+     *             always
      */
     public void addAlgorithm(CombiningAlgorithm alg) {
-        throw new UnsupportedOperationException("a standard factory cannot " +
-                                                "support new algorithms");
+        throw new UnsupportedOperationException("a standard factory cannot "
+                + "support new algorithms");
     }
 
 }

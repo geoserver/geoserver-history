@@ -1,4 +1,3 @@
-
 /*
  * @(#)TargetSection.java
  *
@@ -47,19 +46,17 @@ import org.w3c.dom.NodeList;
 
 import com.sun.xacml.ctx.Status;
 
-
 /**
- * This is a container class for instances of <code>TargetMatchGroup</code>
- * and represents the Subjects, Resources, Actions, and Environments
- * sections of an XACML Target. This section may apply to any request.
- *
+ * This is a container class for instances of <code>TargetMatchGroup</code> and represents the
+ * Subjects, Resources, Actions, and Environments sections of an XACML Target. This section may
+ * apply to any request.
+ * 
  * @since 2.0
  * @author Seth Proctor
  * 
- * Adding generic type support by Christian Mueller (geotools)
+ *         Adding generic type support by Christian Mueller (geotools)
  */
-public class TargetSection
-{
+public class TargetSection {
 
     // the list of match groups
     private List<TargetMatchGroup> matchGroups;
@@ -71,39 +68,43 @@ public class TargetSection
     private int xacmlVersion;
 
     /**
-     * Constructor that takes a group and a version. If the group is
-     * null or empty, then this represents a section that matches any request.
-     *
-     * @param matchGroups a possibly null <code>List</code> of
-     *                    <code>TargetMatchGroup</code>s
-     * @param matchType the type as defined in <code>TargetMatch</code>
-     * @param xacmlVersion the version XACML being used
+     * Constructor that takes a group and a version. If the group is null or empty, then this
+     * represents a section that matches any request.
+     * 
+     * @param matchGroups
+     *            a possibly null <code>List</code> of <code>TargetMatchGroup</code>s
+     * @param matchType
+     *            the type as defined in <code>TargetMatch</code>
+     * @param xacmlVersion
+     *            the version XACML being used
      */
     public TargetSection(List<TargetMatchGroup> matchGroups, int matchType, int xacmlVersion) {
         if (matchGroups == null)
             this.matchGroups = Collections.unmodifiableList(new ArrayList<TargetMatchGroup>());
         else
-            this.matchGroups = Collections.
-                unmodifiableList(new ArrayList<TargetMatchGroup>(matchGroups));
+            this.matchGroups = Collections.unmodifiableList(new ArrayList<TargetMatchGroup>(
+                    matchGroups));
         this.matchType = matchType;
         this.xacmlVersion = xacmlVersion;
     }
 
     /**
      * Creates a <code>Target</code> by parsing a node.
-     *
-     * @param root the node to parse for the <code>Target</code>
-     * @param matchType the type as defined in <code>TargetMatch</code>
-     * @param metaData the meta-data from the enclosing policy
-     *
+     * 
+     * @param root
+     *            the node to parse for the <code>Target</code>
+     * @param matchType
+     *            the type as defined in <code>TargetMatch</code>
+     * @param metaData
+     *            the meta-data from the enclosing policy
+     * 
      * @return a new <code>Target</code> constructed by parsing
-     *
-     * @throws ParsingException if the DOM node is invalid
+     * 
+     * @throws ParsingException
+     *             if the DOM node is invalid
      */
-    public static TargetSection getInstance(Node root, int matchType,
-                                            PolicyMetaData metaData)
-        throws ParsingException
-    {
+    public static TargetSection getInstance(Node root, int matchType, PolicyMetaData metaData)
+            throws ParsingException {
         List<TargetMatchGroup> groups = new ArrayList<TargetMatchGroup>();
         NodeList children = root.getChildNodes();
 
@@ -113,8 +114,7 @@ public class TargetSection
             String typeName = TargetMatch.NAMES[matchType];
 
             if (name.equals(typeName)) {
-                groups.add(TargetMatchGroup.getInstance(child, matchType,
-                                                        metaData));
+                groups.add(TargetMatchGroup.getInstance(child, matchType, metaData));
             } else if (name.equals("Any" + typeName)) {
                 // in a schema-valid policy, the Any element will always be
                 // the only element, so if we find this we stop
@@ -125,13 +125,12 @@ public class TargetSection
         // at this point the list is non-empty (it has specific groups to
         // match) or is empty (it applies to any request using the 1.x or
         // 2.0 syntax)
-        return new TargetSection(groups, matchType,
-                                 metaData.getXACMLVersion());
+        return new TargetSection(groups, matchType, metaData.getXACMLVersion());
     }
 
     /**
      * Returns the <code>TargetMatchGroup</code>s contained in this group.
-     *
+     * 
      * @return a <code>List</code> of <code>TargetMatchGroup</code>s
      */
     public List<TargetMatchGroup> getMatchGroups() {
@@ -140,7 +139,7 @@ public class TargetSection
 
     /**
      * Returns whether this section matches any request.
-     *
+     * 
      * @return true if this section matches any request, false otherwise
      */
     public boolean matchesAny() {
@@ -148,11 +147,12 @@ public class TargetSection
     }
 
     /**
-     * Determines whether this <code>TargetSection</code> matches
-     * the input request (whether it is applicable).
+     * Determines whether this <code>TargetSection</code> matches the input request (whether it is
+     * applicable).
      * 
-     * @param context the representation of the request
-     *
+     * @param context
+     *            the representation of the request
+     * 
      * @return the result of trying to match the target and the request
      */
     public MatchResult match(EvaluationCtx context) {
@@ -164,10 +164,10 @@ public class TargetSection
         // through the list
         Status firstIndeterminateStatus = null;
 
-        // in order for this section to match, one of the groups must match 
+        // in order for this section to match, one of the groups must match
         for (TargetMatchGroup group : matchGroups) {
-         // get the next group and try matching it
-        
+            // get the next group and try matching it
+
             MatchResult result = group.match(context);
 
             // we only need one match, so if this matched, then we're done
@@ -189,34 +189,34 @@ public class TargetSection
         if (firstIndeterminateStatus == null)
             return new MatchResult(MatchResult.NO_MATCH);
         else
-            return new MatchResult(MatchResult.INDETERMINATE,
-                                   firstIndeterminateStatus);
+            return new MatchResult(MatchResult.INDETERMINATE, firstIndeterminateStatus);
     }
 
     /**
-     * Encodes this <code>TargetSection</code> into its XML representation
-     * and writes  this encoding to the given <code>OutputStream</code> with
-     * no indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
+     * Encodes this <code>TargetSection</code> into its XML representation and writes this encoding
+     * to the given <code>OutputStream</code> with no indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
      */
     public void encode(OutputStream output) {
         encode(output, new Indenter(0));
     }
 
     /**
-     * Encodes this <code>TargetSection</code> into its XML representation and
-     * writes this encoding to the given <code>OutputStream</code> with
-     * indentation.
-     *
-     * @param output a stream into which the XML-encoded data is written
-     * @param indenter an object that creates indentation strings
+     * Encodes this <code>TargetSection</code> into its XML representation and writes this encoding
+     * to the given <code>OutputStream</code> with indentation.
+     * 
+     * @param output
+     *            a stream into which the XML-encoded data is written
+     * @param indenter
+     *            an object that creates indentation strings
      */
     public void encode(OutputStream output, Indenter indenter) {
         PrintStream out = new PrintStream(output);
         String indent = indenter.makeString();
         String name = TargetMatch.NAMES[matchType];
-        
+
         // figure out if this section applies to any request
         if (matchGroups.isEmpty()) {
             // this applies to any, so now we need to encode it based on
@@ -235,7 +235,7 @@ public class TargetSection
             out.println(indent + "<" + name + "s>");
 
             indenter.in();
-            for (TargetMatchGroup group : matchGroups) {                    
+            for (TargetMatchGroup group : matchGroups) {
                 group.encode(output, indenter);
             }
             indenter.out();
@@ -243,5 +243,5 @@ public class TargetSection
             out.println(indent + "</" + name + "s>");
         }
     }
-    
+
 }

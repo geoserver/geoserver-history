@@ -1,4 +1,3 @@
-
 /*
  * @(#)DoubleAttribute.java
  *
@@ -40,25 +39,21 @@ import java.net.URI;
 
 import org.w3c.dom.Node;
 
-
 /**
- * Representation of an xsi:double value. This class supports parsing
- * xsi:double values. All objects of this class are immutable and
- * all methods of the class are thread-safe.
- *
+ * Representation of an xsi:double value. This class supports parsing xsi:double values. All objects
+ * of this class are immutable and all methods of the class are thread-safe.
+ * 
  * @since 1.0
  * @author Marco Barreno
  * @author Seth Proctor
  * @author Steve Hanna
  */
-public class DoubleAttribute extends AttributeValue
-{
+public class DoubleAttribute extends AttributeValue {
     /**
      * Official name of this type
      */
-    public static final String identifier =
-        "http://www.w3.org/2001/XMLSchema#double";
- 
+    public static final String identifier = "http://www.w3.org/2001/XMLSchema#double";
+
     /**
      * URI version of name for this type
      */
@@ -70,10 +65,10 @@ public class DoubleAttribute extends AttributeValue
     private double value;
 
     /**
-     * Creates a new <code>DoubleAttribute</code> that represents
-     * the double value supplied.
-     *
-     * @param value the <code>double</code> value to be represented
+     * Creates a new <code>DoubleAttribute</code> that represents the double value supplied.
+     * 
+     * @param value
+     *            the <code>double</code> value to be represented
      */
     public DoubleAttribute(double value) {
         super(identifierURI);
@@ -81,28 +76,30 @@ public class DoubleAttribute extends AttributeValue
     }
 
     /**
-     * Returns a new <code>DoubleAttribute</code> that represents
-     * the xsi:double at a particular DOM node.
-     *
-     * @param root the <code>Node</code> that contains the desired value
-     * @return a new <code>DoubleAttribute</code> representing the
-     *         appropriate value (null if there is a parsing error)
-     * @throws NumberFormatException if the string form is not a double
+     * Returns a new <code>DoubleAttribute</code> that represents the xsi:double at a particular DOM
+     * node.
+     * 
+     * @param root
+     *            the <code>Node</code> that contains the desired value
+     * @return a new <code>DoubleAttribute</code> representing the appropriate value (null if there
+     *         is a parsing error)
+     * @throws NumberFormatException
+     *             if the string form is not a double
      */
-    public static DoubleAttribute getInstance(Node root)
-        throws NumberFormatException
-    {
+    public static DoubleAttribute getInstance(Node root) throws NumberFormatException {
         return getInstance(root.getFirstChild().getNodeValue());
     }
 
     /**
-     * Returns a new <code>DoubleAttribute</code> that represents
-     * the xsi:double value indicated by the string provided.
-     *
-     * @param value a string representing the desired value
-     * @return a new <code>DoubleAttribute</code> representing the
-     *         desired value (null if there is a parsing error)
-     * @throws NumberFormatException if the value is not a double
+     * Returns a new <code>DoubleAttribute</code> that represents the xsi:double value indicated by
+     * the string provided.
+     * 
+     * @param value
+     *            a string representing the desired value
+     * @return a new <code>DoubleAttribute</code> representing the desired value (null if there is a
+     *         parsing error)
+     * @throws NumberFormatException
+     *             if the value is not a double
      */
     public static DoubleAttribute getInstance(String value) {
         // Convert "INF" to "Infinity"
@@ -116,26 +113,27 @@ public class DoubleAttribute extends AttributeValue
 
     /**
      * Returns the <code>double</code> value represented by this object.
-     *
+     * 
      * @return the <code>double</code> value
      */
     public double getValue() {
         return value;
     }
-    
+
     /**
-     * Returns true if the input is an instance of this class and if its
-     * value equals the value contained in this class.
-     *
-     * @param o the object to compare
-     *
+     * Returns true if the input is an instance of this class and if its value equals the value
+     * contained in this class.
+     * 
+     * @param o
+     *            the object to compare
+     * 
      * @return true if this object and the input represent the same value
      */
     public boolean equals(Object o) {
-        if (! (o instanceof DoubleAttribute))
+        if (!(o instanceof DoubleAttribute))
             return false;
 
-        DoubleAttribute other = (DoubleAttribute)o;
+        DoubleAttribute other = (DoubleAttribute) o;
 
         // Handle the NaN case, where Java says NaNs are never
         // equal and XML Query says they always are
@@ -155,15 +153,14 @@ public class DoubleAttribute extends AttributeValue
     }
 
     /**
-     * Returns the hashcode value used to index and compare this object with
-     * others of the same type. Typically this is the hashcode of the backing
-     * data object.
-     *
+     * Returns the hashcode value used to index and compare this object with others of the same
+     * type. Typically this is the hashcode of the backing data object.
+     * 
      * @return the object's hashcode value
      */
     public int hashCode() {
         long v = Double.doubleToLongBits(value);
-        return (int)(v ^ (v >>> 32));
+        return (int) (v ^ (v >>> 32));
     }
 
     /**
@@ -172,5 +169,5 @@ public class DoubleAttribute extends AttributeValue
     public String encode() {
         return String.valueOf(value);
     }
-    
+
 }

@@ -1,4 +1,3 @@
-
 /*
  * @(#)FunctionProxy.java
  *
@@ -38,33 +37,32 @@ package com.sun.xacml.cond;
 
 import org.w3c.dom.Node;
 
-
 /**
- * Used by abstract functions to define how new functions are created by
- * the factory. Note that all functions using XPath are defined to be
- * abstract functions, so they must be created using this interface.
- *
+ * Used by abstract functions to define how new functions are created by the factory. Note that all
+ * functions using XPath are defined to be abstract functions, so they must be created using this
+ * interface.
+ * 
  * @since 1.0
  * @author Seth Proctor
  */
-public interface FunctionProxy
-{
+public interface FunctionProxy {
 
     /**
-     * Creates an instance of some abstract function. If the function
-     * being created is not using XPath, then the version parameter can be
-     * ignored, otherwise a value must be present and the version must
-     * be acceptable.
-     *
-     * @param root the DOM root of the apply statement containing the function
-     * @param xpathVersion the version specified in the contianing policy, or
-     *                     null if no version was specified
-     *
+     * Creates an instance of some abstract function. If the function being created is not using
+     * XPath, then the version parameter can be ignored, otherwise a value must be present and the
+     * version must be acceptable.
+     * 
+     * @param root
+     *            the DOM root of the apply statement containing the function
+     * @param xpathVersion
+     *            the version specified in the contianing policy, or null if no version was
+     *            specified
+     * 
      * @return the function
-     *
-     * @throws Exception if the underlying code experienced any error
+     * 
+     * @throws Exception
+     *             if the underlying code experienced any error
      */
-    public Function getInstance(Node root, String xpathVersion)
-        throws Exception;
+    public Function getInstance(Node root, String xpathVersion) throws Exception;
 
 }
