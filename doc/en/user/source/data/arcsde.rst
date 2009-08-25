@@ -3,7 +3,7 @@
 ArcSDE
 ======
 
-.. warning:: ArcSDE support is not enabled by default and requires the ArcSDE extension to be installed prior to use.  Please see the section on :ref:`arcsde_install` for details.
+.. note:: ArcSDE support is not enabled by default and requires the ArcSDE extension to be installed prior to use.  Please see the section on :ref:`arcsde_install` for details.
 
 ESRI's `ArcSDE <http://www.esri.com/software/arcgis/arcsde/>`_ is a spatial engine that runs on top of a relational database such as Oracle or SQL Server.  GeoServer with the ArcSDE extension supports ArcSDE **versions 9.2 and 9.3**.  It has been tested with **Oracle 10g** and **Microsoft SQL Server 2000 Developer Edition**.  The ArcSDE extension is based on the GeoTools ArcSDE driver and uses the ESRI Java API libraries.  See the `GeoTools ArcSDE page <http://docs.codehaus.org/display/GEOTDOC/ArcSDE+DataStore>`_ for more technical details.
 
@@ -55,7 +55,7 @@ GeoServer files
 #. Download the ArcSDE extension from the `GeoServer download page 
    <http://geoserver.org/display/GEOS/Download>`_.
 
-   .. note:  Make sure you match the version of the extension to the version of GeoServer.
+   .. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of 
    the GeoServer installation.

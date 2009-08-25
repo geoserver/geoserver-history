@@ -11,7 +11,7 @@ GeoServer allows the loading and serving of the following data formats by defaul
    * Shapefiles (including directories of shapefiles)
    * PostGIS databases (with or without JNDI)
    * External WFS layers
-   * Java Property files
+   * Java Properties files
 * Raster data formats
    * ArcGrid
    * GeoTIFF
@@ -20,9 +20,10 @@ GeoServer allows the loading and serving of the following data formats by defaul
    * WorldImage
 
 
-Other data sources require the use of GeoServer extensions, extra downloads that add functionality to GeoServer.  These extensions are always available on the appropriate `GeoServer download pages <http://geoserver.org/display/GEOS/Download>`_.
+Other data sources require the use of GeoServer extensions, extra downloads that add functionality to GeoServer.  These extensions are always available on the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
 
-.. warning:: Make sure to match the version of the extension to the version of your GeoServer instance!
+.. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
+
 
 .. toctree::
    :maxdepth: 2
@@ -48,7 +49,7 @@ Other data sources require the use of GeoServer extensions, extra downloads that
    vpf/
    gdal/
    imagepyramid/
-   jdbcimgmosaic/
+   imagemosaicjdbc/
    connection-pooling/
 
    

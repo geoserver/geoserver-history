@@ -3,12 +3,9 @@
 Oracle
 ======
 
+.. note:: GeoServer does not come built-in with support for Oracle; it must be installed through an extension.  Proceed to :ref:`oracle_install` for installation details.
+
 `Oracle Spatial and Locator <http://www.oracle.com/technology/products/spatial/index.html>`_ are the spatial extensions of Oracle.
-
-.. note:: Support for Oracle datastores are not enabled by default.  It is necessary to install the Oracle extension first.  Proceed to :ref:`oracle_install` for installation details.
-
-Supported versions
-------------------
 
 .. _oracle_install:
 
@@ -17,14 +14,14 @@ Installing the Oracle extension
 
 #. Download the Oracle extension from the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
 
-   .. warning:: Make sure to match the version of the extension with the version of the GeoServer installation.
+   .. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of he GeoServer installation.
 
 Adding an Oracle database
 -------------------------
 
-Once the extension is properly installed ``Oracle`` will show up as an option when creating a new data store.
+Once the extension is properly installed :guilabel:`Oracle` will be an option in the :guilabel:`Vector Data Sources` list when creating a new data store.
 
 .. figure:: images/oraclecreate.png
    :align: center

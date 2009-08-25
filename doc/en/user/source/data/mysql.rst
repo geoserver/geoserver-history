@@ -3,11 +3,11 @@
 MySQL
 =====
 
-`MySQL <http://www.mysql.com/>`_ is an open source relational database with some limited spatial functionality.
+.. note:: GeoServer does not come built-in with support for MySQL; it must be installed through an extension. Proceed to :ref:`mysql_install` for installation details.
 
-.. note:: GeoServer does not come built-in with support for MySQL, it must be installed through an extension. Proceed to :ref:`mysql_install` for installation details.
+.. warning:: Currently the MySQL extension is unmaintained and carries unsupported status. While still usable, do not expect the same reliability as with other extensions.
 
-.. warning:: Currently the MySQL extension is unmaintained and carries unsupported status. While still usable, do not expect the same reliability as with other drivers.
+`MySQL <http://www.mysql.com>`_ is an open source relational database with some limited spatial functionality.
 
 .. _mysql_install:
 
@@ -16,7 +16,7 @@ Installing the MySQL extension
 
 #. Download the MySQL extension from the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
 
-   .. warning:: Ensure the extension matching the version of the GeoServer installation is downloaded.
+   .. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of the GeoServer installation.
 

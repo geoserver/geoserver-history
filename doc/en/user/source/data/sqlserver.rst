@@ -3,10 +3,9 @@
 Microsoft SQL Server
 ====================
 
-Microsoft's `SQL Server <http://www.microsoft.com/sqlserver/2008>`_ is a 
-relational database with spatial functionality.
+.. note:: GeoServer does not come built-in with support for SQL Server; it must be installed through an extension. Proceed to :ref:`sqlserver_install` for installation details.
 
-.. note:: GeoServer does not come built-in with support for SQL Server, it must be installed through an extension. Proceed to :ref:`sqlserver_install` for installation details.
+Microsoft's `SQL Server <http://www.microsoft.com/sqlserver/2008>`_ is a relational database with spatial functionality.
 
 Supported versions
 ------------------
@@ -25,7 +24,7 @@ GeoServer files
 
 #. Download the SQL Server extension from the `GeoServer download page <http://geoserver.org/display/GEOS/Download>`_.
 
-   .. warning:: Ensure the extension matching the version of the GeoServer installation is downloaded.
+   .. warning:: Make sure to match the version of the extension to the version of the GeoServer instance!
 
 #. Extract the contents of the archive into the ``WEB-INF/lib`` directory of the GeoServer installation.
 
@@ -60,28 +59,26 @@ Configuring a SQL Server data store
 
    *Configuring a SQL Server data store*
 
-.
+.. list-table::
+   :widths: 20 80
 
-  * - ``host``
-    - The sql server instance host name or ip address.
-  * - ``port``
-    - The port on which the SQL server instance is accepting connections.
-  * - ``database``
-    - The name of the database to connect to.
-  * - ``schema``
-    - The database schema to access tables from.
-  * - ``user``
-    - The name of the user to connect to the oracle database as.
-  * - ``password``     
-    - The password to use when connecting to the database. Left blank for no
-      password.
-  * - ``max connections``
+   * - ``host``
+     - The sql server instance host name or ip address.
+   * - ``port``
+     - The port on which the SQL server instance is accepting connections.
+   * - ``database``
+     - The name of the database to connect to.
+   * - ``schema``
+     - The database schema to access tables from.
+   * - ``user``
+     - The name of the user to connect to the oracle database as.
+   * - ``password``     
+     - The password to use when connecting to the database. Leave blank for no password.
+   * - ``max connections``
+ 
+       ``min connections``
 
-      ``min connections``
-
-    - Connection pool configuration parameters. See the 
-      :ref:`connection_pooling` section for details.
-
+     - Connection pool configuration parameters. See the :ref:`connection_pooling` section for details.
 
 Adding a SQL Server database with JNDI
 --------------------------------------
