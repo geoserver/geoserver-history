@@ -115,7 +115,7 @@ public class GetFeatureInfoTest extends WMSTestSupport {
     public void testAutoBuffer() throws Exception {
         String layer = getLayerId(MockData.BASIC_POLYGONS);
         String base = "wms?bbox=-4.5,-2.,4.5,7&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
-                + layer + "&query_layers=" + layer + "&width=300&height=300&x=115&y=230";
+                + layer + "&query_layers=" + layer + "&width=300&height=300&x=114&y=229";
         Document dom = getAsDOM(base + "&styles=");
         // make sure the document is empty, the style we chose has thin lines
         assertXpathEvaluatesTo("0", "count(/html/body/table/tr)", dom);
