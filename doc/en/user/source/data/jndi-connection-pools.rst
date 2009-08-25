@@ -21,3 +21,10 @@ Starting with GeoServer 1.7.5 some datastore can retrieve their connection from 
 For example, if the pool was bound to the ``jdbc\oralocal`` name, the configuration of the ``jndiReferenceName`` parameter will be ``java:comp/env/jdbc/oralocal``
 
 For further examples look at the :ref:`tomcat_jndi` tutorial.
+
+Classpath issues warning
+========================
+
+When setting a JNDI connection pool one common step is to add the JDBC driver among the shared libs in the web container. For example, in Tomcat, the JDBC drivers will be copied into :file:`tomcat/lib`.  This usually results in the same classes being available to all web applications running in the container, and it may result in subtle issues if the web application contains the same classes among its libraries.
+
+If you find any issues using the JNDI connections chances are there is a classpath conflict.  To resolve the conflict, remove the copy of the JDBC driver (:file:`ojdbc14.jar`) from the GeoServer :file:`WEB-INF/lib` directory.  (In the specific case or Oracle, the removal of this file is mandatory.)

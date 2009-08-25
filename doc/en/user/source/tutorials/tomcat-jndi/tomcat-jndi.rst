@@ -11,7 +11,7 @@ Tomcat setup
 In order to setup a connection pool Tomcat needs a JDBC driver and the necessary pool configurations.
 
 First off, you need to find the JDBC driver for your database. Most often it is distributed on the web site of your DBMS provider, or available in the installed version of your database.
-For example, a Oracle XE install on a Linux system provides the driver at  :file:`/usr/lib/oracle/xe/app/oracle/product/10.2.0/server/jdbc/lib/ojdbc14.jar`, and that file needs to be copied into Tomcat shared libs directory, :file:`{TOMCAT_HOME}/lib`
+For example, a Oracle XE install on a Linux system provides the driver at  :file:`/usr/lib/oracle/xe/app/oracle/product/10.2.0/server/jdbc/lib/ojdbc14.jar`, and that file needs to be copied into Tomcat shared libs directory, :file:`{TOMCAT_HOME}/lib`.
 
 Once that is done, the Tomcat configuration file :file:`{TOMCAT_HOME}/conf/context.xml` needs to be edited in order to setup the connection pool. In the case of a local Oracle XE the setup might look like:
 
@@ -43,6 +43,11 @@ For more information about the possible parameters and their values refer to the
 
 GeoServer setup
 ---------------
+
+The Oracle NG data store extension has to be installed first:
+
+* If this is a new install, unpack only the :file:`gt-jdbc-oracle-<version>.jar` file into :file:`WEB-INF/lib`, leaving out the JDBC driver (:file:`ojdbc14.jar`).
+* If the extension is already installed, the JDBC driver, :file:`ojdbc14.jar`, has to be removed from the GeoServer :file:`WEB-INF/lib` folder. Failing to do so will result in errors trying to read geometries from the database.
 
 To allow a web application reference to a JNDI resource its :file:`web.xml` file must be modified so that the reference is explicit. Following the above example, we have to modify :file:`{TOMCAT_HOME}/webapps/geoserver/WEB-INF/web.xml` and add at its very end the following declaration:
 
