@@ -261,8 +261,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                             rule.accept(estimator);
                         }
                         
-                        if(estimator.getBuffer() < 2.0 || !estimator.isEstimateAccurate()) {
-                            radius = 2.0;
+                        if(estimator.getBuffer() < 6.0 || !estimator.isEstimateAccurate()) {
+                            radius = 3.0;
                         } else {
                             radius =  estimator.getBuffer() / 2.0;
                         }
