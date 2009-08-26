@@ -427,5 +427,15 @@
         </dependency>
       </dependencies>
     </profile>
+    <profile>
+      <id>translator</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver</groupId>
+          <artifactId>translator</artifactId>
+          <version>${project.version}</version> 
+        </dependency>
+      </dependencies>
+    </profile>
   </profiles>
 </project>
