@@ -1,0 +1,45 @@
+package org.geoserver.web.translator;
+
+import java.util.Locale;
+
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.model.IModel;
+
+/**
+ * An {@link IChoiceRenderer} for a {@link Locale} that displays the
+ * {@link Locale#getDisplayName(Locale) locale name} in the user interface locale.
+ * 
+ * @author Gabriel Roldan
+ * 
+ */
+class LocaleChoiceRenderer implements IChoiceRenderer {
+
+    private static final long serialVersionUID = 1L;
+
+    private final IModel userInterfaceLocaleModel;
+
+    /**
+     * @param userInterfaceLocaleModel
+     *            the model for the user interface {@link Locale}
+     */
+    public LocaleChoiceRenderer(final IModel userInterfaceLocaleModel) {
+        this.userInterfaceLocaleModel = userInterfaceLocaleModel;
+    }
+
+    /**
+     * @return the locale display name in the user interface locale
+     */
+    public Object getDisplayValue(Object l) {
+        final Locale uiLocale = (Locale) userInterfaceLocaleModel.getObject();
+        Locale locale = (Locale) l;
+        return locale.getDisplayName(uiLocale) + " <" + locale.getDisplayName(locale) + ">";
+    }
+
+    /**
+     * @return the locale identifier
+     */
+    public String getIdValue(Object l, int index) {
+        Locale locale = (Locale) l;
+        return locale.toString();
+    }
+}
