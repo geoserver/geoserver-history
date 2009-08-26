@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.io.IOException;
@@ -17,6 +21,13 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.web.GeoServerApplication;
 import org.springframework.core.io.Resource;
 
+/**
+ * Worker class to control the state of translations.
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ */
 public class TranslationController {
 
     private final GeoServerResourceLoader resourceManager;

@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.io.Serializable;
@@ -24,6 +28,14 @@ import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
+/**
+ * Presents the list of current translation and some useful information about each translation
+ * state.
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ */
 public class TranslationPage extends GeoServerBasePage {
 
     public TranslationPage() {

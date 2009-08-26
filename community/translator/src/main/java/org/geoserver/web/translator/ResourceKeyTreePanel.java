@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.io.Serializable;
@@ -28,6 +32,18 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
+/**
+ * A panel presenting the list of user interface string resource keys.
+ * <p>
+ * The contents of the tree view for this panel may be customized in order to show the resource keys
+ * as a tree or as a flat view, collapse or expand all nodes, or show only the resource keys that
+ * are not yet translated for the ongoing locale translation.
+ * </p>
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ */
 public class ResourceKeyTreePanel extends Panel {
     private static final long serialVersionUID = 4308370741356525991L;
 

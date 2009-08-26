@@ -1,11 +1,24 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.util.Locale;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerStringResourceLoader;
 
+/**
+ * An {@link IStringResourceLoader} that engages through application context and provides live
+ * resource strings for the GeoServer UI based on the ongoing translations.
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ */
 public final class TranslationStringResourceLoader extends GeoServerStringResourceLoader {
     private TranslateBean translateLiveState;
 
@@ -17,7 +30,7 @@ public final class TranslationStringResourceLoader extends GeoServerStringResour
             return null;
         }
         String resource = state.getResource(locale, key);
-        if(key.equals("category.extras")){
+        if (key.equals("category.extras")) {
             resource = state.getResource(locale, key);
             return resource;
         }

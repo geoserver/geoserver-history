@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.io.Serializable;
@@ -8,6 +12,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Maintains the state of the ongoing translations.
+ * <p>
+ * REVISIT: this class oughta to be factored out in two, one for the session properties and another
+ * for the actual translation state
+ * </p>
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ */
 public class TranslateBean implements Serializable {
 
     private static final long serialVersionUID = -8138420553898567646L;

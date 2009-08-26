@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.util.ArrayList;
@@ -22,6 +26,13 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.web.GeoServerBasePage;
 
+/**
+ * A page to start the translation for a new {@link Locale}.
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ */
 public class NewTranslationPage extends GeoServerBasePage {
 
     private Component newLanguageChoice;

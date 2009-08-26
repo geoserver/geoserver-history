@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import org.apache.wicket.Component;
@@ -12,6 +16,15 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.translator.TranslationEditPage.LocaleListDetachableModel;
 
+/**
+ * A base panel with a text area whose model is the translated resource for the current key.
+ * 
+ * @author Gabriel Roldan
+ * @version $Id$
+ * @since 2.0
+ * @see Base
+ * @see Target
+ */
 abstract class ResourcePanel extends Panel {
 
     private static final long serialVersionUID = 5645666151936813854L;
@@ -24,6 +37,9 @@ abstract class ResourcePanel extends Panel {
         add(textArea);
     }
 
+    /**
+     * The panel for the base language resource string
+     */
     public static class Base extends ResourcePanel {
 
         private static final long serialVersionUID = 2766414564542792829L;
@@ -35,6 +51,9 @@ abstract class ResourcePanel extends Panel {
 
     }
 
+    /**
+     * The panel to edit the target language resource string
+     */
     public static class Target extends ResourcePanel {
 
         private static final long serialVersionUID = -6616465412272222343L;
