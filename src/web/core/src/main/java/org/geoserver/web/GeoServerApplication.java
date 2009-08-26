@@ -31,6 +31,7 @@ import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
 import org.apache.wicket.resource.loader.ClassStringResourceLoader;
 import org.apache.wicket.resource.loader.ComponentStringResourceLoader;
+import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.SpringWebApplication;
 import org.apache.wicket.util.convert.ConverterLocator;
 import org.apache.wicket.util.resource.AbstractResourceStream;
@@ -159,6 +160,19 @@ public class GeoServerApplication extends SpringWebApplication {
     	// enable GeoServer custom resource locators
         getResourceSettings().setResourceStreamLocator(
                 new GeoServerResourceStreamLocator());
+
+        /*
+         * The order string resource loaders are added to IResourceSettings is of importance so we
+         * need to add any contributed loader prior to the standard ones so it takes precedence.
+         * Otherwise it won't be hit due to GeoServerStringResourceLoader never resolving to null
+         * but falling back to the default language
+         */
+        List<IStringResourceLoader> alternateResourceLoaders = getBeansOfType(IStringResourceLoader.class);
+        for (IStringResourceLoader loader : alternateResourceLoaders) {
+            LOGGER.info("Registering alternate resource loader: " + loader);
+            getResourceSettings().addStringResourceLoader(loader);
+        }
+
         getResourceSettings().addStringResourceLoader(new GeoServerStringResourceLoader());
         getResourceSettings().addStringResourceLoader(new ComponentStringResourceLoader());
         getResourceSettings().addStringResourceLoader(new ClassStringResourceLoader(this.getClass()));
