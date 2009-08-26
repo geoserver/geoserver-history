@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.translator;
 
 import java.util.Locale;
@@ -10,7 +14,8 @@ import org.apache.wicket.model.IModel;
  * {@link Locale#getDisplayName(Locale) locale name} in the user interface locale.
  * 
  * @author Gabriel Roldan
- * 
+ * @version $Id$
+ * @since 2.0
  */
 class LocaleChoiceRenderer implements IChoiceRenderer {
 
