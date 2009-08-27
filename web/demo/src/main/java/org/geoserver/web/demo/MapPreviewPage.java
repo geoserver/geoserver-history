@@ -19,6 +19,7 @@ import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
@@ -68,18 +69,18 @@ public class MapPreviewPage extends GeoServerBasePage {
                 } else if (property == COMMON) {
                     // openlayers preview
                     Fragment f = new Fragment(id, "commonLinks", MapPreviewPage.this);
-                    String olUrl = "window.open('" + layer.getWmsLink()
-                            + "&format=application/openlayers" + "');";
-                    f.add(buildJSExternalLink("ol", olUrl, "OpenLayers"));
+                    final String olUrl = layer.getWmsLink() + "&format=application/openlayers";
+                    f.add(new ExternalLink("ol", olUrl, "OpenLayers"));
                     
                     // kml preview
-                    String kmlUrl = "window.open('../wms/kml?layers=" + layer.getName() + "')";
-                    f.add(buildJSExternalLink("kml", kmlUrl, "KML"));
+                    final String kmlUrl = "../wms/kml?layers=" + layer.getName();
+                    f.add(new ExternalLink("kml", kmlUrl, "KML"));
                     
                     // gml preview (we actually want it only for vector layers)
-                    String gmlUrl = "window.open('../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
-                            + layer.getName() + "&maxFeatures=50')";
-                    Component gmlLink = buildJSExternalLink("gml", gmlUrl, "GML");
+                    final String gmlUrl = 
+                        "../ows?service=WFS&version=1.0.0&request=GetFeature&typeName="
+                        + layer.getName() + "&maxFeatures=50";
+                    Component gmlLink = new ExternalLink("gml", gmlUrl, "GML");
                     f.add(gmlLink);
                     gmlLink.setVisible(layer.getType() == PreviewLayerType.Vector);
                     
@@ -121,17 +122,6 @@ public class MapPreviewPage extends GeoServerBasePage {
         Collections.sort(formats, new FormatComparator("format.wfs."));
 
         return formats;
-    }
-
-    /**
-     * Builds an external link that uses javascript to open the target in a new
-     * window
-     */
-    private Component buildJSExternalLink(String id, String url, String title) {
-        SimpleExternalLink sel = new SimpleExternalLink(id, new Model("#"),
-                new Model(title));
-        sel.getLink().add(new AttributeAppender("onclick", new Model(url), ";"));
-        return sel;
     }
 
     /**
