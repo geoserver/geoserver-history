@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
@@ -96,7 +97,8 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
             try {
                 setRawSLD(readFile(style));
             } catch (IOException e) {
-                throw new WicketRuntimeException(e);
+                // ouch, the style file is gone! Register a generic error message
+                Session.get().error(new ParamResourceModel("sldNotFound", this, style.getFilename()).getString());
             }
         }
 
@@ -156,8 +158,6 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
 
                 // update the style object
                 StyleInfo s = (StyleInfo) form.getModelObject();
-                s.setFilename(upload.getClientFileName());
-
                 if (s.getName() == null || "".equals(s.getName().trim())) {
                     // set it
                     nameTextField.setModelValue(ResponseUtils.stripExtension(upload
