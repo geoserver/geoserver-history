@@ -16,12 +16,10 @@ To point GeoWebCache elsewhere, you will need to specify the location of your Ge
 
    <context-param>
       <param-name>GEOSERVER_WMS_URL</param-name>
-      <param-value>http://example.com/path/wms?request=GetCapabilities</param-value>
+      <param-value>http://example.com:8082/geoserver/wms</param-value>
    </context-param>
 
-Make sure to replace the URL inside ``<param-value>`` with your GeoServer instance's WMS GetCapabilities path.  Restart GeoServer when done.
-
-.. note:: There is a quick link to the WMS GetCapabilities path accessible from the Welcome page of the :ref:`web_admin`.  (See :ref:`webadmin_basics` for details.)
+Make sure to replace the URL inside ``<param-value>`` with your GeoServer instance's WMS path.  This means the context path of GeoServer, usually /geoserver, with "/wms" appended.  Restart GeoServer when done.
 
 Setting the directory for cached data
 -------------------------------------
