@@ -30,19 +30,24 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.Version;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.MultiPolygon;
 
 public class ShapeZipTest extends WFSTestSupport {
 
     private static final QName ALL_TYPES = new QName(MockData.CITE_URI, "AllTypes", MockData.CITE_PREFIX);
-    private static final QName DOTS = new QName(MockData.CITE_URI, "dots.in.name", MockData.CITE_PREFIX);
     private static final QName ALL_DOTS = new QName(MockData.CITE_URI, "All.Types.Dots", MockData.CITE_PREFIX);
     private static final QName GEOMMID = new QName(MockData.CITE_URI, "geommid", MockData.CITE_PREFIX);
     private static final QName LONGNAMES = new QName(MockData.CITE_URI, "longnames", MockData.CITE_PREFIX);
     private static final QName NULLGEOM = new QName(MockData.CITE_URI, "nullgeom", MockData.CITE_PREFIX);
+    private static final QName DOTS = new QName(MockData.CITE_URI, "dots.in.name", MockData.CITE_PREFIX);
+
     private Operation op;
     private GetFeatureType gft;
     
@@ -52,10 +57,10 @@ public class ShapeZipTest extends WFSTestSupport {
         Map params = new HashMap();
         params.put(MockData.KEY_SRS_NUMBER, "4326");
         dataDirectory.addPropertiesType(ALL_TYPES, ShapeZipTest.class.getResource("AllTypes.properties"), params);
-        dataDirectory.addPropertiesType(DOTS, ShapeZipTest.class.getResource("dots.in.name.properties"), params);
         dataDirectory.addPropertiesType(ALL_DOTS, ShapeZipTest.class.getResource("All.Types.Dots.properties"), params);
         dataDirectory.addPropertiesType(GEOMMID, ShapeZipTest.class.getResource("geommid.properties"), params);
         dataDirectory.addPropertiesType(NULLGEOM, ShapeZipTest.class.getResource("nullgeom.properties"), params);
+        dataDirectory.addPropertiesType(DOTS, ShapeZipTest.class.getResource("dots.in.name.properties"), params);
         dataDirectory.addPropertiesType(LONGNAMES, ShapeZipTest.class.getResource("longnames.properties"), params);
     }   
 
@@ -67,27 +72,23 @@ public class ShapeZipTest extends WFSTestSupport {
     }
     
     public void testNoNativeProjection() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
-        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        fct.getFeature().add(fs.getFeatures());
-        zip.write(fct, bos, op);
+        byte[] zip = writeOut(getFeatureSource(MockData.BASIC_POLYGONS).getFeatures());
         
-        checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(bos.toByteArray()));
+        checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(zip));
     }
     
     public void testCharset() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(MockData.BASIC_POLYGONS).getFeatureSource(true);
+        FeatureSource<? extends FeatureType, ? extends Feature> fs;
+        fs = getFeatureSource(MockData.BASIC_POLYGONS);
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
         fct.getFeature().add(fs.getFeatures());
         
         // add the charset
-        gft.getFormatOptions().put("CHARSET", Charset.forName("ISO-8859-15"));
+        Map options = new HashMap();
+        options.put("CHARSET", Charset.forName("ISO-8859-15"));
+        gft.setFormatOptions(options);
         zip.write(fct, bos, op);
         
         checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(bos.toByteArray()));
@@ -95,152 +96,173 @@ public class ShapeZipTest extends WFSTestSupport {
     }
     
     public void testMultiType() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(ALL_TYPES).getFeatureSource(true);
-        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        fct.getFeature().add(fs.getFeatures());
-        zip.write(fct, bos, op);
+        byte[] zip = writeOut(getFeatureSource(ALL_TYPES).getFeatures());
         
         final String[] expectedTypes = new String[] {"AllTypesPoint", "AllTypesMPoint", "AllTypesPolygon", "AllTypesLine"};
-        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
-        checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(zip));
+        checkFieldsAreNotEmpty(new ByteArrayInputStream(zip));
     }
     
     public void testMultiTypeDots() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(ALL_DOTS).getFeatureSource(true);
-        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        fct.getFeature().add(fs.getFeatures());
-        zip.write(fct, bos, op);
+        byte[] zip = writeOut(getFeatureSource(ALL_DOTS).getFeatures());
         
         final String[] expectedTypes = new String[] {"All_Types_DotsPoint", "All_Types_DotsMPoint", 
-        		                                     "All_Types_DotsPolygon", "All_Types_DotsLine"};
-        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
-        checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
-    }
-    
-    public void testDots() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(DOTS).getFeatureSource(true);
-        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        fct.getFeature().add(fs.getFeatures());
-        zip.write(fct, bos, op);
-        
-        final String[] expectedTypes = new String[] {"dots_in_name"};
-        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
-        checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
+                                                             "All_Types_DotsPolygon", "All_Types_DotsLine"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(zip));
+        checkFieldsAreNotEmpty(new ByteArrayInputStream(zip));
     }
     
     public void testGeometryInTheMiddle() throws Exception {
-        // http://jira.codehaus.org/browse/GEOS-2732
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(GEOMMID).getFeatureSource(true);
-        ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        fct.getFeature().add(fs.getFeatures());
-        zip.write(fct, bos, op);
-        checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
+        byte[] zip = writeOut(getFeatureSource(GEOMMID).getFeatures());
+
+        checkFieldsAreNotEmpty(new ByteArrayInputStream(zip));
     }
     
-	public void testLongNames() throws Exception {
-		FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-		fs = getCatalog().getFeatureTypeInfo(LONGNAMES).getFeatureSource(true);
-		ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		FeatureCollectionType fct = WfsFactory.eINSTANCE
-				.createFeatureCollectionType();
-		fct.getFeature().add(fs.getFeatures());
-		zip.write(fct, bos, op);
-		checkFieldsAreNotEmpty(new ByteArrayInputStream(bos.toByteArray()));
-	}
-	
     public void testNullGeometries() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
-        fs = getCatalog().getFeatureTypeInfo(NULLGEOM).getFeatureSource(true);
+        byte[] zip = writeOut(getFeatureSource(NULLGEOM).getFeatures());
+
+        final String[] expectedTypes = new String[] {"nullgeom"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(zip));
+    }
+    
+        public void testLongNames() throws Exception {
+            byte[] zip = writeOut(getFeatureSource(LONGNAMES).getFeatures());
+            
+                // check the result is not empty
+                SimpleFeatureType schema = checkFieldsAreNotEmpty(new ByteArrayInputStream(zip));
+                
+                // check the schema is the expected one
+                checkLongNamesSchema(schema);
+                
+                // run it again, we had a bug in which the remapped names changed at each run
+                zip = writeOut(getFeatureSource(LONGNAMES).getFeatures());
+        schema = checkFieldsAreNotEmpty(new ByteArrayInputStream(zip));
+        checkLongNamesSchema(schema);
+                
+        }
+        
+        void checkLongNamesSchema(SimpleFeatureType schema) {
+            assertEquals(4, schema.getAttributeCount());
+        assertEquals("the_geom", schema.getDescriptor(0).getName().getLocalPart());
+        assertEquals(MultiPolygon.class, schema.getDescriptor(0).getType().getBinding());
+        assertEquals("FID", schema.getDescriptor(1).getName().getLocalPart());
+        assertEquals("VERYLONGNA", schema.getDescriptor(2).getName().getLocalPart());
+        assertEquals("VERYLONGN0", schema.getDescriptor(3).getName().getLocalPart());
+        }
+        
+    public void testDots() throws Exception {
+        byte[] zip = writeOut(getFeatureSource(DOTS).getFeatures());
+        
+        final String[] expectedTypes = new String[] {"dots_in_name"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(zip));
+        checkFieldsAreNotEmpty(new ByteArrayInputStream(zip));
+    }
+    
+    public void testEmptyResult() throws Exception {
+        byte[] zip = writeOut(getFeatureSource(MockData.BASIC_POLYGONS).getFeatures(Filter.EXCLUDE));
+        
+        checkShapefileIntegrity(new String[] {"BasicPolygons"}, new ByteArrayInputStream(zip));
+    }
+    
+    public void testEmptyResulMultiGeom() throws Exception {
+        byte[] zip = writeOut(getFeatureSource(ALL_DOTS).getFeatures(Filter.EXCLUDE));
+        
+        final String[] expectedTypes = new String[] {"All_Types_Dots"};
+        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(zip));
+        
+        boolean foundReadme = false;
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zip));
+        ZipEntry entry;
+        while((entry = zis.getNextEntry()) != null) {
+            foundReadme |= entry.getName().equals("README.TXT");
+        }
+    }
+    
+    /**
+     * Saves the feature source contents into a zipped shapefile, returns the
+     * output as a byte array 
+     */
+    byte[] writeOut(FeatureCollection fc) throws IOException {
         ShapeZipOutputFormat zip = new ShapeZipOutputFormat();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        fct.getFeature().add(fs.getFeatures());
+        fct.getFeature().add(fc);
         zip.write(fct, bos, op);
-        
-        final String[] expectedTypes = new String[] {"nullgeom"};
-        checkShapefileIntegrity(expectedTypes, new ByteArrayInputStream(bos.toByteArray()));
+        return bos.toByteArray();
     }
     
-	private File createTempFolder(String prefix) throws IOException {
-		File temp = File.createTempFile(prefix, null);
+        private File createTempFolder(String prefix) throws IOException {
+                File temp = File.createTempFile(prefix, null);
 
-		temp.delete();
-		temp.mkdir();
-		return temp;
-	}
+                temp.delete();
+                temp.mkdir();
+                return temp;
+        }
 
-	private void copyStream(InputStream inStream, OutputStream outStream)
-			throws IOException {
-		int count = 0;
-		byte[] buf = new byte[8192];
-		while ((count = inStream.read(buf, 0, 8192)) != -1)
-			outStream.write(buf, 0, count);
-	}
+        private void copyStream(InputStream inStream, OutputStream outStream)
+                        throws IOException {
+                int count = 0;
+                byte[] buf = new byte[8192];
+                while ((count = inStream.read(buf, 0, 8192)) != -1)
+                        outStream.write(buf, 0, count);
+        }
 
-	private void checkFieldsAreNotEmpty(InputStream in) throws IOException {
-		ZipInputStream zis = new ZipInputStream(in);
-		ZipEntry entry = null;
+        private SimpleFeatureType checkFieldsAreNotEmpty(InputStream in) throws IOException {
+                ZipInputStream zis = new ZipInputStream(in);
+                ZipEntry entry = null;
 
-		File tempFolder = createTempFolder("shp_");
-		String shapeFileName = "";
-		while ((entry = zis.getNextEntry()) != null) {
-			final String name = entry.getName();
-			String outName = tempFolder.getAbsolutePath() + File.separatorChar
-					+ name;
-			// store .shp file name
-			if (name.toLowerCase().endsWith("shp"))
-				shapeFileName = outName;
-			// copy each file to temp folder
+                File tempFolder = createTempFolder("shp_");
+                String shapeFileName = "";
+                while ((entry = zis.getNextEntry()) != null) {
+                        final String name = entry.getName();
+                        String outName = tempFolder.getAbsolutePath() + File.separatorChar
+                                        + name;
+                        // store .shp file name
+                        if (name.toLowerCase().endsWith("shp"))
+                                shapeFileName = outName;
+                        // copy each file to temp folder
 
-			FileOutputStream outFile = new FileOutputStream(outName);
-			copyStream(zis, outFile);
-			outFile.close();
-			zis.closeEntry();
-		}
-		zis.close();
-		// create a datastore reading the uncompressed shapefile
-		File shapeFile = new File(shapeFileName);
-		ShapefileDataStore ds = new ShapefileDataStore(shapeFile.toURL());
-		FeatureSource<SimpleFeatureType, SimpleFeature> fs = ds
-				.getFeatureSource();
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs
-				.getFeatures();
-		Iterator<SimpleFeature> iter = fc.iterator();
-		try {
-			// check that every field has a not null or "empty" value
-			while (iter.hasNext()) {
-				SimpleFeature f = iter.next();
-				for (Object attrValue : f.getAttributes()) {
-					assertNotNull(attrValue);
-					if (Geometry.class.isAssignableFrom(attrValue.getClass()))
-						assertFalse("Empty geometry", ((Geometry) attrValue)
-								.isEmpty());
-					else
-						assertFalse("Empty value for attribute", attrValue
-								.toString().trim().equals(""));
-				}
+                        FileOutputStream outFile = new FileOutputStream(outName);
+                        copyStream(zis, outFile);
+                        outFile.close();
+                        zis.closeEntry();
+                }
+                zis.close();
+                
+                // create a datastore reading the uncompressed shapefile
+                File shapeFile = new File(shapeFileName);
+                ShapefileDataStore ds = new ShapefileDataStore(shapeFile.toURL());
+                FeatureSource<SimpleFeatureType, SimpleFeature> fs = ds
+                                .getFeatureSource();
+                FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs
+                                .getFeatures();
+                SimpleFeatureType schema = fc.getSchema();
+                
+                Iterator<SimpleFeature> iter = fc.iterator();
+                try {
+                        // check that every field has a not null or "empty" value
+                        while (iter.hasNext()) {
+                                SimpleFeature f = iter.next();
+                                for (Object attrValue : f.getAttributes()) {
+                                        assertNotNull(attrValue);
+                                        if (Geometry.class.isAssignableFrom(attrValue.getClass()))
+                                                assertFalse("Empty geometry", ((Geometry) attrValue)
+                                                                .isEmpty());
+                                        else
+                                                assertFalse("Empty value for attribute", attrValue
+                                                                .toString().trim().equals(""));
+                                }
 
-			}
-		} finally {
-			fc.close(iter);
-			tempFolder.delete();
-		}
+                        }
+                } finally {
+                        fc.close(iter);
+                        tempFolder.delete();
+                }
+                
+                return schema;
 
-	}
-    	
+        }
+        
 
     private void checkShapefileIntegrity(String[] typeNames, final InputStream in) throws IOException {
         ZipInputStream zis = new ZipInputStream(in);
