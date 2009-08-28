@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
@@ -16,6 +18,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.wicket.LiveCollectionModel;
@@ -86,16 +89,56 @@ public class WCSLayerConfig extends LayerConfigurationPanel {
         add(new DropDownChoice("defaultInterpolationMethod", new PropertyModel(coverage, "defaultInterpolationMethod"),
                new WCSInterpolationModel()));
  
-        add(new Palette("interpolationMethods", LiveCollectionModel.list(new PropertyModel(coverage, "interpolationMethods")), 
-                new WCSInterpolationModel(), new SimpleChoiceRenderer(), 7, false));
+        Palette interpolationMethods = new Palette("interpolationMethods", LiveCollectionModel
+                .list(new PropertyModel(coverage, "interpolationMethods")),
+                new WCSInterpolationModel(), new SimpleChoiceRenderer(), 7, false) {
+            /**
+             * Override otherwise the header is not i18n'ized
+             */
+            @Override
+            public Component newSelectedHeader(final String componentId) {
+                return new Label(componentId, new ResourceModel(
+                        "InterpolationMethodsPalette.selectedHeader"));
+            }
+
+            /**
+             * Override otherwise the header is not i18n'ized
+             */
+            @Override
+            public Component newAvailableHeader(final String componentId) {
+                return new Label(componentId, new ResourceModel(
+                        "InterpolationMethodsPalette.availableHeader"));
+            }
+        };
+        add(interpolationMethods);
 
         // don't allow editing the native format
         TextField nativeFormat = new TextField("nativeFormat", new PropertyModel(coverage, "nativeFormat"));
         nativeFormat.setEnabled(false);
         add(nativeFormat);
 
-        add(new Palette("formatPalette", LiveCollectionModel.list(new PropertyModel(coverage, "supportedFormats")), 
-                new WCSFormatsModel(), new SimpleChoiceRenderer(), 10, false));
+        Palette formatPalette = new Palette("formatPalette", LiveCollectionModel
+                .list(new PropertyModel(coverage, "supportedFormats")), new WCSFormatsModel(),
+                new SimpleChoiceRenderer(), 10, false) {
+            /**
+             * Override otherwise the header is not i18n'ized
+             */
+            @Override
+            public Component newSelectedHeader(final String componentId) {
+                return new Label(componentId, new ResourceModel(
+                        "FormatsPalette.selectedHeader"));
+            }
+
+            /**
+             * Override otherwise the header is not i18n'ized
+             */
+            @Override
+            public Component newAvailableHeader(final String componentId) {
+                return new Label(componentId, new ResourceModel(
+                        "FormatsPalette.availableHeader"));
+            }
+        };
+        add(formatPalette);
    }
     
     

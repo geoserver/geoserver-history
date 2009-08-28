@@ -5,24 +5,23 @@
 package org.geoserver.wms.web.publish;
 
 import java.awt.image.BufferedImage;
-import java.awt.Dimension;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Map;
+
 import javax.imageio.ImageIO;
 
-import org.geoserver.catalog.AttributionInfo; 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.UrlValidator;
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.publish.LayerConfigurationPanel;
-import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.validation.validator.NumberValidator;
-import org.apache.wicket.validation.validator.UrlValidator;
 
 /**
  * Configures a {@link LayerInfo} geo-search related metadata
