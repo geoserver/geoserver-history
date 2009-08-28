@@ -18,14 +18,12 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -84,12 +82,12 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         Form theForm = new Form("resource", myResourceModel);
         add(theForm);
         List<ITab> tabs = new ArrayList<ITab>();
-        tabs.add(new AbstractTab(new Model("Data")) {
+        tabs.add(new AbstractTab(new org.apache.wicket.model.ResourceModel("ResourceConfigurationPage.Data")) {
             public Panel getPanel(String panelID) {
                 return new ListPanel(panelID, new ResourceConfigurationSectionListView("theList"));
             }
         });
-        tabs.add(new AbstractTab(new Model("Publishing")) {
+        tabs.add(new AbstractTab(new org.apache.wicket.model.ResourceModel("ResourceConfigurationPage.Publishing")) {
             public Panel getPanel(String panelID) {
                 return new ListPanel(panelID, new LayerConfigurationSectionListView("theList"));
             }

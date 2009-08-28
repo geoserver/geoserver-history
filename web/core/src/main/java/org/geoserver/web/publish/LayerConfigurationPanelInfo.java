@@ -4,13 +4,12 @@
  */
 package org.geoserver.web.publish;
 
-import org.apache.wicket.markup.html.panel.Panel;
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.web.ComponentInfo;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.web.ComponentInfo;
 
 /**
  * Extension point for sections of the configuration pages for individual layers.
