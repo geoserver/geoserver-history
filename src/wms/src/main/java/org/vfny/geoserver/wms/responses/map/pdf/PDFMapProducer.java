@@ -30,6 +30,7 @@ import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractRasterMapProducer;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 import org.vfny.geoserver.wms.responses.MaxErrorEnforcer;
+import org.vfny.geoserver.wms.responses.RenderExceptionStrategy;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -181,6 +182,12 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             // enforce no more than x rendering errors
             int maxErrors = wms.getInfo().getMaxRenderingErrors();
             MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
+
+            // Add a render listener that ignores well known rendering exceptions and reports back non
+            // ignorable ones
+            final RenderExceptionStrategy nonIgnorableExceptionListener;
+            nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
+            renderer.addRenderListener(nonIgnorableExceptionListener);
             
             // enforce max memory usage
             int maxMemory = wms.getInfo().getMaxRequestMemory() * KB;
@@ -198,6 +205,12 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
                 layout.paint(graphic, paintArea, this.mapContext);
             }
             
+            //check if a non ignorable error occurred
+            if(nonIgnorableExceptionListener.exceptionOccurred()){
+                Exception renderError = nonIgnorableExceptionListener.getException();
+                throw new WmsException("Rendering process failed", "internalError", renderError);
+            }
+
             // check if too many errors occurred
             if(errorChecker.exceedsMaxErrors()) {
                 throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out", 

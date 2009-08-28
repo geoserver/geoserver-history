@@ -35,6 +35,7 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import org.vfny.geoserver.wms.responses.MaxErrorEnforcer;
+import org.vfny.geoserver.wms.responses.RenderExceptionStrategy;
 import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -138,6 +139,12 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
             int maxErrors = wms.getInfo().getMaxRenderingErrors();
             MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
 
+            // Add a render listener that ignores well known rendering exceptions and reports back
+            // non ignorable ones
+            final RenderExceptionStrategy nonIgnorableExceptionListener;
+            nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
+            renderer.addRenderListener(nonIgnorableExceptionListener);
+            
 			renderer.paint(g, r, renderer.getContext().getAreaOfInterest());
 			
 			// check if too many errors occurred
@@ -146,6 +153,12 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
                         "internalError", errorChecker.getLastException());
             }
 
+            // check if a non ignorable error occurred
+            if (nonIgnorableExceptionListener.exceptionOccurred()) {
+                Exception renderError = nonIgnorableExceptionListener.getException();
+                throw new WmsException("Rendering process failed", "internalError", renderError);
+            }
+            
 			// This method of output does not output the DOCTYPE definiition
 			// TODO: make a config option that toggles wether doctype is
 			// written out.

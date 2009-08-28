@@ -312,19 +312,6 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         renderer = new ShapefileRenderer();
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);
-        // shapefile renderer won't log rendering errors, sigh, we have to do it manually
-        if(renderer instanceof ShapefileRenderer && LOGGER.isLoggable(Level.FINE)) {
-            renderer.addRenderListener(new RenderListener() {
-
-                public void featureRenderer(SimpleFeature feature) {
-                }
-
-                public void errorOccurred(Exception e) {
-                    LOGGER.log(Level.FINE, "Rendering error occurred", e);
-                }
-
-            });
-        }
 
         // setup the renderer hints
         Map rendererParams = new HashMap();
@@ -390,8 +377,14 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         // enforce no more than x rendering errors
         int maxErrors = wms.getInfo().getMaxRenderingErrors();
         MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
-
-        // setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
+		
+        // Add a render listener that ignores well known rendering exceptions and reports back non
+        // ignorable ones
+        final RenderExceptionStrategy nonIgnorableExceptionListener;
+        nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
+        renderer.addRenderListener(nonIgnorableExceptionListener);
+        
+		// setup the timeout enforcer (the enforcer is neutral when the timeout is 0)
         int maxRenderingTime = wms.getInfo().getMaxRenderingTime() * 1000;
         RenderingTimeoutEnforcer timeout = new RenderingTimeoutEnforcer(maxRenderingTime, renderer,
                 graphic);
@@ -420,6 +413,12 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
                     + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
         }
 
+        //check if a non ignorable error occurred
+        if(nonIgnorableExceptionListener.exceptionOccurred()){
+            Exception renderError = nonIgnorableExceptionListener.getException();
+            throw new WmsException("Rendering process failed", "internalError", renderError);
+        }
+        
         // check if too many errors occurred
         if(errorChecker.exceedsMaxErrors()) {
             throw new WmsException("More than " + maxErrors + " rendering errors occurred, bailing out.", 
