@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.translator;
+package org.geoserver.web.translator.view;
 
 import java.util.Locale;
 
@@ -37,7 +37,11 @@ class LocaleChoiceRenderer implements IChoiceRenderer {
     public Object getDisplayValue(Object l) {
         final Locale uiLocale = (Locale) userInterfaceLocaleModel.getObject();
         Locale locale = (Locale) l;
-        return locale.getDisplayName(uiLocale) + " <" + locale.getDisplayName(locale) + ">";
+        String displayName = locale.getDisplayName(locale);
+        if (!locale.getLanguage().equals(uiLocale.getLanguage())) {
+            displayName = displayName + " <" + locale.getDisplayName(uiLocale) + ">";
+        }
+        return displayName;
     }
 
     /**

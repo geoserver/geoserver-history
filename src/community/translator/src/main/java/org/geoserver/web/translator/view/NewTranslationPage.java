@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.translator;
+package org.geoserver.web.translator.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
@@ -48,7 +49,8 @@ public class NewTranslationPage extends GeoServerBasePage {
 
         newLanguageChoice = newLanguageChoice();
         newTranslationForm.add(newLanguageChoice);
-
+        newTranslationForm.add(new CheckBox("showNativeLanguageNames"));
+        
         newTranslationForm.add(createNewTranslationLink());
         newTranslationForm.add(cancelLink());
         localeInput = new LocaleInputField("localeInput");
@@ -138,8 +140,7 @@ public class NewTranslationPage extends GeoServerBasePage {
                 final Locale userInterfaceLocale = NewTranslationPage.this.getLocale();
                 Collections.sort(choices, new Comparator<Locale>() {
                     public int compare(Locale o1, Locale o2) {
-                        return o1.getDisplayName(userInterfaceLocale).compareTo(
-                                o2.getDisplayName(userInterfaceLocale));
+                        return o1.getDisplayName(o1).compareTo(o2.getDisplayName(o2));
                     }
                 });
             }

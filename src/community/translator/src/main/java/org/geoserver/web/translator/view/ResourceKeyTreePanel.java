@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.translator;
+package org.geoserver.web.translator.view;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.geoserver.web.translator.model.TranslateBean;
 
 /**
  * A panel presenting the list of user interface string resource keys.

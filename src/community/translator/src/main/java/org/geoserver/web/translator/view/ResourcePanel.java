@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.translator;
+package org.geoserver.web.translator.view;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.web.translator.TranslationEditPage.LocaleListDetachableModel;
+import org.geoserver.web.translator.view.TranslationEditPage.LocaleListDetachableModel;
 
 /**
  * A base panel with a text area whose model is the translated resource for the current key.

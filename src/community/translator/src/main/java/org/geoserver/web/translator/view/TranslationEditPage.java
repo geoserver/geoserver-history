@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.translator;
+package org.geoserver.web.translator.view;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +31,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
+import org.geoserver.web.translator.controller.TranslationController;
+import org.geoserver.web.translator.model.TranslateBean;
 
 /**
  * Page to edit a translation, split in two panels, one to select the resource key to translate and
@@ -45,7 +47,7 @@ public class TranslationEditPage extends GeoServerBasePage {
     /**
      * The key to store the current translation progress in the user's {@link Session}
      */
-    static final MetaDataKey TRANSLATION_BEAN = new MetaDataKey(TranslateBean.class) {
+    public static final MetaDataKey TRANSLATION_BEAN = new MetaDataKey(TranslateBean.class) {
         private static final long serialVersionUID = 1L;
     };
 
