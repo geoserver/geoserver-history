@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.translator;
+package org.geoserver.web.translator.controller;
 
 import java.util.Locale;
 
@@ -10,6 +10,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerStringResourceLoader;
+import org.geoserver.web.translator.model.TranslateBean;
+import org.geoserver.web.translator.view.TranslationEditPage;
 
 /**
  * An {@link IStringResourceLoader} that engages through application context and provides live
