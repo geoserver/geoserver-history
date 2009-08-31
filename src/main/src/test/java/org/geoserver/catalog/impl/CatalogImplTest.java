@@ -100,6 +100,14 @@ public class CatalogImplTest extends TestCase {
         catch( Exception e ) {
         }
         
+        ns2.setURI( "bad uri");
+        try {
+            catalog.add( ns2 );
+            fail( "adding an invalid uri should throw exception");
+        }
+        catch( Exception e ) {
+        }
+        
         ns2.setURI( "ns2URI");
         
         try {
