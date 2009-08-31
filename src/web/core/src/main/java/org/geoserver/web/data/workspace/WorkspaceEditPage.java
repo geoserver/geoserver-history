@@ -61,7 +61,8 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         TextField name = new TextField("name", new PropertyModel(wsModel, "name"));
         //name.setEnabled(false);
         form.add(name);
-        TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"));
+        TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"), String.class);
+        uri.setRequired(true);
         uri.add(new URIValidator());
         form.add(uri);
         
@@ -69,7 +70,9 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
 //        StorePanel storePanel = new StorePanel("storeTable", new StoreProvider(ws), false);
 //        form.add(storePanel);
         
-        form.add(new SubmitLink("save"));
+        SubmitLink submit = new SubmitLink("save");
+        form.add(submit);
+        form.setDefaultButton(submit);
         form.add(new BookmarkablePageLink("cancel", WorkspacePage.class));
         
      
