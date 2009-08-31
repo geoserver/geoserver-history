@@ -188,9 +188,10 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             // zipOut.close();
         } finally {
             // make sure we remove the temp directory and its contents completely now
-            FileUtils.deleteDirectory(tempDir);
-            if (tempDir.exists()) {
-                LOGGER.warning("Could not delete temp directory: " + tempDir.getAbsolutePath());
+            try {
+                FileUtils.deleteDirectory(tempDir);
+            } catch(IOException e) {
+                LOGGER.warning("Could not delete temp directory: " + tempDir.getAbsolutePath() + " due to: " + e.getMessage());
             }
         }
     }
