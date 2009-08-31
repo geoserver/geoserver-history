@@ -25,6 +25,15 @@ public class WorkspaceEditPageTest extends GeoServerWicketTestSupport {
 
         // print(tester.getLastRenderedPage(), true, true);
     }
+    
+    public void testURIRequired() {
+        FormTester form = tester.newFormTester("form");
+        form.setValue("uri", "");
+        form.submit();
+        
+        tester.assertRenderedPage(WorkspaceEditPage.class);
+        tester.assertErrorMessages(new String[] {"Field 'uri' is required."});
+    }
 
     public void testLoad() {
         tester.assertRenderedPage(WorkspaceEditPage.class);

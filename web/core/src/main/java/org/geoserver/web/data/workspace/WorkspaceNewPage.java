@@ -54,11 +54,13 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
         
         nsUriTextField = new TextField( "uri", new Model() );
         // maybe a bit too restrictive, but better than not validation at all
+        nsUriTextField.setRequired(true);
         nsUriTextField.add(new UrlValidator());
         form.add( nsUriTextField );
         
         SubmitLink submitLink = new SubmitLink( "submit", form );
         form.add( submitLink );
+        form.setDefaultButton(submitLink);
         
         AjaxLink cancelLink = new AjaxLink( "cancel" ) {
             @Override
