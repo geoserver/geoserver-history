@@ -8,8 +8,11 @@ package org.geoserver.catalog;
 
 import java.io.IOException;
 
+import org.geoserver.catalog.ResourcePool.DataStoreCache;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.data.DataAccess;
+import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 
 /**
@@ -65,4 +68,46 @@ public class ResourcePoolTest extends GeoServerTestSupport {
         assertTrue( cleared );
     }
 
+    boolean disposeCalled;
+
+    /**
+     * Make sure {@link ResourcePool#clear(DataStoreInfo)} and {@link ResourcePool#dispose()} call
+     * {@link DataAccess#dispose()}
+     */
+    public void testDispose() throws IOException {
+        disposeCalled = false;
+        class ResourcePool2 extends ResourcePool {
+            @SuppressWarnings("serial")
+            public ResourcePool2(Catalog catalog) {
+                super(catalog);
+                dataStoreCache = new DataStoreCache() {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    void dispose(String name, DataAccess dataStore) {
+                        disposeCalled = true;
+                        super.dispose(name, dataStore);
+                    }
+                };
+            }
+        }
+
+        Catalog catalog = getCatalog();
+        ResourcePool pool = new ResourcePool2(catalog);
+        catalog.setResourcePool(pool);
+
+        DataStoreInfo info = catalog.getDataStores().get(0);
+        // force the datastore to be created
+        DataAccess<? extends FeatureType, ? extends Feature> dataStore = pool.getDataStore(info);
+        assertNotNull(dataStore);
+        assertFalse(disposeCalled);
+        pool.clear(info);
+        assertTrue(disposeCalled);
+
+        // force the datastore to be created
+        dataStore = pool.getDataStore(info);
+        assertNotNull(dataStore);
+        disposeCalled = false;
+        pool.dispose();
+        assertTrue(disposeCalled);
+    }
 }
