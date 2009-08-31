@@ -6,6 +6,7 @@ package org.geoserver.catalog.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URI;
 import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -954,8 +955,15 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
         }
     
-        if ( namespace.getURI() == null ) {
+        if ( isNull(namespace.getURI()) ) {
             throw new NullPointerException( "Namespace uri must not be null");
+        }
+        
+        try {
+            new URI(namespace.getURI());
+        } catch(Exception e) {
+            throw new IllegalArgumentException("Invalid URI syntax for '" + namespace.getURI() 
+                    + "' in namespace '" + namespace.getPrefix() + "'");
         }
     }
     
