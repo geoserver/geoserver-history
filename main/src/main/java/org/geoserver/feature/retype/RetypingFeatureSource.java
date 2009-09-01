@@ -67,7 +67,7 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
     public void removeFeatureListener(FeatureListener listener) {
         FeatureListener wrapper = (FeatureListener) listeners.get(listener);
         if (wrapper != null) {
-            wrapped.removeFeatureListener(listener);
+            wrapped.removeFeatureListener(wrapper);
             listeners.remove(listener);
         }
     }
