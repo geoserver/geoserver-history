@@ -13,7 +13,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
@@ -54,7 +53,11 @@ public class ImportSummaryPage extends GeoServerSecuredPage {
     public ImportSummaryPage(final ImportSummary summary) {
         // the synthetic results
         IModel summaryMessage;
-        if(summary.getProcessedLayers() == 0) {
+        Exception error = summary.getError();
+        if(error != null) {
+            String errorSummary = error.getClass().getSimpleName() + ", " + error.getMessage();
+            summaryMessage = new ParamResourceModel("summaryError", this, errorSummary);
+        } else if(summary.getProcessedLayers() == 0) {
             summaryMessage = new ParamResourceModel("summaryCancelled", this);
         } else {
             if(summary.getFailures() > 0) {

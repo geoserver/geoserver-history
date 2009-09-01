@@ -7,6 +7,8 @@ package org.geoserver.importer;
 import static org.geoserver.importer.ImportStatus.*;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -16,6 +18,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geotools.data.DataAccess;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
 
 /**
@@ -24,6 +27,8 @@ import org.opengis.feature.type.Name;
  * <p>It is advised to run it into its own thread</p> 
  */
 public class FeatureTypeImporter  implements Runnable {
+    static final Logger LOGGER = Logging.getLogger(FeatureTypeImporter.class);
+    
     DataStoreInfo storeInfo;
 
     String defaultSRS;
@@ -50,8 +55,10 @@ public class FeatureTypeImporter  implements Runnable {
         try {
             NamespaceInfo namespace = catalog.getNamespaceByPrefix(storeInfo.getWorkspace().getName());
 
+            // prepare
             CatalogBuilder builder = new CatalogBuilder(catalog);
             da = storeInfo.getDataStore(null);
+            StyleGenerator styles = new StyleGenerator(catalog);
             
             // cast necessary due to some classpath oddity/geoapi issue, the compiler
             // complained about getNames() returning a List<Object>...
@@ -69,6 +76,7 @@ public class FeatureTypeImporter  implements Runnable {
                     builder.lookupSRS(featureType, true);
                     builder.setupBounds(featureType);
                     layer = builder.buildLayer(featureType);
+                    layer.setDefaultStyle(styles.getStyle(featureType));
                     ImportStatus status = SUCCESS;
                     
                     if(cancelled)
@@ -113,6 +121,7 @@ public class FeatureTypeImporter  implements Runnable {
 
             summary.end();
         } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Import process failed", e);
             summary.end(e);
         } finally {
             if(da != null)
