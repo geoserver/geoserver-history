@@ -62,7 +62,7 @@ public class ImportProgressPage extends GeoServerSecuredPage {
             protected void onTimer(AjaxRequestTarget target) {
                 FeatureTypeImporter importer = getImporter();
                 
-                ImportSummary summary = importer.getSummary();
+                 ImportSummary summary = importer.getSummary();
                 if(summary != null) {
                     if(summary.isCompleted()) {
                         setResponsePage(new ImportSummaryPage(summary));

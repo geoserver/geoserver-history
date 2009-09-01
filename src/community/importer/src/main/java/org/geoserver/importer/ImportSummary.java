@@ -120,6 +120,10 @@ public class ImportSummary implements Serializable {
     public boolean isStoreNew() {
         return storeNew;
     }
+    
+    public Exception getError() {
+        return error;
+    }
 
 
 }
