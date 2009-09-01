@@ -93,7 +93,7 @@ Create a new CoverageStore:
 
 1. Go to "Welcome | Config | Data | CoverageStores | New" via the web interface, choose "ImageMosaicking plugin" for "Coverage Store" and give it a name. Finally click "New":
 
-.. figure:: img\coverage_store.jpg
+.. figure:: img/coverage_store.jpg
    :align: left
 
 
@@ -108,7 +108,7 @@ You have two alternatives:
 
 Finally click the "Submit" button:
 
-.. figure:: img\coverage_store2.jpg
+.. figure:: img/coverage_store2.jpg
    :align: left
 
 
@@ -121,13 +121,13 @@ Create a new Coverage using the new ImageMosaic CoverageStore:
 
 1. Go to "Welcome | Config | Data | Coverage | New" via the web interface, choose the name of the coverage you just created:
 
-.. figure:: img\coverage.gif
+.. figure:: img/coverage.gif
    :align: center
 
 
 2. Click on the New button and you will be presented with the Coverage Editor:
 
-.. figure:: img\cov_edit.png
+.. figure:: img/cov_edit.png
    :align: left
 
 
@@ -156,12 +156,12 @@ The Coverage Editor gives users the possibility to set a few control parameters 
    * - *OutputTransparentColor*
      - Set the transparent color for the created mosaic. See below for an example:
 
-.. figure:: img\output_color.png
+.. figure:: img/output_color.png
    :align: left
 
 *OutputTransparentColor parameter configured with 'no color'*
 
-.. figure:: img\output_color2.png
+.. figure:: img/output_color2.png
    :align: left
 
 *OutputTransparentColor parameter configured with 'no data' color*
@@ -172,12 +172,12 @@ The Coverage Editor gives users the possibility to set a few control parameters 
    * - *InputTransparentColor*
      - Set the transparent color for the granules prior to mosaicing them in order to control the superimposition process between them. When GeoServer composes the granules to satisfy the user request, some of them can overlap some others, therefore, setting this parameter with the opportune color avoids the overlap of 'no data' areas between granules. See below for an example:
 
-.. figure:: img\input_color.png
+.. figure:: img/input_color.png
    :align: left
 
 *InputTransparentColor parameter not configured*
 
-.. figure:: img\input_color2.png
+.. figure:: img/input_color2.png
    :align: left
 
 *InputTransparentColor parameter configured*
@@ -244,7 +244,7 @@ Inside the Coverage Editor you can specify the 'dem' style in order to represent
 
 In this way you have a clear distinction between the different intervals of the dataset that compose the mosaic, like the background and the 'no data' area.
 
-.. figure:: img\vito_config_1.png
+.. figure:: img/vito_config_1.png
    :align: left
 
 .. note:: The 'no data' on the sample mosaic is -9999, on the other  side the default background value is for mosaics is'0.0'.
@@ -252,7 +252,7 @@ In this way you have a clear distinction between the different intervals of the 
 The result is the following.
 
 
-.. figure:: img\vito_1.png
+.. figure:: img/vito_1.png
    :align: left
 *Basic configuration*
 
@@ -262,7 +262,7 @@ By setting in opportune  ways the other configuration parameters, it is possible
 1. Make the 'no data' areas transparent and coherent with the real data. To achieve this we need to change the opacity of the 'no data' ColorMapEntry in the 'dem' style to '0.0' and set 'BackgroundValues' parameter at '-9999' so that empty areas will be filled with this value. The resultis asfollows:
 
 
-.. figure:: img\vito_2.png
+.. figure:: img/vito_2.png
    :align: left
 *Advanced configuration*
 
@@ -320,7 +320,7 @@ In this example we are going to create a mosaic that will serve aerial imagery, 
 The result is the following.
 
 
-.. figure:: img\prato_1.png
+.. figure:: img/prato_1.png
    :align: left
 *Basic configuration*
 
@@ -348,7 +348,7 @@ The  various parameters can be set as follows:
 The results is the following:
 
 
-.. figure:: img\prato_2.png
+.. figure:: img/prato_2.png
    :align: left
 
 *Advanced configuration*
@@ -363,7 +363,7 @@ In the Coverage Editor you can use the basic 'raster' style as shown above since
 The result is the following.
 
 
-.. figure:: img\iacovella_1.png
+.. figure:: img/iacovella_1.png
    :align: left
 
 *Basic configuration*
@@ -374,7 +374,7 @@ In this case we can use the 'InputTrasparentColor' parameter at  to make the col
 This is the result:
 
 
-.. figure:: img\iacovella_2.png
+.. figure:: img/iacovella_2.png
    :align: left
 
 *Advanced configuration*
