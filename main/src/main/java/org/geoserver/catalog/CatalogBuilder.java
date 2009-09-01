@@ -384,6 +384,10 @@ public class CatalogBuilder {
             att.setFeatureType( ftinfo );
             ftinfo.getAttributes().add( att );
         }
+        
+        // quick metadata
+        ftinfo.setTitle(featureType.getName().getLocalPart());
+        
         return ftinfo;
     }
     
@@ -678,8 +682,8 @@ public class CatalogBuilder {
         String name = cvName.toString();
         */
         String name = gc.getName().toString();
-        cinfo.setName( name );
-        cinfo.setTitle(new StringBuffer(name).append(" is a ").append(format.getDescription()).toString());
+        cinfo.setName(name);
+        cinfo.setTitle(name);
         cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName()).toString() );
         
         // metadata links
