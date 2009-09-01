@@ -143,7 +143,8 @@ public class CascadeDeleteVisitor implements CatalogVisitor {
             List<StyleInfo> styles = group.getStyles();
             boolean dirty = false;
             for (int i = 0; i < styles.size(); i++) {
-                if(styles.get(i).equals(style)) {
+                StyleInfo si = styles.get(i);
+                if(si != null && si.equals(style)) {
                     styles.set(i, group.getLayers().get(i).getDefaultStyle());
                     dirty = true;
                 }
