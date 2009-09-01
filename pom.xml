@@ -922,6 +922,11 @@
        <target>1.5</target>
        <debug>true</debug>
        <encoding>UTF-8</encoding>
+       <!-- 
+           On the win32 build box the compiler oom's due to the compiler accumulating
+           too many classes in the permanent generation, similar to GEOT-2462  
+       -->
+      <fork>true</fork> 
      </configuration>
    </plugin>
 
