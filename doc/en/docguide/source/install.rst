@@ -39,7 +39,7 @@ Ubuntu
 
 #. Open a terminal and type the following command::
   
-      sudo apt-get install make python-setuptools 
+      sudo apt-get install python-dev build-essential python-setuptools 
   
    Depending on your system this may trigger the installation of other packages.
 
