@@ -18,6 +18,7 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
+import org.vfny.geoserver.wms.responses.LegendUtils;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 
@@ -101,7 +102,7 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
         BufferedImage legend = this.legendProducer.getLegendGraphic();
 
         //was the legend painted?
-        assertNotBlank("testUserSpecifiedRule", legend, DefaultRasterLegendProducer.BG_COLOR);
+        assertNotBlank("testUserSpecifiedRule", legend, LegendUtils.DEFAULT_BG_COLOR);
 
         //was created only one rule?
         String errMsg = "expected just one legend of height " + HEIGHT_HINT + ", for the rule "
