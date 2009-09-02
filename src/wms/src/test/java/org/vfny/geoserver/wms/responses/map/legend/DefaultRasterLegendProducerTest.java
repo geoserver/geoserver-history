@@ -168,11 +168,6 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
 	    //was the legend painted?
 	    assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
 	    
-	    final JFrame jf= new JFrame();
-	    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    jf.getContentPane().add(new ScrollingImagePanel(legend,512,512));
-	    jf.pack();
-	    jf.setVisible(true);
 
 	    //was the legend painted?
 	    assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
@@ -215,12 +210,6 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
 	    //was the legend painted?
 	    assertNotBlank("testRainfallClasses", legend, LegendUtils.DEFAULT_BG_COLOR);
 	    
-	    final JFrame jf= new JFrame();
-	    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    jf.getContentPane().add(new ScrollingImagePanel(legend,512,512));
-	    jf.pack();
-	    jf.setVisible(true);
-
 	    //was the legend painted?
 	    assertNotBlank("testRainfallClasses", legend, LegendUtils.DEFAULT_BG_COLOR);
 	    
@@ -261,12 +250,6 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
 	
 	    //was the legend painted?
 	    assertNotBlank("testRainfallRamp", legend, LegendUtils.DEFAULT_BG_COLOR);
-	    
-	    final JFrame jf= new JFrame();
-	    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    jf.getContentPane().add(new ScrollingImagePanel(legend,512,512));
-	    jf.pack();
-	    jf.setVisible(true);
 	    
 	    //was the legend painted?
 	    assertNotBlank("testRainfallClasses", legend, LegendUtils.DEFAULT_BG_COLOR);
