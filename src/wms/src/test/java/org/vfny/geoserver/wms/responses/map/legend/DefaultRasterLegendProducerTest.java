@@ -10,15 +10,27 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import javax.media.jai.widget.ScrollingImagePanel;
+import javax.swing.JFrame;
+import javax.xml.namespace.QName;
+
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSTestSupport;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.opengis.coverage.grid.GridCoverage;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.LegendUtils;
+import org.vfny.geoserver.wms.responses.featureinfo.GetFeatureInfoTest;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 
@@ -38,6 +50,15 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
     private DefaultRasterLegendProducer legendProducer;
     GetLegendGraphic service;
 
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        
+        dataDirectory.addCoverage(new QName("http://www.geo-solutions.it", "world", "gs"), MockData.class.getResource("world.tiff"),"tiff", "raster");
+        dataDirectory.addStyle("rainfall", MockData.class.getResource("rainfall.sld"));
+        dataDirectory.addStyle("rainfall_ramp", MockData.class.getResource("rainfall_ramp.sld"));
+        dataDirectory.addStyle("rainfall_classes", MockData.class.getResource("rainfall_classes.sld"));
+    }
     /**
      * DOCUMENT ME!
      *
@@ -110,5 +131,147 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
         int resultLegendCount = legend.getHeight() / HEIGHT_HINT;
         assertEquals(errMsg, 1, resultLegendCount);
     }
+
+	/**
+	 * Tests that a legend is produced for the explicitly specified rule, when
+	 * the FeatureTypeStyle has more than one rule, and one of them is
+	 * requested by the RULE parameter.
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public void testRainfall() throws Exception {
+	    //load a style with 3 rules
+	    Style multipleRulesStyle = getCatalog().getStyleByName("rainfall").getStyle();
+	    
+	    assertNotNull(multipleRulesStyle);
+	    
+	
+	    GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+	    CoverageInfo cInfo = getCatalog().getCoverageByName("world");
+	    assertNotNull(cInfo);
+	    
+        GridCoverage coverage = cInfo.getGridCoverage(null, null);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
+        feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) coverage);
+        req.setLayer(feature.getSchema());
+	    req.setStyle(multipleRulesStyle);
+	    req.setLegendOptions(new HashMap());
+	
+	    final int HEIGHT_HINT = 30;
+	    req.setHeight(HEIGHT_HINT);
+	
+	    //use default values for the rest of parameters
+	    this.legendProducer.produceLegendGraphic(req);
+	
+	    BufferedImage legend = this.legendProducer.getLegendGraphic();
+	
+	    //was the legend painted?
+	    assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+	    
+	    final JFrame jf= new JFrame();
+	    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    jf.getContentPane().add(new ScrollingImagePanel(legend,512,512));
+	    jf.pack();
+	    jf.setVisible(true);
+
+	    //was the legend painted?
+	    assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+	    
+	}
+	
+	/**
+	 * Tests that a legend is produced for the explicitly specified rule, when
+	 * the FeatureTypeStyle has more than one rule, and one of them is
+	 * requested by the RULE parameter.
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public void testRainfallClasses() throws Exception {
+	    //load a style with 3 rules
+	    Style style = getCatalog().getStyleByName("rainfall_classes").getStyle();
+	    
+	    assertNotNull(style);
+	    
+	
+	    GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+	    CoverageInfo cInfo = getCatalog().getCoverageByName("world");
+	    assertNotNull(cInfo);
+	    
+        GridCoverage coverage = cInfo.getGridCoverage(null, null);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
+        feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) coverage);
+        req.setLayer(feature.getSchema());
+	    req.setStyle(style);
+	    req.setLegendOptions(new HashMap());
+	
+	    final int HEIGHT_HINT = 30;
+	    req.setHeight(HEIGHT_HINT);
+	
+	    //use default values for the rest of parameters
+	    this.legendProducer.produceLegendGraphic(req);
+	
+	    BufferedImage legend = this.legendProducer.getLegendGraphic();
+	
+	    //was the legend painted?
+	    assertNotBlank("testRainfallClasses", legend, LegendUtils.DEFAULT_BG_COLOR);
+	    
+	    final JFrame jf= new JFrame();
+	    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    jf.getContentPane().add(new ScrollingImagePanel(legend,512,512));
+	    jf.pack();
+	    jf.setVisible(true);
+
+	    //was the legend painted?
+	    assertNotBlank("testRainfallClasses", legend, LegendUtils.DEFAULT_BG_COLOR);
+	    
+	}
+	
+	/**
+	 * Tests that a legend is produced for the explicitly specified rule, when
+	 * the FeatureTypeStyle has more than one rule, and one of them is
+	 * requested by the RULE parameter.
+	 *
+	 * @throws Exception DOCUMENT ME!
+	 */
+	public void testRainfallRamp() throws Exception {
+	    //load a style with 3 rules
+	    Style style = getCatalog().getStyleByName("rainfall_ramp").getStyle();
+	    
+	    assertNotNull(style);
+	    
+	
+	    GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+	    CoverageInfo cInfo = getCatalog().getCoverageByName("world");
+	    assertNotNull(cInfo);
+	    
+        GridCoverage coverage = cInfo.getGridCoverage(null, null);
+        FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
+        feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) coverage);
+        req.setLayer(feature.getSchema());
+	    req.setStyle(style);
+	    req.setLegendOptions(new HashMap());
+	
+	    final int HEIGHT_HINT = 30;
+	    req.setHeight(HEIGHT_HINT);
+	
+	    //use default values for the rest of parameters
+	    this.legendProducer.produceLegendGraphic(req);
+	
+	    BufferedImage legend = this.legendProducer.getLegendGraphic();
+	
+	    //was the legend painted?
+	    assertNotBlank("testRainfallRamp", legend, LegendUtils.DEFAULT_BG_COLOR);
+	    
+	    final JFrame jf= new JFrame();
+	    jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    jf.getContentPane().add(new ScrollingImagePanel(legend,512,512));
+	    jf.pack();
+	    jf.setVisible(true);
+	    
+	    //was the legend painted?
+	    assertNotBlank("testRainfallClasses", legend, LegendUtils.DEFAULT_BG_COLOR);
+	    
+
+	}
 
 }
