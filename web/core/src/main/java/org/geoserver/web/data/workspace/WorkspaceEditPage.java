@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.data.workspace;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,7 +14,6 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
