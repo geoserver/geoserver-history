@@ -131,6 +131,8 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
 
         WMS wms = request.getWMS();
         LayerInfo layerInfo = wms.getLayerByName(layer);
+        if(layerInfo==null)
+        	 throw new WmsException(layer+" layer does not exists.");
         MapLayerInfo mli = new MapLayerInfo(layerInfo);
 
         try {

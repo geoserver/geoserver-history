@@ -668,18 +668,6 @@ public class GetMapRequest extends WMSRequest {
     }
     
     /**
-     * decodes a color of the form <code>#FFFFFF</code> into a
-     * <code>java.awt.Color</code> object
-     *
-     * @param hexColor DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
-    private static final Color decodeColor(String hexColor) {
-        return Color.decode(hexColor);
-    }
-
-    /**
      * DOCUMENT ME!
      *
      * @author Gabriel Roldan, Axios Engineering
@@ -687,13 +675,13 @@ public class GetMapRequest extends WMSRequest {
      */
     private class MandatoryParameters {
         /** ordered list of requested layers */
-        List<MapLayerInfo> layers = Collections.EMPTY_LIST;
+        List<MapLayerInfo> layers = Collections.emptyList();
 
         /**
          * ordered list of requested layers' styles, in a one to one
          * relationship with <code>layers</code>
          */
-        List<Style> styles = Collections.EMPTY_LIST;
+        List<Style> styles = Collections.emptyList();
 
         /** DOCUMENT ME!  */
         Envelope bbox;

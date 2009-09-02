@@ -18,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.renderer.i18n.ErrorKeys;
 import org.geotools.renderer.i18n.Errors;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -25,6 +26,7 @@ import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
@@ -508,19 +510,21 @@ public class LegendUtils {
 	}
 
 	/**
-	 * Checks if the provided {@link SimpleFeatureType} contains a coverage as per used by the {@link StreamingRenderer}.
+	 * Checks if the provided {@link FeatureType} contains a coverage as per used by the {@link StreamingRenderer}.
 	 * 
-	 * @param layer a {@link SimpleFeatureType} to check if it contains a  grid.
+	 * @param layer a {@link FeatureType} to check if it contains a  grid.
 	 * @return <code>true</code> if this layer contains a gridcoverage, <code>false</code> otherwise.
 	 */
-	public static boolean checkGridLayer(final SimpleFeatureType layer) {
-		 boolean found=false;
+	public static boolean checkGridLayer(final FeatureType layer) {
+		if(!(layer instanceof SimpleFeatureType))
+			return false;
+		boolean found=false;
 		final Collection<PropertyDescriptor> descriptors = layer.getDescriptors();
 		for(PropertyDescriptor descriptor: descriptors){
 			
 			//get the type
 			final PropertyType type=descriptor.getType();
-			if(type.getBinding().isAssignableFrom(GridCoverage2D.class))
+			if(type.getBinding().isAssignableFrom(GridCoverage2D.class)||type.getBinding().isAssignableFrom(AbstractGridCoverage2DReader.class))
 			{
 				found=true;
 				break;
