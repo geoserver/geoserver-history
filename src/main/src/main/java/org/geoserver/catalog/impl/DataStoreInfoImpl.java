@@ -21,6 +21,9 @@ import org.opengis.util.ProgressListener;
 @SuppressWarnings("serial")
 public class DataStoreInfoImpl extends StoreInfoImpl implements DataStoreInfo {
 
+    protected DataStoreInfoImpl() {
+    }
+
     public DataStoreInfoImpl(Catalog catalog) {
         super(catalog);
     }

@@ -10,37 +10,37 @@ import java.util.Map;
 import java.util.Set;
 
 import org.geoserver.catalog.AttributionInfo;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.LayerInfo.Type;
+import org.geoserver.catalog.MetadataMap;
 
 public class LayerInfoImpl implements LayerInfo {
 
-    String id;
+    protected String id;
 
-    String name;
+    protected String name;
 
-    String path;
+    protected String path;
 
-    LayerInfo.Type type;
+    protected LayerInfo.Type type;
 
-    StyleInfo defaultStyle;
+    protected StyleInfo defaultStyle;
 
-    Set styles = new HashSet();
+    protected Set styles = new HashSet();
 
-    ResourceInfo resource;
+    protected ResourceInfo resource;
 
-    LegendInfo legend;
+    protected LegendInfo legend;
 
-    boolean enabled;
+    protected boolean enabled;
 
-    Map metadata = new HashMap();
+    protected MetadataMap metadata = new MetadataMap();
 
-    AttributionInfo attribution;
+    protected AttributionInfo attribution;
     
     public String getId() {
         return id;
@@ -132,11 +132,11 @@ public class LayerInfoImpl implements LayerInfo {
         this.enabled = enabled;
     }
 
-    public Map getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map metadata) {
+    public void setMetadata(MetadataMap metadata) {
         this.metadata = metadata;
     }
     

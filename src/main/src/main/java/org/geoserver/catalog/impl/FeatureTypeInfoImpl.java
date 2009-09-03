@@ -24,13 +24,16 @@ import org.opengis.util.ProgressListener;
 public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
         FeatureTypeInfo {
 
-    List<AttributeTypeInfo> attributes = new ArrayList<AttributeTypeInfo>();
+    protected List<AttributeTypeInfo> attributes = new ArrayList<AttributeTypeInfo>();
     
-    Filter filter;
+    protected Filter filter;
 
-    int maxFeatures;
-    int numDecimals;
-    
+    protected int maxFeatures;
+    protected int numDecimals;
+
+    protected FeatureTypeInfoImpl() {
+    }
+
     public FeatureTypeInfoImpl(Catalog catalog) {
         super(catalog);
     }

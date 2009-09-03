@@ -23,25 +23,28 @@ import org.opengis.util.ProgressListener;
 @SuppressWarnings("serial")
 public abstract class StoreInfoImpl implements StoreInfo {
 
-    String id;
+    protected String id;
 
-    String name;
+    protected String name;
 
-    String description;
+    protected String description;
 
-    String type;
+    protected String type;
     
-    boolean enabled;
+    protected boolean enabled;
 
-    WorkspaceInfo workspace;
+    protected WorkspaceInfo workspace;
     
-    transient Catalog catalog;
+    protected transient Catalog catalog;
 
-    Map<String, Serializable> connectionParameters = new HashMap<String, Serializable>();
+    protected Map<String, Serializable> connectionParameters = new HashMap<String, Serializable>();
 
-    MetadataMap metadata = new MetadataMap();
+    protected MetadataMap metadata = new MetadataMap();
     
-    Throwable error;
+    protected Throwable error;
+
+    protected StoreInfoImpl() {
+    }
 
     protected StoreInfoImpl(Catalog catalog) {
         this.catalog = catalog;

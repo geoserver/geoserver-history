@@ -4,7 +4,6 @@
  */
 package org.geoserver.config.impl;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,42 +15,45 @@ import org.geoserver.config.JAIInfo;
 
 public class GeoServerInfoImpl implements GeoServerInfo {
 
-    String id;
+    protected String id;
 
-    ContactInfo contact = new ContactInfoImpl();
+    protected ContactInfo contact = new ContactInfoImpl();
 
-    JAIInfo jai = new JAIInfoImpl();
+    protected JAIInfo jai = new JAIInfoImpl();
     
     // Charset charSet = Charset.forName("UTF-8");
-    String charset = "UTF-8";
+    protected String charset = "UTF-8";
 
-    String title;
+    protected String title;
 
-    int numDecimals = 4;
+    protected int numDecimals = 4;
 
-    String onlineResource;
+    protected String onlineResource;
 
-    String schemaBaseUrl;
+    protected String schemaBaseUrl;
 
-    String proxyBaseUrl;
+    protected String proxyBaseUrl;
 
-    boolean verbose = true;
+    protected boolean verbose = true;
 
-    boolean verboseExceptions = false;
+    protected boolean verboseExceptions = false;
 
-    MetadataMap metadata = new MetadataMap();
+    protected MetadataMap metadata = new MetadataMap();
 
-    Map<Object, Object> clientProperties = new HashMap<Object, Object>();
+    protected Map<Object, Object> clientProperties = new HashMap<Object, Object>();
 
-    int updateSequence;
+    protected int updateSequence;
     
-    String adminUsername;
-    String adminPassword;
+    protected String adminUsername;
+    protected String adminPassword;
 
-    GeoServer geoServer;
-    
+    protected GeoServer geoServer;
+
     public GeoServerInfoImpl(GeoServer geoServer) {
         this.geoServer = geoServer;
+    }
+
+    protected GeoServerInfoImpl() {
     }
     
     public String getId() {
@@ -60,6 +62,10 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setGeoServer(GeoServer geoServer) {
+        this.geoServer = geoServer;
     }
 
     public void setContact(ContactInfo contactInfo) {

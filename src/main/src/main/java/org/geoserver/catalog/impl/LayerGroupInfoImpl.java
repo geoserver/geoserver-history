@@ -4,27 +4,25 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.StyleInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 public class LayerGroupInfoImpl implements LayerGroupInfo {
 
-    String id;
-    String name;
-    String path;
-    List<LayerInfo> layers = new ArrayList<LayerInfo>();
-    List<StyleInfo> styles = new ArrayList<StyleInfo>();
-    ReferencedEnvelope bounds;
-    Map<String,Serializable> metadata = new HashMap<String, Serializable>();
+    protected String id;
+    protected String name;
+    protected String path;
+    protected List<LayerInfo> layers = new ArrayList<LayerInfo>();
+    protected List<StyleInfo> styles = new ArrayList<StyleInfo>();
+    protected ReferencedEnvelope bounds;
+    protected MetadataMap metadata = new MetadataMap();
     
     public LayerGroupInfoImpl() {
     }
@@ -55,6 +53,10 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
     public List<LayerInfo> getLayers() {
         return layers;
     }
+
+    public void setLayers(List<LayerInfo> layers) {
+        this.layers = layers;
+    }
     
     public List<StyleInfo> getStyles() {
         return styles;
@@ -72,11 +74,11 @@ public class LayerGroupInfoImpl implements LayerGroupInfo {
         this.bounds = bounds;
     }
     
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
     }
     
-    public void setMetadata(Map<String, Serializable> metadata) {
+    public void setMetadata(MetadataMap metadata) {
         this.metadata = metadata;
     }
     

@@ -4,24 +4,21 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.opengis.feature.type.AttributeDescriptor;
 
 public class AttributeTypeInfoImpl implements AttributeTypeInfo {
 
-    String name;
-    int minOccurs;
-    int maxOccurs;
-    boolean nillable;
-    transient AttributeDescriptor attribute;
-    HashMap metadata = new HashMap();
+    protected String name;
+    protected int minOccurs;
+    protected int maxOccurs;
+    protected boolean nillable;
+    protected transient AttributeDescriptor attribute;
+    protected MetadataMap metadata = new MetadataMap();
     
-    FeatureTypeInfo featureType;
+    protected FeatureTypeInfo featureType;
     
     public String getName() {
         return name;
@@ -71,8 +68,12 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
         this.attribute = attribute;
     }
     
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return metadata;
+    }
+
+    public void setMetadata(MetadataMap metadata) {
+        this.metadata = metadata;
     }
     
     @Override
