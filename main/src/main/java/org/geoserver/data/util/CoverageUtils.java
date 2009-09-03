@@ -4,6 +4,16 @@
  */
 package org.geoserver.data.util;
 
+import java.awt.Color;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridGeometry;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -24,33 +34,20 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.CoordinateOperation;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.OperationNotFoundException;
-import java.awt.Color;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * DOCUMENT ME!
  *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
- *         modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
- *         modification)
+ * @author $Author: Alessio Fabiani (alessio.fabiani@geo-solutions.it)
+ * @author $Author: Simone Giannecchini (simone.giannecchini@geo-solutions.it)
  */
 public class CoverageUtils {
-    private final static BufferedCoordinateOperationFactory operationFactory = new BufferedCoordinateOperationFactory(new Hints(
-                Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
+
     private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(CoverageUtils.class.toString());
     public static final int TRANSPARENT = 0;
     public static final int OPAQUE = 1;
-
+    
     public static GeneralParameterValue[] getParameters(ParameterValueGroup params) {
         final List parameters = new ArrayList();
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
@@ -102,17 +99,16 @@ public class CoverageUtils {
 
     public static GeneralParameterValue[] getParameters(ParameterValueGroup params, Map values,
         boolean readGeom) {
-        final List parameters = new ArrayList();
+        final List<ParameterValue<?>> parameters = new ArrayList<ParameterValue<?>>();
         final String readGeometryKey = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
 
         if ((params != null) && (params.values().size() > 0)) {
-            List list = params.values();
-            final Iterator it = list.iterator();
-            while (it.hasNext()) {
-                final ParameterValue val = (ParameterValue) it.next();
+            final List<GeneralParameterValue> elements = params.values();
+            for (GeneralParameterValue elem: elements) {
+                final ParameterValue<?> val = (ParameterValue<?>)elem;
 
                 if (val != null) {
-                    final ParameterDescriptor descr = (ParameterDescriptor) val.getDescriptor();
+                    final ParameterDescriptor<?> descr = val.getDescriptor();
                     final String _key = descr.getName().toString();
 
                     if ("namespace".equals(_key)) {
@@ -137,23 +133,14 @@ public class CoverageUtils {
                     // format specific params
                     //
                     // /////////////////////////////////////////////////////////
-                    Object value = CoverageUtils.getCvParamValue(_key, val, values);
-
-                    if ((value == null)
-                            && (_key.equalsIgnoreCase("InputTransparentColor")
-                            || _key.equalsIgnoreCase("OutputTransparentColor"))) {
-                        parameters.add(new DefaultParameterDescriptor(_key, Color.class, null, value)
-                            .createValue());
-                    } else {
-                        parameters.add(new DefaultParameterDescriptor(_key, value.getClass(), null,
-                                value).createValue());
-                    }
+                    final Object value = CoverageUtils.getCvParamValue(_key, val, values);
+                    parameters.add(new DefaultParameterDescriptor(_key, descr.getValueClass(), null, value).createValue());
+                    
                 }
             }
 
-            return (!parameters.isEmpty())
-            ? (GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()])
-            : null;
+            return (!parameters.isEmpty())? 
+            		(GeneralParameterValue[]) parameters.toArray(new GeneralParameterValue[parameters.size()]): null;
         } else {
             return null;
         }
@@ -354,7 +341,25 @@ public class CoverageUtils {
                     Object[] inArray = { params.get(key) };
                     value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
                 }
-            } else {
+            }else if (key.equalsIgnoreCase("BackgroundValues")) {
+                if (params.get(key) != null) {
+                    String temp = (String) params.get(key);
+                    String[] elements = temp.split(",");
+                    final double[] backgroundValues = new double[elements.length];
+                    for(int i=0;i<elements.length;i++)
+                    	backgroundValues[i]=Double.valueOf(elements[i]);
+                    value=backgroundValues;
+                    
+                } 
+            } 
+            else if (key.equalsIgnoreCase("InputImageThresholdValue")) {
+                if (params.get(key) != null) {
+                    String temp = (String) params.get(key);
+                    value=Double.valueOf(temp);
+                    
+                } 
+            } 
+            else {
                 Class[] clArray = { String.class };
                 Object[] inArray = { params.get(key) };
                 value = param.getValue().getClass().getConstructor(clArray).newInstance(inArray);
@@ -396,21 +401,5 @@ public class CoverageUtils {
         GridCoverage2D gc = (GridCoverage2D) reader.read(getParameters(readParams, parameters,
                     true));
         return gc.getSampleDimensions();
-    }
-    public static MathTransform getMathTransform(CoordinateReferenceSystem sourceCRS,
-            CoordinateReferenceSystem destCRS) {
-            try {
-                CoordinateOperation op = operationFactory.createOperation(sourceCRS, destCRS);
-
-                if (op != null) {
-                    return op.getMathTransform();
-                }
-            } catch (OperationNotFoundException e) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            } catch (FactoryException e) {
-                LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
-            }
-
-            return null;
-        }    
+    }    
 }

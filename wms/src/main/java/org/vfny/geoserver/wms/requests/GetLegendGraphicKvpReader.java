@@ -4,38 +4,6 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.LayerInfo.Type;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.SchemaException;
-import org.geotools.resources.coverage.CoverageUtilities;
-import org.geotools.resources.coverage.FeatureUtilities;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.Rule;
-import org.geotools.styling.SLDParser;
-import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
-import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.FeatureType;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.Request;
-
-import org.vfny.geoserver.util.Requests;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import org.vfny.geoserver.wms.servlets.WMService;
-import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,14 +11,37 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.parsers.FactoryConfigurationError;
+
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.LayerInfo.Type;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.factory.GeoTools;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.resources.coverage.FeatureUtilities;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Rule;
+import org.geotools.styling.SLDParser;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyleFactoryFinder;
+import org.geotools.util.NullProgressListener;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.FeatureType;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.Requests;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 
 /**
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling <code>getRequest</code>
@@ -141,10 +132,11 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 request.setLayer(featureType);
             } else if (layerInfo.getType() == Type.RASTER) {
                 CoverageInfo coverageInfo = mli.getCoverage();
-                GridCoverage coverage = coverageInfo.getGridCoverage(null, null);
-
-                FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
-                feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) coverage);
+                
+                //it much safer to wrap a reader rather than a coverage in most cases, OOM can occur otherwise
+                final AbstractGridCoverage2DReader reader=(AbstractGridCoverage2DReader) coverageInfo.getGridCoverageReader(new NullProgressListener(), GeoTools.getDefaultHints());
+                final FeatureCollection<SimpleFeatureType, SimpleFeature> feature= 
+                FeatureUtilities.wrapGridCoverageReader(reader,null);
                 request.setLayer(feature.getSchema());
             }
         } catch (IOException e) {
