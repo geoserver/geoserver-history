@@ -1,14 +1,14 @@
 package org.geoserver.web.admin;
 
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.GeoServerHomePage;
-import org.geoserver.config.GeoServer;
+import org.apache.wicket.model.IModel;
 import org.geoserver.config.ContactInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
+import org.geoserver.web.GeoServerHomePage;
 
 public class ContactPage extends ServerAdminPage {
     public ContactPage(){
@@ -34,8 +34,9 @@ public class ContactPage extends ServerAdminPage {
             @Override
             public void onSubmit() {
                 GeoServer gs = (GeoServer)geoServerModel.getObject();
-                gs.getGlobal().setContact((ContactInfo)contactModel.getObject());
-                gs.save(gs.getGlobal());
+                GeoServerInfo global = gs.getGlobal();
+                global.setContact((ContactInfo)contactModel.getObject());
+                gs.save(global);
                 setResponsePage(GeoServerHomePage.class);
             }
         });
