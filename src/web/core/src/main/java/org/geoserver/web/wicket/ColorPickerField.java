@@ -45,7 +45,7 @@ public class ColorPickerField extends TextField {
     
     void init() {
         add(HeaderContributor.forJavaScript(JSCOLOR_JS));
-        add(new AttributeAppender("class", new Model("color"), ","));
+        add(new AttributeAppender("class", new Model("color {required:false}"), ","));
     }
     
 }
