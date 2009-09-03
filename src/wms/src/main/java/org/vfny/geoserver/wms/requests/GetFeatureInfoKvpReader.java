@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.requests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -89,8 +90,19 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
 
         request.setGetMapRequest(getMapPart);
 
-        MapLayerInfo[] layers = parseLayers(getWMS());
-        request.setQueryLayers(layers);
+        // parse query layers
+        request.setQueryLayers(parseLayers(getWMS()));
+        // make sure they are a subset of layers
+        List<MapLayerInfo> getMapLayers = new ArrayList(Arrays.asList(getMapPart.getLayers()));
+        List<MapLayerInfo> queryLayers = new ArrayList<MapLayerInfo>(Arrays.asList(request.getQueryLayers()));
+        queryLayers.removeAll(getMapLayers);
+        if(queryLayers.size() > 0) {
+            // we've already expanded base layers so let's avoid list the names, they are not
+            // the original ones anymore
+            throw new WmsException("QUERY_LAYERS contains layers not cited in LAYERS. " +
+            		"It should be a proper subset of those instead");
+        }
+        
 
         String format = getValue("INFO_FORMAT");
 
@@ -183,6 +195,9 @@ public class GetFeatureInfoKvpReader extends WmsKvpRequestReader {
                 layerInfos.add(new MapLayerInfo(layerInfo));
             }
         }
+        
+        
+        
 
         return layerInfos.toArray(new MapLayerInfo[layerInfos.size()]);
     }
