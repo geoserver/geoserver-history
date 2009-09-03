@@ -70,6 +70,7 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.filter.Filter;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
@@ -749,12 +750,21 @@ public class ResourcePool {
             destCRS = info.getCRS();
         } 
         catch (Exception e) {
-            throw (IOException) new IOException( "unable to determine coverage crs").initCause(e);
+			final IOException ioe= new IOException( "unable to determine coverage crs");
+			ioe.initCause(e);
+			throw ioe;
         }
         
         if (!CRS.equalsIgnoreMetadata(sourceCRS, destCRS)) {
             // get a math transform
-            final MathTransform transform = CoverageUtils.getMathTransform(sourceCRS, destCRS);
+            MathTransform transform;
+			try {
+				transform = CRS.findMathTransform(sourceCRS, destCRS,true);
+			} catch (FactoryException e) {
+				final IOException ioe= new IOException( "unable to determine coverage crs");
+				ioe.initCause(e);
+				throw ioe;
+			}
         
             // transform the envelope
             if (!transform.isIdentity()) {
