@@ -238,5 +238,18 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertXpathEvaluatesTo("0", "count(/html/body/table/tr/th)", dom);
     }
     
+    /**
+     * Check we report back an exception when query_layer contains layers not part of LAYERS
+     * @throws Exception
+     */
+    public void testUnkonwnQueryLayer() throws Exception {
+        String layers1 = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.LAKES);
+        String layers2 = getLayerId(MockData.FORESTS) + "," + getLayerId(MockData.BRIDGES);
+        String request = "wms?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/html&request=GetFeatureInfo&layers="
+                + layers1 + "&query_layers=" + layers2 + "&width=20&height=20&x=10&y=10&info";
+        
+        Document dom = getAsDOM(request + "");
+        assertXpathEvaluatesTo("1", "count(/ServiceExceptionReport)", dom);
+    }
     
 }
