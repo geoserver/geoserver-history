@@ -4,9 +4,7 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,44 +28,46 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 @SuppressWarnings("serial")
 public abstract class ResourceInfoImpl implements ResourceInfo {
 
-    String id;
+    protected String id;
 
-    String name; // FIXME: make this protected or private ... hurts people
-                    // extending in other pacakges
+    protected String name;
 
-    String nativeName;
+    protected  String nativeName;
     
-    List<String> alias = new ArrayList<String>();
+    protected List<String> alias = new ArrayList<String>();
     
-    NamespaceInfo namespace;
+    protected NamespaceInfo namespace;
 
-    String title;
+    protected String title;
 
-    String description;
+    protected String description;
 
-    String _abstract;
+    protected String _abstract;
 
-    List<String> keywords = new ArrayList<String>();
+    protected List<String> keywords = new ArrayList<String>();
 
-    List<MetadataLinkInfo> metadataLinks = new ArrayList<MetadataLinkInfo>();
+    protected List<MetadataLinkInfo> metadataLinks = new ArrayList<MetadataLinkInfo>();
 
-    CoordinateReferenceSystem nativeCRS;
+    protected CoordinateReferenceSystem nativeCRS;
     
-    String srs;
+    protected String srs;
 
-    ReferencedEnvelope nativeBoundingBox;
+    protected ReferencedEnvelope nativeBoundingBox;
 
-    ReferencedEnvelope latLonBoundingBox;
+    protected ReferencedEnvelope latLonBoundingBox;
     
-    ProjectionPolicy projectionPolicy;
+    protected ProjectionPolicy projectionPolicy;
 
-    boolean enabled;
+    protected boolean enabled;
 
-    MetadataMap metadata = new MetadataMap();
+    protected MetadataMap metadata = new MetadataMap();
 
-    StoreInfo store;
+    protected StoreInfo store;
     
-    transient Catalog catalog;
+    protected transient Catalog catalog;
+
+    protected ResourceInfoImpl() {
+    }
 
     protected ResourceInfoImpl(Catalog catalog) {
         this.catalog = catalog;
@@ -264,6 +264,10 @@ public abstract class ResourceInfoImpl implements ResourceInfo {
 
     public List<String> getAlias() {
         return alias;
+    }
+
+    public void setAlias(List<String> alias) {
+        this.alias = alias;
     }
 
     public CoordinateReferenceSystem getCRS() {

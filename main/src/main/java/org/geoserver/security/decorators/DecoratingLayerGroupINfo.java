@@ -4,13 +4,12 @@
  */
 package org.geoserver.security.decorators;
 
-import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -55,7 +54,7 @@ public class DecoratingLayerGroupINfo extends AbstractDecorator<LayerGroupInfo> 
         delegate.setName(name);
     }
     
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return delegate.getMetadata();
     }
     

@@ -5,8 +5,6 @@
 package org.geoserver.catalog.impl;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.MetadataMap;
@@ -14,10 +12,10 @@ import org.geoserver.catalog.WorkspaceInfo;
 
 public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
 
-    String id;
-    String name;
+    protected String id;
+    protected String name;
     
-    MetadataMap metadata = new MetadataMap();
+    protected MetadataMap metadata = new MetadataMap();
     
     public String getId() {
         return id;

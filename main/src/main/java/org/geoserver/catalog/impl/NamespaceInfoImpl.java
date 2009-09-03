@@ -4,23 +4,19 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 
 public class NamespaceInfoImpl implements NamespaceInfo {
 
-    String id;
+    protected String id;
 
-    String prefix;
+    protected String prefix;
 
-    String uri;
+    protected String uri;
 
-    MetadataMap metadata = new MetadataMap();
+    protected MetadataMap metadata = new MetadataMap();
     
     public String getId() {
         return id;

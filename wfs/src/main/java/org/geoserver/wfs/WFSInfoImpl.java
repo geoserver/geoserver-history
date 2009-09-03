@@ -7,10 +7,10 @@ import org.geoserver.config.impl.ServiceInfoImpl;
 
 public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
 
-    Map<Version,GMLInfo> gml = new HashMap<Version, GMLInfo>();
-    ServiceLevel serviceLevel = ServiceLevel.COMPLETE;
-    int maxFeatures = Integer.MAX_VALUE;
-    boolean featureBounding = true;
+    protected Map<Version,GMLInfo> gml = new HashMap<Version, GMLInfo>();
+    protected ServiceLevel serviceLevel = ServiceLevel.COMPLETE;
+    protected int maxFeatures = Integer.MAX_VALUE;
+    protected boolean featureBounding = true;
     
     public WFSInfoImpl() {
         setId( "wfs" );
@@ -18,6 +18,10 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     
     public Map<Version, GMLInfo> getGML() {
         return gml;
+    }
+
+    public void setGML(Map<Version, GMLInfo> gml) {
+        this.gml = gml;
     }
 
     public ServiceLevel getServiceLevel() {

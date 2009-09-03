@@ -24,23 +24,26 @@ import org.opengis.util.ProgressListener;
 
 public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
-    String nativeFormat;
+    protected String nativeFormat;
 
-    GridGeometry grid;
+    protected GridGeometry grid;
     
-    List<String> supportedFormats = new ArrayList<String>();
+    protected List<String> supportedFormats = new ArrayList<String>();
 
-    List<String> interpolationMethods = new ArrayList<String>();
+    protected List<String> interpolationMethods = new ArrayList<String>();
 
-    String defaultInterpolationMethod;
+    protected String defaultInterpolationMethod;
 
-    List<CoverageDimensionInfo> dimensions = new ArrayList<CoverageDimensionInfo>();
+    protected List<CoverageDimensionInfo> dimensions = new ArrayList<CoverageDimensionInfo>();
 
-    List<String> requestSRS = new ArrayList<String>();
+    protected List<String> requestSRS = new ArrayList<String>();
 
-    List<String> responseSRS = new ArrayList<String>();
+    protected List<String> responseSRS = new ArrayList<String>();
     
-    Map parameters = new HashMap();
+    protected Map parameters = new HashMap();
+
+    protected CoverageInfoImpl() {
+    }
 
     public CoverageInfoImpl(Catalog catalog) {
         super( catalog );

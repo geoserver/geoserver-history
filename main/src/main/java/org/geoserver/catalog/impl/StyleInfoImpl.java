@@ -13,13 +13,16 @@ import org.geotools.styling.Style;
 
 public class StyleInfoImpl implements StyleInfo {
 
-    String id;
+    protected String id;
 
-    String name;
+    protected String name;
 
-    String filename;
+    protected String filename;
     
-    transient Catalog catalog;
+    protected transient Catalog catalog;
+
+    protected StyleInfoImpl() {
+    }
     
     public StyleInfoImpl( Catalog catalog ) {
         this.catalog = catalog;

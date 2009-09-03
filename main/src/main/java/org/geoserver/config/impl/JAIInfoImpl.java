@@ -5,7 +5,6 @@
 package org.geoserver.config.impl;
 
 import java.io.Serializable;
-import java.nio.charset.Charset;
 
 import javax.media.jai.JAI;
 
@@ -15,7 +14,7 @@ import com.sun.media.jai.util.SunTileCache;
 
 public class JAIInfoImpl implements Serializable, JAIInfo {
 
-    public static String KEY = "jai.info";
+    public static final String KEY = "jai.info";
     
     private static final long serialVersionUID = 7121137497699361776L;
     

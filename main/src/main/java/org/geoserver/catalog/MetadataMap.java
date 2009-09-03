@@ -32,8 +32,9 @@ import org.geotools.util.Converters;
 public class MetadataMap implements Map<String, Serializable>, Serializable {
 
     private static final long serialVersionUID = -3267986531863264568L;
-    
-    Map<String,Serializable> map;
+    protected String id;
+
+    protected Map<String,Serializable> map;
 
     public MetadataMap() {
         this(new HashMap());
@@ -45,9 +46,22 @@ public class MetadataMap implements Map<String, Serializable>, Serializable {
         }
         this.map = map;
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
     public Map<String, Serializable> getMap() {
         return map;
+    }
+
+    public void setMap(Map<String, Serializable> map) {
+        this.map = map;
     }
     
     public <T> T get(String key, Class<T> clazz) {

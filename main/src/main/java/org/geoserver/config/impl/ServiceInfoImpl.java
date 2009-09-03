@@ -5,7 +5,6 @@
 package org.geoserver.config.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,50 +12,49 @@ import java.util.Map;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
 
 public class ServiceInfoImpl implements ServiceInfo {
 
-    String id;
+    protected String id;
 
-    GeoServer geoServer;
+    protected GeoServer geoServer;
 
-    boolean enabled = true;
+    protected boolean enabled = true;
 
-    String name;
+    protected String name;
 
-    String title;
+    protected String title;
 
-    String maintainer;
+    protected String maintainer;
 
-    String abstrct;
+    protected String abstrct;
 
-    String accessConstraints;
+    protected String accessConstraints;
 
-    String fees;
+    protected String fees;
 
-    List versions = new ArrayList();
+    protected List versions = new ArrayList();
 
-    List keywords = new ArrayList();
+    protected List keywords = new ArrayList();
 
-    List exceptionFormats = new ArrayList();
+    protected List exceptionFormats = new ArrayList();
 
-    MetadataLinkInfo metadataLink;
+    protected MetadataLinkInfo metadataLink;
 
-    boolean citeCompliant;
+    protected boolean citeCompliant;
 
-    String onlineResource;
+    protected String onlineResource;
 
-    String schemaBaseURL = "http://schemas.opengis.net";
+    protected String schemaBaseURL = "http://schemas.opengis.net";
 
-    boolean verbose;
+    protected boolean verbose;
 
-    String outputStrategy;
+    protected String outputStrategy;
 
-    MetadataMap metadata = new MetadataMap();
+    protected MetadataMap metadata = new MetadataMap();
 
-    Map clientProperties = new HashMap();
+    protected Map clientProperties = new HashMap();
 
     public String getId() {
         return id;
@@ -134,6 +132,10 @@ public class ServiceInfoImpl implements ServiceInfo {
         return keywords;
     }
 
+    public void setKeywords(List keywords) {
+        this.keywords = keywords;
+    }
+
     public List getVersions() {
         return versions;
     }
@@ -144,6 +146,10 @@ public class ServiceInfoImpl implements ServiceInfo {
     
     public List getExceptionFormats() {
         return exceptionFormats;
+    }
+
+    public void setExceptionFormats(List exceptionFormats) {
+        this.exceptionFormats = exceptionFormats;
     }
 
     public MetadataLinkInfo getMetadataLink() {
@@ -180,6 +186,10 @@ public class ServiceInfoImpl implements ServiceInfo {
 
     public Map getClientProperties() {
         return clientProperties;
+    }
+
+    public void setClientProperties(Map clientProperties) {
+        this.clientProperties = clientProperties;
     }
 
     public String getOutputStrategy() {
