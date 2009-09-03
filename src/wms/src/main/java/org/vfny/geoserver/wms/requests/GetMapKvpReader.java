@@ -294,6 +294,10 @@ public class GetMapKvpReader extends WmsKvpRequestReader {
 		String bufferValue = getValue("BUFFER");
 		int buffer = 0;
 
+		if (bufferValue == null) {
+		    // the the alias
+		    bufferValue = getValue("RADIUS");
+		}
 		if (bufferValue != null) {
 			try {
 				buffer = Integer.parseInt(bufferValue);

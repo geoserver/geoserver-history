@@ -465,7 +465,10 @@ public class GetMapXmlReader extends XmlRequestReader {
 
         // Buffer
         String bufferValue = getNodeValue(outputNode, "Buffer");
-
+        if(bufferValue == null) {
+            // fall back on the alias
+            getNodeValue(outputNode, "Radius");
+        }
         if (bufferValue != null) {
             getMapRequest.setBuffer(Integer.parseInt(bufferValue));
         }
