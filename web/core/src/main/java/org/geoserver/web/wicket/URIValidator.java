@@ -1,12 +1,19 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.wicket;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 
+/**
+ * Validates a URI syntax by building a {@link URI} object arounds it
+ * @author Andrea Aime - OpenGeo
+ */
 @SuppressWarnings("serial")
 public class URIValidator extends AbstractValidator {
 
