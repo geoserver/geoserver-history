@@ -1,11 +1,11 @@
 /**
  * jscolor, JavaScript Color Picker
  *
- * @version 1.2.2
+ * @version 1.2.3
  * @license http://www.gnu.org/copyleft/lesser.html  GNU Lesser General Public License
  * @author  Honza Odvarko <honza@odvarko.cz>
  * @created 2008-06-15
- * @updated 2009-02-03
+ * @updated 2009-02-25
  * @link    http://jscolor.com
  */
 
@@ -364,7 +364,7 @@ var jscolor = {
 				var vp = jscolor.getViewPos() // view pos
 				var vs = jscolor.getViewSize() // view size
 				var ps = [ // picker size
-					2*this.pickerBorder + 4*this.pickerInset + 2*this.pickerFace + jscolor.images.pad[0] + 2*jscolor.images.arrow[1] + jscolor.images.sld[0],
+					2*this.pickerBorder + 4*this.pickerInset + 2*this.pickerFace + jscolor.images.pad[0] + 2*jscolor.images.arrow[0] + jscolor.images.sld[0],
 					2*this.pickerBorder + 2*this.pickerInset + 2*this.pickerFace + jscolor.images.pad[1]
 				]
 				var a, b, c
@@ -377,7 +377,8 @@ var jscolor = {
 				var l = (ts[b]+ps[b])/2
 				var pp = [ // picker pos
 					-vp[a]+tp[a]+ps[a] > vs[a] ?
-						(-vp[a]+tp[a]+ts[a]/2 > vs[a]/2 && tp[a]+ts[a]-ps[a] >= 0 ? tp[a]+ts[a]-ps[a] : tp[a]) : tp[a],
+						(-vp[a]+tp[a]+ts[a]/2 > vs[a]/2 && tp[a]+ts[a]-ps[a] >= 0 ? tp[a]+ts[a]-ps[a] : tp[a]) :
+						tp[a],
 					-vp[b]+tp[b]+ts[b]+ps[b]-l+l*c > vs[b] ?
 						(-vp[b]+tp[b]+ts[b]/2 > vs[b]/2 && tp[b]+ts[b]-l-l*c >= 0 ? tp[b]+ts[b]-l-l*c : tp[b]+ts[b]-l+l*c) :
 						(tp[b]+ts[b]-l+l*c >= 0 ? tp[b]+ts[b]-l+l*c : tp[b]+ts[b]-l-l*c)
