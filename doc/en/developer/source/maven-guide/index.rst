@@ -128,10 +128,10 @@ configuration directory to include. The ``configDirectory`` can either be
 specified as an absolute path like in the above example, or it can be specified
 relative to the web module itself::
 
-  mvn clean install -DconfigId=release -DconfigDirectory=../../data
+  mvn clean install -DconfigId=release -DconfigDirectory=../../../data
 
 The above command does the same as the first, however references the 
-configDirectory relative to the web module. This path, ``../../data``, can be 
+configDirectory relative to the web module. This path, ``../../../data``, can be 
 used if the GeoServer checkout has the standard layout.
 
 Running the web module with Jetty
