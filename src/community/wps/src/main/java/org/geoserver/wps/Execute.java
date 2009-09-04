@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import net.opengis.ows11.CodeType;
 import net.opengis.wps10.ComplexDataType;
 import net.opengis.wps10.DataType;
 import net.opengis.wps10.DocumentOutputDefinitionType;
@@ -40,10 +41,13 @@ import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geoserver.wps.ppio.ReferencePPIO;
 import org.geoserver.wps.ppio.XMLPPIO;
 import org.geotools.data.Parameter;
+import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
+import org.geotools.process.Processors;
 import org.geotools.util.Converters;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -74,9 +78,11 @@ public class Execute {
         Date started = Calendar.getInstance().getTime();
         
         //load the process factory
-        ProcessFactory pf = WPSUtils.findProcessFactory(request.getIdentifier());
+        CodeType ct = request.getIdentifier();
+        Name processName = Ows11Util.name(ct);
+        ProcessFactory pf = Processors.createProcessFactory(processName);
         if ( pf == null ) {
-            throw new WPSException( "No such process: " + request.getIdentifier().getValue() );
+            throw new WPSException( "No such process: " + processName );
         }
         
         //parse the inputs for the request
@@ -86,7 +92,7 @@ public class Execute {
             InputType input = (InputType) i.next();
             
             //locate the parameter for this request
-            Parameter p = pf.getParameterInfo().get( input.getIdentifier().getValue() );
+            Parameter p = pf.getParameterInfo(processName).get( input.getIdentifier().getValue() );
             if ( p == null ) {
                 throw new WPSException( "No such parameter: " + input.getIdentifier().getValue() );
             }
@@ -144,7 +150,7 @@ public class Execute {
         Map<String,Object> result = null;
         Throwable error = null;
         try {
-            Process p = pf.create();
+            Process p = pf.create(processName);
             result = p.execute( inputs, null );    
         }
         catch( Throwable t ) {
@@ -155,16 +161,17 @@ public class Execute {
         //build the response
         Wps10Factory f = Wps10Factory.eINSTANCE;
         ExecuteResponseType response = f.createExecuteResponseType();
+        response.setLang("en");
         String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), gs.getProxyBaseUrl());
         response.setServiceInstance(proxifiedBaseUrl + "ows?");
        
         //process 
         final ProcessBriefType process = f.createProcessBriefType();
         response.setProcess( process );
-        process.setIdentifier( Ows11Util.code( request.getIdentifier() ) );
-        process.setProcessVersion(pf.getVersion());
-        process.setTitle( Ows11Util.languageString( pf.getTitle().toString() ) );
-        process.setAbstract( Ows11Util.languageString( pf.getDescription().toString() ) );
+        process.setIdentifier(ct);
+        process.setProcessVersion(pf.getVersion(processName));
+        process.setTitle( Ows11Util.languageString( pf.getTitle(processName).toString() ) );
+        process.setAbstract( Ows11Util.languageString( pf.getDescription(processName).toString() ) );
        
         //status
         response.setStatus( f.createStatusType() );
@@ -191,11 +198,11 @@ public class Execute {
         OutputDefinitionsType outputs = f.createOutputDefinitionsType();
         response.setOutputDefinitions( outputs );
         
-        Map<String,Parameter<?>> outs = pf.getResultInfo(null);
+        Map<String,Parameter<?>> outs = pf.getResultInfo(processName, null);
         Map<String,ProcessParameterIO> ppios = new HashMap();
         
         for ( String key : result.keySet() ) {
-            Parameter p = pf.getResultInfo(null).get( key );
+            Parameter p = pf.getResultInfo(processName, null).get( key );
             if ( p == null ) {
                 throw new WPSException( "No such output: " + key );
             }
@@ -225,7 +232,7 @@ public class Execute {
         for ( String key : result.keySet() ) {
             OutputDataType output = f.createOutputDataType();
             output.setIdentifier(Ows11Util.code(key));
-            output.setTitle(Ows11Util.languageString(pf.getResultInfo(null).get( key ).description));
+            output.setTitle(Ows11Util.languageString(pf.getResultInfo(processName, null).get( key ).description));
             processOutputs.getOutput().add( output );
             
             final Object o = result.get( key );

@@ -15,6 +15,7 @@ import org.geoserver.wps.xml.WPSConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXParseException;
 
 public class WPSTestSupport extends GeoServerTestSupport {
 
@@ -55,7 +56,8 @@ public class WPSTestSupport extends GeoServerTestSupport {
     
         if ( !p.getValidationErrors().isEmpty() ) {
             for ( Iterator e = p.getValidationErrors().iterator(); e.hasNext(); ) {
-                System.out.println( e.next().toString() );
+                SAXParseException ex = (SAXParseException) e.next();
+                System.out.println( ex.getLineNumber() + "," + ex.getColumnNumber() + " -" + ex.toString()  );
             }
             fail( "Document did not validate.");
         }

@@ -14,10 +14,14 @@ import net.opengis.wps10.DataInputsType1;
 import net.opengis.wps10.ExecuteType;
 import net.opengis.wps10.InputType;
 
+import org.geoserver.ows.Ows11Util;
 import org.geotools.data.Parameter;
+import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
+import org.geotools.process.ProcessException;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.opengis.feature.type.Name;
 import org.opengis.util.ProgressListener;
 
 /**
@@ -29,6 +33,7 @@ public class Executor {
     private Process             process;
     private Map<String, Object> inputs;
     private ProcessFactory      factory;
+    private Name              name;
 
     /**
      * Checks and decodes the process inputs from the request
@@ -39,19 +44,20 @@ public class Executor {
     @SuppressWarnings("unchecked")
     public Executor(ExecuteType request, WPSInfo wps) {
         CodeType identifier = request.getIdentifier();
-        this.factory        = this.findProcessFactory(identifier);
+        this.name           = Ows11Util.name(identifier);
+        this.factory        = Processors.createProcessFactory(name);
         DataTransformer dataTransformer = new DataTransformer(request.getBaseUrl());
 
         if (null == factory) {
             throw new WPSException("InvalidParameterValue", "Identifier");
         }
 
-        if (false == dataTransformer.isTransmutable(this.factory)) {
+        if (false == dataTransformer.isTransmutable(this.factory, name)) {
             throw new WPSException("InvalidParameterValue", "Identifier");
         }
 
         // Check inputs
-        Map<String, Parameter<?>> parameterInfo = factory.getParameterInfo();
+        Map<String, Parameter<?>> parameterInfo = factory.getParameterInfo(name);
         DataInputsType1           requestInputs = request.getDataInputs();
 
         this.checkInputs(parameterInfo, requestInputs);
@@ -60,7 +66,7 @@ public class Executor {
         this.inputs = dataTransformer.decodeInputs(request.getDataInputs().getInput(), parameterInfo);
 
         // Get it ready to execute
-        this.process = factory.create();
+        this.process = factory.create(name);
     }
 
     /**
@@ -77,7 +83,7 @@ public class Executor {
      *
      * @return
      */
-    public Map<String, Object> execute() {
+    public Map<String, Object> execute() throws ProcessException {
         ProgressListener progress = null;
 
         Map<String, Object> outputs = this.process.execute(this.inputs, progress);
@@ -93,7 +99,7 @@ public class Executor {
      * @param outputs
      */
     private void checkOutputs(Map<String, Object> outputs) {
-        Map<String, Parameter<?>> resultInfo = this.factory.getResultInfo(null);
+        Map<String, Parameter<?>> resultInfo = this.factory.getResultInfo(name, null);
 
         for(String key : resultInfo.keySet()) {
             if (0 != resultInfo.get(key).minOccurs) {
@@ -161,14 +167,5 @@ public class Executor {
 
         return;
     }
-
-    private ProcessFactory findProcessFactory(CodeType name) {
-        for(ProcessFactory pf : Processors.getProcessFactories()) {
-            if (pf.getName().equals(name.getValue())) {
-                return pf;
-            }
-        }
-
-        return null;
-    }
+    
 }

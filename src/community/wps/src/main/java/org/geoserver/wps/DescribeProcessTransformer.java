@@ -10,15 +10,18 @@ import java.util.Locale;
 import net.opengis.ows11.CodeType;
 import net.opengis.wps10.DescribeProcessType;
 
+import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.wps.transmute.ComplexTransmuter;
 import org.geoserver.wps.transmute.LiteralTransmuter;
 import org.geoserver.wps.transmute.Transmuter;
 import org.geotools.data.Parameter;
+import org.geotools.feature.NameImpl;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.feature.type.Name;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -91,69 +94,61 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
                 }
 
                 for (Object identifier : this.request.getIdentifier()) {
-                    this.processDescription(((CodeType)identifier).getValue());
+                    CodeType ct = (CodeType) identifier; 
+                    this.processDescription(Ows11Util.name(ct));
                 }
 
                 end("wps:ProcessDescriptions");
             }
 
-            private void processDescription(String identifier) {
-                if ("all".equalsIgnoreCase(identifier)) {
+            private void processDescription(Name identifier) {
+                if ("all".equalsIgnoreCase(identifier.getLocalPart()) && identifier.getNamespaceURI() == null) {
                     this.processDescriptionAll();
 
                     return;
                 }
 
-                ProcessFactory pf = this.findProcessFactory(identifier);
+                ProcessFactory pf = Processors.createProcessFactory(identifier);
 
                 if (null == pf) {
                     throw new WPSException("Invalid identifier", "InvalidParameterValue");
                 }
 
-                if (false == this.dataTransformer.isTransmutable(pf)) {
+                if (false == this.dataTransformer.isTransmutable(pf, identifier)) {
                     throw new WPSException("Invalid identifier", "InvalidParameterValue");
                 }
 
-                this.processDescription(pf);
+                this.processDescription(pf, identifier);
             }
 
-            private void processDescription(ProcessFactory pf) {
+            private void processDescription(ProcessFactory pf, Name identifier) {
                 AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "wps:processVersion", "wps:processVersion", "", pf.getVersion());
-                attributes.addAttribute("", "statusSupported",    "statusSupported",    "", Boolean.toString(pf.supportsProgress()));
+                attributes.addAttribute("", "wps:processVersion", "wps:processVersion", "", pf.getVersion(identifier));
+                attributes.addAttribute("", "statusSupported",    "statusSupported",    "", Boolean.toString(pf.supportsProgress(identifier)));
 
                 start("ProcessDescription", attributes);
-                    element("ows:Identifier", pf.getName());
-                    element("ows:Title",      pf.getTitle().toString(this.locale));
-                    element("ows:Abstract",   pf.getDescription().toString(this.locale));
-                    this.dataInputs(pf);
-                    this.processOutputs(pf);
+                    element("ows:Identifier", identifier.getURI());
+                    element("ows:Title",      pf.getTitle(identifier).toString(this.locale));
+                    element("ows:Abstract",   pf.getDescription(identifier).toString(this.locale));
+                    this.dataInputs(pf, identifier);
+                    this.processOutputs(pf, identifier);
                 end("ProcessDescription");
             }
 
             private void processDescriptionAll() {
                 for (ProcessFactory pf : Processors.getProcessFactories()) {
-                    if (false == this.dataTransformer.isTransmutable(pf)) {
-                        continue;
+                    for (Name processName : pf.getNames()) {
+                        if (false == this.dataTransformer.isTransmutable(pf, processName)) {
+                            continue;
+                        }
+                        this.processDescription(pf, processName);
                     }
-
-                    this.processDescription(pf);
                 }
             }
 
-            private ProcessFactory findProcessFactory(String name) {
-                for (ProcessFactory pf : Processors.getProcessFactories()) {
-                    if (pf.getName().equals(name)) {
-                        return pf;
-                    }
-                }
-
-                return null;
-            }
-
-            private void dataInputs(ProcessFactory pf) {
+            private void dataInputs(ProcessFactory pf, Name processName) {
                 start("DataInputs");
-                for(Parameter<?> inputIdentifier : pf.getParameterInfo().values()) {
+                for(Parameter<?> inputIdentifier : pf.getParameterInfo(processName).values()) {
                     AttributesImpl attributes = new AttributesImpl();
 
                     // WPS spec specifies non-negative for unlimited inputs, so -1 -> 0
@@ -182,9 +177,9 @@ public abstract class DescribeProcessTransformer extends TransformerBase {
                 end("DataInputs");
             }
 
-            private void processOutputs(ProcessFactory pf) {
+            private void processOutputs(ProcessFactory pf, Name processName) {
                 start("ProcessOutputs");
-                for (Parameter<?> outputIdentifier : pf.getResultInfo(null).values()) {
+                for (Parameter<?> outputIdentifier : pf.getResultInfo(processName, null).values()) {
                     start("Output");
                         element("ows:Identifier", outputIdentifier.key);
                         element("ows:Title",      outputIdentifier.title.toString(      this.locale));

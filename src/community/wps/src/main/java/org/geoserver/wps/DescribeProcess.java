@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import net.opengis.ows11.AnyValueType;
 import net.opengis.ows11.CodeType;
 import net.opengis.ows11.Ows11Factory;
 import net.opengis.wps10.ComplexDataDescriptionType;
@@ -34,7 +33,9 @@ import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geotools.data.Parameter;
+import org.geotools.feature.NameImpl;
 import org.geotools.process.ProcessFactory;
+import org.geotools.process.Processors;
 import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
@@ -76,7 +77,8 @@ public class DescribeProcess {
     }
     
     void processDescription( CodeType id, ProcessDescriptionsType pds ) {
-        ProcessFactory pf = WPSUtils.findProcessFactory( id );
+        Name name = Ows11Util.name(id);
+        ProcessFactory pf = Processors.createProcessFactory(name);
         if ( pf == null ) {
             throw new WPSException( "No such process: " + id.getValue() );
         }
@@ -86,22 +88,22 @@ public class DescribeProcess {
         
         pd.setProcessVersion( "1.0.0" );
         pd.setIdentifier( Ows11Util.code( id.getValue() ) );
-        pd.setTitle( Ows11Util.languageString(pf.getTitle()) );
-        pd.setAbstract( Ows11Util.languageString(pf.getDescription()) );
+        pd.setTitle( Ows11Util.languageString(pf.getTitle(name)) );
+        pd.setAbstract( Ows11Util.languageString(pf.getDescription(name)) );
         
         //data inputs
         DataInputsType inputs = wpsf.createDataInputsType();
         pd.setDataInputs(inputs);
-        dataInputs( inputs, pf );
+        dataInputs( inputs, pf, name );
         
         //process outputs
         ProcessOutputsType outputs = wpsf.createProcessOutputsType();
         pd.setProcessOutputs( outputs );
-        processOutputs( outputs, pf );
+        processOutputs( outputs, pf, name );
      }
     
-    void dataInputs( DataInputsType inputs, ProcessFactory pf ) {
-        for(Parameter<?> p : pf.getParameterInfo().values()) {
+    void dataInputs( DataInputsType inputs, ProcessFactory pf, Name name) {
+        for(Parameter<?> p : pf.getParameterInfo(name).values()) {
             InputDescriptionType input = wpsf.createInputDescriptionType();
             inputs.getInput().add( input );
             
@@ -166,8 +168,8 @@ public class DescribeProcess {
         }
     }
     
-    void processOutputs( ProcessOutputsType outputs, ProcessFactory pf ) {
-        Map<String,Parameter<?>> outs = pf.getResultInfo(null);
+    void processOutputs( ProcessOutputsType outputs, ProcessFactory pf, Name name) {
+        Map<String,Parameter<?>> outs = pf.getResultInfo(name, null);
         for ( Parameter p : outs.values() ) {
             OutputDescriptionType output = wpsf.createOutputDescriptionType();
             outputs.getOutput().add( output );
