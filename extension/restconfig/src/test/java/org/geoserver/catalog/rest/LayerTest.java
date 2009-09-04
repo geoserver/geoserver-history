@@ -18,6 +18,8 @@ public class LayerTest extends CatalogRESTTestSupport {
         
         assertEquals( "layer", dom.getDocumentElement().getNodeName() );
         assertXpathEvaluatesTo("Buildings", "/layer/name", dom );
+        assertXpathEvaluatesTo("http://localhost/geoserver/rest/styles/Buildings.xml",
+                "/layer/defaultStyle/atom:link/attribute::href", dom);
     }
     
     public void testGetAsHTML() throws Exception {
