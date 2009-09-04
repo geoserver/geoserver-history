@@ -1,4 +1,4 @@
-.. _ows_servives:
+.. _ows_services:
 
 OWS Services
 ============
