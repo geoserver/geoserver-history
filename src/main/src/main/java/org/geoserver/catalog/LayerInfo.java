@@ -5,7 +5,6 @@
 package org.geoserver.catalog;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -173,7 +172,7 @@ public interface LayerInfo extends CatalogInfo {
      * </p>
      * 
      */
-    Map<String,Serializable> getMetadata();
+    MetadataMap getMetadata();
 
     /**
      * Gets the attribution information for this layer.  
