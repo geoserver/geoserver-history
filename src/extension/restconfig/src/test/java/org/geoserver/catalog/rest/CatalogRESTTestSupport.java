@@ -28,6 +28,7 @@ public class CatalogRESTTestSupport extends GeoServerTestSupport {
         namespaces.put("html", "http://www.w3.org/1999/xhtml");
         namespaces.put("sld", "http://www.opengis.net/sld");
         namespaces.put("ogc", "http://www.opengis.net/ogc");
+        namespaces.put("atom", "http://www.w3.org/2005/Atom");
         
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
         xp = XMLUnit.newXpathEngine();

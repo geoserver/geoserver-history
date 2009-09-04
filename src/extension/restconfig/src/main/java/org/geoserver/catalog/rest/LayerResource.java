@@ -91,7 +91,7 @@ public class LayerResource extends AbstractCatalogResource {
             protected void postEncodeReference(Object obj, String ref,
                     HierarchicalStreamWriter writer, MarshallingContext context) {
                 if ( obj instanceof StyleInfo ) {
-                    encodeLink( "/styles/" + ref, writer);    
+                    encodeLink( "/styles/" + ((StyleInfo)obj).getName(), writer);    
                 }
                 if ( obj instanceof ResourceInfo ) {
                     ResourceInfo r = (ResourceInfo) obj;
