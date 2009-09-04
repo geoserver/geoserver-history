@@ -8,10 +8,13 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 
 import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
@@ -34,7 +37,6 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     /** JPEG Native Acceleration Mode * */
     private Boolean JPEGNativeAcc;
 
-	private boolean hasJAIWriter;
 
     public JPEGMapProducer(WMS wms) {
         super(MIME_TYPE, wms);
@@ -43,12 +45,6 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
          * TODO To check Native Acceleration mode use the following variable
          */
         this.JPEGNativeAcc = wms.getJPEGNativeAcceleration();
-        try{
-        	Class.forName("com.sun.media.imageioimpl.plugins.jpeg.CLibJPEGImageWriter") ;
-        	hasJAIWriter=true;
-        }catch (ClassNotFoundException e) {
-        	hasJAIWriter=false;
-		}
         
         
     }
@@ -76,16 +72,29 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("About to write a JPEG image.");
         }
 
-        if((JPEGNativeAcc.booleanValue()||!hasJAIWriter)&&(image.getMinX()!=0 || image.getMinY()!=0)) {
+        if(image.getMinX()!=0 || image.getMinY()!=0) {
         	// the JPEG native writer does a direct access to the writable raster in a way
             // that does not respect minx/miny settings. This in turn results in the issue
             // described at http://jira.codehaus.org/browse/GEOS-2061
-            final WritableRaster raster=(WritableRaster) image.getData();
-        	final BufferedImage finalImage= new BufferedImage(image.getColorModel(),raster.createWritableTranslatedChild(0, 0),image.getColorModel().isAlphaPremultiplied(),null);
+             
+//            final WritableRaster raster= RasterFactory.createWritableRaster(
+//            		image.getSampleModel().createCompatibleSampleModel(image.getWidth(), image.getHeight()), 
+//            		new Point(0,0)); 
+        	final BufferedImage finalImage= new BufferedImage(
+        			image.getColorModel(),
+//        			raster,
+        			((WritableRaster)image.getData()).createWritableTranslatedChild(0,0),
+        			image.getColorModel().isAlphaPremultiplied(),null);
+//        	final Graphics2D g2D= finalImage.createGraphics();
+//        	g2D.drawRenderedImage(image, AffineTransform.getTranslateInstance());
+//        	g2D.dispose();
             new ImageWorker(finalImage).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
-        } else {
-        	new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
+            
+            ImageIO.write(finalImage, "png", new File("/home/simone/gt-renderer/finalImage.png"));
+            ImageIO.write(image, "png",new File( "/home/simone/gt-renderer/mage.png"));
         }
+        else
+        	new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
