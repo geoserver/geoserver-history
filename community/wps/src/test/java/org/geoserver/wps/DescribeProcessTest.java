@@ -12,7 +12,8 @@ public class DescribeProcessTest extends WPSTestSupport {
     }
     
     public void testGetBuffer() throws Exception {
-        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=buffer");
+        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gt:buffer");
+        print(d);
         testBufferDescription(d);
     }
     
@@ -22,9 +23,10 @@ public class DescribeProcessTest extends WPSTestSupport {
         		"xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
         		"xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
         		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" + 
-        		"    <ows:Identifier>buffer</ows:Identifier>\r\n" + 
+        		"    <ows:Identifier>gt:buffer</ows:Identifier>\r\n" + 
         		"</DescribeProcess>";
         Document d = postAsDOM(root(), request);
+        print(d);
         testBufferDescription(d);
     }
 

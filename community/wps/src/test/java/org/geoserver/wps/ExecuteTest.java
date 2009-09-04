@@ -1,8 +1,9 @@
 package org.geoserver.wps;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.geotools.gml3.GMLConfiguration;
@@ -10,15 +11,13 @@ import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-
 public class ExecuteTest extends WPSTestSupport {
 
     public void testDataInline() throws Exception {
         String xml =  
           "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-            "<ows:Identifier>buffer</ows:Identifier>" + 
+            "<ows:Identifier>gt:buffer</ows:Identifier>" + 
              "<wps:DataInputs>" + 
                 "<wps:Input>" + 
                     "<ows:Identifier>geom1</ows:Identifier>" + 
@@ -64,7 +63,7 @@ public class ExecuteTest extends WPSTestSupport {
         String xml =  
           "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-            "<ows:Identifier>buffer</ows:Identifier>" + 
+            "<ows:Identifier>gt:buffer</ows:Identifier>" + 
              "<wps:DataInputs>" + 
                 "<wps:Input>" + 
                     "<ows:Identifier>geom1</ows:Identifier>" + 
@@ -103,7 +102,7 @@ public class ExecuteTest extends WPSTestSupport {
     public void testFeatureCollectionInline() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>BufferFeatureCollection</ows:Identifier>" + 
+              "<ows:Identifier>gt:BufferFeatureCollection</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -130,6 +129,7 @@ public class ExecuteTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
+        print(d);
         checkValidationErrors(d);
         
         assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
@@ -138,40 +138,6 @@ public class ExecuteTest extends WPSTestSupport {
         assertXpathExists( 
             "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
     }
-    
-//    public void testFeatureCollectionInlineRawOutput() throws Exception {
-//        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
-//              "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-//              "<ows:Identifier>BufferFeatureCollection</ows:Identifier>" + 
-//               "<wps:DataInputs>" + 
-//                  "<wps:Input>" + 
-//                      "<ows:Identifier>features</ows:Identifier>" + 
-//                      "<wps:Data>" +
-//                        "<wps:ComplexData>" + 
-//                             readFileIntoString("states-FeatureCollection.xml") + 
-//                        "</wps:ComplexData>" + 
-//                      "</wps:Data>" +     
-//                  "</wps:Input>" + 
-//                  "<wps:Input>" + 
-//                     "<ows:Identifier>buffer</ows:Identifier>" + 
-//                     "<wps:Data>" + 
-//                       "<wps:LiteralData>10</wps:LiteralData>" + 
-//                     "</wps:Data>" + 
-//                  "</wps:Input>" + 
-//                 "</wps:DataInputs>" +
-//                 "<wps:ResponseForm>" + 
-//                 "  <wps:RawDataOutput>" + 
-//                 "      <ows:Identifier>geom-buffered</ows:Identifier>" + 
-//                 "  </wps:RawDataOutput>" + 
-//                 "</wps:ResponseForm>" +
-//               "</wps:Execute>";
-//        
-//        Document d = postAsDOM( "wps", xml );
-//        print( d );
-//        checkValidationErrors(d, new GMLConfiguration());
-//        
-//        assertEquals( "wfs:FeatureCollection", d.getDocumentElement().getNodeName() );
-//    }
     
     String readFileIntoString( String filename ) throws IOException {
         BufferedReader in = 
@@ -191,7 +157,7 @@ public class ExecuteTest extends WPSTestSupport {
             "<wps:Execute service=\"WPS\" version=\"1.0.0\"\r\n" + 
             "        xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + 
             "        xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n" + 
-            "        <ows:Identifier>DoubleAddition</ows:Identifier>\r\n" + 
+            "        <ows:Identifier>gt:DoubleAddition</ows:Identifier>\r\n" + 
             "        <wps:DataInputs>\r\n" + 
             "                <wps:Input>\r\n" + 
             "                        <ows:Identifier>input_a</ows:Identifier>\r\n" + 

@@ -3,7 +3,6 @@ package org.geoserver.wps;
 import junit.framework.Test;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 
 public class GetCapabilitiesTest extends WPSTestSupport {
 
@@ -11,7 +10,6 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     public static Test suite() {
         return new OneTimeTestSetup(new GetCapabilitiesTest());
     }
-    
     
     public void testGetBasic() throws Exception {
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities" );

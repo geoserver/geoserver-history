@@ -29,6 +29,7 @@ import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.opengis.feature.type.Name;
 
 /**
  * @author Lucas Reed, Refractions Research Inc
@@ -125,13 +126,16 @@ public class GetCapabilities {
         caps.setProcessOfferings( po );
         
         for(ProcessFactory pf : Processors.getProcessFactories()) {
-            ProcessBriefType p = wpsf.createProcessBriefType();
-            p.setProcessVersion(pf.getVersion());
-            po.getProcess().add( p );
+            for (Name name : pf.getNames()) {
+                ProcessBriefType p = wpsf.createProcessBriefType();
+                p.setProcessVersion(pf.getVersion(name));
+                po.getProcess().add( p );
+                
+                p.setIdentifier(Ows11Util.code(name));
+                p.setTitle(Ows11Util.languageString( pf.getTitle(name).toString()));
+                p.setAbstract(Ows11Util.languageString( pf.getDescription(name).toString()));
+            }
             
-            p.setIdentifier( Ows11Util.code( pf.getName()) );
-            p.setTitle( Ows11Util.languageString( pf.getTitle().toString() ) );
-            p.setAbstract( Ows11Util.languageString( pf.getDescription().toString() ) );
         }
 
         LanguagesType1 languages = wpsf.createLanguagesType1();

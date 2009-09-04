@@ -32,6 +32,7 @@ import org.geoserver.wps.transmute.LiteralTransmuter;
 import org.geoserver.wps.transmute.Transmuter;
 import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
+import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
@@ -249,8 +250,8 @@ public class DataTransformer {
      * @param pf
      * @return
      */
-    public boolean isTransmutable(ProcessFactory pf) {
-        for(Parameter<?> param : pf.getParameterInfo().values()) {
+    public boolean isTransmutable(ProcessFactory pf, Name name) {
+        for(Parameter<?> param : pf.getParameterInfo(name).values()) {
             try {
                 this.getDefaultTransmuter(param.type);
             } catch(Exception e) {
@@ -258,7 +259,7 @@ public class DataTransformer {
             }
         }
 
-        for(Parameter<?> param : pf.getResultInfo(null).values()) {
+        for(Parameter<?> param : pf.getResultInfo(name, null).values()) {
             try {
                 this.getDefaultTransmuter(param.type);
             } catch(Exception e) {
