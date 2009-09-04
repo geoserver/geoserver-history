@@ -5,21 +5,19 @@
 
 package org.geoserver.wps.xml.v1_0_0;
 
-import java.util.Map;
-import java.util.List;
 import java.io.Reader;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.xml.namespace.QName;
 
-import org.xml.sax.InputSource;
-
-import org.geotools.xml.Parser;
+import org.geoserver.ows.XmlRequestReader;
+import org.geoserver.wps.WPSException;
 import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
 import org.geotools.wps.WPSConfiguration;
-
-import org.geoserver.wps.WPSException;
-import org.geoserver.ows.XmlRequestReader;
+import org.geotools.xml.Parser;
 
 /**
  * WPS XML parser

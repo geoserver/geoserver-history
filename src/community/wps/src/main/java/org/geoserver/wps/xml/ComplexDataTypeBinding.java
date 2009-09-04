@@ -1,16 +1,16 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.xml;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import net.opengis.wps10.ComplexDataType;
 import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.wps.ComplexDataEncoderDelegate;
-import org.geotools.wps.WPS;
-import org.geotools.xml.AbstractComplexEMFBinding;
 
 public class ComplexDataTypeBinding extends org.geotools.wps.bindings.ComplexDataTypeBinding {
 

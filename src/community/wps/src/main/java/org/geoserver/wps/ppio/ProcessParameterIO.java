@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.ppio;
 
 import java.util.ArrayList;
@@ -5,13 +9,7 @@ import java.util.List;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.Parameter;
-import org.geotools.gml2.GML;
 import org.springframework.context.ApplicationContext;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * Represents the input / output of a parameter in a process.

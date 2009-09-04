@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.ppio;
 
 import java.io.InputStream;
@@ -12,6 +16,9 @@ import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.xml.sax.ContentHandler;
 
+/**
+ * Allows reading and writing a WFS feature collection
+ */
 public class WFSPPIO extends XMLPPIO {
 
     protected WFSPPIO() {
