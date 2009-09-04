@@ -1,13 +1,12 @@
 package org.geoserver.security.decorators;
 
-import java.io.Serializable;
-import java.util.Map;
 import java.util.Set;
 
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.impl.AbstractDecorator;
@@ -36,7 +35,7 @@ public class DecoratingLayerInfo extends AbstractDecorator<LayerInfo> implements
         return delegate.getLegend();
     }
 
-    public Map<String, Serializable> getMetadata() {
+    public MetadataMap getMetadata() {
         return delegate.getMetadata();
     }
 
