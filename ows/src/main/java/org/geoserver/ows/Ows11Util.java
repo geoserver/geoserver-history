@@ -12,7 +12,9 @@ import java.util.Locale;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.ServiceException;
+import org.geotools.feature.NameImpl;
 import org.geotools.xml.EMFUtils;
+import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
 import net.opengis.ows11.CodeType;
@@ -55,6 +57,29 @@ public class Ows11Util {
         code.setValue( value );
         
         return code;
+    }
+    
+    public static CodeType code(Name name) {
+        CodeType code = f.createCodeType();
+//        code.setCodeSpace(name.getNamespaceURI());
+//        code.setValue(name.getLocalPart());
+        code.setValue(name.getURI());
+        
+        return code;
+    }
+    
+    public static Name name(CodeType code) {
+        // mushy translation, code type seems to never have a code space in practice
+        if(code.getCodeSpace() != null) {
+            return new NameImpl(code.getCodeSpace(), code.getValue());
+        } else {
+            String[] parsed = code.getValue().trim().split(":");
+            if(parsed.length == 1) {
+                return new NameImpl(parsed[0]);
+            } else {
+                return new NameImpl(parsed[0], parsed[1]);
+            }
+        }
     }
     
     public static CodeType code( CodeType value ) {
