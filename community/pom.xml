@@ -101,5 +101,11 @@
         <module>scriptlet</module>
       </modules>
     </profile>
+    <profile>
+      <id>hibernate</id>
+      <modules>
+        <module>hibernate</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
