@@ -37,13 +37,16 @@
             <artifactId>gt-process</artifactId>
             <version>${gt.version}</version>
         </dependency>
-        <!-- 
         <dependency>
           <groupId>es.unex.sextante.lib</groupId>
           <artifactId>sextante_vectorTools</artifactId>
           <version>0.4-SNAPSHOT</version>
         </dependency>
-         -->
+        <dependency>
+          <groupId>es.unex.sextante.bindings</groupId>
+          <artifactId>geotools26</artifactId>
+          <version>0.4-SNAPSHOT</version>
+        </dependency>
         <dependency>
           <groupId>xmlunit</groupId>
           <artifactId>xmlunit</artifactId>
