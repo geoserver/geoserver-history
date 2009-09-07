@@ -154,9 +154,7 @@ public class HibCatalogImpl
     public void add(StoreInfo store) {
 
     if(LOGGER.isLoggable(Level.INFO))
-    	LOGGER.info("============== ADDING STORE " + store.getName() );
-    new RuntimeException("============== ADDING STORE " + store.getName()).printStackTrace();
-
+    	LOGGER.info("Adding store " +  store.getClass().getSimpleName() + " " + store.getName() );
 
         if ( store.getWorkspace() == null ) {
             store.setWorkspace( catalogDAO.getDefaultWorkspace() );
@@ -169,7 +167,8 @@ public class HibCatalogImpl
         catalogDAO.save(unwrapped);
         ((StoreInfoImpl)store).setId(store.getId()); // make the ModificationProxy aware of the id
         if(LOGGER.isLoggable(Level.INFO))
-        	LOGGER.info("============== ADDED STORE " + store.getName() + " WITH ID " + store.getId());
+        	LOGGER.info("Added store " +  store.getClass().getSimpleName()
+                        + "[id: " + store.getId() + " name:" + store.getName() + "]");
         added(store);
     }
 
@@ -1606,7 +1605,9 @@ public class HibCatalogImpl
         if (layer.getAttribution() == null) {
             layer.setAttribution(getFactory().createAttribution());
         }
-        resolve(layer.getDefaultStyle());
+        if (layer.getDefaultStyle() != null) {
+            resolve(layer.getDefaultStyle());
+        }
         resolve(layer.getResource());
         resolveCollections(layer);
     }
