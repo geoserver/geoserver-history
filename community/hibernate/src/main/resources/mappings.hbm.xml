@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+  <!-- ======================================================================= -->
+  <!-- ===                                                                 === -->
+  <!-- ===    CATALOG                                                      === -->
+  <!-- ===                                                                 === -->
+  <!-- ======================================================================= -->
+  <!-- 
+      TYPE DEFINITIONS 
+    -->
+  <typedef class="org.geoserver.catalog.hibernate.types.FilterType" name="filter"/>
+  <typedef class="org.geoserver.catalog.hibernate.types.BoundingBoxType" name="boundingBox"/>
+  <typedef class="org.geoserver.catalog.hibernate.types.NumberRangeType" name="numberRange"/>
+  <!--
+       CATALOG
+    -->
+  <!-- ===================================================================== -->
+  <!-- StoreInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.impl.StoreInfoImpl" table="STORES">
+    <cache usage="read-write"/>
+    <id column="STORE_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <discriminator column="STORE_TYPE" type="string"/>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="DESCRIPTION" name="description"/>
+    <property column="ENABLED" name="enabled"/>
+    <many-to-one class="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb" column="WORKSPACE" foreign-key="store_workspace_fk" lazy="false" name="workspace"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="store_metadata_fk" lazy="false" name="metadata"/>
+    <!-- ===================================================================== -->
+    <!-- DataStoreInfo -->
+    <!-- ===================================================================== -->
+    <subclass discriminator-value="DataStore" name="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb">
+      <map cascade="all-delete-orphan" lazy="false" name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS">
+        <key column="DATA_STORE_ID"/>
+        <map-key type="java.lang.String"/>
+        <element length="100000" type="java.io.Serializable"/>
+      </map>
+    </subclass>
+    <!-- ===================================================================== -->
+    <!-- CoverageStoreInfo -->
+    <!-- ===================================================================== -->
+    <subclass discriminator-value="CoverageStore" extends="org.geoserver.catalog.hibernate.beans.StoreInfoImplHb" name="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb">
+      <property column="COVERAGE_STORE_TYPE" name="type"/>
+      <property column="COVERAGE_STORE_URL" name="URL"/>
+    </subclass>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- StyleInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" table="STYLES">
+    <cache usage="read-write"/>
+    <id column="STYLE_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="FILENAME" name="filename"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- NamespaceInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb" table="NAMESPACES">
+    <cache usage="read-write"/>
+    <id column="NS_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NS_PREFIX" name="prefix" unique="true"/>
+    <property column="NS_URI" name="URI" unique="true"/>
+    <property column="IS_DEFAULT" name="default"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="namespace_metadata_fk" lazy="false" name="metadata"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- WorkspaceInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb" table="WORKSPACES">
+    <cache usage="read-write"/>
+    <id column="WS_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name" unique="true"/>
+    <property column="IS_DEFAULT" name="default"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="workspace_metadata_fk" lazy="false" name="metadata"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- MetadataLinkInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.impl.MetadataLinkInfoImpl" table="METADATALINKS">
+    <cache usage="read-write"/>
+    <id column="ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="TYPE" name="type"/>
+    <property column="ABOUT" name="about"/>
+    <property column="METADATA_TYPE" name="metadataType"/>
+    <property column="CONTENT" name="content"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- ResourceInfo -->
+  <!-- ===================================================================== -->
+  <class abstract="true" name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES">
+    <cache usage="read-write"/>
+    <id column="RESOURCE_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="NATIVE_NAME" name="nativeName" not-null="true"/>
+    <!-- property name="prefixedName" column="PREFIXED_NAME"/ -->
+    <many-to-one class="org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb" column="NAMESPACE" foreign-key="resource_namespace_fk" lazy="false" name="namespace"/>
+    <property column="TITLE" name="title"/>
+    <property column="ABSTRACT" name="abstract"/>
+    <property column="DESCRIPTION" name="description"/>
+    <property column="ENABLED" name="enabled"/>
+    <list cascade="all" lazy="false" name="alias" table="RESOURCE_ALIASES">
+      <key column="RESOURCE_ID"/>
+      <list-index column="RES_ALIAS_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <list cascade="all" lazy="false" name="keywords" table="RESOURCE_KEYWORDS">
+      <key column="RESOURCE_ID"/>
+      <list-index column="RES_KW_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <list cascade="all" lazy="false" name="metadataLinks" table="RESOURCE_METADATA_LINK">
+      <key column="RESOURCE_ID"/>
+      <list-index column="RES_METADATA_LINK_INDEX"/>
+      <many-to-many class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
+    </list>
+    <property name="nativeBoundingBox" type="boundingBox">
+      <column name="MINX"/>
+      <column name="MINY"/>
+      <column name="MAXX"/>
+      <column name="MAXY"/>
+      <column name="CRS"/>
+    </property>
+    <property name="latLonBoundingBox" type="boundingBox">
+      <column name="LL_MINX"/>
+      <column name="LL_MINY"/>
+      <column name="LL_MAXX"/>
+      <column name="LL_MAXY"/>
+      <column name="LL_CRS"/>
+    </property>
+    <property column="SRS" name="SRS"/>
+    <!-- property name="CRS" column="RESOURCE_CRS" type="java.io.Serializable" length="100000"/ -->
+    <property column="NATIVE_CRS" length="100000" name="nativeCRS" type="java.io.Serializable"/>
+    <property column="PROJECTION_POLICY" name="projectionPolicy"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="resource_metadata_fk" lazy="false" name="metadata"/>
+    <many-to-one class="org.geoserver.catalog.impl.StoreInfoImpl" column="STORE" foreign-key="resource_store_fk" lazy="false" name="store"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- FeatureTypeInfo -->
+  <!-- ===================================================================== -->
+  <joined-subclass extends="org.geoserver.catalog.impl.ResourceInfoImpl" name="org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb" table="FEATURETYPES">
+    <key column="RESOURCE_ID"/>
+    <many-to-one class="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb" column="STORE" foreign-key="featuretype_store_fk" lazy="false" name="store"/>
+    <property column="FILTER" name="filter" type="filter"/>
+    <list cascade="all" lazy="false" name="attributes" table="FEATURETYPES_ATTR">
+      <key column="featuretype" foreign-key="attrib_featuretype_listpk"/>
+      <list-index column="FTYPES_ATTR_IDX"/>
+      <one-to-many class="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb"/>
+    </list>
+  </joined-subclass>
+  <!-- ===================================================================== -->
+  <!-- CoverageInfo -->
+  <!-- ===================================================================== -->
+  <joined-subclass extends="org.geoserver.catalog.impl.ResourceInfoImpl" name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb" table="COVERAGES">
+    <key column="RESOURCE_ID"/>
+    <property column="NATIVE_FORMAT" name="nativeFormat"/>
+    <!--		<property name="nativeSrsWKT" column="NATIVE_SRS"/> -->
+    <property column="GRID_GEOMETRY" length="100000" name="grid" type="java.io.Serializable"/>
+    <!-- property name="fields" column="FIELDS" type="org.geotools.coverage.io.impl.range.DefaultRangeType"/ -->
+    <list cascade="all" lazy="false" name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS">
+      <key column="COVERAGE_ID"/>
+      <list-index column="CV_FORMAT_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <list cascade="all" lazy="false" name="requestSRS" table="COVERAGE_REQUEST_SRS">
+      <key column="COVERAGE_ID"/>
+      <list-index column="CV_REQUEST_SRS_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <list cascade="all" lazy="false" name="responseSRS" table="COVERAGE_RESPONSE_SRS">
+      <key column="COVERAGE_ID"/>
+      <list-index column="CV_RESPONSE_SRS_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <property column="DEFAULT_INTERPOLATION_METHOD" name="defaultInterpolationMethod"/>
+    <list cascade="all" lazy="false" name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS">
+      <key column="COVERAGE_ID"/>
+      <list-index column="CV_INTERP_METHOD_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <map cascade="all" lazy="false" name="parameters" table="COVERAGE_PARAMETERS">
+      <key column="COVERAGE_ID"/>
+      <map-key type="java.lang.String"/>
+      <element type="java.lang.String"/>
+    </map>
+    <!--
+        <list name="modelRuns" table="COVERAGE_MODEL_RUNNINGS" cascade="all">
+    	    <key column="COVERAGE_ID"/>
+    	    <list-index column="CV_MODEL_RUN_INDEX"/>
+			<one-to-many class="org.geoserver.catalog.impl.ModelRunInfoImpl"/>
+    	</list>
+    	
+    	<list name="geophysicalParameters" table="COVERAGE_GEOPHYSIC_PARAMS" cascade="all">
+		    <key column="COVERAGE_ID"/>
+		    <list-index column="CV_GP_INDEX"/>
+		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
+    	</list>
+-->
+    <many-to-one class="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb" column="STORE" foreign-key="coverage_store_fk" lazy="false" name="store"/>
+  </joined-subclass>
+  <!-- ===================================================================== -->
+  <!-- LegendInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.impl.LegendInfoImpl" table="LEGENDS">
+    <cache usage="read-write"/>
+    <id column="LEGEND_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="WIDTH" name="width"/>
+    <property column="HEIGHT" name="height"/>
+    <property column="FORMAT" name="format"/>
+    <property column="ONLINE_RESOURCE" name="onlineResource"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- LayerInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb" table="LAYERS">
+    <cache usage="read-write"/>
+    <id column="LAYER_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="PATH" name="path"/>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="TYPE" length="100000" name="type" type="java.io.Serializable"/>
+    <property column="ENABLED" name="enabled"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" column="DEFAULT_STYLE" foreign-key="layer_style_fk" lazy="false" name="defaultStyle"/>
+    <set lazy="false" name="styles" table="LAYER_STYLES">
+      <key column="LAYER_ID"/>
+      <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" lazy="false"/>
+    </set>
+    <!-- fixme: maybe these reosurces should be persisted by hand, avoiding dups. -->
+    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="layer_resource_fk" lazy="false" name="resource"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.LegendInfoImpl" column="LEGEND" foreign-key="layer_legend_fk" lazy="false" name="legend"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="layer_metadata_fk" lazy="false" name="metadata"/>
+    <one-to-one cascade="all" class="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" foreign-key="layer_attribution_fk" lazy="false" name="attribution"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- MapInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.impl.MapInfoImpl" table="MAPS">
+    <cache usage="read-write"/>
+    <id column="MAP_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="ENABLED" name="enabled"/>
+    <list lazy="false" name="layers">
+      <key column="MAP_ID"/>
+      <list-index column="MAP_LAYER_INDEX"/>
+      <one-to-many class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"/>
+    </list>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- LayerGroup -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb" table="LAYERGROUPS">
+    <cache usage="read-write"/>
+    <id column="LGROUP_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="PATH" name="path"/>
+    <list name="layers">
+      <key column="LGROUP_ID"/>
+      <list-index column="LGROUP_LAYER_INDEX"/>
+      <one-to-many class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"/>
+    </list>
+    <list name="styles">
+      <key column="LGROUP_ID"/>
+      <list-index column="LGROUP_STYLE_INDEX"/>
+      <one-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"/>
+    </list>
+    <!-- TODO: envelope missing -->
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="layergroup_metadata_fk" lazy="false" name="metadata"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- MetadataMap -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.MetadataMap" table="METADATA">
+    <cache usage="read-write"/>
+    <id column="MD_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <map cascade="all" lazy="false" name="map" table="METADATACONTENT">
+      <key column="MD_ID"/>
+      <map-key column="KEY" type="java.lang.String"/>
+      <element length="100000" type="java.io.Serializable"/>
+    </map>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- AttributionInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" table="ATTRIBUTION">
+    <cache usage="read-write"/>
+    <id column="ATTRIBUTION_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="TITLE" name="title"/>
+    <property column="HREF" name="href"/>
+    <property column="LOGOURL" name="logoURL"/>
+    <property column="LOGOTYPE" name="logoType"/>
+    <property column="LOGOWIDTH" name="logoWidth"/>
+    <property column="LOGOHEIGHT" name="logoHeight"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- AttributeTypeInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb" table="ATTRIBUTETYPE">
+    <cache usage="read-write"/>
+    <id column="ATTRIBUTE_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name"/>
+    <property column="MAXOCCURS" name="maxOccurs"/>
+    <property column="MINOCCURS" name="minOccurs"/>
+    <property column="NILLABLE" name="nillable"/>
+    <!--<many-to-one column="FEATURETYPE" name="featureType" foreign-key="attribute_featuretype_fk" class="org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb"/>-->
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="attributetype_metadata_fk" lazy="false" name="metadata"/>
+    <!-- TODO: map Attribute field -->
+  </class>
+  <!-- ======================================================================= -->
+  <!-- ===                                                                 === -->
+  <!-- ===    CONFIGURATION                                                === -->
+  <!-- ===                                                                 === -->
+  <!-- ======================================================================= -->
+  <!-- ===================================================================== -->
+  <!-- GeoServerInfo -->
+  <!-- ===================================================================== -->
+  <!--
+  <class abstract="true" name="org.geoserver.config.impl.GeoServerInfoImpl">
+-->
+  <class name="org.geoserver.config.hibernate.beans.GeoServerInfoImplHb" table="GEOSERVER">
+    <cache usage="read-write"/>
+    <id column="GS_ID" name="id" type="string">
+      <generator class="native"/>
+    </id>
+    <!--    <many-to-one column="CONTACT_INFO_ID" name="contact" cascade="all" class="org.geoserver.config.hibernate.beans.ContactInfoImplHb"  lazy="false"  unique="true"/> -->
+    <!-- one-to-one name="imaging" class="org.geoserver.config.impl.ImagingInfoImpl"/ -->
+    <property column="CHARSET" name="charset"/>
+    <property column="TITLE" name="title"/>
+    <property column="ADMIN_USERNAME" name="adminUsername"/>
+    <property column="ADMIN_PASSWORD" name="adminPassword"/>
+    <!-- property name="memoryCapacity" column="MEMORY_CAPACITY"/ -->
+    <!-- property name="memoryThreshold" column="MEMORY_THRESHOLD"/ -->
+    <!--    <property column="MAX_FEATURES" name="maxFeatures"/>-->
+    <property column="NUM_DECIMALS" name="numDecimals"/>
+    <property column="ONLINE_RESOURCE" name="onlineResource"/>
+    <property column="SCHEMA_BASE_URL" name="schemaBaseUrl"/>
+    <property column="PROXY_BASE_URL" name="proxyBaseUrl"/>
+    <property column="VERBOSE_FLAG" name="verbose"/>
+    <property column="VERBOSE_EXCEPTIONS" name="verboseExceptions"/>
+    <!--<property column="LOGGING_LEVEL" name="loggingLevel"/>-->
+    <!--<property column="LOGGING_LOCATION" name="loggingLocation"/>-->
+    <!--<property column="STD_OUT_LOGGING" name="stdOutLogging"/>-->
+    <property column="UPDATE_SEQUENCE" name="updateSequence"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="geoserver_metadata_fk" lazy="false" name="metadata"/>
+    <!--  </class>
+  <union-subclass extends="org.geoserver.config.impl.GeoServerInfoImpl" name="org.geoserver.config.impl.GeoServerInfoImplHb" table="GEOSERVER">
+-->
+    <!--
+    <map cascade="all" lazy="false" name="clientProperties" table="GEOSERVER_CLIENT_PROPS">
+      <key column="GS_ID"/>
+      <map-key type="java.lang.String"/>
+      <element length="100000" type="java.io.Serializable"/>
+    </map>-->
+    <!--  </union-subclass>-->
+    <component class="org.geoserver.config.impl.JAIInfoImpl" name="JAI" lazy="false">
+      <property column="jai_allowInterpolation" name="allowInterpolation" not-null="true"/>
+      <property column="jai_recycling" name="recycling" not-null="true"/>
+      <property column="jai_tilePriority" name="tilePriority" not-null="true"/>
+      <property column="jai_tileThreads" name="tileThreads" not-null="true"/>
+      <property column="jai_memoryCapacity" name="memoryCapacity" not-null="true"/>
+      <property column="jai_memoryThreshold" name="memoryThreshold" not-null="true"/>
+      <property column="jai_imageIOCache" name="imageIOCache" not-null="true"/>
+      <property column="jai_pngAcceleration" name="pngAcceleration" not-null="true"/>
+      <property column="jai_jpegAcceleration" name="jpegAcceleration" not-null="true"/>
+      <property column="jai_allowNativeMosaic" name="allowNativeMosaic" not-null="true"/>
+    </component>
+    <component class="org.geoserver.config.hibernate.beans.ContactInfoImplHb" lazy="false" name="contact">
+      <property column="CONTACT_ID" name="id"/>
+      <property column="CONTACT_ADDRESS" name="address"/>
+      <property column="CONTACT_CITY" name="addressCity"/>
+      <property column="CONTACT_COUNTRY" name="addressCountry"/>
+      <property column="CONTACT_POSTAL_CODE" name="addressPostalCode"/>
+      <property column="CONTACT_STATE" name="addressState"/>
+      <property column="CONTACT_TYPE" name="addressType"/>
+      <property column="CONTACT_EMAIL" name="contactEmail"/>
+      <property column="CONTACT_FACSIMILE" name="contactFacsimile"/>
+      <property column="CONTACT_ORGANIZATION" name="contactOrganization"/>
+      <property column="CONTACT_PERSON" name="contactPerson"/>
+      <property column="CONTACT_POSITION" name="contactPosition"/>
+      <property column="CONTACT_VOICE" name="contactVoice"/>
+      <property column="CONTACT_ONLINERESOURCE" name="onlineResource"/>
+    </component>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- ServiceInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.config.impl.ServiceInfoImpl" table="SERVICES">
+    <cache usage="read-write"/>
+    <id column="ID" name="id"/>
+    <property column="ENABLED" name="enabled"/>
+    <property column="NAME" name="name" not-null="true" unique="true"/>
+    <property column="TITLE" name="title"/>
+    <property column="MAINTAINER" name="maintainer"/>
+    <property column="ACCESS_CONSTRAINTS" name="accessConstraints"/>
+    <property column="FEES" name="fees"/>
+    <one-to-one cascade="persist,all" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false" name="metadataLink"/>
+    <!--    <many-to-one class="org.geoserver.config.hibernate.beans.GeoServerInfoImplHb" column="GEOSERVER" lazy="false" name="geoServer"/>-->
+    <property column="CITE_COMPLIANT" name="citeCompliant"/>
+    <property column="ONLINE_RESOURCE" name="onlineResource"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="service_metadata_fk" lazy="false" name="metadata"/>
+    <property column="ABSTRACT" name="abstract"/>
+    <list cascade="all" lazy="false" name="keywords" table="SERVICE_KEYWORDS">
+      <key column="ID"/>
+      <list-index column="SRV_KEYWORD_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+    <list cascade="all" lazy="false" name="versions" table="SERVICE_VERSIONS">
+      <key column="ID"/>
+      <list-index column="SRV_VERSION_INDEX"/>
+      <element type="org.geotools.util.Version"/>
+    </list>
+    <list cascade="all" lazy="false" name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS">
+      <key column="ID"/>
+      <list-index column="SRV_EXCEPTION_FORMAT_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- WMSInfoImpl -->
+  <!-- ===================================================================== -->
+  <joined-subclass extends="org.geoserver.config.impl.ServiceInfoImpl" name="org.geoserver.services.hibernate.beans.WMSInfoImplHb" table="SERVICEWMS">
+    <key column="ID"/>
+    <property column="INTERPOLATION" name="interpolation"/>
+    <many-to-one cascade="all" class="org.geoserver.services.hibernate.beans.WatermarkInfoImplHb" foreign-key="wms_watermark_fk" lazy="false" name="watermark"/>
+    <list cascade="all" lazy="false" name="SRS" table="WMS_SRS">
+      <key column="ID" foreign-key="srs_wms_listfk"/>
+      <list-index column="WMS_SRS_INDEX"/>
+      <element type="java.lang.String"/>
+    </list>
+  </joined-subclass>
+  <!-- ===================================================================== -->
+  <!-- WFSInfoImpl -->
+  <!-- ===================================================================== -->
+  <joined-subclass extends="org.geoserver.config.impl.ServiceInfoImpl" name="org.geoserver.services.hibernate.beans.WFSInfoImplHb" table="SERVICEWFS">
+    <key column="ID"/>
+    <property column="SERVICE_LEVEL" name="serviceLevel"/>
+    <map cascade="all" lazy="false" name="GML" table="WFS_GML">
+      <key column="ID" foreign-key="gml_wfs_mapfk"/>
+      <map-key type="java.lang.Enum"/>
+      <element length="100000" type="java.io.Serializable"/>
+    </map>
+  </joined-subclass>
+  <!-- ===================================================================== -->
+  <!-- WCSInfoImpl -->
+  <!-- ===================================================================== -->
+  <joined-subclass extends="org.geoserver.config.impl.ServiceInfoImpl" name="org.geoserver.services.hibernate.beans.WCSInfoImplHb" table="SERVICEWCS">
+    <key column="ID"/>
+  </joined-subclass>
+  <!-- ===================================================================== -->
+  <!-- WatermarkInfo -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.services.hibernate.beans.WatermarkInfoImplHb" table="WATERMARKS">
+    <cache usage="read-write"/>
+    <id column="SRV_WM_ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="ENABLED" name="enabled"/>
+    <property column="TRASPARENCY" name="transparency"/>
+    <property column="URL" name="URL"/>
+    <property column="POSITION" name="position"/>
+  </class>
+  <!-- ===================================================================== -->
+  <!-- Position -->
+  <!-- ===================================================================== -->
+  <!-- class name="org.geoserver.wms.WatermarkInfo.Position" table="SERVICE_WATERMARKS_POSITION">
+		<id name="id" column="WM_POS_ID">
+            <generator class="native"/>
+        </id>
+		<property name="code" column="CODE"/>
+     </class -->
+  <class name="org.geoserver.config.hibernate.beans.LoggingInfoImplHb" table="LOGGINGINFO">
+    <id column="ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="LEVEL" name="level"/>
+    <property column="LOCATION" name="location"/>
+    <property column="STDOUT" name="stdOutLogging"/>
+  </class>
+</hibernate-mapping>
