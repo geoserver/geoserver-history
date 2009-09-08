@@ -20,6 +20,7 @@ Tutorials
    imagemosaic-jdbc/imagemosaic-jdbc_tutorial
    feature-pregeneralized/feature-pregeneralized_tutorial
    tomcat-jndi/tomcat-jndi
+   image_mosaic_plugin/imagemosaic
    
 
    
