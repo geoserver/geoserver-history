@@ -392,11 +392,20 @@ public class Dispatcher extends AbstractController {
             throw new ServiceException(msg, "MissingParameterValue", "request");
         }
 
+        // ensure the requested operation exists
+        boolean exists = false;
+        for ( String op : serviceDescriptor.getOperations() ) {
+            if ( op.equalsIgnoreCase( req.request ) ) {
+                exists = true;
+                break;
+            }
+        }
+
         // lookup the operation, initial lookup based on (service,request)
         Object serviceBean = serviceDescriptor.getService();
         Method operation = OwsUtils.method(serviceBean.getClass(), req.request);
 
-        if (operation == null) {
+        if (operation == null || !exists) {
             String msg = "No such operation " + req;
             throw new ServiceException(msg, "OperationNotSupported", req.request);
         }

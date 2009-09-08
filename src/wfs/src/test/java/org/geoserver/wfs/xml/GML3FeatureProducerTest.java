@@ -49,7 +49,7 @@ public class GML3FeatureProducerTest extends WFSTestSupport {
      * @return GetFeature operation to request the named types
      */
     Operation request(QName... names) {
-        Service service = new Service("wfs", null, null);
+        Service service = getServiceDescriptor10();
         GetFeatureType type = WfsFactory.eINSTANCE.createGetFeatureType();
         type.setBaseUrl("http://localhost:8080/geoserver");
         for (QName name : names) {

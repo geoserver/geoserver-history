@@ -10,6 +10,8 @@ import java.util.Map;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.Service;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geoserver.wfs.xml.v1_0_0.WFSConfiguration;
 
@@ -29,6 +31,20 @@ public abstract class WFSTestSupport extends GeoServerTestSupport {
      */
     protected WFSInfo getWFS() {
         return getGeoServer().getService( WFSInfo.class );
+    }
+    
+    /**
+     * @return The 1.0 service descriptor.
+     */
+    protected Service getServiceDescriptor10() {
+        return (Service) GeoServerExtensions.bean( "wfsService-1.0.0" );
+    }
+    
+    /**
+     * @return The 1.1 service descriptor.
+     */
+    protected Service getServiceDescriptor11() {
+        return (Service) GeoServerExtensions.bean( "wfsService-1.1.0" );
     }
     
     /**

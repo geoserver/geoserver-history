@@ -24,12 +24,10 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
-import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.util.Version;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -68,7 +66,7 @@ public class ShapeZipTest extends WFSTestSupport {
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
         gft = WfsFactory.eINSTANCE.createGetFeatureType();
-        op = new Operation("GetFeature", new Service("WFS", null, new Version("1.0.0")), null, new Object[] {gft});
+        op = new Operation("GetFeature", getServiceDescriptor10(), null, new Object[] {gft});
     }
     
     public void testNoNativeProjection() throws Exception {

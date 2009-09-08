@@ -28,7 +28,7 @@ public class DescribeFeatureResponseTest extends WFSTestSupport {
     }
 
     Operation request() {
-        Service service = new Service("wfs", null, null);
+        Service service = getServiceDescriptor10();
         DescribeFeatureTypeType type = WfsFactory.eINSTANCE.createDescribeFeatureTypeType();
         type.setBaseUrl("http://localhost:8080/geoserver");
         

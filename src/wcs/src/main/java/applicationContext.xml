@@ -48,6 +48,13 @@
 		<constructor-arg index="0" value="wcs"/>
 		<constructor-arg index="1" ref="wcsService2"/>
 		<constructor-arg index="2" value="1.0.0"/>
+		<constructor-arg index="3">
+          <list>
+            <value>GetCapabilities</value>
+            <value>DescribeCoverage</value>
+            <value>GetCoverage</value>
+          </list>
+        </constructor-arg>
  	</bean>
  	<!-- service exception handler -->
 	<bean id="wcsExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">

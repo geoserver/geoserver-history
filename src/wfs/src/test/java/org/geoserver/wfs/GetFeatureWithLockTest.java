@@ -8,11 +8,17 @@ import org.w3c.dom.NodeList;
 
 public class GetFeatureWithLockTest extends WFSTestSupport {
     
-    /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
-    public static Test suite() {
-        return new OneTimeTestSetup(new GetFeatureWithLockTest());
+//    /**
+//     * This is a READ ONLY TEST so we can use one time setup
+//     */
+//    public static Test suite() {
+//        return new OneTimeTestSetup(new GetFeatureWithLockTest());
+//    }
+//    
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+        getServiceDescriptor11().getOperations().add( "ReleaseLock");
     }
 
     public void testUpdateLockedFeatureWithLockId() throws Exception {
@@ -163,7 +169,6 @@ public class GetFeatureWithLockTest extends WFSTestSupport {
                 + "</wfs:GetFeatureWithLock>";
 
         dom = postAsDOM("wfs", xml);
-
         assertEquals("wfs:FeatureCollection", dom.getDocumentElement()
                 .getNodeName());
 

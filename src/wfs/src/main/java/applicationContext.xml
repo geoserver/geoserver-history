@@ -57,12 +57,33 @@
 		<constructor-arg index="0" value="wfs"/>
 		<constructor-arg index="1" ref="wfsService"/>
 		<constructor-arg index="2" value="1.0.0"/>
+		<constructor-arg index="3">
+		  <list>
+		    <value>GetCapabilities</value>
+		    <value>DescribeFeatureType</value>
+		    <value>GetFeature</value>
+		    <value>GetFeatureWithLock</value>
+		    <value>LockFeature</value>
+		    <value>Transaction</value>
+		  </list>
+		</constructor-arg>
 	</bean>
 	
 	<bean id="wfsService-1.1.0" class="org.geoserver.platform.Service">
 		<constructor-arg index="0" value="wfs"/>
 		<constructor-arg index="1" ref="wfsService"/>
 		<constructor-arg index="2" value="1.1.0"/>
+		<constructor-arg index="3">
+          <list>
+            <value>GetCapabilities</value>
+            <value>DescribeFeatureType</value>
+            <value>GetGmlObject</value>
+            <value>GetFeature</value>
+            <value>GetFeatureWithLock</value>
+            <value>LockFeature</value>
+            <value>Transaction</value>
+          </list>
+        </constructor-arg>
 	</bean>
 	
 	<!-- service exception handler -->
