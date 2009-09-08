@@ -65,6 +65,18 @@
 		<constructor-arg index="0" value="wms"/>
 		<constructor-arg index="1" ref="wmsService2"/>
 		<constructor-arg index="2" value="1.1.1"/>
+	    <constructor-arg index="3">
+          <list>
+            <value>Capabilities</value>
+            <value>GetCapabilities</value>
+            <value>DescribeLayer</value>
+            <value>GetFeatureInfo</value>
+            <value>GetLegendGraphic</value>
+            <value>GetMap</value>
+            <value>Map</value>
+            <value>reflect</value>
+          </list>
+        </constructor-arg>
  	</bean>
  	<!-- service exception handler -->
 	<bean id="wmsExceptionHandler" class="org.geoserver.wms.WmsExceptionHandler">
@@ -321,6 +333,11 @@
 		<constructor-arg index="0" value="kml"/>
 		<constructor-arg index="1" ref="kmlService"/>
 		<constructor-arg index="2" value="1.0.0"/>
+		<constructor-arg index="3">
+		  <list>
+		    <value>wms</value>
+		  </list>
+		</constructor-arg>
  	</bean>
  	
 	<!-- http url mapping -->

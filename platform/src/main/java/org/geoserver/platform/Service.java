@@ -4,6 +4,9 @@
  */
 package org.geoserver.platform;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.geotools.util.Version;
 
 
@@ -38,17 +41,23 @@ public final class Service {
     final Version version;
 
     /**
+     * List of operations provided by the service
+     */
+    final List<String> operations;
+
+    /**
      * Creates a new service descriptor.
      *
      * @param id A string identifing the service.
      * @param service The object implementing the service.
      * @param version The version of the service.
      */
-    public Service(String id, Object service, Version version) {
+    public Service(String id, Object service, Version version, List<String> operations) {
         this.id = id;
         this.service = service;
         this.version = version;
-
+        this.operations = operations;
+        
         if (id == null) {
             throw new NullPointerException("id");
         }
@@ -64,6 +73,10 @@ public final class Service {
 
     public Version getVersion() {
         return version;
+    }
+
+    public List<String> getOperations() {
+        return operations;
     }
 
     public boolean equals(Object obj) {
@@ -87,7 +100,7 @@ public final class Service {
             }
         }
 
-        return true;
+        return operations.equals( other.operations );
     }
 
     public int hashCode() {
@@ -98,6 +111,8 @@ public final class Service {
         if (version != null) {
             result = (result * 17) + version.hashCode();
         }
+
+        result = (result * 17) + operations.hashCode();
 
         return result;
     }

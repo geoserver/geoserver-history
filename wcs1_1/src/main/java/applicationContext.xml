@@ -27,12 +27,26 @@
     <constructor-arg index="0" value="wcs" />
     <constructor-arg index="1" ref="wcs111Service" />
     <constructor-arg index="2" value="1.1.0" />
+    <constructor-arg index="3">
+       <list>
+          <value>GetCapabilities</value>
+          <value>DescribeCoverage</value>
+          <value>GetCoverage</value>
+       </list>
+    </constructor-arg>
   </bean>
 
   <bean id="wcsService-1.1.1" class="org.geoserver.platform.Service">
     <constructor-arg index="0" value="wcs" />
     <constructor-arg index="1" ref="wcs111Service" />
     <constructor-arg index="2" value="1.1.1" />
+     <constructor-arg index="3">
+       <list>
+          <value>GetCapabilities</value>
+          <value>DescribeCoverage</value>
+          <value>GetCoverage</value>
+       </list>
+    </constructor-arg>
   </bean>
 
   <!-- http url mapping -->

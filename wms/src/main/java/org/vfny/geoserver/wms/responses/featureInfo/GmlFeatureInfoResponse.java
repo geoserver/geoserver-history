@@ -107,7 +107,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         }
         
         //this is a dummy wrapper around our 'request' object so that the new Dispatcher will accept it.
-        Service serviceDesc = new Service("wms", null, null);
+        Service serviceDesc = new Service("wms", null, null, Collections.EMPTY_LIST);
         Operation opDescriptor = new Operation("",serviceDesc,null, new Object[] { gfreq });
         
         final GeoServer gs = wmsConfig.getGeoServer();

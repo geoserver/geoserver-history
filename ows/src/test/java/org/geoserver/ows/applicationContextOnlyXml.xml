@@ -26,6 +26,12 @@
 				<constructor-arg value="1.0.0"/>
 			</bean>
 		</constructor-arg>
+		<constructor-arg index="3">
+           <list>
+             <value>hello</value>
+             <value>httpErrorCodeException</value>
+           </list>
+        </constructor-arg>
 	</bean>
 	
 </beans>

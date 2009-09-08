@@ -12,7 +12,6 @@ import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
-import org.geoserver.platform.Service;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geoserver.wfs.response.CSVOutputFormat;
 import org.geotools.data.FeatureSource;
@@ -20,7 +19,6 @@ import org.geotools.data.Query;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.util.Version;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -78,7 +76,7 @@ public class CSVOutputFormatTest extends WFSTestSupport {
         
         // build the request objects and feed the output format
         GetFeatureType gft = WfsFactory.eINSTANCE.createGetFeatureType();
-        Operation op = new Operation("GetFeature", new Service("WFS", null, new Version("1.0.0")), null, new Object[] {gft});
+        Operation op = new Operation("GetFeature", getServiceDescriptor10(), null, new Object[] {gft});
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         FeatureCollectionType fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
         fct.getFeature().add(fs.getFeatures());

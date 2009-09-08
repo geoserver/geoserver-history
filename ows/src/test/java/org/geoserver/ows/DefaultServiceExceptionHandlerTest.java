@@ -7,6 +7,7 @@ package org.geoserver.ows;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -35,7 +36,7 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         super.setUp();
         
         HelloWorld helloWorld = new HelloWorld();
-        Service service = new Service("hello", helloWorld, new Version("1.0.0"));
+        Service service = new Service("hello", helloWorld, new Version("1.0.0"),Collections.singletonList("hello"));
 
         request = new MockHttpServletRequest() {
                 public int getServerPort() {

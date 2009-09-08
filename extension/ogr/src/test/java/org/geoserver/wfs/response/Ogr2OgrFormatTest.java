@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -75,8 +76,8 @@ public class Ogr2OgrFormatTest extends TestCase {
         // the EMF objects used to talk with the output format
         gft = WfsFactory.eINSTANCE.createGetFeatureType();
         fct = WfsFactory.eINSTANCE.createFeatureCollectionType();
-        op = new Operation("GetFeature", new Service("WFS", null, new Version("1.0.0")), null,
-                new Object[] { gft });
+        op = new Operation("GetFeature", new Service("WFS", null, new Version("1.0.0"), 
+                Arrays.asList("GetFeature")), null, new Object[] { gft });
     }
 
     public void testCanHandle() {
