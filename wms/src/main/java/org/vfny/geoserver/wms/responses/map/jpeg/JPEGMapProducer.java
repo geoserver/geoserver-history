@@ -15,7 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.media.jai.InterpolationNearest;
+import javax.media.jai.operator.TranslateDescriptor;
 
+import org.apache.tools.ant.taskdefs.optional.i18n.Translate;
 import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
@@ -71,30 +74,13 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to write a JPEG image.");
         }
-
-        if(image.getMinX()!=0 || image.getMinY()!=0) {
-        	// the JPEG native writer does a direct access to the writable raster in a way
-            // that does not respect minx/miny settings. This in turn results in the issue
-            // described at http://jira.codehaus.org/browse/GEOS-2061
-             
-//            final WritableRaster raster= RasterFactory.createWritableRaster(
-//            		image.getSampleModel().createCompatibleSampleModel(image.getWidth(), image.getHeight()), 
-//            		new Point(0,0)); 
-        	final BufferedImage finalImage= new BufferedImage(
-        			image.getColorModel(),
-//        			raster,
-        			((WritableRaster)image.getData()).createWritableTranslatedChild(0,0),
-        			image.getColorModel().isAlphaPremultiplied(),null);
-//        	final Graphics2D g2D= finalImage.createGraphics();
-//        	g2D.drawRenderedImage(image, AffineTransform.getTranslateInstance());
-//        	g2D.dispose();
-            new ImageWorker(finalImage).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
-            
-            ImageIO.write(finalImage, "png", new File("/home/simone/gt-renderer/finalImage.png"));
-            ImageIO.write(image, "png",new File( "/home/simone/gt-renderer/mage.png"));
+        if (! JPEGNativeAcc.booleanValue()&&image.getMinX()!=0 || image.getMinY()!=0) {
+        	// I don't make an expliciti copy anymore, hoping that sooner or later:
+        	// A> this bug  will be fixed
+        	// B> JDK JpegImageWriter will stop making a straight copy of the input raster
+        	image= TranslateDescriptor.create(image, new Float(-image.getMinX()), new Float(-image.getMinY()), new InterpolationNearest(), null);
         }
-        else
-        	new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
+        new ImageWorker(image).writeJPEG(outStream, "JPEG", 0.75f, JPEGNativeAcc.booleanValue());
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
