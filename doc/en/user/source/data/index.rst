@@ -51,5 +51,6 @@ Other data sources require the use of GeoServer extensions, extra downloads that
    imagepyramid/
    imagemosaicjdbc/
    connection-pooling/
+   app-schema/index
 
    
