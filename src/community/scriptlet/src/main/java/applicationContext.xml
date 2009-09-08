@@ -24,4 +24,11 @@
         <property name="rootPath"><value>scripts</value></property>
         <property name="catalog" ref="catalog"/>
     </bean>
+
+    <bean id="rhinoConsole" class="org.geoserver.web.DemoLinkInfo">
+        <property name="id" value="rhinoConsole"/>
+        <property name="titleKey" value="RhinoConsolePage.title"/>
+        <property name="descriptionKey" value="RhinoConsolePage.shortDescription"/>
+        <property name="componentClass" value="org.geoserver.web.scriptlet.RhinoConsolePage"/>
+    </bean>
 </beans>
