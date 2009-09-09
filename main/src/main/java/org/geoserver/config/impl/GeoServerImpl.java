@@ -128,11 +128,7 @@ public class GeoServerImpl implements GeoServer {
     }
 
     public Collection<? extends ServiceInfo> getServices() {
-        return new ProxyList( services, ServiceInfo.class ) {
-            protected <T> T createProxy(T proxyObject, Class<T> proxyInterface) {
-                return ModificationProxy.create( proxyObject, proxyInterface );
-            }
-        };
+        return ModificationProxy.createList( services, ServiceInfo.class );
     }
     
     public void remove(ServiceInfo service) {

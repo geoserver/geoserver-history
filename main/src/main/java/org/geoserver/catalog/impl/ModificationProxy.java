@@ -447,5 +447,9 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         protected <T> T createProxy(T proxyObject, Class<T> proxyInterface) {
             return ModificationProxy.create( proxyObject, proxyInterface );
         }
+        
+        protected <U> U unwrapProxy(U proxy, java.lang.Class<U> proxyInterface) {
+            return ModificationProxy.unwrap( proxy );
+        };
     }
 }
