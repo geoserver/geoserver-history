@@ -15,4 +15,9 @@ public class AttributionInfoImplHb
     extends AttributionInfoImpl
     implements AttributionInfo, Hibernable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5316010422239218288L;
+
 }

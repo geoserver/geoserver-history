@@ -2,12 +2,10 @@
  */
 package org.geoserver.config.hibernate.beans;
 
-import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.JAIInfo;
-import org.geoserver.config.impl.*;
-
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.JAIInfo;
+import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 import org.geotools.util.logging.Logging;
 
@@ -19,7 +17,12 @@ public class GeoServerInfoImplHb
         extends GeoServerInfoImpl
         implements GeoServerInfo, Hibernable {
 
-    public GeoServerInfoImplHb() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9107189216422234902L;
+
+	public GeoServerInfoImplHb() {
     }
 
     public GeoServerInfoImplHb(GeoServer geoServer) {

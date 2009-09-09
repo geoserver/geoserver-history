@@ -4,7 +4,7 @@
 This project is designed to be compiled as a GeoServer community module.
 
 ################################################################################
-### EDIT DB CONFIGURATION
+### Postgis DB CONFIGURATION
 
 Before creating the .war or installing it, you need to configure the DB where the catalog will be stored.
 You can find the connection information in

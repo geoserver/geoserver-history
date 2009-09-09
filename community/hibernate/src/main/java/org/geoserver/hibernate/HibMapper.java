@@ -52,7 +52,7 @@ import org.geoserver.wms.WMSInfo;
 public class HibMapper {
     private final static Logger LOGGER = Logger.getLogger(HibMapper.class);
 
-    public static Class mapHibernableClass(Class clazz) {
+    public static Class<?> mapHibernableClass(Class<?> clazz) {
         if(Hibernable.class.isAssignableFrom(clazz))
             return clazz;
 

@@ -7,7 +7,11 @@ import org.geoserver.wfs.GMLInfoImpl;
 
 public class GMLInfoImplHb extends GMLInfoImpl implements GMLInfoHb {
 
-    private String srsNameStyleHIB = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -214390976416597998L;
+	private String srsNameStyleHIB = null;
 
     public GMLInfoImplHb() {
     }

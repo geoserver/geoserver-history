@@ -28,7 +28,12 @@ public class DataStoreInfoImplHb
         extends DataStoreInfoImpl
         implements Hibernable {
 
-    public DataStoreInfoImplHb(Catalog catalog, String id) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7131867236029677990L;
+
+	public DataStoreInfoImplHb(Catalog catalog, String id) {
         super(catalog, id);
     }
 

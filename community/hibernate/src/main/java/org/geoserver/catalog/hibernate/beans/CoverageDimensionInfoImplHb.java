@@ -15,4 +15,9 @@ public class CoverageDimensionInfoImplHb
     extends CoverageDimensionImpl
     implements CoverageDimensionInfo, Hibernable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -859886165039126157L;
+
 }

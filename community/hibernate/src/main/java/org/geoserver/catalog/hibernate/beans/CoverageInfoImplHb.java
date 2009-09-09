@@ -23,7 +23,12 @@ public class CoverageInfoImplHb
         extends CoverageInfoImpl
         implements Hibernable {
 
-    /** needed by hibernate */
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2375653788168952215L;
+
+	/** needed by hibernate */
     protected CoverageInfoImplHb() {
     }
 

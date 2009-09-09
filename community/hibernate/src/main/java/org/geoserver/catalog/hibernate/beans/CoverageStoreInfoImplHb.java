@@ -22,7 +22,12 @@ public class CoverageStoreInfoImplHb
         extends CoverageStoreInfoImpl
         implements Hibernable {
 
-    public CoverageStoreInfoImplHb(Catalog catalog, String id) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6033145669780453836L;
+
+	public CoverageStoreInfoImplHb(Catalog catalog, String id) {
         super(catalog, id);
     }
 

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.JAI;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.hibernate.HibCatalogImpl;
 import org.geoserver.config.ConfigurationListener;
@@ -26,11 +25,6 @@ import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.hibernate.HibMapper;
 import org.geoserver.hibernate.Hibernable;
 import org.geoserver.hibernate.dao.ServiceDAO;
-//import org.geotools.coverage.grid.GeneralGridRange;
-//import org.geotools.coverage.io.CoverageAccess;
-//import org.geotools.coverage.io.CoverageSource;
-//import org.geotools.coverage.io.Driver;
-//import org.geotools.coverage.io.CoverageAccess.AccessType;
 import org.geoserver.jai.JAIInitializer;
 import org.geotools.util.logging.Logging;
 
@@ -57,7 +51,7 @@ public class HibGeoServerImpl
     transient private ServiceDAO serviceDAO;
 
     /**
-     * FIXME: please doublecheck the updates to this field<BR>
+     * TODO: please doublecheck the updates to this field<BR>
      * We need to cache JAI info because it has many transient values,
      * and we prefer to cache twe whole class instead of single values.
      */
@@ -69,8 +63,6 @@ public class HibGeoServerImpl
      */
     private HibGeoServerImpl() {
         super();
-//        LOGGER.warning(getClass().getSimpleName() + " created.");
-//        System.out.println(getClass().getSimpleName() + " created.");
         proxy = GSProxy.newInstance(this);
     }
 
@@ -98,7 +90,8 @@ public class HibGeoServerImpl
     }
 
     public GeoServerInfo getGlobal() {
-        LOGGER.finest("Querying geoserver global configuration");
+        if(LOGGER.isLoggable(Level.FINEST))
+        	LOGGER.finest("Querying geoserver global configuration");
         GeoServerInfo geoserver = this.serviceDAO.getGeoServer();
         if (geoserver == null) {
             LOGGER.warning("Database is empty");
@@ -117,23 +110,9 @@ public class HibGeoServerImpl
             }
         }
 
-//        dumpJAI(geoserver);
         return geoserver;
     }
 
-//    private void dumpJAI(GeoServerInfo geoServer) {
-//        if (geoServer.getJAI() == null) {
-//            LOGGER.warning("JAIInfo is null");
-//        } else {
-//            JAIInfo jaiInfo = geoServer.getJAI();
-//            JAI jai = jaiInfo.getJAI();
-//            if (jai == null) {
-//                LOGGER.warning("JAI is null");
-//            } else {
-//                LOGGER.warning("JAITilechache is " + jai.getTileCache());
-//            }
-//        }
-//    }
 
     public void setGlobal(GeoServerInfo configuration) {
         //ensure contactinfo is not null
@@ -147,8 +126,8 @@ public class HibGeoServerImpl
         GeoServerInfoImplHb merged = null;
 
         if (currentGlobal == null) {
-            LOGGER.warning("Storing first instance of GeoServerInfo");
-//            new Throwable("Storing first instance of GeoServerInfo-- TRACE!").printStackTrace();
+            if(LOGGER.isLoggable(Level.INFO))
+            	LOGGER.info("Storing first instance of GeoServerInfo");
 
             GeoServerInfoImplHb inserted = (GeoServerInfoImplHb)this.serviceDAO.save(configuration);
             inserted.copyTo((GeoServerInfoImplHb)configuration);
@@ -212,10 +191,11 @@ public class HibGeoServerImpl
             throw new IllegalArgumentException("service with id '" + serviceId + "' already exists");
         }
 
-        GeoServerInfo global = getGlobal();
+//        GeoServerInfo global = getGlobal();
         service.setGeoServer(proxy);
 
-        LOGGER.warning("CREATING SERVICE id:" + serviceId + " name:"+service.getName() + " title:" + service.getTitle() );
+        if(LOGGER.isLoggable(Level.FINE))
+        	LOGGER.fine("CREATING SERVICE id:" + serviceId + " name:"+service.getName() + " title:" + service.getTitle() );
         
         if(  service instanceof Hibernable) {
             this.serviceDAO.save(service);
@@ -272,8 +252,6 @@ public class HibGeoServerImpl
      * @return
      */
     protected Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
-//        Class clazz2 = HibMapper.mapHibernableClass(clazz);
-//        LOGGER.warning("getting " + clazz.getName() + " --> " + clazz2.getName());
         Collection<ServiceInfoImpl> sis = (Collection<ServiceInfoImpl>)this.serviceDAO.getServices(clazz);
         for (ServiceInfoImpl serviceInfoImpl : sis) {
             serviceInfoImpl.setGeoServer(proxy);
@@ -284,14 +262,9 @@ public class HibGeoServerImpl
     /**
      */
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
-        LOGGER.warning("getService("+ clazz.getName()+")");
+        if(LOGGER.isLoggable(Level.FINE))
+        	LOGGER.fine("getService("+ clazz.getName()+")");
         Class clazz2 = HibMapper.mapHibernableClass(clazz);
-
-//        Collection<? extends ServiceInfo> srv = getServices(clazz2);
-//        LOGGER.warning("found " + srv.size() + " " + clazz.getName());
-//
-//        Collection<? extends ServiceInfo> allsrv = getServices();
-//        LOGGER.warning("found all " + allsrv.size() );
 
         // TODO: create dao.findService
         for (ServiceInfo si : getServices(clazz2)) {
@@ -455,9 +428,7 @@ class GSProxy implements InvocationHandler, Serializable {
         } catch (Exception e) {
             throw new RuntimeException("unexpected invocation exception: " +
                                        e.getMessage());
-        } finally {
-//                System.out.println("after method " + m.getName());
-        }
+        } 
         return result;
     }
 }

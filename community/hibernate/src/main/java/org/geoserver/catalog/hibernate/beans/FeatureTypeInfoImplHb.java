@@ -24,7 +24,12 @@ public class FeatureTypeInfoImplHb
         extends FeatureTypeInfoImpl
         implements FeatureTypeInfo, Hibernable {
 
-    protected FeatureTypeInfoImplHb() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6519421313603985545L;
+
+	protected FeatureTypeInfoImplHb() {
     }
     
     public FeatureTypeInfoImplHb(Catalog catalog) {

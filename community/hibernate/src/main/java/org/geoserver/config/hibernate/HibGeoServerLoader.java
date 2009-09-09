@@ -70,9 +70,6 @@ public class HibGeoServerLoader
     boolean initDone = false;
     boolean tmInitted = false;
     
-//    public HibGeoServerLoader( GeoServerResourceLoader resourceLoader ) {
-//        this.resourceLoader = resourceLoader;
-//    }
     public HibGeoServerLoader( GeoServerResourceLoader resourceLoader, HibGeoServerImpl geoserver, Catalog catalog ) {
         this.resourceLoader = resourceLoader;
         this.geoserver = geoserver.getProxy();
@@ -93,7 +90,6 @@ public class HibGeoServerLoader
     
     public final Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
-//        LOGGER.warning("postProcessAfterInitialization " + beanName + " : " + bean.getClass().getSimpleName());
         return bean;
     }
 
@@ -250,7 +246,8 @@ public class HibGeoServerLoader
             style.setFilename(FilenameUtils.getName(sldfilename));
 
             try {
-                LOGGER.warning("Importing SLD " + style.getName() + " in file " + sldfilename);
+                if(LOGGER.isLoggable(Level.INFO))
+                	LOGGER.info("Importing SLD " + style.getName() + " in file " + sldfilename);
                 catalog.add(style);
             } catch (Exception e) {
                 LOGGER.severe("Could not import SLD " + style.getName() + " in file " + sldfilename);
@@ -286,15 +283,16 @@ public class HibGeoServerLoader
         initialize();
     }
     
-    public void destroy() throws Exception {
+    @SuppressWarnings("unchecked")
+	public void destroy() throws Exception {
         //TODO: persist catalog
         //TODO: persist global
 
         //persist services
-        Collection services = geoserver.getServices();
+        Collection<? extends ServiceInfo> services = geoserver.getServices();
         List<ServiceLoader> loaders = GeoServerExtensions.extensions( ServiceLoader.class );
         
-        for ( Iterator s = services.iterator(); s.hasNext(); ) {
+        for ( Iterator<? extends ServiceInfo> s = services.iterator(); s.hasNext(); ) {
             ServiceInfo service = (ServiceInfo) s.next();
             for ( ServiceLoader loader : loaders ) {
                 if ( loader.getServiceClass().equals(service.getClass()) ) { // TODO ETJ FIXMEEEEEEE

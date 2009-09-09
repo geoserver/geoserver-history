@@ -15,7 +15,11 @@ public class AttributeTypeInfoImplHb
     extends AttributeTypeInfoImpl
     implements AttributeTypeInfo, Hibernable{
 
-    protected String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1557548009925638462L;
+	protected String id;
 
     /**
      * Get the value of id
