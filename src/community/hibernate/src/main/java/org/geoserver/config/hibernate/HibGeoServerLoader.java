@@ -126,7 +126,6 @@ public class HibGeoServerLoader
         GeoServerInfo global = geoserver.getGlobal();
         if(global == null) {            
             global =  HibDefaultsFactoryImpl.createDefaultGeoServer(geoserver);
-//            geoserver.setGlobal(global);
 
             HibDefaultsFactoryImpl.createDefaultServices(geoserver, global);
             HibDefaultsFactoryImpl.createDefaultXXXXspace(geoserver);
@@ -142,8 +141,6 @@ public class HibGeoServerLoader
                 global.setJAI(geoserver.getFactory().createJAI());
                 geoserver.setGlobal(global);
 
-//                JAIInitializer initializer = new JAIInitializer();
-//                initializer.initialize(geoserver);
 
             }
 
@@ -174,61 +171,13 @@ public class HibGeoServerLoader
             loggingInfo = this.geoserver.getFactory().createLogging();
             geoserver.setLogging(loggingInfo);
         }
-
-/*
-        //first thing to do is load the logging configuration
-        LegacyLoggingImporter loggingImporter = new LegacyLoggingImporter( geoserver );
-        try {
-            loggingImporter.imprt( resourceLoader.getBaseDirectory() );
-        } 
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-        
-        try {
-            LoggingInitializer loggingIniter = new LoggingInitializer();
-            loggingIniter.setResourceLoader( resourceLoader );
-            loggingIniter.initialize( geoserver, applicationContext );
-        } 
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-*/
-
-        // load catalog
-//        LegacyCatalogImporter catalogImporter = new LegacyCatalogImporter();
-//        catalogImporter.setResourceLoader(resourceLoader);
         Catalog catalog = geoserver.getCatalog();
         catalog.setResourceLoader(resourceLoader);
 
         if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
             catalog = ((Wrapper) catalog).unwrap(Catalog.class);
         }
-//        catalogImporter.setCatalog(catalog);
-//
-//        try {
-//            catalogImporter.imprt( resourceLoader.getBaseDirectory() );
-//            initializeStyles(catalog);
-//        }
-//        catch(Exception e) {
-//            throw new RuntimeException( e );
-//        }
 
-/*
-        //load configuration
-        LegacyConfigurationImporter importer = new LegacyConfigurationImporter();
-        importer.setConfiguration(geoserver);
-        
-        try {
-            importer.imprt( resourceLoader.getBaseDirectory() );
-        } 
-        catch (Exception e) {
-            throw new RuntimeException( e );
-        }
-*/
-        System.out.println("---------------_> geoserver is " + geoserver.getClass().getName());
-        System.out.println("---------------_> global is is " + geoserver.getGlobal().getClass().getName());
-        System.out.println("---------------_> metadata is  " + geoserver.getGlobal().getMetadata());
 
         if(geoserver.getGlobal().getMetadata() != null) {
             for (String key : geoserver.getGlobal().getMetadata().keySet()) {
@@ -243,8 +192,7 @@ public class HibGeoServerLoader
                 initer.initialize( geoserver );
             }
             catch( Throwable t ) {
-                //TODO: log this
-                t.printStackTrace();
+            	LOGGER.log(Level.WARNING,t.getLocalizedMessage(),t);
             }
         }
   
