@@ -1,18 +1,19 @@
 package org.geoserver.services.hibernate.beans;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.geoserver.hibernate.Hibernable;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfoImpl;
-import org.geoserver.wms.WatermarkInfo;
 
 public class WMSInfoImplHb 
         extends WMSInfoImpl
         implements WMSInfo, Hibernable {
 
-    public WMSInfoImplHb() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1956340656640000352L;
+
+	public WMSInfoImplHb() {
     }
 
     @Override

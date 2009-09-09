@@ -7,20 +7,17 @@ package org.geoserver.config.hibernate;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-
-import org.geoserver.config.JAIInfo;
 import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
 import org.geoserver.services.hibernate.beans.WCSInfoImplHb;
 import org.geoserver.services.hibernate.beans.WFSInfoImplHb;
 import org.geoserver.services.hibernate.beans.WMSInfoImplHb;
 import org.geoserver.services.hibernate.beans.WatermarkInfoImplHb;
 import org.geoserver.wfs.GMLInfo;
-import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wms.WatermarkInfo;
 
 /**
@@ -39,12 +36,7 @@ public class HibDefaultsFactoryImpl {
         GeoServerInfo geoserver = serviceCatalog.getFactory().createGlobal();
         geoserver.setContact(serviceCatalog.getFactory().createContact());
 
-//        geoserver.setMaxFeatures(10000);
         geoserver.setNumDecimals(8);
-
-//        geoserver.setLoggingLevel("DEFAULT_LOGGING.properties");
-//        geoserver.setLoggingLocation("logs/geoserver.log");
-//        geoserver.setStdOutLogging(false);
 
         geoserver.setVerbose(false);
         geoserver.setVerboseExceptions(false);
@@ -128,8 +120,6 @@ public class HibDefaultsFactoryImpl {
         ws = (WorkspaceInfoImplHb)resourceCatalog.getFactory().createWorkspace();
         ws.setName("it.geosolutions");
         resourceCatalog.add(ws);
-
-//        return ns;
     }
     
 }

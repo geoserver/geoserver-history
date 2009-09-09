@@ -7,7 +7,11 @@ public class NamespaceInfoImplHb
         extends NamespaceInfoImpl
         implements Hibernable {
 
-    protected boolean _default;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2667725101814407281L;
+	protected boolean _default;
 
     public NamespaceInfoImplHb() {
     }

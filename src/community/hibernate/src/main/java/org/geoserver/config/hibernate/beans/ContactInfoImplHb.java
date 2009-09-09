@@ -7,13 +7,17 @@ package org.geoserver.config.hibernate.beans;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.hibernate.Hibernable;
-import org.geotools.util.logging.Logging;
 
 public class ContactInfoImplHb
         extends ContactInfoImpl
         implements ContactInfo,Hibernable {
 
-    public ContactInfoImplHb() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7585201572391100517L;
+
+	public ContactInfoImplHb() {
         setId("");
         setAddress("");
         setAddressCity("");
@@ -25,7 +29,6 @@ public class ContactInfoImplHb
         if (this == obj)
             return true;
         if (obj == null) {
-//            Logging.getLogger(getClass()).severe("null");
             return false;
         }
         if (!( obj instanceof ContactInfo ) ) {

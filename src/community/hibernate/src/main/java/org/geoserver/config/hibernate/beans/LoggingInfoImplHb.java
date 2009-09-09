@@ -15,7 +15,11 @@ public class LoggingInfoImplHb
     extends LoggingInfoImpl
     implements LoggingInfo, Hibernable {
 
-    public String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7285995102018807585L;
+	public String id;
 
     public String getId() {
         return id;

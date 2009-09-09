@@ -11,7 +11,11 @@ public class WorkspaceInfoImplHb
         extends WorkspaceInfoImpl
         implements Hibernable {
 
-    protected boolean _default; // todo: check how this property is handled in Main
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6838645169562127250L;
+	protected boolean _default; // todo: check how this property is handled in Main
 
     public WorkspaceInfoImplHb() {
     }

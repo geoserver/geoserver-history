@@ -13,7 +13,12 @@ public class StyleInfoImplHb
         extends StyleInfoImpl
         implements StyleInfo, Hibernable {
 
-    public StyleInfoImplHb(Catalog catalog) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6463661589509009337L;
+
+	public StyleInfoImplHb(Catalog catalog) {
         super(catalog);
     }
 

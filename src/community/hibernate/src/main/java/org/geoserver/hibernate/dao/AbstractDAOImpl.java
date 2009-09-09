@@ -168,8 +168,8 @@ public abstract class AbstractDAOImpl  {
 //                if(++num==10) break;
             }
 
-            if(LOGGER.isLoggable(Level.INFO))
-            	LOGGER.info("FIRST -->"+ret.getClass().getSimpleName() + " --- " + ret + " { "+callerChain+"}");
+            if(LOGGER.isLoggable(Level.FINE))
+            	LOGGER.fine("FIRST -->"+ret.getClass().getSimpleName() + " --- " + ret + " { "+callerChain+"}");
             return ret;
         }
     }

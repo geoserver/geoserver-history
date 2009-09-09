@@ -14,4 +14,9 @@ public class MetadataLinkInfoImplHb
     extends MetadataLinkInfoImpl
     implements MetadataLinkInfo {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 736503895969170827L;
+
 }

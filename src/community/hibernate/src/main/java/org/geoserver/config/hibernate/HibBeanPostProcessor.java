@@ -5,6 +5,7 @@
 package org.geoserver.config.hibernate;
 
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoserver.config.GeoServerLoader;
 import org.geotools.util.logging.Logging;
@@ -51,20 +52,24 @@ public class HibBeanPostProcessor
     
     public final Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
-        LOGGER.warning("postProcessAfterInitialization " + beanName + " : " + bean.getClass().getSimpleName());
+        if(LOGGER.isLoggable(Level.FINER))
+        	LOGGER.finer("postProcessAfterInitialization " + beanName + " : " + bean.getClass().getSimpleName());
         return bean;
     }
 
     public final Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
-        LOGGER.warning("postProcessBeforeInitialization " + beanName + " : " + bean.getClass().getSimpleName());
+    	if(LOGGER.isLoggable(Level.FINER))
+        	LOGGER.finer("postProcessBeforeInitialization " + beanName + " : " + bean.getClass().getSimpleName());
         if(bean instanceof GeoServerLoader) {
-            LOGGER.warning("postProcessBeforeInitialization FOUND !!!!!!!!! " + beanName + " : " + bean.getClass().getSimpleName());
+        	if(LOGGER.isLoggable(Level.FINER))
+            	LOGGER.finer("postProcessBeforeInitialization FOUND !!!!!!!!! " + beanName + " : " + bean.getClass().getSimpleName());
         }
         return bean;
     }
     
     public void destroy() throws Exception {
-        LOGGER.warning("destroy()");
+    	if(LOGGER.isLoggable(Level.FINER))
+        	LOGGER.finer("destroy()");
     }
 }

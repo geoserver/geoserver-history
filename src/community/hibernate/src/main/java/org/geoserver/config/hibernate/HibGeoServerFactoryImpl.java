@@ -5,20 +5,21 @@
 package org.geoserver.config.hibernate;
 
 import java.io.Serializable;
-import org.geoserver.config.hibernate.beans.*;
-import org.geoserver.catalog.MetadataLinkInfo;
-import org.geoserver.config.JAIInfo;
-import org.geoserver.config.LoggingInfo;
-import org.geoserver.config.hibernate.beans.GeoServerInfoImplHb;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
-
+import org.geoserver.config.JAIInfo;
+import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.hibernate.beans.ContactInfoImplHb;
+import org.geoserver.config.hibernate.beans.GeoServerInfoImplHb;
+import org.geoserver.config.hibernate.beans.LoggingInfoImplHb;
+import org.geoserver.config.hibernate.beans.MetadataLinkInfoImplHb;
 import org.geoserver.config.impl.JAIInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.springframework.beans.BeansException;
@@ -26,11 +27,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 public class HibGeoServerFactoryImpl
-        implements GeoServerFactory, ApplicationContextAware, Serializable {
+        implements GeoServerFactory, ApplicationContextAware , Serializable{
 
-    private final static Logger LOGGER = Logger.getLogger(HibGeoServerFactoryImpl.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2733985227400129195L;
 
-    transient protected ApplicationContext applicationContext = null;
+	private final static Logger LOGGER = Logger.getLogger(HibGeoServerFactoryImpl.class);
+
+    protected ApplicationContext applicationContext = null;
 
     public GeoServerInfo createGlobal() {
         return new GeoServerInfoImplHb();
@@ -44,10 +50,9 @@ public class HibGeoServerFactoryImpl
         return new ServiceInfoImpl();
     }
 
-    public Object create(Class clazz) {
+    public <T> T create(Class<T> clazz) {
         if (applicationContext != null) {
-            Collection extensions = applicationContext.getBeansOfType(
-                    GeoServerFactory.Extension.class).values();
+            final Collection extensions = applicationContext.getBeansOfType(GeoServerFactory.Extension.class).values();
             for (Iterator e = extensions.iterator(); e.hasNext();) {
                 Extension extension = (Extension) e.next();
                 if (extension.canCreate(clazz)) {

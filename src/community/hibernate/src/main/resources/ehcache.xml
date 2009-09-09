@@ -1,7 +1,7 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
                             xsi:noNamespaceSchemaLocation="ehcache.xsd">
 
-<diskStore path="java.io.tmpdir"/>
+<diskStore path="java.io.tmpdir/ehcache"/>
 
 <defaultCache
       maxElementsInMemory="10000"
@@ -14,10 +14,9 @@
       memoryStoreEvictionPolicy="LRU"/>
 
 
-<!-- Specifical entity caches -->  
-   
+<!-- Specific entity caches -->  
 <cache
-	name="org.geoserver.catalog.hibernate.beans.StoreInfoImplHb"
+	name="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -26,9 +25,87 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
+   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>   
+    
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>     
+   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>     
 
 <cache
-	name="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"
+	name="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>       
+
+<cache
+	name="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>       
+   
+
+<cache
+	name="org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>   
+   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -49,6 +126,19 @@
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
+
+<cache
+	name="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+    
+
 <cache
 	name="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb"
     maxElementsInMemory="100000"
@@ -60,52 +150,14 @@
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
-<cache
-	name="org.geoserver.catalog.hibernate.beans.MetadataLinkInfoImpl"
-    maxElementsInMemory="100000"
-    eternal="false"
-    timeToIdleSeconds="240"
-    timeToLiveSeconds="240"
-    overflowToDisk="true"
-    diskPersistent="false"
-    diskExpiryThreadIntervalSeconds="240"
-    memoryStoreEvictionPolicy="LRU"/>
-    
-<cache
-	name="org.geoserver.catalog.hibernate.beans.ResourceInfoImplHb"
-    maxElementsInMemory="100000"
-    eternal="false"
-    timeToIdleSeconds="240"
-    timeToLiveSeconds="240"
-    overflowToDisk="true"
-    diskPersistent="false"
-    diskExpiryThreadIntervalSeconds="240"
-    memoryStoreEvictionPolicy="LRU"/>
-    
-<cache
-	name="org.geoserver.catalog.impl.LegendInfoImpl"
-    maxElementsInMemory="100000"
-    eternal="false"
-    timeToIdleSeconds="240"
-    timeToLiveSeconds="240"
-    overflowToDisk="true"
-    diskPersistent="false"
-    diskExpiryThreadIntervalSeconds="240"
-    memoryStoreEvictionPolicy="LRU"/>
 
-<cache
-	name="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"
-    maxElementsInMemory="100000"
-    eternal="false"
-    timeToIdleSeconds="240"
-    timeToLiveSeconds="240"
-    overflowToDisk="true"
-    diskPersistent="false"
-    diskExpiryThreadIntervalSeconds="240"
-    memoryStoreEvictionPolicy="LRU"/>
+
+
+
+
     
 <cache
-	name="org.geoserver.catalog.impl.MapInfoImpl"
+	name="org.geoserver.config.hibernate.beans.MetadataLinkInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -127,18 +179,7 @@
     memoryStoreEvictionPolicy="LRU"/>
 
 <cache
-	name="org.geoserver.config.beans.GeoServerInfoImplHb"
-    maxElementsInMemory="100000"
-    eternal="false"
-    timeToIdleSeconds="240"
-    timeToLiveSeconds="240"
-    overflowToDisk="true"
-    diskPersistent="false"
-    diskExpiryThreadIntervalSeconds="240"
-    memoryStoreEvictionPolicy="LRU"/>
-
-<cache
-	name="org.geoserver.config.impl.ServiceInfoImpl"
+	name="org.geoserver.config.hibernate.beans.GeoServerInfoImplHb"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -160,81 +201,86 @@
     memoryStoreEvictionPolicy="LRU"/>
 
 
-<!-- Specifical query caches -->
+<cache
+	name="org.geoserver.catalog.impl.LegendInfoImpl"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
 
-<!-- cache
-	name="query.PositionReports"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
-
+    
 <cache
-	name="query.ShipInformationReport"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
-	
-<cache
-	name="query.VoyageRelatedData"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
-	
-<cache
-	name="query.Dimension"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
-	
-<cache
-	name="query.NavigationalStatus"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
+	name="org.geoserver.catalog.impl.MapInfoImpl"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
 
 <cache
-	name="query.Port"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
-	
+	name="org.geoserver.catalog.impl.MetadataLinkInfoImpl"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+    
 <cache
-	name="query.Ship"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
-	
-<cache
-	name="query.TypeOfShip"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/>
+	name="org.geoserver.catalog.impl.ResourceInfoImpl"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
 
 <cache
-	name="query.ShipOwner"
-	maxElementsInMemory="10"
-	eternal="false"
-	timeToLiveSeconds="120"
-	diskPersistent="false"
-	overflowToDisk="true"/ -->
-	
+	name="org.geoserver.catalog.impl.StoreInfoImpl"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+    
+        
+<cache
+	name="org.geoserver.config.impl.ServiceInfoImpl"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
 
+
+<cache
+	name="org.geoserver.catalog.MetadataMap"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+    
 <cache
 	name="org.hibernate.cache.StandardQueryCache"
 	maxElementsInMemory="10"

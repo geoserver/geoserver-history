@@ -13,4 +13,9 @@ import org.geoserver.hibernate.Hibernable;
 public class LayerInfoImplHb 
         extends LayerInfoImpl
         implements Hibernable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4909148252767410025L;
 }
