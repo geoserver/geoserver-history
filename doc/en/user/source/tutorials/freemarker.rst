@@ -3,10 +3,13 @@
 Freemarker Templates
 ====================
 
+.. warning:: The screenshots on this tutorial have not yet been updated for the 2.0.x user interface.  But most all the rest of the information should be valid, and the user interface is roughly the same, but a bit more easy to use.
+
+Introduction
+------------
+
 This tutorial will introduce you to a more in depth view of what FreeMarker templates are and how you can use the data provided to templates by GeoServer.
 
-Freemarkers
-```````````
 `Freemarker <http://www.freemarker.org/>`_ is a simple yet powerful template engine that GeoServer uses whenever developer allowed user customization of outputs. In particular, at the time of writing it's used to allow customization of GetFeatureInfo, GeoRSS and KML outputs.
 
 Freemarker allows for simple variable expansions, as in ``$\{myVarName\}``, expansion of nested properties, such as in ``$\{feature.myAtt.value\}``, up to little programs using loops, ifs and variables.

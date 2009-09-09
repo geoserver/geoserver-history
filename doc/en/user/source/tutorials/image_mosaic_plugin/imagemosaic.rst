@@ -20,14 +20,16 @@ Briefly the ImageMOsaic plugin is responsible for composing together  a set of s
   3. All the granules must share the same spatial resolution and set of overviews. 
   
   
-.. note:: About point 3, in the original version of the ImageMosaic plugin this assumption was entirely true since we were assuming to work with real tiles coming from a set of adiacent images.  Lately we have been doing a substantial refactor therefore this condition would not be needed anymore, however in order to remove it we would need to do some work and add a few more options to the configuration file.
-To be more specific, if we can't assume that all the grianules share the same spatial layout and overviews set we would not be able to assing the raster dimensions (width and height) the spatial dimensions (grid-to-world and envelope) and the overviews set to the final mosaic coverage, unless we specify them somehow or we default to something. As long as we can assume that the various granules share the same spatial elements as well as the same overviews set we can inherit the first definition for the final mosaic.
-I am well aware that we might get over this limitation, but this would require some more work, as I already mentioned before.
+.. note:: 
+
+About point 3, in the original version of the ImageMosaic plugin this assumption was entirely true since we were assuming to work with real tiles coming from a set of adiacent images.  Lately we have been doing a substantial refactor therefore this condition would not be needed anymore, however in order to remove it we would need to do some work and add a few more options to the configuration file.
+
+To be more specific, if we can't assume that all the grianules share the same spatial layout and overviews set we would not be able to assing the raster dimensions (width and height) the spatial dimensions (grid-to-world and envelope) and the overviews set to the final mosaic coverage, unless we specify them somehow or we default to something. As long as we can assume that the various granules share the same spatial elements as well as the same overviews set we can inherit the first definition for the final mosaic.  I am well aware that we might get over this limitation, but this would require some more work, as I already mentioned before.
 
   
   
 Granule Index
-----------------
+-------------
 
 In order to configure a new CoverageStore and a new Coverage with this plugin, an index file need to be generated first in order to associate each granule to its bounding box. Currently we support only a Shapefile as a proper index, although it would be possible to extend this and use other means to persist the index.
 
@@ -75,7 +77,7 @@ Here below we are describing all the various elements for this file.
 
    
 Creating Granules Index  and Configuration File
--------------------------------------------------
+-----------------------------------------------
    
 The refactored version  of the ImageMosaic plugin can be used to create the shapefile index as well as the mosaic  configuration file on the fly without having to rely on gdal or some  other similar utility. 
 If you have a tree of directories containing the granules you want to be able to server as a mosaic (and providing that you are respecting the conditions written above) all you need to do is to point the GeoServer to such a directory and it will create the proper ancillary files by inspecting all the files present in the the tree of directories starting from the provided input one.
@@ -214,7 +216,7 @@ Now we are going to provide a few examples of mosaic configurations to demonstra
 
 
 DEM/Bathymetric mosaic configuration (raw data)
-'''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''''''''''''''
 
 Such a mosaic can be use to serve large amount of data which represents altitude or depth and therefore does not specify colors directly while it reather needs an SLD to generate pictures. In our case we have a DEM dataset which consists of a set of raw geotiff files.
 
@@ -266,7 +268,8 @@ The result is the following.
 
 .. figure:: img/vito_1.png
    :align: left
-*Basic configuration*
+
+	*Basic configuration*
 
 
 By setting in opportune  ways the other configuration parameters, it is possible to improve at the same time both the appearance of the mosaic as well as the its performances. As an instance we could:
@@ -276,7 +279,8 @@ By setting in opportune  ways the other configuration parameters, it is possible
 
 .. figure:: img/vito_2.png
    :align: left
-*Advanced configuration*
+
+   *Advanced configuration*
 
 
 2. Allow multithreaded granules loading. By setting the 'AllowMultiThreading' parameter to tru GeoServer will load the granules in parallell sing multiple threads with a consequent increase of the performances on some architectures..
@@ -302,7 +306,7 @@ The configuration parameters are the followings:
 
 
 Aerial Imagery mosaic configuration
-''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''''
 
 In this example we are going to create a mosaic that will serve aerial imagery, RGB geotiffs in this case. Noticed that since we are talking about visual data, in the Coverage Editor you can use the basic 'raster' style, as reported here below, which is just a stub SLD to instruct the  GeoServer raster renderer to not do anything particular in terms of color management:
 
@@ -337,7 +341,8 @@ The result is the following.
 
 .. figure:: img/prato_1.png
    :align: left
-*Basic configuration*
+   
+   *Basic configuration*
 
 .. note:: Those ugly black areas, are the resulting of applying the eafalt mosaic parameters to a mosaic that does not entirey cover its bounding box. The areas within the BBOX that are not covered with data will default to a value of 0 on each band. Since this mosaic is RGB wecan simply set  the OutputTransparentCOlor to 0,0,0 in order to get back transparent fills for the BBOX.
 
@@ -366,11 +371,11 @@ The results is the following:
 .. figure:: img/prato_2.png
    :align: left
 
-*Advanced configuration*
+   *Advanced configuration*
 
 
 Scanned Maps mosaic configuration
-''''''''''''''''''''''''''''''
+'''''''''''''''''''''''''''''''''
 
 In this case we want to show how to serve scanned maps (mostly B&W images) via a GeoServer mosaic.
 
@@ -382,7 +387,7 @@ The result is the following.
 .. figure:: img/iacovella_1.png
    :align: left
 
-*Basic configuration*
+   *Basic configuration*
 
 This mosaic, formed by two single granules,  shows a typical case where the 'no data' collar areas of the granules overlap, as it is shown in the picture above.
 In this case we can use the 'InputTrasparentColor' parameter at  to make the collar areas disappear during the superimposition process, as instance, in this case, by using the '#FFFFFF' 'InputTrasparentColor'.  
@@ -393,7 +398,7 @@ This is the result:
 .. figure:: img/iacovella_2.png
    :align: left
 
-*Advanced configuration*
+   *Advanced configuration*
 
 
 
