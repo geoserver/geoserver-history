@@ -40,12 +40,23 @@ public abstract class ProxyList extends AbstractList {
                 "Object is not a proxy, or not a proxy of the correct type");
         }
         
-        return proxyList.set(index, element);
+        return proxyList.set(index, unwrapProxy(element, proxyInterface));
     }
     
     public int size() {
         return proxyList.size();
     }
     
+    /**
+     * Wraps an object from the underlying list in the proxy.
+     */
     abstract protected <T> T createProxy( T proxyObject, Class<T> proxyInterface );
+    
+    /**
+     * Unwraps a proxy object or insertion into the underlying list.
+     * <p>
+     * Note: This method should handle the case of the object not being a proxy instance, 
+     * but an regular instance of proxyInterface. 
+     */
+    abstract protected <T> T unwrapProxy( T proxy, Class<T> proxyInterface );
 }
