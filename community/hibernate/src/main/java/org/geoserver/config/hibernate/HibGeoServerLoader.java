@@ -275,7 +275,7 @@ public class HibGeoServerLoader
             initializeStyle( catalog, StyleInfo.DEFAULT_POLYGON, "default_line.sld" );
         }
         if ( catalog.getStyleByName( StyleInfo.DEFAULT_RASTER ) == null ) {
-            initializeStyle( catalog, StyleInfo.DEFAULT_RASTER, "default_raster.sld" );
+            initializeStyle( catalog, StyleInfo.DEFAULT_RASTER, "raster.sld" );
         }
 
         File styleDir = null;
@@ -319,10 +319,9 @@ public class HibGeoServerLoader
         //copy the file out to the data directory if necessary
         try {
             if (resourceLoader.find("styles", sld) == null) {
-                FileUtils.copyURLToFile(getClass().getResource(sld),
-                        new File(resourceLoader.find("styles"), sld));
+                FileUtils.copyURLToFile(getClass().getResource(sld),new File(resourceLoader.find("styles"), sld));
             }
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             LOGGER.log(Level.SEVERE, "Could not import SLD " + styleName, ex);
             return;
         }
@@ -350,7 +349,7 @@ public class HibGeoServerLoader
         for ( Iterator s = services.iterator(); s.hasNext(); ) {
             ServiceInfo service = (ServiceInfo) s.next();
             for ( ServiceLoader loader : loaders ) {
-                if ( loader.getServiceClass().equals(service.getClass()) ) { // ETJ FIXMEEEEEEE
+                if ( loader.getServiceClass().equals(service.getClass()) ) { // TODO ETJ FIXMEEEEEEE
                     try {
                         loader.save( service, geoserver );
                         break;
