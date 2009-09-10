@@ -8,10 +8,13 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.rest.PageInfo;
+import org.geotools.util.logging.Logging;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -19,6 +22,7 @@ import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
 
+import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.beans.MapModel;
@@ -76,6 +80,8 @@ import freemarker.template.TemplateModelException;
  *
  */
 public class ReflectiveHTMLFormat extends DataFormat {
+    
+    private static final Logger LOGGER = Logging.getLogger("org.geoserver.rest");
 
     /**
      * The request/response being serviced
@@ -141,17 +147,9 @@ public class ReflectiveHTMLFormat extends DataFormat {
         //first try finding a name directly
         String templateName = getTemplateName( object );
         if ( templateName != null ) {
-            try {
-                template = configuration.getTemplate( templateName );
-            } 
-            catch (IOException e) {
-                try {
-                    template = configuration.getTemplate( templateName + ".ftl" );
-                } 
-                catch (IOException e1) {
-                    //ignore for now
-                }
-            }
+            template = tryLoadTemplate(configuration, templateName);
+            if(template == null)
+                template = tryLoadTemplate(configuration, templateName + ".ftl");
         }
         
         //next look up by the resource being requested
@@ -159,31 +157,25 @@ public class ReflectiveHTMLFormat extends DataFormat {
             //could not find a template bound to the class directly, search by the resource
             // being requested
             String r = request.getResourceRef().getLastSegment();
+            if(r.equals(""))
+                r = request.getResourceRef().getBaseRef().getLastSegment();
             int i = r.lastIndexOf( "." ); 
             if ( i != -1 ) {
                 r = r.substring( 0, i );
             }
             
-            try {
-                template = configuration.getTemplate(r + ".ftl" );
-            } catch (IOException e) {}
+            template = tryLoadTemplate(configuration, r + ".ftl");
         }
         
         //finally try to find by class
         while( template == null && clazz != null ) {
-            
-            try {
-                template = configuration.getTemplate(clazz.getSimpleName() + ".ftl");
-            }
-            catch( IOException e ) {}
-            
-            //try interfaces
-            for ( Class interfaze : clazz.getInterfaces() ) {
-                try {
-                    template = configuration.getTemplate( interfaze.getSimpleName() + ".ftl" );
-                    break;
+            template = tryLoadTemplate(configuration, clazz.getSimpleName() + ".ftl");
+            if(template == null) {
+                for ( Class interfaze : clazz.getInterfaces() ) {
+                    template = tryLoadTemplate(configuration, interfaze.getSimpleName() + ".ftl" );
+                    if(template != null)
+                        break;
                 }
-                catch( IOException e ) {}
             }
             
             //move up the class hierachy to continue to look for a matching template
@@ -202,6 +194,24 @@ public class ReflectiveHTMLFormat extends DataFormat {
         }
         
         return new TemplateRepresentation( templateName, configuration, object, getMediaType() );
+    }
+    
+    /**
+     * Tries to load a template, will return null if it's not found. If the template exists
+     * but it contains syntax errors an exception will be thrown instead
+     * 
+     * @param configuration The template configuration.
+     * @param templateName The name of the template to load.
+     */
+    protected Template tryLoadTemplate(Configuration configuration, String templateName) {
+        try {
+            return configuration.getTemplate(templateName);
+        } catch(ParseException e) {
+            throw new RuntimeException(e);
+        } catch(IOException io) {
+            LOGGER.log(Level.FINE, "Failed to lookup template " + templateName, io);
+            return null;
+        }
     }
 
     protected Configuration createConfiguration(Object data, Class clazz) {
