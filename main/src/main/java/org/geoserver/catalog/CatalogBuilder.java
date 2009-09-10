@@ -686,14 +686,6 @@ public class CatalogBuilder {
         cinfo.setTitle(name);
         cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName()).toString() );
         
-        // metadata links
-        if(format.getDocURL() != null && !"".equals(format.getDocURL().trim())) {
-            MetadataLinkInfo ml = catalog.getFactory().createMetadataLink();
-            ml.setContent(format.getDocURL());
-            ml.setMetadataType("other");
-            cinfo.getMetadataLinks().add( ml );
-        }
-        
         //keywords
         cinfo.getKeywords().add("WCS");
         cinfo.getKeywords().add(format.getName());
