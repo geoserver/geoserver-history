@@ -6,6 +6,13 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
+      <directory>release/extensions/h2</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+   </fileSet>
+    <fileSet>
       <directory>release/target/dependency</directory>
       <outputDirectory></outputDirectory>
       <includes>
