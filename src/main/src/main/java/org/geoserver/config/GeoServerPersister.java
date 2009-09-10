@@ -556,7 +556,22 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     }
     
     void rename(File f, String newName) throws IOException {
-        f.renameTo( new File( f.getParentFile(), newName ) );
+        rename( f, new File( f.getParentFile(), newName ) );
+    }
+    
+    void rename( File source, File dest ) throws IOException {
+        boolean win = System.getProperty("os.name").startsWith("Windows");
+        if ( win && dest.exists() ) {
+            //windows does not do atomic renames, and can not rename a file if the dest file
+            // exists
+            if (!dest.delete()) {
+                throw new IOException("Could not delete: " + dest.getCanonicalPath());
+            }
+            source.renameTo(dest);
+        }
+        else {
+            source.renameTo(dest);
+        }
     }
     
     void persist( Object o, File dir, String filename ) throws IOException {
@@ -565,12 +580,22 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
 
     void persist( Object o, File f ) throws IOException {
         synchronized ( xp ) {
+            //first save to a temp file
+            File temp = new File(f.getParentFile(),f.getName()+".tmp");
+            if ( temp.exists() ) {
+                temp.delete();
+            }
+            
             BufferedOutputStream out = 
-                new BufferedOutputStream( new FileOutputStream( f ) );
+                new BufferedOutputStream( new FileOutputStream( temp ) );
             xp.save( o, out );
             out.flush();
             out.close();
+            
+            //no errors, overwrite the original file
+            rename(temp,f);
         }
         LOGGER.fine("Persisted " + o.getClass().getName() + " to " + f.getAbsolutePath() );
     }
+
 }
