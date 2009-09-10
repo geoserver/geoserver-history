@@ -115,11 +115,6 @@ public class CatalogBuilderTest extends GeoServerTestSupport {
         assertNotNull(fti.getNativeCRS());
         assertNotNull(fti.getNativeBoundingBox());
         assertNotNull(fti.getLatLonBoundingBox());
-        
-        // check the metadata links, geotiff should provide some
-        Format format = CoverageStoreUtils.acquireFormat("GeoTIFF");
-        assertEquals(1, fti.getMetadataLinks().size());
-        assertEquals(format.getDocURL(), fti.getMetadataLinks().get(0).getContent());
     }
     
     public void testEmptyBounds() throws Exception {

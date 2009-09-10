@@ -33,7 +33,7 @@ import org.geoserver.catalog.ResourceInfo;
 @SuppressWarnings("serial")
 public class MetadataLinkEditor extends Panel {
     private static final List<String> LINK_TYPES = Arrays.asList("FGDC",
-            "TC211");
+            "TC211", "other");
     private ListView links;
     private Label noMetadata;
     private WebMarkupContainer table;
@@ -64,15 +64,17 @@ public class MetadataLinkEditor extends Panel {
                         item.getIndex() % 2 == 0 ? "even" : "odd"));
 
                 // link info
-                item.add(new DropDownChoice("type",
-                        new PropertyModel(item.getModel(), "metadataType"), LINK_TYPES));
-                item.add(new TextField("format", new PropertyModel(item.getModel(), "type")));
-                FormComponentFeedbackBorder urlBorder = new FormComponentFeedbackBorder("urlBorder");
-                item.add(urlBorder);
+                DropDownChoice dropDownChoice = new DropDownChoice("type",
+                        new PropertyModel(item.getModel(), "metadataType"), LINK_TYPES);
+                dropDownChoice.setRequired(true);
+                item.add(dropDownChoice);
+                TextField format = new TextField("format", new PropertyModel(item.getModel(), "type"));
+                format.setRequired(true);
+                item.add(format);
                 TextField url = new TextField("metadataLinkURL", new PropertyModel(item.getModel(), "content"));
                 url.add(new UrlValidator());
                 url.setRequired(true);
-                urlBorder.add(url);
+                item.add(url);
                 
                 // remove link
                 AjaxLink link = new AjaxLink("removeLink", item.getModel()) {
