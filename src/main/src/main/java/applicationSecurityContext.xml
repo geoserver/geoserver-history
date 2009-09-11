@@ -318,6 +318,11 @@
   <bean id="accessRulesDao" class="org.geoserver.security.DataAccessRuleDAO">
   	<constructor-arg ref="rawCatalog"/>
   </bean>
+  
+  <!-- The dao used to deal with service level security -->
+  <bean id="serviceRulesDao" class="org.geoserver.security.ServiceAccessRuleDAO">
+  	<constructor-arg ref="rawCatalog"/>
+  </bean>
 
   <!-- 
     This interceptor will be used before calling operations on OWS stuff, and making it secure
