@@ -8,6 +8,7 @@ package org.geoserver.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -161,13 +162,13 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // schemaLocation="http://localhost:80/geoserver/wfs?request=DescribeFeatureType;version=1.1.0;
         // service=WFS&amp;typeName=gsml:CGI_TermValue,gsml:CompositionPart,gsml:ControlledConcept,
         // gsml:GeologicUnit,gsml:MappedFeature"
-        String schemaLocation = evaluate("//xsd:import[1]/@schemaLocation", doc);
+        String schemaLocation = URLDecoder.decode(evaluate("//xsd:import[1]/@schemaLocation", doc), "ASCII");
         assertNotNull(schemaLocation);
         System.out.println(schemaLocation);
         assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
 
         String[] typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
-                schemaLocation.length()).split("%2C");
+                schemaLocation.length()).split(",");
 
         File featureTypeDir = findFile("featureTypes", dataDir);
         assertNotNull(featureTypeDir);
@@ -188,7 +189,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
         // EX import
         assertXpathEvaluatesTo(FeatureChainingMockData.EX_URI, "//xsd:import[2]/@namespace", doc);
-        schemaLocation = evaluate("//xsd:import[2]/@schemaLocation", doc);
+        schemaLocation = URLDecoder.decode(evaluate("//xsd:import[2]/@schemaLocation", doc), "ASCII");
         assertNotNull(schemaLocation);
         assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
         typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
@@ -271,13 +272,13 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * Test content of GetFeature response.
      */
-    public void testGetFeatureContent() {
+    public void testGetFeatureContent() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
 
         assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//gsml:MappedFeature", doc);
 
-        String[] schemaLocationParts = evaluate("/wfs:FeatureCollection/@xsi:schemaLocation", doc)
+        String[] schemaLocationParts = URLDecoder.decode(evaluate("/wfs:FeatureCollection/@xsi:schemaLocation", doc), "ASCII")
                 .split(" ");
         List<String> schemaLocationList = Arrays.asList(schemaLocationParts);
         assertEquals(schemaLocationList.size(), 4);

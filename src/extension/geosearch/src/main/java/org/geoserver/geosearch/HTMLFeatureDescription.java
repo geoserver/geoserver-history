@@ -1,20 +1,15 @@
 package org.geoserver.geosearch;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import static org.geoserver.ows.util.ResponseUtils.*;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.FreemarkerFormat;
-import org.geoserver.rest.RestletException;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.data.DefaultQuery;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.FilterFactory;
 import org.restlet.data.MediaType;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
@@ -56,9 +51,9 @@ public class HTMLFeatureDescription extends AbstractFeatureDescription {
                 + f.getType().getName().getLocalPart()
              );
 
-        m.put("kmllink", GEOSERVER_BASE_URL + "/" + f.getIdentifier().toString() + "_goto.kml");
+        m.put("kmllink", buildURL(GEOSERVER_BASE_URL, f.getIdentifier().toString() + "_goto.kml", null, URLType.SERVICE));
         
-        m.put("rawkmllink", GEOSERVER_BASE_URL + "/" + f.getIdentifier().toString() + ".kml?raw=true");
+        m.put("rawkmllink",  buildURL(GEOSERVER_BASE_URL,  f.getIdentifier().toString() + ".kml?raw=true", null, URLType.SERVICE));
         
         try {
             m.put("name", t.title(f));

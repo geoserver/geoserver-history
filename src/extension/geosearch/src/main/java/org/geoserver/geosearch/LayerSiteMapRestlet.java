@@ -1,5 +1,7 @@
 package org.geoserver.geosearch;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +17,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.DefaultQuery;
@@ -81,10 +85,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
     }
 
     public void handle(Request request, Response response){ 
-        GEOSERVER_URL = RequestUtils.proxifiedBaseURL(
-            request.getRootRef().getParentRef().toString(),
-            getGeoServer().getGlobal().getProxyBaseUrl()
-        );
+        GEOSERVER_URL = getBaseURL(request);
         
         if (request.getMethod().equals(Method.GET)){
             doGet(request, response);
@@ -168,7 +169,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
             for (int i = 1; i <= pagecount; i++) {
                 SiteMapIndexRestlet.addSitemap(
                         sitemapindex, 
-                        GEOSERVER_URL + "rest/layers/" + layerName + "/sitemap-" + i + ".xml"
+                        buildURL(GEOSERVER_URL,  "rest/layers/" + layerName + "/sitemap-" + i + ".xml", null, URLType.SERVICE)
                        );
             }
         } catch (IOException ioe) {
@@ -218,7 +219,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
     private void encodeFeatureLink(Element urlSet, String layername, SimpleFeature f){
         Element urlElement = new Element("url", SITEMAP);
         Element loc = new Element("loc", SITEMAP);
-        loc.setText(GEOSERVER_URL + "rest/layers/" + layername + "/" + f.getID() + ".kml");
+        loc.setText(buildURL(GEOSERVER_URL, "rest/layers/" + layername + "/" + f.getID() + ".kml", null, URLType.SERVICE));
         urlElement.addContent(loc);
         Element geo = new Element("geo", GEOSITEMAP);
         Element geoformat = new Element("format", GEOSITEMAP);
@@ -451,24 +452,19 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         // Ok we have the coordinates, now we turn that into a bbox for a WMS query
         ReferencedEnvelope env = envelope(coords[0],coords[1],coords[2]);
         
-        String url = 
-            GEOSERVER_URL + "wms?"
-            + "service=WMS&"
-            + "version=1.1.0&"
-            + "request=GetMap&"
-            + "format=application/vnd.google-earth.kml+xml&"
-            + "format_options=regionateby:auto&"
-            + "exceptions=application/vnd.ogc.se_inimage&"
-            + "bbox=" + env.getMinX() + "," + env.getMinY() 
-            + "," + env.getMaxX() + "," + env.getMaxY() + "&"
-            + "srs=EPSG:4326&"
-            // + "styles=" + fti.getDefaultStyle().getName() +"&"
-            + "layers=" + fti.getName() + "&"
-            + "tiled=FALSE&"
-            + "width=256&"
-            + "height=256";
+        Map<String, String> params = params("service", "wms",
+                "version", "1.1.0",
+                "request", "GetMap",
+                "format", "application/vnd.google-earth.kml+xml",
+                "exceptions", "application/vnd.ogc.se_inimage",
+                "bbox", env.getMinX() + "," + env.getMinY() 
+                + "," + env.getMaxX() + "," + env.getMaxY(),
+                "srs", "EPSG:4326",
+                "layers", fti.getName(),
+                "width", "256",
+                "height", "256");
         
-        return url;
+        return buildURL(GEOSERVER_URL, "wms", params, URLType.SERVICE);
     }
 }
 

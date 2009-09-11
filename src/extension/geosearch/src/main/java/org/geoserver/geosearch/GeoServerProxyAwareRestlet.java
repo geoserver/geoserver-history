@@ -31,11 +31,9 @@ public class GeoServerProxyAwareRestlet extends Restlet {
         myGeoserver = gs;
     }
 
-    public String getBaseURL(Request req){
-        String baseURL = req.getResourceRef().getBaseRef().toString();
-        baseURL = RequestUtils.proxifiedBaseURL(baseURL, getGeoServer().getGlobal().getProxyBaseUrl());
-        baseURL = getParentUrl(baseURL);
-        return baseURL;
+    public String getBaseURL(Request req) {
+        return req.getRootRef().getParentRef().toString();
+        
     }
 
     public static String getParentUrl(String url){
