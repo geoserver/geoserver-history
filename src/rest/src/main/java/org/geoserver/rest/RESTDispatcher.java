@@ -129,7 +129,7 @@ public class RESTDispatcher extends AbstractController {
 
             r.attach(path, restlet);
 
-            if (!(path.indexOf("?") == -1)){
+            if (path.indexOf("?") == -1){
                 r.attach(path + "?{q}", restlet);
             } else LOG.fine("Query string already listed in restlet mapping: " + path);
         }
