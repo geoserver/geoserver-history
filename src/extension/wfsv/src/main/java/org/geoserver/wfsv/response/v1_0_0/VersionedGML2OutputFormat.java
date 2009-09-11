@@ -4,12 +4,15 @@
  */
 package org.geoserver.wfsv.response.v1_0_0;
 
+import java.util.Map;
+
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -40,14 +43,15 @@ public class VersionedGML2OutputFormat extends GML2OutputFormat {
     }
     
     protected String wfsSchemaLocation(GeoServerInfo global, String baseUrl) {
-        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl,global.getProxyBaseUrl()),
-                "schemas/wfs/1.0.0/WFS-versioning.xsd");
+        return ResponseUtils.buildSchemaURL(baseUrl, "/wfs/1.0.0/WFS-versioning.xsd");
     }
 
     protected String typeSchemaLocation(GeoServerInfo global, FeatureTypeInfo meta, String baseUrl) {
-        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, global.getProxyBaseUrl());
-        return ResponseUtils.appendQueryString(proxifiedBase + "wfs",
-            "service=WFSV&version=1.0.0&request=DescribeVersionedFeatureType&typeName=" + meta.getName());
+        Map<String, String> params = ResponseUtils.params("service", "WFS",
+                "version", "1.0.0",
+                "request", "DescribeVersionedFeatureType",
+                "typeName", meta.getName());
+        return ResponseUtils.buildURL(baseUrl, "wfsv", params, URLType.SERVICE);
     }
     
     

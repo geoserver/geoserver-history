@@ -5,16 +5,33 @@
 package org.geoserver.ows.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLEncoder;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.ows.URLMangler;
+import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.platform.GeoServerExtensions;
 
 
 /**
  * Utility class performing operations related to http respones.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
+ * @author Andrea Aime, OpenGeo
  *
  */
 public class ResponseUtils {
+    // the path that does contain the GeoServer internal XML schemas
+    public static final String SCHEMAS = "schemas";
+    
     /**
      * Parses the passed string, and encodes the special characters (used in
      * xml for special purposes) with the appropriate codes. e.g. '<' is
@@ -106,6 +123,9 @@ public class ResponseUtils {
      * This method checks <code>url</code> to see if the appended query string requires a '?' or
      * '&' to be prepended.
      * </p>
+     * <p>
+     * This code can be used to make sure the url ends with ? or & by calling appendQueryString(url, "")
+     * </p>
      *
      * @param url The base url.
      * @param queryString The query string to be appended, should not contain the '?' character.
@@ -189,23 +209,27 @@ public class ResponseUtils {
     }
 
     /**
-     * Appends a path tpo a url.
-     * <p>
-     * This method checks <code>url</code> to see if the appended path requires a '/' to be
-     * prepended.
-     * </p>
-     * @param url The base url.
-     * @param path The path to be appended to the url.
+     * Given a set of path components a full path is built
+     * @param pathComponent the set of path components
      *
      * @return The full url with the path appended.
      * TODO: remove this and replace with Requetss.appendContextPath
      */
-    public static String appendPath(String url, String path) {
-        if (path.startsWith("/")) {
-            path = path.substring(1);
+    public static String appendPath(String... pathComponents) {
+        StringBuilder result = new StringBuilder(pathComponents[0]);
+        for (int i = 1; i < pathComponents.length; i++) {
+            String component = pathComponents[i];
+            boolean endsWithSlash = result.charAt(result.length() - 1) == '/';
+            boolean startsWithSlash = component.startsWith("/");
+            if(endsWithSlash && startsWithSlash) {
+                result.setLength(result.length() - 1);
+            } else if(!endsWithSlash && !startsWithSlash) {
+                result.append("/");
+            }
+            result.append(component);
         }
-
-        return url.endsWith("/") ? (url + path) : (url + "/" + path);
+        
+        return result.toString();
     }
     
     /**
@@ -342,4 +366,102 @@ public class ResponseUtils {
         
         return "/" + path;
     }
+    
+    /**
+     * Builds and mangles a URL given its constitutent components. The components will be eventually
+     * modified by registered {@link URLMangler} instances to handle proxies or add security tokens
+     * 
+     * @param baseURL
+     *            the base URL, containing host, port and application
+     * @param path
+     *            the path after the application name
+     * @param kvp
+     *            the GET request parameters
+     * @param the
+     *            URL type
+     */
+    public static String buildURL(String baseURL, String path, Map<String, String> kvp, URLType type) {
+        try {
+            // prepare modifiable parameters
+            StringBuilder baseURLBuffer = new StringBuilder(baseURL);
+            StringBuilder pathBuffer = new StringBuilder(path != null ? path : "");
+            Map<String, String> kvpBuffer = new LinkedHashMap<String, String>();
+            if(kvp != null)
+                kvpBuffer.putAll(kvp);
+            
+            // run all of the manglers
+            for(URLMangler mangler : GeoServerExtensions.extensions(URLMangler.class)) {
+                mangler.mangleURL(baseURLBuffer, pathBuffer, kvpBuffer, type);
+            }
+            
+            // compose the final URL
+            String result = appendPath(baseURLBuffer.toString(), pathBuffer.toString());
+            StringBuilder params = new StringBuilder();
+            for (Map.Entry<String, String> entry : kvpBuffer.entrySet()) {
+                params.append(entry.getKey());
+                params.append("=");
+                // TODO: URLEncoder also encodes ( and ) which are considered safe chars,
+                // see also http://www.w3.org/International/O-URL-code.html
+                String encoded = URLEncoder.encode(entry.getValue(), "ASCII");
+                params.append(encoded);
+                params.append("&");
+            }
+            if(params.length() > 1) {
+                params.setLength(params.length() - 1);
+                result = appendQueryString(result, params.toString());
+            }
+            
+            return result;
+        } catch (UnsupportedEncodingException e) {
+            // this will just never happen
+            throw new RuntimeException("Unexpected encoding error while building a URL", e);
+        }
+    }
+    
+    /**
+     * Builds and mangles a URL for a schema contained in GeoServer
+     * 
+     * @param baseURL
+     *            the base URL, containing host, port and application
+     * @param path
+     *            the path inside the schema location (.../geoserver/schemas/...)
+     */
+    public static String buildSchemaURL(String baseURL, String path) {
+        return buildURL(baseURL, appendPath(SCHEMAS, path), null, URLType.RESOURCE);
+    }
+    
+    /**
+     * Pulls out the base url ( from the client point of view ), from the given request object.
+     * 
+     * @return A String of the form "<scheme>://<server>:<port>/<context>/"
+     * 
+     */
+    public static String baseURL(HttpServletRequest req) {
+        StringBuffer sb = new StringBuffer(req.getScheme());
+        sb.append("://").append(req.getServerName()).append(":").append(req.getServerPort())
+                .append(req.getContextPath()).append("/");
+        return sb.toString();
+    }
+    
+    /**
+     * Convenience method to build a KVP parameter map
+     * @param parameters sequence of keys and values
+     * @return
+     */
+    public static Map<String, String> params(String... parameters) {
+        Map<String, String> result = new LinkedHashMap<String, String>();
+        if(parameters.length % 2 != 0)
+            throw new IllegalArgumentException("The parameters sequence should be " +
+            		"composed of key/value pairs, but the params passed are odd in number");
+        
+        for (int i = 0; i < parameters.length;) {
+            String key = parameters[i++];
+            String value = parameters[i++];
+            result.put(key, value);
+        }
+        
+        return result;
+    }
+    
+    
 }

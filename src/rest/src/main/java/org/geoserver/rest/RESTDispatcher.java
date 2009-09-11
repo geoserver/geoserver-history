@@ -143,38 +143,33 @@ public class RESTDispatcher extends AbstractController {
                         Response response) {
                     super.init(request, response);
 
-                    //set the page uri's, proxying if necessary
-                    String rootURI = request.getRootRef().toString();
-                    String baseURI = null;
-                    if ( request.getResourceRef().getBaseRef() != null ) {
-                        baseURI = request.getResourceRef().getBaseRef().toString();
-                    }
-                    String pageURI = request.getResourceRef().toString();
+                    //set the page uri's
                     
-                    if ( gs.getGlobal().getProxyBaseUrl() != null ) {
-                        String host = 
-                            RequestUtils.proxifiedBaseURL(request.getHostRef().toString(), gs.getGlobal().getProxyBaseUrl());
-                        rootURI = ResponseUtils.appendPath( host, request.getRootRef().getPath() );
-                        baseURI = baseURI != null ?
-                                ResponseUtils.appendPath( host, request.getResourceRef().getBaseRef().getPath() ) : baseURI;
-                        pageURI = ResponseUtils.appendPath( host, request.getResourceRef().getPath() );
+                    // http://host:port/appName
+                    String baseURL = request.getRootRef().getParentRef().toString();
+                    String rootPath = request.getRootRef().toString().substring(baseURL.length());
+                    String pagePath = request.getResourceRef().toString().substring(baseURL.length());
+                    String basePath = null;
+                    if ( request.getResourceRef().getBaseRef() != null ) {
+                        basePath = request.getResourceRef().getBaseRef().toString().substring(baseURL.length());
                     }
                     
                     //strip off the extension
-                    String extension = ResponseUtils.getExtension(pageURI);
+                    String extension = ResponseUtils.getExtension(pagePath);
                     if ( extension != null ) {
-                        pageURI = pageURI.substring(0,pageURI.length() - extension.length() - 1);
+                        pagePath = pagePath.substring(0, pagePath.length() - extension.length() - 1);
                     }
                     
                     //trim leading slash
-                    if ( pageURI.endsWith( "/" ) ) {
-                        pageURI = pageURI.substring(0,pageURI.length()-1);
+                    if ( pagePath.endsWith( "/" ) ) {
+                        pagePath = pagePath.substring(0, pagePath.length()-1);
                     }
                     //create a page info object and put it into a request attribute
                     PageInfo pageInfo = new PageInfo();
-                    pageInfo.setRootURI( rootURI );
-                    pageInfo.setBaseURI( baseURI );
-                    pageInfo.setPageURI( pageURI );
+                    pageInfo.setBaseURL(baseURL);
+                    pageInfo.setRootPath(rootPath);
+                    pageInfo.setBasePath(basePath);
+                    pageInfo.setPagePath(pagePath);
                     pageInfo.setExtension( extension );
                     request.getAttributes().put( PageInfo.KEY, pageInfo );
                     

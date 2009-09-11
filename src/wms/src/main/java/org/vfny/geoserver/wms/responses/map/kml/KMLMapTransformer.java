@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.type.DateUtil;
@@ -960,13 +963,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     .getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
 
-            String baseUrl = RequestUtils.baseURL(request.getHttpServletRequest());
-            baseUrl = RequestUtils.proxifiedBaseURL(
-                    baseUrl, gs.getGlobal().getProxyBaseUrl()
-                    );
-
-            return baseUrl + "rest/" + ns.getPrefix() + "/"
-                + featureTypeName;
+            return buildURL(baseURL(request.getHttpServletRequest()), 
+                    appendPath("rest", ns.getPrefix(), featureTypeName), null, URLType.SERVICE);
         }
 
         /**

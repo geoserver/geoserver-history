@@ -49,8 +49,6 @@ public class VersionedXmlSchemaEncoder extends Response {
         // create the schema
         DescribeFeatureTypeType req = (DescribeFeatureTypeType) describeFeatureType
                 .getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req
-                .getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         FeatureTypeSchemaBuilder builder = null;
         if (results.isVersioned()) {
             builder = new VersionedSchemaBuilder(wfs.getGeoServer(), configuration);
@@ -58,8 +56,7 @@ public class VersionedXmlSchemaEncoder extends Response {
             builder = new FeatureTypeSchemaBuilder.GML3(wfs.getGeoServer());
         }
 
-        XSDSchema schema = builder.build(results.getFeatureTypeInfo(),
-                proxifiedBaseUrl);
+        XSDSchema schema = builder.build(results.getFeatureTypeInfo(), req.getBaseUrl());
 
         // serialize
         schema.updateElement();

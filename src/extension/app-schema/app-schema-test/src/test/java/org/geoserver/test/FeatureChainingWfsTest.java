@@ -163,10 +163,11 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // gsml:GeologicUnit,gsml:MappedFeature"
         String schemaLocation = evaluate("//xsd:import[1]/@schemaLocation", doc);
         assertNotNull(schemaLocation);
+        System.out.println(schemaLocation);
         assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
 
         String[] typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
-                schemaLocation.length()).split(",");
+                schemaLocation.length()).split("%2C");
 
         File featureTypeDir = findFile("featureTypes", dataDir);
         assertNotNull(featureTypeDir);

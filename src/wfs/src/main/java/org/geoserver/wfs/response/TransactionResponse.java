@@ -4,6 +4,7 @@
  */
 package org.geoserver.wfs.response;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
 import net.opengis.wfs.ActionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.InsertResultsType;
@@ -15,6 +16,7 @@ import net.opengis.wfs.TransactionType;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
@@ -95,11 +97,7 @@ public class TransactionResponse extends Response {
         writer.write("xsi:schemaLocation=\"http://www.opengis.net/wfs ");
 
         TransactionType req = (TransactionType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), 
-            wfs.getGeoServer().getGlobal().getProxyBaseUrl());
-        
-        String baseUrl = ResponseUtils.appendPath(proxifiedBaseUrl,
-                "schemas/wfs/1.0.0/WFS-transaction.xsd");
+        String baseUrl = buildSchemaURL(req.getBaseUrl(), "wfs/1.0.0/WFS-transaction.xsd"); 
 
         writer.write(baseUrl);
         writer.write("\">");
@@ -203,11 +201,9 @@ public class TransactionResponse extends Response {
         encoder.setEncoding(Charset.forName( wfs.getGeoServer().getGlobal().getCharset()) );
 
         TransactionType req = (TransactionType)operation.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), 
-            wfs.getGeoServer().getGlobal().getProxyBaseUrl());
         
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
+                buildSchemaURL(req.getBaseUrl(), "wfs/1.1.0/wfs.xsd"));
         encoder.encode(response, org.geoserver.wfs.xml.v1_1_0.WFS.TRANSACTIONRESPONSE, output);
        
     }

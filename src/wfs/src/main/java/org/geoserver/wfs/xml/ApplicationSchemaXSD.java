@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs.xml;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +38,7 @@ import org.eclipse.xsd.util.XSDConstants;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.gml2.GML;
 import org.geotools.util.logging.Logging;
@@ -228,13 +232,18 @@ public class ApplicationSchemaXSD extends XSD {
 
     void buildSchemaImports(Collection<NamespaceInfo> namespaces, XSDSchema schema, XSDFactory factory) {
         
-        String schemaLocation = ResponseUtils.appendQueryString(ResponseUtils.appendPath( baseURL, "wfs"), 
-            "service=wfs&request=DescribeFeatureType&version=" + wfs.getVersion() + "&namespace=");
+        Map<String, String> params = params("service", "wfs",
+                "request", "DescribeFeatureType",
+                "version", wfs.getVersion());
+        
+//        String schemaLocation = ResponseUtils.appendQueryString(ResponseUtils.appendPath( baseURL, "wfs"), 
+//            "service=wfs&request=DescribeFeatureType&version=" + wfs.getVersion() + "&namespace=");
         
         for ( NamespaceInfo namespace : namespaces ) {
             XSDImport imprt = factory.createXSDImport();
             imprt.setNamespace(namespace.getURI());
-            imprt.setSchemaLocation(schemaLocation + namespace.getPrefix());
+            params.put("namespace", namespace.getPrefix());
+            imprt.setSchemaLocation(buildURL(baseURL, "wfs", params, URLType.SERVICE));
 
             schema.getContents().add(imprt);
         }

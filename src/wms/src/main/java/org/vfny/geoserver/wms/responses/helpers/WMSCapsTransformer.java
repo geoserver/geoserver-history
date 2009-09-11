@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.awt.Dimension;
 import java.io.IOException;
 import java.io.Serializable;
@@ -37,6 +39,7 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
@@ -77,7 +80,7 @@ public class WMSCapsTransformer extends TransformerBase {
             "application/vnd.ogc.se_inimage", };
 
     /** The geoserver base URL to append it the schemas/wms/1.1.1/WMS_MS_Capabilities.dtd DTD location */
-    private String schemaBaseUrl;
+    private String baseURL;
 
     /** The list of output formats to state as supported for the GetMap request */
     private Set<String> getMapFormats;
@@ -89,8 +92,7 @@ public class WMSCapsTransformer extends TransformerBase {
      * Creates a new WMSCapsTransformer object.
      *
      * @param schemaBaseUrl
-     *            the server base url which to append the "schemas/wms/1.1.1/WMS_MS_Capabilities.dtd" 
-     *            DTD location to
+     *            the base URL of the current request (usually "http://host:port/geoserver")
      * @param getMapFormats the list of supported output formats to state for the GetMap request
      * @param getLegendGraphicFormats the list of supported output formats to state for the 
      *          GetLegendGraphic request
@@ -98,10 +100,10 @@ public class WMSCapsTransformer extends TransformerBase {
      * @throws NullPointerException
      *             if <code>schemaBaseUrl</code> is null;
      */
-    public WMSCapsTransformer(String schemaBaseUrl, Set<String> getMapFormats, Set<String> getLegendGraphicFormats) {
+    public WMSCapsTransformer(String baseURL, Set<String> getMapFormats, Set<String> getLegendGraphicFormats) {
         super();
-        if (schemaBaseUrl == null) {
-            throw new NullPointerException("schemaBaseUrl");
+        if (baseURL == null) {
+            throw new NullPointerException("baseURL");
         }
         if (getMapFormats == null) {
             throw new NullPointerException("getMapFormats");
@@ -112,7 +114,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
         this.getMapFormats = getMapFormats;
         this.getLegendGraphicFormats = getLegendGraphicFormats;
-        this.schemaBaseUrl = schemaBaseUrl;
+        this.baseURL = baseURL;
         this.setNamespaceDeclarationEnabled(false);
     }
 
@@ -141,11 +143,7 @@ public class WMSCapsTransformer extends TransformerBase {
     @Override
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = schemaBaseUrl + (schemaBaseUrl.endsWith("/")? "" : "/") +
-            "schemas/wms/1.1.1/WMS_MS_Capabilities.dtd"; // DJB: fixed this to
-                                                                                  // point to correct
-                                                                                  // location
-
+        String dtdUrl =  buildSchemaURL(baseURL, "wms/1.1.1/WMS_MS_Capabilities.dtd");
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -242,7 +240,7 @@ public class WMSCapsTransformer extends TransformerBase {
             orAtts.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
             orAtts.addAttribute(XLINK_NS, "xlink:type", "xlink:type", "", "simple");
             orAtts.addAttribute("", "xlink:href", "xlink:href", "",
-                RequestUtils.proxifiedBaseURL(request.getBaseUrl(),wmsConfig.getProxyBaseUrl()) + "wms");
+                    buildURL(request.getBaseUrl(), "wms", null, URLType.SERVICE));
             element("OnlineResource", null, orAtts);
 
             GeoServer geoServer = wmsConfig.getGeoServer();
@@ -352,9 +350,9 @@ public class WMSCapsTransformer extends TransformerBase {
             start("GetCapabilities");
             element("Format", WMS_CAPS_MIME);
             
-            String serviceUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wmsConfig
-                    .getProxyBaseUrl())
-                    + "wms?SERVICE=WMS&";
+            // build the service URL and make sure it ends with &
+            String serviceUrl = buildURL(request.getBaseUrl(), "wms", params("SERVICE", "WMS"), URLType.SERVICE);
+            serviceUrl = appendQueryString(serviceUrl, "");
 
             handleDcpType(serviceUrl, serviceUrl);
             end("GetCapabilities");
@@ -947,23 +945,16 @@ public class WMSCapsTransformer extends TransformerBase {
                 element("Format", defaultFormat);
                 attrs.clear();
 
-                StringBuffer onlineResource =
-                    new StringBuffer(RequestUtils.proxifiedBaseURL(
-                            request.getBaseUrl(), wmsConfig.getProxyBaseUrl()));
-                onlineResource.append("wms/GetLegendGraphic?VERSION=");
-                onlineResource.append(GetLegendGraphicRequest.SLD_VERSION);
-                onlineResource.append("&FORMAT=");
-                onlineResource.append(defaultFormat);
-                onlineResource.append("&WIDTH=");
-                onlineResource.append(GetLegendGraphicRequest.DEFAULT_WIDTH);
-                onlineResource.append("&HEIGHT=");
-                onlineResource.append(GetLegendGraphicRequest.DEFAULT_HEIGHT);
-                onlineResource.append("&LAYER=");
-                onlineResource.append(layerName);
+                Map<String, String> params = params("request", "GetLegendGraphic",
+                        "format", defaultFormat,
+                        "width", String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH),
+                        "heigth", String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT),
+                        "layer", layerName);
+                String legendURL = buildURL(request.getBaseUrl(), "wms", params, URLType.SERVICE);
 
                 attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
                 attrs.addAttribute(XLINK_NS, "type", "xlink:type", "", "simple");
-                attrs.addAttribute(XLINK_NS, "href", "xlink:href", "", onlineResource.toString());
+                attrs.addAttribute(XLINK_NS, "href", "xlink:href", "", legendURL);
                 element("OnlineResource", null, attrs);
 
                 end("LegendURL");

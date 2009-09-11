@@ -4,12 +4,15 @@
  */
 package org.geoserver.wfs.xml;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -33,6 +36,7 @@ import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.wfs.WFSInfo;
@@ -80,7 +84,7 @@ public abstract class FeatureTypeSchemaBuilder {
     protected String gmlSchemaLocation;
     protected String baseType;
     protected String substitutionGroup;
-    protected String describeFeatureTypeBase;
+    protected Map<String, String> describeFeatureTypeParams;
     protected String gmlPrefix;
     protected Configuration xmlConfiguration;
 
@@ -124,18 +128,13 @@ public abstract class FeatureTypeSchemaBuilder {
         
         if (baseUrl == null)
             baseUrl = wfs.getSchemaBaseURL(); 
-
-        if (!baseUrl.endsWith("wfs") && !baseUrl.endsWith("wfs?")) {
-            baseUrl = ResponseUtils.appendPath(baseUrl, "wfs");
-        }
                 
         if (ns2featureTypeInfos.entrySet().size() == 1) {
             //import gml schema
             XSDImport imprt = factory.createXSDImport();
             imprt.setNamespace(gmlNamespace);
 
-            imprt.setSchemaLocation( ResponseUtils.appendPath(ResponseUtils.getParentUrl(baseUrl),
-                    "schemas/" + gmlSchemaLocation));
+            imprt.setSchemaLocation(ResponseUtils.buildSchemaURL(baseUrl, gmlSchemaLocation));
 
             XSDSchema gmlSchema = gmlSchema();
             imprt.setResolvedSchema(gmlSchema);
@@ -172,20 +171,19 @@ public abstract class FeatureTypeSchemaBuilder {
                 String prefix = (String) entry.getKey();
                 List types = (List) entry.getValue();
 
-                StringBuffer queryString = new StringBuffer(describeFeatureTypeBase);
-                queryString.append("&typeName=");
-
+                StringBuffer typeNames = new StringBuffer();
                 for (Iterator t = types.iterator(); t.hasNext();) {
                     FeatureTypeInfo type = (FeatureTypeInfo) t.next();
-                    queryString.append(type.getPrefixedName());
+                    typeNames.append(type.getPrefixedName());
 
                     if (t.hasNext()) {
-                        queryString.append(",");
+                        typeNames.append(",");
                     }
                 }
+                Map<String, String> params = new LinkedHashMap<String, String>(describeFeatureTypeParams);
+                params.put("typeName", typeNames.toString());
 
-                String schemaLocation = ResponseUtils.appendQueryString(baseUrl,
-                        queryString.toString());
+                String schemaLocation = buildURL(baseUrl, "wfs", params, URLType.RESOURCE);
                 String namespace = catalog.getNamespaceByPrefix(prefix).getURI();
 
                 XSDImport imprt = factory.createXSDImport();
@@ -548,7 +546,9 @@ public abstract class FeatureTypeSchemaBuilder {
             gmlSchemaLocation = "gml/2.1.2/feature.xsd";
             baseType = "AbstractFeatureType";
             substitutionGroup = "_Feature";
-            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.0.0&service=WFS";
+            describeFeatureTypeParams = params("request", "DescribeFeatureType", 
+                    "version", "1.0.0",
+                    "service", "WFS");
             gmlPrefix = "gml";
             xmlConfiguration = new GMLConfiguration();
         }
@@ -577,7 +577,10 @@ public abstract class FeatureTypeSchemaBuilder {
             gmlSchemaLocation = "gml/3.1.1/base/gml.xsd";
             baseType = "AbstractFeatureType";
             substitutionGroup = "_Feature";
-            describeFeatureTypeBase = "request=DescribeFeatureType&version=1.1.0&service=WFS";
+            describeFeatureTypeParams =  params("request", "DescribeFeatureType", 
+                    "version", "1.1.0",
+                    "service", "WFS");
+
             gmlPrefix = "gml";
             xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
         }

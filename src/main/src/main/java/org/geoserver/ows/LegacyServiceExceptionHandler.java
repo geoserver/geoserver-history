@@ -4,6 +4,8 @@
  */
 package org.geoserver.ows;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -13,6 +15,7 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -119,9 +122,8 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
         sb.append("?>");
 
         // dtd location
-        String schemaBaseURL = RequestUtils.schemaBaseURL(request.httpRequest, geoServer.getGlobal().getProxyBaseUrl());
         if (dtdLocation != null) {
-            String fullDtdLocation = ResponseUtils.appendPath(schemaBaseURL, dtdLocation);
+            String fullDtdLocation =  buildSchemaURL(baseURL(request.httpRequest), dtdLocation);
             sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
         }
 
@@ -130,8 +132,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         //xml schema location
         if ((schemaLocation != null) && (dtdLocation == null)) {
-            String fullSchemaLocation = ResponseUtils.appendPath(schemaBaseURL,
-                    schemaLocation);
+            String fullSchemaLocation =  buildSchemaURL(baseURL(request.httpRequest), schemaLocation); 
 
             sb.append("xmlns=\"http://www.opengis.net/ogc\" ");
             sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");

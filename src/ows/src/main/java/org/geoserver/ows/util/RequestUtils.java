@@ -4,15 +4,18 @@
  */
 package org.geoserver.ows.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.ows.URLMangler;
+import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geotools.util.Version;
 
@@ -26,50 +29,13 @@ import org.geotools.util.Version;
  */
 public class RequestUtils {
     
-    /**
-     * Returns the url which is hte base of schemas stored / served by
-     * geoserver.
-     * <p>
-     *         This method returns:
-     *         <pre>
-     *        <code>
-     *    baseURL( req ) + "schemas/"
-     *  </code>
-     *  </pre>
-     * </p>
-     *
-     * @return A String of the form "<scheme>://<server>:<port>/<context>/schemas/"
-     * @deprecated This method does not take into account the proxy base 
-     * url, use {@link #schemaBaseURL(HttpServletRequest, String)} instead 
-     */
-    public static String schemaBaseURL(HttpServletRequest req) {
-        return baseURL(req) + "schemas/";
-    }
-    
-    /**
-     * Returns the url which is hte base of schemas stored / served by
-     * geoserver.
-     * <p>
-     *         This method returns:
-     *         <pre>
-     *        <code>
-     *    proxifiedBaseURL(baseURL(req), proxyBase) + "schemas/"
-     *  </code>
-     *  </pre>
-     * </p>
-     *
-     * @return A String of the form "<scheme>://<server>:<port>/<context>/schemas/"
-     */
-    public static String schemaBaseURL(HttpServletRequest req, String proxyBase) {
-        return proxifiedBaseURL(baseURL(req), proxyBase) + "schemas/";
-    }
 
     /**
      * Pulls out the base url ( from the client point of view ), from the
      * given request object.
      *
      * @return A String of the form "<scheme>://<server>:<port>/<context>/"
-     *
+     * @deprecated Use {@link ResponseUtils#baseURL(HttpServletRequest)} instead
      */
     public static String baseURL(HttpServletRequest req) {
         StringBuffer sb = new StringBuffer(req.getScheme());
@@ -78,41 +44,7 @@ public class RequestUtils {
         return sb.toString();
     }
     
-    /**
-     * Given the actual <code>baseUrl</code> (may or may not include context) and a proxy base url,
-     * returns the proxy base if not null or the actual one, ensuring the returned value ends with "/".
-     * <p>
-     * Be careful this does not account for a full reverse-proxy like url replacement, and is actually
-     * meant only for OWS output that need some sort of schema information to be returned in the response
-     * content.
-     * </p>
-     * 
-     */
-    public static String proxifiedBaseURL(String baseUrl, String proxyBase) {
-        if (proxyBase == null || proxyBase.trim().length() == 0) {
-            if (!baseUrl.endsWith("/"))
-                baseUrl += "/";
-            return baseUrl;
-        }
-        return proxyBase.endsWith("/")? proxyBase : proxyBase + "/";
-        
-//        try {
-//            URI baseUri = new URI(baseUrl);
-//            if (proxyBase.endsWith("/"))
-//                proxyBase = proxyBase.substring(0, proxyBase.length() - 1);
-//
-//            String proxifiedBaseUrl = proxyBase + baseUri.getPath();
-//            if (!proxifiedBaseUrl.endsWith("/"))
-//                proxifiedBaseUrl += "/";
-//
-//            return proxifiedBaseUrl;
-//        } catch (URISyntaxException urise) {
-//            // hmm...guess the proxy base must be invalid
-//            throw new RuntimeException(
-//                    "Invalid Proxy Base URL property is set in your GeoServer installation.", urise);
-//        }
-    }
-
+    
     /**
      * Given a list of provided versions, and a list of accepted versions, this method will
      * return the negotiated version to be used for response according to the pre OWS 1.1 specifications,

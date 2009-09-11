@@ -4,6 +4,9 @@
  */
 package org.geoserver.rest;
 
+import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.ows.util.ResponseUtils;
+
 /**
  * An object which contains information about the "page" or "resource" being accessed
  * in a restlet request.
@@ -23,18 +26,14 @@ public class PageInfo {
      */
     public static final String KEY = "org.geoserver.pageDetails";
 
-    /**
-     * the root uri
-     */
-    String rootURI;
-    /**
-     * the base uri for the page.
-     */
-    String baseURI;
-    /**
-     * The full uri for the page.
-     */
-    String pageURI;
+    String baseURL;
+    
+    String rootPath;
+    
+    String basePath;
+    
+    String pagePath;
+    
     /**
      * The extension of the page. 
      */
@@ -43,32 +42,84 @@ public class PageInfo {
     PageInfo() {
     }
 
-    public String getRootURI() {
-        return rootURI;
-    }
-    public void setRootURI(String rootURI) {
-        this.rootURI = rootURI;
-    }
+
     
-    public String getBaseURI() {
-        return baseURI;
+    public String getBaseURL() {
+        return baseURL;
     }
-    void setBaseURI(String baseURI) {
-        this.baseURI = baseURI;
+
+
+
+    public void setBaseURL(String baseURL) {
+        this.baseURL = baseURL;
     }
-    
-    public String getPageURI() {
-        return pageURI;
+
+
+
+    public String getRootPath() {
+        return rootPath;
     }
-    void setPageURI(String pageURI) {
-        this.pageURI = pageURI;
+
+
+
+    public void setRootPath(String rootPath) {
+        this.rootPath = rootPath;
     }
-    
+
+
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
+
+
+
+    public String getPagePath() {
+        return pagePath;
+    }
+
+    public void setPagePath(String pagePath) {
+        this.pagePath = pagePath;
+    }
+
     public String getExtension() {
         return extension;
     }
+    
     void setExtension(String extension) {
         this.extension = extension;
+    }
+    
+    public String pageURI(String path) {
+        return buildURI(pagePath, path);
+    }
+    
+    public String rootURI(String path) {
+        return buildURI(rootPath, path);
+    }
+    
+    public String baseURI(String path) {
+        return buildURI(basePath, path);
+    }
+    
+    String buildURI(String base, String path) {
+        if(path != null) {
+            if(path.startsWith(".")) {
+                if(base.endsWith("/"))
+                    base = base.substring(1);
+                path = base + path;
+            } else {
+                path = ResponseUtils.appendPath(base, path);
+            }
+        }
+        
+        return ResponseUtils.buildURL(baseURL, path, null, URLType.SERVICE);
     }
     
 }

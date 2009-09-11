@@ -4,6 +4,8 @@
  */
 package org.geoserver.wcs.response;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,6 +24,7 @@ import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.WCSInfo;
 import org.geoserver.wcs.kvp.GridType;
@@ -133,10 +136,8 @@ public class DescribeCoverageTransformer extends TransformerBase {
             final String locationAtt = new StringBuffer(XSI_PREFIX).append(":schemaLocation")
                     .toString();
 
-            proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-                    .getGeoServer().getGlobal().getProxyBaseUrl());
-            final String locationDef = WCS_URI + " " + proxifiedBaseUrl
-                    + "schemas/wcs/1.1.1/wcsDescribeCoverage.xsd";
+             final String locationDef = buildSchemaURL(request.getBaseUrl(),  "wcs/1.1.1/wcsDescribeCoverage.xsd");
+            
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
             start("wcs:CoverageDescriptions", attributes);

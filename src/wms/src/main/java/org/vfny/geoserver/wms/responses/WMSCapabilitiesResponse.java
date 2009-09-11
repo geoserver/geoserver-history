@@ -128,14 +128,8 @@ public class WMSCapabilitiesResponse implements Response {
     	//otherwise it's a normal response...
         
 
-        String serverBaseUrl;
-        {
-            String requestBaseUrl = request.getBaseUrl();
-            String proxyBaseUrl = wmsConfig.getProxyBaseUrl();
-            serverBaseUrl = RequestUtils.proxifiedBaseURL(requestBaseUrl, proxyBaseUrl); 
-        }
         Set<String> legendFormats = GetLegendGraphicResponse.getFormats();
-        WMSCapsTransformer transformer = new WMSCapsTransformer(serverBaseUrl, mapFormats, legendFormats);
+        WMSCapsTransformer transformer = new WMSCapsTransformer(request.getBaseUrl(), mapFormats, legendFormats);
 
         // if (request.getWFS().getGeoServer().isVerbose()) {
         transformer.setIndentation(2);
