@@ -23,29 +23,23 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geotools.util.logging.Logging;
 import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
- * Allows one to manage the rules used by the per layer security subsystem
+ * Allows one to manage the rules used by the service layer security subsystem
  * TODO: consider splitting the persistence of properties into two strategies,
  * and in memory one, and a file system one (this class is so marginal that
  * I did not do so right away, in memory access is mostly handy for testing)
  */
-public class DataAccessRuleDAO {
+public class ServiceAccessRuleDAO {
 
-    static final Logger LOGGER = Logging.getLogger(DataAccessRuleDAO.class);
+    static final Logger LOGGER = Logging.getLogger(ServiceAccessRuleDAO.class);
 
     Catalog rawCatalog;
-
-    TreeSet<DataAccessRule> rules;
-
-    /**
-     * Default to the highest security mode
-     */
-    CatalogMode catalogMode = CatalogMode.HIDE;
+    
+    TreeSet<ServiceAccessRule> rules;
 
     /**
      * Used to check the file for modifications
@@ -66,8 +60,13 @@ public class DataAccessRuleDAO {
      * Returns the instanced contained in the Spring context for the UI to use
      * @return
      */
-    public static DataAccessRuleDAO get() {
-       return GeoServerExtensions.bean(DataAccessRuleDAO.class); 
+    public static ServiceAccessRuleDAO get() {
+       return GeoServerExtensions.bean(ServiceAccessRuleDAO.class); 
+    }
+    
+    public ServiceAccessRuleDAO(Catalog rawCatalog) throws ConfigurationException {
+        this.rawCatalog = rawCatalog;
+        this.securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
     }
 
     /**
@@ -75,8 +74,7 @@ public class DataAccessRuleDAO {
      * 
      * @param rawCatalog
      */
-    public DataAccessRuleDAO(Catalog rawCatalog) throws ConfigurationException {
-        this.rawCatalog = rawCatalog;
+    public ServiceAccessRuleDAO() throws ConfigurationException {
         this.securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
     }
     
@@ -85,8 +83,7 @@ public class DataAccessRuleDAO {
      * 
      * @param rawCatalog
      */
-    DataAccessRuleDAO(Catalog rawCatalog, File securityDir) throws ConfigurationException {
-        this.rawCatalog = rawCatalog;
+    ServiceAccessRuleDAO(Catalog rawCatalog, File securityDir) throws ConfigurationException {
         this.securityDir = securityDir;
     }
 
@@ -95,9 +92,9 @@ public class DataAccessRuleDAO {
      * 
      * @return
      */
-    public List<DataAccessRule> getRules() {
+    public List<ServiceAccessRule> getRules() {
         checkPropertyFile(false);
-        return new ArrayList<DataAccessRule>(rules);
+        return new ArrayList<ServiceAccessRule>(rules);
     }
 
     /**
@@ -106,7 +103,7 @@ public class DataAccessRuleDAO {
      * @param rule
      * @return true if the set did not contain the rule already, false otherwise
      */
-    public boolean addRule(DataAccessRule rule) {
+    public boolean addRule(ServiceAccessRule rule) {
         lastModified = System.currentTimeMillis();
         return rules.add(rule);
     }
@@ -131,21 +128,11 @@ public class DataAccessRuleDAO {
      * @param rule
      * @return
      */
-    public boolean removeRule(DataAccessRule rule) {
+    public boolean removeRule(ServiceAccessRule rule) {
         lastModified = System.currentTimeMillis();
         return rules.remove(rule);
     }
 
-    /**
-     * The way the catalog should react to unauthorized access
-     * 
-     * @return
-     */
-    public CatalogMode getMode() {
-        checkPropertyFile(false);
-        return catalogMode;
-    }
-    
     /**
      * Writes the rules back to file system
      * @throws IOException
@@ -157,7 +144,7 @@ public class DataAccessRuleDAO {
             Properties p = toProperties();
 
             // write out to the data dir
-            File propFile = new File(securityDir, "layers.properties");
+            File propFile = new File(securityDir, "service.properties");
             os = new FileOutputStream(propFile);
             p.store(os, null);
         } catch (Exception e) {
@@ -180,12 +167,12 @@ public class DataAccessRuleDAO {
             if (rules == null) {
                 // no security folder, let's work against an empty properties then
                 if (securityDir == null || !securityDir.exists()) {
-                    this.rules = new TreeSet<DataAccessRule>();
+                    this.rules = new TreeSet<ServiceAccessRule>();
                 } else {
                     // no security config, let's work against an empty properties then
-                    File layers = new File(securityDir, "layers.properties");
+                    File layers = new File(securityDir, "service.properties");
                     if (!layers.exists()) {
-                        this.rules = new TreeSet<DataAccessRule>();
+                        this.rules = new TreeSet<ServiceAccessRule>();
                     } else {
                         // ok, something is there, let's load it
                         watcher = new PropertyFileWatcher(layers);
@@ -211,35 +198,23 @@ public class DataAccessRuleDAO {
      * @return
      */
     void loadRules(Properties props) {
-        TreeSet<DataAccessRule> result = new TreeSet<DataAccessRule>();
-        catalogMode = CatalogMode.HIDE;
+        TreeSet<ServiceAccessRule> result = new TreeSet<ServiceAccessRule>();
         for (Map.Entry entry : props.entrySet()) {
             String ruleKey = (String) entry.getKey();
             String ruleValue = (String) entry.getValue();
 
-            // check for the mode
-            if ("mode".equalsIgnoreCase(ruleKey)) {
-                try {
-                    catalogMode = CatalogMode.valueOf(ruleValue.toUpperCase());
-                } catch (Exception e) {
-                    LOGGER.warning("Invalid security mode " + ruleValue + " acceptable values are "
-                            + Arrays.asList(CatalogMode.values()));
-                }
-            } else {
-                DataAccessRule rule = parseDataAccessRule(ruleKey, ruleValue);
-                if (rule != null) {
-                    if (result.contains(rule))
-                        LOGGER.warning("Rule " + ruleKey + "." + ruleValue
-                                + " overwrites another rule on the same path");
-                    result.add(rule);
-                }
+            ServiceAccessRule rule = parseServiceAccessRule(ruleKey, ruleValue);
+            if (rule != null) {
+                if (result.contains(rule))
+                    LOGGER.warning("Rule " + ruleKey + "." + ruleValue
+                            + " overwrites another rule on the same path");
+                result.add(rule);
             }
         }
         
-        // make sure the two basic rules if the set is empty
+        // make sure to add the "all access alloed" rule if the set if empty
         if(result.size() == 0) {
-            result.add(new DataAccessRule(DataAccessRule.READ_ALL));
-            result.add(new DataAccessRule(DataAccessRule.WRITE_ALL));
+            result.add(new ServiceAccessRule(new ServiceAccessRule()));
         }
         
         rules = result;
@@ -251,47 +226,22 @@ public class DataAccessRuleDAO {
      * 
      * @return
      */
-    DataAccessRule parseDataAccessRule(String ruleKey, String ruleValue) {
+    ServiceAccessRule parseServiceAccessRule(String ruleKey, String ruleValue) {
         final String rule = ruleKey + "=" + ruleValue;
 
         // parse
         String[] elements = parseElements(ruleKey);
-        if(elements.length != 3) {
-            LOGGER.warning("Invalid rule " + rule + ", the expected format is workspace.layer.mode=role1,role2,...");
+        if(elements.length != 2) {
+            LOGGER.warning("Invalid rule " + rule + ", the expected format is service.method=role1,role2,...");
             return null;
         }
-        String workspace = elements[0];
-        String layerName = elements[1];
-        String modeAlias = elements[2];
+        String service = elements[0];
+        String method = elements[1];
         Set<String> roles = parseRoles(ruleValue);
 
-        // perform basic checks on the elements
-        if (elements.length != 3) {
-            LOGGER.warning("Invalid rule '" + rule
-                    + "', the standard form is [namespace].[layer].[mode]=[role]+ "
-                    + "Rule has been ignored");
-            return null;
-        }
-
-        // emit warnings for unknown workspaces, layers, but don't skip the rule,
-        // people might be editing the catalog structure and will edit the access rule
-        // file afterwards
-        if (!ANY.equals(workspace) && rawCatalog.getWorkspaceByName(workspace) == null)
-            LOGGER.warning("Namespace/Workspace " + workspace + " is unknown in rule " + rule);
-        if (!ANY.equals(layerName) && rawCatalog.getLayerByName(layerName) == null)
-            LOGGER.warning("Layer " + workspace + " is unknown in rule + " + rule);
-
-        // check the access mode sanity
-        AccessMode mode = AccessMode.getByAlias(modeAlias);
-        if (mode == null) {
-            LOGGER.warning("Unknown access mode " + modeAlias + " in " + ruleKey
-                    + ", skipping rule " + rule);
-            return null;
-        }
-
         // check ANY usage sanity
-        if (ANY.equals(workspace)) {
-            if (!ANY.equals(layerName)) {
+        if (ANY.equals(service)) {
+            if (!ANY.equals(method)) {
                 LOGGER.warning("Invalid rule " + rule + ", when namespace "
                         + "is * then also layer must be *. Skipping rule " + rule);
                 return null;
@@ -299,7 +249,7 @@ public class DataAccessRuleDAO {
         }
 
         // build the rule
-        return new DataAccessRule(workspace, layerName, mode, roles);
+        return new ServiceAccessRule(service, method, roles);
     }
     
     /**
@@ -308,8 +258,7 @@ public class DataAccessRuleDAO {
      */
     Properties toProperties() {
         Properties props = new Properties();
-        props.put("mode", catalogMode.toString());
-        for (DataAccessRule rule : rules) {
+        for (ServiceAccessRule rule : rules) {
             props.put(rule.getKey(), rule.getValue());
         }
         return props;
@@ -354,36 +303,9 @@ public class DataAccessRuleDAO {
      * @param path
      * @return
      */
-    static String[] parseElements(String path) {
-        String[] rawParse = path.trim().split("\\s*\\.\\s*");
-        List<String> result = new ArrayList<String>();
-        String prefix = null;
-        for (String raw : rawParse) {
-            if(prefix != null)
-                raw = prefix + "."  + raw;
-            // just assume the escape is invalid char besides \. and check it once only
-            if (raw.endsWith("\\")) {
-                prefix = raw.substring(0, raw.length() - 1);
-            } else {
-                result.add(raw);
-                prefix = null;
-            }
-        }
-        
-        return (String[]) result.toArray(new String[result.size()]);
+    private String[] parseElements(String path) {
+        // regexp: ignore extra spaces, split on dot
+        return path.split("\\s*\\.\\s*");
     }
-
-	public void setCatalogMode(CatalogMode catalogMode) {
-		this.catalogMode = catalogMode;
-	}
-	
-	public static CatalogMode getByAlias(String alias){
-		for(CatalogMode mode: CatalogMode.values()){
-			if(mode.name().equals(alias)){
-				return mode;
-			}
-		}
-		return null;
-	}
 
 }
