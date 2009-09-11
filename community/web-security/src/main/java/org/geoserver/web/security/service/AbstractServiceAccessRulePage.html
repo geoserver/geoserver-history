@@ -6,16 +6,11 @@
 <wicket:extend>
 	<form wicket:id="ruleForm">
 	<ul>
-		<li><label for="workspace"><wicket:message
-			key="workspace">workspace</wicket:message></label> <select
-			wicket:id="workspace" id="workspace" /></li>
+		<li><label for="service"><wicket:message key="service">service</wicket:message></label>
+		<select wicket:id="service" id="service" /></li>
 
-		<li><label for="layer"><wicket:message key="layer">layer</wicket:message></label>
-		<select wicket:id="layer" id="layer" /></li>
-
-		<li><label for="accessMode"><wicket:message
-			key="accessMode">mode</wicket:message></label> <select wicket:id="accessMode"
-			id="accessMode" /></li>
+		<li><label for="method"><wicket:message key="method">method</wicket:message></label>
+		<select wicket:id="method" id="method" /></li>
 
 		<div wicket:id="roles"></div>
 	</ul>

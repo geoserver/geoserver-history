@@ -19,7 +19,7 @@ import org.geoserver.web.wicket.ParamResourceModel;
  */
 @SuppressWarnings("serial")
 public class NewDataAccessRulePage extends AbstractDataAccessRulePage {
-    
+
     public NewDataAccessRulePage() {
         super(new DataAccessRule());
         form.add(new DuplicateRuleValidator());
@@ -28,32 +28,44 @@ public class NewDataAccessRulePage extends AbstractDataAccessRulePage {
     @Override
     protected void onFormSubmit() {
         try {
+            String roles = parseRole(rolesForComponent.getRolePalette().getModelObjectAsString());
+            DataAccessRule rule = new DataAccessRule((String) workspace.getConvertedInput(),
+                    (String) layer.getConvertedInput(),
+                    (AccessMode) accessMode.getConvertedInput(), roles);
             DataAccessRuleDAO dao = DataAccessRuleDAO.get();
-            dao.addRule((DataAccessRule) getModelObject()); 
+            dao.addRule(rule);
             dao.storeRules();
             setResponsePage(DataAccessRulePage.class);
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error occurred while saving user", e);
             error(new ParamResourceModel("saveError", getPage(), e.getMessage()));
         }
     }
-    
+
+    private String parseRole(String modelObjectAsString) {
+        return modelObjectAsString.substring(1, modelObjectAsString.length() - 1);
+    }
+
     /**
      * Checks the same rule has not been entered before
+     * 
      * @author aaime
-     *
+     * 
      */
     class DuplicateRuleValidator extends AbstractFormValidator {
         public void validate(Form form) {
-            DataAccessRule rule = new DataAccessRule((String) workspace.getConvertedInput(), (String) layer.getConvertedInput(), 
-                    (AccessMode) accessMode.getConvertedInput());
-            if(DataAccessRuleDAO.get().getRules().contains(rule)) {
-                form.error(new ParamResourceModel("duplicateRule", getPage(), rule.getKey()).getString());
+            DataAccessRule rule = new DataAccessRule((String) workspace.getConvertedInput(),
+                    (String) layer.getConvertedInput(),
+                    (AccessMode) accessMode.getConvertedInput(), rolesForComponent.getRolePalette()
+                            .getModelObjectAsString());
+            if (DataAccessRuleDAO.get().getRules().contains(rule)) {
+                form.error(new ParamResourceModel("duplicateRule", getPage(), rule.getKey())
+                        .getString());
             }
         }
 
         public FormComponent[] getDependentFormComponents() {
-            return new FormComponent[] {workspace, layer, accessMode};
+            return new FormComponent[] { workspace, layer, accessMode, rolesForComponent };
         }
     }
 

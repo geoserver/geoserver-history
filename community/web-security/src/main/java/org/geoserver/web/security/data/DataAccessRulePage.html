@@ -1,17 +1,18 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.apache.org/">
 <head>
 <title><wicket:message key="title">Data access rules list</wicket:message></title>
 </head>
 <body>
 <wicket:extend>
+
+	<p><a class="add-link" href="#" wicket:id="addRule"><wicket:message
+			key="addRule">Add new rule</wicket:message></a></p>
 	<div wicket:id="table"></div>
 
-	<ul>
-		<li><a href="#" wicket:id="addRule"><wicket:message
-			key="addRule">Add new rule</wicket:message></a></li>
-	</ul>
+	
 </wicket:extend>
 </body>
 </html>

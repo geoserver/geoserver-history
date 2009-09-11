@@ -2,10 +2,9 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.security.data;
+package org.geoserver.web.security.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,69 +12,62 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.geoserver.catalog.ResourceInfo;
-import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.security.AccessMode;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.Service;
 import org.geoserver.security.DataAccessRule;
+import org.geoserver.security.ServiceAccessRule;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.security.RolesFormComponent;
-import org.geoserver.web.wicket.ParamResourceModel;
 
 /**
  * Abstract page binding a {@link DataAccessRule}
  */
 @SuppressWarnings("serial")
-public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
+public abstract class AbstractServiceAccessRulePage extends GeoServerSecuredPage {
 
-    List<AccessMode> MODES = Arrays.asList(AccessMode.READ, AccessMode.WRITE);
+    DropDownChoice service;
 
-    DropDownChoice workspace;
-
-    DropDownChoice layer;
-
-    DropDownChoice accessMode;
+    DropDownChoice method;
 
     RolesFormComponent rolesForComponent;
 
     Form form;
 
-    public AbstractDataAccessRulePage(DataAccessRule rule) {
-        setModel(new CompoundPropertyModel(new DataAccessRule(rule)));
+    public AbstractServiceAccessRulePage(ServiceAccessRule rule) {
+        setModel(new CompoundPropertyModel(new ServiceAccessRule(rule)));
 
         // build the form
         form = new Form("ruleForm");
         add(form);
-        form.add(workspace = new DropDownChoice("workspace", getWorkspaceNames()));
-        workspace.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        form.add(service = new DropDownChoice("service", getServiceNames()));
+        service.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                layer.setChoices(new Model(getLayerNames((String) workspace.getConvertedInput())));
-                layer.modelChanged();
-                target.addComponent(layer);
+                method.setChoices(new Model(getMethod((String) service.getConvertedInput())));
+                method.modelChanged();
+                target.addComponent(method);
             }
         });
         setOutputMarkupId(true);
-        form.add(layer = new DropDownChoice("layer", getLayerNames(rule.getWorkspace())));
-        layer.setOutputMarkupId(true);
-        form.add(accessMode = new DropDownChoice("accessMode", MODES, new AccessModeRenderer()));
+        form.add(method = new DropDownChoice("method", getMethod(rule.getService())));
+        method.setOutputMarkupId(true);
+
         form.add(rolesForComponent = new RolesFormComponent("roles", new RolesModel(rule), form,
                 true));
 
         // build the submit/cancel
-        form.add(new BookmarkablePageLink("cancel", DataAccessRulePage.class));
+        form.add(new BookmarkablePageLink("cancel", ServiceAccessRulePage.class));
         form.add(saveLink());
 
         // add the validators
-        workspace.setRequired(true);
-        layer.setRequired(true);
-        accessMode.setRequired(true);
+        service.setRequired(true);
+        method.setRequired(true);
     }
 
     SubmitLink saveLink() {
@@ -95,10 +87,29 @@ public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
     /**
      * Returns a sorted list of workspace names
      */
-    ArrayList<String> getWorkspaceNames() {
+    ArrayList<String> getServiceNames() {
         ArrayList<String> result = new ArrayList<String>();
-        for (WorkspaceInfo ws : getCatalog().getWorkspaces()) {
-            result.add(ws.getName());
+        for (Service ows : GeoServerExtensions.extensions(Service.class)) {
+            if (!result.contains(ows.getId()))
+                result.add(ows.getId());
+        }
+        Collections.sort(result);
+        result.add(0, "*");
+
+        return result;
+    }
+
+    /**
+     * Returns a sorted list of layer names in the specified workspace (or * if the workspace is *)
+     */
+    ArrayList<String> getMethod(String service) {
+        ArrayList<String> result = new ArrayList<String>();
+        boolean flag = true;
+        for (Service ows : GeoServerExtensions.extensions(Service.class)) {
+            if (service.equals(ows.getId()) && !result.contains(ows.getOperations()) && flag) {
+                flag = false;
+                result.addAll(ows.getOperations());
+            }
         }
         Collections.sort(result);
         result.add(0, "*");
@@ -106,45 +117,13 @@ public abstract class AbstractDataAccessRulePage extends GeoServerSecuredPage {
     }
 
     /**
-     * Returns a sorted list of layer names in the specified workspace (or * if the workspace is *)
-     */
-    ArrayList<String> getLayerNames(String workspaceName) {
-        ArrayList<String> result = new ArrayList<String>();
-        if (!workspaceName.equals("*")) {
-            for (ResourceInfo r : getCatalog().getResources(ResourceInfo.class)) {
-                if (r.getStore().getWorkspace().getName().equals(workspaceName))
-                    result.add(r.getName());
-            }
-            Collections.sort(result);
-        }
-        result.add(0, "*");
-        return result;
-    }
-
-    /**
-     * Makes sure we see translated text, by the raw name is used for the model
-     */
-    class AccessModeRenderer implements IChoiceRenderer {
-
-        public Object getDisplayValue(Object object) {
-            return (String) new ParamResourceModel(((AccessMode) object).name(), getPage())
-                    .getObject();
-        }
-
-        public String getIdValue(Object object, int index) {
-            return ((AccessMode) object).name();
-        }
-
-    }
-
-    /**
      * Bridge between Set and List
      */
     static class RolesModel implements IModel {
 
-        DataAccessRule rule;
+        ServiceAccessRule rule;
 
-        RolesModel(DataAccessRule rule) {
+        RolesModel(ServiceAccessRule rule) {
             this.rule = rule;
         }
 

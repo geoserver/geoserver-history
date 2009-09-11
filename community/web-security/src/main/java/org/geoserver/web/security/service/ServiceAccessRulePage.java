@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.web.security.data;
+package org.geoserver.web.security.service;
 
 import java.util.logging.Level;
 
@@ -10,15 +10,10 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.geoserver.security.DataAccessRule;
-import org.geoserver.security.DataAccessRuleDAO;
-import org.geoserver.security.DataAccessManager.CatalogMode;
+import org.geoserver.security.ServiceAccessRule;
+import org.geoserver.security.ServiceAccessRuleDAO;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
@@ -30,23 +25,23 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * A page listing data access rules, allowing for removal, addition and linking to an edit page
  */
 @SuppressWarnings("serial")
-public class DataAccessRulePage extends GeoServerSecuredPage {
+public class ServiceAccessRulePage extends GeoServerSecuredPage {
 
-    private GeoServerTablePanel<DataAccessRule> rules;
+    private GeoServerTablePanel<ServiceAccessRule> rules;
 
-    public DataAccessRulePage() {
-        DataAccessRuleProvider provider = new DataAccessRuleProvider();
-        rules = new GeoServerTablePanel<DataAccessRule>("table", provider) {
+    public ServiceAccessRulePage() {
+        ServiceAccessRuleProvider provider = new ServiceAccessRuleProvider();
+        rules = new GeoServerTablePanel<ServiceAccessRule>("table", provider) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
-                    Property<DataAccessRule> property) {
-                if (property == DataAccessRuleProvider.RULEKEY) {
+                    Property<ServiceAccessRule> property) {
+                if (property == ServiceAccessRuleProvider.RULEKEY) {
                     return editRuleLink(id, itemModel, property);
                 }
-                if (property == DataAccessRuleProvider.ROLES) {
+                if (property == ServiceAccessRuleProvider.ROLES) {
                     return new Label(id, property.getModel(itemModel));
-                } else if (property == DataAccessRuleProvider.REMOVE) {
+                } else if (property == ServiceAccessRuleProvider.REMOVE) {
                     return removeRuleLink(id, itemModel);
                 } else {
                     throw new RuntimeException("Uknown property " + property);
@@ -58,10 +53,11 @@ public class DataAccessRulePage extends GeoServerSecuredPage {
 
         add(rules);
         add(addRuleLink());
+
     }
 
     ConfirmationAjaxLink removeRuleLink(String id, IModel itemModel) {
-        DataAccessRule rule = ((DataAccessRule) itemModel.getObject());
+        ServiceAccessRule rule = ((ServiceAccessRule) itemModel.getObject());
         IModel confirmRemoveModel = new ParamResourceModel("confirmRemoveRule", this, rule.getKey());
         return new ConfirmationAjaxLink(id, itemModel, new ParamResourceModel("removeRule", this,
                 rule.getKey()), confirmRemoveModel) {
@@ -69,8 +65,8 @@ public class DataAccessRulePage extends GeoServerSecuredPage {
             @Override
             protected void onClick(AjaxRequestTarget target) {
                 try {
-                    DataAccessRule rule = ((DataAccessRule) getModelObject());
-                    DataAccessRuleDAO dao = DataAccessRuleDAO.get();
+                    ServiceAccessRule rule = ((ServiceAccessRule) getModelObject());
+                    ServiceAccessRuleDAO dao = ServiceAccessRuleDAO.get();
                     dao.removeRule(rule);
                     dao.storeRules();
                 } catch (Exception e) {
@@ -90,20 +86,21 @@ public class DataAccessRulePage extends GeoServerSecuredPage {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
-                setResponsePage(new NewDataAccessRulePage());
+                setResponsePage(new NewServiceAccessRulePage());
             }
 
         };
     }
 
-    Component editRuleLink(String id, IModel itemModel, Property<DataAccessRule> property) {
+    Component editRuleLink(String id, IModel itemModel, Property<ServiceAccessRule> property) {
         return new SimpleAjaxLink(id, itemModel, property.getModel(itemModel)) {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
-                setResponsePage(new EditDataAccessRulePage((DataAccessRule) getModelObject()));
+                setResponsePage(new EditServiceAccessRulePage((ServiceAccessRule) getModelObject()));
             }
 
         };
     }
+
 }

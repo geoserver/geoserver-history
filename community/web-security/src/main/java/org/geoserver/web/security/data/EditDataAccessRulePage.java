@@ -14,7 +14,7 @@ import org.geoserver.web.wicket.ParamResourceModel;
  * Edits an existing rule
  */
 public class EditDataAccessRulePage extends AbstractDataAccessRulePage {
-    
+
     public EditDataAccessRulePage(DataAccessRule rule) {
         super(rule);
     }
@@ -23,14 +23,13 @@ public class EditDataAccessRulePage extends AbstractDataAccessRulePage {
     protected void onFormSubmit() {
         try {
             DataAccessRuleDAO dao = DataAccessRuleDAO.get();
-            dao.addRule((DataAccessRule) getModelObject()); 
+            dao.addRule((DataAccessRule) getModelObject());
             dao.storeRules();
             setResponsePage(DataAccessRulePage.class);
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error occurred while saving user", e);
             error(new ParamResourceModel("saveError", getPage(), e.getMessage()));
         }
     }
-    
 
 }

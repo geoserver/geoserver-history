@@ -14,14 +14,19 @@ import org.geoserver.security.DataAccessRuleDAO;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 
 /**
- * Page listing the rules contained in the layers.properties file 
+ * Page listing the rules contained in the layers.properties file
  */
 @SuppressWarnings("serial")
 public class DataAccessRuleProvider extends GeoServerDataProvider<DataAccessRule> {
-    
-    public static final Property<DataAccessRule> RULEKEY = new BeanProperty<DataAccessRule>("key", "key");
-    public static final Property<DataAccessRule> ROLES = new BeanProperty<DataAccessRule>("roles", "value");
-    public static final Property<DataAccessRule> REMOVE = new PropertyPlaceholder<DataAccessRule>("remove");
+
+    public static final Property<DataAccessRule> RULEKEY = new BeanProperty<DataAccessRule>("key",
+            "key");
+
+    public static final Property<DataAccessRule> ROLES = new BeanProperty<DataAccessRule>("roles",
+            "value");
+
+    public static final Property<DataAccessRule> REMOVE = new PropertyPlaceholder<DataAccessRule>(
+            "remove");
 
     @Override
     protected List<DataAccessRule> getItems() {

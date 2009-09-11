@@ -38,10 +38,9 @@ public class RolesFormComponent extends FormComponentPanel {
         super(id, choiceModel);
         roles = GeoserverUserDao.get().getRoles();
         if (hasAny) {
-            roles.add(0, "*");
+            roles.add(roles.size(), "*");
         }
         choices = new ArrayList<String>((List<String>) choiceModel.getObject());
-        
 
         rolePalette = rolesPalette(new PropertyModel(this, "choices"));
         rolePalette.setOutputMarkupId(true);
@@ -114,4 +113,8 @@ public class RolesFormComponent extends FormComponentPanel {
         }
         setConvertedInput(choices);
     }
+
+	public Palette getRolePalette() {
+		return rolePalette;
+	}
 }
