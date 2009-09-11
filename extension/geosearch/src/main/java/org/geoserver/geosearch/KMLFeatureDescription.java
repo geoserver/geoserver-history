@@ -1,6 +1,8 @@
 package org.geoserver.geosearch;
 
-import org.geoserver.ows.util.RequestUtils;
+import static org.geoserver.ows.util.ResponseUtils.*;
+
+import org.geoserver.ows.URLMangler.URLType;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.jdom.Document;
@@ -21,7 +23,6 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 
 public class KMLFeatureDescription extends AbstractFeatureDescription {
@@ -31,10 +32,7 @@ public class KMLFeatureDescription extends AbstractFeatureDescription {
     private String GEOSERVER_URL;
 
     public void handle(Request req, Response resp) {
-        GEOSERVER_URL = RequestUtils.proxifiedBaseURL(
-                req.getRootRef().getParentRef().toString(),
-                getGeoServer().getGlobal().getProxyBaseUrl()
-                );
+        GEOSERVER_URL = getBaseURL(req);
 
         if (req.getMethod().equals(Method.GET)) {
             doGet(req, resp);
@@ -85,7 +83,8 @@ public class KMLFeatureDescription extends AbstractFeatureDescription {
 
         Element link = new Element("Link");
         link.addContent(new Element("href").addContent(
-                GEOSERVER_URL + "wms/kml?layers=" + typeName));
+                
+                buildURL(GEOSERVER_URL, "wms/kml?layers=" + typeName, null, URLType.SERVICE)));
 
         networklink.addContent(link);
         return networklink;
