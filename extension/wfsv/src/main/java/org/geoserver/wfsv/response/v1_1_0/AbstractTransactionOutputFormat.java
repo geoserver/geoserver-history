@@ -194,8 +194,7 @@ public abstract class AbstractTransactionOutputFormat extends Response {
         BaseRequestType gft = (BaseRequestType) operation.getParameters()[0];
 
         Encoder encoder = new Encoder(configuration, configuration.schema());
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(), global.getProxyBaseUrl());
-        encodeWfsSchemaLocation(encoder, proxifiedBaseUrl);
+        encodeWfsSchemaLocation(encoder, gft.getBaseUrl());
 
         encoder.setIndenting(true);
         encoder.setEncoding(Charset.forName( global.getCharset() ));
@@ -242,7 +241,7 @@ public abstract class AbstractTransactionOutputFormat extends Response {
             }
 
             // set the schema location
-            encodeTypeSchemaLocation(encoder, proxifiedBaseUrl, namespaceURI, typeNames);
+            encodeTypeSchemaLocation(encoder, gft.getBaseUrl(), namespaceURI, typeNames);
         }
 
         try {
@@ -254,10 +253,10 @@ public abstract class AbstractTransactionOutputFormat extends Response {
         }
     }
 
-    protected abstract void encodeTypeSchemaLocation(Encoder encoder, String proxifiedBaseUrl,
+    protected abstract void encodeTypeSchemaLocation(Encoder encoder, String baseURL,
             String namespaceURI, StringBuffer typeNames);
     
 
-    protected abstract void encodeWfsSchemaLocation(Encoder encoder, String proxifiedBaseUrl);
+    protected abstract void encodeWfsSchemaLocation(Encoder encoder, String baseURL);
     
 }

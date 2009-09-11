@@ -4,11 +4,14 @@
  */
 package org.geoserver.wcs.response;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.util.logging.Logger;
 
 import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.WCSInfo;
 import org.geotools.util.logging.Logging;
@@ -59,8 +62,6 @@ public class CoveragesTransformer extends TransformerBase {
     }
 
     private class CoveragesTranslator extends TranslatorSupport {
-        private String proxifiedBaseUrl;
-
         /**
          * Creates a new WFSCapsTranslator object.
          * 
@@ -107,10 +108,8 @@ public class CoveragesTransformer extends TransformerBase {
                 final String locationAtt = new StringBuffer(XSI_PREFIX).append(":schemaLocation")
                         .toString();
 
-                proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wcs
-                        .getGeoServer().getGlobal().getProxyBaseUrl());
-                final String locationDef = WCS_URI + " " + proxifiedBaseUrl
-                        + "schemas/wcs/1.1.1/wcsCoverages.xsd";
+                final String locationDef = buildSchemaURL(request.getBaseUrl(), "wcs/1.1.1/wcsCoverages.xsd");
+                
                 attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
                 start("wcs:Coverages", attributes);

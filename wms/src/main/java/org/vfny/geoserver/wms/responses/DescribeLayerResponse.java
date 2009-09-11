@@ -80,10 +80,7 @@ public class DescribeLayerResponse implements Response {
             LOGGER.fine(new StringBuffer("executing request ").append(request).toString());
         }
 
-        String baseUrl = this.request.getBaseUrl();
-        String proxyBaseUrl = this.request.getWMS().getProxyBaseUrl();
-        String serverBaseUrl = RequestUtils.proxifiedBaseURL(baseUrl, proxyBaseUrl);
-        this.transformer = new DescribeLayerTransformer(serverBaseUrl);
+        this.transformer = new DescribeLayerTransformer(this.request.getBaseUrl());
         this.transformer.setNamespaceDeclarationEnabled(false);
         Charset encoding = this.request.getWMS().getCharSet();
         this.transformer.setEncoding(encoding);

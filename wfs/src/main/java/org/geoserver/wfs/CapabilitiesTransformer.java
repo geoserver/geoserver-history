@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,6 +26,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWS;
@@ -144,8 +147,6 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType)object;
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(
-                    request.getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
                 
                 // Not used.  WFS 1.1 and 1.0 don't actually support updatesequence
                 //verifyUpdateSequence(request);
@@ -177,9 +178,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                     XSI_URI);
 
                 String locationAtt = XSI_PREFIX + ":schemaLocation";
-                String locationDef = WFS_URI + " "
-                    + ResponseUtils.appendPath(proxifiedBaseUrl,
-                        "schemas/wfs/1.0.0/WFS-capabilities.xsd");
+                String locationDef = WFS_URI + " " + buildSchemaURL(request.getBaseUrl(), "wfs/1.0.0/WFS-capabilities.xsd");
                 attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
 
                 start("WFS_Capabilities", attributes);
@@ -219,10 +218,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
                 handleKeywords(wfs.getKeywords());
 
-                String proxifiedBaseUrl = 
-                    RequestUtils.proxifiedBaseURL(request.getBaseUrl(), wfs.getGeoServer().getGlobal().getProxyBaseUrl());
-                
-                element("OnlineResource", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs"));
+                element("OnlineResource", buildURL(request.getBaseUrl(), "wfs", null, URLType.SERVICE));
                 element("Fees", wfs.getFees());
                 element("AccessConstraints", wfs.getAccessConstraints());
                 end("Service");
@@ -493,24 +489,20 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              *        requests
              */
             private void handleDcpType(String capabilityName, String httpMethod) {
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
-                    wfs.getGeoServer().getGlobal().getProxyBaseUrl());
-
-                if (proxifiedBaseUrl.endsWith("?")) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
-                }
-
-                if (HTTP_GET.equals(httpMethod)) {
-                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?request=" + capabilityName);
-                } else if (HTTP_POST.equals(httpMethod)) {
-                    proxifiedBaseUrl = ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?");
+                String onlineResource;
+                if(HTTP_GET.equals(httpMethod)) {
+                   onlineResource = buildURL(request.getBaseUrl(), "wfs", params("request", capabilityName), URLType.SERVICE);
+                } else {
+                    // make sure it ends with ?
+                    onlineResource = buildURL(request.getBaseUrl(), "wfs", null, URLType.SERVICE);
+                    appendQueryString(onlineResource, "");
                 }
 
                 start("DCPType");
                 start("HTTP");
 
                 AttributesImpl atts = new AttributesImpl();
-                atts.addAttribute("", "onlineResource", "onlineResource", "", proxifiedBaseUrl);
+                atts.addAttribute("", "onlineResource", "onlineResource", "", onlineResource);
                 element(httpMethod, null, atts);
 
                 end("HTTP");
@@ -790,8 +782,6 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
 
             public void encode(Object object) throws IllegalArgumentException {
                 request = (GetCapabilitiesType)object;
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
-                    wfs.getGeoServer().getGlobal().getProxyBaseUrl());
                 
                 verifyUpdateSequence(request);
                 
@@ -800,10 +790,9 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                             WFS_URI, "xmlns:ows", OWS.NAMESPACE, "xmlns:gml", GML.NAMESPACE,
                             "xmlns:ogc", OGC.NAMESPACE, "xmlns:xlink", XLINK.NAMESPACE,
                             "xsi:schemaLocation",
-                            
-                        org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " "
-                            + ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd")
-                        });
+                            org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " " +
+                            buildSchemaURL(request.getBaseUrl(), "wfs/1.1.0/wfs.xsd")
+                            });
 
                 List<NamespaceInfo> namespaces = catalog.getNamespaces();
                 for (NamespaceInfo namespace : namespaces) {
@@ -1579,24 +1568,14 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 //dcp
                 start("ows:DCP");
                 start("ows:HTTP");
-
-                String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
-                    wfs.getGeoServer().getGlobal().getProxyBaseUrl());
-
-                if (proxifiedBaseUrl.endsWith("?")) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.length() - 1);
-                }
-
-                if (proxifiedBaseUrl.indexOf('?') != -1) {
-                    proxifiedBaseUrl = proxifiedBaseUrl.substring(0, proxifiedBaseUrl.indexOf('?'));
-                }
-
+                
+                String serviceURL = buildURL(request.getBaseUrl(), "wfs", null, URLType.SERVICE);
                 if (get) {
-                    element("ows:Get", null, attributes(new String[] { "xlink:href", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?") }));
+                    element("ows:Get", null, attributes(new String[] { "xlink:href", serviceURL}));
                 }
 
                 if (post) {
-                    element("ows:Post", null, attributes(new String[] { "xlink:href", ResponseUtils.appendPath(proxifiedBaseUrl, "wfs?") }));
+                    element("ows:Post", null, attributes(new String[] { "xlink:href", serviceURL}));
                 }
 
                 end("ows:HTTP");

@@ -4,6 +4,9 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import net.opengis.wfs.DescribeFeatureTypeType;
 
 import org.eclipse.xsd.XSDSchema;
@@ -12,17 +15,12 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-
 import org.geoserver.wfs.WFSDescribeFeatureTypeOutputFormat;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 
 public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
@@ -59,8 +57,7 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         GeoServerInfo global = wfs.getGeoServer().getGlobal();
         //create the schema
         DescribeFeatureTypeType req = (DescribeFeatureTypeType)describeFeatureType.getParameters()[0];
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(req.getBaseUrl(), global.getProxyBaseUrl());
-        XSDSchema schema = schemaBuilder.build(featureTypeInfos, proxifiedBaseUrl);
+        XSDSchema schema = schemaBuilder.build(featureTypeInfos, req.getBaseUrl());
 
         //serialize
         schema.updateElement();

@@ -1,6 +1,11 @@
 package org.geoserver.wfsv.response.v1_1_0;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
+import java.util.Map;
+
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
@@ -16,16 +21,18 @@ public class TransactionOutputFormat extends AbstractTransactionOutputFormat {
 
     }
 
-    protected void encodeTypeSchemaLocation(Encoder encoder, String proxifiedBaseUrl,
+    protected void encodeTypeSchemaLocation(Encoder encoder, String baseURL,
             String namespaceURI, StringBuffer typeNames) {
-        encoder.setSchemaLocation(namespaceURI, ResponseUtils.appendQueryString(proxifiedBaseUrl
-                + "wfs", "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
-                + typeNames.toString()));
+        Map<String, String> params = params("service", "WFS",
+                "version", "1.1.0", 
+                "request", "DescribeFeatureType",
+                "typeName", typeNames.toString());
+        encoder.setSchemaLocation(namespaceURI, buildURL(baseURL, "wfs", params, URLType.RESOURCE));
     }
 
-    protected void encodeWfsSchemaLocation(Encoder encoder, String proxifiedBaseUrl) {
-        encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, ResponseUtils
-                .appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
+    protected void encodeWfsSchemaLocation(Encoder encoder, String baseURL) {
+        encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE, 
+                buildSchemaURL(baseURL, "wfs/1.1.0/wfs.xsd"));
     }
 
 }

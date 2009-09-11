@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs.xml;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -26,9 +28,8 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
@@ -138,11 +139,11 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         //declare wfs schema location
         BaseRequestType gft = (BaseRequestType)getFeature.getParameters()[0];
         
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft.getBaseUrl(),global.getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-            ResponseUtils.appendPath(proxifiedBaseUrl, "schemas/wfs/1.1.0/wfs.xsd"));
+                buildSchemaURL(gft.getBaseUrl(), "wfs/1.1.0/wfs.xsd"));
 
         //declare application schema namespaces
+        Map<String, String> params = params("service", "WFS", "version", "1.1.0", "request", "DescribeFeatureType");
         for (Iterator i = ns2metas.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
 
@@ -159,12 +160,11 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
                     typeNames.append(",");
                 }
             }
+            params.put("typeName", typeNames.toString());
 
             //set the schema location
             encoder.setSchemaLocation(namespaceURI,
-                ResponseUtils.appendQueryString(proxifiedBaseUrl + "wfs",
-                    "service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
-                    + typeNames.toString()));
+                    buildURL(gft.getBaseUrl(), "wfs", params, URLType.SERVICE));
         }
 
         encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);

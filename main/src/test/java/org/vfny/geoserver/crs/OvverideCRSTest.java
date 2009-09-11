@@ -19,7 +19,7 @@ public class OvverideCRSTest extends GeoServerTestSupport {
         getTestData().copyTo(OvverideCRSTest.class.getResourceAsStream("override_epsg.properties"), "epsg/override_epsg.properties");
     }
     
-    public void testOvveride() throws Exception {
+    public void testOverride() throws Exception {
         CoordinateReferenceSystem epsg3003 = CRS.decode("EPSG:3003");
         DefaultGeodeticDatum datum3003 = (DefaultGeodeticDatum) (((ProjectedCRS)  epsg3003).getDatum());
         BursaWolfParameters[] bwParamArray3003 = datum3003.getBursaWolfParameters();

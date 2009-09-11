@@ -99,16 +99,6 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
     String href( String link, DataFormat format ) {
         PageInfo pg = getPageInfo();
         
-        String href = null;
-        if ( link.startsWith( "/") ) {
-            //absolute, encode from "root"
-            href = ResponseUtils.appendPath( pg.getRootURI(), link );
-        }
-        else {
-            //encode as relative
-            href = ResponseUtils.appendPath( pg.getPageURI(), link );
-        }
-
         //try to figure out extension
         String ext = null;
         if ( format != null ) {
@@ -119,7 +109,16 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
             ext = pg.getExtension();
         }
         
-        href += ext != null ? "."+ext : "";
-        return href;
+        if(ext != null && ext.length() > 0)
+            link = link+ "." + ext;
+        
+        // encode as relative or absolute depending on the link type
+        if ( link.startsWith( "/") ) {
+            // absolute, encode from "root"
+            return pg.rootURI(link);
+        } else {
+            //encode as relative
+            return pg.pageURI(link);
+        }
     }
 }

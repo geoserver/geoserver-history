@@ -4,6 +4,8 @@
  */
 package org.geoserver.ows;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -15,8 +17,10 @@ import net.opengis.ows10.ExceptionReportType;
 import net.opengis.ows10.ExceptionType;
 import net.opengis.ows10.Ows10Factory;
 
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.xml.v1_0.OWSConfiguration;
 import org.geoserver.platform.ServiceException;
 import org.geotools.xml.Encoder;
@@ -99,8 +103,8 @@ public class DefaultServiceExceptionHandler extends ServiceExceptionHandler {
         encoder.setIndentSize(2);
         encoder.setLineWidth(60);
 
-        encoder.setSchemaLocation(org.geoserver.ows.xml.v1_0.OWS.NAMESPACE,
-            RequestUtils.schemaBaseURL(request.getHttpRequest()) + "ows/1.0.0/owsExceptionReport.xsd");
+        String schemaLocation = buildSchemaURL(baseURL(request.getHttpRequest()), "ows/1.0.0/owsExceptionReport.xsd");
+        encoder.setSchemaLocation(org.geoserver.ows.xml.v1_0.OWS.NAMESPACE, schemaLocation);
 
         try {
             encoder.encode(report, org.geoserver.ows.xml.v1_0.OWS.EXCEPTIONREPORT,

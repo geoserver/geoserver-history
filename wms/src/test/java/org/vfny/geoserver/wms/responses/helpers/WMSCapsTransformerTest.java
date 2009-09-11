@@ -45,7 +45,7 @@ public class WMSCapsTransformerTest extends TestCase {
     private XpathEngine XPATH;
 
     /** default base url to feed a WMSCapsTransformer with for it to append the DTD location */
-    private static final String schemaBaseUrl = "http://localhost/geoserver";
+    private static final String baseUrl = "http://localhost/geoserver";
 
     /** test map formats to feed a WMSCapsTransformer with */
     private static final Set<String> mapFormats = Collections.singleton("image/png");
@@ -80,9 +80,6 @@ public class WMSCapsTransformerTest extends TestCase {
 
     private WMSCapabilitiesRequest req;
 
-    /** the default base url for {@link WMSCapabilitiesRequest#getBaseUrl()                      */
-    private static final String baseUrl = "http://localhost:8080/geoserver";
-
     /**
      * Sets up the configuration objects with default values. Since they're live, specific tests can
      * modify their state before running the assertions
@@ -114,19 +111,19 @@ public class WMSCapsTransformerTest extends TestCase {
     }
 
     public void testHeader() throws Exception {
-        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
         StringWriter writer = new StringWriter();
         tr.transform(req, writer);
         String content = writer.getBuffer().toString();
 
         assertTrue(content.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"));
-        String dtdDef = "<!DOCTYPE WMT_MS_Capabilities SYSTEM \"" + schemaBaseUrl
+        String dtdDef = "<!DOCTYPE WMT_MS_Capabilities SYSTEM \"" + baseUrl
                 + "/schemas/wms/1.1.1/WMS_MS_Capabilities.dtd\">";
         assertTrue(content.contains(dtdDef));
     }
 
     public void testRootElement() throws Exception {
-        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
 
         Document dom = WMSTestSupport.transform(req, tr);
         Element root = dom.getDocumentElement();
@@ -135,7 +132,7 @@ public class WMSCapsTransformerTest extends TestCase {
         assertEquals("0", root.getAttribute("updateSequence"));
 
         geosInfo.setUpdateSequence(10);
-        tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
         dom = WMSTestSupport.transform(req, tr);
         root = dom.getDocumentElement();
         assertEquals("10", root.getAttribute("updateSequence"));
@@ -168,7 +165,7 @@ public class WMSCapsTransformerTest extends TestCase {
         wmsInfo.setFees("fees");
         wmsInfo.setAccessConstraints("accessConstraints");
 
-        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
 
@@ -209,45 +206,8 @@ public class WMSCapsTransformerTest extends TestCase {
         assertXpathEvaluatesTo("accessConstraints", service + "/AccessConstraints", dom);
     }
 
-    /**
-     * Do the links in getcaps respect the proxy base url?
-     */
-    public void testProxyBaseUrl() throws Exception {
-        final String proxyBaseUrl = "http://localhost/proxy";
-        geosInfo.setProxyBaseUrl(proxyBaseUrl);
-
-        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
-        tr.setIndentation(2);
-        Document dom = WMSTestSupport.transform(req, tr);
-
-        String serviceOnlineRes = "/WMT_MS_Capabilities/Service/OnlineResource/@xlink:href";
-        // @REVISIT: shouldn't it be WmsInfo.getOnlineResource?
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms", serviceOnlineRes, dom);
-
-        String getCapsGet = "/WMT_MS_Capabilities/Capability/Request/GetCapabilities/DCPType/HTTP/Get/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getCapsGet, dom);
-
-        String getCapsPost = "/WMT_MS_Capabilities/Capability/Request/GetCapabilities/DCPType/HTTP/Post/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getCapsPost, dom);
-
-        String getMapGet = "/WMT_MS_Capabilities/Capability/Request/GetMap/DCPType/HTTP/Get/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getMapGet, dom);
-
-        String getFeatureInfoGet = "/WMT_MS_Capabilities/Capability/Request/GetFeatureInfo/DCPType/HTTP/Get/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getFeatureInfoGet, dom);
-
-        String getFeatureInfoPost = "/WMT_MS_Capabilities/Capability/Request/GetFeatureInfo/DCPType/HTTP/Post/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getFeatureInfoPost, dom);
-
-        String describeLayerGet = "/WMT_MS_Capabilities/Capability/Request/DescribeLayer/DCPType/HTTP/Get/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", describeLayerGet, dom);
-
-        String getLegentGet = "/WMT_MS_Capabilities/Capability/Request/GetLegendGraphic/DCPType/HTTP/Get/OnlineResource/@xlink:href";
-        assertXpathEvaluatesTo(proxyBaseUrl + "/wms?SERVICE=WMS&", getLegentGet, dom);
-    }
-
     public void testCRSList() throws Exception {
-        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
@@ -260,7 +220,7 @@ public class WMSCapsTransformerTest extends TestCase {
         wmsInfo.getSRS().add("EPSG:3246");
         wmsInfo.getSRS().add("EPSG:23030");
 
-        WMSCapsTransformer tr = new WMSCapsTransformer(schemaBaseUrl, mapFormats, legendFormats);
+        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         NodeList limitedCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",

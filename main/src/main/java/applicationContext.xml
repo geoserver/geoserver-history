@@ -123,4 +123,9 @@
   <bean id="catalogRepository" class="org.geoserver.catalog.CatalogRepository">
     <constructor-arg ref="catalog"/>
   </bean>
+  
+  <!-- the proxyfing URL mangler -->
+  <bean id="proxyfier" class="org.geoserver.ows.ProxifyingURLMangler">
+    <constructor-arg index="0" ref="geoServer"/>
+  </bean>
 </beans>

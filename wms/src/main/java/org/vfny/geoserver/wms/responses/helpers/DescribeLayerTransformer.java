@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.xml.transform.TransformerBase;
@@ -29,26 +32,22 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class DescribeLayerTransformer extends TransformerBase {
     /** The base url upon URLs which point to 'me' should be based. */
-    private String serverBaseUrl;
+    private String baseURL;
 
     /**
      * Creates a new DescribeLayerTransformer object.
      * 
      * @param serverBaseUrl
-     *                the server base url which to append the
-     *                "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd" dtd location to for the
-     *                response. If proxified, shall be resolved before calling this constructor and
-     *                give it the actual URL to use. No "proxification" will be performed by this
-     *                transformer.
+     *                the base URL, usually "http://host:port/geoserver" 
      */
-    public DescribeLayerTransformer(final String serverBaseUrl) {
+    public DescribeLayerTransformer(final String baseURL) {
         super();
 
-        if (serverBaseUrl == null) {
+        if (baseURL == null) {
             throw new NullPointerException("serverBaseUrl");
         }
 
-        this.serverBaseUrl = serverBaseUrl;
+        this.baseURL = baseURL;
     }
 
     /**
@@ -79,8 +78,7 @@ public class DescribeLayerTransformer extends TransformerBase {
      */
     public Transformer createTransformer() throws TransformerException {
         Transformer transformer = super.createTransformer();
-        String dtdUrl = ResponseUtils.appendPath(serverBaseUrl,
-                "schemas/wms/1.1.1/WMS_DescribeLayerResponse.dtd");
+        String dtdUrl =  buildSchemaURL(baseURL, "wms/1.1.1/WMS_DescribeLayerResponse.dtd");
         transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
 
         return transformer;
@@ -156,11 +154,13 @@ public class DescribeLayerTransformer extends TransformerBase {
                 String owsType;
                 if (MapLayerInfo.TYPE_VECTOR == layer.getType()) {
                     // REVISIT: not sure why we need WfsDispatcher, "wfs?" should suffice imho
-                    owsUrl = ResponseUtils.appendPath(serverBaseUrl, "wfs/WfsDispatcher?");
+                    owsUrl = buildURL(baseURL, "wfs/WfsDispatcher", null, URLType.SERVICE);
+                    owsUrl = appendQueryString(owsUrl, "");
                     owsType = "WFS";
                     layerAtts.addAttribute("", "wfs", "wfs", "", owsUrl);
                 } else if (MapLayerInfo.TYPE_RASTER == layer.getType()) {
-                    owsUrl = ResponseUtils.appendPath(serverBaseUrl, "wcs?");
+                    owsUrl = buildURL(baseURL, "wcs", null, URLType.SERVICE);
+                    owsUrl = appendQueryString(owsUrl, "");
                     owsType = "WCS";
                 } else {
                     // non vector nor raster layer, LayerDescription will not contain these

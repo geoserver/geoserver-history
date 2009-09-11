@@ -1,5 +1,9 @@
 package org.geoserver.wfsv.response.v1_1_0;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
+import java.util.Map;
+
 import org.eclipse.xsd.XSDSchema;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
@@ -22,7 +26,10 @@ public class VersionedSchemaBuilder extends FeatureTypeSchemaBuilder {
         gmlSchemaLocation = "wfs/1.1.0/wfsv.xsd";
         baseType = "AbstractVersionedFeatureType";
         substitutionGroup = "_VersionedFeature";
-        describeFeatureTypeBase = "request=DescribeVersionedFeatureType&version=1.1.0&versioned=true";
+        describeFeatureTypeParams = params("request", "DescribeFeatureType", 
+                "version", "1.0.0",
+                "service", "WFS",
+                "versioned", "true");
         gmlPrefix = "wfsv";
         xmlConfiguration = new org.geotools.gml3.GMLConfiguration();
     }

@@ -4,6 +4,8 @@
  */
 package org.geoserver.wcs.response;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +20,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -111,9 +114,8 @@ public class WCSGetCoverageStoreResponse extends Response {
         System.out.println(coverageFile);
         
         // build the path where the clients will be able to retrieve the coverage files
-        final String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), 
-        		wcs.getGeoServer().getGlobal().getProxyBaseUrl());
-        final String coverageLocation = proxifiedBaseUrl + "temp/wcs/" + coverageFile.getName(); 
+        final String coverageLocation = buildURL(request.getBaseUrl(), 
+                appendPath("temp/wcs", coverageFile.getName()), null, URLType.RESOURCE);
         
         // build the response
         CoveragesTransformer tx = new CoveragesTransformer(wcs, request, coverageLocation);

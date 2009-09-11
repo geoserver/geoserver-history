@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfs.xml;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.QueryType;
@@ -12,6 +14,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -286,13 +289,12 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     }
 
     protected String wfsSchemaLocation(GeoServerInfo global, String baseUrl) {
-        return ResponseUtils.appendPath(RequestUtils.proxifiedBaseURL(baseUrl, global.getProxyBaseUrl()),
-                "schemas/wfs/1.0.0/WFS-basic.xsd");
+        return buildSchemaURL(baseUrl, "wfs/1.0.0/WFS-basic.xsd");
     }
 
     protected String typeSchemaLocation(GeoServerInfo global, FeatureTypeInfo meta, String baseUrl) {
-        final String proxifiedBase = RequestUtils.proxifiedBaseURL(baseUrl, global.getProxyBaseUrl());
-        return ResponseUtils.appendQueryString(proxifiedBase + "wfs",
-            "service=WFS&version=1.0.0&request=DescribeFeatureType&typeName=" + meta.getPrefixedName());
+        Map<String, String> params = params("service", "WFS", "version", "1.0.0", 
+                "request", "DescribeFeatureType", "typeName", meta.getPrefixedName());
+        return buildURL(baseUrl, "wfs", params, URLType.SERVICE);
     }
 }

@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -25,6 +27,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Response;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
@@ -108,11 +111,8 @@ public class VersionedGML3OutputFormat extends Response {
         // declare wfs schema location
         BaseRequestType gft = (BaseRequestType) getFeature.getParameters()[0];
 
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(gft
-                .getBaseUrl(), global.getProxyBaseUrl());
         encoder.setSchemaLocation(org.geoserver.wfsv.xml.v1_1_0.WFSV.NAMESPACE,
-                ResponseUtils.appendPath(proxifiedBaseUrl,
-                        "schemas/wfs/1.1.0/wfs.xsd"));
+                buildSchemaURL(gft.getBaseUrl(), "wfs/1.1.0/wfs.xsd"));
 
         // declare application schema namespaces
         for (Iterator i = ns2metas.entrySet().iterator(); i.hasNext();) {
@@ -133,10 +133,11 @@ public class VersionedGML3OutputFormat extends Response {
             }
 
             // set the schema location
-            encoder.setSchemaLocation(namespaceURI, ResponseUtils
-                    .appendQueryString(proxifiedBaseUrl + "wfs",
-                            "service=WFSV&version=1.1.0&request=DescribeVersionedFeatureType&typeName="
-                                    + typeNames.toString()));
+            Map<String, String> params = params("service", "WFS",
+                    "version", "1.1.0", 
+                    "request", "DescribeFeatureType",
+                    "typeName", typeNames.toString());
+            encoder.setSchemaLocation(namespaceURI, buildURL(gft.getBaseUrl(), "wfs", params, URLType.SERVICE));
         }
 
         encoder.encode(results,

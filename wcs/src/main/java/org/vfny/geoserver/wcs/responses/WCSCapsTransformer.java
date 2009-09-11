@@ -4,6 +4,8 @@
  */
 package org.vfny.geoserver.wcs.responses;
 
+import static org.geoserver.ows.util.ResponseUtils.*;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -16,11 +18,9 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.config.ContactInfo;
-import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
-import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wcs.WCSInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.xml.transform.TransformerBase;
@@ -115,23 +115,7 @@ public class WCSCapsTransformer extends TransformerBase {
 	 *             if it is thrown by <code>super.createTransformer()</code>
 	 */
 	public Transformer createTransformer() throws TransformerException {
-		Transformer transformer = super.createTransformer();
-		GeoServer gs = (GeoServer) GeoServerExtensions.extensions(
-				GeoServer.class, applicationContext).get(0);
-		String dtdUrl = RequestUtils.proxifiedBaseURL(this.baseUrl, gs
-				.getGlobal().getProxyBaseUrl())
-				+ "schemas/wcs/1.0.0/wcsCapabilities.xsd"; // DJB: fixed
-		// this to
-		// point to correct
-		// location
-
-		//JD: disabling doctype because it throws off the cite test parser.
-		// I do not beleive that a doctype def is necessary anyways since 
-		// there is a xml schema for wcs 1.0, and plus, this doctype url points tp 
-		// an xml schema, which is just plain wrong
-		//transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtdUrl);
-
-		return transformer;
+		return super.createTransformer();
 	}
 	
     /**
@@ -197,9 +181,8 @@ public class WCSCapsTransformer extends TransformerBase {
                                                                    .toString();
 
             GeoServerInfo gsInfo = wcs.getGeoServer().getGlobal();
-			final String locationDef = WCS_URI + " "
-                + RequestUtils.proxifiedBaseURL(request.getBaseUrl(), gsInfo.getProxyBaseUrl())
-                + "schemas/wcs/1.0.0/wcsCapabilities.xsd";
+			final String locationDef = WCS_URI + " " + 
+			    buildURL(request.getBaseUrl(), appendPath(SCHEMAS, "schemas/wcs/1.0.0/wcsCapabilities.xsd"), null, URLType.RESOURCE);
 
             attributes.addAttribute("", locationAtt, locationAtt, "", locationDef);
             attributes.addAttribute("", "updateSequence", "updateSequence", "", gsInfo.getUpdateSequence() + "");
@@ -296,15 +279,13 @@ public class WCSCapsTransformer extends TransformerBase {
             start("DCPType");
             start("HTTP");
 
-            String baseUrl = RequestUtils.proxifiedBaseURL(
-					request.getBaseUrl(), request.getServiceConfig()
-							.getGeoServer().getGlobal().getProxyBaseUrl());
-            baseUrl = ResponseUtils.appendPath(baseUrl, "wcs");
-            
-            //ensure ends in "?" or "&"
-            baseUrl = ResponseUtils.appendQueryString(baseUrl, "");
+            String baseURL = buildURL(request.getBaseUrl(), "wcs", null, URLType.EXTERNAL);
+            // ensure ends in "?" or "&"
+            if(baseURL.indexOf('?') == 0) {
+                baseURL = ResponseUtils.appendQueryString(baseURL, "");
+            }
 
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseUrl);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseURL);
 
             start("Get");
             start("OnlineResource", attributes);
@@ -314,7 +295,7 @@ public class WCSCapsTransformer extends TransformerBase {
             end("DCPType");
 
             attributes = new AttributesImpl();
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseUrl);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseURL);
 
             start("DCPType");
             start("HTTP");
