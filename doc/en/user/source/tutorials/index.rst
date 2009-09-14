@@ -11,7 +11,7 @@ Tutorials
    GetFeatureInfo/index.rst
    heights/heights
    palettedimage/palettedimage
-   time
+   time/time
    staticfiles
    wmsreflector
    cql/cql_tutorial
