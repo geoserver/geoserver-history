@@ -194,9 +194,15 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertEquals(schemaLocation.startsWith(DESCRIBE_FEATURE_TYPE_BASE), true);
         typeNames = schemaLocation.substring(DESCRIBE_FEATURE_TYPE_BASE.length(),
                 schemaLocation.length()).split(",");
+        // test we get back the two type names we expect
+        // order is not guaranteed
         assertEquals(typeNames.length, 2);
-        assertEquals(typeNames[0], "ex:FirstParentFeature");
-        assertEquals(typeNames[1], "ex:SecondParentFeature");
+        List<String> typeNamesList = Arrays.asList(typeNames);
+        int firstIndex = typeNamesList.indexOf("ex:FirstParentFeature");
+        int secondIndex = typeNamesList.indexOf("ex:SecondParentFeature");
+        assertTrue(0 <= firstIndex && firstIndex <= 1) ;
+        assertTrue(0 <= secondIndex && secondIndex <= 1);
+        assertTrue(firstIndex != secondIndex);
         // nothing else
         assertXpathCount(0, "//xsd:import[3]", doc);
         assertXpathCount(0, "//xsd:complexType", doc);
