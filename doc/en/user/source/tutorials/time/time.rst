@@ -106,7 +106,7 @@ Consider the date time ``12:30 on January 01, 2007`` specified in the following 
 
 The process is similar for dates (no time). The date ``01?01%2007`` would be specified in a template with explicit formatting:
 
-..code-block:: html
+.. code-block:: html
 
   ${DATETIME_ATTRIBUTE_NAME.value?date("M?d%y")}
 
