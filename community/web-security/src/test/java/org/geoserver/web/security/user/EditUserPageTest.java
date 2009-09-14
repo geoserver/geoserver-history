@@ -24,22 +24,22 @@ public class EditUserPageTest extends GeoServerWicketTestSupport {
         tester.assertRenderedPage(EditUserPage.class);
     }
 
-    public void testEditPassword() {
-        // make sure the recorder is where we think it is, it contains the palette selection
-        tester.assertComponent("userForm:roles:recorder", Recorder.class);
-        
-        FormTester form = tester.newFormTester("userForm");
-        form.setValue("password", "newpwd");
-        form.setValue("confirmPassword", "newpwd");
-        form.submit("save");
-        
-        tester.assertErrorMessages(new String[0]);
-        tester.assertRenderedPage(UserPage.class);
-        
-        dao.reload();
-        UserDetails user = dao.loadUserByUsername("admin");
-        assertEquals("newpwd", user.getPassword());
-    }
+//    public void testEditPassword() {
+//        // make sure the recorder is where we think it is, it contains the palette selection
+//        tester.assertComponent("userForm:roles:recorder", Recorder.class);
+//        
+//        FormTester form = tester.newFormTester("userForm");
+//        form.setValue("password", "newpwd");
+//        form.setValue("confirmPassword", "newpwd");
+//        form.submit("save");
+//        
+//        tester.assertErrorMessages(new String[0]);
+//        tester.assertRenderedPage(UserPage.class);
+//        
+//        dao.reload();
+//        UserDetails user = dao.loadUserByUsername("admin");
+//        assertEquals("newpwd", user.getPassword());
+//    }
     
 
 }

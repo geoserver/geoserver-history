@@ -48,18 +48,18 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         // assertEquals(1, user.getAuthorities().length);
     }
     
-    public void testPasswordsDontMatch() {
-        Locale.setDefault(Locale.ENGLISH);
-        
-        FormTester form = tester.newFormTester("userForm");
-        form.setValue("username", "user");
-        form.setValue("password", "pwd1");
-        form.setValue("confirmPassword", "pwd2");
-        form.setValue("roles:recorder", "ROLE_FOO");
-        form.submit("save");
-        
-        tester.assertErrorMessages(new String[] {"'pwd1' from Password and 'pwd2' from Confirm password must be equal."});
-        tester.assertRenderedPage(NewUserPage.class);
-    }
+//    public void testPasswordsDontMatch() {
+//        Locale.setDefault(Locale.ENGLISH);
+//        
+//        FormTester form = tester.newFormTester("userForm");
+//        form.setValue("username", "user");
+//        form.setValue("password", "pwd1");
+//        form.setValue("confirmPassword", "pwd2");
+//        form.setValue("roles:recorder", "ROLE_FOO");
+//        form.submit("save");
+//        
+//        tester.assertErrorMessages(new String[] {"'pwd1' from Password and 'pwd2' from Confirm password must be equal."});
+//        tester.assertRenderedPage(NewUserPage.class);
+//    }
 
 }
