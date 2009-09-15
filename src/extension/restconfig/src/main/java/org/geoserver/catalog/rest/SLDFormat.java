@@ -22,8 +22,15 @@ import org.geotools.styling.StyledLayerDescriptor;
 
 public class SLDFormat extends StreamDataFormat {
 
+    boolean prettyPrint;
+    
     public SLDFormat() {
+        this(false);
+    }
+    
+    public SLDFormat(boolean prettyPrint) {
         super(StyleResource.MEDIATYPE_SLD);
+        this.prettyPrint = prettyPrint;
     }
     
     @Override
@@ -40,6 +47,9 @@ public class SLDFormat extends StreamDataFormat {
         sld.setStyledLayers( new StyledLayer[]{ nl });
         
         SLDTransformer writer = new SLDTransformer();
+        if (prettyPrint) {
+            writer.setIndentation(2);
+        }
         try {
             writer.transform( sld, out );
         } 
