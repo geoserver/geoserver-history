@@ -140,13 +140,14 @@ public class StyleResource extends AbstractCatalogResource {
                 throw new RestletException( msg, Status.CLIENT_ERROR_FORBIDDEN);
             }
             
+            //TODO: have the writing out of the style delegate to ResourcePool.writeStyle()
             try {
                 f = loader.createFile( "styles/" + name + ".sld") ;
                 
                 //serialize the file to the styles directory
                 BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream ( f ) );
                 
-                SLDFormat format = new SLDFormat();
+                SLDFormat format = new SLDFormat(true);
                 format.toRepresentation(style).write(out);
                 
                 out.flush();
@@ -187,7 +188,7 @@ public class StyleResource extends AbstractCatalogResource {
         }
         else if ( object instanceof Style ) {
             StyleInfo s = catalog.getStyleByName( style );
-            catalog.getResourcePool().writeStyle( s, (Style) object );
+            catalog.getResourcePool().writeStyle( s, (Style) object, true );
         }
         
         LOGGER.info( "PUT style " + style);
