@@ -8,7 +8,7 @@ Tutorials
    :maxdepth: 2
 
    kmlplacemark/index
-   heighttemplates.rst
-   timetemplates.rst
+   heights/heights.rst
+   time/time.rst
    superoverlaysgwc.rst
    superoverlaysextrudesbuildings.rst

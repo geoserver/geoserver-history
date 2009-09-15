@@ -9,9 +9,7 @@ Tutorials
    freemarker.rst
    georss/georss.rst
    GetFeatureInfo/index.rst
-   heights/heights.rst
    palettedimage/palettedimage.rst
-   time/time.rst
    staticfiles.rst
    wmsreflector.rst
    cql/cql_tutorial.rst
