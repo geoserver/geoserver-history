@@ -76,15 +76,7 @@
         
         
     <!--  dispatcher -->
-    <bean id="dispatcher" class="org.geoserver.ows.Dispatcher">
-      <!-- 
-        See the applicationSecurityContext document. You can safely remove this
-        if in need for playing with a non secure version of Geoserver
-       -->
-      <property name="securityInterceptor">
-        <ref bean="operationSecurityInterceptor"/>
-      </property>
-    </bean>
+    <bean id="dispatcher" class="org.geoserver.ows.Dispatcher"/>
 
     <!-- file publisher, allows parts of the data dir to be published as static files (used
          to publish styles, www and by wcs 1.1.1 -->
