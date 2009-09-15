@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -992,6 +993,33 @@ public class CatalogImplTest extends TestCase {
         assertEquals( s.getName(), styles.get( 1 ).getName() );
 
     }
+    
+    public void testExceptionThrowingListener() throws Exception {
+        ExceptionThrowingListener l = new ExceptionThrowingListener();
+        catalog.addListener(l);
+        
+        l.throwCatalogException = false;
+        
+        WorkspaceInfo ws = catalog.getFactory().createWorkspace();
+        ws.setName("foo");
+        
+        //no exception thrown back
+        catalog.add(ws);
+        
+        l.throwCatalogException = true;
+        ws = catalog.getFactory().createWorkspace();
+        ws.setName("bar");
+        
+        try {
+            catalog.add(ws);
+            fail();
+        }
+        catch( CatalogException ce ) {
+            //good
+        }
+    }
+    
+    
     static class TestListener implements CatalogListener {
 
         public List<CatalogAddEvent> added = new ArrayList();
@@ -1015,5 +1043,32 @@ public class CatalogImplTest extends TestCase {
         
         public void reloaded() {
         }
+    }
+    
+    static class ExceptionThrowingListener implements CatalogListener {
+
+        public boolean throwCatalogException;
+        
+        public void handleAddEvent(CatalogAddEvent event) throws CatalogException {
+            if (throwCatalogException) {
+                throw new CatalogException();
+            }
+            else {
+                throw new RuntimeException();
+            }
+        }
+
+        public void handleModifyEvent(CatalogModifyEvent event) throws CatalogException {
+        }
+
+        public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
+        }
+
+        public void handleRemoveEvent(CatalogRemoveEvent event) throws CatalogException {
+        }
+
+        public void reloaded() {
+        }
+        
     }
 }
