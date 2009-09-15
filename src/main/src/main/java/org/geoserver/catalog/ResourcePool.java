@@ -742,12 +742,26 @@ public class ResourcePool {
      * 
      */
     public void writeStyle( StyleInfo info, Style style ) throws IOException {
+        writeStyle(info,style,false);
+    }
+    
+    /**
+     * Serializes a style to configuration optionally formatting the style when writing it.
+     * 
+     * @param info The configuration for the style.
+     * @param style The style object.
+     * @param format Whether to format the style
+     */
+    public void writeStyle( StyleInfo info, Style style, boolean format) throws IOException {
         synchronized ( styleCache ) {
             File styleFile = GeoserverDataDirectory.findStyleFile( info.getFilename(), true );
             BufferedOutputStream out = new BufferedOutputStream( new FileOutputStream( styleFile ) );
             
             try {
                 SLDTransformer tx = new SLDTransformer();
+                if (format) {
+                    tx.setIndentation(2);
+                }
                 try {
                     tx.transform( style, out );
                 } 

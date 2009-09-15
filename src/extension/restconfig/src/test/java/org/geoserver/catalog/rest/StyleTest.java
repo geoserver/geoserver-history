@@ -6,6 +6,7 @@ package org.geoserver.catalog.rest;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 import net.sf.json.JSON;
@@ -13,6 +14,7 @@ import net.sf.json.JSONObject;
 
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geotools.styling.Style;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -125,6 +127,21 @@ public class StyleTest extends CatalogRESTTestSupport {
         
         style = catalog.getStyleByName( "Ponds");
         assertEquals( "Forests.sld", style.getFilename() );
+    }
+    
+    public void testPutAsSLD() throws Exception {
+        String xml = newSLDXML();
+
+        MockHttpServletResponse response = 
+            putAsServletResponse( "/rest/styles/Ponds", xml, StyleResource.MEDIATYPE_SLD.toString());
+        assertEquals( 200, response.getStatusCode() );
+        
+        Style s = catalog.getStyleByName( "Ponds" ).getStyle();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new SLDFormat().write(s, out);
+        
+        xml = new String(out.toByteArray());
+        assertTrue(xml.contains("<sld:Name>foo</sld:Name>"));
     }
     
     public void testDelete() throws Exception {
