@@ -88,7 +88,8 @@ public class ServiceAccessRuleDAO {
     }
 
     /**
-     * Returns the list of rules contained in the property file
+     * Returns the list of rules contained in the property file. The returned rules are
+     * sorted against the {@link ServiceAccessRule} natural order
      * 
      * @return
      */

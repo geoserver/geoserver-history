@@ -325,24 +325,10 @@
   </bean>
 
   <!-- 
-    This interceptor will be used before calling operations on OWS stuff, and making it secure
+    This callback will be used before calling operations on OWS stuff, and making it secure
    -->
-  <bean id="operationSecurityInterceptor"
-    class="org.geoserver.security.OperationSecurityInterceptor">
-    <property name="authenticationManager" ref="authenticationManager" />
-    <property name="accessDecisionManager">
-      <bean class="org.acegisecurity.vote.AffirmativeBased">
-        <property name="allowIfAllAbstainDecisions" value="false" />
-        <property name="decisionVoters">
-          <list>
-            <bean class="org.acegisecurity.vote.RoleVoter" />
-            <bean class="org.acegisecurity.vote.AuthenticatedVoter" />
-          </list>
-        </property>
-      </bean>
-    </property>
-    <property name="objectDefinitionSource">
-      <bean class="org.geoserver.security.OperationDefinitionSource" />
-    </property>
+  <bean id="operationCallback"
+    class="org.geoserver.security.OperationSecurityCallback">
+    <constructor-arg ref="serviceRulesDao"/>
   </bean>
 </beans>
