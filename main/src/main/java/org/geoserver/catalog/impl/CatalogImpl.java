@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.CoverageDimensionInfo;
@@ -1292,6 +1293,8 @@ public class CatalogImpl implements Catalog {
     }
 
     protected void event(CatalogEvent event) {
+        CatalogException toThrow = null;
+        
         for (Iterator l = listeners.iterator(); l.hasNext();) {
             try {
                 CatalogListener listener = (CatalogListener) l.next();
@@ -1304,10 +1307,18 @@ public class CatalogImpl implements Catalog {
                 } else if (event instanceof CatalogPostModifyEvent) {
                     listener.handlePostModifyEvent((CatalogPostModifyEvent)event);
                 }
-            } catch(Exception e) {
-                LOGGER.log(Level.WARNING, "Catalog listener threw exception handling event.", e);
+            } catch(Throwable t) {
+                if ( t instanceof CatalogException && toThrow == null) {
+                    toThrow = (CatalogException) t;
+                }
+                else {
+                    LOGGER.log(Level.WARNING, "Catalog listener threw exception handling event.", t);
+                }
             }
-            
+        }
+        
+        if (toThrow != null) {
+            throw toThrow;
         }
     }
     

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -579,23 +580,30 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     }
 
     void persist( Object o, File f ) throws IOException {
-        synchronized ( xp ) {
-            //first save to a temp file
-            File temp = new File(f.getParentFile(),f.getName()+".tmp");
-            if ( temp.exists() ) {
-                temp.delete();
+        try {
+            synchronized ( xp ) {
+                //first save to a temp file
+                File temp = new File(f.getParentFile(),f.getName()+".tmp");
+                if ( temp.exists() ) {
+                    temp.delete();
+                }
+                
+                BufferedOutputStream out = 
+                    new BufferedOutputStream( new FileOutputStream( temp ) );
+                xp.save( o, out );
+                out.flush();
+                out.close();
+                
+                //no errors, overwrite the original file
+                rename(temp,f);
             }
-            
-            BufferedOutputStream out = 
-                new BufferedOutputStream( new FileOutputStream( temp ) );
-            xp.save( o, out );
-            out.flush();
-            out.close();
-            
-            //no errors, overwrite the original file
-            rename(temp,f);
+            LOGGER.fine("Persisted " + o.getClass().getName() + " to " + f.getAbsolutePath() );
         }
-        LOGGER.fine("Persisted " + o.getClass().getName() + " to " + f.getAbsolutePath() );
+        catch( Exception e ) {
+            //catch any exceptions and send them back as CatalogExeptions
+            String msg = "Error persisting " + o + " to " + f.getCanonicalPath();
+            throw new CatalogException(msg, e);
+        }
     }
 
 }
