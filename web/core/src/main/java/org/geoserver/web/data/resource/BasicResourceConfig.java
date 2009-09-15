@@ -46,7 +46,7 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         super(id, model);
 
         TextField name = new TextField("name");
-        name.add(new PatternValidator("[\\w_]\\w*"));
+        name.setRequired(true);
         add(name);
         add(new TextField("title"));
         add(new TextArea("abstract"));
