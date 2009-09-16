@@ -48,16 +48,16 @@ public class CatalogIconFactory implements Serializable {
             GeoServerBasePage.class, "img/icons/geosilk/vector.png");
     
     public static final ResourceReference POINT_ICON = new ResourceReference(
-            GeoServerBasePage.class, "img/icons/geosilk/point.png");
+            GeoServerBasePage.class, "img/icons/silk/bullet_blue.png");
     
     public static final ResourceReference LINE_ICON = new ResourceReference(
-            GeoServerBasePage.class, "img/icons/geosilk/line.png");
+            GeoServerBasePage.class, "img/icons/silk/line_blue.png");
     
     public static final ResourceReference POLYGON_ICON = new ResourceReference(
-            GeoServerBasePage.class, "img/icons/geosilk/polygon.png");
+            GeoServerBasePage.class, "img/icons/silk/shape_square_blue.png");
     
     public static final ResourceReference GEOMETRY_ICON = new ResourceReference(
-            GeoServerBasePage.class, "img/icons/geosilk/geometry..png");
+            GeoServerBasePage.class, "img/icons/geosilk/vector.png");
 
     public static final ResourceReference UNKNOWN_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/silk/error.png");
