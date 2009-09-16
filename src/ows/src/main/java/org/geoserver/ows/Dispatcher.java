@@ -116,9 +116,6 @@ public class Dispatcher extends AbstractController {
     /** flag to control wether the dispatcher is cite compliant */
     boolean citeCompliant = false;
 
-    /** The security interceptor to be used for authorization checks **/
-    OperationInterceptor securityInterceptor = null;
-    
     /** thread local variable for the request */
     public static final ThreadLocal<Request> REQUEST = new ThreadLocal<Request>();
     
@@ -579,12 +576,8 @@ public class Dispatcher extends AbstractController {
         Object result = null;
 
         try {
-            if (securityInterceptor != null) {
-                result = securityInterceptor.invoke(opDescriptor, operation, serviceBean, parameters);
-            } else {
-                result = operation.invoke(serviceBean, parameters);
-            }
-        } catch (InvocationTargetException e) {
+            result = operation.invoke(serviceBean, parameters);
+         } catch (InvocationTargetException e) {
             if (e.getTargetException() != null) {
                 throw e.getTargetException();
             }
@@ -1333,18 +1326,5 @@ public class Dispatcher extends AbstractController {
         handler.handleServiceException(se, request);
     }
 
-   
-
-    /**
-     * Allows setting up a security interceptor that will allow security checks around
-     * service invocations
-     * @return
-     */
-    public OperationInterceptor getSecurityInterceptor() {
-        return securityInterceptor;
-    }
-
-    public void setSecurityInterceptor(OperationInterceptor interceptor) {
-        this.securityInterceptor = interceptor;
-    }
+    
 }
