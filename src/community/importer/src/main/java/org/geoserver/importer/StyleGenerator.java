@@ -98,23 +98,28 @@ public class StyleGenerator {
             gt = GeometryType.POINT;
         }
 
-        // is it already there, or do we have to create it?
-        String styleName = (gt + "_" + colorName).replace(" ", "_").toLowerCase();
+        // find a new style name
+        String styleName = featureType.getStore().getWorkspace().getName() + "_" + featureType.getName() + "_style";
         StyleInfo style = catalog.getStyleByName(styleName);
-        if (style == null) {
-            // variable replacement
-            String colorCode = Integer.toHexString(color.getRGB());
-            colorCode = colorCode.substring(2, colorCode.length());
-            String sld = TEMPLATES.get(gt).replace("${colorName}", colorName).replace(
-                    "${colorCode}", "#" + colorCode);
-
-            // let's store it
-            style = catalog.getFactory().createStyle();
-            style.setName(styleName);
-            style.setFilename(styleName + ".sld");
-            catalog.add(style);
-            catalog.getResourcePool().writeStyle(style, new ByteArrayInputStream(sld.getBytes()));
+        int i = 1;
+        while(style != null) {
+            styleName = featureType.getStore().getWorkspace().getName() + "_" + featureType.getName() + i +  "_style";
+            style = catalog.getStyleByName(styleName);
+            i++;
         }
+        
+        // variable replacement
+        String colorCode = Integer.toHexString(color.getRGB());
+        colorCode = colorCode.substring(2, colorCode.length());
+        String sld = TEMPLATES.get(gt).replace("${colorName}", colorName).replace(
+                "${colorCode}", "#" + colorCode);
+
+        // let's store it
+        style = catalog.getFactory().createStyle();
+        style.setName(styleName);
+        style.setFilename(styleName + ".sld");
+        catalog.add(style);
+        catalog.getResourcePool().writeStyle(style, new ByteArrayInputStream(sld.getBytes()));
 
         return style;
     }
