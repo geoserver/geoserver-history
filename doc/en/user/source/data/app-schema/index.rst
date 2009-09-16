@@ -5,5 +5,6 @@ Application Schema Support
    :maxdepth: 2
 
    app-schema
+   complex-features
    FeatureChainingUserGuide
    DataAccessIntegration

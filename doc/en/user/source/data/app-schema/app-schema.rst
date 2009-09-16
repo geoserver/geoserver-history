@@ -9,8 +9,6 @@ GeoServer provides support for a broad selection of simple feature data stores, 
 
 Configuration of an app-schema complex feature type requires manual construction of a GeoServer data directory that contains a mapping file and a ``datastore.xml`` that points at this mapping file. The data directory also requires all the other ancillary configuration files used by GeoServer for simple features. GeoServer can serve simple and complex features at the same time.
 
-.. note:: This tutorial describes the new GeoServer ``web2`` data directory layout.
-
 
 Workspace layout
 ----------------
