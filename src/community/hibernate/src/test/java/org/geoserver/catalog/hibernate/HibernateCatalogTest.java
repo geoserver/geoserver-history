@@ -10,6 +10,7 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -44,6 +45,10 @@ public class HibernateCatalogTest extends HibTestSupport {
     private void clearCatalog() {
         // ensure no stores
 
+        for (LayerGroupInfo layergroup : ModificationProxy.unwrap(catalog.getLayerGroups())) {
+            catalog.remove(layergroup);
+        }
+
         for (LayerInfo layerInfo : ModificationProxy.unwrap(catalog.getLayers())) {
             catalog.remove(layerInfo);
         }
@@ -68,6 +73,7 @@ public class HibernateCatalogTest extends HibTestSupport {
             catalog.remove(mapInfo);
         }
 
+        assertTrue("LayerGroups in the DB, can't proceed.", catalog.getLayerGroups().isEmpty());
         assertTrue("Layers in the DB, can't proceed.", catalog.getLayers().isEmpty());
         assertTrue("Datastores in the DB, can't proceed.", catalog.getDataStores().isEmpty());
         assertTrue("Coveragestores in the DB, can't proceed.", catalog.getCoverageStores().isEmpty());
@@ -570,7 +576,7 @@ public class HibernateCatalogTest extends HibTestSupport {
         assertNotNull(coverage1);
     }
 
-    public void testLayer() {
+    public void testMap() {
         // ensure no stores
         clearCatalog();
         removeExistingNS();
@@ -584,56 +590,8 @@ public class HibernateCatalogTest extends HibTestSupport {
         ns.setURI("http://testLayerWorkspace.org");
         catalog.add(ns);
 
-        LayerInfo layer1;
-        LayerInfo layer2;
-
-        {
-            CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
-            coverageStore.setName("testLayerCoverageStore1");
-            coverageStore.setWorkspace(ws);
-
-            catalog.add(coverageStore);
-
-            CoverageInfo coverage = catalog.getFactory().createCoverage();
-            coverage.setName("testLayerCoverage1");
-            coverage.setNativeName("native_testLayerCoverage1");
-            coverage.setTitle("testLayerCoverage1 title");
-            coverage.setStore(coverageStore);
-    //        coverage.setNativeBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
-    //        coverage.setLatLonBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
-            catalog.add(coverage);
-
-            layer1 = catalog.getFactory().createLayer();
-            layer1.setResource(coverage);
-            layer1.setName("layer1");
-
-            logger.warn("LYID:     " + layer1.getId());
-            logger.warn("COVERAGE: " + layer1.getResource());
-            logger.warn("COVSTORE: " + ((CoverageInfo)layer1.getResource()).getStore());
-
-            catalog.add(layer1);
-        }
-
-        {
-            CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
-            coverageStore.setName("testLayerCoverageStore2");
-            coverageStore.setWorkspace(ws);
-
-            catalog.add(coverageStore);
-
-            CoverageInfo coverage = catalog.getFactory().createCoverage();
-            coverage.setName("testLayerCoverage2");
-            coverage.setNativeName("native_testLayerCoverage2");
-            coverage.setTitle("testLayerCoverage2 title");
-            coverage.setStore(coverageStore);
-            catalog.add(coverage);
-
-            layer2 = catalog.getFactory().createLayer();
-            layer2.setName("layer2"); // this will trigger a warning log
-            layer2.setResource(coverage); // this will trigger a warning log
-
-            catalog.add(layer2);
-        }
+        LayerInfo layer1 = createLayer(ws, "cs1", "cov1", "ncov1", "test coverage 1", "testlayer1");
+        LayerInfo layer2 = createLayer(ws, "cs2", "cov2", "ncov2", "test coverage 2", "testlayer2");
 
         MapInfo map1 = catalog.getFactory().createMap();
         map1.setName("map_testLayer");
@@ -651,6 +609,76 @@ public class HibernateCatalogTest extends HibTestSupport {
         // assertTrue( map1 != map2 );
 
         assertEquals(2, map2.getLayers().size());
+    }
+
+    public void testLayerGroup() {
+        // ensure no stores
+        clearCatalog();
+        removeExistingNS();
+
+        // store needs a workspace...
+        WorkspaceInfo ws = catalog.getFactory().createWorkspace();
+        ws.setName("testLayerWorkspace");
+        catalog.add(ws);
+        NamespaceInfo ns = catalog.getFactory().createNamespace();
+        ns.setPrefix("testLayerWorkspace");
+        ns.setURI("http://testLayerWorkspace.org");
+        catalog.add(ns);
+
+        LayerInfo layer1 = createLayer(ws, "cs1", "cov1", "ncov1", "test coverage 1", "testlayer1");
+        LayerInfo layer2 = createLayer(ws, "cs2", "cov2", "ncov2", "test coverage 2", "testlayer2");
+
+        LayerGroupInfo layerGroupInfo = catalog.getFactory().createLayerGroup();
+        layerGroupInfo.setName("TestLayerGroup");
+        layerGroupInfo.getLayers().add(layer1);
+        layerGroupInfo.getLayers().add(layer2);
+
+        ReferencedEnvelope re = new ReferencedEnvelope(10, 20, -20, -10, DefaultGeographicCRS.WGS84);
+        layerGroupInfo.setBounds(re);
+
+        catalog.add(layerGroupInfo);
+
+        endTransaction();
+        startNewTransaction();
+
+        LayerGroupInfo reloaded = catalog.getLayerGroup(layerGroupInfo.getId());
+        assertNotNull(reloaded);
+
+        ReferencedEnvelope reReloaded = reloaded.getBounds();
+        assertNotNull(reReloaded);
+        assertEquals(re.getMinX(), reReloaded.getMinX());
+    }
+
+    private LayerInfo createLayer(WorkspaceInfo ws, String csname, String covname, String covnname, String covtitle, String lname)
+    {
+        LayerInfo layer1;
+
+        CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
+        coverageStore.setName(csname);
+        coverageStore.setWorkspace(ws);
+
+        catalog.add(coverageStore);
+
+        CoverageInfo coverage = catalog.getFactory().createCoverage();
+        coverage.setName(covname);
+        coverage.setNativeName(covnname);
+        coverage.setTitle(covtitle);
+        coverage.setStore(coverageStore);
+//        coverage.setNativeBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
+//        coverage.setLatLonBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
+        catalog.add(coverage);
+
+        layer1 = catalog.getFactory().createLayer();
+        layer1.setResource(coverage);
+        layer1.setName(lname);
+
+        logger.warn("LYID:     " + layer1.getId());
+        logger.warn("COVERAGE: " + layer1.getResource());
+        logger.warn("COVSTORE: " + ((CoverageInfo)layer1.getResource()).getStore());
+
+        catalog.add(layer1);
+
+        return layer1;
     }
 
     public void setCatalogDAO(CatalogDAO catalogDAO) {
