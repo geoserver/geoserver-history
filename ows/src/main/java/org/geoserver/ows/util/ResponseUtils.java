@@ -7,10 +7,8 @@ package org.geoserver.ows.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -381,41 +379,34 @@ public class ResponseUtils {
      *            URL type
      */
     public static String buildURL(String baseURL, String path, Map<String, String> kvp, URLType type) {
-        try {
-            // prepare modifiable parameters
-            StringBuilder baseURLBuffer = new StringBuilder(baseURL);
-            StringBuilder pathBuffer = new StringBuilder(path != null ? path : "");
-            Map<String, String> kvpBuffer = new LinkedHashMap<String, String>();
-            if(kvp != null)
-                kvpBuffer.putAll(kvp);
-            
-            // run all of the manglers
-            for(URLMangler mangler : GeoServerExtensions.extensions(URLMangler.class)) {
-                mangler.mangleURL(baseURLBuffer, pathBuffer, kvpBuffer, type);
-            }
-            
-            // compose the final URL
-            String result = appendPath(baseURLBuffer.toString(), pathBuffer.toString());
-            StringBuilder params = new StringBuilder();
-            for (Map.Entry<String, String> entry : kvpBuffer.entrySet()) {
-                params.append(entry.getKey());
-                params.append("=");
-                // TODO: URLEncoder also encodes ( and ) which are considered safe chars,
-                // see also http://www.w3.org/International/O-URL-code.html
-                String encoded = URLEncoder.encode(entry.getValue(), "ASCII");
-                params.append(encoded);
-                params.append("&");
-            }
-            if(params.length() > 1) {
-                params.setLength(params.length() - 1);
-                result = appendQueryString(result, params.toString());
-            }
-            
-            return result;
-        } catch (UnsupportedEncodingException e) {
-            // this will just never happen
-            throw new RuntimeException("Unexpected encoding error while building a URL", e);
+        // prepare modifiable parameters
+        StringBuilder baseURLBuffer = new StringBuilder(baseURL);
+        StringBuilder pathBuffer = new StringBuilder(path != null ? path : "");
+        Map<String, String> kvpBuffer = new LinkedHashMap<String, String>();
+        if(kvp != null)
+            kvpBuffer.putAll(kvp);
+        
+        // run all of the manglers
+        for(URLMangler mangler : GeoServerExtensions.extensions(URLMangler.class)) {
+            mangler.mangleURL(baseURLBuffer, pathBuffer, kvpBuffer, type);
         }
+        
+        // compose the final URL
+        String result = appendPath(baseURLBuffer.toString(), pathBuffer.toString());
+        StringBuilder params = new StringBuilder();
+        for (Map.Entry<String, String> entry : kvpBuffer.entrySet()) {
+            params.append(entry.getKey());
+            params.append("=");
+            String encoded = urlEncode(entry.getValue());
+            params.append(encoded);
+            params.append("&");
+        }
+        if(params.length() > 1) {
+            params.setLength(params.length() - 1);
+            result = appendQueryString(result, params.toString());
+        }
+        
+        return result;
     }
     
     /**
@@ -461,6 +452,33 @@ public class ResponseUtils {
         }
         
         return result;
+    }
+    
+    /**
+     * URL encodes the value towards the ISO-8859-1 charset
+     * @param value
+     */
+    public static String urlEncode(String value) {
+        try {
+            // TODO: URLEncoder also encodes ( and ) which are considered safe chars,
+            // see also http://www.w3.org/International/O-URL-code.html
+            return URLEncoder.encode(value, "ISO-8859-1"); 
+        } catch(UnsupportedEncodingException e) {
+            throw new RuntimeException("This is unexpected", e);
+        }
+    }
+    
+    /**
+     * URL decods the value using ISO-8859-1 as the reference charset
+     * @param value
+     * @return
+     */
+    public static String urlDecode(String value) {
+        try {
+            return URLDecoder.decode(value, "ISO-8859-1");
+        } catch(UnsupportedEncodingException e) {
+            throw new RuntimeException("This is unexpected", e);
+        }
     }
     
     
