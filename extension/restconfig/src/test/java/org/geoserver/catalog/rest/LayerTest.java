@@ -18,6 +18,9 @@ public class LayerTest extends CatalogRESTTestSupport {
         
         assertEquals( "layer", dom.getDocumentElement().getNodeName() );
         assertXpathEvaluatesTo("Buildings", "/layer/name", dom );
+        // check the layer name is actually the first child (GEOS-3336 risked modifying
+        // the order)
+        assertXpathEvaluatesTo("Buildings", "/layer/*[1]", dom );
         assertXpathEvaluatesTo("http://localhost/geoserver/rest/styles/Buildings.xml",
                 "/layer/defaultStyle/atom:link/attribute::href", dom);
     }

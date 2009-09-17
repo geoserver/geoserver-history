@@ -143,9 +143,9 @@ public class DescribeLayerKvpRequestReaderTest extends TestCase {
 		featureTypeInfo.setStore(dataStoreInfo);
 
 		LayerInfoImpl layerInfo = new LayerInfoImpl();
+		layerInfo.setResource(featureTypeInfo);
 		layerInfo.setId("states");
 		layerInfo.setName("states");
-		layerInfo.setResource(featureTypeInfo);
 
 		catalog.add(ns);
 		catalog.add(workspace);
@@ -173,9 +173,9 @@ public class DescribeLayerKvpRequestReaderTest extends TestCase {
 		coverageInfo.setStore(coverageStoreInfo);
 
 		layerInfo = new LayerInfoImpl();
+		layerInfo.setResource(coverageInfo);
 		layerInfo.setId("fakeCoverage");
 		layerInfo.setName("fakeCoverage");
-		layerInfo.setResource(coverageInfo);
 
 		catalog.add(coverageStoreInfo);
 		catalog.add(coverageInfo);

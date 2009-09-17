@@ -1273,6 +1273,19 @@ public class XStreamPersister {
         public LayerInfoConverter() {
             super( LayerInfo.class );
         }
+        
+        @Override
+        protected void doMarshal(Object source, HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+            // write out the name, which is a derived property now
+            // TODO: remove this when resource/publishing split is done
+            LayerInfo l = (LayerInfo) source;
+            writer.startNode("name");
+            writer.setValue(l.getName());
+            writer.endNode();
+
+            super.doMarshal(source, writer, context);
+        }
                 
         @Override
         protected void postDoMarshal(Object result,

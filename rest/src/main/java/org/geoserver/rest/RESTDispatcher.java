@@ -97,7 +97,7 @@ public class RESTDispatcher extends AbstractController {
                 }
                 
                 //log the full exception at a higher level
-                LOG.log( Level.FINE, "", re );
+                LOG.log( Level.SEVERE, "", re );
             }
             else {
                 LOG.log( Level.SEVERE, "", e );

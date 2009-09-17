@@ -74,7 +74,6 @@ public class CatalogImplTest extends TestCase {
         s.setFilename( "styleFilename" );
         
         l = factory.createLayer();
-        l.setName( "layerName");
         l.setResource( ft );
         l.setDefaultStyle( s );
     }
@@ -723,7 +722,7 @@ public class CatalogImplTest extends TestCase {
         }
         catch( Exception e) {}
         
-        l2.setName( "l2" );
+        // l2.setName( "l2" );
         try {
             catalog.add( l2 );
             fail( "adding with no resource should throw exception");
@@ -784,19 +783,19 @@ public class CatalogImplTest extends TestCase {
         catalog.add(l);
         
         LayerInfo l2 = catalog.getLayerByName( l.getName() );
-        l2.setName( null );
+//        l2.setName( null );
         l2.setResource( null );
         
         LayerInfo l3 = catalog.getLayerByName( l.getName() );
         assertEquals( l.getName(), l3.getName() );
         
-        try {
-            catalog.save(l2);
-            fail( "setting name to null should throw exception");
-        }
-        catch( Exception e ) {}
-        
-        l2.setName( "changed" );
+//        try {
+//            catalog.save(l2);
+//            fail( "setting name to null should throw exception");
+//        }
+//        catch( Exception e ) {}
+//        
+//        l2.setName( "changed" );
         try {
             catalog.save(l2);
             fail( "setting resource to null should throw exception");
@@ -806,7 +805,9 @@ public class CatalogImplTest extends TestCase {
         l2.setResource(ft);
         catalog.save(l2);
         
-        l3 = catalog.getLayerByName( "changed" );
+        // TODO: reinstate with resource/publishing split done
+        // l3 = catalog.getLayerByName( "changed" );
+        l3 = catalog.getLayerByName( ft.getName() );
         assertNotNull(l3);
     }
     
@@ -954,7 +955,8 @@ public class CatalogImplTest extends TestCase {
     public void testProxyBehaviour() throws Exception {
         testAddLayer();
         
-        LayerInfo l = catalog.getLayerByName( "layerName");
+        // l = catalog.getLayerByName( "layerName");
+        LayerInfo l = catalog.getLayerByName(ft.getName());
         assertTrue( l instanceof Proxy );
         
         ResourceInfo r = l.getResource();
@@ -963,7 +965,8 @@ public class CatalogImplTest extends TestCase {
         r.setName( "changed");
         catalog.save( l );
         
-        l = catalog.getLayerByName( "layerName");
+        // l = catalog.getLayerByName( "layerName");
+        l = catalog.getLayerByName(ft.getName());
         assertEquals( "changed", l.getResource().getName() );
     }
     

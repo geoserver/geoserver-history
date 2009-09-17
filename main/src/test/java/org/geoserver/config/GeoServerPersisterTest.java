@@ -264,7 +264,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         assertFalse( f.exists() );
         
         LayerInfo l = catalog.getFactory().createLayer();
-        l.setName("foolayer");
+        // l.setName("foo");
         l.setResource( catalog.getFeatureTypeByName( "bar", "foo") );
         
         StyleInfo s = catalog.getStyleByName( "foostyle");
@@ -277,7 +277,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
     public void testModifyLayer() throws Exception {
         testAddLayer();
         
-        LayerInfo l = catalog.getLayerByName( "foolayer" );
+        LayerInfo l = catalog.getLayerByName( "foo" );
         l.setPath( "/foo/bar" );
         catalog.save( l );
         
@@ -295,7 +295,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
             "workspaces/acme/foostore/foo/layer.xml");
         assertTrue( f.exists() );
         
-        LayerInfo l = catalog.getLayerByName( "foolayer" );
+        LayerInfo l = catalog.getLayerByName( "foo" );
         catalog.remove( l );
         
         assertFalse( f.exists() );
@@ -352,11 +352,11 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         
         LayerGroupInfo lg = catalog.getFactory().createLayerGroup();
         lg.setName("lg");
-        lg.getLayers().add( catalog.getLayerByName( "foolayer") );
+        lg.getLayers().add( catalog.getLayerByName( "foo") );
         lg.getStyles().add( catalog.getStyleByName( "foostyle") );
-        lg.getLayers().add( catalog.getLayerByName( "foolayer") );
+        lg.getLayers().add( catalog.getLayerByName( "foo") );
         lg.getStyles().add( /* default style */ null);
-        lg.getLayers().add( catalog.getLayerByName( "foolayer") );
+        lg.getLayers().add( catalog.getLayerByName( "foo") );
         lg.getStyles().add( catalog.getStyleByName( "foostyle"));
 
         catalog.add( lg );

@@ -868,9 +868,9 @@ public class CatalogBuilder {
     
     LayerInfo buildLayer( ResourceInfo resource ) {
         LayerInfo layer = catalog.getFactory().createLayer();
+        layer.setResource( resource );
         layer.setName( resource.getName() );
         layer.setEnabled(true);
-        layer.setResource( resource );
         
         // setup the layer type
         if ( layer.getResource() instanceof FeatureTypeInfo ) {

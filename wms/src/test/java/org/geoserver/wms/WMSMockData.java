@@ -291,9 +291,9 @@ public class WMSMockData {
         catalog.add(featureTypeInfo);
 
         LayerInfo layerInfo = new LayerInfoImpl();
+        layerInfo.setResource(featureTypeInfo);
         layerInfo.setName(name);
         layerInfo.setEnabled(true);
-        layerInfo.setResource(featureTypeInfo);
         layerInfo.setDefaultStyle(defaultStyle);
         layerInfo.setType(LayerInfo.Type.VECTOR);
         catalog.add(layerInfo);
