@@ -5,9 +5,10 @@
 package org.geoserver.web.data.store;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.SubmitLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.ResourceModel;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.web.GeoServerWicketTestSupport;
 
 public class NewDataPageTest extends GeoServerWicketTestSupport {
@@ -27,6 +28,28 @@ public class NewDataPageTest extends GeoServerWicketTestSupport {
         tester.assertComponent("storeForm:rasterResources", ListView.class);
     }
     
+    /**
+     * Need to use a static class so it has no back pointer to NewDataPageTest which is not serializable
+     * @author groldan
+     *
+     */
+    private static class NewDataPageWithFakeCatalog extends NewDataPage{
+        @Override
+        protected Catalog getCatalog(){
+            return new CatalogImpl();
+        }
+    }
+    
+    public void testLoadWithNoWorkspaces() {
+        tester.startPage(new NewDataPageWithFakeCatalog());
+        tester.assertRenderedPage(NewDataPageWithFakeCatalog.class);
+
+        String expectedErrMsg = (String) new ResourceModel("NewDataPage.noWorkspacesErrorMessage")
+                .getObject();
+        assertNotNull(expectedErrMsg);
+        tester.assertErrorMessages(new String[] { expectedErrMsg });
+    }
+
     public void testClickLink() {
         Label label = (Label) findComponentByContent(tester.getLastRenderedPage(), "Properties", Label.class);
         // getPath() will start with 0: which indicates the page
@@ -37,7 +60,7 @@ public class NewDataPageTest extends GeoServerWicketTestSupport {
         
         // print(tester.getLastRenderedPage(), true, true);
         tester.assertModelValue("dataStoreForm:storeType", "Properties");
-        
+    
     }
 
 }
