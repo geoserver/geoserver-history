@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -20,6 +19,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.coverage.grid.io.GridFormatFinder;
@@ -54,6 +54,12 @@ public class NewDataPage extends GeoServerSecuredPage {
     @SuppressWarnings("serial")
     public NewDataPage() {
 
+        final boolean thereAreWorkspaces = !getCatalog().getWorkspaces().isEmpty();
+        
+        if(!thereAreWorkspaces){
+            super.error((String)new ResourceModel("NewDataPage.noWorkspacesErrorMessage").getObject());
+        }
+
         final Form storeForm = new Form("storeForm");
         add(storeForm);
 
@@ -76,6 +82,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                         setResponsePage(new DataAccessNewPage(dataStoreFactoryName));
                     }
                 };
+                link.setEnabled(thereAreWorkspaces);
                 link.add(new Label("resourcelabel", dataStoreFactoryName));
                 item.add(link);
                 item.add(new Label("resourceDescription", description));
@@ -104,6 +111,7 @@ public class NewDataPage extends GeoServerSecuredPage {
                         setResponsePage(new CoverageStoreNewPage(coverageFactoryName));
                     }
                 };
+                link.setEnabled(thereAreWorkspaces);
                 link.add(new Label("resourcelabel", coverageFactoryName));
                 item.add(link);
                 item.add(new Label("resourceDescription", description));
