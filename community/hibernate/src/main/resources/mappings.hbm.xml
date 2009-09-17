@@ -283,7 +283,13 @@
       <list-index column="LGROUP_STYLE_INDEX"/>
       <one-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"/>
     </list>
-    <!-- TODO: envelope missing -->
+    <property name="bounds" type="boundingBox">
+      <column name="MINX"/>
+      <column name="MINY"/>
+      <column name="MAXX"/>
+      <column name="MAXY"/>
+      <column name="CRS"/>
+    </property>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="layergroup_metadata_fk" lazy="false" name="metadata"/>
   </class>
   <!-- ===================================================================== -->
