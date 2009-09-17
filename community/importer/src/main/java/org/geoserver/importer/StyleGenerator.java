@@ -99,11 +99,11 @@ public class StyleGenerator {
         }
 
         // find a new style name
-        String styleName = featureType.getStore().getWorkspace().getName() + "_" + featureType.getName() + "_style";
+        String styleName = featureType.getStore().getWorkspace().getName() + "_" + featureType.getName();
         StyleInfo style = catalog.getStyleByName(styleName);
         int i = 1;
         while(style != null) {
-            styleName = featureType.getStore().getWorkspace().getName() + "_" + featureType.getName() + i +  "_style";
+            styleName = featureType.getStore().getWorkspace().getName() + "_" + featureType.getName() + i;
             style = catalog.getStyleByName(styleName);
             i++;
         }
