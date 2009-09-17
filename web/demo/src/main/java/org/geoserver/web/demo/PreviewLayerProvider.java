@@ -20,28 +20,28 @@ import org.geoserver.web.wicket.GeoServerDataProvider;
  */
 @SuppressWarnings("serial")
 public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
-    static final Property<PreviewLayer> TYPE = new BeanProperty<PreviewLayer>(
+    public static final Property<PreviewLayer> TYPE = new BeanProperty<PreviewLayer>(
             "type", "type");
 
-    static final Property<PreviewLayer> NAME = new BeanProperty<PreviewLayer>(
+    public static final Property<PreviewLayer> NAME = new BeanProperty<PreviewLayer>(
             "name", "name");
     
-    static final Property<PreviewLayer> TITLE = new BeanProperty<PreviewLayer>(
+    public static final Property<PreviewLayer> TITLE = new BeanProperty<PreviewLayer>(
             "title", "title");
     
-    static final Property<PreviewLayer> ABSTRACT = new BeanProperty<PreviewLayer>(
+    public static final Property<PreviewLayer> ABSTRACT = new BeanProperty<PreviewLayer>(
             "abstract", "abstract", false);
     
-    static final Property<PreviewLayer> KEYWORDS = new BeanProperty<PreviewLayer>(
+    public static final Property<PreviewLayer> KEYWORDS = new BeanProperty<PreviewLayer>(
             "keywords", "keywords", false);
 
-    static final Property<PreviewLayer> COMMON = new PropertyPlaceholder<PreviewLayer>(
+    public static final Property<PreviewLayer> COMMON = new PropertyPlaceholder<PreviewLayer>(
             "commonFormats");
 
-    static final Property<PreviewLayer> ALL = new PropertyPlaceholder<PreviewLayer>(
+    public static final Property<PreviewLayer> ALL = new PropertyPlaceholder<PreviewLayer>(
             "allFormats");
 
-    static final List<Property<PreviewLayer>> PROPERTIES = Arrays.asList(TYPE,
+    public static final List<Property<PreviewLayer>> PROPERTIES = Arrays.asList(TYPE,
             NAME, TITLE, ABSTRACT, KEYWORDS, COMMON, ALL);
 
     @Override

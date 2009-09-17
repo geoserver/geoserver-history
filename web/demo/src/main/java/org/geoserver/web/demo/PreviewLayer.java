@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.util.parse.metapattern.GroupNotBoundException;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -34,7 +33,7 @@ import com.vividsolutions.jts.geom.Envelope;
 public class PreviewLayer {
     static final Logger LOGGER = Logging.getLogger(PreviewLayer.class);
 
-    enum PreviewLayerType {
+    public enum PreviewLayerType {
         Raster, Vector, Remote, Group
     };
 
@@ -63,6 +62,13 @@ public class PreviewLayer {
     public ResourceReference getIcon() {
         if(layerInfo != null)
             return CatalogIconFactory.get().getLayerIcon(layerInfo);
+        else
+            return CatalogIconFactory.GROUP_ICON;
+    }
+    
+    public ResourceReference getTypeSpecificIcon() {
+        if(layerInfo != null)
+            return CatalogIconFactory.get().getSpecificLayerIcon(layerInfo);
         else
             return CatalogIconFactory.GROUP_ICON;
     }
