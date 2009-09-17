@@ -622,10 +622,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 element("Abstract", info.getAbstract());
                 handleKeywords(info.getKeywords());
 
-                /**
-                 * @task REVISIT: should getSRS() return the full URL?
-                 */
-                element("SRS", "EPSG:" + info.getSRS());
+                element("SRS", info.getSRS());
 
                 String minx = String.valueOf(bbox.getMinX());
                 String miny = String.valueOf(bbox.getMinY());
