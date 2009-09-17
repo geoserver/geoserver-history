@@ -1,7 +1,0 @@
-Building the GeoExt Styler
-==========================
-
-To build this module you need to install 'jstools'. Documentation available at
-http://projects.opengeo.org/jstools. After 'jsbuild' is available on the 
-path you can run 'mvn clean install'. The extension will then be available in 
-'target/styler-<VERSION>.zip'.
