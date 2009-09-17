@@ -661,9 +661,10 @@ public class CatalogImpl implements Catalog {
     }
 
     void validate( LayerInfo layer, boolean isNew) {
-        if ( isNull(layer.getName()) ) {
-            throw new NullPointerException( "Layer name must not be null" );
-        }
+        // TODO: bring back when the layer/publishing split is in act
+//        if ( isNull(layer.getName()) ) {
+//            throw new NullPointerException( "Layer name must not be null" );
+//        }
         
         LayerInfo existing = getLayerByName( layer.getName() );
         if ( existing != null && !existing.getId().equals( layer.getId() ) ) {

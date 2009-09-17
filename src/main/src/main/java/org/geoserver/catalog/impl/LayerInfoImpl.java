@@ -4,25 +4,31 @@
  */
 package org.geoserver.catalog.impl;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LegendInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.LayerInfo.Type;
-import org.geoserver.catalog.MetadataMap;
+import org.geotools.util.logging.Logging;
 
 public class LayerInfoImpl implements LayerInfo {
+    
+    static final Logger LOGGER = Logging.getLogger(LayerInfoImpl.class);
 
     protected String id;
 
-    protected String name;
+    // this property has been left to ensure backwards compatibility with xstream but it's marked transient
+    // to avoid its value being serialized.
+    // TODO: revert to normal property when the resource/publishing split is done
+    transient protected String name;
 
     protected String path;
 
@@ -51,11 +57,16 @@ public class LayerInfoImpl implements LayerInfo {
     }
     
     public String getName() {
-        return name;
+        return resource.getName();
+        // TODO: uncomment back when resource/publish split is complete
+        // return name;
     }
 
     public void setName(String name) {
+        // TODO: remove this log and reinstate field assignment when resource/publish split is complete
+        LOGGER.log(Level.FINE, "Warning, some code is setting the LayerInfo name, but that will be ignored");
         this.name = name;
+        resource.setName(name);
     }
 
     public Type getType() {
@@ -153,7 +164,8 @@ public class LayerInfoImpl implements LayerInfo {
         result = prime * result + (enabled ? 1231 : 1237);
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((legend == null) ? 0 : legend.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        // TODO: add back when resource publish split is in place
+        // result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((path == null) ? 0 : path.hashCode());
         result = prime * result
                 + ((resource == null) ? 0 : resource.hashCode());
@@ -188,11 +200,12 @@ public class LayerInfoImpl implements LayerInfo {
                 return false;
         } else if (!legend.equals(other.getLegend()))
             return false;
-        if (name == null) {
-            if (other.getName() != null)
-                return false;
-        } else if (!name.equals(other.getName()))
-            return false;
+        // TODO: add back when resource/publish split is in place
+//        if (name == null) {
+//            if (other.getName() != null)
+//                return false;
+//        } else if (!name.equals(other.getName()))
+//            return false;
         if (path == null) {
             if (other.getPath() != null)
                 return false;
@@ -224,7 +237,7 @@ public class LayerInfoImpl implements LayerInfo {
 
     @Override
     public String toString() {
-        return new StringBuilder(getClass().getSimpleName()).append('[').append(name).append(
+        return new StringBuilder(getClass().getSimpleName()).append('[').append(getName()).append(
                 ", resource:").append(resource).append(']').toString();
     }
 }

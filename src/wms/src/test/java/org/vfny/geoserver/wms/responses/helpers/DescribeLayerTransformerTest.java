@@ -96,9 +96,9 @@ public class DescribeLayerTransformerTest extends TestCase {
         featureTypeInfo.setStore(dataStoreInfo);
 
         vectorLayerInfo = new LayerInfoImpl();
+        vectorLayerInfo.setResource(featureTypeInfo);
         vectorLayerInfo.setId("states");
         vectorLayerInfo.setName("states");
-        vectorLayerInfo.setResource(featureTypeInfo);
 
         catalog.add(ns);
         catalog.add(workspace);
@@ -117,9 +117,9 @@ public class DescribeLayerTransformerTest extends TestCase {
         coverageInfo.setStore(coverageStoreInfo);
 
         coverageLayerInfo = new LayerInfoImpl();
+        coverageLayerInfo.setResource(coverageInfo);
         coverageLayerInfo.setId("fakeCoverage");
         coverageLayerInfo.setName("fakeCoverage");
-        coverageLayerInfo.setResource(coverageInfo);
 
         catalog.add(coverageStoreInfo);
         catalog.add(coverageInfo);

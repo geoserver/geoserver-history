@@ -60,9 +60,13 @@ public class LayerResource extends AbstractCatalogResource {
         LayerInfo layer = (LayerInfo) object;
         
         //ensure this is not a name change
-        if ( layer.getName() != null && !layer.getName().equals( original.getName() ) ) {
-            throw new RestletException( "Can't change name of a layer", Status.CLIENT_ERROR_FORBIDDEN );
-        }
+        // TODO: Uncomment this when the resource/layer split is not, now by definition 
+        // we cannot rename a layer, it's just not possible and it's not un-marshalled either
+//        if ( layer.getName() != null && !layer.getName().equals( original.getName() ) ) {
+//            throw new RestletException( "Can't change name of a layer", Status.CLIENT_ERROR_FORBIDDEN );
+//        }
+        // force in the same resource otherwise the update will simply fail as we cannot reach the name
+        layer.setResource(original.getResource());
         
         new CatalogBuilder( catalog ).updateLayer( original, layer );
         catalog.save( original );

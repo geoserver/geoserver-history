@@ -430,7 +430,8 @@ public class XStreamPersisterTest extends TestCase {
         catalog.add( s );
         
         LayerInfo l = cFactory.createLayer();
-        l.setName( "layer" );
+        // TODO: reinstate when layer/publish slipt is actually in place
+        // l.setName( "layer" );
         l.setResource( ft );
         l.setDefaultStyle( s );
         catalog.add( l );
@@ -441,7 +442,7 @@ public class XStreamPersisterTest extends TestCase {
         persister.setCatalog( catalog );
         l = persister.load( in( out ) , LayerInfo.class );
         
-        assertEquals( "layer", l.getName() );
+        assertEquals( l.getResource().getName(), l.getName() );
         assertEquals( ft, l.getResource() );
         assertEquals( s, l.getDefaultStyle() );
         //assertNotNull( l.getStyles() );
