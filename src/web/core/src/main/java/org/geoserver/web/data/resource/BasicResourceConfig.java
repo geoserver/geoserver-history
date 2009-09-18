@@ -12,12 +12,16 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.IFormValidator;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
@@ -31,6 +35,9 @@ import org.geoserver.web.wicket.KeywordsEditor;
 import org.geoserver.web.wicket.LiveCollectionModel;
 import org.geoserver.web.wicket.SRSToCRSModel;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * A generic configuration panel for all basic ResourceInfo properties
@@ -95,6 +102,10 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
             ci.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
         }
         refForm.add(projectionPolicy);
+        
+        
+        refForm.add(new ReprojectionIsPossibleValidator(nativeCRS, declaredCRS, projectionPolicy));
+
     }
 
     AjaxSubmitLink computeNativeBoundsLink(final Form refForm,
@@ -169,6 +180,53 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
     static class ResourceNameValidator extends PatternValidator {
         public ResourceNameValidator() {
             super("[\\w][\\w.-]*");
+        }
+    }
+    
+    /**
+     * Form validator that checks whether the native CRS can be projected to the declared one
+     * whenever the projection policy chosen is "reproject" 
+     */
+    private static class ReprojectionIsPossibleValidator implements IFormValidator {
+
+        private FormComponent[] dependentFormComponents;
+
+        private FormComponent nativeCRS;
+
+        private FormComponent declaredCRS;
+
+        private FormComponent projectionPolicy;
+
+        public ReprojectionIsPossibleValidator(final FormComponent nativeCRS,
+                final FormComponent declaredCRS, final FormComponent projectionPolicy) {
+            this.nativeCRS = nativeCRS;
+            this.declaredCRS = declaredCRS;
+            this.projectionPolicy = projectionPolicy;
+            this.dependentFormComponents = new FormComponent[] { nativeCRS, declaredCRS,
+                    projectionPolicy };
+        }
+
+        public FormComponent[] getDependentFormComponents() {
+            return dependentFormComponents;
+        }
+
+        public void validate(final Form form) {
+            CoordinateReferenceSystem nativeCrs;
+            CoordinateReferenceSystem declaredCrs;
+            ProjectionPolicy policy;
+
+            nativeCrs = (CoordinateReferenceSystem) nativeCRS.getConvertedInput();
+            declaredCrs = (CoordinateReferenceSystem) declaredCRS.getConvertedInput();
+            policy = (ProjectionPolicy) projectionPolicy.getConvertedInput();
+            if (policy == ProjectionPolicy.REPROJECT_TO_DECLARED) {
+                final boolean lenient = true;
+                try {
+                    CRS.findMathTransform(nativeCrs, declaredCrs, lenient);
+                } catch (FactoryException e) {
+                    String msgKey = "BasicResourceConfig.noTransformFromNativeToDeclaredCRS";
+                    form.error((String)new ResourceModel(msgKey).getObject());
+                }
+            }
         }
     }
 }
