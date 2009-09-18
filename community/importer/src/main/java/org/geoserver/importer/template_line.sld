@@ -10,6 +10,7 @@
       <Title>A ${colorName} line style</Title>
       <FeatureTypeStyle>
         <Rule>
+          <Title>${colorName} line</Title>
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">${colorCode}</CssParameter>
