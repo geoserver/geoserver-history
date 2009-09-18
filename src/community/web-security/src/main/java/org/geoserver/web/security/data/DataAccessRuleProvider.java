@@ -25,9 +25,6 @@ public class DataAccessRuleProvider extends GeoServerDataProvider<DataAccessRule
     public static final Property<DataAccessRule> ROLES = new BeanProperty<DataAccessRule>("roles",
             "value");
 
-    public static final Property<DataAccessRule> REMOVE = new PropertyPlaceholder<DataAccessRule>(
-            "remove");
-
     @Override
     protected List<DataAccessRule> getItems() {
         return DataAccessRuleDAO.get().getRules();
@@ -35,7 +32,7 @@ public class DataAccessRuleProvider extends GeoServerDataProvider<DataAccessRule
 
     @Override
     protected List<Property<DataAccessRule>> getProperties() {
-        return Arrays.asList(RULEKEY, ROLES, REMOVE);
+        return Arrays.asList(RULEKEY, ROLES);
     }
 
     public IModel model(Object object) {

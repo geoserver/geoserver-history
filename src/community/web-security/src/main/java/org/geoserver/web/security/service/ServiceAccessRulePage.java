@@ -4,20 +4,19 @@
  */
 package org.geoserver.web.security.service;
 
-import java.util.logging.Level;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.security.ServiceAccessRule;
-import org.geoserver.security.ServiceAccessRuleDAO;
 import org.geoserver.web.GeoServerSecuredPage;
-import org.geoserver.web.wicket.ConfirmationAjaxLink;
+import org.geoserver.web.security.SelectionServiceRemovalLink;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
-import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -28,10 +27,14 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 public class ServiceAccessRulePage extends GeoServerSecuredPage {
 
     private GeoServerTablePanel<ServiceAccessRule> rules;
+    
+    private SelectionServiceRemovalLink removal;
+
+    GeoServerDialog dialog;
 
     public ServiceAccessRulePage() {
         ServiceAccessRuleProvider provider = new ServiceAccessRuleProvider();
-        rules = new GeoServerTablePanel<ServiceAccessRule>("table", provider) {
+        add(rules = new GeoServerTablePanel<ServiceAccessRule>("table", provider, true) {
 
             @Override
             protected Component getComponentForProperty(String id, IModel itemModel,
@@ -41,44 +44,35 @@ public class ServiceAccessRulePage extends GeoServerSecuredPage {
                 }
                 if (property == ServiceAccessRuleProvider.ROLES) {
                     return new Label(id, property.getModel(itemModel));
-                } else if (property == ServiceAccessRuleProvider.REMOVE) {
-                    return removeRuleLink(id, itemModel);
-                } else {
-                    throw new RuntimeException("Uknown property " + property);
                 }
-
+                throw new RuntimeException("Uknown property " + property);
             }
-        };
+            
+            @Override
+            protected void onSelectionUpdate(AjaxRequestTarget target) {
+                removal.setEnabled(rules.getSelection().size() > 0);
+                target.addComponent(removal);
+            }
+        });
         rules.setOutputMarkupId(true);
-
-        add(rules);
-        add(addRuleLink());
+        
+        add(dialog = new GeoServerDialog("dialog"));
+        setHeaderPanel(headerPanel());
 
     }
+    
+    protected Component headerPanel() {
+        Fragment header = new Fragment(HEADER_PANEL, "header", this);
 
-    ConfirmationAjaxLink removeRuleLink(String id, IModel itemModel) {
-        ServiceAccessRule rule = ((ServiceAccessRule) itemModel.getObject());
-        IModel confirmRemoveModel = new ParamResourceModel("confirmRemoveRule", this, rule.getKey());
-        return new ConfirmationAjaxLink(id, itemModel, new ParamResourceModel("removeRule", this,
-                rule.getKey()), confirmRemoveModel) {
+        // the add button
+        header.add(new BookmarkablePageLink("addNew", NewServiceAccessRulePage.class));
 
-            @Override
-            protected void onClick(AjaxRequestTarget target) {
-                try {
-                    ServiceAccessRule rule = ((ServiceAccessRule) getModelObject());
-                    ServiceAccessRuleDAO dao = ServiceAccessRuleDAO.get();
-                    dao.removeRule(rule);
-                    dao.storeRules();
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE,
-                            "Error occurred while removing a rule and saving out the result", e);
-                    error(new ParamResourceModel("saveError", this, e.getMessage()));
-                    target.addComponent(feedbackPanel);
-                }
-                target.addComponent(rules);
-            }
+        // the removal button
+        header.add(removal = new SelectionServiceRemovalLink("removeSelected", rules, dialog));
+        removal.setOutputMarkupId(true);
+        removal.setEnabled(false);
 
-        };
+        return header;
     }
 
     AjaxLink addRuleLink() {
