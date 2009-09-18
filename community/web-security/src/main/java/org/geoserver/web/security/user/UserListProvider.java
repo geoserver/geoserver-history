@@ -83,7 +83,7 @@ public class UserListProvider extends GeoServerDataProvider<User> {
         
     };
     
-    public static final Property<User> REMOVE = new PropertyPlaceholder<User>("remove");
+//    public static final Property<User> REMOVE = new PropertyPlaceholder<User>("remove");
 
     @Override
     protected List<User> getItems() {
@@ -93,7 +93,7 @@ public class UserListProvider extends GeoServerDataProvider<User> {
 
     @Override
     protected List<Property<User>> getProperties() {
-        return Arrays.asList(USERNAME, ROLES, ADMIN, REMOVE);
+        return Arrays.asList(USERNAME, ROLES, ADMIN);
     }
 
     public IModel model(Object object) {

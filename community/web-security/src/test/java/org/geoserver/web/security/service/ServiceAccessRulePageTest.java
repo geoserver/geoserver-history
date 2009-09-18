@@ -31,13 +31,13 @@ public class ServiceAccessRulePageTest extends GeoServerWicketTestSupport {
                 .getModelObject());
     }
     
-    public void testNewRule() throws Exception {
-        tester.clickLink("addRule");
-        tester.assertRenderedPage(NewServiceAccessRulePage.class);
-        assertEquals("*", tester.getComponentFromLastRenderedPage("ruleForm:service")
-                .getModelObject());
-        assertEquals("*", tester.getComponentFromLastRenderedPage("ruleForm:method")
-                .getModelObject());
-    }
+//    public void testNewRule() throws Exception {
+//        tester.clickLink("addRule");
+//        tester.assertRenderedPage(NewServiceAccessRulePage.class);
+//        assertEquals("*", tester.getComponentFromLastRenderedPage("ruleForm:service")
+//                .getModelObject());
+//        assertEquals("*", tester.getComponentFromLastRenderedPage("ruleForm:method")
+//                .getModelObject());
+//    }
 
 }

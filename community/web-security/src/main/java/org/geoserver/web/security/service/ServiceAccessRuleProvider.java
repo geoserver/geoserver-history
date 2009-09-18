@@ -21,7 +21,6 @@ public class ServiceAccessRuleProvider extends GeoServerDataProvider<ServiceAcce
     
     public static final Property<ServiceAccessRule> RULEKEY = new BeanProperty<ServiceAccessRule>("key", "key");
     public static final Property<ServiceAccessRule> ROLES = new BeanProperty<ServiceAccessRule>("roles", "value");
-    public static final Property<ServiceAccessRule> REMOVE = new PropertyPlaceholder<ServiceAccessRule>("remove");
 
     @Override
     protected List<ServiceAccessRule> getItems() {
@@ -30,7 +29,7 @@ public class ServiceAccessRuleProvider extends GeoServerDataProvider<ServiceAcce
 
     @Override
     protected List<Property<ServiceAccessRule>> getProperties() {
-        return Arrays.asList(RULEKEY, ROLES, REMOVE);
+        return Arrays.asList(RULEKEY, ROLES);
     }
 
     public IModel model(Object object) {
