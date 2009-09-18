@@ -10,9 +10,11 @@
       <Title>A ${colorName} polygon style</Title>
       <FeatureTypeStyle>
         <Rule>
+          <Title>${colorName} polygon</Title>
           <PolygonSymbolizer>
             <Fill>
-              <CssParameter name="fill">${colorCode}</CssParameter>
+              <CssParameter name="fill">${colorCode}
+              </CssParameter>
             </Fill>
             <Stroke>
               <CssParameter name="stroke">#000000</CssParameter>
