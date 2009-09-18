@@ -6,6 +6,7 @@ package org.geoserver.web.data.resource;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Level;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -224,7 +225,9 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
                     CRS.findMathTransform(nativeCrs, declaredCrs, lenient);
                 } catch (FactoryException e) {
                     String msgKey = "BasicResourceConfig.noTransformFromNativeToDeclaredCRS";
-                    form.error((String)new ResourceModel(msgKey).getObject());
+                    String errMsg = e.getMessage();
+                    String message =(String) new ResourceModel(msgKey).getObject();
+                    form.error(message, Collections.singletonMap("error", errMsg));
                 }
             }
         }
