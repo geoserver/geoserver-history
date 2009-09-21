@@ -266,6 +266,30 @@ public class CatalogImplTest extends TestCase {
         assertTrue( catalog.getWorkspaces().isEmpty() );
     }
 
+    public void testAutoSetDefaultWorkspace() {
+        catalog.add( ws );
+        assertEquals( 1, catalog.getWorkspaces().size() );
+        assertEquals(ws, catalog.getDefaultWorkspace());
+    }
+
+    public void testRemoveDefaultWorkspace() {
+        catalog.add( ws );        
+        catalog.remove( ws );
+        assertNull(catalog.getDefaultWorkspace());
+    }
+
+    public void testAutoSetDefaultNamespace() {
+        catalog.add( ns );
+        assertEquals( 1, catalog.getNamespaces().size() );
+        assertEquals(ns, catalog.getDefaultNamespace());
+    }
+
+    public void testRemoveDefaultNamespace() {
+        catalog.add( ns );        
+        catalog.remove( ns );
+        assertNull(catalog.getDefaultNamespace());
+    }
+
     public void testGetWorkspaceById() {
         catalog.add( ws );
         WorkspaceInfo ws2 = catalog.getWorkspace(ws.getId());
