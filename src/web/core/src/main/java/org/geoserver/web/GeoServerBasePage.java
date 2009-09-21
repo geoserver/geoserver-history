@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
@@ -17,6 +18,7 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
+import org.apache.wicket.behavior.HeaderContributor;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -61,6 +63,27 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
 
 	@SuppressWarnings("serial")
     public GeoServerBasePage() {
+        //add css and javascript header contributions
+        List<HeaderContribution> cssContribs = 
+            getGeoServerApplication().getBeansOfType(HeaderContribution.class);
+        for (HeaderContribution csscontrib : cssContribs) {
+            try {
+                if (csscontrib.appliesTo(this)) {
+                    ResourceReference ref = csscontrib.getCSS();
+                    if (ref != null) {
+                        add(HeaderContributor.forCss(ref));
+                    }
+                    
+                    ref = csscontrib.getJavaScript();
+                    if (ref != null) {
+                        add(HeaderContributor.forJavaScript(ref));
+                    }
+                }
+            }
+            catch( Throwable t ) {
+                LOGGER.log(Level.WARNING, "Problem adding header contribution", t );
+            }
+        }
 	    
 	    // page title
 	    add(new Label("pageTitle", getPageTitle()));
