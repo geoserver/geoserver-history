@@ -2,19 +2,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+				http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
+				 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<!-- property file config -->
-    <bean id="placeholderConfig"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location" value="classpath:h2.properties"/>
-		<!--
-			property name="systemPropertiesModeName">
-			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value> </property
-		-->
-    </bean>
+    <context:property-placeholder location="classpath:h2.properties"/>
 
 	<!-- data source -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
@@ -42,7 +39,6 @@
                 <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
                 <entry key="hibernate.cache.provider_configuration_file_resource_path" value="ehcache.xml"/>
                 <entry key="hibernate.ejb.interceptor" value="org.geoserver.catalog.hibernate.HibCatalogInterceptor"/>
-
             </map>
         </property>
     </bean>
@@ -99,17 +95,12 @@
         <property name="factory" ref="configFactory" />
         <property name="catalog" ref="catalogTarget" />
 
-        <!--<property name="createBootstrapConfig" value="true"/>-->
     </bean>
 
     <bean id="configWrapper" class="org.geoserver.config.hibernate.HibGeoServerWrapper" 
             lazy-init="false" primary="true" depends-on="transactionManager,hibGeoServerLoader">
         <constructor-arg ref="configTarget"/>
 
-        <!-- next props are set only to be sure that beans are already been instantiated -->
-<!--        <property name="transactionManager" ref="transactionManager"/>
-        <property name="geoserverLoader" ref="geoServerLoader"/>
-        <property name="catalogInterceptor" ref="catalogInterceptor"/>-->
     </bean>
 
 
@@ -129,48 +120,22 @@
     <alias name="hibGeoServerLoader" alias="geoServerLoader" />
 
 
-    <!-- This class is the memory-stored configuration -->
-    <!--
-    <bean id="hibDataConfig"
-        class="org.geoserver.hibernate.HibDataConfig" lazy-init="false" primary="true">
-    </bean>
+<!-- jee:jndi-lookup id="server" jndi-name="java:comp/env/jmx/runtime" />
 
-    <alias name="hibDataConfig" alias="dataConfig" />
-    -->
+<jee:jndi-lookup id="hibernateSessionFactory" jndi-name="SessionFactory" />
 
-    <!-- Other replaced beans ============================================== -->
-    <!-- the old catalog -->
-    <!--
-    <bean id="dataHib"
-        class="org.vfny.geoserver.global.HibData">
-        <constructor-arg ref="geoServer2"/>
-    </bean>
-    -->
-    <!-- the old catalog, in insecure version, needed by some configuration classes -->
-    <!--
-    <bean id="rawDataHib"
-        class="org.vfny.geoserver.global.HibData">
-        <constructor-arg ref="geoServer2"/>
-        <constructor-arg ref="rawCatalog"/>
-    </bean>
-    -->
-    <!--
-    <alias name="dataHib" alias="data" />
-    <alias name="rawDataHib" alias="rawData" />
--->
-    <!-- not sure about this, maybe useless since alias is in place, maybe may have race problems -->
-    <!--
-    <bean id="dataRegisterar" class="org.vfny.geoserver.global.GeoServerServletContextInitializer">
-        <constructor-arg type="java.lang.String" value="DATA"/>
-        <constructor-arg ref="dataHib"/>
-    </bean>
--->
+<bean id="hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
+   <property name="statisticsEnabled" value="true" />
+   <property name="sessionFactory" ref="hibernateSessionFactory"/>
+</bean>
 
-    <!-- original one makes one assumption too much about context :|
-    <bean id="config"
-        class="org.geoserver.config.hibernate.ConfigWorkaround">
-        <property name="configuration" ref="geoServer2"/>
-    </bean>
--->
+<bean class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+   <property name="server" ref="server" />
+   <property name="beans">
+      <map>
+        <entry key="Hibernate:name=statistics" value-ref="hibernateStatistics"/>
+      </map>
+   </property>
+</bean-->
 
 </beans>
