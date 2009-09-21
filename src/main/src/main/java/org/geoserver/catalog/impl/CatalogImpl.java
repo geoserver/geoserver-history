@@ -973,6 +973,12 @@ public class CatalogImpl implements Catalog {
         if ( !getResourcesByNamespace(namespace, ResourceInfo.class ).isEmpty() ) {
             throw new IllegalArgumentException( "Unable to delete non-empty namespace.");
         }
+
+        NamespaceInfo defaultNamespace = getDefaultNamespace();
+        if (namespace.equals(defaultNamespace)) {
+            namespaces.remove(null);
+        }
+        
         namespaces.remove(namespace.getPrefix());
         removed(namespace);
     }
@@ -1048,6 +1054,12 @@ public class CatalogImpl implements Catalog {
         if ( !getStoresByWorkspace( workspace, StoreInfo.class).isEmpty() ) {
             throw new IllegalArgumentException( "Cannot delete non-empty workspace.");
         }
+        
+        WorkspaceInfo defaultWorkspace = getDefaultWorkspace();
+        if (workspace.equals(defaultWorkspace)) {
+            workspaces.remove(null);
+        }
+        
         workspaces.remove( workspace.getName() );
         removed( workspace );
     }
