@@ -7,13 +7,12 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 
 import org.geotools.util.logging.Logging;
-import org.hibernate.SessionFactory;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -23,24 +22,13 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
-public class HibTestSupport extends AbstractTransactionalSpringContextTests { // AbstractTransactionalDataSourceSpringContextTests  {
+public class HibTestSupport extends AbstractTransactionalSpringContextTests { 
 
     private static final Logger LOGGER = Logging.getLogger(HibTestSupport.class);
 
     public HibTestSupport() {
         setDefaultRollback( false );
     }
-
-//    @Autowired
-//    protected SessionFactory sessionFactory;
-//    /**
-//     * We need to flush data or we may incurr in empty selections.
-//     */
-//    @Override
-//    protected void endTransaction() {
-//        super.endTransaction();
-//        this.sessionFactory.getCurrentSession().flush();
-//    }
 
 
     @Override
@@ -55,7 +43,6 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests { //
     @Override
     protected GenericApplicationContext createApplicationContext(String[] locations) {
         try {
-            //        HibGeoServerTestApplicationContext context = new HibGeoServerTestApplicationContext(getConfigLocations(), "data");
             ServletContext ctx = createServletContext();
 
             GenericWebApplicationContext context = new GenericWebApplicationContext(new UnoverridingBeanFactory());
@@ -63,7 +50,6 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests { //
             prepareApplicationContext(context);
             customizeBeanFactory(context.getDefaultListableBeanFactory());
             createBeanDefinitionReader(context).loadBeanDefinitions(locations);
-//        new XmlBeanDefinitionReader(context).loadBeanDefinitions(locations);
             context.refresh();
             return context;
         } catch (Exception orig) {
@@ -76,7 +62,6 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests { //
                             LOGGER.warning("Server msg: " + psqle.getServerErrorMessage());
                             LOGGER.warning("Server iqry: " + psqle.getServerErrorMessage().getInternalQuery());
                             LOGGER.warning("Server hint: " + psqle.getServerErrorMessage().getHint());
-//                            LOGGER.warning("Server msg: " + psqle.getServerErrorMessage());
                         }
 
 
@@ -94,9 +79,6 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests { //
         }
     }
 
-//	protected BeanDefinitionReader createBeanDefinitionReader(GenericApplicationContext context) {
-//		return new XmlBeanDefinitionReader(context);
-//	}
     static class UnoverridingBeanFactory extends DefaultListableBeanFactory {
 
         public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition)

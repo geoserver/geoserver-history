@@ -11,23 +11,37 @@
 				 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<!-- property file config -->
-    <context:property-placeholder location="classpath:h2.properties"/>
+	<!-- The order is to look for a properties  -->
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	    <property name="location" value="classpath:gs-db-config.properties"/> 
+	    <property name="ignoreResourceNotFound" value="True"/>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	    <property name="location" value="file:${user.dir}/gs-db-config.properties"/> 
+	    <property name="ignoreResourceNotFound" value="True"/>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	    <property name="location" value="file:${GeoServerDBConfigPropertiesFile}"/> 
+	    <property name="ignoreResourceNotFound" value="True"/>
+	</bean>	
+	
+   
 
 	<!-- data source -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
-        <property name="driverClassName" value="${jdbc.driver}"/>
-        <property name="url"             value="${jdbc.url}"/>
-        <property name="username"        value="${jdbc.user}"/>
-        <property name="password"        value="${jdbc.password}"/>
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url"             value="jdbc:h2:file:gscatalog"/>
+        <property name="username"        value="user"/>
+        <property name="password"        value=""/>
     </bean>
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-
         <property name="dataSource" ref="dataSource"/>
-
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                <property name="database" value="${hibernate.dbms}" />
-                <property name="databasePlatform" value="${hibernate.dialect}" />
+                <property name="database" value="H2" />
+                <property name="databasePlatform" value="org.geoserver.hibernate.H2Dialect" />
                 <property name="showSql" value="false" />
                 <property name="generateDdl" value="true" />
             </bean>
@@ -80,13 +94,11 @@
     <bean id="serviceDAO" class="org.geoserver.hibernate.dao.ServiceDAOImpl"/>
     <bean id="catalogDAO" class="org.geoserver.hibernate.dao.CatalogDAOImpl"/>
 	<!-- catalog -->
-
     <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibCatalogImpl" lazy-init="false" primary="true">
         <property name="catalogDAO" ref="catalogDAO"/>
     </bean>
 
     <alias name="catalogTarget" alias="rawCatalog" />
-
     <bean id="configFactory" class="org.geoserver.config.hibernate.HibGeoServerFactoryImpl" />
 
     <bean id="configTarget" class="org.geoserver.config.hibernate.HibGeoServerImpl" lazy-init="false" primary="true">
