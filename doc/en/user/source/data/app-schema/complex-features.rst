@@ -22,7 +22,7 @@ similar structure to a "flat" XML representation, where every column of the tabl
 an XML element that usually contains no further structure.
 One reason why GeoServer WFS is so easy to use with simple features is that the conversion
 from columns in a database table to XML elements is automatic. The name of each element is the
-name of the table, in the namespace of the data store. The name of the feature type defaults to
+name of the column, in the namespace of the data store. The name of the feature type defaults to
 the name of the table. GeoServer WFS can manufacture an XSD type definition for every simple feature type it serves.
 Submit a DescribeFeatureType request to see it.
 
