@@ -6,11 +6,15 @@ package org.geoserver.config.hibernate;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -31,6 +35,8 @@ import org.geoserver.wcs.WCSInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.util.logging.Logging;
+import org.hibernate.SessionFactory;
+import org.hibernate.jmx.StatisticsService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
@@ -118,6 +124,8 @@ public class HibGeoServerLoader
     
     protected void initialize() {
         LOGGER.warning("Initializing " + this.getClass().getSimpleName() );
+        
+
 
         GeoServerInfo global = geoserver.getGlobal();
         if(global == null) {            

@@ -27,6 +27,7 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.style.Style;
 
 public class HibernateCatalogTest extends HibTestSupport {
     private static final Logger LOGGER = Logging.getLogger(HibernateCatalogTest.class);
@@ -89,7 +90,7 @@ public class HibernateCatalogTest extends HibTestSupport {
             catalog.remove(styleInfo);
         }
 
-        List list = catalog.getStyles();
+        List<StyleInfo> list = catalog.getStyles();
         assertTrue("Styles in the DB, can't proceed.", list.isEmpty());
     }
 
@@ -255,10 +256,10 @@ public class HibernateCatalogTest extends HibTestSupport {
 
         List<StyleInfo> styles = catalog.getStyles();
         assertFalse(styles.isEmpty());
-        StyleInfo s1 = (StyleInfo) styles.get(0);
+        StyleInfo s1 = styles.get(0);
 
         assertTrue(styles.size() == 2);
-        StyleInfo s2 = (StyleInfo) styles.get(1);
+        StyleInfo s2 = styles.get(1);
 
         if ("style2".equals(s1.getName())) {
             StyleInfo t = s1;
@@ -292,11 +293,11 @@ public class HibernateCatalogTest extends HibTestSupport {
         Iterator<NamespaceInfo> namespaces = catalog.getNamespaces().iterator();
 
         assertTrue(namespaces.hasNext());
-        NamespaceInfo ns1 = (NamespaceInfo) namespaces.next();
+        NamespaceInfo ns1 = namespaces.next();
         ns1 = ModificationProxy.unwrap(ns1);
 
         assertTrue(namespaces.hasNext());
-        NamespaceInfo ns2 = (NamespaceInfo) namespaces.next();
+        NamespaceInfo ns2 = namespaces.next();
         ns2 = ModificationProxy.unwrap(ns2);
 
         if ("gs".equals(ns1.getPrefix())) {
