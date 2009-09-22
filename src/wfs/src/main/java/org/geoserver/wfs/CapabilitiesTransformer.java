@@ -559,7 +559,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 // filter out disabled feature types
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                     FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
-                    if(!ft.isEnabled())
+                    if(!ft.enabled())
                         it.remove();
                 }
                 
@@ -1192,7 +1192,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 // filter out disabled feature types
                 for (Iterator it = featureTypes.iterator(); it.hasNext();) {
                     FeatureTypeInfo ft = (FeatureTypeInfo) it.next();
-                    if(!ft.isEnabled())
+                    if(!ft.enabled())
                         it.remove();
                 }
                 
@@ -1209,7 +1209,7 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
                 Collections.sort(featureTypes, new FeatureTypeInfoTitleComparator());
                 for (Iterator i = featureTypes.iterator(); i.hasNext();) {
                     FeatureTypeInfo featureType = (FeatureTypeInfo) i.next();
-                    if(featureType.isEnabled())
+                    if(featureType.enabled())
                         featureType(featureType);
                 }
 

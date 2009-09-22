@@ -546,7 +546,7 @@ public class WCSCapsTransformer extends TransformerBase {
             // filter out disabled coverages
             for (Iterator it = coverages.iterator(); it.hasNext();) {
                 CoverageInfo cv = (CoverageInfo) it.next();
-                if(!cv.isEnabled())
+                if(!cv.enabled())
                     it.remove();
             }
             
@@ -570,7 +570,7 @@ public class WCSCapsTransformer extends TransformerBase {
         }
 
         private void handleCoverageOfferingBrief(WCSInfo config, CoverageInfo cv) {
-            if (cv.isEnabled()) {
+            if (cv.enabled()) {
                 start("CoverageOfferingBrief");
 
                 String tmp;

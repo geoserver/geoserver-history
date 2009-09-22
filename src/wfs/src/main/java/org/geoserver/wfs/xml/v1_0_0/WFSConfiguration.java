@@ -15,6 +15,7 @@ import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -72,7 +73,8 @@ public class WFSConfiguration extends Configuration {
             }
 
             public void handleModifyEvent(CatalogModifyEvent event) {
-                if (event.getSource() instanceof FeatureTypeInfo || 
+                if (event.getSource() instanceof DataStoreInfo ||
+                    event.getSource() instanceof FeatureTypeInfo || 
                     event.getSource() instanceof NamespaceInfo) {
                     reloaded();
                 }
@@ -155,7 +157,7 @@ public class WFSConfiguration extends Configuration {
         Collection featureTypes = catalog.getFeatureTypes();
         for (Iterator f = featureTypes.iterator(); f.hasNext();) {
             FeatureTypeInfo meta = (FeatureTypeInfo) f.next();
-            if ( !meta.isEnabled() ) {
+            if ( !meta.enabled() ) {
                 continue;
             }
 
