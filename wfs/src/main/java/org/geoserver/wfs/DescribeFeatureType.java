@@ -111,7 +111,7 @@ O:
 
                 for (Iterator h = infos.iterator(); h.hasNext();) {
                     FeatureTypeInfo meta = (FeatureTypeInfo) h.next();
-                    if(!meta.isEnabled())
+                    if(!meta.enabled())
                         continue;
                     
                     String namespace = meta.getNamespace().getURI();
@@ -139,7 +139,7 @@ O:
             //are enabled
             for (Iterator it = infos.iterator(); it.hasNext();) {
                 FeatureTypeInfo ftInfo = (FeatureTypeInfo) it.next();
-                if(ftInfo.isEnabled())
+                if(ftInfo.enabled())
                     requested.add(ftInfo);
             }
         }

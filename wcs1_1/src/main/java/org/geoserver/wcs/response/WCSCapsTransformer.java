@@ -397,8 +397,10 @@ public class WCSCapsTransformer extends TransformerBase {
             
             // filter out disabled coverages
             for (Iterator it = coverages.iterator(); it.hasNext();) {
+                // GR: I don't think we should be removing directly from the list returned by
+                // Catalog?
                 CoverageInfo cv = (CoverageInfo) it.next();
-                if(!cv.isEnabled())
+                if(!cv.enabled())
                     it.remove();
             }
             
@@ -415,7 +417,7 @@ public class WCSCapsTransformer extends TransformerBase {
             Collections.sort(coverages, new CoverageInfoLabelComparator());
             for (Iterator i = coverages.iterator(); i.hasNext();) {
                 CoverageInfo cv = (CoverageInfo) i.next();
-                if (cv.isEnabled())
+                if (cv.enabled())
                     handleCoverageSummary(cv);
             }
 

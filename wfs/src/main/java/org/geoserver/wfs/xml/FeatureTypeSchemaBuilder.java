@@ -233,7 +233,7 @@ public abstract class FeatureTypeSchemaBuilder {
             FeatureTypeInfo meta = (FeatureTypeInfo) i.next();
             
             // don't build schemas for disabled feature types
-            if(!meta.isEnabled())
+            if(!meta.enabled())
                 continue;
 
             //build the schema for the types in the single namespace
