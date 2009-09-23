@@ -30,13 +30,13 @@ public class HibGeoServerFactoryImpl
         implements GeoServerFactory, ApplicationContextAware , Serializable{
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -2733985227400129195L;
+     *
+     */
+    private static final long serialVersionUID = -2733985227400129195L;
 
-	private final static Logger LOGGER = Logger.getLogger(HibGeoServerFactoryImpl.class);
+    private final static Logger LOGGER = Logger.getLogger(HibGeoServerFactoryImpl.class);
 
-    protected ApplicationContext applicationContext = null;
+    transient protected ApplicationContext applicationContext = null;
 
     public GeoServerInfo createGlobal() {
         return new GeoServerInfoImplHb();
