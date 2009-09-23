@@ -244,12 +244,21 @@ Notice that the syntax wasn't ``bbox=x1,y1,x2,y2`` or ``bbox=y1,x1,y2,x1``.  The
       typeName=namespace:featuretype&
       bbox=a1,b1,a2,b2
 
-LockFeature
------------
+
 
 Transaction
 -----------
 
+The **Transaction** operation performs edits of actual data that is exposed by the WFS.  A transaction can add, modify and remove features.  Each transaction consists of zero or more Insert, Update and Delete elements.  Each element is performed in order.  In GeoServer every transaction is 'atomic', meaning that if any of the elements fails then the data is left unchanged.
+
+More information on the syntax of transactions can be found in the WFS specification, and in the GeoServer sample requests.  
+
+LockFeature
+-----------
+
+The **LockFeature** operation is theoretically useful in conjunction with transactions, so users can 'lock' an area of the map that they are editing, to ensure that other users don't edit it.  In practice no widely used clients support the LockFeature operation.  
+
 GetGMLObject
 ------------
 
+**GetGMLObject** is another operation that is little used in practical client applications.  It only really makes sense in situations that require :ref:`complex_features`.  It allows clients to extract just a portion of the nested properties.  
