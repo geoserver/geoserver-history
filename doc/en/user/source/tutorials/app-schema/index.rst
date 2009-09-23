@@ -1,3 +1,5 @@
+.. _app_schema_tutorial_index:
+
 Application Schema Support
 ==========================
 

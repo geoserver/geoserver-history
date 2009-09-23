@@ -1,3 +1,5 @@
+.. _app_schema_index:
+
 Application Schema Support
 ==========================
 

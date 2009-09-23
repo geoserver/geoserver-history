@@ -1,7 +1,10 @@
-..  _app_schema_tutorial:
+.. _app_schema_tutorial:
 
 Application Schema Tutorial
 ===========================
+
+The :ref:`app_schema_index` extension provides support for :ref:`complex_features` in GeoServer WFS. This tutorial demonstrates how to configure an app-schema complex feature type.
+
 
 Worked example
 --------------
@@ -79,18 +82,6 @@ Each mapping file contains the same namespace prefix definitions::
 		<prefix>xlink</prefix>
 		<uri>http://www.w3.org/1999/xlink</uri>
 	</Namespace>
-
-Included types
-``````````````
-
-Non-feature types (eg. gsml:CompositionPart is a data type that is nested in gsml:GeologicUnit) may be mapped separately for its reusability, but we don't want to configure it as a feature type as we don't want to individually access it.
-Related feature types don't need to be explicitly included here as it would have its own workspace configuration for Geoserver to find it.
-The location path in ``Include`` tag is relative to the mapping file. 
-For an example, if gsml:CompositionPart configuration file is located in the same directory as the gsml:GeologicUnit configuration::
-
-    <includedTypes>	
-        <Include>gsml_CompositionPart.xml</Include>
-    </includedTypes>
 
 
 Source data store
