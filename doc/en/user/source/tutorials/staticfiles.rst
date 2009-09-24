@@ -2,7 +2,6 @@
 
 Serving Static Files
 ====================
-.. warning:: The screenshots on this tutorial have not yet been updated for the 2.0.x user interface.  But most all the rest of the information should be valid, and the user interface is roughly the same, but a bit more easy to use.
 
 Introduction
 ------------
@@ -18,7 +17,7 @@ If you application needed to make ajax calls back to Geoserver (WFS-T requires t
 
 Directly from the Data Directory
 --------------------------------
-Starting from Geoserver 1.5.2 and 1.6.0 you can put your own static files in the www subfolder of the GeoServer data directory, and have them served at ``http:/myhost:8080/geoserver/www``. This means you can put there your html, images and javascript (even a full installation of MapBuilder) and have Geoserver provide them on the web: no need for unpacking, creating a new webapp, or fiddling with another web server, and no problems with ajax callback.
+With GeoServer you can put your own static files in the www subfolder of the data directory, and have them served at ``http:/myhost:8080/geoserver/www``. This means you can put in your html, images and javascript (even a full installation of MapBuilder) and have Geoserver provide them on the web: no need for unpacking, creating a new webapp, or fiddling with another web server, and no problems with ajax callback.
 
 Now, this is handy, but has its own limitations:
 
