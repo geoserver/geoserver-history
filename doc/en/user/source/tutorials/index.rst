@@ -13,7 +13,6 @@ Tutorials
    staticfiles.rst
    wmsreflector.rst
    cql/cql_tutorial.rst
-   app-schema/index.rst
    imagemosaic-jdbc/imagemosaic-jdbc_tutorial.rst
    feature-pregeneralized/feature-pregeneralized_tutorial.rst
    tomcat-jndi/tomcat-jndi.rst

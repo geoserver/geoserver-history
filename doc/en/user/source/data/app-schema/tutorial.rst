@@ -1,15 +1,9 @@
 .. _app_schema_tutorial:
 
-Application Schema Tutorial
-===========================
+Tutorial
+========
 
-The :ref:`app_schema_index` extension provides support for :ref:`complex_features` in GeoServer WFS. This tutorial demonstrates how to configure an app-schema complex feature type.
-
-
-Worked example
---------------
-
-This example uses `GeoScience Markup Language (GeoSciML) 2.0 <http://geosciml.org/geosciml/2.0/doc/>`_ to deliver two complex feature types:
+This tutorial demonstrates how to configure two app-schema complex feature types using the `GeoScience Markup Language (GeoSciML) 2.0 <http://geosciml.org/geosciml/2.0/doc/>`_ application schema:
 
 #. The feature type ``gsml:GeologicUnit`` describes the intensive properties of a piece of geology.
 
@@ -21,6 +15,8 @@ Because a single ``gsml:GeologicUnit`` can be observed at several distinct locat
 
 * The configuration is complete can be used immediately. Get it from subversion and set it as your ``GEOSERVER_DATA_DIR``.
 
+Worked example
+--------------
 
 gsml:GeologicUnit datastore
 ```````````````````````````
@@ -257,7 +253,6 @@ In feature chaining, one feature type is used as a property of an enclosing feat
 * Every ``gsml:MappedFeature`` with ``gml:name[2]`` equal to the ``URN`` of the ``gsml:GeologicUnit`` under construction is included as a ``gsml:occurrence`` property of the ``gsml:GeologicUnit``.
 
 
-
 gsml:GeologicUnit WFS response
 ``````````````````````````````
 
@@ -268,15 +263,8 @@ gsml:GeologicUnit WFS response
 * The response document has been pretty-printed so contains more whitespace than the original GeoServer response.
 
 
-Further reading
----------------
-
-* :ref:`GeoServer Feature Chaining User Guide <feature_chaining>`
-
-* `GeoServer Mapping File Property Interpolation <https://www.seegrid.csiro.au/twiki/bin/view/Infosrvices/GeoserverAppSchemaConfiguration>`_
-
 Footnotes
----------
+`````````
 
 .. [#auscope] AuScope Ltd is funded under the National Collaborative Research Infrastructure Strategy (NCRIS), an Australian Commonwealth Government Programme. `http://www.auscope.org.au/category.php?id=10 <http://www.auscope.org.au/category.php?id=10>`_
 

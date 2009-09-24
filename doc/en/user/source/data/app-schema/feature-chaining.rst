@@ -1,7 +1,7 @@
-..  _feature_chaining:
+..  _app_schema_feature_chaining:
 
-Feature Chaining User Guide
-===========================
+Feature Chaining
+================
 
 Scope
 -----

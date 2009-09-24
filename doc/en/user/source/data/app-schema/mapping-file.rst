@@ -1,56 +1,7 @@
-.. _app_schema:
+.. _app_schema_mapping_file:
 
-Application Schema Support
-==========================
-
-
-Installation
-------------
-
-Application schema support is a GeoServer extension and is downloaded separately.
-
-* Download the app-schema plugin zip file for the same version of GeoServer.
-* Unzip the app-schema plugin zip file to obtain the jar files inside. Do not unzip the jar files.
-* Place the jar files in the ``WEB-INF/lib`` directory of your GeoServer installation.
-* Restart GeoServer to load the extension (although you might want to configure it first [see below]).
-
-
-Configuration
--------------
-
-Configuration of an app-schema complex feature type requires manual construction of a GeoServer data directory that contains an XML mapping file and a ``datastore.xml`` that points at this mapping file. The data directory also requires all the other ancillary configuration files used by GeoServer for simple features. GeoServer can serve simple and complex features at the same time.
-
-
-Workspace layout
-----------------
-
-The GeoServer data directory contains a folder called ``workspaces`` with the following structure::
-
-    workspaces
-        - gsml
-            - SomeDataStore
-                - SomeFeatureType
-                    - featuretype.xml
-                - datastore.xml
-                - SomeFeatureType-mapping-file.xml
-
-.. note:: The folder inside ``workspaces`` must have a name (the workspace name) that is the same as the namespace prefix (``gsml`` in this example).
-
-
-Datastore
----------
-
-Each data store folder contains a file ``datastore.xml`` that contains the configuration parameters of the data store. To create an app-schema feature type, the data store must be configured to load the app-schema service module and process the mapping file. These options are contained in the ``connectionParameters``:
-
-* ``namespace`` defines the XML namespace of the complex feature type.
-
-* ``url`` is a ``file:`` URL that gives the location of the app-schema mapping file relative to the root of the GeoServer data directory.
-
-* ``dbtype`` must be ``app-schema`` to trigger the creation of an app-schema feature type.
-
-
-Mapping file
-------------
+Mapping File
+============
 
 An app-schema feature type is configured using a mapping file that defines the data source for the feature and the mappings from the source data to XPaths in the output XML.
 
@@ -83,9 +34,13 @@ Here is an outline of a mapping file::
 * ``typeMappings`` give the relationships between the fields of the source data store and the elements of the output complex feature.
 
 Mapping file schema
-```````````````````
+-------------------
 
 * ``AppSchemaDataAccess.xsd`` is optional because it is not used by GeoServer. The presence of ``AppSchemaDataAccess.xsd`` in the same folder as the mapping file enables XML editors to observe its grammar and provide contextual help.
+
+
+Mapping file format
+-------------------
 
 ``namespaces``
 ``````````````

@@ -1,9 +1,9 @@
-.. _app_schema_index:
+.. _app_schema:
 
 Application Schema Support
 ==========================
 
-The application schema support (app-schema) extension provides support for :ref:`complex_features` in GeoServer WFS.
+The application schema support (app-schema) extension provides support for :ref:`app_schema_complex_features` in GeoServer WFS.
 
 GeoServer provides support for a broad selection of simple feature data stores, including property files, shapefiles, and JDBC data stores such as PostGIS and Oracle Spatial. The app-schema module takes one or more of these simple feature data stores and applies a mapping to convert the simple feature types into one or more complex feature types conforming to a GML application schema.
 
@@ -20,8 +20,12 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   app-schema
-   property-interpolation
    complex-features
-   FeatureChainingUserGuide
-   DataAccessIntegration
+   installation
+   configuration
+   mapping-file
+   property-interpolation
+   data-stores
+   feature-chaining
+   data-access-integration
+   tutorial

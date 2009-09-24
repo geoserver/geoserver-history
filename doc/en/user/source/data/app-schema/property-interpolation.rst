@@ -1,4 +1,4 @@
-.. _property_interpolation:
+.. _app_schema_property_interpolation:
 
 Property Interpolation
 ======================

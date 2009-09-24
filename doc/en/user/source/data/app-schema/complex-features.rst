@@ -1,4 +1,4 @@
-.. _complex_features:
+.. _app_schema_complex_features:
 
 Complex Features
 ================
