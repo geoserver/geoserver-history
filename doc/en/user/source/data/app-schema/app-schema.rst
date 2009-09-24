@@ -3,17 +3,6 @@
 Application Schema Support
 ==========================
 
-The application schema support (app-schema) extension provides support for :ref:`complex_features` in GeoServer WFS.
-
-GeoServer provides support for a broad selection of simple feature data stores, including property files, shapefiles, and JDBC data stores such as PostGIS and Oracle Spatial. The app-schema module takes one or more of these simple feature data stores and applies a mapping to convert the simple feature types into one or more complex feature types conforming to a GML application schema.
-
-.. figure:: app-schema.png
-   :align: center
-
-   *Three tables in a database are accessed using GeoServer simple feature support and converted into two complex feature types.*
-
-The app-schema module looks to GeoServer just like any other data store and so can be loaded and used to service WFS requests. In effect, the app-schema data store is a wrapper or adapter that converts a simple feature data store into complex features for delivery via WFS. The mapping works both ways, so queries against properties of complex features are supported.
-
 
 Installation
 ------------
@@ -218,7 +207,7 @@ A CQL expression that is used to set the ``gml:id`` of the output feature type. 
         <targetAttributeNode>gsml:CGI_TermValuePropertyType</targetAttributeNode>
     </AttributeMapping>
 
-Note that the GML encoding rules require that complex types are never the direct property of another complex type; they are always contained in a property type to ensure that their type is encoded in a surrounding element. Encoded GML is always type/property/type/property. This is also known as the GML "striping" rule. The consequence of this for app-schema mapping files is that ``targetAttributeNode`` must be applied to the property and the type must be set to the XSD property type not to the type of the contained attribute (gsml:CGI_TermValuePropertyType not gsml:CGI_TermValueType).
+Note that the GML encoding rules require that complex types are never the direct property of another complex type; they are always contained in a property type to ensure that their type is encoded in a surrounding element. Encoded GML is always type/property/type/property. This is also known as the GML "striping" rule. The consequence of this for app-schema mapping files is that ``targetAttributeNode`` must be applied to the property and the type must be set to the XSD property type not to the type of the contained attribute (``gsml:CGI_TermValuePropertyType`` not ``gsml:CGI_TermValueType``).
 
 Because the XPath refers to a property type not the encodes content, ``targetAttributeNode`` often appears in a mapping with ``targetAttribute`` and no other elements.
 
