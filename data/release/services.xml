@@ -169,6 +169,9 @@
       <globalWatermarkingTransparency>0</globalWatermarkingTransparency>
       <globalWatermarkingPosition>8</globalWatermarkingPosition>
       <allowInterpolation>Nearest</allowInterpolation>
+      <maxRequestMemory>65536</maxRequestMemory>
+      <maxRenderingTime>60</maxRenderingTime>
+      <maxRenderingErrors>1000</maxRenderingErrors>
     </service>
   </services>
 </serverConfiguration>
