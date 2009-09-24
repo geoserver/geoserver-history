@@ -3,7 +3,14 @@
 WFS basics
 ==========
 
-.. warning:: Add intro here
+GeoServer provides support for Open Geospatial Consortium (OGC) Web Feature Service (WFS) versions 1.0 and 1.1.  This is a standard for getting raw vector data - the 'source code' of the map - over the web.  Using a compliant WFS makes it possible for clients to query the data structure and the actual data.  Advanced WFS operations also enable editing and locking of the data.  
+
+GeoServer is the reference implementation of both the 1.0 and 1.1 versions of the standard, completely implementing every part of the protocol.  This includes the Basic operations of GetCapabilities, DescribeFeatureType and GetFeature, as well as the more advanced Transaction, LockFeature and GetGmlObject operations.  GeoServer's WFS also is integrated with GeoServer's :ref:`security` system, to limit access to data and transactions.  It also supports a wide variety of :ref:`wfs_output_formats`, to make the raw data more widely available.  
+
+GeoServer additionally supports a special 'versioning' protocol in an extension: :ref:`wfsv_extension`.  This is not yet a part of the WFS specification, but is written to be compatible, extending it to provide a history of edits, differences between edits, and a rollback operation to take things to a previous state.  
+
+
+:ref:`wfs_reference`
 
 Differences between WFS versions
 -------------------------------- 
