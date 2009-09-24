@@ -3,31 +3,29 @@
 Paletted Images
 ===============
 
-.. warning:: The screenshots on this tutorial have not yet been updated for the 2.0.x user interface.  But most all the rest of the information should be valid, and the user interface is roughly the same, but a bit more easy to use.
-
-Geoserver 1.5.2 onwards has the ability to output good quality 256 color images. This tutorial introduces you to the palette concepts, the various image generation options, and offers a quality/resource comparison of them in different situations.
+Geoserver has the ability to output high quality 256 color images. This tutorial introduces you to the palette concepts, the various image generation options, and offers a quality/resource comparison of them in different situations.
 
 What are Paletted Images?
 -------------------------
-Some image formtas, such as GIF or PNG, can use a palette, that is, a table of (usually) 256 colors to allow for better compression. Basically, instead of representing each pixel with its full color triplet, that is 24bits (plus eventual 8 more for transparency), they use a 8 bit index that represent the position inside the palette, and thus the color.
+Some image formats, such as GIF or PNG, can use a palette, which is a table of (usually) 256 colors to allow for better compression. Basically, instead of representing each pixel with its full color triplet, which takes 24bits (plus eventual 8 more for transparency), they use a 8 bit index that represent the position inside the palette, and thus the color.
 
-This allows for images that are 3-4 times smaller than the standard images, with the limitation that only 256 different colors can appear on the image itself. Depending of the actual map, this may be a very stringent limitation, visibly degrading the image quality, or it may be that the output cannot be told from a full color image.
+This allows for images that are 3-4 times smaller than the standard images, with the limitation that only 256 different colors can appear on the image itself. Depending of the actual map, this may be a very stringent limitation, visibly degrading the image quality, or it may be that the output cannot be told from a full color image.  But for many maps one can easily find 256 representative colors.
 
-In the latter case, paletted images smaller footprint is usually a big gain in both performance and costs, because more data can be served with the same internet connection, and the clients will obtain responses faster.
+In the latter case, the smaller footprint of paletted images is usually a big gain in both performance and costs, because more data can be served with the same internet connection, and the clients will obtain responses faster.
 
 Formats and Antialiasing
 ------------------------
-Internet standards offer a variety of image formats, all having different strong and weak point. The three most common formats are:
+Internet standards offer a variety of image formats, all having different strong and weak points. The three most common formats are:
 
 * **JPEG**: a lossy format with tunable compression. JPEG is best suited for imagery layers, where the pixel color varies continuously from one pixel to the next one, and allows for the best compressed outputs. On the contrary, it's not suited to most vector layers, because even slight compression generates visible artifacts on uniform color areas.
 
 * **PNG**: a non lossy format allowing for both full color and paletted. In full color images each pixel is encoded as a 24bits integer with full transparency information (so PNG images can be translucent), in paletted mode each pixel is an 8 bit index into a 256 color table (the palette). This format is best suited to vector layers, especially in the paletted version. The full color version is sometimes referred as PNG24, the paletted version as PNG8.
 
-* **GIF**: a non lossy format with a 256 colors palette, best suited for vector layers. Does not support translucency, but allows for fully transparent pixels.
+* **GIF**: a non lossy format with a 256 color palette, best suited for vector layers. Does not support translucency, but allows for fully transparent pixels.
 
 So, as it turns out, paletted images can be used with profit on vector data sets, either using the PNG8 or GIF formats.
 
-Antialiasing plays a role too. Let's take a road layer, where each road is depicted by a solid gray line, 2 pixels thick. One may thing this layer needs only 2 colors, the background one (eventually transparent) and gray. In fact, this is true only if no antialiasing is enabled. Antialiasing will smooth the borders of the line giving a softer, better looking shape, and it will do so by adding pixels with an intermediate color, thus increasing the number of colors that are needed to fully display the image.
+Antialiasing plays a role too. Let's take a road layer, where each road is depicted by a solid gray line, 2 pixels thick. One may think this layer needs only 2 colors: the background one (eventually transparent) and gray. In fact, this is true only if no antialiasing is enabled. Antialiasing will smooth the borders of the line giving a softer, better looking shape, and it will do so by adding pixels with an intermediate color, thus increasing the number of colors that are needed to fully display the image.
 
 The following zoom of an image shows antialiasing in action:
 
@@ -180,7 +178,7 @@ To give you an example when paletted images may not fit the bill, let's consider
 
    *PNG + internet safe palette.*
 
-As the sampler shows, the JPEG output has the same quality as the full color image, is generated faster and uses only 1/5 of its size. At the opposite, the version using the internet safe palette is fast and small, but the output is totally ruined. Everything considered, JPEG is the clear winner, sporting good quality, fast image generation and a size that's half of the best png output we can get.
+As the sample shows, the JPEG output has the same quality as the full color image, is generated faster and uses only 1/5 of its size.  On the other hand, the version using the internet safe palette is fast and small, but the output is totally ruined. Everything considered, JPEG is the clear winner, sporting good quality, fast image generation and a size that's half of the best png output we can get.
 
 
 
