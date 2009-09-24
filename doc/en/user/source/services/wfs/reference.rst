@@ -261,4 +261,4 @@ The **LockFeature** operation is theoretically useful in conjunction with transa
 GetGMLObject
 ------------
 
-**GetGMLObject** is another operation that is little used in practical client applications.  It only really makes sense in situations that require :ref:`complex_features`.  It allows clients to extract just a portion of the nested properties.  
+**GetGMLObject** is another operation that is little used in practical client applications.  It only really makes sense in situations that require :ref:`app_schema_complex_features`.  It allows clients to extract just a portion of the nested properties.  
