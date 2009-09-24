@@ -4,12 +4,11 @@ GetFeatureInfo Templates
 ========================
 
 This tutorial describes how to use the GeoServer template system to create custom HTML GetFeatureInfo responses.
-To follow the instructions in this tutorial you'll need a Geoserver version 1.5.2, 1.6.0-beta2 or greater (at the time of writing, 1.5.2 is still to be released, but you can use a nightly to test this out).
 
 Introduction
 ````````````
 
-GetFeatureInfo is a WMS standard call allowing to retrieve informations about features and coverages displayed in a map. The map can be composed of various layers, and GetFeatureInfo can be instructed to return multiple feature descriptions, which may be of different types. GetFeatureInfo can generate output in various formats, at the time of writing, GML2, plain text and HTML. Templating is concerned with the HTML one.
+GetFeatureInfo is a WMS standard call that allows one to retrieve information about features and coverages displayed in a map. The map can be composed of various layers, and GetFeatureInfo can be instructed to return multiple feature descriptions, which may be of different types. GetFeatureInfo can generate output in various formats: GML2, plain text and HTML. Templating is concerned with the HTML one.
 
 The default HTML output is a sequence of titled tables, each one for a different layer. The following example shows the default output for the tiger-ny basemap (included in the above cited releases, and onwards).
 
@@ -79,7 +78,7 @@ The *footer template* is similar, a static template used to close the HTML docum
 	  </body>
 	</html>
 	
-The *content template* is the one turning feature objects into actual HTML tables. The template is called multiple times, each time it's fed with a different feature collection, whose features all have the same type. In the above example, the template have been called once for the roads, and once for the points of interest (POI).  Here is the template source::
+The *content template* is the one that turns feature objects into actual HTML tables. The template is called multiple times: each time it's fed with a different feature collection, whose features all have the same type. In the above example, the template has been called once for the roads, and once for the points of interest (POI).  Here is the template source::
 
 	<#-- 
 	Body section of the GetFeatureInfo template, it's provided with one feature collection, and
@@ -114,15 +113,15 @@ The *content template* is the one turning feature objects into actual HTML table
 	</table>
 	<br/>
 	
-As you can see there is a first loop scanning type and outputting its attributes into the table header, then a second loop going over each feature into the collection (features).  From each feature, the attribute collections is accessed to dump the attribute value. In both cases, geometries are skipped, since there is no much point in including them into the tabular report.  In the table building code you can also see how odd rows are given the "odd" class, so that their background alternates improving readability.
+As you can see there is a first loop scanning type and outputting its attributes into the table header, then a second loop going over each feature in the collection (features).  From each feature, the attribute collections are accessed to dump the attribute value. In both cases, geometries are skipped, since there is not much point in including them in the tabular report.  In the table building code you can also see how odd rows are given the "odd" class, so that their background colors improve readability.
 	
 Custom Templates
 ````````````````		
-So, what you have to do if you want to override the custom templates? Well, it depends on which template you want to override.
+So, what do you have to do if you want to override the custom templates? Well, it depends on which template you want to override.
 
-``header.ftl`` and ``footer.ftl`` are type independent, so if you want to override them you have to place a file named ``header.ftl`` or ``footer.ftl`` it the ``featureTypes`` directory, located in your GeoServer :ref:`data_directory`.  On the contrary, ``content.ftl`` may be generic, or specific to a feature type.
+``header.ftl`` and ``footer.ftl`` are type independent, so if you want to override them you have to place a file named ``header.ftl`` or ``footer.ftl`` in the ``featureTypes`` directory, located in your GeoServer :ref:`data_directory`.  On the contrary, ``content.ftl`` may be generic, or specific to a feature type.
 
-For example, let's say you would like better a bulleted list appearance for your feature info output, and you want this to be applied to all GetFeatureInfo HTML output. In that case you would drop the following ``content.ftl`` in the featureTypes directory::
+For example, let's say you would prefer a bulleted list appearance for your feature info output, and you want this to be applied to all GetFeatureInfo HTML output. In that case you would drop the following ``content.ftl`` in the featureTypes directory::
 
 	<ul>
 	<#list features as feature>
@@ -145,9 +144,9 @@ With this template in place, the output would be:
 
    *Bulleted List Output*
 	
-Looking at the output we notice point of interest features refer to image files, that we know are stored inside the default GeoServer distribution in the ``demo_app/pics`` path. So, we could provide a POI specific override that actually loads the images. 
+Looking at the output we notice that point of interest features refer to image files, which we know are stored inside the default GeoServer distribution in the ``demo_app/pics`` path. So, we could provide a POI specific override that actually loads the images. 
 	
-This is easy, just put the following template in the feature type folder, which in this case is ``featureTypes/DS_poi_poi`` (you should refer to your Internet visible server address instead of localhost, or its IP if you have fixed IPs)::
+This is easy: just put the following template in the feature type folder, which in this case is ``featureTypes/DS_poi_poi`` (you should refer to your Internet visible server address instead of localhost, or its IP if you have fixed IPs)::
 
 	<ul>
 	<#list features as feature>
