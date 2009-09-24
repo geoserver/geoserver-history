@@ -10,4 +10,4 @@ Web Map Service
    outputformats
    configuration
    vendor
-   reference/index
+   reference

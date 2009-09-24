@@ -22,9 +22,9 @@ Briefly the ImageMOsaic plugin is responsible for composing together  a set of s
   
 .. note:: 
 
-About point 3, in the original version of the ImageMosaic plugin this assumption was entirely true since we were assuming to work with real tiles coming from a set of adiacent images.  Lately we have been doing a substantial refactor therefore this condition would not be needed anymore, however in order to remove it we would need to do some work and add a few more options to the configuration file.
+ About point 3, in the original version of the ImageMosaic plugin this assumption was entirely true since we were assuming to work with real tiles coming from a set of adiacent images.  Lately we have been doing a substantial refactor therefore this condition would not be needed anymore, however in order to remove it we would need to do some work and add a few more options to the configuration file.
 
-To be more specific, if we can't assume that all the grianules share the same spatial layout and overviews set we would not be able to assing the raster dimensions (width and height) the spatial dimensions (grid-to-world and envelope) and the overviews set to the final mosaic coverage, unless we specify them somehow or we default to something. As long as we can assume that the various granules share the same spatial elements as well as the same overviews set we can inherit the first definition for the final mosaic.  I am well aware that we might get over this limitation, but this would require some more work, as I already mentioned before.
+ To be more specific, if we can't assume that all the grianules share the same spatial layout and overviews set we would not be able to assing the raster dimensions (width and height) the spatial dimensions (grid-to-world and envelope) and the overviews set to the final mosaic coverage, unless we specify them somehow or we default to something. As long as we can assume that the various granules share the same spatial elements as well as the same overviews set we can inherit the first definition for the final mosaic.  I am well aware that we might get over this limitation, but this would require some more work, as I already mentioned before.
 
   
   
@@ -269,7 +269,7 @@ The result is the following.
 .. figure:: img/vito_1.png
    :align: left
 
-	*Basic configuration*
+   *Basic configuration*
 
 
 By setting in opportune  ways the other configuration parameters, it is possible to improve at the same time both the appearance of the mosaic as well as the its performances. As an instance we could:

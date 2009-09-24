@@ -1,4 +1,4 @@
-.. tutorials_wmsreflector:
+.. _tutorials_wmsreflector:
 
 WMS Reflector
 =============
@@ -8,8 +8,9 @@ Overview
 --------
 Standard WMS requests can be quite long and verbose. For instance the following, which returns an OpenLayers application with an 800x600 image set to display the feature ``topp:states``, with bounds set to the northwestern hemisphere by providing the appropriate bounding box.
 
-.. code-block:: html
-      http://localhost:8080/geoserver/wms?service=WMS&request=GetMap&version=1.1.1&format=application/openlayers&width=800&height=600&srs=EPSG:4326&layers=topp:states&styles=population&bbox=-180,0,0,90
+.. code-block:: html 
+
+   http://localhost:8080/geoserver/wms?service=WMS&request=GetMap&version=1.1.1&format=application/openlayers&width=800&height=600&srs=EPSG:4326&layers=topp:states&styles=population&bbox=-180,0,0,90
   
 Typing into a browser, or HTML editor, can be quite cumbersome and error prone. The WMS Reflector solves this problem nicely by using good default values for the options that you do not specify. Using the reflector one can shorten the above request to:
 
