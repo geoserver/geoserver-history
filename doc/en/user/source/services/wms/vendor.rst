@@ -62,7 +62,7 @@ It is sometimes advisable (for speed and bandwidth reasons) to downsample the bi
 
    palette=<image>
 
-where ``<image>`` is the filename of the palette image (without the extension).  To force a web-safe palette, you can use the syntax ``palette=safe``.
+where ``<image>`` is the filename of the palette image (without the extension).  To force a web-safe palette, you can use the syntax ``palette=safe``.  For more information see the tutorial on :ref:`tutorials_palettedimages`
   
 
 tiled
