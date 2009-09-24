@@ -1,4 +1,4 @@
-.. _app_schema_data_stores
+.. _app_schema_data_stores:
 
 Data Stores
 ===========
