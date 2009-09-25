@@ -3,106 +3,63 @@
 Structure of the Data Directory
 ===============================
 
-.. warning:: This data structure is a bit out of date, as it is ported straight from 1.7.x.  The directory structure is mostly the same, but a lot of the contents have changed.
+Introduction
+------------
 
-The following figure shows the structure of a "vanilla" GeoServer data directory::
+The structure of the data directory at this point is likely only of interest to core developers.  Previously users would often modify their data directory directly to programmatically make changes to their GeoServer configuration.  The new route to do this is with the :ref:`rest_extension` API, and is the only recommended option.
+
+The following figure shows the structure of a GeoServer data directory::
 
    data_directory/
-      catalog.xml
-      services.xml
-      coverages/
+      global.xml
+      logging.xml
+      wms.xml
+      wfs.xml
+      wcs.xml
       data/
       demo/
-      featureTypes/
+      geosearch/
+      gwc/
+      layergroups/
       palettes/
       plugIns/
       security/
       styles/
       templates/
       user_projections/
+      workspaces
       www/
 
-catalog.xml and services.xml
-----------------------------
+The .xml files
+--------------
 
-The ``catalog.xml`` file contains a list of all the *data sources* that GeoServer is configured to serve. It contains references to shapefiles, PostGIS databases, GeoTIFF files, and many other types of data. The catalog file also contains other information such as a set of namespaces used by the WFS, and a set of SLD styles used by the WMS.
+The top level xml files save the information about the services and various global options. 
 
-``catalog.xml`` is a XML file which has the following format::
+.. list-table::
+   :widths: 20 80
 
-  <catalog>
-    <datastores>
-      ...
-    </datastores>
+   * - **File**
+     - **Description**
+   * - ``global.xml``
+     - Contains settings that go across services, including contact information, JAI settings, character sets and verbosity.
+   * - ``logging.xml``
+     - Specifies the logging level, location, and whether it should log to std out.  
+   * - ``wcs.xml`` 
+     - Contains the service metadata and various settings for the WCS service.
+   * - ``wfs.xml`` 
+     - Contains the service metadata and various settings for the WFS service.
+   * - ``wms.xml`` 
+     - Contains the service metadata and various settings for the WMS service.
 
-    <formats>
-      ...
-    </formats>
 
-    <namespaces>
-      ...
-    </namespaces>
+workspaces
+----------
 
-    <styles>
-      ...
-    </styles>
-  </catalog>
-
-The ``services.xml`` file contains all *service level configuration*. Among many things this validation options for the WFS, image rendering parameters for the WMS, etc... The services file contains an entry for each service published by GeoServer. This currently includes a WMS, WFS, and WCS entry.
-	
-``services.xml`` is a XML file which has the following format::
-
-  <services>
-    <service type="WMS">
-      ..
-    </service>
-    <service type="WFS">
-      ..
-    </service>
-    <service type="WCS">
-      ..
-    </service>
-  </services>
-
-coverages and featureTypes
---------------------------
-
-	The ``coverages`` and ``featureTypes`` directories contains metadata about "layers" which are published by GeoServer. A *vector* layer corresponds to the ``featureTypes`` directory, and a *raster* layer corresponds to the ``coverages`` directory. The term *layer* refers to both types.
-
-For each layer published by GeoServer a sub-directory is created under the ``coverages`` or ``featureTypes`` directory, depending on if the layer is raster or vector based. The following figure shows the contains of the two respective directories from the data directory of a vanilla GeoServer installation::
-
-   coverages/
-      arc_sample/
-      img_sample/
-      img_sample2_Pk50095/
-      mosaic_sample/
-      sfDem_dem/
-
-   featureTypes/
-      DS_giant_polygon_giant_polygon/
-      DS_poi_poi/
-      DS_poly_landmarks_poly_landmarks/
-      DS_tiger_roads_tiger_roads/
-      sfArchsites_archsites/
-      sfBugsites_bugsites/
-      sfRestricted_restricted/
-      sfRoads_roads/
-      sfStreams_streams/
-      states/
-      tasmania_cities/
-      tasmania_roads/
-      tasmania_state_boundaries/
-      tasmania_water_bodies/
-
-Each sub-directory contains a file named ``info.xml`` which contains metadata about the layer. Such metadata includes:
-
-   * The spatial reference system or "projection" of the dataset
-   * The spatial extent of the dataset
-   * The default style used by the WMS when rendering the layer
-
+	The various workspaces directories contain metadata about "layers" which are published by GeoServer.  Each layer will have a layer.xml file associated with it, as well as either a coverage.xml or a featuretype.xml file depending on whether it's a *raster* or *vector* .
 
 data
 ----
-Not to the confused with the "GeoServer data directory" itself, the ``data`` directory is a location where actual data can be stored. This directly is commonly used to store shapefiles and raster files but can be used for any data that is file based.
+Not to the confused with the "GeoServer data directory" itself, the ``data`` directory is a location where actual data can be stored. This directory is commonly used to store shapefiles and raster files but can be used for any data that is file based.
 
 The main benefit of storing data files inside of the ``data`` directory is portability. Consider a shapefile located external to the data directory at a location ``C:\gis_data\foo.shp``. The ``datastore`` entry in ``catalog.xml`` for this shapefile would like the following::
 
@@ -128,6 +85,18 @@ demo
 ----
 
 The ``demo`` directory contains files which define the *sample requests* available in the *Sample Request Tool* (http://localhost:8080/geoserver/demoRequest.do). For more information see the :ref:`webadmin_demos` page for more information.
+
+geosearch
+---------
+The geosearch directory is not named quite correctly.  It contains information for regionation of KML files.
+
+gwc
+---
+This directory holds the cache created by the embedded GeoWebCache service.
+
+layergroups
+-----------
+Contains information on the layer groups configurations.
 
 palettes
 --------
