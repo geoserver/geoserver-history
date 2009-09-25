@@ -17,7 +17,7 @@ The following image formats can be read by GeoServer using GDAL:
 Installing GDAL
 ---------------
 
-GDAL is not a GeoServer extension, but in order for GeoServer to leverage the GDAL libraries, GDAL must be installed on your host system.  
+GDAL is not a standard GeoServer extension, as the GDAL library files are built into GeoServer by default.  However, in order for GeoServer to leverage these libraries, the GDAL (binary) program itself must be installed through your host system's OS.  Once this program is installed, GeoServer will be able to recognize GDAL data types.
 
 #. Navigate to the `imageio-ext download page <https://imageio-ext.dev.java.net>`_.
 #. Select the most recent stable binary release.
