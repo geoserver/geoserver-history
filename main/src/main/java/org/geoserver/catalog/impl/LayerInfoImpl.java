@@ -7,7 +7,6 @@ package org.geoserver.catalog.impl;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.AttributionInfo;
