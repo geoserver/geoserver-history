@@ -7,13 +7,17 @@ package org.geoserver.catalog.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geotools.util.NumberRange;
 
 public class CoverageDimensionImpl implements CoverageDimensionInfo {
 
-    String id;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2993765933856195894L;
+
+	String id;
 
     String name;
 

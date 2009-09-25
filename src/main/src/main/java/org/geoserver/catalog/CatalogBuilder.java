@@ -784,6 +784,8 @@ public class CatalogBuilder {
                     }
                 }
             }
+            
+            dims.add(dim);
         }
 
         return dims;
