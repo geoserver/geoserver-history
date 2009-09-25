@@ -33,7 +33,9 @@ import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
@@ -162,8 +164,7 @@ public class Execute {
         Wps10Factory f = Wps10Factory.eINSTANCE;
         ExecuteResponseType response = f.createExecuteResponseType();
         response.setLang("en");
-        String proxifiedBaseUrl = RequestUtils.proxifiedBaseURL(request.getBaseUrl(), gs.getProxyBaseUrl());
-        response.setServiceInstance(proxifiedBaseUrl + "ows?");
+        response.setServiceInstance(ResponseUtils.appendQueryString(ResponseUtils.buildURL(request.getBaseUrl(), "ows", null, URLType.SERVICE), ""));
        
         //process 
         final ProcessBriefType process = f.createProcessBriefType();
