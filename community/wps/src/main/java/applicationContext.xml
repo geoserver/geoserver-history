@@ -21,6 +21,13 @@
         <constructor-arg index="0" value="wps" />
         <constructor-arg index="1" ref="wpsService" />
         <constructor-arg index="2" value="1.0.0" />
+        <constructor-arg index="3">
+		  <list>
+		    <value>GetCapabilities</value>
+		    <value>DescribeProcess</value>
+		    <value>Execute</value>
+		  </list>
+		</constructor-arg>
     </bean>
 
     <!-- KVP Parsers -->
