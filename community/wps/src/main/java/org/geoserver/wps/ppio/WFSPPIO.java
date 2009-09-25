@@ -22,7 +22,7 @@ import org.xml.sax.ContentHandler;
 public class WFSPPIO extends XMLPPIO {
 
     protected WFSPPIO() {
-        super( FeatureCollectionType.class, FeatureCollection.class, WFS.FeatureCollection );
+        super( FeatureCollectionType.class, FeatureCollection.class, "text/xml; subtype=wfs-collection/1.0", WFS.FeatureCollection );
     }
 
     @Override
