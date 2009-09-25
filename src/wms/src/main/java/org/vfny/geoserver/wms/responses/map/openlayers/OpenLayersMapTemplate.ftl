@@ -153,9 +153,12 @@
                         </#list>
                         format: format,
                         tiled: 'true',
-                        tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom  
+                        tilesOrigin : map.maxExtent.left + ',' + map.maxExtent.bottom
                     },
-                    {buffer: 0} 
+                    {
+                        buffer: 0,
+                        displayOutsideMaxExtent: true
+                    } 
                 );
             
                 // setup single tiled layer
