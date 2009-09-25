@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Parameter;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -31,7 +30,6 @@ import es.unex.sextante.additionalInfo.AdditionalInfoMultipleInput;
 import es.unex.sextante.additionalInfo.AdditionalInfoNumericalValue;
 import es.unex.sextante.additionalInfo.AdditionalInfoRasterLayer;
 import es.unex.sextante.additionalInfo.AdditionalInfoString;
-import es.unex.sextante.additionalInfo.AdditionalInfoTable;
 import es.unex.sextante.additionalInfo.AdditionalInfoTableField;
 import es.unex.sextante.additionalInfo.AdditionalInfoVectorLayer;
 import es.unex.sextante.core.GeoAlgorithm;
@@ -211,8 +209,8 @@ public class SextanteProcessFactory implements ProcessFactory {
             map.put(SHAPE_TYPE, aivl.getShapeType());
         }
         if (param instanceof ParameterVectorLayer) {
-            AdditionalInfoTable ait = (AdditionalInfoTable) ai;
-            map.put(PARAMETER_MANDATORY, ait.getIsMandatory());
+            AdditionalInfoVectorLayer aiv = (AdditionalInfoVectorLayer) ai;
+            map.put(PARAMETER_MANDATORY, aiv.getIsMandatory());
         }
         if (param instanceof ParameterString) {
             AdditionalInfoString ais = (AdditionalInfoString) ai;
@@ -262,12 +260,12 @@ public class SextanteProcessFactory implements ProcessFactory {
             Output output = ooset.getOutput(i);
 
             if (output instanceof OutputVectorLayer) {
-                outputClass = FeatureSource.class;
+                outputClass = FeatureCollection.class;
             } else if (output instanceof OutputRasterLayer) {
                 outputClass = GridCoverage.class;
             }
             if (output instanceof OutputTable) {
-                outputClass = FeatureSource.class;
+                outputClass = FeatureCollection.class;
             }
             if (output instanceof OutputChart) {
                 outputClass = ChartPanel.class;
