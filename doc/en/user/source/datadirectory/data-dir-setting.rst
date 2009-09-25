@@ -3,7 +3,7 @@
 Setting the Data Directory
 ==========================
 
-Setting up a GeoServer data directory is dependent on the type of GeoServer installation. Follow the instructions below specific to the target platform.
+Setting up a GeoServer data directory is dependent on the type of GeoServer installation. Follow the instructions below specific to the target platform. 
 
 Windows
 -------
@@ -44,6 +44,11 @@ Place the command in the ``.bash_profile`` or ``.bashrc`` file (again assuming a
 
 Mac OS X
 --------
+
+If running the binary version of GeoServer on Mac OS X then the data directory is set in the exact same way as linux. 
+
+If using the Mac OS X binary, then set the GEOSERVER_DATA_DIR environment variable to the file location.  See 
+`this page <http://developer.apple.com/mac/library/qa/qa2001/qa1067.html>`_ for details on how to set an environment variable in Mac OS X
 
 
 Web Archive
