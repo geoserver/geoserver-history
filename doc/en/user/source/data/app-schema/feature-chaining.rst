@@ -1,4 +1,4 @@
-..  _app_schema_feature_chaining:
+..  _app-schema.feature-chaining:
 
 Feature Chaining
 ================
@@ -15,7 +15,7 @@ This page describes the use of "Feature Chaining" to compose complex features fr
  * Eliminating the need for large denormalized data store views of top level features and their related features. Denormalized views would still be needed for special cases, such as many-to-many relationships, but won't be as large.
 
 The current state of the User guide refers to setting up Geotools application schema configurations, and will be updated to reflect a Geoserver 2.0 configuration example shortly.
-For non-application schema configurations, please refer to :ref:`app_schema_data_access_integration`.
+For non-application schema configurations, please refer to :ref:`app-schema.data-access-integration`.
 
 Versions supported
 ``````````````````

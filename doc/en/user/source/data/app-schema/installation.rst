@@ -1,4 +1,4 @@
-.. _app_schema_installation:
+.. _app-schema.installation:
 
 Installation
 ============

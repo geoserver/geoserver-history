@@ -1,4 +1,4 @@
-.. _app_schema_mapping_file:
+.. _app-schema.mapping-file:
 
 Mapping File
 ============

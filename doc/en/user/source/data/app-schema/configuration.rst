@@ -1,4 +1,4 @@
-.. _app_schema_configuration:
+.. _app-schema.configuration:
 
 Configuration
 =============

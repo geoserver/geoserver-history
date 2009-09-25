@@ -1,4 +1,4 @@
-.. _app_schema_tutorial:
+.. _app-schema.tutorial:
 
 Tutorial
 ========
