@@ -94,6 +94,11 @@ public class DefaultWebMapService implements WebMapService,
      * Temporary field that handles the usage of the line width optimization code
      */
     private static Boolean OPTIMIZE_LINE_WIDTH = null;
+    
+    /**
+     * Temporary field that handles the choice of renderer to be used
+     */
+    private static Boolean USE_STREAMING_RENDERER = null;
 
     public DefaultWebMapService( WMS wms ) {
         this.wms = wms;
@@ -122,6 +127,16 @@ public class DefaultWebMapService implements WebMapService,
             else
                 OPTIMIZE_LINE_WIDTH = Boolean.valueOf(enabled);
         }
+        
+        // initialization of the renderer choice flag
+        if (USE_STREAMING_RENDERER == null) {
+            String enabled = GeoServerExtensions.getProperty("USE_STREAMING_RENDERER", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                USE_STREAMING_RENDERER = false;
+            else
+                USE_STREAMING_RENDERER = Boolean.valueOf(enabled);
+        }
     }
     
     /**
@@ -131,6 +146,15 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static boolean isLineWidthOptimizationEnabled() {
         return OPTIMIZE_LINE_WIDTH;
+    }
+    
+    /**
+     * Checks wheter the line streaming renderer is enabled, or not (defaults to false
+     * unless the user sets the USE_STREAMING_RENDERER property to true)
+     * @return
+     */
+    public static boolean useStreamingRenderer() {
+        return USE_STREAMING_RENDERER;
     }
 
     /**
