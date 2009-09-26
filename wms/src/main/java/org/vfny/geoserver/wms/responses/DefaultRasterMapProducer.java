@@ -98,7 +98,7 @@ public abstract class DefaultRasterMapProducer extends
 
     private final static String AA_FULL = "FULL";
 
-    private final static List AA_SETTINGS = Arrays.asList(new String[] {
+    private final static List<String> AA_SETTINGS = Arrays.asList(new String[] {
             AA_NONE, AA_TEXT, AA_FULL });
 
     /**
@@ -251,7 +251,7 @@ public abstract class DefaultRasterMapProducer extends
         boolean useAlpha = transparent || MetatileMapProducer.isRequestTiled(request, this);
         final RenderedImage preparedImage = prepareImage(paintArea.width, paintArea.height, 
                 palette, useAlpha);
-        final Map hintsMap = new HashMap();
+        final Map<RenderingHints.Key, Object> hintsMap = new HashMap<RenderingHints.Key, Object>();
 
         final Graphics2D graphic = ImageUtils.prepareTransparency(transparent, bgColor,
                 preparedImage, hintsMap);
@@ -301,12 +301,15 @@ public abstract class DefaultRasterMapProducer extends
         graphic.setRenderingHints(hintsMap);
 
         RenderingHints hints = new RenderingHints(hintsMap);
-        renderer = new ShapefileRenderer();
+        if(DefaultWebMapService.useStreamingRenderer())
+            renderer = new StreamingRenderer();
+        else
+            renderer = new ShapefileRenderer();
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);
 
         // setup the renderer hints
-        Map rendererParams = new HashMap();
+        Map<Object, Object> rendererParams = new HashMap<Object, Object>();
         rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
         rendererParams.put("renderingBuffer", new Integer(mapContext
                 .getBuffer()));
@@ -491,7 +494,6 @@ public abstract class DefaultRasterMapProducer extends
 
             MapDecorationLayout.Block.Position p = null;
 
-            WatermarkInfo.Position wmPos = watermark.getPosition();
             switch (watermark.getPosition()) {
             case TOP_LEFT:
                 p = MapDecorationLayout.Block.Position.UL;
