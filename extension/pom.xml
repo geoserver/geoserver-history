@@ -138,6 +138,13 @@
         <module>restconfig</module>
       </modules>
     </profile>
+    
+    <profile>
+      <id>security</id>
+      <modules>
+        <module>web-security</module>
+      </modules>
+    </profile>
 
     <!-- allExtensions profile, includes all modules -->
     <profile>

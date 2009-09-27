@@ -986,6 +986,7 @@
       <descriptor>release/ext-geosearch.xml</descriptor>
       <descriptor>release/ext-charts.xml</descriptor>
       <descriptor>release/ext-app-schema.xml</descriptor>
+      <descriptor>release/ext-web-security.xml</descriptor>
      </descriptors>
      <finalName>geoserver-2.0-SNAPSHOT</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
