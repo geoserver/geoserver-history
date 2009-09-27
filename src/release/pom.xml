@@ -191,7 +191,13 @@
    <groupId>org.geoserver.extension</groupId>
    <artifactId>arcsde</artifactId>
    <version>${project.version}</version>
-  </dependency> 
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>web-security</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+ 
  </dependencies>
  <build>
   <plugins>
