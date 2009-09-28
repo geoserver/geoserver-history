@@ -166,6 +166,7 @@
         <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
+        <module>web-security</module>
       </modules>
     </profile>
 
@@ -189,6 +190,7 @@
         <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
+        <module>web-security</module>
       </modules>
     </profile>
 
