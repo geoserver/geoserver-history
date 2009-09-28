@@ -140,10 +140,9 @@ background: #fff url(./chrome/main-bg.png) repeat-x;
 
 #content {
 width: 740px; /*790px total*/
-overflow: hidden;
 float: left;
 margin: -3px 0 0 0;
-padding: 1216px 28px 0 22px;
+padding: 16px 28px 0 22px;
 background: #fff url(./chrome/content-bg.png) repeat-x;
 color: #262523;
 font-size: 1.2em;
@@ -292,7 +291,7 @@ Content
 font-size: 0.85em;
 color: #c6e09b;
 border-bottom: 1px solid #c6e09b;
-margin: -1200px 0 1em;
+margin: 0 0 1em;
 padding: 0 0 0.5em;
 }
 
@@ -338,6 +337,10 @@ padding: 0 0.5em;
 
 #content #relatedlinks li.first a {
 padding: 0 0 0 0.5em;
+}
+
+#content .section {
+overflow: hidden;
 }
 
 #content h1 {
