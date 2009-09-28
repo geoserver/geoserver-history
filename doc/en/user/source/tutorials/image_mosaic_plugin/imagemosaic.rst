@@ -1,4 +1,4 @@
-.. _imagemosaic_extension:
+.. _tutorial_imagemosaic_extension:
 
 Using the ImageMosaic plugin
 ============================
@@ -7,37 +7,37 @@ Using the ImageMosaic plugin
 Introduction
 ------------
 
-This tutorial describes the process of creating a new coverage using the new ImageMosaic plugin. The ImageMosaic plugin is authored by `Simone Giannecchini <http://simboss.blogspot.com/>`_ of `GeoSolutions <http://ww.geosolutions.it>`_, and allows the creation of a mosaic from a number of georeferenced rasters. The plugin can be used with Geotiffs, as well as rasters accompanied by a world file (.pgw for png files, .jgw for jpg files, etc.). In addition, if imageio-ext GDAL extensions are properly installed we can also server all the formats supported by it like MrSID, ECW, JPEG2000, etc...
+This tutorial describes the process of creating a new coverage using the new ImageMosaic plugin. The ImageMosaic plugin is authored by `Simone Giannecchini <http://simboss.blogspot.com/>`_ of `GeoSolutions <http://ww.geosolutions.it>`_, and allows the creation of a mosaic from a number of georeferenced rasters. The plugin can be used with Geotiffs, as well as rasters accompanied by a world file (.pgw for png files, .jgw for jpg files, etc.). In addition, if imageio-ext GDAL extensions are properly installed we can also serve all the formats supported by it like MrSID, ECW, JPEG2000, etc... See :ref:`data_gdal` for more information on how to install them.
 
 The JAI documentation gives a good description about what a Mosaic does:
 
 `The "Mosaic" operation creates a mosaic of two or more source images. This operation could be used for example to assemble a set of overlapping geospatially rectified images into a contiguous image. It could also be used to create a montage of photographs such as a panorama`.
 
-Briefly the ImageMOsaic plugin is responsible for composing together  a set of similar raster data, which, from now on I will call *granules*. The plugin has, of course, some limitations which are now going to describe
+Briefly the ImageMosaic plugin is responsible for composing together a set of similar raster data, which, from now on I will call *granules*. The plugin has, of course, some limitations:
 
-  1. All the granules must share the same Coordinate Reference System, no reprojection is performed. I do not intend to relax this constraint
-  2. All the granules must share the same ColorModel and SampleModel. This is a limitation/assumption of the underlying JAI Mosaic  operator: it basically means that the granules must share the same pixel layout and photometric interpretation. It would be quite difficult to overcome this limitation, but to some extent it could be done. Notice that, in case of colormapped granules, if the various granules share the same colormap we will do our best to retain it and try not to expand them in memory. This canalso be controlled via a  parameter in the configuration file (se next sections)
+  1. All the granules must share the same Coordinate Reference System, no reprojection is performed.  This will always be a constraint.
+  2. All the granules must share the same ColorModel and SampleModel. This is a limitation/assumption of the underlying JAI Mosaic operator: it basically means that the granules must share the same pixel layout and photometric interpretation. It would be quite difficult to overcome this limitation, but to some extent it could be done. Notice that, in case of colormapped granules, if the various granules share the same colormap the code will do its best to retain it and try not to expand them in memory. This can also be controlled via a  parameter in the configuration file (se next sections)
   3. All the granules must share the same spatial resolution and set of overviews. 
   
   
 .. note:: 
 
- About point 3, in the original version of the ImageMosaic plugin this assumption was entirely true since we were assuming to work with real tiles coming from a set of adiacent images.  Lately we have been doing a substantial refactor therefore this condition would not be needed anymore, however in order to remove it we would need to do some work and add a few more options to the configuration file.
+ About point 3, in the original version of the ImageMosaic plugin this assumption was entirely true since we made an assumption to work with real tiles coming from a set of adjacent images.  Lately we have been doing a substantial refactoring, so this condition could be removed, but doing so would take some more work and a few additional options in the configuration file.
 
- To be more specific, if we can't assume that all the grianules share the same spatial layout and overviews set we would not be able to assing the raster dimensions (width and height) the spatial dimensions (grid-to-world and envelope) and the overviews set to the final mosaic coverage, unless we specify them somehow or we default to something. As long as we can assume that the various granules share the same spatial elements as well as the same overviews set we can inherit the first definition for the final mosaic.  I am well aware that we might get over this limitation, but this would require some more work, as I already mentioned before.
+ To be more specific, if we can't assume that all the granules share the same spatial layout and overviews set we would not be able to asses the raster dimensions (width and height) the spatial dimensions (grid-to-world and envelope) and the overviews set to the final mosaic coverage, unless we specify them somehow or we default to something. As long as we can assume that the various granules share the same spatial elements as well as the same overviews set we can inherit the first definition for the final mosaic.  This limitation can be overcome with more work.
 
   
   
 Granule Index
 -------------
 
-In order to configure a new CoverageStore and a new Coverage with this plugin, an index file need to be generated first in order to associate each granule to its bounding box. Currently we support only a Shapefile as a proper index, although it would be possible to extend this and use other means to persist the index.
+In order to configure a new CoverageStore and a new Coverage with this plugin, an index file needs to be generated first in order to associate each granule to its bounding box. Currently we support only a Shapefile as a proper index, although it would be possible to extend this and use other means to persist the index.
 
 More specifically, the following files are needed:
 
    1. A shapefile that contains enclosing polygons for each raster file.  This shapefile needs to have a field whose values are the paths for the mosaic granules. The path can be either relative to the shapefile itself or absolute, moreover, while the default name for the shapefile attribute that contains the granules' paths is "location", such a name can be configured to be different (we'll describe this later on).
    2. A projection file (.prj) for the above-mentioned shapefile.
-   3. A configuration file (.properties). This file contains properties such as cell size in x and y direction, the number of rasters for the ImageMosaic coverage, etc.. We will describe this file innext section.
+   3. A configuration file (.properties). This file contains properties such as cell size in x and y direction, the number of rasters for the ImageMosaic coverage, etc.. We will describe this file in the next section.
    
 Later on we will describe the process of creating an index for a set of granules.
 
@@ -45,7 +45,7 @@ Configuration File
 -------------------   
 
 The mosaic configuration file is used to store some configuration parameters to control the ImageMosaic plugin. It is created as part of the mosac creation and usually do not require manual editing.
-Here below we are describing all the various elements for this file.
+The table below describes the various elements in this configuration file.
 
 .. list-table::
    :widths: 15 5 80
@@ -79,8 +79,9 @@ Here below we are describing all the various elements for this file.
 Creating Granules Index  and Configuration File
 -----------------------------------------------
    
-The refactored version  of the ImageMosaic plugin can be used to create the shapefile index as well as the mosaic  configuration file on the fly without having to rely on gdal or some  other similar utility. 
-If you have a tree of directories containing the granules you want to be able to server as a mosaic (and providing that you are respecting the conditions written above) all you need to do is to point the GeoServer to such a directory and it will create the proper ancillary files by inspecting all the files present in the the tree of directories starting from the provided input one.
+The refactored version of the ImageMosaic plugin can be used to create the shapefile index as well as the mosaic  configuration file on the fly without having to rely on gdal or some  other similar utility. 
+
+If you have a tree of directories containing the granules you want to be able to serve as a mosaic (and providing that you are respecting the conditions written above) all you need to do is to point the GeoServer to such a directory and it will create the proper ancillary files by inspecting all the files present in the the tree of directories starting from the provided input one.
 
 
 Configuring a Coverage in Geoserver
