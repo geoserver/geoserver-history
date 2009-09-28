@@ -310,7 +310,7 @@
      <id>security</id>
      <dependencies>
       <dependency>
-       <groupId>org.geoserver.web</groupId>
+       <groupId>org.geoserver.extension</groupId>
        <artifactId>web-security</artifactId>
        <version>${project.version}</version>
       </dependency>
