@@ -58,16 +58,12 @@ public class JavaScriptProcess implements Process{
                 Object[] args = {mapToJsObject(input, scope)};
                 Object result = processFn.call(cx, scope, scope, args);
                 results = jsObjectToMap((Scriptable)result);
-                System.out.println("JS Process Results: " + results);
             } else {
-                System.out.println("JS ERROR");
                 throw new RuntimeException(
                     "Script for process: " + myScript.getName() + 
                     " is not a valid process script."
                 );
             }
-        } catch (Exception e) {
-            System.out.println("Script go boom: " + e);
         } finally { 
             Context.exit();
         }
