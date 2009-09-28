@@ -140,7 +140,6 @@ background: #fff url(./chrome/main-bg.png) repeat-x;
 
 #content {
 width: 740px; /*790px total*/
-overflow: hidden;
 float: left;
 margin: -3px 0 0 0;
 padding: 1216px 28px 0 22px;
@@ -338,6 +337,10 @@ padding: 0 0.5em;
 
 #content #relatedlinks li.first a {
 padding: 0 0 0 0.5em;
+}
+
+#content .section {
+overflow: hidden;
 }
 
 #content h1 {
