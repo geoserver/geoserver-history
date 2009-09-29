@@ -22,11 +22,16 @@ import java.util.regex.Pattern;
 import org.apache.wicket.Application;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.IRequestTarget;
+import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.protocol.http.PageExpiredException;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebRequestCycleProcessor;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.request.IRequestCycleProcessor;
 import org.apache.wicket.request.RequestParameters;
 import org.apache.wicket.resource.loader.ClassStringResourceLoader;
@@ -189,6 +194,8 @@ public class GeoServerApplication extends SpringWebApplication {
                 htmlvalidator.setIgnoreKnownWicketBugs(true);
                 getRequestCycleSettings().addResponseFilter(htmlvalidator);
         }
+
+        getApplicationSettings().setPageExpiredErrorPage(GeoServerExpiredPage.class);
     }
     
     @Override
@@ -280,6 +287,10 @@ public class GeoServerApplication extends SpringWebApplication {
         return new RequestCycleProcessor();
     }
 
+    public final RequestCycle newRequestCycle(final Request request, final Response response) {
+        return new RequestCycle(this, (WebRequest)request, (WebResponse)response);
+    }
+
     /*
      * Overrides to return a custom converter locator which loads converters
      * from the GeoToools converter subsystem.
@@ -308,6 +319,21 @@ public class GeoServerApplication extends SpringWebApplication {
             }
 
             return resolveHomePageTarget(requestCycle, requestParameters);
+        }
+    }
+
+    static class RequestCycle extends WebRequestCycle {
+        public RequestCycle(GeoServerApplication app, WebRequest req, WebResponse resp) {
+            super(app, req, resp);
+        }
+
+        @Override
+        public final Page onRuntimeException(final Page cause, final RuntimeException ex) {
+            if (ex instanceof PageExpiredException) {
+                return super.onRuntimeException(cause, ex);
+            } else {
+                return new GeoServerErrorPage(cause, ex);
+            }
         }
     }
 
