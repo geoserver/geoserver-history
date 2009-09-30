@@ -24,7 +24,7 @@ import org.geoserver.wms.WatermarkInfo;
 import org.geotools.util.logging.Logging;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
 public class HibServiceTranslator {
@@ -37,19 +37,18 @@ public class HibServiceTranslator {
     }
 
     public ServiceInfoImpl translate(ServiceInfo service) {
-        if(service instanceof WCSInfoImpl)
-            return translateWCS((WCSInfoImpl)service);
-        else if(service instanceof WFSInfoImpl)
-            return translateWFS((WFSInfoImpl)service);
-        else if(service instanceof WMSInfoImpl)
-            return translateWMS((WMSInfoImpl)service);
-        else if(service instanceof ServiceInfoImpl)
-            return translateSI((ServiceInfoImpl)service);
-        else if(service instanceof Hibernable) {
+        if (service instanceof WCSInfoImpl)
+            return translateWCS((WCSInfoImpl) service);
+        else if (service instanceof WFSInfoImpl)
+            return translateWFS((WFSInfoImpl) service);
+        else if (service instanceof WMSInfoImpl)
+            return translateWMS((WMSInfoImpl) service);
+        else if (service instanceof ServiceInfoImpl)
+            return translateSI((ServiceInfoImpl) service);
+        else if (service instanceof Hibernable) {
             LOGGER.warning("Will not translate a " + service.getClass().getName());
-            return (ServiceInfoImpl)service;
-        }
-        else {
+            return (ServiceInfoImpl) service;
+        } else {
             LOGGER.warning("Can't translate a " + service.getClass().getName());
             throw new IllegalArgumentException("Can't translate a " + service.getClass().getName());
         }
@@ -81,14 +80,14 @@ public class HibServiceTranslator {
             dest.getExceptionFormats().add(o);
 
         // ETJ TODO
-//        for (Map.Entry entry : (Set<Map.Entry>)src.getMetadata().entrySet() )
-//            dest.getMetadata().put(entry.getKey(), entry.getValue());
-//        for (Map.Entry entry : (Set<Map.Entry>)src.getClientProperties().entrySet() )
-//            dest.getClientProperties().put(entry.getKey(), entry.getValue());
+        // for (Map.Entry entry : (Set<Map.Entry>)src.getMetadata().entrySet() )
+        // dest.getMetadata().put(entry.getKey(), entry.getValue());
+        // for (Map.Entry entry : (Set<Map.Entry>)src.getClientProperties().entrySet() )
+        // dest.getClientProperties().put(entry.getKey(), entry.getValue());
     }
 
     private ServiceInfoImpl translateSI(ServiceInfoImpl serviceInfo) {
-        ServiceInfoImpl ret = (ServiceInfoImpl)factory.createService();
+        ServiceInfoImpl ret = (ServiceInfoImpl) factory.createService();
         copySI(serviceInfo, ret);
         return ret;
     }
@@ -112,7 +111,7 @@ public class HibServiceTranslator {
             GMLInfoImplHb infohb = translateGMLInfo(info);
             ret.getGML().put(version, infohb);
         }
-        
+
         return ret;
     }
 
@@ -140,11 +139,11 @@ public class HibServiceTranslator {
     }
 
     private WatermarkInfoImplHb translate(WatermarkInfo watermark) {
-        if(watermark == null)
+        if (watermark == null)
             return null;
 
         WatermarkInfoImplHb ret = new WatermarkInfoImplHb();
-//        ret.setId(watermark.get);
+        // ret.setId(watermark.get);
         ret.setEnabled(watermark.isEnabled());
         ret.setPosition(watermark.getPosition());
         ret.setTransparency(watermark.getTransparency());

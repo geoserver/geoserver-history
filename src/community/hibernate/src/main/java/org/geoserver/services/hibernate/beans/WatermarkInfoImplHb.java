@@ -8,8 +8,11 @@ public class WatermarkInfoImplHb implements WatermarkInfoHb {
     private Integer id;
 
     private boolean enabled;
+
     private Position position;
+
     private int transparency;
+
     private String url;
 
     public WatermarkInfoImplHb() {
@@ -30,7 +33,7 @@ public class WatermarkInfoImplHb implements WatermarkInfoHb {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-    
+
     public Position getPosition() {
         return position;
     }

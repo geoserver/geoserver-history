@@ -21,92 +21,88 @@ import org.opengis.filter.Filter;
  * Hibernate user type for {@link Filter}.
  * 
  * @author This class persists a filter as a string of xml.
- *
+ * 
  */
 public class FilterType implements UserType {
 
-	/**
-	 * xml configuration for parsing / encoding filters.
-	 */
-	static OGCConfiguration ogc = new OGCConfiguration();
-	
-	public Object assemble(Serializable cached, Object owner)
-			throws HibernateException {
-		return null;
-	}
+    /**
+     * xml configuration for parsing / encoding filters.
+     */
+    static OGCConfiguration ogc = new OGCConfiguration();
 
-	public Object deepCopy(Object value) throws HibernateException {
-		return value;
-	}
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
+        return null;
+    }
 
-	public Serializable disassemble(Object value) throws HibernateException {
-		return null;
-	}
+    public Object deepCopy(Object value) throws HibernateException {
+        return value;
+    }
 
-	public boolean equals(Object x, Object y) throws HibernateException {
-		return Utilities.equals( x, y );
-	}
+    public Serializable disassemble(Object value) throws HibernateException {
+        return null;
+    }
 
-	public int hashCode(Object x) throws HibernateException {
-		return x.hashCode();
-	}
+    public boolean equals(Object x, Object y) throws HibernateException {
+        return Utilities.equals(x, y);
+    }
 
-	public boolean isMutable() {
-		return false;
-	}
+    public int hashCode(Object x) throws HibernateException {
+        return x.hashCode();
+    }
 
-	public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
-			throws HibernateException, SQLException {
-		
-		String xml = rs.getString( names[0] );
-		if ( xml == null ) {
-			return null;
-		}
-		
-		Parser parser = new Parser( ogc );
-		try {
-			Filter filter = (Filter) parser.parse( new StringReader( xml ) );
-			return filter;
-		} 
-		catch( Exception e ) {
-			String msg = "Could not decode filter: " + xml;
-			throw new HibernateException(msg, e );
-		}
-	}
+    public boolean isMutable() {
+        return false;
+    }
 
-	public void nullSafeSet(PreparedStatement st, Object value, int index)
-			throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet rs, String[] names, Object owner)
+            throws HibernateException, SQLException {
 
-		Filter filter = (Filter) value;
-		if ( filter == null ) {
-			st.setString( index , null );
-			return;
-		}
-		
-		Encoder encoder = new Encoder( ogc );
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		try {
-			encoder.encode( filter, OGC.Filter, output );
-			st.setString( index, new String( output.toByteArray() ) );
-		} 
-		catch (Exception e) {
-			String msg = "Could not encode filter: " + filter;
-			throw new HibernateException( msg, e );
-		}
+        String xml = rs.getString(names[0]);
+        if (xml == null) {
+            return null;
+        }
 
-	}
+        Parser parser = new Parser(ogc);
+        try {
+            Filter filter = (Filter) parser.parse(new StringReader(xml));
+            return filter;
+        } catch (Exception e) {
+            String msg = "Could not decode filter: " + xml;
+            throw new HibernateException(msg, e);
+        }
+    }
 
-	public Object replace(Object original, Object target, Object owner)
-			throws HibernateException {
-		return original;
-	}
+    public void nullSafeSet(PreparedStatement st, Object value, int index)
+            throws HibernateException, SQLException {
 
-	public Class<Filter> returnedClass() {
-		return Filter.class;
-	}
+        Filter filter = (Filter) value;
+        if (filter == null) {
+            st.setString(index, null);
+            return;
+        }
 
-	public int[] sqlTypes() {
-		return new int[]{ Types.VARCHAR };
-	}
+        Encoder encoder = new Encoder(ogc);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            encoder.encode(filter, OGC.Filter, output);
+            st.setString(index, new String(output.toByteArray()));
+        } catch (Exception e) {
+            String msg = "Could not encode filter: " + filter;
+            throw new HibernateException(msg, e);
+        }
+
+    }
+
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
+        return original;
+    }
+
+    public Class<Filter> returnedClass() {
+        return Filter.class;
+    }
+
+    public int[] sqlTypes() {
+        return new int[] { Types.VARCHAR };
+    }
 
 }

@@ -8,18 +8,17 @@ import org.geoserver.config.impl.LoggingInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class LoggingInfoImplHb
-    extends LoggingInfoImpl
-    implements LoggingInfo, Hibernable {
+public class LoggingInfoImplHb extends LoggingInfoImpl implements LoggingInfo, Hibernable {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 7285995102018807585L;
-	public String id;
+    private static final long serialVersionUID = 7285995102018807585L;
+
+    public String id;
 
     public String getId() {
         return id;

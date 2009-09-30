@@ -9,16 +9,14 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 
-public class StyleInfoImplHb 
-        extends StyleInfoImpl
-        implements StyleInfo, Hibernable {
+public class StyleInfoImplHb extends StyleInfoImpl implements StyleInfo, Hibernable {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6463661589509009337L;
+    private static final long serialVersionUID = 6463661589509009337L;
 
-	public StyleInfoImplHb(Catalog catalog) {
+    public StyleInfoImplHb(Catalog catalog) {
         super(catalog);
     }
 

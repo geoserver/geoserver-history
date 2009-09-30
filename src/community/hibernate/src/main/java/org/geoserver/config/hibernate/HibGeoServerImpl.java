@@ -28,11 +28,8 @@ import org.geoserver.hibernate.dao.ServiceDAO;
 import org.geoserver.jai.JAIInitializer;
 import org.geotools.util.logging.Logging;
 
-
-
-public class HibGeoServerImpl 
-        implements Serializable
-//        , GeoServer
+public class HibGeoServerImpl implements Serializable
+// , GeoServer
 {
 
     private static final Logger LOGGER = Logging.getLogger("org.geoserver.config.hibernate");
@@ -41,6 +38,7 @@ public class HibGeoServerImpl
      * factory to create config objects.
      */
     private HibGeoServerFactoryImpl factory;
+
     transient private HibCatalogImpl catalog;
 
     transient private List<ConfigurationListener> listeners = new ArrayList<ConfigurationListener>();
@@ -52,12 +50,13 @@ public class HibGeoServerImpl
 
     /**
      * TODO: please doublecheck the updates to this field<BR>
-     * We need to cache JAI info because it has many transient values,
-     * and we prefer to cache twe whole class instead of single values.
+     * We need to cache JAI info because it has many transient values, and we prefer to cache twe
+     * whole class instead of single values.
      */
     transient JAIInfo cachedJAI = null;
 
     private final GeoServer proxy;
+
     /**
      * 
      */
@@ -86,12 +85,12 @@ public class HibGeoServerImpl
     }
 
     public void setFactory(GeoServerFactory factory) {
-        this.factory = (HibGeoServerFactoryImpl)factory;
+        this.factory = (HibGeoServerFactoryImpl) factory;
     }
 
     public GeoServerInfo getGlobal() {
-        if(LOGGER.isLoggable(Level.FINEST))
-        	LOGGER.finest("Querying geoserver global configuration");
+        if (LOGGER.isLoggable(Level.FINEST))
+            LOGGER.finest("Querying geoserver global configuration");
         GeoServerInfo geoserver = this.serviceDAO.getGeoServer();
         if (geoserver == null) {
             LOGGER.warning("Database is empty");
@@ -99,12 +98,12 @@ public class HibGeoServerImpl
 
         } else {
 
-            if(cachedJAI == null) {
+            if (cachedJAI == null) {
                 LOGGER.info("getGlobal: JAI was null, inizitialized.");
                 cachedJAI = geoserver.getJAI();
             } else {
-                // The cached jai may have been updated. 
-                // Updated values should already be in db, but we need 
+                // The cached jai may have been updated.
+                // Updated values should already be in db, but we need
                 // the transient runtime values that are stored in cachedJAI.
                 geoserver.setJAI(cachedJAI);
             }
@@ -113,10 +112,9 @@ public class HibGeoServerImpl
         return geoserver;
     }
 
-
     public void setGlobal(GeoServerInfo configuration) {
-        //ensure contactinfo is not null
-        if(configuration.getContact() == null) {
+        // ensure contactinfo is not null
+        if (configuration.getContact() == null) {
             LOGGER.warning("GeoServerInfo contact is not set. Creating empty one...");
             configuration.setContact(getFactory().createContact());
         }
@@ -126,22 +124,22 @@ public class HibGeoServerImpl
         GeoServerInfoImplHb merged = null;
 
         if (currentGlobal == null) {
-            if(LOGGER.isLoggable(Level.INFO))
-            	LOGGER.info("Storing first instance of GeoServerInfo");
+            if (LOGGER.isLoggable(Level.INFO))
+                LOGGER.info("Storing first instance of GeoServerInfo");
 
-            GeoServerInfoImplHb inserted = (GeoServerInfoImplHb)this.serviceDAO.save(configuration);
-            inserted.copyTo((GeoServerInfoImplHb)configuration);
-            ((GeoServerInfoImplHb)configuration).setId(inserted.getId());
+            GeoServerInfoImplHb inserted = (GeoServerInfoImplHb) this.serviceDAO
+                    .save(configuration);
+            inserted.copyTo((GeoServerInfoImplHb) configuration);
+            ((GeoServerInfoImplHb) configuration).setId(inserted.getId());
         } else {
 
-            GeoServerInfoImplHb oldconf = (GeoServerInfoImplHb)currentGlobal;
-            GeoServerInfoImplHb newconf = (GeoServerInfoImplHb)configuration;
+            GeoServerInfoImplHb oldconf = (GeoServerInfoImplHb) currentGlobal;
+            GeoServerInfoImplHb newconf = (GeoServerInfoImplHb) configuration;
 
             newconf.setId(oldconf.getId());
-            merged = (GeoServerInfoImplHb)this.serviceDAO.update(newconf);
+            merged = (GeoServerInfoImplHb) this.serviceDAO.update(newconf);
             merged.copyTo(newconf);
         }
-
 
         JAIInitializer initializer = new JAIInitializer();
         try {
@@ -150,29 +148,31 @@ public class HibGeoServerImpl
             LOGGER.log(Level.SEVERE, "Error initializing JAI: " + ex.getMessage(), ex);
         }
         cachedJAI = configuration.getJAI();
-        if(merged != null)
+        if (merged != null)
             merged.setJAI(cachedJAI);
 
-        //fire the modification event
+        // fire the modification event
         firePostGlobalModified(merged);
     }
 
     public void save(GeoServerInfo geoServer) {
         setGlobal(geoServer);
 
-        for ( ConfigurationListener l : listeners ) {
+        for (ConfigurationListener l : listeners) {
             try {
-                l.handleGlobalChange( geoServer, 
-                        new ArrayList<String>(), // FIXME: if really needed, reload from DB and compare
-                        new ArrayList<Object>(), // FIXME: if really needed, reload from DB and compare
-                        new ArrayList<Object>());// FIXME: if really needed, reload from DB and compare
-            }
-            catch( Exception e ) {
+                l.handleGlobalChange(geoServer, new ArrayList<String>(), // FIXME: if really needed,
+                                                                         // reload from DB and
+                                                                         // compare
+                        new ArrayList<Object>(), // FIXME: if really needed, reload from DB and
+                                                 // compare
+                        new ArrayList<Object>());// FIXME: if really needed, reload from DB and
+                                                 // compare
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Exception calling handleGlobalChange", e);
             }
         }
 
-        //fire post modification event
+        // fire post modification event
         firePostGlobalModified(geoServer);
     }
 
@@ -191,13 +191,14 @@ public class HibGeoServerImpl
             throw new IllegalArgumentException("service with id '" + serviceId + "' already exists");
         }
 
-//        GeoServerInfo global = getGlobal();
+        // GeoServerInfo global = getGlobal();
         service.setGeoServer(proxy);
 
-        if(LOGGER.isLoggable(Level.FINE))
-        	LOGGER.fine("CREATING SERVICE id:" + serviceId + " name:"+service.getName() + " title:" + service.getTitle() );
-        
-        if(  service instanceof Hibernable) {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("CREATING SERVICE id:" + serviceId + " name:" + service.getName()
+                    + " title:" + service.getTitle());
+
+        if (service instanceof Hibernable) {
             this.serviceDAO.save(service);
         } else {
             LOGGER.info("Translating unhibernable instance of " + service.getClass().getName());
@@ -206,7 +207,7 @@ public class HibGeoServerImpl
             this.serviceDAO.save(hservice);
         }
 
-        //fire post modification event
+        // fire post modification event
         firePostServiceModified(service);
     }
 
@@ -223,19 +224,21 @@ public class HibGeoServerImpl
     public void save(ServiceInfo service) {
         this.serviceDAO.update(service);
 
-        for ( ConfigurationListener l : listeners ) {
+        for (ConfigurationListener l : listeners) {
             try {
-                l.handleServiceChange(service,
-                        new ArrayList<String>(), // FIXME: if really needed, reload from DB and compare
-                        new ArrayList<Object>(), // FIXME: if really needed, reload from DB and compare
-                        new ArrayList<Object>());// FIXME: if really needed, reload from DB and compare
-            }
-            catch( Exception e ) {
+                l.handleServiceChange(service, new ArrayList<String>(), // FIXME: if really needed,
+                                                                        // reload from DB and
+                                                                        // compare
+                        new ArrayList<Object>(), // FIXME: if really needed, reload from DB and
+                                                 // compare
+                        new ArrayList<Object>());// FIXME: if really needed, reload from DB and
+                                                 // compare
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Exception calling handleServiceChange", e);
             }
         }
 
-        //fire post modification event
+        // fire post modification event
         firePostServiceModified(service);
     }
 
@@ -252,7 +255,8 @@ public class HibGeoServerImpl
      * @return
      */
     protected Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
-        Collection<ServiceInfoImpl> sis = (Collection<ServiceInfoImpl>)this.serviceDAO.getServices(clazz);
+        Collection<ServiceInfoImpl> sis = (Collection<ServiceInfoImpl>) this.serviceDAO
+                .getServices(clazz);
         for (ServiceInfoImpl serviceInfoImpl : sis) {
             serviceInfoImpl.setGeoServer(proxy);
         }
@@ -262,8 +266,8 @@ public class HibGeoServerImpl
     /**
      */
     public <T extends ServiceInfo> T getService(Class<T> clazz) {
-        if(LOGGER.isLoggable(Level.FINE))
-        	LOGGER.fine("getService("+ clazz.getName()+")");
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("getService(" + clazz.getName() + ")");
         Class clazz2 = HibMapper.mapHibernableClass(clazz);
 
         // TODO: create dao.findService
@@ -280,7 +284,7 @@ public class HibGeoServerImpl
     /**
      * 
      */
-    protected  ServiceInfo getService(String id) {
+    protected ServiceInfo getService(String id) {
         return getService(id, ServiceInfo.class);
     }
 
@@ -289,7 +293,7 @@ public class HibGeoServerImpl
      */
     public <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
         T ret = this.serviceDAO.getService(id, clazz);
-        if(ret != null)
+        if (ret != null)
             ret.setGeoServer(proxy);
         return ret;
     }
@@ -299,7 +303,7 @@ public class HibGeoServerImpl
      */
     public <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
         T ret = this.serviceDAO.getServiceByName(name, clazz);
-        if(ret != null)
+        if (ret != null)
             ret.setGeoServer(proxy);
         return ret;
     }
@@ -316,7 +320,6 @@ public class HibGeoServerImpl
         catalog.dispose();
         listeners.clear();
     }
-
 
     public ServiceDAO getServiceDAO() {
         return serviceDAO;
@@ -347,56 +350,53 @@ public class HibGeoServerImpl
     public void save(LoggingInfo logging) {
         serviceDAO.setLogging(logging);
 
-        for ( ConfigurationListener l : listeners ) {
+        for (ConfigurationListener l : listeners) {
             try {
-                l.handleLoggingChange( logging,
-                        new ArrayList<String>(), // FIXME: if really needed, reload from DB and compare
-                        new ArrayList<Object>(), // FIXME: if really needed, reload from DB and compare
-                        new ArrayList<Object>());// FIXME: if really needed, reload from DB and compare
-            }
-            catch( Exception e ) {
+                l.handleLoggingChange(logging, new ArrayList<String>(), // FIXME: if really needed,
+                                                                        // reload from DB and
+                                                                        // compare
+                        new ArrayList<Object>(), // FIXME: if really needed, reload from DB and
+                                                 // compare
+                        new ArrayList<Object>());// FIXME: if really needed, reload from DB and
+                                                 // compare
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Exception calling handleLoggingChange", e);
             }
         }
 
-        //fire post modification event
+        // fire post modification event
         firePostLoggingModified(logging);
     }
 
-
     private void firePostGlobalModified(GeoServerInfo global) {
-        for ( ConfigurationListener l : listeners ) {
+        for (ConfigurationListener l : listeners) {
             try {
-                l.handlePostGlobalChange( global );
-            }
-            catch( Exception e ) {
+                l.handlePostGlobalChange(global);
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Exception in fireGlobalPostModified", e);
             }
         }
     }
 
     private void firePostLoggingModified(LoggingInfo logging) {
-        for ( ConfigurationListener l : listeners ) {
+        for (ConfigurationListener l : listeners) {
             try {
-                l.handlePostLoggingChange( logging );
-            }
-            catch( Exception e ) {
+                l.handlePostLoggingChange(logging);
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Exception in fireLoggingPostModified", e);
             }
         }
     }
 
     void firePostServiceModified(ServiceInfo service) {
-        for ( ConfigurationListener l : listeners ) {
+        for (ConfigurationListener l : listeners) {
             try {
-                l.handlePostServiceChange( service );
-            }
-            catch( Exception e ) {
+                l.handlePostServiceChange(service);
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Exception in firePostServiceModified", e);
             }
         }
     }
-
 
 }
 
@@ -405,30 +405,25 @@ class GSProxy implements InvocationHandler, Serializable {
     private HibGeoServerImpl geoserverimpl;
 
     public static GeoServer newInstance(HibGeoServerImpl gsi) {
-        return (GeoServer)Proxy.newProxyInstance(
-            gsi.getClass().getClassLoader(),
-            new Class[] {GeoServer.class},
-            new GSProxy(gsi));
+        return (GeoServer) Proxy.newProxyInstance(gsi.getClass().getClassLoader(),
+                new Class[] { GeoServer.class }, new GSProxy(gsi));
     }
 
     private GSProxy(HibGeoServerImpl obj) {
         this.geoserverimpl = obj;
     }
 
-    public Object invoke(Object proxy, Method m, Object[] args)
-        throws Throwable
-    {
+    public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
         Object result;
         try {
-           // System.out.println("before method " + m.getName());
+            // System.out.println("before method " + m.getName());
             Method pmethod = geoserverimpl.getClass().getMethod(m.getName(), m.getParameterTypes());
             result = pmethod.invoke(geoserverimpl, args);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         } catch (Exception e) {
-            throw new RuntimeException("unexpected invocation exception: " +
-                                       e.getMessage());
-        } 
+            throw new RuntimeException("unexpected invocation exception: " + e.getMessage());
+        }
         return result;
     }
 }

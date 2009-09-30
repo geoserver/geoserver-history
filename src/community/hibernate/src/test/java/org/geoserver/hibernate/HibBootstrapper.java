@@ -21,13 +21,13 @@ import org.geoserver.wfs.GMLInfo.SrsNameStyle;
 import org.geoserver.wms.WatermarkInfo;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
 public class HibBootstrapper {
 
-
     private Catalog resourceCatalog;
+
     private GeoServer serviceCatalog;
 
     public HibBootstrapper(Catalog resourceCatalog, GeoServer serviceCatalog) {
@@ -39,12 +39,11 @@ public class HibBootstrapper {
 
         GeoServerInfo geoserver = createDefaultGeoServer();
         createDefaultServices(geoserver);
-//        NamespaceInfo defaultNameSpace = createDefaultNamespace();
-//        WorkspaceInfo defaultWs = createDefaultWorkspace();
-        
+        // NamespaceInfo defaultNameSpace = createDefaultNamespace();
+        // WorkspaceInfo defaultWs = createDefaultWorkspace();
+
         return geoserver;
     }
-
 
     public NamespaceInfo createDefaultNamespace() {
         NamespaceInfo ns = resourceCatalog.getFactory().createNamespace();
@@ -56,7 +55,8 @@ public class HibBootstrapper {
     }
 
     public WorkspaceInfo createDefaultWorkspace() {
-        WorkspaceInfoImplHb ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory().createWorkspace();
+        WorkspaceInfoImplHb ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory()
+                .createWorkspace();
         ws.setDefault(Boolean.TRUE);
         ws.setName("nurc");
         resourceCatalog.add(ws);
@@ -71,20 +71,19 @@ public class HibBootstrapper {
 
         geoserver.setNumDecimals(8);
 
-
         geoserver.setVerbose(false);
         geoserver.setVerboseExceptions(false);
 
-        //jai
+        // jai
         JAIInfo jai = serviceCatalog.getFactory().createJAI();
-        jai.setMemoryCapacity( (Double) 0.5);
-        jai.setMemoryThreshold( (Double) 0.75 );
-        jai.setTileThreads( (Integer) 5 );
-        jai.setTilePriority( (Integer) 5 );
-        jai.setImageIOCache( (Boolean) false );
-        jai.setJpegAcceleration( (Boolean) false );
-        jai.setPngAcceleration( (Boolean) false );
-        jai.setRecycling( (Boolean) false );
+        jai.setMemoryCapacity((Double) 0.5);
+        jai.setMemoryThreshold((Double) 0.75);
+        jai.setTileThreads((Integer) 5);
+        jai.setTilePriority((Integer) 5);
+        jai.setImageIOCache((Boolean) false);
+        jai.setJpegAcceleration((Boolean) false);
+        jai.setPngAcceleration((Boolean) false);
+        jai.setRecycling((Boolean) false);
         jai.setAllowNativeMosaic(false);
 
         geoserver.setJAI(jai);
@@ -140,8 +139,6 @@ public class HibBootstrapper {
         this.serviceCatalog.add(wcs);
     }
 
-
-
     public void setCatalog(Catalog catalog) {
         this.resourceCatalog = catalog;
     }
@@ -150,6 +147,4 @@ public class HibBootstrapper {
         this.serviceCatalog = geoServer;
     }
 
-
-    
 }

@@ -28,9 +28,9 @@ public class HibernateGeoserverTest extends HibTestSupport {
     protected void onSetUpBeforeTransaction() throws Exception {
         super.onSetUpBeforeTransaction();
 
-        catalog = (HibCatalogImpl) applicationContext.getBean("catalogTarget"); 
+        catalog = (HibCatalogImpl) applicationContext.getBean("catalogTarget");
         geoServer = (HibGeoServerImpl) applicationContext.getBean("configTarget");
-        
+
     }
 
     private void removeServices() {
@@ -56,7 +56,7 @@ public class HibernateGeoserverTest extends HibTestSupport {
         GeoServerInfo info2 = geoServer.getGlobal();
         assertFalse(info == info2);
 
-//        info = info2;
+        // info = info2;
         assertEquals("Lost title attribute inter transactions", "title", info2.getTitle());
 
     }
@@ -99,7 +99,9 @@ public class HibernateGeoserverTest extends HibTestSupport {
 
     public void testGlobal() throws Exception {
         GeoServerInfo global1 = geoServer.getFactory().createGlobal();
-        global1.setTitle("test global " + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL).format(new Date()));
+        global1.setTitle("test global "
+                + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL).format(
+                        new Date()));
 
         geoServer.setGlobal(global1);
 
@@ -110,9 +112,11 @@ public class HibernateGeoserverTest extends HibTestSupport {
 
         endTransaction();
         startNewTransaction();
-        
+
         GeoServerInfo global2 = geoServer.getFactory().createGlobal();
-        global2.setTitle("subst'ed global " + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL).format(new Date()));
+        global2.setTitle("subst'ed global "
+                + DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL).format(
+                        new Date()));
 
         global2.setAdminPassword("secret");
         ContactInfo contactInfo = geoServer.getFactory().createContact();
@@ -123,18 +127,18 @@ public class HibernateGeoserverTest extends HibTestSupport {
 
         endTransaction();
         startNewTransaction();
-        
+
         GeoServerInfo globalZ = geoServer.getGlobal();
 
-        String globalDebugDiff = ((GeoServerInfoImplHb)global2).getFirstDiff(globalZ);
-        if(globalDebugDiff != null)
+        String globalDebugDiff = ((GeoServerInfoImplHb) global2).getFirstDiff(globalZ);
+        if (globalDebugDiff != null)
             Logging.getLogger(this.getClass()).severe("Globals do not match: " + globalDebugDiff);
 
         assertEquals(global2, globalZ);
 
         ContactInfo contactInfoZ = globalZ.getContact();
         assertEquals("Contacts differ", global2.getContact(), contactInfoZ);
-//        assertEquals(global2, globalZ);
+        // assertEquals(global2, globalZ);
     }
 
     public void testModifyGlobal() throws Exception {
@@ -175,7 +179,7 @@ public class HibernateGeoserverTest extends HibTestSupport {
         } catch (Exception e) {
             assertTrue(true);
         }
-        
+
         ServiceInfo s = geoServer.getServiceByName("testAddService", ServiceInfo.class);
         assertNotNull(s);
         assertEquals(service, s);
@@ -214,7 +218,7 @@ public class HibernateGeoserverTest extends HibTestSupport {
 
         global = geoServer.getGlobal();
         global.setAdminPassword("foo");
-//        global.setMaxFeatures(100);
+        // global.setMaxFeatures(100);
         global.setOnlineResource("bar");
 
         assertEquals(0, tl.gPropertyNames.size());
@@ -263,7 +267,8 @@ public class HibernateGeoserverTest extends HibTestSupport {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
-        public void handleLoggingChange(LoggingInfo logging, List<String> propertyNames, List<Object> oldValues, List<Object> newValues) {
+        public void handleLoggingChange(LoggingInfo logging, List<String> propertyNames,
+                List<Object> oldValues, List<Object> newValues) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 

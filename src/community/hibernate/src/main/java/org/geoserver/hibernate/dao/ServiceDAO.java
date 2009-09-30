@@ -9,13 +9,17 @@ import org.geoserver.config.ServiceInfo;
 public interface ServiceDAO {
 
     public abstract void save(ServiceInfo entity);
+
     public abstract void delete(ServiceInfo entity);
+
     public abstract void update(ServiceInfo entity);
 
     public abstract GeoServerInfo save(GeoServerInfo entity);
+
     public abstract void delete(GeoServerInfo entity);
+
     public abstract GeoServerInfo update(GeoServerInfo entity);
-    
+
     /**
      * 
      * @return
@@ -30,7 +34,7 @@ public interface ServiceDAO {
      * @return
      */
     public abstract <T extends ServiceInfo> T getService(String id, Class<T> clazz);
-    
+
     /**
      * 
      * @param <T>
@@ -39,14 +43,15 @@ public interface ServiceDAO {
      * @return
      */
     public abstract <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz);
-    
+
     /**
      * 
      * @param clazz
      * @return
      */
     public abstract Collection<? extends ServiceInfo> getServices(Class<?> clazz);
-    
+
     public void setLogging(LoggingInfo entity);
+
     public LoggingInfo getLogging();
 }

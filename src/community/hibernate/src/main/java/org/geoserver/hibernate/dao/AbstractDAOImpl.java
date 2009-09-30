@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Transactional
-public abstract class AbstractDAOImpl  {
+public abstract class AbstractDAOImpl {
 
     protected final Logger LOGGER = Logging.getLogger(AbstractDAOImpl.class);
 
@@ -38,32 +38,30 @@ public abstract class AbstractDAOImpl  {
         super();
     }
 
-
-    protected Query buildQuery(Object ... elems) {
-        final StringBuilder builder= new StringBuilder();
+    protected Query buildQuery(Object... elems) {
+        final StringBuilder builder = new StringBuilder();
         int cnt = 0;
-        for(Object elem : elems){
-            if(elem instanceof String)
+        for (Object elem : elems) {
+            if (elem instanceof String)
                 builder.append(elem);
-            else if(elem instanceof Class) {
-                Class mappedclass = HibMapper.mapHibernableClass((Class)elem);
+            else if (elem instanceof Class) {
+                Class mappedclass = HibMapper.mapHibernableClass((Class) elem);
                 builder.append(mappedclass.getSimpleName());
-            } else if(elem instanceof QueryParam) {
+            } else if (elem instanceof QueryParam) {
                 builder.append(":param").append(cnt++);
             }
         }
 
         Query query = entityManager.createQuery(builder.toString());
         cnt = 0;
-        for(Object elem : elems){
-            if(elem instanceof QueryParam) {
-                query.setParameter("param"+(cnt++), ((QueryParam)elem).param);
+        for (Object elem : elems) {
+            if (elem instanceof QueryParam) {
+                query.setParameter("param" + (cnt++), ((QueryParam) elem).param);
             }
         }
 
         return query;
     }
-
 
     protected static QueryParam param(Object param) {
         return new QueryParam(param);
@@ -77,14 +75,13 @@ public abstract class AbstractDAOImpl  {
             this.param = param;
         }
     }
-    
 
     /*
      */
-    protected  void save(Info entity) {
-        if(LOGGER.isLoggable(Level.INFO))
-        	LOGGER.info("Saving " + entity.getClass().getSimpleName());
-        if( !( entity instanceof Hibernable) )
+    protected void save(Info entity) {
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Saving " + entity.getClass().getSimpleName());
+        if (!(entity instanceof Hibernable))
             LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
         entityManager.persist(entity);
@@ -93,27 +90,26 @@ public abstract class AbstractDAOImpl  {
     /*
      */
     protected <T> T merge(T entity) {
-        if( !( entity instanceof Hibernable) )
+        if (!(entity instanceof Hibernable))
             LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
-        return (T)entityManager.merge(entity);
+        return (T) entityManager.merge(entity);
     }
 
     /*
      */
-    protected  void delete(CatalogInfo entity) {
-        if( !( entity instanceof Hibernable) )
+    protected void delete(CatalogInfo entity) {
+        if (!(entity instanceof Hibernable))
             LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
         CatalogInfo attached = entityManager.find(entity.getClass(), entity.getId());
-
 
         entityManager.remove(attached);
         entityManager.flush();// TODO useless?
     }
 
-    protected  void delete(Info entity) {
-        if( !( entity instanceof Hibernable) )
+    protected void delete(Info entity) {
+        if (!(entity instanceof Hibernable))
             LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
         entityManager.remove(entity);
@@ -137,51 +133,50 @@ public abstract class AbstractDAOImpl  {
     }
 
     protected Object first(final Query query, boolean doWarn) {
-        query.setMaxResults(doWarn?2:1);
+        query.setMaxResults(doWarn ? 2 : 1);
         List result = query.getResultList();
-        if( result.isEmpty()) {
+        if (result.isEmpty()) {
             return null;
         } else {
-            if(doWarn && result.size() > 1) {
-                LOGGER.log(Level.WARNING, "Found too many items in result", new RuntimeException("Trace: Found too many items in query"));
+            if (doWarn && result.size() > 1) {
+                LOGGER.log(Level.WARNING, "Found too many items in result", new RuntimeException(
+                        "Trace: Found too many items in query"));
             }
 
             Object ret = result.get(0);
-            if (ret instanceof HibernateProxy){
-                    HibernateProxy proxy = (HibernateProxy) ret;
-                    ret = proxy.getHibernateLazyInitializer().getImplementation();
+            if (ret instanceof HibernateProxy) {
+                HibernateProxy proxy = (HibernateProxy) ret;
+                ret = proxy.getHibernateLazyInitializer().getImplementation();
             }
 
             StringBuilder callerChain = new StringBuilder();
             int num = 0;
             for (StackTraceElement stackTraceElement : new Throwable().getStackTrace()) {
-                if("first".equals(stackTraceElement.getMethodName()))
+                if ("first".equals(stackTraceElement.getMethodName()))
                     continue;
                 String cname = stackTraceElement.getClassName();
-                if(cname.startsWith("org.spring"))
+                if (cname.startsWith("org.spring"))
                     continue;
-                cname = cname.substring(cname.lastIndexOf(".")+1);
-                callerChain
-                        .append(cname).append('.')
-                        .append(stackTraceElement.getMethodName()).append(':')
-                        .append(stackTraceElement.getLineNumber()).append(' ');
-//                if(++num==10) break;
+                cname = cname.substring(cname.lastIndexOf(".") + 1);
+                callerChain.append(cname).append('.').append(stackTraceElement.getMethodName())
+                        .append(':').append(stackTraceElement.getLineNumber()).append(' ');
+                // if(++num==10) break;
             }
 
-            if(LOGGER.isLoggable(Level.FINE))
-            	LOGGER.fine("FIRST -->"+ret.getClass().getSimpleName() + " --- " + ret + " { "+callerChain+"}");
+            if (LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine("FIRST -->" + ret.getClass().getSimpleName() + " --- " + ret + " { "
+                        + callerChain + "}");
             return ret;
         }
     }
 
-
     protected List<?> list(Class clazz) {
-        Query query = buildQuery("from " , clazz);
+        Query query = buildQuery("from ", clazz);
         List result = query.getResultList();
         return result;
     }
 
-    //==========================================================================
+    // ==========================================================================
 
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;

@@ -35,7 +35,6 @@ public class HibernateCatalogTest extends HibTestSupport {
     HibCatalogImpl catalog;
 
     CatalogDAO catalogDAO;
-    
 
     protected void onSetUpBeforeTransaction() throws Exception {
         super.onSetUpBeforeTransaction();
@@ -77,7 +76,8 @@ public class HibernateCatalogTest extends HibTestSupport {
         assertTrue("LayerGroups in the DB, can't proceed.", catalog.getLayerGroups().isEmpty());
         assertTrue("Layers in the DB, can't proceed.", catalog.getLayers().isEmpty());
         assertTrue("Datastores in the DB, can't proceed.", catalog.getDataStores().isEmpty());
-        assertTrue("Coveragestores in the DB, can't proceed.", catalog.getCoverageStores().isEmpty());
+        assertTrue("Coveragestores in the DB, can't proceed.", catalog.getCoverageStores()
+                .isEmpty());
         assertTrue("Coverages in the DB, can't proceed.", catalog.getCoverages().isEmpty());
         assertTrue("FeatureTypes in the DB, can't proceed.", catalog.getFeatureTypes().isEmpty());
         assertTrue("Maps in the DB, can't proceed.", catalog.getMaps().isEmpty());
@@ -95,9 +95,9 @@ public class HibernateCatalogTest extends HibTestSupport {
     }
 
     private void removeExistingNS() {
-//        for (NamespaceInfo namespaceInfo : ModificationProxy.unwrap(catalog.getNamespaces())) {
+        // for (NamespaceInfo namespaceInfo : ModificationProxy.unwrap(catalog.getNamespaces())) {
         for (NamespaceInfo namespaceInfo : catalogDAO.getNamespaces()) {
-//            namespaceInfo = ModificationProxy.unwrap(namespaceInfo);
+            // namespaceInfo = ModificationProxy.unwrap(namespaceInfo);
             catalog.remove(namespaceInfo);
         }
 
@@ -106,15 +106,15 @@ public class HibernateCatalogTest extends HibTestSupport {
         for (NamespaceInfo nsi : list) {
             sb.append(nsi.getName()).append("(").append(nsi.getId()).append(") ");
         }
-        if(!list.isEmpty())
-                LOGGER.severe("!!! Namespaces in the DB ("+sb+")");
+        if (!list.isEmpty())
+            LOGGER.severe("!!! Namespaces in the DB (" + sb + ")");
 
-        assertTrue("Namespaces in the DB ("+sb+"), can't proceed.", list.isEmpty());
+        assertTrue("Namespaces in the DB (" + sb + "), can't proceed.", list.isEmpty());
 
         for (WorkspaceInfo ws : ModificationProxy.unwrap(catalog.getWorkspaces())) {
             catalog.remove(ws);
         }
-        
+
         assertTrue("Workspaces in the DB, can't proceed.", catalog.getWorkspaces().isEmpty());
 
     }
@@ -183,7 +183,7 @@ public class HibernateCatalogTest extends HibTestSupport {
         removeExistingNS();
 
         endTransaction();
-        //----------------------------------------------------------------------
+        // ----------------------------------------------------------------------
         startNewTransaction();
 
         // store needs a workspace...
@@ -192,7 +192,7 @@ public class HibernateCatalogTest extends HibTestSupport {
         catalog.add(ws);
 
         endTransaction();
-        //----------------------------------------------------------------------
+        // ----------------------------------------------------------------------
         startNewTransaction();
 
         // create a new store
@@ -210,20 +210,23 @@ public class HibernateCatalogTest extends HibTestSupport {
         catalog.add(store);
 
         endTransaction();
-//        Logging.getLogger(this.getClass()).warning("##################### id:" + store.getId() + " name:"+store.getName() );
+        // Logging.getLogger(this.getClass()).warning("##################### id:" + store.getId() +
+        // " name:"+store.getName() );
 
-        //----------------------------------------------------------------------
-        startNewTransaction(); 
+        // ----------------------------------------------------------------------
+        startNewTransaction();
 
         List<CoverageStoreInfo> stores = catalog.getCoverageStores();
-//        for (CoverageStoreInfo storex : stores) {
-//            Logging.getLogger(this.getClass()).warning(":::::::::: id:" + storex.getId() + " name:"+storex.getName() );
-//        }
+        // for (CoverageStoreInfo storex : stores) {
+        // Logging.getLogger(this.getClass()).warning(":::::::::: id:" + storex.getId() +
+        // " name:"+storex.getName() );
+        // }
         assertEquals(1, stores.size());
-//        Logging.getLogger(this.getClass()).warning("::::::::::::::::::::: id:" + stores.get(0).getId() + " name:"+stores.get(0).getName() );
+        // Logging.getLogger(this.getClass()).warning("::::::::::::::::::::: id:" +
+        // stores.get(0).getId() + " name:"+stores.get(0).getName() );
 
         CoverageStoreInfo loadedStore = catalog.getCoverageStore(store.getId());
-        assertNotNull("Store "+store.getId()+" was not persisted properly.", loadedStore);
+        assertNotNull("Store " + store.getId() + " was not persisted properly.", loadedStore);
         assertEquals("coverageStore", loadedStore.getName());
         assertEquals("store description", loadedStore.getDescription());
         assertTrue(loadedStore.isEnabled());
@@ -276,7 +279,7 @@ public class HibernateCatalogTest extends HibTestSupport {
         // ensure no stores
         clearCatalog();
         removeExistingNS();
-        
+
         NamespaceInfo namespace = catalog.getFactory().createNamespace();
         namespace.setPrefix("topp");
         namespace.setURI("http://topp.openplans.org");
@@ -360,7 +363,7 @@ public class HibernateCatalogTest extends HibTestSupport {
         NamespaceInfo toppNamespace = catalog.getFactory().createNamespace();
         toppNamespace.setPrefix("topp2");
         toppNamespace.setURI("http://topp.openplans.org/default");
-        
+
         catalog.add(toppNamespace);
         catalog.setDefaultNamespace(toppNamespace);
 
@@ -379,7 +382,7 @@ public class HibernateCatalogTest extends HibTestSupport {
 
         endTransaction();
         startNewTransaction();
-        
+
         defaultNs = catalog.getDefaultNamespace();
         assertEquals(gsNamespace, defaultNs);
     }
@@ -390,7 +393,7 @@ public class HibernateCatalogTest extends HibTestSupport {
         // ensure no stores
         clearCatalog();
         removeExistingNS();
-        
+
         NamespaceInfo namespace = catalog.getFactory().createNamespace();
         namespace.setPrefix(getName());
         namespace.setURI("http://" + getName() + ".openplans.org");
@@ -441,13 +444,12 @@ public class HibernateCatalogTest extends HibTestSupport {
 
         endTransaction();
 
-
         startNewTransaction();
 
         FeatureTypeInfo loadedFeatureType = catalog.getFeatureType(refFeatureType.getId());
         assertNotNull(loadedFeatureType);
 
-        assertFalse( refFeatureType == loadedFeatureType );
+        assertFalse(refFeatureType == loadedFeatureType);
         refFeatureType = loadedFeatureType;
 
         assertEquals("featureType", refFeatureType.getName());
@@ -470,8 +472,8 @@ public class HibernateCatalogTest extends HibTestSupport {
         assertEquals(-90d, box.getMinY(), 0d);
         assertEquals(180d, box.getMaxX(), 0d);
         assertEquals(90d, box.getMaxY(), 0d);
-        assertTrue(CRS.equalsIgnoreMetadata(DefaultGeographicCRS.WGS84,
-                                            box.getCoordinateReferenceSystem()));
+        assertTrue(CRS.equalsIgnoreMetadata(DefaultGeographicCRS.WGS84, box
+                .getCoordinateReferenceSystem()));
 
         assertNotNull(refFeatureType.getNamespace());
         assertEquals(getName(), refFeatureType.getNamespace().getPrefix());
@@ -481,10 +483,12 @@ public class HibernateCatalogTest extends HibTestSupport {
         endTransaction();
 
         startNewTransaction();
-        loadedFeatureType = catalog.getFeatureTypeByName(namespace.getPrefix(), refFeatureType.getName());
+        loadedFeatureType = catalog.getFeatureTypeByName(namespace.getPrefix(), refFeatureType
+                .getName());
         assertNotNull(loadedFeatureType);
 
-        loadedFeatureType = catalog.getFeatureTypeByName(namespace.getURI(), refFeatureType.getName());
+        loadedFeatureType = catalog.getFeatureTypeByName(namespace.getURI(), refFeatureType
+                .getName());
         assertNotNull(loadedFeatureType);
     }
 
@@ -526,8 +530,10 @@ public class HibernateCatalogTest extends HibTestSupport {
         coverage.setSRS("EPSG:4326");
         coverage.setNamespace(namespace);
         coverage.setStore(coverageStore);
-        coverage.setNativeBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
-        coverage.setLatLonBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
+        coverage
+                .setNativeBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
+        coverage
+                .setLatLonBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
 
         coverage.setNativeFormat("nativeFormat");
         coverage.getSupportedFormats().add("supportedFormat1");
@@ -650,8 +656,8 @@ public class HibernateCatalogTest extends HibTestSupport {
         assertEquals(re.getMinX(), reReloaded.getMinX());
     }
 
-    private LayerInfo createLayer(WorkspaceInfo ws, String csname, String covname, String covnname, String covtitle, String lname)
-    {
+    private LayerInfo createLayer(WorkspaceInfo ws, String csname, String covname, String covnname,
+            String covtitle, String lname) {
         LayerInfo layer1;
 
         CoverageStoreInfo coverageStore = catalog.getFactory().createCoverageStore();
@@ -665,8 +671,10 @@ public class HibernateCatalogTest extends HibTestSupport {
         coverage.setNativeName(covnname);
         coverage.setTitle(covtitle);
         coverage.setStore(coverageStore);
-//        coverage.setNativeBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
-//        coverage.setLatLonBoundingBox(new ReferencedEnvelope(0, 0, 0, 0, DefaultGeographicCRS.WGS84));
+        // coverage.setNativeBoundingBox(new ReferencedEnvelope(0, 0, 0, 0,
+        // DefaultGeographicCRS.WGS84));
+        // coverage.setLatLonBoundingBox(new ReferencedEnvelope(0, 0, 0, 0,
+        // DefaultGeographicCRS.WGS84));
         catalog.add(coverage);
 
         layer1 = catalog.getFactory().createLayer();
@@ -675,7 +683,7 @@ public class HibernateCatalogTest extends HibTestSupport {
 
         logger.warn("LYID:     " + layer1.getId());
         logger.warn("COVERAGE: " + layer1.getResource());
-        logger.warn("COVSTORE: " + ((CoverageInfo)layer1.getResource()).getStore());
+        logger.warn("COVSTORE: " + ((CoverageInfo) layer1.getResource()).getStore());
 
         catalog.add(layer1);
 
@@ -685,6 +693,5 @@ public class HibernateCatalogTest extends HibTestSupport {
     public void setCatalogDAO(CatalogDAO catalogDAO) {
         this.catalogDAO = catalogDAO;
     }
-
 
 }

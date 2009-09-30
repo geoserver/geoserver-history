@@ -4,18 +4,17 @@ import org.geoserver.catalog.impl.*;
 import org.geoserver.hibernate.Hibernable;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class WorkspaceInfoImplHb 
-        extends WorkspaceInfoImpl
-        implements Hibernable {
+public class WorkspaceInfoImplHb extends WorkspaceInfoImpl implements Hibernable {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6838645169562127250L;
-	protected boolean _default; // todo: check how this property is handled in Main
+    private static final long serialVersionUID = 6838645169562127250L;
+
+    protected boolean _default; // todo: check how this property is handled in Main
 
     public WorkspaceInfoImplHb() {
     }

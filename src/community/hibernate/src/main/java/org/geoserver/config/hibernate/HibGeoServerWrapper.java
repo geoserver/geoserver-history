@@ -15,7 +15,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.hibernate.dao.ServiceDAO;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
 public class HibGeoServerWrapper implements GeoServer {
@@ -26,17 +26,17 @@ public class HibGeoServerWrapper implements GeoServer {
         this.delegate = delegate;
     }
 
-//    public void setTransactionManager(JpaTransactionManager dummy) {
-//        Logging.getLogger(HibGeoServerWrapper.class).warning("************* TransactionManager set ");
-//    }
-//
-//    public void setGeoserverLoader(HibGeoServerLoader dummy) {
-//        Logging.getLogger(HibGeoServerWrapper.class).warning("************* Loader set ");
-//    }
-//
-//    public void setCatalogInterceptor(HibCatalogInterceptor dummy) {
-//        Logging.getLogger(HibGeoServerWrapper.class).warning("************* Interceptor set ");
-//    }
+    // public void setTransactionManager(JpaTransactionManager dummy) {
+    // Logging.getLogger(HibGeoServerWrapper.class).warning("************* TransactionManager set ");
+    // }
+    //
+    // public void setGeoserverLoader(HibGeoServerLoader dummy) {
+    // Logging.getLogger(HibGeoServerWrapper.class).warning("************* Loader set ");
+    // }
+    //
+    // public void setCatalogInterceptor(HibCatalogInterceptor dummy) {
+    // Logging.getLogger(HibGeoServerWrapper.class).warning("************* Interceptor set ");
+    // }
 
     public void setServiceDAO(ServiceDAO serviceDAO) {
         delegate.setServiceDAO(serviceDAO);
@@ -141,5 +141,5 @@ public class HibGeoServerWrapper implements GeoServer {
     public void save(LoggingInfo logging) {
         delegate.save(logging);
     }
-    
+
 }

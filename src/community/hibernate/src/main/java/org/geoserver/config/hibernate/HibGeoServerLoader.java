@@ -6,15 +6,11 @@ package org.geoserver.config.hibernate;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -35,8 +31,6 @@ import org.geoserver.wcs.WCSInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.util.logging.Logging;
-import org.hibernate.SessionFactory;
-import org.hibernate.jmx.StatisticsService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.ApplicationContext;
@@ -47,36 +41,41 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 /**
  * Base class for initializing based on GeoServer configuration.
  * <p>
- * This class should  be subclassed in cases where some sort of system 
- * initialization must be carried out, and aspects of the initialization depend 
- * on GeoServer configuration.
+ * This class should be subclassed in cases where some sort of system initialization must be carried
+ * out, and aspects of the initialization depend on GeoServer configuration.
  * </p>
  * <p>
  * Instances of this class should be registered in a spring context. Example:
+ * 
  * <pre>
- *  &lt;bean id="geoServerLoader" class="GeoServerLoader"/>
+ *  &lt;bean id=&quot;geoServerLoader&quot; class=&quot;GeoServerLoader&quot;/&gt;
  * </pre>
+ * 
  * </p>
- 
+ * 
  * @author Justin Deoliveira, The Open Planning Project
- *
+ * 
  */
-public class HibGeoServerLoader
-        implements 
-//        BeanPostProcessor,
+public class HibGeoServerLoader implements
+// BeanPostProcessor,
         DisposableBean, ApplicationContextAware {
 
-    private final static Logger LOGGER = Logging.getLogger( HibGeoServerLoader.class );
-    
+    private final static Logger LOGGER = Logging.getLogger(HibGeoServerLoader.class);
+
     ApplicationContext applicationContext;
+
     GeoServerResourceLoader resourceLoader;
 
     GeoServer geoserver = null;
+
     Catalog catalog = null;
+
     boolean initDone = false;
+
     boolean tmInitted = false;
-    
-    public HibGeoServerLoader( GeoServerResourceLoader resourceLoader, HibGeoServerImpl geoserver, Catalog catalog ) {
+
+    public HibGeoServerLoader(GeoServerResourceLoader resourceLoader, HibGeoServerImpl geoserver,
+            Catalog catalog) {
         this.resourceLoader = resourceLoader;
         this.geoserver = geoserver.getProxy();
         this.catalog = catalog;
@@ -84,16 +83,16 @@ public class HibGeoServerLoader
         initialize();
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
-//        if( ! (applicationContext instanceof WebApplicationContext))
-//            throw new IllegalArgumentException("Expecting a WebApplicationContext, got a " + applicationContext.getClass().getName());
+        // if( ! (applicationContext instanceof WebApplicationContext))
+        // throw new IllegalArgumentException("Expecting a WebApplicationContext, got a " +
+        // applicationContext.getClass().getName());
 
-        GeoserverDataDirectory.init((WebApplicationContext)applicationContext);
+        GeoserverDataDirectory.init((WebApplicationContext) applicationContext);
         this.applicationContext = applicationContext;
     }
-    
+
     public final Object postProcessAfterInitialization(Object bean, String beanName)
             throws BeansException {
         return bean;
@@ -101,35 +100,36 @@ public class HibGeoServerLoader
 
     public final Object postProcessBeforeInitialization(Object bean, String beanName)
             throws BeansException {
-//        LOGGER.warning("postProcessBeforeInitialization " + beanName + " : " + bean.getClass().getSimpleName());
-//
-//        if ( bean instanceof GeoServer ) {
-//            LOGGER.warning("Initializing "+bean.getClass().getSimpleName()+" with " + resourceLoader + " ("+resourceLoader.getClass().getName()+") " );
-//            geoserver = (GeoServer) bean;
-//        } else if ( bean instanceof Catalog ) {
-//            LOGGER.warning("Initializing "+bean.getClass().getSimpleName()+" with " + resourceLoader + " ("+resourceLoader.getClass().getName()+") " );
-//            catalog = (Catalog) bean;
-//        }
-//
-//        if( "transactionManager".equals(beanName))
-//            tmInitted = true;
-//
-//        if(geoserver != null && catalog != null && tmInitted && ! initDone) {
-//            initialize();
-//            initDone = true;
-//        }
-//
+        // LOGGER.warning("postProcessBeforeInitialization " + beanName + " : " +
+        // bean.getClass().getSimpleName());
+        //
+        // if ( bean instanceof GeoServer ) {
+        // LOGGER.warning("Initializing "+bean.getClass().getSimpleName()+" with " + resourceLoader
+        // + " ("+resourceLoader.getClass().getName()+") " );
+        // geoserver = (GeoServer) bean;
+        // } else if ( bean instanceof Catalog ) {
+        // LOGGER.warning("Initializing "+bean.getClass().getSimpleName()+" with " + resourceLoader
+        // + " ("+resourceLoader.getClass().getName()+") " );
+        // catalog = (Catalog) bean;
+        // }
+        //
+        // if( "transactionManager".equals(beanName))
+        // tmInitted = true;
+        //
+        // if(geoserver != null && catalog != null && tmInitted && ! initDone) {
+        // initialize();
+        // initDone = true;
+        // }
+        //
         return bean;
     }
-    
-    protected void initialize() {
-        LOGGER.warning("Initializing " + this.getClass().getSimpleName() );
-        
 
+    protected void initialize() {
+        LOGGER.warning("Initializing " + this.getClass().getSimpleName());
 
         GeoServerInfo global = geoserver.getGlobal();
-        if(global == null) {            
-            global =  HibDefaultsFactoryImpl.createDefaultGeoServer(geoserver);
+        if (global == null) {
+            global = HibDefaultsFactoryImpl.createDefaultGeoServer(geoserver);
 
             HibDefaultsFactoryImpl.createDefaultServices(geoserver, global);
             HibDefaultsFactoryImpl.createDefaultXXXXspace(geoserver);
@@ -140,37 +140,36 @@ public class HibGeoServerLoader
             JAIInfo jai = global.getJAI();
             // we are missing the JAI info. This can be due by the fact that previous
             // run was made by a unit test
-            if(jai == null) {
+            if (jai == null) {
                 LOGGER.warning("Global is missing JAI info. Setting default ones...");
                 global.setJAI(geoserver.getFactory().createJAI());
                 geoserver.setGlobal(global);
 
-
             }
 
             WMSInfo wms = geoserver.getService(WMSInfo.class);
-            if(wms == null) {
+            if (wms == null) {
                 LOGGER.warning("Missing WMS service. Creating default one.");
                 HibDefaultsFactoryImpl.createWMS(global, geoserver);
             }
 
             WCSInfo wcs = geoserver.getService(WCSInfo.class);
-            if(wcs == null) {
+            if (wcs == null) {
                 LOGGER.warning("Missing WCS service. Creating default one.");
                 HibDefaultsFactoryImpl.createWCS(global, geoserver);
             }
 
             WFSInfo wfs = geoserver.getService(WFSInfo.class);
-            if(wfs == null) {
+            if (wfs == null) {
                 LOGGER.warning("Missing WFS service. Creating default one.");
                 HibDefaultsFactoryImpl.createWFS(global, geoserver);
             }
-            
+
         }
 
         // LOGGING
         LoggingInfo loggingInfo = geoserver.getLogging();
-        if(loggingInfo == null ) {
+        if (loggingInfo == null) {
             LOGGER.warning("Missing logging info. Creating default.");
             loggingInfo = this.geoserver.getFactory().createLogging();
             geoserver.setLogging(loggingInfo);
@@ -178,56 +177,57 @@ public class HibGeoServerLoader
         Catalog catalog = geoserver.getCatalog();
         catalog.setResourceLoader(resourceLoader);
 
-        if(catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
+        if (catalog instanceof Wrapper && ((Wrapper) catalog).isWrapperFor(Catalog.class)) {
             catalog = ((Wrapper) catalog).unwrap(Catalog.class);
         }
 
-
-        if(geoserver.getGlobal().getMetadata() != null) {
+        if (geoserver.getGlobal().getMetadata() != null) {
             for (String key : geoserver.getGlobal().getMetadata().keySet()) {
                 System.out.println("--- METADATA KEY: " + key);
             }
         }
 
-        //load initializer extensions
-        List<GeoServerInitializer> initializers = GeoServerExtensions.extensions( GeoServerInitializer.class );
-        for ( GeoServerInitializer initer : initializers ) {
+        // load initializer extensions
+        List<GeoServerInitializer> initializers = GeoServerExtensions
+                .extensions(GeoServerInitializer.class);
+        for (GeoServerInitializer initer : initializers) {
             try {
-                initer.initialize( geoserver );
-            }
-            catch( Throwable t ) {
-            	LOGGER.log(Level.WARNING,t.getLocalizedMessage(),t);
+                initer.initialize(geoserver);
+            } catch (Throwable t) {
+                LOGGER.log(Level.WARNING, t.getLocalizedMessage(), t);
             }
         }
-  
-        //load listeners
-//        List<CatalogListener> catalogListeners = GeoServerExtensions.extensions( CatalogListener.class );
-//        for ( CatalogListener l : catalogListeners ) {
-//            catalog.addListener( l );
-//        }
-//        List<ConfigurationListener> configListeners = GeoServerExtensions.extensions( ConfigurationListener.class );
-//        for ( ConfigurationListener l : configListeners ) {
-//            geoserver.addListener( l );
-//        }
- 
+
+        // load listeners
+        // List<CatalogListener> catalogListeners = GeoServerExtensions.extensions(
+        // CatalogListener.class );
+        // for ( CatalogListener l : catalogListeners ) {
+        // catalog.addListener( l );
+        // }
+        // List<ConfigurationListener> configListeners = GeoServerExtensions.extensions(
+        // ConfigurationListener.class );
+        // for ( ConfigurationListener l : configListeners ) {
+        // geoserver.addListener( l );
+        // }
+
     }
-    
+
     /**
-     * Does some post processing on the catalog to ensure that the "well-known" styles
-     * are always around.
+     * Does some post processing on the catalog to ensure that the "well-known" styles are always
+     * around.
      */
-    void initializeStyles( Catalog catalog ) {
-        if ( catalog.getStyleByName( StyleInfo.DEFAULT_POINT ) == null ) {
-            initializeStyle( catalog, StyleInfo.DEFAULT_POINT, "default_point.sld" );
+    void initializeStyles(Catalog catalog) {
+        if (catalog.getStyleByName(StyleInfo.DEFAULT_POINT) == null) {
+            initializeStyle(catalog, StyleInfo.DEFAULT_POINT, "default_point.sld");
         }
-        if ( catalog.getStyleByName( StyleInfo.DEFAULT_LINE ) == null ) {
-            initializeStyle( catalog, StyleInfo.DEFAULT_LINE, "default_line.sld" );
+        if (catalog.getStyleByName(StyleInfo.DEFAULT_LINE) == null) {
+            initializeStyle(catalog, StyleInfo.DEFAULT_LINE, "default_line.sld");
         }
-        if ( catalog.getStyleByName( StyleInfo.DEFAULT_POLYGON ) == null ) {
-            initializeStyle( catalog, StyleInfo.DEFAULT_POLYGON, "default_line.sld" );
+        if (catalog.getStyleByName(StyleInfo.DEFAULT_POLYGON) == null) {
+            initializeStyle(catalog, StyleInfo.DEFAULT_POLYGON, "default_line.sld");
         }
-        if ( catalog.getStyleByName( StyleInfo.DEFAULT_RASTER ) == null ) {
-            initializeStyle( catalog, StyleInfo.DEFAULT_RASTER, "raster.sld" );
+        if (catalog.getStyleByName(StyleInfo.DEFAULT_RASTER) == null) {
+            initializeStyle(catalog, StyleInfo.DEFAULT_RASTER, "raster.sld");
         }
 
         File styleDir = null;
@@ -236,7 +236,7 @@ public class HibGeoServerLoader
         } catch (IOException ex) {
             Logger.getLogger(HibGeoServerLoader.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(styleDir == null) {
+        if (styleDir == null) {
             LOGGER.severe("Can't find styles dir.");
             return;
         }
@@ -244,7 +244,7 @@ public class HibGeoServerLoader
         String[] sldlist = styleDir.list(new SuffixFileFilter(".sld"));
         for (String sldfilename : sldlist) {
             String stylename = FilenameUtils.getBaseName(sldfilename);
-            if(catalog.getStyleByName(stylename) != null) {
+            if (catalog.getStyleByName(stylename) != null) {
                 LOGGER.info("Style " + stylename + "exists.");
                 continue;
             }
@@ -254,69 +254,71 @@ public class HibGeoServerLoader
             style.setFilename(FilenameUtils.getName(sldfilename));
 
             try {
-                if(LOGGER.isLoggable(Level.INFO))
-                	LOGGER.info("Importing SLD " + style.getName() + " in file " + sldfilename);
+                if (LOGGER.isLoggable(Level.INFO))
+                    LOGGER.info("Importing SLD " + style.getName() + " in file " + sldfilename);
                 catalog.add(style);
             } catch (Exception e) {
-                LOGGER.severe("Could not import SLD " + style.getName() + " in file " + sldfilename);
+                LOGGER
+                        .severe("Could not import SLD " + style.getName() + " in file "
+                                + sldfilename);
             }
         }
 
     }
-    
+
     /**
      * Copies a well known style out to the data directory and adds a catalog entry for it.
      */
-    private void initializeStyle( Catalog catalog, String styleName, String sld ) {
-        
-        //copy the file out to the data directory if necessary
+    private void initializeStyle(Catalog catalog, String styleName, String sld) {
+
+        // copy the file out to the data directory if necessary
         try {
             if (resourceLoader.find("styles", sld) == null) {
-                FileUtils.copyURLToFile(getClass().getResource(sld),new File(resourceLoader.find("styles"), sld));
+                FileUtils.copyURLToFile(getClass().getResource(sld), new File(resourceLoader
+                        .find("styles"), sld));
             }
         } catch (Throwable ex) {
             LOGGER.log(Level.SEVERE, "Could not import SLD " + styleName, ex);
             return;
         }
-        
-        //create a style for it
+
+        // create a style for it
         StyleInfo s = catalog.getFactory().createStyle();
-        s.setName( styleName );
-        s.setFilename( sld );
-        catalog.add( s );
+        s.setName(styleName);
+        s.setFilename(sld);
+        catalog.add(s);
     }
-    
+
     public void reload() throws Exception {
         destroy();
         initialize();
     }
-    
-    @SuppressWarnings("unchecked")
-	public void destroy() throws Exception {
-        //TODO: persist catalog
-        //TODO: persist global
 
-        //persist services
+    @SuppressWarnings("unchecked")
+    public void destroy() throws Exception {
+        // TODO: persist catalog
+        // TODO: persist global
+
+        // persist services
         Collection<? extends ServiceInfo> services = geoserver.getServices();
-        List<ServiceLoader> loaders = GeoServerExtensions.extensions( ServiceLoader.class );
-        
-        for ( Iterator<? extends ServiceInfo> s = services.iterator(); s.hasNext(); ) {
+        List<ServiceLoader> loaders = GeoServerExtensions.extensions(ServiceLoader.class);
+
+        for (Iterator<? extends ServiceInfo> s = services.iterator(); s.hasNext();) {
             ServiceInfo service = (ServiceInfo) s.next();
-            for ( ServiceLoader loader : loaders ) {
-                if ( loader.getServiceClass().equals(service.getClass()) ) { // TODO ETJ FIXMEEEEEEE
+            for (ServiceLoader loader : loaders) {
+                if (loader.getServiceClass().equals(service.getClass())) { // TODO ETJ FIXMEEEEEEE
                     try {
-                        loader.save( service, geoserver );
+                        loader.save(service, geoserver);
                         break;
-                    }
-                    catch( Throwable t ) {
-                        LOGGER.warning( "Error persisting service: " + service.getId() );
-                        LOGGER.log( Level.INFO, "", t );
+                    } catch (Throwable t) {
+                        LOGGER.warning("Error persisting service: " + service.getId());
+                        LOGGER.log(Level.INFO, "", t);
                     }
                 }
             }
         }
-        
-        //dispose
+
+        // dispose
         geoserver.dispose();
     }
 }
