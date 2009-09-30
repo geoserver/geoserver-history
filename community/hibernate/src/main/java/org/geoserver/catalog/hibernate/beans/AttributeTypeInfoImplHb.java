@@ -8,22 +8,22 @@ import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 
 /**
- *
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class AttributeTypeInfoImplHb 
-    extends AttributeTypeInfoImpl
-    implements AttributeTypeInfo, Hibernable{
+public class AttributeTypeInfoImplHb extends AttributeTypeInfoImpl implements AttributeTypeInfo,
+        Hibernable {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -1557548009925638462L;
-	protected String id;
+    private static final long serialVersionUID = -1557548009925638462L;
+
+    protected String id;
 
     /**
      * Get the value of id
-     *
+     * 
      * @return the value of id
      */
     public String getId() {
@@ -32,8 +32,9 @@ public class AttributeTypeInfoImplHb
 
     /**
      * Set the value of id
-     *
-     * @param id new value of id
+     * 
+     * @param id
+     *            new value of id
      */
     public void setId(String id) {
         this.id = id;

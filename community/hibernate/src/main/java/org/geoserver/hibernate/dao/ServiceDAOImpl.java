@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class ServiceDAOImpl extends AbstractDAOImpl implements ServiceDAO {
-    
+
     /**
      * Constructor for HibernateDAO.
      */
@@ -34,38 +34,38 @@ public class ServiceDAOImpl extends AbstractDAOImpl implements ServiceDAO {
     /**
      * 
      */
-    public  GeoServerInfo getGeoServer() {
+    public GeoServerInfo getGeoServer() {
         Query query = buildQuery("from ", GeoServerInfoImplHb.class);
-        return (GeoServerInfo)first(query, true);
+        return (GeoServerInfo) first(query, true);
     }
 
     /**
      * 
      */
-    public  Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
+    public Collection<? extends ServiceInfo> getServices(Class<?> clazz) {
         Class clazz2 = HibMapper.mapHibernableClass(clazz);
         Query query = buildQuery("from ", clazz2);
-        return (Collection<? extends ServiceInfo>)query.getResultList();
+        return (Collection<? extends ServiceInfo>) query.getResultList();
 
     }
 
     /**
      * 
      */
-    public  <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
+    public <T extends ServiceInfo> T getService(String id, Class<T> clazz) {
         Class clazz2 = HibMapper.mapHibernableClass(clazz);
-        Query query = buildQuery("from " , clazz2 , " where id = " , param(id) );
-        return (T)first(query);
+        Query query = buildQuery("from ", clazz2, " where id = ", param(id));
+        return (T) first(query);
 
     }
 
     /**
      * 
      */
-    public  <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
-        Query query = buildQuery("from ", clazz, " where name = " , param(name) );
+    public <T extends ServiceInfo> T getServiceByName(String name, Class<T> clazz) {
+        Query query = buildQuery("from ", clazz, " where name = ", param(name));
         List result = query.getResultList();
-        if(result.isEmpty()) {
+        if (result.isEmpty()) {
             return null;
         } else {
             T service = (T) result.get(0);
@@ -106,8 +106,8 @@ public class ServiceDAOImpl extends AbstractDAOImpl implements ServiceDAO {
     }
 
     public void setLogging(LoggingInfo entity) {
-        LoggingInfoImplHb old = (LoggingInfoImplHb)getLogging();
-        if(old == null) {
+        LoggingInfoImplHb old = (LoggingInfoImplHb) getLogging();
+        if (old == null) {
             entityManager.persist(entity);
         } else {
             old.copyFrom(entity);
@@ -117,6 +117,6 @@ public class ServiceDAOImpl extends AbstractDAOImpl implements ServiceDAO {
 
     public LoggingInfo getLogging() {
         Query query = buildQuery("from ", LoggingInfoImplHb.class);
-        return (LoggingInfo)first(query);
+        return (LoggingInfo) first(query);
     }
 }

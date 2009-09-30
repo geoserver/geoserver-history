@@ -97,6 +97,23 @@
     <property column="CONTENT" name="content"/>
   </class>
   <!-- ===================================================================== -->
+  <!-- CoverageDimension -->
+  <!-- ===================================================================== -->
+  <class name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" table="COVERAGE_DIMENSIONS">
+    <cache usage="read-write"/>
+    <id column="ID" name="id">
+      <generator class="native"/>
+    </id>
+    <property column="NAME" name="name"/>
+    <property column="DESCRIPTION" name="description"/>
+    <property column="RANGE" name="range" type="org.geotools.util.NumberRange"/>
+    <list cascade="all" lazy="false" name="nullValues" table="COV_DIM_NULL_VALUES">
+      <key column="ID"/>
+      <list-index column="COV_DIM_NULLS_INDEX"/>
+      <element type="java.lang.Double"/>
+    </list>
+  </class>
+  <!-- ===================================================================== -->
   <!-- ResourceInfo -->
   <!-- ===================================================================== -->
   <class abstract="true" name="org.geoserver.catalog.impl.ResourceInfoImpl" table="RESOURCES">
@@ -190,6 +207,11 @@
       <key column="COVERAGE_ID"/>
       <list-index column="CV_INTERP_METHOD_INDEX"/>
       <element type="java.lang.String"/>
+    </list>
+    <list cascade="all" lazy="false" name="dimensions" table="RESOURCE_COV_DIMENSION">
+      <key column="RESOURCE_ID"/>
+      <list-index column="COV_DIMENSION_INDEX"/>
+      <many-to-many class="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" lazy="false"/>
     </list>
     <map cascade="all" lazy="false" name="parameters" table="COVERAGE_PARAMETERS">
       <key column="COVERAGE_ID"/>

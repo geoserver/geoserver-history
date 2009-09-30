@@ -26,8 +26,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-public class HibGeoServerFactoryImpl
-        implements GeoServerFactory, ApplicationContextAware , Serializable{
+public class HibGeoServerFactoryImpl implements GeoServerFactory, ApplicationContextAware,
+        Serializable {
 
     /**
      *
@@ -52,7 +52,8 @@ public class HibGeoServerFactoryImpl
 
     public <T> T create(Class<T> clazz) {
         if (applicationContext != null) {
-            final Collection extensions = applicationContext.getBeansOfType(GeoServerFactory.Extension.class).values();
+            final Collection extensions = applicationContext.getBeansOfType(
+                    GeoServerFactory.Extension.class).values();
             for (Iterator e = extensions.iterator(); e.hasNext();) {
                 Extension extension = (Extension) e.next();
                 if (extension.canCreate(clazz)) {
@@ -65,8 +66,7 @@ public class HibGeoServerFactoryImpl
         return null;
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 

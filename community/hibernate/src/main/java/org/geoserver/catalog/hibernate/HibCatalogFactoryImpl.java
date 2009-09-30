@@ -86,7 +86,7 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
         return null;
     }
 
-    public AttributeTypeInfo createAttribute() {        
+    public AttributeTypeInfo createAttribute() {
         return new AttributeTypeInfoImplHb();
     }
 

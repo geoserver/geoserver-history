@@ -75,41 +75,44 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
-
 /**
  * A {@link Catalog} implementation based on Hibernate
- *
+ * 
  * @author ETj
  */
 
-public class HibCatalogImpl
-        implements Catalog, Serializable, ApplicationContextAware {
-
-
+public class HibCatalogImpl implements Catalog, Serializable, ApplicationContextAware {
 
     private final static Logger LOGGER = Logging.getLogger(HibCatalogImpl.class);
+
     /**
      *
      */
     private SoftValueHashMap<String, ResourceInfo> resourceInfoCache = new SoftValueHashMap<String, ResourceInfo>();
+
     /**
      *
      */
     private CatalogDAO catalogDAO;
+
     /**
      * Flag indicating whether events are fired on commit or as they happen
      */
     private boolean fireEventsOnCommit = false;
+
     /**
      * listeners
      */
     private List<CatalogListener> listeners = new ArrayList<CatalogListener>();
+
     /**
      * events
-     *
+     * 
      * TODO: ETJ rework this: what do we need the key for in this map?
      */
-    private Map<HibCatalogImpl, CatalogEvent> events = Collections.synchronizedMap(new MultiHashMap());
+    private Map<HibCatalogImpl, CatalogEvent> events = Collections
+            .synchronizedMap(new MultiHashMap());
+
     /**
      * resources
      */
@@ -125,9 +128,8 @@ public class HibCatalogImpl
         listeners.add(new HibCatalogUpdater());
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
-        GeoserverDataDirectory.init((WebApplicationContext)applicationContext);
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        GeoserverDataDirectory.init((WebApplicationContext) applicationContext);
     }
 
     /**
@@ -139,8 +141,7 @@ public class HibCatalogImpl
     }
 
     /**
-     * Sets whether to fire events on commits, intended to be used by unit tests
-     * only?
+     * Sets whether to fire events on commits, intended to be used by unit tests only?
      */
     void setFireEventsOnCommit(boolean fireEventsOnCommit) {
         this.fireEventsOnCommit = fireEventsOnCommit;
@@ -153,44 +154,45 @@ public class HibCatalogImpl
     // Store methods
     public void add(StoreInfo store) {
 
-    if(LOGGER.isLoggable(Level.INFO))
-    	LOGGER.info("Adding store " +  store.getClass().getSimpleName() + " " + store.getName() );
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Adding store " + store.getClass().getSimpleName() + " " + store.getName());
 
-        if ( store.getWorkspace() == null ) {
-            store.setWorkspace( catalogDAO.getDefaultWorkspace() );
+        if (store.getWorkspace() == null) {
+            store.setWorkspace(catalogDAO.getDefaultWorkspace());
         }
-        
+
         validate(store, true);
         resolve(store);
         StoreInfo unwrapped = ModificationProxy.unwrap(store);
         unwrapped.setWorkspace(ModificationProxy.unwrap(unwrapped.getWorkspace()));
         catalogDAO.save(unwrapped);
-        ((StoreInfoImpl)store).setId(store.getId()); // make the ModificationProxy aware of the id
-        if(LOGGER.isLoggable(Level.INFO))
-        	LOGGER.info("Added store " +  store.getClass().getSimpleName()
-                        + "[id: " + store.getId() + " name:" + store.getName() + "]");
+        ((StoreInfoImpl) store).setId(store.getId()); // make the ModificationProxy aware of the id
+        if (LOGGER.isLoggable(Level.INFO))
+            LOGGER.info("Added store " + store.getClass().getSimpleName() + "[id: " + store.getId()
+                    + " name:" + store.getName() + "]");
         added(store);
     }
 
     void validate(StoreInfo store, boolean isNew) {
-        if ( isNull(store.getName()) ) {
-            throw new IllegalArgumentException( "Store name must not be null");
+        if (isNull(store.getName())) {
+            throw new IllegalArgumentException("Store name must not be null");
         }
-        if ( store.getWorkspace() == null ) {
-            throw new IllegalArgumentException( "Store must be part of a workspace");
+        if (store.getWorkspace() == null) {
+            throw new IllegalArgumentException("Store must be part of a workspace");
         }
 
         WorkspaceInfo workspace = store.getWorkspace();
-        StoreInfo existing = getStoreByName( workspace, store.getName(), StoreInfo.class );
-        if ( existing != null && !existing.getId().equals( store.getId() )) {
-            String msg = "Store '"+ store.getName() +"' already exists in workspace '"+workspace.getName()+"'";
-            throw new IllegalArgumentException( msg );
+        StoreInfo existing = getStoreByName(workspace, store.getName(), StoreInfo.class);
+        if (existing != null && !existing.getId().equals(store.getId())) {
+            String msg = "Store '" + store.getName() + "' already exists in workspace '"
+                    + workspace.getName() + "'";
+            throw new IllegalArgumentException(msg);
         }
     }
 
     public void remove(StoreInfo store) {
-        if ( !getResourcesByStore(store, ResourceInfo.class).isEmpty() ) {
-            throw new IllegalArgumentException( "Unable to delete non-empty store.");
+        if (!getResourcesByStore(store, ResourceInfo.class).isEmpty()) {
+            throw new IllegalArgumentException("Unable to delete non-empty store.");
         }
         store = unwrap(store);
         catalogDAO.delete(store);
@@ -200,9 +202,9 @@ public class HibCatalogImpl
     public void save(StoreInfo store) {
         validate(store, false);
 
-        if ( store.getId() == null ) {
-            //add it instead of saving
-            add( store );
+        if (store.getId() == null) {
+            // add it instead of saving
+            add(store);
             return;
         }
 
@@ -210,23 +212,22 @@ public class HibCatalogImpl
     }
 
     private Class<? extends StoreInfo> mapStoreClass(StoreInfo store) {
-        if(store instanceof DataStoreInfo)
+        if (store instanceof DataStoreInfo)
             return DataStoreInfo.class;
-        else if(store instanceof CoverageStoreInfo)
+        else if (store instanceof CoverageStoreInfo)
             return CoverageStoreInfo.class;
         else
             return StoreInfo.class; // should not happen
     }
 
     private Class<? extends ResourceInfo> mapResourceClass(ResourceInfo resource) {
-        if(resource instanceof FeatureTypeInfo)
+        if (resource instanceof FeatureTypeInfo)
             return FeatureTypeInfo.class;
-        else if(resource instanceof CoverageInfo)
+        else if (resource instanceof CoverageInfo)
             return CoverageInfo.class;
         else
             return ResourceInfo.class; // should not happen
     }
-
 
     protected <T> T createProxy(T obj, Class<T> clazz) {
         return obj;
@@ -236,66 +237,63 @@ public class HibCatalogImpl
         return list;
     }
 
-
     public <T extends StoreInfo> T getStore(String id, Class<T> clazz) {
         StoreInfo store = catalogDAO.getStore(id, clazz);
-        if(store == null) {
+        if (store == null) {
             return null;
         } else {
             resolve(store);
-            return createProxy( (T) store, (Class<T>)mapStoreClass(store) );
+            return createProxy((T) store, (Class<T>) mapStoreClass(store));
         }
     }
 
     public <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz) {
-       T freestore = getStoreByName( (WorkspaceInfo) null, name, clazz );
-       if ( freestore != null ) {
-           return freestore;
-       }
+        T freestore = getStoreByName((WorkspaceInfo) null, name, clazz);
+        if (freestore != null) {
+            return freestore;
+        }
 
-       //look for secondary match
-       List matches = catalogDAO.getStoresByName(name, clazz);
-       if ( matches.size() == 1 ) {
-           StoreInfo store = (StoreInfo) matches.get(0);
-           resolve(store);
-           return createProxy( (T) store, (Class<T>)mapStoreClass(store));
-       }
+        // look for secondary match
+        List matches = catalogDAO.getStoresByName(name, clazz);
+        if (matches.size() == 1) {
+            StoreInfo store = (StoreInfo) matches.get(0);
+            resolve(store);
+            return createProxy((T) store, (Class<T>) mapStoreClass(store));
+        }
 
-       return null;
+        return null;
     }
 
-    public <T extends StoreInfo> T getStoreByName(WorkspaceInfo workspace,
-            String name, Class<T> clazz) {
+    public <T extends StoreInfo> T getStoreByName(WorkspaceInfo workspace, String name,
+            Class<T> clazz) {
 
-        if ( workspace == null ) {
+        if (workspace == null) {
             workspace = catalogDAO.getDefaultWorkspace();
         } else {
             workspace = ModificationProxy.unwrap(workspace);
         }
 
         StoreInfo store = catalogDAO.getStoreByName(workspace, name, clazz);
-        if(store == null) {
+        if (store == null) {
             return null;
         } else {
             resolve(store);
-            return createProxy( (T) store, (Class<T>)mapStoreClass(store) );
+            return createProxy((T) store, (Class<T>) mapStoreClass(store));
         }
 
     }
 
-    public <T extends StoreInfo> T getStoreByName(String workspaceName,
-           String name, Class<T> clazz) {
-        return getStoreByName(
-            workspaceName != null ? getWorkspaceByName(workspaceName) : null, name, clazz);
+    public <T extends StoreInfo> T getStoreByName(String workspaceName, String name, Class<T> clazz) {
+        return getStoreByName(workspaceName != null ? getWorkspaceByName(workspaceName) : null,
+                name, clazz);
     }
 
-    public <T extends StoreInfo> List<T> getStoresByWorkspace(
-            String workspaceName, Class<T> clazz) {
+    public <T extends StoreInfo> List<T> getStoresByWorkspace(String workspaceName, Class<T> clazz) {
 
         WorkspaceInfo workspace = null;
-        if ( workspaceName != null ) {
+        if (workspaceName != null) {
             workspace = getWorkspaceByName(workspaceName);
-            if ( workspace == null ) {
+            if (workspace == null) {
                 return Collections.EMPTY_LIST;
             }
         }
@@ -303,30 +301,30 @@ public class HibCatalogImpl
         return getStoresByWorkspace(workspace, clazz);
     }
 
-    public <T extends StoreInfo> List<T> getStoresByWorkspace(
-            WorkspaceInfo workspace, Class<T> clazz) {
+    public <T extends StoreInfo> List<T> getStoresByWorkspace(WorkspaceInfo workspace,
+            Class<T> clazz) {
 
-        if ( workspace == null ) {
+        if (workspace == null) {
             workspace = catalogDAO.getDefaultWorkspace();
         } else
             workspace = ModificationProxy.unwrap(workspace);
 
         List matches = catalogDAO.getStoresByWorkspace(workspace, clazz);
 
-        for (StoreInfo store : (List<StoreInfo>)matches) {
+        for (StoreInfo store : (List<StoreInfo>) matches) {
             resolve(store);
         }
 
-        Class proxyclass = matches.isEmpty() ? clazz : mapStoreClass((StoreInfo)matches.get(0));
+        Class proxyclass = matches.isEmpty() ? clazz : mapStoreClass((StoreInfo) matches.get(0));
         return createProxyList(matches, proxyclass);
     }
 
     public List getStores(Class clazz) {
         List stores = catalogDAO.getStores(clazz);
-        for (StoreInfo store : (List<StoreInfo>)stores) {
+        for (StoreInfo store : (List<StoreInfo>) stores) {
             resolve(store);
         }
-        Class proxyclass = stores.isEmpty() ? clazz : mapStoreClass((StoreInfo)stores.get(0));
+        Class proxyclass = stores.isEmpty() ? clazz : mapStoreClass((StoreInfo) stores.get(0));
         return createProxyList(stores, proxyclass);
     }
 
@@ -335,7 +333,7 @@ public class HibCatalogImpl
     }
 
     public DataStoreInfo getDataStoreByName(String name) {
-        return (DataStoreInfo) getStoreByName(name,DataStoreInfo.class);
+        return (DataStoreInfo) getStoreByName(name, DataStoreInfo.class);
     }
 
     public DataStoreInfo getDataStoreByName(String workspaceName, String name) {
@@ -347,11 +345,11 @@ public class HibCatalogImpl
     }
 
     public List<DataStoreInfo> getDataStoresByWorkspace(String workspaceName) {
-        return getStoresByWorkspace( workspaceName, DataStoreInfo.class );
+        return getStoresByWorkspace(workspaceName, DataStoreInfo.class);
     }
 
     public List<DataStoreInfo> getDataStoresByWorkspace(WorkspaceInfo workspace) {
-        return getStoresByWorkspace( workspace, DataStoreInfo.class );
+        return getStoresByWorkspace(workspace, DataStoreInfo.class);
     }
 
     public List<DataStoreInfo> getDataStores() {
@@ -366,24 +364,20 @@ public class HibCatalogImpl
         return (CoverageStoreInfo) getStoreByName(name, CoverageStoreInfo.class);
     }
 
-    public CoverageStoreInfo getCoverageStoreByName(String workspaceName,
-            String name) {
-        return getStoreByName(workspaceName,name,CoverageStoreInfo.class);
+    public CoverageStoreInfo getCoverageStoreByName(String workspaceName, String name) {
+        return getStoreByName(workspaceName, name, CoverageStoreInfo.class);
     }
 
-    public CoverageStoreInfo getCoverageStoreByName(WorkspaceInfo workspace,
-            String name) {
-        return getStoreByName(workspace, name,CoverageStoreInfo.class);
+    public CoverageStoreInfo getCoverageStoreByName(WorkspaceInfo workspace, String name) {
+        return getStoreByName(workspace, name, CoverageStoreInfo.class);
     }
 
-    public List<CoverageStoreInfo> getCoverageStoresByWorkspace(
-            String workspaceName) {
-        return getStoresByWorkspace( workspaceName, CoverageStoreInfo.class );
+    public List<CoverageStoreInfo> getCoverageStoresByWorkspace(String workspaceName) {
+        return getStoresByWorkspace(workspaceName, CoverageStoreInfo.class);
     }
 
-    public List<CoverageStoreInfo> getCoverageStoresByWorkspace(
-            WorkspaceInfo workspace) {
-        return getStoresByWorkspace( workspace, CoverageStoreInfo.class );
+    public List<CoverageStoreInfo> getCoverageStoresByWorkspace(WorkspaceInfo workspace) {
+        return getStoresByWorkspace(workspace, CoverageStoreInfo.class);
     }
 
     public List<CoverageStoreInfo> getCoverageStores() {
@@ -392,14 +386,14 @@ public class HibCatalogImpl
 
     // Resource methods
     public void add(ResourceInfo resource) {
-        if ( resource.getNamespace() == null ) {
-            //default to default namespace
-            resource.setNamespace( catalogDAO.getDefaultNamespace() );
+        if (resource.getNamespace() == null) {
+            // default to default namespace
+            resource.setNamespace(catalogDAO.getDefaultNamespace());
         }
 
-        validate(resource,true);
+        validate(resource, true);
         resolve(resource);
-//        resources.put(resource.getClass(), resource);
+        // resources.put(resource.getClass(), resource);
         ResourceInfo unwrappedResource = ModificationProxy.unwrap(resource);
         unwrappedResource.setNamespace(ModificationProxy.unwrap(unwrappedResource.getNamespace()));
         StoreInfo unwrappedStore = ModificationProxy.unwrap(resource.getStore());
@@ -413,36 +407,38 @@ public class HibCatalogImpl
     }
 
     void validate(ResourceInfo resource, boolean isNew) {
-        if ( isNull(resource.getName()) ) {
-            throw new NullPointerException( "Resource name must not be null");
+        if (isNull(resource.getName())) {
+            throw new NullPointerException("Resource name must not be null");
         }
-        if ( resource.getStore() == null ) {
-            throw new IllegalArgumentException( "Resource must be part of a store");
+        if (resource.getStore() == null) {
+            throw new IllegalArgumentException("Resource must be part of a store");
         }
-        if ( resource.getNamespace() == null ) {
-            throw new IllegalArgumentException( "Resource must be part of a namespace");
+        if (resource.getNamespace() == null) {
+            throw new IllegalArgumentException("Resource must be part of a namespace");
         }
 
         StoreInfo store = resource.getStore();
-        ResourceInfo existing = getResourceByStore( store, resource.getName(), ResourceInfo.class);
-        if ( existing != null && !existing.getId().equals( resource.getId() ) ) {
-            String msg = "Resource named '"+resource.getName()+"' already exists in store: '"+ store.getName()+"'";
-            throw new IllegalArgumentException( msg );
+        ResourceInfo existing = getResourceByStore(store, resource.getName(), ResourceInfo.class);
+        if (existing != null && !existing.getId().equals(resource.getId())) {
+            String msg = "Resource named '" + resource.getName() + "' already exists in store: '"
+                    + store.getName() + "'";
+            throw new IllegalArgumentException(msg);
         }
 
         NamespaceInfo namespace = resource.getNamespace();
-        existing =  getResourceByName( namespace, resource.getName(), ResourceInfo.class);
-        if ( existing != null && !existing.getId().equals( resource.getId() ) ) {
-            String msg = "Resource named '"+resource.getName()+"' already exists in namespace: '"+ namespace.getPrefix()+"'";
-            throw new IllegalArgumentException( msg );
+        existing = getResourceByName(namespace, resource.getName(), ResourceInfo.class);
+        if (existing != null && !existing.getId().equals(resource.getId())) {
+            String msg = "Resource named '" + resource.getName()
+                    + "' already exists in namespace: '" + namespace.getPrefix() + "'";
+            throw new IllegalArgumentException(msg);
         }
 
     }
 
     public void remove(ResourceInfo resource) {
-        //ensure no references to the resource
-        if ( !getLayers( resource ).isEmpty() ) {
-            throw new IllegalArgumentException( "Unable to delete resource referenced by layer");
+        // ensure no references to the resource
+        if (!getLayers(resource).isEmpty()) {
+            throw new IllegalArgumentException("Unable to delete resource referenced by layer");
         }
         resource = unwrap(resource);
         catalogDAO.delete(resource);
@@ -450,230 +446,229 @@ public class HibCatalogImpl
     }
 
     public void save(ResourceInfo resource) {
-        validate(resource,false);
+        validate(resource, false);
         saved(resource);
     }
 
     public <T extends ResourceInfo> T getResource(String id, Class<T> clazz) {
         ResourceInfo resource = catalogDAO.getResource(id, clazz);
-        if(resource == null)
+        if (resource == null)
             return null;
         else {
             resolve(resource);
-            return createProxy((T) resource, clazz );
+            return createProxy((T) resource, clazz);
         }
-//            ModificationProxy.create((T) resource, clazz );
+        // ModificationProxy.create((T) resource, clazz );
 
-//        List l = lookup(clazz, resources);
-//        for (Iterator i = l.iterator(); i.hasNext();) {
-//            ResourceInfo resource = (ResourceInfo) i.next();
-//            if (id.equals(resource.getId())) {
-//                return ModificationProxy.create((T) resource, clazz );
-//            }
-//        }
-//
-//        return null;
+        // List l = lookup(clazz, resources);
+        // for (Iterator i = l.iterator(); i.hasNext();) {
+        // ResourceInfo resource = (ResourceInfo) i.next();
+        // if (id.equals(resource.getId())) {
+        // return ModificationProxy.create((T) resource, clazz );
+        // }
+        // }
+        //
+        // return null;
     }
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
 
         NamespaceInfo namespace = null;
-        if ("".equals( ns ) ) {
+        if ("".equals(ns)) {
             ns = null;
         }
-        if ( ns == null ) {
-            //if namespace was null, try the default namespace
-            if ( getDefaultNamespace() != null ) {
+        if (ns == null) {
+            // if namespace was null, try the default namespace
+            if (getDefaultNamespace() != null) {
                 namespace = getDefaultNamespace();
             }
-        }
-        else {
-            namespace = getNamespaceByPrefix( ns );
-            if ( namespace == null ) {
-                namespace = getNamespaceByURI( ns );
+        } else {
+            namespace = getNamespaceByPrefix(ns);
+            if (namespace == null) {
+                namespace = getNamespaceByURI(ns);
             }
         }
 
-        if(namespace != null) {
+        if (namespace != null) {
             ResourceInfo resource = catalogDAO.getResourceByName(namespace.getName(), name, clazz);
-            if(resource != null)
+            if (resource != null)
                 resolve(resource);
-//                return ModificationProxy.create( (T) resource, clazz );
-                return createProxy((T) resource, (Class<T>)mapResourceClass(resource) );
+            // return ModificationProxy.create( (T) resource, clazz );
+            return createProxy((T) resource, (Class<T>) mapResourceClass(resource));
 
         }
 
-//        List l = lookup(clazz, resources);
-//        if ( namespace != null ) {
-//            for (Iterator i = l.iterator(); i.hasNext();) {
-//                ResourceInfo resource = (ResourceInfo) i.next();
-//                if (name.equals(resource.getName())) {
-//                    NamespaceInfo namespace1 = resource.getNamespace();
-//                    if (namespace1 != null && namespace1.equals( namespace )) {
-//                            return ModificationProxy.create( (T) resource, clazz );
-//                    }
-//                }
-//            }
-//        }
+        // List l = lookup(clazz, resources);
+        // if ( namespace != null ) {
+        // for (Iterator i = l.iterator(); i.hasNext();) {
+        // ResourceInfo resource = (ResourceInfo) i.next();
+        // if (name.equals(resource.getName())) {
+        // NamespaceInfo namespace1 = resource.getNamespace();
+        // if (namespace1 != null && namespace1.equals( namespace )) {
+        // return ModificationProxy.create( (T) resource, clazz );
+        // }
+        // }
+        // }
+        // }
 
-        if ( ns == null ) {
+        if (ns == null) {
             // no namespace was specified, so do an exhaustive lookup
-            List<ResourceInfo> matches = (List<ResourceInfo>)catalogDAO.getResourcesByName(name, clazz);
-//            List matches = new ArrayList();
-//            for (Iterator i = l.iterator(); i.hasNext();) {
-//                ResourceInfo resource = (ResourceInfo) i.next();
-//                if (name.equals(resource.getName())) {
-//                    matches.add( resource );
-//                }
-//            }
+            List<ResourceInfo> matches = (List<ResourceInfo>) catalogDAO.getResourcesByName(name,
+                    clazz);
+            // List matches = new ArrayList();
+            // for (Iterator i = l.iterator(); i.hasNext();) {
+            // ResourceInfo resource = (ResourceInfo) i.next();
+            // if (name.equals(resource.getName())) {
+            // matches.add( resource );
+            // }
+            // }
 
-            if ( matches.size() == 1 ) {
+            if (matches.size() == 1) {
                 ResourceInfo ret = matches.get(0);
                 resolve(ret);
-                return createProxy((T) ret, (Class<T>)mapResourceClass(ret) );
-//                return ModificationProxy.create( (T) matches.get( 0 ), clazz );
+                return createProxy((T) ret, (Class<T>) mapResourceClass(ret));
+                // return ModificationProxy.create( (T) matches.get( 0 ), clazz );
             }
         }
         return null;
     }
 
-    public <T extends ResourceInfo> T getResourceByName(NamespaceInfo ns,
-            String name, Class<T> clazz) {
-        return getResourceByName( ns != null ? ns.getPrefix() : null , name, clazz);
+    public <T extends ResourceInfo> T getResourceByName(NamespaceInfo ns, String name,
+            Class<T> clazz) {
+        return getResourceByName(ns != null ? ns.getPrefix() : null, name, clazz);
     }
 
     public <T extends ResourceInfo> T getResourceByName(Name name, Class<T> clazz) {
-        return getResourceByName( name.getNamespaceURI(), name.getLocalPart(), clazz );
+        return getResourceByName(name.getNamespaceURI(), name.getLocalPart(), clazz);
     }
 
-    public <T extends ResourceInfo> T getResourceByName( String name, Class<T> clazz ) {
+    public <T extends ResourceInfo> T getResourceByName(String name, Class<T> clazz) {
         ResourceInfo resource;
 
         // check is the name is a fully qualified one
-        int colon = name.indexOf( ':' );
-        if ( colon != -1 ) {
+        int colon = name.indexOf(':');
+        if (colon != -1) {
             String ns = name.substring(0, colon);
             String localName = name.substring(colon + 1);
             return getResourceByName(ns, localName, clazz);
-        }
-        else {
-            return getResourceByName((String)null,name,clazz);
+        } else {
+            return getResourceByName((String) null, name, clazz);
         }
     }
 
     public List getResources(Class clazz) {
-//        return ModificationProxy.createList( lookup(clazz,resources), clazz );
-//        return ModificationProxy.createList( catalogDAO.getResources(clazz), clazz );
+        // return ModificationProxy.createList( lookup(clazz,resources), clazz );
+        // return ModificationProxy.createList( catalogDAO.getResources(clazz), clazz );
         List<ResourceInfo> list = catalogDAO.getResources(clazz);
         for (ResourceInfo resourceInfo : list) {
             resolve(resourceInfo);
         }
 
-        return createProxyList(list, clazz );
+        return createProxyList(list, clazz);
     }
 
     public List getResourcesByNamespace(NamespaceInfo namespace, Class clazz) {
-//        List all = lookup(clazz, resources);
-//        List matches = new ArrayList();
+        // List all = lookup(clazz, resources);
+        // List matches = new ArrayList();
 
-        if ( namespace == null ) {
+        if (namespace == null) {
             namespace = getDefaultNamespace();
         }
 
-//        for (Iterator r = all.iterator(); r.hasNext();) {
-//            ResourceInfo resource = (ResourceInfo) r.next();
-//            if (namespace != null ) {
-//                if (namespace.equals(resource.getNamespace())) {
-//                    matches.add( resource );
-//                }
-//            }
-//            else if ( resource.getNamespace() == null ) {
-//                matches.add(resource);
-//            }
-//        }
+        // for (Iterator r = all.iterator(); r.hasNext();) {
+        // ResourceInfo resource = (ResourceInfo) r.next();
+        // if (namespace != null ) {
+        // if (namespace.equals(resource.getNamespace())) {
+        // matches.add( resource );
+        // }
+        // }
+        // else if ( resource.getNamespace() == null ) {
+        // matches.add(resource);
+        // }
+        // }
 
         List<ResourceInfo> matches = catalogDAO.getResourcesByNamespace(namespace, clazz);
         for (ResourceInfo resource : matches) {
             resolve(resource);
         }
-        Class proxyclass = matches.isEmpty() ? clazz : mapResourceClass((ResourceInfo)matches.get(0));
-//        return ModificationProxy.createList( matches, clazz );
-        return createProxyList( matches, proxyclass );
+        Class proxyclass = matches.isEmpty() ? clazz : mapResourceClass((ResourceInfo) matches
+                .get(0));
+        // return ModificationProxy.createList( matches, clazz );
+        return createProxyList(matches, proxyclass);
     }
 
-    public <T extends ResourceInfo> List<T> getResourcesByNamespace(
-            String namespace, Class<T> clazz) {
-        if ( namespace == null ) {
-            return getResourcesByNamespace((NamespaceInfo)null,clazz);
+    public <T extends ResourceInfo> List<T> getResourcesByNamespace(String namespace, Class<T> clazz) {
+        if (namespace == null) {
+            return getResourcesByNamespace((NamespaceInfo) null, clazz);
         }
 
         NamespaceInfo ns = getNamespaceByPrefix(namespace);
-        if ( ns == null ) {
+        if (ns == null) {
             ns = getNamespaceByURI(namespace);
         }
-        if ( ns == null ) {
+        if (ns == null) {
             return Collections.EMPTY_LIST;
         }
 
         return getResourcesByNamespace(ns, clazz);
     }
 
-    public <T extends ResourceInfo> T getResourceByStore(StoreInfo store,
-            String name, Class<T> clazz) {
+    public <T extends ResourceInfo> T getResourceByStore(StoreInfo store, String name,
+            Class<T> clazz) {
 
         store = ModificationProxy.unwrap(store);
         ResourceInfo resource = catalogDAO.getResourceByStore(store, name, clazz);
-        if(resource == null)
+        if (resource == null)
             return null;
         else {
             resolve(resource);
-            return createProxy((T)resource, (Class<T>)mapResourceClass(resource));
+            return createProxy((T) resource, (Class<T>) mapResourceClass(resource));
         }
 
-//        List all = lookup(clazz,resources);
-//        for (Iterator r = all.iterator(); r.hasNext(); ) {
-//            ResourceInfo resource = (ResourceInfo) r.next();
-//            if ( name.equals( resource.getName() ) && store.equals( resource.getStore() ) ) {
-//                return ModificationProxy.create((T)resource, clazz);
-//            }
-//
-//        }
-//
-//        return null;
+        // List all = lookup(clazz,resources);
+        // for (Iterator r = all.iterator(); r.hasNext(); ) {
+        // ResourceInfo resource = (ResourceInfo) r.next();
+        // if ( name.equals( resource.getName() ) && store.equals( resource.getStore() ) ) {
+        // return ModificationProxy.create((T)resource, clazz);
+        // }
+        //
+        // }
+        //
+        // return null;
     }
 
-    public <T extends ResourceInfo> List<T> getResourcesByStore(
-            StoreInfo store, Class<T> clazz) {
+    public <T extends ResourceInfo> List<T> getResourcesByStore(StoreInfo store, Class<T> clazz) {
         store = ModificationProxy.unwrap(store);
         // refine clazz type searching
         Class typedClazz = clazz;
-        if(clazz.equals(ResourceInfo.class)) {
-            if(store instanceof DataStoreInfo) {
+        if (clazz.equals(ResourceInfo.class)) {
+            if (store instanceof DataStoreInfo) {
                 typedClazz = FeatureTypeInfo.class;
-            } else if(store instanceof CoverageStoreInfo) {
+            } else if (store instanceof CoverageStoreInfo) {
                 typedClazz = CoverageInfo.class;
             } else
-                throw new IllegalArgumentException("Unknown store type " + store.getClass().getName());
+                throw new IllegalArgumentException("Unknown store type "
+                        + store.getClass().getName());
         }
-        List<T> resources = catalogDAO.getResourcesByStore(store, (Class<T>)typedClazz);
+        List<T> resources = catalogDAO.getResourcesByStore(store, (Class<T>) typedClazz);
         for (ResourceInfo resource : resources) {
             resolve(resource);
         }
         Class proxyclazz = resources.isEmpty() ? typedClazz : mapResourceClass(resources.get(0));
-//        return ModificationProxy.createList( resources, proxyclazz );
-        return createProxyList( resources, proxyclazz );
+        // return ModificationProxy.createList( resources, proxyclazz );
+        return createProxyList(resources, proxyclazz);
 
-//        List all = lookup(clazz,resources);
-//        List matches = new ArrayList();
-//
-//        for (Iterator r = all.iterator(); r.hasNext();) {
-//            ResourceInfo resource = (ResourceInfo) r.next();
-//            if (store.equals(resource.getStore())) {
-//                matches.add(resource);
-//            }
-//        }
-//
-//        return  ModificationProxy.createList( matches, clazz );
+        // List all = lookup(clazz,resources);
+        // List matches = new ArrayList();
+        //
+        // for (Iterator r = all.iterator(); r.hasNext();) {
+        // ResourceInfo resource = (ResourceInfo) r.next();
+        // if (store.equals(resource.getStore())) {
+        // matches.add(resource);
+        // }
+        // }
+        //
+        // return ModificationProxy.createList( matches, clazz );
     }
 
     public FeatureTypeInfo getFeatureType(String id) {
@@ -681,12 +676,11 @@ public class HibCatalogImpl
     }
 
     public FeatureTypeInfo getFeatureTypeByName(String ns, String name) {
-        return (FeatureTypeInfo) getResourceByName(ns, name,
-                FeatureTypeInfo.class);
+        return (FeatureTypeInfo) getResourceByName(ns, name, FeatureTypeInfo.class);
     }
 
     public FeatureTypeInfo getFeatureTypeByName(NamespaceInfo ns, String name) {
-        return getResourceByName(ns, name, FeatureTypeInfo.class );
+        return getResourceByName(ns, name, FeatureTypeInfo.class);
     }
 
     public FeatureTypeInfo getFeatureTypeByName(Name name) {
@@ -705,14 +699,12 @@ public class HibCatalogImpl
         return getResourcesByNamespace(namespace, FeatureTypeInfo.class);
     }
 
-    public FeatureTypeInfo getFeatureTypeByStore(DataStoreInfo dataStore,
-            String name) {
+    public FeatureTypeInfo getFeatureTypeByStore(DataStoreInfo dataStore, String name) {
         return getFeatureTypeByDataStore(dataStore, name);
     }
 
-    public FeatureTypeInfo getFeatureTypeByDataStore(DataStoreInfo dataStore,
-            String name) {
-        return getResourceByStore( dataStore, name, FeatureTypeInfo.class );
+    public FeatureTypeInfo getFeatureTypeByDataStore(DataStoreInfo dataStore, String name) {
+        return getResourceByStore(dataStore, name, FeatureTypeInfo.class);
     }
 
     public List<FeatureTypeInfo> getFeatureTypesByStore(DataStoreInfo store) {
@@ -740,7 +732,7 @@ public class HibCatalogImpl
     }
 
     public CoverageInfo getCoverageByName(String name) {
-        return (CoverageInfo) getResourceByName( name, CoverageInfo.class );
+        return (CoverageInfo) getResourceByName(name, CoverageInfo.class);
     }
 
     public List<CoverageInfo> getCoverages() {
@@ -752,54 +744,49 @@ public class HibCatalogImpl
     }
 
     public List<CoverageInfo> getCoveragesByStore(CoverageStoreInfo store) {
-        return getResourcesByStore(store,CoverageInfo.class);
+        return getResourcesByStore(store, CoverageInfo.class);
     }
 
-    public CoverageInfo getCoverageByCoverageStore(
-            CoverageStoreInfo coverageStore, String name) {
-        return getResourceByStore( coverageStore, name, CoverageInfo.class );
+    public CoverageInfo getCoverageByCoverageStore(CoverageStoreInfo coverageStore, String name) {
+        return getResourceByStore(coverageStore, name, CoverageInfo.class);
     }
-    public List<CoverageInfo> getCoveragesByCoverageStore(
-            CoverageStoreInfo store) {
-        return getResourcesByStore( store, CoverageInfo.class );
+
+    public List<CoverageInfo> getCoveragesByCoverageStore(CoverageStoreInfo store) {
+        return getResourcesByStore(store, CoverageInfo.class);
     }
 
     // Layer methods
     public void add(LayerInfo layer) {
-        validate(layer,true);
+        validate(layer, true);
         resolve(layer);
 
-        if ( layer.getType() == null ) {
-            if ( layer.getResource() instanceof FeatureTypeInfo ) {
-                layer.setType( LayerInfo.Type.VECTOR );
-            }
-            else if ( layer.getResource() instanceof CoverageInfo ) {
-                layer.setType( LayerInfo.Type.RASTER );
-            }
-            else {
+        if (layer.getType() == null) {
+            if (layer.getResource() instanceof FeatureTypeInfo) {
+                layer.setType(LayerInfo.Type.VECTOR);
+            } else if (layer.getResource() instanceof CoverageInfo) {
+                layer.setType(LayerInfo.Type.RASTER);
+            } else {
                 String msg = "Layer type not set and can't be derived from resource";
-                throw new IllegalArgumentException( msg );
+                throw new IllegalArgumentException(msg);
             }
         }
 
-//        layers.add(layer);
+        // layers.add(layer);
         LayerInfo unwrapped = unwrap(layer);
         ResourceInfo resource = unwrapped.getResource();
-        if(resource != null) {
+        if (resource != null) {
             resource = unwrap(resource);
             unwrapped.setResource(resource);
         }
 
         LOGGER.warning("SAVING LAYER id:" + unwrapped.getId() + " name:" + unwrapped.getName());
-        LOGGER.warning("  layer.resource "
-                    + unwrapped.getResource().getClass().getSimpleName() + "["
-                    + "id:" + unwrapped.getResource().getId()
-                    + " name:" + unwrapped.getResource().getName() + "]");
+        LOGGER.warning("  layer.resource " + unwrapped.getResource().getClass().getSimpleName()
+                + "[" + "id:" + unwrapped.getResource().getId() + " name:"
+                + unwrapped.getResource().getName() + "]");
 
-        if(unwrapped.getDefaultStyle() != null)
-            LOGGER.warning("  layer.style " + "["
-                        + "id:" + unwrapped.getDefaultStyle().getId()
-                        + " name:" + unwrapped.getDefaultStyle().getName() + "]" );
+        if (unwrapped.getDefaultStyle() != null)
+            LOGGER.warning("  layer.style " + "[" + "id:" + unwrapped.getDefaultStyle().getId()
+                    + " name:" + unwrapped.getDefaultStyle().getName() + "]");
 
         fixNativeName(resource);
 
@@ -807,91 +794,89 @@ public class HibCatalogImpl
         added(layer);
     }
 
-
     /**
-     * <B>FIXME This is a workaround to fill in nativeName in coverages.</B>
-     * Please investigate why its value is not assigned.
+     * <B>FIXME This is a workaround to fill in nativeName in coverages.</B> Please investigate why
+     * its value is not assigned.
+     * 
      * @deprecated this is a workaround
      */
     private void fixNativeName(ResourceInfo resource) {
-        if(resource != null && resource.getNativeName() == null) {
-            if(resource instanceof CoverageInfo) {
-                LOGGER.warning("FIXME Coverage is missing nativeName ("
-                        + "id:"+ resource.getId()
-                        + " name:"+ resource.getName()
-                        +")");
-                String storeurl = ((CoverageInfo)resource).getStore().getURL();
+        if (resource != null && resource.getNativeName() == null) {
+            if (resource instanceof CoverageInfo) {
+                LOGGER.warning("FIXME Coverage is missing nativeName (" + "id:" + resource.getId()
+                        + " name:" + resource.getName() + ")");
+                String storeurl = ((CoverageInfo) resource).getStore().getURL();
                 String name = FilenameUtils.getBaseName(storeurl);
                 resource.setNativeName(name);
-                LOGGER.warning("FIXME setting coverage nativeName to " + name );
+                LOGGER.warning("FIXME setting coverage nativeName to " + name);
             }
         }
     }
 
-
-    void validate( LayerInfo layer, boolean isNew) {
-        if ( isNull(layer.getName()) ) {
-            throw new NullPointerException( "Layer name must not be null" );
+    void validate(LayerInfo layer, boolean isNew) {
+        if (isNull(layer.getName())) {
+            throw new NullPointerException("Layer name must not be null");
         }
 
-        LayerInfo existing = getLayerByName( layer.getName() );
-        if ( existing != null && !existing.getId().equals( layer.getId() ) ) {
-            //JD: since layers are not qualified by anything (yet), check
+        LayerInfo existing = getLayerByName(layer.getName());
+        if (existing != null && !existing.getId().equals(layer.getId())) {
+            // JD: since layers are not qualified by anything (yet), check
             // namespace of the resource, if they are different then allow the
             // layer to be added
-            if ( existing.getResource().getNamespace().equals( layer.getName() ) ) {
-                throw new IllegalArgumentException( "Layer named '"+layer.getName()+"' already exists.");
+            if (existing.getResource().getNamespace().equals(layer.getName())) {
+                throw new IllegalArgumentException("Layer named '" + layer.getName()
+                        + "' already exists.");
             }
         }
 
-        if ( layer.getResource() == null ) {
-            throw new NullPointerException( "Layer resource must not be null" );
+        if (layer.getResource() == null) {
+            throw new NullPointerException("Layer resource must not be null");
         }
-        //(JD): not sure if default style should be mandatory
-        //if ( layer.getDefaultStyle() == null ){
-        //    throw new NullPointerException( "Layer default style must not be null" );
-        //}
+        // (JD): not sure if default style should be mandatory
+        // if ( layer.getDefaultStyle() == null ){
+        // throw new NullPointerException( "Layer default style must not be null" );
+        // }
     }
 
     public void remove(LayerInfo layer) {
-        //ensure no references to the layer
-        for ( LayerGroupInfo lg : catalogDAO.getLayerGroups() ) {
-            if ( lg.getLayers().contains( layer ) ) {
-                String msg = "Unable to delete layer referenced by layer group '"+lg.getName()+"'";
-                throw new IllegalArgumentException( msg );
+        // ensure no references to the layer
+        for (LayerGroupInfo lg : catalogDAO.getLayerGroups()) {
+            if (lg.getLayers().contains(layer)) {
+                String msg = "Unable to delete layer referenced by layer group '" + lg.getName()
+                        + "'";
+                throw new IllegalArgumentException(msg);
             }
         }
-//        layers.remove(unwrap(layer));
+        // layers.remove(unwrap(layer));
         catalogDAO.delete(layer);
         removed(layer);
     }
 
     public void save(LayerInfo layer) {
-        validate( layer, false );
+        validate(layer, false);
         saved(layer);
     }
 
     public LayerInfo getLayer(String id) {
         LayerInfo layer = catalogDAO.getLayer(id);
-        if(layer == null)
+        if (layer == null)
             return null;
         else {
             resolve(layer);
-            return createProxy( layer, LayerInfo.class );
+            return createProxy(layer, LayerInfo.class);
         }
 
     }
 
-
     public LayerInfo getLayerByName(Name name) {
-        if ( name.getNamespaceURI() != null ) {
-            NamespaceInfo ns = getNamespaceByURI( name.getNamespaceURI() );
-            if ( ns != null ) {
-                return getLayerByName( ns.getPrefix() + ":" + name.getLocalPart() );
+        if (name.getNamespaceURI() != null) {
+            NamespaceInfo ns = getNamespaceByURI(name.getNamespaceURI());
+            if (ns != null) {
+                return getLayerByName(ns.getPrefix() + ":" + name.getLocalPart());
             }
         }
 
-        return getLayerByName( name.getLocalPart() );
+        return getLayerByName(name.getLocalPart());
     }
 
     public LayerInfo getLayerByName(String name) {
@@ -900,27 +885,25 @@ public class HibCatalogImpl
 
         LayerInfo layer;
 
-        int colon = name.indexOf( ':' );
-        if ( colon != -1 ) {
-            //search by resource name
-            prefix = name.substring( 0, colon );
-            resource = name.substring( colon + 1 );
+        int colon = name.indexOf(':');
+        if (colon != -1) {
+            // search by resource name
+            prefix = name.substring(0, colon);
+            resource = name.substring(colon + 1);
 
             // todo: check original code: it compared vs the resource name
 
             layer = catalogDAO.getLayerByName(prefix, resource);
 
-        }
-        else {
-            //search by layer name
+        } else {
+            // search by layer name
             layer = catalogDAO.getLayerByName(name);
 
-
         }
 
-        if(layer != null) {
-           resolve(layer);
-           return createProxy( layer, LayerInfo.class );
+        if (layer != null) {
+            resolve(layer);
+            return createProxy(layer, LayerInfo.class);
         } else
             return null;
     }
@@ -937,10 +920,10 @@ public class HibCatalogImpl
 
     public List<LayerInfo> getLayers(StyleInfo style) {
         List<LayerInfo> matches = new ArrayList<LayerInfo>();
-        for(LayerInfo layer : catalogDAO.getLayers()) {
-            if ( style.equals( layer.getDefaultStyle() ) || layer.getStyles().contains( style ) ) {
+        for (LayerInfo layer : catalogDAO.getLayers()) {
+            if (style.equals(layer.getDefaultStyle()) || layer.getStyles().contains(style)) {
                 resolve(layer);
-                matches.add( layer );
+                matches.add(layer);
             }
         }
 
@@ -952,13 +935,13 @@ public class HibCatalogImpl
         for (LayerInfo layerInfo : layers) {
             resolve(layerInfo);
         }
-        return createProxyList( layers, LayerInfo.class );
+        return createProxyList(layers, LayerInfo.class);
     }
 
     // Map methods
     public MapInfo getMap(String id) {
         MapInfo map = catalogDAO.getMap(id);
-        if(map != null) {
+        if (map != null) {
             resolve(map);
             return createProxy(map, MapInfo.class);
         }
@@ -968,12 +951,11 @@ public class HibCatalogImpl
 
     public MapInfo getMapByName(String name) {
         MapInfo map = catalogDAO.getMapByName(name);
-        if(map != null) {
+        if (map != null) {
             resolve(map);
             return createProxy(map, MapInfo.class);
         }
         return null;
-
 
     }
 
@@ -983,15 +965,15 @@ public class HibCatalogImpl
             resolve(map);
         }
 
-        return createProxyList( maps, MapInfo.class );
+        return createProxyList(maps, MapInfo.class);
     }
 
     public void add(LayerGroupInfo layerGroup) {
-        validate(layerGroup,true);
+        validate(layerGroup, true);
         resolve(layerGroup);
 
-        if ( layerGroup.getStyles().isEmpty() ) {
-            for ( LayerInfo l : layerGroup.getLayers() ) {
+        if (layerGroup.getStyles().isEmpty()) {
+            for (LayerInfo l : layerGroup.getLayers()) {
                 // default style
                 layerGroup.getStyles().add(null);
             }
@@ -999,38 +981,40 @@ public class HibCatalogImpl
 
         layerGroup = ModificationProxy.unwrap(layerGroup);
         catalogDAO.save(layerGroup);
-        added( layerGroup );
+        added(layerGroup);
     }
 
-    void validate( LayerGroupInfo layerGroup, boolean isNew ) {
-        if( isNull(layerGroup.getName()) ) {
-            throw new NullPointerException( "Layer group name must not be null");
+    void validate(LayerGroupInfo layerGroup, boolean isNew) {
+        if (isNull(layerGroup.getName())) {
+            throw new NullPointerException("Layer group name must not be null");
         }
 
-        LayerGroupInfo existing = getLayerGroupByName( layerGroup.getName() );
-        if ( existing != null && !existing.getId().equals( layerGroup.getId() ) ) {
-            throw new IllegalArgumentException( "Layer group named '" + layerGroup.getName() + "' already exists." );
+        LayerGroupInfo existing = getLayerGroupByName(layerGroup.getName());
+        if (existing != null && !existing.getId().equals(layerGroup.getId())) {
+            throw new IllegalArgumentException("Layer group named '" + layerGroup.getName()
+                    + "' already exists.");
         }
 
-        if ( !isNew ) {
-            if ( layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty() ) {
-                throw new NullPointerException( "Layer group must not be empty");
+        if (!isNew) {
+            if (layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty()) {
+                throw new NullPointerException("Layer group must not be empty");
             }
         }
 
-        if ( layerGroup.getStyles() != null && !layerGroup.getStyles().isEmpty() &&
-                !(layerGroup.getStyles().size() == layerGroup.getLayers().size()) ) {
-            throw new IllegalArgumentException( "Layer group has different number of styles than layers");
+        if (layerGroup.getStyles() != null && !layerGroup.getStyles().isEmpty()
+                && !(layerGroup.getStyles().size() == layerGroup.getLayers().size())) {
+            throw new IllegalArgumentException(
+                    "Layer group has different number of styles than layers");
         }
     }
 
     public void remove(LayerGroupInfo layerGroup) {
         catalogDAO.delete(unwrap(layerGroup));
-        removed( layerGroup );
+        removed(layerGroup);
     }
 
     public void save(LayerGroupInfo layerGroup) {
-        validate(layerGroup,false);
+        validate(layerGroup, false);
         saved(layerGroup);
     }
 
@@ -1039,12 +1023,12 @@ public class HibCatalogImpl
         for (LayerGroupInfo layerGroupInfo : layerGroups) {
             resolve(layerGroupInfo);
         }
-        return createProxyList( layerGroups, LayerGroupInfo.class );
+        return createProxyList(layerGroups, LayerGroupInfo.class);
     }
 
     public LayerGroupInfo getLayerGroup(String id) {
         final LayerGroupInfo layerGroup = catalogDAO.getLayerGroup(id);
-        if(layerGroup != null) {
+        if (layerGroup != null) {
             resolve(layerGroup);
             return createProxy(layerGroup, LayerGroupInfo.class);
         } else
@@ -1054,7 +1038,7 @@ public class HibCatalogImpl
 
     public LayerGroupInfo getLayerGroupByName(String name) {
         LayerGroupInfo layerGroup = catalogDAO.getLayerGroupByName(name);
-        if(layerGroup != null) {
+        if (layerGroup != null) {
             resolve(layerGroup);
             return createProxy(layerGroup, LayerGroupInfo.class);
         } else
@@ -1073,24 +1057,23 @@ public class HibCatalogImpl
     }
 
     public void save(MapInfo map) {
-        saved( map );
+        saved(map);
     }
 
     // Namespace methods
     public NamespaceInfo getNamespace(String id) {
         final NamespaceInfo namespace = catalogDAO.getNamespace(id);
-        if(namespace != null) {
+        if (namespace != null) {
             resolve(namespace);
             return createProxy(namespace, NamespaceInfo.class);
         } else
             return null;
 
-
     }
 
     public NamespaceInfo getNamespaceByPrefix(String prefix) {
         NamespaceInfo namespace = catalogDAO.getNamespaceByPrefix(prefix);
-        if(namespace != null) {
+        if (namespace != null) {
             resolve(namespace);
             return createProxy(namespace, NamespaceInfo.class);
         } else
@@ -1099,7 +1082,7 @@ public class HibCatalogImpl
 
     public NamespaceInfo getNamespaceByURI(String uri) {
         NamespaceInfo namespace = catalogDAO.getNamespaceByURI(uri);
-        if(namespace != null) {
+        if (namespace != null) {
             resolve(namespace);
             return createProxy(namespace, NamespaceInfo.class);
         } else
@@ -1112,16 +1095,15 @@ public class HibCatalogImpl
         for (NamespaceInfo namespace : namespaces) {
             resolve(namespace);
         }
-        return createProxyList( namespaces, NamespaceInfo.class );
+        return createProxyList(namespaces, NamespaceInfo.class);
     }
 
     public void add(NamespaceInfo namespace) {
-        validate(namespace,true);
+        validate(namespace, true);
         resolve(namespace);
 
-
         boolean existsDefault = catalogDAO.getDefaultNamespace() != null;
-        ((NamespaceInfoImplHb)namespace).setDefault(!existsDefault);
+        ((NamespaceInfoImplHb) namespace).setDefault(!existsDefault);
 
         catalogDAO.save(namespace);
 
@@ -1129,17 +1111,18 @@ public class HibCatalogImpl
     }
 
     void validate(NamespaceInfo namespace, boolean isNew) {
-        if ( isNull(namespace.getPrefix()) ) {
-            throw new NullPointerException( "Namespace prefix must not be null");
+        if (isNull(namespace.getPrefix())) {
+            throw new NullPointerException("Namespace prefix must not be null");
         }
 
-        NamespaceInfo existing = catalogDAO.getNamespaceByPrefix( namespace.getPrefix() );
-        if ( existing != null && !existing.getId().equals( namespace.getId() ) ) {
-            throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
+        NamespaceInfo existing = catalogDAO.getNamespaceByPrefix(namespace.getPrefix());
+        if (existing != null && !existing.getId().equals(namespace.getId())) {
+            throw new IllegalArgumentException("Namespace with prefix '" + namespace.getPrefix()
+                    + "' already exists.");
         }
 
-        if ( namespace.getURI() == null ) {
-            throw new NullPointerException( "Namespace uri must not be null");
+        if (namespace.getURI() == null) {
+            throw new NullPointerException("Namespace uri must not be null");
         }
 
         if (isNull(namespace.getURI())) {
@@ -1149,28 +1132,30 @@ public class HibCatalogImpl
         try {
             new URI(namespace.getURI());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid URI syntax for '" + namespace.getURI() + "' in namespace '" + namespace.getPrefix() + "'");
+            throw new IllegalArgumentException("Invalid URI syntax for '" + namespace.getURI()
+                    + "' in namespace '" + namespace.getPrefix() + "'");
         }
     }
 
     public void remove(NamespaceInfo namespace) {
-        if ( ! catalogDAO.getResourcesByNamespace(namespace, ResourceInfo.class ).isEmpty() ) {
-            throw new IllegalArgumentException( "Unable to delete non-empty namespace.");
+        if (!catalogDAO.getResourcesByNamespace(namespace, ResourceInfo.class).isEmpty()) {
+            throw new IllegalArgumentException("Unable to delete non-empty namespace.");
         }
         NamespaceInfoImplHb realns = catalogDAO.getNamespaceByPrefix(namespace.getPrefix());
-        if(realns == null) {
-            throw new IllegalArgumentException( "Can't find namespace '"+namespace.getPrefix()+"' for deletion.");
+        if (realns == null) {
+            throw new IllegalArgumentException("Can't find namespace '" + namespace.getPrefix()
+                    + "' for deletion.");
         }
 
         catalogDAO.delete(realns);
 
-        if( realns.isDefault() ) {
-            LOGGER.warning("Removing default namespace '"+namespace.getName()+"'");
+        if (realns.isDefault()) {
+            LOGGER.warning("Removing default namespace '" + namespace.getName() + "'");
             // elect a random ns as default
             List<NamespaceInfo> nslist = catalogDAO.getNamespaces();
-            if(!nslist.isEmpty()) {
-                NamespaceInfoImplHb ns0 = (NamespaceInfoImplHb)nslist.get(0);
-                LOGGER.warning("Electing '"+namespace.getName()+"' to default namespace.");
+            if (!nslist.isEmpty()) {
+                NamespaceInfoImplHb ns0 = (NamespaceInfoImplHb) nslist.get(0);
+                LOGGER.warning("Electing '" + namespace.getName() + "' to default namespace.");
                 ns0.setDefault(true);
                 catalogDAO.update(ns0);
             }
@@ -1179,7 +1164,7 @@ public class HibCatalogImpl
     }
 
     public void save(NamespaceInfo namespace) {
-        validate(namespace,false);
+        validate(namespace, false);
 
         saved(namespace);
     }
@@ -1187,24 +1172,26 @@ public class HibCatalogImpl
     public NamespaceInfo getDefaultNamespace() {
         final NamespaceInfoImplHb defaultNamespace = catalogDAO.getDefaultNamespace();
         resolve(defaultNamespace);
-        return createProxy( defaultNamespace, NamespaceInfo.class);
+        return createProxy(defaultNamespace, NamespaceInfo.class);
 
     }
 
     public void setDefaultNamespace(NamespaceInfo defaultNamespace) {
         NamespaceInfo nsold = catalogDAO.getDefaultNamespace();
         NamespaceInfo nsnew = catalogDAO.getNamespaceByPrefix(defaultNamespace.getPrefix());
-        if ( nsnew == null ) {
-            throw new IllegalArgumentException( "No such namespace: '" + defaultNamespace.getPrefix() + "'" );
+        if (nsnew == null) {
+            throw new IllegalArgumentException("No such namespace: '"
+                    + defaultNamespace.getPrefix() + "'");
         }
 
-        if(nsold != null && nsold.getPrefix().equals(nsnew.getPrefix())) // setting existing default
+        if (nsold != null && nsold.getPrefix().equals(nsnew.getPrefix())) // setting existing
+                                                                          // default
             return;
 
-        ((NamespaceInfoImplHb)nsnew).setDefault(true);
+        ((NamespaceInfoImplHb) nsnew).setDefault(true);
         catalogDAO.update(nsnew);
-        if(nsold != null) {
-            ((NamespaceInfoImplHb)nsold).setDefault(false);
+        if (nsold != null) {
+            ((NamespaceInfoImplHb) nsold).setDefault(false);
             catalogDAO.update(nsold);
         }
 
@@ -1212,58 +1199,59 @@ public class HibCatalogImpl
 
     // Workspace methods
     public void add(WorkspaceInfo workspace) {
-        validate(workspace,true);
-       if(catalogDAO.getWorkspaceByName(workspace.getName()) != null) {
-            throw new IllegalArgumentException( "Workspace with name '" + workspace.getName() + "' already exists.");
+        validate(workspace, true);
+        if (catalogDAO.getWorkspaceByName(workspace.getName()) != null) {
+            throw new IllegalArgumentException("Workspace with name '" + workspace.getName()
+                    + "' already exists.");
         }
 
         resolve(workspace);
 
         boolean existsDefault = catalogDAO.getDefaultWorkspace() != null;
-        ((WorkspaceInfoImplHb)workspace).setDefault(!existsDefault);
+        ((WorkspaceInfoImplHb) workspace).setDefault(!existsDefault);
 
         catalogDAO.save(workspace);
-        
-        added( workspace );
+
+        added(workspace);
     }
 
     void validate(WorkspaceInfo workspace, boolean isNew) {
-        if ( isNull(workspace.getName()) ) {
-            throw new NullPointerException( "workspace name must not be null");
+        if (isNull(workspace.getName())) {
+            throw new NullPointerException("workspace name must not be null");
         }
 
-        WorkspaceInfo existing = catalogDAO.getWorkspaceByName( workspace.getName() );
-        if ( existing != null && !existing.getId().equals( workspace.getId() ) ) {
-            throw new IllegalArgumentException( "Workspace named '"+ workspace.getName() +"' already exists.");
+        WorkspaceInfo existing = catalogDAO.getWorkspaceByName(workspace.getName());
+        if (existing != null && !existing.getId().equals(workspace.getId())) {
+            throw new IllegalArgumentException("Workspace named '" + workspace.getName()
+                    + "' already exists.");
         }
 
     }
 
     public void remove(WorkspaceInfo workspace) {
-        //JD: maintain the link between namespace and workspace, remove this when this is no
+        // JD: maintain the link between namespace and workspace, remove this when this is no
         // longer necessary
-        if ( catalogDAO.getNamespaceByPrefix( workspace.getName() ) != null ) {
-            throw new IllegalArgumentException ( "Cannot delete workspace with linked namespace");
+        if (catalogDAO.getNamespaceByPrefix(workspace.getName()) != null) {
+            throw new IllegalArgumentException("Cannot delete workspace with linked namespace");
         }
-        if ( ! getStoresByWorkspace( workspace, StoreInfo.class).isEmpty() ) {
-            throw new IllegalArgumentException( "Cannot delete non-empty workspace.");
+        if (!getStoresByWorkspace(workspace, StoreInfo.class).isEmpty()) {
+            throw new IllegalArgumentException("Cannot delete non-empty workspace.");
         }
         catalogDAO.delete(workspace);
-        removed( workspace );
+        removed(workspace);
     }
 
     public void save(WorkspaceInfo workspace) {
-        validate(workspace,false);
-
+        validate(workspace, false);
 
         saved(workspace);
     }
 
     public WorkspaceInfo getDefaultWorkspace() {
         WorkspaceInfo workspace = catalogDAO.getDefaultWorkspace();
-        if(workspace != null) {
+        if (workspace != null) {
             resolve(workspace);
-            return createProxy( workspace, WorkspaceInfo.class );
+            return createProxy(workspace, WorkspaceInfo.class);
         } else
             return null;
 
@@ -1273,17 +1261,17 @@ public class HibCatalogImpl
 
         WorkspaceInfo wsold = catalogDAO.getDefaultWorkspace();
         WorkspaceInfo wsnew = catalogDAO.getWorkspaceByName(workspace.getName());
-        if ( wsnew == null ) {
-            throw new IllegalArgumentException( "No such workspace: '" + workspace.getName() + "'" );
+        if (wsnew == null) {
+            throw new IllegalArgumentException("No such workspace: '" + workspace.getName() + "'");
         }
 
-        if(wsold != null && wsold.getName().equals(wsnew.getName())) // setting existing default
+        if (wsold != null && wsold.getName().equals(wsnew.getName())) // setting existing default
             return;
 
-        ((WorkspaceInfoImplHb)wsnew).setDefault(true);
+        ((WorkspaceInfoImplHb) wsnew).setDefault(true);
         catalogDAO.update(wsnew);
-        if(wsold != null) {
-            ((WorkspaceInfoImplHb)wsold).setDefault(false);
+        if (wsold != null) {
+            ((WorkspaceInfoImplHb) wsold).setDefault(false);
             catalogDAO.update(wsold);
         }
 
@@ -1294,14 +1282,13 @@ public class HibCatalogImpl
         for (WorkspaceInfo workspace : workspaces) {
             resolve(workspace);
         }
-        return createProxyList( workspaces, WorkspaceInfo.class );
-
+        return createProxyList(workspaces, WorkspaceInfo.class);
 
     }
 
     public WorkspaceInfo getWorkspace(String id) {
         WorkspaceInfo workspace = catalogDAO.getWorkspace(id);
-        if(workspace != null) {
+        if (workspace != null) {
             resolve(workspace);
             return createProxy(workspace, WorkspaceInfo.class);
         } else
@@ -1311,7 +1298,7 @@ public class HibCatalogImpl
 
     public WorkspaceInfo getWorkspaceByName(String name) {
         WorkspaceInfo workspace = catalogDAO.getWorkspaceByName(name);
-        if(workspace != null) {
+        if (workspace != null) {
             resolve(workspace);
             return createProxy(workspace, WorkspaceInfo.class);
         } else
@@ -1322,7 +1309,7 @@ public class HibCatalogImpl
     // Style methods
     public StyleInfo getStyle(String id) {
         StyleInfo style = catalogDAO.getStyle(id);
-        if(style != null) {
+        if (style != null) {
             resolve(style);
             return createProxy(style, StyleInfo.class);
         } else
@@ -1332,12 +1319,11 @@ public class HibCatalogImpl
 
     public StyleInfo getStyleByName(String name) {
         StyleInfo style = catalogDAO.getStyleByName(name);
-        if(style != null) {
+        if (style != null) {
             resolve(style);
             return createProxy(style, StyleInfo.class);
         } else
             return null;
-
 
     }
 
@@ -1351,31 +1337,33 @@ public class HibCatalogImpl
     }
 
     public void add(StyleInfo style) {
-        validate(style,true);
+        validate(style, true);
         resolve(style);
         catalogDAO.save(style);
         added(style);
     }
 
-    void validate( StyleInfo style, boolean isNew ) {
-        if ( isNull(style.getName()) ) {
-            throw new NullPointerException( "Style name must not be null");
+    void validate(StyleInfo style, boolean isNew) {
+        if (isNull(style.getName())) {
+            throw new NullPointerException("Style name must not be null");
         }
-        if ( isNull(style.getFilename()) ) {
-            throw new NullPointerException( "Style fileName must not be null");
+        if (isNull(style.getFilename())) {
+            throw new NullPointerException("Style fileName must not be null");
         }
 
-        StyleInfo existing = getStyleByName( style.getName() );
-        if ( existing != null && !existing.getId().equals( style.getId() )) {
-            throw new IllegalArgumentException( "Style named '" +  style.getName() +"' already exists.");
+        StyleInfo existing = getStyleByName(style.getName());
+        if (existing != null && !existing.getId().equals(style.getId())) {
+            throw new IllegalArgumentException("Style named '" + style.getName()
+                    + "' already exists.");
         }
     }
 
     public void remove(StyleInfo style) {
-        //ensure no references to the style
-        for ( LayerInfo l : catalogDAO.getLayers() ) {
-            if ( style.equals( l.getDefaultStyle() ) || l.getStyles().contains( style )) {
-                throw new IllegalArgumentException( "Unable to delete style referenced by '"+ l.getName()+"'");
+        // ensure no references to the style
+        for (LayerInfo l : catalogDAO.getLayers()) {
+            if (style.equals(l.getDefaultStyle()) || l.getStyles().contains(style)) {
+                throw new IllegalArgumentException("Unable to delete style referenced by '"
+                        + l.getName() + "'");
             }
         }
         StyleInfo realObj = catalogDAO.getStyle(style.getId());
@@ -1384,8 +1372,8 @@ public class HibCatalogImpl
     }
 
     public void save(StyleInfo style) {
-        validate(style,false);
-        saved( style );
+        validate(style, false);
+        saved(style);
     }
 
     // Event methods
@@ -1413,18 +1401,21 @@ public class HibCatalogImpl
     public GeoServerResourceLoader getResourceLoader() {
         return resourceLoader;
     }
+
     public void setResourceLoader(GeoServerResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
-    public void dispose() {
-        if ( listeners != null ) listeners.clear();
 
-        if ( resourcePool != null ) resourcePool.dispose();
+    public void dispose() {
+        if (listeners != null)
+            listeners.clear();
+
+        if (resourcePool != null)
+            resourcePool.dispose();
     }
 
-
     protected void added(CatalogInfo object) {
-        fireAdded( object );
+        fireAdded(object);
     }
 
     protected void fireAdded(CatalogInfo object) {
@@ -1436,45 +1427,43 @@ public class HibCatalogImpl
 
     @SuppressWarnings("unchecked")
     protected void saved(CatalogInfo object) {
-        //this object is a proxy
-        if( ! Proxy.isProxyClass(object.getClass())) {
-            LOGGER.severe("WORKAROUND: CatalogInfo object is a " + object.getClass().getSimpleName()
-                    + " -- Faking delta values" );
+        // this object is a proxy
+        if (!Proxy.isProxyClass(object.getClass())) {
+            LOGGER.severe("WORKAROUND: CatalogInfo object is a "
+                    + object.getClass().getSimpleName() + " -- Faking delta values");
 
-            //fire out what changed
+            // fire out what changed
             List propertyNames = new ArrayList();
             List newValues = new ArrayList();
             List oldValues = new ArrayList();
 
-            //TODO: protect this original object, perhaps with another proxy
-            fireModified( object, propertyNames, oldValues, newValues );
-            firePostModified( object );
+            // TODO: protect this original object, perhaps with another proxy
+            fireModified(object, propertyNames, oldValues, newValues);
+            firePostModified(object);
             return;
         }
 
+        ModificationProxy h = (ModificationProxy) Proxy.getInvocationHandler(object);
 
-        ModificationProxy h =
-            (ModificationProxy) Proxy.getInvocationHandler(object);
-
-        //get the real object
+        // get the real object
         CatalogInfo real = (CatalogInfo) h.getProxyObject();
 
-        //fire out what changed
+        // fire out what changed
         List propertyNames = h.getPropertyNames();
         List newValues = h.getNewValues();
         List oldValues = h.getOldValues();
 
-        //TODO: protect this original object, perhaps with another proxy
-        fireModified( real, propertyNames, oldValues, newValues );
+        // TODO: protect this original object, perhaps with another proxy
+        fireModified(real, propertyNames, oldValues, newValues);
 
-        //commit to the original object
+        // commit to the original object
         h.commit();
 
-        //resolve to do a sync on the object
-        //syncIdWithName(real);
+        // resolve to do a sync on the object
+        // syncIdWithName(real);
 
-        //fire the post modify event
-        firePostModified( real );
+        // fire the post modify event
+        firePostModified(real);
     }
 
     protected void fireModified(CatalogInfo object, List propertyNames, List oldValues,
@@ -1491,10 +1480,11 @@ public class HibCatalogImpl
 
     protected void firePostModified(CatalogInfo object) {
         CatalogPostModifyEventImpl event = new CatalogPostModifyEventImpl();
-        event.setSource( object);
+        event.setSource(object);
 
         event(event);
     }
+
     protected void removed(CatalogInfo object) {
         CatalogRemoveEventImpl event = new CatalogRemoveEventImpl();
         event.setSource(object);
@@ -1512,9 +1502,9 @@ public class HibCatalogImpl
                 } else if (event instanceof CatalogModifyEvent) {
                     listener.handleModifyEvent((CatalogModifyEvent) event);
                 } else if (event instanceof CatalogPostModifyEvent) {
-                    listener.handlePostModifyEvent((CatalogPostModifyEvent)event);
+                    listener.handlePostModifyEvent((CatalogPostModifyEvent) event);
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 LOGGER.log(Level.WARNING, "Catalog listener threw exception handling event.", e);
             }
 
@@ -1525,11 +1515,11 @@ public class HibCatalogImpl
      * Implementation method for resolving all {@link ResolvingProxy} instances.
      */
     public void resolve() {
-        if ( listeners == null ) {
+        if (listeners == null) {
             listeners = new ArrayList<CatalogListener>();
         }
 
-        if ( resourcePool == null ) {
+        if (resourcePool == null) {
             resourcePool = new ResourcePool(this);
         }
     }
@@ -1543,35 +1533,34 @@ public class HibCatalogImpl
     }
 
     protected void resolve(StoreInfo store) {
-    	StoreInfoImpl s = (StoreInfoImpl) store;
+        StoreInfoImpl s = (StoreInfoImpl) store;
 
-        //resolve the workspace
-        WorkspaceInfo resolved = ResolvingProxy.resolve( this, s.getWorkspace());
-        if ( resolved != null ) {
-            s.setWorkspace(  resolved );
-        }
-        else {
-            //this means the workspace has not yet been added to the catalog, keep the proxy around
+        // resolve the workspace
+        WorkspaceInfo resolved = ResolvingProxy.resolve(this, s.getWorkspace());
+        if (resolved != null) {
+            s.setWorkspace(resolved);
+        } else {
+            // this means the workspace has not yet been added to the catalog, keep the proxy around
         }
         resolveCollections(s);
 
-        s.setCatalog( this );
+        s.setCatalog(this);
     }
 
     protected void resolve(ResourceInfo resource) {
         ResourceInfoImpl r = (ResourceInfoImpl) resource;
 
-        //resolve the store
-        StoreInfo resolved = ResolvingProxy.resolve( this, r.getStore() );
-        if ( resolved != null ) {
-            resolve(resolved); 
-            r.setStore( resolved );
+        // resolve the store
+        StoreInfo resolved = ResolvingProxy.resolve(this, r.getStore());
+        if (resolved != null) {
+            resolve(resolved);
+            r.setStore(resolved);
         }
 
-        if ( resource instanceof FeatureTypeInfo ) {
-            resolve( (FeatureTypeInfo) resource );
+        if (resource instanceof FeatureTypeInfo) {
+            resolve((FeatureTypeInfo) resource);
         }
-        if(r instanceof CoverageInfo){
+        if (r instanceof CoverageInfo) {
             resolve((CoverageInfo) resource);
         }
 
@@ -1579,12 +1568,12 @@ public class HibCatalogImpl
     }
 
     private void resolve(CoverageInfo r) {
-        CoverageInfoImpl c = (CoverageInfoImpl)r;
-        if(c.getDimensions() == null) {
+        CoverageInfoImpl c = (CoverageInfoImpl) r;
+        if (c.getDimensions() == null) {
             c.setDimensions(new ArrayList<CoverageDimensionInfo>());
         } else {
             for (CoverageDimensionInfo dim : c.getDimensions()) {
-                if(dim.getNullValues() == null)
+                if (dim.getNullValues() == null)
                     ((CoverageDimensionImpl) dim).setNullValues(new ArrayList<Double>());
             }
         }
@@ -1592,8 +1581,9 @@ public class HibCatalogImpl
     }
 
     /**
-     * We don't want the world to be able and call this without
-     * going trough {@link #resolve(ResourceInfo)}
+     * We don't want the world to be able and call this without going trough
+     * {@link #resolve(ResourceInfo)}
+     * 
      * @param featureType
      */
     private void resolve(FeatureTypeInfo featureType) {
@@ -1616,24 +1606,24 @@ public class HibCatalogImpl
         resolveCollections(layerGroup);
         LayerGroupInfoImpl lg = (LayerGroupInfoImpl) layerGroup;
 
-        for ( int i = 0; i < lg.getLayers().size(); i++ ) {
-            LayerInfo l = lg.getLayers().get( i );
-            LayerInfo resolved = ResolvingProxy.resolve( this, l );
-            lg.getLayers().set( i, resolved );
+        for (int i = 0; i < lg.getLayers().size(); i++) {
+            LayerInfo l = lg.getLayers().get(i);
+            LayerInfo resolved = ResolvingProxy.resolve(this, l);
+            lg.getLayers().set(i, resolved);
         }
 
-        for ( int i = 0; i < lg.getStyles().size(); i++ ) {
-            StyleInfo s = lg.getStyles().get( i );
-            if(s != null) {
-                StyleInfo resolved = ResolvingProxy.resolve( this, s );
-                lg.getStyles().set( i, resolved );
+        for (int i = 0; i < lg.getStyles().size(); i++) {
+            StyleInfo s = lg.getStyles().get(i);
+            if (s != null) {
+                StyleInfo resolved = ResolvingProxy.resolve(this, s);
+                lg.getStyles().set(i, resolved);
             }
         }
 
     }
 
     protected void resolve(StyleInfo style) {
-        ((StyleInfoImpl)style).setCatalog( this );
+        ((StyleInfoImpl) style).setCatalog(this);
     }
 
     protected void resolve(MapInfo map) {
@@ -1646,81 +1636,72 @@ public class HibCatalogImpl
      * Method which reflectively sets all collections when they are null.
      */
     protected void resolveCollections(Object object) {
-        ClassProperties properties = OwsUtils.getClassProperties( object.getClass() );
-        for ( String property : properties.properties() ) {
-            Method g = properties.getter( property, null );
-            if ( g == null ) {
+        ClassProperties properties = OwsUtils.getClassProperties(object.getClass());
+        for (String property : properties.properties()) {
+            Method g = properties.getter(property, null);
+            if (g == null) {
                 continue;
             }
 
             Class type = g.getReturnType();
-            //only continue if this is a collection or a map
-            if (  !(Map.class.isAssignableFrom( type ) || Collection.class.isAssignableFrom( type ) ) ) {
+            // only continue if this is a collection or a map
+            if (!(Map.class.isAssignableFrom(type) || Collection.class.isAssignableFrom(type))) {
                 continue;
             }
 
-            //only continue if there is also a setter as well
-            Method s = properties.setter( property, null );
-            if ( s == null ) {
+            // only continue if there is also a setter as well
+            Method s = properties.setter(property, null);
+            if (s == null) {
                 continue;
             }
 
-            //if the getter returns null, call the setter
+            // if the getter returns null, call the setter
             try {
-                Object value = g.invoke( object, null );
-                if ( value == null ) {
-                    if ( Map.class.isAssignableFrom( type ) ) {
-                        if ( MetadataMap.class.isAssignableFrom( type ) ) {
+                Object value = g.invoke(object, null);
+                if (value == null) {
+                    if (Map.class.isAssignableFrom(type)) {
+                        if (MetadataMap.class.isAssignableFrom(type)) {
                             value = new MetadataMap();
-                        }
-                        else {
+                        } else {
                             value = new HashMap();
                         }
-                    }
-                    else if ( List.class.isAssignableFrom( type ) ) {
+                    } else if (List.class.isAssignableFrom(type)) {
                         value = new ArrayList();
-                    }
-                    else if ( Set.class.isAssignableFrom( type ) ) {
+                    } else if (Set.class.isAssignableFrom(type)) {
                         value = new HashSet();
-                    }
-                    else {
-                        throw new RuntimeException( "Unknown collection type:" + type.getName() );
+                    } else {
+                        throw new RuntimeException("Unknown collection type:" + type.getName());
                     }
 
-                    //initialize
-                    s.invoke( object, value );
+                    // initialize
+                    s.invoke(object, value);
                 }
-            }
-            catch (Exception e) {
-                throw new RuntimeException( e );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
-    protected void setId( Object o ) {
-        if ( OwsUtils.get( o, "id") == null ) {
+    protected void setId(Object o) {
+        if (OwsUtils.get(o, "id") == null) {
             String uid = new UID().toString();
-            OwsUtils.set( o, "id", o.getClass().getSimpleName() + "-"+uid );
+            OwsUtils.set(o, "id", o.getClass().getSimpleName() + "-" + uid);
         }
     }
 
-    protected boolean isNull( String string ) {
-        return string == null || "".equals( string.trim() );
+    protected boolean isNull(String string) {
+        return string == null || "".equals(string.trim());
     }
-
 
     public static <T> T unwrap(T obj) {
         return ModificationProxy.unwrap(obj);
     }
 
-
     public void setCatalogDAO(CatalogDAO catalogDAO) {
         this.catalogDAO = catalogDAO;
     }
 
-    
-    class HibCatalogUpdater
-            implements CatalogListener {
+    class HibCatalogUpdater implements CatalogListener {
 
         public void handleAddEvent(CatalogAddEvent event) {
         }
@@ -1739,7 +1720,7 @@ public class HibCatalogImpl
         public void reloaded() {
         }
 
-        private CatalogVisitor catalogVisitor = new  CatalogVisitor() {
+        private CatalogVisitor catalogVisitor = new CatalogVisitor() {
 
             public void visit(WorkspaceInfo obj) {
                 obj = ModificationProxy.unwrap(obj);
@@ -1786,7 +1767,6 @@ public class HibCatalogImpl
                 catalogDAO.update(obj);
             }
         };
-
 
     }
 

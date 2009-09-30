@@ -22,18 +22,17 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * Hibernate user type for {@link BoundingBox}.
  * 
  * @author Justin Deoliveira, The Open Planing Project
- *
+ * 
  */
 public class BoundingBoxType implements UserType {
 
     private static final Logger LOGGER = Logging.getLogger(BoundingBoxType.class);
 
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    public Object assemble(Serializable cached, Object owner) throws HibernateException {
 
-//        String os = owner == null ? "null" : owner.getClass().getSimpleName();
-//        String cs = cached == null ? "null" : cached.getClass().getSimpleName();
-//        LOGGER.severe("ASSEMBLE " + cs + "(" + cached + ")" + os + "(" + owner + ")");
+        // String os = owner == null ? "null" : owner.getClass().getSimpleName();
+        // String cs = cached == null ? "null" : cached.getClass().getSimpleName();
+        // LOGGER.severe("ASSEMBLE " + cs + "(" + cached + ")" + os + "(" + owner + ")");
 
         return cached;
     }
@@ -43,11 +42,11 @@ public class BoundingBoxType implements UserType {
     }
 
     public Serializable disassemble(Object value) throws HibernateException {
-//        if (value == null) {
-//            LOGGER.severe("DISASSEMBLE null");
-//        } else {
-//            LOGGER.severe("DISASSEMBLE " + value.getClass().getSimpleName() + " " + value);
-//        }
+        // if (value == null) {
+        // LOGGER.severe("DISASSEMBLE null");
+        // } else {
+        // LOGGER.severe("DISASSEMBLE " + value.getClass().getSimpleName() + " " + value);
+        // }
         return (Serializable) value;
     }
 
@@ -113,8 +112,7 @@ public class BoundingBoxType implements UserType {
         }
     }
 
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return original;
     }
 
@@ -123,8 +121,6 @@ public class BoundingBoxType implements UserType {
     }
 
     public int[] sqlTypes() {
-        return new int[]{
-                    Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.BLOB
-                };
+        return new int[] { Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.BLOB };
     }
 }

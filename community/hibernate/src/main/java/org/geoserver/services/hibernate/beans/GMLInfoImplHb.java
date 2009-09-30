@@ -10,13 +10,14 @@ public class GMLInfoImplHb extends GMLInfoImpl implements GMLInfoHb {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -214390976416597998L;
-	private String srsNameStyleHIB = null;
+    private static final long serialVersionUID = -214390976416597998L;
+
+    private String srsNameStyleHIB = null;
 
     public GMLInfoImplHb() {
     }
 
-    //--- Wrapping enum into strings for a cleaner db dump
+    // --- Wrapping enum into strings for a cleaner db dump
 
     protected String getSrsNameStyleHIB() {
         return srsNameStyleHIB;
@@ -28,7 +29,7 @@ public class GMLInfoImplHb extends GMLInfoImpl implements GMLInfoHb {
 
     @PrePersist
     protected void beforeSave() {
-        if(getSrsNameStyle() == null)
+        if (getSrsNameStyle() == null)
             setSrsNameStyleHIB(null);
         else
             setSrsNameStyleHIB(getSrsNameStyle().name());
@@ -36,13 +37,12 @@ public class GMLInfoImplHb extends GMLInfoImpl implements GMLInfoHb {
 
     @PostLoad
     protected void afterLoad() {
-        if(getSrsNameStyleHIB() == null)
+        if (getSrsNameStyleHIB() == null)
             setSrsNameStyle(null);
         else
             setSrsNameStyle(SrsNameStyle.valueOf(getSrsNameStyleHIB()));
     }
 
-    //--- /wrapping
-
+    // --- /wrapping
 
 }

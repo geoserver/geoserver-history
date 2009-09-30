@@ -22,22 +22,20 @@ import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.AbstractTransactionalSpringContextTests;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 
-public class HibTestSupport extends AbstractTransactionalSpringContextTests { 
+public class HibTestSupport extends AbstractTransactionalSpringContextTests {
 
     private static final Logger LOGGER = Logging.getLogger(HibTestSupport.class);
 
     public HibTestSupport() {
-        setDefaultRollback( false );
+        setDefaultRollback(false);
     }
-
 
     @Override
     protected String[] getConfigLocations() {
-        return new String[]{
-                    "classpath*:applicationContext-hibernateTest.xml"
-                    ,"classpath*:applicationContext.xml" // hope it will get first the appcontext defined in this very module
-                    ,"classpath*:applicationSecurityContext.xml"
-                };
+        return new String[] { "classpath*:applicationContext-hibernateTest.xml",
+                "classpath*:applicationContext.xml" // hope it will get first the appcontext defined
+                                                    // in this very module
+                , "classpath*:applicationSecurityContext.xml" };
     }
 
     @Override
@@ -45,7 +43,8 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests {
         try {
             ServletContext ctx = createServletContext();
 
-            GenericWebApplicationContext context = new GenericWebApplicationContext(new UnoverridingBeanFactory());
+            GenericWebApplicationContext context = new GenericWebApplicationContext(
+                    new UnoverridingBeanFactory());
             context.setServletContext(ctx);
             prepareApplicationContext(context);
             customizeBeanFactory(context.getDefaultListableBeanFactory());
@@ -53,17 +52,19 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests {
             context.refresh();
             return context;
         } catch (Exception orig) {
-            for(Throwable loop = orig; loop != null; loop = loop.getCause()) {
-                if(loop instanceof SQLException) {
+            for (Throwable loop = orig; loop != null; loop = loop.getCause()) {
+                if (loop instanceof SQLException) {
                     LOGGER.warning("Found a SQLException. Unrolling stacktrace.");
-                    for(SQLException sqle = (SQLException)loop; sqle != null; sqle = sqle.getNextException()) {
-                        if(sqle instanceof PSQLException) {
-                            PSQLException psqle = (PSQLException)sqle;
+                    for (SQLException sqle = (SQLException) loop; sqle != null; sqle = sqle
+                            .getNextException()) {
+                        if (sqle instanceof PSQLException) {
+                            PSQLException psqle = (PSQLException) sqle;
                             LOGGER.warning("Server msg: " + psqle.getServerErrorMessage());
-                            LOGGER.warning("Server iqry: " + psqle.getServerErrorMessage().getInternalQuery());
-                            LOGGER.warning("Server hint: " + psqle.getServerErrorMessage().getHint());
+                            LOGGER.warning("Server iqry: "
+                                    + psqle.getServerErrorMessage().getInternalQuery());
+                            LOGGER.warning("Server hint: "
+                                    + psqle.getServerErrorMessage().getHint());
                         }
-
 
                         StringWriter sw = new StringWriter();
                         PrintWriter pw = new PrintWriter(sw, true);
@@ -87,7 +88,8 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests {
             if (containsBeanDefinition(beanName)) {
                 String oldbd = getBeanDefinition(beanName).getBeanClassName();
                 String newbd = beanDefinition.getBeanClassName();
-                String note = oldbd.equals(newbd) ? " (same class " + oldbd + ")" : " from " + oldbd + " into " + newbd;
+                String note = oldbd.equals(newbd) ? " (same class " + oldbd + ")" : " from "
+                        + oldbd + " into " + newbd;
                 logger.info("Not overriding " + beanName + note);
             } else {
                 super.registerBeanDefinition(beanName, beanDefinition);
@@ -97,24 +99,25 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests {
 
     private ServletContext createServletContext() {
         MockServletContext ctx = new MockServletContext();
-        File testDataDir = null;;
+        File testDataDir = null;
+        ;
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext();
 
         Resource testDataResource = context.getResource("testdata");
-        if(testDataResource == null)
+        if (testDataResource == null)
             throw new RuntimeException("Can't find test data.");
 
         try {
             testDataDir = testDataResource.getFile();
 
             File services = new File(testDataDir, "services.xml");
-            if(! services.exists())
+            if (!services.exists())
                 throw new FileNotFoundException(services.getPath());
 
-            ctx.addInitParameter("GEOSERVER_DATA_DIR", testDataDir.getAbsolutePath()); 
+            ctx.addInitParameter("GEOSERVER_DATA_DIR", testDataDir.getAbsolutePath());
             ctx.addInitParameter("serviceStrategy", "PARTIAL-BUFFER2");
-            
+
         } catch (IOException ex) {
             LOGGER.severe("Error in test files: " + ex.getMessage());
             throw new RuntimeException("Error in test files", ex);

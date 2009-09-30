@@ -3,15 +3,14 @@ package org.geoserver.catalog.hibernate.beans;
 import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 
-public class NamespaceInfoImplHb 
-        extends NamespaceInfoImpl
-        implements Hibernable {
+public class NamespaceInfoImplHb extends NamespaceInfoImpl implements Hibernable {
 
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 2667725101814407281L;
-	protected boolean _default;
+    private static final long serialVersionUID = 2667725101814407281L;
+
+    protected boolean _default;
 
     public NamespaceInfoImplHb() {
     }
