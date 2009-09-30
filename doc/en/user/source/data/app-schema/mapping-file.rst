@@ -5,6 +5,10 @@ Mapping File
 
 An app-schema feature type is configured using a mapping file that defines the data source for the feature and the mappings from the source data to XPaths in the output XML.
 
+
+Outline
+-------
+
 Here is an outline of a mapping file::
 
     <?xml version="1.0" encoding="UTF-8"?>
@@ -33,14 +37,15 @@ Here is an outline of a mapping file::
 
 * ``typeMappings`` give the relationships between the fields of the source data store and the elements of the output complex feature.
 
+
 Mapping file schema
--------------------
+```````````````````
 
 * ``AppSchemaDataAccess.xsd`` is optional because it is not used by GeoServer. The presence of ``AppSchemaDataAccess.xsd`` in the same folder as the mapping file enables XML editors to observe its grammar and provide contextual help.
 
 
-Mapping file format
--------------------
+Settings
+--------
 
 ``namespaces``
 ``````````````
@@ -77,14 +82,21 @@ Non-feature types (eg. gsml:CompositionPart is a data type that is nested in gsm
 
 All Geoserver data sources are available for use. Parameters can be provided in any order.
 
+
 ``catalog``
 ```````````
 
-The ``catalog`` element provides the location of an OASIS catalog that contains all dependent schemas, given as a path relative to the mapping file, for example::
+An OASIS XML Catalog is a standard configuration file format that instructs an XML processing system how to process entity references:
+
+* http://en.wikipedia.org/wiki/XML_Catalog
+* http://www.oasis-open.org/committees/entity/spec-2001-08-06.html
+
+In the case of GeoServer app-schema, the catalog is a local filesystem cache of all the schemas used to define the output feature types. The ``catalog`` element provides the location of an OASIS XML catalog that contains all dependent schemas, given as a path relative to the mapping file, for example::
 
     <catalog>../../../schemas/catalog.xml</catalog>
 
-In practice it is mandatory to provide an OASIS catalog because the implementation otherwise has difficulti resolving relative imports in schema files.
+In practice it is mandatory to provide an OASIS catalog because the implementation otherwise has difficulty resolving relative imports in schema files.
+
 
 
 ``targetTypes``
@@ -98,6 +110,9 @@ The ``targetTypes`` section lists all the application schemas required to define
         </FeatureType>
     </targetTypes>
 
+
+Mappings
+--------
 
 ``typeMappings``
 ````````````````
@@ -124,8 +139,10 @@ For example::
 * ``targetElement`` is the the element name in the target application schema. This is the same as the WFS feature type name.
 * ``attributeMappings`` lists
 
+
 ``attributeMappings``
 `````````````````````
+
 ``attributeMappings`` comprises a list of ``AttributeMapping`` elements.
 
 
@@ -146,11 +163,35 @@ Outline::
 ``targetAttribute``
 ```````````````````
 
-``targetAttribute`` is the XPath to the output element, in the context of the target element.
+``targetAttribute`` is the XPath to the output element, in the context of the target element. For example, if the containing mapping is for a feature, you should be able to map a ``gml:name`` property by setting the target attribute::
+
+    <targetAttribute>gml:name</targetAttribute>
+
+Multivalued attributes resulting from denormalised sources are automatically encoded. If you wish to encode multivalued attributes from different input columns as a specific instance of an attribute, you can use a (one-based) index. For example, you can set the third ``gml:name`` with::
+
+    <targetAttribute>gml:name[3]</targetAttribute>
+
 
 ``idExpression`` (optional)
 ```````````````````````````
 A CQL expression that is used to set the ``gml:id`` of the output feature type. This could be a column in a database, the automatically generated simple feature ID obtained with ``getId()``, or some other expression.
+
+
+``sourceExpression``
+````````````````````
+
+Use a ``sourceExpression`` tag to set the element content from source data. For example, to set the element content from a column call ``DESCRIPTION``::
+
+    <sourceExpression><OCQL>DESCRIPTION</OCQL></sourceExpression>
+
+You can use CQL expressions to calculate the content of the element. Ths example concatenated strings from two columns and a literal::
+
+    <sourceExpression>
+        <OCQL>strConCat(FIRST , strConCat(' followed by ', SECOND))</OCQL>
+    </sourceExpression>
+
+.. warning:: Avoid use of CQL expressions for properties that users will want to query, because the current implementation cannot reverse these expressions to generate efficient SQL, and will instead read all features to calculate the property to find the features that match the filter query. Falling back to brute force search makes queries on CQL-calculated expressions very slow. If you must concatenate strings to generate content, you may find that doing this in your database is much faster.
+
 
 ``targetAttributeNode`` (optional)
 ``````````````````````````````````
@@ -165,6 +206,44 @@ A CQL expression that is used to set the ``gml:id`` of the output feature type. 
 Note that the GML encoding rules require that complex types are never the direct property of another complex type; they are always contained in a property type to ensure that their type is encoded in a surrounding element. Encoded GML is always type/property/type/property. This is also known as the GML "striping" rule. The consequence of this for app-schema mapping files is that ``targetAttributeNode`` must be applied to the property and the type must be set to the XSD property type not to the type of the contained attribute (``gsml:CGI_TermValuePropertyType`` not ``gsml:CGI_TermValueType``).
 
 Because the XPath refers to a property type not the encodes content, ``targetAttributeNode`` often appears in a mapping with ``targetAttribute`` and no other elements.
+
+``isMultiple`` (optional)
+`````````````````````````
+
+The ``isMultiple`` element states whether there might be multiple values for this attribute.Because the default value is ``false`` and it is omitted in this case, it is most usually seen as::
+
+    <isMultiple>true</isMultiple>
+
+
+``ClientProperty`` (optional, multivalued)
+``````````````````````````````````````````
+
+A mapping can have one or more ``ClientProperty`` elements, which set XML attributes on the mapping target. Each ``ClientProperty`` has a ``name`` and a ``value`` which is an arbitrary CQL expression. No ``OCQL`` element is used inside these.
+
+This ``ClientProperty`` element sets the ``codeSpace`` XML attribute to the literal string ``urn:ietf:rfc:2141``. Note the use of single quotes around the literal string. This could be applied to any GML CodeType::
+
+    <ClientProperty>
+        <name>codeSpace</name>
+        <value>'urn:ietf:rfc:2141'</value>
+    </ClientProperty>
+
+This ``ClientProperty`` element sets the ``xlink:href`` XML attribute to to the value of the ``RELATED_FEATURE_URN`` field in the data source (could be a column in an Oracle database table). This could be applied to any property type, such a GML FeaturePropertyType, or other type modelled on the GML association pattern::
+
+    <ClientProperty>
+        <name>xlink:href</name>
+        <value>RELATED_FEATURE_URN</value>
+    </ClientProperty>
+
+
+CQL
+---
+
+* String literals are enclosed in single quotes, for example ``'urn:ogc:def:nil:OGC:missing'``.
+
+* The uDig manual contains information on CQL:
+
+    * http://udig.refractions.net/confluence/display/EN/Common+Query+Language
+
 
 
 
