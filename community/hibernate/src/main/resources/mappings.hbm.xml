@@ -28,16 +28,16 @@
     <property column="DESCRIPTION" name="description"/>
     <property column="ENABLED" name="enabled"/>
     <many-to-one class="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb" column="WORKSPACE" foreign-key="store_workspace_fk" lazy="false" name="workspace"/>
-    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="store_metadata_fk" lazy="false" name="metadata"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="store_metadata_fk" name="metadata"/>
+    <map cascade="all-delete-orphan" lazy="false" name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS">
+        <key column="DATA_STORE_ID"/>
+        <map-key type="java.lang.String"/>
+        <element length="100000" type="java.io.Serializable"/>
+    </map>
     <!-- ===================================================================== -->
     <!-- DataStoreInfo -->
     <!-- ===================================================================== -->
     <subclass discriminator-value="DataStore" name="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb">
-      <map cascade="all-delete-orphan" lazy="false" name="connectionParameters" table="DATA_STORE_CONNECTION_PARAMETERS">
-        <key column="DATA_STORE_ID"/>
-        <map-key type="java.lang.String"/>
-        <element length="100000" type="java.io.Serializable"/>
-      </map>
     </subclass>
     <!-- ===================================================================== -->
     <!-- CoverageStoreInfo -->
@@ -255,19 +255,20 @@
       <generator class="native"/>
     </id>
     <property column="PATH" name="path"/>
+    <!-- NAME prop will be really useful only in gs2.1 -->
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="TYPE" length="100000" name="type" type="java.io.Serializable"/>
     <property column="ENABLED" name="enabled"/>
     <many-to-one cascade="persist" class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" column="DEFAULT_STYLE" foreign-key="layer_style_fk" lazy="false" name="defaultStyle"/>
-    <set lazy="false" name="styles" table="LAYER_STYLES">
+    <set name="styles" table="LAYER_STYLES" lazy="false">
       <key column="LAYER_ID"/>
       <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" lazy="false"/>
     </set>
     <!-- fixme: maybe these reosurces should be persisted by hand, avoiding dups. -->
-    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="layer_resource_fk" lazy="false" name="resource"/>
-    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.LegendInfoImpl" column="LEGEND" foreign-key="layer_legend_fk" lazy="false" name="legend"/>
-    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="layer_metadata_fk" lazy="false" name="metadata"/>
-    <one-to-one cascade="all" class="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" foreign-key="layer_attribution_fk" lazy="false" name="attribution"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="layer_resource_fk"  name="resource" not-null="true" lazy="false"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.LegendInfoImpl" column="LEGEND" foreign-key="layer_legend_fk"  name="legend" lazy="false"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="layer_metadata_fk"  name="metadata" lazy="false"/>
+    <one-to-one cascade="all" class="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" foreign-key="layer_attribution_fk" name="attribution" lazy="false"/>
   </class>
   <!-- ===================================================================== -->
   <!-- MapInfo -->
@@ -295,12 +296,12 @@
     </id>
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="PATH" name="path"/>
-    <list name="layers">
+    <list name="layers" lazy="false">
       <key column="LGROUP_ID"/>
       <list-index column="LGROUP_LAYER_INDEX"/>
       <one-to-many class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"/>
     </list>
-    <list name="styles">
+    <list name="styles" lazy="false">
       <key column="LGROUP_ID"/>
       <list-index column="LGROUP_STYLE_INDEX"/>
       <one-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"/>
