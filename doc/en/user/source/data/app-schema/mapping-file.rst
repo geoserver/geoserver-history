@@ -47,6 +47,7 @@ Mapping file schema
 Settings
 --------
 
+
 ``namespaces``
 ``````````````
 
@@ -80,7 +81,24 @@ Non-feature types (eg. gsml:CompositionPart is a data type that is nested in gsm
 ``sourceDataStores``
 ````````````````````
 
-All Geoserver data sources are available for use. Parameters can be provided in any order.
+Every mapping file requires at least one data store to provide data for features.
+
+* app-schema reuses GeoServer data stores, so there are many available types.
+* See :ref:`app-schema.data-stores` for details of data store configuration.
+
+Outline::
+
+    <sourceDataStores>
+        <DataStore>
+            <id>datastore</id>
+            <parameters>
+                ...
+            </parameters>
+        </DataStore>
+        ...
+    </sourceDataStores>
+
+If you have more than one ``DataStore`` in a mapping file, be sure to give them each a distinct ``id``.
 
 
 ``catalog``
@@ -135,6 +153,7 @@ For example::
 
     * table or view name, lowercase for PostGIS, uppercase for Oracle.
     * property file name (without the .properties suffix)
+    * can be fully qualified for some data sources SDE.USERNAME.TABLENAME
 
 * ``targetElement`` is the the element name in the target application schema. This is the same as the WFS feature type name.
 * ``attributeMappings`` lists
@@ -180,7 +199,7 @@ A CQL expression that is used to set the ``gml:id`` of the output feature type. 
 ``sourceExpression``
 ````````````````````
 
-Use a ``sourceExpression`` tag to set the element content from source data. For example, to set the element content from a column call ``DESCRIPTION``::
+Use a ``sourceExpression`` tag to set the element content from source data. For example, to set the element content from a column called ``DESCRIPTION``::
 
     <sourceExpression><OCQL>DESCRIPTION</OCQL></sourceExpression>
 
@@ -245,5 +264,12 @@ CQL
     * http://udig.refractions.net/confluence/display/EN/Common+Query+Language
 
 
+Database identifiers
+--------------------
+
+When referring to database table/view names or column names, use:
+
+* lowercase for PostGIS
+* UPPERCASE for Oracle Spatial and ArcSDE
 
 

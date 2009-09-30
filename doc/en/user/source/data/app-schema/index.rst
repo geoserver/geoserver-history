@@ -5,6 +5,8 @@ Application Schema Support
 
 The application schema support (app-schema) extension provides support for :ref:`app-schema.complex-features` in GeoServer WFS.
 
+.. note:: You must install the app-schema plugin to use Application Schema Support.
+
 GeoServer provides support for a broad selection of simple feature data stores, including property files, shapefiles, and JDBC data stores such as PostGIS and Oracle Spatial. The app-schema module takes one or more of these simple feature data stores and applies a mapping to convert the simple feature types into one or more complex feature types conforming to a GML application schema.
 
 .. figure:: app-schema.png
