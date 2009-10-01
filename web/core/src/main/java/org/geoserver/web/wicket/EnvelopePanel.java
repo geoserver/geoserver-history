@@ -6,12 +6,14 @@ package org.geoserver.web.wicket;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
-import org.apache.wicket.markup.html.form.IFormVisitorParticipant;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -60,12 +62,19 @@ public class EnvelopePanel extends FormComponentPanel {
     
     private void updateFields() {
         ReferencedEnvelope e = (ReferencedEnvelope) getModelObject();
-        if(e != null) {
-            this.minX = e.getMinX();
-            this.minY = e.getMinY();
-            this.maxX = e.getMaxX();
-            this.maxY = e.getMaxY();
-            this.crs = e.getCoordinateReferenceSystem();
+        if(e != null && e.getCoordinateReferenceSystem() != null) {
+        	this.crs = e.getCoordinateReferenceSystem();
+        	try {
+				String epsgCode = CRS.equalsIgnoreMetadata(DefaultGeographicCRS.WGS84, this.crs) ? "EPSG:4326" : CRS.lookupIdentifier(this.crs, false);
+				if (epsgCode != null) {
+		            this.minX = e.getMinX();
+		            this.minY = e.getMinY();
+		            this.maxX = e.getMaxX();
+		            this.maxY = e.getMaxY();
+				}
+			} catch (FactoryException e1) {
+				// Do nothing!
+			}
         }
     }
    
@@ -90,7 +99,7 @@ public class EnvelopePanel extends FormComponentPanel {
         });
         
         // update the envelope model
-        if(minX != null && maxX != null && minY != null && maxX != null)
+        if(minX != null && maxX != null && minY != null && maxX != null && crs != null)
             setConvertedInput(new ReferencedEnvelope(minX, maxX, minY, maxY, crs));
         else
             setConvertedInput(null);
