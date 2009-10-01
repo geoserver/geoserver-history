@@ -40,6 +40,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridEnvelope;
+import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -482,6 +483,8 @@ public class CatalogBuilder {
         if (rinfo.getProjectionPolicy() == ProjectionPolicy.REPROJECT_TO_DECLARED && bounds != null) {
             try {
                 bounds = bounds.transform(rinfo.getCRS(), true);
+                GridGeometry grid = ((CoverageInfo) rinfo).getGrid();
+                ((CoverageInfo) rinfo).setGrid(new GridGeometry2D(grid.getGridRange(),grid.getGridToCRS(), rinfo.getCRS()));
             } catch(Exception e) {
                 throw (IOException) new IOException("transform error").initCause(e);
             }
