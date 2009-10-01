@@ -15,6 +15,14 @@
       <enabled>true</enabled>
      </snapshots>
     </repository>
+    <repository>
+      <id>opengeo</id>
+      <name>opengeo</name>
+      <url>http://repo.opengeo.org/</url>
+       <snapshots>
+        <enabled>true</enabled>
+       </snapshots>
+    </repository>
   </repositories>
 
  <dependencies>
