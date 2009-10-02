@@ -144,14 +144,14 @@
       <list-index column="RES_METADATA_LINK_INDEX"/>
       <many-to-many class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
     </list>
-    <property name="nativeBoundingBox" type="boundingBox">
+    <property name="nativeBoundingBox" type="boundingBox" lazy="false">
       <column name="MINX"/>
       <column name="MINY"/>
       <column name="MAXX"/>
       <column name="MAXY"/>
       <column name="CRS"/>
     </property>
-    <property name="latLonBoundingBox" type="boundingBox">
+    <property name="latLonBoundingBox" type="boundingBox" lazy="false">
       <column name="LL_MINX"/>
       <column name="LL_MINY"/>
       <column name="LL_MAXX"/>
@@ -162,8 +162,8 @@
     <!-- property name="CRS" column="RESOURCE_CRS" type="java.io.Serializable" length="100000"/ -->
     <property column="NATIVE_CRS" length="100000" name="nativeCRS" type="java.io.Serializable"/>
     <property column="PROJECTION_POLICY" name="projectionPolicy"/>
-    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="resource_metadata_fk" lazy="false" name="metadata"/>
-    <many-to-one class="org.geoserver.catalog.impl.StoreInfoImpl" column="STORE" foreign-key="resource_store_fk" lazy="false" name="store"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="resource_metadata_fk" lazy="false" name="metadata" unique="true" not-null="true"/>
+    <many-to-one class="org.geoserver.catalog.impl.StoreInfoImpl" column="STORE" foreign-key="resource_store_fk" lazy="false" name="store" not-null="true"/>
   </class>
   <!-- ===================================================================== -->
   <!-- FeatureTypeInfo -->
@@ -268,7 +268,7 @@
     <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="layer_resource_fk"  name="resource" not-null="true" lazy="false"/>
     <many-to-one cascade="persist" class="org.geoserver.catalog.impl.LegendInfoImpl" column="LEGEND" foreign-key="layer_legend_fk"  name="legend" lazy="false"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="layer_metadata_fk"  name="metadata" lazy="false"/>
-    <one-to-one cascade="all" class="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" foreign-key="layer_attribution_fk" name="attribution" lazy="false"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" column="ATTRIBUTION" foreign-key="layer_attribution_fk" name="attribution" lazy="false"/>
   </class>
   <!-- ===================================================================== -->
   <!-- MapInfo -->
@@ -289,24 +289,57 @@
   <!-- ===================================================================== -->
   <!-- LayerGroup -->
   <!-- ===================================================================== -->
+
+  <class name="org.geoserver.catalog.hibernate.beans.GroupedLayerHb" table="GROUPEDLAYERS" >
+    <id column="ID" name="id">
+      <generator class="native"/>
+    </id>
+    <version column="LOCKVER" name="version" access="field" insert="true"/>
+    <many-to-one class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb" name="layer" lazy="false">
+        <column name="layer_id" not-null="true"/>
+    </many-to-one>
+    <many-to-one class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" name="style" lazy="false">
+        <column name="style_id" not-null="false"/>
+    </many-to-one>
+  </class>
+
+
   <class name="org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb" table="LAYERGROUPS">
     <cache usage="read-write"/>
     <id column="LGROUP_ID" name="id">
       <generator class="native"/>
     </id>
+    <version column="LOCKVER" name="version" access="field" insert="true"/>
+
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="PATH" name="path"/>
+
+    <list name="groupedLayers" lazy="false" table="LAYERGROUPS_LAYERS" cascade="all,persist,delete,delete-orphan" >
+      <key column="LGROUP_ID" not-null="true"/>
+      <list-index column="LAYER_INDEX"/>
+      <one-to-many class="org.geoserver.catalog.hibernate.beans.GroupedLayerHb" />
+    </list>
+
+
+<!--
     <list name="layers" lazy="false">
       <key column="LGROUP_ID"/>
       <list-index column="LGROUP_LAYER_INDEX"/>
-      <one-to-many class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"/>
+      <many-to-many class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb">
+          <column name="LAYER_ID"/>
+      </many-to-many>
     </list>
+
     <list name="styles" lazy="false">
       <key column="LGROUP_ID"/>
       <list-index column="LGROUP_STYLE_INDEX"/>
-      <one-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"/>
+<!- - a null style will make the logic refer to the layer's default style - ->
+      <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" >
+          <column name="STYLE_ID" not-null="false"/> 
+      </many-to-many>
     </list>
-    <property name="bounds" type="boundingBox">
+-->
+    <property name="bounds" type="boundingBox" lazy="false">
       <column name="MINX"/>
       <column name="MINY"/>
       <column name="MAXX"/>

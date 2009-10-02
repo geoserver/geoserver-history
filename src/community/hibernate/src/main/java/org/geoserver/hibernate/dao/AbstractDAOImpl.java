@@ -102,8 +102,8 @@ public abstract class AbstractDAOImpl {
         if (!(entity instanceof Hibernable))
             LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
-        CatalogInfo attached = entityManager.find(entity.getClass(), entity.getId());
-
+        CatalogInfo attached; // = entityManager.find(entity.getClass(), entity.getId());
+        attached = entityManager.merge(entity);
         entityManager.remove(attached);
         entityManager.flush();// TODO useless?
     }

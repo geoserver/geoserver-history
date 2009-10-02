@@ -51,7 +51,9 @@ import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
+import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.CoverageInfoImpl;
@@ -1609,6 +1611,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         for (int i = 0; i < lg.getLayers().size(); i++) {
             LayerInfo l = lg.getLayers().get(i);
             LayerInfo resolved = ResolvingProxy.resolve(this, l);
+            resolve(resolved);
             lg.getLayers().set(i, resolved);
         }
 
@@ -1616,6 +1619,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
             StyleInfo s = lg.getStyles().get(i);
             if (s != null) {
                 StyleInfo resolved = ResolvingProxy.resolve(this, s);
+                ((StyleInfoImplHb)resolved).setCatalog(this);
                 lg.getStyles().set(i, resolved);
             }
         }
