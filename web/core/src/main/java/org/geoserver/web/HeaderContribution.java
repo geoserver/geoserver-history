@@ -45,7 +45,7 @@ public class HeaderContribution {
     static Logger LOGGER = Logging.getLogger( "org.geoserver.web");
     
     Class scope;
-    String cssFilename, javaScriptFilename;
+    String cssFilename, javaScriptFilename, faviconFilename;
  
     public Class getScope() {
         return scope;
@@ -71,6 +71,14 @@ public class HeaderContribution {
         this.javaScriptFilename = javaScriptFilename;
     }
     
+    public String getFaviconFilename() {
+        return faviconFilename;
+    }
+
+    public void setFaviconFilename(String faviconName) {
+        this.faviconFilename = faviconName;
+    }
+
     /**
      * Determines if the header contribution should apply to a particular page or not.
      * <p>
@@ -101,6 +109,19 @@ public class HeaderContribution {
     public ResourceReference getJavaScript() {
         if ( scope != null && javaScriptFilename != null ) {
             return new ResourceReference(scope, cssFilename);
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Returns the resource reference to a replacement favicon for the header contribution,
+     * or null if there is no favicon replacement
+     * @return
+     */
+    public ResourceReference getFavicon() {
+        if( scope != null && faviconFilename != null) {
+            return new ResourceReference(scope, faviconFilename);
         }
         
         return null;
