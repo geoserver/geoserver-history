@@ -6,8 +6,6 @@ Heights Templates
 Introduction
 ------------
 
-.. warning:: The screenshots on this tutorial have not yet been updated for the 2.0.x user interface.  But most all the rest of the information should be valid, and the user interface is roughly the same, but a bit more easy to use.
-
 Height Templates in KML allow you to use an attribute of your data as the 'height' of features in Google Earth.
 
 .. note:: This tutorial assumes that GeoServer is running on http://localhost:8080.
