@@ -16,6 +16,7 @@ import org.acegisecurity.Authentication;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.behavior.HeaderContributor;
@@ -24,6 +25,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -64,6 +66,7 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
 	@SuppressWarnings("serial")
     public GeoServerBasePage() {
         //add css and javascript header contributions
+	    ResourceReference faviconReference = null;
         List<HeaderContribution> cssContribs = 
             getGeoServerApplication().getBeansOfType(HeaderContribution.class);
         for (HeaderContribution csscontrib : cssContribs) {
@@ -78,12 +81,24 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
                     if (ref != null) {
                         add(HeaderContributor.forJavaScript(ref));
                     }
+                    
+                    ref = csscontrib.getFavicon();
+                    if(ref != null) {
+                        faviconReference = ref;
+                    }
                 }
             }
             catch( Throwable t ) {
                 LOGGER.log(Level.WARNING, "Problem adding header contribution", t );
             }
         }
+        
+        // favicon
+        if(faviconReference == null) {
+            faviconReference = new ResourceReference(GeoServerBasePage.class, "favicon.ico");
+        }
+        String faviconUrl = RequestCycle.get().urlFor(faviconReference).toString();
+        add(new ExternalLink("faviconLink", faviconUrl, null));
 	    
 	    // page title
 	    add(new Label("pageTitle", getPageTitle()));
