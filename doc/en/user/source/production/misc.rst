@@ -21,4 +21,6 @@ In order to make it easier to find your data, put a link to your capabilities do
 Set up clustering
 -----------------
 
-.. todo:: Details on clustering.
+Setting up a `Cluster <http://en.wikipedia.org/wiki/Cluster_(computing)>`_ is one of the best ways to improve the reliability and performance of your GeoServer installation.  All the most stable and high performance GeoServer instances are configured in some sort of cluster.  There are a huge variety of techniques to configure a cluster, including at the container level, the virtual machine level, and the physical server level.  
+
+Andrea Aime is currently working on an overview of what some of the biggest GeoServer users have done, for his 'GeoServer in Production' talk at FOSS4G 2009.  In time that information will be migrated to tutorials and white papers.
