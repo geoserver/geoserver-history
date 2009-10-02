@@ -14,15 +14,18 @@ Raster Super-Overlays
 
 Consider this image, which is generated from GeoServer. When zoomed out, the data is at a small size.
 
-.. warning:: Add SS from old site, Fig 1
+.. figure:: images/tile0small.png
+   :align: center
 
 When zooming in, the image grows larger, but since the image is at low resolution (orignially designed to be viewed small), the quality degrades.
 
-.. warning:: Add SS from old site, Fig 2
+.. figure:: images/tile0.png
+   :align: center
 
 However, in a super-overlay, the KML document requests a new image from GeoServer of a higher resolution for that zoom level. As the new image is downloaded, the old image is replaced by the new image.
 
-.. warning:: Add SS from old site, Fig 3
+.. figure:: images/tile4.png
+   :align: center
 
 Raster Super-Overlays and GeoWebCache
 -------------------------------------
@@ -34,8 +37,6 @@ The easiest way to tile cache a raster super overlay is to use GeoWebCache which
    http://GEOSERVER_URL/gwc/service/kml/<layername>.<imageformat>.kmz
 
 where ``GEOSERVER_URL`` is the URL of your GeoServer instance.
-
-It is also possible to use `TileCache <http://tilecache.org/>`_ with raster super-overlays.
 
 Vector Super-Overlays
 ---------------------

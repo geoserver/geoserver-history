@@ -11,4 +11,5 @@ To get GeoServer to include a legend with the KML output, append ``legend=true``
 
 The resulting Google Earth output looks like this:
 
-.. warning:: Add SS with legend.
+.. figure:: images/legend.png
+   :align: center

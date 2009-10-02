@@ -11,11 +11,13 @@ The second form is as an overlay (image). In this form the rendering is done by 
 
 There are advantages to and disadvantages to each output mode when rendering vector data.  Placemarks look nicer, but there can be performance problems with Google Earth if the data set is large. Overlays put less of a strain on Google Earth, but aren't as nice looking.
 
-The following shows the same dataset rendered in Placemark form on the left and Overlay form on the right.
+The following shows the same dataset rendered in Placemark form on the top and Overlay form on the bottom.
 
-.. warning:: SS Placemark
+.. figure:: images/vector.png
+   :align: center
 
-.. warning:: SS Overlay
+.. figure:: images/raster.png
+   :align: center
 
 KML scoring is the process of determing whether to render features as rasters or as vectors.
 
