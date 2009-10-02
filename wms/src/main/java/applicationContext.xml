@@ -75,6 +75,7 @@
             <value>GetMap</value>
             <value>Map</value>
             <value>reflect</value>
+            <value>kml</value>
           </list>
         </constructor-arg>
  	</bean>
@@ -324,21 +325,6 @@
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 	
-	<!--  kml service stuff -->
-	<!--  TODO: move this to s eperate module -->
-	<bean id="kmlService" class="org.vfny.geoserver.wms.responses.map.kml.KMLReflector">
-		<constructor-arg ref="wmsService2"/>
-	</bean>	
-	<bean id="kmlServiceDescriptor" class="org.geoserver.platform.Service">
-		<constructor-arg index="0" value="kml"/>
-		<constructor-arg index="1" ref="kmlService"/>
-		<constructor-arg index="2" value="1.0.0"/>
-		<constructor-arg index="3">
-		  <list>
-		    <value>wms</value>
-		  </list>
-		</constructor-arg>
- 	</bean>
  	
 	<!-- http url mapping -->
 	<bean id="kmlURLMapping" 
