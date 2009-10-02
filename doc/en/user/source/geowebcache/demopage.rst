@@ -5,7 +5,8 @@ Demo page
 
 GeoWebCache comes with a demo page that allows quick access to some of the most basic functionality of the software.  From within the demo page you can view configured layers, reload the configuration to add new layers, and seed/refresh the existing cache on a per-layer basis.
 
-.. warning:: Add screenshot of demo page
+.. figure:: images/geowebcache.png
+   :align: center
 
 Loading
 -------
@@ -25,7 +26,8 @@ Refreshing layer list
 
 The demo page contains a list of every layer that GeoWebCache is aware of.  This is related (but not always identical) to the list of layers as published in GeoServer's WMS GetCapabilities document.  If changes have been made to GeoServer, GeoWebCache will not automatically become aware of them.  If there is a discrepancy, the **Reload Configuration** button will poll GeoServer for the most up-to-date list.  Pressing this button will trigger authentication to GeoServer.  Use the same username and password that you would use to log in to the :ref:`web_admin`.  (See :ref:`webadmin_basics` for more information.)  After a successful login, the number of layers found and loaded will be displayed.
 
-.. warning:: Add screenshot(s) of reload configuration
+.. figure:: images/geowebcache-reload.png
+   :align: center
 
 Layers and output formats
 -------------------------
