@@ -14,15 +14,17 @@ To set the height based on an attribute, the syntax is::
 
    ${ATTRIBUTE.value}
 
-Replace the word ``ATTRIBUTE`` with the name of the height attribute in your data set.
+Replace the word ``ATTRIBUTE`` with the name of the height attribute in your data set.  For a complete tutorial on working with the height templates see :ref:`tutorials_heights`.
 
 Time
 ----
 
-Google Earth also contains a "time slider", which can allow animations of data, and show changes over time.  As with height, time can be linked to an attirbute of the data, as long as the data set has a date/time attribute. Lnking this date/time attribute to the time slider in Google Earth is accomplished by creating a Freemarker template. Create a file called ``time.ftl``, and save it in the same  directory that contains your data's ``info.xml``.
+Google Earth also contains a "time slider", which can allow animations of data, and show changes over time.  As with height, time can be linked to an attribute of the data, as long as the data set has a date/time attribute. Linking this date/time attribute to the time slider in Google Earth is accomplished by creating a Freemarker template. Create a file called ``time.ftl``, and save it in the same  directory that contains your data's ``info.xml``.
 
 To set the time based on an attribute the syntax is::
 
    ${DATETIME_ATTRIBUTE.value}
 
 Replace the word ``DATETIME_ATTRIBUTE`` with the name of the date/time attribute. When creating KML, GeoServer will automatically link the data to the time element in Google Earth. If set successfully, the time slider will automatically appear.
+
+For a full tutorial on using GeoServer with Google Earth's time slider see :ref:`tutorials_time`
