@@ -656,6 +656,103 @@ public class HibernateCatalogTest extends HibTestSupport {
         assertEquals(re.getMinX(), reReloaded.getMinX());
     }
 
+    public void testLayerGroupUpdate() {
+        // ensure no stores
+        clearCatalog();
+        removeExistingNS();
+
+        // store needs a workspace...
+        WorkspaceInfo ws = catalog.getFactory().createWorkspace();
+        ws.setName("testLayerWorkspace");
+        catalog.add(ws);
+        NamespaceInfo ns = catalog.getFactory().createNamespace();
+        ns.setPrefix("testLayerWorkspace");
+        ns.setURI("http://testLayerWorkspace.org");
+        catalog.add(ns);
+
+        LayerInfo layer1 = createLayer(ws, "cs1", "cov1", "ncov1", "test coverage 1", "testlayer1");
+        LayerInfo layer2 = createLayer(ws, "cs2", "cov2", "ncov2", "test coverage 2", "testlayer2");
+
+        LayerGroupInfo layerGroupInfo = catalog.getFactory().createLayerGroup();
+        layerGroupInfo.setName("TestLayerGroup_SAVE_UPDATE");
+        layerGroupInfo.getLayers().add(layer1);
+        layerGroupInfo.getLayers().add(layer2);
+
+        ReferencedEnvelope re = new ReferencedEnvelope(10, 20, -20, -10, DefaultGeographicCRS.WGS84);
+        layerGroupInfo.setBounds(re);
+
+        StyleInfo style = catalog.getFactory().createStyle();
+        style.setName("style_test");
+        style.setFilename("style_test");
+        catalog.add(style);
+
+        layerGroupInfo.getStyles().add(style);
+        layerGroupInfo.getStyles().add(null);
+
+        catalog.add(layerGroupInfo);
+
+        assertEquals(2, layerGroupInfo.getStyles().size());
+
+        endTransaction();
+
+        {
+            startNewTransaction();
+
+            LayerGroupInfo reloaded = catalog.getLayerGroup(layerGroupInfo.getId());
+            assertNotNull(reloaded);
+
+            assertEquals("Styles has not been saved", 2, reloaded.getStyles().size());
+
+            reloaded.getLayers().remove(1);
+            reloaded.getStyles().remove(1);
+
+            assertEquals("GroupedLayer is broken", 1, reloaded.getStyles().size());
+            assertEquals("GroupedLayer is broken", 1, reloaded.getLayers().size());
+
+            LOGGER.info("A Layer was removed from the group, total should be 1 - SAVING");
+            catalog.save(reloaded);
+            LOGGER.info("After saving, IN transaction, 1 expected:  " + reloaded);
+            endTransaction();
+            LOGGER.info("After saving, OUT transaction, 1 expected: " + reloaded);
+
+            assertEquals(layerGroupInfo.getId(), reloaded.getId());
+            assertFalse(layerGroupInfo == reloaded);
+        }
+
+
+        {
+            startNewTransaction();
+            LayerGroupInfo reloaded2 = catalog.getLayerGroup(layerGroupInfo.getId());
+            assertNotNull(reloaded2);
+
+            assertEquals("GroupedLayer remove/update is broken", 1, reloaded2.getStyles().size());
+            assertEquals("GroupedLayer remove/update is broken", 1, reloaded2.getLayers().size());
+
+            endTransaction();
+            startNewTransaction();
+
+            reloaded2.getLayers().add(layer2);
+            reloaded2.getStyles().add(null);
+
+            LOGGER.info("A Layer was added to the group, total should be 2 - SAVING");
+            catalog.save(reloaded2);
+            LOGGER.info("After saving, IN transaction, 2 expected:  " + reloaded2);
+            endTransaction();
+            LOGGER.info("After saving, OUT transaction, 2 expected: " + reloaded2);
+        }
+
+        {
+            startNewTransaction();
+
+            LayerGroupInfo reloaded3 = catalog.getLayerGroup(layerGroupInfo.getId());
+            assertNotNull(reloaded3);
+
+            assertEquals("GroupedLayer add/update is broken", 2, reloaded3.getStyles().size());
+            assertEquals("GroupedLayer add/update is broken", 2, reloaded3.getLayers().size());
+        }
+
+    }
+
     private LayerInfo createLayer(WorkspaceInfo ws, String csname, String covname, String covnname,
             String covtitle, String lname) {
         LayerInfo layer1;

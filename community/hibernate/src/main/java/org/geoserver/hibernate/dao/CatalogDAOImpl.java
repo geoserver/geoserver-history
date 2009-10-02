@@ -3,6 +3,7 @@
  */
 package org.geoserver.hibernate.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -185,7 +186,12 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public List<LayerInfo> getLayers() {
-        return (List<LayerInfo>) list(LayerInfoImplHb.class);
+        long t0 = System.currentTimeMillis();
+        List<LayerInfo> ret = (List<LayerInfo>) list(LayerInfoImplHb.class);
+        long t1 = System.currentTimeMillis();
+        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
+//        new Throwable(" **************** TRACING GETLAYERS ******************").printStackTrace();
+        return ret;
     }
 
     /**
@@ -402,7 +408,39 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
     }
 
     public LayerGroupInfo update(LayerGroupInfo entity) {
-        return super.merge(entity);
+        // OK, it's really ugly.
+        // TODO: should be rewritten
+
+        // Backup choosen layers/styles
+        List l = new ArrayList(entity.getLayers());
+        List s = new ArrayList(entity.getStyles());
+//        LOGGER.info("LG(1 start): " + entity);
+
+        // clearing layers/styles: the list will be set empty
+        ((LayerGroupInfoImplHb)entity).getGroupedLayers().clear();
+        entity.getLayers().clear();
+        entity.getStyles().clear();
+        entity = super.merge(entity);
+//        LOGGER.info("LG(cleared): " + entity);
+
+        // really cleaning the db records
+        entityManager.flush();
+//        LOGGER.info("LG(2 merged):" + entity);
+
+        // restoring user list and backend list
+        ((LayerGroupInfoImplHb)entity).setLayers(l);
+        ((LayerGroupInfoImplHb)entity).setStyles(s);
+        ((LayerGroupInfoImplHb)entity).preupdate(); // layers/styles are saved in fields not handled by hib, so the update could be not triggered automatically
+//        LOGGER.info("LG(3 restored):" + entity);
+
+        // merging the data: set the id into GroupedLayers
+        entity = entityManager.merge(entity);
+//        LOGGER.info("LG(4 merge):" + entity);
+
+        // flush the whole changes. amen.
+        entityManager.flush();
+//        LOGGER.info("LG(5 flush):" + entity);
+        return entity;
     }
 
     public void save(WorkspaceInfo entity) {
