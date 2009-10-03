@@ -1,4 +1,4 @@
 .. _installation_windows:
 
-Windows installer
+Windows Installer
 =================
