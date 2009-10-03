@@ -1,4 +1,4 @@
 .. _installation_osx:
 
-Mac OS X installer
+Mac OS X Installer
 ==================
