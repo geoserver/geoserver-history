@@ -27,5 +27,5 @@ After doing so you will be presented with a open option dialog, choose Google Ea
 
 When Google Earth finishes loading you should be viewing a the topp:states layers.
 
-.. figure:: ../googleearth.png
+.. figure:: ../googleearth.jpg
    :align: center
