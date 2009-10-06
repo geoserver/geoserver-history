@@ -300,4 +300,5 @@ Here is an example of a Tomcat 6 context in ``/etc/tomcat6/server.xml`` that inc
     
 Firewall timeouts can silently sever idle connections to the database and cause GeoServer to hang. If there is a firewall between GeoServer and the database, a connection pool configured to shut down idle connections before the firewall can drop them will prevent GeoServer from hanging. This JNDI connection pool is configured to shut down idle connections after 5 to 10 minutes. 
 
+See also :ref:`tomcat_jndi`.
 
