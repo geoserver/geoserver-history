@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.resource;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,19 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.layer.LayerPage;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.publish.LayerConfigurationPanelInfo;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.coverage.grid.GridGeometry;
 
 /**
  * Page allowing to configure a layer and its resource.
@@ -119,6 +126,26 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                     Catalog catalog = getCatalog();
                     ResourceInfo resourceInfo = getResourceInfo();
                     if (isNew) {
+                    	ReferencedEnvelope bounds;
+						// updating grid if is a coverage
+                    	if(resourceInfo instanceof CoverageInfo) {
+                            // the coverage bounds computation path is a bit more linear, the
+                            // readers always return the bounds and in the proper CRS (afaik)
+                            CoverageInfo cinfo = (CoverageInfo) resourceInfo;
+                            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(null, null); 
+                            bounds = new ReferencedEnvelope(reader.getOriginalEnvelope());
+                            // apply the bounds, taking into account the reprojection policy if need be 
+                            if (resourceInfo.getProjectionPolicy() == ProjectionPolicy.REPROJECT_TO_DECLARED && bounds != null) {
+                                try {
+                                    bounds = bounds.transform(resourceInfo.getCRS(), true);
+                                    GridGeometry grid = ((CoverageInfo) resourceInfo).getGrid();
+                                    ((CoverageInfo) resourceInfo).setGrid(new GridGeometry2D(grid.getGridRange(),grid.getGridToCRS(), resourceInfo.getCRS()));
+                                } catch(Exception e) {
+                                    throw (IOException) new IOException("transform error").initCause(e);
+                                }
+                            } 
+                        }
+                    	
                         catalog.add(resourceInfo);
                         try {
                             catalog.add(getLayerInfo());
