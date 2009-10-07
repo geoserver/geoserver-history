@@ -7,6 +7,7 @@ package org.geoserver.security.decorators;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.geoserver.catalog.Wrapper;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.SecureCatalogImpl.Response;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
@@ -59,6 +60,22 @@ public class ReadOnlyFeatureCollection<T extends FeatureType, F extends Feature>
             return null;
         else
             return (FeatureCollection) SecuredObjects.secure(fc, policy);
+    }
+    
+    @Override
+    public void close(FeatureIterator<F> close) {
+        if(close instanceof Wrapper && ((Wrapper) close).isWrapperFor(FeatureIterator.class))
+            delegate.close(((Wrapper) close).unwrap(FeatureIterator.class));
+        else
+            delegate.close(close);
+    }
+    
+    @Override
+    public void close(Iterator<F> close) {
+        if(close instanceof Wrapper && ((Wrapper) close).isWrapperFor(Iterator.class))
+            delegate.close(((Wrapper) close).unwrap(Iterator.class));
+        else
+            delegate.close(close);
     }
 
     // ---------------------------------------------------------------------
