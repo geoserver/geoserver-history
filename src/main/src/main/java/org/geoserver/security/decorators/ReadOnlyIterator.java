@@ -6,26 +6,25 @@ package org.geoserver.security.decorators;
 
 import java.util.Iterator;
 
+import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.SecureCatalogImpl.Response;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 
-public class ReadOnlyIterator implements Iterator {
-    Iterator wrapped;
-
+public class ReadOnlyIterator extends AbstractDecorator<Iterator> implements Iterator {
     WrapperPolicy policy;
 
     public ReadOnlyIterator(Iterator wrapped, WrapperPolicy policy) {
-        this.wrapped = wrapped;
+        super(wrapped);
         this.policy = policy;
     }
 
     public boolean hasNext() {
-        return wrapped.hasNext();
+        return delegate.hasNext();
     }
 
     public Object next() {
-        return wrapped.next();
+        return delegate.next();
     }
 
     public void remove() {
