@@ -10,7 +10,7 @@ Installation
 
 #. Navigate to the `GeoServer Download <http://geoserver.org/display/GEOS/Stable>`_ page and click your preferred GeoServer version--Stable, Latest or Nightly.
 
-#. On the resulting page, download and save the the :guilabel:`Binary (OS independent)` format of your preferred GeoServer version.  
+#. On the resulting page, download and save the :guilabel:`Binary (OS independent)` format of your preferred GeoServer version.  
 
     .. note:: Download GeoServer wherever you find appropriate.  In this example we download the GeoServer archive to the Desktop.  If GeoServer is in a different location, simply replace ``Desktop`` in the following command to your own folder path.
 
@@ -50,8 +50,8 @@ Installation
 
 #. Start GeoServer by changing into the directory ``geoserver/bin`` and executing the ``startup.sh`` script:
 
-    .. code-block::
-
+    .. code-block:: bash
+       
        cd geoserver-1.7.0/bin
        sh startup.sh
 
