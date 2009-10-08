@@ -15,6 +15,7 @@ txsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/m
  <name>GeoServer Maven Archetypes</name>
 
  <modules>
+  <module>webPlugin</module>
   <module>wfsOutputFormat</module>
  </modules>
 
