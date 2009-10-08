@@ -835,7 +835,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
                 }
         		poly=(Polygon)decimate(poly);
         	} else
-        		poly = (Polygon) decimate(geom);
+        		throw new IOException("Impossible to encode: "+geom);
             if(poly!=null) {
 	            LineString shell = poly.getExteriorRing();
 	            
