@@ -68,13 +68,15 @@ public class MetadataLinkEditor extends Panel {
                         new PropertyModel(item.getModel(), "metadataType"), LINK_TYPES);
                 dropDownChoice.setRequired(true);
                 item.add(dropDownChoice);
+                FormComponentFeedbackBorder urlBorder = new FormComponentFeedbackBorder("urlBorder");
+                item.add(urlBorder);
                 TextField format = new TextField("format", new PropertyModel(item.getModel(), "type"));
                 format.setRequired(true);
                 item.add(format);
                 TextField url = new TextField("metadataLinkURL", new PropertyModel(item.getModel(), "content"));
                 url.add(new UrlValidator());
                 url.setRequired(true);
-                item.add(url);
+                urlBorder.add(url);
                 
                 // remove link
                 AjaxLink link = new AjaxLink("removeLink", item.getModel()) {
