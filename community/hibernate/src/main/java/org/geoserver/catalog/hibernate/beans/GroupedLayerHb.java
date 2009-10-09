@@ -3,11 +3,13 @@
 
 package org.geoserver.catalog.hibernate.beans;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ETj <etj at geo-solutions.it>
  */
-public class GroupedLayerHb {
+public class GroupedLayerHb implements Serializable {
 
     private Long id = null;
     private Integer version = null;
