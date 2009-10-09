@@ -493,11 +493,11 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
 
         if (namespace != null) {
             ResourceInfo resource = catalogDAO.getResourceByName(namespace.getName(), name, clazz);
-            if (resource != null)
+            if (resource != null) {
                 resolve(resource);
             // return ModificationProxy.create( (T) resource, clazz );
-            return createProxy((T) resource, (Class<T>) mapResourceClass(resource));
-
+                return createProxy((T) resource, (Class<T>) mapResourceClass(resource));
+            }
         }
 
         // List l = lookup(clazz, resources);
