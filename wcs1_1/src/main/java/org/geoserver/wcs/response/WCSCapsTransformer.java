@@ -85,8 +85,6 @@ public class WCSCapsTransformer extends TransformerBase {
          */
         private GetCapabilitiesType request;
 
-        private String proxifiedBaseUrl;
-
         /**
          * Creates a new WFSCapsTranslator object.
          * 
@@ -283,7 +281,7 @@ public class WCSCapsTransformer extends TransformerBase {
             attributes.addAttribute(null, "name", "name", null, capabilityName);
             start("ows:Operation", attributes);
 
-            final String url = proxifiedBaseUrl + "wcs?";
+            final String url = appendQueryString(buildURL(request.getBaseUrl(), "wcs", null, URLType.SERVICE), "");
 
             start("ows:DCP");
             start("ows:HTTP");
