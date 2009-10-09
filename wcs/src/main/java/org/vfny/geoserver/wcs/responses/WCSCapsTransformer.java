@@ -281,7 +281,7 @@ public class WCSCapsTransformer extends TransformerBase {
 
             String baseURL = buildURL(request.getBaseUrl(), "wcs", null, URLType.EXTERNAL);
             // ensure ends in "?" or "&"
-            if(baseURL.indexOf('?') == 0) {
+            if(baseURL.indexOf('?') == -1) {
                 baseURL = ResponseUtils.appendQueryString(baseURL, "");
             }
 
