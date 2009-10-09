@@ -20,7 +20,7 @@ import org.hibernate.usertype.UserType;
 public class NumberRangeType implements UserType {
 
     public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        return null;
+        return cached;
     }
 
     public Object deepCopy(Object value) throws HibernateException {
@@ -28,7 +28,7 @@ public class NumberRangeType implements UserType {
     }
 
     public Serializable disassemble(Object value) throws HibernateException {
-        return null;
+        return (Serializable)value;
     }
 
     public boolean equals(Object x, Object y) throws HibernateException {
