@@ -313,7 +313,7 @@ public abstract class DefaultRasterMapProducer extends
         rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
         rendererParams.put("renderingBuffer", new Integer(mapContext
                 .getBuffer()));
-        rendererParams.put("maxFiltersToSendToDatastore", new Integer(20));
+        rendererParams.put("maxFiltersToSendToDatastore",  DefaultWebMapService.getMaxFilterRules());
         rendererParams.put(ShapefileRenderer.SCALE_COMPUTATION_METHOD_KEY,
                 ShapefileRenderer.SCALE_OGC);
         if(AA_NONE.equals(antialias)) {

@@ -73,7 +73,7 @@ public class DefaultWebMapService implements WebMapService,
      * default for 'transparent' parameter.
      */
     public static Boolean TRANSPARENT = Boolean.TRUE;
-
+    
     /**
      * default for 'bbox' paramter
      */
@@ -99,6 +99,12 @@ public class DefaultWebMapService implements WebMapService,
      * Temporary field that handles the choice of renderer to be used
      */
     private static Boolean USE_STREAMING_RENDERER = null;
+    
+    /**
+     * Max number of rule filters to be used against the data source
+     */
+    public static Integer MAX_FILTER_RULES = null;
+
 
     public DefaultWebMapService( WMS wms ) {
         this.wms = wms;
@@ -137,6 +143,16 @@ public class DefaultWebMapService implements WebMapService,
             else
                 USE_STREAMING_RENDERER = Boolean.valueOf(enabled);
         }
+        
+        // initialization of the renderer choice flag
+        if (MAX_FILTER_RULES == null) {
+            String enabled = GeoServerExtensions.getProperty("MAX_FILTER_RULES", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                MAX_FILTER_RULES = 20;
+            else
+                MAX_FILTER_RULES = Integer.valueOf(MAX_FILTER_RULES);
+        }
     }
     
     /**
@@ -155,6 +171,15 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static boolean useStreamingRenderer() {
         return USE_STREAMING_RENDERER;
+    }
+    
+    /**
+     * If true (default) use the sld rule filters to compose the query to the DB,
+     * otherwise don't and get down only with the bbox and eventual definition filter)
+     * @return
+     */
+    public static int getMaxFilterRules() {
+        return MAX_FILTER_RULES;
     }
 
     /**
