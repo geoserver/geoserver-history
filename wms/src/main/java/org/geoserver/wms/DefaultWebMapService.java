@@ -146,12 +146,12 @@ public class DefaultWebMapService implements WebMapService,
         
         // initialization of the renderer choice flag
         if (MAX_FILTER_RULES == null) {
-            String enabled = GeoServerExtensions.getProperty("MAX_FILTER_RULES", context);
+            String rules = GeoServerExtensions.getProperty("MAX_FILTER_RULES", context);
             // default to true, but allow switching off
-            if(enabled == null)
+            if(rules == null)
                 MAX_FILTER_RULES = 20;
             else
-                MAX_FILTER_RULES = Integer.valueOf(MAX_FILTER_RULES);
+                MAX_FILTER_RULES = Integer.valueOf(rules);
         }
     }
     
