@@ -170,7 +170,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
                 //It may be a wrapped coverage
                 CoverageInfo cInfo = wms.getCoverageInfo(name);
                 if(cInfo != null){
-                    templateLoader.setCoverageName(name.getLocalPart());
+                    templateLoader.setCoverage(cInfo);
                 }else{
                     throw new IllegalArgumentException("Can't find neither a FeatureType nor " +
                             "a CoverageInfo named " + name);
