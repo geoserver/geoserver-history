@@ -29,7 +29,7 @@
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>wfs</artifactId>
-   <version>1.7.7-SNAPSHOT</version>
+   <version>1.7.7</version>
   </dependency>
   <dependency>
    <groupId>junit</groupId>
@@ -40,21 +40,21 @@
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>wfs</artifactId>
-   <version>1.7.7-SNAPSHOT</version>
+   <version>1.7.7</version>
    <classifier>tests</classifier>
    <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>main</artifactId>
-   <version>1.7.7-SNAPSHOT</version>
+   <version>1.7.7</version>
    <classifier>tests</classifier>
    <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>data</artifactId>
-   <version>1.7.7-SNAPSHOT</version>
+   <version>1.7.7</version>
    <classifier>tests</classifier>
    <scope>test</scope>
   </dependency>

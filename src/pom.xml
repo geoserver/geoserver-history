@@ -7,7 +7,7 @@
  <groupId>org.geoserver</groupId>
  <artifactId>geoserver</artifactId>
  <packaging>pom</packaging>
- <version>1.7.7-SNAPSHOT</version>
+ <version>1.7.7</version>
  <name>GeoServer</name>
 
  <scm>
@@ -956,7 +956,7 @@
       <descriptor>release/ext-geosearch.xml</descriptor>
       <descriptor>release/ext-charts.xml</descriptor>
      </descriptors>
-     <finalName>geoserver-1.7.7-SNAPSHOT</finalName>
+     <finalName>geoserver-1.7.7</finalName>
      <outputDirectory>${project.build.directory}/release</outputDirectory>
     </configuration>
    </plugin>
@@ -1169,7 +1169,7 @@
  </modules>
 
  <properties>
-  <gs.version>1.7.7-SNAPSHOT</gs.version>
+  <gs.version>1.7.7</gs.version>
   <gt.version>2.5-SNAPSHOT</gt.version>
   <spring.version>2.5.5</spring.version>
   <java.awt.headless>true</java.awt.headless>
