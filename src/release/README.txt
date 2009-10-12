@@ -1,3 +1,20 @@
+GeoServer 1.7.7 (October 12, 2009)
+----------------------------------
+
+The either release of 1.7.x fixes teh following new features and fixes:
+
+  * Further enhancements to the REST API
+  * Memory leak making GetMap requests
+  * Connection leaking during GetFeature request exceptions
+  * Varying generation of short shapefile field names from long names
+  * Various documentation improvements
+
+The entire change log can be found at:
+
+  http://jira.codehaus.org/browse/GEOS/fixforversion/15542
+
+This release is based on GeoTools 2.5.8
+
 GeoServer 1.7.6 (July 24, 2009)
 -------------------------------
 
