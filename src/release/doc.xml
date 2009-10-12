@@ -7,7 +7,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>../doc/user/build/html</directory>
-			<outputDirectory>geoserver-1.7.5/doc</outputDirectory>
+			<outputDirectory>geoserver-1.7.7/doc</outputDirectory>
 			<includes>
 				<include>**/*</include>
 			</includes>
