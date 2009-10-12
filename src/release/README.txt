@@ -1,7 +1,7 @@
 GeoServer 1.7.7 (October 12, 2009)
 ----------------------------------
 
-The either release of 1.7.x fixes teh following new features and fixes:
+The eighth release of 1.7.x fixes teh following new features and fixes:
 
   * Further enhancements to the REST API
   * Memory leak making GetMap requests
