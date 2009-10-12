@@ -107,6 +107,7 @@ In the case of GeoServer app-schema, the catalog is a local filesystem cache of 
 
 In practice it is mandatory to provide an OASIS catalog because the implementation otherwise has difficulty resolving relative imports in schema files.
 
+GML 3.1.1 is distributed with GeoServer and does not need to be included in the catalog.
 
 
 ``targetTypes``

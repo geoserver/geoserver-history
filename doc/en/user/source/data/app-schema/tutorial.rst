@@ -3,47 +3,88 @@
 Tutorial
 ========
 
-This tutorial demonstrates how to configure two app-schema complex feature types using the `GeoScience Markup Language (GeoSciML) 2.0 <http://geosciml.org/geosciml/2.0/doc/>`_ application schema:
+This tutorial demonstrates how to configure two complex feature types using the app-schema plugin and data from two property files.
 
-#. The feature type ``gsml:GeologicUnit`` describes the intensive properties of a piece of geology.
 
-#. The feature type ``gsml:MappedFeature`` in this case describes one location on a map of a ``gsml:GeologicUnit``.
+GeoSciML
+---------
+
+This example uses `Geoscience Markup Language (GeoSciML) 2.0 <http://geosciml.org/geosciml/2.0/doc/>`_, a GML application schema:
+
+    *"GeoSciML is an application schema that specifies a set of feature-types and supporting structures for information used in the solid-earth geosciences."*
+
+The tutorial defines two feature types:
+
+#. ``gsml:GeologicUnit``, which describes "a body of material in the Earth".
+
+#. ``gsml:MappedFeature``, which describes the representation on a map of a feature, in this case ``gsml:GeologicUnit``.
 
 Because a single ``gsml:GeologicUnit`` can be observed at several distinct locations on the Earth's surface, it can have a multivalued ``gsml:occurrence`` property, each being a ``gsml:MappedFeature``.
 
-* The example configuration can be found in the `AuScope subversion repository <https://svn.auscope.org/subversion/AuScope/geoserver/config/geoserver-app-schema-tutorial-config/trunk/>`_. [#auscope]_
 
-* The configuration is complete can be used immediately. Get it from subversion and set it as your ``GEOSERVER_DATA_DIR``.
+Configuration
+-------------
 
-Worked example
---------------
+* Install GeoServer as usual.
 
-gsml:GeologicUnit datastore
-```````````````````````````
+* Install the app-schema plugin (place the jar files in ``WEB-INF/lib``).
 
-``workspaces/gsml/gsml_GeologicUnit/datastore.xml``::
+* The tutorial configuration is a complete working GeoServer data directory. It includes all the schema (XSD) files required to use GeoSciML 2.0, the data files, and the app-schema configuration files. There are two ways you can get it:
+
+    #. Download :download:`geoserver-app-schema-tutorial-config.zip` and unzip it into the folder that you will use as your data directory.
+
+    #. Check it out from the `AuScope subversion repository <https://svn.auscope.org/subversion/AuScope/geoserver/config/geoserver-app-schema-tutorial-config/trunk/>`_.
+
+* If the data directory differs from the default, edit ``WEB-INF/web.xml`` to set ``GEOSERVER_DATA_DIR``. (Be sure to uncomment the section that sets ``GEOSERVER_DATA_DIR``.)
+
+* Perform any configuration required by your servlet container, and then start the servlet. For example, if you are using Tomcat, configure a new context in ``server.xml`` and then restart Tomcat.
+
+
+Test
+----
+
+Test the GeoServer app-schema WFS in a web browser. If GeoServer is listening on ``localhost:8080`` you can query the two feature types using these links:
+
+* http://localhost:8080/geoserver/wfs?request=GetFeature&typeName=gsml:GeologicUnit
+
+* http://localhost:8080/geoserver/wfs?request=GetFeature&typeName=gsml:MappedFeature
+
+The data in this tutorial is fictitious. Some of the text and numbers have been taken from real data, but have been modified to the extent that they have no real-world meaning.
+
+
+gsml:GeologicUnit WFS response
+``````````````````````````````
+
+* :download:`The WFS response <gsml_GeologicUnit-wfs-response.xml>` for ``gsml:GeologicUnit`` contains two features corresponding to the two rows in ``gsml_GeologicUnit.properties``.
+
+* Note that the first ``gsml:GeologicUnit`` has two ``gsml:occurrence`` properties, while the second has one. Feature chaining has been used to construct a multivalued property. 
+
+* The response document has been manually pretty-printed, so contains more whitespace than the original GeoServer response, but is otherwise a complete WFS response.
+
+
+``datastore.xml``
+-----------------
+
+Each data store configuration file ``datastore.xml`` specifies the location of a mapping file and triggers its loading as an app-schema data source. This file should not be confused with the source data store, which is specified inside the mapping file.
+
+For ``gsml_GeologicUnit`` the file is ``workspaces/gsml/gsml_GeologicUnit/datastore.xml``::
 
     <dataStore>
-    	<id>gsml_GeologicUnit_datastore</id>
-    	<name>gsml_GeologicUnit</name>
-    	<enabled>true</enabled>
-    	<workspace>
-    		<id>gsml_workspace</id>
-    	</workspace>
-    	<connectionParameters>
-    		<entry key="namespace">urn:cgi:xmlns:CGI:GeoSciML:2.0</entry>
-    		<entry key="url">file:workspaces/gsml/gsml_GeologicUnit/gsml_GeologicUnit.xml</entry>
-    		<entry key="dbtype">app-schema</entry>
-    	</connectionParameters>
+        <id>gsml_GeologicUnit_datastore</id>
+        <name>gsml_GeologicUnit</name>
+        <enabled>true</enabled>
+        <workspace>
+            <id>gsml_workspace</id>
+        </workspace>
+        <connectionParameters>
+            <entry key="namespace">urn:cgi:xmlns:CGI:GeoSciML:2.0</entry>
+            <entry key="url">file:workspaces/gsml/gsml_GeologicUnit/gsml_GeologicUnit.xml</entry>
+            <entry key="dbtype">app-schema</entry>
+        </connectionParameters>
     </dataStore>
 
-.. note:: Ensure that there is no whitespace inside an ``entry`` element.
 
-
-gsml:MappedFeature datastore
-````````````````````````````
-
-``workspaces/gsml/gsml_MappedFeature/datastore.xml``::
+For ``gsml:MappedFeature`` the file is ``workspaces/gsml/gsml_MappedFeature/datastore.xml``::
 
     <dataStore>
     	<id>gsml_MappedFeature_datastore</id>
@@ -61,10 +102,21 @@ gsml:MappedFeature datastore
 
 .. note:: Ensure that there is no whitespace inside an ``entry`` element.
 
+
+Mapping files
+-------------
+
+The mapping files are:
+
+* ``workspaces/gsml/gsml_GeologicUnit/gsml_GeologicUnit.xml``
+
+* ``workspaces/gsml/gsml_MappedFeature/gsml_MappedFeature.xml``
+
+
 Namespaces
 ``````````
 
-Each mapping file contains the same namespace prefix definitions::
+Each mapping file contains namespace prefix definitions::
 
 	<Namespace>
 		<prefix>gsml</prefix>
@@ -79,37 +131,48 @@ Each mapping file contains the same namespace prefix definitions::
 		<uri>http://www.w3.org/1999/xlink</uri>
 	</Namespace>
 
+Only those namespace prefixes used in the mapping file need to be declared.
+
 
 Source data store
 `````````````````
 
+The data for this tutorial is contained in two property files:
+
+* ``workspaces/gsml/gsml_GeologicUnit/gsml_GeologicUnit.properties``
+
+* ``workspaces/gsml/gsml_MappedFeature/gsml_MappedFeature.properties``
+
+:ref:`data_java_properties` describes the format of property files.
+
 For this example, each feature type uses an identical source data store configuration. The ``directory`` indicates that the source data is contained in property files named by their feature type::
 
-	<sourceDataStores>
-		<DataStore>
-			<id>datastore</id>
-			<parameters>
-				<Parameter>
-					<name>directory</name>
-					<value>file:./</value>
-				</Parameter>
-			</parameters>
-		</DataStore>
-	</sourceDataStores>
+   <sourceDataStores>
+        <DataStore>
+            <id>datastore</id>
+            <parameters>
+                <Parameter>
+                    <name>directory</name>
+                    <value>file:./</value>
+                </Parameter>
+            </parameters>
+        </DataStore>
+    </sourceDataStores>
 
 A more realistic configuration would contain database connection parameters, such as `this mapping file that connects to Oracle Spatial <https://svn.auscope.org/subversion/AuScope/geoserver/config/geoserver-pirsa-minocc-config/trunk/workspaces/gsml/gsml_MappedFeature/gsml_MappedFeature.xml>`_. Note that the database example uses `property interpolation <https://www.seegrid.csiro.au/twiki/bin/view/Infosrvices/GeoserverAppSchemaConfiguration>`_.
 
 
-OASIS Catalog
-`````````````
+Catalog
+```````
 
-Both feature types use a common OASIS catalog, given as a path relative to the mapping file::
+Both feature types use the same OASIS XML Catalog, given as a path relative to the mapping file::
 
 	<catalog>../../../schemas/catalog.xml</catalog>
 
-This catalog is an svn external in the data directory subversion repository, but you can see it at this `browsable catalog location <https://svn.auscope.org/subversion/AuScope/geoserver/schemas/trunk/catalog.xml>`_. This is the catalog for the `AuScope schema collection <https://svn.auscope.org/subversion/AuScope/geoserver/schemas/trunk/>`_. [#auscope]_
-
-Use of a catalog is required because the implementation otherwise fails to honour relative imports.
+* The catalog contains the GeoSciML 2.0 schemas and its dependencies.
+* Note that some dependencies are imported as relative filesystem paths, and so are not resolved through the catalog.
+* GML 3.1.1 is also a dependency, but is not required because it is distributed with GeoServer.
+* Use of a catalog is required because the implementation otherwise fails to honour relative imports.
 
 
 Target types
@@ -253,18 +316,5 @@ In feature chaining, one feature type is used as a property of an enclosing feat
 * Every ``gsml:MappedFeature`` with ``gml:name[2]`` equal to the ``URN`` of the ``gsml:GeologicUnit`` under construction is included as a ``gsml:occurrence`` property of the ``gsml:GeologicUnit``.
 
 
-gsml:GeologicUnit WFS response
-``````````````````````````````
 
-* :download:`The WFS response <gsml_GeologicUnit-wfs-response.xml>` for ``gsml:GeologicUnit`` contains two features corresponding to the two rows in ``gsml_GeologicUnit.properties``.
-
-* Note that the first ``gsml:GeologicUnit`` has two ``gsml:occurrence`` properties, while the second has one. Feature chaining has been used to construct a multivalued property. 
-
-* The response document has been pretty-printed so contains more whitespace than the original GeoServer response.
-
-
-Footnotes
-`````````
-
-.. [#auscope] AuScope Ltd is funded under the National Collaborative Research Infrastructure Strategy (NCRIS), an Australian Commonwealth Government Programme. `http://www.auscope.org.au/category.php?id=10 <http://www.auscope.org.au/category.php?id=10>`_
 
