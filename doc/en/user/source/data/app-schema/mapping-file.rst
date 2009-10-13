@@ -46,8 +46,8 @@ Settings
 --------
 
 
-``namespaces``
-``````````````
+namespaces
+``````````
 
 The ``namespaces`` section defines all the XML namespaces used in the mapping file::
 
@@ -65,8 +65,8 @@ The ``namespaces`` section defines all the XML namespaces used in the mapping fi
     </Namespace>
 
 
-``includedTypes`` (optional)
-````````````````````````````
+includedTypes (optional)
+````````````````````````
 
 Non-feature types (eg. gsml:CompositionPart is a data type that is nested in gsml:GeologicUnit) may be mapped separately for its reusability, but we don't want to configure it as a feature type as we don't want to individually access it. Related feature types don't need to be explicitly included here as it would have its own workspace configuration for GeoServer to find it. The location path in ``Include`` tag is relative to the mapping file. For an example, if gsml:CompositionPart configuration file is located in the same directory as the gsml:GeologicUnit configuration::
 
@@ -75,8 +75,8 @@ Non-feature types (eg. gsml:CompositionPart is a data type that is nested in gsm
     </includedTypes>
 
 
-``sourceDataStores``
-````````````````````
+sourceDataStores
+````````````````
 
 Every mapping file requires at least one data store to provide data for features. app-schema reuses GeoServer data stores, so there are many available types. See :ref:`app-schema.data-stores` for details of data store configuration. For example::
 
@@ -93,8 +93,8 @@ Every mapping file requires at least one data store to provide data for features
 If you have more than one ``DataStore`` in a mapping file, be sure to give them each a distinct ``id``.
 
 
-``catalog``
-```````````
+catalog
+```````
 
 An OASIS XML Catalog is a standard configuration file format that instructs an XML processing system how to process entity references:
 
@@ -110,8 +110,8 @@ In practice it is mandatory to provide an OASIS catalog because the implementati
 GML 3.1.1 is distributed with GeoServer and does not need to be included in the catalog.
 
 
-``targetTypes``
-```````````````
+targetTypes
+```````````
 
 The ``targetTypes`` section lists all the application schemas required to define the mapping. Typically only one is required. For example::
 
@@ -126,8 +126,8 @@ Mappings
 --------
 
 
-``typeMappings`` and ``FeatureTypeMapping``
-```````````````````````````````````````````
+typeMappings and FeatureTypeMapping
+```````````````````````````````````
 
 The ``typeMappings`` section is the heart of the app-schema module. It defines the mapping from simple features to the the nested structure of one or more simple features. It consists of a list of ``FeatureTypeMapping`` elements, which each define one output feature type. For example::
 
@@ -149,8 +149,8 @@ The ``typeMappings`` section is the heart of the app-schema module. It defines t
 * ``targetElement`` is the the element name in the target application schema. This is the same as the WFS feature type name.
 
 
-``attributeMappings`` ``AttributeMapping``
-``````````````````````````````````````````
+attributeMappings and AttributeMapping
+``````````````````````````````````````
 
 ``attributeMappings`` comprises a list of ``AttributeMapping`` elements::
 
@@ -164,8 +164,8 @@ The ``typeMappings`` section is the heart of the app-schema module. It defines t
     </AttributeMapping>
 
 
-``targetAttribute``
-```````````````````
+targetAttribute
+```````````````
 
 ``targetAttribute`` is the XPath to the output element, in the context of the target element. For example, if the containing mapping is for a feature, you should be able to map a ``gml:name`` property by setting the target attribute::
 
@@ -178,8 +178,9 @@ Multivalued attributes resulting from :ref:`app-schema.denormalised-sources` are
 The reserved name ``FEATURE_LINK`` is used to map data that is not encoded in XML but is required for use in :ref:`app-schema.feature-chaining`.
 
 
-``idExpression``
-````````````````
+idExpression
+````````````
+
 A CQL expression that is used to set the ``gml:id`` of the output feature type. This could be a column in a database, the automatically generated simple feature ID obtained with ``getId()``, or some other expression.
 
 .. note:: Every feature type must have one ``idExpression`` mapping to set its ``gml:id``. This requirement is an implementation limitation (strictly, ``gml:id`` is optional in GML).
@@ -187,8 +188,8 @@ A CQL expression that is used to set the ``gml:id`` of the output feature type. 
 .. note:: ``gml:id`` must be an `NCName <http://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName>`_.
 
 
-``sourceExpression`` (optional)
-```````````````````````````````
+sourceExpression (optional)
+```````````````````````````
 
 Use a ``sourceExpression`` tag to set the element content from source data. For example, to set the element content from a column called ``DESCRIPTION``::
 
@@ -205,8 +206,8 @@ You can use CQL expressions to calculate the content of the element. This exampl
 .. warning:: Avoid use of CQL expressions for properties that users will want to query, because the current implementation cannot reverse these expressions to generate efficient SQL, and will instead read all features to calculate the property to find the features that match the filter query. Falling back to brute force search makes queries on CQL-calculated expressions very slow. If you must concatenate strings to generate content, you may find that doing this in your database is much faster.
 
 
-``linkElement`` and ``linkField`` (optional)
-````````````````````````````````````````````
+linkElement and linkField (optional)
+````````````````````````````````````
 
 The presence of ``linkElement`` and ``linkField`` change the meaning of ``sourceExpression`` to a :ref:`app-schema.feature-chaining` mapping, in which the source of the mapping is the feature of type ``linkElement`` with property ``linkField`` matching the expression. For example, the following ``sourceExpression`` uses as the result of the mapping the (possibly multivalued) ``gsml:MappedFeature`` for which ``gml:name[2]`` is equal to the value of ``URN`` for the source feature. This is in effect a foreign key relation::
 
@@ -221,8 +222,8 @@ The feature type ``gsml:MappedFeature`` might be defined in another mapping file
 See :ref:`app-schema.feature-chaining` for a comprehensive discussion.
 
 
-``targetAttributeNode`` (optional)
-``````````````````````````````````
+targetAttributeNode (optional)
+``````````````````````````````
 
 ``targetAttributeNode`` is required wherever a property type contains an abstract element and app-schema cannot determine the type of the enclosed attribute. This mapping must come before the mapping for the enclosed elements. In this example, ``gsml:positionalAccuracy`` is a ``gsml:CGI_ValuePropertyType`` which contains a ``gsml:CGI_Value``, which is abstract. In this case, ``targetAttributeNode`` must be used to set the type of the property type to a type that encloses a non-abstract element::
 
@@ -236,16 +237,16 @@ Note that the GML encoding rules require that complex types are never the direct
 Because the XPath refers to a property type not the encoded content, ``targetAttributeNode`` often appears in a mapping with ``targetAttribute`` and no other elements.
 
 
-``isMultiple`` (optional)
-`````````````````````````
+isMultiple (optional)
+`````````````````````
 
 The ``isMultiple`` element states whether there might be multiple values for this attribute.Because the default value is ``false`` and it is omitted in this case, it is most usually seen as::
 
     <isMultiple>true</isMultiple>
 
 
-``ClientProperty`` (optional, multivalued)
-``````````````````````````````````````````
+ClientProperty (optional, multivalued)
+``````````````````````````````````````
 
 A mapping can have one or more ``ClientProperty`` elements which set XML attributes on the mapping target. Each ``ClientProperty`` has a ``name`` and a ``value`` that is an arbitrary CQL expression. No ``OCQL`` element is used inside ``value``.
 
