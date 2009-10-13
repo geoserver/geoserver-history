@@ -1,8 +1,5 @@
 package org.geoserver.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,7 +26,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -44,12 +40,9 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import junit.framework.TestCase;
-
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 
-import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
@@ -73,7 +66,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -86,7 +78,6 @@ import com.mockrunner.mock.web.MockHttpSession;
 import com.mockrunner.mock.web.MockServletConfig;
 import com.mockrunner.mock.web.MockServletContext;
 import com.mockrunner.mock.web.MockServletOutputStream;
-import com.mockrunner.mock.web.MockServletInputStream;
 
 /**
  * Base test class for GeoServer unit tests.
@@ -148,6 +139,10 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         }
 
         Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+        
+        // set up test data 
+        testData = buildTestData();
+        testData.setUp();
 
         // setup quiet logging (we need to to this here because Data
         // is loaded before GoeServer has a chance to setup logging for good)
@@ -157,14 +152,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
             LOGGER.log(Level.SEVERE, "Could not configure log4j logging redirection", e);
         }
         System.setProperty(LoggingUtils.RELINQUISH_LOG4J_CONTROL, "true");
-        LoggingUtils.configureGeoServerLogging(getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
+        GeoServerResourceLoader loader = new GeoServerResourceLoader(testData.getDataDirectoryRoot());
+        LoggingUtils.configureGeoServerLogging(loader, getClass().getResourceAsStream(getLogConfiguration()), false, true, null);
 
         //HACK: once we port tests to the new data directory, remove this
         GeoServerLoader.setLegacy( useLegacyDataDirectory() );
-        
-        // set up test data and, if succeeds, create a mock servlet context and start up the spring configuration
-        testData = buildTestData();
-        testData.setUp();
+
+        // if we have data, create a mock servlet context and start up the spring configuration
         if (testData.isTestDataAvailable()) {
             MockServletContext servletContext = new MockServletContext();
             servletContext.setInitParameter("GEOSERVER_DATA_DIR", testData.getDataDirectoryRoot()

@@ -17,7 +17,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 public class LoggingUtils {
     
@@ -41,7 +40,7 @@ public class LoggingUtils {
         }
     }
 
-    public static void configureGeoServerLogging(InputStream loggingConfigStream, boolean suppressStdOutLogging, boolean suppressFileLogging, String logFileName) throws FileNotFoundException, IOException,
+    public static void configureGeoServerLogging(GeoServerResourceLoader loader, InputStream loggingConfigStream, boolean suppressStdOutLogging, boolean suppressFileLogging, String logFileName) throws FileNotFoundException, IOException,
                             ConfigurationException {
             //JD: before we wipe out the logging configuration, save any appenders that are not 
             // console or file based. This allows for other types of appenders to remain in tact
@@ -68,10 +67,10 @@ public class LoggingUtils {
                     Appender gslf = org.apache.log4j.Logger.getRootLogger().getAppender("geoserverlogfile");
                     if (gslf instanceof org.apache.log4j.RollingFileAppender) {
                         if (logFileName == null ) {
-                            logFileName = new File(GeoserverDataDirectory.findCreateConfigDir("logs"),  "geoserver.log").getAbsolutePath();
+                            logFileName = new File(loader.findOrCreateDirectory("logs"),  "geoserver.log").getAbsolutePath();
                         } else { 
                             if (!new File(logFileName).isAbsolute()) {
-                                logFileName = new File(GeoserverDataDirectory.getGeoserverDataDirectory(), logFileName).getAbsolutePath();
+                                logFileName = new File(loader.getBaseDirectory(), logFileName).getAbsolutePath();
                                 LoggingInitializer.LOGGER.fine("Non-absolute pathname detected for logfile.  Setting logfile relative to data dir.");
                             }
                         }
@@ -171,7 +170,7 @@ public class LoggingUtils {
             LoggingInitializer.LOGGER.fine("GeoServer logging profile '" + log4jConfigFile.getName() + "' enabled.");
         }
     
-        configureGeoServerLogging(loggingConfigStream, suppressStdOutLogging, false, 
+        configureGeoServerLogging(resourceLoader, loggingConfigStream, suppressStdOutLogging, false, 
                                 logFileName);
         
         
