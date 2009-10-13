@@ -178,9 +178,13 @@ Multivalued attributes resulting from :ref:`app-schema.denormalised-sources` are
 The reserved name ``FEATURE_LINK`` is used to map data that is not encoded in XML but is required for use in :ref:`app-schema.feature-chaining`.
 
 
-``idExpression`` (optional)
-```````````````````````````
+``idExpression``
+````````````````
 A CQL expression that is used to set the ``gml:id`` of the output feature type. This could be a column in a database, the automatically generated simple feature ID obtained with ``getId()``, or some other expression.
+
+.. note:: Every feature type must have one ``idExpression`` mapping to set its ``gml:id``. This requirement is an implementation limitation (strictly, ``gml:id`` is optional in GML).
+
+.. note:: ``gml:id`` must be an `NCName <http://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName>`_.
 
 
 ``sourceExpression`` (optional)
