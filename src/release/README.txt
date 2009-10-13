@@ -1,3 +1,27 @@
+GeoServer 2.0-RC2 (October 13, 2009)
+-----------------------------------
+
+The second release candidate version for 2.0. The focus on this release has been
+mostly bug fixing and documentation. In particular, 123 jira issues were closed,
+a sizeable amount of which were documentation related.
+Notable new feature is the new security GUI extension module, allowing the administrator
+to edit the security configuration files from the graphical UI.
+
+We express our gratitute to the "Official Testing Team" for testing out the release
+prior to the larger user community.
+This release candidate will be re-released as 2.0 unless major issues are found, 
+please help us find any remaining problem within the next week.
+
+Thanks to all the developers for the hard work and specially the user community for
+the bug reports.
+
+The entire changelog for this release can be found here:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/15569
+
+This release is based on GeoTools 2.6.0-RC1 (revision 34122) 
+
+
 GeoServer 2.0-RC1 (August 14, 2009)
 -----------------------------------
 The first release candidate version for 2.0. The focus for this release has been
