@@ -15,5 +15,6 @@ A symbolizer specifies how data should be visualized.  There are 5 types of symb
    polygonsymbolizer
    rastersymbolizer
    textsymbolizer
+   labeling
    filters
    scale
