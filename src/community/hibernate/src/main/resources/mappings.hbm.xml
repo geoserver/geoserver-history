@@ -211,7 +211,7 @@
       <list-index column="idx"/>
       <element column="srs" type="java.lang.String"/>
     </list>
-    <list cascade="all" lazy="false" name="responseSRS" table="COVERfalseAGE_RESPONSE_SRS">
+    <list cascade="all" lazy="false" name="responseSRS" table="COVERAGE_RESPONSE_SRS">
     <cache usage="read-write"/>
       <key column="COVERAGE_ID" foreign-key="fk_cov_res_srs"/>
       <list-index column="idx"/>
