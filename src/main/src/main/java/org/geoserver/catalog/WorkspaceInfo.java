@@ -4,8 +4,6 @@
  */
 package org.geoserver.catalog;
 
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * A container of grouping for store objects.
