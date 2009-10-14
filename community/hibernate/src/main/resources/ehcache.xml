@@ -25,6 +25,27 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
+    
+<cache
+	name="org.geoserver.services.hibernate.beans.WMSInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.services.hibernate.beans.WMSInfoImplHb.SRS"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>    
    
 <cache
 	name="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb"
@@ -46,8 +67,28 @@
     overflowToDisk="true"
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
-    memoryStoreEvictionPolicy="LRU"/>     
-   
+    memoryStoreEvictionPolicy="LRU"/>    
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb.dimensions"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb.nullValues"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>      
+       
 <cache
 	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb"
     maxElementsInMemory="100000"
@@ -57,7 +98,81 @@
     overflowToDisk="true"
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.dimensions"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>     
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.parameters"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/> 
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.supportedFormats"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/> 
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.interpolationMethods"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/> 
+            <cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.requestSRS"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/> 
+    
+        
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.nullValues"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>     
+<cache
+	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb.responseSRS"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>            
+
+
 
 <cache
 	name="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb"
@@ -92,6 +207,17 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
+    
+  <cache
+	name="org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb.attributes"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
    
 <cache
 	name="org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb"
@@ -103,9 +229,31 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>   
+<cache
+	name="org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb.groupedLayers"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>       
+    
    
 <cache
 	name="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+    
+    <cache
+	name="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb.styles"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -223,7 +371,17 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
-
+<cache
+	name="org.geoserver.catalog.impl.MapInfoImpl.layers"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+    
 <cache
 	name="org.geoserver.catalog.impl.MetadataLinkInfoImpl"
     maxElementsInMemory="100000"
@@ -245,7 +403,37 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
-
+<cache
+	name="org.geoserver.catalog.impl.ResourceInfoImpl.alias"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.catalog.impl.ResourceInfoImpl.keywords"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.catalog.impl.ResourceInfoImpl.metadataLinks"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/> 
+        
 <cache
 	name="org.geoserver.catalog.impl.StoreInfoImpl"
     maxElementsInMemory="100000"
@@ -268,7 +456,36 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
-
+<cache
+	name="org.geoserver.config.impl.ServiceInfoImpl.exceptionFormats"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.config.impl.ServiceInfoImpl.keywords"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.config.impl.ServiceInfoImpl.versions"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
 
 <cache
 	name="org.geoserver.catalog.MetadataMap"
@@ -280,7 +497,18 @@
     diskPersistent="false"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.catalog.MetadataMap.map"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="false"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>    
     
+<!-- QUERY CACHE -->
 <cache
 	name="org.hibernate.cache.StandardQueryCache"
 	maxElementsInMemory="10"

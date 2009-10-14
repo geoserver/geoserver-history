@@ -115,6 +115,7 @@
       <column name="maxvalue"/>
     </property>
     <list cascade="all" lazy="false" name="nullValues" table="COVERAGE_DIM_NULL_VALUES">
+      <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="COV_DIM_NULLS_INDEX"/>
       <element type="java.lang.Double"/>
@@ -137,16 +138,19 @@
     <property column="DESCRIPTION" name="description"/>
     <property column="ENABLED" name="enabled"/>
     <list cascade="all" lazy="false" name="alias" table="RESOURCE_ALIASES">
+      <cache usage="read-write"/>
       <key column="RESOURCE_ID"/>
       <list-index column="RES_ALIAS_INDEX"/>
       <element type="java.lang.String"/>
     </list>
     <list cascade="all" lazy="false" name="keywords" table="RESOURCE_KEYWORDS">
+      <cache usage="read-write"/>
       <key column="RESOURCE_ID"/>
       <list-index column="RES_KW_INDEX"/>
       <element type="java.lang.String"/>
     </list>
     <list cascade="all" lazy="false" name="metadataLinks" table="RESOURCE_METADATA_LINK">
+	  <cache usage="read-write"/>
       <key column="RESOURCE_ID"/>
       <list-index column="RES_METADATA_LINK_INDEX"/>
       <many-to-many class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false"/>
@@ -180,6 +184,7 @@
     <many-to-one class="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb" column="STORE" foreign-key="fk_featuretype_store" lazy="false" name="store"/>
     <property column="FILTER" name="filter" type="filter"/>
     <list cascade="all" lazy="false" name="attributes" table="FEATURETYPES_ATTR">
+      <cache usage="read-write"/>
       <key column="featuretype" foreign-key="attrib_featuretype_listpk"/>
       <list-index column="FTYPES_ATTR_IDX"/>
       <one-to-many class="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb"/>
@@ -195,32 +200,38 @@
     <property column="GRID_GEOMETRY" length="100000" name="grid" type="java.io.Serializable"/>
     <!-- property name="fields" column="FIELDS" type="org.geotools.coverage.io.impl.range.DefaultRangeType"/ -->
     <list cascade="all" lazy="false" name="supportedFormats" table="COVERAGE_SUPPORTED_FORMATS">
+    <cache usage="read-write"/>    
       <key column="COVERAGE_ID" foreign-key="fk_cov_supp_form"/>
       <list-index column="CV_FORMAT_INDEX"/>
       <element column="format" type="java.lang.String"/>
     </list>
     <list cascade="all" lazy="false" name="requestSRS" table="COVERAGE_REQUEST_SRS">
+    <cache usage="read-write"/>
       <key column="COVERAGE_ID" foreign-key="fk_cov_req_srs"/>
       <list-index column="idx"/>
       <element column="srs" type="java.lang.String"/>
     </list>
-    <list cascade="all" lazy="false" name="responseSRS" table="COVERAGE_RESPONSE_SRS">
+    <list cascade="all" lazy="false" name="responseSRS" table="COVERfalseAGE_RESPONSE_SRS">
+    <cache usage="read-write"/>
       <key column="COVERAGE_ID" foreign-key="fk_cov_res_srs"/>
       <list-index column="idx"/>
       <element column="srs" type="java.lang.String"/>
     </list>
     <property column="DEFAULT_INTERPOLATION_METHOD" name="defaultInterpolationMethod"/>
     <list cascade="all" lazy="false" name="interpolationMethods" table="COVERAGE_INTERPOLATION_METHODS">
+    <cache usage="read-write"/>
       <key column="COVERAGE_ID" foreign-key="fk_cov_interp"/>
       <list-index column="idx"/>
       <element column="interpolation" type="java.lang.String"/>
     </list>
     <list cascade="all" lazy="false" name="dimensions" table="RESOURCE_COV_DIMENSION">
+    <cache usage="read-write"/>
       <key column="RESOURCE_ID" foreign-key="fk_cov_dim"/>
       <list-index column="idx"/>
       <many-to-many class="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" lazy="false"/>
     </list>
     <map cascade="all" lazy="false" name="parameters" table="COVERAGE_PARAMETERS">
+    <cache usage="read-write"/>
       <key column="COVERAGE_ID" foreign-key="fk_cov_param"/>
       <map-key column="paramname" type="java.lang.String"/>
       <element column="paramvalue" type="java.lang.String"/>
@@ -268,6 +279,7 @@
     <property column="ENABLED" name="enabled"/>
     <many-to-one cascade="persist" class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" column="DEFAULT_STYLE" foreign-key="fk_layer_defstyle" lazy="false" name="defaultStyle"/>
     <set lazy="false" name="styles" table="LAYER_STYLES">
+      <cache usage="read-write"/>
       <key column="LAYER_ID" foreign-key="fk_layerstyles_layer"/>
       <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" foreign-key="fk_layerstyles_styles" lazy="false"/>
     </set>
@@ -288,6 +300,7 @@
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="ENABLED" name="enabled"/>
     <list lazy="false" name="layers">
+    <cache usage="read-write"/>
       <key column="MAP_ID"/>
       <list-index column="MAP_LAYER_INDEX"/>
       <one-to-many class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb"/>
@@ -318,6 +331,7 @@
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="PATH" name="path"/>
     <list cascade="all,persist,delete,delete-orphan" lazy="false" name="groupedLayers" table="LAYERGROUPS_LAYERS">
+      <cache usage="read-write"/>
       <key column="LGROUP_ID" foreign-key="fk_groupedlayer_lgroup" not-null="true"/>
       <list-index column="LAYER_INDEX"/>
       <one-to-many class="org.geoserver.catalog.hibernate.beans.GroupedLayerHb"/>
@@ -358,6 +372,7 @@
       <generator class="native"/>
     </id>
     <map cascade="all" lazy="false" name="map" table="METADATACONTENT">
+    <cache usage="read-write"/>
       <key column="MD_ID"/>
       <map-key column="mapkey" type="java.lang.String"/>
       <element column="mapvalue" length="100000" type="java.io.Serializable"/>
@@ -488,16 +503,19 @@
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="fk_service_metadata" lazy="false" name="metadata"/>
     <property column="ABSTRACT" name="abstract"/>
     <list cascade="all" lazy="false" name="keywords" table="SERVICE_KEYWORDS">
+    <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="SRV_KEYWORD_INDEX"/>
       <element type="java.lang.String"/>
     </list>
     <list cascade="all" lazy="false" name="versions" table="SERVICE_VERSIONS">
+    <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="SRV_VERSION_INDEX"/>
       <element type="org.geotools.util.Version"/>
     </list>
     <list cascade="all" lazy="false" name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS">
+    <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="SRV_EXCEPTION_FORMAT_INDEX"/>
       <element type="java.lang.String"/>
@@ -511,6 +529,7 @@
     <property column="INTERPOLATION" name="interpolation"/>
     <many-to-one cascade="all" class="org.geoserver.services.hibernate.beans.WatermarkInfoImplHb" foreign-key="fk_wms_watermark" lazy="false" name="watermark"/>
     <list cascade="all" lazy="false" name="SRS" table="WMS_SRS">
+    <cache usage="read-write"/>
       <key column="ID" foreign-key="srs_wms_listfk"/>
       <list-index column="WMS_SRS_INDEX"/>
       <element type="java.lang.String"/>
@@ -523,6 +542,7 @@
     <key column="ID"/>
     <property column="SERVICE_LEVEL" name="serviceLevel" type="wfsServiceLevel"/>
     <map cascade="all" lazy="false" name="GML" table="WFS_GML">
+     <cache usage="read-write"/>
       <key column="service_id" foreign-key="gml_wfs_mapfk"/>
       <map-key column="WFSVERSION" type="wfsVersion"/>
       <element length="32" type="gmlInfo">

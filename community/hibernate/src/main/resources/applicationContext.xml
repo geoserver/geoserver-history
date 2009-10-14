@@ -8,7 +8,7 @@
 				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
 				http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
-				 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<!-- property file config -->
 	<!-- The order is to look for a properties  -->
@@ -51,7 +51,21 @@
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="update" />
                 <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
-                <entry key="hibernate.cache.provider_configuration_file_resource_path" value="ehcache.xml"/>
+                <entry key="hibernate.cache.provider_configuration_file_resource_path" value="/ehcache.xml"/>
+                
+                <!-- enable second level caching and query caching -->
+                <entry key="hibernate.cache.use_query_cache" value="true"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="true"/>
+                
+                <entry key="hibernate.generate_statistics" value="true"/>
+                <entry key="hibernate.session_factory_name" value="SessionFactory"/>
+                
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="true"/>
+                
+                <entry key="hibernate.show_sql" value="false"/>
+                <entry key="hibernate.use_sql_comments" value="true"/>
+                <entry key="hibernate.format_sql" value="true"/>
+                
                 <entry key="hibernate.ejb.interceptor" value="org.geoserver.catalog.hibernate.HibCatalogInterceptor"/>
             </map>
         </property>
@@ -75,6 +89,8 @@
     <!--to Spring's DataAccessException hierarchy).                         -->
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
+	<context:annotation-config/>
+	
 
     <!--                                                                -->
     <!--                                                                -->
@@ -130,24 +146,5 @@
     </bean>
 
     <alias name="hibGeoServerLoader" alias="geoServerLoader" />
-
-
-<!-- jee:jndi-lookup id="server" jndi-name="java:comp/env/jmx/runtime" />
-
-<jee:jndi-lookup id="hibernateSessionFactory" jndi-name="SessionFactory" />
-
-<bean id="hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
-   <property name="statisticsEnabled" value="true" />
-   <property name="sessionFactory" ref="hibernateSessionFactory"/>
-</bean>
-
-<bean class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
-   <property name="server" ref="server" />
-   <property name="beans">
-      <map>
-        <entry key="Hibernate:name=statistics" value-ref="hibernateStatistics"/>
-      </map>
-   </property>
-</bean-->
 
 </beans>

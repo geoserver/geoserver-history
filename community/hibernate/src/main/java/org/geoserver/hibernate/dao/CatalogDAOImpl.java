@@ -3,9 +3,18 @@
  */
 package org.geoserver.hibernate.dao;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 
+import javax.annotation.PostConstruct;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
 import javax.persistence.Query;
 
 import org.geoserver.catalog.Catalog;
@@ -23,8 +32,12 @@ import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.MapInfoImpl;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.jmx.StatisticsService;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * 
@@ -33,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
 
-    public CatalogDAOImpl() {
+	public CatalogDAOImpl() {
         super();
     }
 
@@ -186,11 +199,10 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public List<LayerInfo> getLayers() {
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         List<LayerInfo> ret = (List<LayerInfo>) list(LayerInfoImplHb.class);
-        long t1 = System.currentTimeMillis();
-        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
-//        new Throwable(" **************** TRACING GETLAYERS ******************").printStackTrace();
+//        long t1 = System.currentTimeMillis();
+//        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
         return ret;
     }
 
@@ -457,4 +469,55 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
         return super.merge(entity);
     }
 
+    @PostConstruct
+    protected void postProcess(){
+
+    	// make it a bit mroe generic
+    	final Object delegate = entityManager.getDelegate();
+    	if(!(delegate instanceof Session))
+    	{
+    		if(LOGGER.isLoggable(Level.FINE))
+    			LOGGER.fine("Unable to register statistics JMX bean");
+    		return;
+    	}
+    	
+    	//register the hibernate statistics service as an mbean
+		final org.hibernate.Session session = (Session)delegate;
+        final SessionFactory sessionFactory = session.getSessionFactory();
+        
+        //build the ObjectName you want
+        final Hashtable<String, String> tb = new Hashtable<String, String>();
+        tb.put("type", "statistics");
+        tb.put("sessionFactory", "GeoServer-Hib Statistics");
+        ObjectName on=null;
+		try {
+			on = new ObjectName("hibernate", tb);
+		} catch (MalformedObjectNameException e) {
+    		if(LOGGER.isLoggable(Level.FINE))
+    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
+    		return;
+		} catch (NullPointerException e) {
+    		if(LOGGER.isLoggable(Level.FINE))
+    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
+    		return;
+		}
+        StatisticsService stats = new StatisticsService();
+        stats.setSessionFactory(sessionFactory);
+        try {
+			if(on!=null)
+				ManagementFactory.getPlatformMBeanServer().registerMBean(stats, on);
+		} catch (InstanceAlreadyExistsException e) {
+    		if(LOGGER.isLoggable(Level.FINE))
+    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
+    		return;
+		} catch (MBeanRegistrationException e) {
+    		if(LOGGER.isLoggable(Level.FINE))
+    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
+    		return;
+		} catch (NotCompliantMBeanException e) {
+    		if(LOGGER.isLoggable(Level.FINE))
+    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
+    		return;
+		}
+    }
 }
