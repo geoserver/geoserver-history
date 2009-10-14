@@ -4,8 +4,6 @@
  */
 package org.geoserver.catalog;
 
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Application schema namespace.
