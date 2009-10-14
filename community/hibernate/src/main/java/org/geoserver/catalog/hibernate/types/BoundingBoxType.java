@@ -120,7 +120,8 @@ public class BoundingBoxType implements UserType {
         return BoundingBox.class;
     }
 
+    private static final int[] SQLTYPES = new int[] { Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.BLOB };
     public int[] sqlTypes() {
-        return new int[] { Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.DOUBLE, Types.BLOB };
+        return SQLTYPES;
     }
 }
