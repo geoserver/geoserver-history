@@ -3,11 +3,6 @@
 WCS reference
 ============= 
 
-.. _wms_reference: 
-
-WMS reference
-============= 
-
 Introduction
 ------------ 
 

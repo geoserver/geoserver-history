@@ -176,7 +176,8 @@ latex_logo = '../../theme/_static/GeoServer_500.png'
 latex_elements = {
   'fontpkg': '\\usepackage{palatino}',
   'fncychap': '\\usepackage[Sonny]{fncychap}',
-  'preamble': """\\usepackage[parfill]{parskip}
+  'preamble': #"""\\usepackage[parfill]{parskip}
+  """
 	\\hypersetup{
 		colorlinks = true,
     linkcolor = [rgb]{0,0.46,0.63},

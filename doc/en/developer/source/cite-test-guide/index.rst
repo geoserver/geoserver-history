@@ -168,7 +168,7 @@ Run WFS 1.0 tests
 
    #. ``All`` tests included
 
-   .. image:: tewfs-1.0.jpg
+   .. image:: tewfs-1_0.jpg
 
 Run WFS 1.1 tests
 -----------------
@@ -206,7 +206,7 @@ Run WFS 1.1 tests
 
    #. ``GML Simple Features``: ``SF-0``
 
-   .. image:: tewfs-1.1.jpg
+   .. image:: tewfs-1_1.jpg
 
 Run WMS 1.1 tests
 -----------------
@@ -237,9 +237,9 @@ Run WMS 1.1 tests
      
    #. Click ``OK``
 
-   .. image:: tewms-1.1a.jpg
+   .. image:: tewms-1_1a.jpg
 
-   .. image:: tewms-1.1b.jpg
+   .. image:: tewms-1_1b.jpg
 
 Run WCS 1.1 tests
 -----------------
@@ -255,11 +255,11 @@ Run WCS 1.1 tests
    
    Click ``Next``
 
-   .. image:: tewcs-1.1a.jpg
+   .. image:: tewcs-1_1a.jpg
 
 #. Accept the default values and click ``Submit``
 
-   .. image:: tewcs-1.1b.jpg
+   .. image:: tewcs-1_1b.jpg
 
 Run WCS 1.0 tests
 -----------------
@@ -305,9 +305,9 @@ Run WCS 1.0 tests
 
    #. Click ``OK``
 
-   .. image:: tewcs-1.0a.jpg
+   .. image:: tewcs-1_0a.jpg
 
-   .. image:: tewcs-1.0b.jpg
+   .. image:: tewcs-1_0b.jpg
 
 .. _commandline:
 

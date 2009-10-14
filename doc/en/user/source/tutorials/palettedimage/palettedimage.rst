@@ -29,7 +29,7 @@ Antialiasing plays a role too. Let's take a road layer, where each road is depic
 
 The following zoom of an image shows antialiasing in action:
 
-.. figure:: antialiasing.gif
+.. figure:: antialiasing.png
    :align: center
 
    *Antialiasing*
@@ -152,7 +152,7 @@ To give you an example when paletted images may not fit the bill, let's consider
 
 **Parameters**:``FORMAT=image/jpeg`` Size: 23KB | Map generation time: 0.12s
 
-.. figure:: dem-jpeg.jpeg.jpg
+.. figure:: dem-jpeg.jpg
    :align: center
 
    *JPEG output*

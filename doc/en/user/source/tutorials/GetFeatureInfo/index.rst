@@ -12,7 +12,7 @@ GetFeatureInfo is a WMS standard call that allows one to retrieve information ab
 
 The default HTML output is a sequence of titled tables, each one for a different layer. The following example shows the default output for the tiger-ny basemap (included in the above cited releases, and onwards).
 
-.. figure:: default.gif
+.. figure:: default.png
    :align: center
 
    *Default Output*
@@ -139,7 +139,7 @@ For example, let's say you would prefer a bulleted list appearance for your feat
 	
 With this template in place, the output would be:
 
-.. figure:: ul.gif
+.. figure:: ul.png
    :align: center
 
    *Bulleted List Output*
@@ -158,7 +158,7 @@ This is easy: just put the following template in the feature type folder, which 
 	
 With this additional template, the output is:
 	
-.. figure:: thumb.gif
+.. figure:: thumb.png
    :align: center
 
    *Output with Thumbnail Image*

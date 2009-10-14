@@ -1,4 +1,4 @@
-.. _wps_design_guide
+.. _wps_design_guide:
 
 WPS design guide
 ================

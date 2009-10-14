@@ -83,9 +83,9 @@ must also be installed manually. To install Jinja:
 #. Download the source tarball :file:`Jinja2-2.1.1.tar.gz`
 #. Unpack the source tarball and install Jinja::
 
-    tar xzvf Jinja2-2.1.1-tar.gz
-    cd Jinja2-2.1.1.
-    python setup.py install
+       tar xzvf Jinja2-2.1.1-tar.gz
+       cd Jinja2-2.1.1.
+       python setup.py install
 
 After Jinja is installed follow a similar process to install Sphinx:
 
@@ -93,6 +93,6 @@ After Jinja is installed follow a similar process to install Sphinx:
 #. Download the source tarbell :file:`Sphinx-0.6.2.tar.gz`
 #. Unpack the source tarball and install Sphinx::
 
-   tar xzvf Sphinx-0.6.2.tar.gz
-   cd Sphinx-0.6.2
-   python setup.py install
+       tar xzvf Sphinx-0.6.2.tar.gz
+       cd Sphinx-0.6.2
+       python setup.py install

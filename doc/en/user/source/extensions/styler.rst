@@ -21,16 +21,16 @@ Usage
    `http://localhost:8080/geoserver/www/styler/index.html <http://localhost:8080/geoserver/www/styler/index.html>`_
    2. Use the "Layers" panel to select a layer to style.
 
-.. figure:: images/layers.png
+       .. figure:: images/layers.png
 
    3. In the "Legend" panel select a rule by clicking on it.
 
-.. figure:: images/legend.png
+       .. figure:: images/legend.png
 
    4. Change the color by clicking in the color box.
 
-.. figure:: images/color.png
+       .. figure:: images/color.png
 
    5. Click on a feature to view information about its attributes and which rules applied to it.
 
-.. figure:: images/info.png
+       .. figure:: images/info.png
