@@ -41,6 +41,7 @@ import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
+import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.config.ContactInfo;
