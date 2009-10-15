@@ -9,7 +9,7 @@
       timeToIdleSeconds="120"
       timeToLiveSeconds="120"
       overflowToDisk="true"
-      diskPersistent="false"
+      diskPersistent="true"
       diskExpiryThreadIntervalSeconds="120"
       memoryStoreEvictionPolicy="LRU"/>
 
@@ -22,7 +22,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -33,7 +33,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -43,10 +43,53 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>    
    
+<cache
+	name="org.geoserver.services.hibernate.beans.WFSInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="true"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+<cache
+	name="org.geoserver.services.hibernate.beans.WFSInfoImplHb.SRS"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="true"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>  
+    
+<cache
+	name="org.geoserver.services.hibernate.beans.GMLInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="true"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>        
+      
+<cache
+	name="org.geoserver.services.hibernate.beans.WCSInfoImplHb"
+    maxElementsInMemory="100000"
+    eternal="false"
+    timeToIdleSeconds="240"
+    timeToLiveSeconds="240"
+    overflowToDisk="true"
+    diskPersistent="true"
+    diskExpiryThreadIntervalSeconds="240"
+    memoryStoreEvictionPolicy="LRU"/>
+       
 <cache
 	name="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb"
     maxElementsInMemory="100000"
@@ -54,7 +97,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>   
     
@@ -65,7 +108,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>    
 <cache
@@ -75,7 +118,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>   
 <cache
@@ -85,7 +128,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>      
        
@@ -96,7 +139,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>   
 <cache
@@ -106,7 +149,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>     
 <cache
@@ -116,7 +159,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/> 
 <cache
@@ -126,7 +169,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/> 
 <cache
@@ -136,7 +179,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/> 
             <cache
@@ -146,7 +189,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/> 
     
@@ -158,7 +201,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>     
 <cache
@@ -168,7 +211,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>            
 
@@ -181,7 +224,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>       
 
@@ -192,7 +235,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>       
    
@@ -204,7 +247,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -215,7 +258,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
    
@@ -226,7 +269,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>   
 <cache
@@ -236,7 +279,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>       
     
@@ -248,7 +291,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -259,7 +302,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -270,7 +313,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -282,7 +325,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -294,7 +337,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -311,7 +354,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 
@@ -322,7 +365,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 
@@ -333,7 +376,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 
@@ -344,7 +387,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 
@@ -356,7 +399,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 
@@ -368,7 +411,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -378,7 +421,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -389,7 +432,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -400,7 +443,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -410,7 +453,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -420,7 +463,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -430,7 +473,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/> 
         
@@ -441,7 +484,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
     
@@ -453,7 +496,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -463,7 +506,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -473,7 +516,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -483,7 +526,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 
@@ -494,7 +537,7 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>
 <cache
@@ -504,14 +547,14 @@
     timeToIdleSeconds="240"
     timeToLiveSeconds="240"
     overflowToDisk="true"
-    diskPersistent="false"
+    diskPersistent="true"
     diskExpiryThreadIntervalSeconds="240"
     memoryStoreEvictionPolicy="LRU"/>    
     
 <!-- QUERY CACHE -->
 <cache
 	name="org.hibernate.cache.StandardQueryCache"
-	maxElementsInMemory="10"
+	maxElementsInMemory="100"
 	eternal="false"
 	timeToLiveSeconds="120"
 	diskPersistent="true"
