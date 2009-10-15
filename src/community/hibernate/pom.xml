@@ -141,7 +141,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
 <!-- we may want to use some testing cases from the main package -->
 <!--
