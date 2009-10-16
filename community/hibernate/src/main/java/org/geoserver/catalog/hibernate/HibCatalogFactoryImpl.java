@@ -1,10 +1,9 @@
 package org.geoserver.catalog.hibernate;
 
-import org.geoserver.catalog.AttributionInfo;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import java.util.logging.Logger;
+
 import org.geoserver.catalog.AttributeTypeInfo;
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
@@ -24,10 +23,11 @@ import org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
-import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.LegendInfoImpl;
 import org.geoserver.catalog.impl.MapInfoImpl;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
