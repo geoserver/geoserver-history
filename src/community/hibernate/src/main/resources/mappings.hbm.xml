@@ -33,6 +33,7 @@
     <many-to-one class="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb" column="WORKSPACE" foreign-key="fk_store_workspace" lazy="false" name="workspace"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="fk_store_metadata" lazy="false" name="metadata"/>
     <map cascade="all-delete-orphan" lazy="false" name="connectionParameters" table="STORE_CONNPARAMS">
+      <cache usage="read-write"/>
       <key column="STORE_ID" foreign-key="fk_store_connparam"/>
       <map-key column="mapkey" type="java.lang.String"/>
       <element column="mapvalue" length="100000" type="java.io.Serializable"/>
@@ -277,11 +278,11 @@
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="TYPE" length="100000" name="type" type="java.io.Serializable"/>
     <property column="ENABLED" name="enabled"/>
-    <many-to-one cascade="persist" class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" column="DEFAULT_STYLE" foreign-key="fk_layer_defstyle" lazy="false" name="defaultStyle"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" column="DEFAULT_STYLE" foreign-key="fk_layer_defstyle" lazy="false" name="defaultStyle" fetch="select"/>
     <set lazy="false" name="styles" table="LAYER_STYLES">
       <cache usage="read-write"/>
       <key column="LAYER_ID" foreign-key="fk_layerstyles_layer"/>
-      <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" foreign-key="fk_layerstyles_styles" lazy="false"/>
+      <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" foreign-key="fk_layerstyles_styles" lazy="false" fetch="select"/>
     </set>
     <!-- fixme: maybe these reosurces should be persisted by hand, avoiding dups. -->
     <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="fk_layer_resource" lazy="false" name="resource" not-null="true"/>
