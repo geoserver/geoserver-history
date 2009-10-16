@@ -5,13 +5,11 @@
 
 package org.geoserver.hibernate;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
@@ -41,7 +39,7 @@ import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
-import org.geoserver.catalog.impl.LayerGroupInfoImpl;
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.config.ContactInfo;
@@ -52,10 +50,13 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.hibernate.beans.ContactInfoImplHb;
 import org.geoserver.config.hibernate.beans.GeoServerInfoImplHb;
 import org.geoserver.config.hibernate.beans.LoggingInfoImplHb;
-import org.geoserver.config.hibernate.beans.MetadataLinkInfoImplHb;
 import org.geoserver.config.impl.JAIInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.config.util.ImplementationMapper;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 
 
 /**
@@ -66,7 +67,7 @@ import org.geoserver.config.util.ImplementationMapper;
  */
 public class HibImplementationMapper implements ImplementationMapper {
 
-    private static Map<Class, Class> impl = new HashMap<Class, Class>();
+    private static Map<Class<?>, Class<?>> impl = new HashMap<Class<?>, Class<?>>();
 //    private static List<Converter> converters = new ArrayList<Converter>();
     
     static {
@@ -74,7 +75,7 @@ public class HibImplementationMapper implements ImplementationMapper {
 //        populateConverters();
     }
 
-    public Class getImpl(Class clazz) {
+    public Class<?> getImpl(Class<?> clazz) {
         return impl.get(clazz);
     }
 
@@ -101,7 +102,7 @@ public class HibImplementationMapper implements ImplementationMapper {
         impl.put(FeatureTypeInfo.class, FeatureTypeInfoImplHb.class);
         impl.put(CoverageInfo.class, CoverageInfoImplHb.class);
         impl.put(CoverageDimensionInfo.class, CoverageDimensionImpl.class);
-        impl.put(MetadataLinkInfo.class, MetadataLinkInfoImplHb.class);
+        impl.put(MetadataLinkInfo.class, MetadataLinkInfoImpl.class);
         impl.put(AttributeTypeInfo.class, AttributeTypeInfoImplHb.class);
         impl.put(LayerInfo.class, LayerInfoImplHb.class);
         impl.put(LayerGroupInfo.class, LayerGroupInfoImplHb.class);

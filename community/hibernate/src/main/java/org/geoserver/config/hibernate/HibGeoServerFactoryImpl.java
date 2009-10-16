@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.geoserver.catalog.MetadataLinkInfo;
+import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
@@ -19,7 +20,6 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.hibernate.beans.ContactInfoImplHb;
 import org.geoserver.config.hibernate.beans.GeoServerInfoImplHb;
 import org.geoserver.config.hibernate.beans.LoggingInfoImplHb;
-import org.geoserver.config.hibernate.beans.MetadataLinkInfoImplHb;
 import org.geoserver.config.impl.JAIInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.springframework.beans.BeansException;
@@ -75,7 +75,7 @@ public class HibGeoServerFactoryImpl implements GeoServerFactory, ApplicationCon
     }
 
     public MetadataLinkInfo createMetadataLink() {
-        return new MetadataLinkInfoImplHb();
+        return new MetadataLinkInfoImpl();
     }
 
     public LoggingInfo createLogging() {
