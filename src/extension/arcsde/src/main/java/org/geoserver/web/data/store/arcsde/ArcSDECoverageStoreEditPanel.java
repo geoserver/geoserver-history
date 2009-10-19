@@ -49,8 +49,8 @@ import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.arcsde.ArcSDEDataStoreFactory;
-import org.geotools.arcsde.data.ArcSDEDataStoreConfig;
 import org.geotools.arcsde.gce.ArcSDERasterFormat;
+import org.geotools.arcsde.session.ArcSDEConnectionConfig;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
 
@@ -353,14 +353,14 @@ public final class ArcSDECoverageStoreEditPanel extends StoreEditPanel {
             String url = ((CoverageStoreInfo) storeInfo).getURL();
 
             if (null != url && url.startsWith("sde:")) {
-                ArcSDEDataStoreConfig connectionConfig;
+                ArcSDEConnectionConfig connectionConfig;
                 connectionConfig = ArcSDERasterFormat
                         .sdeURLToConnectionConfig(new StringBuffer(url));
                 params.put(SERVER_NAME_PARAM_NAME, connectionConfig.getServerName());
                 params.put(PORT_NUMBER_PARAM_NAME, connectionConfig.getPortNumber().toString());
                 params.put(INSTANCE_NAME_PARAM_NAME, connectionConfig.getDatabaseName());
                 params.put(USER_NAME_PARAM_NAME, connectionConfig.getUserName());
-                params.put(PASSWORD_PARAM_NAME, connectionConfig.getUserPassword());
+                params.put(PASSWORD_PARAM_NAME, connectionConfig.getPassword());
 
                 // parse table name
                 int idx = url.lastIndexOf('#');

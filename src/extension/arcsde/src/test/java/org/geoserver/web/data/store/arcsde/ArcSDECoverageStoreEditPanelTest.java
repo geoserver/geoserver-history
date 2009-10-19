@@ -185,6 +185,9 @@ public class ArcSDECoverageStoreEditPanelTest extends GeoServerWicketTestSupport
             public ISessionPool createPool(final ArcSDEConnectionConfig config) throws IOException {
                 return new ISessionPool() {
                     public ISession getSession() throws IOException, UnavailableConnectionException {
+                        return getSession(true);
+                    }
+                    public ISession getSession(final boolean transactional) throws IOException, UnavailableConnectionException {
                         return new SessionWrapper(null) {
                             @Override
                             public List<String> getRasterColumns() throws IOException {
