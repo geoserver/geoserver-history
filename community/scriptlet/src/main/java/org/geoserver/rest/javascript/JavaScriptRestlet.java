@@ -75,10 +75,12 @@ public class JavaScriptRestlet extends Restlet {
                 Object wrappedRequest = Context.javaToJS(request, scope);
                 Object wrappedResponse = Context.javaToJS(response, scope);
                 Object wrappedCatalog = Context.javaToJS(catalog, scope);
+                Object wrappedLoader = Context.javaToJS(resourceLoader, scope);
 
                 ScriptableObject.putProperty(scope, "request", wrappedRequest);
                 ScriptableObject
                     .putProperty(scope, "response", wrappedResponse);
+                ScriptableObject.putProperty(scope, "loader", wrappedLoader);
                 ScriptableObject.putProperty(scope, "catalog", wrappedCatalog);
 
                 cx.evaluateReader(scope, reader, script.getName(), 1, null);
