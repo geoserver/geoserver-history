@@ -1,3 +1,14 @@
+GeoServer 2.0 (October 21, 2009)
+--------------------------------
+
+The official release of GeoServer 2.0. This release contains a minor styling fix but is essentially the same as 2.0-RC2.
+
+The changelog for this releas can be found at:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/15874
+
+This release is based on GeoToools 2.6.0.
+
 GeoServer 2.0-RC2 (October 13, 2009)
 -----------------------------------
 
