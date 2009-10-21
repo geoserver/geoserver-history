@@ -33,7 +33,7 @@ The code looks like::
     var bg = form.getFirstValue("bg") || "0x0000FF";
     bg = parseColor(bg);
     var stencil = form.getFirstValue("stencil");
-    var path = new java.io.File("/home/dwins/Projects/geoserver/data/release/scripts/stencils/");
+    var path = loader.find("scripts/stencils/");
     var img = new java.io.File(path, stencil + ".png");
 
 Now, let's check that the image exists and is not actually some hacker's attempt

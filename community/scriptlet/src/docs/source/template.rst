@@ -10,9 +10,7 @@ formats it using Freemarker::
     var MediaType = Packages.org.restlet.data.MediaType;
 
     var config = new Packages.freemarker.template.Configuration();
-    config.setDirectoryForTemplateLoading(new java.io.File(
-        "/home/dwins/Projects/geoserver/data/release/scripts/templates/"
-    ));
+    config.setDirectoryForTemplateLoading(loader.find("scripts/templates/"));
 
     var context = {"message": "hello friends", "date": new java.util.Date()};
     var map = new java.util.HashMap();
@@ -30,9 +28,7 @@ Freemarker template engine.  The configuration is fairly straightforward,
 especially if you are already familiar with Freemarker::
 
     var config = new Packages.freemarker.template.Configuration();
-    config.setDirectoryForTemplateLoading(new java.io.File(
-        "/home/dwins/Projects/geoserver/data/release/scripts/templates/"
-    ));
+    config.setDirectoryForTemplateLoading(loader.find("scripts/templates/"));
 
 Populating the template context is a little trickier.  Freemarker doesn't
 understand JavaScript objects as context objects, so we have to translate to a
