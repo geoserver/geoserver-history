@@ -1,0 +1,10 @@
+<coverageStore>
+  <id>CoverageStoreInfoImpl-4e0b98bf:12475d46fdd:-7fd5</id>
+  <name>arcGridSample</name>
+  <type>ArcGrid</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl-4e0b98bf:12475d46fdd:-7ff7</id>
+  </workspace>
+  <url>file:coverages/arc_sample/precip30min.asc</url>
+</coverageStore>

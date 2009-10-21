@@ -1,0 +1,10 @@
+<coverageStore>
+  <id>CoverageStoreInfoImpl--7c9ab95c:1247612cd06:-7feb</id>
+  <name>dem</name>
+  <type>GeoTIFF</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl--7c9ab95c:1247612cd06:-7fff</id>
+  </workspace>
+  <url>file:coverages/sfdem.tif</url>
+</coverageStore>
