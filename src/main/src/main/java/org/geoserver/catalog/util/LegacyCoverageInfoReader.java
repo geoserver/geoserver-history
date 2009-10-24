@@ -140,7 +140,11 @@ public class LegacyCoverageInfoReader {
     public Map<String,Object> grid() throws Exception {
         Element gridElement = ReaderUtils.getChildElement(coverage, "grid");
         HashMap<String,Object> grid = new HashMap<String, Object>();
-        
+
+        if ( gridElement == null ) {
+            return null;
+        }
+
         grid.put( "dimension", 
             Integer.parseInt( ReaderUtils.getAttribute(gridElement, "dimension", true ) ) );
         

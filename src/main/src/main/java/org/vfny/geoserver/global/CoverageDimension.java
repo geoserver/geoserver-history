@@ -92,7 +92,12 @@ public class CoverageDimension extends GlobalLayerSupertype {
      * @return Returns the nullValues.
      */
     public Double[] getNullValues() {
-        return cd.getNullValues().toArray( new Double[ cd.getNullValues().size() ]);
+        if ( cd.getNullValues() != null ) {
+            return cd.getNullValues().toArray( new Double[ cd.getNullValues().size() ]);
+        }
+        else {
+            return null;
+        }
         //return nullValues;
     }
 
@@ -101,7 +106,9 @@ public class CoverageDimension extends GlobalLayerSupertype {
      */
     public void setNullValues(Double[] nullValues) {
         cd.getNullValues().clear();
-        cd.getNullValues().addAll( Arrays.asList(nullValues) );
+        if (nullValues != null) {
+            cd.getNullValues().addAll( Arrays.asList(nullValues) );
+        }
         //this.nullValues = nullValues;
     }
 
