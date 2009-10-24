@@ -18,7 +18,9 @@ import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 import javax.media.jai.Interpolation;
+import javax.media.jai.RenderedOp;
 import javax.media.jai.TiledImage;
+import javax.media.jai.operator.FormatDescriptor;
 
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
@@ -156,6 +158,8 @@ GetMapProducer {
 	        if(image!=null)
 	        {
 	        	int dtype = image.getData().getDataBuffer().getDataType();
+	        	/* Throw exception if required to perform conversion */
+	        	/*
 	        	if((bilEncoding.equals("application/bil32"))&&(dtype!=DataBuffer.TYPE_FLOAT))	        	{
 	        		throw new ServiceException("Cannot fetch BIL float data,"+
 	        				"Wrong underlying data type");
@@ -168,7 +172,27 @@ GetMapProducer {
 	        		throw new ServiceException("Cannot fetch BIL byte data,"+
 	        				"Wrong underlying data type");
 	        	}
-	        	TiledImage tiled = new TiledImage(image,width,height);
+	        	*/
+	        	
+	        	/*
+	        	 * Perform format conversion
+	        	 * Operator is not created if no conversion is necessary
+	        	 */
+	        	RenderedOp formcov = null;
+	        	if((bilEncoding.equals("application/bil32"))&&(dtype!=DataBuffer.TYPE_FLOAT))	        	{
+	        		formcov = FormatDescriptor.create(image,DataBuffer.TYPE_FLOAT ,null);
+	        	}
+	        	if((bilEncoding.equals("application/bil16"))&&(dtype!=DataBuffer.TYPE_SHORT))	        	{
+	        		formcov = FormatDescriptor.create(image,DataBuffer.TYPE_SHORT ,null);
+	        	}
+	        	if((bilEncoding.equals("application/bil8"))&&(dtype!=DataBuffer.TYPE_BYTE))	        	{
+	        		formcov = FormatDescriptor.create(image,DataBuffer.TYPE_BYTE ,null);
+	        	}
+	        	TiledImage tiled = null;
+	        	if (formcov!= null)
+	        		tiled = new TiledImage(formcov,width,height);
+	        	else
+	        		tiled = new TiledImage(image,width,height);
 	        	final ImageOutputStream imageOutStream = ImageIO.createImageOutputStream(out);
 		        final ImageWriter writer = writerSPI.createWriterInstance();
 		        writer.setOutput(imageOutStream);
