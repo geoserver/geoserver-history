@@ -1,5 +1,5 @@
 <assembly>
-  <id>web-security</id>
+  <id>web-security-plugin</id>
   <formats>
     <format>zip</format>
   </formats>
