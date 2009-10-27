@@ -104,7 +104,7 @@ public class SpringUnWrapper implements UnWrapper {
                     }
                     return unwrapped;
                 }
-            } catch(Exception t) {
+            } catch(Throwable t) {
                 // catch a throwable since some of the unwrappers do not blow up
                 // during initialization when the enviroment does not help, but
                 // they do at unwrap time and they throw Error suclasses
