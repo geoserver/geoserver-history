@@ -21,7 +21,6 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb;
@@ -32,6 +31,7 @@ import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
 import org.geoserver.catalog.impl.MapInfoImpl;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.config.ContactInfo;
@@ -85,7 +85,7 @@ public class HibMapper {
             return WorkspaceInfoImplHb.class;
 
         else if (CoverageDimensionInfo.class.isAssignableFrom(clazz))
-            return CoverageDimensionInfoImplHb.class;
+            return CoverageDimensionImpl.class;
 
         else if (AttributeTypeInfo.class.isAssignableFrom(clazz))
             return AttributeTypeInfoImplHb.class;

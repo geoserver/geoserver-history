@@ -18,7 +18,6 @@ import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb;
@@ -28,6 +27,7 @@ import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.LegendInfoImpl;
 import org.geoserver.catalog.impl.MapInfoImpl;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
@@ -103,7 +103,7 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
     }
 
     public CoverageDimensionInfo createCoverageDimension() {
-        return new CoverageDimensionInfoImplHb();
+        return new CoverageDimensionImpl();
     }
 
     public AttributionInfo createAttribution() {

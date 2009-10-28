@@ -10,6 +10,8 @@ import org.geoserver.hibernate.Hibernable;
 /**
  * 
  * @author ETj <etj at geo-solutions.it>
+ *
+ * @deprecated  use CoverageDimensionImpl
  */
 public class CoverageDimensionInfoImplHb extends CoverageDimensionImpl implements
         CoverageDimensionInfo, Hibernable {

@@ -103,7 +103,7 @@
   <!-- ===================================================================== -->
   <!-- CoverageDimension -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" table="COVERAGE_DIMENSIONS">
+  <class name="org.geoserver.catalog.impl.CoverageDimensionImpl" table="COVERAGE_DIMENSIONS">
     <cache usage="read-write"/>
     <id column="ID" name="id">
       <generator class="native"/>
@@ -229,7 +229,7 @@
     <cache usage="read-write"/>
       <key column="RESOURCE_ID" foreign-key="fk_cov_dim"/>
       <list-index column="idx"/>
-      <many-to-many class="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" lazy="false"/>
+      <many-to-many class="org.geoserver.catalog.impl.CoverageDimensionImpl" lazy="false"/>
     </list>
     <map cascade="all" lazy="false" name="parameters" table="COVERAGE_PARAMETERS">
     <cache usage="read-write"/>
@@ -497,26 +497,26 @@
     <property column="MAINTAINER" name="maintainer"/>
     <property column="ACCESS_CONSTRAINTS" name="accessConstraints"/>
     <property column="FEES" name="fees"/>
-    <one-to-one cascade="persist,all" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false" name="metadataLink"/>
+    <one-to-one cascade="persist,all" class="org.geoserver.catalog.impl.MetadataLinkInfoImpl" lazy="false" name="metadataLink" foreign-key="fk_service_mdlink"/>
     <!--    <many-to-one class="org.geoserver.config.hibernate.beans.GeoServerInfoImplHb" column="GEOSERVER" lazy="false" name="geoServer"/>-->
     <property column="CITE_COMPLIANT" name="citeCompliant"/>
     <property column="ONLINE_RESOURCE" name="onlineResource"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="fk_service_metadata" lazy="false" name="metadata"/>
     <property column="ABSTRACT" name="abstract"/>
     <list cascade="all" lazy="false" name="keywords" table="SERVICE_KEYWORDS">
-    <cache usage="read-write"/>
+      <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="SRV_KEYWORD_INDEX"/>
       <element type="java.lang.String"/>
     </list>
     <list cascade="all" lazy="false" name="versions" table="SERVICE_VERSIONS">
-    <cache usage="read-write"/>
+      <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="SRV_VERSION_INDEX"/>
       <element type="org.geotools.util.Version"/>
     </list>
     <list cascade="all" lazy="false" name="exceptionFormats" table="SERVICE_EXCEPTION_FORMATS">
-    <cache usage="read-write"/>
+      <cache usage="read-write"/>
       <key column="ID"/>
       <list-index column="SRV_EXCEPTION_FORMAT_INDEX"/>
       <element type="java.lang.String"/>
