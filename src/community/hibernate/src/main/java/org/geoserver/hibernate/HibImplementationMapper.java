@@ -57,6 +57,7 @@ import org.geoserver.config.util.ImplementationMapper;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.collections.CollectionConverter;
+import com.thoughtworks.xstream.converters.collections.MapConverter;
 
 
 /**
@@ -75,17 +76,24 @@ public class HibImplementationMapper implements ImplementationMapper {
 //        populateConverters();
     }
 
-    public Class<?> getImpl(Class<?> clazz) {
-        return impl.get(clazz);
+//    public Class<?> getImpl(Class<?> clazz) {
+//        return impl.get(clazz);
+//    }
+
+    public Class getImpl(Class intface) {
+        return impl.get(intface);
     }
 
     public static Map<String, Converter> getLocalConverters() {
         return new HashMap<String, Converter>();
     }
 
+
+
     public List<Converter> getConverters(XStream xs) {
         List<Converter> converters = new ArrayList<Converter>();
         converters.add(new HibListConverter(xs));
+        converters.add(new HibMapConverter(xs));
         return converters;
     }
     
@@ -138,5 +146,18 @@ class HibListConverter
     public boolean canConvert(Class type) {
         return type.equals(org.hibernate.collection.PersistentList.class);
     }
+}
 
+class HibMapConverter
+        extends MapConverter
+        implements Converter {
+
+    public HibMapConverter( XStream xs ) {
+        super(xs.getMapper());
+    }
+
+    @Override
+    public boolean canConvert(Class type) {
+        return type.equals(org.hibernate.collection.PersistentMap.class);
+    }
 }
