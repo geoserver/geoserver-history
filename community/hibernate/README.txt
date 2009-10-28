@@ -3,16 +3,40 @@
 
 This project is designed to be compiled as a GeoServer community module.
 
-################################################################################
-### Postgis DB CONFIGURATION
-
-Before creating the .war or installing it, you need to configure the DB where the catalog will be stored.
-You can find the connection information in
-   community/hibernate/src/main/resources/postgis.properties
-Please edit the info in the file to match the DB you created for this purpose.
+This module needs some changes in the main trunk that are yet to be approved.
+Before building, please apply the patches provided with these jira tickets:
+- http://jira.codehaus.org/browse/GEOS-3569
 
 
-WARNING: Please note that at the moments the tests and the running configuration point to the same db; 
-it means that rebuilding or testing the module will trash your data.
-The tests also leave the db in an unconsistent state; please clean the db before running the webapp, so that 
-it will be properly initialized.
+================================================================================
+=== DB CONFIGURATION
+
+By default the Hibernate catalog will use an embedded H2 db.
+
+You may redefine the db to be used either by:
+- putting a gs-db-config.properties file in the classpath;
+- putting a gs-db-config.properties file in your home dir;
+- setting the env var GeoServerDBConfigPropertiesFile to point to the
+  desired properties file.
+
+The property file should contain these props:
+
+  dataSource.driverClassName
+  dataSource.url
+  dataSource.username
+  dataSource.password
+  entityManagerFactory.jpaVendorAdapter.databasePlatform
+  entityManagerFactory.jpaVendorAdapter.database
+
+For instance, a sample PostgreSQL setup would be:
+
+  dataSource.driverClassName=org.postgresql.Driver
+  dataSource.url=jdbc:postgresql://localhost/gscatalog
+  dataSource.username=geosolutions
+  dataSource.password=gscatalog
+
+  entityManagerFactory.jpaVendorAdapter.databasePlatform=org.hibernate.dialect.PostgreSQLDialect
+  entityManagerFactory.jpaVendorAdapter.database=POSTGRESQL
+
+
+Be warned not to run the maven tests against your configured DB.
