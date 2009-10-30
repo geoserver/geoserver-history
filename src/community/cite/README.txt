@@ -32,13 +32,17 @@ it.
 
 *Note* : Revision 2740 is the last verified version of the tests.
 
-3. Patch the Test Engine Sources
+3. Checkout the CITE1 Component
+
+  'svn co https://svn.opengeospatial.org:8443/ogc-projects/cite/components/cite1/trunk cite1'
+
+4. Patch the Test Engine Sources
 
 Patch the engine sources with the 'engine.patch' file.
 
    'patch -p0 < engine.patch'
 
-4. Build the Test Engine
+5. Build the Test Engine
 
 The test engine is built with the following command: 
 
