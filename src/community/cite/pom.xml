@@ -89,15 +89,11 @@
  
                   <!-- create the engine build.properties file -->
                   <property name="bp.file" value="${basedir}/engine/build.properties"/>
-                  <echo file="${bp.file}" message="usersdir "/>
-                  <echo file="${bp.file}" append="true">${basedir}/users${line.separator}</echo>
-                  <echo file="${bp.file}" append="true" message="workdir "/>
-                  <echo file="${bp.file}" append="true">${basedir}/target/work${line.separator}</echo>
-                  <echo file="${bp.file}" append="true" message="tomcat.dir "/>
-                  <echo file="${bp.file}" append="true">${basedir}/target</echo>
+                  <copy file="${basedir}/engine.build.properties" tofile="${bp.file}"/>
+                  <replace file="${bp.file}" token="@BASEDIR@" value="${basedir}"/>
 
-				<!-- for windows, change \ to \\ -->
-                 <replace file="${basedir}/engine/build.properties" token="\" value="\\" />
+	 	  <!-- for windows, change \ to \\ -->
+                 <replace file="${bp.file}" token="\" value="\\" />
 
                   <!-- copy over the pom and realm.properties file for the 
                        engine -->
