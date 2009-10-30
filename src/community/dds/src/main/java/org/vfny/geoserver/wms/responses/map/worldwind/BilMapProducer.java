@@ -57,7 +57,7 @@ import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
  * Map producer for producing Raw bil images out of an elevation model.
  * 
  * @author Tishampati Dhar
- * @since 1.4.x
+ * @since 2.0.x
  * 
  */
 public final class BilMapProducer extends AbstractGetMapProducer implements
