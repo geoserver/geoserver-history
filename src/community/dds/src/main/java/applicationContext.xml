@@ -3,9 +3,16 @@
 
 <beans>	
 	<!--  
-		Map producer factories
+		Map producers
 	 -->
-	<bean id="DDSMapProducerFactory" 
-		class="nicastel.geoserver.plugin.dds.DDSMapProducerFactory">
+	<bean id="DDSMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.worldwind.DDSMapProducer">
+		<constructor-arg index="0" ref="wms"/>
 	</bean>	
+	<bean id="BilMapProducer"
+		singleton="false"
+		class="org.vfny.geoserver.wms.responses.map.worldwind.BilMapProducer">
+		<constructor-arg index="0" ref="wms"/>
+	</bean>
 </beans>
