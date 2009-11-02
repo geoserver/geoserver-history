@@ -99,6 +99,7 @@ public class StatusPage extends ServerAdminPage {
                 System.gc();
                 System.runFinalization();
                 jaiCache.setMemoryCapacity(capacityBefore);
+                updateModel();
             }
         });
 
