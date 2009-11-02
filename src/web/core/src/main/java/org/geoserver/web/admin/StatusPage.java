@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.JAIInfo;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
@@ -98,6 +99,7 @@ public class StatusPage extends ServerAdminPage {
                 System.gc();
                 System.runFinalization();
                 jaiCache.setMemoryCapacity(capacityBefore);
+                updateModel();
             }
         });
 
@@ -131,11 +133,12 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_JAI_AVAILABLE, Boolean.toString(isNativeJAIAvailable()));
         values.put(KEY_JAI_IMAGEIO_AVAILABLE, Boolean.toString(PackageUtil.isCodecLibAvailable()));
 
-        JAI jai =  getGeoServer().getGlobal().getJAI().getJAI();
-        SunTileCache jaiCache = getGeoServer().getGlobal().getJAI().getTileCache();
+        JAIInfo jaiInfo = getGeoServer().getGlobal().getJAI();
+        JAI jai =  jaiInfo.getJAI();
+        SunTileCache jaiCache = jaiInfo.getTileCache();
 
-        values.put(KEY_JAI_MAX_MEM, Long.toString(jaiCache.getMemoryCapacity()));
-        values.put(KEY_JAI_MEM_USAGE, Long.toString(jaiCache.getCacheMemoryUsed()));
+        values.put(KEY_JAI_MAX_MEM, formatMemory(jaiCache.getMemoryCapacity()));
+        values.put(KEY_JAI_MEM_USAGE, formatMemory(jaiCache.getCacheMemoryUsed()));
         values.put(KEY_JAI_MEM_THRESHOLD, Float.toString(100.0f * jaiCache.getMemoryThreshold()));
         values.put(KEY_JAI_TILE_THREADS, Integer.toString(jai.getTileScheduler().getParallelism()));
         values.put(KEY_JAI_TILE_THREAD_PRIORITY, Integer.toString(jai.getTileScheduler()
@@ -158,7 +161,13 @@ public class StatusPage extends ServerAdminPage {
      */
     private String formatUsedMemory() {
         final Runtime runtime = Runtime.getRuntime();
-        final double usedBytes = runtime.totalMemory() - runtime.freeMemory();
+        final long usedBytes = runtime.totalMemory() - runtime.freeMemory();
+        String formattedUsedMemory = formatMemory(usedBytes);
+
+        return formattedUsedMemory;
+    }
+
+    private String formatMemory(final long bytes) {
         final long KB = 1024;
         final long MB = KB * KB;
         final long GB = KB * MB;
@@ -166,14 +175,13 @@ public class StatusPage extends ServerAdminPage {
         formatter.setMaximumFractionDigits(2);
 
         String formattedUsedMemory;
-        if (usedBytes > GB) {
-            formattedUsedMemory = formatter.format(usedBytes / GB) + " GB";
-        } else if (usedBytes > MB) {
-            formattedUsedMemory = formatter.format(usedBytes / MB) + " MB";
+        if (bytes > GB) {
+            formattedUsedMemory = formatter.format(bytes / GB) + " GB";
+        } else if (bytes > MB) {
+            formattedUsedMemory = formatter.format(bytes / MB) + " MB";
         } else {
-            formattedUsedMemory = formatter.format(usedBytes / KB) + " KB";
+            formattedUsedMemory = formatter.format(bytes / KB) + " KB";
         }
-
         return formattedUsedMemory;
     }
 
