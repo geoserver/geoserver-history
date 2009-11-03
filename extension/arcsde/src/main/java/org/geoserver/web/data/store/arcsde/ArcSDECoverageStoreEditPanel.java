@@ -49,7 +49,7 @@ import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.util.MapModel;
 import org.geotools.arcsde.ArcSDEDataStoreFactory;
-import org.geotools.arcsde.gce.ArcSDERasterFormat;
+import org.geotools.arcsde.raster.gce.ArcSDERasterFormat;
 import org.geotools.arcsde.session.ArcSDEConnectionConfig;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.util.logging.Logging;
