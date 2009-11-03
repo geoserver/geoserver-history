@@ -41,6 +41,11 @@ public class GeoserverInitStartupListener implements ServletContextListener {
                 .getSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER))) {
             Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
         }
+        
+        // setup the referencing tolerance to make it more tolerant to tiny differences
+        // between projections (increases the chance of matching a random prj file content
+        // to an actual EPSG code
+        Hints.putSystemDefault(Hints.COMPARISON_TOLERANCE, 1e-9);
 
         // HACK: java.util.prefs are awful. See
         // http://www.allaboutbalance.com/disableprefs. When the site comes
