@@ -61,7 +61,7 @@ public class PreviewLayer {
     
     public ResourceReference getIcon() {
         if(layerInfo != null)
-            return CatalogIconFactory.get().getLayerIcon(layerInfo);
+            return CatalogIconFactory.get().getSpecificLayerIcon(layerInfo);
         else
             return CatalogIconFactory.GROUP_ICON;
     }
