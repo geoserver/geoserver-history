@@ -26,15 +26,15 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 public class KMLTransformerTest extends WMSTestSupport {
@@ -286,7 +286,8 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
         transformer.setIndentation(2);
 
-        mapContext.setAreaOfInterest(new Envelope(-180.0, 180.0, -90.0, 90.0));
+        
+        mapContext.setAreaOfInterest(new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0, DefaultGeographicCRS.WGS84));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
@@ -303,7 +304,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLTransformer transformer = new KMLTransformer();
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS, "allsymbolizers"));
-        mapContext.setAreaOfInterest(new Envelope(-180,0,-90,90));
+        mapContext.setAreaOfInterest(new ReferencedEnvelope(-180, 0, -90, 90, DefaultGeographicCRS.WGS84));
         mapContext.setMapHeight(256);
         mapContext.setMapWidth(256);
 
@@ -326,7 +327,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLTransformer transformer = new KMLTransformer();
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.STREAMS, "dynamicsymbolizer"));
-        mapContext.setAreaOfInterest(new Envelope(-180,0,-90,90));
+        mapContext.setAreaOfInterest(new ReferencedEnvelope(-180, 0, -90, 90, DefaultGeographicCRS.WGS84));
         mapContext.setMapHeight(256);
         mapContext.setMapWidth(256);
 

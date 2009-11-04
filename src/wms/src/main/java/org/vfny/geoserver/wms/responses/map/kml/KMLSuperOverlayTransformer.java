@@ -246,7 +246,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             if (!isVectorLayer(mapLayer)) return 1; // for coverages, we want raster tiles everywhere
             Envelope originalBounds = mapContext.getRequest().getBbox();
             mapContext.getRequest().setBbox(bounds);
-            mapContext.setAreaOfInterest(bounds);
+            mapContext.setAreaOfInterest(new ReferencedEnvelope(bounds, DefaultGeographicCRS.WGS84));
 
             String originalRegionateBy = null;
             if (regionate){
@@ -290,7 +290,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             }
 
             mapContext.getRequest().setBbox(originalBounds);
-            mapContext.setAreaOfInterest(originalBounds);
+            mapContext.setAreaOfInterest(new ReferencedEnvelope(originalBounds, DefaultGeographicCRS.WGS84));
             if (regionate && originalRegionateBy == null){
                 mapContext.getRequest().getFormatOptions().remove("regionateby");
             }

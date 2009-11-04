@@ -123,7 +123,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
         final WMSMapContext map = new WMSMapContext();
-        map.setAreaOfInterest(env);
+        map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
         map.setMapWidth(300);
         map.setMapHeight(300);
         map.setBgColor(Color.red);
@@ -197,7 +197,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         addToMap(map, MockData.BRIDGES);
         addToMap(map, MockData.MAP_NEATLINE);
 
-        map.setAreaOfInterest(env);
+        map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
 
         this.rasterMapProducer.setOutputFormat("image/gif");
         this.rasterMapProducer.setMapContext(map);
@@ -312,7 +312,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         WMSMapContext map = new WMSMapContext();
         map.setRequest(new GetMapRequest(getWMS()));
         map.addLayer(fSource, style);
-        map.setAreaOfInterest(env);
+        map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
         map.setMapWidth(w);
         map.setMapHeight(h);
         map.setBgColor(BG_COLOR);
