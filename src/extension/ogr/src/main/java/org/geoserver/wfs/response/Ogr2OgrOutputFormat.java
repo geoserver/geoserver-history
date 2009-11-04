@@ -205,9 +205,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
                 String epsgCode = null;
                 final SimpleFeatureType schema = curCollection.getSchema();
                 final CoordinateReferenceSystem crs = schema.getCoordinateReferenceSystem();
-                if (crs != null)
-                    epsgCode = "EPSG:" + GML2EncodingUtils.epsgCode(crs);
-                wrapper.convert(intermediate, tempOGR, schema.getTypeName(), format, epsgCode);
+                wrapper.convert(intermediate, tempOGR, schema.getTypeName(), format, crs);
 
                 // wipe out the input dir contents
                 IOUtils.emptyDirectory(tempGS);

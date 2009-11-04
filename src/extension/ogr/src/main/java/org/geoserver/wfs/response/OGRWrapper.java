@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.util.logging.Logging;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * Helper used to invoke ogr2ogr
@@ -37,15 +38,20 @@ public class OGRWrapper {
     }
 
     public void convert(File inputData, File outputDirectory, String typeName,
-            OgrFormat format, String crsName) throws IOException, InterruptedException {
+            OgrFormat format, CoordinateReferenceSystem crs) throws IOException, InterruptedException {
         // build the command line
         List<String> cmd = new ArrayList<String>();
         cmd.add(ogrExecutable);
         cmd.add("-f");
         cmd.add(format.ogrFormat);
-        if (crsName != null) {
+        if (crs != null) {
+            // we don't use an EPSG code since there is no guarantee we'll be able to reverse
+            // engineer one. Using WKT also ensures the EPSG params such as the TOWGS84 ones are
+            // not lost in the conversion
             cmd.add("-a_srs");
-            cmd.add(crsName);
+            String s = crs.toWKT();
+            s = s.replaceAll("\n", "").replaceAll("  ", "");
+            cmd.add(s);
         }
         if (format.options != null) {
             for (String option : format.options) {
