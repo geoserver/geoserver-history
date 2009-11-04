@@ -12,7 +12,9 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.w3c.dom.Document;
 
@@ -65,7 +67,7 @@ public class KMLSuperOverlayTransformerTest extends WMSTestSupport {
         KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
         transformer.setIndentation(2);
 
-        mapContext.setAreaOfInterest(new Envelope(-180, 180, -90, 90));
+        mapContext.setAreaOfInterest(new ReferencedEnvelope(-180, 180, -90, 90, DefaultGeographicCRS.WGS84));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
@@ -86,7 +88,7 @@ public class KMLSuperOverlayTransformerTest extends WMSTestSupport {
         KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
         transformer.setIndentation(2);
 
-        mapContext.setAreaOfInterest(new Envelope(0, 180, -90, 90));
+        mapContext.setAreaOfInterest(new ReferencedEnvelope(0, 180, -90, 90, DefaultGeographicCRS.WGS84));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         transformer.transform(mapLayer, output);
