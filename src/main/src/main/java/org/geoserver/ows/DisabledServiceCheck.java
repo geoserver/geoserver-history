@@ -2,12 +2,14 @@ package org.geoserver.ows;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.logging.Logger;
 
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
+import org.geotools.util.logging.Logging;
 
 /**
  * Intercepts requests to all OWS services ensuring that the service is enabled.
@@ -16,6 +18,8 @@ import org.geoserver.platform.ServiceException;
  *
  */
 public class DisabledServiceCheck implements DispatcherCallback {
+    
+    static final Logger LOGGER = Logging.getLogger(DisabledServiceCheck.class);
 
     
     public Request init(Request request) {
@@ -33,11 +37,11 @@ public class DisabledServiceCheck implements DispatcherCallback {
         if ( s instanceof Proxy ) {
             Class[] interfaces = s.getClass().getInterfaces();
             for ( int i = 0; m == null && i < interfaces.length; i++ ) {
-                m = OwsUtils.getter( interfaces[i], "service", ServiceInfo.class );
+                m = OwsUtils.getter( interfaces[i], "serviceInfo", ServiceInfo.class );
             }
         }
         else {
-            m = OwsUtils.getter( s.getClass(), "service", ServiceInfo.class );
+            m = OwsUtils.getter( s.getClass(), "serviceInfo", ServiceInfo.class );
         }
         
         if ( m != null ) {
@@ -53,6 +57,10 @@ public class DisabledServiceCheck implements DispatcherCallback {
                 //TODO: log this
                 throw new ServiceException( e );
             }
+        } else {
+            // log a warning, we could not perform an important check
+            LOGGER.warning("Could not get a ServiceInfo for service " + service.getId() 
+                    + " thus could not check if the service is enabled");
         }
         
         return service;
