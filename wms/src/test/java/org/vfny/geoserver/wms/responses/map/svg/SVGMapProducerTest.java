@@ -14,13 +14,13 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
@@ -62,7 +62,7 @@ public class SVGMapProducerTest extends WMSTestSupport {
         FeatureSource fs = ds.getFeatureSource("test");
 
         final WMSMapContext map = new WMSMapContext();
-        map.setAreaOfInterest(new Envelope(-250, 250, -250, 250));
+        map.setAreaOfInterest(new ReferencedEnvelope(-250, 250, -250, 250, null));
         map.setMapWidth(300);
         map.setMapHeight(300);
         map.setBgColor(Color.red);
