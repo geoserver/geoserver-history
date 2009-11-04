@@ -42,7 +42,7 @@ public abstract class Response {
     /**
      * The well known "outputFormat" of the response
      */
-    final Set outputFormats;
+    final Set<String> outputFormats;
 
     /**
      * Constructor which specified the class this response is bound to.
@@ -72,7 +72,7 @@ public abstract class Response {
      * @param binding The class of object the response serializes
      * @param outputFormats A set of common names for the response.
      */
-    public Response(Class binding, Set outputFormats) {
+    public Response(Class binding, Set<String> outputFormats) {
         if (binding == null) {
             throw new NullPointerException("binding may not be null");
         }
@@ -102,14 +102,14 @@ public abstract class Response {
             return null;
         }
         
-        return (String) outputFormats.iterator().next();
+        return outputFormats.iterator().next();
     }
 
     /**
      *  
      * @return Set of common or well-known name for the response, may be empty.
      */
-    public final Set getOutputFormats()  {
+    public final Set<String> getOutputFormats()  {
         return outputFormats;
     }
     

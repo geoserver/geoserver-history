@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -29,7 +30,6 @@ import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.demo.PreviewLayer.PreviewLayerType;
 import org.geoserver.web.wicket.GeoServerTablePanel;
-import org.geoserver.web.wicket.SimpleExternalLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -106,7 +106,7 @@ public class MapPreviewPage extends GeoServerBasePage {
             formats.add(producer.getOutputFormat());
         }
         formats = new ArrayList<String>(new HashSet<String>(formats));
-        Collections.sort(formats, new FormatComparator("format.wms."));
+        prepareFormatList(formats, new FormatComparator("format.wms."));
 
         return formats;
     }
@@ -117,11 +117,24 @@ public class MapPreviewPage extends GeoServerBasePage {
         final GeoServerApplication application = getGeoServerApplication();
         for (WFSGetFeatureOutputFormat producer : application
                 .getBeansOfType(WFSGetFeatureOutputFormat.class)) {
-            formats.add((String) producer.getOutputFormats().iterator().next());
+            for (String format : producer.getOutputFormats()) {
+                formats.add(format);
+            }
         }
-        Collections.sort(formats, new FormatComparator("format.wfs."));
-
+        prepareFormatList(formats, new FormatComparator("format.wfs."));
+        
         return formats;
+    }
+    
+    private void prepareFormatList(List<String> formats, FormatComparator comparator) {
+        Collections.sort(formats, comparator);
+        String prev = null;
+        for (Iterator<String> it = formats.iterator(); it.hasNext();) {
+            String format = it.next();
+            if(prev != null && comparator.compare(format, prev) == 0)
+                it.remove();
+            prev = format;
+        }
     }
 
     /**
@@ -135,7 +148,7 @@ public class MapPreviewPage extends GeoServerBasePage {
         RepeatingView wmsFormats = new RepeatingView("wmsFormats");
         for (int i = 0; i < wmsOutputFormats.size(); i++) {
             String wmsOutputFormat = wmsOutputFormats.get(i);
-            String label = translateFormat("format.wms." + wmsOutputFormat);
+            String label = translateFormat("format.wms.", wmsOutputFormat);
             // build option with text and value
             Label format = new Label(i + "", label);
             format.add(new AttributeModifier("value", true, new Model(wmsOutputFormat)));
@@ -150,7 +163,7 @@ public class MapPreviewPage extends GeoServerBasePage {
         if(vector) {
             for (int i = 0; i < wfsOutputFormats.size(); i++) {
                 String wfsOutputFormat = wfsOutputFormats.get(i);
-                String label = translateFormat("format.wfs." + wfsOutputFormat);
+                String label = translateFormat("format.wfs.", wfsOutputFormat);
                 // build option with text and value
                 Label format = new Label(i + "", label);
                 format.add(new AttributeModifier("value", true, new Model(wfsOutputFormat)));
@@ -174,12 +187,12 @@ public class MapPreviewPage extends GeoServerBasePage {
         return f;
     }
     
-    private String translateFormat(String format) {
+    private String translateFormat(String prefix, String format) {
         try {
-            return getLocalizer().getString(format, this);
+            return getLocalizer().getString(prefix + format, this);
         } catch(Exception e) {
             LOGGER.log(Level.WARNING, e.getMessage());
-            return "?" + format + "?";
+            return format;
         }
     }
     
@@ -197,8 +210,8 @@ public class MapPreviewPage extends GeoServerBasePage {
         }
 
         public int compare(String f1, String f2) {
-            String t1 = translateFormat(prefix + f1);
-            String t2 = translateFormat(prefix + f2);
+            String t1 = translateFormat(prefix, f1);
+            String t2 = translateFormat(prefix, f2);
             return t1.compareTo(t2);
         }
         

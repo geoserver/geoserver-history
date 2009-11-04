@@ -489,7 +489,8 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
                 result = Charset.forName(charsetName);
         }
         
-        return result != null ? result : Charset.defaultCharset();
+        // if not specified let's use the shapefile default one
+        return result != null ? result : Charset.forName("ISO-8859-1");
     }
 
     /**

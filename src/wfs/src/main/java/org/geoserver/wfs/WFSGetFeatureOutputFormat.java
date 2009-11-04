@@ -52,7 +52,7 @@ public abstract class WFSGetFeatureOutputFormat extends Response {
      *
      * @param outputFormats Set of well-known name of the format, not <code>null</code>
      */
-    public WFSGetFeatureOutputFormat(Set outputFormats) {
+    public WFSGetFeatureOutputFormat(Set<String> outputFormats) {
         super(FeatureCollectionType.class, outputFormats);
     }
 
