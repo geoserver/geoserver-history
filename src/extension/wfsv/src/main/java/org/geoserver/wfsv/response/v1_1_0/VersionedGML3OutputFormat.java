@@ -60,7 +60,7 @@ public class VersionedGML3OutputFormat extends Response {
     public VersionedGML3OutputFormat(GeoServer gs,
             WFSVConfiguration configuration) {
         super(VersionedFeatureCollectionType.class,
-                new HashSet(Arrays.asList(new Object[] { "gml3",
+                new HashSet<String>(Arrays.asList(new String[] { "gml3",
                         "text/xml; subtype=gml/3.1.1" })));
 
         this.wfs = gs.getService( WFSInfo.class );
