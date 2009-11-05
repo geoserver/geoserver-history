@@ -6,15 +6,9 @@ package org.geoserver.web.data.store.panel;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.web.data.namespace.NamespaceChoiceRenderer;
-import org.geoserver.web.data.namespace.NamespacesModel;
-import org.geoserver.web.util.MapModel;
 
 /**
  * A label + namespace dropdown form panel
@@ -35,7 +29,8 @@ public class NamespacePanel extends Panel {
         super(componentId, selectedItemModel);
 
         // the label
-        Label label = new Label("paramName", paramLabelModel);
+        String requiredMark = required ? " *" : ""; 
+        Label label = new Label("paramName", paramLabelModel + requiredMark);
         add(label);
 
         nsLabel = new Label("paramValue", new PropertyModel(selectedItemModel, "URI"));

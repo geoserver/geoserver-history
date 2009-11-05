@@ -28,7 +28,8 @@ public class WorkspacePanel extends Panel {
         super(id, workspaceModel);
 
         // the label
-        Label label = new Label("paramName", paramLabelModel);
+        String requiredMark = required ? " *" : ""; 
+        Label label = new Label("paramName", paramLabelModel.getObject() + requiredMark);
         add(label);
 
         // the drop down field, with a decorator for validations
