@@ -4,9 +4,11 @@
  */
 package org.geoserver.web.data.workspace;
 
+import java.awt.Checkbox;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
@@ -38,8 +40,10 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
     
     IModel wsModel;
     IModel nsModel;
+    boolean defaultWs;
     
     public WorkspaceEditPage( WorkspaceInfo ws ) {
+        defaultWs = ws.getId().equals(getCatalog().getDefaultWorkspace().getId());
         
         wsModel = new WorkspaceDetachableModel( ws );
 
@@ -57,12 +61,13 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         };
         add(form);
         TextField name = new TextField("name", new PropertyModel(wsModel, "name"));
-        //name.setEnabled(false);
         form.add(name);
         TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"), String.class);
         uri.setRequired(true);
         uri.add(new URIValidator());
         form.add(uri);
+        CheckBox defaultChk = new CheckBox("default", new PropertyModel(this, "defaultWs"));
+        form.add(defaultChk);
         
         //stores
 //        StorePanel storePanel = new StorePanel("storeTable", new StoreProvider(ws), false);
@@ -85,6 +90,7 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         //sync up workspace name with namespace prefix, temp measure
         namespaceInfo.setPrefix(workspaceInfo.getName());
         
+        // this will ensure all datastore namespaces are updated when the workspace is modified
         DataStoreNamespaceUpdatingListener listener = new DataStoreNamespaceUpdatingListener(
                 workspaceInfo, catalog);
         catalog.addListener(listener);
@@ -92,6 +98,8 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         try {
             catalog.save(workspaceInfo);
             catalog.save(namespaceInfo);
+            if(defaultWs)
+                catalog.setDefaultWorkspace(workspaceInfo);
         } finally {
             catalog.removeListener(listener);
         }

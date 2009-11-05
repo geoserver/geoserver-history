@@ -1025,6 +1025,7 @@ public class CatalogImpl implements Catalog {
         resolve(workspace);
         synchronized (workspaces) {
             workspaces.put( workspace.getName(), workspace );
+            // if there is no default workspace use this one as the default
             if ( workspaces.get( null ) == null ) {
                 workspaces.put( null, workspace );
             }
@@ -1055,12 +1056,19 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Cannot delete non-empty workspace.");
         }
         
+        workspaces.remove( workspace.getName() );
+        
         WorkspaceInfo defaultWorkspace = getDefaultWorkspace();
         if (workspace.equals(defaultWorkspace)) {
             workspaces.remove(null);
+            
+            //default removed, choose another workspace to become default
+            if (!workspaces.isEmpty()) {
+                setDefaultWorkspace(workspaces.values().iterator().next());
+            }
         }
         
-        workspaces.remove( workspace.getName() );
+        
         removed( workspace );
     }
     
