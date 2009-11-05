@@ -27,7 +27,7 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
         
         props.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.NONE);
         props.put(MockData.KEY_SRS_NUMBER, 3004);
-        dataDirectory.addWellKnownType(MockData.DELETES, props);
+        dataDirectory.addWellKnownType(MockData.LINES, props);
     }
     
     public void testForce() throws Exception {
@@ -54,21 +54,15 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
         assertEquals(CRS.decode("EPSG:3003"), f.getType().getCoordinateReferenceSystem());
     }
     
-    // THIS BREAKS DUE TO THE NATIVE SRS BEING LOST IN TRANSLATIONS, NEEDS FIXING
-//    public void testLeaveNative() throws Exception {
-//        FeatureTypeInfo fti = getCatalog().getFeatureTypeByName(MockData.DELETES.getLocalPart());
-//        assertEquals("EPSG:3004", fti.getSRS());
-//        assertEquals(ProjectionPolicy.NONE, fti.getProjectionPolicy());
-//        System.out.println(fti.getProjectionPolicy());
-//        FeatureCollection fc = fti.getFeatureSource(null, null).getFeatures();
-//        // uagh, here the policy changed because the attributes did not remember the crs!
-//        System.out.println(fti.getProjectionPolicy());
-//        assertEquals(ProjectionPolicy.NONE, fti.getProjectionPolicy());
-//        System.out.println(fc.getSchema().getCoordinateReferenceSystem());
-//        assertEquals(CRS.decode("EPSG:32615"), fc.getSchema().getCoordinateReferenceSystem());
-//        FeatureIterator fi = fc.features();
-//        Feature f = fi.next();
-//        fi.close();
-//        assertEquals(CRS.decode("EPSG:32615"), f.getType().getCoordinateReferenceSystem());
-//    }
+    public void testLeaveNative() throws Exception {
+        FeatureTypeInfo fti = getCatalog().getFeatureTypeByName(MockData.LINES.getLocalPart());
+        assertEquals("EPSG:3004", fti.getSRS());
+        assertEquals(ProjectionPolicy.NONE, fti.getProjectionPolicy());
+        FeatureCollection fc = fti.getFeatureSource(null, null).getFeatures();
+        assertEquals(CRS.decode("EPSG:32615"), fc.getSchema().getCoordinateReferenceSystem());
+        FeatureIterator fi = fc.features();
+        Feature f = fi.next();
+        fi.close();
+        assertEquals(CRS.decode("EPSG:32615"), f.getType().getCoordinateReferenceSystem());
+    }
 }
