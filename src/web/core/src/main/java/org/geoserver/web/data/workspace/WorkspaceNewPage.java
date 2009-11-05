@@ -6,11 +6,13 @@ package org.geoserver.web.data.workspace;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.UrlValidator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
@@ -25,6 +27,7 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
 
     Form form;
     TextField nsUriTextField;
+    boolean defaultWs;
     
     public WorkspaceNewPage() {
         WorkspaceInfo ws = getCatalog().getFactory().createWorkspace();
@@ -42,6 +45,8 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
                 
                 catalog.add( ws );
                 catalog.add( ns );
+                if(defaultWs)
+                    catalog.setDefaultWorkspace(ws);
                 
                 //TODO: set the response page to be the ediut 
                 setResponsePage(WorkspacePage.class );
@@ -57,6 +62,9 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
         nsUriTextField.setRequired(true);
         nsUriTextField.add(new UrlValidator());
         form.add( nsUriTextField );
+        
+        CheckBox defaultChk = new CheckBox("default", new PropertyModel(this, "defaultWs"));
+        form.add(defaultChk);
         
         SubmitLink submitLink = new SubmitLink( "submit", form );
         form.add( submitLink );

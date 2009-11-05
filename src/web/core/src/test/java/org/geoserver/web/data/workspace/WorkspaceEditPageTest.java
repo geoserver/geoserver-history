@@ -90,4 +90,15 @@ public class WorkspaceEditPageTest extends GeoServerWicketTestSupport {
             assertEquals(newNsURI, store.getConnectionParameters().get("namespace"));
         }
     }
+    
+    public void testDefaultCheckbox() {
+        assertFalse(getCatalog().getDefaultWorkspace().getName().equals(MockData.CITE_PREFIX));
+        
+        FormTester form = tester.newFormTester("form");
+        form.setValue("default", "true");
+        form.submit();
+        tester.assertNoErrorMessage();
+        
+        assertEquals(MockData.CITE_PREFIX, getCatalog().getDefaultWorkspace().getName());
+    }
 }

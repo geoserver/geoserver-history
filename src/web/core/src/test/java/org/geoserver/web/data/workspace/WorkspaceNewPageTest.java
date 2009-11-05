@@ -45,10 +45,13 @@ public class WorkspaceNewPageTest extends GeoServerWicketTestSupport {
         FormTester form = tester.newFormTester("form");
         form.setValue("name", "abc");
         form.setValue("uri", "http://www.geoserver.org");
+        form.setValue("default", "true");
         form.submit();
     
         tester.assertRenderedPage(WorkspacePage.class);
         tester.assertNoErrorMessage();
+        
+        assertEquals("abc", getCatalog().getDefaultWorkspace().getName());
     }
     
     public void testInvalidURI()  {
