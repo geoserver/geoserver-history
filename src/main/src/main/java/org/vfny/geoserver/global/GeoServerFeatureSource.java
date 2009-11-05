@@ -404,8 +404,10 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         CoordinateReferenceSystem nativeCRS = fc.getSchema().getGeometryDescriptor().getCoordinateReferenceSystem();
         
         if(nativeCRS == null) {
-            fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
-            nativeCRS = declaredCRS;
+            if(declaredCRS != null) {
+                fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
+                nativeCRS = declaredCRS;
+            }
         } else if(srsHandling == ProjectionPolicy.FORCE_DECLARED && !nativeCRS.equals(declaredCRS)) {
             fc =  new ForceCoordinateSystemFeatureResults(fc, declaredCRS);
             nativeCRS = declaredCRS;
