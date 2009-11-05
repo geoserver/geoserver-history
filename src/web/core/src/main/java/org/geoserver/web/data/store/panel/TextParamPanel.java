@@ -38,7 +38,8 @@ public class TextParamPanel extends Panel {
         super(id, paramValue);
 
         // the label
-        Label label = new Label("paramName", paramLabelModel);
+        String requiredMark = required ? " *" : ""; 
+        Label label = new Label("paramName", paramLabelModel.getObject() + requiredMark);
         add(label);
 
         // the text field, with a decorator for validations

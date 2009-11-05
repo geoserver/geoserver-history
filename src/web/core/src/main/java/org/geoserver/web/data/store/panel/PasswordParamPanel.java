@@ -24,7 +24,8 @@ public class PasswordParamPanel extends Panel {
     public PasswordParamPanel(final String id, final IModel model, final IModel paramLabelModel,
             final boolean required) {
         super(id, model);
-        add(new Label("paramName", paramLabelModel));
+        String requiredMark = required ? " *" : ""; 
+        add(new Label("paramName", paramLabelModel.getObject() + requiredMark));
 
         passwordField = new PasswordTextField("paramValue", model);
         passwordField.setRequired(required);
