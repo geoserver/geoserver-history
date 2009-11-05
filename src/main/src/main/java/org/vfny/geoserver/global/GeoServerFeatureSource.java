@@ -337,10 +337,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         try {
             //this is the raw "unprojected" feature collection
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures(newQuery);
-            if ( targetCRS != null ) {
-                return reprojectFeatureCollection(targetCRS, fc);
-            }
-            return fc;
+            return applyProjectionPolicies(targetCRS, fc);
         } catch (Exception e) {
             throw new DataSourceException(e);
         }
@@ -392,17 +389,10 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
     }
 
     /**
-     * Wraps feature collection as needed in order to respect srs handling and reprojection
-     * @param targetCRS
-     * @param fc
-     * @return
-     * @throws IOException
-     * @throws SchemaException
-     * @throws TransformException
-     * @throws OperationNotFoundException
-     * @throws FactoryException
+     * Wraps feature collection as needed in order to respect the current projection policy and the
+     * target CRS, if any (can be null, in that case only the projection policy is applied)
      */
-    protected FeatureCollection<SimpleFeatureType, SimpleFeature> reprojectFeatureCollection(
+    protected FeatureCollection<SimpleFeatureType, SimpleFeature> applyProjectionPolicies(
             CoordinateReferenceSystem targetCRS,
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc)
             throws IOException, SchemaException, TransformException,

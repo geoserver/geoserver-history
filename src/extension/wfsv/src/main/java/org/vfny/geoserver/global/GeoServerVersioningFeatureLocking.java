@@ -63,7 +63,7 @@ public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc = versioningSource
                     .getVersionedFeatures(newQuery);
 
-            return reprojectFeatureCollection(targetCRS, fc);
+            return applyProjectionPolicies(targetCRS, fc);
         } catch (Exception e) {
             throw new DataSourceException(e);
         }

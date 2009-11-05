@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
@@ -55,7 +56,8 @@ import com.vividsolutions.jts.geom.Envelope;
 public class MockData implements TestData {
     // Extra configuration keys for vector data
     /**
-     * Use FeatureTypeInfo constants for srs handling as values
+     * Use FeatureTypeInfo constants for srs handling as values or use {@link ProjectionPolicy}
+     * values straight
      */
     public static final String KEY_SRS_HANDLINGS = "srsHandling";
     /**
@@ -416,15 +418,32 @@ public class MockData implements TestData {
     public void addWellKnownTypes(QName[] names) throws IOException {
         for (int i = 0; i < names.length; i++) {
             QName name = names[i];
-            
-            URL properties = MockData.class.getResource(name.getLocalPart() + ".properties");
-            URL style = MockData.class.getResource(name.getLocalPart() + ".sld");
-            String styleName = null;
-            if(style != null) {
-                styleName = name.getLocalPart();
-                addStyle(styleName, style);
-            }
+            addWellKnownType(name, null);
+        }
+    }
+    
+    /**
+     * Adds a single well known type with the custom properties specified
+     * 
+     * @param name
+     * @param extraProperties The extra properties to be used
+     * @throws IOException
+     */
+    public void addWellKnownType(QName name, Map extraProperties) throws IOException {
+        URL properties = MockData.class.getResource(name.getLocalPart() + ".properties");
+        URL style = MockData.class.getResource(name.getLocalPart() + ".sld");
+        String styleName = null;
+        if(style != null) {
+            styleName = name.getLocalPart();
+            addStyle(styleName, style);
+        }
+        
+        if(extraProperties == null)
             addPropertiesType(name, properties, Collections.singletonMap(KEY_STYLE, styleName));
+        else {
+            Map props = new HashMap(extraProperties);
+            props.put(KEY_STYLE, styleName);
+            addPropertiesType(name, properties, props);
         }
     }
     
@@ -594,7 +613,6 @@ public class MockData implements TestData {
         // prepare extra params default
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(KEY_STYLE, "Default");
-        params.put(KEY_SRS_HANDLINGS, 2);
         params.put(KEY_ALIAS, null);
         
         Integer srs = SRS.get( name );
@@ -622,7 +640,16 @@ public class MockData implements TestData {
         // this mock type may have wrong SRS compared to the actual one in the property files...
         // let's configure SRS handling not to alter the original one, and have 4326 used only
         // for capabilities
-        writer.write("<SRSHandling>" + params.get(KEY_SRS_HANDLINGS) +  "</SRSHandling>");
+        int srsHandling = 2;
+        Object handling = params.get(KEY_SRS_HANDLINGS);
+        if(handling != null) {
+            if(handling instanceof ProjectionPolicy) {
+                srsHandling = ((ProjectionPolicy) params.get(KEY_SRS_HANDLINGS)).getCode();
+            } else if(handling instanceof Number) {
+                srsHandling = ((Number) params.get(KEY_SRS_HANDLINGS)).intValue();
+            }
+        } 
+        writer.write("<SRSHandling>" + srsHandling +  "</SRSHandling>");
         writer.write("<title>" + type + "</title>");
         writer.write("<abstract>abstract about " + type + "</abstract>");
         writer.write("<numDecimals value=\"8\"/>");

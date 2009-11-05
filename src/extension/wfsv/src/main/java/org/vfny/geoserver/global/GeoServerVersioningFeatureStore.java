@@ -55,7 +55,7 @@ public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore
             FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
             fc = versioningSource.getVersionedFeatures(newQuery);
 
-            return reprojectFeatureCollection(targetCRS, fc);
+            return applyProjectionPolicies(targetCRS, fc);
         } catch (Exception e) {
             throw new DataSourceException(e);
         }
