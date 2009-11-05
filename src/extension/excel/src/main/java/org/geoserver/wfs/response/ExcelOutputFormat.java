@@ -38,6 +38,9 @@ import org.opengis.feature.type.AttributeDescriptor;
  * @author Sebastian Benthall, OpenGeo, seb@opengeo.org
  */
 public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
+    
+    static final int EXCELL_CELL_CHAR_LIMIT = (int) Math.pow(2,15) - 1; //32,767
+    static final String STRING_LENGTH_WARNING = "DATA TRUNCATED (EXCEEDS EXCEL LIMIT)";
 
     public ExcelOutputFormat() {
         //this is the name of your output format, it is the string
@@ -122,8 +125,17 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
                         	} else if(att instanceof Boolean) {
                         	    cell.setCellValue((Boolean) att);
                         	} else {
-                        	    // ok, it seems we have no better way than dump it as a string
-                        	    cell.setCellValue(new HSSFRichTextString(att.toString()));
+                                // ok, it seems we have no better way than dump it as a string
+                                String stringVal = att.toString();
+
+                                // if string length > excel cell limit, truncate it and warn the
+                                // user, otherwise excel workbook will be corrupted
+                                if (stringVal.length() > EXCELL_CELL_CHAR_LIMIT) {
+                                    stringVal = STRING_LENGTH_WARNING + " "
+                                            + stringVal.substring(0, EXCELL_CELL_CHAR_LIMIT
+                                                    - STRING_LENGTH_WARNING.length() - 1);
+                                }
+                                cell.setCellValue(new HSSFRichTextString(stringVal));
                         	}
                         }
                     }    
