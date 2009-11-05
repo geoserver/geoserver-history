@@ -59,6 +59,7 @@ import org.geotools.data.DataAccessFactory.Param;
  * @see LabelParamPanel
  * @see NamespacePanel
  */
+@SuppressWarnings("serial")
 public class DefaultDataStoreEditPanel extends StoreEditPanel {
 
     private static final long serialVersionUID = -1969433619372747193L;
@@ -169,9 +170,15 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
             parameterPanel = new PasswordParamPanel(componentId, new MapModel(paramsModel,
                     paramName), new ResourceModel(paramLabel, paramLabel), required);
         } else {
+            IModel model;
+            if("url".equalsIgnoreCase(paramName)) {
+                model = new URLModel(paramsModel, paramName);
+            } else {
+                model = new MapModel(paramsModel, paramName);
+            }
+            
             TextParamPanel tp = new TextParamPanel(componentId,
-                    new MapModel(paramsModel, paramName),
-                    new ResourceModel(paramLabel, paramLabel), required);
+                    model, new ResourceModel(paramLabel, paramLabel), required);
             // if it can be a reference to the local filesystem make sure it's valid
             if (paramName.equalsIgnoreCase("url")) {
                 tp.getFormComponent().add(new FileExistsValidator());
@@ -201,9 +208,6 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
      * 
      */
     private final class NamespaceParamModel extends MapModel {
-
-        private static final long serialVersionUID = 6767931873085302114L;
-
         private NamespaceParamModel(IModel model, String expression) {
             super(model, expression);
         }
@@ -220,6 +224,26 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
             NamespaceInfo namespaceInfo = (NamespaceInfo) object;
             String nsUri = namespaceInfo.getURI();
             super.setObject(nsUri);
+        }
+    }
+
+    /**
+     * Makes sure the file path for shapefiles do start with file:// otherwise
+     * stuff like /home/user/file.shp won't be recognized as valid...
+     * @author aaime
+     *
+     */
+    private final class URLModel extends MapModel {
+        private URLModel(IModel model, String expression) {
+            super(model, expression);
+        }
+
+        @Override
+        public void setObject(Object object) {
+            String file = (String) object;
+            if(!file.startsWith("file://"))
+                file = "file://" + file;
+            super.setObject(file);
         }
     }
 
