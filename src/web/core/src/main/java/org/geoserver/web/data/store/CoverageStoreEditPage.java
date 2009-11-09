@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -16,6 +17,7 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.wicket.GeoServerDialog;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.GridCoverageReader;
 
@@ -25,11 +27,33 @@ import org.opengis.coverage.grid.GridCoverageReader;
  * @author Andrea Aime
  */
 public class CoverageStoreEditPage extends AbstractCoverageStorePage {
-
+    
+    public static final String STORE_NAME = "storeName";
+    public static final String WS_NAME = "wsName";
+    
+    
     /**
      * Dialog to ask for save confirmation in case the store can't be reached
      */
     private GeoServerDialog dialog;
+    
+    /**
+     * Uses a "name" parameter to locate the datastore
+     * @param parameters
+     */
+    public CoverageStoreEditPage(PageParameters parameters) {
+        String wsName = parameters.getString(WS_NAME);
+        String storeName = parameters.getString(STORE_NAME);
+        CoverageStoreInfo csi = getCatalog().getCoverageStoreByName(wsName, storeName);
+        
+        if(csi == null) {
+            error(new ParamResourceModel("CoverageStoreEditPage.notFound", this, wsName, storeName).getString());
+            setResponsePage(StorePage.class);
+            return;
+        }
+        
+        initUI(csi);
+    }
 
     /**
      * 
@@ -43,13 +67,19 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
             throw new IllegalArgumentException("Cannot find coverage store " + storeId);
         }
 
+        initUI(store);
+    }
+    
+    @Override
+    void initUI(CoverageStoreInfo store) {
         dialog = new GeoServerDialog("dialog");
         add(dialog);
-        initUI(store);
-
+        
+        super.initUI(store);
+        
         String workspaceId = store.getWorkspace().getId();
         workspacePanel.getFormComponent().add(
-                new CheckExistingResourcesInWorkspaceValidator(storeId, workspaceId));
+                new CheckExistingResourcesInWorkspaceValidator(store.getId(), workspaceId));
     }
 
     @SuppressWarnings("deprecation")

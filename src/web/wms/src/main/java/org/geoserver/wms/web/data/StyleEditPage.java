@@ -8,13 +8,30 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.web.wicket.ParamResourceModel;
 
 /**
  * Style edit page
  */
 public class StyleEditPage extends AbstractStylePage {
+    
+    public static final String NAME = "name";
+
+    public StyleEditPage(PageParameters parameters) {
+        String name = parameters.getString(NAME);
+        StyleInfo si = getCatalog().getStyleByName(name);
+        
+        if(si == null) {
+            error(new ParamResourceModel("StyleEditPage.notFound", this, name).getString());
+            setResponsePage(StylePage.class);
+            return;
+        }
+        
+        initUI(si);
+    }
     
     public StyleEditPage(StyleInfo style) {
         super(style);

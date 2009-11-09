@@ -4,6 +4,12 @@ import org.apache.wicket.util.tester.FormTester;
 
 public class LayerGroupNewPageTest extends LayerGroupBaseTest {
     
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+        login();
+    }
+    
     public void testMissingName() {
         LayerGroupNewPage page = new LayerGroupNewPage();
         // print(page, false, false);

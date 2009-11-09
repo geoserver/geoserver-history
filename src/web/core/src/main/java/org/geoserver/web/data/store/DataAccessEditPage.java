@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.geoserver.catalog.Catalog;
@@ -18,6 +19,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.wicket.GeoServerDialog;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.data.DataAccess;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
@@ -29,11 +31,32 @@ import org.opengis.feature.type.FeatureType;
  */
 public class DataAccessEditPage extends AbstractDataAccessPage implements Serializable {
 
+    public static final String STORE_NAME = "storeName";
+    public static final String WS_NAME = "wsName";
+    
     /**
      * Dialog to ask for save confirmation in case the store can't be reached
      */
     private GeoServerDialog dialog;
-
+    
+    /**
+     * Uses a "name" parameter to locate the datastore
+     * @param parameters
+     */
+    public DataAccessEditPage(PageParameters parameters) {
+        String wsName = parameters.getString(WS_NAME);
+        String storeName = parameters.getString(STORE_NAME);
+        DataStoreInfo dsi = getCatalog().getDataStoreByName(wsName, storeName);
+        
+        if(dsi == null) {
+            error(new ParamResourceModel("DataAccessEditPage.notFound", this, wsName, storeName).getString());
+            setResponsePage(StorePage.class);
+            return;
+        }
+        
+        initUI(dsi);
+    }
+    
     /**
      * Creates a new datastore configuration page to edit the properties of the given data store
      * 
@@ -48,14 +71,19 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
             throw new IllegalArgumentException("DataStore " + dataStoreInfoId + " not found");
         }
 
+        initUI(dataStoreInfo);
+    }
+    
+    protected void initUI(final DataStoreInfo dataStoreInfo) {
         // the confirm dialog
         dialog = new GeoServerDialog("dialog");
         add(dialog);
-        initUI(dataStoreInfo);
+        
+        super.initUI(dataStoreInfo);
 
         final String wsId = dataStoreInfo.getWorkspace().getId();
         workspacePanel.getFormComponent().add(
-                new CheckExistingResourcesInWorkspaceValidator(dataStoreInfoId, wsId));
+                new CheckExistingResourcesInWorkspaceValidator(dataStoreInfo.getId(), wsId));
     }
 
     /**

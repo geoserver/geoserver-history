@@ -14,11 +14,9 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
-import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StoreInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
@@ -28,7 +26,7 @@ import org.geoserver.web.data.store.DataAccessEditPage;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
-import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.SimpleBookmarkableLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -103,37 +101,32 @@ public class LayerPage extends GeoServerSecuredPage {
     }
 
     private Component layerLink(String id, final IModel model) {
-        return new SimpleAjaxLink(id, NAME.getModel(model)) {
-            public void onClick(AjaxRequestTarget target) {
-                setResponsePage(new ResourceConfigurationPage(getModelObjectAsString()));
-            }
-        };
+        IModel layerNameModel = NAME.getModel(model);
+        String layerName = (String) layerNameModel.getObject();
+        return new SimpleBookmarkableLink(id, ResourceConfigurationPage.class, layerNameModel, 
+                ResourceConfigurationPage.NAME, layerName);
     }
 
     private Component storeLink(String id, final IModel model) {
-        return new SimpleAjaxLink(id, STORE.getModel(model)) {
-            public void onClick(AjaxRequestTarget target) {
-                String storeName = getModelObjectAsString();
-                StoreInfo store = getCatalog().getStoreByName(storeName, StoreInfo.class);
-                if (store instanceof DataStoreInfo)
-                    setResponsePage(new DataAccessEditPage(store.getId()));
-                else if(store instanceof CoverageStoreInfo)
-                    setResponsePage(new CoverageStoreEditPage(store.getId()));
-                else
-                    throw new RuntimeException("Don't know how to deal with store " + store);
-            }
-        };
+        IModel storeModel = STORE.getModel(model);
+        String wsName = (String) WORKSPACE.getModel(model).getObject();
+        String storeName = (String) storeModel.getObject();
+        StoreInfo store = getCatalog().getStoreByName(wsName, storeName, StoreInfo.class);
+        if(store instanceof DataStoreInfo) {
+            return new SimpleBookmarkableLink(id, DataAccessEditPage.class, storeModel, 
+                    DataAccessEditPage.STORE_NAME, storeName, 
+                    DataAccessEditPage.WS_NAME, wsName);
+        } else {
+            return new SimpleBookmarkableLink(id, CoverageStoreEditPage.class, storeModel, 
+                    DataAccessEditPage.STORE_NAME, storeName, 
+                    DataAccessEditPage.WS_NAME, wsName);
+        }
     }
 
     private Component workspaceLink(String id, final IModel model) {
-    	
-    	
-        return new SimpleAjaxLink(id, WORKSPACE.getModel(model)) {
-            public void onClick(AjaxRequestTarget target) {
-                WorkspaceInfo ws = getCatalog().getWorkspaceByName(getModelObjectAsString());
-                setResponsePage(new WorkspaceEditPage(ws));
-            }
-        };
+    	IModel nameModel = WORKSPACE.getModel(model);
+        return new SimpleBookmarkableLink(id, WorkspaceEditPage.class, nameModel,
+                "name", (String) nameModel.getObject());
     }
 
 }
