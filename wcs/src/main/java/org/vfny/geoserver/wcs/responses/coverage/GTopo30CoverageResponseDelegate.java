@@ -17,22 +17,21 @@ import org.geotools.gce.gtopo30.GTopo30Writer;
 import org.opengis.coverage.grid.GridCoverageWriter;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
-
 /**
  * @author simone giannecchini
  * @author alesio fabiani
- *
- * TODO To change the template for this generated type comment go to Window -
- * Preferences - Java - Code Style - Code Templates
+ * 
+ *         TODO To change the template for this generated type comment go to Window - Preferences -
+ *         Java - Code Style - Code Templates
  */
 public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate {
-    
-    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
-            "application/gtopo30"));
-    
+
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays
+            .asList("application/gtopo30"));
+
     /**
      * the grid coverage to be used in this repsonse
-     *
+     * 
      * @uml.property name="sourceCoverage"
      * @uml.associationEnd multiplicity="(0 1)"
      */
@@ -40,16 +39,17 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#canProduce(java.lang.String)
      */
     public boolean canProduce(String outputFormat) {
-        return outputFormat != null && (outputFormat.equalsIgnoreCase("GTopo30")
-               || FORMATS.contains(outputFormat.toLowerCase()));
+        return outputFormat != null
+                && (outputFormat.equalsIgnoreCase("GTopo30") || FORMATS.contains(outputFormat
+                        .toLowerCase()));
     }
-    
+
     public String getMimeFormatFor(String outputFormat) {
-        if(canProduce(outputFormat))
+        if (canProduce(outputFormat))
             return "application/gtopo30";
         else
             return null;
@@ -57,19 +57,20 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#prepare(java.lang.String,
-     *      org.geotools.coverage.grid.GridCoverage2D)
+     * org.geotools.coverage.grid.GridCoverage2D)
      */
-    public void prepare(String outputFormat, GridCoverage2D coverage)
-        throws IOException {
+    public void prepare(String outputFormat, GridCoverage2D coverage) throws IOException {
         this.sourceCoverage = coverage;
     }
 
     /*
      * (non-Javadoc)
-     *
-     * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentType(org.vfny.geoserver.global.GeoServer)
+     * 
+     * @see
+     * org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentType(org.vfny.geoserver
+     * .global.GeoServer)
      */
     public String getContentType() {
         return "application/x-zip";
@@ -77,7 +78,7 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#getContentEncoding()
      */
     public String getContentEncoding() {
@@ -87,21 +88,21 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getContentDisposition() {
         return new StringBuffer("attachment;filename=").append(this.sourceCoverage.getName())
-                                                       .append(".zip").toString();
+                .append(".zip").toString();
     }
-    
+
     public String getFileExtension() {
         return "zip";
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#encode(java.io.OutputStream)
      */
     public void encode(OutputStream output) throws ServiceException, IOException {

@@ -19,22 +19,24 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 /**
- * A basic text based output format designed to ease debugging GetCoverage calls (and actually
- * read the contents of a coverage without getting mad...)
+ * A basic text based output format designed to ease debugging GetCoverage calls (and actually read
+ * the contents of a coverage without getting mad...)
+ * 
  * @author Andrea Aime - TOPP
- *
+ * 
  */
 public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
-    
-    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
-            "text/debug"));
+
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("text/debug"));
+
     private GridCoverage2D coverage;
 
     public boolean canProduce(String outputFormat) {
-        return outputFormat != null && (outputFormat.equalsIgnoreCase("DEBUG") 
-                || FORMATS.contains(outputFormat.toLowerCase()));
+        return outputFormat != null
+                && (outputFormat.equalsIgnoreCase("DEBUG") || FORMATS.contains(outputFormat
+                        .toLowerCase()));
     }
-    
+
     public String getContentDisposition() {
         return null;
     }
@@ -46,13 +48,13 @@ public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
     public String getContentType() {
         return "text/plain";
     }
-    
+
     public String getFileExtension() {
         return "txt";
     }
 
     public String getMimeFormatFor(String outputFormat) {
-        if(canProduce(outputFormat))
+        if (canProduce(outputFormat))
             return "text/debug";
         else
             return null;
@@ -71,26 +73,25 @@ public class DebugCoverageResponseDelegate implements CoverageResponseDelegate {
         ps.println("Contents:");
         RenderedImage ri = coverage.getRenderedImage();
         Raster raster = ri.getData();
-        for(int band = 0; band < raster.getNumBands(); band++) {
+        for (int band = 0; band < raster.getNumBands(); band++) {
             ps.println("Band " + band + ":");
-            for (int j = raster.getMinY(); j < (raster.getMinY() +  raster.getHeight()); j++) {
-                for (int i = raster.getMinX(); i < (raster.getMinX() +  raster.getWidth()); i++) {
-                    if(raster.getTransferType() == DataBuffer.TYPE_DOUBLE)
+            for (int j = raster.getMinY(); j < (raster.getMinY() + raster.getHeight()); j++) {
+                for (int i = raster.getMinX(); i < (raster.getMinX() + raster.getWidth()); i++) {
+                    if (raster.getTransferType() == DataBuffer.TYPE_DOUBLE)
                         ps.print(raster.getSampleDouble(i, j, band));
-                    else if(raster.getTransferType() == DataBuffer.TYPE_FLOAT)
+                    else if (raster.getTransferType() == DataBuffer.TYPE_FLOAT)
                         ps.print(raster.getSampleFloat(i, j, band));
                     else
                         ps.print(raster.getSample(i, j, band));
-                    if(i < (raster.getMinX() +  raster.getWidth() - 1));
-                        ps.print(" ");
+                    if (i < (raster.getMinX() + raster.getWidth() - 1))
+                        ;
+                    ps.print(" ");
                 }
                 ps.println();
             }
-               
+
         }
         ps.flush();
     }
-
-    
 
 }

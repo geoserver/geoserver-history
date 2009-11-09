@@ -70,7 +70,7 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 
 public class DefaultWebCoverageService111 implements WebCoverageService111 {
-    Logger LOGGER = Logging.getLogger(DefaultWebCoverageService.class);
+    Logger LOGGER = Logging.getLogger(DefaultWebCoverageService111.class);
 
     private final static Hints HINTS = new Hints(new HashMap());
     static {
