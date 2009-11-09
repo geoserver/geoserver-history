@@ -7,6 +7,7 @@ package org.geoserver.web.data.layergroup;
 import java.util.Collections;
 import java.util.logging.Level;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
@@ -42,9 +43,9 @@ public class LayerGroupNewPage extends GeoServerSecuredPage {
                     catalog.add( lg );
                     
                     lg = catalog.getLayerGroup( lg.getId() );
-                    setResponsePage(new LayerGroupEditPage( lg ) );
-                }
-                catch( Exception e ) {
+                    setResponsePage(LayerGroupEditPage.class, 
+                            new PageParameters(LayerGroupEditPage.GROUP + "=" + lg.getName()));
+                } catch( Exception e ) {
                     error( e );
                     LOGGER.log( Level.WARNING, "Error creating new layer group.", e );
                 }

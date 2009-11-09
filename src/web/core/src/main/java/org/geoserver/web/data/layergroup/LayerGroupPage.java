@@ -15,6 +15,7 @@ import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.SimpleBookmarkableLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -71,14 +72,11 @@ public class LayerGroupPage extends GeoServerSecuredPage {
     }
     
     Component layerGroupLink(String id, IModel itemModel) {
-        return new SimpleAjaxLink(id, LayerGroupProvider.NAME.getModel(itemModel)) {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                String lgName = getModelObjectAsString();
-                LayerGroupInfo lg = getCatalog().getLayerGroupByName( lgName );
-                setResponsePage( new LayerGroupEditPage( lg ) );
-            }
-        };
+        IModel groupNameModel = LayerGroupProvider.NAME.getModel(itemModel);
+        String groupName = (String) groupNameModel.getObject();
+        
+        return new SimpleBookmarkableLink(id, LayerGroupEditPage.class, groupNameModel, 
+                LayerGroupEditPage.GROUP, groupName);
     }
    
 }

@@ -4,17 +4,12 @@
  */
 package org.geoserver.web.data.store;
 
-import static org.geoserver.web.data.store.StoreProvider.ENABLED;
-import static org.geoserver.web.data.store.StoreProvider.NAME;
-import static org.geoserver.web.data.store.StoreProvider.TYPE;
-import static org.geoserver.web.data.store.StoreProvider.WORKSPACE;
+import static org.geoserver.web.data.store.StoreProvider.*;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
@@ -22,7 +17,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.StoreInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
@@ -30,6 +24,7 @@ import org.geoserver.web.wicket.ConfirmationAjaxLink;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.SimpleBookmarkableLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -41,6 +36,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * @see StorePage
  * @see StoreProvider
  */
+@SuppressWarnings("serial")
 public class StorePanel extends GeoServerTablePanel<StoreInfo> {
 
     private static final long serialVersionUID = 5957961031378924960L;
@@ -97,51 +93,26 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
         throw new IllegalArgumentException("Don't know a property named " + property.getName());
     }
 
-    @SuppressWarnings("serial")
     private Component storeNameLink(String id, final IModel itemModel) {
-
-        final IModel labelModel = NAME.getModel(itemModel);
-
-        return new SimpleAjaxLink(id, itemModel, labelModel) {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                StoreInfo store = (StoreInfo) getModelObject();
-                if (store == null) {
-                    popupWindow.setContent(new Label(popupWindow.getContentId(),
-                            "Cannot find the store " + store
-                                    + " anymore, I guess it has been removed. "
-                                    + "Will refresh the store list."));
-                    popupWindow.show(target);
-                    target.addComponent(StorePanel.this);
-                    return;
-                }
-
-                WebPage editPage;
-                try {
-                    if (store instanceof DataStoreInfo) {
-                        editPage = new DataAccessEditPage(store.getId());
-                    } else {
-                        editPage = new CoverageStoreEditPage(store.getId());
-                    }
-                } catch (IllegalArgumentException e) {
-                    popupWindow.setContent(new Label(popupWindow.getContentId(), e.getMessage()));
-                    popupWindow.show(target);
-                    target.addComponent(StorePanel.this);
-                    return;
-                }
-                setResponsePage(editPage);
-            }
-        };
+        String wsName = (String) WORKSPACE.getModel(itemModel).getObject();
+        IModel storeNameModel = NAME.getModel(itemModel);
+        String storeName = (String) storeNameModel.getObject();
+        StoreInfo store = getCatalog().getStoreByName(wsName, storeName, StoreInfo.class);
+        if(store instanceof DataStoreInfo) {
+            return new SimpleBookmarkableLink(id, DataAccessEditPage.class, storeNameModel, 
+                    DataAccessEditPage.STORE_NAME, storeName, 
+                    DataAccessEditPage.WS_NAME, wsName);
+        } else {
+            return new SimpleBookmarkableLink(id, CoverageStoreEditPage.class, storeNameModel, 
+                    DataAccessEditPage.STORE_NAME, storeName, 
+                    DataAccessEditPage.WS_NAME, wsName);
+        }
     }
 
     private Component workspaceLink(String id, IModel itemModel) {
-        return new SimpleAjaxLink(id, WORKSPACE.getModel(itemModel)) {
-            public void onClick(AjaxRequestTarget target) {
-                WorkspaceInfo info = getCatalog().getWorkspaceByName(getModelObjectAsString());
-                if (info != null)
-                    setResponsePage(new WorkspaceEditPage(info));
-            }
-        };
+        IModel nameModel = WORKSPACE.getModel(itemModel);
+        return new SimpleBookmarkableLink(id, WorkspaceEditPage.class, nameModel, 
+                "name", (String) nameModel.getObject());
     }
 
     protected Component removeLink(String id, final IModel itemModel) {

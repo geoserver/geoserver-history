@@ -68,7 +68,7 @@ abstract class AbstractDataAccessPage extends GeoServerSecuredPage {
      * @param storeInfo
      * @throws IllegalArgumentException
      */
-    protected final void initUI(final DataStoreInfo storeInfo) throws IllegalArgumentException {
+    protected void initUI(final DataStoreInfo storeInfo) throws IllegalArgumentException {
 
         if (storeInfo.getWorkspace() == null) {
             throw new IllegalArgumentException("Workspace not provided");

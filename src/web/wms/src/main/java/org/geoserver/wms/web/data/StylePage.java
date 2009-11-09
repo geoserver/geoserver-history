@@ -17,6 +17,7 @@ import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.SimpleBookmarkableLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -89,13 +90,9 @@ public class StylePage extends GeoServerSecuredPage {
     }
 
     Component styleLink( String id, IModel model ) {
-        return new SimpleAjaxLink( id, StyleProvider.NAME.getModel(model) ) {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                String sid = getModelObjectAsString();
-                StyleInfo style = getCatalog().getStyleByName( sid );
-                setResponsePage( new StyleEditPage( style ) );
-            }
-        };
+        IModel nameModel = StyleProvider.NAME.getModel(model);
+        String name = (String) nameModel.getObject();
+        return new SimpleBookmarkableLink(id, StyleEditPage.class, nameModel, 
+                StyleEditPage.NAME, name);
     }
 }

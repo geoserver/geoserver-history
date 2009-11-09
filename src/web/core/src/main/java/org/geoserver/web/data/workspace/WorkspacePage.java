@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.workspace;
 
+import static org.geoserver.web.data.layer.LayerProvider.*;
 import static org.geoserver.web.data.workspace.WorkspaceProvider.*;
 
 import org.apache.wicket.Component;
@@ -17,6 +18,7 @@ import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.SimpleBookmarkableLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
 /**
@@ -70,13 +72,9 @@ public class WorkspacePage extends GeoServerSecuredPage {
     }
     
     Component workspaceLink(String id, final IModel itemModel) {
-        return new SimpleAjaxLink(id, WorkspaceProvider.NAME.getModel(itemModel)) {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                WorkspaceInfo ws = (WorkspaceInfo) itemModel.getObject();
-                setResponsePage( new WorkspaceEditPage( ws ) );
-            }
-        };
+        IModel nameModel = NAME.getModel(itemModel);
+        return new SimpleBookmarkableLink(id, WorkspaceEditPage.class, nameModel,
+                "name", (String) nameModel.getObject());
     }
     
 }
