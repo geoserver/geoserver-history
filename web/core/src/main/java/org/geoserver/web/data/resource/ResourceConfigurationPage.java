@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
@@ -35,6 +36,7 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.layer.LayerPage;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.publish.LayerConfigurationPanelInfo;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -54,14 +56,28 @@ import org.opengis.coverage.grid.GridGeometry;
 @SuppressWarnings("serial")
 public class ResourceConfigurationPage extends GeoServerSecuredPage {
 
+    public static final String NAME = "name";
+
     private IModel myResourceModel;
 
     private IModel myLayerModel;
 
     private boolean isNew;
+    
+    public ResourceConfigurationPage(PageParameters parameters) {
+        this(parameters.getString(NAME));
+    }
 
     public ResourceConfigurationPage(String layerName) {
         LayerInfo layer = getCatalog().getLayerByName(layerName);
+        
+        if(layer == null) {
+            error(new ParamResourceModel("ResourceConfigurationPage.notFound", this, layerName).getString());
+            setResponsePage(LayerPage.class);
+            return;
+        }
+
+        
         setup(layer.getResource(), layer);
         this.isNew = false;
         initComponents();

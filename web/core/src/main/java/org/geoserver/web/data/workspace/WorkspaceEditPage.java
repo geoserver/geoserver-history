@@ -4,10 +4,10 @@
  */
 package org.geoserver.web.data.workspace;
 
-import java.awt.Checkbox;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -27,6 +27,7 @@ import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.namespace.NamespaceDetachableModel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.URIValidator;
 import org.geotools.util.logging.Logging;
 
@@ -42,7 +43,28 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
     IModel nsModel;
     boolean defaultWs;
     
-    public WorkspaceEditPage( WorkspaceInfo ws ) {
+    /**
+     * Uses a "name" parameter to locate the workspace
+     * @param parameters
+     */
+    public WorkspaceEditPage(PageParameters parameters) {
+        String wsName = parameters.getString("name");
+        WorkspaceInfo wsi = getCatalog().getWorkspaceByName(wsName);
+        
+        if(wsi == null) {
+            error(new ParamResourceModel("WorkspaceEditPage.notFound", this, wsName).getString());
+            setResponsePage(WorkspacePage.class);
+            return;
+        }
+        
+        init(wsi);
+    }
+    
+    public WorkspaceEditPage(WorkspaceInfo ws) {
+        init(ws);
+    }
+    
+    private void init(WorkspaceInfo ws) {
         defaultWs = ws.getId().equals(getCatalog().getDefaultWorkspace().getId());
         
         wsModel = new WorkspaceDetachableModel( ws );
@@ -77,10 +99,8 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         form.add(submit);
         form.setDefaultButton(submit);
         form.add(new BookmarkablePageLink("cancel", WorkspacePage.class));
-        
-     
     }
-    
+
     private void saveWorkspace() {
         final Catalog catalog = getCatalog();
 

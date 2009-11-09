@@ -16,6 +16,11 @@ import org.geoserver.catalog.StyleInfo;
  * Allows for editing a new style, includes file upload
  */
 public class StyleNewPage extends AbstractStylePage {
+    
+    public StyleNewPage() {
+        initUI(null);
+    }
+    
     @Override
     protected void onStyleFormSubmit() {
         // add the style

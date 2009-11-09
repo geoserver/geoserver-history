@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.Label;
@@ -24,6 +25,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.layer.LayerDetachableModel;
+import org.geoserver.web.data.store.StorePage;
 import org.geoserver.web.data.style.StyleDetachableModel;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;
@@ -42,12 +44,30 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 @SuppressWarnings("serial")
 public class LayerGroupEditPage extends GeoServerSecuredPage {
 
+    public static final String GROUP = "group";
     IModel lgModel;
     EnvelopePanel envelopePanel;
     CRSPanel crsPanel;
     LayerGroupEntryPanel lgEntryPanel;
     
+    public LayerGroupEditPage(PageParameters parameters) {
+        String groupName = parameters.getString(GROUP);
+        LayerGroupInfo lg = getCatalog().getLayerGroupByName(groupName);
+        
+        if(lg == null) {
+            error(new ParamResourceModel("LayerGroupEditPage.notFound", this, groupName).getString());
+            setResponsePage(LayerGroupPage.class);
+            return;
+        }
+        
+        initUI(lg);
+    }
+    
     public LayerGroupEditPage( LayerGroupInfo layerGroup ) {
+        initUI(layerGroup);
+    }
+
+    private void initUI(LayerGroupInfo layerGroup) {
         lgModel = new LayerGroupDetachableModel( layerGroup );
         
         Form form = new Form( "form", new CompoundPropertyModel( lgModel ) );

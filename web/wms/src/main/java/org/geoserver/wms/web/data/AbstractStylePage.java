@@ -70,10 +70,13 @@ public abstract class AbstractStylePage extends GeoServerSecuredPage {
     String rawSLD;
 
     public AbstractStylePage() {
-        this(null);
     }
 
     public AbstractStylePage(StyleInfo style) {
+        initUI(style);
+    }
+
+    protected void initUI(StyleInfo style) {
         styleForm = new Form("form", new CompoundPropertyModel(style != null ? new StyleDetachableModel(style) : getCatalog().getFactory().createStyle())) {
             @Override
             protected void onSubmit() {
