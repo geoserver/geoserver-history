@@ -21,22 +21,19 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
-
 /**
  * DOCUMENT ME!
- *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
- *         modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
- *         modification)
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate {
-    
-    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
-            "image/geotiff", "image/tiff;subtype=\"geotiff\""));
-    
+
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("image/geotiff",
+            "image/tiff;subtype=\"geotiff\""));
+
     /**
-     *
+     * 
      * @uml.property name="sourceCoverage"
      * @uml.associationEnd multiplicity="(0 1)"
      */
@@ -46,18 +43,17 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
     }
 
     public boolean canProduce(String outputFormat) {
-        return outputFormat != null && (
-                outputFormat.equalsIgnoreCase("geotiff") || 
-                FORMATS.contains(outputFormat.toLowerCase()));
+        return outputFormat != null
+                && (outputFormat.equalsIgnoreCase("geotiff") || FORMATS.contains(outputFormat
+                        .toLowerCase()));
     }
 
-    public void prepare(String outputFormat, GridCoverage2D coverage)
-        throws IOException {
+    public void prepare(String outputFormat, GridCoverage2D coverage) throws IOException {
         this.sourceCoverage = coverage;
     }
-    
+
     public String getMimeFormatFor(String outputFormat) {
-        if(canProduce(outputFormat))
+        if (canProduce(outputFormat))
             return "image/geotiff";
         else
             return null;
@@ -69,7 +65,7 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
@@ -78,13 +74,13 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getContentDisposition() {
         return "attachment;filename=" + this.sourceCoverage.getName() + ".tiff";
     }
-    
+
     public String getFileExtension() {
         return "tiff";
     }
@@ -92,7 +88,7 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
             throw new IllegalStateException("It seems prepare() has not been called"
-                + " or has not succeed");
+                    + " or has not succeed");
         }
 
         final GeoTiffFormat format = new GeoTiffFormat();
@@ -105,11 +101,11 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
         final ParameterValueGroup writerParams = format.getWriteParameters();
         writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
-                    .setValue(wp);
+                .setValue(wp);
 
         GridCoverageWriter writer = format.getWriter(output);
-        writer.write(sourceCoverage,
-            (GeneralParameterValue[]) writerParams.values().toArray(new GeneralParameterValue[1]));
+        writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.values().toArray(
+                new GeneralParameterValue[1]));
 
         writer.dispose();
 

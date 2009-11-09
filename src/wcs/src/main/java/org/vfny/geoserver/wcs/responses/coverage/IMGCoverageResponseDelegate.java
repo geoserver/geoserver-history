@@ -20,53 +20,50 @@ import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
-
 /**
  * DOCUMENT ME!
- *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
- *         modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
- *         modification)
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
-    
-    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList(
-        "image/bmp", "image/gif", "image/tiff", "image/png", "image/jpeg"));
-    
+
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("image/bmp",
+            "image/gif", "image/tiff", "image/png", "image/jpeg"));
+
     /**
-     *
+     * 
      * @uml.property name="sourceCoverage"
      * @uml.associationEnd multiplicity="(0 1)"
      */
     private GridCoverage2D sourceCoverage;
+
     private String outputFormat;
 
     public IMGCoverageResponseDelegate() {
     }
 
     public boolean canProduce(String outputFormat) {
-        return outputFormat != null && (
-                FORMATS.contains(outputFormat.toLowerCase()) ||
-                FORMATS.contains("image/" + outputFormat.toLowerCase()));
+        return outputFormat != null
+                && (FORMATS.contains(outputFormat.toLowerCase()) || FORMATS.contains("image/"
+                        + outputFormat.toLowerCase()));
     }
-    
+
     public String getMimeFormatFor(String outputFormat) {
-        if(!canProduce(outputFormat))
+        if (!canProduce(outputFormat))
             return null;
-        
-        if(FORMATS.contains(outputFormat.toLowerCase()))
+
+        if (FORMATS.contains(outputFormat.toLowerCase()))
             return outputFormat;
         String mime = "image/" + outputFormat.toLowerCase();
-        if(FORMATS.contains(mime))
+        if (FORMATS.contains(mime))
             return mime;
-        
+
         return null;
     }
 
-    public void prepare(String outputFormat, GridCoverage2D coverage)
-        throws IOException {
-        this.outputFormat = outputFormat.startsWith("image/") ? outputFormat.substring(6) 
+    public void prepare(String outputFormat, GridCoverage2D coverage) throws IOException {
+        this.outputFormat = outputFormat.startsWith("image/") ? outputFormat.substring(6)
                 : outputFormat;
         this.sourceCoverage = coverage;
     }
@@ -77,7 +74,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getContentEncoding() {
@@ -86,22 +83,24 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
     /**
      * DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public String getContentDisposition() {
-        return (outputFormat.equalsIgnoreCase("tiff") || outputFormat.equalsIgnoreCase("tif"))
-        ? new StringBuffer("attachment;filename=").append(this.sourceCoverage.getName()).append(".")
-                                                  .append(outputFormat).toString() : null;
+        return (outputFormat.equalsIgnoreCase("tiff") || outputFormat.equalsIgnoreCase("tif")) ? new StringBuffer(
+                "attachment;filename=").append(this.sourceCoverage.getName()).append(".").append(
+                outputFormat).toString()
+                : null;
     }
-    
+
     public String getFileExtension() {
         return "outputFormat";
     }
 
     public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
-            throw new IllegalStateException("It seems prepare() has not been called or has not succeed");
+            throw new IllegalStateException(
+                    "It seems prepare() has not been called or has not succeed");
         }
 
         final GridCoverageWriter writer = new WorldImageWriter(output);
@@ -113,7 +112,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
         format.setValue(this.outputFormat.toLowerCase());
 
         // writing
-        writer.write(sourceCoverage, new GeneralParameterValue[] {format});
+        writer.write(sourceCoverage, new GeneralParameterValue[] { format });
 
         // freeing everything
         output.flush();

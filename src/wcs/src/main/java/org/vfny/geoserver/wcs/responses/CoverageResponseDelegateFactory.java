@@ -15,14 +15,11 @@ import org.vfny.geoserver.wcs.responses.coverage.GTopo30CoverageResponseDelegate
 import org.vfny.geoserver.wcs.responses.coverage.GeoTIFFCoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.coverage.IMGCoverageResponseDelegate;
 
-
 /**
  * DOCUMENT ME!
- *
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last
- *         modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last
- *         modification)
+ * 
+ * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class CoverageResponseDelegateFactory {
     /** DOCUMENT ME! */
@@ -41,10 +38,10 @@ public class CoverageResponseDelegateFactory {
 
     /**
      * Creates an encoder for a specific getfeature results output format
-     *
+     * 
      * @param outputFormat
      *            DOCUMENT ME!
-     *
+     * 
      * @return DOCUMENT ME!
      */
     public static CoverageResponseDelegate encoderFor(String outputFormat) {
@@ -60,14 +57,14 @@ public class CoverageResponseDelegateFactory {
                     }
                 } catch (IllegalAccessException ex) {
                     final NoSuchElementException e = new NoSuchElementException(new StringBuffer(
-                                "Can't create the encoder ").append(encoder.getClass().getName())
-                                                                                                                             .toString());
+                            "Can't create the encoder ").append(encoder.getClass().getName())
+                            .toString());
                     e.initCause(ex);
                     throw e;
                 } catch (InstantiationException ex) {
                     final NoSuchElementException e = new NoSuchElementException(new StringBuffer(
-                                "Can't create the encoder ").append(encoder.getClass().getName())
-                                                                                                                             .toString());
+                            "Can't create the encoder ").append(encoder.getClass().getName())
+                            .toString());
                     e.initCause(ex);
                     throw e;
                 }
@@ -76,6 +73,5 @@ public class CoverageResponseDelegateFactory {
 
         return null;
     }
-    
-    
+
 }

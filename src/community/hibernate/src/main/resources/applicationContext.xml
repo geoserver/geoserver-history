@@ -13,7 +13,8 @@
 	<!-- property file config -->
 	<!-- The order is to look for a properties  -->
 	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-	    <property name="location" value="classpath:gs-db-config.properties"/> 
+	    <!-- property name="location" value="classpath:gs-db-config.properties"/ -->
+	    <property name="location" value="classpath:postgis.properties"/> 
 	    <property name="ignoreResourceNotFound" value="True"/>
 	</bean>
 	
