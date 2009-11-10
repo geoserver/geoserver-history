@@ -178,7 +178,7 @@ public class LegacyFeatureTypeInfoReader {
 
         if (legendURL != null) {
             HashMap map = new HashMap();
-            map.put( "width", ReaderUtils.getAttribute(legendURL, "width", true) );
+            map.put( "width", Integer.parseInt(ReaderUtils.getAttribute(legendURL, "width", true) ) );
             map.put( "height",Integer.parseInt(ReaderUtils.getAttribute(legendURL, "height", true) ) );
             map.put( "format", ReaderUtils.getChildText(legendURL, "Format", true) ); 
             map.put( "onlineResource", ReaderUtils.getAttribute(ReaderUtils.getChildElement(
