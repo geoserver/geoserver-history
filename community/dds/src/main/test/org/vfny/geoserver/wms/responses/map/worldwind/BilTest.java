@@ -1,18 +1,15 @@
 package org.vfny.geoserver.wms.responses.map.worldwind;
 
-import java.io.File;
 import java.util.logging.Logger;
 
-import junit.framework.TestCase;
+import javax.xml.namespace.QName;
 
-import org.geotools.test.TestData;
-import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.data.DataStore;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.springframework.web.context.support.GenericWebApplicationContext;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.GetMapProducer;
+import junit.framework.Test;
+
+import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSTestSupport;
+
 
 /**
  * Test case for producing Raw bil images out of an elevation model.
@@ -22,46 +19,73 @@ import org.vfny.geoserver.wms.GetMapProducer;
  * 
  */
 
-public class BilTest extends TestCase {
-	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(BilTest.class.getPackage().getName());
+public class BilTest extends WMSTestSupport {
+	/**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
 	
-	GetMapProducer mapProducer = null;
-	
-	DataStore testDS = null;
-	
-	int mapWidth=512;
-	int mapHeight=512;
+	public static String WCS_PREFIX = "wcs";
+    public static String WCS_URI = "http://www.opengis.net/wcs/1.1.1";
+    public static QName AUS_DEM = new QName(WCS_URI, "Ausdem", WCS_PREFIX);
+    
 
-	private CoordinateReferenceSystem WGS84 = null;
-	
-	public void setUp() throws Exception {
-		System.setProperty("org.geotools.referencing.forceXY", "true");
-		File testdata=TestData.file(this, ".");
-		System.setProperty("GEOSERVER_DATA_DIR", testdata.getAbsolutePath());
-		GeoServerResourceLoader loader = new GeoServerResourceLoader(testdata);		
-        GenericWebApplicationContext context = new GenericWebApplicationContext();
-        context.getBeanFactory().registerSingleton("resourceLoader", loader);
-        GeoserverDataDirectory.init(context);
-		
-        // initialized WGS84 CRS (used by many tests)
-        WGS84 =CRS.decode("EPSG:4326");
-        
-        
-        testDS=getTestDataStore();
-        
-        // initializes GetMapProducer factory and actual producer
-        //this.mapFactory = getProducerFactory();
-        this.mapProducer=getProducerInstance();
-        super.setUp();
+    
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new BilTest());
+    }
+    
+    
+    @Override
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
+        WMSInfo wmsInfo = getGeoServer().getService(WMSInfo.class);
+        wmsInfo.setMaxBuffer(50);
+        getGeoServer().save(wmsInfo);
+    }
+    
+    @Override
+    protected void populateDataDirectory(MockData dataDirectory) throws Exception {
+        super.populateDataDirectory(dataDirectory);
+        dataDirectory.addStyle("raster", BilTest.class.getResource("raster.sld"));
+        dataDirectory.addCoverage(AUS_DEM, BilTest.class.getResource("aus_dem.tif"),
+                "tiff", "raster");
+    }
+
+
+	public void testStandardRequest() throws Exception {
+	    String layer = getLayerId(AUS_DEM);
+	    String request = "wms?service=wms&request=GetMap&version=1.1.1" +
+	    		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
+	    		"&format=application/bil8&srs=EPSG:4326";
+	    String response = getAsString(request);
+	    // Check response length in bytes
+	    assertEquals("testStandardRequest",4092,response.getBytes().length);
+	    
+	    request = "wms?service=wms&request=GetMap&version=1.1.1" +
+		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
+		"&format=application/bil16&srs=EPSG:4326";
+	    response = getAsString(request);
+	    // Check response length in bytes
+	    assertEquals("testStandardRequest",8178,response.getBytes().length);
+	    
+	    request = "wms?service=wms&request=GetMap&version=1.1.1" +
+		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=64&height=64" + 
+		"&format=application/bil32&srs=EPSG:4326";
+	    response = getAsString(request);
+	    // Check response length in bytes
+	    assertEquals("testStandardRequest",16361,response.getBytes().length);
 	}
-
-	private DataStore getTestDataStore() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private GetMapProducer getProducerInstance() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public void testLargeRequest() throws Exception {
+	    String layer = getLayerId(AUS_DEM);
+	    String request = "wms?service=wms&request=GetMap&version=1.1.1" +
+	    		"&layers=" + layer + "&styles=&bbox=108.3,-46.3,160.3,-4.2&width=600&height=600" + 
+	    		"&format=image/bil&srs=EPSG:4326";
+	    
+	    String exceptstr  = getAsString(request);
+	    assertTrue("testLargeRequest",exceptstr.contains("ServiceException"));
 	}
 }
