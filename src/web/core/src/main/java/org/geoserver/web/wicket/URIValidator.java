@@ -11,7 +11,7 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 
 /**
- * Validates a URI syntax by building a {@link URI} object arounds it
+ * Validates a URI syntax by building a {@link URI} object around it
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
