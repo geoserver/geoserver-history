@@ -25,7 +25,7 @@ import org.geoserver.web.data.store.StoreEditPanel;
 import org.geoserver.web.data.store.StoreExtensionPoints;
 import org.geoserver.web.data.store.panel.PasswordParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
-import org.geotools.arcsde.gce.ArcSDERasterFormat;
+import org.geotools.arcsde.raster.gce.ArcSDERasterFormat;
 import org.geotools.arcsde.session.ArcSDEConnectionConfig;
 import org.geotools.arcsde.session.ISession;
 import org.geotools.arcsde.session.ISessionPool;
