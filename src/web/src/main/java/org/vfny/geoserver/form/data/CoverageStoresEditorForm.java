@@ -271,7 +271,7 @@ public final class CoverageStoresEditorForm extends ActionForm {
 
             // HACK!  ArcSDE rasters take a string (which is stuffed into the given file)
             if (-1 == factory.getClass().toString()
-                                 .indexOf("org.geotools.arcsde.gce.ArcSDERasterFormat")) {
+                                 .indexOf("org.geotools.arcsde.raster.gce.ArcSDERasterFormat")) {
                 file = GeoserverDataDirectory.findDataFile(url);
                 FormUtils.checkFileExistsAndCanRead(file, errors);
 
