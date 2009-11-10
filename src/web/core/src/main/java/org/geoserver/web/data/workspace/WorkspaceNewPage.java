@@ -18,6 +18,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.URIValidator;
 
 /**
  * Allows creation of a new workspace
@@ -60,7 +61,7 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
         nsUriTextField = new TextField( "uri", new Model() );
         // maybe a bit too restrictive, but better than not validation at all
         nsUriTextField.setRequired(true);
-        nsUriTextField.add(new UrlValidator());
+        nsUriTextField.add(new URIValidator());
         form.add( nsUriTextField );
         
         CheckBox defaultChk = new CheckBox("default", new PropertyModel(this, "defaultWs"));

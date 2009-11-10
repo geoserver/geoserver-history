@@ -61,6 +61,6 @@ public class WorkspaceNewPageTest extends GeoServerWicketTestSupport {
         form.submit();
         
         tester.assertRenderedPage(WorkspaceNewPage.class);
-        tester.assertErrorMessages(new String[] {"'not a valid uri' is not a valid URL."});
+        tester.assertErrorMessages(new String[] {"Invalid URI syntax: not a valid uri"});
     }
 }
