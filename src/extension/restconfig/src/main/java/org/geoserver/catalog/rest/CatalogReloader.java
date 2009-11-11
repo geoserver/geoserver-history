@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServerLoader;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.RestletException;
 import org.geotools.util.logging.Logging;
 import org.restlet.data.Method;
@@ -20,11 +21,8 @@ public class CatalogReloader extends AbstractCatalogFinder {
 
     static Logger LOGGER = Logging.getLogger("org.geoserver.catalog.rest");
 
-    GeoServerLoader loader;
-
-    public CatalogReloader(Catalog catalog, GeoServerLoader loader) {
+    public CatalogReloader(Catalog catalog) {
         super(catalog);
-        this.loader = loader;
     }
 
     @Override
@@ -64,9 +62,12 @@ public class CatalogReloader extends AbstractCatalogFinder {
      */
     protected void reloadCatalog() throws Exception {
         try {
-            synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
-                loader.reload();
-                LOGGER.info("Catalog reloaded.");
+            GeoServerLoader loader = GeoServerExtensions.bean(GeoServerLoader.class);
+            if (loader != null) {
+                synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+                    loader.reload();
+                    LOGGER.info("Catalog reloaded.");
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
