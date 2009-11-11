@@ -232,7 +232,5 @@
   <bean id="styleFinder2" class="org.geoserver.catalog.rest.StyleFinder" parent="abstractCatalogFinder"/>
   <bean id="layerFinder2" class="org.geoserver.catalog.rest.LayerFinder" parent="abstractCatalogFinder"/>
   <bean id="layerGroupFinder2" class="org.geoserver.catalog.rest.LayerGroupFinder" parent="abstractCatalogFinder"/>
-  <bean id="catalogReloader" class="org.geoserver.catalog.rest.CatalogReloader" parent="abstractCatalogFinder">
-    <constructor-arg index="1" ref="geoServerLoader"/>
-  </bean>
+  <bean id="catalogReloader" class="org.geoserver.catalog.rest.CatalogReloader" parent="abstractCatalogFinder"/>
 </beans>
