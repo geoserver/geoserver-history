@@ -19,6 +19,8 @@
     <property name="titleKey" value="org.geoserver.web.proxy.ProxyAdminPage.page.title"/>
     <property name="descriptionKey" value="org.geoserver.web.proxy.ProxyAdminPage.page.description"/>
     <property name="componentClass" value="org.geoserver.web.proxy.ProxyAdminPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="order" value="100"/>
   </bean>
   
 </beans>
