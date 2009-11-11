@@ -6,7 +6,10 @@ package org.geoserver.web.data.resource;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -26,6 +29,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -104,17 +108,67 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         add(new Label("resourcename", getResourceInfo().getPrefixedName()));
         Form theForm = new Form("resource", myResourceModel);
         add(theForm);
+        
         List<ITab> tabs = new ArrayList<ITab>();
-        tabs.add(new AbstractTab(new org.apache.wicket.model.ResourceModel("ResourceConfigurationPage.Data")) {
+        
+        //add the "well known" tabs
+        tabs.add(new AbstractTab(
+            new org.apache.wicket.model.ResourceModel("ResourceConfigurationPage.Data")) {
+            
             public Panel getPanel(String panelID) {
-                return new ListPanel(panelID, new ResourceConfigurationSectionListView("theList"));
+                return new DataLayerEditTabPanel(panelID, myLayerModel);
             }
         });
-        tabs.add(new AbstractTab(new org.apache.wicket.model.ResourceModel("ResourceConfigurationPage.Publishing")) {
+        tabs.add(new AbstractTab(
+            new org.apache.wicket.model.ResourceModel("ResourceConfigurationPage.Publishing")) {
+          
             public Panel getPanel(String panelID) {
-                return new ListPanel(panelID, new LayerConfigurationSectionListView("theList"));
+                return new PublishingLayerEditTabPanel(panelID, myLayerModel);
             }
         });
+        
+        //add the tabs contributed via extension point
+        List<LayerEditTabPanelInfo> tabPanels = 
+            getGeoServerApplication().getBeansOfType(LayerEditTabPanelInfo.class);
+        
+        //sort the tabs based on order
+        Collections.sort(tabPanels, new Comparator<LayerEditTabPanelInfo>() {
+            public int compare(LayerEditTabPanelInfo o1, LayerEditTabPanelInfo o2) {
+                Integer order1 = o1.getOrder() >= 0 ? o1.getOrder() : Integer.MAX_VALUE;
+                Integer order2 = o2.getOrder() >= 0 ? o2.getOrder() : Integer.MAX_VALUE;
+                
+                return order1.compareTo( order2 );
+            }
+        });
+        
+        for (LayerEditTabPanelInfo tabPanel : tabPanels) {
+            String titleKey = tabPanel.getTitleKey();
+            IModel titleModel = null;
+            if (titleKey != null) {
+                titleModel = new org.apache.wicket.model.ResourceModel(titleKey);
+            }
+            else {
+                titleModel = new Model(tabPanel.getComponentClass().getSimpleName());
+            }
+            
+            final Class<LayerEditTabPanel> panelClass = tabPanel.getComponentClass(); 
+            tabs.add(new AbstractTab(titleModel) {
+                
+                @Override
+                public Panel getPanel(String panelId) {
+                    try {
+                        return panelClass.getConstructor(String.class, IModel.class)
+                            .newInstance(panelId, myLayerModel);
+                    } 
+                    catch (Exception e) {
+                        throw new WicketRuntimeException(e);
+                        //LOGGER.log(Level.WARNING, "Error creating resource panel", e);
+                    } 
+                }
+            });
+            
+        }
+        
         // we need to override with submit links so that the various form
         // element
         // will validate and write down into their
@@ -220,60 +274,85 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         return list;
     }
 
-    private class ResourceConfigurationSectionListView extends ListView {
-        private static final long serialVersionUID = -6575960326680386479L;
+    private abstract class ListLayerEditTabPanel extends LayerEditTabPanel {
 
-        public ResourceConfigurationSectionListView(String id) {
-            super(id, filterResourcePanels(((GeoServerApplication) getGeoServerApplication())
-                    .getBeansOfType(ResourceConfigurationPanelInfo.class)));
+        public ListLayerEditTabPanel(String id, IModel model) {
+            super(id, model);
+            
+            ListView list = createList("theList");
+            
             // do this or die on validation (the form element contents will
             // reset, the edit will be lost)
-            setReuseItems(true);
+            list.setReuseItems(true);
+            add(list);
         }
 
-        @Override
-        protected void populateItem(ListItem item) {
-            ResourceConfigurationPanelInfo panelInfo = (ResourceConfigurationPanelInfo) item
-                    .getModelObject();
-            try {
-                final Class<ResourceConfigurationPanel> componentClass = panelInfo
-                        .getComponentClass();
-                final Constructor<ResourceConfigurationPanel> constructor;
-                constructor = componentClass.getConstructor(String.class, IModel.class);
-                ResourceConfigurationPanel panel = constructor.newInstance("content",
-                        myResourceModel);
-                item.add((Component) panel);
-            } catch (Exception e) {
-                throw new WicketRuntimeException(
-                        "Failed to add pluggable resource configuration panels", e);
-            }
-        }
+        protected abstract ListView createList(String id);
+
     }
+    
+    private class DataLayerEditTabPanel extends ListLayerEditTabPanel {
 
-    private class LayerConfigurationSectionListView extends ListView {
+        public DataLayerEditTabPanel(String id, IModel model) {
+            super(id, model);
+        }
+
+        protected ListView createList(String id) {
+            List dataPanels = filterResourcePanels(((GeoServerApplication) getGeoServerApplication())
+                    .getBeansOfType(ResourceConfigurationPanelInfo.class));
+            ListView dataPanelList = new ListView(id, dataPanels) {
+                @Override
+                protected void populateItem(ListItem item) {
+                    ResourceConfigurationPanelInfo panelInfo = (ResourceConfigurationPanelInfo) item
+                            .getModelObject();
+                    try {
+                        final Class<ResourceConfigurationPanel> componentClass = panelInfo
+                                .getComponentClass();
+                        final Constructor<ResourceConfigurationPanel> constructor;
+                        constructor = componentClass.getConstructor(String.class, IModel.class);
+                        ResourceConfigurationPanel panel = constructor.newInstance("content",
+                                myResourceModel);
+                        item.add((Component) panel);
+                    } catch (Exception e) {
+                        throw new WicketRuntimeException(
+                                "Failed to add pluggable resource configuration panels", e);
+                    }
+                }
+            };
+            return dataPanelList;
+        }
+        
+    }
+    
+    private class PublishingLayerEditTabPanel extends ListLayerEditTabPanel {
         private static final long serialVersionUID = -6575960326680386479L;
 
-        public LayerConfigurationSectionListView(String id) {
-            super(id, filterLayerPanels(((GeoServerApplication) getGeoServerApplication())
-                    .getBeansOfType(LayerConfigurationPanelInfo.class)));
-            // do this or die on validation (the form element contents will
-            // reset, the edit will be lost)
-            setReuseItems(true);
+        public PublishingLayerEditTabPanel(String id, IModel model) {
+            super(id, model);
         }
 
         @Override
-        protected void populateItem(ListItem item) {
-            LayerConfigurationPanelInfo panelInfo = (LayerConfigurationPanelInfo) item
+        public ListView createList(String id) {
+            List pubPanels = filterLayerPanels(((GeoServerApplication) getGeoServerApplication())
+                    .getBeansOfType(LayerConfigurationPanelInfo.class));
+            ListView pubPanelList = new ListView(id, pubPanels) {
+                @Override
+                protected void populateItem(ListItem item) {
+                    LayerConfigurationPanelInfo panelInfo = (LayerConfigurationPanelInfo) item
                     .getModelObject();
-            try {
-                LayerConfigurationPanel panel = panelInfo.getComponentClass().getConstructor(
-                        String.class, IModel.class).newInstance("content", myLayerModel);
-                item.add((Component) panel);
-            } catch (Exception e) {
-                throw new WicketRuntimeException(
-                        "Failed to add pluggable layer configuration panels", e);
-            }
+                    try {
+                        LayerConfigurationPanel panel = panelInfo.getComponentClass().getConstructor(
+                                String.class, IModel.class).newInstance("content", myLayerModel);
+                        item.add((Component) panel);
+                    } catch (Exception e) {
+                        throw new WicketRuntimeException(
+                                "Failed to add pluggable layer configuration panels", e);
+                    }
+                }
+            };
+            return pubPanelList;
         }
+
     }
 
     /**
