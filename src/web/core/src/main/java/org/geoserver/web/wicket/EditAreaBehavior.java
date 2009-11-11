@@ -8,9 +8,14 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.protocol.http.WebRequest;
 
 /**
- * Turns a normal text area intoa an editor with syntax highlight
+ * Turns a normal text area into a an editor via the EditArea javascript library that supprots
+ * syntax highlighting.
+ * <p>
+ * See {@linkplain http://www.cdolivet.com/editarea/editarea/docs/} for info about EditArea.
+ * The syntax scheme can be set by passing the string to the constructor. 
+ * </p>
+ * 
  * @author aaime
- *
  */
 @SuppressWarnings("serial")
 public class EditAreaBehavior extends AbstractBehavior {
@@ -19,7 +24,16 @@ public class EditAreaBehavior extends AbstractBehavior {
             EditAreaBehavior.class, "js/editarea/edit_area_full.js");
     private Component component;
 
+    private String syntax;
 
+    public EditAreaBehavior() {
+        this("xml");
+    }
+    
+    public EditAreaBehavior(String syntax) {
+        this.syntax = syntax;
+    }
+    
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
@@ -45,7 +59,7 @@ public class EditAreaBehavior extends AbstractBehavior {
     private String getEditAreaInitJavascript() {
         return "editAreaLoader.init({" +
                 "id : \"" + component.getMarkupId() + "\"," +
-                "syntax: \"css\"," +
+                "syntax: \""+syntax+"\"," +
                 "start_highlight: true," +
                 "allow_toggle: false," +
                 "font_size: 8," + 
