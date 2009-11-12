@@ -23,6 +23,7 @@
     <module>wms</module>
     <module>wfs</module>
     <module>wcs</module>
+    <module>gwc</module>
   </modules>
 
 </project>
