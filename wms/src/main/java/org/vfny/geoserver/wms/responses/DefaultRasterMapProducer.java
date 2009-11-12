@@ -119,7 +119,7 @@ public abstract class DefaultRasterMapProducer extends
     }
 
     /** WMS Service configuration * */
-    private WMS wms;
+    protected WMS wms;
 
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
