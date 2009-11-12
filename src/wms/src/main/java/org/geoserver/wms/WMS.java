@@ -7,12 +7,14 @@ package org.geoserver.wms;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.GeoServer;
@@ -23,7 +25,9 @@ import org.geoserver.wms.WatermarkInfo.Position;
 import org.geotools.styling.Style;
 import org.geotools.util.Converters;
 import org.geotools.util.Version;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
+
 
 /**
  * A facade providing access to the WMS configuration details
@@ -31,6 +35,16 @@ import org.opengis.feature.type.Name;
  * @author Gabriel Roldan
  */
 public class WMS {
+    
+    public static final String JPEG_COMPRESSION = "jpegCompression";
+    
+    public static final int JPEG_COMPRESSION_DEFAULT = 25;
+
+    public static final String PNG_COMPRESSION = "pngCompression";
+    
+    public static final int PNG_COMPRESSION_DEFAULT = 25;
+
+    static final Logger LOGGER = Logging.getLogger(WMS.class);
 
     public static final String WEB_CONTAINER_KEY = "WMS";
 
@@ -236,6 +250,29 @@ public class WMS {
         WMSInfo serviceInfo = getServiceInfo();
         Boolean svgAntiAlias = Converters.convert(serviceInfo.getMetadata().get("svgAntiAlias"), Boolean.class);
         return svgAntiAlias == null ? true : svgAntiAlias.booleanValue();
+    }
+    
+    public int getPngCompression() {
+        WMSInfo serviceInfo = getServiceInfo();
+        return getMetadataPercentage(serviceInfo.getMetadata(), PNG_COMPRESSION, PNG_COMPRESSION_DEFAULT);
+    }
+    
+    public int getJpegCompression() {
+        WMSInfo serviceInfo = getServiceInfo();
+        return getMetadataPercentage(serviceInfo.getMetadata(), JPEG_COMPRESSION, JPEG_COMPRESSION_DEFAULT);
+    }
+    
+    int getMetadataPercentage(MetadataMap metadata, String key, int defaultValue) {
+        Integer parsedValue = Converters.convert(metadata.get(key), Integer.class);
+        if(parsedValue == null)
+            return defaultValue;
+        int value = parsedValue.intValue();
+        if(value < 0 || value > 100) {
+            LOGGER.warning("Invalid percertage value for '" + key + "', it should be between 0 and 100");
+            return defaultValue;
+        }
+        
+        return value;
     }
 
     public int getNumDecimals() {

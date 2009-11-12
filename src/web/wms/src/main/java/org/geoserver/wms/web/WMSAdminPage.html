@@ -78,7 +78,29 @@
           </li>
         </ul>
       </fieldset>
-    </li>  
+    </li>
+    <li>
+      <fieldset>
+        <legend><span><wicket:message key="pngOptions">PNG Options</wicket:message></span></legend>
+        <ul>
+          <li>
+            <label><wicket:message key="pngCompression">Compression level (0-100, default 25)</wicket:message></label>
+            <input class="field" type="text" wicket:id="png.compression"></input>
+          </li>
+        </ul>
+      </fieldset>
+    </li>    
+    <li>
+      <fieldset>
+        <legend><span><wicket:message key="jpegOptions">JPEG Options</wicket:message></span></legend>
+        <ul>
+          <li>
+            <label><wicket:message key="jpegCompression">Compression level (0-100, default 25)</wicket:message></label>
+            <input class="field" type="text" wicket:id="jpeg.compression"></input>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
   </wicket:extend>
 </body>
 </html>
