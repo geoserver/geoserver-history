@@ -7,7 +7,6 @@ package org.geoserver.wms.web;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
@@ -82,6 +81,19 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     	PropertyModel metadataModel = new PropertyModel(info, "metadata");
         form.add(new CheckBox("svg.antialias", new MapModel(metadataModel, "svgAntiAlias")));
     	form.add(new DropDownChoice("svg.producer", new MapModel(metadataModel, "svgRenderer"), SVG_RENDERERS, new SVGMethodRenderer()));
+    	// png compression levels
+    	MapModel pngCompression = new MapModel(metadataModel, WMS.PNG_COMPRESSION);
+    	if(pngCompression.getObject() == null)
+    	    pngCompression.setObject(WMS.PNG_COMPRESSION_DEFAULT);
+        TextField pngCompressionField = new TextField("png.compression", pngCompression, Integer.class);
+        pngCompressionField.add(new NumberValidator.RangeValidator(0, 100));
+        form.add(pngCompressionField);
+        // jpeg compression levels
+    	MapModel jpegCompression = new MapModel(metadataModel, WMS.JPEG_COMPRESSION);
+    	if(jpegCompression.getObject() == null)
+            jpegCompression.setObject(WMS.JPEG_COMPRESSION_DEFAULT);
+        TextField jpegCompressionField = new TextField("jpeg.compression", jpegCompression, Integer.class);
+        form.add(jpegCompressionField);
     }
     
     protected String getServiceName(){

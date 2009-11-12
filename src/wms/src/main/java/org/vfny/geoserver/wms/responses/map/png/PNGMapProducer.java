@@ -11,9 +11,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
@@ -77,7 +75,8 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
             image = forceIndexed8Bitmask(image);
         }
 
-        new ImageWorker(image).writePNG(outStream, "FILTERED", 0.5f, PNGNativeAcc.booleanValue(),
+        float quality = (100 - wms.getPngCompression()) / 100.0f;
+        new ImageWorker(image).writePNG(outStream, "FILTERED", quality, PNGNativeAcc.booleanValue(),
             image.getColorModel() instanceof IndexColorModel);
 
         if (LOGGER.isLoggable(Level.FINE)) {
