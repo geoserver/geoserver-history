@@ -65,6 +65,9 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
     /** DOCUMENT ME! */
     private DefaultRasterMapProducer rasterMapProducer;
+    
+    /** DOCUMENT ME! */
+    private String mapFormat = "image/gif";
 
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -103,6 +106,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         this.rasterMapProducer = null;
         super.tearDownInternal();
     }
+    
+    public String getMapFormat()
+    {
+    	return this.mapFormat;
+    }
 
     /**
      * DOCUMENT ME!
@@ -111,7 +119,6 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      *             DOCUMENT ME!
      */
     public void testSimpleGetMapQuery() throws Exception {
-        final String mapFormat = "image/gif";
 
         
         Catalog catalog = getCatalog();
@@ -134,7 +141,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         Style basicStyle = styleByName.getStyle();
         map.addLayer(fs, basicStyle);
 
-        this.rasterMapProducer.setOutputFormat(mapFormat);
+        this.rasterMapProducer.setOutputFormat(getMapFormat());
         this.rasterMapProducer.setMapContext(map);
         this.rasterMapProducer.produceMap();
 
@@ -199,7 +206,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
 
-        this.rasterMapProducer.setOutputFormat("image/gif");
+        this.rasterMapProducer.setOutputFormat(getMapFormat());
         this.rasterMapProducer.setMapContext(map);
         this.rasterMapProducer.produceMap();
 
@@ -318,7 +325,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setBgColor(BG_COLOR);
         map.setTransparent(false);
 
-        this.rasterMapProducer.setOutputFormat("image/gif");
+        this.rasterMapProducer.setOutputFormat(getMapFormat());
         this.rasterMapProducer.setMapContext(map);
         this.rasterMapProducer.produceMap();
 
@@ -399,7 +406,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         
         StyleInfo someStyle = getCatalog().getStyles().get(0);
         map.addLayer(source, someStyle.getStyle());
-        this.rasterMapProducer.setOutputFormat("image/gif");
+        this.rasterMapProducer.setOutputFormat(getMapFormat());
         this.rasterMapProducer.setMapContext(map);
         this.rasterMapProducer.produceMap();
 
