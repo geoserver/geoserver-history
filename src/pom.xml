@@ -1166,15 +1166,11 @@
  </reporting>
 
  <distributionManagement>
-  <repository>
-   <id>codehaus.org</id>
-   <name>GeoServer Central Repository</name>
-   <url>dav:https://dav.codehaus.org/repository/geoserver/</url>
-  </repository>
   <snapshotRepository>
-   <id>codehaus.org</id>
-   <name>GeoServer Central Development Repository</name>
-   <url>dav:https://dav.codehaus.org/snapshots.repository/geoserver/</url>
+   <id>opengeo</id>
+   <name>OpenGeo Maven Repository</name>
+   <url>dav:http://repo.opengeo.org</url>
+   <uniqueVersion>false</uniqueVersion>
   </snapshotRepository>
  </distributionManagement>
 
