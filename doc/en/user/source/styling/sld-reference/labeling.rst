@@ -77,6 +77,7 @@ The anchor point determines where the label is placed relative to the label poin
 The anchor point is defined relative to the label's bounding box. The bottom left is (0,0), the top left is (1,1), and the middle is (0.5,0.5).
 
 .. code-block:: xml 
+
   <PointPlacement>
     <AnchorPoint>
        <AnchorPointX>
@@ -90,21 +91,26 @@ The anchor point is defined relative to the label's bounding box. The bottom lef
 
 By changing the values, you can control where the label is placed.
 	
+	
 .. figure:: img/point_x0y0_5.gif
    :align: center		
-  (x=0,y=0.5) DEFAULT - place the label to the right of the label point 	
+
+(x=0,y=0.5) DEFAULT - place the label to the right of the label point 	
 
 .. figure:: img/point_x0_5y0_5.gif
    :align: center
-  (x=0.5,y=0.5) - place the centre of the label at the label point
+
+(x=0.5,y=0.5) - place the centre of the label at the label point
 
 .. figure:: img/point_x15y0_5.gif
    :align: center
-  (x=1,y=0.5) - place the label to the left of the label point 	
+
+(x=1,y=0.5) - place the label to the left of the label point 	
 
 .. figure:: img/point_x0_5y0_0.gif
    :align: center
-  (x=0.5,y=0) - place the label centered above the label point
+
+(x=0.5,y=0) - place the label centered above the label point
 
 
 Displacement
@@ -113,6 +119,7 @@ Displacement
 Displacement allows fine control of the placement of the label. The displacement values are in pixels and simply move the location of the label on the resulting image.
 
 .. code-block:: xml 
+
   <PointPlacement>
    <Displacement>
      <DisplacementX>
@@ -128,14 +135,14 @@ Displacement allows fine control of the placement of the label. The displacement
 .. figure:: img/point_x0y0_5_displacex10.gif
    :align: center
 	
-  displacement of x=10 pixels
-  compare with anchor point (x=0,y=0.5) above 	
+displacement of x=10 pixels
+compare with anchor point (x=0,y=0.5) above 	
 
 .. figure:: img/point_x0y1_displacey10.gif
    :align: center
 
-  displacement of y=-10 pixels
-  compare with anchor point (x=0.5,y=1.0) not shown
+displacement of y=-10 pixels
+compare with anchor point (x=0.5,y=1.0) not shown
 
 
 Rotation
@@ -144,6 +151,7 @@ Rotation
 Rotation is simple - it rotates the label clockwise the number of degrees you specify. See the examples below for how it interacts with AnchorPoints and displacements.
 
 .. code-block:: xml
+  
   <Rotation>
     45
   </Rotation>
@@ -151,22 +159,22 @@ Rotation is simple - it rotates the label clockwise the number of degrees you sp
 .. figure:: img/rot1.gif
    :align: center
 
-  simple 45 degrees rotation 	
+simple 45 degrees rotation 	
 
 .. figure:: img/rot2.gif
    :align: center
 
-  45 degrees rotation with anchor point (x=0.5,y=0.5)
+45 degrees rotation with anchor point (x=0.5,y=0.5)
 	
 .. figure:: img/rot3.gif
    :align: center	
 	
-  45 degrees with 40 pixel X displacement 	
+45 degrees with 40 pixel X displacement 	
 
 .. figure:: img/rot4.gif
    :align: center
 
-  45 degrees rotation with 40 pixel Y displacement with anchor point (x=0.5,y=0.5)
+45 degrees rotation with 40 pixel Y displacement with anchor point (x=0.5,y=0.5)
 
 
 LinePlacement
@@ -178,6 +186,7 @@ When you are labeling a line (i.e. a road or river), you can specify a <LinePlac
 The line placement option is very simple - it only allows you to move a label up-and-down from a line.
 
 .. code-block:: xml 
+
   <xs:elementname="LinePlacement">
    <xs:complexType>
      <xs:sequence>
@@ -191,6 +200,7 @@ The line placement option is very simple - it only allows you to move a label up
 This is very similiar to the DisplacementY option (see above).
 
 .. code-block:: xml 
+
   <LabelPlacement>
     <LinePlacement>
       <PerpendicularOffset>
@@ -202,12 +212,14 @@ This is very similiar to the DisplacementY option (see above).
 .. figure:: img/lp_1.gif
    :align: center
 	
-  PerpendicularOffset=0 	
+
+PerpendicularOffset=0 	
 
 .. figure:: img/lp_2.gif
    :align: center
 
-  PerpendicularOffset=10 pixels
+
+PerpendicularOffset=10 pixels
 
 
 Composing labels from multiple attributes
@@ -218,6 +230,7 @@ The <Label> element in TextSymbolizer is said to be mixed, that is, its content 
 For example, if you want both a state name and its abbreviation to appear in a label, you can do the following:
 
 .. code-block:: xml 
+
   <Label>
     <ogc:PropertyName>STATE_NAME</ogc:PropertyName> (<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>)
   </Label>
@@ -230,6 +243,7 @@ So, what if you need to insert a newline or a sequence of two or more spaces bet
 So, for example, if you wanted to have the state abbreviation sitting on the next line you'd use the following:
 
 .. code-block:: xml 
+
   <Label>
     <ogc:PropertyName>STATE_NAME</ogc:PropertyName><![CDATA[
   ]]>(<ogc:PropertyName>STATE_ABBR</ogc:PropertyName>)
@@ -248,6 +262,7 @@ GeoServer has extended the standard SLD to also include priority labeling. This 
 For example, lets assume you have a data set like this:
 
 .. code-block::
+
    City Name   | population
   -------------+------------
    Yonkers     |     197,818
@@ -264,17 +279,21 @@ Most people don't know where "Yonkers" city is, but do know where "New York" cit
 In our TextSymbolizer we can put an Expression to retreive or calculate the priority for each feature:
 
 .. code-block:: xml 
+
   <Priority>
       <PropertyName>population</PropertyName>
   </Priority>
 
+
 .. figure:: img/priority_all.gif
    :align: center
+
 
 Location of the cities (see population data above)
 
 .. figure:: img/priority_some.gif
    :align: center
+
 
 New York is labeled in preference to the less populated cities. Without priority labeling, "Yonkers" could be labeled in preference to New York, making a difficult to interpret map.
 
@@ -312,7 +331,8 @@ With the grouping option on, all the geometries with the same label are grouped 
    * - Polygon Set
      - polygons are (a) clipped to the view rectangle (b) the centroid of the largest polygon is used.
 
-.. code-block:: xml 
+.. code-block:: xml
+ 
   <VendorOption name="group">yes</VendorOption>
 
 
@@ -323,7 +343,8 @@ Overlapping and Separating Labels (<VendorOption name="spaceAround">)
 
 By default geoserver will not put labels "on top of each other". By using the spaceAround option you can allow labels to overlap and you can also add extra space around a label.
 
-.. code-block:: xml 
+.. code-block:: xml
+ 
   <VendorOption name="spaceAround">10</VendorOption>
 
 .. figure:: img/space_0.gif
@@ -352,12 +373,14 @@ followLine
 
 The **followLine** option forces a label to follow the curve of the line. To use this option place the following in your *<TextSymbolizer>*.
 
-.. code-block:: xml  
+.. code-block:: xml
+  
   <VendorOption name="followLine">true</VendorOption>  
 
 It is required to use *<LinePlacement>* along with this option to ensure that all labels are correctly following the lines:
 
 .. code-block:: xml
+
   <LabelPlacement>
     <LinePlacement/>
   </LabelPlacement>
@@ -370,6 +393,7 @@ The **maxDisplacement** option controls the displacement of the label along a li
 When used in conjunction with **repeat**, the value for **maxDisplacement** should always be lower than the value for repeat.
 
 .. code-block:: xml
+
   <VendorOption name="maxDisplacement">10</VendorOption> 
 
 
@@ -379,6 +403,7 @@ repeat
 The **repeat** option determines how often GeoServer labels a line. Normally GeoServer would label each line only once, regardless of their length. Specify a positive value to make it draw the label every **repeat** pixels.
 
 .. code-block:: xml
+
   <VendorOption name="repeat">100</VendorOption>
 
 
@@ -388,6 +413,7 @@ labelAllGroup
 The **labelAllGroup** option makes sure that all of the segments in a line group are labeled instead of just the longest one.
 
 .. code-block:: xml
+
   <VendorOption name="labelAllGroup">true</VendorOption>
 
 
@@ -397,6 +423,7 @@ maxAngleDelta
 Designed to use used in conjuection with **followLine**, the **maxAngleDelta** option sets the maximum angle, in degrees, between two subsequent characters in a curved label. Large angles create either visually disconnected words or overlapping characters. It is advised not to use angles larger than 30.
 
 .. code-block:: xml
+
   <VendorOption name="maxAngleDelta">15</VendorOption>
 
 
@@ -406,6 +433,7 @@ autoWrap
 The **autoWrap** option wraps labels when they exceed the given value, given in pixels. Make sure to give a dimension wide enough to accommodate the longest word other wise this option will split words over multiple lines.
 
 .. code-block:: xml
+
   <VendorOption name="autoWrap">50</VendorOption>
 
 
@@ -417,6 +445,7 @@ The labeller always tries to draw labels so that they can be read, meaning the l
 The following setting disables label flipping, making the label always follow the natural orientation of the line being labelled:
 
 .. code-block:: xml
+
   <VendorOption name="forceLeftToRigth">false</VendorOption>
 
 
@@ -426,6 +455,7 @@ conflictResolution
 By default labels are subjected to conflict resolution, meaning the renderer will not allow any label to overlap with a label that has been drawn already. Setting this parameter to false pull the label out of the conflict resolution game, meaning the label will be drawn even if it overlaps with other labels, and other labels drawn after it won't mind overlapping with it.
 
 .. code-block:: xml
+
   <VendorOption name="conflictResolution">false</VendorOption>
 
 Goodness of Fit
