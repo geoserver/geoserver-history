@@ -92,23 +92,19 @@ The anchor point is defined relative to the label's bounding box. The bottom lef
 By changing the values, you can control where the label is placed.
 	
 	
-.. figure:: img/point_x0y0_5.gif
-   :align: center		
+.. figure:: img/point_x0y0_5.gif	
 
 (x=0,y=0.5) DEFAULT - place the label to the right of the label point 	
 
 .. figure:: img/point_x0_5y0_5.gif
-   :align: center
 
 (x=0.5,y=0.5) - place the centre of the label at the label point
 
 .. figure:: img/point_x15y0_5.gif
-   :align: center
 
 (x=1,y=0.5) - place the label to the left of the label point 	
 
-.. figure:: img/point_x0_5y0_0.gif
-   :align: center
+.. figure:: img/point_x0_5y0.gif
 
 (x=0.5,y=0) - place the label centered above the label point
 
@@ -135,14 +131,12 @@ Displacement allows fine control of the placement of the label. The displacement
 .. figure:: img/point_x0y0_5_displacex10.gif
    :align: center
 	
-displacement of x=10 pixels
-compare with anchor point (x=0,y=0.5) above 	
+displacement of x=10 pixels, compare with anchor point (x=0,y=0.5) above 	
 
 .. figure:: img/point_x0y1_displacey10.gif
    :align: center
 
-displacement of y=-10 pixels
-compare with anchor point (x=0.5,y=1.0) not shown
+displacement of y=-10 pixels, compare with anchor point (x=0.5,y=1.0) not shown
 
 
 Rotation
@@ -157,22 +151,18 @@ Rotation is simple - it rotates the label clockwise the number of degrees you sp
   </Rotation>
 
 .. figure:: img/rot1.gif
-   :align: center
 
 simple 45 degrees rotation 	
 
 .. figure:: img/rot2.gif
-   :align: center
 
 45 degrees rotation with anchor point (x=0.5,y=0.5)
 	
 .. figure:: img/rot3.gif
-   :align: center	
 	
 45 degrees with 40 pixel X displacement 	
 
 .. figure:: img/rot4.gif
-   :align: center
 
 45 degrees rotation with 40 pixel Y displacement with anchor point (x=0.5,y=0.5)
 
@@ -210,13 +200,11 @@ This is very similiar to the DisplacementY option (see above).
   </LabelPlacement>
 
 .. figure:: img/lp_1.gif
-   :align: center
 	
 
 PerpendicularOffset=0 	
 
 .. figure:: img/lp_2.gif
-   :align: center
 
 
 PerpendicularOffset=10 pixels
