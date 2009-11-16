@@ -962,7 +962,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     }
                 }
             } catch (IOException ioe) {
-                throw new RuntimeException("Error getting FeatureType, this should never happen!");
+                throw new RuntimeException("Error getting FeatureType, this should never happen!", ioe);
             }
         }
 
