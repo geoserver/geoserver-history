@@ -1,15 +1,16 @@
 package org.geoserver.catalog.hibernate;
 
-import org.geoserver.catalog.event.CatalogPostModifyEvent;
-import org.geoserver.hibernate.HibTestSupport;
 import java.util.logging.Logger;
+
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
+import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.hibernate.HibGeoServerImpl;
+import org.geoserver.hibernate.HibTestSupport;
 import org.geotools.util.logging.Logging;
 
 public class HibernateCatalogEventTest extends HibTestSupport {
@@ -47,7 +48,7 @@ public class HibernateCatalogEventTest extends HibTestSupport {
         store.setName("foo" + System.currentTimeMillis()); // we need a unique name
         store.setDescription("testAddStore() "); // just for data debugging
 
-        WorkspaceInfoImplHb ws = catalog.getFactory().createWorkspace();
+        WorkspaceInfoImpl ws = catalog.getFactory().createWorkspace();
         ws.setName("testAddStore" + System.currentTimeMillis()); // we need a unique name
         catalog.add(ws);
 
@@ -68,7 +69,7 @@ public class HibernateCatalogEventTest extends HibTestSupport {
         DataStoreInfo store = catalog.getFactory().createDataStore();
         store.setName("bar");
 
-        WorkspaceInfoImplHb ws = catalog.getFactory().createWorkspace();
+        WorkspaceInfoImpl ws = catalog.getFactory().createWorkspace();
         ws.setName("testModifyStore" + System.currentTimeMillis()); // we need a unique name
         catalog.add(ws);
 

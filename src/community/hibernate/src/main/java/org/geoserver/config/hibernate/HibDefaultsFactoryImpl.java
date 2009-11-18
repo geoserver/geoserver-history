@@ -1,4 +1,4 @@
-/* 
+/*
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
@@ -28,7 +28,7 @@ import org.geoserver.wms.WatermarkInfo;
  * Can be used for tests, or for the real initialization of the GS DB catalog. -- we may want
  * however to init the DB with data read from existing XML files: it would be easier to import
  * legacy files, or to boot GS with a customized set of settings.
- * 
+ *
  * @author ETj <etj at geo-solutions.it>
  */
 public class HibDefaultsFactoryImpl {
@@ -115,13 +115,13 @@ public class HibDefaultsFactoryImpl {
         ns.setURI("http://www.geo-solutions.it");
         resourceCatalog.add(ns);
 
-        WorkspaceInfoImplHb ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory()
+        WorkspaceInfoImpl ws = (WorkspaceInfoImpl) resourceCatalog.getFactory()
                 .createWorkspace();
         ws.setName("topp");
         resourceCatalog.add(ws);
         resourceCatalog.setDefaultWorkspace(ws);
 
-        ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory().createWorkspace();
+        ws = (WorkspaceInfoImpl) resourceCatalog.getFactory().createWorkspace();
         ws.setName("it.geosolutions");
         resourceCatalog.add(ws);
     }

@@ -3,18 +3,9 @@
  */
 package org.geoserver.hibernate.dao;
 
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.logging.Level;
 
-import javax.annotation.PostConstruct;
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
 import javax.persistence.Query;
 
 import org.geoserver.catalog.Catalog;
@@ -28,16 +19,12 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.MapInfoImpl;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.jmx.StatisticsService;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 
 /**
  * 
@@ -46,17 +33,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
 
-	public CatalogDAOImpl() {
+    public CatalogDAOImpl() {
         super();
     }
 
     /**
      * @see Catalog#getDefaultNamespace()
      */
-    public NamespaceInfoImplHb getDefaultNamespace() {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where default = ",
+    public NamespaceInfoImpl getDefaultNamespace() {
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where default = ",
                 param(Boolean.TRUE));
-        return (NamespaceInfoImplHb) first(query);
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
@@ -167,7 +154,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      */
     public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace,
             Class<T> clazz) {
-        Query query = buildQuery("select r from ", clazz, " r, ", NamespaceInfoImplHb.class, " n",
+        Query query = buildQuery("select r from ", clazz, " r, ", NamespaceInfoImpl.class, " n",
                 " where r.namespace = n and n.prefix = ", param(namespace.getPrefix()));
         return query.getResultList();
     }
@@ -199,10 +186,11 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public List<LayerInfo> getLayers() {
-//        long t0 = System.currentTimeMillis();
+        long t0 = System.currentTimeMillis();
         List<LayerInfo> ret = (List<LayerInfo>) list(LayerInfoImplHb.class);
-//        long t1 = System.currentTimeMillis();
-//        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
+        long t1 = System.currentTimeMillis();
+        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
+//        new Throwable(" **************** TRACING GETLAYERS ******************").printStackTrace();
         return ret;
     }
 
@@ -210,7 +198,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public StyleInfo getStyle(String id) {
-        Query query = buildQuery("from ", StyleInfoImplHb.class, " where id = ", param(id));
+        Query query = buildQuery("from ", StyleInfoImpl.class, " where id = ", param(id));
         return (StyleInfo) first(query);
     }
 
@@ -218,7 +206,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public StyleInfo getStyleByName(String name) {
-        Query query = buildQuery("from ", StyleInfoImplHb.class, " where name = ", param(name));
+        Query query = buildQuery("from ", StyleInfoImpl.class, " where name = ", param(name));
         return (StyleInfo) first(query);
     }
 
@@ -226,47 +214,47 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public List<StyleInfo> getStyles() {
-        return (List<StyleInfo>) list(StyleInfoImplHb.class);
+        return (List<StyleInfo>) list(StyleInfoImpl.class);
     }
 
     /**
      * 
      */
-    public NamespaceInfoImplHb getNamespace(String id) {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where id = ", param(id));
-        return (NamespaceInfoImplHb) first(query);
+    public NamespaceInfoImpl getNamespace(String id) {
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where id = ", param(id));
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
      * 
      */
-    public NamespaceInfoImplHb getNamespaceByPrefix(String prefix) {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where prefix = ",
+    public NamespaceInfoImpl getNamespaceByPrefix(String prefix) {
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where prefix = ",
                 param(prefix));
-        return (NamespaceInfoImplHb) first(query);
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
      * 
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where URI = ", param(uri));
-        return (NamespaceInfoImplHb) first(query);
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where URI = ", param(uri));
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
      * 
      */
     public List<NamespaceInfo> getNamespaces() {
-        return (List<NamespaceInfo>) list(NamespaceInfoImplHb.class);
+        return (List<NamespaceInfo>) list(NamespaceInfoImpl.class);
     }
 
     /**
      */
-    public WorkspaceInfoImplHb getDefaultWorkspace() {
-        Query query = buildQuery("from ", WorkspaceInfoImplHb.class, " where default = ",
+    public WorkspaceInfoImpl getDefaultWorkspace() {
+        Query query = buildQuery("from ", WorkspaceInfoImpl.class, " where default = ",
                 param(Boolean.TRUE));
-        return (WorkspaceInfoImplHb) first(query);
+        return (WorkspaceInfoImpl) first(query);
     }
 
     /**
@@ -469,55 +457,4 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
         return super.merge(entity);
     }
 
-    @PostConstruct
-    protected void postProcess(){
-
-    	// make it a bit mroe generic
-    	final Object delegate = entityManager.getDelegate();
-    	if(!(delegate instanceof Session))
-    	{
-    		if(LOGGER.isLoggable(Level.FINE))
-    			LOGGER.fine("Unable to register statistics JMX bean");
-    		return;
-    	}
-    	
-    	//register the hibernate statistics service as an mbean
-		final org.hibernate.Session session = (Session)delegate;
-        final SessionFactory sessionFactory = session.getSessionFactory();
-        
-        //build the ObjectName you want
-        final Hashtable<String, String> tb = new Hashtable<String, String>();
-        tb.put("type", "statistics");
-        tb.put("sessionFactory", "GeoServer-Hib Statistics");
-        ObjectName on=null;
-		try {
-			on = new ObjectName("hibernate", tb);
-		} catch (MalformedObjectNameException e) {
-    		if(LOGGER.isLoggable(Level.FINE))
-    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
-    		return;
-		} catch (NullPointerException e) {
-    		if(LOGGER.isLoggable(Level.FINE))
-    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
-    		return;
-		}
-        StatisticsService stats = new StatisticsService();
-        stats.setSessionFactory(sessionFactory);
-        try {
-			if(on!=null)
-				ManagementFactory.getPlatformMBeanServer().registerMBean(stats, on);
-		} catch (InstanceAlreadyExistsException e) {
-    		if(LOGGER.isLoggable(Level.FINE))
-    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
-    		return;
-		} catch (MBeanRegistrationException e) {
-    		if(LOGGER.isLoggable(Level.FINE))
-    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
-    		return;
-		} catch (NotCompliantMBeanException e) {
-    		if(LOGGER.isLoggable(Level.FINE))
-    			LOGGER.log(Level.FINE,"Unable to register statistics JMX bean",e);
-    		return;
-		}
-    }
 }
