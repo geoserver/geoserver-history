@@ -5,6 +5,8 @@ package org.geoserver.catalog.hibernate.beans;
 
 import java.io.Serializable;
 
+import org.geoserver.catalog.impl.StyleInfoImpl;
+
 /**
  *
  * @author ETj <etj at geo-solutions.it>
@@ -14,9 +16,9 @@ public class GroupedLayerHb implements Serializable {
     private Long id = null;
     private Integer version = null;
     private LayerInfoImplHb layer = null;
-    private StyleInfoImplHb style = null;
+    private StyleInfoImpl style = null;
 
-    public GroupedLayerHb(LayerInfoImplHb layer, StyleInfoImplHb style) {
+    public GroupedLayerHb(LayerInfoImplHb layer, StyleInfoImpl style) {
         this.layer = layer;
         this.style = style;
     }
@@ -40,11 +42,11 @@ public class GroupedLayerHb implements Serializable {
         this.layer = layer;
     }
 
-    public StyleInfoImplHb getStyle() {
+    public StyleInfoImpl getStyle() {
         return style;
     }
 
-    public void setStyle(StyleInfoImplHb style) {
+    public void setStyle(StyleInfoImpl style) {
         this.style = style;
     }
 

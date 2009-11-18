@@ -51,22 +51,22 @@ import org.geoserver.catalog.event.impl.CatalogAddEventImpl;
 import org.geoserver.catalog.event.impl.CatalogModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogPostModifyEventImpl;
 import org.geoserver.catalog.event.impl.CatalogRemoveEventImpl;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.impl.CoverageInfoImpl;
 import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.ModificationProxy;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.ResolvingProxy;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.hibernate.dao.CatalogDAO;
 import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
 import org.springframework.beans.BeansException;
@@ -88,6 +88,11 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
     /**
      *
      */
+    private SoftValueHashMap<String, ResourceInfo> resourceInfoCache = new SoftValueHashMap<String, ResourceInfo>();
+
+    /**
+     *
+     */
     private CatalogDAO catalogDAO;
 
     /**
@@ -105,7 +110,8 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
      * 
      * TODO: ETJ rework this: what do we need the key for in this map?
      */
-    private Map<HibCatalogImpl, CatalogEvent> events = Collections.synchronizedMap(new MultiHashMap());
+    private Map<HibCatalogImpl, CatalogEvent> events = Collections
+            .synchronizedMap(new MultiHashMap());
 
     /**
      * resources
@@ -118,8 +124,8 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
     private HibCatalogImpl() {
         super();
         resourcePool = new ResourcePool(this);
+
         listeners.add(new HibCatalogUpdater());
-        
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -452,7 +458,17 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
             resolve(resource);
             return createProxy((T) resource, clazz);
         }
+        // ModificationProxy.create((T) resource, clazz );
 
+        // List l = lookup(clazz, resources);
+        // for (Iterator i = l.iterator(); i.hasNext();) {
+        // ResourceInfo resource = (ResourceInfo) i.next();
+        // if (id.equals(resource.getId())) {
+        // return ModificationProxy.create((T) resource, clazz );
+        // }
+        // }
+        //
+        // return null;
     }
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
@@ -1087,7 +1103,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         resolve(namespace);
 
         boolean existsDefault = catalogDAO.getDefaultNamespace() != null;
-        ((NamespaceInfoImplHb) namespace).setDefault(!existsDefault);
+        ((NamespaceInfoImpl) namespace).setDefault(!existsDefault);
 
         catalogDAO.save(namespace);
 
@@ -1125,7 +1141,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         if (!catalogDAO.getResourcesByNamespace(namespace, ResourceInfo.class).isEmpty()) {
             throw new IllegalArgumentException("Unable to delete non-empty namespace.");
         }
-        NamespaceInfoImplHb realns = catalogDAO.getNamespaceByPrefix(namespace.getPrefix());
+        NamespaceInfoImpl realns = catalogDAO.getNamespaceByPrefix(namespace.getPrefix());
         if (realns == null) {
             throw new IllegalArgumentException("Can't find namespace '" + namespace.getPrefix()
                     + "' for deletion.");
@@ -1138,7 +1154,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
             // elect a random ns as default
             List<NamespaceInfo> nslist = catalogDAO.getNamespaces();
             if (!nslist.isEmpty()) {
-                NamespaceInfoImplHb ns0 = (NamespaceInfoImplHb) nslist.get(0);
+                NamespaceInfoImpl ns0 = (NamespaceInfoImpl) nslist.get(0);
                 LOGGER.warning("Electing '" + namespace.getName() + "' to default namespace.");
                 ns0.setDefault(true);
                 catalogDAO.update(ns0);
@@ -1154,7 +1170,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
     }
 
     public NamespaceInfo getDefaultNamespace() {
-        final NamespaceInfoImplHb defaultNamespace = catalogDAO.getDefaultNamespace();
+        final NamespaceInfoImpl defaultNamespace = catalogDAO.getDefaultNamespace();
         resolve(defaultNamespace);
         return createProxy(defaultNamespace, NamespaceInfo.class);
 
@@ -1172,10 +1188,10 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
                                                                           // default
             return;
 
-        ((NamespaceInfoImplHb) nsnew).setDefault(true);
+        ((NamespaceInfoImpl) nsnew).setDefault(true);
         catalogDAO.update(nsnew);
         if (nsold != null) {
-            ((NamespaceInfoImplHb) nsold).setDefault(false);
+            ((NamespaceInfoImpl) nsold).setDefault(false);
             catalogDAO.update(nsold);
         }
 
@@ -1192,7 +1208,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         resolve(workspace);
 
         boolean existsDefault = catalogDAO.getDefaultWorkspace() != null;
-        ((WorkspaceInfoImplHb) workspace).setDefault(!existsDefault);
+        ((WorkspaceInfoImpl) workspace).setDefault(!existsDefault);
 
         catalogDAO.save(workspace);
 
@@ -1252,10 +1268,10 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         if (wsold != null && wsold.getName().equals(wsnew.getName())) // setting existing default
             return;
 
-        ((WorkspaceInfoImplHb) wsnew).setDefault(true);
+        ((WorkspaceInfoImpl) wsnew).setDefault(true);
         catalogDAO.update(wsnew);
         if (wsold != null) {
-            ((WorkspaceInfoImplHb) wsold).setDefault(false);
+            ((WorkspaceInfoImpl) wsold).setDefault(false);
             catalogDAO.update(wsold);
         }
 
@@ -1601,7 +1617,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
             StyleInfo s = lg.getStyles().get(i);
             if (s != null) {
                 StyleInfo resolved = ResolvingProxy.resolve(this, s);
-                ((StyleInfoImplHb)resolved).setCatalog(this);
+                ((StyleInfoImpl)resolved).setCatalog(this);
                 lg.getStyles().set(i, resolved);
             }
         }

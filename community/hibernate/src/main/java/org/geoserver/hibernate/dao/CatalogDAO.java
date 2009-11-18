@@ -10,8 +10,8 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 
 public interface CatalogDAO {
 
@@ -63,9 +63,9 @@ public interface CatalogDAO {
 
     public abstract WorkspaceInfo update(WorkspaceInfo entity);
 
-    NamespaceInfoImplHb getDefaultNamespace();
+    NamespaceInfoImpl getDefaultNamespace();
 
-    WorkspaceInfoImplHb getDefaultWorkspace();
+    WorkspaceInfoImpl getDefaultWorkspace();
 
     LayerGroupInfo getLayerGroup(String id);
 
@@ -89,9 +89,9 @@ public interface CatalogDAO {
 
     List<MapInfo> getMaps();
 
-    NamespaceInfoImplHb getNamespace(String id);
+    NamespaceInfoImpl getNamespace(String id);
 
-    NamespaceInfoImplHb getNamespaceByPrefix(String prefix);
+    NamespaceInfoImpl getNamespaceByPrefix(String prefix);
 
     NamespaceInfo getNamespaceByURI(String uri);
 

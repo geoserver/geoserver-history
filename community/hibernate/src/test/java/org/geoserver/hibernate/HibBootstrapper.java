@@ -6,7 +6,7 @@ package org.geoserver.hibernate;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
@@ -55,7 +55,7 @@ public class HibBootstrapper {
     }
 
     public WorkspaceInfo createDefaultWorkspace() {
-        WorkspaceInfoImplHb ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory()
+        WorkspaceInfoImpl ws = (WorkspaceInfoImpl) resourceCatalog.getFactory()
                 .createWorkspace();
         ws.setDefault(Boolean.TRUE);
         ws.setName("nurc");
