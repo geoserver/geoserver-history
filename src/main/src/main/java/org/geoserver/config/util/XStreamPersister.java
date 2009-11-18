@@ -518,7 +518,7 @@ public class XStreamPersister {
     /**
      * Map converter which encodes a map more breifly than the standard map converter.
      */
-    class BreifMapConverter extends MapConverter {
+    protected class BreifMapConverter extends MapConverter {
         
         public BreifMapConverter() {
             super(getXStream().getMapper());
