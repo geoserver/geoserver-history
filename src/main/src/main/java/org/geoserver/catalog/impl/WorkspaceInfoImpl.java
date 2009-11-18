@@ -14,6 +14,7 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
 
     protected String id;
     protected String name;
+    protected boolean _default;
     
     protected MetadataMap metadata = new MetadataMap();
     
@@ -23,6 +24,14 @@ public class WorkspaceInfoImpl implements WorkspaceInfo, Serializable {
     
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public boolean isDefault() {
+        return _default;
+    }
+
+    public void setDefault(boolean _default) {
+        this._default = _default;
     }
 
     public String getName() {

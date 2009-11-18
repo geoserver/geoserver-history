@@ -11,6 +11,7 @@ import org.opengis.feature.type.AttributeDescriptor;
 
 public class AttributeTypeInfoImpl implements AttributeTypeInfo {
 
+    protected String id;
     protected String name;
     protected int minOccurs;
     protected int maxOccurs;
@@ -20,6 +21,14 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     
     protected FeatureTypeInfo featureType;
     
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
