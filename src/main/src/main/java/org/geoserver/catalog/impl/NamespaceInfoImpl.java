@@ -15,6 +15,8 @@ public class NamespaceInfoImpl implements NamespaceInfo {
     protected String prefix;
 
     protected String uri;
+    
+    protected boolean _default;
 
     protected MetadataMap metadata = new MetadataMap();
     
@@ -24,6 +26,14 @@ public class NamespaceInfoImpl implements NamespaceInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public boolean isDefault() {
+        return _default;
+    }
+
+    public void setDefault(boolean _default) {
+        this._default = _default;
     }
 
     public String getPrefix() {
