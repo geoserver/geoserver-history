@@ -262,10 +262,12 @@ public class XStreamPersister {
         
         
         //WorkspaceInfo
+        xs.omitField( impl(WorkspaceInfo.class), "_default");
         xs.registerLocalConverter( impl(WorkspaceInfo.class), "metadata", new MetadataMapConverter() );
         
         //NamespaceInfo
         xs.omitField( impl(NamespaceInfo.class), "catalog");
+        xs.omitField( impl(NamespaceInfo.class), "_default");
         xs.registerLocalConverter( impl(NamespaceInfo.class), "metadata", new MetadataMapConverter() );
         
         // StoreInfo
@@ -363,6 +365,7 @@ public class XStreamPersister {
         xs.omitField( ResourceInfoImpl.class, "id");
         xs.omitField( LayerInfoImpl.class, "id");
         xs.omitField(LayerGroupInfoImpl.class, "id" );
+        xs.omitField(AttributeTypeInfoImpl.class, "id");
     }
     
     /**
