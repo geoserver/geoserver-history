@@ -132,6 +132,9 @@
     <alias name="hibGeoServerLoader" alias="geoServerLoader" />
 
 
+	<bean id="xstreamPersisterFactoryHib" class="org.geoserver.hibernate.HibXStreamPersisterFactory"/>
+	<alias name="xstreamPersisterFactoryHib" alias="xstreamPersisterFactory" />
+
 <!-- jee:jndi-lookup id="server" jndi-name="java:comp/env/jmx/runtime" />
 
 <jee:jndi-lookup id="hibernateSessionFactory" jndi-name="SessionFactory" />

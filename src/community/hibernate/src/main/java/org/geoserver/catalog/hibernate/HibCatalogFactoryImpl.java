@@ -1,10 +1,9 @@
 package org.geoserver.catalog.hibernate;
 
-import org.geoserver.catalog.AttributionInfo;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import java.util.logging.Logger;
+
 import org.geoserver.catalog.AttributeTypeInfo;
+import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
@@ -17,20 +16,21 @@ import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
-import org.geoserver.catalog.impl.CoverageDimensionImpl;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
+import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
+import org.geoserver.catalog.impl.AttributionInfoImpl;
+import org.geoserver.catalog.impl.CoverageDimensionImpl;
+import org.geoserver.catalog.impl.CoverageInfoImpl;
+import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
+import org.geoserver.catalog.impl.DataStoreInfoImpl;
+import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.LegendInfoImpl;
 import org.geoserver.catalog.impl.MapInfoImpl;
 import org.geoserver.catalog.impl.MetadataLinkInfoImpl;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 
 public class HibCatalogFactoryImpl implements CatalogFactory {
 
@@ -46,7 +46,7 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
     }
 
     public DataStoreInfo createDataStore() {
-        return new DataStoreInfoImplHb(catalog);
+        return new DataStoreInfoImpl(catalog);
     }
 
     public MetadataLinkInfo createMetadataLink() {
@@ -54,15 +54,15 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
     }
 
     public CoverageStoreInfo createCoverageStore() {
-        return new CoverageStoreInfoImplHb(catalog);
+        return new CoverageStoreInfoImpl(catalog);
     }
 
     public FeatureTypeInfo createFeatureType() {
-        return new FeatureTypeInfoImplHb(catalog);
+        return new FeatureTypeInfoImpl(catalog);
     }
 
     public CoverageInfo createCoverage() {
-        return new CoverageInfoImplHb(catalog);
+        return new CoverageInfoImpl(catalog);
     }
 
     public LayerInfo createLayer() {
@@ -74,11 +74,11 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
     }
 
     public StyleInfo createStyle() {
-        return new StyleInfoImplHb(catalog);
+        return new StyleInfoImpl(catalog);
     }
 
-    public NamespaceInfoImplHb createNamespace() {
-        return new NamespaceInfoImplHb();
+    public NamespaceInfoImpl createNamespace() {
+        return new NamespaceInfoImpl();
     }
 
     public <T> T create(Class<T> clazz) {
@@ -87,7 +87,7 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
     }
 
     public AttributeTypeInfo createAttribute() {
-        return new AttributeTypeInfoImplHb();
+        return new AttributeTypeInfoImpl();
     }
 
     public LayerGroupInfo createLayerGroup() {
@@ -98,16 +98,16 @@ public class HibCatalogFactoryImpl implements CatalogFactory {
         return new LegendInfoImpl();
     }
 
-    public WorkspaceInfoImplHb createWorkspace() {
-        return new WorkspaceInfoImplHb();
-    }
-
-    public CoverageDimensionInfo createCoverageDimension() {
-        return new CoverageDimensionInfoImplHb();
+    public WorkspaceInfoImpl createWorkspace() {
+        return new WorkspaceInfoImpl();
     }
 
     public AttributionInfo createAttribution() {
-        return new AttributionInfoImplHb();
+        return new AttributionInfoImpl();
     }
+
+	public CoverageDimensionInfo createCoverageDimension() {
+		return new CoverageDimensionImpl();
+	}
 
 }

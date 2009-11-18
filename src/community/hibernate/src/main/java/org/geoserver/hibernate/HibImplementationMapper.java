@@ -5,13 +5,11 @@
 
 package org.geoserver.hibernate;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
@@ -29,20 +27,20 @@ import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.hibernate.HibCatalogImpl;
-import org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
+import org.geoserver.catalog.impl.AttributionInfoImpl;
 import org.geoserver.catalog.impl.CoverageDimensionImpl;
+import org.geoserver.catalog.impl.CoverageInfoImpl;
+import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
+import org.geoserver.catalog.impl.DataStoreInfoImpl;
+import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
@@ -54,16 +52,22 @@ import org.geoserver.config.hibernate.beans.LoggingInfoImplHb;
 import org.geoserver.config.hibernate.beans.MetadataLinkInfoImplHb;
 import org.geoserver.config.impl.JAIInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
-import org.geoserver.config.util.ImplementationMapper;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.collections.CollectionConverter;
 
 
 /**
  * Provides implementation mapping for GeoServer interfaces.
  * Mainly used in XStream outputting.
  *
+ * This is a WORKEROUND
+ * Will be removed in 2.1
+ * 
  * @author ETj <etj at geo-solutions.it>
  */
-public class HibImplementationMapper implements ImplementationMapper {
+public class HibImplementationMapper {
 
     private static Map<Class, Class> impl = new HashMap<Class, Class>();
 //    private static List<Converter> converters = new ArrayList<Converter>();
@@ -92,19 +96,19 @@ public class HibImplementationMapper implements ImplementationMapper {
         impl.put(LoggingInfo.class, LoggingInfoImplHb.class);
         impl.put(JAIInfo.class, JAIInfoImpl.class);
         impl.put(Catalog.class, HibCatalogImpl.class);
-        impl.put(NamespaceInfo.class, NamespaceInfoImplHb.class);
-        impl.put(WorkspaceInfo.class, WorkspaceInfoImplHb.class);
-        impl.put(DataStoreInfo.class, DataStoreInfoImplHb.class);
-        impl.put(CoverageStoreInfo.class, CoverageStoreInfoImplHb.class);
-        impl.put(StyleInfo.class, StyleInfoImplHb.class);
-        impl.put(FeatureTypeInfo.class, FeatureTypeInfoImplHb.class);
-        impl.put(CoverageInfo.class, CoverageInfoImplHb.class);
+        impl.put(NamespaceInfo.class, NamespaceInfoImpl.class);
+        impl.put(WorkspaceInfo.class, WorkspaceInfoImpl.class);
+        impl.put(DataStoreInfo.class, DataStoreInfoImpl.class);
+        impl.put(CoverageStoreInfo.class, CoverageStoreInfoImpl.class);
+        impl.put(StyleInfo.class, StyleInfoImpl.class);
+        impl.put(FeatureTypeInfo.class, FeatureTypeInfoImpl.class);
+        impl.put(CoverageInfo.class, CoverageInfoImpl.class);
         impl.put(CoverageDimensionInfo.class, CoverageDimensionImpl.class);
         impl.put(MetadataLinkInfo.class, MetadataLinkInfoImplHb.class);
-        impl.put(AttributeTypeInfo.class, AttributeTypeInfoImplHb.class);
+        impl.put(AttributeTypeInfo.class, AttributeTypeInfoImpl.class);
         impl.put(LayerInfo.class, LayerInfoImplHb.class);
         impl.put(LayerGroupInfo.class, LayerGroupInfoImplHb.class);
-        impl.put(AttributionInfo.class, AttributionInfoImplHb.class);
+        impl.put(AttributionInfo.class, AttributionInfoImpl.class);
         impl.put(ContactInfo.class, ContactInfoImplHb.class);
         impl.put(ResourceInfo.class, ResourceInfoImpl.class);
 

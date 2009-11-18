@@ -27,7 +27,7 @@
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="DESCRIPTION" name="description"/>
     <property column="ENABLED" name="enabled"/>
-    <many-to-one class="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb" column="WORKSPACE" foreign-key="fk_store_workspace" lazy="false" name="workspace"/>
+    <many-to-one class="org.geoserver.catalog.impl.WorkspaceInfoImpl" column="WORKSPACE" foreign-key="fk_store_workspace" lazy="false" name="workspace"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="fk_store_metadata" name="metadata" lazy="false"/>
     <map cascade="all-delete-orphan" lazy="false" name="connectionParameters" table="STORE_CONNPARAMS">
         <key column="STORE_ID" foreign-key="fk_store_connparam"/>
@@ -37,12 +37,12 @@
     <!-- ===================================================================== -->
     <!-- DataStoreInfo -->
     <!-- ===================================================================== -->
-    <subclass discriminator-value="DataStore" name="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb">
+    <subclass discriminator-value="DataStore" name="org.geoserver.catalog.impl.DataStoreInfoImpl">
     </subclass>
     <!-- ===================================================================== -->
     <!-- CoverageStoreInfo -->
     <!-- ===================================================================== -->
-    <subclass discriminator-value="CoverageStore" extends="org.geoserver.catalog.hibernate.beans.StoreInfoImplHb" name="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb">
+    <subclass discriminator-value="CoverageStore" extends="org.geoserver.catalog.hibernate.beans.StoreInfoImplHb" name="org.geoserver.catalog.impl.CoverageStoreInfoImpl">
       <property column="COVERAGE_STORE_TYPE" name="type"/>
       <property column="COVERAGE_STORE_URL" name="URL"/>
     </subclass>
@@ -50,7 +50,7 @@
   <!-- ===================================================================== -->
   <!-- StyleInfo -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" table="STYLES">
+  <class name="org.geoserver.catalog.impl.StyleInfoImpl" table="STYLES">
     <cache usage="read-write"/>
     <id column="STYLE_ID" name="id">
       <generator class="native"/>
@@ -61,7 +61,7 @@
   <!-- ===================================================================== -->
   <!-- NamespaceInfo -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb" table="NAMESPACES">
+  <class name="org.geoserver.catalog.impl.NamespaceInfoImpl" table="NAMESPACES">
     <cache usage="read-write"/>
     <id column="NS_ID" name="id">
       <generator class="native"/>
@@ -74,7 +74,7 @@
   <!-- ===================================================================== -->
   <!-- WorkspaceInfo -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb" table="WORKSPACES">
+  <class name="org.geoserver.catalog.impl.WorkspaceInfoImpl" table="WORKSPACES">
     <cache usage="read-write"/>
     <id column="WS_ID" name="id">
       <generator class="native"/>
@@ -99,7 +99,7 @@
   <!-- ===================================================================== -->
   <!-- CoverageDimension -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" table="COVERAGE_DIMENSIONS">
+  <class name="org.geoserver.catalog.impl.CoverageDimensionImpl" table="COVERAGE_DIMENSIONS">
     <cache usage="read-write"/>
     <id column="ID" name="id">
       <generator class="native"/>
@@ -128,7 +128,7 @@
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="NATIVE_NAME" name="nativeName" not-null="true"/>
     <!-- property name="prefixedName" column="PREFIXED_NAME"/ -->
-    <many-to-one class="org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb" column="NAMESPACE" foreign-key="fk_resource_namespace" lazy="false" name="namespace"/>
+    <many-to-one class="org.geoserver.catalog.impl.NamespaceInfoImpl" column="NAMESPACE" foreign-key="fk_resource_namespace" lazy="false" name="namespace"/>
     <property column="TITLE" name="title"/>
     <property column="ABSTRACT" name="abstract"/>
     <property column="DESCRIPTION" name="description"/>
@@ -172,20 +172,20 @@
   <!-- ===================================================================== -->
   <!-- FeatureTypeInfo -->
   <!-- ===================================================================== -->
-  <joined-subclass extends="org.geoserver.catalog.impl.ResourceInfoImpl" name="org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb" table="FEATURETYPES">
+  <joined-subclass extends="org.geoserver.catalog.impl.ResourceInfoImpl" name="org.geoserver.catalog.impl.FeatureTypeInfoImpl" table="FEATURETYPES">
     <key column="RESOURCE_ID"/>
-    <many-to-one class="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb" column="STORE" foreign-key="fk_featuretype_store" lazy="false" name="store"/>
+    <many-to-one class="org.geoserver.catalog.impl.DataStoreInfoImpl" column="STORE" foreign-key="fk_featuretype_store" lazy="false" name="store"/>
     <property column="FILTER" name="filter" type="filter"/>
     <list cascade="all" lazy="false" name="attributes" table="FEATURETYPES_ATTR">
       <key column="featuretype" foreign-key="attrib_featuretype_listpk"/>
       <list-index column="FTYPES_ATTR_IDX"/>
-      <one-to-many class="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb"/>
+      <one-to-many class="org.geoserver.catalog.impl.AttributeTypeInfoImpl"/>
     </list>
   </joined-subclass>
   <!-- ===================================================================== -->
   <!-- CoverageInfo -->
   <!-- ===================================================================== -->
-  <joined-subclass extends="org.geoserver.catalog.impl.ResourceInfoImpl" name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb" table="COVERAGES">
+  <joined-subclass extends="org.geoserver.catalog.impl.ResourceInfoImpl" name="org.geoserver.catalog.impl.CoverageInfoImpl" table="COVERAGES">
     <key column="RESOURCE_ID" foreign-key="fk_coverage_resource"/>
     <property column="NATIVE_FORMAT" name="nativeFormat"/>
     <!--		<property name="nativeSrsWKT" column="NATIVE_SRS"/> -->
@@ -215,7 +215,7 @@
     <list cascade="all" lazy="false" name="dimensions" table="RESOURCE_COV_DIMENSION">
       <key column="RESOURCE_ID" foreign-key="fk_cov_dim"/>
       <list-index column="idx"/>
-      <many-to-many class="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb" lazy="false"/>
+      <many-to-many class="org.geoserver.catalog.impl.CoverageDimensionImpl" lazy="false"/>
     </list>
     <map cascade="all" lazy="false" name="parameters" table="COVERAGE_PARAMETERS">
       <key column="COVERAGE_ID" foreign-key="fk_cov_param"/>
@@ -235,7 +235,7 @@
 		    <many-to-many class="org.geoserver.catalog.impl.GeophysicParamInfoImpl"/>
     	</list>
 -->
-    <many-to-one class="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb" column="STORE" foreign-key="fk_coverage_store" lazy="false" name="store"/>
+    <many-to-one class="org.geoserver.catalog.impl.CoverageStoreInfoImpl" column="STORE" foreign-key="fk_coverage_store" lazy="false" name="store"/>
   </joined-subclass>
   <!-- ===================================================================== -->
   <!-- LegendInfo -->
@@ -263,16 +263,16 @@
     <property column="NAME" name="name" not-null="true" unique="true"/>
     <property column="TYPE" length="100000" name="type" type="java.io.Serializable"/>
     <property column="ENABLED" name="enabled"/>
-    <many-to-one cascade="persist" class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" column="DEFAULT_STYLE" foreign-key="fk_layer_defstyle" lazy="false" name="defaultStyle"/>
+    <many-to-one cascade="persist" class="org.geoserver.catalog.impl.StyleInfoImpl" column="DEFAULT_STYLE" foreign-key="fk_layer_defstyle" lazy="false" name="defaultStyle"/>
     <set name="styles" table="LAYER_STYLES" lazy="false">
       <key column="LAYER_ID" foreign-key="fk_layerstyles_layer"/>
-      <many-to-many class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" lazy="false" foreign-key="fk_layerstyles_styles"/>
+      <many-to-many class="org.geoserver.catalog.impl.StyleInfoImpl" lazy="false" foreign-key="fk_layerstyles_styles"/>
     </set>
     <!-- fixme: maybe these reosurces should be persisted by hand, avoiding dups. -->
     <many-to-one cascade="persist" class="org.geoserver.catalog.impl.ResourceInfoImpl" column="RESOURCE" foreign-key="fk_layer_resource"  name="resource" not-null="true" lazy="false"/>
     <many-to-one cascade="persist" class="org.geoserver.catalog.impl.LegendInfoImpl" column="LEGEND" foreign-key="fk_layer_legend"  name="legend" lazy="false"/>
     <many-to-one cascade="all" class="org.geoserver.catalog.MetadataMap" column="METADATA" foreign-key="fk_layer_metadata"  name="metadata" lazy="false"/>
-    <many-to-one cascade="all" class="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" column="ATTRIBUTION" foreign-key="fk_layer_attribution" name="attribution" lazy="false"/>
+    <many-to-one cascade="all" class="org.geoserver.catalog.impl.AttributionInfoImpl" column="ATTRIBUTION" foreign-key="fk_layer_attribution" name="attribution" lazy="false"/>
   </class>
   <!-- ===================================================================== -->
   <!-- MapInfo -->
@@ -302,7 +302,7 @@
     <many-to-one class="org.geoserver.catalog.hibernate.beans.LayerInfoImplHb" name="layer" lazy="false" foreign-key="fk_groupedlayer_layer">
         <column name="layer_id" not-null="true"/>
     </many-to-one>
-    <many-to-one class="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb" name="style" lazy="false" foreign-key="fk_groupedlayer_style">
+    <many-to-one class="org.geoserver.catalog.impl.StyleInfoImpl" name="style" lazy="false" foreign-key="fk_groupedlayer_style">
         <column name="style_id" not-null="false"/>
     </many-to-one>
   </class>
@@ -369,7 +369,7 @@
   <!-- ===================================================================== -->
   <!-- AttributionInfo -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb" table="ATTRIBUTION">
+  <class name="org.geoserver.catalog.impl.AttributionInfoImpl" table="ATTRIBUTION">
     <cache usage="read-write"/>
     <id column="ATTRIBUTION_ID" name="id">
       <generator class="native"/>
@@ -384,7 +384,7 @@
   <!-- ===================================================================== -->
   <!-- AttributeTypeInfo -->
   <!-- ===================================================================== -->
-  <class name="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb" table="ATTRIBUTETYPE">
+  <class name="org.geoserver.catalog.impl.AttributeTypeInfoImpl" table="ATTRIBUTETYPE">
     <cache usage="read-write"/>
     <id column="ATTRIBUTE_ID" name="id">
       <generator class="native"/>

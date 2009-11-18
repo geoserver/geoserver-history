@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
@@ -115,13 +115,13 @@ public class HibDefaultsFactoryImpl {
         ns.setURI("http://www.geo-solutions.it");
         resourceCatalog.add(ns);
 
-        WorkspaceInfoImplHb ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory()
+        WorkspaceInfoImpl ws = (WorkspaceInfoImpl) resourceCatalog.getFactory()
                 .createWorkspace();
         ws.setName("topp");
         resourceCatalog.add(ws);
         resourceCatalog.setDefaultWorkspace(ws);
 
-        ws = (WorkspaceInfoImplHb) resourceCatalog.getFactory().createWorkspace();
+        ws = (WorkspaceInfoImpl) resourceCatalog.getFactory().createWorkspace();
         ws.setName("it.geosolutions");
         resourceCatalog.add(ws);
     }

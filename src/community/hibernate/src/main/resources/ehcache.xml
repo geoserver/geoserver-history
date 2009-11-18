@@ -16,7 +16,7 @@
 
 <!-- Specific entity caches -->  
 <cache
-	name="org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb"
+	name="org.geoserver.catalog.impl.AttributeTypeInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -27,7 +27,7 @@
     memoryStoreEvictionPolicy="LRU"/>
    
 <cache
-	name="org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb"
+	name="org.geoserver.catalog.impl.AttributionInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -38,7 +38,7 @@
     memoryStoreEvictionPolicy="LRU"/>   
     
 <cache
-	name="org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb"
+	name="org.geoserver.catalog.impl.CoverageDimensionImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -49,7 +49,7 @@
     memoryStoreEvictionPolicy="LRU"/>     
    
 <cache
-	name="org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb"
+	name="org.geoserver.catalog.impl.CoverageInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -60,7 +60,7 @@
     memoryStoreEvictionPolicy="LRU"/>     
 
 <cache
-	name="org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb"
+	name="org.geoserver.catalog.impl.CoverageStoreInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -71,7 +71,7 @@
     memoryStoreEvictionPolicy="LRU"/>       
 
 <cache
-	name="org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb"
+	name="org.geoserver.catalog.impl.DataStoreInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -83,7 +83,7 @@
    
 
 <cache
-	name="org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb"
+	name="org.geoserver.catalog.impl.FeatureTypeInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -116,7 +116,7 @@
     memoryStoreEvictionPolicy="LRU"/>
     
 <cache
-	name="org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb"
+	name="org.geoserver.catalog.impl.NamespaceInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -128,7 +128,7 @@
     
 
 <cache
-	name="org.geoserver.catalog.hibernate.beans.StyleInfoImplHb"
+	name="org.geoserver.catalog.impl.StyleInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"
@@ -140,7 +140,7 @@
     
 
 <cache
-	name="org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb"
+	name="org.geoserver.catalog.impl.WorkspaceInfoImpl"
     maxElementsInMemory="100000"
     eternal="false"
     timeToIdleSeconds="240"

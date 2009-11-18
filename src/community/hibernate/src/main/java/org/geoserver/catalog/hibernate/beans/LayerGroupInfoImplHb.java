@@ -6,11 +6,12 @@ package org.geoserver.catalog.hibernate.beans;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.impl.*;
+
+import org.geoserver.catalog.impl.LayerGroupInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 import org.geotools.util.logging.Logging;
 
@@ -50,7 +51,7 @@ public class LayerGroupInfoImplHb extends LayerGroupInfoImpl implements Hibernab
         getGroupedLayers().clear();
         for (int i = 0; i < layers.size(); i++) {
             getGroupedLayers().add(new GroupedLayerHb((LayerInfoImplHb)layers.get(i),
-                                                  (StyleInfoImplHb)styles.get(i)));
+                                                  (StyleInfoImpl)styles.get(i)));
         }
     }
 
@@ -65,7 +66,7 @@ public class LayerGroupInfoImplHb extends LayerGroupInfoImpl implements Hibernab
         getGroupedLayers().clear();
         for (int i = 0; i < layers.size(); i++) {
             getGroupedLayers().add(new GroupedLayerHb((LayerInfoImplHb)layers.get(i),
-                                                  (StyleInfoImplHb)styles.get(i)));
+                                                  (StyleInfoImpl)styles.get(i)));
         }
     }
 

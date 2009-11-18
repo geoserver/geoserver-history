@@ -19,21 +19,21 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.hibernate.beans.AttributeTypeInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.AttributionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageDimensionInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.CoverageStoreInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.DataStoreInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.FeatureTypeInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
+import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
+import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
+import org.geoserver.catalog.impl.AttributionInfoImpl;
+import org.geoserver.catalog.impl.CoverageDimensionImpl;
+import org.geoserver.catalog.impl.CoverageInfoImpl;
+import org.geoserver.catalog.impl.CoverageStoreInfoImpl;
+import org.geoserver.catalog.impl.DataStoreInfoImpl;
+import org.geoserver.catalog.impl.FeatureTypeInfoImpl;
 import org.geoserver.catalog.impl.MapInfoImpl;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
@@ -61,16 +61,16 @@ public class HibMapper {
         // CATALOG STUFF
 
         else if (CoverageStoreInfo.class.isAssignableFrom(clazz))
-            return CoverageStoreInfoImplHb.class;
+            return CoverageStoreInfoImpl.class;
         else if (DataStoreInfo.class.isAssignableFrom(clazz))
-            return DataStoreInfoImplHb.class;
+            return DataStoreInfoImpl.class;
         else if (StoreInfo.class.isAssignableFrom(clazz)) // mind the order!
             return StoreInfoImpl.class;
 
         else if (CoverageInfo.class.isAssignableFrom(clazz))
-            return CoverageInfoImplHb.class;
+            return CoverageInfoImpl.class;
         else if (FeatureTypeInfo.class.isAssignableFrom(clazz))
-            return FeatureTypeInfoImplHb.class;
+            return FeatureTypeInfoImpl.class;
         else if (ResourceInfo.class.isAssignableFrom(clazz)) // mind the order!
             return ResourceInfoImpl.class;
 
@@ -80,21 +80,21 @@ public class HibMapper {
             return LayerGroupInfoImplHb.class;
 
         else if (NamespaceInfo.class.isAssignableFrom(clazz))
-            return NamespaceInfoImplHb.class;
+            return NamespaceInfoImpl.class;
         else if (WorkspaceInfo.class.isAssignableFrom(clazz))
-            return WorkspaceInfoImplHb.class;
+            return WorkspaceInfoImpl.class;
 
         else if (CoverageDimensionInfo.class.isAssignableFrom(clazz))
-            return CoverageDimensionInfoImplHb.class;
+            return CoverageDimensionImpl.class;
 
         else if (AttributeTypeInfo.class.isAssignableFrom(clazz))
-            return AttributeTypeInfoImplHb.class;
+            return AttributeTypeInfoImpl.class;
 
         else if (AttributionInfo.class.isAssignableFrom(clazz))
-            return AttributionInfoImplHb.class;
+            return AttributionInfoImpl.class;
 
         else if (StyleInfo.class.isAssignableFrom(clazz))
-            return StyleInfoImplHb.class;
+            return StyleInfoImpl.class;
 
         // SERVICE STUFF
 

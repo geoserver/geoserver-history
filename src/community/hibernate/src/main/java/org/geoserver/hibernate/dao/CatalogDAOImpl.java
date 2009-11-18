@@ -19,10 +19,10 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.NamespaceInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.StyleInfoImplHb;
-import org.geoserver.catalog.hibernate.beans.WorkspaceInfoImplHb;
 import org.geoserver.catalog.impl.MapInfoImpl;
+import org.geoserver.catalog.impl.NamespaceInfoImpl;
+import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,10 +40,10 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
     /**
      * @see Catalog#getDefaultNamespace()
      */
-    public NamespaceInfoImplHb getDefaultNamespace() {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where default = ",
+    public NamespaceInfoImpl getDefaultNamespace() {
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where default = ",
                 param(Boolean.TRUE));
-        return (NamespaceInfoImplHb) first(query);
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
@@ -154,7 +154,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      */
     public <T extends ResourceInfo> List<T> getResourcesByNamespace(NamespaceInfo namespace,
             Class<T> clazz) {
-        Query query = buildQuery("select r from ", clazz, " r, ", NamespaceInfoImplHb.class, " n",
+        Query query = buildQuery("select r from ", clazz, " r, ", NamespaceInfoImpl.class, " n",
                 " where r.namespace = n and n.prefix = ", param(namespace.getPrefix()));
         return query.getResultList();
     }
@@ -198,7 +198,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public StyleInfo getStyle(String id) {
-        Query query = buildQuery("from ", StyleInfoImplHb.class, " where id = ", param(id));
+        Query query = buildQuery("from ", StyleInfoImpl.class, " where id = ", param(id));
         return (StyleInfo) first(query);
     }
 
@@ -206,7 +206,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public StyleInfo getStyleByName(String name) {
-        Query query = buildQuery("from ", StyleInfoImplHb.class, " where name = ", param(name));
+        Query query = buildQuery("from ", StyleInfoImpl.class, " where name = ", param(name));
         return (StyleInfo) first(query);
     }
 
@@ -214,47 +214,47 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public List<StyleInfo> getStyles() {
-        return (List<StyleInfo>) list(StyleInfoImplHb.class);
+        return (List<StyleInfo>) list(StyleInfoImpl.class);
     }
 
     /**
      * 
      */
-    public NamespaceInfoImplHb getNamespace(String id) {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where id = ", param(id));
-        return (NamespaceInfoImplHb) first(query);
+    public NamespaceInfoImpl getNamespace(String id) {
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where id = ", param(id));
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
      * 
      */
-    public NamespaceInfoImplHb getNamespaceByPrefix(String prefix) {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where prefix = ",
+    public NamespaceInfoImpl getNamespaceByPrefix(String prefix) {
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where prefix = ",
                 param(prefix));
-        return (NamespaceInfoImplHb) first(query);
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
      * 
      */
     public NamespaceInfo getNamespaceByURI(String uri) {
-        Query query = buildQuery("from ", NamespaceInfoImplHb.class, " where URI = ", param(uri));
-        return (NamespaceInfoImplHb) first(query);
+        Query query = buildQuery("from ", NamespaceInfoImpl.class, " where URI = ", param(uri));
+        return (NamespaceInfoImpl) first(query);
     }
 
     /**
      * 
      */
     public List<NamespaceInfo> getNamespaces() {
-        return (List<NamespaceInfo>) list(NamespaceInfoImplHb.class);
+        return (List<NamespaceInfo>) list(NamespaceInfoImpl.class);
     }
 
     /**
      */
-    public WorkspaceInfoImplHb getDefaultWorkspace() {
-        Query query = buildQuery("from ", WorkspaceInfoImplHb.class, " where default = ",
+    public WorkspaceInfoImpl getDefaultWorkspace() {
+        Query query = buildQuery("from ", WorkspaceInfoImpl.class, " where default = ",
                 param(Boolean.TRUE));
-        return (WorkspaceInfoImplHb) first(query);
+        return (WorkspaceInfoImpl) first(query);
     }
 
     /**
