@@ -54,6 +54,7 @@ import org.geoserver.catalog.util.LegacyFeatureTypeInfoReader;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.config.util.XStreamPersisterFactory;
 import org.geoserver.config.util.XStreamServiceLoader;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -85,6 +86,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     
     GeoServerResourceLoader resourceLoader;
     GeoServer geoserver;
+    XStreamPersisterFactory xpf = new XStreamPersisterFactory();
     
     //JD: this is a hack for the moment, it is used only to maintain tests since the test setup relies
     // on the old data directory structure, once the tests have been ported to the new structure
@@ -98,6 +100,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     public void setApplicationContext(ApplicationContext applicationContext)
             throws BeansException {
         GeoserverDataDirectory.init((WebApplicationContext)applicationContext);
+    }
+    
+    public void setXStreamPeristerFactory(XStreamPersisterFactory xpf) {
+        this.xpf = xpf;
     }
     
     public static void setLegacy(boolean legacy) {
@@ -120,7 +126,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             //load
             try {
                 Catalog catalog = (Catalog) bean;
-                XStreamPersister xp = new XStreamPersister.XML();
+                XStreamPersister xp = xpf.createXMLPersister();
                 xp.setCatalog( catalog );
                 loadCatalog( catalog, xp );
             } 
@@ -132,7 +138,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         if ( bean instanceof GeoServer ) {
             geoserver = (GeoServer) bean;
             try {
-                loadGeoServer( geoserver,  new XStreamPersister.XML() );
+                loadGeoServer( geoserver, xpf.createXMLPersister() );
             } 
             catch (Exception e) {
                 throw new RuntimeException( e );
@@ -199,7 +205,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             f = resourceLoader.find( "global.xml");
             if ( f != null ) {
                 BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                GeoServerInfoImpl global = (GeoServerInfoImpl) new XStreamPersister.XML().load( in, GeoServerInfo.class );
+                GeoServerInfoImpl global = (GeoServerInfoImpl) xpf.createXMLPersister().load( in, GeoServerInfo.class );
                 // fill in default collection values if needed
                 //JD: this should not be here, it should be moved to a resolve() method
                 // on GeoServer, like the way the catalog does it
@@ -214,7 +220,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             f = resourceLoader.find( "logging.xml" );
             if ( f != null ) {
                 BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
-                LoggingInfo logging = new XStreamPersister.XML().load( in, LoggingInfo.class );
+                LoggingInfo logging = xpf.createXMLPersister().load( in, LoggingInfo.class );
                 geoServer.setLogging( logging );
             }
             //load services
@@ -358,7 +364,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             catalog = ((Wrapper)geoserver.getCatalog()).unwrap(Catalog.class);
         }
         
-        XStreamPersister xp = new XStreamPersister.XML();
+        XStreamPersister xp = xpf.createXMLPersister();
         xp.setCatalog( catalog );
         
         loadCatalog( catalog, xp );
@@ -369,7 +375,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
     public void persist() throws Exception {
         //TODO: make the configuration backend pluggable... or loadable
         // from application context, or web.xml, or env variable, etc...
-        XStreamPersister p = new XStreamPersister.XML();
+        XStreamPersister p = xpf.createXMLPersister();
         BufferedOutputStream out = new BufferedOutputStream( 
             new FileOutputStream( resourceLoader.createFile( "catalog2.xml" ) )
         );
