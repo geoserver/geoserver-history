@@ -30,7 +30,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
         return new ReflectiveXMLFormat() {
             @Override
             protected void write(Object data, OutputStream output) throws IOException  {
-                XStreamPersister p = new XStreamPersister.XML();
+                XStreamPersister p = xpf.createXMLPersister();
                 p.setCatalog( catalog );
                 p.setReferenceByName(true);
                 p.setExcludeIds();
@@ -42,7 +42,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
             @Override
             protected Object read(InputStream in)
                     throws IOException {
-                XStreamPersister p = new XStreamPersister.XML();
+                XStreamPersister p = xpf.createXMLPersister();
                 p.setCatalog( catalog );
                 
                 configurePersister(p,this);
@@ -57,7 +57,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
             @Override
             protected void write(Object data, OutputStream output)
                     throws IOException {
-                XStreamPersister p = new XStreamPersister.JSON();
+                XStreamPersister p = xpf.createJSONPersister();
                 p.setCatalog(catalog);
                 p.setReferenceByName(true);
                 p.setExcludeIds();
@@ -69,7 +69,7 @@ public abstract class AbstractCatalogResource extends CatalogResourceBase {
             @Override
             protected Object read(InputStream input)
                     throws IOException {
-                XStreamPersister p = new XStreamPersister.JSON();
+                XStreamPersister p = xpf.createJSONPersister();
                 p.setCatalog(catalog);
                 
                 configurePersister(p,this);

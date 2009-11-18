@@ -7,7 +7,9 @@ package org.geoserver.catalog.rest;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.config.util.XStreamPersisterFactory;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.ReflectiveResource;
 import org.geoserver.rest.format.DataFormat;
@@ -34,12 +36,17 @@ public abstract class CatalogResourceBase extends ReflectiveResource {
      * the class of the resource
      */
     protected Class clazz;
+    /**
+     * xstream persister factory
+     */
+    protected XStreamPersisterFactory xpf;
     
     public CatalogResourceBase(Context context,Request request, Response response, Class clazz,
             Catalog catalog) {
         super( context, request, response );
         this.clazz = clazz;
         this.catalog = catalog;
+        this.xpf = GeoServerExtensions.bean(XStreamPersisterFactory.class);
     }
     
     @Override

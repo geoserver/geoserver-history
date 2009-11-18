@@ -19,8 +19,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.collections.MultiHashMap;
+import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -53,8 +55,10 @@ import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.config.LoggingInfo;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
@@ -97,7 +101,6 @@ import com.thoughtworks.xstream.converters.reflection.Sun14ReflectionProvider;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.mapper.ClassAliasingMapper;
 import com.thoughtworks.xstream.mapper.Mapper;
 
@@ -110,26 +113,6 @@ import com.thoughtworks.xstream.mapper.Mapper;
  */
 public class XStreamPersister {
 
-    /**
-     * Persister for XML.
-     */
-    public static class XML extends XStreamPersister {
-
-        public XML() {
-            super(null);
-        }
-    }
-
-    /**
-     * Persister for JSON.
-     */
-    public static class JSON extends XStreamPersister {
-
-        public JSON() {
-            //super( new JsonHierarchicalStreamDriver() );
-            super( new JettisonMappedXmlDriver() );
-        }
-    }
     
     /**
      * Callback interface or xstream persister.
@@ -195,9 +178,17 @@ public class XStreamPersister {
     boolean referenceByName = false;
     
     /**
-     * Constructs the persister and underlyign xstream.
+     * Constructs the persister and underlying xstream.
+     */
+    protected XStreamPersister() {
+        this(null);
+    }
+    
+    /**
+     * Constructs the persister and underlying xstream specifying the stream driver explicitly.
      */
     protected XStreamPersister(HierarchicalStreamDriver streamDriver) {
+        
         //control the order in which fields are sorted
         SortableFieldKeySorter sorter = new SortableFieldKeySorter();
         sorter.registerFieldOrder( CatalogImpl.class, new String[]{ "workspaces", "namespaces", "stores", "styles", 
@@ -214,124 +205,117 @@ public class XStreamPersister {
         }
         xs.setMode(XStream.NO_REFERENCES);
         
+        init(xs);
+    }
+    
+    protected void init(XStream xs) {
+        // Default implementations
+        initImplementationDefaults(xs);
+        
         // Aliases
-        xs.alias("global", GeoServerInfoImpl.class);
-        xs.alias("logging", LoggingInfo.class, LoggingInfoImpl.class);
-        xs.alias("jai", JAIInfo.class, JAIInfoImpl.class);
-        xs.alias("catalog", CatalogImpl.class);
-        xs.alias("namespace", NamespaceInfo.class, NamespaceInfoImpl.class);
-        xs.alias("workspace", WorkspaceInfo.class, WorkspaceInfoImpl.class);
-        xs.alias("dataStore", DataStoreInfo.class, DataStoreInfoImpl.class);
-        xs.alias("coverageStore", CoverageStoreInfo.class, CoverageStoreInfoImpl.class);
-        xs.alias("style",StyleInfo.class, StyleInfoImpl.class);
-        xs.alias( "featureType", FeatureTypeInfo.class, FeatureTypeInfoImpl.class );
-        xs.alias( "coverage", CoverageInfo.class, CoverageInfoImpl.class);
-        xs.alias( "coverageDimension", CoverageDimensionImpl.class);
-        xs.alias( "metadataLink", MetadataLinkInfo.class, MetadataLinkInfoImpl.class);
-        xs.alias( "attribute", AttributeTypeInfoImpl.class );
-        xs.alias( "layer", LayerInfo.class, LayerInfoImpl.class);
-        xs.alias( "layerGroup", LayerGroupInfo.class, LayerGroupInfoImpl.class );
+        xs.alias("global", GeoServerInfo.class);
+        xs.alias("logging", LoggingInfo.class);
+        xs.alias("jai", JAIInfo.class);
+        xs.alias("catalog", Catalog.class);
+        xs.alias("namespace", NamespaceInfo.class);
+        xs.alias("workspace", WorkspaceInfo.class);
+        xs.alias("dataStore", DataStoreInfo.class);
+        xs.alias("coverageStore", CoverageStoreInfo.class);
+        xs.alias("style",StyleInfo.class);
+        xs.alias( "featureType", FeatureTypeInfo.class);
+        xs.alias( "coverage", CoverageInfo.class);
+        xs.alias( "coverageDimension", CoverageDimensionInfo.class);
+        xs.alias( "metadataLink", MetadataLinkInfo.class);
+        xs.alias( "attribute", AttributeTypeInfo.class );
+        xs.alias( "layer", LayerInfo.class);
+        xs.alias( "layerGroup", LayerGroupInfo.class);
         xs.alias( "gridGeometry", GridGeometry2D.class);
         xs.alias( "projected", DefaultProjectedCRS.class);
-        xs.alias( "attribution", AttributionInfoImpl.class );
+        xs.alias( "attribution", AttributionInfo.class );
         xs.aliasField("abstract", ResourceInfoImpl.class, "_abstract" );
         
-        //default implementations
-        xs.addDefaultImplementation(ArrayList.class, List.class);
-        xs.addDefaultImplementation(GridGeometry2D.class, GridGeometry.class );
-        xs.addDefaultImplementation(DefaultGeographicCRS.class, CoordinateReferenceSystem.class);
-        
-        xs.addDefaultImplementation(AttributionInfoImpl.class, AttributionInfo.class);
-        xs.addDefaultImplementation(MetadataLinkInfoImpl.class, MetadataLinkInfo.class);
-        xs.addDefaultImplementation(ContactInfoImpl.class, ContactInfo.class);
-        xs.addDefaultImplementation(WorkspaceInfoImpl.class, WorkspaceInfo.class);
-        xs.addDefaultImplementation(NamespaceInfoImpl.class, NamespaceInfo.class);
-        xs.addDefaultImplementation(StyleInfoImpl.class, StyleInfo.class);
-        xs.addDefaultImplementation(LayerInfoImpl.class, LayerInfo.class);
-        //xs.addDefaultImplementation(DataStoreInfoImpl.class, StoreInfo.class);
-        
         // GeoServerInfo
-        xs.omitField(GeoServerInfoImpl.class, "clientProperties");
-        xs.omitField(GeoServerInfoImpl.class, "geoServer");
-        xs.registerLocalConverter(GeoServerInfoImpl.class, "metadata", new MetadataMapConverter());
+        xs.omitField(impl(GeoServerInfo.class), "clientProperties");
+        xs.omitField(impl(GeoServerInfo.class), "geoServer");
+        xs.registerLocalConverter(impl(GeoServerInfo.class), "metadata", new MetadataMapConverter());
         
         // ServiceInfo
-        xs.omitField(ServiceInfoImpl.class, "clientProperties");
-        xs.omitField(ServiceInfoImpl.class, "geoServer");
-        xs.registerLocalConverter(ServiceInfoImpl.class, "metadata", new MetadataMapConverter());
+        xs.omitField(impl(ServiceInfo.class), "clientProperties");
+        xs.omitField(impl(ServiceInfo.class), "geoServer");
+        xs.registerLocalConverter(impl(ServiceInfo.class), "metadata", new MetadataMapConverter());
         
         // Catalog
-        xs.omitField(CatalogImpl.class, "resourcePool");
-        xs.omitField(CatalogImpl.class, "resourceLoader");
-        xs.omitField(CatalogImpl.class, "resources");
-        xs.omitField(CatalogImpl.class, "listeners");
-        xs.omitField(CatalogImpl.class, "layers");
-        xs.omitField(CatalogImpl.class, "maps");
-        xs.omitField(CatalogImpl.class, "layerGroups");
-        xs.omitField(CatalogImpl.class, "LOGGER");
-        xs.registerLocalConverter(CatalogImpl.class, "stores",
+        xs.omitField(impl(Catalog.class), "resourcePool");
+        xs.omitField(impl(Catalog.class), "resourceLoader");
+        xs.omitField(impl(Catalog.class), "resources");
+        xs.omitField(impl(Catalog.class), "listeners");
+        xs.omitField(impl(Catalog.class), "layers");
+        xs.omitField(impl(Catalog.class), "maps");
+        xs.omitField(impl(Catalog.class), "layerGroups");
+        xs.omitField(impl(Catalog.class), "LOGGER");
+        xs.registerLocalConverter(impl(Catalog.class), "stores",
                 new StoreMultiHashMapConverter());
-        xs.registerLocalConverter(CatalogImpl.class, "namespaces",
+        xs.registerLocalConverter(impl(Catalog.class), "namespaces",
                 new SpaceMapConverter("namespace"));
-        xs.registerLocalConverter(CatalogImpl.class, "workspaces",
+        xs.registerLocalConverter(impl(Catalog.class), "workspaces",
                 new SpaceMapConverter("workspace"));
         
         
         //WorkspaceInfo
-        xs.registerLocalConverter( WorkspaceInfoImpl.class, "metadata", new MetadataMapConverter() );
+        xs.registerLocalConverter( impl(WorkspaceInfo.class), "metadata", new MetadataMapConverter() );
         
         //NamespaceInfo
-        xs.omitField( NamespaceInfoImpl.class, "catalog");
-        xs.registerLocalConverter( NamespaceInfoImpl.class, "metadata", new MetadataMapConverter() );
+        xs.omitField( impl(NamespaceInfo.class), "catalog");
+        xs.registerLocalConverter( impl(NamespaceInfo.class), "metadata", new MetadataMapConverter() );
         
         // StoreInfo
-        xs.omitField(StoreInfoImpl.class, "catalog");
-        //xs.omitField(StoreInfoImpl.class, "workspace"); //handled by StoreInfoConverter
-        xs.registerLocalConverter(StoreInfoImpl.class, "workspace", new ReferenceConverter(WorkspaceInfo.class));
-        xs.registerLocalConverter(StoreInfoImpl.class, "connectionParameters", new BreifMapConverter() );
-        xs.registerLocalConverter(StoreInfoImpl.class, "metadata", new MetadataMapConverter());
+        xs.omitField(impl(StoreInfo.class), "catalog");
+        //xs.omitField(StoreInfo.class), "workspace"); //handled by StoreInfoConverter
+        xs.registerLocalConverter(impl(StoreInfo.class), "workspace", new ReferenceConverter(WorkspaceInfo.class));
+        xs.registerLocalConverter(impl(StoreInfo.class), "connectionParameters", new BreifMapConverter() );
+        xs.registerLocalConverter(impl(StoreInfo.class), "metadata", new MetadataMapConverter());
         
         // StyleInfo
-        xs.omitField(StyleInfoImpl.class, "catalog");
-        xs.registerLocalConverter(StyleInfoImpl.class, "metadata", new MetadataMapConverter() );
+        xs.omitField(impl(StyleInfo.class), "catalog");
+        xs.registerLocalConverter(impl(StyleInfo.class), "metadata", new MetadataMapConverter() );
         
         // ResourceInfo
-        xs.omitField( ResourceInfoImpl.class, "catalog");
-        xs.omitField( ResourceInfoImpl.class, "crs" );
-        xs.registerLocalConverter( ResourceInfoImpl.class, "nativeCRS", new CRSConverter());
-        xs.registerLocalConverter( ResourceInfoImpl.class, "store", new ReferenceConverter(StoreInfo.class));
-        xs.registerLocalConverter( ResourceInfoImpl.class, "namespace", new ReferenceConverter(NamespaceInfo.class));
-        xs.registerLocalConverter( ResourceInfoImpl.class, "metadata", new MetadataMapConverter() );
+        xs.omitField( impl(ResourceInfo.class), "catalog");
+        xs.omitField( impl(ResourceInfo.class), "crs" );
+        xs.registerLocalConverter( impl(ResourceInfo.class), "nativeCRS", new CRSConverter());
+        xs.registerLocalConverter( impl(ResourceInfo.class), "store", new ReferenceConverter(StoreInfo.class));
+        xs.registerLocalConverter( impl(ResourceInfo.class), "namespace", new ReferenceConverter(NamespaceInfo.class));
+        xs.registerLocalConverter( impl(ResourceInfo.class), "metadata", new MetadataMapConverter() );
         
         // FeatureTypeInfo
         
         // CoverageInfo
 
         // CoverageDimensionInfo
-        xs.registerLocalConverter( CoverageDimensionImpl.class, "range", new NumberRangeConverter());
+        xs.registerLocalConverter( impl(CoverageDimensionInfo.class), "range", new NumberRangeConverter());
         
         // AttributeTypeInfo
-        xs.omitField( AttributeTypeInfoImpl.class, "featureType");
-        xs.omitField( AttributeTypeInfoImpl.class, "attribute");
+        xs.omitField( impl(AttributeTypeInfo.class), "featureType");
+        xs.omitField( impl(AttributeTypeInfo.class), "attribute");
         
         // LayerInfo
-        //xs.omitField( LayerInfoImpl.class, "resource");
-        xs.registerLocalConverter( LayerInfoImpl.class, "resource", new ReferenceConverter( ResourceInfo.class ) );
-        xs.registerLocalConverter( LayerInfoImpl.class, "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
-        xs.registerLocalConverter( LayerInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ) );
-        xs.registerLocalConverter( LayerInfoImpl.class, "metadata", new MetadataMapConverter() );
+        //xs.omitField( LayerInfo.class), "resource");
+        xs.registerLocalConverter( impl(LayerInfo.class), "resource", new ReferenceConverter( ResourceInfo.class ) );
+        xs.registerLocalConverter( impl(LayerInfo.class), "defaultStyle", new ReferenceConverter( StyleInfo.class ) );
+        xs.registerLocalConverter( impl(LayerInfo.class), "styles", new ReferenceCollectionConverter( StyleInfo.class ) );
+        xs.registerLocalConverter( impl(LayerInfo.class), "metadata", new MetadataMapConverter() );
         
         // LayerGroupInfo
-        xs.registerLocalConverter(LayerGroupInfoImpl.class, "layers", new ReferenceCollectionConverter( LayerInfo.class ));
-        xs.registerLocalConverter(LayerGroupInfoImpl.class, "styles", new ReferenceCollectionConverter( StyleInfo.class ));
-        xs.registerLocalConverter(LayerGroupInfoImpl.class, "metadata", new MetadataMapConverter() );
+        xs.registerLocalConverter(impl(LayerGroupInfo.class), "layers", new ReferenceCollectionConverter( LayerInfo.class ));
+        xs.registerLocalConverter(impl(LayerGroupInfo.class), "styles", new ReferenceCollectionConverter( StyleInfo.class ));
+        xs.registerLocalConverter(impl(LayerGroupInfo.class), "metadata", new MetadataMapConverter() );
         
         //ReferencedEnvelope
         xs.registerLocalConverter( ReferencedEnvelope.class, "crs", new SRSConverter() );
         xs.registerLocalConverter( GeneralEnvelope.class, "crs", new SRSConverter() );
         
         // ServiceInfo
-        xs.omitField( ServiceInfoImpl.class, "geoServer" );
+        xs.omitField( impl(ServiceInfo.class), "geoServer" );
         
         // Converters
         xs.registerConverter(new SpaceInfoConverter());
@@ -429,6 +413,61 @@ public class XStreamPersister {
         return obj;
     }
 
+    /**
+     * Sets up mappings from interface to implementation classes.
+     * 
+     */
+    protected void initImplementationDefaults(XStream xs) {
+        //configuration
+        xs.addDefaultImplementation(GeoServerInfoImpl.class, GeoServerInfo.class);
+        xs.addDefaultImplementation(LoggingInfoImpl.class, LoggingInfo.class);
+        xs.addDefaultImplementation(JAIInfoImpl.class, JAIInfo.class);
+        xs.addDefaultImplementation(ContactInfoImpl.class, ContactInfo.class);
+        xs.addDefaultImplementation(AttributionInfoImpl.class, AttributionInfo.class);
+        
+        //catalog
+        xs.addDefaultImplementation(CatalogImpl.class, Catalog.class);
+        xs.addDefaultImplementation(NamespaceInfoImpl.class, NamespaceInfo.class);
+        xs.addDefaultImplementation(WorkspaceInfoImpl.class, WorkspaceInfo.class);
+        xs.addDefaultImplementation(DataStoreInfoImpl.class, DataStoreInfo.class);
+        xs.addDefaultImplementation(CoverageStoreInfoImpl.class, CoverageStoreInfo.class);
+        xs.addDefaultImplementation(StyleInfoImpl.class, StyleInfo.class);
+        xs.addDefaultImplementation(FeatureTypeInfoImpl.class, FeatureTypeInfo.class );
+        xs.addDefaultImplementation(CoverageInfoImpl.class, CoverageInfo.class);
+        xs.addDefaultImplementation(CoverageDimensionImpl.class, CoverageDimensionInfo.class);
+        xs.addDefaultImplementation(MetadataLinkInfoImpl.class, MetadataLinkInfo.class);
+        xs.addDefaultImplementation(AttributeTypeInfoImpl.class, AttributeTypeInfo.class );
+        xs.addDefaultImplementation(LayerInfoImpl.class, LayerInfo.class);
+        xs.addDefaultImplementation(LayerGroupInfoImpl.class, LayerGroupInfo.class );
+        
+        //supporting objects
+        xs.addDefaultImplementation(GridGeometry2D.class, GridGeometry.class );
+        xs.addDefaultImplementation(DefaultGeographicCRS.class, CoordinateReferenceSystem.class);
+        
+        //collections
+        xs.addDefaultImplementation(ArrayList.class, List.class);
+    }
+    
+    protected Class impl(Class interfce) {
+        //special case case classes, they don't get registered as default implementations
+        // only concrete classes do
+        if (interfce == ServiceInfo.class) {
+            return ServiceInfoImpl.class;
+        }
+        if (interfce == StoreInfo.class) {
+            return StoreInfoImpl.class;
+        }
+        if (interfce == ResourceInfo.class) {
+            return ResourceInfoImpl.class;
+        }
+        
+        Class clazz = getXStream().getMapper().defaultImplementationOf(interfce); 
+        if (clazz == null) {
+            throw new RuntimeException("No default mapping for " + interfce);
+        }
+        return clazz;
+    }
+    
     /**
      * Custom reflection provider which unwraps proxies, and skips empty collections
      * and maps.

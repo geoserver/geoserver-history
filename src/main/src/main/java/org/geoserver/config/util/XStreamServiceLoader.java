@@ -27,10 +27,15 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
     
     GeoServerResourceLoader resourceLoader;
     String filenameBase;
+    XStreamPersisterFactory xpf = new XStreamPersisterFactory();
     
     public XStreamServiceLoader(GeoServerResourceLoader resourceLoader, String filenameBase) {
         this.resourceLoader = resourceLoader;
         this.filenameBase = filenameBase;
+    }
+    
+    public void setXStreamPeristerFactory(XStreamPersisterFactory xpf) {
+        this.xpf = xpf;
     }
     
     public final T load( GeoServer gs ) throws Exception {
@@ -43,7 +48,7 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
             BufferedInputStream in = 
                 new BufferedInputStream( new FileInputStream( file ) );
             try {
-                XStreamPersister xp = new XStreamPersister.XML();
+                XStreamPersister xp = xpf.createXMLPersister();
                 initXStreamPersister(xp, gs);
                 return initialize( xp.load( in, getServiceClass() ) );
             }
@@ -71,7 +76,7 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
         
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(file));
         try {
-            XStreamPersister xp = new XStreamPersister.XML();
+            XStreamPersister xp = xpf.createXMLPersister();
             initXStreamPersister(xp, gs);
             xp.save( service, out );
             

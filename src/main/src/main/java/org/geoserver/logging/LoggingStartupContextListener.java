@@ -16,6 +16,7 @@ import javax.servlet.ServletContextListener;
 
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.config.util.XStreamPersisterFactory;
 import org.geoserver.logging.LoggingUtils.GeoToolsLoggingRedirection;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -65,7 +66,7 @@ public class LoggingStartupContextListener implements ServletContextListener {
                 
                 File f= loader.find( "logging.xml" );
                 if ( f != null ) {
-                    XStreamPersister xp = new XStreamPersister.XML();
+                    XStreamPersister xp = new XStreamPersisterFactory().createXMLPersister();
                     BufferedInputStream in = new BufferedInputStream( new FileInputStream( f ) );
                     try {
                         LoggingInfo loginfo = xp.load(in,LoggingInfo.class);
