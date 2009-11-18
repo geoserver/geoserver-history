@@ -40,7 +40,7 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
     
     @Override
     protected void configureXStream(XStream xstream) {
-        XStreamPersister xp = new XStreamPersister.XML();
+        XStreamPersister xp = xpf.createXMLPersister();
         final String name = xp.getClassAliasingMapper().serializedClass( clazz );
         
         xstream.alias( name, clazz );

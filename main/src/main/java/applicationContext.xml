@@ -120,4 +120,8 @@
   <bean id="proxyfier" class="org.geoserver.ows.ProxifyingURLMangler">
     <constructor-arg index="0" ref="geoServer"/>
   </bean>
+  
+  <!-- xstream persister factory -->
+  <bean id="xstreamPersisterFactory" class="org.geoserver.config.util.XStreamPersisterFactory"/>
+
 </beans>

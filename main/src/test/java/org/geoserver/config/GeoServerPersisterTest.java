@@ -19,6 +19,7 @@ import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamPersister;
+import org.geoserver.config.util.XStreamPersisterFactory;
 import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;
 
@@ -32,7 +33,7 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         
         catalog = getCatalog();
         GeoServerPersister p = 
-            new GeoServerPersister( getResourceLoader(), new XStreamPersister.XML() );
+            new GeoServerPersister( getResourceLoader(), new XStreamPersisterFactory().createXMLPersister() );
         catalog.addListener( p );
     }
     
