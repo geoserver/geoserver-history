@@ -181,7 +181,7 @@ public class RequestUtils {
      * @param the locator for the service exception (may be null)
      */
     public static void checkVersionNumber(String v, String locator) throws ServiceException {
-        if (!v.matches("[0-99]\\.[0-99]\\.[0-99]")) {
+        if (!v.matches("[0-9]{1,2}\\.[0-9]{1,2}\\.[0-9]{1,2}")) {
             String msg = v + " is an invalid version number";
             throw new ServiceException(msg, "VersionNegotiationFailed", locator);
         }
