@@ -80,6 +80,13 @@
         <module>imagemosaic-jdbc</module>
       </modules>
     </profile>
+    
+    <profile>
+      <id>jp2k</id>
+      <modules>
+        <module>jp2k</module>
+      </modules>
+    </profile>
 
     <profile>
       <id>feature-pregeneralized</id>
@@ -159,6 +166,7 @@
         <module>wfsv</module>
         <module>db2</module>
         <module>imagemap</module>
+        <module>jp2k</module>
         <module>ogr</module>
         <module>excel</module>
         <module>validation</module>
@@ -183,6 +191,7 @@
         <module>wfsv</module>
         <module>db2</module>
         <module>imagemap</module>
+        <module>jp2k</module>
         <module>ogr</module>
         <module>excel</module>
         <module>validation</module>

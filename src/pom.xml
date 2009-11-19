@@ -181,6 +181,11 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
+    <artifactId>gt-jp2k</artifactId>
+    <version>${gt.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geotools</groupId>
     <artifactId>gt-image</artifactId>
     <version>${gt.version}</version>
    </dependency>
@@ -188,6 +193,12 @@
     <groupId>org.geotools</groupId>
     <artifactId>gt-imagemosaic</artifactId>
     <version>${gt.version}</version>
+    <exclusions>
+        <exclusion>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-jp2k</artifactId>
+        </exclusion>
+      </exclusions> 
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
@@ -969,6 +980,7 @@
       <descriptor>release/ext-db2.xml</descriptor>
       <descriptor>release/ext-feature-pregeneralized.xml</descriptor>
       <descriptor>release/ext-imagemosaic-jdbc.xml</descriptor>
+      <descriptor>release/ext-jp2k.xml</descriptor>
       <descriptor>release/ext-mysql.xml</descriptor>
       <descriptor>release/ext-oracle.xml</descriptor>
       <descriptor>release/ext-vpf.xml</descriptor>

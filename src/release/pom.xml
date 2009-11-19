@@ -184,6 +184,11 @@
   </dependency> 
   <dependency>
    <groupId>org.geoserver.extension</groupId>
+   <artifactId>jp2k</artifactId>
+   <version>${project.version}</version>
+  </dependency> 
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
    <artifactId>arcsde</artifactId>
    <version>${project.version}</version>
   </dependency>
