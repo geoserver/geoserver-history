@@ -948,7 +948,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 Map<String, String> params = params("request", "GetLegendGraphic",
                         "format", defaultFormat,
                         "width", String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH),
-                        "heigth", String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT),
+                        "height", String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT),
                         "layer", layerName);
                 String legendURL = buildURL(request.getBaseUrl(), "wms", params, URLType.SERVICE);
 
