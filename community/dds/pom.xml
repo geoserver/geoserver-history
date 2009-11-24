@@ -13,7 +13,7 @@
 	</parent>
 
 	<groupId>org.geoserver</groupId>
-	<artifactId>wwformat</artifactId>
+	<artifactId>dds</artifactId>
 	<packaging>jar</packaging>
 	<version>2.0.1-SNAPSHOT</version>
 	<name>WorldWind Format Module</name>
