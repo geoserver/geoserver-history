@@ -301,10 +301,10 @@ public abstract class DefaultRasterMapProducer extends
         graphic.setRenderingHints(hintsMap);
 
         RenderingHints hints = new RenderingHints(hintsMap);
-        if(DefaultWebMapService.useStreamingRenderer())
+//        if(DefaultWebMapService.useStreamingRenderer())
             renderer = new StreamingRenderer();
-        else
-            renderer = new ShapefileRenderer();
+//        else
+//            renderer = new ShapefileRenderer();
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);
 
@@ -326,6 +326,8 @@ public abstract class DefaultRasterMapProducer extends
         if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
             rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
         }
+        // turn on advanced projection handling
+        rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
 
         boolean kmplacemark = false;
         if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
