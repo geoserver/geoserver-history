@@ -28,7 +28,7 @@ extensions = ['sphinx.ext.todo']
 todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['../../theme/_templates']
+#templates_path = ['../../theme/_templates']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -83,7 +83,7 @@ pygments_style = 'sphinx'
 # Options for HTML output
 # -----------------------
 html_theme = 'geoserver'
-html_theme_path = ['../../theme']
+html_theme_path = ['../../themes']
 
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
