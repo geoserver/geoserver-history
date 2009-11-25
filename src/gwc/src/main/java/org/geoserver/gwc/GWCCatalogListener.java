@@ -1,6 +1,9 @@
-/* Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
+/** 
+ * Copyright (c) 2001 - 2009 TOPP - www.openplans.org. All rights reserved.
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
+ * 
+ * @author Arne Kepp / OpenGeo
  */
 package org.geoserver.gwc;
 
@@ -11,6 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -20,33 +24,34 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.ows.Dispatcher;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.layer.Grid;
-import org.geowebcache.layer.GridCalculator;
-import org.geowebcache.layer.SRS;
+import org.geowebcache.config.Configuration;
+import org.geowebcache.config.meta.ServiceInformation;
+import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSetBroker;
+import org.geowebcache.grid.GridSubset;
+import org.geowebcache.grid.GridSubsetFactory;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.TileLayerDispatcher;
+import org.geowebcache.layer.wms.WMSGeoServerHelper;
 import org.geowebcache.layer.wms.WMSLayer;
 import org.geowebcache.util.ApplicationContextProvider;
-import org.geowebcache.util.Configuration;
-import org.geowebcache.util.GeoServerConfiguration;
-import org.geowebcache.util.wms.BBOX;
 
-
-/**
- * This class acts as a source of TileLayer objects for GeoWebCache.
- * 
- * @author Arne Kepp / OpenGeo 2009
- */
 public class GWCCatalogListener implements CatalogListener, Configuration {
-    private static Logger log = Logging.getLogger("org.geoserver.gwc");
+
+    private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCCatalogListener");
     
-    protected Catalog cat = null;
+    final protected Catalog cat;
+
+    final protected Dispatcher gsDispatcher;
     
-    protected TileLayerDispatcher layerDispatcher = null;
+    final protected GridSetBroker gridSetBroker;
+    
+    protected TileLayerDispatcher layerDispatcher;
     
     private List<String> mimeFormats = null;
     
@@ -55,19 +60,20 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     private String wmsUrl = null;
     
     ArrayList<TileLayer> list;
-   
-    //TODO Maybe all this coverageinfo business is a waster of time?
+
     
-    /**
-     * Constructor for Spring
-     * 
-     * @param cat
-     * @param layerDispatcher
-     * @param ctxProv
-     */
-    public GWCCatalogListener(Catalog cat, TileLayerDispatcher layerDispatcher, ApplicationContextProvider ctxProv) {
+    public GWCCatalogListener(
+            Catalog cat,
+            Dispatcher gsDispatcher,
+            GridSetBroker gridSetBroker, 
+            ApplicationContextProvider ctxProv) {
+        
         this.cat = cat;
-        this.layerDispatcher = layerDispatcher;
+        
+        this.gridSetBroker = gridSetBroker;
+        
+        this.gsDispatcher = gsDispatcher;
+        //this.layerDispatcher = layerDispatcher;
         
         mimeFormats = new ArrayList<String>(5);
         mimeFormats.add("image/png");
@@ -76,31 +82,31 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         mimeFormats.add("image/jpeg"); 
         mimeFormats.add("application/vnd.google-earth.kml+xml");
         
-        wmsUrl = ctxProv.getSystemVar(
-                GeoServerConfiguration.GEOSERVER_WMS_URL, 
-                "http://localhost:8080/geoserver/wms" );
-        
         cat.addListener(this);
         
         log.fine("GWCCatalogListener registered with catalog");
     }
     
-    /**
-     * Handles when a layer is added to the catalog
-     */
-    public void handleAddEvent(CatalogAddEvent event) {
+    public void setTileLayerDispatcher(TileLayerDispatcher layerDispatcher) {
+        log.fine("TileLayerDispatcher was set");
+        this.layerDispatcher = layerDispatcher;
+    }
+    
+    public void handleAddEvent(CatalogAddEvent event) throws CatalogException {
         Object obj = event.getSource();
         
         WMSLayer wmsLayer = null;
         
-        if(obj instanceof CoverageInfo) {
-            CoverageInfo covInfo = (CoverageInfo) obj;
-            wmsLayer = getLayer(covInfo);
-        }
-        if(obj instanceof ResourceInfo) {
-            ResourceInfo resInfo = (ResourceInfo) obj;
-            wmsLayer = getLayer(resInfo);
-        }
+        if(obj instanceof LayerInfo) {
+            LayerInfo layerInfo = (LayerInfo) obj;
+            wmsLayer = getLayer(layerInfo);
+        }      
+        //if(obj instanceof LayerGroupInfo) {
+            // The object will be incomplete, it does not have layers or bounds
+            
+            //LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
+            //wmsLayer = getLayer(lgInfo);
+       //}
         
         if (wmsLayer != null && this.list != null) {
             addToList(wmsLayer);
@@ -109,60 +115,60 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
             log.finer(wmsLayer.getName() + " added to TileLayerDispatcher");
         }
     }
-    
-    public void handleModifyEvent(CatalogModifyEvent event) {
-        // We don't really care about this one, 
-        // though we could clear the cache on style change
-    }
-    
-    public void handleRemoveEvent(CatalogRemoveEvent event) { 
-        Object obj = event.getSource();
-        
-        //String name = null; //getLayerName(obj);
-        
-        WMSLayer wmsLayer = null;
-        
-        if(obj instanceof CoverageInfo) {
-            CoverageInfo covInfo = (CoverageInfo) obj;
-            wmsLayer = getLayer(covInfo);
-        }
-        if(obj instanceof ResourceInfo) {
-            ResourceInfo resInfo = (ResourceInfo) obj;
-            wmsLayer = getLayer(resInfo);
-        }
-        
-        if(wmsLayer != null && this.list != null) {
-            removeFromList(wmsLayer);
-            layerDispatcher.getLayers();
-            layerDispatcher.remove(wmsLayer.getName());
-            log.finer(wmsLayer.getName() + " removed from TileLayerDispatcher");
-        }
+
+    public void handleModifyEvent(CatalogModifyEvent event) throws CatalogException {
+        // Not dealing with this one just yet
     }
 
-    public void handlePostModifyEvent(CatalogPostModifyEvent event) {
+    public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
         Object obj = event.getSource();
 
         WMSLayer wmsLayer = null; //getLayer(obj);
 
-        if(obj instanceof CoverageInfo) {
-            CoverageInfo covInfo = (CoverageInfo) obj;
-            wmsLayer = getLayer(covInfo);
-        }
-        if(obj instanceof ResourceInfo) {
-            ResourceInfo resInfo = (ResourceInfo) obj;
-            wmsLayer = getLayer(resInfo);
-        }
+        //if(obj instanceof CoverageInfo) {
+        //    CoverageInfo covInfo = (CoverageInfo) obj;
+        //    wmsLayer = getLayer(covInfo);
+        //}
+        //if(obj instanceof ResourceInfo) {
+        //    ResourceInfo resInfo = (ResourceInfo) obj;
+        //    wmsLayer = getLayer(resInfo);
+        //}
+        if(obj instanceof LayerInfo) {
+            LayerInfo li = (LayerInfo) obj;
+            wmsLayer = getLayer(li);
+        } else
         if(obj instanceof LayerGroupInfo) {
             LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
             wmsLayer = getLayer(lgInfo);
         }
         
-        if (wmsLayer != null && this.list != null) {
+        if (wmsLayer != null && this.list != null) {            
             updateList(wmsLayer);
             layerDispatcher.getLayers();
             layerDispatcher.update(wmsLayer);
             log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
+        } 
+    }
+
+    public void handleRemoveEvent(CatalogRemoveEvent event) throws CatalogException {
+        Object obj = event.getSource();
+       
+        String prefixedName = null;
+        
+        if(obj instanceof LayerGroupInfo) {
+            LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
+            prefixedName = lgInfo.getName();
+        } else
+        if(obj instanceof LayerInfo) {
+            LayerInfo layerInfo = (LayerInfo) obj;
+            prefixedName = layerInfo.getResource().getPrefixedName();
         }
+        
+        if(null != prefixedName) {
+            removeFromList(prefixedName);
+            layerDispatcher.remove(prefixedName);
+        }
+        // TODO clear cache
     }
 
     public void reloaded() {
@@ -177,9 +183,12 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         return "GeoServer Catalog Listener";
     }
 
-    public synchronized List<TileLayer> getTileLayers(boolean reload) 
-    throws GeoWebCacheException {
-        
+    public ServiceInformation getServiceInformation() throws GeoWebCacheException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<TileLayer> getTileLayers(boolean reload) throws GeoWebCacheException {
         if(! reload && list != null) {
             return list;
         }
@@ -194,17 +203,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
             //System.out.println(tl.getName() + " layerinfo");
             list.add(tl);
         }
-        
-        /** These seem to get duplicated as layerinfo objects anyway **/
-        // Adding raster layers
-        //Iterator<CoverageInfo> cIter = cat.getCoverages().iterator();
-        //while(cIter.hasNext()) {
-        //    CoverageInfo ci = cIter.next();
-        //    TileLayer tl = getLayer(ci);
-        //    System.out.println(tl.getName() + " coverageinfo");
-        //    list.add(tl);
-        //}
-        
+                
         // Adding layer groups 
         Iterator<LayerGroupInfo> lgIter = cat.getLayerGroups().iterator();
         while(lgIter.hasNext()) {
@@ -227,17 +226,23 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         }
     }
     
-    synchronized private void removeFromList(WMSLayer wmsLayer) {
+    private void removeFromList(WMSLayer wmsLayer) {
+        removeFromList(wmsLayer.getName());
+    }
+    
+    synchronized private void removeFromList(String layerName) {
         if(this.list != null) {
             Iterator<TileLayer> iter = list.iterator();
             int i = 0;
             while(iter.hasNext()) {
                 TileLayer tl = iter.next();
-                if(tl.getName().equals(wmsLayer.getName())) {
+                if(tl != null && tl.getName().equals(layerName)) {
                     list.remove(i);
+                    return;
                 }
                 i++;
             }
+            log.finer("Did not find " + layerName + " in list.");
         }
     }
     
@@ -247,13 +252,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         }
     }
     
-    //private String getLayerName(Object obj) {
-    //    return getLayer(obj).getName();
-    //}
-    
-    //private WMSLayer getLayer(Object obj) {
-    //    
-    //}
+    private WMSLayer getLayer(LayerInfo li) {
+        return getLayer(li.getResource());
+    }
     
     private WMSLayer getLayer(LayerGroupInfo lgi) {
         ReferencedEnvelope latLonBounds = null;
@@ -264,8 +265,10 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         }
         
         if(latLonBounds == null) {
-            log.fine("GWCCatalogListener had problems reprojecting " 
+            log.severe("GWCCatalogListener had problems getting or reprojecting " 
                     + lgi.getBounds() + " to EPSG:4326");
+            
+            return null;
         }
         
         WMSLayer retLayer = new WMSLayer(
@@ -280,6 +283,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 true);
         
         retLayer.setBackendTimeout(120);
+        retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
+        
+        retLayer.initialize(gridSetBroker);
         return retLayer;
     }
     
@@ -295,6 +301,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 null,
                 true);
         retLayer.setBackendTimeout(120);
+        retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
+        
+        retLayer.initialize(gridSetBroker);
         return retLayer;
     }
     
@@ -311,6 +320,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 false);
         
         retLayer.setBackendTimeout(120);
+        retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
+        
+        retLayer.initialize(gridSetBroker);
         return retLayer;   
     }
 
@@ -319,27 +331,34 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         return strs;
     }
     
-    private Hashtable<SRS,Grid> getGrids(ReferencedEnvelope env) {
+    private Hashtable<String,GridSubset> getGrids(ReferencedEnvelope env) {
         double minX = env.getMinX();
         double minY = env.getMinY();
         double maxX = env.getMaxX();
         double maxY = env.getMaxY();
 
-        BBOX bounds4326 = new BBOX(minX,minY,maxX,maxY);
+        BoundingBox bounds4326 = new BoundingBox(minX,minY,maxX,maxY);
  
-        BBOX bounds900913 = new BBOX(
+        BoundingBox bounds900913 = new BoundingBox(
                 longToSphericalMercatorX(minX),
                 latToSphericalMercatorY(minY),
                 longToSphericalMercatorX(maxX),
                 latToSphericalMercatorY(maxY));
         
-        Hashtable<SRS,Grid> grids = new Hashtable<SRS,Grid>(2);
+        Hashtable<String,GridSubset> grids = new Hashtable<String,GridSubset>(2);
         
-        grids.put(SRS.getEPSG4326(), new Grid(SRS.getEPSG4326(), bounds4326, 
-                BBOX.WORLD4326, GridCalculator.get4326Resolutions()));
-        grids.put(SRS.getEPSG900913(), new Grid(SRS.getEPSG900913(), bounds900913,
-                BBOX.WORLD900913, GridCalculator.get900913Resolutions()));
-       
+        GridSubset gridSubset4326 = GridSubsetFactory.createGridSubSet(
+                gridSetBroker.WORLD_EPSG4326, 
+                bounds4326, 0, 25 );
+        
+        grids.put(gridSetBroker.WORLD_EPSG4326.getName(), gridSubset4326);
+        
+        GridSubset gridSubset900913 = GridSubsetFactory.createGridSubSet(
+                gridSetBroker.WORLD_EPSG3857, 
+                bounds900913, 0, 25 );
+        
+        grids.put(gridSetBroker.WORLD_EPSG3857.getName(), gridSubset900913);
+               
         return grids;
     }
     
@@ -360,6 +379,5 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         double tmp = Math.PI/4.0 + y/2.0; 
         return 20037508.34 * Math.log(Math.tan(tmp)) / Math.PI;
     }
+
 }
-
-

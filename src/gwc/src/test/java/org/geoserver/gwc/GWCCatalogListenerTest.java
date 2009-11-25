@@ -12,11 +12,11 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geowebcache.GeoWebCacheException;
-import org.geowebcache.layer.Grid;
-import org.geowebcache.layer.SRS;
+import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSubset;
+import org.geowebcache.grid.SRS;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.TileLayerDispatcher;
-import org.geowebcache.util.wms.BBOX;
 
 
 /**
@@ -40,7 +40,7 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
      */
     public void testInit() throws Exception {
         GWCCatalogListener gwcListener = (GWCCatalogListener) applicationContext.getBean("gwcCatalogListener");
-
+        
         Catalog cat = gwcListener.cat;
         
         TileLayerDispatcher tld = gwcListener.layerDispatcher;
@@ -67,7 +67,7 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         while(tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
             if(tl.getName().equals("cite:Lakes")) {
-                tl.isInitialized();
+                //tl.isInitialized();
                 foundLakes = true;
                 break;
             }
@@ -80,10 +80,10 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
             TileLayer tl = tlIter.next();
             System.out.println(tl.getName());
             if(tl.getName().equals("sf:AggregateGeoFeature")) {
-                tl.isInitialized();
+                //tl.isInitialized();
                 foudAGF = true;
-                Grid epsg4326 = tl.getGrid(SRS.getEPSG4326());
-                assertTrue(epsg4326.getGridBounds().equals( new BBOX(-180.0,-90.0,180.0,90.0)));
+                GridSubset epsg4326 = tl.getGridSubset(gwcListener.gridSetBroker.WORLD_EPSG4326.getName());
+                assertTrue(epsg4326.getGridSetBounds().equals( new BoundingBox(-180.0,-90.0,180.0,90.0)));
                 String mime = tl.getMimeTypes().get(1).getMimeType();
                 assertTrue(mime.startsWith("image/") || mime.startsWith("application/vnd.google-earth.kml+xml"));
             }
