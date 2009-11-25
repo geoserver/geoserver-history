@@ -5,6 +5,8 @@ import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -96,7 +98,18 @@ public class DataAccessRuleDAOTest extends TestCase {
         assertEquals("w", rule.getWorkspace());
         assertEquals("a.b", rule.getLayer());
         assertEquals(AccessMode.READ, rule.getAccessMode());
-
+    }
+    
+    public void testStoreEscapedDots() throws Exception {
+        dao.clear();
+        dao.addRule(new DataAccessRule("it.geosolutions", "layer.dots", 
+                AccessMode.READ, Collections.singleton("ROLE_ABC")));
+        Properties ps = dao.toProperties();
+        
+        assertEquals(2, ps.size());
+        assertEquals("ROLE_ABC", ps.getProperty("it\\.geosolutions.layer\\.dots.r"));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ps.store(bos, null);
     }
     
 }
