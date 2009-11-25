@@ -11,12 +11,11 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.media.jai.InterpolationNearest;
-import javax.media.jai.operator.TranslateDescriptor;
-
 import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
+
+import com.sun.media.imageioimpl.common.PackageUtil;
 
 /**
  * Map producer for JPEG image format.
@@ -33,16 +32,13 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     static final String MIME_TYPE = "image/jpeg";
 
     /** JPEG Native Acceleration Mode * */
-    private Boolean JPEGNativeAcc;
+    private boolean JPEGNativeAcc;
 
 
     public JPEGMapProducer(WMS wms) {
         super(MIME_TYPE, wms);
 
-        /**
-         * TODO To check Native Acceleration mode use the following variable
-         */
-        this.JPEGNativeAcc = wms.getJPEGNativeAcceleration();
+        this.JPEGNativeAcc = wms.getJPEGNativeAcceleration()&& PackageUtil.isCodecLibAvailable();
         
         
     }
@@ -69,15 +65,8 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to write a JPEG image.");
         }
-        if (! JPEGNativeAcc.booleanValue()&&image.getMinX()!=0 || image.getMinY()!=0) {
-        	// I don't make an expliciti copy anymore, hoping that sooner or later:
-        	// A> this bug  will be fixed
-        	// B> JDK JpegImageWriter will stop making a straight copy of the input raster
-        	image= TranslateDescriptor.create(image, new Float(-image.getMinX()), new Float(-image.getMinY()), new InterpolationNearest(), null);
-        }
-        
         float quality = (100 - wms.getJpegCompression()) / 100.0f;
-        new ImageWorker(image).writeJPEG(outStream, "JPEG", quality, JPEGNativeAcc.booleanValue());
+        new ImageWorker(image).writeJPEG(outStream, "JPEG", quality, JPEGNativeAcc);
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
