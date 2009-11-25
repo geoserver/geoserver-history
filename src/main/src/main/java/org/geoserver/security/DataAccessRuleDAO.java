@@ -310,7 +310,10 @@ public class DataAccessRuleDAO {
         Properties props = new Properties();
         props.put("mode", catalogMode.toString());
         for (DataAccessRule rule : rules) {
-            props.put(rule.getKey(), rule.getValue());
+        	String key = rule.getWorkspace().replaceAll("\\.", "\\\\.") + "." 
+        	             + rule.getLayer().replaceAll("\\.", "\\\\.") + "." 
+        	             + rule.getAccessMode().getAlias();
+        	props.put(key, rule.getValue());
         }
         return props;
     }
