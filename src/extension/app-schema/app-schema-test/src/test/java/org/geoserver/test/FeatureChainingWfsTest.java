@@ -608,6 +608,32 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
     }
     
+    /**
+     * Implementation for tests expected to get mf4 only.
+     * 
+     * @param xml
+     */
+    private void checkGetMf4Only(String xml) {
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(1, "//gsml:MappedFeature", doc);
+        // mf4
+        {
+            String id = "mf4";
+            assertXpathEvaluatesTo(id, "//gsml:MappedFeature[1]/@gml:id", doc);
+            assertXpathEvaluatesTo("MURRADUC BASALT", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gml:name", doc);
+            // gu.25682
+            assertXpathEvaluatesTo("gu.25682", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
+        }
+    }
+    
+    /**
+     * Test if we can get mf4 by its name.
+     */
     public void testGetFeaturePropertyFilter() {
         String xml = //
         "<wfs:GetFeature " //
@@ -628,21 +654,53 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>" //
                 + "    </wfs:Query> " //
                 + "</wfs:GetFeature>";
-        Document doc = postAsDOM("wfs", xml);
-        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
-        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
-        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
-        assertXpathCount(1, "//gsml:MappedFeature", doc);
-        // mf4
-        {
-            String id = "mf4";
-            assertXpathEvaluatesTo(id, "//gsml:MappedFeature[1]/@gml:id", doc);
-            assertXpathEvaluatesTo("MURRADUC BASALT", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gml:name", doc);
-            // gu.25682
-            assertXpathEvaluatesTo("gu.25682", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
-        }
+        checkGetMf4Only(xml);
+    }
+
+    /**
+     * Test if we can get mf4 with a FeatureId fid filter.
+     */
+    public void testGetFeatureWithFeatureIdFilter() {
+        String xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:FeatureId fid=\"mf4\"/>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        checkGetMf4Only(xml);
+    }
+
+    /**
+     * Test if we can get mf4 with a GmlObjectId gml:id filter.
+     */
+    public void testGetFeatureWithGmlObjectIdFilter() {
+        String xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:GmlObjectId gml:id=\"mf4\"/>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        checkGetMf4Only(xml);
     }
     
     /**

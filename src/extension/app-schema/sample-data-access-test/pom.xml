@@ -12,19 +12,16 @@
 
 	<groupId>org.geoserver.extension</groupId>
 	<artifactId>sample-data-access-test</artifactId>
-	<version>2.0.1-SNAPSHOT</version>
 	<name>Sample DataAccess Integration Test</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.geoserver</groupId>
 			<artifactId>main</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
 			<classifier>tests</classifier>
 		</dependency>
 		<dependency>
@@ -34,7 +31,6 @@
 			-->
 			<groupId>org.geoserver</groupId>
 			<artifactId>wfs</artifactId>
-			<version>2.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<!-- text-feature-list runtime dependency -->
