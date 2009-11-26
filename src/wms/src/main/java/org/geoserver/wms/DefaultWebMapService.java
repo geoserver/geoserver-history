@@ -7,7 +7,6 @@ package org.geoserver.wms;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -105,6 +104,16 @@ public class DefaultWebMapService implements WebMapService,
      * Temporary field that handles the usage of the line width optimization code
      */
     private static Boolean OPTIMIZE_LINE_WIDTH = null;
+    
+    /**
+     * Temporary field that handles the renderer choice
+     */
+    private static Boolean USE_STREAMING_RENDERER = null;
+    
+    /**
+     * Activate advanced projection handling
+     */
+    private static Boolean ADVANCED_PROJECTION_HANDLING = null;
 
     public DefaultWebMapService( WMS wms ) {
         this.wms = wms;
@@ -137,6 +146,26 @@ public class DefaultWebMapService implements WebMapService,
             else
                 OPTIMIZE_LINE_WIDTH = Boolean.valueOf(enabled);
         }
+        
+        // initialization of the renderer choice flag
+        if (USE_STREAMING_RENDERER == null) {
+            String enabled = GeoServerExtensions.getProperty("USE_STREAMING_RENDERER", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                USE_STREAMING_RENDERER = false;
+            else
+                USE_STREAMING_RENDERER = Boolean.valueOf(enabled);
+        }
+        
+        // first time initialization of advanced projection handling
+        if (ADVANCED_PROJECTION_HANDLING == null) {
+            String enabled = GeoServerExtensions.getProperty("ADVANCED_PROJECTION_HANDLING", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                ADVANCED_PROJECTION_HANDLING = false;
+            else
+                ADVANCED_PROJECTION_HANDLING = Boolean.valueOf(enabled);
+        }
     }
     
     /**
@@ -155,6 +184,23 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static boolean isLineWidthOptimizationEnabled() {
         return OPTIMIZE_LINE_WIDTH;
+    }
+    
+    /**
+     * Returns true if projection geometry cutting and wrapping is enabled
+     * @return
+     */
+    public static boolean isAdvancedProjectionHandlingEnabled() {
+        return ADVANCED_PROJECTION_HANDLING;
+    }
+    
+    /**
+     * Checks wheter the line streaming renderer is enabled, or not (defaults to false
+     * unless the user sets the USE_STREAMING_RENDERER property to true)
+     * @return
+     */
+    public static boolean useStreamingRenderer() {
+        return USE_STREAMING_RENDERER;
     }
 
     public WMSCapabilitiesResponse getCapabilities(

@@ -136,4 +136,9 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
         //write to output
         wb.write(output);
     }
+    
+    @Override
+    public String getCapabilitiesElementName() {
+    	return "EXCEL";
+    }
 }

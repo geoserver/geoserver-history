@@ -309,7 +309,10 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         graphic.setRenderingHints(hintsMap);
 
         RenderingHints hints = new RenderingHints(hintsMap);
-        renderer = new ShapefileRenderer();
+        if(DefaultWebMapService.useStreamingRenderer())
+            renderer = new StreamingRenderer();
+        else
+            renderer = new ShapefileRenderer();
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);
 
@@ -335,6 +338,9 @@ AbstractRasterMapProducer implements RasterMapProducer, ApplicationContextAware 
         }
         if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
             rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
+        }
+        if(DefaultWebMapService.isAdvancedProjectionHandlingEnabled()) {
+            rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
         }
 
         boolean kmplacemark = false;
