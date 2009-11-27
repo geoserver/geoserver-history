@@ -145,13 +145,6 @@
         <module>restconfig</module>
       </modules>
     </profile>
-    
-    <profile>
-      <id>security</id>
-      <modules>
-        <module>web-security</module>
-      </modules>
-    </profile>
 
     <!-- allExtensions profile, includes all modules -->
     <profile>
@@ -174,7 +167,6 @@
         <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
-        <module>web-security</module>
       </modules>
     </profile>
 
@@ -199,7 +191,6 @@
         <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
-        <module>web-security</module>
       </modules>
     </profile>
 
