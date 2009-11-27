@@ -27,7 +27,6 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.coverage.grid.io.OverviewPolicy;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -60,7 +59,6 @@ public class CoverageResponse implements Response {
     /** Standard logging instance for class */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses");
     private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-    private final static Hints IGNORE_OVERVIEWS = new Hints(Hints.OVERVIEW_POLICY,OverviewPolicy.IGNORE);
     private final static Hints hints = new Hints();
 
     static {
@@ -70,7 +68,6 @@ public class CoverageResponse implements Response {
         //
         // ///////////////////////////////////////////////////////////////////
         hints.add(LENIENT_HINT);
-        hints.add(IGNORE_OVERVIEWS);
     }
 
     /**
