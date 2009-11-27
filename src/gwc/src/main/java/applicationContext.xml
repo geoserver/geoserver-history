@@ -20,6 +20,11 @@
     <constructor-arg ref="gwcStorageBroker" /> <!-- GeoServer -->
   </bean>
   
+  <bean id="gwcTransactionListener" class="org.geoserver.gwc.GWCTransactionListener">
+    <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
+    <constructor-arg ref="gwcCleanser" />
+  </bean>
+  
   <bean id="gwcCatalogListener" class="org.geoserver.gwc.GWCCatalogListener">
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
     <constructor-arg ref="dispatcher"/> <!-- GeoServer -->
