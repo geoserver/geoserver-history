@@ -682,16 +682,23 @@ public class ResourcePool {
 
         
         synchronized ( hints != null ? hintCoverageReaderCache : coverageReaderCache ) {
-            /////////////////////////////////////////////////////////
-            //
-            // Getting coverage reader using the format and the real path.
-            //
-            // /////////////////////////////////////////////////////////
-            final File obj = GeoserverDataDirectory.findDataFile(info.getURL());
-
-            // XXX CACHING READERS HERE
-            reader = (info.getFormat()).getReader(obj,hints);
-            (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(info, reader); 
+            if (hints != null) {
+                reader = (GridCoverageReader) hintCoverageReaderCache.get(info);
+            } else {
+                reader = (GridCoverageReader) coverageReaderCache.get(info);
+            }
+            if (reader == null) {
+                /////////////////////////////////////////////////////////
+                //
+                // Getting coverage reader using the format and the real path.
+                //
+                // /////////////////////////////////////////////////////////
+                final File obj = GeoserverDataDirectory.findDataFile(info.getURL());
+    
+                // XXX CACHING READERS HERE
+                reader = (info.getFormat()).getReader(obj,hints);
+                (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(info, reader);
+            }
         }
         
         return reader;
