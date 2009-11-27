@@ -156,7 +156,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                
                // First we check for referenced to affected layers
                liter = lgi.getLayers().iterator();
-               while(liter.hasNext()) {
+               while(! truncate && liter.hasNext()) {
                    LayerInfo li = liter.next();
                    if(layerNameList.contains(li.getResource().getPrefixedName())){
                        truncate = true;
@@ -166,11 +166,10 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                // Finally we need to check whether the style is used explicitly
                if(! truncate) {
                    Iterator<StyleInfo> siiter = lgi.getStyles().iterator();
-                   while(siiter.hasNext()) {
+                   while(! truncate && siiter.hasNext()) {
                        StyleInfo si2 = siiter.next();
                        if(si2 != null && si2.getName().equals(si.getName())) {
                            truncate = true;
-                           break;
                        }
                    }
                }
