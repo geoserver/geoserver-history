@@ -41,7 +41,6 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.coverage.grid.io.OverviewPolicy;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -78,7 +77,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
     private final static Hints HINTS = new Hints(new HashMap());
     static {
         HINTS.add(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
-        HINTS.add(new Hints(Hints.OVERVIEW_POLICY, OverviewPolicy.IGNORE));
     }
 
     private WCSInfo wcs;
