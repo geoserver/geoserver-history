@@ -10,20 +10,22 @@ package org.geoserver.gwc;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogException;
-import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.ows.Dispatcher;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -41,6 +43,12 @@ import org.geowebcache.layer.wms.WMSGeoServerHelper;
 import org.geowebcache.layer.wms.WMSLayer;
 import org.geowebcache.util.ApplicationContextProvider;
 
+
+/**
+ * This class implements a GeoWebCache configuration object, i.e. 
+ * a source of WMS layer definitions, and a GeoServer catalog listener
+ * which is loaded on startup and listens for configuration changes.
+ */
 public class GWCCatalogListener implements CatalogListener, Configuration {
 
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCCatalogListener");
@@ -50,6 +58,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     final protected Dispatcher gsDispatcher;
     
     final protected GridSetBroker gridSetBroker;
+    
+    final protected GWCCleanser cleanser;
     
     protected TileLayerDispatcher layerDispatcher;
     
@@ -61,19 +71,20 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     
     ArrayList<TileLayer> list;
 
-    
     public GWCCatalogListener(
             Catalog cat,
             Dispatcher gsDispatcher,
             GridSetBroker gridSetBroker, 
-            ApplicationContextProvider ctxProv) {
+            ApplicationContextProvider ctxProv,
+            GWCCleanser cleanser) {
         
         this.cat = cat;
         
         this.gridSetBroker = gridSetBroker;
         
         this.gsDispatcher = gsDispatcher;
-        //this.layerDispatcher = layerDispatcher;
+        
+        this.cleanser = cleanser;
         
         mimeFormats = new ArrayList<String>(5);
         mimeFormats.add("image/png");
@@ -97,16 +108,11 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         
         WMSLayer wmsLayer = null;
         
+        // We only handle layers here. Layer groups are initially empty
         if(obj instanceof LayerInfo) {
             LayerInfo layerInfo = (LayerInfo) obj;
             wmsLayer = getLayer(layerInfo);
-        }      
-        //if(obj instanceof LayerGroupInfo) {
-            // The object will be incomplete, it does not have layers or bounds
-            
-            //LayerGroupInfo lgInfo = (LayerGroupInfo) obj;
-            //wmsLayer = getLayer(lgInfo);
-       //}
+        }
         
         if (wmsLayer != null && this.list != null) {
             addToList(wmsLayer);
@@ -122,17 +128,63 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
 
     public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
         Object obj = event.getSource();
+        
+        if(obj instanceof StyleInfoImpl) {
+           // TODO First pass only considers default styles,
+           // which is all GWC will accept anyway
+           StyleInfoImpl si = (StyleInfoImpl) obj;
+           String styleName = si.getName();
+           
+           LinkedList<String> layerNameList = new LinkedList<String>();
+           
+           // First we collect all the layers that use this style
+           Iterator<LayerInfo> liter = cat.getLayers().iterator();
+           while(liter.hasNext()) {
+               LayerInfo li = liter.next();
+               if(li.getDefaultStyle().getName().equals(styleName)) {
+                   String prefixedName = li.getResource().getPrefixedName();
+                   layerNameList.add(prefixedName);
+                   cleanser.deleteLayer(prefixedName);
+               }
+           }
+           
+           // Now we check for layer groups that are affected
+           Iterator<LayerGroupInfo> lgiter = cat.getLayerGroups().iterator();
+           while(lgiter.hasNext()) {
+               LayerGroupInfo lgi = lgiter.next();
+               boolean truncate = false;
+               
+               // First we check for referenced to affected layers
+               liter = lgi.getLayers().iterator();
+               while(liter.hasNext()) {
+                   LayerInfo li = liter.next();
+                   if(layerNameList.contains(li.getResource().getPrefixedName())){
+                       truncate = true;
+                   }
+               }
+               
+               // Finally we need to check whether the style is used explicitly
+               if(! truncate) {
+                   Iterator<StyleInfo> siiter = lgi.getStyles().iterator();
+                   while(siiter.hasNext()) {
+                       StyleInfo si2 = siiter.next();
+                       if(si2 != null && si2.getName().equals(si.getName())) {
+                           truncate = true;
+                           break;
+                       }
+                   }
+               }
+               
+               if(truncate) {
+                   cleanser.deleteLayer(lgi.getName());
+               }
+               // Next layer group
+           }
+           
+        } else {
 
         WMSLayer wmsLayer = null; //getLayer(obj);
 
-        //if(obj instanceof CoverageInfo) {
-        //    CoverageInfo covInfo = (CoverageInfo) obj;
-        //    wmsLayer = getLayer(covInfo);
-        //}
-        //if(obj instanceof ResourceInfo) {
-        //    ResourceInfo resInfo = (ResourceInfo) obj;
-        //    wmsLayer = getLayer(resInfo);
-        //}
         if(obj instanceof LayerInfo) {
             LayerInfo li = (LayerInfo) obj;
             wmsLayer = getLayer(li);
@@ -147,7 +199,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
             layerDispatcher.getLayers();
             layerDispatcher.update(wmsLayer);
             log.finer(wmsLayer.getName() + " updated on TileLayerDispatcher");
-        } 
+            cleanser.deleteLayer(wmsLayer.getName());
+        }
+        }
     }
 
     public void handleRemoveEvent(CatalogRemoveEvent event) throws CatalogException {
@@ -167,8 +221,8 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         if(null != prefixedName) {
             removeFromList(prefixedName);
             layerDispatcher.remove(prefixedName);
+            cleanser.deleteLayer(prefixedName);
         }
-        // TODO clear cache
     }
 
     public void reloaded() {
@@ -307,24 +361,24 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         return retLayer;
     }
     
-    private WMSLayer getLayer(CoverageInfo ci) {
-        WMSLayer retLayer = new WMSLayer(
-                ci.getPrefixedName(),
-                getWMSUrl(), 
-                null, // Styles 
-                ci.getPrefixedName(), 
-                mimeFormats, 
-                getGrids(ci.getLatLonBoundingBox()), 
-                metaFactors,
-                null, 
-                false);
-        
-        retLayer.setBackendTimeout(120);
-        retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
-        
-        retLayer.initialize(gridSetBroker);
-        return retLayer;   
-    }
+//    private WMSLayer getLayer(CoverageInfo ci) {
+//        WMSLayer retLayer = new WMSLayer(
+//                ci.getPrefixedName(),
+//                getWMSUrl(), 
+//                null, // Styles 
+//                ci.getPrefixedName(), 
+//                mimeFormats, 
+//                getGrids(ci.getLatLonBoundingBox()), 
+//                metaFactors,
+//                null, 
+//                false);
+//        
+//        retLayer.setBackendTimeout(120);
+//        retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
+//        
+//        retLayer.initialize(gridSetBroker);
+//        return retLayer;   
+//    }
 
     private String[] getWMSUrl() {
         String[] strs = { wmsUrl };

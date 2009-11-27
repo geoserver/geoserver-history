@@ -7,7 +7,6 @@
  */
 package org.geowebcache.layer.wms;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.Dispatcher;

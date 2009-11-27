@@ -16,11 +16,16 @@
     <!--property name="absolutePath"><value>/etc/geowebcache/conf</value></property-->
   </bean>
   
+  <bean id="gwcCleanser" class="org.geoserver.gwc.GWCCleanser">
+    <constructor-arg ref="gwcStorageBroker" /> <!-- GeoServer -->
+  </bean>
+  
   <bean id="gwcCatalogListener" class="org.geoserver.gwc.GWCCatalogListener">
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
     <constructor-arg ref="dispatcher"/> <!-- GeoServer -->
     <constructor-arg ref="gwcGridSetBroker"/>
     <constructor-arg ref="gwcAppCtx" />
+    <constructor-arg ref="gwcCleanser" />
     <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
   </bean>
   
