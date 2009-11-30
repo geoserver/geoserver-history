@@ -326,6 +326,9 @@ public abstract class DefaultRasterMapProducer extends
         if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
             rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
         }
+        if(DefaultWebMapService.isAdvancedProjectionHandlingEnabled()) {
+            rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
+        }
 
         boolean kmplacemark = false;
         if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)

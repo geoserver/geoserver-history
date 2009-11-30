@@ -104,6 +104,11 @@ public class DefaultWebMapService implements WebMapService,
      * Max number of rule filters to be used against the data source
      */
     public static Integer MAX_FILTER_RULES = null;
+    
+    /**
+     * Activate advanced projection handling
+     */
+    private static Boolean ADVANCED_PROJECTION_HANDLING = null;
 
 
     public DefaultWebMapService( WMS wms ) {
@@ -153,6 +158,16 @@ public class DefaultWebMapService implements WebMapService,
             else
                 MAX_FILTER_RULES = Integer.valueOf(rules);
         }
+        
+        // first time initialization of advanced projection handling
+        if (ADVANCED_PROJECTION_HANDLING == null) {
+            String enabled = GeoServerExtensions.getProperty("ADVANCED_PROJECTION_HANDLING", context);
+            // default to true, but allow switching off
+            if(enabled == null)
+                ADVANCED_PROJECTION_HANDLING = false;
+            else
+                ADVANCED_PROJECTION_HANDLING = Boolean.valueOf(enabled);
+        }
     }
     
     /**
@@ -180,6 +195,14 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static int getMaxFilterRules() {
         return MAX_FILTER_RULES;
+    }
+    
+    /**
+     * Returns true if projection geometry cutting and wrapping is enabled
+     * @return
+     */
+    public static boolean isAdvancedProjectionHandlingEnabled() {
+        return ADVANCED_PROJECTION_HANDLING;
     }
 
     /**
