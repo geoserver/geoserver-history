@@ -43,7 +43,7 @@ public class ColorPickerPanel extends Panel {
 
 		// the label
 		String requiredMark = required ? " *" : ""; 
-		Label label = new Label("paramName", paramLabelModel + requiredMark);
+		Label label = new Label("paramName", paramLabelModel.getObject() + requiredMark);
 		add(label);
 
 		// the color picker. Notice that we need to convert between RRGGBB and
