@@ -130,7 +130,7 @@ The corresponding HTML would look like:
 Making it Internationalizable
 -----------------------------
 
-In the GeoServer UI, we use a customized resource lookup utility within Wicket to allow any module to provide resource strings.  All you need to do is include your :abbr:`i18n (Internationalization)` values in a Java Properties file named ``GeoServerApplication.properties`` in the root of your ``src`` directory (ie, :file:`{project}/src/main/java/GeoServerApplication.properties``).
+In the GeoServer UI, we use a customized resource lookup utility within Wicket to allow any module to provide resource strings.  All you need to do is include your :abbr:`i18n (Internationalization)` values in a Java Properties file named ``GeoServerApplication.properties`` in the root of your ``src`` directory (ie, :file:`{project}/src/main/java/GeoServerApplication.properties`).
 
 The ``<wicket:message>`` element makes it quite easy to make text internationalizable, but in the event that you need to insert a value into a sentence at a position that changes dependent on the language, you'll need to use something more complicated.
 

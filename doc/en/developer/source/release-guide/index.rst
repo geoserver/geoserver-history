@@ -108,18 +108,23 @@ Update version numbers in tag
      src/release/bin.xml
      src/release/doc.xml
      src/release/src.xml
-     src/web/src/main/java/ApplicationResources*
-     doc/user/source/conf.py
-     doc/developer/source/conf.py
      
 
    Example (using sed)::
 
      sed -i 's/1.7.1/1.7.2/g' release/installer/win/geoserver.nsi
+     
+#  Update the version number in all Sphinx conf.py files. Example, using sed and find::
+  
+     find . -name conf.py -exec sed -i 's/1.7.1/1.7.2/g' {} \;
+     
+#  Update the version number in all i18n files. Example, using sed and find::
+     
+      find . -name GeoServerApplication*.properties -exec sed -i 's/1.7.1/1.7.2/g' {} \;
 
 #. Commit changes::
 
-     svn commit -m "Updated version numbers for [VERSION]" release web/src/main/java
+     svn commit -m "Updated version numbers for [VERSION]" 
   
 Upgrade branch pom versions
 ---------------------------
@@ -162,7 +167,7 @@ Build release artifacts
 
 #. Build javadocs::
 
-     mvn javadoc:javadoc
+     mvn javadoc:aggregate
 
 #. Build artifacts::
 
@@ -202,7 +207,7 @@ HTML
 #. Change to the root of the documentation directory, or check it out (if you don't already have it) from
    https://svn.codehaus.org/geoserver/tags/[VERSION]/doc
 
-#. Change directory to :file:`doc/user`.
+#. Change directory to :file:`doc/en/user`.
 
 #. Build HTML files for the User Manual.
 
@@ -221,7 +226,7 @@ HTML
       cd build/html     
       zip -r geoserver-[VERSION]-htmldoc.zip *
 
-#. Go back to the root of the documentation tree, and change directory to :file:`doc/developer`.
+#. Go back to the root of the documentation tree, and change directory to :file:`doc/en/developer`.
 
 #. Build HTML files for the Developer Manual.
 
@@ -450,7 +455,7 @@ All of the artifacts generated so far need to be uploaded to the SourceForce ``F
 
 The simplest way for developers working under a Unix like system is to use :command:`scp`::
    
-  scp *.zip username@frs.sourceforge.net:uploads
+   scp *.zip user,geoserver@frs.sourceforge.net:/home/frs/project/g/ge/geoserver/
   
 The same can be accomplished in Windows using `WinSCP <http://winscp.net>`_.
 

@@ -13,6 +13,10 @@ The binary release of GeoServer should be somehere around 45 - 46 megabytes.
 Demos
 -----
 
+.. note::
+   
+   These are no longer available in GeoServer 2.0, we'll probably reinstate them later
+
 To do the demo page, http://localhost:8080/geoserver/demo.do, and test all of 
 the demos. This includes:
 
@@ -24,19 +28,19 @@ the demos. This includes:
 Sample requests
 ---------------
 
-Go to the sample request page, http://localhost:8080/geoserver/demoRequest.do, 
+Go to the sample request page, http://localhost:8080/geoserver/web/?wicket:bookmarkablePage=:org.geoserver.web.demo.DemoRequestsPage, 
 and execute every sample request, ensuring the correct response for each 
 request.
 
 Map preview
 -----------
 
-#. Go to the map preview page, http://localhost:8080/geoserver/mapPreview.do
+#. Go to the map preview page, http://atlas.openplans.org:8081/geoserver/web/?wicket:bookmarkablePage=:org.geoserver.web.demo.MapPreviewPage
 #. Click the ``OpenLayers`` link next to ``nurc:ArcSample``
 
    .. image:: arc_sample.png 
 
-#. Go back to the map preview and click the ``GeoRSS`` link next to 
+#. Go back to the map preview and click the ``GeoRSS`` item in the drop down choice next to 
    ``topp:states`` 
 
    .. image:: states_georss.png
