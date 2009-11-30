@@ -4,20 +4,20 @@ Global variables affecting WMS
 ================================
 
 This document details the set of global variables that can affect WMS behaviour.
-Each global variable can be set as an enviroment variable, as a servlet context variable, or as a Java system property, just like the well known ``GEOSERVER_DATA_DIRECTORY`` setting. Referer to :ref:`data_dir_setting` for details on how a global variable can be specified.
+Each global variable can be set as an environment variable, as a servlet context variable, or as a Java system property, just like the well known ``GEOSERVER_DATA_DIRECTORY`` setting. Refer to :ref:`data_dir_setting` for details on how a global variable can be specified.
 
 ADVANCED_PROJECTION_HANDLING
 ----------------------------
 
 Can be ``true`` or ``false`` (defaults to: ``false``).
 When ``true`` experimental pre and post processing of geometries is applied for selected projections: Mercator, Transverse Mercator, Polar Stereographic and unprojected geographics.
-The processing cuts out parts of the geometries that cannot be reprojected due to the projection own singularities and wraps the geometries around the dateline in order to provide a Google Maps like effect (continus, endless horizontal map).
+The processing cuts out parts of the geometries that cannot be reprojected due to the projection own singularities and wraps the geometries around the dateline in order to provide a Google Maps like effect (continuous, endless horizontal map).
 
 MAX_FILTER_RULES
 ----------------
 
-A integer number (defalts to 20)
-When drawing a style containing multiple active rules the renderer combines the filters of the rules in OR and adds them to the standard bounding box filter. This behaviour is active up until the maximum numer of filter rules is reached, past that the rule filters are no more added to avoid huge queries. By default up to 20 rules are combined, past 20 rules only the bounding box filter is used.
+A integer number (defaults to 20)
+When drawing a style containing multiple active rules the renderer combines the filters of the rules in OR and adds them to the standard bounding box filter. This behaviour is active up until the maximum number of filter rules is reached, past that the rule filters are no more added to avoid huge queries. By default up to 20 rules are combined, past 20 rules only the bounding box filter is used.
 Turning it off (setting it to 0) can be useful if the styles are mostly classifications, detrimental if the rule filters are actually filtering a good amount of data out.
 
 OPTIMIZE_LINE_WIDTH
