@@ -10,4 +10,5 @@ Web Map Service
    outputformats
    configuration
    vendor
+   global
    reference
