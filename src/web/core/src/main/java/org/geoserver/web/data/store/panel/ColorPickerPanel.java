@@ -17,14 +17,14 @@ import org.geoserver.web.wicket.ColorPickerField;
 
 /**
  * A label with a text field. Can receive custom validators for the text field.
- * 
+ *
  * @author Gabriel Roldan
  */
 @SuppressWarnings("serial")
 public class ColorPickerPanel extends Panel {
 
 	/**
-	 * 
+	 *
 	 * @param id
 	 * @param paramsMap
 	 * @param paramName
@@ -42,8 +42,8 @@ public class ColorPickerPanel extends Panel {
 		super(id, paramVale);
 
 		// the label
-		String requiredMark = required ? " *" : ""; 
-		Label label = new Label("paramName", paramLabelModel + requiredMark);
+		String requiredMark = required ? " *" : "";
+		Label label = new Label("paramName", paramLabelModel.getObject() + requiredMark);
 		add(label);
 
 		// the color picker. Notice that we need to convert between RRGGBB and
