@@ -120,6 +120,11 @@ public class Dispatcher extends AbstractController {
     public static final ThreadLocal<Request> REQUEST = new ThreadLocal<Request>();
     
     static final Charset UTF8 = Charset.forName("UTF-8");
+    
+    /**
+     * The amount of bytes to be read to determine the proper xml reader in POST request
+     */
+    int XML_LOOKAHEAD = 8192;
 
     /**
      * list of callbacks 
@@ -150,6 +155,21 @@ public class Dispatcher extends AbstractController {
     protected void initApplicationContext(ApplicationContext context) {
         //load life cycle callbacks
         callbacks = GeoServerExtensions.extensions( DispatcherCallback.class, context);
+        
+        // setup the xml lookahead value
+        String lookahead = GeoServerExtensions.getProperty("XML_LOOKAHEAD", context);
+        if(lookahead != null) {
+            try {
+                int lookaheadValue = Integer.valueOf(lookahead);
+                if(lookaheadValue <= 0)
+                    logger.log(Level.SEVERE, "Invalid XML_LOOKAHEAD value, " +
+                            "will use " + XML_LOOKAHEAD + " instead");
+                XML_LOOKAHEAD = lookaheadValue;
+            } catch(Exception e) {
+                logger.log(Level.SEVERE, "Invalid XML_LOOKAHEAD value, " +
+                        "will use " + XML_LOOKAHEAD + " instead");
+            }
+        }
     }
     
     protected void preprocessRequest(HttpServletRequest request)
@@ -246,9 +266,9 @@ public class Dispatcher extends AbstractController {
             //wrap the input stream in a buffered input stream
             request.input = reader(httpRequest);
 
-            //mark the input stream, support up to 2KB, TODO: make this configurable
+            //mark the input stream
             char[] req = new char[1024];
-            request.input.mark(2048);
+            request.input.mark(XML_LOOKAHEAD);
             int read = request.input.read(req, 0, 1024);
             
             if (logger.isLoggable(Level.FINE)) {
@@ -281,7 +301,7 @@ public class Dispatcher extends AbstractController {
         throws IOException {
         //create a buffer so we can reset the input stream
         BufferedInputStream input = new BufferedInputStream(httpRequest.getInputStream());
-        input.mark(2048);
+        input.mark(XML_LOOKAHEAD);
 
         //create object to hold encoding info
         EncodingInfo encoding = new EncodingInfo();
