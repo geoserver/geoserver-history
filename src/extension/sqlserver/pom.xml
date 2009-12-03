@@ -16,7 +16,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.geotools</groupId>
+      <groupId>org.geotools.jdbc</groupId>
       <artifactId>gt-jdbc-sqlserver</artifactId>
     </dependency>
   </dependencies>
