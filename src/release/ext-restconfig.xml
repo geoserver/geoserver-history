@@ -12,5 +12,12 @@
         <include>restconfig-*.jar</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>release/extensions/restconfig</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
