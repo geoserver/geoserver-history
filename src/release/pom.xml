@@ -83,11 +83,6 @@
   </dependency>
   <dependency>
    <groupId>org.geotools</groupId>
-   <artifactId>gt-mysql</artifactId>
-   <version>${gt.version}</version>
-  </dependency>
-  <dependency>
-   <groupId>org.geotools</groupId>
    <artifactId>gt-vpf</artifactId>
    <version>${gt.version}</version>
   </dependency>
@@ -134,6 +129,11 @@
   <dependency>
    <groupId>org.geoserver.extension</groupId>
    <artifactId>db2</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.geoserver.extension</groupId>
+   <artifactId>mysql</artifactId>
    <version>${project.version}</version>
   </dependency>
   <dependency>

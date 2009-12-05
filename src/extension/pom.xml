@@ -59,6 +59,13 @@
         <module>oracle</module>
       </modules>
     </profile>
+
+    <profile>
+      <id>mysql</id>
+      <modules>
+        <module>mysql</module>
+      </modules>
+    </profile>
     
     <profile>
       <id>wfsv</id>
@@ -156,6 +163,7 @@
         <module>h2</module>
         <module>sqlserver</module>
         <module>oracle</module>
+        <module>mysql</module>
         <module>wfsv</module>
         <module>db2</module>
         <module>imagemap</module>
@@ -180,6 +188,7 @@
         <module>h2</module>
         <module>sqlserver</module>
         <module>oracle</module>
+        <module>mysql</module>
         <module>wfsv</module>
         <module>db2</module>
         <module>imagemap</module>
