@@ -85,6 +85,7 @@ public class DataStoreFileResource extends StoreFileResource {
                     zout.closeEntry();
                 }
                 zout.flush();
+                zout.close();
             }
         };
         getResponse().setEntity( fmt.toRepresentation( directory ) );
