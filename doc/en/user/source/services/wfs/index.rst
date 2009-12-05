@@ -10,3 +10,4 @@ Web Feature Service
    outputformats
    vendor
    reference
+   schemamapping
