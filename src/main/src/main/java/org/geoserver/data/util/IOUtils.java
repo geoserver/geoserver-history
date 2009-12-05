@@ -182,7 +182,7 @@ public class IOUtils {
         String sysTempDir = dummyTemp.getParentFile().getAbsolutePath();
         dummyTemp.delete();
 
-        File reqTempDir = new File(sysTempDir + File.separator + "wfsshptemp" + Math.random());
+        File reqTempDir = new File(sysTempDir + File.separator + prefix + Math.random());
         reqTempDir.mkdir();
 
         return reqTempDir;
