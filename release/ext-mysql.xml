@@ -16,7 +16,7 @@
 			<directory>release/target/dependency</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
-				<include>gt-mysql*.jar</include>
+				<include>gt-jdbc-mysql*.jar</include>
 				<include>mysql-connector-java-*.jar</include>
 			</includes>
 		</fileSet>

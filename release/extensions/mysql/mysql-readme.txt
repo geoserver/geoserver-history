@@ -1,4 +1,4 @@
-GEOSERVER 1.5+ DATA STORE EXTRAS README
+MySQL Extension README
 
 This package contains a MySQL DataStore implementation that is 
 distributed as a separate plug-in.  This plug-in is still experimental,
@@ -13,7 +13,7 @@ Contains the following data stores:
 
 INSTALLATION
 
-1. Copy included gt2-mysql and mysql-connector-java jars included to your 
+1. Copy included gt2-jdbc-mysql and mysql-connector-java jars included to your 
    GeoServer library directory.  In a binary install this is at 
    [GEOSERVER_HOME]/server/geoserver/WEB-INF/lib/
    In a war install this is [container]/webapps/geoserver/WEB-INF/lib/
@@ -25,5 +25,5 @@ Config -> Data -> DataStores -> New.  Fill out the appropriate params.
 
 COMPATIBILITY
 
-This jar should work with any version of GeoServer based on GeoTools 2.6.x.  
-Currently this is anything in 2.0.x.
+This jar should work with any version of GeoServer based on GeoTools 2.7.x.  
+Currently this is anything in 2.1.x.
