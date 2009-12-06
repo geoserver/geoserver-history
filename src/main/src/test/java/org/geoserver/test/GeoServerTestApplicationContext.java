@@ -17,6 +17,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ui.context.Theme;
 import org.springframework.web.context.WebApplicationContext;
 
+import org.geoserver.data.util.IOUtils;
 
 /**
  * A spring application context used for GeoServer testing.
@@ -36,6 +37,14 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
     public GeoServerTestApplicationContext(String[] configLocation, ServletContext servletContext)
         throws BeansException {
         super(configLocation, false);
+        try {
+            servletContext.setAttribute(
+                "javax.servlet.context.tempdir", 
+                IOUtils.createRandomDirectory("./target", "mock", "tmp")
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         this.servletContext = servletContext;
     }
 
@@ -65,6 +74,5 @@ public class GeoServerTestApplicationContext extends ClassPathXmlApplicationCont
             def.setBeanClassName( "org.geoserver.wcs.WCSLoader");
         }
         catch( NoSuchBeanDefinitionException e ) {}
-        
     }
 }
