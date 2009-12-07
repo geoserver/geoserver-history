@@ -5,13 +5,15 @@
 package org.geoserver.web;
 
 import java.util.HashMap;
-import java.util.Map;
 
+import org.acegisecurity.Authentication;
+import org.acegisecurity.GrantedAuthority;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -56,18 +58,27 @@ public class GeoServerHomePage extends GeoServerBasePage {
             add(label);
         }
         
-        Catalog catalog = getCatalog();
-        add(new BookmarkablePageLink("layersLink", LayerPage.class)
-            .add(new Label( "nlayers", ""+catalog.getLayers().size())));
-        add(new BookmarkablePageLink("addLayerLink", NewLayerPage.class));
-        
-        add(new BookmarkablePageLink("storesLink",StorePage.class)
-            .add(new Label( "nstores", ""+catalog.getStores(StoreInfo.class).size())));
-        add(new BookmarkablePageLink("addStoreLink", NewDataPage.class));
-        
-        add(new BookmarkablePageLink("workspacesLink",WorkspacePage.class)
-            .add(new Label( "nworkspaces", ""+catalog.getWorkspaces().size())));
-        add(new BookmarkablePageLink("addWorkspaceLink", WorkspaceNewPage.class));
+        Authentication auth = getSession().getAuthentication();
+        if(isAdmin(auth)) {
+            Fragment f = new Fragment("catalogLinks", "catalogLinksFragment", this);
+            Catalog catalog = getCatalog();
+            f.add(new BookmarkablePageLink("layersLink", LayerPage.class)
+                .add(new Label( "nlayers", ""+catalog.getLayers().size())));
+            f.add(new BookmarkablePageLink("addLayerLink", NewLayerPage.class));
+            
+            f.add(new BookmarkablePageLink("storesLink",StorePage.class)
+                .add(new Label( "nstores", ""+catalog.getStores(StoreInfo.class).size())));
+            f.add(new BookmarkablePageLink("addStoreLink", NewDataPage.class));
+            
+            f.add(new BookmarkablePageLink("workspacesLink",WorkspacePage.class)
+                .add(new Label( "nworkspaces", ""+catalog.getWorkspaces().size())));
+            f.add(new BookmarkablePageLink("addWorkspaceLink", WorkspaceNewPage.class));
+            add(f);
+        } else {
+            Label placeHolder = new Label("catalogLinks");
+            placeHolder.setVisible(false);
+            add(placeHolder);
+        }
         
         // when hacking this service listing code please refer to 
         // http://jira.codehaus.org/browse/GEOS-2114
@@ -91,6 +102,20 @@ public class GeoServerHomePage extends GeoServerBasePage {
             }
         };
         add(view);
+    }
+    
+    /**
+     * Checks if the current user is authenticated and is the administrator
+     */
+    private boolean isAdmin(Authentication authentication) {
+        if(authentication == null || !authentication.isAuthenticated())
+            return false;
+        
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            if ("ROLE_ADMINISTRATOR".equals(authority.getAuthority()))
+                return true;
+        }
+        return false;
     }
 
     private IModel getServices() {
