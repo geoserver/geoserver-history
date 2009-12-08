@@ -40,12 +40,17 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
      * Underlying objectDefinitionSource object
      */
     private RESTfulPathBasedFilterInvocationDefinitionMap delegate = null;   
-
+    /**
+     * rest access rules dao
+     */
+    private RESTAccessRuleDAO dao;
+    
     /** 
      * Override the method in AbstractFilterInvocationDefinitionSource
      */
     public ConfigAttributeDefinition getAttributes( Object object )
         throws IllegalArgumentException {
+        
         if ((object == null) || !this.supports(object.getClass())) {
             throw new IllegalArgumentException("Object must be a FilterInvocation");
         }
@@ -53,7 +58,7 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         String url = ((FilterInvocation) object).getRequestUrl();
         String method = ((FilterInvocation) object).getHttpRequest().getMethod();
 
-        return delegate.lookupAttributes( url, method );
+        return delegate().lookupAttributes( cleanURL(url), method );
     }
 
     /**
@@ -64,11 +69,11 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
     }
 
     public ConfigAttributeDefinition lookupAttributes( String url, String method ) { 
-        return delegate.lookupAttributes( url, method );
+        return delegate().lookupAttributes(cleanURL(url), method );
     }
 
     public Iterator getConfigAttributeDefinitions() {
-        return delegate.getConfigAttributeDefinitions();        
+        return delegate().getConfigAttributeDefinitions();        
     }
 
     /**
@@ -81,12 +86,33 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
     /**
      * Creates a proxy to a PathBasedFilterInvocationDefinitionMap to delegate calls.
      * Initializations of the delegate is done here.
+     * 
+     * @deprecated This is not longer used (JD)
      */
     public RESTfulDefinitionSource( String pathToRoleList ) throws IllegalArgumentException {    
         delegate = new RESTfulPathBasedFilterInvocationDefinitionMap();
         processPathList( pathToRoleList );
     }
 
+    public RESTfulDefinitionSource(RESTAccessRuleDAO dao) {
+        this.dao = dao;
+        
+        //force a read of the property file at startup
+        dao.reload();
+    }
+    
+    RESTfulPathBasedFilterInvocationDefinitionMap delegate() {
+        if (delegate == null || dao.isModified()) {
+            synchronized(this) {
+                delegate = new RESTfulPathBasedFilterInvocationDefinitionMap();
+                for (String rule : dao.getRules()) {
+                    processPathList(rule);
+                }    
+            }
+        }
+        return delegate;
+    }
+    
     /**
      * this is completely bogus. I am duplicating code in FilterInvocationDefinitionSourceEditor 
      */
@@ -229,6 +255,15 @@ public class RESTfulDefinitionSource implements FilterInvocationDefinitionSource
         }
     }
 
+    /**
+     * Hacks an incoming url to help with matching. 
+     */
+    String cleanURL(String url) {
+        //remove any trailing slashes
+        url = url.replaceAll("/+$", "");
+        return url;
+    }
+    
     //++++++++++++++++++++++++
     static public class RESTfulDefinitionSourceMapping {        
         private String url = null;      
