@@ -93,7 +93,7 @@ public class GeoServerDataDirectory {
      * </p>
      */
     public File findOrCreateDataRoot() throws IOException {
-        return dataRoot(false);
+        return dataRoot(true);
     }
     
     File dataRoot(boolean create) throws IOException {
@@ -141,6 +141,54 @@ public class GeoServerDataDirectory {
     File dataFile( boolean create, String... location ) throws IOException {
         return create ? resourceLoader.createFile(dataRoot(create), location) 
             : resourceLoader.find( dataRoot(create), location );
+    }
+    
+    /**
+     * Returns the root of the directory which contains security configuration files, if the 
+     * directory does exist, null is returned.
+     * <p>
+     * This directory is called 'security', and is located directly under {@link #root()}
+     * </p>
+     */
+    public File findSecurityRoot() throws IOException {
+        return securityRoot(false);
+    }
+    
+    /**
+     * Returns the root of the directory which contains security configuration files, if the 
+     * directory does exist it is created.
+     * <p>
+     * This directory is called 'security', and is located directly under {@link #root()}
+     * </p>
+     */
+    public File findOrCreateSecurityRoot() throws IOException {
+        return securityRoot(true);
+    }
+    
+    File securityRoot(boolean create) throws IOException {
+        return create ? resourceLoader.findOrCreateDirectory( "security" ) 
+                : resourceLoader.find( "security");
+    }
+    
+    /**
+     * Copies a file into a security configuration directory.
+     * <p>
+     * If the security configuration directory does exist it will be created.
+     * </p>
+     */
+    public void copyToSecurityDir( File f ) throws IOException {
+        FileUtils.copyFileToDirectory( f, securityRoot( true ) );
+    }
+
+    /**
+     * Copies data into a security configuration directory.
+     * <p>
+     * If the security configuration directory does exist it will be created
+     * </p>
+     */
+    public void copyToSecurityDir( InputStream data, String filename ) 
+        throws IOException {
+        copy( data, securityRoot( true ), filename );
     }
     
     /**
