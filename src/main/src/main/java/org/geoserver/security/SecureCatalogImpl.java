@@ -599,7 +599,7 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
             } else if (accessManager.getMode() == CatalogMode.MIXED) {
                 // if request is a get capabilities and mixed, we hide again
                 Request request = Dispatcher.REQUEST.get();
-                if(request != null && request.getRequest().equalsIgnoreCase("GetCapabilities"))
+                if(request != null && "GetCapabilities".equalsIgnoreCase(request.getRequest()))
                     return WrapperPolicy.HIDE;
                 // otherwise challenge the user for credentials
                 else
