@@ -44,6 +44,8 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
+import org.opengis.parameter.GeneralParameterDescriptor;
+import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -71,7 +73,7 @@ import com.vividsolutions.jts.geom.Envelope;
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
     static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(GetMapResponse.class.getPackage().getName());
+            .getLogger(GetMapResponse.class.getName());
 
     private static FilterFactory filterFac = CommonFactoryFinder.getFilterFactory(null);
 
@@ -84,12 +86,12 @@ public class GetMapResponse implements Response {
     /**
      * The map context
      */
-    private WMSMapContext map;
+    private WMSMapContext mapContext;
 
     /**
      * custom response headers
      */
-    private HashMap responseHeaders;
+    private HashMap<String, String> responseHeaders;
 
     String headerContentDisposition;
 
@@ -118,8 +120,8 @@ public class GetMapResponse implements Response {
      * response object.
      * 
      */
-    public HashMap getResponseHeaders() {
-        return responseHeaders == null? null : new HashMap(responseHeaders);
+    public HashMap<String, String> getResponseHeaders() {
+        return responseHeaders == null? null : new HashMap<String, String>(responseHeaders);
     }
 
     /**
@@ -146,7 +148,7 @@ public class GetMapResponse implements Response {
      * get a decent test coverage on it first as to avoid regressions as much as
      * possible
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings(value={"unchecked","deprecation"})
     public void execute(Request req) throws ServiceException {
         final GetMapRequest request = (GetMapRequest) req;
         assertMandatory(request);
@@ -156,8 +158,8 @@ public class GetMapResponse implements Response {
         this.delegate = getDelegate(outputFormat);
         // JD:make instance variable in order to release resources later
         // final WMSMapContext map = new WMSMapContext();
-        map = new WMSMapContext(request);
-        this.delegate.setMapContext(map);
+        mapContext = new WMSMapContext(request);
+        this.delegate.setMapContext(mapContext);
 
         final Envelope env = request.getBbox();
 
@@ -168,7 +170,7 @@ public class GetMapResponse implements Response {
             }
 
             this.delegate = new MetatileMapProducer(request, (RasterMapProducer) delegate);
-            this.delegate.setMapContext(map);
+            this.delegate.setMapContext(mapContext);
         }
 
         final MapLayerInfo[] layers = request.getLayers();
@@ -184,27 +186,27 @@ public class GetMapResponse implements Response {
 
         // DJB: added this to be nicer about the "NONE" srs.
         if (mapcrs != null) {
-            map.setAreaOfInterest(env, mapcrs);
+            mapContext.setAreaOfInterest(env, mapcrs);
         } else {
-            map.setAreaOfInterest(env, DefaultGeographicCRS.WGS84);
+            mapContext.setAreaOfInterest(env, DefaultGeographicCRS.WGS84);
         }
 
-        map.setMapWidth(request.getWidth());
-        map.setMapHeight(request.getHeight());
-        map.setBgColor(request.getBgColor());
-        map.setTransparent(request.isTransparent());
-        map.setBuffer(request.getBuffer());
-        map.setPaletteInverter(request.getPalette());
+        mapContext.setMapWidth(request.getWidth());
+        mapContext.setMapHeight(request.getHeight());
+        mapContext.setBgColor(request.getBgColor());
+        mapContext.setTransparent(request.isTransparent());
+        mapContext.setBuffer(request.getBuffer());
+        mapContext.setPaletteInverter(request.getPalette());
 
         // //
         //
         // Check to see if we really have something to display. Sometimes width
-        // or height or both are non positivie or the requested area is null.
+        // or height or both are non positive or the requested area is null.
         //
         // ///
         if ((request.getWidth() <= 0) || (request.getHeight() <= 0)
-                || (map.getAreaOfInterest().getLength(0) <= 0)
-                || (map.getAreaOfInterest().getLength(1) <= 0)) {
+                || (mapContext.getAreaOfInterest().getLength(0) <= 0)
+                || (mapContext.getAreaOfInterest().getLength(1) <= 0)) {
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER
                         .fine("We are not going to render anything because either the area is null or the dimensions are not positive.");
@@ -246,7 +248,7 @@ public class GetMapResponse implements Response {
                     definitionQuery.setMaxFeatures(maxFeatures);
 
                     layer.setQuery(definitionQuery);
-                    map.addLayer(layer);
+                    mapContext.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
                     if (cachingPossible) {
                         if (layers[i].isCachingEnabled()) {
@@ -327,21 +329,27 @@ public class GetMapResponse implements Response {
                     definitionQuery.setMaxFeatures(maxFeatures);
 
                     layer.setQuery(definitionQuery);
-                    map.addLayer(layer);
+                    mapContext.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
+                	
+
+                    
+                    
                     // /////////////////////////////////////////////////////////
                     //
                     // Adding a coverage layer
                     //
                     // /////////////////////////////////////////////////////////
-                    AbstractGridCoverage2DReader reader;
-                    reader = (AbstractGridCoverage2DReader) layers[i].getCoverageReader();
+                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers[i].getCoverageReader();
                     if (reader != null) {
-                        // /////////////////////////////////////////////////////////
+
+                    	// get the group of parameters tha this reader supports
+                        final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
+                    	GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, layers[i].getCoverage().getParameters());                        
+                        
                         //
                         // Setting coverage reading params.
                         //
-                        // /////////////////////////////////////////////////////////
 
                         /*
                          * Test if the parameter "TIME" is present in the WMS
@@ -349,14 +357,31 @@ public class GetMapResponse implements Response {
                          * it is the case, one can adds it to the request. If an
                          * exception is thrown, we have nothing to do.
                          */
-                        try {
-                            ParameterValue time = reader.getFormat().getReadParameters().parameter(
-                                    "TIME");
-                            if (time != null && request.getTime() != null) {
-                                time.setValue(request.getTime());
-                            }
-                        } catch (ParameterNotFoundException p) {
-                        }
+                    	final List dateTime = request.getTime();
+                    	final boolean hasTime=dateTime!=null&&dateTime.size()>0;
+                        final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
+                        if(hasTime)
+	                        for(GeneralParameterDescriptor pd:parameterDescriptors){
+	                        	
+	                        	// TIME
+	                        	if(pd.getName().getCode().equalsIgnoreCase("TIME")){
+	                        		final ParameterValue time=(ParameterValue) pd.createValue();
+	                        		if (time != null) {
+	                                    time.setValue(request.getTime());
+	                                }
+	                        		
+	                        		// add to the list
+	                        		GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
+	                        		System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+	                        		readParametersClone[readParameters.length]=time;
+	                        		readParameters=readParametersClone;
+	                        		
+	                        		// leave 
+	                        		break;
+	                        	}
+	                        }
+                        
+                            
 
                         // uncomment when the DIM_RANGE vendor parameter will be
                         // enabled
@@ -372,8 +397,7 @@ public class GetMapResponse implements Response {
                         // }
 
                         try {
-                            ParameterValue elevation = reader.getFormat().getReadParameters()
-                                    .parameter("ELEVATION");
+                            ParameterValue elevation = reader.getFormat().getReadParameters().parameter("ELEVATION");
                             if (elevation != null && request.getElevation() != null) {
                                 elevation.setValue(request.getElevation().intValue());
                             }
@@ -382,21 +406,21 @@ public class GetMapResponse implements Response {
                         }
 
                         try {
-                            final ParameterValueGroup params = reader.getFormat()
-                                    .getReadParameters();
 
-                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
-                                    reader, CoverageUtils.getParameters(params, layers[i]
-                                            .getCoverage().getParameters())), layerStyle);
+                            layer = new DefaultMapLayer(
+                            		FeatureUtilities.wrapGridCoverageReader(
+                            				reader, 
+                            				readParameters
+                            				)
+                            		,layerStyle
+                            		);
 
                             layer.setTitle(layers[i].getCoverage().getName());
                             layer.setQuery(Query.ALL);
-                            map.addLayer(layer);
+                            mapContext.addLayer(layer);
                         } catch (IllegalArgumentException e) {
                             if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE, new StringBuffer(
-                                        "Wrapping GC in feature source: ").append(
-                                        e.getLocalizedMessage()).toString(), e);
+                                LOGGER.log(Level.SEVERE, new StringBuilder("Wrapping GC in feature source: ").append( e.getLocalizedMessage()).toString(), e);
                             }
 
                             throw new WmsException(
@@ -422,7 +446,7 @@ public class GetMapResponse implements Response {
 
             if (cachingPossible) {
                 if(responseHeaders == null){
-                    responseHeaders = new HashMap();
+                    responseHeaders = new HashMap<String, String>();
                 }
                 responseHeaders.put("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
                 
@@ -639,8 +663,8 @@ public class GetMapResponse implements Response {
      */
     void clearMapContext() {
         try {
-            if (map != null && map.getLayerCount() > 0)
-                map.clearLayerList();
+            if (mapContext != null && mapContext.getLayerCount() > 0)
+                mapContext.clearLayerList();
         } catch (Exception e) // we dont want to propogate a new error
         {
             if (LOGGER.isLoggable(Level.SEVERE)) {

@@ -179,7 +179,6 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     /**
      * @see GetMapProducer#getOutputFormatNames()
      */
-    @SuppressWarnings("unchecked")
     public Set<String> getOutputFormatNames() {
         return outputFormatNames;
     }

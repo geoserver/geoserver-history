@@ -15,11 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -50,10 +48,10 @@ public class GetMapRequest extends WMSRequest {
     private OptionalParameters optionalParams = new OptionalParameters();
 
     /** format options */
-    private Map /*<String,Object>*/ formatOptions = new CaseInsensitiveMap(new HashMap());
+    private Map <String,Object> formatOptions = new CaseInsensitiveMap(new HashMap());
 
     /** raw kvp parameters non-parsed */
-    private Map /*<String,String>*/ rawKvp;
+    private Map <String,String> rawKvp;
     
     /**
      * Creates a GetMapRequest object.
