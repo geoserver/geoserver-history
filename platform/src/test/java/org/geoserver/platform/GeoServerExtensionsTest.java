@@ -53,6 +53,7 @@ public class GeoServerExtensionsTest extends TestCase {
         gse.setApplicationContext(appContext);
 
         assertEquals(0, gse.extensionsCache.size());
+        expect(appContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(appContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(
                 new String[] { "testKey", "fakeKey" });
         expect(appContext.getBean("testKey")).andReturn(this);
@@ -68,7 +69,7 @@ public class GeoServerExtensionsTest extends TestCase {
         assertTrue(extensions.contains(this));
         assertTrue(extensions.contains(null));
 
-        assertEquals(1, gse.extensionsCache.size());
+        assertEquals(2, gse.extensionsCache.size());
         assertTrue(gse.extensionsCache.containsKey(GeoServerExtensionsTest.class));
         assertNotNull(gse.extensionsCache.get(GeoServerExtensionsTest.class));
         assertEquals(2, gse.extensionsCache.get(GeoServerExtensionsTest.class).length);
@@ -91,6 +92,7 @@ public class GeoServerExtensionsTest extends TestCase {
         // setApplicationContext cleared the static cache
         assertEquals(0, GeoServerExtensions.extensionsCache.size());
         // set the expectation over the app context used as argument
+        expect(customAppContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(customAppContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(
                 new String[] { "itDoesntMatterForThePurpose" });
         expect(customAppContext.getBean("itDoesntMatterForThePurpose")).andReturn(this);
@@ -108,6 +110,62 @@ public class GeoServerExtensionsTest extends TestCase {
 
         verify(appContext);
         verify(customAppContext);
+    }
+    
+    public void testExtensionFilterByName() {
+        ApplicationContext appContext = createNiceMock(ApplicationContext.class);
+
+        // setApplicationContext cleared the static cache
+        // set the expectation over the app context used as argument
+        NameExclusionFilter filter = new NameExclusionFilter();
+        filter.setBeanId("testId");
+        expect(appContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[] { "filter" }).anyTimes();
+        expect(appContext.getBean("filter")).andReturn(filter).anyTimes();
+        expect(appContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(new String[] { "testId" }).anyTimes();
+        expect(appContext.getBean("testId")).andReturn(this).anyTimes();
+        replay(appContext);
+
+        // build extensions
+        GeoServerExtensions gse = new GeoServerExtensions();
+        gse.setApplicationContext(appContext);
+        
+        // check we get nothing
+        List<GeoServerExtensionsTest> extensions = gse.extensions(GeoServerExtensionsTest.class);
+        assertEquals(0, extensions.size());
+        
+        // change the bean id and we should get one result instead
+        filter.setBeanId("holabaloo");
+        extensions = gse.extensions(GeoServerExtensionsTest.class);
+        assertEquals(1, extensions.size());
+        assertSame(this, extensions.get(0));
+    }
+    
+    public void testExtensionFilterByClass() {
+        ApplicationContext appContext = createNiceMock(ApplicationContext.class);
+
+        // setApplicationContext cleared the static cache
+        // set the expectation over the app context used as argument
+        ClassExclusionFilter filter = new ClassExclusionFilter();
+        filter.setBeanClass(GeoServerExtensionsTest.class);
+        expect(appContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[] { "filter" }).anyTimes();
+        expect(appContext.getBean("filter")).andReturn(filter).anyTimes();
+        expect(appContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(new String[] { "testId" }).anyTimes();
+        expect(appContext.getBean("testId")).andReturn(this).anyTimes();
+        replay(appContext);
+
+        // build extensions
+        GeoServerExtensions gse = new GeoServerExtensions();
+        gse.setApplicationContext(appContext);
+        
+        // check we get nothing
+        List<GeoServerExtensionsTest> extensions = gse.extensions(GeoServerExtensionsTest.class);
+        assertEquals(0, extensions.size());
+        
+        // change the bean id and we should get one result instead
+        filter.setBeanClass(Integer.class);
+        extensions = gse.extensions(GeoServerExtensionsTest.class);
+        assertEquals(1, extensions.size());
+        assertSame(this, extensions.get(0));
     }
 
     public void testBeanString() {

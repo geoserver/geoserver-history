@@ -122,10 +122,20 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
             }
         }
         
+        // lookup extension filters preventing recursion
+        List<ExtensionFilter> filters;
+        if(ExtensionFilter.class.isAssignableFrom(extensionPoint)) {
+            filters = Collections.emptyList();
+        } else {
+            filters = extensions(ExtensionFilter.class, context);
+        }
+        
         // look up all the beans
         List result = new ArrayList(names.length);
-        for (int i = 0; i < names.length; i++) {
-            result.add(context.getBean(names[i]));
+        for(String name : names) {
+            Object bean = context.getBean(name);
+            if(!excludeBean(name, bean, filters))
+                result.add(bean);
         }
         
         // load from factory spi
@@ -138,8 +148,13 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
             }
             spiCache.put(extensionPoint, spiExtensions);
         }
-        result.addAll(spiExtensions);
-        
+        // filter the beans coming from SPI (we don't cache the results
+        // of the filtering, an extension filter can change its mind 
+        // from call to call
+        for (Object bean : spiExtensions) {
+            if(!excludeBean(null, bean, filters))
+                result.add(spiExtensions);
+        }
         
         //sort the results based on ExtensionPriority
         Collections.sort( result, new Comparator() {
@@ -160,6 +175,17 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
         });
         
         return result;
+    }
+
+    /**
+     * Returns true if any of the {@link ExtensionFilter} asks to exclude the bean
+     */
+    private static boolean excludeBean(String beanId, Object bean, List<ExtensionFilter> filters) {
+        for (ExtensionFilter filter : filters) {
+            if(filter.exclude(beanId, bean))
+                return true;
+        }
+        return false;
     }
 
     /**
