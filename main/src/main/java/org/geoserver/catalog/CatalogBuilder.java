@@ -564,6 +564,10 @@ public class CatalogBuilder {
         
         CoverageStoreInfo csinfo = (CoverageStoreInfo) store;
         AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+        
+        if(reader == null)
+            throw new Exception ("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+        
         return buildCoverage(reader);
     }
     
