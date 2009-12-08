@@ -14,6 +14,9 @@ import java.util.List;
 
 import junit.framework.Test;
 
+import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
@@ -41,6 +44,20 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new GetMapKvpRequestReaderTest());
+    }
+    
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
+        
+        CatalogFactory cf = getCatalog().getFactory();
+        CatalogBuilder cb = new CatalogBuilder(getCatalog());
+        LayerGroupInfo gi = cf.createLayerGroup();
+        gi.setName("testGroup");
+        gi.getLayers().add(getCatalog().getLayerByName(MockData.BASIC_POLYGONS.getLocalPart()));
+        gi.getStyles().add(getCatalog().getStyleByName("polygon"));
+        cb.calculateLayerGroupBounds(gi);
+        getCatalog().add(gi);
     }
 
     protected void setUpInternal() throws Exception {
@@ -393,4 +410,28 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
             assertEquals("RemoteOWSFailure", e.getCode());
         }
     }
+    
+    public void testGroupInSLD() throws Exception {
+        // see GEOS-1818
+        final HashMap kvp = new HashMap();
+        kvp.put("srs", "epsg:4326");
+        kvp.put("bbox",
+                "124.38035938267053,-58.45445933799711,169.29632161732948,-24.767487662002893");
+        kvp.put("width", "640");
+        kvp.put("height", "480");
+        kvp.put("format", "image/png");
+        final URL url = GetMapKvpRequestReader.class.getResource("BaseMapGroup.sld");
+        kvp.put("sld", url.toString());
+        kvp.put("version", "1.1.1");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(kvp), kvp);
+        
+        assertEquals(1, request.getLayers().length);
+        assertEquals(1, request.getStyles().size());
+        assertEquals(getLayerId(MockData.BASIC_POLYGONS), request.getLayers()[0].getName());
+        Style expectedStyle = getCatalog().getStyleByName("polygon").getStyle();
+        assertEquals(expectedStyle, request.getStyles().get(0));
+    }
+
 }
