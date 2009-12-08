@@ -16,6 +16,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
+import org.geoserver.platform.ExtensionFilter;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.wms.GetMapProducer;
 
@@ -42,6 +43,7 @@ public class WMSExtensionsTest extends TestCase {
         ApplicationContext mockContext = EasyMock.createMock(ApplicationContext.class);
         // I'm not so pleasant with this block of code as it implies knowing how
         // the internals of GeoServerExtensions work
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(
                 new String[] { "producer1", "producer2" });
         expect(mockContext.getBean("producer1")).andReturn(mockProducer1);
@@ -61,6 +63,7 @@ public class WMSExtensionsTest extends TestCase {
         ApplicationContext mockContext = EasyMock.createMock(ApplicationContext.class);
         // I'm not so pleasant with this block of code as it implies knowing how
         // the internals of GeoServerExtensions work
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(new String[] {});
         // end of unpleasant block
 
@@ -77,10 +80,12 @@ public class WMSExtensionsTest extends TestCase {
         ApplicationContext mockContext = EasyMock.createMock(ApplicationContext.class);
         // I'm not so pleasant with this block of code as it implies knowing how
         // the internals of GeoServerExtensions work
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(
                 new String[] { "producer1" }); // call#1
         expect(mockContext.getBean("producer1")).andReturn(mockProducer); // call#1
 
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(
                 new String[] { "producer1" }); // call#2
         expect(mockContext.getBean("producer1")).andReturn(mockProducer); // call#2
