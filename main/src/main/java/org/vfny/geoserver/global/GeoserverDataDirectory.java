@@ -8,6 +8,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -405,5 +406,13 @@ public class GeoserverDataDirectory {
             catalog = (Catalog) GeoServerExtensions.bean( "catalog");
         }
         return catalog;
+    }
+    
+    /**
+     * Helper method to help client code migrade from using this class to using
+     * {@link org.geoserver.config.GeoserverDataDirectory}.
+     */
+    public static org.geoserver.config.GeoServerDataDirectory accessor() {
+        return new org.geoserver.config.GeoServerDataDirectory(loader);
     }
 }

@@ -7,6 +7,9 @@
         resources
      -->
     <bean id="resourceLoader" class="org.geoserver.platform.GeoServerResourceLoader"/>
+    <bean id="dataDirectory" class="org.geoserver.config.GeoServerDataDirectory">
+       <constructor-arg ref="resourceLoader"/>
+    </bean>
     
     <!-- extensions -->
     <bean id="extensions" class="org.geoserver.platform.GeoServerExtensions"/>
