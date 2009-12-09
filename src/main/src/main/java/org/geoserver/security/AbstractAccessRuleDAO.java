@@ -175,7 +175,7 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable> {
      */
     void checkPropertyFile(boolean force) {
         try {
-            if (rules == null) {
+            if (rules == null || force) {
                 // no security folder, let's work against an empty properties then
                 if (securityDir == null || !securityDir.exists()) {
                     this.rules = new TreeSet<R>();
@@ -199,8 +199,7 @@ public abstract class AbstractAccessRuleDAO<R extends Comparable> {
                     }
                 }
                 lastModified = System.currentTimeMillis();
-            //} else if (watcher != null && (watcher.isStale() || force)) {
-            } else if (isModified() || force) {    
+            } else if (isModified()) {    
                 loadRules(watcher.getProperties());
                 lastModified = System.currentTimeMillis();
             }
