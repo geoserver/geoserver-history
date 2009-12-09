@@ -459,6 +459,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
      */
     Catalog readCatalog( XStreamPersister xp ) throws Exception {
         Catalog catalog = new CatalogImpl();
+        catalog.setResourceLoader(resourceLoader);
         xp.setCatalog( catalog );
         
         CatalogFactory factory = catalog.getFactory();
@@ -538,14 +539,6 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                                 catch( Exception e ) {
                                     LOGGER.log( Level.WARNING, "Failed to load feature type '" + ftd.getName() +"'", e);
                                     continue;
-                                }
-                                
-                                //check for a schema override
-                                try {
-                                    handleSchemaOverride( ft, ftd );
-                                }
-                                catch( Exception e ) {
-                                    LOGGER.log( Level.WARNING, "Schema override failed for feature type '" + ft.getName() +"'", e);
                                 }
                                 
                                 catalog.add( ft );
@@ -658,6 +651,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
      */
     Catalog readLegacyCatalog(File f, XStreamPersister xp) throws Exception {
         Catalog catalog2 = new CatalogImpl();
+        catalog2.setResourceLoader(resourceLoader);
         
         //add listener now as a converter which will convert from the old style 
         // data directory to the new
@@ -740,86 +734,6 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
 
         in.close();
         return obj;
-    }
-    
-    /**
-     * Handles a schema override of a feature type.
-     * <p>
-     * Reads schema.xml or schema.xsd, and culls the attributes of the resulting feature type.
-     * 
-     * </p>
-     */
-    //JD: this seems a bit out of place here... possibly move somewhere else 
-    void handleSchemaOverride( FeatureTypeInfo ft, File ftd ) throws IOException {
-        //TODO: create a file that abstracts file system access to data directory
-        
-        File schemaFile = new File( ftd, "schema.xsd" );
-        if ( !schemaFile.exists() ) {
-            //check for the old style schema.xml
-            File oldSchemaFile = new File(ftd, "schema.xml");
-            if ( oldSchemaFile.exists() ) {
-                schemaFile = new File( oldSchemaFile.getParentFile(), "schema.xsd");
-                BufferedWriter out = 
-                    new BufferedWriter(new OutputStreamWriter( new FileOutputStream( schemaFile ) ) );
-                out.write( "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'>");
-                IOUtils.copy( new FileInputStream( oldSchemaFile ), out );
-                out.write( "</xs:schema>" );
-                out.flush();
-                out.close();
-            }
-        }
-        
-        if ( schemaFile.exists()) {
-            //TODO: farm this schema loading stuff to some utility class
-            //parse the schema + generate attributes from that
-            List locators = Arrays.asList( GML.getInstance().createSchemaLocator() );
-            XSDSchema schema = null;
-            try {
-                schema = Schemas.parse( schemaFile.getAbsolutePath(), locators, null );
-            }
-            catch( Exception e ) {
-                LOGGER.warning( "Unable to parse " + schemaFile.getAbsolutePath() + "." +
-                    " Falling back on native feature type");
-            }
-            if ( schema != null ) {
-                XSDTypeDefinition type = null;
-                for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
-                    XSDElementDeclaration element = (XSDElementDeclaration) e.next();
-                    if ( ft.getName().equals( element.getName() ) ) {
-                        type = element.getTypeDefinition();
-                        break;
-                    }
-                }
-                if ( type == null ) {
-                    for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
-                        XSDTypeDefinition typedef = (XSDTypeDefinition) t.next();
-                        if ( (ft.getName() + "_Type").equals( typedef.getName() ) ) {
-                            type = typedef;
-                            break;
-                        }
-                    }
-                }
-                
-                if ( type != null ) {
-                    List children = Schemas.getChildElementDeclarations(type,true);
-                    for ( Iterator<AttributeTypeInfo> i = ft.getAttributes().iterator(); i.hasNext(); ) {
-                        AttributeTypeInfo at = i.next();
-                        boolean found = false;
-                        for ( Iterator c = children.iterator(); c.hasNext(); ) {
-                            XSDElementDeclaration ce = (XSDElementDeclaration) c.next();
-                            if ( at.getName().equals( ce.getName() ) ) {
-                                found = true;
-                                break;
-                            }
-                        }
-                        
-                        if ( !found ) {
-                            i.remove();
-                        }
-                    }
-                }
-            }
-        }
     }
     
     /**

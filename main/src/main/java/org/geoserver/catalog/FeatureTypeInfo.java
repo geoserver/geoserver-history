@@ -32,6 +32,10 @@ public interface FeatureTypeInfo extends ResourceInfo {
     
     /**
      * The attributes that the feature type exposes.
+     * <p>
+     * Services and client code will want to call the {@link #attributes()}
+     * method over this one.
+     * </p>
      */
     List<AttributeTypeInfo> getAttributes();
     
@@ -84,6 +88,15 @@ public interface FeatureTypeInfo extends ResourceInfo {
      * numbers from data of this feature type.
      */
     void setNumDecimals( int numDecimals );
+    
+    /**
+     * Returns the derived set of attributes for the feature type.
+     * <p>
+     * This value is derived from the underlying feature, and any 
+     * overrides configured via {@link #getAttributes()}.
+     * </p>
+     */
+    List<AttributeTypeInfo> attributes() throws IOException;
     
     /**
      * Returns the underlying geotools feature type.

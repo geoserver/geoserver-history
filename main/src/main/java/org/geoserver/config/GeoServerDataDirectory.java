@@ -362,6 +362,33 @@ public class GeoServerDataDirectory {
     }
     
     /**
+     * Finds the directory for the resource assuming a 1.x style data directory.
+     * <p>
+     * Something like:
+     * <pre>
+     * featureTypes/states_shapefile_states
+     * coverages/sfdem_dem
+     * </pre>
+     * </p>
+     * 
+     * @param r The resource.
+     * 
+     * @return The directory for the resource, or null if it could not be found.
+     */
+    public File findLegacyResourceDir( ResourceInfo r ) throws IOException {
+        String dirname = r.getStore().getName() + "_" + r.getName();
+        File dir = null;
+        if ( r instanceof FeatureTypeInfo ) {
+            dir = resourceLoader.find("featureTypes", dirname);
+        }
+        else if ( r instanceof CoverageInfo ) {
+            dir = resourceLoader.find("coverages", dirname);
+        }
+        
+        return dir != null ? dir : null;
+    }
+    
+    /**
      * Returns the directory in which a resources configuration is persisted, if the directory does
      * not exist it will be created.
      */
@@ -373,6 +400,7 @@ public class GeoServerDataDirectory {
         File sdir = storeDir(create, r.getStore());
         return sdir != null ? dir(new File( sdir, r.getName() ), create) : null;
     }
+    
     
     /**
      * Returns the configuration file for the specified resource, if the file does not exist null is
@@ -414,6 +442,15 @@ public class GeoServerDataDirectory {
     public File findSuppResourceFile( ResourceInfo r, String filename ) throws IOException {
         File rdir = findResourceDir( r );
         return rdir != null ? file(new File( rdir, filename ), false) : null;
+    }
+    
+    /**
+     * Returns a supplementary configuration file for a resource in a 1.x data directory format. If 
+     * the file does not exist null is returned.
+     */
+    public File findSuppLegacyResourceFile( ResourceInfo r, String filename ) throws IOException {
+        File rdir = findLegacyResourceDir( r );
+        return rdir != null ? file(new File( rdir, filename ), false ) : null;
     }
     
     /**
