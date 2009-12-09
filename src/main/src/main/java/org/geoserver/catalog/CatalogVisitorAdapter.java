@@ -13,6 +13,10 @@ package org.geoserver.catalog;
  */
 public class CatalogVisitorAdapter implements CatalogVisitor {
 
+    public void visit(Catalog catalog) {
+    
+    }
+    
     public void visit( WorkspaceInfo workspace ) {
         
     }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -117,6 +118,16 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
                     WorkspaceInfo newWorkspace = (WorkspaceInfo) event.getNewValues().get( i );
                     File oldDir = dir( (StoreInfo) source );
                     oldDir.renameTo( new File( dir( newWorkspace ), oldDir.getName() ) );
+                }
+            }
+            
+            //handle default workspace
+            if ( source instanceof Catalog ) {
+                i = event.getPropertyNames().indexOf("defaultWorkspace");
+                if ( i > -1 ) {
+                    WorkspaceInfo defWorkspace = (WorkspaceInfo) event.getNewValues().get( i );
+                    File d = rl.createDirectory( "workspaces");
+                    persist(defWorkspace, new File(d, "default.xml"));
                 }
             }
             

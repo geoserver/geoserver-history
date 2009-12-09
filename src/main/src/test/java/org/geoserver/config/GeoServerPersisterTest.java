@@ -59,6 +59,18 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         assertFalse( ws.exists() );
     }
     
+    public void testDefaultWorkspace() throws Exception {
+        testAddWorkspace();
+        WorkspaceInfo ws = catalog.getWorkspaceByName("acme");
+        catalog.setDefaultWorkspace(ws);
+        
+        File dws = new File( testData.getDataDirectoryRoot(), "workspaces/default.xml" );
+        assertTrue( dws.exists() );
+        
+        Document dom = dom(dws);
+        assertXpathEvaluatesTo("acme", "/workspace/name", dom );
+    }
+    
     public void testAddDataStore() throws Exception {
         testAddWorkspace();
         

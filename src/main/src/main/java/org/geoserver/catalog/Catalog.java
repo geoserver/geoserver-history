@@ -125,7 +125,7 @@ import java.util.Collection;
  * 
  * @author Justin Deoliveira, The Open Planning project
  */
-public interface Catalog {
+public interface Catalog extends CatalogInfo {
 
     /**
      * The factory used to create catalog objects.
