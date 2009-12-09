@@ -9,6 +9,7 @@ import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.rmi.server.UID;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogException;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CatalogInfo;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
@@ -122,6 +124,10 @@ public class CatalogImpl implements Catalog {
 
     public CatalogImpl() {
         resourcePool = new ResourcePool(this);
+    }
+    
+    public String getId() {
+        return "catalog";
     }
     
     public CatalogFactory getFactory() {
@@ -1011,7 +1017,13 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "No such namespace: '" + defaultNamespace.getPrefix() + "'" );
         }
         
+        NamespaceInfo old = namespaces.get(null);
         namespaces.put( null, ns );
+        
+        //fire change event
+        fireModified(this, 
+            Arrays.asList("defaultNamespace"), Arrays.asList(old), Arrays.asList(defaultNamespace));
+        
     }
 
     // Workspace methods
@@ -1095,7 +1107,12 @@ public class CatalogImpl implements Catalog {
     }
     
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
+        WorkspaceInfo old = workspaces.get(null);
         workspaces.put( null, workspace );
+        
+        //fire change event
+        fireModified(this, 
+            Arrays.asList("defaultWorkspace"), Arrays.asList(old), Arrays.asList(workspace));
     }
     
     public List<WorkspaceInfo> getWorkspaces() {
@@ -1617,6 +1634,10 @@ public class CatalogImpl implements Catalog {
     
     public static <T> T unwrap(T obj) {
         return ModificationProxy.unwrap(obj);
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
     }
     
 }

@@ -481,6 +481,22 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         //workspaces, stores, and resources
         File workspaces = resourceLoader.find( "workspaces" );
         if ( workspaces != null ) {
+            //do a first quick scan over all workspaces, setting the default
+            File dws = new File(workspaces, "default.xml");
+            WorkspaceInfo defaultWorkspace = null;
+            if (dws.exists()) {
+                try {
+                    defaultWorkspace = depersist(xp, dws, WorkspaceInfo.class);
+                    LOGGER.info("Loaded default workspace " + defaultWorkspace.getName());
+                }
+                catch( Exception e ) {
+                    LOGGER.log(Level.WARNING, "Failed to load default workspace", e);
+                }
+            }
+            else {
+                LOGGER.warning("No default workspace was found.");
+            }
+            
             for ( File wsd : list(workspaces, DirectoryFileFilter.INSTANCE ) ) {
                 File f = new File( wsd, "workspace.xml");
                 if ( !f.exists() ) {
@@ -501,9 +517,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                 
                 //load the namespace
                 File nsf = new File( wsd, "namespace.xml" );
+                NamespaceInfo ns = null; 
                 if ( nsf.exists() ) {
                     try {
-                        NamespaceInfo ns = depersist( xp, nsf, NamespaceInfo.class );
+                        ns = depersist( xp, nsf, NamespaceInfo.class );
                         catalog.add( ns );
                     }
                     catch( Exception e ) {
@@ -511,9 +528,20 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                     }
                 }
                 
+                if (ws.getName().equals(defaultWorkspace.getName())) {
+                    catalog.setDefaultWorkspace(ws);
+                    if (ns != null) {
+                        catalog.setDefaultNamespace(ns);
+                    }
+                }
+                
+            }
+            
+            for ( File wsd : list(workspaces, DirectoryFileFilter.INSTANCE ) ) {
+                
                 //load the stores for this workspace
                 for ( File sd : list(wsd, DirectoryFileFilter.INSTANCE) ) {
-                    f = new File( sd, "datastore.xml");
+                    File f = new File( sd, "datastore.xml");
                     if ( f.exists() ) {
                         //load as a datastore
                         DataStoreInfo ds = null;

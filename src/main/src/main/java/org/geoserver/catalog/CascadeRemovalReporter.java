@@ -49,6 +49,9 @@ public class CascadeRemovalReporter implements CatalogVisitor {
         reset();
     }
     
+    public void visit(Catalog catalog) {
+    }
+    
     /**
      * Resets the visitor so that it can be reused for another search
      */

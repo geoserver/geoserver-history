@@ -15,6 +15,7 @@ import org.acegisecurity.InsufficientAuthenticationException;
 import org.acegisecurity.context.SecurityContextHolder;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
@@ -98,6 +99,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
 
     public SecureCatalogImpl(Catalog catalog) throws Exception {
         this(catalog, lookupDataAccessManager(catalog));
+    }
+    
+    public String getId() {
+        return delegate.getId();
     }
 
     static DataAccessManager lookupDataAccessManager(Catalog catalog) throws Exception {
@@ -976,6 +981,10 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
     
     public void setResourceLoader(GeoServerResourceLoader resourceLoader) {
         delegate.setResourceLoader(resourceLoader);
+    }
+    
+    public void accept(CatalogVisitor visitor) {
+        delegate.accept(visitor);
     }
 
 }
