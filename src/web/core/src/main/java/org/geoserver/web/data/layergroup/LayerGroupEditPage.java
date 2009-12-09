@@ -91,9 +91,6 @@ public class LayerGroupEditPage extends GeoServerSecuredPage {
         form.add(new GeoServerAjaxFormLink( "generateBounds") {
             @Override
             public void onClick(AjaxRequestTarget target, Form form) {
-                // force update of the crs panel contents
-                crsPanel.processInput();
-                
                 // build a layer group with the current contents of the group
                 LayerGroupInfo lg = getCatalog().getFactory().createLayerGroup();
                 for ( LayerGroupEntry entry : lgEntryPanel.getEntries() ) {
