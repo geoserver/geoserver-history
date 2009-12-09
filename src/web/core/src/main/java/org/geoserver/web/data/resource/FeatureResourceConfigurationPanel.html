@@ -2,7 +2,10 @@
 <head></head>
 <body>
 <wicket:panel>
-    <fieldset><legend><span><wicket:message key="featureTypeDetails">Feature Type Details</wicket:message></span></legend>
+    <div wicket:id="attributePanel"></div>
+    <wicket:fragment wicket:id="attributePanelFragment">
+      <div>
+      <fieldset><legend><span><wicket:message key="featureTypeDetails">Feature Type Details</wicket:message></span></legend>
     <ul>
       <li>
       <table>
@@ -20,8 +23,17 @@
         </tr>
       </table>
       </li>
+      <li>
+        <ul>
+          <li style="display: inline;"><a wicket:id="reload">Reload feature type</a></li>
+          <li style="display: inline; padding-left: 10px;"><a class="warning-link" wicket:id="reloadWarning">...</a></li>
+        </ul>
+      </li>
     </ul>
     </fieldset>
+    </div>
+    </wicket:fragment>
+    <div wicket:id="reloadWarningDialog"></div>
 </wicket:panel>
 </body>
 </html>

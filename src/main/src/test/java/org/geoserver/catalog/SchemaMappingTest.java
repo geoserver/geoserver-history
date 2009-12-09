@@ -8,7 +8,7 @@ public class SchemaMappingTest extends GeoServerTestSupport {
     public void testNoMapping() throws Exception {
         FeatureTypeInfo ft = 
             getCatalog().getFeatureTypeByName( "DividedRoutes");
-        assertEquals( 4, ft.getAttributes().size() );
+        assertEquals( 4, ft.attributes().size() );
     }
     
     public void testXsdMapping() throws Exception {
@@ -17,7 +17,7 @@ public class SchemaMappingTest extends GeoServerTestSupport {
         reloadCatalogAndConfiguration();
         FeatureTypeInfo ft = 
             getCatalog().getFeatureTypeByName( "DividedRoutes");
-        assertEquals( 3, ft.getAttributes().size() );
+        assertEquals( 3, ft.attributes().size() );
     }
     
     public void testXmlMapping() throws Exception {
@@ -26,7 +26,7 @@ public class SchemaMappingTest extends GeoServerTestSupport {
         reloadCatalogAndConfiguration();
         FeatureTypeInfo ft = 
             getCatalog().getFeatureTypeByName( "DividedRoutes");
-        assertEquals( 2, ft.getAttributes().size() );
+        assertEquals( 2, ft.attributes().size() );
     }
     
 }

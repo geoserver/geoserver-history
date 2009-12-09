@@ -77,6 +77,10 @@ public class FeatureTypeInfoImpl extends ResourceInfoImpl implements
     public void setNumDecimals(int numDecimals) {
         this.numDecimals = numDecimals;
     }
+    
+    public List<AttributeTypeInfo> attributes() throws IOException {
+        return catalog.getResourcePool().getAttributes( this );
+    }
 
     public FeatureType getFeatureType() throws IOException {
         return catalog.getResourcePool().getFeatureType( this );

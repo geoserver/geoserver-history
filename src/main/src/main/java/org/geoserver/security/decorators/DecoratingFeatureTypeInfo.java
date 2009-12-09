@@ -86,6 +86,10 @@ public abstract class DecoratingFeatureTypeInfo extends AbstractDecorator<Featur
         return delegate.getDescription();
     }
 
+    public List<AttributeTypeInfo> attributes() throws IOException {
+        return delegate.attributes();
+    }
+    
     public FeatureType getFeatureType() throws IOException {
         return delegate.getFeatureType();
     }

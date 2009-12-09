@@ -6,16 +6,20 @@ package org.geoserver.catalog;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,11 +32,15 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDSchema;
+import org.eclipse.xsd.XSDTypeDefinition;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
@@ -54,12 +62,14 @@ import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.gml2.GML;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.logging.Logging;
+import org.geotools.xml.Schemas;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
@@ -112,17 +122,21 @@ public class ResourcePool {
         }
     }
 
+    Catalog catalog;
     HashMap<String, CoordinateReferenceSystem> crsCache;
     DataStoreCache dataStoreCache;
     FeatureTypeCache featureTypeCache;
+    FeatureTypeAttributeCache featureTypeAttributeCache;
     CoverageReaderCache coverageReaderCache;
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
     
     public ResourcePool(Catalog catalog) {
+        this.catalog = catalog;
         crsCache = new HashMap<String, CoordinateReferenceSystem>();
         dataStoreCache = new DataStoreCache();
         featureTypeCache = new FeatureTypeCache();
+        featureTypeAttributeCache = new FeatureTypeAttributeCache();
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
         styleCache = new HashMap<StyleInfo, Style>();
@@ -375,6 +389,135 @@ public class ResourcePool {
         }
     }
     
+    public List<AttributeTypeInfo> getAttributes(FeatureTypeInfo info) throws IOException {
+        //first check the feature type itself
+        if (info.getAttributes() != null && !info.getAttributes().isEmpty()) {
+            return info.getAttributes();
+        }
+        
+        //check the cache
+        List<AttributeTypeInfo> atts = (List<AttributeTypeInfo>) featureTypeAttributeCache.get(info);
+        if (atts == null) {
+            synchronized (featureTypeAttributeCache) {
+                atts = (List<AttributeTypeInfo>) featureTypeAttributeCache.get(info);
+                if (atts == null) {
+                    //load from feature type
+                    atts = loadAttributes(info);
+                    
+                    //check for a schema override
+                    try {
+                        handleSchemaOverride(atts,info);
+                    }
+                    catch( Exception e ) {
+                        LOGGER.log( Level.WARNING, 
+                            "Error occured applying schema override for "+info.getName(), e);
+                    }
+                    
+                    //TODO: cache attributes
+                    //featureTypeAttributeCache.put(info, atts);
+                }
+            }
+        }
+        
+        return atts;
+    }
+    
+    public List<AttributeTypeInfo> loadAttributes(FeatureTypeInfo info) throws IOException {
+        List<AttributeTypeInfo> attributes = new ArrayList();
+        FeatureType ft = getFeatureType(info);
+        
+        for (PropertyDescriptor pd : ft.getDescriptors()) {
+            AttributeTypeInfo att = catalog.getFactory().createAttribute();
+            att.setFeatureType(info);
+            att.setName(pd.getName().getLocalPart());
+            att.setMinOccurs(pd.getMinOccurs());
+            att.setMaxOccurs(pd.getMaxOccurs());
+            att.setNillable(pd.isNillable());
+            attributes.add(att);
+        }
+        
+        return attributes;
+    }
+    
+    void handleSchemaOverride( List<AttributeTypeInfo> atts, FeatureTypeInfo ft ) throws IOException {
+        GeoServerDataDirectory dd = new GeoServerDataDirectory(catalog.getResourceLoader());
+        File schemaFile = dd.findSuppResourceFile(ft, "schema.xsd");
+        if (schemaFile == null) {
+            schemaFile = dd.findSuppLegacyResourceFile(ft, "schema.xsd");
+            if ( schemaFile == null ) {
+                //check for the old style schema.xml
+                File oldSchemaFile = dd.findSuppResourceFile(ft, "schema.xml");
+                if ( oldSchemaFile == null ) {
+                    oldSchemaFile = dd.findSuppLegacyResourceFile(ft, "schema.xml");
+                }
+                if ( oldSchemaFile != null ) {
+                    schemaFile = new File( oldSchemaFile.getParentFile(), "schema.xsd");
+                    BufferedWriter out = 
+                        new BufferedWriter(new OutputStreamWriter( new FileOutputStream( schemaFile ) ) );
+                    out.write( "<xs:schema xmlns:xs='http://www.w3.org/2001/XMLSchema'");
+                    out.write( " xmlns:gml='http://www.opengis.net/gml'");
+                    out.write(">");
+                    IOUtils.copy( new FileInputStream( oldSchemaFile ), out );
+                    out.write( "</xs:schema>" );
+                    out.flush();
+                    out.close();
+                }
+            }
+        }
+        
+        if (schemaFile != null) {
+            //TODO: farm this schema loading stuff to some utility class
+            //parse the schema + generate attributes from that
+            List locators = Arrays.asList( GML.getInstance().createSchemaLocator() );
+            XSDSchema schema = null;
+            try {
+                schema = Schemas.parse( schemaFile.getAbsolutePath(), locators, null );
+            }
+            catch( Exception e ) {
+                LOGGER.warning( "Unable to parse " + schemaFile.getAbsolutePath() + "." +
+                    " Falling back on native feature type");
+            }
+            if ( schema != null ) {
+                XSDTypeDefinition type = null;
+                for ( Iterator e = schema.getElementDeclarations().iterator(); e.hasNext(); ) {
+                    XSDElementDeclaration element = (XSDElementDeclaration) e.next();
+                    if ( ft.getName().equals( element.getName() ) ) {
+                        type = element.getTypeDefinition();
+                        break;
+                    }
+                }
+                if ( type == null ) {
+                    for ( Iterator t = schema.getTypeDefinitions().iterator(); t.hasNext(); ) {
+                        XSDTypeDefinition typedef = (XSDTypeDefinition) t.next();
+                        if ( (ft.getName() + "_Type").equals( typedef.getName() ) ) {
+                            type = typedef;
+                            break;
+                        }
+                    }
+                }
+                
+                if ( type != null ) {
+                    List children = Schemas.getChildElementDeclarations(type,true);
+                    for ( Iterator<AttributeTypeInfo> i = atts.iterator(); i.hasNext(); ) {
+                        AttributeTypeInfo at = i.next();
+                        boolean found = false;
+                        for ( Iterator c = children.iterator(); c.hasNext(); ) {
+                            XSDElementDeclaration ce = (XSDElementDeclaration) c.next();
+                            if ( at.getName().equals( ce.getName() ) ) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        
+                        if ( !found ) {
+                            i.remove();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Returns the underlying resource for a feature type, caching the result.
      * <p>
@@ -523,6 +666,7 @@ public class ResourcePool {
      */
     public void clear( FeatureTypeInfo info ) {
         featureTypeCache.remove( info );
+        featureTypeAttributeCache.remove( info );
     }
     
     /**
@@ -603,7 +747,7 @@ public class ResourcePool {
             ppolicy = ProjectionPolicy.NONE;
         }
         
-        List<AttributeTypeInfo> attributes = info.getAttributes();
+        List<AttributeTypeInfo> attributes = info.attributes();
         if (attributes == null || attributes.isEmpty()) { 
             return fs;
         } 
@@ -979,6 +1123,7 @@ public class ResourcePool {
         crsCache.clear();
         dataStoreCache.clear();
         featureTypeCache.clear();
+        featureTypeAttributeCache.clear();
         coverageReaderCache.clear();
         hintCoverageReaderCache.clear();
         styleCache.clear();
@@ -1061,6 +1206,10 @@ public class ResourcePool {
             }
             super.clear();
         }
+    }
+    
+    static class FeatureTypeAttributeCache extends LRUMap {
+        
     }
     
     /**

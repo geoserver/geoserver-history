@@ -169,7 +169,7 @@ public class GetFeature {
 
                 FeatureSource<? extends FeatureType, ? extends Feature> source = meta.getFeatureSource(null,null);
 
-                List<AttributeTypeInfo> atts = meta.getAttributes();
+                List<AttributeTypeInfo> atts = meta.attributes();
                 List attNames = new ArrayList( atts.size() );
                 for ( AttributeTypeInfo att : atts ) {
                     attNames.add( att.getName() );

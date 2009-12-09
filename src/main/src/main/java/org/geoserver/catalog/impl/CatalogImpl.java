@@ -1611,6 +1611,8 @@ public class CatalogImpl implements Catalog {
             resourcePool.dispose();
             resourcePool = other.resourcePool;
         }
+        
+        resourceLoader = other.resourceLoader;
     }
     
     public static <T> T unwrap(T obj) {

@@ -368,29 +368,33 @@ public class CatalogBuilder {
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "SRS lookup failed", e);
         }
-        ftinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-
-        //attributes
-        for ( PropertyDescriptor pd : featureType.getDescriptors() ) {
-            if ( !( pd instanceof AttributeDescriptor ) ) {
-                continue;
-            }
-            
-            AttributeTypeInfo att = catalog.getFactory().createAttribute();
-            att.setName( pd.getName().getLocalPart() );
-            att.setMinOccurs( pd.getMinOccurs() );
-            att.setMaxOccurs( pd.getMaxOccurs() );
-            att.setNillable( pd.isNillable() );
-            att.setAttribute( (AttributeDescriptor)pd );
-            att.setFeatureType( ftinfo );
-            ftinfo.getAttributes().add( att );
-        }
+        setupProjectionPolicy(ftinfo);
         
         // quick metadata
         ftinfo.setTitle(featureType.getName().getLocalPart());
         
         return ftinfo;
     }
+    
+    /**
+     * Sets the projection policy for a resource based on the following rules:
+     * <ul>
+     *   <li>If getSRS() returns a non null value it is set to {@Link ProjectionPolicy#FORCE_DECLARED}
+     *   <li>If getSRS() returns a null value it is set to {@link ProjectionPolicy#NONE}
+     * </ul>
+     * 
+     * TODO: make this method smarter, and compare the native crs to figure out if prejection 
+     * actually needs to be done, and sync it up with setting proj policy on coverage layers.
+     */
+    public void setupProjectionPolicy(ResourceInfo rinfo) {
+         if ( rinfo.getSRS() != null ) {
+             rinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+         }
+         else {
+             rinfo.setProjectionPolicy(ProjectionPolicy.NONE);
+         }
+    }
+
     
     /**
      * Given a {@link ResourceInfo} this method:
@@ -531,10 +535,12 @@ public class CatalogBuilder {
         if ( featureType.getNativeName() != null && featureType.getName() == null ) {
             featureType.setName( featureType.getNativeName() );
         }
-        
         // setup the srs if missing
         if ( featureType.getSRS() == null ) {
             lookupSRS(featureType, true);
+        }
+        if (featureType.getProjectionPolicy() == null) {
+            setupProjectionPolicy(featureType);
         }
         
         // deal with bounding boxes as possible
