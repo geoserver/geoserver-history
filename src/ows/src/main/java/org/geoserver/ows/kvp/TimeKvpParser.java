@@ -68,13 +68,13 @@ public class TimeKvpParser extends KvpParser {
      */
     public Object parse(String value) throws ParseException {
         if (value == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         value = value.trim();
         if (value.length() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
-        final List dates = new ArrayList();
+        final List<Date> dates = new ArrayList<Date>();
         if (value.indexOf(',') >= 0) {
             String[] listDates = value.split(",");
             for (int i=0; i<listDates.length; i++) {
@@ -115,6 +115,10 @@ public class TimeKvpParser extends KvpParser {
      * @throws ParseException if the string can not be parsed.
      */
     private Date getDate(final String value) throws ParseException {
+    	
+    	// special handling for current keyword
+    	if(value.equalsIgnoreCase("current"))
+    		return null;
         for (int i=0; i<PATTERNS.length; i++) {
             // rebuild formats at each parse, date formats are not thread safe
             SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
