@@ -152,8 +152,16 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
             StringBuffer typeNames = new StringBuffer();
 
+            String userSchemaLocation = null;
             for (Iterator m = metas.iterator(); m.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
+                if (userSchemaLocation == null) {
+                    FeatureType featureType = meta.getFeatureType();
+                    Object schemaUri = featureType.getUserData().get("schemaURI");
+                    if (schemaUri != null) {
+                        userSchemaLocation = schemaUri.toString();
+                    }
+                }
                 typeNames.append(meta.getPrefixedName());
                 
                 if (m.hasNext()) {
@@ -162,9 +170,15 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             }
             params.put("typeName", typeNames.toString());
 
-            //set the schema location
-            encoder.setSchemaLocation(namespaceURI,
-                    buildURL(gft.getBaseUrl(), "wfs", params, URLType.SERVICE));
+            //set the schema location if the user provides it, otherwise give a default one
+            if (userSchemaLocation != null) {
+                encoder.setSchemaLocation(namespaceURI, userSchemaLocation);
+            } else {
+                String schemaLocation = buildURL(gft.getBaseUrl(), "wfs", params, URLType.SERVICE);
+                LOGGER.config("Unable to find user-defined schema location for: " + namespaceURI
+                        + ". Using a built schema location by default: " + schemaLocation);
+                encoder.setSchemaLocation(namespaceURI, schemaLocation);
+            }
         }
 
         encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);

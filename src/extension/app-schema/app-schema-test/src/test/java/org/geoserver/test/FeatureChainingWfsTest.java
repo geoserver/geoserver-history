@@ -31,6 +31,9 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     final String DESCRIBE_FEATURE_TYPE_BASE = BASE_URL
             + "wfs?request=DescribeFeatureType&version=1.1.0&service=WFS&typeName=";
 
+    final String DEFAULT_WFS_SCHEMA_URI = WFS.NAMESPACE
+            + " http://localhost:80/geoserver/schemas/wfs/1.1.0/wfs.xsd";
+
     /**
      * Read-only test so can use one-time setup.
      * 
@@ -280,25 +283,20 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      */
     public void testGetFeatureContent() throws Exception {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature");
-
+        LOGGER.info("WFS GetFeature&typename=gsml:MappedFeature response:\n" + prettyString(doc));
         assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//gsml:MappedFeature", doc);
 
-        String[] schemaLocationParts = URLDecoder.decode(evaluate("/wfs:FeatureCollection/@xsi:schemaLocation", doc), "ASCII")
-                .split(" ");
-        List<String> schemaLocationList = Arrays.asList(schemaLocationParts);
-        assertEquals(schemaLocationList.size(), 4);
-        // make sure describeFeatureType URL is correct
-        StringBuffer describeFeatureType = new StringBuffer();
-        describeFeatureType.append(BASE_URL).append(
-                "wfs?service=WFS&version=1.1.0&request=DescribeFeatureType").append(
-                "&typeName=gsml:MappedFeature");
-        assertEquals(schemaLocationList.contains(describeFeatureType.toString()), true);
-        // make sure the rest of the string would be there.. the order unimportant and might change
-        assertEquals(schemaLocationList.contains(WFS.NAMESPACE), true);
-        assertEquals(schemaLocationList.contains(AbstractAppSchemaMockData.GSML_URI), true);
-        assertEquals(schemaLocationList
-                .contains("http://localhost:80/geoserver/schemas/wfs/1.1.0/wfs.xsd"), true);
+        String schemaLocation = evaluate("/wfs:FeatureCollection/@xsi:schemaLocation", doc);
+        String gsmlLocation = AbstractAppSchemaMockData.GSML_URI + " "
+                + AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL;
+        if (schemaLocation.startsWith(AbstractAppSchemaMockData.GSML_URI)) {
+            // GSML schema location was encoded first
+            assertEquals(schemaLocation, gsmlLocation + " " + DEFAULT_WFS_SCHEMA_URI);
+        } else {
+            // WFS schema location was encoded first
+            assertEquals(schemaLocation, DEFAULT_WFS_SCHEMA_URI + " " + gsmlLocation);
+        }
 
         // mf1
         {
