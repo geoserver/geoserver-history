@@ -206,19 +206,22 @@ public class CatalogImplTest extends TestCase {
         ns.setURI( "ns2URI");
         
         assertTrue( l.added.isEmpty() );
+        assertTrue( l.modified.isEmpty() );
         catalog.add( ns );
         assertEquals( 1, l.added.size() );
         assertEquals( ns, l.added.get(0).getSource());
+        assertEquals( 1, l.modified.size() );
+        assertEquals( catalog, l.modified.get(0).getSource());
+        assertEquals( "defaultNamespace", l.modified.get(0).getPropertyNames().get(0));
         
         ns = catalog.getNamespaceByPrefix( "ns2Prefix" );
         ns.setURI( "changed");
-        
-        assertTrue( l.modified.isEmpty() );
         catalog.save( ns );
-        assertEquals( 1, l.modified.size() );
-        assertTrue(l.modified.get(0).getPropertyNames().contains( "uRI" ));
-        assertTrue(l.modified.get(0).getOldValues().contains( "ns2URI" ));
-        assertTrue(l.modified.get(0).getNewValues().contains( "changed" ));
+        
+        assertEquals( 2, l.modified.size() );
+        assertTrue(l.modified.get(1).getPropertyNames().contains( "uRI" ));
+        assertTrue(l.modified.get(1).getOldValues().contains( "ns2URI" ));
+        assertTrue(l.modified.get(1).getNewValues().contains( "changed" ));
         
         assertTrue( l.removed.isEmpty() );
         catalog.remove( ns );
@@ -339,19 +342,21 @@ public class CatalogImplTest extends TestCase {
         ws.setName( "ws2");
         
         assertTrue( l.added.isEmpty() );
+        assertTrue( l.modified.isEmpty() );
         catalog.add( ws );
         assertEquals( 1, l.added.size() );
         assertEquals( ws, l.added.get(0).getSource());
+        assertEquals( catalog, l.modified.get(0).getSource());
+        assertEquals( "defaultWorkspace", l.modified.get(0).getPropertyNames().get(0));
         
         ws = catalog.getWorkspaceByName( "ws2" );
         ws.setName( "changed");
         
-        assertTrue( l.modified.isEmpty() );
         catalog.save( ws );
-        assertEquals( 1, l.modified.size() );
-        assertTrue(l.modified.get(0).getPropertyNames().contains( "name" ));
-        assertTrue(l.modified.get(0).getOldValues().contains( "ws2" ));
-        assertTrue(l.modified.get(0).getNewValues().contains( "changed" ));
+        assertEquals( 2, l.modified.size() );
+        assertTrue(l.modified.get(1).getPropertyNames().contains( "name" ));
+        assertTrue(l.modified.get(1).getOldValues().contains( "ws2" ));
+        assertTrue(l.modified.get(1).getNewValues().contains( "changed" ));
         
         assertTrue( l.removed.isEmpty() );
         catalog.remove( ws );

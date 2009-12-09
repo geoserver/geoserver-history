@@ -528,10 +528,28 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                     }
                 }
                 
-                if (ws.getName().equals(defaultWorkspace.getName())) {
-                    catalog.setDefaultWorkspace(ws);
-                    if (ns != null) {
-                        catalog.setDefaultNamespace(ns);
+                //set the default workspace, this value might be null in the case of coming from a 
+                // 2.0.0 data directory. See http://jira.codehaus.org/browse/GEOS-3440
+                if (defaultWorkspace != null ) {
+                    if (ws.getName().equals(defaultWorkspace.getName())) {
+                        catalog.setDefaultWorkspace(ws);
+                        if (ns != null) {
+                            catalog.setDefaultNamespace(ns);
+                        }
+                    }
+                }
+                else {
+                    //create the default.xml file
+                    defaultWorkspace = catalog.getDefaultWorkspace();
+                    if (defaultWorkspace != null) {
+                        try {
+                            persist(xp, defaultWorkspace, dws);    
+                        }
+                        catch( Exception e ) {
+                            LOGGER.log( Level.WARNING, "Failed to persist default workspace '" + 
+                                wsd.getName() + "'" , e );
+                        }
+                        
                     }
                 }
                 
