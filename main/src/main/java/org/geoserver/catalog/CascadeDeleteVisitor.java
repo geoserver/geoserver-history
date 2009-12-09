@@ -35,6 +35,9 @@ public class CascadeDeleteVisitor implements CatalogVisitor {
     public CascadeDeleteVisitor(Catalog catalog) {
         this.catalog = catalog;
     }
+    
+    public void visit(Catalog catalog) {
+    }
 
     public void visit(WorkspaceInfo workspace) {
         // remove owned stores

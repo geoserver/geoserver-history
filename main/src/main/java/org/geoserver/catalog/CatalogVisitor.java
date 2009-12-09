@@ -13,6 +13,11 @@ package org.geoserver.catalog;
 public interface CatalogVisitor {
     
     /**
+     * Visits the catalog
+     */
+    void visit( Catalog catalog );
+    
+    /**
      * Visits a workspace.
      */
     void visit( WorkspaceInfo workspace );
