@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.impl.CatalogImpl;
@@ -287,6 +288,7 @@ public class WMSMockData {
         featureTypeInfo.setNativeBoundingBox(bbox);
         featureTypeInfo.setNativeCRS(wgs84);
         featureTypeInfo.setSRS("EPSG:4326");
+        featureTypeInfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         featureTypeInfo.setStore(dataStoreInfo);
         catalog.add(featureTypeInfo);
 

@@ -1,25 +1,52 @@
 package org.geoserver.web.data.resource;
 
-import java.beans.PropertyDescriptor;
 import java.io.IOException;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
+import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.web.GeoServerApplication;
+import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 
 @SuppressWarnings("serial")
 public class FeatureResourceConfigurationPanel extends ResourceConfigurationPanel {
 
+    ModalWindow reloadWarningDialog;
+    
     public FeatureResourceConfigurationPanel(String id, final IModel model) {
         super(id, model);
         
+        final Fragment attributePanel = new Fragment("attributePanel", "attributePanelFragment", this);
+        attributePanel.setOutputMarkupId(true);
+        add(attributePanel);
+        
         // just use the direct attributes, this is not editable atm
-        ListView attributes = new ListView("attributes", new PropertyModel(model, "attributes")) {
+        ListView attributes = new ListView("attributes", new Model() {
+            @Override
+            public Object getObject() {
+                FeatureTypeInfo typeInfo = (FeatureTypeInfo) model.getObject();
+                try {
+                    return typeInfo.attributes();
+                } 
+                catch (IOException e) {
+                    throw new WicketRuntimeException(e);
+                }
+            }
+        }) {
 
             @Override
             protected void populateItem(ListItem item) {
@@ -47,6 +74,45 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
             }
             
         };
-        add(attributes);
+        attributePanel.add(attributes);
+        
+        GeoServerAjaxFormLink reload = new GeoServerAjaxFormLink("reload") {
+            @Override
+            protected void onClick(AjaxRequestTarget target, Form form) {
+                GeoServerApplication app = (GeoServerApplication) getApplication();
+                
+                FeatureTypeInfo ft = (FeatureTypeInfo)getResourceInfo();
+                app.getCatalog().getResourcePool().clear(ft);
+                app.getCatalog().getResourcePool().clear(ft.getStore());
+                target.addComponent(attributePanel);
+            }
+        };
+        attributePanel.add(reload);
+        
+        GeoServerAjaxFormLink warning = new GeoServerAjaxFormLink("reloadWarning") {
+            @Override
+            protected void onClick(AjaxRequestTarget target, Form form) {
+                reloadWarningDialog.show(target);
+            }
+        };
+        attributePanel.add(warning);
+        
+        add(reloadWarningDialog = new ModalWindow("reloadWarningDialog"));
+        reloadWarningDialog.setPageCreator(new ModalWindow.PageCreator() {
+            public Page createPage() {
+                return new ReloadWarningDialog(
+                    new StringResourceModel("featureTypeReloadWarning", FeatureResourceConfigurationPanel.this, null));
+            }
+        });
+        reloadWarningDialog.setTitle(new StringResourceModel("warning", (Component)  null, null));
+        reloadWarningDialog.setInitialHeight(100);
+        reloadWarningDialog.setInitialHeight(200);
+        
+    }
+    
+    static class ReloadWarningDialog extends WebPage {
+        public ReloadWarningDialog(StringResourceModel message) {
+            add(new Label("message", message));
+        }
     }
 }
