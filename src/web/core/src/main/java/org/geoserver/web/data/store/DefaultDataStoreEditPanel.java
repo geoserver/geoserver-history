@@ -241,7 +241,7 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
         @Override
         public void setObject(Object object) {
             String file = (String) object;
-            if(!file.startsWith("file://"))
+            if(!file.startsWith("file://") && !file.startsWith("file:"))
                 file = "file://" + file;
             super.setObject(file);
         }
