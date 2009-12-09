@@ -947,6 +947,10 @@ public class CatalogImpl implements Catalog {
             namespaces.put(namespace.getPrefix(),namespace);
             if ( namespaces.get( null ) == null ) {
                 namespaces.put( null, namespace );
+                
+                //fire the event
+                fireModified(this, Arrays.asList("defaultNamespace"), 
+                    Collections.singletonList(null), Arrays.asList(namespace));
             }
         }
         
@@ -1040,6 +1044,10 @@ public class CatalogImpl implements Catalog {
             // if there is no default workspace use this one as the default
             if ( workspaces.get( null ) == null ) {
                 workspaces.put( null, workspace );
+                
+                //fire the event
+                fireModified(this, Arrays.asList("defaultWorkspace"), 
+                    Collections.singletonList(null), Arrays.asList(workspace));
             }
         }
         
