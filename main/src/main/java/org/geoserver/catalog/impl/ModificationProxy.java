@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.Info;
 import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
@@ -113,7 +114,7 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             Object result = method.invoke( proxyObject, args ); 
 
             //intercept result and wrap it in a proxy if it is another Info object
-            if ( result != null && result instanceof Info ) {
+            if ( result != null && shouldProxyProperty(result.getClass())) {
                 //avoid double proxy
                 Object o = ModificationProxy.unwrap( result );
                 if ( o == result ) {
@@ -198,6 +199,18 @@ public class ModificationProxy implements InvocationHandler, Serializable {
             //reset
             properties = null;
         }
+    }
+    
+    /**
+     * Helper method for determining if a property of a proxied object should also 
+     * be proxied.
+     */
+    boolean shouldProxyProperty(Class propertyType) {
+        if (Catalog.class.isAssignableFrom(propertyType)) {
+            //never proxy the catalog
+            return false;
+        }
+        return Info.class.isAssignableFrom(propertyType); 
     }
     
     HashMap<String,Object> properties() {
