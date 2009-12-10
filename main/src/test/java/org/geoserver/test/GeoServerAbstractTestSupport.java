@@ -56,6 +56,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.Hints;
+import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
@@ -134,11 +135,13 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      */
     @Override
     protected void oneTimeSetUp() throws Exception {
-        if (System.getProperty("org.geotools.referencing.forceXY") == null) {
+        // do we need to reset the referencing subsystem and reorient it with lon/lat order?
+        if (System.getProperty("org.geotools.referencing.forceXY") == null
+                || !"http".equals(Hints.getSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING))) {
             System.setProperty("org.geotools.referencing.forceXY", "true");
+            Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
+            CRS.reset("all");
         }
-
-        Hints.putSystemDefault(Hints.FORCE_AXIS_ORDER_HONORING, "http");
         
         // set up test data 
         testData = buildTestData();
