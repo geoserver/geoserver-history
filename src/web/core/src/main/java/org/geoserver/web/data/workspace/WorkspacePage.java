@@ -4,20 +4,22 @@
  */
 package org.geoserver.web.data.workspace;
 
-import static org.geoserver.web.data.layer.LayerProvider.*;
-import static org.geoserver.web.data.workspace.WorkspaceProvider.*;
+import static org.geoserver.web.data.workspace.WorkspaceProvider.DEFAULT;
+import static org.geoserver.web.data.workspace.WorkspaceProvider.NAME;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.SelectionRemovalLink;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.GeoServerTablePanel;
-import org.geoserver.web.wicket.SimpleAjaxLink;
+import org.geoserver.web.wicket.Icon;
 import org.geoserver.web.wicket.SimpleBookmarkableLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -39,6 +41,11 @@ public class WorkspacePage extends GeoServerSecuredPage {
                     Property<WorkspaceInfo> property) {
                 if ( property == NAME ) {
                     return workspaceLink(id, itemModel);
+                } else if (property == DEFAULT) {
+                    if(getCatalog().getDefaultWorkspace().equals(itemModel.getObject()))
+                        return new Icon(id, CatalogIconFactory.ENABLED_ICON);
+                    else
+                        return new Label(id, "");
                 }
                 
                 throw new IllegalArgumentException("No such property "+ property.getName());
