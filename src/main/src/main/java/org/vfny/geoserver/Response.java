@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver;
 
-import org.geoserver.config.GeoServer;
-import org.geoserver.config.ServiceInfo;
-import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
+import org.geoserver.platform.ServiceException;
 
 
 /**
@@ -193,7 +194,7 @@ public interface Response {
      * the load on geoserver.
      * @return
      */
-    public HashMap getResponseHeaders();
+    public HashMap<String, String> getResponseHeaders();
 
     /**
      * Writes this respone to the provided output stream.

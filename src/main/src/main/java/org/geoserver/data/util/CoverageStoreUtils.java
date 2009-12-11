@@ -282,7 +282,7 @@ public final class CoverageStoreUtils {
      * @throws FactoryException
      * @throws TransformException
      */
-    public static GeneralEnvelope getWGS84LonLatEnvelope(GeneralEnvelope envelope)
+    public static GeneralEnvelope getWGS84LonLatEnvelope(final GeneralEnvelope envelope)
         throws IndexOutOfBoundsException, FactoryException, TransformException {
         final CoordinateReferenceSystem sourceCRS = envelope.getCoordinateReferenceSystem();
 
