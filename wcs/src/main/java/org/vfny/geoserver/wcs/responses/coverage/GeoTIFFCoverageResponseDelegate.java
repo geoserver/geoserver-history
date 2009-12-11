@@ -16,21 +16,20 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.coverage.grid.io.imageio.GeoToolsWriteParams;
 import org.geotools.gce.geotiff.GeoTiffFormat;
 import org.geotools.gce.geotiff.GeoTiffWriteParams;
-import org.opengis.coverage.grid.GridCoverageWriter;
+import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 /**
- * DOCUMENT ME!
+ * Coverage writer for the geotiff format.
  * 
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author Simone Giannecchini, GeoSolutions SAS
  */
 public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate {
 
-    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("image/geotiff",
-            "image/tiff;subtype=\"geotiff\""));
+    private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("image/tiff","image/tiff;subtype=\"geotiff\"","image/geotiff"));
 
     /**
      * 
@@ -39,13 +38,16 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
      */
     private GridCoverage2D sourceCoverage;
 
+	private static final GeoTiffFormat format = new GeoTiffFormat();
+
+	public static final String GEOTIFF_CONTENT_TYPE = "image/tiff;subtype=\"geotiff\"";
+
     public GeoTIFFCoverageResponseDelegate() {
     }
 
     public boolean canProduce(String outputFormat) {
         return outputFormat != null
-                && (outputFormat.equalsIgnoreCase("geotiff") || FORMATS.contains(outputFormat
-                        .toLowerCase()));
+                && (outputFormat.equalsIgnoreCase("geotiff") || FORMATS.contains(outputFormat.toLowerCase()));
     }
 
     public void prepare(String outputFormat, GridCoverage2D coverage) throws IOException {
@@ -54,13 +56,13 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
 
     public String getMimeFormatFor(String outputFormat) {
         if (canProduce(outputFormat))
-            return "image/geotiff";
+            return "image/tiff;subtype=\"geotiff\"";
         else
             return null;
     }
 
     public String getContentType() {
-        return "image/tiff";
+        return GEOTIFF_CONTENT_TYPE;
     }
 
     /**
@@ -78,11 +80,11 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
      * @return DOCUMENT ME!
      */
     public String getContentDisposition() {
-        return "attachment;filename=" + this.sourceCoverage.getName() + ".tiff";
+        return "attachment;filename=" + this.sourceCoverage.getName() + ".tif";
     }
 
     public String getFileExtension() {
-        return "tiff";
+        return "tif";
     }
 
     public void encode(OutputStream output) throws ServiceException, IOException {
@@ -91,25 +93,32 @@ public class GeoTIFFCoverageResponseDelegate implements CoverageResponseDelegate
                     + " or has not succeed");
         }
 
-        final GeoTiffFormat format = new GeoTiffFormat();
+        // good for all params
         final GeoTiffWriteParams wp = new GeoTiffWriteParams();
         wp.setCompressionMode(GeoTiffWriteParams.MODE_EXPLICIT);
         wp.setCompressionType("LZW");
         wp.setCompressionQuality(0.75F);
         wp.setTilingMode(GeoToolsWriteParams.MODE_EXPLICIT);
         wp.setTiling(256, 256);
-
         final ParameterValueGroup writerParams = format.getWriteParameters();
-        writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString())
-                .setValue(wp);
+        writerParams.parameter(AbstractGridFormat.GEOTOOLS_WRITE_PARAMS.getName().toString()).setValue(wp);
 
-        GridCoverageWriter writer = format.getWriter(output);
-        writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.values().toArray(
-                new GeneralParameterValue[1]));
+        // write down
+        GeoTiffWriter writer = (GeoTiffWriter) format.getWriter(output);
+        try{
+        	if(writer!=null)
+        		writer.write(sourceCoverage, (GeneralParameterValue[]) writerParams.values().toArray(new GeneralParameterValue[1]));
+        }finally {
+        	try{
+        	if(writer!=null)
+        		writer.dispose();
+        	}catch (Throwable e) {
+				// eating exception
+			}
+            this.sourceCoverage.dispose(false);
+            this.sourceCoverage = null;
+		}
 
-        writer.dispose();
 
-        this.sourceCoverage.dispose(false);
-        this.sourceCoverage = null;
     }
 }

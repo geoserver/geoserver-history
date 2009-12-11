@@ -47,13 +47,13 @@ public class CoverageResponseDelegateFactory {
     public static CoverageResponseDelegate encoderFor(String outputFormat) {
         CoverageResponseDelegate encoder = null;
 
-        for (Iterator it = encoders.iterator(); it.hasNext();) {
-            encoder = (CoverageResponseDelegate) it.next();
+        for (Iterator<CoverageResponseDelegate> it = encoders.iterator(); it.hasNext();) {
+            encoder = it.next();
 
             if (encoder.canProduce(outputFormat)) {
                 try {
                     if (encoder != null) {
-                        return (CoverageResponseDelegate) encoder.getClass().newInstance();
+                        return encoder.getClass().newInstance();
                     }
                 } catch (IllegalAccessException ex) {
                     final NoSuchElementException e = new NoSuchElementException(new StringBuffer(

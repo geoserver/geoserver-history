@@ -4,8 +4,6 @@
  */
 package org.vfny.geoserver.wcs;
 
-import java.util.logging.Logger;
-
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.platform.ServiceException;
 
@@ -14,11 +12,16 @@ import org.geoserver.platform.ServiceException;
  * will expect. All errors should be wrapped in this before returning to clients.
  * 
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author Simone Giannecchini, GeoSolutions SAS
  * @version $Id$
  */
 public class WcsException extends ServiceException {
-    public enum WcsExceptionCode {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6110652531274829497L;
+
+	public enum WcsExceptionCode {
         MissingParameterValue, InvalidParameterValue, NoApplicableCode, UnsupportedCombination, NotEnoughStorage, InvalidUpdateSequence, CurrentUpdateSequence
     }
 
