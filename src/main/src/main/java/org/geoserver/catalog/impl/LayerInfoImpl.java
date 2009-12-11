@@ -140,6 +140,10 @@ public class LayerInfoImpl implements LayerInfo {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        ResourceInfo resource = getResource();
+        if (resource != null) {
+            resource.setEnabled(enabled);
+        }
     }
 
     public MetadataMap getMetadata() {

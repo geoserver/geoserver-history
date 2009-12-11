@@ -272,6 +272,7 @@ public class XStreamPersister {
         
         // StoreInfo
         xs.omitField(impl(StoreInfo.class), "catalog");
+        xs.omitField(impl(StoreInfo.class), "error");
         //xs.omitField(StoreInfo.class), "workspace"); //handled by StoreInfoConverter
         xs.registerLocalConverter(impl(StoreInfo.class), "workspace", new ReferenceConverter(WorkspaceInfo.class));
         xs.registerLocalConverter(impl(StoreInfo.class), "connectionParameters", new BreifMapConverter() );
