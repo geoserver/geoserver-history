@@ -19,6 +19,7 @@ import junit.framework.Test;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.geotiff.GeoTiffReader;
+import org.vfny.geoserver.wcs.responses.coverage.GeoTIFFCoverageResponseDelegate;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -64,7 +65,7 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
 
         // the second part is the actual coverage
         BodyPart coveragePart = multipart.getBodyPart(1);
-        assertEquals("image/tiff", coveragePart.getContentType());
+        assertEquals(GeoTIFFCoverageResponseDelegate.GEOTIFF_CONTENT_TYPE, coveragePart.getContentType());
         assertEquals("<theCoverage>", coveragePart.getHeader("Content-ID")[0]);
     }
 
@@ -159,6 +160,6 @@ public class GetCoverageMultipartEncodingTest extends WCSTestSupport {
         // parse the multipart, check the second part is a geotiff
         Multipart multipart = getMultipart(response);
         BodyPart coveragePart = multipart.getBodyPart(1);
-        assertEquals("image/tiff", coveragePart.getContentType());
+        assertEquals(GeoTIFFCoverageResponseDelegate.GEOTIFF_CONTENT_TYPE, coveragePart.getContentType());
     }
 }

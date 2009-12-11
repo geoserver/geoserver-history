@@ -1,17 +1,12 @@
 package org.geoserver.wcs;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.geoserver.data.test.MockData.TASMANIA_BM;
 import static org.geoserver.data.test.MockData.WORLD;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
-import java.io.File;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
 
 import junit.framework.Test;
 import junit.textui.TestRunner;
@@ -26,9 +21,6 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.wcs.WcsException;
-import org.w3c.dom.Document;
-
-import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class GetCoverageTest extends WCSTestSupport {
 
@@ -66,286 +58,6 @@ public class GetCoverageTest extends WCSTestSupport {
     
     
 
-    public void testKvpBasic() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-90,-180,90,180,urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("store", "false");
-        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        assertEquals(1, coverages.length);
-        GridCoverage2D coverage = (GridCoverage2D) coverages[0];
-        assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
-                .getCoordinateReferenceSystem());
-    }
-    
-    public void testAntimeridianWorld() throws Exception {
-        // for the moment, just make sure we don't die and return something, see 
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(WORLD);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "175,10,-175,20,urn:ogc:def:crs:OGC:1.3:CRS84");
-        raw.put("store", "false");
-//        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        assertEquals(1, coverages.length);
-        GridCoverage2D coverage = (GridCoverage2D) coverages[0];
-        assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
-                .getCoordinateReferenceSystem());
-    }
-    
-    public void testAntimeridianTaz() throws Exception {
-        // for the moment, just make sure we don't die and return something, see 
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("store", "false");
-
-        // complete coverage from left side of request bbox
-        raw.put("BoundingBox", "145,-80,-175,0,urn:ogc:def:crs:OGC:1.3:CRS84");
-        executeGetCoverageKvp(raw);
-        
-        // partial coverage from left side of request bbox
-        raw.put("BoundingBox", "147,-80,-175,0,urn:ogc:def:crs:OGC:1.3:CRS84");
-        executeGetCoverageKvp(raw);
-        
-        // partial coverage from both left and right side
-        raw.put("BoundingBox", "147.2,-80,147,0,urn:ogc:def:crs:OGC:1.3:CRS84");
-        executeGetCoverageKvp(raw);
-        
-        // partial coverage from right side
-        raw.put("BoundingBox", "175,-80,147,0,urn:ogc:def:crs:OGC:1.3:CRS84");
-        executeGetCoverageKvp(raw);
-        
-        // full coverage from right side
-        raw.put("BoundingBox", "175,-80,150,0,urn:ogc:def:crs:OGC:1.3:CRS84");
-        executeGetCoverageKvp(raw);
-    }
-
-    public void testWrongFormatParams() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "SuperCoolFormat");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-        try {
-            executeGetCoverageKvp(raw);
-            fail("When did we learn to encode SuperCoolFormat?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.toString(), e.getCode());
-            assertEquals("format", e.getLocator());
-        }
-    }
-
-    public void testDefaultGridOrigin() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
-        assertEquals(0.0, tx.getTranslateX());
-        assertEquals(0.0, tx.getTranslateY());
-    }
-    
-    public void testWrongGridOrigin() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("GridOrigin", "12,13,14");
-        try {
-            executeGetCoverageKvp(raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("GridOrigin", e.getLocator());
-        }
-    }
-
-    public void testWrongGridOffsets() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("GridOffsets", "12,13,14");
-        try {
-            executeGetCoverageKvp(raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("GridOffsets", e.getLocator());
-        }
-    }
-    
-    public void testNoGridOffsets() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        GridCoverage original = getCatalog().getCoverageByName(getLayerId).getGridCoverage(null, null);
-
-        final AffineTransform2D originalTx = (AffineTransform2D) original.getGridGeometry()
-                .getGridToCRS();
-        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
-                .getGridToCRS();
-        assertEquals(originalTx.getScaleX(), flippedTx.getShearY(), EPS);
-        assertEquals(originalTx.getScaleY(), flippedTx.getShearX(), EPS);
-        assertEquals(originalTx.getShearX(), flippedTx.getScaleY(), EPS);
-        assertEquals(originalTx.getShearY(), flippedTx.getScaleX(), EPS);
-        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
-        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
-    }
-    
-    public void testGridOffsetsSubsample() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
-        raw.put("GridType", "urn:ogc:def:method:WCS:1.1:2dSimpleGrid");
-        raw.put("GridOffsets", "0.1,0.1");
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        final AffineTransform2D flippedTx = (AffineTransform2D) coverages[0].getGridGeometry()
-        .getGridToCRS();
-        assertEquals(0.0, flippedTx.getShearY(), EPS);
-        assertEquals(0.0, flippedTx.getShearX(), EPS);
-        assertEquals(0.1, flippedTx.getScaleY(), EPS);
-        assertEquals(0.1, flippedTx.getScaleX(), EPS);
-        assertEquals(0.0, flippedTx.getTranslateY(), EPS);
-        assertEquals(0.0, flippedTx.getTranslateX(), EPS);
-    }
-
-    /**
-     * Tests valid range subset expressions, but with a mix of valid and invalid
-     * identifiers
-     * 
-     * @throws Exception
-     */
-    public void testInvalidRangeSubset() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-
-        // unknown field
-        raw.put("rangeSubset", "jimbo:nearest");
-        try {
-            executeGetCoverageKvp(raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("RangeSubset", e.getLocator());
-        }
-
-        // unknown axis
-        raw.put("rangeSubset", "contents:nearest[MadAxis[key]]");
-        try {
-            executeGetCoverageKvp(raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("RangeSubset", e.getLocator());
-        }
-
-        // unknown key
-        raw.put("rangeSubset", "contents:nearest[Bands[MadKey]]");
-        try {
-            executeGetCoverageKvp(raw);
-            fail("We should have had a WcsException here?");
-        } catch (WcsException e) {
-            assertEquals(InvalidParameterValue.name(), e.getCode());
-            assertEquals("RangeSubset", e.getLocator());
-        }
-    }
-    
-//     disabling tests up until the gt2 code is working again
-    public void testRangeSubsetSingle() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-
-        // extract all bands. We had two bugs here, one related to the case sensitiveness
-        // and the other about the inability to extract bands at all (with exception of the red one) 
-        String[] bands = new String[] {"red_band", "grEEN_band", "Blue_band"};
-        for (int i = 0; i < bands.length; i++) {
-            raw.put("rangeSubset", "contents:nearest[Bands[" + bands[i] + "]]");
-            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-            assertEquals(1, coverages[0].getNumSampleDimensions());
-            final String coverageBand = coverages[0].getSampleDimension(0).getDescription().toString();
-            assertEquals(bands[i].toLowerCase(), coverageBand.toLowerCase());
-        }
-    }
-    
-    public void testRangeSubsetMulti() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-
-        raw.put("rangeSubset", "contents:nearest[Bands[RED_BAND,BLUE_BAND]]");
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        assertEquals(2, coverages[0].getNumSampleDimensions());
-        assertEquals("RED_BAND", coverages[0].getSampleDimension(0).getDescription().toString());
-        assertEquals("BLUE_BAND", coverages[0].getSampleDimension(1).getDescription().toString());
-    }
-    
-    public void testRangeSubsetSwap() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-
-        raw.put("rangeSubset", "contents:nearest[Bands[BLUE_BAND,GREEN_BAND]]");
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        assertEquals(2, coverages[0].getNumSampleDimensions());
-        assertEquals("BLUE_BAND", coverages[0].getSampleDimension(0).getDescription().toString());
-        assertEquals("GREEN_BAND", coverages[0].getSampleDimension(1).getDescription().toString());
-    }
-    
-    public void testRangeSubsetOnlyInterpolation() throws Exception {
-          Map<String, Object> raw = new HashMap<String, Object>();
-          final String getLayerId = getLayerId(TASMANIA_BM);
-          raw.put("identifier", getLayerId);
-          raw.put("format", "image/geotiff");
-          raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG::4326");
-          raw.put("rangeSubset", "contents:nearest");
-          GridCoverage[] coverages = executeGetCoverageKvp(raw);
-          assertEquals(3, coverages[0].getNumSampleDimensions());
-    }
-    
-    public void testRangeSubsetOnlyField() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(TASMANIA_BM);
-        raw.put("identifier", getLayerId);
-        raw.put("format", "image/geotiff");
-        raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG::4326");
-        raw.put("rangeSubset", "contents");
-        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-        assertEquals(3, coverages[0].getNumSampleDimensions());
-  }
-    
     public void testNullGridOrigin() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + //
             "<wcs:GetCoverage service=\"WCS\" " + //
@@ -366,45 +78,12 @@ public class GetCoverageTest extends WCSTestSupport {
             "    <wcs:GridCRS>\r\n" + //
             "      <wcs:GridBaseCRS>urn:ogc:def:crs:EPSG:6.6:4326</wcs:GridBaseCRS>\r\n" + //
             "      <wcs:GridType>urn:ogc:def:method:WCS:1.1:2dSimpleGrid</wcs:GridType>\r\n" + //
-            "      <wcs:GridOffsets>1 2</wcs:GridOffsets>\r\n" + //
+            "      <wcs:GridOffsets>-1 2</wcs:GridOffsets>\r\n" + //
             "    </wcs:GridCRS>\r\n" + //
             "  </wcs:Output>\r\n" + //
             "</wcs:GetCoverage>";
     
         executeGetCoverageXml(request);
-    }
-    
-    public void testStoreSupported() throws Exception {
-        String request = "wcs?service=WCS&version=1.1.1&request=GetCoverage" + "&identifier="
-                + getLayerId(TASMANIA_BM)
-                + "&BoundingBox=-90,-180,90,180,urn:ogc:def:crs:EPSG:4326"
-                + "&GridBaseCRS=urn:ogc:def:crs:EPSG:4326" + "&format=geotiff&store=true";
-        Document dom = getAsDOM(request);
-//        print(dom);
-        checkValidationErrors(dom, WCS11_SCHEMA);
-        assertXpathEvaluatesTo(TASMANIA_BM.getLocalPart(),
-                "wcs:Coverages/wcs:Coverage/ows:Title", dom);
-        
-        // grab the file path on the disk
-        String path = xpath.evaluate("//ows:Reference/@xlink:href", dom);
-        File temp = new File(getTestData().getDataDirectoryRoot(), "temp");
-        if(!temp.exists())
-            temp.mkdir();
-        File wcsTemp = new File(temp, "wcs");
-            wcsTemp.mkdir();
-        File coverageFile = new File(wcsTemp, path.substring(path.lastIndexOf("/") + 1)).getAbsoluteFile();
-        
-        // make sure the tiff can be actually read
-        ImageReader reader = ImageIO.getImageReadersByFormatName("tiff").next();
-        reader.setInput(ImageIO.createImageInputStream(coverageFile));
-        reader.read(0);
-        
-        // make sure we can actually retrieve the coverage (GEOS-2790)
-        String localPath = path.substring(path.indexOf("geoserver/") + 10);
-        MockHttpServletResponse response = getAsServletResponse(localPath);
-        reader.setInput(ImageIO.createImageInputStream(getBinaryInputStream(response)));
-        reader.read(0);
-        reader.dispose();
     }
     
     /**
@@ -425,7 +104,112 @@ public class GetCoverageTest extends WCSTestSupport {
         return service.getCoverage(getCoverage);
     }
     
-    public static void main(String[] args) {
+    public void testKvpBasic() throws Exception {
+	    Map<String, Object> raw = new HashMap<String, Object>();
+	    final String getLayerId = getLayerId(TASMANIA_BM);
+	    raw.put("identifier", getLayerId);
+	    raw.put("format", "image/tiff");
+	    raw.put("BoundingBox", "-90,-180,90,180,urn:ogc:def:crs:EPSG:6.6:4326");
+	    raw.put("store", "false");
+	    raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
+	
+	    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+	    assertEquals(1, coverages.length);
+	    GridCoverage2D coverage = (GridCoverage2D) coverages[0];
+	    assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope().getCoordinateReferenceSystem());
+	}
+
+	    public void testAntimeridianWorld() throws Exception {
+	        // for the moment, just make sure we don't die and return something, see 
+	        Map<String, Object> raw = new HashMap<String, Object>();
+	        final String getLayerId = getLayerId(WORLD);
+	        raw.put("identifier", getLayerId);
+	        raw.put("format", "image/geotiff");
+	        raw.put("BoundingBox", "175,10,-175,20,urn:ogc:def:crs:OGC:1.3:CRS84");
+	        raw.put("store", "false");
+	//        raw.put("GridBaseCRS", "urn:ogc:def:crs:EPSG:6.6:4326");
+	
+	        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+	        assertEquals(1, coverages.length);
+	        GridCoverage2D coverage = (GridCoverage2D) coverages[0];
+	        assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
+	                .getCoordinateReferenceSystem());
+	    }
+
+	public void testAntimeridianTaz() throws Exception {
+	    // for the moment, just make sure we don't die and return something, see 
+	    Map<String, Object> raw = new HashMap<String, Object>();
+	    final String getLayerId = getLayerId(TASMANIA_BM);
+	    raw.put("identifier", getLayerId);
+	    raw.put("format", "image/geotiff");
+	    raw.put("store", "false");
+	
+	    // complete coverage from left side of request bbox
+	    raw.put("BoundingBox", "145,-80,-175,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+	    executeGetCoverageKvp(raw);
+	    
+	    // partial coverage from left side of request bbox
+	    raw.put("BoundingBox", "147,-80,-175,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+	    executeGetCoverageKvp(raw);
+	    
+	    // partial coverage from both left and right side
+	    raw.put("BoundingBox", "147.2,-80,147,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+	    executeGetCoverageKvp(raw);
+	    
+	    // partial coverage from right side
+	    raw.put("BoundingBox", "175,-80,147,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+	    executeGetCoverageKvp(raw);
+	    
+	    // full coverage from right side
+	    raw.put("BoundingBox", "175,-80,150,0,urn:ogc:def:crs:OGC:1.3:CRS84");
+	    executeGetCoverageKvp(raw);
+	}
+
+	public void testWrongFormatParams() throws Exception {
+	    Map<String, Object> raw = new HashMap<String, Object>();
+	    final String getLayerId = getLayerId(TASMANIA_BM);
+	    raw.put("identifier", getLayerId);
+	    raw.put("format", "SuperCoolFormat");
+	    raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+	    try {
+	        executeGetCoverageKvp(raw);
+	        fail("When did we learn to encode SuperCoolFormat?");
+	    } catch (WcsException e) {
+	        assertEquals(InvalidParameterValue.toString(), e.getCode());
+	        assertEquals("format", e.getLocator());
+	    }
+	}
+
+	public void testDefaultGridOrigin() throws Exception {
+	    Map<String, Object> raw = new HashMap<String, Object>();
+	    final String getLayerId = getLayerId(TASMANIA_BM);
+	    raw.put("identifier", getLayerId);
+	    raw.put("format", "image/geotiff");
+	    raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+	
+	    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+	    AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
+	    assertEquals(0.0, tx.getTranslateX());
+	    assertEquals(0.0, tx.getTranslateY());
+	}
+
+	public void testWrongGridOrigin() throws Exception {
+	    Map<String, Object> raw = new HashMap<String, Object>();
+	    final String getLayerId = getLayerId(TASMANIA_BM);
+	    raw.put("identifier", getLayerId);
+	    raw.put("format", "image/geotiff");
+	    raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+	    raw.put("GridOrigin", "12,13,14");
+	    try {
+	        executeGetCoverageKvp(raw);
+	        fail("We should have had a WcsException here?");
+	    } catch (WcsException e) {
+	        assertEquals(InvalidParameterValue.name(), e.getCode());
+	        assertEquals("GridOrigin", e.getLocator());
+	    }
+	}
+
+	public static void main(String[] args) {
         TestRunner.run(suite());
     }
 
