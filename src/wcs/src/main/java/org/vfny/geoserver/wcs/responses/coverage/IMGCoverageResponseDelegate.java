@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.geoserver.data.util.IOUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.image.WorldImageWriter;
@@ -97,27 +98,38 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
         return "outputFormat";
     }
 
-    public void encode(OutputStream output) throws ServiceException, IOException {
+    @SuppressWarnings("deprecation")
+	public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
             throw new IllegalStateException(
                     "It seems prepare() has not been called or has not succeed");
         }
 
-        final GridCoverageWriter writer = new WorldImageWriter(output);
+        final WorldImageWriter writer = new WorldImageWriter(output);
 
         // writing parameters for Image
         final Format writerParams = writer.getFormat();
         final ParameterValueGroup writeParameters = writerParams.getWriteParameters();
         final ParameterValue format = writeParameters.parameter("Format");
         format.setValue(this.outputFormat.toLowerCase());
+        
+        try{
+	        // writing
+	        writer.write(sourceCoverage, new GeneralParameterValue[] { format });
+	        output.flush();
+        }finally{
+        	
+            // freeing everything
+        	org.apache.commons.io.IOUtils.closeQuietly(output);
+        	
+        	try{
+        		writer.dispose();
+        	}catch (Throwable e) {
+				// eat me
+			}
+            this.sourceCoverage.dispose(false);
+            this.sourceCoverage = null;
+        }
 
-        // writing
-        writer.write(sourceCoverage, new GeneralParameterValue[] { format });
-
-        // freeing everything
-        output.flush();
-        writer.dispose();
-        this.sourceCoverage.dispose(false);
-        this.sourceCoverage = null;
     }
 }
