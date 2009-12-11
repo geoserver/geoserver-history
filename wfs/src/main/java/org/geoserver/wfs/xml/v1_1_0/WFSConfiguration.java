@@ -14,9 +14,11 @@ import java.util.logging.Logger;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
@@ -32,6 +34,7 @@ import org.geoserver.wfs.xml.filter.v1_1.PropertyNameTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geoserver.wfs.xml.gml3.CircleTypeBinding;
 import org.geoserver.wfs.xml.xs.DateBinding;
+import org.geotools.data.DataAccess;
 import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
 import org.geotools.filter.v1_1.OGC;
 import org.geotools.filter.v1_1.OGCConfiguration;
@@ -44,6 +47,7 @@ import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
 import org.geotools.xml.Schemas;
 import org.geotools.xs.XS;
+import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
@@ -99,7 +103,18 @@ public class WFSConfiguration extends Configuration {
             }
                 
         });
-        
+        catalog.getResourcePool().addListener(new ResourcePool.Listener() {
+            
+            public void disposed(FeatureTypeInfo featureType, FeatureType ft) {
+            }
+            
+            public void disposed(CoverageStoreInfo coverageStore, GridCoverageReader gcr) {
+            }
+            
+            public void disposed(DataStoreInfo dataStore, DataAccess da) {
+                wfs.flush();
+            }
+        });
         addDependency(new OGCConfiguration());
         addDependency(new GMLConfiguration());
         addDependency(new OWSConfiguration());
