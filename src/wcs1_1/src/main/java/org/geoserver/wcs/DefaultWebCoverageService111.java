@@ -127,7 +127,8 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
         throw new WcsException("Could not understand version:" + version);
     }
 
-    public GridCoverage[] getCoverage(GetCoverageType request) {
+    @SuppressWarnings({ "deprecation", "unchecked" })
+	public GridCoverage[] getCoverage(GetCoverageType request) {
         if (LOGGER.isLoggable(Level.FINEST)) {
             LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ")
                     .append(request).toString());
@@ -143,19 +144,16 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             checkRangeSubset(meta, request.getRangeSubset());
             checkOutput(meta, request.getOutput());
 
-            // grab the format, the reader using the default params,
-            final Format format = meta.getStore().getFormat();
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta
-                    .getGridCoverageReader(null, HINTS);
-            final ParameterValueGroup params = reader.getFormat().getReadParameters();
+            // grab the format, the reader using the default params
+            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, HINTS);
 
             // handle spatial domain subset, if needed
             final GeneralEnvelope originalEnvelope = reader.getOriginalEnvelope();
             final BoundingBoxType bbox = request.getDomainSubset().getBoundingBox();
-            final CoordinateReferenceSystem nativeCRS = originalEnvelope
-                    .getCoordinateReferenceSystem();
-            final GeneralEnvelope destinationEnvelopeInSourceCRS;
-            final GeneralEnvelope destinationEnvelope;
+            final CoordinateReferenceSystem nativeCRS = originalEnvelope.getCoordinateReferenceSystem();
+            final GeneralEnvelope requestedEnvelopeInSourceCRS;
+            final GeneralEnvelope requestedEnvelope;
+            MathTransform bboxToNativeTx=null;
             if (bbox != null) {
                 // first off, parse the envelope corners
                 double[] lowerCorner = new double[bbox.getLowerCorner().size()];
@@ -164,25 +162,27 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     lowerCorner[i] = (Double) bbox.getLowerCorner().get(i);
                     upperCorner[i] = (Double) bbox.getUpperCorner().get(i);
                 }
-                destinationEnvelope = new GeneralEnvelope(lowerCorner, upperCorner);
+                requestedEnvelope = new GeneralEnvelope(lowerCorner, upperCorner);
                 // grab the native crs
                 // if no crs has beens specified, the native one is assumed
                 if (bbox.getCrs() == null) {
-                    destinationEnvelope.setCoordinateReferenceSystem(nativeCRS);
-                    destinationEnvelopeInSourceCRS = destinationEnvelope;
+                    requestedEnvelope.setCoordinateReferenceSystem(nativeCRS);
+                    requestedEnvelopeInSourceCRS = requestedEnvelope;
                 } else {
                     // otherwise we need to transform
                     final CoordinateReferenceSystem bboxCRS = CRS.decode(bbox.getCrs());
-                    destinationEnvelope.setCoordinateReferenceSystem(bboxCRS);
-                    final MathTransform bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS,
-                            true);
-                    destinationEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx,
-                            destinationEnvelope);
-                    destinationEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
+                    requestedEnvelope.setCoordinateReferenceSystem(bboxCRS);
+                    bboxToNativeTx = CRS.findMathTransform(bboxCRS, nativeCRS,true);
+                    if(!bboxToNativeTx.isIdentity()){
+	                    requestedEnvelopeInSourceCRS = CRS.transform(bboxToNativeTx,requestedEnvelope);
+	                    requestedEnvelopeInSourceCRS.setCoordinateReferenceSystem(nativeCRS);
+                    }
+                    else
+                    	requestedEnvelopeInSourceCRS= new GeneralEnvelope(requestedEnvelope);
                 }
             } else {
-                destinationEnvelopeInSourceCRS = reader.getOriginalEnvelope();
-                destinationEnvelope = destinationEnvelopeInSourceCRS;
+                requestedEnvelopeInSourceCRS = reader.getOriginalEnvelope();
+                requestedEnvelope = requestedEnvelopeInSourceCRS;
             }
 
             final GridCrsType gridCRS = request.getOutput().getGridCRS();
@@ -211,8 +211,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                 // if no offsets has been specified we try to default on the
                 // native ones
                 if (offsets == null) {
-                    if (!(gridToCRS instanceof AffineTransform2D)
-                            && !(gridToCRS instanceof IdentityTransform))
+                    if (!(gridToCRS instanceof AffineTransform2D)&& !(gridToCRS instanceof IdentityTransform))
                         throw new WcsException(
                                 "Internal error, the coverage we're playing with does not have an affine transform...");
 
@@ -226,8 +225,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                         if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
                             offsets = new Double[] { affine.getScaleX(), affine.getScaleY() };
                         else
-                            offsets = new Double[] { affine.getScaleX(), affine.getShearX(),
-                                    affine.getShearY(), affine.getScaleY() };
+                            offsets = new Double[] { affine.getScaleX(), affine.getShearX(),affine.getShearY(), affine.getScaleY() };
                     }
                 }
 
@@ -244,15 +242,19 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
             // now we have enough info to read the coverage, grab the parameters
             // and add the grid geometry info
-            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat()
-                    .getReadParameters());
-            final GeneralEnvelope intersected = new GeneralEnvelope(destinationEnvelopeInSourceCRS);
-            intersected.intersect(originalEnvelope);
-            final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersected, null);
-            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-                    destinationGridGeometry);
-            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat()
-                    .getReadParameters(), parameters, true));
+            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
+            final GeneralEnvelope intersectionEnvelopeInSourceCRS = new GeneralEnvelope(requestedEnvelopeInSourceCRS);
+            intersectionEnvelopeInSourceCRS.intersect(originalEnvelope);
+            final GeneralEnvelope intersectionEnvelope= 
+            	bboxToNativeTx.isIdentity()?
+            			new GeneralEnvelope(intersectionEnvelopeInSourceCRS):
+            			CRS.transform(bboxToNativeTx.inverse(), intersectionEnvelopeInSourceCRS);
+            intersectionEnvelope.setCoordinateReferenceSystem(targetCRS);
+            
+            
+            final GridGeometry2D requestedGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelopeInSourceCRS, null);
+            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),requestedGridGeometry);
+            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                 throw new IOException("The requested coverage could not be found.");
             }
@@ -267,8 +269,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                     throw new WcsException("Multi field coverages are not supported yet");
                 }
 
-                FieldSubsetType field = (FieldSubsetType) request.getRangeSubset().getFieldSubset()
-                        .get(0);
+                FieldSubsetType field = (FieldSubsetType) request.getRangeSubset().getFieldSubset().get(0);
                 interpolationType = field.getInterpolationType();
 
                 // handle axis subset
@@ -325,26 +326,16 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             }
 
             /**
-             * Crop
-             */
-            final GridCoverage2D croppedGridCoverage = WCSUtils.crop(bandSelectedCoverage,
-                    (GeneralEnvelope) coverage.getEnvelope(), nativeCRS,
-                    destinationEnvelopeInSourceCRS, Boolean.TRUE);
-
-            /**
-             * Scale
-             */
-            final GridCoverage2D scaledCoverage = WCSUtils.scale(croppedGridCoverage,
-                    destinationGridGeometry);
-
-            /**
              * Reproject
              */
-            final GridCoverage2D reprojectedCoverage = WCSUtils.reproject(scaledCoverage,
-                    nativeCRS, targetCRS, interpolation);
+            // adjust the grid geometry to use the final bbox and crs
+            final GridGeometry2D destinationGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelope, null);
+            final GridCoverage2D reprojectedCoverage = WCSUtils.resample(
+            		bandSelectedCoverage,
+                    nativeCRS, targetCRS, destinationGridGeometry,interpolation);
 
             return new GridCoverage[] { reprojectedCoverage };
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (e instanceof WcsException)
                 throw (WcsException) e;
             else
