@@ -12,14 +12,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geoserver.config.GeoServer;
-import org.geoserver.config.ServiceInfo;
-import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.ows.HttpServletRequestAware;
 import org.geoserver.ows.KvpRequestReader;
-import org.geoserver.ows.adapters.KvpRequestReaderAdapter;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 
 /**
  * Bridge towards the old the old kvp readers that injects the proper service info object in the
@@ -61,7 +56,7 @@ public class WMSKvpRequestReaderAdapter extends KvpRequestReader implements Http
             kvp.put(paramName.toUpperCase(), paramValue);
         }
 
-        // look for a constructor, may have to walk up teh class hierachy
+        // look for a constructor, may have to walk up the class hierarchy
         Constructor constructor = findConstructor();
 
         // create an instance of the delegate

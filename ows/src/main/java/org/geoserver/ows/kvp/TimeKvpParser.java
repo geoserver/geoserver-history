@@ -4,7 +4,6 @@
  */
 package org.geoserver.ows.kvp;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -13,6 +12,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import org.geoserver.ows.KvpParser;
 
 
@@ -20,7 +20,7 @@ import org.geoserver.ows.KvpParser;
  * Parses the {@code time} parameter of the request. The date, time and period
  * are expected to be formatted according ISO-8601 standard.
  *
- * @author C�dric Briancon
+ * @author Cedric Briancon
  * @author Martin Desruisseaux
  * @version $Id$
  */
@@ -85,7 +85,10 @@ public class TimeKvpParser extends KvpParser {
         String[] period = value.split("/");
         // Only one date given.
         if (period.length == 1) {
-            dates.add(getDate(value));
+        	if(value.equals("current"))
+        		dates.add(new Date());
+        	else
+        		dates.add(getDate(value));
             return dates;
         }
         // Period like : yyyy-MM-ddTHH:mm:ssZ/yyyy-MM-ddTHH:mm:ssZ/P1D
