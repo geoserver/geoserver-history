@@ -51,10 +51,8 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.util.logging.Logging;
-import org.opengis.coverage.grid.Format;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.geometry.Envelope;
-import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.GeographicCRS;
 import org.opengis.referencing.cs.AxisDirection;
@@ -72,7 +70,7 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 public class DefaultWebCoverageService111 implements WebCoverageService111 {
     Logger LOGGER = Logging.getLogger(DefaultWebCoverageService111.class);
 
-    private final static Hints HINTS = new Hints(new HashMap());
+    private final static Hints HINTS = new Hints();
     static {
         HINTS.add(new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE));
         HINTS.add(new Hints(Hints.OVERVIEW_POLICY, OverviewPolicy.IGNORE));
