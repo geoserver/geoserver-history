@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,6 +131,7 @@ public class ResourcePool {
     CoverageReaderCache coverageReaderCache;
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
+    List<Listener> listeners;
     
     public ResourcePool(Catalog catalog) {
         this.catalog = catalog;
@@ -140,7 +142,23 @@ public class ResourcePool {
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
         styleCache = new HashMap<StyleInfo, Style>();
+        listeners = new CopyOnWriteArrayList<Listener>();
+        
         catalog.addListener( new CacheClearingListener() );
+    }
+    
+    /**
+     * Adds a pool listener.
+     */
+    public void addListener(Listener l) {
+        listeners.add(l);
+    }
+
+    /**
+     * Removes a pool listener.
+     */
+    public void removeListener(Listener l) {
+        listeners.remove(l);
     }
     
     /**
@@ -360,33 +378,6 @@ public class ResourcePool {
      */
     public void clear( DataStoreInfo info ) {
         dataStoreCache.remove( info.getId() );
-    }
-    
-    /**
-     * Disposes a data store and removes it from the cache.
-     * <p>
-     * This method catches any exception thrown during data store disposal and 
-     * logs it at the FINE level.
-     * </p>
-     */
-    public void dispose( DataStoreInfo info ) {
-        DataAccess dataStore = (DataAccess) dataStoreCache.get(info);
-        if ( dataStore != null ) {
-            synchronized (dataStoreCache) {
-                dataStore = (DataAccess) dataStoreCache.get(info);
-                if ( dataStore != null ) {
-                    try {
-                        dataStore.dispose();
-                    }
-                    catch( Exception e ) {
-                        LOGGER.warning( "Error occured disposing data store '" + info.getName() + "'");
-                        LOGGER.log(Level.FINE, "", e );
-                    }
-                    
-                    dataStoreCache.remove( info );
-                }
-            }
-        }
     }
     
     public List<AttributeTypeInfo> getAttributes(FeatureTypeInfo info) throws IOException {
@@ -1127,19 +1118,21 @@ public class ResourcePool {
         coverageReaderCache.clear();
         hintCoverageReaderCache.clear();
         styleCache.clear();
+        listeners.clear();
     }
     
-    static class FeatureTypeCache extends LRUMap {
+    class FeatureTypeCache extends LRUMap {
         
         protected boolean removeLRU(LinkEntry entry) {
             FeatureTypeInfo info = (FeatureTypeInfo) entry.getKey();
             LOGGER.info( "Disposing feature type '" + info.getName() + "'");
             
+            fireDisposed(info, (FeatureType) entry.getValue());
             return super.removeLRU(entry);
         }
     }
     
-    static class DataStoreCache extends LRUMap {
+    class DataStoreCache extends LRUMap {
         protected boolean removeLRU(LinkEntry entry) {
             String name = (String) entry.getKey();
             dispose(name,(DataAccess) entry.getValue());
@@ -1147,8 +1140,12 @@ public class ResourcePool {
             return super.removeLRU(entry);
         }
         
-        void dispose(String name, DataAccess dataStore) {
+        void dispose(String id, DataAccess dataStore) {
+            DataStoreInfo info = catalog.getDataStore(id);
+            String name = info != null ? info.getName() : id;
             LOGGER.info( "Disposing datastore '" + name + "'" );
+            
+            fireDisposed(info, dataStore);
             
             try {
                 dataStore.dispose();
@@ -1175,7 +1172,7 @@ public class ResourcePool {
         }
     }
     
-    static class CoverageReaderCache extends LRUMap {
+    class CoverageReaderCache extends LRUMap {
         protected boolean removeLRU(LinkEntry entry) {
             CoverageStoreInfo info = (CoverageStoreInfo) entry.getKey();
             dispose( info, (GridCoverageReader) entry.getValue() );
@@ -1184,6 +1181,7 @@ public class ResourcePool {
         
         void dispose( CoverageStoreInfo info, GridCoverageReader reader ) {
             LOGGER.info( "Disposing grid coverage reader '" + info.getName() + "'");
+            fireDisposed(info, reader);
             try {
                 reader.dispose();
             }
@@ -1250,6 +1248,66 @@ public class ResourcePool {
         public void visit(StyleInfo style) {
             clear(style);
         }
+    }
+    
+    void fireDisposed(DataStoreInfo dataStore, DataAccess da) {
+        for (Listener l : listeners) {
+            try {
+                l.disposed(dataStore, da);
+            }
+            catch(Throwable t) {
+                LOGGER.warning("Resource pool listener threw error");
+                LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+            }
+        }
+    }
+    
+    void fireDisposed(FeatureTypeInfo featureType, FeatureType ft) {
+        for (Listener l : listeners) {
+            try {
+                l.disposed(featureType, ft);
+            }
+            catch(Throwable t) {
+                LOGGER.warning("Resource pool listener threw error");
+                LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+            }
+        }
+    }
+    
+    void fireDisposed(CoverageStoreInfo coverageStore, GridCoverageReader gcr) {
+        for (Listener l : listeners) {
+            try {
+                l.disposed(coverageStore, gcr);
+            }
+            catch(Throwable t) {
+                LOGGER.warning("Resource pool listener threw error");
+                LOGGER.log(Level.INFO, t.getLocalizedMessage(), t);
+            }
+        }
+    }
+    
+    /**
+     * Listener for resource pool events.
+     * 
+     * @author Justin Deoliveira, OpenGeo
+     *
+     */
+    public static interface Listener {
+        
+        /**
+         * Event fired when a data store is evicted from the resource pool.
+         */
+        void disposed(DataStoreInfo dataStore, DataAccess da);
+
+        /**
+         * Event fired when a coverage store is evicted from the resource pool.
+         */
+        void disposed(CoverageStoreInfo coverageStore, GridCoverageReader gcr);
+
+        /**
+         * Event fired when a feature type is evicted from the resource pool. 
+         */
+        void disposed(FeatureTypeInfo featureType, FeatureType ft);
     }
     
 }
