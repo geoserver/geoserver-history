@@ -14,7 +14,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
  * DOCUMENT ME!
  * 
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
- * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
+ * @author Simone Giannecchini, GeoSolutions SAS
  */
 public interface CoverageResponseDelegate {
     boolean canProduce(String outputFormat);

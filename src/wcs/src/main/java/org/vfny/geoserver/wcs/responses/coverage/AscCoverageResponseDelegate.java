@@ -11,12 +11,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.arcgrid.ArcGridWriter;
-import org.opengis.coverage.grid.GridCoverageWriter;
-import org.opengis.parameter.ParameterValueGroup;
-import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 /**
@@ -102,16 +100,14 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
         }
 
         GZIPOutputStream gzipOut = null;
-
         if (compressOutput) {
             gzipOut = new GZIPOutputStream(output);
             output = gzipOut;
         }
 
+        ArcGridWriter writer=null;
         try {
-            final GridCoverageWriter writer = new ArcGridWriter(output);
-            final ParameterValueGroup params = writer.getFormat().getWriteParameters();
-            // params.parameter("Compressed").setValue(compressOutput);
+            writer = new ArcGridWriter(output);
             writer.write(sourceCoverage, null);
 
             if (gzipOut != null) {
@@ -119,13 +115,19 @@ public class AscCoverageResponseDelegate implements CoverageResponseDelegate {
                 gzipOut.flush();
             }
 
-            // freeing everything
-            writer.dispose();
+
+        }finally {
+        	try{
+        	if(writer!=null)
+        		writer.dispose();
+        	}catch (Throwable e) {
+				// eating exception
+			}
+        	if(gzipOut!=null)
+        		IOUtils.closeQuietly(gzipOut);
+        	
             this.sourceCoverage.dispose(false);
             this.sourceCoverage = null;
-        } catch (Exception e) {
-            throw new WcsException(new StringBuffer("Problems Rendering Image").append(
-                    e.getMessage()).toString(), e);
-        }
+		}
     }
 }
