@@ -224,7 +224,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                     throw new IOException("The requested coverage could not be found.");
                 }
-                ImageIO.write(coverage.getRenderedImage(), "tiff", new FileImageOutputStreamExtImpl(new File("/media/ext_hd_01/work/data/wcs/test.tif")));
 
                 //
                 // Band Select (works on just one field)
@@ -297,7 +296,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 		destinationEnvelope
                 );
                 final GridCoverage2D reprojectedCoverage = WCSUtils.resample(bandSelectedCoverage,nativeCRS, targetCRS,destinationGridGeometry, interpolation);
-                ImageIO.write(reprojectedCoverage.getRenderedImage(), "tiff", new FileImageOutputStreamExtImpl(new File("/media/ext_hd_01/work/data/wcs/test1.tif")));
                 coverageResults.add(reprojectedCoverage);
             }
 
@@ -507,8 +505,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             if (interpolation.startsWith("nearest")) {
                 interpolation = "nearest neighbor";
             }
-            for (Iterator it = info.getInterpolationMethods().iterator(); it.hasNext();) {
-                String method = (String) it.next();
+            if(info.getDefaultInterpolationMethod().equalsIgnoreCase(interpolation)){
+            	interpolationSupported=true;
+            }
+            for (String method : info.getInterpolationMethods()) {
                 if (interpolation.equalsIgnoreCase(method)) {
                     interpolationSupported = true;
                 }
