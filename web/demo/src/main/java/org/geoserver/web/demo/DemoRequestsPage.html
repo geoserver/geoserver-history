@@ -4,12 +4,12 @@
 </head>
 <body>
 <wicket:extend>
+  <form wicket:id="demoRequestsForm">
   <table style="height:100%;width=100%;">
     <tbody>
       <tr>
         <td class="label"><wicket:message key="request">Request:</wicket:message></td>
         <td class="datum">
-        <form id="selectForm" wicket:id="selectForm">
          <select wicket:id="demoRequestsList">
           <optgroup label="WMS">
             <option>wms1</option>
@@ -21,10 +21,8 @@
             <option>wcs1</option>
           </optgroup>
          </select>
-        </form>
         </td>
       </tr>
-      <form wicket:id="TestWfsPostForm" action="TestWfsPost" method="POST">
       <tr>
         <td class="label"><wicket:message key="url">URL:</wicket:message></td>
         <td class="datum"><input wicket:id="url" type="text" size="90" name="url" value=""/></td>
@@ -53,9 +51,9 @@
           </div>
         </td>
       </tr>
-      </form>
     </tbody>
   </table>
+ </form>
 
   <div wicket:id="responseWindow"></div>
 

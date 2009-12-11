@@ -10,17 +10,18 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.HiddenField;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.demo.DemoRequestsPage.DemoRequestsModel;
+import org.geoserver.web.demo.DemoRequestsPage.DemoRequest;
 import org.vfny.geoserver.wfs.servlets.TestWfsPost;
 
 /**
- * An intermediate page used to submit a demo request to the
- * {@link TestWfsPost /TestWfsPost} servlet.
+ * An intermediate page used to submit a demo request to the {@link TestWfsPost /TestWfsPost}
+ * servlet.
  * <p>
- * This page does not extend {@link GeoServerBasePage} since its just an
- * intermediate form to submit to the servlet.
+ * This page does not extend {@link GeoServerBasePage} since its just an intermediate form to submit
+ * to the servlet.
  * </p>
  * 
  * @author Gabriel Roldan (TOPP)
@@ -30,18 +31,19 @@ import org.vfny.geoserver.wfs.servlets.TestWfsPost;
 public class DemoRequestResponse extends WebPage {
 
     /**
-     * Fills out the form to be submitted to {@code TestWfsPost} with the
-     * properties from the {@code DemoRequestModel} provided, and auto-submit
-     * the form on page load so the results get loaded in the page body.
+     * Fills out the form to be submitted to {@code TestWfsPost} with the properties from the
+     * {@code DemoRequestModel} provided, and auto-submit the form on page load so the results get
+     * loaded in the page body.
      * 
      * @param model
-     *            the demo request parameters holder
+     *            the demo request parameters holder, as a model for {@link DemoRequest}
      */
-    public DemoRequestResponse(final DemoRequestsModel model) {
+    public DemoRequestResponse(final IModel model) {
         // this page being in an IFrame needs to grap its own PageMap
         // in order not to share it with the parent page and thus be
         // marked as expired
         super(PageMap.forName("demoRequestResponse"));
+
         Form form = new Form("form");
         add(form);
         form.add(new HiddenField("url", new PropertyModel(model, "requestUrl")));
