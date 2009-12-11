@@ -49,11 +49,13 @@ public class CatalogImplTest extends TestCase {
         ws.setName( "wsName");
         
         ds = factory.createDataStore();
+        ds.setEnabled(true);
         ds.setName( "dsName");
         ds.setDescription("dsDescription");
         ds.setWorkspace( ws );
         
         ft = factory.createFeatureType();
+        ft.setEnabled(true);
         ft.setName( "ftName" );
         ft.setAbstract( "ftAbstract" );
         ft.setDescription( "ftDescription" );
@@ -74,6 +76,7 @@ public class CatalogImplTest extends TestCase {
         s.setFilename( "styleFilename" );
         
         l = factory.createLayer();
+        l.setEnabled(true);
         l.setResource( ft );
         l.setDefaultStyle( s );
     }
@@ -838,6 +841,23 @@ public class CatalogImplTest extends TestCase {
         // l3 = catalog.getLayerByName( "changed" );
         l3 = catalog.getLayerByName( ft.getName() );
         assertNotNull(l3);
+    }
+    
+    public void testEnableLayer() {
+        catalog.add(l);
+        
+        LayerInfo l2 = catalog.getLayerByName(l.getName());
+        assertTrue(l2.isEnabled());
+        assertTrue(l2.enabled());
+        assertTrue(l2.getResource().isEnabled());
+        
+        l2.setEnabled(false);
+        catalog.save(l2);
+        
+        l2 = catalog.getLayerByName(l2.getName());
+        assertFalse(l2.isEnabled());
+        assertFalse(l2.enabled());
+        assertFalse(l2.getResource().isEnabled());
     }
     
     public void testLayerEvents() {

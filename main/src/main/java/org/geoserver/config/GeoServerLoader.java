@@ -568,6 +568,20 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                             catalog.add( ds );
                             
                             LOGGER.info( "Loaded data store '" + ds.getName() +"'");
+                            
+                            if (ds.isEnabled()) {
+                                //connect to the datastore to determine if we should disable it
+                                try {
+                                    ds.getDataStore(null);
+                                }
+                                catch( Throwable t ) {
+                                    LOGGER.warning( "Error connecting to '" + ds.getName() + "'. Disabling." );
+                                    LOGGER.log( Level.INFO, "", t );
+                                    
+                                    ds.setError(t);
+                                    ds.setEnabled(false);
+                                }
+                            }
                         }
                         catch( Exception e ) {
                             LOGGER.log( Level.WARNING, "Failed to load data store '" + sd.getName() +"'", e);
