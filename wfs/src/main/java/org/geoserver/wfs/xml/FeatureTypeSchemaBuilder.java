@@ -25,6 +25,7 @@ import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDFactory;
 import org.eclipse.xsd.XSDForm;
 import org.eclipse.xsd.XSDImport;
+import org.eclipse.xsd.XSDInclude;
 import org.eclipse.xsd.XSDModelGroup;
 import org.eclipse.xsd.XSDNamedComponent;
 import org.eclipse.xsd.XSDParticle;
@@ -130,7 +131,33 @@ public abstract class FeatureTypeSchemaBuilder {
             baseUrl = wfs.getSchemaBaseURL(); 
                 
         if (ns2featureTypeInfos.entrySet().size() == 1) {
-            //import gml schema
+            // only 1 namespace, write target namespace out
+            String targetPrefix = (String) ns2featureTypeInfos.keySet().iterator().next();
+            String targetNamespace = catalog.getNamespaceByPrefix(targetPrefix).getURI();
+            schema.setTargetNamespace(targetNamespace);
+            schema.getQNamePrefixToNamespaceMap().put(targetPrefix, targetNamespace);
+            // would result in 1 xsd:include if schema location is specified
+            try {
+                FeatureType featureType = featureTypeInfos[0].getFeatureType();
+                Object schemaUri = featureType.getUserData().get("schemaURI");
+                if (schemaUri != null) {
+                    // should always be a string.. set in AppSchemaDataAccessConfigurator
+                    assert schemaUri instanceof String;
+                    // schema is supplied by the user.. just include the top level schema instead of
+                    // building the type
+                    if (!findTypeInSchema(featureTypeInfos[0], schema, factory)) {
+                        addInclude(schema, factory, targetNamespace, (String) schemaUri);
+                    }
+                    return schema;
+                }
+            } catch (IOException e) {
+                logger.warning("Unable to get schema location for feature type '"
+                        + featureTypeInfos[0].getPrefixedName() + "'. Reason: '" + e.getMessage()
+                        + "'. Building the schema manually instead.");
+            }
+
+            // user didn't define schema location
+            // import gml schema
             XSDImport imprt = factory.createXSDImport();
             imprt.setNamespace(gmlNamespace);
 
@@ -140,25 +167,12 @@ public abstract class FeatureTypeSchemaBuilder {
             imprt.setResolvedSchema(gmlSchema);
 
             schema.getContents().add(imprt);
-
-            // This is so we don't have duplicate imports
-            ArrayList<String> importedNamespaces = new ArrayList<String>(
-                    featureTypeInfos.length + 1);
-            importedNamespaces.add(gmlNamespace);
-
-            String targetPrefix = (String) ns2featureTypeInfos.keySet().iterator().next();
-            String targetNamespace = catalog.getNamespaceByPrefix(targetPrefix).getURI();
-
-            schema.setTargetNamespace(targetNamespace);
-            //schema.getQNamePrefixToNamespaceMap().put( null, targetNamespace );
-            schema.getQNamePrefixToNamespaceMap().put(targetPrefix, targetNamespace);
             schema.getQNamePrefixToNamespaceMap().put(gmlPrefix, gmlNamespace);
             schema.getQNamePrefixToNamespaceMap().put("gml", "http://www.opengis.net/gml");
-
-            //all types in same namespace, write out the schema
+            // then manually build schema
             for (int i = 0; i < featureTypeInfos.length; i++) {
                 try {
-                    buildSchemaContent(featureTypeInfos[i], schema, factory, importedNamespaces);
+                    buildSchemaContent(featureTypeInfos[i], schema, factory, baseUrl);
                 } catch (Exception e) {
                     logger.log(Level.WARNING, "Could not build xml schema for type: "
                             + featureTypeInfos[i].getName(), e);
@@ -166,35 +180,74 @@ public abstract class FeatureTypeSchemaBuilder {
             }
         } else {
             //different namespaces, write out import statements
+            ArrayList<String> importedNamespaces = new ArrayList<String>(
+                    ns2featureTypeInfos.size() + 1);
             for (Iterator i = ns2featureTypeInfos.entrySet().iterator(); i.hasNext();) {
                 Map.Entry entry = (Map.Entry) i.next();
                 String prefix = (String) entry.getKey();
                 List types = (List) entry.getValue();
 
                 StringBuffer typeNames = new StringBuffer();
+                String namespaceURI;
                 for (Iterator t = types.iterator(); t.hasNext();) {
-                    FeatureTypeInfo type = (FeatureTypeInfo) t.next();
-                    typeNames.append(type.getPrefixedName());
+                    FeatureTypeInfo info = (FeatureTypeInfo) t.next();
+                    FeatureType featureType = info.getFeatureType();
+                    Object schemaUri = featureType.getUserData().get("schemaURI");
+                    if (schemaUri != null) {
+                        // should always be a string.. set in AppSchemaDataAccessConfigurator
+                        assert schemaUri instanceof String;
+                        // schema is supplied by the user.. just import the top level schema instead of
+                        // building
+                        // the type
+                        namespaceURI = featureType.getName().getNamespaceURI();
 
-                    if (t.hasNext()) {
-                        typeNames.append(",");
+                        addImport(schema, factory, namespaceURI,
+                                (String) schemaUri, importedNamespaces);
+
+                        // ensure there's only 1 import per namespace
+                        importedNamespaces.add(namespaceURI);
+
+                    } else {
+                        typeNames.append(info.getPrefixedName()).append(",");
                     }
                 }
-                Map<String, String> params = new LinkedHashMap<String, String>(describeFeatureTypeParams);
-                params.put("typeName", typeNames.toString());
-
-                String schemaLocation = buildURL(baseUrl, "wfs", params, URLType.RESOURCE);
-                String namespace = catalog.getNamespaceByPrefix(prefix).getURI();
-
-                XSDImport imprt = factory.createXSDImport();
-                imprt.setNamespace(namespace);
-                imprt.setSchemaLocation(schemaLocation);
-
-                schema.getContents().add(imprt);
+                if (typeNames.length() > 0) {
+                    // schema not found, encode describe feature type URL
+                    Map<String, String> params = new LinkedHashMap<String, String>(describeFeatureTypeParams);
+                    params.put("typeName", typeNames.toString().trim());
+    
+                    String schemaLocation = buildURL(baseUrl, "wfs", params, URLType.RESOURCE);
+                    String namespace = catalog.getNamespaceByPrefix(prefix).getURI();
+    
+                    XSDImport imprt = factory.createXSDImport();
+                    imprt.setNamespace(namespace);
+                    imprt.setSchemaLocation(schemaLocation);
+    
+                    schema.getContents().add(imprt);
+                }
             }
         }
 
         return schema;
+    }
+
+    /**
+     * Add include statement to schema.
+     * 
+     * @param schema
+     *            Output schema
+     * @param factory
+     *            XSD factory used to produce schema
+     * @param nsURI
+     *            Name space URI
+     * @param schemaLocation
+     *            The schema location to be included
+     */
+    private void addInclude(XSDSchema schema, XSDFactory factory, String nsURI, String schemaLocation) {
+        XSDInclude xsdInclude = factory.createXSDInclude();
+        xsdInclude.setSchemaLocation(schemaLocation);
+        schema.getContents().add(xsdInclude);        
+        schema.updateElement();
     }
 
     /**
@@ -257,8 +310,8 @@ public abstract class FeatureTypeSchemaBuilder {
         return wfsSchema;
     }
 
-    void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory,
-            List<String> importedNamespaces) throws IOException {
+    boolean findTypeInSchema(FeatureTypeInfo featureTypeMeta, XSDSchema schema, XSDFactory factory)
+            throws IOException {
         // look if the schema for the type is already defined
         String ws = featureTypeMeta.getStore().getWorkspace().getName();
         String ds = featureTypeMeta.getStore().getName();
@@ -383,35 +436,44 @@ public abstract class FeatureTypeSchemaBuilder {
                 schema.getContents().addAll(contents);
                 schema.updateElement();
 
-                return;
+                return true;
             }
         }
+        return false;
+    }
 
-        FeatureType featureType = featureTypeMeta.getFeatureType();
-        Object schemaUri = featureType.getUserData().get("schemaURI");
-        if (schemaUri != null) {
-            // should always be a string.. set in AppSchemaDataAccessConfigurator
-            assert schemaUri instanceof String;
-            // schema is supplied by the user.. just import the top level schema instead of building
-            // the type
-            addImport(schema, factory, featureType.getName().getNamespaceURI(), (String) schemaUri,
-                    importedNamespaces);
-        } else {
+    private void buildSchemaContent(FeatureTypeInfo featureTypeMeta, XSDSchema schema,
+            XSDFactory factory, String baseUrl)
+            throws IOException {
+        if (!findTypeInSchema(featureTypeMeta, schema, factory)) {
             // build the type manually
+            XSDImport imprt = factory.createXSDImport();
+            imprt.setNamespace(gmlNamespace);
+
+            imprt.setSchemaLocation(ResponseUtils.buildSchemaURL(baseUrl, gmlSchemaLocation));
+
+            XSDSchema gmlSchema = gmlSchema();
+            imprt.setResolvedSchema(gmlSchema);
+
+            schema.getContents().add(imprt);
+
+            schema.getQNamePrefixToNamespaceMap().put(gmlPrefix, gmlNamespace);
+            schema.getQNamePrefixToNamespaceMap().put("gml", "http://www.opengis.net/gml");
+
             XSDComplexTypeDefinition xsdComplexType = buildComplexSchemaContent(featureTypeMeta
                     .getFeatureType(), schema, factory);
 
             XSDElementDeclaration element = factory.createXSDElementDeclaration();
-            element.setName(name);
+            element.setName(featureTypeMeta.getName());
 
             element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
                     substitutionGroup));
             element.setTypeDefinition(xsdComplexType);
 
             schema.getContents().add(element);
-        }
 
-        schema.updateElement();
+            schema.updateElement();
+        }
     }
 
     /**
