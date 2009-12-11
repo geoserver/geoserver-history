@@ -421,7 +421,8 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         kvp.put("height", "480");
         kvp.put("format", "image/png");
         final URL url = GetMapKvpRequestReader.class.getResource("BaseMapGroup.sld");
-        kvp.put("sld", url.toString());
+        // URLDecoder.decode fixes GEOS-3709
+        kvp.put("sld", URLDecoder.decode(url.toString(), "UTF-8"));
         kvp.put("version", "1.1.1");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
