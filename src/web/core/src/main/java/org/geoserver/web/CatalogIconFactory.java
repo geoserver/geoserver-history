@@ -110,28 +110,36 @@ public class CatalogIconFactory implements Serializable {
             try {
                 FeatureTypeInfo fti = (FeatureTypeInfo) info.getResource();
                 GeometryDescriptor gd = fti.getFeatureType().getGeometryDescriptor();
-                if(gd == null) {
-                    return GEOMETRY_ICON;
-                } 
-                
-                Class geom = gd.getType().getBinding();
-                if(Point.class.isAssignableFrom(geom) 
-                        || MultiPoint.class.isAssignableFrom(geom)) {
-                    return POINT_ICON;
-                } else if(LineString.class.isAssignableFrom(geom) 
-                        || MultiLineString.class.isAssignableFrom(geom)) {
-                    return LINE_ICON;
-                } else if(Polygon.class.isAssignableFrom(geom) 
-                        || MultiPolygon.class.isAssignableFrom(geom)) {
-                    return POLYGON_ICON;
-                } else {
-                    return GEOMETRY_ICON;
-                }
+                return getVectoryIcon(gd);
             } catch(Exception e) {
                 return GEOMETRY_ICON;
             }
         } else {
             return UNKNOWN_ICON;
+        }
+    }
+
+    /**
+     * Returns the vector icon associated to the specified geometry descriptor
+     * @param gd
+     */
+    public ResourceReference getVectoryIcon(GeometryDescriptor gd) {
+        if(gd == null) {
+            return GEOMETRY_ICON;
+        } 
+        
+        Class geom = gd.getType().getBinding();
+        if(Point.class.isAssignableFrom(geom) 
+                || MultiPoint.class.isAssignableFrom(geom)) {
+            return POINT_ICON;
+        } else if(LineString.class.isAssignableFrom(geom) 
+                || MultiLineString.class.isAssignableFrom(geom)) {
+            return LINE_ICON;
+        } else if(Polygon.class.isAssignableFrom(geom) 
+                || MultiPolygon.class.isAssignableFrom(geom)) {
+            return POLYGON_ICON;
+        } else {
+            return GEOMETRY_ICON;
         }
     }
 
