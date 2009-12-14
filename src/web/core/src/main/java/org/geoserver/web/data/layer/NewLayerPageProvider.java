@@ -30,10 +30,12 @@ import org.opengis.feature.type.Name;
 @SuppressWarnings("serial")
 public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
     
-    public static final Property<Resource> NAME = new BeanProperty<Resource>("name", "localName");
     public static final Property<Resource> PUBLISHED = new BeanProperty<Resource>("published", "published");
+    public static final Property<Resource> NAME = new BeanProperty<Resource>("name", "localName");
+    public static final Property<Resource> ACTION = new PropertyPlaceholder<Resource>("action");
     
-    public static final List<Property<Resource>> PROPERTIES = Arrays.asList(NAME, PUBLISHED);
+    
+    public static final List<Property<Resource>> PROPERTIES = Arrays.asList(PUBLISHED, NAME, ACTION);
     
     boolean showPublished;
     

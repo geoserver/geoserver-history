@@ -37,6 +37,7 @@ import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.GeoServerTablePanel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
 
@@ -94,14 +95,25 @@ public class NewLayerPage extends GeoServerSecuredPage {
             protected Component getComponentForProperty(String id,
                     IModel itemModel, Property<Resource> property) {
                 if (property == NewLayerPageProvider.NAME) {
-                    return resourceChooserLink(id, itemModel, property);
+                    return new Label(id, property.getModel(itemModel));
                 } else if (property == NewLayerPageProvider.PUBLISHED) {
                     final Resource resource = (Resource) itemModel.getObject();
                     final CatalogIconFactory icons = CatalogIconFactory.get();
-                    ResourceReference icon = resource.isPublished()? icons.getEnabledIcon() : icons.getDisabledIcon();
-                    Fragment f = new Fragment(id, "iconFragment", NewLayerPage.this);
-                    f.add(new Image("layerIcon", icon));
-                    return f;
+                    if(resource.isPublished()) {
+                        ResourceReference icon = icons.getEnabledIcon();
+                        Fragment f = new Fragment(id, "iconFragment", NewLayerPage.this);
+                        f.add(new Image("layerIcon", icon));
+                        return f;
+                    } else {
+                        return new Label(id);
+                    }
+                } else if(property == NewLayerPageProvider.ACTION) {
+                    final Resource resource = (Resource) itemModel.getObject();
+                    if(resource.isPublished()) {
+                        return resourceChooserLink(id, itemModel, new ParamResourceModel("publishAgain", this));
+                    } else {
+                        return resourceChooserLink(id, itemModel, new ParamResourceModel("publish", this));
+                    }
                 } else {
                     throw new IllegalArgumentException(
                             "Don't know of property " + property.getName());
@@ -152,10 +164,8 @@ public class NewLayerPage extends GeoServerSecuredPage {
         return stores;
     }
 
-    SimpleAjaxLink resourceChooserLink(String id, IModel itemModel,
-            Property<Resource> property) {
-        return new SimpleAjaxLink(id, itemModel, property
-                .getModel(itemModel)) {
+    SimpleAjaxLink resourceChooserLink(String id, IModel itemModel, IModel label) {
+        return new SimpleAjaxLink(id, itemModel, label) {
 
             @Override
             protected void onClick(AjaxRequestTarget target) {
