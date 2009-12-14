@@ -4,16 +4,16 @@
 package org.geoserver.hibernate.dao;
 
 import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+
 import org.geoserver.catalog.CatalogInfo;
 import org.geoserver.catalog.Info;
 import org.geoserver.hibernate.HibMapper;
-import org.geoserver.hibernate.Hibernable;
 import org.geotools.util.logging.Logging;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.stereotype.Repository;
@@ -34,8 +34,8 @@ public abstract class AbstractDAOImpl {
     /**
      * Constructor for HibernateDAO.
      */
-    public AbstractDAOImpl() {
-        super();
+    public AbstractDAOImpl() {       
+
     }
 
     protected Query buildQuery(Object... elems) {
@@ -53,6 +53,7 @@ public abstract class AbstractDAOImpl {
         }
 
         Query query = entityManager.createQuery(builder.toString());
+        query.setHint("org.hibernate.cacheable", true);
         cnt = 0;
         for (Object elem : elems) {
             if (elem instanceof QueryParam) {
@@ -79,10 +80,10 @@ public abstract class AbstractDAOImpl {
     /*
      */
     protected void save(Info entity) {
-        if (LOGGER.isLoggable(Level.INFO))
-            LOGGER.info("Saving " + entity.getClass().getSimpleName());
-        if (!(entity instanceof Hibernable))
-            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("Saving " + entity.getClass().getSimpleName());
+//        if (!(entity instanceof Hibernable))
+//            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
         entityManager.persist(entity);
     }
@@ -90,28 +91,27 @@ public abstract class AbstractDAOImpl {
     /*
      */
     protected <T> T merge(T entity) {
-        if (!(entity instanceof Hibernable))
-            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
+//        if (!(entity instanceof Hibernable))
+//            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
-        return (T) entityManager.merge(entity);
+        return entityManager.merge(entity);
     }
 
     /*
      */
     protected void delete(CatalogInfo entity) {
-        if (!(entity instanceof Hibernable))
-            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
+//        if (!(entity instanceof Hibernable))
+//            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
 
-        CatalogInfo attached; // = entityManager.find(entity.getClass(), entity.getId());
-        attached = entityManager.merge(entity);
+        CatalogInfo attached = entityManager.merge(entity);
         entityManager.remove(attached);
         entityManager.flush();// TODO useless?
     }
 
     protected void delete(Info entity) {
-        if (!(entity instanceof Hibernable))
-            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
-
+//        if (!(entity instanceof Hibernable))
+//            LOGGER.severe("Trying to handle a " + entity.getClass().getName());
+        
         entityManager.remove(entity);
         entityManager.flush();// TODO useless?
     }
@@ -134,7 +134,8 @@ public abstract class AbstractDAOImpl {
 
     protected Object first(final Query query, boolean doWarn) {
         query.setMaxResults(doWarn ? 2 : 1);
-        List result = query.getResultList();
+        query.setHint("org.hibernate.cacheable", true);
+        List<?> result = query.getResultList();
         if (result.isEmpty()) {
             return null;
         } else {
@@ -149,35 +150,38 @@ public abstract class AbstractDAOImpl {
                 ret = proxy.getHibernateLazyInitializer().getImplementation();
             }
 
-            StringBuilder callerChain = new StringBuilder();
-            int num = 0;
-            for (StackTraceElement stackTraceElement : new Throwable().getStackTrace()) {
-                if ("first".equals(stackTraceElement.getMethodName()))
-                    continue;
-                String cname = stackTraceElement.getClassName();
-                if (cname.startsWith("org.spring"))
-                    continue;
-                cname = cname.substring(cname.lastIndexOf(".") + 1);
-                callerChain.append(cname).append('.').append(stackTraceElement.getMethodName())
-                        .append(':').append(stackTraceElement.getLineNumber()).append(' ');
-                // if(++num==10) break;
-            }
 
-            if (LOGGER.isLoggable(Level.FINE))
+
+            if (LOGGER.isLoggable(Level.FINE)){
+                StringBuilder callerChain = new StringBuilder();
+                for (StackTraceElement stackTraceElement : new Throwable().getStackTrace()) {
+                    if ("first".equals(stackTraceElement.getMethodName()))
+                        continue;
+                    String cname = stackTraceElement.getClassName();
+                    if (cname.startsWith("org.spring"))
+                        continue;
+                    cname = cname.substring(cname.lastIndexOf(".") + 1);
+                    callerChain.append(cname).append('.').append(stackTraceElement.getMethodName())
+                            .append(':').append(stackTraceElement.getLineNumber()).append(' ');
+                    // if(++num==10) break;
+                }            	
                 LOGGER.fine("FIRST -->" + ret.getClass().getSimpleName() + " --- " + ret + " { "
                         + callerChain + "}");
+            }
             return ret;
         }
     }
 
     protected List<?> list(Class clazz) {
         Query query = buildQuery("from ", clazz);
-        List result = query.getResultList();
+        query.setHint("org.hibernate.cacheable", true);
+        List<?> result = query.getResultList();
         return result;
-    }
+   }
+        
 
     // ==========================================================================
-
+        
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }

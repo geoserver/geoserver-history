@@ -3,9 +3,18 @@
  */
 package org.geoserver.hibernate.dao;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Level;
 
+import javax.annotation.PostConstruct;
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
 import javax.persistence.Query;
 
 import org.geoserver.catalog.Catalog;
@@ -20,9 +29,13 @@ import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.hibernate.beans.LayerGroupInfoImplHb;
 import org.geoserver.catalog.hibernate.beans.LayerInfoImplHb;
 import org.geoserver.catalog.impl.MapInfoImpl;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.jmx.StatisticsService;
 import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
+import org.geoserver.hibernate.HibMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +45,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
+
+    private boolean statsEnabled = false;
 
     public CatalogDAOImpl() {
         super();
@@ -186,11 +201,10 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
      * 
      */
     public List<LayerInfo> getLayers() {
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         List<LayerInfo> ret = (List<LayerInfo>) list(LayerInfoImplHb.class);
-        long t1 = System.currentTimeMillis();
-        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
-//        new Throwable(" **************** TRACING GETLAYERS ******************").printStackTrace();
+//        long t1 = System.currentTimeMillis();
+//        LOGGER.warning("getLayers -> " + (t1-t0)+ " ms : # " + ret.size());
         return ret;
     }
 
@@ -358,8 +372,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
         // FIXME we are replacing some referenced object here because hib would recognized original
         // ones as unattached.
         if (entity.getDefaultStyle() != null) {
-            Query query = buildQuery("from ", StyleInfo.class, " where id = ", param(entity
-                    .getDefaultStyle().getId()));
+            Query query = buildQuery("from ", StyleInfo.class, " where id = ", param(entity.getDefaultStyle().getId()));
             StyleInfo style = (StyleInfo) first(query);
             entity.setDefaultStyle(style);
         }
@@ -372,6 +385,12 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
     }
 
     public LayerInfo update(LayerInfo entity) {
+        if (entity.getDefaultStyle() != null && entity.getDefaultStyle().getId() != null) {
+            LOGGER.info("Refreshing style in layer " + entity + " --> style id: " + entity.getDefaultStyle().getId());
+            StyleInfo style = (StyleInfo)entityManager.find(HibMapper.mapHibernableClass(StyleInfo.class), entity.getDefaultStyle().getId());
+            entity.setDefaultStyle(style);
+        }
+        
         return super.merge(entity);
     }
 
@@ -417,7 +436,7 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
 //        LOGGER.info("LG(1 start): " + entity);
 
         // clearing layers/styles: the list will be set empty
-        ((LayerGroupInfoImplHb)entity).getGroupedLayers().clear();
+        ((LayerGroupInfoImplHb) entity).getGroupedLayers().clear();
         entity.getLayers().clear();
         entity.getStyles().clear();
         entity = super.merge(entity);
@@ -428,9 +447,9 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
 //        LOGGER.info("LG(2 merged):" + entity);
 
         // restoring user list and backend list
-        ((LayerGroupInfoImplHb)entity).setLayers(l);
-        ((LayerGroupInfoImplHb)entity).setStyles(s);
-        ((LayerGroupInfoImplHb)entity).preupdate(); // layers/styles are saved in fields not handled by hib, so the update could be not triggered automatically
+        ((LayerGroupInfoImplHb) entity).setLayers(l);
+        ((LayerGroupInfoImplHb) entity).setStyles(s);
+        ((LayerGroupInfoImplHb) entity).preupdate(); // layers/styles are saved in fields not handled by hib, so the update could be not triggered automatically
 //        LOGGER.info("LG(3 restored):" + entity);
 
         // merging the data: set the id into GroupedLayers
@@ -457,4 +476,80 @@ public class CatalogDAOImpl extends AbstractDAOImpl implements CatalogDAO {
         return super.merge(entity);
     }
 
+    @PostConstruct
+    protected void postProcess() {
+
+        if (!isStatsEnabled()) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("Statistics JMX bean is disabled.");
+            }
+            return;
+        }
+
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.info("Setting up statistics JMX bean");
+        }
+
+        // make it a bit mroe generic
+        final Object delegate = entityManager.getDelegate();
+        if (!(delegate instanceof Session)) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.info("Unable to register statistics JMX bean");
+            }
+            return;
+        }
+
+        //register the hibernate statistics service as an mbean
+        final org.hibernate.Session session = (Session) delegate;
+        final SessionFactory sessionFactory = session.getSessionFactory();
+
+        //build the ObjectName you want
+        final Hashtable<String, String> tb = new Hashtable<String, String>();
+        tb.put("type", "statistics");
+        tb.put("sessionFactory", "GeoServer-Hib Statistics");
+        ObjectName on = null;
+        try {
+            on = new ObjectName("hibernate", tb);
+        } catch (MalformedObjectNameException e) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.log(Level.INFO, "Unable to register statistics JMX bean", e);
+            }
+            return;
+        } catch (NullPointerException e) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.log(Level.INFO, "Unable to register statistics JMX bean", e);
+            }
+            return;
+        }
+        StatisticsService stats = new StatisticsService();
+        stats.setSessionFactory(sessionFactory);
+        try {
+            if (on != null) {
+                ManagementFactory.getPlatformMBeanServer().registerMBean(stats, on);
+            }
+        } catch (InstanceAlreadyExistsException e) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.log(Level.INFO, "Unable to register statistics JMX bean", e);
+            }
+            return;
+        } catch (MBeanRegistrationException e) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.log(Level.INFO, "Unable to register statistics JMX bean", e);
+            }
+            return;
+        } catch (NotCompliantMBeanException e) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.log(Level.INFO, "Unable to register statistics JMX bean", e);
+            }
+            return;
+        }
+    }
+
+    public boolean isStatsEnabled() {
+        return statsEnabled;
+    }
+
+    public void setStatsEnabled(boolean statsEnabled) {
+        this.statsEnabled = statsEnabled;
+    }
 }

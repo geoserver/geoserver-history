@@ -13,14 +13,14 @@ import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
-import org.geoserver.services.hibernate.beans.WCSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WFSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WMSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WatermarkInfoImplHb;
+import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;
+import org.geoserver.wfs.WFSInfoImpl;
+import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.WatermarkInfoImpl;
 
 /**
  * Provides methods to create basic objects with default values.
@@ -56,7 +56,7 @@ public class HibDefaultsFactoryImpl {
     }
 
     public static void createWFS(GeoServerInfo geoserver, GeoServer config) {
-        WFSInfoImplHb wfs = new WFSInfoImplHb();
+        WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId("wfs");
         wfs.setName("wfs");
         wfs.setTitle("Default WFS");
@@ -75,7 +75,7 @@ public class HibDefaultsFactoryImpl {
     }
 
     public static void createWCS(GeoServerInfo geoserver, GeoServer config) {
-        WCSInfoImplHb wcs = new WCSInfoImplHb();
+        WCSInfoImpl wcs = new WCSInfoImpl();
         wcs.setId("wcs");
         wcs.setName("wcs");
         wcs.setTitle("Default WCS");
@@ -88,12 +88,12 @@ public class HibDefaultsFactoryImpl {
     }
 
     public static void createWMS(GeoServerInfo geoserver, GeoServer config) {
-        WMSInfoImplHb wms = new WMSInfoImplHb();
+        WMSInfoImpl wms = new WMSInfoImpl();
         wms.setName("wms");
         wms.setId("wms");
         wms.setTitle("Default WMS");
         wms.setEnabled(true);
-        WatermarkInfo wm = new WatermarkInfoImplHb();
+        WatermarkInfo wm = new WatermarkInfoImpl();
         wm.setEnabled(false);
         wm.setPosition(WatermarkInfo.Position.BOT_RIGHT);
         wms.setWatermark(wm);

@@ -1,18 +1,43 @@
-================================================================================
-=== BUILDING
+################################################################################
+### BUILDING
 
 This project is designed to be compiled as a GeoServer community module.
 
 ################################################################################
-### Postgis DB CONFIGURATION
+### Customizing the db
 
-Before creating the .war or installing it, you need to configure the DB where the catalog will be stored.
-You can find the connection information in
-   community/hibernate/src/main/resources/postgis.properties
-Please edit the info in the file to match the DB you created for this purpose.
+The catalog will use an embedded h2 db.
+
+If you want to customize it to use another db, you'll either have to:
+- put a gs-db-config.properties file in the classpath
+- put a gs-db-config.properties file in the current dir
+- define a GeoServerDBConfigPropertiesFile env var, pointing to the property files.
+
+The prop file should contains these props:
+
+  dataSource.driverClassName=org.postgresql.Driver
+  dataSource.url=jdbc:postgresql://localhost/gscatalog
+  dataSource.username=geosolutions
+  dataSource.password=gscatalog
+
+  entityManagerFactory.jpaVendorAdapter.databasePlatform=org.hibernate.dialect.PostgreSQLDialect
+  entityManagerFactory.jpaVendorAdapter.database=POSTGRESQL
 
 
-WARNING: Please note that at the moments the tests and the running configuration point to the same db; 
-it means that rebuilding or testing the module will trash your data.
-The tests also leave the db in an unconsistent state; please clean the db before running the webapp, so that 
+Please make sure not to run the junit tests on your production DB.
+The tests also leave the db in an unconsistent state; please clean the db before running the webapp, so that
 it will be properly initialized.
+
+
+################################################################################
+### Enabling statistics
+
+You may want to check if/how the 2nd level cache is working.
+You may run geoserver by
+   mvn -Dcom.sun.management.jmxremote jetty:run
+and then run JConsole.
+You'll find the hibernate cache info in tab MBeans, item hibernate/statistics/GeoServer-Hib Statistics
+
+
+
+

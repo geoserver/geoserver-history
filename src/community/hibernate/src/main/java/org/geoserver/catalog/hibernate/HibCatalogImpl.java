@@ -66,7 +66,6 @@ import org.geoserver.hibernate.dao.CatalogDAO;
 import org.geoserver.ows.util.ClassProperties;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
 import org.springframework.beans.BeansException;
@@ -88,11 +87,6 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
     /**
      *
      */
-    private SoftValueHashMap<String, ResourceInfo> resourceInfoCache = new SoftValueHashMap<String, ResourceInfo>();
-
-    /**
-     *
-     */
     private CatalogDAO catalogDAO;
 
     /**
@@ -110,8 +104,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
      * 
      * TODO: ETJ rework this: what do we need the key for in this map?
      */
-    private Map<HibCatalogImpl, CatalogEvent> events = Collections
-            .synchronizedMap(new MultiHashMap());
+    private Map<HibCatalogImpl, CatalogEvent> events = Collections.synchronizedMap(new MultiHashMap());
 
     /**
      * resources
@@ -125,7 +118,11 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         super();
         resourcePool = new ResourcePool(this);
 
-        listeners.add(new HibCatalogUpdater());
+        listeners.add(new HibCatalogUpdater());        
+    }
+
+    public String getId() {
+        return "catalog";
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -458,17 +455,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
             resolve(resource);
             return createProxy((T) resource, clazz);
         }
-        // ModificationProxy.create((T) resource, clazz );
 
-        // List l = lookup(clazz, resources);
-        // for (Iterator i = l.iterator(); i.hasNext();) {
-        // ResourceInfo resource = (ResourceInfo) i.next();
-        // if (id.equals(resource.getId())) {
-        // return ModificationProxy.create((T) resource, clazz );
-        // }
-        // }
-        //
-        // return null;
     }
 
     public <T extends ResourceInfo> T getResourceByName(String ns, String name, Class<T> clazz) {
@@ -1430,7 +1417,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         // this object is a proxy
         if (!Proxy.isProxyClass(object.getClass())) {
             LOGGER.severe("WORKAROUND: CatalogInfo object is a "
-                    + object.getClass().getSimpleName() + " -- Faking delta values");
+                    + object.getClass().getSimpleName() + " -- Faking delta values in fireModified()");
 
             // fire out what changed
             List propertyNames = new ArrayList();
@@ -1768,8 +1755,15 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
                 obj = ModificationProxy.unwrap(obj);
                 catalogDAO.update(obj);
             }
+
+            public void visit(Catalog catalog) {
+            }
         };
 
+    }
+
+    public void accept(CatalogVisitor visitor) {
+        visitor.visit(this);
     }
 
 }

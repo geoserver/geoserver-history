@@ -101,8 +101,9 @@ public class FilterType implements UserType {
         return Filter.class;
     }
 
+    private static final int[] SQLTYPES = new int[] { Types.VARCHAR};
     public int[] sqlTypes() {
-        return new int[] { Types.VARCHAR };
+        return SQLTYPES;
     }
 
 }

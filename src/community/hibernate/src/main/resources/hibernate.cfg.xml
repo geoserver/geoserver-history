@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
   <session-factory>
-        
+    
     <!-- pooling -->
     <property name="cp30.min_size">5</property>
     <property name="cp30.max_size">30</property>
@@ -19,14 +19,15 @@
     <!-- Enable Hibernate's automatic session context management -->
     <property name="hibernate.current_session_context_class">thread</property>
 
-    <!-- Enable Hibernate statistics generation -->
-    <property name="hibernate.generate_statistics">true</property>
+    <!-- Enable Hibernate statistics generation 
+    <property name="hibernate.generate_statistics">true</property>    
+    <property name="hibernate.cache.use_structured_entries">false</property>-->
 
     <!-- Cache Configurations -->
     <!-- Using net.sf.ehcache.hibernate.SingletonEhCacheProvider instead of
          net.sf.ehcache.hibernate.EhCacheProvider ensures the same instance
          of CacheManager is referred to by both Hibernate and our JMX Agent
-         simpleJpaHibernateApp.agents.jmxAgent. (Thanks to Greg Luck!)  -->
+         simpleJpaHibernateApp.agents.jmxAgent. (Thanks to Greg Luck!) 
     <property name="hibernate.cache.provider_class">net.sf.ehcache.hibernate.SingletonEhCacheProvider</property>
     <property name="hibernate.cache.provider_configuration">ehcache.xml</property>
     <property name="hibernate.cache.use_minimal_puts">false</property>
@@ -34,6 +35,6 @@
     <property name="hibernate.cache.use_second_level_cache">true</property>
     <property name="hibernate.cache.use_structured_entries">true</property>
 
-    <property name="hibernate.bytecode.use_reflection_optimizer">true</property>
+    <property name="hibernate.bytecode.use_reflection_optimizer">true</property> -->
   </session-factory>
 </hibernate-configuration>
