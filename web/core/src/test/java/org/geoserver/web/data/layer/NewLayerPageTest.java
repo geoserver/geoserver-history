@@ -69,7 +69,7 @@ public class NewLayerPageTest extends GeoServerWicketTestSupport {
         String[] names = ((DataStore) store.getDataStore(null)).getTypeNames();
         Arrays.sort(names);
         
-        tester.clickLink(TABLE_PATH + ":listContainer:items:1:itemProperties:0:component:link", true);
+        tester.clickLink(TABLE_PATH + ":listContainer:items:1:itemProperties:2:component:link", true);
         tester.assertRenderedPage(ResourceConfigurationPage.class);
         assertEquals(names[0], ((ResourceConfigurationPage) tester.getLastRenderedPage()).getResourceInfo().getName());
     }
