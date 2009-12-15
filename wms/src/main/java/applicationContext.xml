@@ -113,7 +113,7 @@
     <bean id="timeKvpParser" class="org.geoserver.ows.kvp.TimeKvpParser">
         <constructor-arg value="time"/>
     </bean>
- 	<bean id="elevationKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+ 	<bean id="elevationKvpParser" class="org.geoserver.ows.kvp.DoubleKvpParser">
 		<constructor-arg value="elevation"/>
  	</bean>
  	<bean id="validateSldKvpParser" class="org.geoserver.ows.kvp.BooleanKvpParser">
