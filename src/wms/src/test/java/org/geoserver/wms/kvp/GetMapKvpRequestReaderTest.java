@@ -132,7 +132,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(1, request.getBuffer());
 
         assertEquals(PaletteManager.safePalette, request.getPalette().getIcm());
-        assertEquals(Integer.valueOf(4), request.getElevation());
+        assertEquals(Double.valueOf(4), request.getElevation());
         
         Calendar cal = Calendar.getInstance();
         cal.set(2006, 1, 27, 22, 8, 12);
