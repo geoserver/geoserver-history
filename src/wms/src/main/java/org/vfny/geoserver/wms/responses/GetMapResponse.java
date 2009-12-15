@@ -46,7 +46,6 @@ import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.parameter.ParameterNotFoundException;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -396,14 +395,35 @@ public class GetMapResponse implements Response {
                         // } catch (ParameterNotFoundException p) {
                         // }
 
-                        try {
-                            ParameterValue elevation = reader.getFormat().getReadParameters().parameter("ELEVATION");
-                            if (elevation != null && request.getElevation() != null) {
-                                elevation.setValue(request.getElevation().intValue());
-                            }
-                        } catch (ParameterNotFoundException p) {
-                            //ignore?
-                        }
+                        /*
+                         * Test if the parameter "TIME" is present in the WMS
+                         * request, and by the way in the reading parameters. If
+                         * it is the case, one can adds it to the request. If an
+                         * exception is thrown, we have nothing to do.
+                         */
+                    	final double  elevationValue = request.getElevation();
+                    	final boolean hasElevation=!Double.isNaN(elevationValue);
+                    	if(hasElevation)
+	                        for(GeneralParameterDescriptor pd:parameterDescriptors){
+	                        	
+	                        	// ELEVATION
+	                        	if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
+	                        		final ParameterValue elevation=(ParameterValue) pd.createValue();
+	                        		if (elevation != null) {
+	                                    elevation.setValue(request.getElevation());
+	                                }
+	                        		
+	                        		// add to the list
+	                        		GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
+	                        		System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+	                        		readParametersClone[readParameters.length]=elevation;
+	                        		readParameters=readParametersClone;
+	                        		
+	                        		// leave 
+	                        		break;
+	                        	}
+	                        }                        
+
 
                         try {
 

@@ -10,6 +10,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -309,14 +310,14 @@ public class GetMapRequest extends WMSRequest {
     /**
      * @return The time request parameter.
      */
-    public List getTime() {
+    public List<Date> getTime() {
         return this.optionalParams.time;
     }
 
     /**
      * @return The elevation request parameter.
      */
-    public Integer getElevation() {
+    public double getElevation() {
         return this.optionalParams.elevation;
     }
 
@@ -593,14 +594,14 @@ public class GetMapRequest extends WMSRequest {
      * Sets the time request parameter.
      *
      */
-    public void setTime(List time) {
-        this.optionalParams.time = time;
+    public void setTime(List<Date> time) {
+        this.optionalParams.time = new ArrayList<Date>(time);
     }
 
     /**
      * Sets the elevation request parameter.
      */
-    public void setElevation(Integer elevation) {
+    public void setElevation(double elevation) {
         this.optionalParams.elevation = elevation;
     }
 
@@ -749,10 +750,10 @@ public class GetMapRequest extends WMSRequest {
 
         /** time elevation parameter, a list since many pattern setup can be possible, see
          *  for example http://mapserver.gis.umn.edu/docs/howto/wms_time_support/#time-patterns */
-        List time;
+        List<Date> time;
 
         /** time elevation parameter */
-        Integer elevation;
+        double elevation=Double.NaN;
 
         /**
          * SLD parameter
