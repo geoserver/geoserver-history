@@ -278,7 +278,7 @@ public class CRSPanel extends FormComponentPanel {
     /*
      * Panel for displaying the well known text for a CRS.
      */
-    static class WKTPanel extends Panel {
+    public static class WKTPanel extends Panel {
 
         public WKTPanel(String id, CoordinateReferenceSystem crs) {
             super(id);
