@@ -382,6 +382,8 @@ public class ResourcePool {
     
     public List<AttributeTypeInfo> getAttributes(FeatureTypeInfo info) throws IOException {
         //first check the feature type itself
+        //      workaround for GEOS-3294, upgrading from 2.0 data directory,
+        //      simply ignore any stored attributes
         if (info.getAttributes() != null && !info.getAttributes().isEmpty()) {
             return info.getAttributes();
         }
