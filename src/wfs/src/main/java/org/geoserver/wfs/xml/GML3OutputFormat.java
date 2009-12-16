@@ -175,7 +175,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
                 encoder.setSchemaLocation(namespaceURI, userSchemaLocation);
             } else {
                 String schemaLocation = buildURL(gft.getBaseUrl(), "wfs", params, URLType.SERVICE);
-                LOGGER.config("Unable to find user-defined schema location for: " + namespaceURI
+                LOGGER.finer("Unable to find user-defined schema location for: " + namespaceURI
                         + ". Using a built schema location by default: " + schemaLocation);
                 encoder.setSchemaLocation(namespaceURI, schemaLocation);
             }
