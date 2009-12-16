@@ -11,14 +11,14 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
-import org.geoserver.services.hibernate.beans.WCSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WFSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WMSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WatermarkInfoImplHb;
+import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;
+import org.geoserver.wfs.WFSInfoImpl;
+import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.WatermarkInfoImpl;
 
 /**
  * 
@@ -95,7 +95,7 @@ public class HibBootstrapper {
 
     private void createDefaultServices(GeoServerInfo geoserver) {
 
-        WFSInfoImplHb wfs = new WFSInfoImplHb();
+        WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId("wfs");
         wfs.setName("wfs");
         wfs.setTitle("Test WFS");
@@ -116,12 +116,12 @@ public class HibBootstrapper {
 
         this.serviceCatalog.add(wfs);
 
-        WMSInfoImplHb wms = new WMSInfoImplHb();
+        WMSInfoImpl wms = new WMSInfoImpl();
         wms.setName("wms");
         wms.setId("wms");
         wms.setTitle("Test WMS");
         wms.setEnabled(true);
-        WatermarkInfo wm = new WatermarkInfoImplHb();
+        WatermarkInfo wm = new WatermarkInfoImpl();
         wm.setEnabled(false);
         wm.setPosition(WatermarkInfo.Position.BOT_RIGHT);
         wms.setWatermark(wm);
@@ -129,7 +129,7 @@ public class HibBootstrapper {
 
         this.serviceCatalog.add(wms);
 
-        WCSInfoImplHb wcs = new WCSInfoImplHb();
+        WCSInfoImpl wcs = new WCSInfoImpl();
         wcs.setId("wcs");
         wcs.setName("wcs");
         wcs.setTitle("Test WCS");

@@ -45,6 +45,10 @@ public class HibernateCatalogTest extends HibTestSupport {
     private void clearCatalog() {
         // ensure no stores
 
+        for (MapInfo mapInfo : ModificationProxy.unwrap(catalog.getMaps())) {
+            catalog.remove(mapInfo);
+        }
+        
         for (LayerGroupInfo layergroup : ModificationProxy.unwrap(catalog.getLayerGroups())) {
             catalog.remove(layergroup);
         }
@@ -67,10 +71,6 @@ public class HibernateCatalogTest extends HibTestSupport {
 
         for (CoverageStoreInfo covStoreInfo : ModificationProxy.unwrap(catalog.getCoverageStores())) {
             catalog.remove(covStoreInfo);
-        }
-
-        for (MapInfo mapInfo : ModificationProxy.unwrap(catalog.getMaps())) {
-            catalog.remove(mapInfo);
         }
 
         assertTrue("LayerGroups in the DB, can't proceed.", catalog.getLayerGroups().isEmpty());

@@ -1,6 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
  */
 
 package org.geoserver.config.hibernate;
@@ -11,16 +9,11 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.hibernate.Hibernable;
 import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
-import org.geoserver.services.hibernate.beans.WCSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WFSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WMSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WatermarkInfoImplHb;
 import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSInfoImpl;
 import org.geoserver.wfs.WFSInfo.Version;
 import org.geoserver.wms.WMSInfoImpl;
-import org.geoserver.wms.WatermarkInfo;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -93,14 +86,14 @@ public class HibServiceTranslator {
     }
 
     private ServiceInfoImpl translateWCS(WCSInfoImpl wcs) {
-        WCSInfoImplHb ret = new WCSInfoImplHb();
+        WCSInfoImpl ret = new WCSInfoImpl();
         copySI(wcs, ret);
         ret.setGMLPrefixing(wcs.isGMLPrefixing());
         return ret;
     }
 
     private ServiceInfoImpl translateWFS(WFSInfoImpl wfs) {
-        WFSInfoImplHb ret = new WFSInfoImplHb();
+        WFSInfoImpl ret = new WFSInfoImpl();
         copySI(wfs, ret);
         ret.setFeatureBounding(wfs.isFeatureBounding());
         ret.setMaxFeatures(wfs.getMaxFeatures());
@@ -122,11 +115,11 @@ public class HibServiceTranslator {
     }
 
     private ServiceInfoImpl translateWMS(WMSInfoImpl wms) {
-        WMSInfoImplHb ret = new WMSInfoImplHb();
+        WMSInfoImpl ret = new WMSInfoImpl();
         copySI(wms, ret);
 
         ret.setMaxRequestMemory(wms.getMaxRequestMemory());
-        ret.setWatermark(translate(wms.getWatermark()));
+        ret.setWatermark(wms.getWatermark());
         ret.setInterpolation(wms.getInterpolation());
         for (String srs : wms.getSRS()) {
             ret.getSRS().add(srs);
@@ -138,18 +131,18 @@ public class HibServiceTranslator {
         return ret;
     }
 
-    private WatermarkInfoImplHb translate(WatermarkInfo watermark) {
-        if (watermark == null)
-            return null;
-
-        WatermarkInfoImplHb ret = new WatermarkInfoImplHb();
-        // ret.setId(watermark.get);
-        ret.setEnabled(watermark.isEnabled());
-        ret.setPosition(watermark.getPosition());
-        ret.setTransparency(watermark.getTransparency());
-        ret.setURL(watermark.getURL());
-
-        return ret;
-    }
+//    private WatermarkInfoImplHb translate(WatermarkInfo watermark) {
+//        if (watermark == null)
+//            return null;
+//
+//        WatermarkInfoImplHb ret = new WatermarkInfoImplHb();
+//        // ret.setId(watermark.get);
+//        ret.setEnabled(watermark.isEnabled());
+//        ret.setPosition(watermark.getPosition());
+//        ret.setTransparency(watermark.getTransparency());
+//        ret.setURL(watermark.getURL());
+//
+//        return ret;
+//    }
 
 }

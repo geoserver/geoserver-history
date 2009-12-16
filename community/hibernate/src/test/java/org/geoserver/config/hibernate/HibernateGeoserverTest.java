@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import java.util.Map;
 import java.util.logging.Logger;
 import org.geoserver.catalog.hibernate.HibCatalogImpl;
 import org.geoserver.config.LoggingInfo;
@@ -17,6 +18,11 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.hibernate.beans.GeoServerInfoImplHb;
 import org.geoserver.config.impl.ServiceInfoImpl;
+import org.geoserver.hibernate.HibBootstrapper;
+import org.geoserver.services.hibernate.beans.GMLInfoImplHb;
+import org.geoserver.wfs.GMLInfo;
+import org.geoserver.wfs.GMLInfo.SrsNameStyle;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.util.logging.Logging;
 
 public class HibernateGeoserverTest extends HibTestSupport {
@@ -202,6 +208,34 @@ public class HibernateGeoserverTest extends HibTestSupport {
         ServiceInfo s2 = geoServer.getServiceByName("testModifyService", ServiceInfo.class);
 
         assertEquals("changed", s2.getTitle());
+    }
+
+
+    public void testWFS() throws Exception {
+        removeServices();
+
+        HibBootstrapper bootstrapper = new HibBootstrapper(catalog, geoServer.getProxy());
+        bootstrapper.createDefaultNamespace();
+        bootstrapper.createDefaultWorkspace();
+        bootstrapper.createBaseObjects();
+
+        
+        // WS should already be loaded
+        WFSInfo wfs = (WFSInfo)geoServer.getService("wfs");
+        assertNotNull(wfs);
+
+        Map<WFSInfo.Version,GMLInfo> gml = wfs.getGML();
+//
+//
+//        gml.setSrsNameStyle(SrsNameStyle.NORMAL);
+//        wfs.getGML().put(WFSInfo.Version.V_10, gml);
+//
+//        // gml3
+//        gml = new GMLInfoImplHb();
+//        gml.setSrsNameStyle(SrsNameStyle.URN);
+//        wfs.getGML().put(WFSInfo.Version.V_11, gml);
+//        wfs.setGeoServer(serviceCatalog);
+
     }
 
     /**

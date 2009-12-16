@@ -40,3 +40,13 @@ For instance, a sample PostgreSQL setup would be:
 
 
 Be warned not to run the maven tests against your configured DB.
+
+================================================================================
+=== Enabling statistics
+ 
+You may want to check if/how the 2nd level cache is working.
+You may run geoserver by
+    mvn -Dcom.sun.management.jmxremote jetty:run
+ and then run JConsole.
+You'll find the hibernate cache info in tab MBeans, item hibernate/statistics/GeoServer-Hib Statistics
+ 

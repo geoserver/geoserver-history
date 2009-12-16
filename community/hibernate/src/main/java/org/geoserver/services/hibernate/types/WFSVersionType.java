@@ -1,3 +1,6 @@
+/*
+ */
+
 package org.geoserver.services.hibernate.types;
 
 import org.geoserver.hibernate.types.EnumUserType;
@@ -6,6 +9,7 @@ import org.geoserver.wfs.WFSInfo.Version;
 
 /**
  * Hibernate user type for {@link WFSInfo.Version}.
+ * @author ETj <etj at geo-solutions.it>
  */
 public class WFSVersionType extends EnumUserType<WFSInfo.Version> {
 

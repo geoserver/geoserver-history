@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:jee="http://www.springframework.org/schema/jee" 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-				http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-				http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
-				 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
 	<!-- property file config -->
 	<!-- The order is to look for a properties  -->
@@ -28,6 +29,11 @@
 	</bean>	
 	
    
+    <!--<aop:aspectj-autoproxy/>-->
+<!--
+    <context:load-time-weaver/>
+    <bean id="profiler" class="org.geoserver.hibernate.ProfilingAspect"/>
+-->
 
 	<!-- data source -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
@@ -51,7 +57,21 @@
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="update" />
                 <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
-                <entry key="hibernate.cache.provider_configuration_file_resource_path" value="ehcache.xml"/>
+                <entry key="hibernate.cache.provider_configuration_file_resource_path" value="/ehcache.xml"/>
+                
+                <!-- enable second level caching and query caching -->
+                <entry key="hibernate.cache.use_query_cache" value="true"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="true"/>
+                
+                <entry key="hibernate.generate_statistics" value="true"/>
+                <entry key="hibernate.session_factory_name" value="SessionFactory"/>
+                
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="true"/>
+                
+                <entry key="hibernate.show_sql" value="false"/>
+                <entry key="hibernate.use_sql_comments" value="true"/>
+                <entry key="hibernate.format_sql" value="true"/>
+                
                 <entry key="hibernate.ejb.interceptor" value="org.geoserver.catalog.hibernate.HibCatalogInterceptor"/>
             </map>
         </property>
@@ -75,6 +95,8 @@
     <!--to Spring's DataAccessException hierarchy).                         -->
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
 
+	<context:annotation-config/>
+	
 
     <!--                                                                -->
     <!--                                                                -->
@@ -92,7 +114,9 @@
 	<!-- DAOs -->
 
     <bean id="serviceDAO" class="org.geoserver.hibernate.dao.ServiceDAOImpl"/>
-    <bean id="catalogDAO" class="org.geoserver.hibernate.dao.CatalogDAOImpl"/>
+    <bean id="catalogDAO" class="org.geoserver.hibernate.dao.CatalogDAOImpl">
+        <property name="statsEnabled" value="true"/>
+    </bean>
 	<!-- catalog -->
     <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibCatalogImpl" lazy-init="false" primary="true">
         <property name="catalogDAO" ref="catalogDAO"/>
@@ -135,22 +159,30 @@
 	<bean id="xstreamPersisterFactoryHib" class="org.geoserver.hibernate.HibXStreamPersisterFactory"/>
 	<alias name="xstreamPersisterFactoryHib" alias="xstreamPersisterFactory" />
 
-<!-- jee:jndi-lookup id="server" jndi-name="java:comp/env/jmx/runtime" />
+    <!-- This class is the memory-stored configuration -->
+    <!--
+    <bean id="hibDataConfig"
+        class="org.geoserver.hibernate.HibDataConfig" lazy-init="false" primary="true">
+    </bean>
+    -->
 
-<jee:jndi-lookup id="hibernateSessionFactory" jndi-name="SessionFactory" />
+<!--
+    <jee:jndi-lookup id="server" jndi-name="java:comp/env/jmx/runtime" />
+    <jee:jndi-lookup id="hibernateSessionFactory" jndi-name="SessionFactory" />
 
-<bean id="hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
-   <property name="statisticsEnabled" value="true" />
-   <property name="sessionFactory" ref="hibernateSessionFactory"/>
-</bean>
+    <bean id="hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
+       <property name="statisticsEnabled" value="true" />
+       <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
 
-<bean class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
-   <property name="server" ref="server" />
-   <property name="beans">
-      <map>
-        <entry key="Hibernate:name=statistics" value-ref="hibernateStatistics"/>
-      </map>
-   </property>
-</bean-->
+    <bean class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+       <property name="server" ref="server" />
+       <property name="beans">
+          <map>
+            <entry key="Hibernate:name=statistics" value-ref="hibernateStatistics"/>
+          </map>
+       </property>
+    </bean>
+-->
 
 </beans>

@@ -47,9 +47,16 @@ public class NumberRangeType implements UserType {
             throws HibernateException, SQLException {
 
         double min = rs.getDouble(names[0]);
+        if(min==0 && rs.wasNull())
+            min = Double.NaN;
         double max = rs.getDouble(names[1]);
+        if(max==0 && rs.wasNull())
+            max = Double.NaN;
 
-        return NumberRange.create(min, max);
+        if(Double.isNaN(min) && Double.isNaN(max))
+            return null;
+        else
+            return NumberRange.create(min, max);
     }
 
     public void nullSafeSet(PreparedStatement st, Object value, int index)
@@ -75,8 +82,9 @@ public class NumberRangeType implements UserType {
         return NumberRange.class;
     }
 
+    private static final int[] SQLTYPES = new int[] { Types.DOUBLE, Types.DOUBLE };
     public int[] sqlTypes() {
-        return new int[] { Types.DOUBLE, Types.DOUBLE };
+        return SQLTYPES;
     }
 
 }

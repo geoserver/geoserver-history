@@ -60,10 +60,12 @@ public class HibTestSupport extends AbstractTransactionalSpringContextTests {
                         if (sqle instanceof PSQLException) {
                             PSQLException psqle = (PSQLException) sqle;
                             LOGGER.warning("Server msg: " + psqle.getServerErrorMessage());
-                            LOGGER.warning("Server iqry: "
-                                    + psqle.getServerErrorMessage().getInternalQuery());
-                            LOGGER.warning("Server hint: "
-                                    + psqle.getServerErrorMessage().getHint());
+                            if(psqle.getServerErrorMessage() != null) {
+                                LOGGER.warning("Server iqry: " 
+                                        + psqle.getServerErrorMessage().getInternalQuery());
+                                LOGGER.warning("Server hint: "
+                                        + psqle.getServerErrorMessage().getHint());
+                            }
                         }
 
                         StringWriter sw = new StringWriter();

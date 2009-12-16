@@ -9,6 +9,9 @@ import java.util.logging.Logger;
 
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.impl.*;
 
 import org.geoserver.catalog.impl.LayerGroupInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
@@ -89,12 +92,16 @@ public class LayerGroupInfoImplHb extends LayerGroupInfoImpl implements Hibernab
         StringBuilder sb = new StringBuilder(getClass().getSimpleName())
                 .append("[id:").append(getId())
                 .append(" name:").append(getName())
-                .append(" gl:").append(groupedLayers.size())
-                .append(" arr:").append(layers.size())
+                .append(" gl:").append(groupedLayers==null?-1:groupedLayers.size())
+                .append(" arr:").append(layers==null?-1:layers.size())
                 .append(" {");
-        for (GroupedLayerHb groupedLayerHb : groupedLayers) {
-            sb.append(groupedLayerHb.getId()).append(' ');
+
+        if(groupedLayers != null) {
+            for (GroupedLayerHb groupedLayerHb : groupedLayers) {
+                sb.append(groupedLayerHb.getId()).append(' ');
+            }
         }
+
         sb.append("}]");
 
         return sb.toString();
