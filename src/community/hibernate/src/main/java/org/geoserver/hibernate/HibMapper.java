@@ -40,12 +40,12 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.hibernate.beans.ContactInfoImplHb;
 import org.geoserver.config.hibernate.beans.LoggingInfoImplHb;
 import org.geoserver.config.impl.ServiceInfoImpl;
-import org.geoserver.services.hibernate.beans.WCSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WFSInfoImplHb;
-import org.geoserver.services.hibernate.beans.WMSInfoImplHb;
 import org.geoserver.wcs.WCSInfo;
+import org.geoserver.wcs.WCSInfoImpl;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.WFSInfoImpl;
 import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSInfoImpl;
 
 /**
  * 
@@ -99,11 +99,11 @@ public class HibMapper {
         // SERVICE STUFF
 
         else if (WMSInfo.class.isAssignableFrom(clazz))
-            return WMSInfoImplHb.class;
+            return WMSInfoImpl.class;
         else if (WCSInfo.class.isAssignableFrom(clazz))
-            return WCSInfoImplHb.class;
+            return WCSInfoImpl.class;
         else if (WFSInfo.class.isAssignableFrom(clazz))
-            return WFSInfoImplHb.class;
+            return WFSInfoImpl.class;
         else if (ServiceInfo.class.isAssignableFrom(clazz)) // mind the order!
             return ServiceInfoImpl.class; // this is not declared as hibernable :(
 
