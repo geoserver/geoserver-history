@@ -72,7 +72,9 @@ import org.opengis.filter.FilterFactory2;
 import org.opengis.filter.Or;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -340,14 +342,14 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     final CoverageInfo cinfo = requestedLayers[i].getCoverage();
                     final AbstractGridCoverage2DReader reader=(AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(new NullProgressListener(),GeoTools.getDefaultHints());
                     final ParameterValueGroup params = reader.getFormat().getReadParameters();
-                    final GeneralParameterValue[] parameters = CoverageUtils.getParameters(params, requestedLayers[i].getCoverage().getParameters(),true);
+                    GeneralParameterValue[] parameters = CoverageUtils.getParameters(params, requestedLayers[i].getCoverage().getParameters(),true);
                     //get the original grid geometry
                     final GridGeometry2D coverageGeometry=(GridGeometry2D) cinfo.getGrid();
                     // set the requested position in model space for this request
                     final Coordinate middle = pixelToWorld(x, y, bbox, width, height);
                     DirectPosition position = new DirectPosition2D(requestedCRS, middle.x, middle.y);
                 	
-                	//change from request crs to coverage crs in order to compute a minimal request area, 
+                    //change from request crs to coverage crs in order to compute a minimal request area, 
                     // TODO this code need to be made much more robust
                     if (requestedCRS != null) {
                         
@@ -401,6 +403,88 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     	}
                     	
                     }
+                    
+                    // get the group of parameters tha this reader supports
+                    final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
+                    
+                    //
+                    // Setting coverage reading params.
+                    //
+
+                    /*
+                     * Test if the parameter "TIME" is present in the WMS
+                     * request, and by the way in the reading parameters. If
+                     * it is the case, one can adds it to the request. If an
+                     * exception is thrown, we have nothing to do.
+                     */
+                    final List dateTime = getMapReq.getTime();
+                    final boolean hasTime=dateTime!=null&&dateTime.size()>0;
+                    final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
+                    if(hasTime)
+                        for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                            // TIME
+                            if(pd.getName().getCode().equalsIgnoreCase("TIME")){
+                                final ParameterValue time=(ParameterValue) pd.createValue();
+                                if (time != null) {
+                                    time.setValue(getMapReq.getTime());
+                                }
+
+                                // add to the list
+                                GeneralParameterValue[] readParametersClone= new GeneralParameterValue[parameters.length+1];
+                                System.arraycopy(parameters, 0,readParametersClone , 0, parameters.length);
+                                readParametersClone[parameters.length]=time;
+                                parameters=readParametersClone;
+
+                                // leave 
+                                break;
+                            }
+                        }
+                    
+                        
+
+                    // uncomment when the DIM_RANGE vendor parameter will be
+                    // enabled
+                    // try {
+                    // ParameterValue dimRange =
+                    // reader.getFormat().getReadParameters()
+                    // .parameter("DIM_RANGE");
+                    // if (dimRange != null && request.getDimRange() !=
+                    // null) {
+                    // dimRange.setValue(request.getDimRange());
+                    // }
+                    // } catch (ParameterNotFoundException p) {
+                    // }
+
+                    /*
+                     * Test if the parameter "TIME" is present in the WMS
+                     * request, and by the way in the reading parameters. If
+                     * it is the case, one can adds it to the request. If an
+                     * exception is thrown, we have nothing to do.
+                     */
+                    final double  elevationValue = getMapReq.getElevation();
+                    final boolean hasElevation=!Double.isNaN(elevationValue);
+                    if(hasElevation)
+                        for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                            // ELEVATION
+                            if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
+                                final ParameterValue elevation=(ParameterValue) pd.createValue();
+                                if (elevation != null) {
+                                    elevation.setValue(getMapReq.getElevation());
+                                }
+
+                                // add to the list
+                                GeneralParameterValue[] readParametersClone= new GeneralParameterValue[parameters.length+1];
+                                System.arraycopy(parameters, 0,readParametersClone , 0, parameters.length);
+                                readParametersClone[parameters.length]=elevation;
+                                parameters=readParametersClone;
+
+                                // leave 
+                                break;
+                            }
+                        }
+                    
                     final GridCoverage2D coverage=(GridCoverage2D) reader.read(parameters);
                     if(coverage==null)
                     {
