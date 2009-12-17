@@ -5,23 +5,22 @@
 package org.geoserver.wcs;
 
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
-import it.geosolutions.imageio.stream.output.FileImageOutputStreamExtImpl;
 
 import java.awt.Rectangle;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
 import javax.media.jai.Interpolation;
 
 import net.opengis.gml.GridType;
+import net.opengis.gml.impl.TimePositionTypeImpl;
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.DescribeCoverageType;
 import net.opengis.wcs10.DomainSubsetType;
@@ -31,6 +30,7 @@ import net.opengis.wcs10.InterpolationMethodType;
 import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.OutputType;
 import net.opengis.wcs10.RangeSubsetType;
+import net.opengis.wcs10.TimePeriodType;
 import net.opengis.wcs10.TypedLiteralType;
 
 import org.geoserver.catalog.Catalog;
@@ -40,6 +40,7 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.response.Wcs10CapsTransformer;
 import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
+import org.geotools.coverage.grid.GeneralGridGeometry;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
@@ -48,10 +49,15 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.geometry.Envelope;
+import org.opengis.parameter.GeneralParameterDescriptor;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.GeographicCRS;
@@ -153,9 +159,12 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         List<GridCoverage> coverageResults = new ArrayList<GridCoverage>();
         try {
 
-        	// acquire coverage info
+            // acquire coverage info
             meta = catalog.getCoverageByName(request.getSourceCoverage());
 
+            if (meta == null)
+                throw new WcsException("Cannot find sourceCoverage on the catalog!");
+            
             // first let's run some sanity checks on the inputs
             checkDomainSubset(meta, request.getDomainSubset());
             checkRangeSubset(meta, request.getRangeSubset());
@@ -203,24 +212,122 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 //
                 // Raster destination size
                 //
+                double[] elevations = new double[] {Double.NaN, Double.NaN};
                 Rectangle destinationSize = null;
                 if (requestedCRS != null
                         && request.getDomainSubset().getSpatialSubset().getGrid().size() > 0) {
                     final GridType grid = (GridType) request.getDomainSubset().getSpatialSubset().getGrid().get(0);
                     
-                    int[] lowers = new int[] { (int) grid.getLimits().getMinX(),(int) grid.getLimits().getMinY() };
-                    int[] highers = new int[] { (int) grid.getLimits().getMaxX(),(int) grid.getLimits().getMaxY() };
+                    int[] lowers = new int[] { (int) grid.getLimits().getMinimum(0),(int) grid.getLimits().getMinimum(1) };
+                    int[] highers = new int[] { (int) grid.getLimits().getMaximum(0),(int) grid.getLimits().getMaximum(1) };
                     destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
+                    
+                    if (grid.getAxisName().contains("elevation") && grid.getDimension().intValue() > 2) {
+                        elevations = new double[] {grid.getLimits().getMinimum(2), grid.getLimits().getMaximum(2)};
+                    }
                 }
 
             
-                final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
+                //final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
+                // get the group of parameters tha this reader supports
+                final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
+                GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, meta.getParameters());
+                                        readParameters = (readParameters != null ? readParameters : new GeneralParameterValue[0]);
+                
+                //
+                // Setting coverage reading params.
+                //
+                
                 final GridGeometry2D requestedGridGeometry = new GridGeometry2D(
                 		new GridEnvelope2D(destinationSize),
                 		requestedEnvelope
                 );
-                parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),requestedGridGeometry);
-                coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
+                final ParameterValue requestedGridGeometryParam = new DefaultParameterDescriptor(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
+
+                // add to the list
+                GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
+                System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+                readParametersClone[readParameters.length]=requestedGridGeometryParam;
+                readParameters=readParametersClone;
+
+                /*
+                 * Test if the parameter "TIME" is present in the WMS
+                 * request, and by the way in the reading parameters. If
+                 * it is the case, one can adds it to the request. If an
+                 * exception is thrown, we have nothing to do.
+                 */
+                final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
+                if(request.getDomainSubset().getTemporalSubset() != null)
+                    for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                        // TIME
+                        if(pd.getName().getCode().equalsIgnoreCase("TIME")){
+                            final ParameterValue time=(ParameterValue) pd.createValue();
+                            final List<Date> timeValues = new LinkedList<Date>();
+                            
+                            if (request.getDomainSubset().getTemporalSubset().getTimePosition() != null 
+                                    && request.getDomainSubset().getTemporalSubset().getTimePosition().size() > 0) {
+                                for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePosition().iterator(); it.hasNext(); ) {
+                                    TimePositionTypeImpl tp = (TimePositionTypeImpl) it.next();
+                                    timeValues.add((Date) tp.getValue());
+                                }
+                                if (time != null) {
+                                    time.setValue(timeValues);
+                                }
+                            } else if (request.getDomainSubset().getTemporalSubset().getTimePeriod() != null 
+                                    && request.getDomainSubset().getTemporalSubset().getTimePeriod().size() > 0) {
+                                for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePeriod().iterator(); it.hasNext(); ) {
+                                    TimePeriodType tp = (TimePeriodType) it.next();
+                                    Date beginning = (Date)tp.getBeginPosition().getValue();
+                                    Date ending = (Date)tp.getEndPosition().getValue();
+                                    
+                                    timeValues.add(beginning);
+                                    timeValues.add(ending);
+                                }
+                                if (time != null) {
+                                    time.setValue(timeValues);
+                                }
+                            }
+
+                            // add to the list
+                            readParametersClone= new GeneralParameterValue[readParameters.length+1];
+                            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+                            readParametersClone[readParameters.length]=time;
+                            readParameters=readParametersClone;
+
+                            // leave 
+                            break;
+                        }
+                    }
+                
+                //
+                // ELEVATION
+                //
+                if(!Double.isNaN(elevations[0]))
+                    for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                        // ELEVATION
+                        if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
+                            final ParameterValue elevation=(ParameterValue) pd.createValue();
+                            if (elevation != null) {
+                                elevation.setValue(elevations[0]);
+                            }
+
+                            // add to the list
+                            readParametersClone= new GeneralParameterValue[readParameters.length+1];
+                            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+                            readParametersClone[readParameters.length]=elevation;
+                            readParameters=readParametersClone;
+
+                            // leave 
+                            break;
+                        }
+                    }
+                
+                //
+                // perform read
+                //
+                coverage = (GridCoverage2D) reader.read(readParameters);
                 if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                     throw new IOException("The requested coverage could not be found.");
                 }
@@ -505,7 +612,8 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             if (interpolation.startsWith("nearest")) {
                 interpolation = "nearest neighbor";
             }
-            if(info.getDefaultInterpolationMethod().equalsIgnoreCase(interpolation)){
+            if(interpolation.equals("nearest neighbor") || 
+                    (info.getDefaultInterpolationMethod() != null && info.getDefaultInterpolationMethod().equalsIgnoreCase(interpolation))){
             	interpolationSupported=true;
             }
             for (String method : info.getInterpolationMethods()) {
@@ -644,8 +752,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         int[] bands = null;
         if (axisSubset.getSingleValue().size() > 0) {
             bands = new int[1];
-            bands[0] = Integer.parseInt(((TypedLiteralType) axisSubset.getSingleValue().get(0))
-                    .getValue());
+            bands[0] = Integer.parseInt(((TypedLiteralType) axisSubset.getSingleValue().get(0)).getValue());
         } else if (axisSubset.getInterval().size() > 0) {
             IntervalType interval = (IntervalType) axisSubset.getInterval().get(0);
             int min = Integer.parseInt(interval.getMin().getValue());

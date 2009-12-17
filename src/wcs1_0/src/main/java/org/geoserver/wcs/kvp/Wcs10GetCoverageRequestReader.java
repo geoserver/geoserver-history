@@ -7,7 +7,7 @@ package org.geoserver.wcs.kvp;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.MissingParameterValue;
 
-import java.text.SimpleDateFormat;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,8 +41,6 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
@@ -124,10 +122,9 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             timeSequence = (TimeSequenceType) time;
         } else if (time != null && time instanceof List) {
             timeSequence = Wcs10Factory.eINSTANCE.createTimeSequenceType();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             for (Date tPos : (List<Date>) time) {
                 TimePositionType timePosition = Gml4wcsFactory.eINSTANCE.createTimePositionType();
-                timePosition.setValue(sdf.format(tPos));
+                timePosition.setValue(tPos);
                 timeSequence.getTimePosition().add(timePosition);
             }
         }
@@ -143,19 +140,41 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             double height = kvp.get("height") instanceof Integer ? ((Integer) kvp.get("height"))
                     .doubleValue() : Double.parseDouble((String) kvp.get("height"));
 
-            grid.setLimits(new Envelope(0.0, width, 0.0, height));
+            grid.getAxisName().add("lon");
+            grid.getAxisName().add("lat");
+
+            if (kvp.get("depth") != null) {
+                grid.getAxisName().add("elevation");
+
+                double depth = kvp.get("depth") instanceof Integer ? ((Integer) kvp.get("depth"))
+                        .doubleValue() : Double.parseDouble((String) kvp.get("depth"));
+                grid.setDimension(BigInteger.valueOf(3));
+                grid.setLimits(new GeneralEnvelope(new double[]{0.0, 0.0, depth}, new double[]{width, height, depth}));
+            } else {
+                grid.setDimension(BigInteger.valueOf(2));
+                grid.setLimits(new GeneralEnvelope(new double[]{0.0, 0.0}, new double[]{width, height}));
+            }
         } else if (kvp.get("resx") != null && kvp.get("resy") != null) {
             double resX = Double.parseDouble((String) kvp.get("resx"));
             double resY = Double.parseDouble((String) kvp.get("resy"));
 
-            int width = (int) Math.round((envelope.getUpperCorner().getOrdinate(0) - envelope
-                    .getLowerCorner().getOrdinate(0))
-                    / resX);
-            int height = (int) Math.round((envelope.getUpperCorner().getOrdinate(1) - envelope
-                    .getLowerCorner().getOrdinate(1))
-                    / resY);
+            int width = (int) Math.round((envelope.getUpperCorner().getOrdinate(0) - envelope.getLowerCorner().getOrdinate(0)) / resX);
+            int height = (int) Math.round((envelope.getUpperCorner().getOrdinate(1) - envelope.getLowerCorner().getOrdinate(1)) / resY);
 
-            grid.setLimits(new Envelope(0.0, width, 0.0, height));
+            grid.getAxisName().add("lon");
+            grid.getAxisName().add("lat");
+
+            if (kvp.get("resz") != null) {
+                grid.getAxisName().add("elevation");
+                
+                double resZ = Double.parseDouble((String) kvp.get("resz"));
+                double depth = (envelope.getUpperCorner().getOrdinate(2) - envelope.getLowerCorner().getOrdinate(2)) / resZ;
+                grid.setDimension(BigInteger.valueOf(3));
+                grid.setLimits(new GeneralEnvelope(new double[]{0.0, 0.0, depth}, new double[]{width, height, depth}));
+            } else {
+                grid.setDimension(BigInteger.valueOf(2));
+                grid.setLimits(new GeneralEnvelope(new double[]{0.0, 0.0}, new double[]{width, height}));
+            }
         } else
             throw new WcsException("Could not recognize grid resolution", InvalidParameterValue, "");
 

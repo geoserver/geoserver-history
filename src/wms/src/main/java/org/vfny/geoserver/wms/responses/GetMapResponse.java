@@ -360,25 +360,25 @@ public class GetMapResponse implements Response {
                     	final boolean hasTime=dateTime!=null&&dateTime.size()>0;
                         final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
                         if(hasTime)
-	                        for(GeneralParameterDescriptor pd:parameterDescriptors){
-	                        	
-	                        	// TIME
-	                        	if(pd.getName().getCode().equalsIgnoreCase("TIME")){
-	                        		final ParameterValue time=(ParameterValue) pd.createValue();
-	                        		if (time != null) {
-	                                    time.setValue(request.getTime());
-	                                }
-	                        		
-	                        		// add to the list
-	                        		GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
-	                        		System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-	                        		readParametersClone[readParameters.length]=time;
-	                        		readParameters=readParametersClone;
-	                        		
-	                        		// leave 
-	                        		break;
-	                        	}
-	                        }
+                            for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                                // TIME
+                                if(pd.getName().getCode().equalsIgnoreCase("TIME")){
+                                    final ParameterValue time=(ParameterValue) pd.createValue();
+                                    if (time != null) {
+                                        time.setValue(request.getTime());
+                                    }
+
+                                    // add to the list
+                                    GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
+                                    System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+                                    readParametersClone[readParameters.length]=time;
+                                    readParameters=readParametersClone;
+
+                                    // leave 
+                                    break;
+                                }
+                            }
                         
                             
 
@@ -404,25 +404,25 @@ public class GetMapResponse implements Response {
                     	final double  elevationValue = request.getElevation();
                     	final boolean hasElevation=!Double.isNaN(elevationValue);
                     	if(hasElevation)
-	                        for(GeneralParameterDescriptor pd:parameterDescriptors){
-	                        	
-	                        	// ELEVATION
-	                        	if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
-	                        		final ParameterValue elevation=(ParameterValue) pd.createValue();
-	                        		if (elevation != null) {
-	                                    elevation.setValue(request.getElevation());
-	                                }
-	                        		
-	                        		// add to the list
-	                        		GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
-	                        		System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-	                        		readParametersClone[readParameters.length]=elevation;
-	                        		readParameters=readParametersClone;
-	                        		
-	                        		// leave 
-	                        		break;
-	                        	}
-	                        }                        
+                    	    for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                    	        // ELEVATION
+                    	        if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
+                    	            final ParameterValue elevation=(ParameterValue) pd.createValue();
+                    	            if (elevation != null) {
+                    	                elevation.setValue(request.getElevation());
+                    	            }
+
+                    	            // add to the list
+                    	            GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
+                    	            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+                    	            readParametersClone[readParameters.length]=elevation;
+                    	            readParameters=readParametersClone;
+
+                    	            // leave 
+                    	            break;
+                    	        }
+                    	    }
 
 
                         try {
