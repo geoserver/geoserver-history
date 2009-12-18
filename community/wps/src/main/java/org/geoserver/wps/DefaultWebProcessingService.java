@@ -5,6 +5,8 @@
 
 package org.geoserver.wps;
 
+import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +19,7 @@ import net.opengis.wps10.WPSCapabilitiesType;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
+import org.geotools.util.logging.Logging;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -27,6 +30,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class DefaultWebProcessingService implements WebProcessingService, ApplicationContextAware {
+	private static final Logger LOGGER = Logging.getLogger(DefaultWebProcessingService.class);
     protected WPSInfo  wps;
     protected GeoServerInfo gs;
     protected ApplicationContext context;
@@ -34,6 +38,13 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
     public DefaultWebProcessingService(GeoServer gs) {
         this.wps = gs.getService( WPSInfo.class );
         this.gs = gs.getGlobal();
+    }
+    
+    /**
+     * @see WebMapService#getServiceInfo()
+     */
+    public WPSInfo getServiceInfo() {
+        return wps;
     }
 
     /**
@@ -55,7 +66,7 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
      * @see org.geoserver.wps.WebProcessingService#execute
      */
     public ExecuteResponseType execute(ExecuteType request) throws WPSException {
-        return new Execute(wps,gs,context).run(request);
+    	return new Execute(wps,gs,context).run(request);
     }
 
     /**
