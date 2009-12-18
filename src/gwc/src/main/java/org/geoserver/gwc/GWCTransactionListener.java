@@ -8,6 +8,7 @@
 package org.geoserver.gwc;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
@@ -15,8 +16,11 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
+import org.geotools.util.logging.Logging;
 
 public class GWCTransactionListener implements TransactionListener {
+    private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCTransactionListener");
+    
     final private Catalog cat;
     
     final private GWCCleanser cleanser;
@@ -27,10 +31,17 @@ public class GWCTransactionListener implements TransactionListener {
     }
     
  // TODO limit to subset
-    public void dataStoreChange(TransactionEvent event) throws WFSException {        
-        String prefix = cat.getNamespaceByURI(event.getLayerName().getNamespaceURI()).getPrefix();
+    public void dataStoreChange(TransactionEvent event) throws WFSException {
+        String prefix = null;
+        String layerName = null;
         
-        String layerName = prefix +":"+ event.getLayerName().getLocalPart();
+        try {
+            prefix = cat.getNamespaceByURI(event.getLayerName().getNamespaceURI()).getPrefix();
+            layerName = prefix +":"+ event.getLayerName().getLocalPart();
+        } catch(NullPointerException npe) {
+            log.fine("Null pointer while trying to determine feature prefix. Cache not truncated.");
+            return;
+        }
         
         // The layer itself
         cleanser.deleteLayer(layerName);
