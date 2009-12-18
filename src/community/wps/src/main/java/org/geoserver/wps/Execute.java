@@ -12,8 +12,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import net.opengis.ows11.CodeType;
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
 import net.opengis.wps10.ComplexDataType;
 import net.opengis.wps10.DataType;
 import net.opengis.wps10.DocumentOutputDefinitionType;
@@ -27,28 +30,27 @@ import net.opengis.wps10.OutputDataType;
 import net.opengis.wps10.OutputDefinitionsType;
 import net.opengis.wps10.OutputReferenceType;
 import net.opengis.wps10.ProcessBriefType;
-import net.opengis.wps10.ProcessFailedType;
 import net.opengis.wps10.ProcessOutputsType1;
 import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geoserver.wps.ppio.ReferencePPIO;
 import org.geoserver.wps.ppio.XMLPPIO;
 import org.geotools.data.Parameter;
-import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.util.Converters;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.EMFUtils;
+import org.geotools.xml.Encoder;
 import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
@@ -116,11 +118,16 @@ public class Execute {
                 MethodType meth = ref.getMethod() != null ? ref.getMethod() : MethodType.GET_LITERAL; 
                 
                 //handle get vs post
-                if ( meth == MethodType.POST_LITERAL ) {
-                    //post, handle the body
+                if (href.startsWith("http://geoserver/wfs")) {
+                	// Process with local WFS
+                	WebFeatureService wfs = (WebFeatureService)context.getBean("wfsServiceTarget");
+                	FeatureCollectionType featureCollectionType = wfs.getFeature((GetFeatureType)ref.getBody());
+                	decoded = featureCollectionType.getFeature().get(0);
+                } else if ( meth == MethodType.POST_LITERAL ) {
+                    //TODO post
                 }
                 else {
-                    //get, parse kvp
+                    //TODO get, parse kvp
                 }
             }
             else {
@@ -150,14 +157,15 @@ public class Execute {
         
         //execute the process
         Map<String,Object> result = null;
-        Throwable error = null;
         try {
             Process p = pf.create(processName);
             result = p.execute( inputs, null );    
         }
+        catch ( WPSException e) {
+            throw e;
+        }
         catch( Throwable t ) {
-            //save the error to report back
-            error = t;
+        	throw new WPSException("InternalError: " + t, t);
         }
         
         //build the response
@@ -177,16 +185,7 @@ public class Execute {
         //status
         response.setStatus( f.createStatusType() );
         response.getStatus().setCreationTime( Converters.convert( started, XMLGregorianCalendar.class ));
-        
-        if ( error != null ) {
-            ProcessFailedType failure = f.createProcessFailedType();
-            response.getStatus().setProcessFailed( failure );
-            
-            failure.setExceptionReport( Ows11Util.exceptionReport( new ServiceException( error ), wps.getGeoServer().getGlobal().isVerboseExceptions()) );
-        }
-        else {
-            response.getStatus().setProcessSucceeded( "Process succeeded.");
-        }
+        response.getStatus().setProcessSucceeded( "Process succeeded.");
       
         //inputs
         response.setDataInputs( f.createDataInputsType1() );

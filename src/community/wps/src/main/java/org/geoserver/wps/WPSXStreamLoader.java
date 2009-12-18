@@ -19,8 +19,8 @@ import org.geotools.util.Version;
  * @author Lucas Reed, Refractions Research Inc
  * @author Justin Deoliveira, The Open Planning Project
  */
-public class WPSLoader extends XStreamServiceLoader<WPSInfo> {
-    public WPSLoader(GeoServerResourceLoader resourceLoader) {
+public class WPSXStreamLoader extends XStreamServiceLoader<WPSInfo> {
+    public WPSXStreamLoader(GeoServerResourceLoader resourceLoader) {
         super(resourceLoader, "wps");
     }
 
@@ -42,7 +42,7 @@ public class WPSLoader extends XStreamServiceLoader<WPSInfo> {
     
     @Override
     protected void initXStreamPersister(XStreamPersister xp, GeoServer gs) {
-        xp.getXStream().alias( "wcs", WPSInfo.class, WPSInfoImpl.class );
+        xp.getXStream().alias( "wps", WPSInfo.class, WPSInfoImpl.class );
     }
     
     @Override
@@ -53,6 +53,7 @@ public class WPSLoader extends XStreamServiceLoader<WPSInfo> {
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.0.0") );
         }
+        System.out.println("Init keywords:"+service.getKeywords());
         return service;
     }
 }

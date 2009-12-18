@@ -6,6 +6,7 @@ package org.geoserver.wps.sextante;
 
 import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.*;
 
+import java.awt.RenderingHints.Key;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -286,4 +287,12 @@ public class SextanteProcessFactory implements ProcessFactory {
     public String toString() {
         return "SextanteFactory";
     }
+
+	public boolean isAvailable() {
+		return true;
+	}
+
+	public Map<Key, ?> getImplementationHints() {
+		return Collections.EMPTY_MAP;
+	}
 }
