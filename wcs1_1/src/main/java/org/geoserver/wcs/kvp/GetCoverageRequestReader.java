@@ -54,7 +54,7 @@ public class GetCoverageRequestReader extends EMFKvpRequestReader {
 
         // either bbox or timesequence must be there
         BoundingBoxType bbox = (BoundingBoxType) kvp.get("BoundingBox");
-        TimeSequenceType timeSequence = (TimeSequenceType) kvp.get("TemporalSubset");
+        TimeSequenceType timeSequence = (TimeSequenceType) kvp.get("TimeSequence");
         if (timeSequence == null && bbox == null)
             throw new WcsException(
                     "Bounding box cannot be null, TimeSequence has not been specified",

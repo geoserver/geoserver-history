@@ -5,7 +5,6 @@
 package org.geoserver.wcs.xml.v1_1_1;
 
 import java.io.Reader;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.namespace.QName;

@@ -1,10 +1,14 @@
 package org.geoserver.wcs.kvp;
 
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.opengis.wcs11.TimeSequenceType;
+import net.opengis.wcs11.Wcs111Factory;
 
 import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.kvp.TimeKvpParser;
 import org.geotools.util.logging.Logging;
 
 public class TimeSequenceKvpParser extends KvpParser {
@@ -17,8 +21,15 @@ public class TimeSequenceKvpParser extends KvpParser {
 
     @Override
     public Object parse(String value) throws Exception {
-        LOGGER.warning("TimeSequence is not supported in GeoServer WCS 1.1 implementation so far");
-        return null;
+        TimeSequenceType timeSequence = Wcs111Factory.eINSTANCE.createTimeSequenceType();
+        TimeKvpParser parser = new TimeKvpParser("WCS1_1");
+        
+        List<Date> timePositions = (List<Date>)parser.parse(value);
+        for (Date tp : timePositions) {
+            timeSequence.getTimePosition().add(tp);
+        }
+        
+        return timeSequence;
     }
 
 }
