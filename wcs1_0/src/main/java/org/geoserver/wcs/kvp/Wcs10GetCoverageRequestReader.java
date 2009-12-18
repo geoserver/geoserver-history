@@ -41,17 +41,19 @@ import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.VerticalCRS;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
+
 /**
  * GetCoverage request reader for WCS 1.0.0
  * 
  * @author Simone Giannecchini, GeoSolutions SAS
- *
+ * 
  */
 public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
@@ -69,7 +71,8 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         // grab coverage info to perform further checks
         if (getCoverage.getSourceCoverage() == null) {
             if (kvp.get("coverage") == null)
-                throw new WcsException("source coverage parameter is mandatory",MissingParameterValue, "source coverage");
+                throw new WcsException("source coverage parameter is mandatory",
+                        MissingParameterValue, "source coverage");
             else
                 getCoverage.setSourceCoverage((String) ((List) kvp.get("coverage")).get(0));
         }
@@ -124,32 +127,28 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             throw new WcsException("crs parameter is mandatory", MissingParameterValue, "crs");
         crs = decodeCRS100(crsName, crs);
         final VerticalCRS verticalCRS = CRS.getVerticalCRS(crs);
-        final boolean hasVerticalCRS=verticalCRS!=null;
-
+        final boolean hasVerticalCRS = verticalCRS != null;
 
         //
         // at least one between BBOX and TIME must be there
         //
-        final GeneralEnvelope bbox =  (GeneralEnvelope) kvp.get("BBOX");
+        final GeneralEnvelope bbox = (GeneralEnvelope) kvp.get("BBOX");
         if (bbox == null)
             throw new WcsException("bbox parameter is mandatory", MissingParameterValue, "bbox");
-        final GeneralEnvelope envelope = new GeneralEnvelope(crs);
-        if(!hasVerticalCRS)
-        	envelope.setEnvelope(
-        			bbox.getLowerCorner().getOrdinate(0),
-        			bbox.getLowerCorner().getOrdinate(1), 
-        			bbox.getUpperCorner().getOrdinate(0), 
-        			bbox.getUpperCorner().getOrdinate(1)
-        			);
-        else //3D
-        	envelope.setEnvelope(
-        			bbox.getLowerCorner().getOrdinate(0),
-        			bbox.getLowerCorner().getOrdinate(1), 
-        			bbox.getLowerCorner().getOrdinate(2),
-        			bbox.getUpperCorner().getOrdinate(0), 
-        			bbox.getUpperCorner().getOrdinate(1),
-        			bbox.getUpperCorner().getOrdinate(2)
-        			);
+        final GeneralEnvelope envelope = new GeneralEnvelope(/* TODO: ignore 3D CRS for now crs */ bbox.getDimension() == 3 ? DefaultGeographicCRS.WGS84_3D : crs);
+        if (/* TODO: ignore 3D CRS for now !hasVerticalCRS */ bbox.getDimension() == 2)
+            envelope.setEnvelope(bbox.getLowerCorner().getOrdinate(0), bbox.getLowerCorner()
+                    .getOrdinate(1), bbox.getUpperCorner().getOrdinate(0), bbox.getUpperCorner()
+                    .getOrdinate(1));
+        else if (/* TODO: ignore 3D CRS for now hasVerticalCRS */ bbox.getDimension() == 3)
+            // 3D
+            envelope.setEnvelope(bbox.getLowerCorner().getOrdinate(0), bbox.getLowerCorner()
+                    .getOrdinate(1), bbox.getLowerCorner().getOrdinate(2), bbox.getUpperCorner()
+                    .getOrdinate(0), bbox.getUpperCorner().getOrdinate(1), bbox.getUpperCorner()
+                    .getOrdinate(2));
+        else
+            throw new WcsException("bbox not compliant with the specified CRS", InvalidParameterValue, "bbox");
+        
         //
         // TIME
         //
@@ -160,164 +159,164 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         } else if (time != null && time instanceof List) {
             timeSequence = Wcs10Factory.eINSTANCE.createTimeSequenceType();
             for (Date tPos : (List<Date>) time) {
-                final TimePositionType timePosition = Gml4wcsFactory.eINSTANCE.createTimePositionType();
+                final TimePositionType timePosition = Gml4wcsFactory.eINSTANCE
+                        .createTimePositionType();
                 timePosition.setValue(tPos);
                 timeSequence.getTimePosition().add(timePosition);
             }
         }
         if (timeSequence == null && bbox == null)
-            throw new WcsException("Bounding box cannot be null, TIME has not been specified",WcsExceptionCode.MissingParameterValue, "BBOX");
+            throw new WcsException("Bounding box cannot be null, TIME has not been specified",
+                    WcsExceptionCode.MissingParameterValue, "BBOX");
 
         //
         // GRID management
         //
         final RectifiedGridType grid = Gml4wcsFactory.eINSTANCE.createRectifiedGridType();
-        final Object w=kvp.get("width");
-        final Object h=kvp.get("height");
-        if ( w!= null && h != null) {
-        	//
-        	// normal grid management, we need to compute RESX, RESY, RESZ afterwards
-        	//
-        	
-        	// get W and H
-            int width = Integer.parseInt((String)w);
-            int height = Integer.parseInt((String) h);
+        final Object w = kvp.get("width");
+        final Object h = kvp.get("height");
+        if (w != null && h != null) {
+            //
+            // normal grid management, we need to compute RESX, RESY, RESZ afterwards
+            //
+
+            // get W and H
+            int width = w instanceof Integer ? ((Integer) w).intValue() : Integer.parseInt((String) w);
+            int height = h instanceof Integer ? ((Integer) h).intValue() : Integer.parseInt((String) h);
             grid.getAxisName().add("x");
             grid.getAxisName().add("y");
-                       
+
             // now compute offset and origin
-            final double resX = envelope.getSpan(0)/width;
-            final double resY = envelope.getSpan(1)/height;
-            
-            
+            final double resX = envelope.getSpan(0) / width;
+            final double resY = envelope.getSpan(1) / height;
+
             // now compute offset vector for the transform from the envelope
-            final double origX=envelope.getLowerCorner().getOrdinate(0);
-            final double origY=envelope.getLowerCorner().getOrdinate(1);
-            
+            final double origX = envelope.getLowerCorner().getOrdinate(0);
+            final double origY = envelope.getLowerCorner().getOrdinate(1);
+
             // create offset point
-            final PointType origin= Gml4wcsFactory.eINSTANCE.createPointType();
-            final DirectPositionType dp= Gml4wcsFactory.eINSTANCE.createDirectPositionType();
+            final PointType origin = Gml4wcsFactory.eINSTANCE.createPointType();
+            final DirectPositionType dp = Gml4wcsFactory.eINSTANCE.createDirectPositionType();
             origin.setPos(dp);
             origin.setSrsName(crsName);
-            
-            
-            // create resolutions vector
-            final VectorType resolutionVector=Gml4wcsFactory.eINSTANCE.createVectorType();
-                                   
 
-            final Object d=kvp.get("depth") ;
-            if (d!= null) {
+            // create resolutions vector
+            final VectorType resolutionVector = Gml4wcsFactory.eINSTANCE.createVectorType();
+
+            final Object d = kvp.get("depth");
+            if (d != null) {
 
                 // check that the envelope is 3D or throw an error
-                if(bbox.getDimension()!=3)
-                	throw new WcsException("Found depth but envelope is of dimension "+bbox.getDimension(), InvalidParameterValue, "");
-                
-            	// notice that as for the spec this element represents the number of ticks on the third dimension
+                if (bbox.getDimension() != 3)
+                    throw new WcsException("Found depth but envelope is of dimension "
+                            + bbox.getDimension(), InvalidParameterValue, "");
+
+                // notice that as for the spec this element represents the number of ticks on the
+                // third dimension
                 grid.getAxisName().add("z");
 
-                final int depth = Integer.parseInt((String) d);
+                final int depth = d instanceof Integer ? ((Integer) d).intValue() : Integer.parseInt((String) d);
                 grid.setDimension(BigInteger.valueOf(3));
-                grid.setLimits(new GeneralGridEnvelope(new int[]{0, 0, depth}, new int[]{width, height, depth}));
+                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, depth }, new int[] {width, height, 0 }, true));
 
-                final double resZ = (bbox.getUpperCorner().getOrdinate(2)-bbox.getLowerCorner().getOrdinate(2))/depth;
+                final double resZ = (bbox.getUpperCorner().getOrdinate(2) - bbox.getLowerCorner().getOrdinate(2)) / depth;
                 final double origZ = bbox.getLowerCorner().getOrdinate(2);
-                
+
                 // 3D grid
                 grid.setDimension(BigInteger.valueOf(3));
                 // set the origin position
                 dp.setDimension(grid.getDimension());
-                dp.setValue(Arrays.asList(origX,origY,origZ));
+                dp.setValue(Arrays.asList(origX, origY, origZ));
                 grid.setOrigin(origin);
-                
+
                 // set the resolution vector
                 resolutionVector.setDimension(grid.getDimension());
-                resolutionVector.setValue(Arrays.asList(resX,resY,resZ));
+                resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
+                grid.getOffsetVector().add(resolutionVector);
             } else {
                 // 2d grid
                 grid.setDimension(BigInteger.valueOf(2));
-                grid.setLimits(new GridEnvelope2D(0, 0,width, height));
-                
+                grid.setLimits(new GridEnvelope2D(0, 0, width, height));
+
                 // set the origin position
                 dp.setDimension(grid.getDimension());
-                dp.setValue(Arrays.asList(origX,origY));
+                dp.setValue(Arrays.asList(origX, origY));
                 grid.setOrigin(origin);
-                
+
                 // set the resolution vector
                 resolutionVector.setDimension(grid.getDimension());
-                resolutionVector.setValue(Arrays.asList(resX,resY));                
+                resolutionVector.setValue(Arrays.asList(resX, resY));
+                grid.getOffsetVector().add(resolutionVector);
             }
         } else {
-        		//
-				// we might be working with a rectified grid request there we need
-				// to try and use that type. we cannot build a raster grid at this
-				// stage yet since we have no idea about how the envelope will be intersected with the native envelope for this raster
-        		//
-	            final Object rx=kvp.get("resx");
-	            final Object ry=kvp.get("resy");
-	        	if (rx != null && ry != null) {
-	        
-	        		// get resx e resy
-		            final double resX = Double.parseDouble((String) rx);
-		            final double resY = Double.parseDouble((String) ry);
-		            
-		            
-		            // now compute offset vector for the transform from the envelope
-		            final double origX=envelope.getLowerCorner().getOrdinate(0);
-		            final double origY=envelope.getLowerCorner().getOrdinate(1);
-		            
-		            // create offset point
-		            final PointType origin= Gml4wcsFactory.eINSTANCE.createPointType();
-		            final DirectPositionType dp= Gml4wcsFactory.eINSTANCE.createDirectPositionType();
-		            origin.setPos(dp);
-		            origin.setSrsName(crsName);
-		            
-		            
-		            // create resolutions vector
-		            final VectorType resolutionVector=Gml4wcsFactory.eINSTANCE.createVectorType();
-		                       
-		            //
-		            // Third dimension management
-		            //
-		            final Object rz=kvp.get("resz");
-		            if (rz != null) {
-		                // eventual depth
-		                final double resZ = Double.parseDouble((String)rz);
-		                // check that the envelope is 3D or throw an error
-		                if(bbox.getDimension()!=3)
-		                	throw new WcsException("Found ResZ but envelope is of dimension "+bbox.getDimension(), InvalidParameterValue, "");
-		                final double origZ = bbox.getLowerCorner().getOrdinate(2);
-		                
-		                // 3D grid
-		                grid.setDimension(BigInteger.valueOf(3));
-		                // set the origin position
-		                dp.setDimension(grid.getDimension());
-		                dp.setValue(Arrays.asList(origX,origY,origZ));
-		                grid.setOrigin(origin);
-		                
-		                // set the resolution vector
-		                resolutionVector.setDimension(grid.getDimension());
-		                resolutionVector.setValue(Arrays.asList(resX,resY,resZ));
-		                
-		                
-		            } else {
-		            	
-		            	// 2d grid
-		            	grid.setDimension(BigInteger.valueOf(2));
-		                // set the origin position
-		                dp.setDimension(grid.getDimension());
-		                dp.setValue(Arrays.asList(origX,origY));
-		                grid.setOrigin(origin);
-		                
-		                // set the resolution vector
-		                resolutionVector.setDimension(grid.getDimension());
-		                resolutionVector.setValue(Arrays.asList(resX,resY));
+            //
+            // we might be working with a rectified grid request there we need
+            // to try and use that type. we cannot build a raster grid at this
+            // stage yet since we have no idea about how the envelope will be intersected with the
+            // native envelope for this raster
+            //
+            final Object rx = kvp.get("resx");
+            final Object ry = kvp.get("resy");
+            if (rx != null && ry != null) {
+                // get resx e resy
+                final double resX = Double.parseDouble((String) rx);
+                final double resY = Double.parseDouble((String) ry);
 
-		            }
+                // now compute offset vector for the transform from the envelope
+                final double origX = envelope.getLowerCorner().getOrdinate(0);
+                final double origY = envelope.getLowerCorner().getOrdinate(1);
 
-	            } else
-	                throw new WcsException("Could not recognize grid resolution", InvalidParameterValue, "");
-        	}
-         
+                // create offset point
+                final PointType origin = Gml4wcsFactory.eINSTANCE.createPointType();
+                final DirectPositionType dp = Gml4wcsFactory.eINSTANCE.createDirectPositionType();
+                origin.setPos(dp);
+                origin.setSrsName(crsName);
+
+                // create resolutions vector
+                final VectorType resolutionVector = Gml4wcsFactory.eINSTANCE.createVectorType();
+
+                //
+                // Third dimension management
+                //
+                final Object rz = kvp.get("resz");
+                if (rz != null) {
+                    // eventual depth
+                    final double resZ = Double.parseDouble((String) rz);
+                    // check that the envelope is 3D or throw an error
+                    if (bbox.getDimension() != 3)
+                        throw new WcsException("Found ResZ but envelope is of dimension "
+                                + bbox.getDimension(), InvalidParameterValue, "");
+                    final double origZ = bbox.getLowerCorner().getOrdinate(2);
+
+                    // 3D grid
+                    grid.setDimension(BigInteger.valueOf(3));
+                    // set the origin position
+                    dp.setDimension(grid.getDimension());
+                    dp.setValue(Arrays.asList(origX, origY, origZ));
+                    grid.setOrigin(origin);
+
+                    // set the resolution vector
+                    resolutionVector.setDimension(grid.getDimension());
+                    resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
+                    grid.getOffsetVector().add(resolutionVector);
+                } else {
+                    // 2d grid
+                    grid.setDimension(BigInteger.valueOf(2));
+                    // set the origin position
+                    dp.setDimension(grid.getDimension());
+                    dp.setValue(Arrays.asList(origX, origY));
+                    grid.setOrigin(origin);
+
+                    // set the resolution vector
+                    resolutionVector.setDimension(grid.getDimension());
+                    resolutionVector.setValue(Arrays.asList(resX, resY));
+                    grid.getOffsetVector().add(resolutionVector);
+                }
+
+            } else
+                throw new WcsException("Could not recognize grid resolution",
+                        InvalidParameterValue, "");
+        }
 
         spatialSubset.getEnvelope().add(envelope);
         spatialSubset.getGrid().add(grid);
@@ -439,18 +438,21 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
      * @param crs
      * @return
      */
-    private static CoordinateReferenceSystem decodeCRS100(String crsName, CoordinateReferenceSystem crs) {
+    private static CoordinateReferenceSystem decodeCRS100(String crsName,
+            CoordinateReferenceSystem crs) {
         if ("WGS84(DD)".equals(crsName)) {
             crsName = "EPSG:4326";
         }
 
         try {
-        	// in 100 we work with Lon,Lat always
+            // in 100 we work with Lon,Lat always
             crs = CRS.decode(crsName, true);
         } catch (NoSuchAuthorityCodeException e) {
-            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,"crs");
+            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,
+                    "crs");
         } catch (FactoryException e) {
-            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,"crs");
+            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,
+                    "crs");
         }
 
         return crs;

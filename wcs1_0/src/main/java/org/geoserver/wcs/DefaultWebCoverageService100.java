@@ -19,7 +19,8 @@ import java.util.logging.Logger;
 
 import javax.media.jai.Interpolation;
 
-import net.opengis.gml.GridType;
+import net.opengis.gml.RectifiedGridType;
+import net.opengis.gml.VectorType;
 import net.opengis.gml.impl.TimePositionTypeImpl;
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.DescribeCoverageType;
@@ -52,15 +53,18 @@ import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.operation.builder.GridToEnvelopeMapper;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridEnvelope;
+import org.opengis.geometry.Envelope;
 import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.util.WCSUtils;
@@ -171,11 +175,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             final EList grids = spatialSubset.getGrid();
             if(grids.size()==0)
             	throw new IllegalArgumentException("Invalid number of Grid for spatial subsetting was set:"+grids.size());
-            final GridType grid = (GridType) grids.get(0);
+            final RectifiedGridType grid = (RectifiedGridType) grids.get(0);
             final List envelopes = spatialSubset.getEnvelope();
             if(envelopes.size()==0)
             	throw new IllegalArgumentException("Invalid number of Envelope for spatial subsetting was set:"+envelopes.size()); 
-            final GeneralEnvelope requestedEnvelope= (GeneralEnvelope) envelopes.get(0);
+            final GeneralEnvelope requestedEnvelope = (GeneralEnvelope) envelopes.get(0);
             
 
             // grab the reader using the default params,
@@ -184,8 +188,12 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             	
             	
                 // get native elements and then play with the the requested ones
-                final GeneralEnvelope nativeEnvelope = reader.getOriginalEnvelope();
-                final CoordinateReferenceSystem nativeCRS = nativeEnvelope.getCoordinateReferenceSystem();
+                final GeneralEnvelope originalEnvelope    = reader.getOriginalEnvelope();
+                final GridEnvelope originalGridRange      = reader.getOriginalGridRange();
+                final CoordinateReferenceSystem nativeCRS = originalEnvelope.getCoordinateReferenceSystem();
+                final GridToEnvelopeMapper geMapper= new GridToEnvelopeMapper(originalGridRange, originalEnvelope);
+                                           geMapper.setPixelAnchor(PixelInCell.CELL_CENTER);
+                final MathTransform raster2Model          = geMapper.createTransform();       
 
                 // get requested crs
                 String requestedCRS = null;
@@ -203,7 +211,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 //
                 // compute intersection envelope
                 //
-                final GeneralEnvelope destinationEnvelope = computeIntersectionEnvelope(requestedEnvelope,nativeEnvelope);
+                final GeneralEnvelope destinationEnvelope = computeIntersectionEnvelope(requestedEnvelope, originalEnvelope);
                      
 
                 //
@@ -212,37 +220,57 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 int elevationLevels=0;
                 Rectangle destinationSize = null;
                 if (requestedCRS != null) {
+                    final GridEnvelope limits = grid.getLimits();
+                    int[] lowers  = null;
+                    int[] highers = null;
                     
-                	final GridEnvelope limits = grid.getLimits();
-                    int[] lowers =  limits.getLow().getCoordinateValues();
-                    int[] highers = limits.getHigh().getCoordinateValues();
+                    if (limits != null) {
+                        lowers = limits.getLow().getCoordinateValues();
+                        highers = limits.getHigh().getCoordinateValues();
+                    } else if (grid.getOffsetVector() != null && grid.getOffsetVector().size() > 0) {
+                        final VectorType offsetVector = (VectorType) grid.getOffsetVector().get(0);
+                        final int dimension = offsetVector.getDimension() != null ? offsetVector.getDimension().intValue() : 2;
+                        int w = (int) Math.round(originalEnvelope.getSpan(0) / (Double) offsetVector.getValue().get(0));
+                        int h = (int) Math.round(originalEnvelope.getSpan(1) / (Double) offsetVector.getValue().get(1));
+                        
+                        if (dimension == 2) {
+                            lowers = new int[] {0, 0};
+                            highers = new int[] {w, h};
+                        } else if (dimension == 3) {
+                            int z = /* TODO: (int) Math.round(originalEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2)); */
+                                (int) Math.round(requestedEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2));
+                            lowers = new int[] {0, 0, z};
+                            highers = new int[] {w, h, 0};
+                        } else
+                            throw new WcsException("Invalid Resolutions Vector.", InvalidParameterValue,null);
+                    }
+
                     destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
                     
-                    if (grid.getAxisName().contains("elevation") && grid.getDimension().intValue() > 2) {
-
+                    if (grid.getAxisName().contains("z") && lowers.length > 2) {
                     	// number of Z levles
                     	elevationLevels = lowers[2];
                     	if(lowers[2]==highers[2])
-                    		throw new WcsException("Invalid DEPTH values:"+lowers[2]+","+highers[2], InvalidParameterValue,null);
+                    	    throw new WcsException("Invalid DEPTH values:"+lowers[2]+","+highers[2], InvalidParameterValue,null);
                     	if(elevationLevels<=0)
-                    		throw new WcsException("Invalid DEPTH value:"+elevationLevels, InvalidParameterValue,null);
+                    	    throw new WcsException("Invalid DEPTH value:"+elevationLevels, InvalidParameterValue,null);
                     }
                 }
+                
                 double[] elevations = null;
                 if(elevationLevels>0)
                 {
-                	// compute the elevation levels, we have elevationLevels values
-                	elevations=new double[elevationLevels];
-                	
-                	elevations[0]=Double.NaN; // TODO put the extrema
-                	elevations[elevationLevels-1]=Double.NaN;
-                	if(elevationLevels>2){
-                		final int adjustedLevelsNum=elevationLevels-1;
-                		double step= (elevations[elevationLevels-1]-elevations[0])/adjustedLevelsNum;
-                		for(int i=1;i<adjustedLevelsNum;i++)
-                			elevations[i]=elevations[i-1]+step;
-                	}
-                	
+                    // compute the elevation levels, we have elevationLevels values
+                    elevations=new double[elevationLevels];
+
+                    elevations[0]=requestedEnvelope.getLowerCorner().getOrdinate(2); // TODO put the extrema
+                    elevations[elevationLevels-1]=requestedEnvelope.getUpperCorner().getOrdinate(2);
+                    if(elevationLevels>2){
+                        final int adjustedLevelsNum=elevationLevels-1;
+                        double step = (elevations[elevationLevels-1]-elevations[0])/adjustedLevelsNum;
+                        for(int i=1;i<adjustedLevelsNum;i++)
+                            elevations[i]=elevations[i-1]+step;
+                    }
                 }
             
                 //final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
@@ -257,7 +285,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 
                 final GridGeometry2D requestedGridGeometry = new GridGeometry2D(
                 		new GridEnvelope2D(destinationSize),
-                		requestedEnvelope
+                		getHorizontalEnvelope(requestedEnvelope)
                 );
                 final ParameterValue<GeneralGridGeometry> requestedGridGeometryParam = new DefaultParameterDescriptor<GeneralGridGeometry>(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
 
@@ -320,7 +348,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 //
                 // ELEVATION
                 //
-                if(!Double.isNaN(elevations[0]))
+                if(elevations != null && !Double.isNaN(elevations[0]))
                     for(GeneralParameterDescriptor pd:parameterDescriptors){
 
                         // ELEVATION
@@ -433,6 +461,17 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 
     }
 
+    private static Envelope getHorizontalEnvelope(GeneralEnvelope requestedEnvelope) {
+        final CoordinateReferenceSystem nativeCRS = CRS.getHorizontalCRS(requestedEnvelope.getCoordinateReferenceSystem());
+        
+        GeneralEnvelope horizontalRequestedEnvelope = new GeneralEnvelope(nativeCRS);
+        horizontalRequestedEnvelope.setEnvelope(requestedEnvelope.getLowerCorner().getOrdinate(0), requestedEnvelope.getLowerCorner()
+                .getOrdinate(1), requestedEnvelope.getUpperCorner().getOrdinate(0), requestedEnvelope.getUpperCorner()
+                .getOrdinate(1));
+
+        return horizontalRequestedEnvelope;
+    }
+
     private static GeneralEnvelope computeIntersectionEnvelope(
     		final GeneralEnvelope requestedEnvelope, 
     		final GeneralEnvelope nativeEnvelope) {
@@ -455,14 +494,14 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             // now transform the requested envelope to source crs
             if (destinationToSourceTransform != null && !destinationToSourceTransform.isIdentity())
             {
-            	retVal = CRS.transform(destinationToSourceTransform,requestedEnvelope);
+            	retVal = CRS.transform(destinationToSourceTransform,getHorizontalEnvelope(requestedEnvelope));
             	retVal.setCoordinateReferenceSystem(nativeCRS);
             	
             }
             else
             {
             	//we do not need to do anything, but we do this in order to aboid problems with the envelope checks
-            	retVal= new GeneralEnvelope(requestedEnvelope);
+            	retVal= new GeneralEnvelope(getHorizontalEnvelope(requestedEnvelope));
             	
             }            
 

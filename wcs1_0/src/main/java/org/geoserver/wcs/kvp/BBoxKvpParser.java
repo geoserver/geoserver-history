@@ -10,7 +10,7 @@ import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.GeneralEnvelope;
 
-public class BBoxKvpParser extends WcsKvpParser {
+public class BBoxKvpParser extends Wcs10KvpParser {
     public BBoxKvpParser() {
         super("bbox", GeneralEnvelope.class);
     }
