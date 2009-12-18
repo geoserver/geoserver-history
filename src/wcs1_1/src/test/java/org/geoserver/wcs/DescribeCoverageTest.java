@@ -56,7 +56,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
     public void testDescribeMissingVersion() throws Exception {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&identifiers=" 
-                + layerId(TASMANIA_DEM));
+                + getLayerId(TASMANIA_DEM));
 //        print(dom);
         checkOws11Exception(dom);
         Element element = (Element) dom.getElementsByTagName("ows:Exception").item(0);
@@ -86,7 +86,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
     public void testDescribeDemCoverageKvp() throws Exception {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
-                + layerId(TASMANIA_DEM));
+                + getLayerId(TASMANIA_DEM));
 //        print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
         checkDemCoverageDescription(dom);
@@ -100,7 +100,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
             "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + // 
             "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + // 
             "  version=\"1.1.1\" >\r\n" + //
-            "  <wcs:Identifier>" + layerId(TASMANIA_DEM) + "</wcs:Identifier>\r\n" + // 
+            "  <wcs:Identifier>" + getLayerId(TASMANIA_DEM) + "</wcs:Identifier>\r\n" + // 
             "</wcs:DescribeCoverage>";
         Document dom = postAsDOM(BASEPATH, request, errors);
         checkValidationErrors(dom, WCS11_SCHEMA);
@@ -111,7 +111,7 @@ public class DescribeCoverageTest extends WCSTestSupport {
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
-        assertXpathEvaluatesTo(layerId(TASMANIA_DEM), 
+        assertXpathEvaluatesTo(getLayerId(TASMANIA_DEM), 
                 "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier", dom);
         // check there is no rotation
         Node gridOffsets = xpath.getMatchingNodes("/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
@@ -135,13 +135,13 @@ public class DescribeCoverageTest extends WCSTestSupport {
     public void testDescribeRotatedCoverage() throws Exception {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
-                + layerId(ROTATED_CAD));
+                + getLayerId(ROTATED_CAD));
 //        print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
-        assertXpathEvaluatesTo(layerId(ROTATED_CAD), 
+        assertXpathEvaluatesTo(getLayerId(ROTATED_CAD), 
                 "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier", dom);
         // check there is no rotation
         Node gridOffsets = xpath.getMatchingNodes("/wcs:CoverageDescriptions/wcs:CoverageDescription/" +
@@ -167,13 +167,13 @@ public class DescribeCoverageTest extends WCSTestSupport {
     public void testDescribeImageCoverage() throws Exception {
         Document dom = getAsDOM(BASEPATH
                 + "?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="
-                + layerId(TASMANIA_BM));
+                + getLayerId(TASMANIA_BM));
 //        print(dom);
         checkValidationErrors(dom, WCS11_SCHEMA);
         // check the basics, the output is a single coverage description with the expected id
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescriptions").getLength());
         assertEquals(1, dom.getElementsByTagName("wcs:CoverageDescription").getLength());
-        assertXpathEvaluatesTo(layerId(TASMANIA_BM), 
+        assertXpathEvaluatesTo(getLayerId(TASMANIA_BM), 
                 "/wcs:CoverageDescriptions/wcs:CoverageDescription/wcs:Identifier", dom);
         // check there is no rotation
         Node gridOffsets = xpath.getMatchingNodes("/wcs:CoverageDescriptions/wcs:CoverageDescription/" +

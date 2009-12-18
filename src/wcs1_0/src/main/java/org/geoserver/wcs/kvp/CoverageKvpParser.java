@@ -34,9 +34,10 @@ public class CoverageKvpParser extends KvpParser {
         this.catalog = catalog;
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public Object parse(String value) throws Exception {
-        Collection coverages = new ArrayList();
+    	final List<String> coverages = new ArrayList<String>();
         final List<String> identifiers = KvpUtils.readFlat(value);
         if (identifiers == null || identifiers.size() == 0) {
             throw new WcsException("Required paramer, coverage, missing",
@@ -44,14 +45,9 @@ public class CoverageKvpParser extends KvpParser {
         }
 
         for (String coverage : identifiers) {
-            String coverageName = coverage.indexOf("@") > 0 ? coverage.substring(0, coverage
-                    .indexOf("@")) : coverage;
-            String fieldName = coverage.indexOf("@") > 0 ? coverage
-                    .substring(coverage.indexOf("@") + 1) : null;
-            LayerInfo layer = catalog.getLayerByName(value);
+            final LayerInfo layer = catalog.getLayerByName(coverage);
             if (layer == null || layer.getType() != LayerInfo.Type.RASTER)
-                throw new WcsException("Could not find coverage '" + coverage + "'",
-                        InvalidParameterValue, "coverage");
+                throw new WcsException("Could not find coverage '" + coverage + "'",InvalidParameterValue, "coverage");
             coverages.add(coverage);
         }
 

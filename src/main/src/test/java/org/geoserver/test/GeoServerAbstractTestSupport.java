@@ -347,13 +347,6 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         QName qname = new QName(ns.getURI(), name, ns.getPrefix());
         return qname;
     }
-
-    /**
-     * @deprecated use {@link #getLayerId(QName)}.
-     */
-    public final String layerId(QName layerName) {
-        return getLayerId( layerName );
-    }
     
     /**
      * Given a qualified layer name returns a string in the form "prefix:localPart" if prefix

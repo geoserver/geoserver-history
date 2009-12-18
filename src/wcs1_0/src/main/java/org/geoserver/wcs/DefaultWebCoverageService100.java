@@ -30,9 +30,11 @@ import net.opengis.wcs10.InterpolationMethodType;
 import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.OutputType;
 import net.opengis.wcs10.RangeSubsetType;
+import net.opengis.wcs10.SpatialSubsetType;
 import net.opengis.wcs10.TimePeriodType;
 import net.opengis.wcs10.TypedLiteralType;
 
+import org.eclipse.emf.common.util.EList;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.config.GeoServer;
@@ -48,28 +50,21 @@ import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.geotools.resources.CRSUtilities;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.geometry.Envelope;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.parameter.GeneralParameterDescriptor;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.crs.GeographicCRS;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.cs.CoordinateSystemAxis;
-import org.opengis.referencing.operation.CoordinateOperation;
-import org.opengis.referencing.operation.CoordinateOperationFactory;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.util.WCSUtils;
 import org.vfny.geoserver.wcs.WcsException;
-import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
 
@@ -153,28 +148,42 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
     /**
      * 
      */
-    public GridCoverage[] getCoverage(GetCoverageType request) {
+    public GridCoverage[] getCoverage(final GetCoverageType request) {
         CoverageInfo meta = null;
         GridCoverage2D coverage = null;
-        List<GridCoverage> coverageResults = new ArrayList<GridCoverage>();
+        final List<GridCoverage> coverageResults = new ArrayList<GridCoverage>();
         try {
 
             // acquire coverage info
             meta = catalog.getCoverageByName(request.getSourceCoverage());
-
             if (meta == null)
                 throw new WcsException("Cannot find sourceCoverage on the catalog!");
             
             // first let's run some sanity checks on the inputs
-            checkDomainSubset(meta, request.getDomainSubset());
+//            checkDomainSubset(meta, request.getDomainSubset());
             checkRangeSubset(meta, request.getRangeSubset());
             checkInterpolationMethod(meta, request.getInterpolationMethod());
             checkOutput(meta, request.getOutput());
+            
+            // prepare domain elements
+            final DomainSubsetType domainSubset = request.getDomainSubset();
+            final SpatialSubsetType spatialSubset=domainSubset.getSpatialSubset();
+            final EList grids = spatialSubset.getGrid();
+            if(grids.size()==0)
+            	throw new IllegalArgumentException("Invalid number of Grid for spatial subsetting was set:"+grids.size());
+            final GridType grid = (GridType) grids.get(0);
+            final List envelopes = spatialSubset.getEnvelope();
+            if(envelopes.size()==0)
+            	throw new IllegalArgumentException("Invalid number of Envelope for spatial subsetting was set:"+envelopes.size()); 
+            final GeneralEnvelope requestedEnvelope= (GeneralEnvelope) envelopes.get(0);
+            
 
             // grab the reader using the default params,
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, HINTS);
             if (reader != null) {
-                // handle spatial domain subset, if needed
+            	
+            	
+                // get native elements and then play with the the requested ones
                 final GeneralEnvelope nativeEnvelope = reader.getOriginalEnvelope();
                 final CoordinateReferenceSystem nativeCRS = nativeEnvelope.getCoordinateReferenceSystem();
 
@@ -187,22 +196,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 final CoordinateReferenceSystem targetCRS;
                 if (requestedCRS == null) {
                     targetCRS = reader.getOriginalEnvelope().getCoordinateReferenceSystem();
-                    requestedCRS = CRS.lookupIdentifier(targetCRS, false);
+                    requestedCRS = CRS.lookupIdentifier(targetCRS, true);
                 } else
                     targetCRS = CRS.decode(requestedCRS,true);
-                
-                //
-                // get requested envelope
-                //
-                final GeneralEnvelope requestedEnvelope ;
-                Object reqEnvelope = request.getDomainSubset().getSpatialSubset().getEnvelope().get(0);
-                if (reqEnvelope instanceof com.vividsolutions.jts.geom.Envelope)
-                    requestedEnvelope = new GeneralEnvelope(new ReferencedEnvelope((com.vividsolutions.jts.geom.Envelope)reqEnvelope, targetCRS));
-                else if (reqEnvelope instanceof Envelope)
-                    requestedEnvelope =new GeneralEnvelope((Envelope) reqEnvelope);
-                else
-                	throw new IllegalArgumentException("Illegal bounding box requested");
-                
+                 
                 //
                 // compute intersection envelope
                 //
@@ -212,27 +209,47 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 //
                 // Raster destination size
                 //
-                double[] elevations = new double[] {Double.NaN, Double.NaN};
+                int elevationLevels=0;
                 Rectangle destinationSize = null;
-                if (requestedCRS != null
-                        && request.getDomainSubset().getSpatialSubset().getGrid().size() > 0) {
-                    final GridType grid = (GridType) request.getDomainSubset().getSpatialSubset().getGrid().get(0);
+                if (requestedCRS != null) {
                     
-                    int[] lowers = new int[] { (int) grid.getLimits().getMinimum(0),(int) grid.getLimits().getMinimum(1) };
-                    int[] highers = new int[] { (int) grid.getLimits().getMaximum(0),(int) grid.getLimits().getMaximum(1) };
+                	final GridEnvelope limits = grid.getLimits();
+                    int[] lowers =  limits.getLow().getCoordinateValues();
+                    int[] highers = limits.getHigh().getCoordinateValues();
                     destinationSize = new Rectangle(lowers[0], lowers[1], highers[0], highers[1]);
                     
                     if (grid.getAxisName().contains("elevation") && grid.getDimension().intValue() > 2) {
-                        elevations = new double[] {grid.getLimits().getMinimum(2), grid.getLimits().getMaximum(2)};
+
+                    	// number of Z levles
+                    	elevationLevels = lowers[2];
+                    	if(lowers[2]==highers[2])
+                    		throw new WcsException("Invalid DEPTH values:"+lowers[2]+","+highers[2], InvalidParameterValue,null);
+                    	if(elevationLevels<=0)
+                    		throw new WcsException("Invalid DEPTH value:"+elevationLevels, InvalidParameterValue,null);
                     }
                 }
-
+                double[] elevations = null;
+                if(elevationLevels>0)
+                {
+                	// compute the elevation levels, we have elevationLevels values
+                	elevations=new double[elevationLevels];
+                	
+                	elevations[0]=Double.NaN; // TODO put the extrema
+                	elevations[elevationLevels-1]=Double.NaN;
+                	if(elevationLevels>2){
+                		final int adjustedLevelsNum=elevationLevels-1;
+                		double step= (elevations[elevationLevels-1]-elevations[0])/adjustedLevelsNum;
+                		for(int i=1;i<adjustedLevelsNum;i++)
+                			elevations[i]=elevations[i-1]+step;
+                	}
+                	
+                }
             
                 //final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
                 // get the group of parameters tha this reader supports
                 final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
                 GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, meta.getParameters());
-                                        readParameters = (readParameters != null ? readParameters : new GeneralParameterValue[0]);
+                readParameters = (readParameters != null ? readParameters : new GeneralParameterValue[0]);
                 
                 //
                 // Setting coverage reading params.
@@ -242,7 +259,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 		new GridEnvelope2D(destinationSize),
                 		requestedEnvelope
                 );
-                final ParameterValue requestedGridGeometryParam = new DefaultParameterDescriptor(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
+                final ParameterValue<GeneralGridGeometry> requestedGridGeometryParam = new DefaultParameterDescriptor<GeneralGridGeometry>(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
 
                 // add to the list
                 GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
@@ -266,8 +283,8 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                             final List<Date> timeValues = new LinkedList<Date>();
                             
                             if (request.getDomainSubset().getTemporalSubset().getTimePosition() != null 
-                                    && request.getDomainSubset().getTemporalSubset().getTimePosition().size() > 0) {
-                                for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePosition().iterator(); it.hasNext(); ) {
+                                    &&domainSubset.getTemporalSubset().getTimePosition().size() > 0) {
+                                for (Iterator it =domainSubset.getTemporalSubset().getTimePosition().iterator(); it.hasNext(); ) {
                                     TimePositionTypeImpl tp = (TimePositionTypeImpl) it.next();
                                     timeValues.add((Date) tp.getValue());
                                 }
@@ -275,8 +292,8 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                                     time.setValue(timeValues);
                                 }
                             } else if (request.getDomainSubset().getTemporalSubset().getTimePeriod() != null 
-                                    && request.getDomainSubset().getTemporalSubset().getTimePeriod().size() > 0) {
-                                for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePeriod().iterator(); it.hasNext(); ) {
+                                    &&domainSubset.getTemporalSubset().getTimePeriod().size() > 0) {
+                                for (Iterator it =domainSubset.getTemporalSubset().getTimePeriod().iterator(); it.hasNext(); ) {
                                     TimePeriodType tp = (TimePeriodType) it.next();
                                     Date beginning = (Date)tp.getBeginPosition().getValue();
                                     Date ending = (Date)tp.getEndPosition().getValue();
@@ -536,71 +553,62 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 		return null;
 	}
 
-	private static void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset)
-            throws Exception {
-        ReferencedEnvelope bbox = null;
-        Object requestedEnvelope = domainSubset.getSpatialSubset().getEnvelope().get(0);
-        if (requestedEnvelope instanceof ReferencedEnvelope) {
-            bbox = (ReferencedEnvelope) requestedEnvelope;
-        } else if (requestedEnvelope instanceof GeneralEnvelope) {
-            bbox = new ReferencedEnvelope((GeneralEnvelope) requestedEnvelope);
-        }
-
-        CoordinateReferenceSystem bboxCRs = bbox.getCoordinateReferenceSystem();
-        // TODO: FIX THIS!!!
-        Envelope gridEnvelope = /* meta.getCoverage().getEnvelope() */null;
-        GeneralEnvelope gridEnvelopeBboxCRS = null;
-        if (bboxCRs instanceof GeographicCRS) {
-            try {
-                CoordinateOperationFactory cof = CRS.getCoordinateOperationFactory(true);
-
-                final CoordinateOperation operation = cof.createOperation(gridEnvelope
-                        .getCoordinateReferenceSystem(), bboxCRs);
-                gridEnvelopeBboxCRS = CRS.transform(operation, gridEnvelope);
-            } catch (Exception e) {
-                // this may happen, there is nothing we can do about it, we just
-                // use the back transformed envelope to be more lenient about
-                // which coordinate coorections to make on the longitude axis
-                // should the antimeridian style be used
-            }
-        }
-
-        // check the coordinates, but make sure the case 175,-175 is handled
-        // as valid for the longitude axis in a geographic coordinate system
-        // see section 7.6.2 of the WCS 1.1.1 spec)
-        double[] lower = bbox.getLowerCorner().getCoordinate();
-        double[] upper = bbox.getUpperCorner().getCoordinate();
-        for (int i = 0; i < lower.length; i++) {
-            if (lower[i] > upper[i]) {
-                final CoordinateSystemAxis axis = bboxCRs.getCoordinateSystem().getAxis(i);
-                // see if the coordinates can be fixed
-                if (bboxCRs instanceof GeographicCRS && axis.getDirection() == AxisDirection.EAST) {
-
-                    if (gridEnvelopeBboxCRS != null) {
-                        // try to guess which one needs to be fixed
-                        final double envMax = gridEnvelopeBboxCRS.getMaximum(i);
-                        if (envMax >= lower[i])
-                            upper[i] = upper[i] + (axis.getMaximumValue() - axis.getMinimumValue());
-                        else
-                            lower[i] = lower[i] - (axis.getMaximumValue() - axis.getMinimumValue());
-
-                    } else {
-                        // just fix the upper and hope...
-                        upper[i] = upper[i] + (axis.getMaximumValue() - axis.getMinimumValue());
-                    }
-                }
-
-                // if even after the fix we're in the wrong situation, complain
-                if (lower[i] > upper[i]) {
-                    throw new WcsException(
-                            "illegal bbox, min of dimension " + (i + 1) + ": " + lower[i] + " is "
-                                    + "greater than max of same dimension: " + upper[i],
-                            WcsExceptionCode.InvalidParameterValue, "BoundingBox");
-                }
-            }
-
-        }
-    }
+//	private static void checkDomainSubset(CoverageInfo meta, DomainSubsetType domainSubset)
+//            throws Exception {
+//      
+//		final GeneralEnvelope requestedEnvelope = (GeneralEnvelope) domainSubset.getSpatialSubset().getEnvelope().get(0);
+//        final CoordinateReferenceSystem bboxCRs = requestedEnvelope.getCoordinateReferenceSystem();
+//
+//        Envelope gridEnvelope = /* meta.getCoverage().getEnvelope() */null;
+//        GeneralEnvelope requestedEnvelopeBboxCRS = null;
+//        if (bboxCRs instanceof GeographicCRS) {
+//            try {
+//                final CoordinateOperationFactory cof = CRS.getCoordinateOperationFactory(true);
+//                final CoordinateOperation operation = cof.createOperation(gridEnvelope.getCoordinateReferenceSystem(), bboxCRs);
+//                requestedEnvelopeBboxCRS = CRS.transform(operation, gridEnvelope);
+//            } catch (Exception e) {
+//                // this may happen, there is nothing we can do about it, we just
+//                // use the back transformed envelope to be more lenient about
+//                // which coordinate coorections to make on the longitude axis
+//                // should the antimeridian style be used
+//            }
+//        }
+//
+//        // check the coordinates, but make sure the case 175,-175 is handled
+//        // as valid for the longitude axis in a geographic coordinate system
+//        // see section 7.6.2 of the WCS 1.1.1 spec)
+//        double[] lower = requestedEnvelope.getLowerCorner().getCoordinate();
+//        double[] upper = requestedEnvelope.getUpperCorner().getCoordinate();
+//        for (int i = 0; i < lower.length; i++) {
+//            if (lower[i] > upper[i]) {
+//                final CoordinateSystemAxis axis = bboxCRs.getCoordinateSystem().getAxis(i);
+//                // see if the coordinates can be fixed
+//                if (bboxCRs instanceof GeographicCRS && axis.getDirection() == AxisDirection.EAST) {
+//
+//                    if (requestedEnvelopeBboxCRS != null) {
+//                        // try to guess which one needs to be fixed
+//                        final double envMax = requestedEnvelopeBboxCRS.getMaximum(i);
+//                        if (envMax >= lower[i])
+//                            upper[i] = upper[i] + (axis.getMaximumValue() - axis.getMinimumValue());
+//                        else
+//                            lower[i] = lower[i] - (axis.getMaximumValue() - axis.getMinimumValue());
+//
+//                    } else {
+//                        // just fix the upper and hope...
+//                        upper[i] = upper[i] + (axis.getMaximumValue() - axis.getMinimumValue());
+//                    }
+//                }
+//
+//                // if even after the fix we're in the wrong situation, complain
+//                if (lower[i] > upper[i]) {
+//                    throw new WcsException(
+//                            "illegal bbox, min of dimension " + (i + 1) + ": " + lower[i] + " is " + "greater than max of same dimension: " + upper[i],
+//                            WcsExceptionCode.InvalidParameterValue, "BoundingBox");
+//                }
+//            }
+//
+//        }
+//    }
 
     private static void checkInterpolationMethod(CoverageInfo info,
             InterpolationMethodType interpolationMethod) {
@@ -644,8 +652,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         String format = output.getFormat().getValue();
         String declaredFormat = getDeclaredFormat(meta.getSupportedFormats(), format);
         if (declaredFormat == null)
-            throw new WcsException("format " + format + " is not supported for this coverage",
-                    InvalidParameterValue, "format");
+            throw new WcsException("format " + format + " is not supported for this coverage",InvalidParameterValue, "format");
 
         // check requested CRS
         // if (output.getCrs() != null) {
@@ -660,24 +667,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
     }
 
     /**
-     * Extracts only the final part of an EPSG code allowing for a specification independent
-     * comparison (that is, it removes the EPSG:, urn:xxx:, http://... prefixes)
-     * 
-     * @param srsName
-     * @return
-     */
-    private String extractCode(String srsName) {
-        if (srsName.startsWith("http://www.opengis.net/gml/srs/epsg.xml#"))
-            return srsName.substring(40);
-        else if (srsName.startsWith("urn:"))
-            return srsName.substring(srsName.lastIndexOf(':') + 1);
-        else if (srsName.startsWith("EPSG:"))
-            return srsName.substring(5);
-        else
-            return srsName;
-    }
-
-    /**
      * Checks if the supported format string list contains the specified format, doing a case
      * insensitive search. If found the declared output format name is returned, otherwise null is
      * returned.
@@ -686,38 +675,16 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
      * @param format
      * @return
      */
-    private static String getDeclaredFormat(List supportedFormats, String format) {
+    private static String getDeclaredFormat(List<String> supportedFormats, String format) {
         // supported formats may be setup using old style formats, first scan
         // the configured list
-        for (Iterator it = supportedFormats.iterator(); it.hasNext();) {
-            String sf = (String) it.next();
+        for (String sf:supportedFormats) {
             if (sf.equalsIgnoreCase(format.trim())) {
                 return sf;
             } else {
                 CoverageResponseDelegate delegate = CoverageResponseDelegateFactory.encoderFor(sf);
                 if (delegate != null && delegate.canProduce(format))
                     return sf;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Checks if the request/response CRS list contains the requested output CRS, doing a case
-     * insensitive search. If found the requested output CRS ID is returned, otherwise null is
-     * returned.
-     * 
-     * @param requestResoinseCRSs
-     * @param crs
-     * @return
-     */
-    private String getRequestResponseCRS(List requestResoinseCRSs, String crs) {
-        // supported formats may be setup using old style formats, first scan
-        // the configured list
-        for (Iterator it = requestResoinseCRSs.iterator(); it.hasNext();) {
-            String reqResCRS = (String) it.next();
-            if (reqResCRS.equalsIgnoreCase(crs)) {
-                return reqResCRS;
             }
         }
         return null;
