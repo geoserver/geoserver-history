@@ -30,7 +30,7 @@ public class NamespacePanel extends Panel {
 
         // the label
         String requiredMark = required ? " *" : ""; 
-        Label label = new Label("paramName", paramLabelModel + requiredMark);
+        Label label = new Label("paramName", paramLabelModel.getObject() + requiredMark);
         add(label);
 
         nsLabel = new Label("paramValue", new PropertyModel(selectedItemModel, "URI"));
