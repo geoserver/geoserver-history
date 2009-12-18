@@ -9,33 +9,29 @@ import java.util.List;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 public class BBoxKvpParser extends WcsKvpParser {
     public BBoxKvpParser() {
         super("bbox", GeneralEnvelope.class);
     }
 
-    public Object parse(String value) throws Exception {
+    @SuppressWarnings("unchecked")
+	public GeneralEnvelope parse(String value) throws Exception {
         List unparsed = KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER);
-
+        final int size=unparsed.size();
         // check to make sure that the bounding box has 4 coordinates
-        if (unparsed.size() < 4) {
+        if (unparsed.size() < 4||(size%2!=0)||size>6) {
             throw new IllegalArgumentException("Requested bounding box contains wrong"
-                    + "number of coordinates (should have " + "4): " + unparsed.size());
+                    + "number of coordinates: " + unparsed.size());
         }
 
         // if it does, store them in an array of doubles
-        double[] bbox = new double[unparsed.size()];
-
-        for (int i = 0; i < unparsed.size(); i++) {
+        final double[] bbox = new double[size];
+        for (int i = 0; i < size; i++) {
             try {
                 bbox[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Bounding box coordinate " + i
-                        + " is not parsable:" + unparsed.get(i));
+                throw new IllegalArgumentException("Bounding box coordinate " + i + " is not parsable:" + unparsed.get(i));
             }
         }
 
@@ -44,10 +40,12 @@ public class BBoxKvpParser extends WcsKvpParser {
         double miny = bbox[1];
         double maxx = bbox[2];
         double maxy = bbox[3];
-
-        double minz = 0.0;
-        double maxz = 0.0;
-
+    	double minz = Double.NaN;
+    	double maxz = Double.NaN;
+        if(size==6){
+        	minz = bbox[4];
+        	maxz = bbox[5];
+        }
         if (minx > maxx) {
             throw new ServiceException("illegal bbox, minX: " + minx + " is "
                     + "greater than maxX: " + maxx);
@@ -57,23 +55,19 @@ public class BBoxKvpParser extends WcsKvpParser {
             throw new ServiceException("illegal bbox, minY: " + miny + " is "
                     + "greater than maxY: " + maxy);
         }
+        
+        if (size== 6 &&minz > maxz) {
+            throw new ServiceException("illegal bbox, minz: " + minz + " is "
+                    + "greater than maxz: " + maxz);
+        }        
 
-        // check for crs
-        CoordinateReferenceSystem crs = null;
+        // build the final envelope with no CRS
+        final GeneralEnvelope envelope= new GeneralEnvelope(size/2);
+        if(size==4)
+        	envelope.setEnvelope(minx,miny,maxx,maxy);
+        else
+        	envelope.setEnvelope(minx,miny,minz,maxx,maxy,maxz);
+        return envelope;
 
-        if (unparsed.size() > 4) {
-            crs = CRS.decode((String) unparsed.get(4));
-        } else {
-            // TODO: use the default crs of the system
-        }
-
-        return new ReferencedEnvelope(minx, maxx, miny, maxy, crs);
-        // if (unparsed.size() > 4) {
-        // minz = bbox[4];
-        // maxz = unparsed.size() == 5 ? minz : bbox[5];
-        // return new GeneralEnvelope(new double[] {minx, miny, minz}, new double[] {maxx, maxy,
-        // maxz});
-        // } else
-        // return new GeneralEnvelope(new double[] {minx, miny}, new double[] {maxx, maxy});
     }
 }

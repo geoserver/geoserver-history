@@ -11,7 +11,6 @@ import junit.framework.Test;
 import junit.textui.TestRunner;
 import net.opengis.wcs10.GetCoverageType;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.wcs.kvp.Wcs10GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
@@ -26,13 +25,9 @@ import org.vfny.geoserver.wcs.WcsException;
 
 public class GetCoverageTest extends WCSTestSupport {
 
-    private static final double EPS = 10 - 6;
-
     private Wcs10GetCoverageRequestReader kvpreader;
 
     private WebCoverageService100 service;
-
-    private Catalog catalog;
 
     private WCSConfiguration configuration;
 
@@ -51,7 +46,6 @@ public class GetCoverageTest extends WCSTestSupport {
         kvpreader = (Wcs10GetCoverageRequestReader) applicationContext
                 .getBean("wcs100GetCoverageRequestReader");
         service = (WebCoverageService100) applicationContext.getBean("wcs100ServiceTarget");
-        catalog = (Catalog) applicationContext.getBean("catalog");
         configuration = new WCSConfiguration();
         xmlReader = new WcsXmlReader("GetCoverage", "1.0.0", configuration);
     }
@@ -63,8 +57,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testKvpBasic() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("coverage", layerId);
+        final String layerId = getLayerId(TASMANIA_BM);
+        raw.put("coverage",layerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "-180,-90,180,90");
@@ -82,8 +76,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testWrongFormatParams() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("coverage", layerId);
+        final String getLayerId = getLayerId(TASMANIA_BM);
+        raw.put("coverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "SuperCoolFormat");
         raw.put("BBox", "146,-45,147,-42");
@@ -92,7 +86,8 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("height", "150");
 
         try {
-            GridCoverage[] coverages = executeGetCoverageKvp(raw);
+            @SuppressWarnings("unused")
+			GridCoverage[] coverages = executeGetCoverageKvp(raw);
             fail("When did we learn to encode SuperCoolFormat?");
         } catch (WcsException e) {
             assertEquals(InvalidParameterValue.toString(), e.getCode());
@@ -102,8 +97,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testDefaultGridOrigin() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("sourcecoverage", layerId);
+        final String getLayerId = getLayerId(TASMANIA_BM);
+        raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146.49999999999477,-44.49999999999785,147.0,-42.99999999999787");
@@ -126,8 +121,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testRangeSubsetSingle() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("coverage", layerId);
+        final String getLayerId = getLayerId(TASMANIA_BM);
+        raw.put("coverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
@@ -151,8 +146,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testRangeSubsetMulti() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("coverage", layerId);
+        final String getLayerId = getLayerId(TASMANIA_BM);
+        raw.put("coverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
@@ -169,8 +164,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testRangeSubsetSwap() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("coverage", layerId);
+        final String getLayerId = getLayerId(TASMANIA_BM);
+        raw.put("coverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
@@ -187,8 +182,8 @@ public class GetCoverageTest extends WCSTestSupport {
 
     public void testRangeSubsetOnlyField() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
-        raw.put("sourcecoverage", layerId);
+        final String getLayerId = getLayerId(TASMANIA_BM);
+        raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
         raw.put("BBox", "146,-45,147,-42");
@@ -199,13 +194,31 @@ public class GetCoverageTest extends WCSTestSupport {
         GridCoverage[] coverages = executeGetCoverageKvp(raw);
         assertEquals(3, coverages[0].getNumSampleDimensions());
     }
+    
+//    public void testRangeSubsetOnlyFieldRes() throws Exception {
+//        Map<String, Object> raw = new HashMap<String, Object>();
+//        final String getLayerId = getLayerId(TASMANIA_BM);
+//        raw.put("sourcecoverage", getLayerId);
+//        raw.put("version", "1.0.0");
+//        raw.put("format", "image/geotiff");
+//        raw.put("BBox", "146,-45,147,-42");
+//        raw.put("crs", "EPSG:4326");
+//        raw.put("resx", "0.2");
+//        raw.put("resy", "0.2");
+//
+//        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+//        assertEquals(3, coverages[0].getNumSampleDimensions());
+//        
+//        AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
+//        assertEquals(0.2, tx.getScaleX());
+//        assertEquals(-0.2, tx.getScaleY());        
+//    }
 
     /**
      * Runs GetCoverage on the specified parameters and returns an array of coverages
      */
     GridCoverage[] executeGetCoverageKvp(Map<String, Object> raw) throws Exception {
-        GetCoverageType getCoverage = (GetCoverageType) kvpreader.read(kvpreader.createRequest(),
-                parseKvp(raw), raw);
+        final GetCoverageType getCoverage = (GetCoverageType) kvpreader.read(kvpreader.createRequest(),parseKvp(raw), raw);
         return service.getCoverage(getCoverage);
     }
 

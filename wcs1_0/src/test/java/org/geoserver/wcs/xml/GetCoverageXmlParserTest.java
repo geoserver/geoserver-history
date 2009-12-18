@@ -13,9 +13,8 @@ import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.wcs.WCSConfiguration;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.vfny.geoserver.wcs.WcsException;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 public class GetCoverageXmlParserTest extends TestCase {
 
@@ -176,11 +175,11 @@ public class GetCoverageXmlParserTest extends TestCase {
         assertEquals(grid.getAxisName().get(0), "Column");
         assertEquals(grid.getAxisName().get(1), "Row");
 
-        GeneralEnvelope gridLimits = grid.getLimits();
-        assertEquals(0.0, gridLimits.getMinimum(0));
-        assertEquals(0.0, gridLimits.getMinimum(1));
-        assertEquals(545.0, gridLimits.getMaximum(0));
-        assertEquals(490.0, gridLimits.getMaximum(1));
+        GridEnvelope gridLimits = grid.getLimits();
+        assertEquals(0.0, gridLimits.getLow(0));
+        assertEquals(0.0, gridLimits.getLow(1));
+        assertEquals(545.0, gridLimits.getHigh(0));
+        assertEquals(490.0, gridLimits.getHigh(1));
 
         RangeSubsetType rangeSet = gc.getRangeSubset();
         AxisSubsetType axisSubset = (AxisSubsetType) rangeSet.getAxisSubset().get(0);

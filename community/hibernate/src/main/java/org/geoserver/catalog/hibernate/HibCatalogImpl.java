@@ -82,7 +82,12 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 public class HibCatalogImpl implements Catalog, Serializable, ApplicationContextAware {
 
-    private final static Logger LOGGER = Logging.getLogger(HibCatalogImpl.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -33839247662351582L;
+
+	private final static Logger LOGGER = Logging.getLogger(HibCatalogImpl.class);
 
     /**
      *
@@ -765,15 +770,16 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
             unwrapped.setResource(resource);
         }
 
-        LOGGER.warning("SAVING LAYER id:" + unwrapped.getId() + " name:" + unwrapped.getName());
-        LOGGER.warning("  layer.resource " + unwrapped.getResource().getClass().getSimpleName()
-                + "[" + "id:" + unwrapped.getResource().getId() + " name:"
-                + unwrapped.getResource().getName() + "]");
-
-        if (unwrapped.getDefaultStyle() != null)
-            LOGGER.warning("  layer.style " + "[" + "id:" + unwrapped.getDefaultStyle().getId()
-                    + " name:" + unwrapped.getDefaultStyle().getName() + "]");
-
+        if(LOGGER.isLoggable(Level.FINE)){
+	        LOGGER.fine("SAVING LAYER id:" + unwrapped.getId() + " name:" + unwrapped.getName());
+	        LOGGER.fine("  layer.resource " + unwrapped.getResource().getClass().getSimpleName()
+	                + "[" + "id:" + unwrapped.getResource().getId() + " name:"
+	                + unwrapped.getResource().getName() + "]");
+	
+	        if (unwrapped.getDefaultStyle() != null)
+	            LOGGER.fine("  layer.style " + "[" + "id:" + unwrapped.getDefaultStyle().getId()
+	                    + " name:" + unwrapped.getDefaultStyle().getName() + "]");
+        }
         fixNativeName(resource);
 
         catalogDAO.save(unwrapped);
@@ -789,12 +795,13 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
     private void fixNativeName(ResourceInfo resource) {
         if (resource != null && resource.getNativeName() == null) {
             if (resource instanceof CoverageInfo) {
-                LOGGER.warning("FIXME Coverage is missing nativeName (" + "id:" + resource.getId()
-                        + " name:" + resource.getName() + ")");
+            	if(LOGGER.isLoggable(Level.FINE))
+            		LOGGER.fine("FIXME Coverage is missing nativeName (" + "id:" + resource.getId()+ " name:" + resource.getName() + ")");
                 String storeurl = ((CoverageInfo) resource).getStore().getURL();
                 String name = FilenameUtils.getBaseName(storeurl);
                 resource.setNativeName(name);
-                LOGGER.warning("FIXME setting coverage nativeName to " + name);
+                if(LOGGER.isLoggable(Level.FINE))
+            		LOGGER.fine("FIXME setting coverage nativeName to " + name);
             }
         }
     }
@@ -1136,12 +1143,14 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
         catalogDAO.delete(realns);
 
         if (realns.isDefault()) {
-            LOGGER.warning("Removing default namespace '" + namespace.getName() + "'");
+        	if(LOGGER.isLoggable(Level.FINE))
+        		LOGGER.fine("Removing default namespace '" + namespace.getName() + "'");
             // elect a random ns as default
             List<NamespaceInfo> nslist = catalogDAO.getNamespaces();
             if (!nslist.isEmpty()) {
                 NamespaceInfoImpl ns0 = (NamespaceInfoImpl) nslist.get(0);
-                LOGGER.warning("Electing '" + namespace.getName() + "' to default namespace.");
+                if(LOGGER.isLoggable(Level.FINE))
+            		LOGGER.fine("Electing '" + namespace.getName() + "' to default namespace.");
                 ns0.setDefault(true);
                 catalogDAO.update(ns0);
             }
@@ -1490,7 +1499,7 @@ public class HibCatalogImpl implements Catalog, Serializable, ApplicationContext
                 } else if (event instanceof CatalogPostModifyEvent) {
                     listener.handlePostModifyEvent((CatalogPostModifyEvent) event);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 LOGGER.log(Level.WARNING, "Catalog listener threw exception handling event.", e);
             }
 

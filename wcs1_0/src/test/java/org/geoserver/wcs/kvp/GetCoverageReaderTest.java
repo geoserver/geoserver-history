@@ -45,7 +45,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
             assertEquals("MissingParameterValue", e.getCode());
         }
 
-        final String layerId = layerId(TASMANIA_BM);
+        final String layerId = getLayerId(TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
@@ -94,7 +94,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 
     public void testBasic() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
+        final String layerId = getLayerId(TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/tiff");
@@ -112,7 +112,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 
     public void testUnsupportedCRS() throws Exception {
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String layerId = layerId(TASMANIA_BM);
+        final String layerId = getLayerId(TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/tiff");
