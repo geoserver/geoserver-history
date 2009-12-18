@@ -7,6 +7,10 @@ import javax.xml.namespace.QName;
 import net.opengis.wcs11.Wcs111Factory;
 
 import org.eclipse.emf.ecore.EFactory;
+import org.geoserver.wcs.xml.v1_1_1.bindings.TimePeriodTypeBinding;
+import org.geoserver.wcs.xml.v1_1_1.bindings.TimePositionTypeBinding;
+import org.geoserver.wcs.xml.v1_1_1.bindings.TimeSequenceTypeBinding;
+import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.ows.v1_1.OWSConfiguration;
 import org.geotools.xml.ComplexEMFBinding;
@@ -42,15 +46,15 @@ public class WCSConfiguration extends Configuration {
         register(bindings, wcsFactory, WCS._DescribeCoverage);
         register(bindings, wcsFactory, WCS._GetCoverage);
         register(bindings, wcsFactory, WCS.DomainSubsetType);
-        register(bindings, wcsFactory, WCS.TimeDurationType);
-        register(bindings, wcsFactory, WCS.TimePeriodType);
-        register(bindings, wcsFactory, WCS.TimeSequenceType);
         register(bindings, wcsFactory, WCS.RangeSubsetType);
         register(bindings, wcsFactory, WCS.RangeSubsetType_FieldSubset);
         register(bindings, wcsFactory, WCS._AxisSubset);
         register(bindings, wcsFactory, WCS.OutputType);
         register(bindings, wcsFactory, WCS.GridCrsType);
         
+        bindings.put(GML.TimePositionType, new TimePositionTypeBinding());
+        bindings.put(WCS.TimePeriodType, new TimePeriodTypeBinding());
+        bindings.put(WCS.TimeSequenceType, new TimeSequenceTypeBinding());
     }
     
     private void register(Map bindings, EFactory factory, QName qname) {

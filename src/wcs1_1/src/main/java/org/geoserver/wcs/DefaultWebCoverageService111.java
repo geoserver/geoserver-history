@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +31,7 @@ import net.opengis.wcs11.GetCoverageType;
 import net.opengis.wcs11.GridCrsType;
 import net.opengis.wcs11.OutputType;
 import net.opengis.wcs11.RangeSubsetType;
+import net.opengis.wcs11.TimePeriodType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageDimensionInfo;
@@ -39,6 +43,7 @@ import org.geoserver.wcs.kvp.GridCS;
 import org.geoserver.wcs.kvp.GridType;
 import org.geoserver.wcs.response.DescribeCoverageTransformer;
 import org.geoserver.wcs.response.WCSCapsTransformer;
+import org.geotools.coverage.grid.GeneralGridGeometry;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -47,12 +52,17 @@ import org.geotools.coverage.grid.io.OverviewPolicy;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
+import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.referencing.operation.transform.IdentityTransform;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.geometry.Envelope;
+import org.opengis.parameter.GeneralParameterDescriptor;
+import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.parameter.ParameterValue;
+import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.GeographicCRS;
 import org.opengis.referencing.cs.AxisDirection;
@@ -184,7 +194,6 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             }
 
             final GridCrsType gridCRS = request.getOutput().getGridCRS();
-            // TODO: handle time domain subset...
 
             // Compute the target crs, the crs that the final coverage will be
             // served into
@@ -240,7 +249,6 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
 
             // now we have enough info to read the coverage, grab the parameters
             // and add the grid geometry info
-            final Map parameters = CoverageUtils.getParametersKVP(reader.getFormat().getReadParameters());
             final GeneralEnvelope intersectionEnvelopeInSourceCRS = new GeneralEnvelope(requestedEnvelopeInSourceCRS);
             intersectionEnvelopeInSourceCRS.intersect(originalEnvelope);
             final GeneralEnvelope intersectionEnvelope= 
@@ -251,8 +259,100 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             
             
             final GridGeometry2D requestedGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelopeInSourceCRS, null);
-            parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),requestedGridGeometry);
-            coverage = (GridCoverage2D) reader.read(CoverageUtils.getParameters(reader.getFormat().getReadParameters(), parameters, true));
+
+            final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
+            GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, meta.getParameters());
+                                    readParameters = (readParameters != null ? readParameters : new GeneralParameterValue[0]);
+            
+            //
+            // Setting coverage reading params.
+            //
+            final ParameterValue requestedGridGeometryParam = new DefaultParameterDescriptor(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
+
+            // add to the list
+            GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
+            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+            readParametersClone[readParameters.length]=requestedGridGeometryParam;
+            readParameters=readParametersClone;
+            
+            /*
+             * Test if the parameter "TIME" is present in the WMS
+             * request, and by the way in the reading parameters. If
+             * it is the case, one can adds it to the request. If an
+             * exception is thrown, we have nothing to do.
+             */
+            final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
+            if (request.getDomainSubset().getTemporalSubset() != null)
+                for(GeneralParameterDescriptor pd:parameterDescriptors){
+
+                    // TIME
+                    if(pd.getName().getCode().equalsIgnoreCase("TIME")){
+                        final ParameterValue time=(ParameterValue) pd.createValue();
+                        final List<Date> timeValues = new LinkedList<Date>();
+                        
+                        if (request.getDomainSubset().getTemporalSubset().getTimePosition() != null 
+                                && request.getDomainSubset().getTemporalSubset().getTimePosition().size() > 0) {
+                            for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePosition().iterator(); it.hasNext(); ) {
+                                Date tp = (Date) it.next();
+                                timeValues.add(tp);
+                            }
+                            if (time != null) {
+                                time.setValue(timeValues);
+                            }
+                        } else if (request.getDomainSubset().getTemporalSubset().getTimePeriod() != null 
+                                && request.getDomainSubset().getTemporalSubset().getTimePeriod().size() > 0) {
+                            for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePeriod().iterator(); it.hasNext(); ) {
+                                TimePeriodType tp = (TimePeriodType) it.next();
+                                Date beginning = (Date)tp.getBeginPosition();
+                                Date ending = (Date)tp.getEndPosition();
+                                
+                                timeValues.add(beginning);
+                                timeValues.add(ending);
+                            }
+                            if (time != null) {
+                                time.setValue(timeValues);
+                            }
+                        }
+
+                        // add to the list
+                        readParametersClone= new GeneralParameterValue[readParameters.length+1];
+                        System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+                        readParametersClone[readParameters.length]=time;
+                        readParameters=readParametersClone;
+
+                        // leave 
+                        break;
+                    }
+                }                
+            
+            //
+            // ELEVATION
+            //
+//            if(!Double.isNaN(elevations[0]))
+//                for(GeneralParameterDescriptor pd:parameterDescriptors){
+//
+//                    // ELEVATION
+//                    if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
+//                        final ParameterValue elevation=(ParameterValue) pd.createValue();
+//                        if (elevation != null) {
+//                            elevation.setValue(elevations[0]);
+//                        }
+//
+//                        // add to the list
+//                        readParametersClone= new GeneralParameterValue[readParameters.length+1];
+//                        System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+//                        readParametersClone[readParameters.length]=elevation;
+//                        readParameters=readParametersClone;
+//
+//                        // leave 
+//                        break;
+//                    }
+//                }
+            
+            //
+            // perform Read ...
+            //
+            coverage = (GridCoverage2D) reader.read(readParameters);
             if ((coverage == null) || !(coverage instanceof GridCoverage2D)) {
                 throw new IOException("The requested coverage could not be found.");
             }
@@ -655,5 +755,31 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             else
                 keys.set(j, parsedKey);
         }
+    }
+    
+    /**
+     * 
+     * @param date
+     * @return
+     */
+    private static Date cvtToGmt( Date date )
+    {
+       TimeZone tz = TimeZone.getDefault();
+       Date ret = new Date( date.getTime() - tz.getRawOffset() );
+
+       // if we are now in DST, back off by the delta.  Note that we are checking the GMT date, this is the KEY.
+       if ( tz.inDaylightTime( ret ))
+       {
+          Date dstDate = new Date( ret.getTime() - tz.getDSTSavings() );
+
+          // check to make sure we have not crossed back into standard time
+          // this happens when we are on the cusp of DST (7pm the day before the change for PDT)
+          if ( tz.inDaylightTime( dstDate ))
+          {
+             ret = dstDate;
+          }
+       }
+
+       return ret;
     }
 }
