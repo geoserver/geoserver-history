@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.ows.KvpParser;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.util.Version;
 
 /**
  * Utility class for reading Key Value Pairs from a http query string.
@@ -463,20 +464,36 @@ public class KvpUtils {
             //find the parser for this key value pair
             Object parsed = null;
 
+            KvpParser parser = null;
             for (Iterator pitr = parsers.iterator(); pitr.hasNext() && parsed == null;) {
-                KvpParser parser = (KvpParser) pitr.next();
-
-                if (key.equalsIgnoreCase(parser.getKey())) {
-                    try {
-                        parsed = parser.parse(value);
-                    } catch (Throwable t) {
-                        //dont throw any exceptions yet, befor the service is
-                        // known
-                        errors.add( t );
+                KvpParser candidate = (KvpParser) pitr.next();
+                if (key.equalsIgnoreCase(candidate.getKey())) {
+                    if (parser == null)
+                        parser = candidate;
+                    
+                    else {
+                        String trgService = candidate.getService();
+                        Version trgVersion = candidate.getVersion();
+                        
+                        if (trgService != null && trgService.equalsIgnoreCase(service) && trgVersion!= null && trgVersion.toString().equals(version))
+                            parser = candidate;
+                        
+                        else if (trgService != null && trgService.equalsIgnoreCase(service))
+                            parser = candidate;
                     }
                 }
             }
 
+            if (parser != null) {
+                try {
+                    parsed = parser.parse(value);
+                } catch (Throwable t) {
+                    //dont throw any exceptions yet, befor the service is
+                    // known
+                    errors.add( t );
+                }
+            }
+            
             //if noone could parse, just set to string value
             if (parsed != null) {
                 entry.setValue(parsed);
