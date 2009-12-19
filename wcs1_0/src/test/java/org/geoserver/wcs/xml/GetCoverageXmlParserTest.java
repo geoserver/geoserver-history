@@ -176,10 +176,10 @@ public class GetCoverageXmlParserTest extends TestCase {
         assertEquals(grid.getAxisName().get(1), "Row");
 
         GridEnvelope gridLimits = grid.getLimits();
-        assertEquals(0.0, gridLimits.getLow(0));
-        assertEquals(0.0, gridLimits.getLow(1));
-        assertEquals(545.0, gridLimits.getHigh(0));
-        assertEquals(490.0, gridLimits.getHigh(1));
+        assertEquals(0, gridLimits.getLow(0));
+        assertEquals(0, gridLimits.getLow(1));
+        assertEquals(545, gridLimits.getHigh(0));
+        assertEquals(490, gridLimits.getHigh(1));
 
         RangeSubsetType rangeSet = gc.getRangeSubset();
         AxisSubsetType axisSubset = (AxisSubsetType) rangeSet.getAxisSubset().get(0);
