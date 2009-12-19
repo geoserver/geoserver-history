@@ -468,6 +468,11 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         File styles = resourceLoader.find( "styles" );
         for ( File sf : list(styles,new SuffixFileFilter(".xml") ) ) {
             try {
+                //handle the .xml.xml case
+                if (new File(styles,sf.getName()+".xml").exists()) {
+                    continue;
+                }
+                
                 StyleInfo s = depersist( xp, sf, StyleInfo.class );
                 catalog.add( s );
                 

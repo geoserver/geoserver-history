@@ -516,7 +516,17 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     }
     
     File file( StyleInfo s ) throws IOException {
-        return new File( dir( s ), s.getName() + ".xml");
+        //special case for styles, if the file name (minus the suffix) matches the id of the style
+        // and the suffix is xml (rather than sld) we need to avoid overwritting the actual 
+        // style file
+        if (s.getFilename() != null && s.getFilename().endsWith(".xml") 
+            && s.getFilename().startsWith(s.getName()+".")) {
+            //append a second .xml suffix
+            return new File( dir( s ), s.getName() + ".xml.xml");
+        }
+        else {
+            return new File( dir( s ), s.getName() + ".xml");
+        }
     }
     
     //layer groups
