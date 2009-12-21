@@ -57,7 +57,8 @@ import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
  */
 public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
-    Catalog catalog;
+    public static final String VERSION = "1.0.0";
+	Catalog catalog;
 
     public Wcs10GetCoverageRequestReader(Catalog catalog) {
         super(GetCoverageType.class, Wcs10Factory.eINSTANCE);
@@ -83,7 +84,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
         // do the version negotiation dance
         List<String> provided = new ArrayList<String>();
-        provided.add("1.0.0");
+        provided.add(Wcs10GetCoverageRequestReader.VERSION);
         List<String> accepted = null;
         if (getCoverage.getVersion() != null) {
             accepted = new ArrayList<String>();
@@ -91,11 +92,11 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         }
         String version = RequestUtils.getVersionPreOws(provided, accepted);
 
-        if (!"1.0.0".equals(version)) {
+        if (!Wcs10GetCoverageRequestReader.VERSION.equals(version)) {
             throw new WcsException("An invalid version number has been specified",
                     WcsExceptionCode.InvalidParameterValue, "version");
         }
-        getCoverage.setVersion("1.0.0");
+        getCoverage.setVersion(Wcs10GetCoverageRequestReader.VERSION);
 
         // build the domain subset
         getCoverage.setDomainSubset(parseDomainSubset(kvp));
@@ -122,10 +123,11 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         // check for CRS
         //
         String crsName = (String) kvp.get("crs");
-        CoordinateReferenceSystem crs = null;
         if (crsName == null)
-            throw new WcsException("crs parameter is mandatory", MissingParameterValue, "crs");
-        crs = decodeCRS100(crsName, crs);
+            throw new WcsException("CRS parameter is mandatory", MissingParameterValue, "crs");
+        final CoordinateReferenceSystem crs = decodeCRS100(crsName);
+        if(crs==null)
+        	throw new WcsException("CRS parameter is invalid:"+crsName,InvalidParameterValue , "crs");
         final VerticalCRS verticalCRS = CRS.getVerticalCRS(crs);
         final boolean hasVerticalCRS = verticalCRS != null;
 
@@ -177,31 +179,32 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         final Object h = kvp.get("height");
         if (w != null && h != null) {
             //
-            // normal grid management, we need to compute RESX, RESY, RESZ afterwards
+            // normal grid management, only the envelope and the raster dimensions have been specified, 
+        	// we need to compute RESX, RESY, RESZ afterwards
             //
 
             // get W and H
-            int width = w instanceof Integer ? ((Integer) w).intValue() : Integer.parseInt((String) w);
-            int height = h instanceof Integer ? ((Integer) h).intValue() : Integer.parseInt((String) h);
+            int width =  Integer.parseInt((String) w);
+            int height = Integer.parseInt((String) h);
             grid.getAxisName().add("x");
             grid.getAxisName().add("y");
 
-            // now compute offset and origin
-            final double resX = envelope.getSpan(0) / width;
-            final double resY = envelope.getSpan(1) / height;
-
-            // now compute offset vector for the transform from the envelope
-            final double origX = envelope.getLowerCorner().getOrdinate(0);
-            final double origY = envelope.getLowerCorner().getOrdinate(1);
-
-            // create offset point
-            final PointType origin = Gml4wcsFactory.eINSTANCE.createPointType();
-            final DirectPositionType dp = Gml4wcsFactory.eINSTANCE.createDirectPositionType();
-            origin.setPos(dp);
-            origin.setSrsName(crsName);
-
-            // create resolutions vector
-            final VectorType resolutionVector = Gml4wcsFactory.eINSTANCE.createVectorType();
+//            // now compute offset and origin
+//            final double resX = envelope.getSpan(0) / width;
+//            final double resY = envelope.getSpan(1) / height;
+//
+//            // now compute offset vector for the transform from the envelope
+//            final double origX = envelope.getLowerCorner().getOrdinate(0);
+//            final double origY = envelope.getLowerCorner().getOrdinate(1);
+//
+//            // create offset point
+//            final PointType origin = Gml4wcsFactory.eINSTANCE.createPointType();
+//            final DirectPositionType dp = Gml4wcsFactory.eINSTANCE.createDirectPositionType();
+//            origin.setPos(dp);
+//            origin.setSrsName(crsName);
+//
+//            // create resolutions vector
+//            final VectorType resolutionVector = Gml4wcsFactory.eINSTANCE.createVectorType();
 
             final Object d = kvp.get("depth");
             if (d != null) {
@@ -215,38 +218,39 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
                 // third dimension
                 grid.getAxisName().add("z");
 
-                final int depth = d instanceof Integer ? ((Integer) d).intValue() : Integer.parseInt((String) d);
+                final int depth = Integer.parseInt((String) d);
                 grid.setDimension(BigInteger.valueOf(3));
-                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, depth }, new int[] {width, height, 0 }, true));
+                // notice that the third element indicates how many layers we do have requested on the third dimension
+                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, 0 }, new int[] {width, height, depth }, true));
 
-                final double resZ = (bbox.getUpperCorner().getOrdinate(2) - bbox.getLowerCorner().getOrdinate(2)) / depth;
-                final double origZ = bbox.getLowerCorner().getOrdinate(2);
+//                final double resZ = (bbox.getUpperCorner().getOrdinate(2) - bbox.getLowerCorner().getOrdinate(2)) / depth;
+//                final double origZ = bbox.getLowerCorner().getOrdinate(2);
 
                 // 3D grid
                 grid.setDimension(BigInteger.valueOf(3));
-                // set the origin position
-                dp.setDimension(grid.getDimension());
-                dp.setValue(Arrays.asList(origX, origY, origZ));
-                grid.setOrigin(origin);
-
-                // set the resolution vector
-                resolutionVector.setDimension(grid.getDimension());
-                resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
-                grid.getOffsetVector().add(resolutionVector);
+//                // set the origin position
+//                dp.setDimension(grid.getDimension());
+//                dp.setValue(Arrays.asList(origX, origY, origZ));
+//                grid.setOrigin(origin);
+//
+//                // set the resolution vector
+//                resolutionVector.setDimension(grid.getDimension());
+//                resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
+//                grid.getOffsetVector().add(resolutionVector);
             } else {
                 // 2d grid
                 grid.setDimension(BigInteger.valueOf(2));
                 grid.setLimits(new GridEnvelope2D(0, 0, width, height));
 
-                // set the origin position
-                dp.setDimension(grid.getDimension());
-                dp.setValue(Arrays.asList(origX, origY));
-                grid.setOrigin(origin);
-
-                // set the resolution vector
-                resolutionVector.setDimension(grid.getDimension());
-                resolutionVector.setValue(Arrays.asList(resX, resY));
-                grid.getOffsetVector().add(resolutionVector);
+//                // set the origin position
+//                dp.setDimension(grid.getDimension());
+//                dp.setValue(Arrays.asList(origX, origY));
+//                grid.setOrigin(origin);
+//
+//                // set the resolution vector
+//                resolutionVector.setDimension(grid.getDimension());
+//                resolutionVector.setValue(Arrays.asList(resX, resY));
+//                grid.getOffsetVector().add(resolutionVector);
             }
         } else {
             //
@@ -405,7 +409,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         }
     }
 
-    private OutputType parseOutputElement(Map kvp) throws Exception {
+    private OutputType parseOutputElement(final Map<String,String> kvp) throws Exception {
         final OutputType output = Wcs10Factory.eINSTANCE.createOutputType();
         final CodeType crsType = Gml4wcsFactory.eINSTANCE.createCodeType();
         final CodeType formatType = Gml4wcsFactory.eINSTANCE.createCodeType();
@@ -415,13 +419,12 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         if (format == null)
             throw new WcsException("format parameter is mandatory", MissingParameterValue, "format");
 
-        String crsName = (String) (kvp.get("response_crs") != null ? kvp.get("response_crs") : kvp
-                .get("crs"));
+        final String crsName = (String) (kvp.get("response_crs") != null ? kvp.get("response_crs") : kvp.get("crs"));
         CoordinateReferenceSystem crs = null;
         if (crsName != null) {
-            crs = decodeCRS100(crsName, crs);
+            crs = decodeCRS100(crsName);
 
-            crsType.setValue(CRS.lookupIdentifier(crs, false));
+            crsType.setValue(CRS.lookupIdentifier(crs, true));
 
             output.setCrs(crsType);
         }
@@ -434,28 +437,25 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
     }
 
     /**
+     * DEcode the requested CRS following the WCS 1.0 style with LON,LAT axes order.
+     * 
      * @param crsName
-     * @param crs
      * @return
      */
-    private static CoordinateReferenceSystem decodeCRS100(String crsName,
-            CoordinateReferenceSystem crs) {
+    private static CoordinateReferenceSystem decodeCRS100(String crsName) throws WcsException{
         if ("WGS84(DD)".equals(crsName)) {
             crsName = "EPSG:4326";
         }
 
         try {
             // in 100 we work with Lon,Lat always
-            crs = CRS.decode(crsName, true);
+            return CRS.decode(crsName, true);
         } catch (NoSuchAuthorityCodeException e) {
-            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,
-                    "crs");
+            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,"crs");
         } catch (FactoryException e) {
-            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,
-                    "crs");
+            throw new WcsException("Could not recognize crs " + crsName, InvalidParameterValue,"crs");
         }
 
-        return crs;
     }
 
 }
