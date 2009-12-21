@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.media.jai.Interpolation;
 
 import net.opengis.ows11.BoundingBoxType;
+import net.opengis.ows11.CodeType;
 import net.opengis.wcs11.AxisSubsetType;
 import net.opengis.wcs11.DescribeCoverageType;
 import net.opengis.wcs11.DomainSubsetType;
@@ -32,6 +33,7 @@ import net.opengis.wcs11.GridCrsType;
 import net.opengis.wcs11.OutputType;
 import net.opengis.wcs11.RangeSubsetType;
 import net.opengis.wcs11.TimePeriodType;
+import net.opengis.wcs11.TimeSequenceType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageDimensionInfo;
@@ -138,14 +140,16 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
     @SuppressWarnings({ "deprecation", "unchecked" })
 	public GridCoverage[] getCoverage(GetCoverageType request) {
         if (LOGGER.isLoggable(Level.FINEST)) {
-            LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ")
-                    .append(request).toString());
+            LOGGER.finest(new StringBuffer("execute CoverageRequest response. Called request is: ").append(request).toString());
         }
 
         CoverageInfo meta = null;
         GridCoverage2D coverage = null;
         try {
-            meta = catalog.getCoverageByName(request.getIdentifier().getValue());
+            CodeType identifier = request.getIdentifier();
+            if (identifier == null)
+                throw new WcsException("Internal error, the coverage identifier must not be null", InvalidParameterValue, "identifier");
+            meta = catalog.getCoverageByName(identifier.getValue());
 
             // first let's run some sanity checks on the inputs
             checkDomainSubset(meta, request.getDomainSubset());
@@ -203,6 +207,12 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             else
                 targetCRS = CRS.decode(gridCRS.getGridBaseCRS());
 
+            //
+            // Raster destination size
+            //
+            int elevationLevels=0;
+            double[] elevations = null;
+            
             // grab the grid to world transformation
             MathTransform gridToCRS = reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
             if (gridCRS != null) {
@@ -223,28 +233,87 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
                                 "Internal error, the coverage we're playing with does not have an affine transform...");
 
                     if (gridToCRS instanceof IdentityTransform) {
-                        if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
+                        if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant()) || 
+                                gridCRS.getGridType().equals(GridType.GT2dGridIn2dCrs.getXmlConstant()))
                             offsets = new Double[] { 1.0, 1.0 };
                         else
-                            offsets = new Double[] { 1.0, 0.0, 0.0, 1.0 };
+                            offsets = new Double[] { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
                     } else {
                         AffineTransform2D affine = (AffineTransform2D) gridToCRS;
-                        if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid))
+                        if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant()) || 
+                                gridCRS.getGridType().equals(GridType.GT2dGridIn2dCrs.getXmlConstant()))
                             offsets = new Double[] { affine.getScaleX(), affine.getScaleY() };
                         else
-                            offsets = new Double[] { affine.getScaleX(), affine.getShearX(),affine.getShearY(), affine.getScaleY() };
+                            offsets = new Double[] { affine.getScaleX(), affine.getShearX(), affine.getShearY(), affine.getScaleY() };
                     }
                 }
 
                 // building the actual transform for the resulting grid geometry
                 AffineTransform tx;
-                if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant())) {
-                    tx = new AffineTransform(offsets[0], 0, 0, offsets[1], origin[0], origin[1]);
+                if (gridCRS.getGridType().equals(GridType.GT2dSimpleGrid.getXmlConstant()) || 
+                        gridCRS.getGridType().equals(GridType.GT2dGridIn2dCrs.getXmlConstant())) {
+                    tx = new AffineTransform(
+                            offsets[0], 0, 
+                            0, offsets[1], 
+                            origin[0], origin[1]
+                    );
                 } else {
-                    tx = new AffineTransform(offsets[0], offsets[2], offsets[1], offsets[3],
-                            origin[0], origin[1]);
+                    tx = new AffineTransform(
+                            offsets[0], offsets[4], 
+                            offsets[1], offsets[3], 
+                            origin[0], origin[1]
+                    );
+                    
+                    if (origin.length != 3 || offsets.length != 6)
+                        throw new WcsException("", InvalidParameterValue, "GridCRS");
+              
+                    //
+                    //  ELEVATIONS
+                    //
+                    
+                    // TODO: draft code ... it needs more study!
+                    elevationLevels = (int) Math.round(requestedEnvelope.getUpperCorner().getOrdinate(2) - requestedEnvelope.getLowerCorner().getOrdinate(2));
+
+                    // compute the elevation levels, we have elevationLevels values
+                    if (elevationLevels > 0) {
+                        elevations=new double[elevationLevels];
+
+                        elevations[0]=requestedEnvelope.getLowerCorner().getOrdinate(2); // TODO put the extrema
+                        elevations[elevationLevels-1]=requestedEnvelope.getUpperCorner().getOrdinate(2);
+                        if(elevationLevels>2){
+                            final int adjustedLevelsNum=elevationLevels-1;
+                            double step = (elevations[elevationLevels-1]-elevations[0])/adjustedLevelsNum;
+                            for(int i=1;i<adjustedLevelsNum;i++)
+                                elevations[i]=elevations[i-1]+step;
+                        }
+                    }
                 }
                 gridToCRS = new AffineTransform2D(tx);
+            }
+            
+            //
+            //   TIME Values
+            //
+            final List<Date> timeValues = new LinkedList<Date>();
+
+            TimeSequenceType temporalSubset = request.getDomainSubset().getTemporalSubset();
+            
+            if (temporalSubset != null && temporalSubset.getTimePosition() != null 
+                    && temporalSubset.getTimePosition().size() > 0) {
+                for (Iterator it = temporalSubset.getTimePosition().iterator(); it.hasNext(); ) {
+                    Date tp = (Date) it.next();
+                    timeValues.add(tp);
+                }
+            } else if (temporalSubset != null &&  temporalSubset.getTimePeriod() != null 
+                    && temporalSubset.getTimePeriod().size() > 0) {
+                for (Iterator it = temporalSubset.getTimePeriod().iterator(); it.hasNext(); ) {
+                    TimePeriodType tp = (TimePeriodType) it.next();
+                    Date beginning = (Date)tp.getBeginPosition();
+                    Date ending = (Date)tp.getEndPosition();
+
+                    timeValues.add(beginning);
+                    timeValues.add(ending);
+                }
             }
 
             // now we have enough info to read the coverage, grab the parameters
@@ -258,7 +327,7 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             intersectionEnvelope.setCoordinateReferenceSystem(targetCRS);
             
             
-            final GridGeometry2D requestedGridGeometry =new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelopeInSourceCRS, null);
+            final GridGeometry2D requestedGridGeometry = new GridGeometry2D(PixelInCell.CELL_CENTER, gridToCRS, intersectionEnvelopeInSourceCRS, null);
 
             final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
             GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, meta.getParameters());
@@ -269,12 +338,6 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             //
             final ParameterValue requestedGridGeometryParam = new DefaultParameterDescriptor(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
 
-            // add to the list
-            GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
-            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-            readParametersClone[readParameters.length]=requestedGridGeometryParam;
-            readParameters=readParametersClone;
-            
             /*
              * Test if the parameter "TIME" is present in the WMS
              * request, and by the way in the reading parameters. If
@@ -282,72 +345,52 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
              * exception is thrown, we have nothing to do.
              */
             final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
-            if (request.getDomainSubset().getTemporalSubset() != null)
+            ParameterValue time=null;
+            boolean hasTime=timeValues.size()>0;
+            ParameterValue elevation=null;
+            boolean hasElevation=elevations != null && !Double.isNaN(elevations[0]);
+            
+            if(hasElevation||hasTime){
                 for(GeneralParameterDescriptor pd:parameterDescriptors){
 
-                    // TIME
-                    if(pd.getName().getCode().equalsIgnoreCase("TIME")){
-                        final ParameterValue time=(ParameterValue) pd.createValue();
-                        final List<Date> timeValues = new LinkedList<Date>();
+                        final String code=pd.getName().getCode();
                         
-                        if (request.getDomainSubset().getTemporalSubset().getTimePosition() != null 
-                                && request.getDomainSubset().getTemporalSubset().getTimePosition().size() > 0) {
-                            for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePosition().iterator(); it.hasNext(); ) {
-                                Date tp = (Date) it.next();
-                                timeValues.add(tp);
-                            }
-                            if (time != null) {
-                                time.setValue(timeValues);
-                            }
-                        } else if (request.getDomainSubset().getTemporalSubset().getTimePeriod() != null 
-                                && request.getDomainSubset().getTemporalSubset().getTimePeriod().size() > 0) {
-                            for (Iterator it = request.getDomainSubset().getTemporalSubset().getTimePeriod().iterator(); it.hasNext(); ) {
-                                TimePeriodType tp = (TimePeriodType) it.next();
-                                Date beginning = (Date)tp.getBeginPosition();
-                                Date ending = (Date)tp.getEndPosition();
-                                
-                                timeValues.add(beginning);
-                                timeValues.add(ending);
-                            }
-                            if (time != null) {
-                                time.setValue(timeValues);
-                            }
+                        //
+                        // TIME
+                        //
+                        if(code.equalsIgnoreCase("TIME")){
+                            time=(ParameterValue) pd.createValue();
+                            time.setValue(timeValues);                }
+                        
+                        //
+                        // ELEVATION
+                        //
+                        if(code.equalsIgnoreCase("ELEVATION")){
+                            elevation=(ParameterValue) pd.createValue();
+                            elevation.setValue(elevations[0]);
                         }
-
-                        // add to the list
-                        readParametersClone= new GeneralParameterValue[readParameters.length+1];
-                        System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-                        readParametersClone[readParameters.length]=time;
-                        readParameters=readParametersClone;
-
-                        // leave 
-                        break;
+                        
+                        
+                        // leave?
+                        if((hasElevation&&elevation!=null&&hasTime&&time!=null)||
+                                        !hasElevation&&hasTime&&time!=null||
+                                        hasElevation&&elevation!=null&&!hasTime)
+                                break;
                     }
-                }                
-            
+            }
             //
-            // ELEVATION
+            // add read parameters
             //
-//            if(!Double.isNaN(elevations[0]))
-//                for(GeneralParameterDescriptor pd:parameterDescriptors){
-//
-//                    // ELEVATION
-//                    if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
-//                        final ParameterValue elevation=(ParameterValue) pd.createValue();
-//                        if (elevation != null) {
-//                            elevation.setValue(elevations[0]);
-//                        }
-//
-//                        // add to the list
-//                        readParametersClone= new GeneralParameterValue[readParameters.length+1];
-//                        System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-//                        readParametersClone[readParameters.length]=elevation;
-//                        readParameters=readParametersClone;
-//
-//                        // leave 
-//                        break;
-//                    }
-//                }
+            int addedParams=1+(hasTime?1:0)+(hasElevation?1:0);
+            // add to the list
+            GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length+addedParams--];
+            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
+            readParametersClone[readParameters.length+addedParams--]=requestedGridGeometryParam;
+            if(hasTime)
+                readParametersClone[readParameters.length+addedParams--]=time;
+            if(hasElevation)
+                readParametersClone[readParameters.length+addedParams--]=elevation;            
+            readParameters=readParametersClone;
             
             //
             // perform Read ...
