@@ -7,13 +7,13 @@
   <!-- set parent pom to community pom -->
   <parent>
     <groupId>org.geoserver</groupId> <artifactId>community</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.1</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>rest</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.1-SNAPSHOT</version>
+  <version>2.0.1</version>
   <name>Geoserver REST Support Code</name>
 
   <repositories>
@@ -34,12 +34,12 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0.1-SNAPSHOT</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms</artifactId>
-      <version>2.0.1-SNAPSHOT</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.restlet</groupId>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0.1-SNAPSHOT</version>
+      <version>2.0.1</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
