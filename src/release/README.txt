@@ -1,3 +1,12 @@
+GeoServer 2.0.1 (December 22, 2009)
+-----------------------------------
+
+The secord release of the GeoServer 2.0 branch includes a wide array of bugs squashed, issues resolved and improvements over the initial 2.0 release.  With the increase in community testing the fixes are spread far and wide throughout the code base.  For a complete list, refer to the issue tracker:
+
+http://jira.codehaus.org/browse/GEOS/fixforversion/15897
+
+This release is based on GeoTools 2.6.1.
+
 GeoServer 2.0 (October 21, 2009)
 --------------------------------
 
