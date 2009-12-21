@@ -42,8 +42,8 @@ public class GetCoverageXmlParserTest extends TestCase {
                 + " <sourceCoverage>nurc:Pk50095</sourceCoverage>" + "</GetCoverage>";
 
         try {
-            GetCoverageType cov = (GetCoverageType) reader.read(null, new StringReader(request),
-                    null);
+            @SuppressWarnings("unused")
+			GetCoverageType cov = (GetCoverageType) reader.read(null, new StringReader(request),null);
             fail("This request is not valid!!!");
         } catch (WcsException e) {
             // ok, we do expect a validation exception in fact

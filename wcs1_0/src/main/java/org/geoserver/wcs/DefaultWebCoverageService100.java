@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import javax.media.jai.Interpolation;
 
 import net.opengis.gml.CodeType;
+import net.opengis.gml.DirectPositionType;
 import net.opengis.gml.RectifiedGridType;
 import net.opengis.gml.VectorType;
 import net.opengis.gml.impl.TimePositionTypeImpl;
@@ -33,7 +34,6 @@ import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.OutputType;
 import net.opengis.wcs10.RangeSubsetType;
 import net.opengis.wcs10.SpatialSubsetType;
-import net.opengis.wcs10.TimePeriodType;
 import net.opengis.wcs10.TimeSequenceType;
 import net.opengis.wcs10.TypedLiteralType;
 
@@ -235,15 +235,17 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             	// Notice that this is specific to WCS 1.0.0 since the request just allow us to specify ResX and ResY
             	//
                 final VectorType offsetVector = (VectorType) grid.getOffsetVector().get(0);
-                final List offsetValues = offsetVector.getValue();
+                final List offsetValues = offsetVector.getValue();     	
                 final double resX=(Double) offsetValues.get(0);
-                final double resY=-(Double) offsetValues.get(1);
+                final double resY=(Double) offsetValues.get(1);
+                
+                final DirectPositionType origin_ = grid.getOrigin().getPos();
                 
                 destinationSize=null;                        
                 destinationG2W= new AffineTransform2D(
                 	resX, 	0d, 		
-                	0d, 	resY, 	
-                	requestedEnvelope.getLowerCorner().getOrdinate(0)+resX/2.0,requestedEnvelope.getUpperCorner().getOrdinate(1)+resY/2.0
+                	0d, 	resY,
+                	(Double)origin_.getValue().get(0),(Double)origin_.getValue().get(1)
                 	);
                 
                 
