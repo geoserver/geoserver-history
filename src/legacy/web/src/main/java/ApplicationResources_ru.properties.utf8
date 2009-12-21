@@ -466,7 +466,7 @@ message.dataOkay=Данные загружены без проблем
 # Welcome
 Welcome.label=Добро пожаловать
 Welcome.title=Добро пожаловать в GeoServer
-Welcome.short=Добро пожаловать в GeoServer 1.6.4.  Благодарим за использование GeoServer!
+Welcome.short=Добро пожаловать в GeoServer 2.0.1.  Благодарим за использование GeoServer!
 Welcome.words=(GeoServer) (ГИС) (Географическая информационная система) (WFS)
 
 Welcome.contact.label=Контакт

@@ -387,7 +387,7 @@ message.dataOkay=データ�?�障害�?��??読込�?�れ�?��?�
 # WELCOME
 welcome.label=Welcome
 welcome.title=Welcome GeoServer
-welcome.short=よ�?��?��??　GeoServer 1.7.0-beta1　　GeoServer�?��?�利用�?�り�?��?��?��?��?��?��?��?�!
+welcome.short=よ�?��?��??　GeoServer 2.0.1　　GeoServer�?��?�利用�?�り�?��?��?��?��?��?��?��?�!
 welcome.words=(GeoServer) (GIS) (Geographic Information Systems) (WFS)
 
 welcome.contact.label=連絡先

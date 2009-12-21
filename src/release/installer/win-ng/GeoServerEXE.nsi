@@ -2,13 +2,13 @@
 
 ; Define your application name
 !define APPNAME "GeoServer"
-!define APPNAMEANDVERSION "GeoServer 2.0-SNAPSHOT"
+!define APPNAMEANDVERSION "GeoServer 2.0.1"
 
 ; Main Install settings
 Name "${APPNAMEANDVERSION}"
 InstallDir "$PROGRAMFILES\${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "geoserver-2.0-SNAPSHOT-ng.exe"
+OutFile "geoserver-2.0.1-ng.exe"
 
 ; Modern interface settings
 !include "MUI.nsh"
@@ -48,7 +48,7 @@ LangString TEXT_CREDS_SUBTITLE ${LANG_ENGLISH} "Set administrator credentials"
 !define MUI_ABORTWARNING
 
 ; Optional welcome text here
-  !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of GeoServer 2.0-SNAPSHOT. \r\n\r\n\
+  !define MUI_WELCOMEPAGE_TEXT "This wizard will guide you through the installation of GeoServer 2.0.1. \r\n\r\n\
 	It is recommended that you close all other applications before starting Setup.\
 	This will make it possible to update relevant system files without having to reboot your computer.\r\n\r\n\
 	Please report any problems or suggestions to the GeoServer Users mailing list: geoserver-users@lists.sourceforge.net. \r\n\r\n\
