@@ -21,6 +21,7 @@ import net.opengis.gml.PointType;
 import net.opengis.gml.RectifiedGridType;
 import net.opengis.gml.TimePositionType;
 import net.opengis.gml.VectorType;
+import net.opengis.wcs10.AxisDescriptionType;
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.DomainSubsetType;
 import net.opengis.wcs10.GetCoverageType;
@@ -46,6 +47,8 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.VerticalCRS;
+import org.opengis.referencing.cs.AxisDirection;
+import org.opengis.referencing.cs.CoordinateSystem;
 import org.vfny.geoserver.wcs.WcsException;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 
@@ -128,8 +131,8 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         final CoordinateReferenceSystem crs = decodeCRS100(crsName);
         if(crs==null)
         	throw new WcsException("CRS parameter is invalid:"+crsName,InvalidParameterValue , "crs");
-        final VerticalCRS verticalCRS = CRS.getVerticalCRS(crs);
-        final boolean hasVerticalCRS = verticalCRS != null;
+//        final VerticalCRS verticalCRS = CRS.getVerticalCRS(crs);
+//        final boolean hasVerticalCRS = verticalCRS != null;
 
         //
         // at least one between BBOX and TIME must be there
@@ -184,27 +187,10 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             //
 
             // get W and H
-            int width =  Integer.parseInt((String) w);
-            int height = Integer.parseInt((String) h);
+            int width =  w instanceof Integer?((Integer)w):Integer.parseInt((String)w);
+            int height =w instanceof Integer?((Integer)h):Integer.parseInt((String)h);
             grid.getAxisName().add("x");
             grid.getAxisName().add("y");
-
-//            // now compute offset and origin
-//            final double resX = envelope.getSpan(0) / width;
-//            final double resY = envelope.getSpan(1) / height;
-//
-//            // now compute offset vector for the transform from the envelope
-//            final double origX = envelope.getLowerCorner().getOrdinate(0);
-//            final double origY = envelope.getLowerCorner().getOrdinate(1);
-//
-//            // create offset point
-//            final PointType origin = Gml4wcsFactory.eINSTANCE.createPointType();
-//            final DirectPositionType dp = Gml4wcsFactory.eINSTANCE.createDirectPositionType();
-//            origin.setPos(dp);
-//            origin.setSrsName(crsName);
-//
-//            // create resolutions vector
-//            final VectorType resolutionVector = Gml4wcsFactory.eINSTANCE.createVectorType();
 
             final Object d = kvp.get("depth");
             if (d != null) {
@@ -221,36 +207,16 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
                 final int depth = Integer.parseInt((String) d);
                 grid.setDimension(BigInteger.valueOf(3));
                 // notice that the third element indicates how many layers we do have requested on the third dimension
-                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, 0 }, new int[] {width, height, depth }, true));
+                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, 0 }, new int[] {width, height, depth }, false));
 
-//                final double resZ = (bbox.getUpperCorner().getOrdinate(2) - bbox.getLowerCorner().getOrdinate(2)) / depth;
-//                final double origZ = bbox.getLowerCorner().getOrdinate(2);
 
                 // 3D grid
                 grid.setDimension(BigInteger.valueOf(3));
-//                // set the origin position
-//                dp.setDimension(grid.getDimension());
-//                dp.setValue(Arrays.asList(origX, origY, origZ));
-//                grid.setOrigin(origin);
-//
-//                // set the resolution vector
-//                resolutionVector.setDimension(grid.getDimension());
-//                resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
-//                grid.getOffsetVector().add(resolutionVector);
             } else {
                 // 2d grid
                 grid.setDimension(BigInteger.valueOf(2));
                 grid.setLimits(new GridEnvelope2D(0, 0, width, height));
 
-//                // set the origin position
-//                dp.setDimension(grid.getDimension());
-//                dp.setValue(Arrays.asList(origX, origY));
-//                grid.setOrigin(origin);
-//
-//                // set the resolution vector
-//                resolutionVector.setDimension(grid.getDimension());
-//                resolutionVector.setValue(Arrays.asList(resX, resY));
-//                grid.getOffsetVector().add(resolutionVector);
             }
         } else {
             //
@@ -262,13 +228,20 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
             final Object rx = kvp.get("resx");
             final Object ry = kvp.get("resy");
             if (rx != null && ry != null) {
-                // get resx e resy
-                final double resX = Double.parseDouble((String) rx);
-                final double resY = Double.parseDouble((String) ry);
+                // get resx e resy but correct also the sign for them taking into account 
+            	final CoordinateSystem cs=crs.getCoordinateSystem();
+            	final AxisDirection northingDirection=cs.getAxis(1).getDirection();
+            	final int yAxisCorrection=AxisDirection.NORTH.equals(northingDirection)?-1:1;
+            	final AxisDirection eastingDirection=cs.getAxis(0).getDirection();
+            	final int xAxisCorrection=AxisDirection.EAST.equals(eastingDirection)?1:-1;
+                final double resX = Double.parseDouble((String) rx)*xAxisCorrection;
+                final double resY = Double.parseDouble((String) ry)*yAxisCorrection;
+                
 
                 // now compute offset vector for the transform from the envelope
-                final double origX = envelope.getLowerCorner().getOrdinate(0);
-                final double origY = envelope.getLowerCorner().getOrdinate(1);
+                // Following ISO 19123 we use the CELL_CENTER convention but with the raster 
+                final double origX = envelope.getLowerCorner().getOrdinate(0)+resX/2;
+                final double origY = envelope.getUpperCorner().getOrdinate(1)+resY/2;
 
                 // create offset point
                 final PointType origin = Gml4wcsFactory.eINSTANCE.createPointType();
