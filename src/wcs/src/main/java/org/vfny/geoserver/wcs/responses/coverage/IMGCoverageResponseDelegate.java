@@ -10,12 +10,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.geoserver.data.util.IOUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.gce.image.WorldImageWriter;
 import org.opengis.coverage.grid.Format;
-import org.opengis.coverage.grid.GridCoverageWriter;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
@@ -27,6 +25,7 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
+@SuppressWarnings("deprecation")
 public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
 
     private static final Set<String> FORMATS = new HashSet<String>(Arrays.asList("image/bmp",
@@ -98,7 +97,6 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
         return "outputFormat";
     }
 
-    @SuppressWarnings("deprecation")
 	public void encode(OutputStream output) throws ServiceException, IOException {
         if (sourceCoverage == null) {
             throw new IllegalStateException(
@@ -110,7 +108,7 @@ public class IMGCoverageResponseDelegate implements CoverageResponseDelegate {
         // writing parameters for Image
         final Format writerParams = writer.getFormat();
         final ParameterValueGroup writeParameters = writerParams.getWriteParameters();
-        final ParameterValue format = writeParameters.parameter("Format");
+        final ParameterValue<?> format = writeParameters.parameter("Format");
         format.setValue(this.outputFormat.toLowerCase());
         
         try{

@@ -18,12 +18,11 @@ import org.opengis.coverage.grid.GridCoverageWriter;
 import org.vfny.geoserver.wcs.responses.CoverageResponseDelegate;
 
 /**
- * @author simone giannecchini
- * @author alesio fabiani
- * 
- *         TODO To change the template for this generated type comment go to Window - Preferences -
- *         Java - Code Style - Code Templates
+ * Encoder for gtopo format
+ * @author Simone Giannecchini, GeoSolutions SAS
+ *
  */
+@SuppressWarnings("deprecation")
 public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate {
 
     private static final Set<String> FORMATS = new HashSet<String>(Arrays
@@ -105,7 +104,7 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
      * 
      * @see org.vfny.geoserver.wcs.responses.CoverageResponseDelegate#encode(java.io.OutputStream)
      */
-    public void encode(OutputStream output) throws ServiceException, IOException {
+	public void encode(OutputStream output) throws ServiceException, IOException {
         // creating a zip outputstream
         final ZipOutputStream outZ = new ZipOutputStream(output);
         output = outZ;
@@ -113,16 +112,20 @@ public class GTopo30CoverageResponseDelegate implements CoverageResponseDelegate
         // creating a writer
         final GridCoverageWriter writer = new GTopo30Writer(outZ);
 
-        // writing
-        if (writer != null) {
-            writer.write(sourceCoverage, null);
-        } else {
-            throw new ServiceException("Could not create a writer for the format Gtopo30!");
+        try{
+	        // writing
+	        writer.write(sourceCoverage, null);
+        }finally{
+        	try{
+	            // freeing everything
+	            writer.dispose();
+        	}catch (Throwable e) {
+				// TODO: handle exception
+			}
+            this.sourceCoverage.dispose(false);
+            this.sourceCoverage = null;
         }
 
-        // freeing everything
-        writer.dispose();
-        this.sourceCoverage.dispose(false);
-        this.sourceCoverage = null;
+
     }
 }

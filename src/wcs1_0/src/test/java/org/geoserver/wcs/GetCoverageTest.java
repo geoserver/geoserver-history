@@ -2,6 +2,7 @@ package org.geoserver.wcs;
 
 import static org.geoserver.data.test.MockData.TASMANIA_BM;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,15 +15,19 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.wcs.kvp.Wcs10GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
+import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.metadata.iso.spatial.PixelTranslation;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.wcs.WCSConfiguration;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.geometry.Envelope;
+import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.datum.PixelInCell;
+import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.wcs.WcsException;
 /**
  * Tests for GetCoverage operation on WCS.
@@ -84,18 +89,21 @@ public class GetCoverageTest extends WCSTestSupport {
         ((GridCoverage2D)coverages[0]).dispose(true);
     }
     
-    public void testDomainSubset() throws Exception {
+    public void testDomainSubsetRxRy() throws Exception {
     	// get base  coverage
         final GridCoverage baseCoverage = catalog.getCoverageByName(TASMANIA_BM.getLocalPart()).getGridCoverage(null, null);
-        AffineTransform2D expectedTx = (AffineTransform2D) baseCoverage.getGridGeometry().getGridToCRS();        
+        final AffineTransform2D expectedTx = (AffineTransform2D) baseCoverage.getGridGeometry().getGridToCRS();        
         final GeneralEnvelope originalEnvelope = (GeneralEnvelope) baseCoverage.getEnvelope();
         final GeneralEnvelope newEnvelope=new GeneralEnvelope(originalEnvelope);
         newEnvelope.setEnvelope(
         		originalEnvelope.getMinimum(0),
-        		originalEnvelope.getMinimum(1),
+        		originalEnvelope.getMaximum(1)-originalEnvelope.getSpan(1)/2,
         		originalEnvelope.getMinimum(0)+originalEnvelope.getSpan(0)/2,
-        		originalEnvelope.getMinimum(1)+originalEnvelope.getSpan(1)/2
+        		originalEnvelope.getMaximum(1)
         		);
+        
+        final MathTransform cornerWorldToGrid = PixelTranslation.translate(expectedTx,PixelInCell.CELL_CENTER,PixelInCell.CELL_CORNER);
+        final GeneralGridEnvelope expectedGridEnvelope = new GeneralGridEnvelope(CRS.transform(cornerWorldToGrid.inverse(), newEnvelope),PixelInCell.CELL_CORNER,true);
         final StringBuilder envelopeBuilder= new StringBuilder();
         envelopeBuilder.append(newEnvelope.getMinimum(0)).append(",");
         envelopeBuilder.append(newEnvelope.getMinimum(1)).append(",");
@@ -113,10 +121,18 @@ public class GetCoverageTest extends WCSTestSupport {
         raw.put("resy", Double.toString(Math.abs(expectedTx.getScaleY())));
 
         final GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        final GridCoverage2D result=(GridCoverage2D) coverages[0];
         assertTrue(coverages.length==1);
-        AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
+        final AffineTransform2D tx = (AffineTransform2D) result.getGridGeometry().getGridToCRS();
         assertEquals("resx",expectedTx.getScaleX(),tx.getScaleX(),1E-6);
-        assertEquals("resx",Math.abs(expectedTx.getScaleY()),Math.abs(tx.getScaleY()),1E-6);	
+        assertEquals("resx",Math.abs(expectedTx.getScaleY()),Math.abs(tx.getScaleY()),1E-6);
+        
+        final GridEnvelope gridEnvelope = result.getGridGeometry().getGridRange();
+        assertEquals("w",181,gridEnvelope.getSpan(0));
+        assertEquals("h",181,gridEnvelope.getSpan(1));
+        assertEquals("grid envelope",expectedGridEnvelope, gridEnvelope);
+        
+        // dispose
         ((GridCoverage2D)coverages[0]).dispose(true);
     }
     
