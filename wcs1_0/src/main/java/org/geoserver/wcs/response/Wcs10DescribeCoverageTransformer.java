@@ -7,13 +7,20 @@ package org.geoserver.wcs.response;
 import static org.geoserver.ows.util.ResponseUtils.appendPath;
 import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
+import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -22,10 +29,13 @@ import net.opengis.wcs10.DescribeCoverageType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.wcs.WCSInfo;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.LinearTransform;
@@ -35,6 +45,7 @@ import org.geotools.xml.transform.Translator;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.Matrix;
 import org.vfny.geoserver.wcs.WcsException;
@@ -187,7 +198,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             element("wcs:description", ci.getDescription());
             element("wcs:name", ci.getPrefixedName());
             element("wcs:label", ci.getTitle());
-            handleLonLatEnvelope(ci.getLatLonBoundingBox());
+            handleLonLatEnvelope(ci, ci.getLatLonBoundingBox());
             handleKeywords(ci.getKeywords());
 
             handleDomain(ci);
@@ -230,15 +241,60 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
          * 
          * @param lonLatEnvelope
          */
-        private void handleLonLatEnvelope(ReferencedEnvelope lonLatEnvelope) {
-            if (lonLatEnvelope != null) {
+        private void handleLonLatEnvelope(CoverageInfo ci, ReferencedEnvelope referencedEnvelope) {
+            String timeMetadata = null;
+            String elevationMetadata = null;
+
+            CoverageStoreInfo csinfo = ci.getStore();
+            
+            if(csinfo == null)
+                throw new WcsException("Unable to acquire coverage store resource for coverage: " + ci.getName());
+            
+            AbstractGridCoverage2DReader reader = null;
+            try {
+                reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+            } catch (IOException e) {
+                LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+            }
+            
+            if(reader == null)
+                throw new WcsException("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+
+            final String[] metadataNames = reader.getMetadataNames();
+            
+            if (metadataNames != null && metadataNames.length > 0) {
+                // TIME DIMENSION
+                timeMetadata = reader.getMetadataValue("TIME_DOMAIN");
+                
+                // ELEVATION DIMENSION
+                elevationMetadata = reader.getMetadataValue("ELEVATION_DOMAIN");
+                
+            }
+
+            if (referencedEnvelope != null) {
                 AttributesImpl attributes = new AttributesImpl();
-                attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */
-                "urn:ogc:def:crs:OGC:1.3:CRS84");
+                attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */ "urn:ogc:def:crs:OGC:1.3:CRS84");
 
                 start("wcs:lonLatEnvelope", attributes);
-                element("gml:pos", lonLatEnvelope.getMinX() + " " + lonLatEnvelope.getMinY());
-                element("gml:pos", lonLatEnvelope.getMaxX() + " " + lonLatEnvelope.getMaxY());
+
+                final StringBuffer minCP = new StringBuffer(Double.toString(referencedEnvelope.getMinX())).append(" ").append(referencedEnvelope.getMinY());
+                final StringBuffer maxCP = new StringBuffer(Double.toString(referencedEnvelope.getMaxX())).append(" ").append(referencedEnvelope.getMaxY());
+
+                if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                    final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                    minCP.append(" ").append(elevationLevels[0]);
+                    maxCP.append(" ").append(elevationLevels[elevationLevels.length - 1]);
+                }
+                
+                    element("gml:pos", minCP.toString());
+                    element("gml:pos", maxCP.toString());
+
+                if (timeMetadata != null && timeMetadata.length() > 0) {
+                    String[] timePositions = orderTimeArray(timeMetadata.split(","));
+                    element("gml:timePosition", timePositions[0]);
+                    element("gml:timePosition", timePositions[timePositions.length - 1]);
+                }
+
                 end("wcs:lonLatEnvelope");
             }
         }
@@ -265,11 +321,44 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
         }
 
         private void handleDomain(CoverageInfo ci) throws Exception {
+            String timeMetadata = null;
+            String elevationMetadata = null;
+
+            CoverageStoreInfo csinfo = ci.getStore();
+            
+            if(csinfo == null)
+                throw new WcsException("Unable to acquire coverage store resource for coverage: " + ci.getName());
+            
+            AbstractGridCoverage2DReader reader = null;
+            try {
+                reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+            } catch (IOException e) {
+                LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+            }
+            
+            if(reader == null)
+                throw new WcsException("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+
+            final String[] metadataNames = reader.getMetadataNames();
+            
+            if (metadataNames != null && metadataNames.length > 0) {
+                // TIME DIMENSION
+                timeMetadata = reader.getMetadataValue("TIME_DOMAIN");
+                
+                // ELEVATION DIMENSION
+                elevationMetadata = reader.getMetadataValue("ELEVATION_DOMAIN");
+                
+            }
+
             start("wcs:domainSet");
             start("wcs:spatialDomain");
-            handleBoundingBox(ci.getSRS(), ci.getNativeBoundingBox());
-            handleGrid(ci);
+                // TODO: better handling of CRS 3D
+                handleBoundingBox(ci.getSRS(), ci.getNativeBoundingBox(), timeMetadata, elevationMetadata);
+                handleGrid(ci, elevationMetadata);
             end("wcs:spatialDomain");
+            start("wcs:temporalDomain");
+                handleTemporalDomain(ci, timeMetadata);
+            end("wcs:temporalDomain");
             end("wcs:domainSet");
         }
 
@@ -277,64 +366,113 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
          * DOCUMENT ME!
          * 
          * @param referencedEnvelope
+         * @param elevationMetadata 
+         * @param timeMetadata 
          * @param set2
          * @param set
          */
-        private void handleBoundingBox(String srsName, ReferencedEnvelope referencedEnvelope) {
+        private void handleBoundingBox(String srsName, ReferencedEnvelope referencedEnvelope, String timeMetadata, String elevationMetadata) {
             if (referencedEnvelope != null) {
                 AttributesImpl attributes = new AttributesImpl();
                 attributes.addAttribute("", "srsName", "srsName", "", srsName);
 
-                start("gml:Envelope", attributes);
-                element("gml:pos", Double.toString(referencedEnvelope.getMinX()) + " "
-                        + Double.toString(referencedEnvelope.getMinY()));
-                element("gml:pos", Double.toString(referencedEnvelope.getMaxX()) + " "
-                        + Double.toString(referencedEnvelope.getMaxY()));
-                end("gml:Envelope");
+                final StringBuffer minCP = new StringBuffer(Double.toString(referencedEnvelope.getMinX())).append(" ").append(referencedEnvelope.getMinY());
+                final StringBuffer maxCP = new StringBuffer(Double.toString(referencedEnvelope.getMaxX())).append(" ").append(referencedEnvelope.getMaxY());
+
+                if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                    final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                    minCP.append(" ").append(elevationLevels[0]);
+                    maxCP.append(" ").append(elevationLevels[elevationLevels.length - 1]);
+                }
+                
+                if (timeMetadata != null && timeMetadata.length() > 0) {
+                    start("gml:EnvelopeWithTimePeriod", attributes);
+                        element("gml:pos", minCP.toString());
+                        element("gml:pos", maxCP.toString());
+
+                        final String[] timePositions = orderTimeArray(timeMetadata.split(","));
+                        element("gml:timePosition", timePositions[0]);
+                        element("gml:timePosition", timePositions[timePositions.length - 1]);
+                    end("gml:EnvelopeWithTimePeriod");
+                } else {
+                    start("gml:Envelope", attributes);
+                        element("gml:pos", minCP.toString());
+                        element("gml:pos", maxCP.toString());
+                    end("gml:Envelope");
+                }
             }
         }
 
         /**
+         * DOCUMENT ME!
          * 
          * @param ci
+         * @param timeMetadata
+         * @param elevationMetadata
+         */
+        private void handleTemporalDomain(CoverageInfo ci, String timeMetadata) {
+            if (timeMetadata != null && timeMetadata.length() > 0) {
+                final String[] timePositions = orderTimeArray(timeMetadata.split(","));
+                for (String timePosition : timePositions) {
+                    element("gml:timePosition", timePosition);
+                }
+            }
+        }
+        
+        /**
+         * 
+         * @param ci
+         * @param elevationMetadata 
          * @throws Exception
          */
-        private void handleGrid(CoverageInfo ci) throws Exception {
-            GridGeometry grid = ci.getGrid();
-            MathTransform gridToCRS = grid.getGridToCRS();
+        private void handleGrid(CoverageInfo ci, String elevationMetadata) throws Exception {
+            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(ci.getStore(), null);
+            GridGeometry originalGrid = new GridGeometry2D(reader.getOriginalGridRange(), reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER), reader.getCrs());
+            MathTransform gridToCRS = originalGrid.getGridToCRS();
             final int gridDimension = (gridToCRS != null ? gridToCRS.getSourceDimensions() : 0);
 
             AttributesImpl attributes = new AttributesImpl();
-            attributes
-                    .addAttribute("", "dimension", "dimension", "", String.valueOf(gridDimension));
+            attributes.addAttribute("", "dimension", "dimension", "", String.valueOf(gridDimension));
 
             start("gml:RectifiedGrid", attributes);
             // Grid Envelope
             String lowers = "";
             String uppers = "";
-            double res = 0;
             for (int r = 0; r < gridDimension; r++) {
                 if (gridToCRS.getSourceDimensions() > r) {
-                    lowers += (grid.getGridRange().getLow(r) + " ");
-                    uppers += (grid.getGridRange().getHigh(r) + " ");
+                    lowers += (originalGrid.getGridRange().getLow(r) + " ");
+                    uppers += (originalGrid.getGridRange().getHigh(r) + " ");
                 } else {
                     lowers += (0 + " ");
                     uppers += (0 + " ");
                 }
             }
+            
+            if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                lowers += (0 + " ");
+                uppers += (elevationLevels.length + " ");
+            }
+            
             start("gml:limits");
-            start("gml:GridEnvelope");
-            element("gml:low", lowers.trim());
-            element("gml:high", uppers.trim());
-            end("gml:GridEnvelope");
+                start("gml:GridEnvelope");
+                    element("gml:low", lowers.trim());
+                    element("gml:high", uppers.trim());
+                end("gml:GridEnvelope");
             end("gml:limits");
 
             // Grid Axes
-            for (int dn = 0; dn < ci.getCRS().getCoordinateSystem().getDimension(); dn++)
-                element("gml:axisName", ci.getCRS().getCoordinateSystem().getAxis(dn)
-                        .getAbbreviation());
+            for (int dn = 0; dn < ci.getCRS().getCoordinateSystem().getDimension(); dn++) {
+                String axisName = ci.getCRS().getCoordinateSystem().getAxis(dn).getAbbreviation();
+                axisName = axisName.toLowerCase().startsWith("lon") ? "x" : axisName;
+                axisName = axisName.toLowerCase().startsWith("lat") ? "y" : axisName;
+                element("gml:axisName", axisName);
+            }
+            
+            if (elevationMetadata != null && elevationMetadata.length() > 0)
+                element("gml:axisName", "z");
 
-            final LinearTransform tx = (LinearTransform) ci.getGrid().getGridToCRS();
+            final LinearTransform tx = (LinearTransform) gridToCRS;
             final Matrix matrix = tx.getMatrix();
             // Grid Origins
             StringBuffer origins = new StringBuffer();
@@ -344,9 +482,15 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                     origins.append(" ");
             }
 
+            if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                origins.append(" ").append(elevationLevels[0]);
+            }
+            
             start("gml:origin");
-            element("gml:pos", origins.toString());
+                element("gml:pos", origins.toString());
             end("gml:origin");
+            
             // Grid Offsets
             StringBuffer offsets = new StringBuffer();
             for (int i = 0; i < matrix.getNumRow() - 1; i++) {
@@ -356,8 +500,15 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                         offsets.append(" ");
                 }
 
+                if (elevationMetadata != null && elevationMetadata.length() > 0)
+                    offsets.append(" 0.0");
+                
                 element("gml:offsetVector", offsets.toString());
                 offsets = new StringBuffer();
+            }
+
+            if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                element("gml:offsetVector", "0.0 0.0 1.0");
             }
 
             end("gml:RectifiedGrid");
@@ -464,16 +615,20 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
          * @param ci
          */
         private void handleSupportedInterpolations(CoverageInfo ci) {
-            final AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "default", "default", "", ci
-                    .getDefaultInterpolationMethod());
+            if (ci.getDefaultInterpolationMethod() != null) {
+                final AttributesImpl attributes = new AttributesImpl();
+                attributes.addAttribute("", "default", "default", "", ci.getDefaultInterpolationMethod());
 
-            start("wcs:supportedInterpolations", attributes);
+                start("wcs:supportedInterpolations", attributes);
+            } else {
+                start("wcs:supportedInterpolations");
+            }
+            
             for (Iterator it = ci.getInterpolationMethods().iterator(); it.hasNext();) {
                 String method = (String) it.next();
                 String converted = METHOD_NAME_MAP.get(method);
-                if (converted != null)
-                    element("wcs:interpolationMethod", /* converted */method);
+                if (/* converted */ method != null)
+                    element("wcs:interpolationMethod", /* converted */ method);
 
             }
             end("wcs:supportedInterpolations");
@@ -489,6 +644,94 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             if (content != null && !"".equals(content.trim()))
                 element(elementName, content);
         }
+    }
+
+    /**
+     * 
+     * @param originalArray
+     * @return
+     */
+    private static String[] orderDoubleArray(String[] originalArray) {
+        List finalArray = Arrays.asList(originalArray);
+        
+        Collections.sort(finalArray, new Comparator<String>() {
+
+            public int compare(String o1, String o2) {
+                if (o1.equals(o2))
+                    return 0;
+                
+                return (Double.parseDouble(o1) > Double.parseDouble(o2) ? 1 : -1);
+            }
+            
+        });
+        
+        return (String[]) finalArray.toArray(new String[1]);
+    }
+
+    /**
+     * 
+     * @param originalArray
+     * @return
+     */
+    private static String[] orderTimeArray(String[] originalArray) {
+        List finalArray = Arrays.asList(originalArray);
+
+        Collections.sort(finalArray, new Comparator<String>() {
+            /**
+             * All patterns that are correct regarding the ISO-8601 norm.
+             */
+            final String[] PATTERNS = {
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                "yyyy-MM-dd'T'HH:mm:sss'Z'",
+                "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                "yyyy-MM-dd'T'HH:mm'Z'",
+                "yyyy-MM-dd'T'HH'Z'",
+                "yyyy-MM-dd",
+                "yyyy-MM",
+                "yyyy"
+            };
+            
+            public int compare(String o1, String o2) {
+                if (o1.equals(o2))
+                    return 0;
+                
+                Date d1 = getDate(o1);
+                Date d2 = getDate(o2);
+                
+                if (d1 == null || d2 == null)
+                    return 0;
+                
+                return (d1.getTime() > d2.getTime() ? 1 : -1);
+            }
+            
+            private Date getDate(final String value) {
+                
+                // special handling for current keyword
+                if(value.equalsIgnoreCase("current"))
+                        return null;
+                for (int i=0; i<PATTERNS.length; i++) {
+                    // rebuild formats at each parse, date formats are not thread safe
+                    SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
+
+                    /* We do not use the standard method DateFormat.parse(String), because if the parsing
+                     * stops before the end of the string, the remaining characters are just ignored and
+                     * no exception is thrown. So we have to ensure that the whole string is correct for
+                     * the format.
+                     */
+                    ParsePosition pos = new ParsePosition(0);
+                    Date time = format.parse(value, pos);
+                    if (pos.getIndex() == value.length()) {
+                        return time;
+                    }
+                }
+                
+                return null;
+            }
+
+            
+        });
+        
+        return (String[]) finalArray.toArray(new String[1]);
     }
 
 }

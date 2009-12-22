@@ -30,6 +30,7 @@ public class TimeKvpParser extends KvpParser {
      */
     private static final String[] PATTERNS = {
         "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        "yyyy-MM-dd'T'HH:mm:sss'Z'",
         "yyyy-MM-dd'T'HH:mm:ss'Z'",
         "yyyy-MM-dd'T'HH:mm'Z'",
         "yyyy-MM-dd'T'HH'Z'",

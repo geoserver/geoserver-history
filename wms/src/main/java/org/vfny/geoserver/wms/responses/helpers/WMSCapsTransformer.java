@@ -4,19 +4,24 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.appendQueryString;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
-import java.awt.Dimension;
 import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,6 +34,9 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.geoserver.catalog.AttributionInfo;
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -40,9 +48,9 @@ import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -723,6 +731,77 @@ public class WMSCapsTransformer extends TransformerBase {
                 handleBBox(bbox, srs);
             }
             
+            // handle dimensions
+            String timeMetadata = null;
+            String elevationMetadata = null;
+            if (layer.getType() == Type.RASTER) {
+                CoverageInfo cvinfo = ((CoverageInfo) layer.getResource());
+
+                if(cvinfo == null)
+                    throw new RuntimeException("Unable to acquire coverage resource for layer: " + layer.getName());
+
+                Catalog catalog = cvinfo.getCatalog();
+
+                if(catalog == null)
+                    throw new RuntimeException("Unable to acquire catalog resource for layer: " + layer.getName());
+                
+                CoverageStoreInfo csinfo = cvinfo.getStore();
+                
+                if(csinfo == null)
+                    throw new RuntimeException("Unable to acquire coverage store resource for layer: " + layer.getName());
+                
+                AbstractGridCoverage2DReader reader = null;
+                try {
+                    reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+                } catch (IOException e) {
+                    LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+                }
+                
+                if(reader == null)
+                    throw new RuntimeException("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+
+                final String[] metadataNames = reader.getMetadataNames();
+                
+                if (metadataNames != null && metadataNames.length > 0) {
+                    // TIME DIMENSION
+                    timeMetadata = reader.getMetadataValue("TIME_DOMAIN");
+                    
+                    if (timeMetadata != null) {
+                        AttributesImpl timeDim = new AttributesImpl();
+                        timeDim.addAttribute("", "name", "name", "", "time");
+                        timeDim.addAttribute("", "units", "units", "", "ISO8601");
+                        element("Dimension", null, timeDim);
+                    }
+                    
+                    // ELEVATION DIMENSION
+                    elevationMetadata = reader.getMetadataValue("ELEVATION_DOMAIN");
+                    
+                    if (elevationMetadata != null) {
+                        AttributesImpl elevDim = new AttributesImpl();
+                        elevDim.addAttribute("", "name", "name", "", "elevation");
+                        elevDim.addAttribute("", "units", "units", "", "EPSG:5030");
+                        element("Dimension", null, elevDim);
+                    }
+                }
+            }
+            
+            // handle extensions
+            if (timeMetadata != null && timeMetadata.length() > 0) {
+                final String[] timePositions = orderTimeArray(timeMetadata.split(","));
+                AttributesImpl timeDim = new AttributesImpl();
+                timeDim.addAttribute("", "name", "name", "", "time");
+                timeDim.addAttribute("", "default", "default", "", timePositions[0]);
+                element("Extent", timeMetadata, timeDim);
+            }
+            
+            if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                AttributesImpl elevDim = new AttributesImpl();
+                elevDim.addAttribute("", "name", "name", "", "elevation");
+                elevDim.addAttribute("", "default", "default", "", elevationLevels[0]);
+                element("Extent", elevationMetadata, elevDim);
+            }
+            
             // handle data attribution
             handleAttribution(layer);
 
@@ -767,6 +846,101 @@ public class WMSCapsTransformer extends TransformerBase {
             end("Layer");
         }
         
+        /**
+         * 
+         * @param originalArray
+         * @return
+         */
+        private static String[] orderDoubleArray(String[] originalArray) {
+            List finalArray = Arrays.asList(originalArray);
+            
+            Collections.sort(finalArray, new Comparator<String>() {
+
+                public int compare(String o1, String o2) {
+                    if (o1.equals(o2))
+                        return 0;
+                    
+                    return (Double.parseDouble(o1) > Double.parseDouble(o2) ? 1 : -1);
+                }
+                
+            });
+            
+            return (String[]) finalArray.toArray(new String[1]);
+        }
+
+        /**
+         * 
+         * @param originalArray
+         * @return
+         */
+        private static String[] orderTimeArray(String[] originalArray) {
+            List finalArray = Arrays.asList(originalArray);
+
+            Collections.sort(finalArray, new Comparator<String>() {
+                /**
+                 * All patterns that are correct regarding the ISO-8601 norm.
+                 */
+                final String[] PATTERNS = {
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                    "yyyy-MM-dd'T'HH:mm:sss'Z'",
+                    "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                    "yyyy-MM-dd'T'HH:mm'Z'",
+                    "yyyy-MM-dd'T'HH'Z'",
+                    "yyyy-MM-dd",
+                    "yyyy-MM",
+                    "yyyy"
+                };
+                
+                public int compare(String o1, String o2) {
+                    if (o1.equals(o2))
+                        return 0;
+                    
+                    Date d1 = getDate(o1);
+                    Date d2 = getDate(o2);
+                    
+                    if (d1 == null || d2 == null)
+                        return 0;
+                    
+                    return (d1.getTime() > d2.getTime() ? 1 : -1);
+                }
+                
+                private Date getDate(final String value) {
+                    
+                    // special handling for current keyword
+                    if(value.equalsIgnoreCase("current"))
+                            return null;
+                    for (int i=0; i<PATTERNS.length; i++) {
+                        // rebuild formats at each parse, date formats are not thread safe
+                        SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
+
+                        /* We do not use the standard method DateFormat.parse(String), because if the parsing
+                         * stops before the end of the string, the remaining characters are just ignored and
+                         * no exception is thrown. So we have to ensure that the whole string is correct for
+                         * the format.
+                         */
+                        ParsePosition pos = new ParsePosition(0);
+                        Date time = format.parse(value, pos);
+                        if (pos.getIndex() == value.length()) {
+                            return time;
+                        }
+                    }
+                    
+                    return null;
+                }
+
+                
+            });
+            
+            return (String[]) finalArray.toArray(new String[1]);
+        }
+
+        /**
+         * DOCUMENT ME!
+         * 
+         * @param layerGroups
+         * @throws FactoryException
+         * @throws TransformException
+         */
         protected void handleLayerGroups(List<LayerGroupInfo> layerGroups)
             throws FactoryException, TransformException {
             if (layerGroups == null || layerGroups.size() == 0) {
