@@ -356,9 +356,11 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
                 handleBoundingBox(ci.getSRS(), ci.getNativeBoundingBox(), timeMetadata, elevationMetadata);
                 handleGrid(ci, elevationMetadata);
             end("wcs:spatialDomain");
-            start("wcs:temporalDomain");
-                handleTemporalDomain(ci, timeMetadata);
-            end("wcs:temporalDomain");
+            if (timeMetadata != null && timeMetadata.length() > 0) {
+                start("wcs:temporalDomain");
+                    handleTemporalDomain(ci, timeMetadata);
+                end("wcs:temporalDomain");
+            }
             end("wcs:domainSet");
         }
 
