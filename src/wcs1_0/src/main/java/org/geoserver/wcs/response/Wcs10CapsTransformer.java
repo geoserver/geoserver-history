@@ -7,11 +7,17 @@ package org.geoserver.wcs.response;
 import static org.geoserver.ows.util.ResponseUtils.appendPath;
 import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
+import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -20,11 +26,13 @@ import net.opengis.wcs10.GetCapabilitiesType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wcs.WCSInfo;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;
@@ -545,18 +553,118 @@ public class Wcs10CapsTransformer extends TransformerBase {
          * 
          * @param referencedEnvelope
          */
-        private void handleEnvelope(ReferencedEnvelope referencedEnvelope) {
+        private void handleEnvelope(ReferencedEnvelope referencedEnvelope, String timeMetadata, String elevationMetadata) {
             AttributesImpl attributes = new AttributesImpl();
 
-            attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */
-            "urn:ogc:def:crs:OGC:1.3:CRS84");
+            attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */ "urn:ogc:def:crs:OGC:1.3:CRS84");
             start("wcs:lonLatEnvelope", attributes);
-            element("gml:pos", new StringBuffer(Double.toString(referencedEnvelope.getMinX()))
-                    .append(" ").append(referencedEnvelope.getMinY()).toString());
-            element("gml:pos", new StringBuffer(Double.toString(referencedEnvelope.getMaxX()))
-                    .append(" ").append(referencedEnvelope.getMaxY()).toString());
+            final StringBuffer minCP = new StringBuffer(Double.toString(referencedEnvelope.getMinX())).append(" ").append(referencedEnvelope.getMinY());
+            final StringBuffer maxCP = new StringBuffer(Double.toString(referencedEnvelope.getMaxX())).append(" ").append(referencedEnvelope.getMaxY());
 
+            if (elevationMetadata != null && elevationMetadata.length() > 0) {
+                final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                minCP.append(" ").append(elevationLevels[0]);
+                maxCP.append(" ").append(elevationLevels[elevationLevels.length - 1]);
+            }
+            
+            element("gml:pos", minCP.toString());
+            element("gml:pos", maxCP.toString());
+
+            if (timeMetadata != null && timeMetadata.length() > 0) {
+                String[] timePositions = orderTimeArray(timeMetadata.split(","));
+                element("gml:timePosition", timePositions[0]);
+                element("gml:timePosition", timePositions[timePositions.length - 1]);
+            }
+            
             end("wcs:lonLatEnvelope");
+        }
+
+        /**
+         * 
+         * @param originalArray
+         * @return
+         */
+        private String[] orderDoubleArray(String[] originalArray) {
+            List finalArray = Arrays.asList(originalArray);
+            
+            Collections.sort(finalArray, new Comparator<String>() {
+
+                public int compare(String o1, String o2) {
+                    if (o1.equals(o2))
+                        return 0;
+                    
+                    return (Double.parseDouble(o1) > Double.parseDouble(o2) ? 1 : -1);
+                }
+                
+            });
+            
+            return (String[]) finalArray.toArray(new String[1]);
+        }
+        
+        /**
+         * 
+         * @param originalArray
+         * @return
+         */
+        private String[] orderTimeArray(String[] originalArray) {
+            List finalArray = Arrays.asList(originalArray);
+
+            Collections.sort(finalArray, new Comparator<String>() {
+                /**
+                 * All patterns that are correct regarding the ISO-8601 norm.
+                 */
+                final String[] PATTERNS = {
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                    "yyyy-MM-dd'T'HH:mm:sss'Z'",
+                    "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                    "yyyy-MM-dd'T'HH:mm'Z'",
+                    "yyyy-MM-dd'T'HH'Z'",
+                    "yyyy-MM-dd",
+                    "yyyy-MM",
+                    "yyyy"
+                };
+                
+                public int compare(String o1, String o2) {
+                    if (o1.equals(o2))
+                        return 0;
+                    
+                    Date d1 = getDate(o1);
+                    Date d2 = getDate(o2);
+                    
+                    if (d1 == null || d2 == null)
+                        return 0;
+                    
+                    return (d1.getTime() > d2.getTime() ? 1 : -1);
+                }
+                
+                private Date getDate(final String value) {
+                    
+                    // special handling for current keyword
+                    if(value.equalsIgnoreCase("current"))
+                            return null;
+                    for (int i=0; i<PATTERNS.length; i++) {
+                        // rebuild formats at each parse, date formats are not thread safe
+                        SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
+
+                        /* We do not use the standard method DateFormat.parse(String), because if the parsing
+                         * stops before the end of the string, the remaining characters are just ignored and
+                         * no exception is thrown. So we have to ensure that the whole string is correct for
+                         * the format.
+                         */
+                        ParsePosition pos = new ParsePosition(0);
+                        Date time = format.parse(value, pos);
+                        if (pos.getIndex() == value.length()) {
+                            return time;
+                        }
+                    }
+                    
+                    return null;
+                }
+
+                
+            });
+            
+            return (String[]) finalArray.toArray(new String[1]);
         }
 
         /**
@@ -631,7 +739,36 @@ public class Wcs10CapsTransformer extends TransformerBase {
                     element("wcs:label", tmp);
                 }
 
-                handleEnvelope(cv.getLatLonBoundingBox());
+                
+                String timeMetadata = null;
+                String elevationMetadata = null;
+
+                CoverageStoreInfo csinfo = cv.getStore();
+                
+                if(csinfo == null)
+                    throw new WcsException("Unable to acquire coverage store resource for coverage: " + cv.getName());
+                
+                AbstractGridCoverage2DReader reader = null;
+                try {
+                    reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+                } catch (IOException e) {
+                    LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+                }
+                
+                if(reader == null)
+                    throw new WcsException("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
+
+                final String[] metadataNames = reader.getMetadataNames();
+                
+                if (metadataNames != null && metadataNames.length > 0) {
+                    // TIME DIMENSION
+                    timeMetadata = reader.getMetadataValue("TIME_DOMAIN");
+                    
+                    // ELEVATION DIMENSION
+                    elevationMetadata = reader.getMetadataValue("ELEVATION_DOMAIN");
+                }
+
+                handleEnvelope(cv.getLatLonBoundingBox(), timeMetadata, elevationMetadata);
                 handleKeywords(cv.getKeywords());
 
                 end("wcs:CoverageOfferingBrief");
