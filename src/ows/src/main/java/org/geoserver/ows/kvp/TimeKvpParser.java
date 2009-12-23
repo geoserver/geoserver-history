@@ -87,7 +87,7 @@ public class TimeKvpParser extends KvpParser {
         // Only one date given.
         if (period.length == 1) {
         	if(value.equals("current"))
-        		dates.add(new Date());
+        		dates.add(null);
         	else
         		dates.add(getDate(value));
             return dates;
