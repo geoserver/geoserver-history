@@ -28,6 +28,11 @@
       <artifactId>main</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.geoserver.web</groupId>
+      <artifactId>web-core</artifactId>
+      <version>${gs.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
       <classifier>tests</classifier>
