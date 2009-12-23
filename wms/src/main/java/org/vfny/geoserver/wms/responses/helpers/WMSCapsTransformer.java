@@ -787,15 +787,14 @@ public class WMSCapsTransformer extends TransformerBase {
             
             // handle extensions
             if (timeMetadata != null && timeMetadata.length() > 0) {
-                final String[] timePositions = orderTimeArray(timeMetadata.split(","));
                 AttributesImpl timeDim = new AttributesImpl();
                 timeDim.addAttribute("", "name", "name", "", "time");
-                timeDim.addAttribute("", "default", "default", "", timePositions[0]);
+                timeDim.addAttribute("", "default", "default", "", "current");
                 element("Extent", timeMetadata, timeDim);
             }
             
             if (elevationMetadata != null && elevationMetadata.length() > 0) {
-                final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
+                final String[] elevationLevels = elevationMetadata.split(",");
                 AttributesImpl elevDim = new AttributesImpl();
                 elevDim.addAttribute("", "name", "name", "", "elevation");
                 elevDim.addAttribute("", "default", "default", "", elevationLevels[0]);
@@ -846,93 +845,93 @@ public class WMSCapsTransformer extends TransformerBase {
             end("Layer");
         }
         
-        /**
-         * 
-         * @param originalArray
-         * @return
-         */
-        private static String[] orderDoubleArray(String[] originalArray) {
-            List finalArray = Arrays.asList(originalArray);
-            
-            Collections.sort(finalArray, new Comparator<String>() {
+//        /**
+//         * 
+//         * @param originalArray
+//         * @return
+//         */
+//        private static String[] orderDoubleArray(String[] originalArray) {
+//            List finalArray = Arrays.asList(originalArray);
+//            
+//            Collections.sort(finalArray, new Comparator<String>() {
+//
+//                public int compare(String o1, String o2) {
+//                    if (o1.equals(o2))
+//                        return 0;
+//                    
+//                    return (Double.parseDouble(o1) > Double.parseDouble(o2) ? 1 : -1);
+//                }
+//                
+//            });
+//            
+//            return (String[]) finalArray.toArray(new String[1]);
+//        }
 
-                public int compare(String o1, String o2) {
-                    if (o1.equals(o2))
-                        return 0;
-                    
-                    return (Double.parseDouble(o1) > Double.parseDouble(o2) ? 1 : -1);
-                }
-                
-            });
-            
-            return (String[]) finalArray.toArray(new String[1]);
-        }
-
-        /**
-         * 
-         * @param originalArray
-         * @return
-         */
-        private static String[] orderTimeArray(String[] originalArray) {
-            List finalArray = Arrays.asList(originalArray);
-
-            Collections.sort(finalArray, new Comparator<String>() {
-                /**
-                 * All patterns that are correct regarding the ISO-8601 norm.
-                 */
-                final String[] PATTERNS = {
-                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                    "yyyy-MM-dd'T'HH:mm:sss'Z'",
-                    "yyyy-MM-dd'T'HH:mm:ss'Z'",
-                    "yyyy-MM-dd'T'HH:mm'Z'",
-                    "yyyy-MM-dd'T'HH'Z'",
-                    "yyyy-MM-dd",
-                    "yyyy-MM",
-                    "yyyy"
-                };
-                
-                public int compare(String o1, String o2) {
-                    if (o1.equals(o2))
-                        return 0;
-                    
-                    Date d1 = getDate(o1);
-                    Date d2 = getDate(o2);
-                    
-                    if (d1 == null || d2 == null)
-                        return 0;
-                    
-                    return (d1.getTime() > d2.getTime() ? 1 : -1);
-                }
-                
-                private Date getDate(final String value) {
-                    
-                    // special handling for current keyword
-                    if(value.equalsIgnoreCase("current"))
-                            return null;
-                    for (int i=0; i<PATTERNS.length; i++) {
-                        // rebuild formats at each parse, date formats are not thread safe
-                        SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
-
-                        /* We do not use the standard method DateFormat.parse(String), because if the parsing
-                         * stops before the end of the string, the remaining characters are just ignored and
-                         * no exception is thrown. So we have to ensure that the whole string is correct for
-                         * the format.
-                         */
-                        ParsePosition pos = new ParsePosition(0);
-                        Date time = format.parse(value, pos);
-                        if (pos.getIndex() == value.length()) {
-                            return time;
-                        }
-                    }
-                    
-                    return null;
-                }
-
-                
-            });
-            
-            return (String[]) finalArray.toArray(new String[1]);
-        }
+//        /**
+//         * 
+//         * @param originalArray
+//         * @return
+//         */
+//        private static String[] orderTimeArray(String[] originalArray) {
+//            List finalArray = Arrays.asList(originalArray);
+//
+//            Collections.sort(finalArray, new Comparator<String>() {
+//                /**
+//                 * All patterns that are correct regarding the ISO-8601 norm.
+//                 */
+//                final String[] PATTERNS = {
+//                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+//                    "yyyy-MM-dd'T'HH:mm:sss'Z'",
+//                    "yyyy-MM-dd'T'HH:mm:ss'Z'",
+//                    "yyyy-MM-dd'T'HH:mm'Z'",
+//                    "yyyy-MM-dd'T'HH'Z'",
+//                    "yyyy-MM-dd",
+//                    "yyyy-MM",
+//                    "yyyy"
+//                };
+//                
+//                public int compare(String o1, String o2) {
+//                    if (o1.equals(o2))
+//                        return 0;
+//                    
+//                    Date d1 = getDate(o1);
+//                    Date d2 = getDate(o2);
+//                    
+//                    if (d1 == null || d2 == null)
+//                        return 0;
+//                    
+//                    return (d1.getTime() > d2.getTime() ? 1 : -1);
+//                }
+//                
+//                private Date getDate(final String value) {
+//                    
+//                    // special handling for current keyword
+//                    if(value.equalsIgnoreCase("current"))
+//                            return null;
+//                    for (int i=0; i<PATTERNS.length; i++) {
+//                        // rebuild formats at each parse, date formats are not thread safe
+//                        SimpleDateFormat format = new SimpleDateFormat(PATTERNS[i], Locale.CANADA);
+//
+//                        /* We do not use the standard method DateFormat.parse(String), because if the parsing
+//                         * stops before the end of the string, the remaining characters are just ignored and
+//                         * no exception is thrown. So we have to ensure that the whole string is correct for
+//                         * the format.
+//                         */
+//                        ParsePosition pos = new ParsePosition(0);
+//                        Date time = format.parse(value, pos);
+//                        if (pos.getIndex() == value.length()) {
+//                            return time;
+//                        }
+//                    }
+//                    
+//                    return null;
+//                }
+//
+//                
+//            });
+//            
+//            return (String[]) finalArray.toArray(new String[1]);
+//        }
 
         /**
          * DOCUMENT ME!
