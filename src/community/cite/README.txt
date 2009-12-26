@@ -42,7 +42,13 @@ Patch the engine sources with the 'engine.patch' file.
 
    'patch -p0 < engine.patch'
 
-5. Build the Test Engine
+5. Patch the Test Sources
+
+Patch the test sources with the 'tests.patch' file.
+
+   'patch -p0 < tests.patch'
+
+6. Build the Test Engine
 
 The test engine is built with the following command: 
 
