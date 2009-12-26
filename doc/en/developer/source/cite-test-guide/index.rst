@@ -49,6 +49,10 @@ Check out CITE tools
     you do not have one ask on the developer list for someone to check out the
     tests for you.
 
+#. Patch the tests sources::
+
+     patch -p0 < tests.patch
+
 Build the CITE tools
 --------------------
 
