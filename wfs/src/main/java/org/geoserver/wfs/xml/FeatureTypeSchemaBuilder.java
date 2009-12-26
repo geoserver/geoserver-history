@@ -212,6 +212,8 @@ public abstract class FeatureTypeSchemaBuilder {
                     }
                 }
                 if (typeNames.length() > 0) {
+                    typeNames.setLength(typeNames.length()-1);
+                    
                     // schema not found, encode describe feature type URL
                     Map<String, String> params = new LinkedHashMap<String, String>(describeFeatureTypeParams);
                     params.put("typeName", typeNames.toString().trim());
