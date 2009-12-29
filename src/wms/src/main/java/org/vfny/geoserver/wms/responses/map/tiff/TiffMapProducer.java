@@ -20,8 +20,6 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageWriterSpi;
-
 /**
  * Map producer for producing Tiff images out of a map.
  * 
@@ -33,7 +31,7 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 	/** A logger for this class. */
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
 
-	private final static ImageWriterSpi writerSPI = new TIFFImageWriterSpi();
+	private final static ImageWriterSpi writerSPI = new it.geosolutions.imageioimpl.plugins.tiff.TIFFImageWriterSpi();
 
 	/** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/tiff";
@@ -78,8 +76,9 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 		final ImageWriter writer = writerSPI.createWriterInstance();
 
 		// getting a stream caching in memory
-		final ImageOutputStream ioutstream = ImageIO
-				.createImageOutputStream(outStream);
+		final ImageOutputStream ioutstream = ImageIO.createImageOutputStream(outStream);
+		if(ioutstream==null)
+			throw new WmsException("Unable to create ImageOutputStream.");
 
 		// tiff
 		if (LOGGER.isLoggable(Level.FINE)) {
@@ -96,10 +95,28 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
 		}
 
 		// write it out
-		writer.setOutput(ioutstream);
-		writer.write(image);
-		ioutstream.close();
-		writer.dispose();
+		try{
+			writer.setOutput(ioutstream);
+			writer.write(image);
+		}finally{
+			try{
+				ioutstream.close();
+			}catch (Throwable e) {
+				// eat exception to release resources silently
+				if(LOGGER.isLoggable(Level.FINEST))
+					LOGGER.log(Level.FINEST,"Unable to properly close output stream",e);
+			}
+			
+			try{
+
+				writer.dispose();
+			}catch (Throwable e) {
+				// eat exception to release resources silently
+				if(LOGGER.isLoggable(Level.FINEST))
+					LOGGER.log(Level.FINEST,"Unable to properly dispose writer",e);
+			}
+		}
+		
 
 		if (LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.fine("Writing tiff image done!");

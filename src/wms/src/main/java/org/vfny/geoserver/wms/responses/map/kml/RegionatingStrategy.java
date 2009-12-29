@@ -1,7 +1,6 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.LayerInfo;
 import org.geotools.map.MapLayer;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
