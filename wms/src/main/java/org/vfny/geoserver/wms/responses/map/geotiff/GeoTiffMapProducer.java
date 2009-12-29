@@ -58,8 +58,7 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws WmsException, IOException {
         // crating a grid coverage
-        final GridCoverage2D gc = factory.create("geotiff", image,
-                new GeneralEnvelope(mapContext.getAreaOfInterest()));
+        final GridCoverage2D gc = factory.create("geotiff", image,new GeneralEnvelope(mapContext.getAreaOfInterest()));
 
         // tiff
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -75,10 +74,33 @@ public class GeoTiffMapProducer extends DefaultRasterMapProducer {
 
         // writing it out
         final ImageOutputStream imageOutStream = ImageIO.createImageOutputStream(outStream);
-        final GeoTiffWriter writer = new GeoTiffWriter(imageOutStream);
-        writer.write(gc, null);
-        imageOutStream.flush();
-        imageOutStream.close();
+		if(imageOutStream==null)
+			throw new WmsException("Unable to create ImageOutputStream.");
+		
+        GeoTiffWriter writer = null;
+
+		// write it out
+		try{
+			writer = new GeoTiffWriter(imageOutStream);
+	        writer.write(gc, null);
+		}finally{
+			try{
+				imageOutStream.close();
+			}catch (Throwable e) {
+				// eat exception to release resources silently
+				if(LOGGER.isLoggable(Level.FINEST))
+					LOGGER.log(Level.FINEST,"Unable to properly close output stream",e);
+			}
+			
+			try{
+				if(writer!=null)
+					writer.dispose();
+			}catch (Throwable e) {
+				// eat exception to release resources silently
+				if(LOGGER.isLoggable(Level.FINEST))
+					LOGGER.log(Level.FINEST,"Unable to properly dispose writer",e);
+			}
+		}
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing tiff image done!");
