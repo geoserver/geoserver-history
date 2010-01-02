@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -805,6 +806,9 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
      * Helper method for listing files in a directory.
      */
     Collection<File> list( File d, IOFileFilter filter ) {
+        if (d == null) {
+            return Collections.EMPTY_LIST;
+        }
         ArrayList<File> files = new ArrayList(); 
         for ( File f : d.listFiles() ) {
             if ( filter.accept( f ) ) {
