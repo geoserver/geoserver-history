@@ -18,7 +18,7 @@ import org.vfny.geoserver.wcs.responses.coverage.IMGCoverageResponseDelegate;
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  */
 public class CoverageResponseDelegateFactory {

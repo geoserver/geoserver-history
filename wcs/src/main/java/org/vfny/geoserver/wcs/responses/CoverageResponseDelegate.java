@@ -13,7 +13,7 @@ import org.geotools.coverage.grid.GridCoverage2D;
 /**
  * DOCUMENT ME!
  * 
- * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
+ * @author Alessio Fabiani, GeoSolutions SAS
  * @author Simone Giannecchini, GeoSolutions SAS
  */
 public interface CoverageResponseDelegate {

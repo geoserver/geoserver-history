@@ -6,10 +6,10 @@ package org.vfny.geoserver.wms;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
+import org.geotools.map.MapContext;
 
 /**
  * Provides the skeleton for producers of map image, as required by the GetMap

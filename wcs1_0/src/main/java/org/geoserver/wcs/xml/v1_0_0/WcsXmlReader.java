@@ -22,7 +22,6 @@ import org.vfny.geoserver.wcs.WcsException;
  * @author Justin Deoliveira, The Open Planning Project
  * @author Andrea Aime, The Open Planning project
  * 
- *         TODO: there is too much duplication with the 1.0.0 reader, factor it out.
  */
 public class WcsXmlReader extends XmlRequestReader {
     /**

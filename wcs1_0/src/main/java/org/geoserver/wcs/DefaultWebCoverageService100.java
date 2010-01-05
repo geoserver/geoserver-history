@@ -81,8 +81,6 @@ import org.vfny.geoserver.wcs.responses.CoverageResponseDelegateFactory;
  */
 public class DefaultWebCoverageService100 implements WebCoverageService100 {
 
-    private final static Hints HINTS = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
-
     private WCSInfo wcs;
 
     private Catalog catalog;
@@ -163,12 +161,13 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 throw new WcsException("Cannot find sourceCoverage on the catalog!");
             
             // first let's run some sanity checks on the inputs
-//            checkDomainSubset(meta, request.getDomainSubset());
             checkRangeSubset(meta, request.getRangeSubset());
             checkInterpolationMethod(meta, request.getInterpolationMethod());
             checkOutput(meta, request.getOutput());
             
-            // prepare domain elements
+            //
+            // PREPARE DOMAIN SUBSET ELEMENT
+            //
             final DomainSubsetType domainSubset = request.getDomainSubset();
             // time
             final TimeSequenceType temporalSubset = domainSubset.getTemporalSubset();
@@ -191,7 +190,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             
 
             // grab the reader using the default params,
-            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, HINTS);
+            final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, WCSUtils.LENIENT_HINT);
             if(reader==null)
             	 return coverageResults.toArray(new GridCoverage2D[] {});
             	
