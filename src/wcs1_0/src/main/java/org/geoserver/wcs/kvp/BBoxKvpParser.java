@@ -9,7 +9,15 @@ import java.util.List;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.GeneralEnvelope;
-
+/**
+ * Parsing a BBOX for WCS.
+ * 
+ * <p>
+ * Notice that we make sure tht the BBOX is 2D since we support elevation only as a band of the range!
+ * 
+ * @author Simone Giannecchini, GeoSolutions SAS
+ *
+ */
 public class BBoxKvpParser extends Wcs10KvpParser {
     public BBoxKvpParser() {
         super("bbox", GeneralEnvelope.class);
@@ -20,7 +28,7 @@ public class BBoxKvpParser extends Wcs10KvpParser {
         List unparsed = KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER);
         final int size=unparsed.size();
         // check to make sure that the bounding box has 4 coordinates
-        if (unparsed.size() < 4||(size%2!=0)||size>6) {
+        if (unparsed.size() < 4||(size%2!=0)||size>4) {
             throw new IllegalArgumentException("Requested bounding box contains wrong"
                     + "number of coordinates: " + unparsed.size());
         }
@@ -40,12 +48,12 @@ public class BBoxKvpParser extends Wcs10KvpParser {
         double miny = bbox[1];
         double maxx = bbox[2];
         double maxy = bbox[3];
-    	double minz = Double.NaN;
-    	double maxz = Double.NaN;
-        if(size==6){
-        	minz = bbox[4];
-        	maxz = bbox[5];
-        }
+//    	double minz = Double.NaN;
+//    	double maxz = Double.NaN;
+//        if(size==6){
+//        	minz = bbox[4];
+//        	maxz = bbox[5];
+//        }
         if (minx > maxx) {
             throw new ServiceException("illegal bbox, minX: " + minx + " is "
                     + "greater than maxX: " + maxx);
@@ -56,17 +64,17 @@ public class BBoxKvpParser extends Wcs10KvpParser {
                     + "greater than maxY: " + maxy);
         }
         
-        if (size== 6 &&minz > maxz) {
-            throw new ServiceException("illegal bbox, minz: " + minz + " is "
-                    + "greater than maxz: " + maxz);
-        }        
+//        if (size== 6 &&minz > maxz) {
+//            throw new ServiceException("illegal bbox, minz: " + minz + " is "
+//                    + "greater than maxz: " + maxz);
+//        }        
 
         // build the final envelope with no CRS
         final GeneralEnvelope envelope= new GeneralEnvelope(size/2);
-        if(size==4)
+//        if(size==4)
         	envelope.setEnvelope(minx,miny,maxx,maxy);
-        else
-        	envelope.setEnvelope(minx,miny,minz,maxx,maxy,maxz);
+//        else
+//        	envelope.setEnvelope(minx,miny,minz,maxx,maxy,maxz);
         return envelope;
 
     }

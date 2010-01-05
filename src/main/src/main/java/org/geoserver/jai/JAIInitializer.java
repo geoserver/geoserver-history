@@ -72,6 +72,8 @@ public class JAIInitializer implements GeoServerInitializer {
         ImageIO.setUseCache(jai.isImageIOCache());
         
         // Workaround for native mosaic BUG
-        Registry.setNativeAccelerationAllowed("Mosaic", false, jaiDef);
+        Registry.setNativeAccelerationAllowed("Mosaic", jai.isAllowNativeMosaic(), jaiDef);
+        
+        
     }
 }

@@ -1,7 +1,12 @@
 package org.geoserver.wcs;
 
 import org.geoserver.config.impl.ServiceInfoImpl;
-
+/**
+ * Default implementation for the {@link WCSInfo} bean.
+ * 
+ * @author Simone Giannecchini, GeoSolutions SAS
+ *
+ */
 @SuppressWarnings("unchecked")
 public class WCSInfoImpl extends ServiceInfoImpl implements WCSInfo {
 

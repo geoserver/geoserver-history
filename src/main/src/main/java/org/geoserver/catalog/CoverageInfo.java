@@ -22,6 +22,7 @@ import org.opengis.util.ProgressListener;
  * @author Justin Deoliveira, The Open Planning Project
  * @uml.dependency supplier="org.geoserver.catalog.CoverageResource"
  */
+@SuppressWarnings("deprecation")
 public interface CoverageInfo extends ResourceInfo {
 
     /**
@@ -30,20 +31,6 @@ public interface CoverageInfo extends ResourceInfo {
      */
     CoverageStoreInfo getStore();
     
-    ///**
-    // * The format of the coverage.
-    // * 
-    // * @uml.property name="format"
-    // */
-    //String getFormat();
-    //
-    ///**
-    // * Sets the format of the coverage.
-    // * 
-    // * @uml.property name="format"
-    // */
-    //void setFormat(String format);
-
     /**
      * The native format of the coverage.
      * 
@@ -151,9 +138,4 @@ public interface CoverageInfo extends ResourceInfo {
     
     GridCoverageReader getGridCoverageReader( ProgressListener listener, Hints hints ) 
         throws IOException;
-    
-    /**
-     * The live coverage resource, an instance of of {@link CoverageResource}.
-     */
-    //CoverageResource getResource(ProgressListener listener) throws IOException;
-}
+ }

@@ -10,25 +10,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.media.jai.BorderExtender;
 import javax.media.jai.Interpolation;
-import javax.media.jai.InterpolationNearest;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.processing.DefaultProcessor;
-import org.geotools.coverage.processing.operation.Crop;
-import org.geotools.coverage.processing.operation.FilteredSubsample;
 import org.geotools.coverage.processing.operation.Interpolate;
 import org.geotools.coverage.processing.operation.Resample;
-import org.geotools.coverage.processing.operation.Scale;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
 import org.geotools.factory.Hints;
-import org.geotools.geometry.GeneralEnvelope;
-import org.geotools.referencing.CRS;
 import org.opengis.coverage.Coverage;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wcs.WcsException;
@@ -40,15 +32,14 @@ import org.vfny.geoserver.wcs.WcsException;
  * 
  */
 public class WCSUtils {
-    private final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
 
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(WCSUtils.class);
+    
+    public final static Hints LENIENT_HINT = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
 
     private final static SelectSampleDimension bandSelectFactory = new SelectSampleDimension();
 
-
     private final static Interpolate interpolateFactory = new Interpolate();
-
 
     private final static Resample resampleFactory = new Resample();
 

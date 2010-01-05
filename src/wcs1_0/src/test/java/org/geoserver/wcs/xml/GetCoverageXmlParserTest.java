@@ -102,10 +102,8 @@ public class GetCoverageXmlParserTest extends TestCase {
         assertEquals("1.0.0", gc.getVersion());
         assertEquals("nurc:Pk50095", gc.getSourceCoverage());
 
-        GeneralEnvelope envelope = ((GeneralEnvelope) gc.getDomainSubset().getSpatialSubset()
-                .getEnvelope().get(0));
-        assertEquals("EPSG:32633", CRS.lookupIdentifier(envelope.getCoordinateReferenceSystem(),
-                true));
+        GeneralEnvelope envelope = ((GeneralEnvelope) gc.getDomainSubset().getSpatialSubset().getEnvelope().get(0));
+        assertEquals("EPSG:32633", CRS.lookupIdentifier(envelope.getCoordinateReferenceSystem(),true));
         assertEquals(347649.93086859107, envelope.getLowerCorner().getOrdinate(0));
         assertEquals(5176214.082539256, envelope.getLowerCorner().getOrdinate(1));
         assertEquals(370725.976428591, envelope.getUpperCorner().getOrdinate(0));

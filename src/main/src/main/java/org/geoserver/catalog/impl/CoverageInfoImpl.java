@@ -21,10 +21,21 @@ import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.util.ProgressListener;
-
+/**
+ * Default Implementation of the {@link CoverageInfo} bean to capture information about a coverage.
+ * 
+ * @author Simone Giannecchini, GeoSolutions SAS
+ *
+ */
+@SuppressWarnings("deprecation")
 public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
-    protected String nativeFormat;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 659498790758954330L;
+
+	protected String nativeFormat;
 
     protected GridGeometry grid;
     

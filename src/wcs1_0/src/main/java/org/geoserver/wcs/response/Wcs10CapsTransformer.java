@@ -553,7 +553,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
          * 
          * @param referencedEnvelope
          */
-        private void handleEnvelope(ReferencedEnvelope referencedEnvelope, String timeMetadata, String elevationMetadata) {
+        private void handleEnvelope(ReferencedEnvelope referencedEnvelope, String timeMetadata) {
             AttributesImpl attributes = new AttributesImpl();
 
             attributes.addAttribute("", "srsName", "srsName", "", /* "WGS84(DD)" */ "urn:ogc:def:crs:OGC:1.3:CRS84");
@@ -561,11 +561,6 @@ public class Wcs10CapsTransformer extends TransformerBase {
             final StringBuffer minCP = new StringBuffer(Double.toString(referencedEnvelope.getMinX())).append(" ").append(referencedEnvelope.getMinY());
             final StringBuffer maxCP = new StringBuffer(Double.toString(referencedEnvelope.getMaxX())).append(" ").append(referencedEnvelope.getMaxY());
 
-            if (elevationMetadata != null && elevationMetadata.length() > 0) {
-                final String[] elevationLevels = orderDoubleArray(elevationMetadata.split(","));
-                minCP.append(" ").append(elevationLevels[0]);
-                maxCP.append(" ").append(elevationLevels[elevationLevels.length - 1]);
-            }
             
             element("gml:pos", minCP.toString());
             element("gml:pos", maxCP.toString());
@@ -741,7 +736,6 @@ public class Wcs10CapsTransformer extends TransformerBase {
 
                 
                 String timeMetadata = null;
-                String elevationMetadata = null;
 
                 CoverageStoreInfo csinfo = cv.getStore();
                 
@@ -764,11 +758,9 @@ public class Wcs10CapsTransformer extends TransformerBase {
                     // TIME DIMENSION
                     timeMetadata = reader.getMetadataValue("TIME_DOMAIN");
                     
-                    // ELEVATION DIMENSION
-                    elevationMetadata = reader.getMetadataValue("ELEVATION_DOMAIN");
                 }
 
-                handleEnvelope(cv.getLatLonBoundingBox(), timeMetadata, elevationMetadata);
+                handleEnvelope(cv.getLatLonBoundingBox(), timeMetadata);
                 handleKeywords(cv.getKeywords());
 
                 end("wcs:CoverageOfferingBrief");
