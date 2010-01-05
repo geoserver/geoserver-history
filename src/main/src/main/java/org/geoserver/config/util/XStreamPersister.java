@@ -76,6 +76,7 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
+import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridGeometry;
@@ -909,9 +910,8 @@ public class XStreamPersister {
                 reader.moveDown(); //transform or crs
             }
             
-            AffineTransform transform = null;
+            AffineTransform2D gridToCRS = null;
             if ( "transform".equals( reader.getNodeName() ) ) {
-                transform = new AffineTransform();
                 double sx,sy,shx,shy,tx,ty;
                 
                 reader.moveDown(); //scaleX
@@ -921,7 +921,6 @@ public class XStreamPersister {
                 reader.moveDown(); //scaleY
                 sy = Double.parseDouble( reader.getValue() );
                 reader.moveUp();
-                transform.setToScale( sx, sy );
                 
                 reader.moveDown(); //shearX
                 shx = Double.parseDouble( reader.getValue() );
@@ -930,7 +929,6 @@ public class XStreamPersister {
                 reader.moveDown(); //shearY
                 shy = Double.parseDouble( reader.getValue() );
                 reader.moveUp();
-                transform.setToScale( shx, shy );
                 
                 reader.moveDown(); //translateX
                 tx = Double.parseDouble( reader.getValue() );
@@ -939,7 +937,10 @@ public class XStreamPersister {
                 reader.moveDown(); //translateY
                 ty = Double.parseDouble( reader.getValue() );
                 reader.moveUp();
-                transform.setToTranslation(tx, ty);
+                
+
+                // set tranform
+                gridToCRS = new AffineTransform2D(sx, shx, shy, sy, tx, ty);
                 
                 reader.moveUp();
                 if ( reader.hasMoreChildren() ) {
@@ -957,19 +958,6 @@ public class XStreamPersister {
             // new grid range
             GeneralGridEnvelope gridRange = new GeneralGridEnvelope(low, high);
             
-            // grid to crs
-            MathTransform gridToCRS = null;
-            if ( transform != null ) {
-                Matrix matrix = new GeneralMatrix(transform);
-                final MathTransformFactory factory = new DefaultMathTransformFactory();
-                try {
-                    gridToCRS = factory.createAffineTransform(matrix);
-                } 
-                catch (FactoryException e) {
-                    throw new RuntimeException( e );
-                }
-
-            }
             
             GridGeometry2D gg = new GridGeometry2D( gridRange, gridToCRS, crs );
             return serializationMethodInvoker.callReadResolve(gg);
