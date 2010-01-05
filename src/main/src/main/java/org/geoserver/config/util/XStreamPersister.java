@@ -921,7 +921,7 @@ public class XStreamPersister {
                 reader.moveDown(); //scaleY
                 sy = Double.parseDouble( reader.getValue() );
                 reader.moveUp();
-                transform.setToScale( sx, sy );
+                
                 
                 reader.moveDown(); //shearX
                 shx = Double.parseDouble( reader.getValue() );
@@ -930,7 +930,6 @@ public class XStreamPersister {
                 reader.moveDown(); //shearY
                 shy = Double.parseDouble( reader.getValue() );
                 reader.moveUp();
-                transform.setToScale( shx, shy );
                 
                 reader.moveDown(); //translateX
                 tx = Double.parseDouble( reader.getValue() );
@@ -939,8 +938,10 @@ public class XStreamPersister {
                 reader.moveDown(); //translateY
                 ty = Double.parseDouble( reader.getValue() );
                 reader.moveUp();
-                transform.setToTranslation(tx, ty);
                 
+                
+                // set tranform
+                transform.setTransform(sx, shx, shy, sy, tx, ty);
                 reader.moveUp();
                 if ( reader.hasMoreChildren() ) {
                     reader.moveDown(); //crs
