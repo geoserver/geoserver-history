@@ -26,9 +26,9 @@ public class BBoxKvpParser extends Wcs10KvpParser {
     @SuppressWarnings("unchecked")
 	public GeneralEnvelope parse(String value) throws Exception {
         List unparsed = KvpUtils.readFlat(value, KvpUtils.INNER_DELIMETER);
-        final int size=unparsed.size();
+        final int size = unparsed.size();
         // check to make sure that the bounding box has 4 coordinates
-        if (unparsed.size() !=4) {
+        if (unparsed.size() != 4) {
             throw new IllegalArgumentException("Requested bounding box contains wrong"
                     + "number of coordinates: " + unparsed.size());
         }

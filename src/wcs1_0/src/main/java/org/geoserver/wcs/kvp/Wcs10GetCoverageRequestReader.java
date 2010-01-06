@@ -21,7 +21,6 @@ import net.opengis.gml.PointType;
 import net.opengis.gml.RectifiedGridType;
 import net.opengis.gml.TimePositionType;
 import net.opengis.gml.VectorType;
-import net.opengis.wcs10.AxisDescriptionType;
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.DomainSubsetType;
 import net.opengis.wcs10.GetCoverageType;
@@ -38,7 +37,6 @@ import org.geoserver.ows.kvp.EMFKvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.KvpUtils.Tokenizer;
-import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.referencing.CRS;
@@ -46,7 +44,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.crs.VerticalCRS;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.cs.CoordinateSystem;
 import org.vfny.geoserver.wcs.WcsException;
@@ -140,17 +137,22 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
         final GeneralEnvelope bbox = (GeneralEnvelope) kvp.get("BBOX");
         if (bbox == null)
             throw new WcsException("bbox parameter is mandatory", MissingParameterValue, "bbox");
+        
+        // afabiani: consider Elevation as band, forcing the bbox to be 2D only
+        if (bbox.getDimension() != 2)
+            throw new WcsException("Requested bounding box is not 2-dimensional: " + bbox.getDimension(), InvalidParameterValue, "bbox");
+        
         final GeneralEnvelope envelope = new GeneralEnvelope(/* TODO: ignore 3D CRS for now crs */ bbox.getDimension() == 3 ? DefaultGeographicCRS.WGS84_3D : crs);
         if (/* TODO: ignore 3D CRS for now !hasVerticalCRS */ bbox.getDimension() == 2)
             envelope.setEnvelope(bbox.getLowerCorner().getOrdinate(0), bbox.getLowerCorner()
                     .getOrdinate(1), bbox.getUpperCorner().getOrdinate(0), bbox.getUpperCorner()
                     .getOrdinate(1));
-        else if (/* TODO: ignore 3D CRS for now hasVerticalCRS */ bbox.getDimension() == 3)
-            // 3D
-            envelope.setEnvelope(bbox.getLowerCorner().getOrdinate(0), bbox.getLowerCorner()
-                    .getOrdinate(1), bbox.getLowerCorner().getOrdinate(2), bbox.getUpperCorner()
-                    .getOrdinate(0), bbox.getUpperCorner().getOrdinate(1), bbox.getUpperCorner()
-                    .getOrdinate(2));
+//        else if (/* TODO: ignore 3D CRS for now hasVerticalCRS */ bbox.getDimension() == 3)
+//            // 3D
+//            envelope.setEnvelope(bbox.getLowerCorner().getOrdinate(0), bbox.getLowerCorner()
+//                    .getOrdinate(1), bbox.getLowerCorner().getOrdinate(2), bbox.getUpperCorner()
+//                    .getOrdinate(0), bbox.getUpperCorner().getOrdinate(1), bbox.getUpperCorner()
+//                    .getOrdinate(2));
         else
             throw new WcsException("bbox not compliant with the specified CRS", InvalidParameterValue, "bbox");
         
@@ -194,24 +196,25 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
             final Object d = kvp.get("depth");
             if (d != null) {
-
-                // check that the envelope is 3D or throw an error
-                if (bbox.getDimension() != 3)
-                    throw new WcsException("Found depth but envelope is of dimension "
-                            + bbox.getDimension(), InvalidParameterValue, "");
-
-                // notice that as for the spec this element represents the number of ticks on the
-                // third dimension
-                grid.getAxisName().add("z");
-
-                final int depth = Integer.parseInt((String) d);
-                grid.setDimension(BigInteger.valueOf(3));
-                // notice that the third element indicates how many layers we do have requested on the third dimension
-                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, 0 }, new int[] {width, height, depth }, false));
-
-
-                // 3D grid
-                grid.setDimension(BigInteger.valueOf(3));
+                // afabiani: we consider 2D grdis only 
+                throw new WcsException("3D grids are not supported.", InvalidParameterValue, "depth");
+//                // check that the envelope is 3D or throw an error
+//                if (bbox.getDimension() != 3)
+//                    throw new WcsException("Found depth but envelope is of dimension "
+//                            + bbox.getDimension(), InvalidParameterValue, "");
+//
+//                // notice that as for the spec this element represents the number of ticks on the
+//                // third dimension
+//                grid.getAxisName().add("z");
+//
+//                final int depth = Integer.parseInt((String) d);
+//                grid.setDimension(BigInteger.valueOf(3));
+//                // notice that the third element indicates how many layers we do have requested on the third dimension
+//                grid.setLimits(new GeneralGridEnvelope(new int[] { 0, 0, 0 }, new int[] {width, height, depth }, false));
+//
+//
+//                // 3D grid
+//                grid.setDimension(BigInteger.valueOf(3));
             } else {
                 // 2d grid
                 grid.setDimension(BigInteger.valueOf(2));
@@ -257,25 +260,27 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
                 //
                 final Object rz = kvp.get("resz");
                 if (rz != null) {
-                    // eventual depth
-                    final double resZ = Double.parseDouble((String) rz);
-                    // check that the envelope is 3D or throw an error
-                    if (bbox.getDimension() != 3)
-                        throw new WcsException("Found ResZ but envelope is of dimension "
-                                + bbox.getDimension(), InvalidParameterValue, "");
-                    final double origZ = bbox.getLowerCorner().getOrdinate(2);
-
-                    // 3D grid
-                    grid.setDimension(BigInteger.valueOf(3));
-                    // set the origin position
-                    dp.setDimension(grid.getDimension());
-                    dp.setValue(Arrays.asList(origX, origY, origZ));
-                    grid.setOrigin(origin);
-
-                    // set the resolution vector
-                    resolutionVector.setDimension(grid.getDimension());
-                    resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
-                    grid.getOffsetVector().add(resolutionVector);
+                    // afabiani: we consider 2D grdis only 
+                    throw new WcsException("3D grids are not supported.", InvalidParameterValue, "depth");
+//                    // eventual depth
+//                    final double resZ = Double.parseDouble((String) rz);
+//                    // check that the envelope is 3D or throw an error
+//                    if (bbox.getDimension() != 3)
+//                        throw new WcsException("Found ResZ but envelope is of dimension "
+//                                + bbox.getDimension(), InvalidParameterValue, "");
+//                    final double origZ = bbox.getLowerCorner().getOrdinate(2);
+//
+//                    // 3D grid
+//                    grid.setDimension(BigInteger.valueOf(3));
+//                    // set the origin position
+//                    dp.setDimension(grid.getDimension());
+//                    dp.setValue(Arrays.asList(origX, origY, origZ));
+//                    grid.setOrigin(origin);
+//
+//                    // set the resolution vector
+//                    resolutionVector.setDimension(grid.getDimension());
+//                    resolutionVector.setValue(Arrays.asList(resX, resY, resZ));
+//                    grid.getOffsetVector().add(resolutionVector);
                 } else {
                     // 2d grid
                     grid.setDimension(BigInteger.valueOf(2));
@@ -308,11 +313,18 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
 
         if (kvp.get("Band") != null) {
             Object axis = kvp.get("Band");
-            if (axis instanceof String) {
-                checkStringTypeAxisRange(rangeSubset, axis);
-            } else if (axis instanceof AxisSubsetType) {
+            if (axis instanceof AxisSubsetType) {
                 rangeSubset.getAxisSubset().add(axis);
-            }
+            } else
+                checkTypeAxisRange(rangeSubset, axis, "Band");
+        }
+        
+        if (kvp.get("ELEVATION") != null) {
+            Object axis = kvp.get("ELEVATION");
+            if (axis instanceof AxisSubsetType) {
+                rangeSubset.getAxisSubset().add(axis);
+            } else
+                checkTypeAxisRange(rangeSubset, axis, "ELEVATION");
         }
 
         return rangeSubset;
@@ -322,63 +334,76 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
      * @param rangeSubset
      * @param axis
      */
-    private void checkStringTypeAxisRange(final RangeSubsetType rangeSubset, Object axis) {
-        String bands = (String) axis;
-        if (bands != null) {
-            if (bands.contains("/")) {
-                List<String> unparsed = KvpUtils.readFlat(bands, new Tokenizer("/"));
+    private void checkTypeAxisRange(final RangeSubsetType rangeSubset, Object axis, String axisName) {
+        if (axis instanceof String) {
+            String bands = (String) axis;
+            if (bands != null) {
+                if (bands.contains("/")) {
+                    List<String> unparsed = KvpUtils.readFlat(bands, new Tokenizer("/"));
 
-                IntervalType interval = Wcs10Factory.eINSTANCE.createIntervalType();
-                TypedLiteralType min = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                TypedLiteralType max = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                TypedLiteralType res = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                if (unparsed.size() == 2) {
-                    min.setValue(unparsed.get(0));
-                    max.setValue(unparsed.get(1));
+                    IntervalType interval = Wcs10Factory.eINSTANCE.createIntervalType();
+                    TypedLiteralType min = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                    TypedLiteralType max = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                    TypedLiteralType res = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                    if (unparsed.size() == 2) {
+                        min.setValue(unparsed.get(0));
+                        max.setValue(unparsed.get(1));
 
-                    interval.setMin(min);
-                    interval.setMax(max);
+                        interval.setMin(min);
+                        interval.setMax(max);
+                    } else {
+                        min.setValue(unparsed.get(0));
+                        max.setValue(unparsed.get(1));
+                        res.setValue(unparsed.get(2));
+
+                        interval.setMin(min);
+                        interval.setMax(max);
+                        interval.setRes(res);
+                    }
+
+                    final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
+
+                    axisSubset.setName(axisName);
+
+                    axisSubset.getInterval().add(interval);
+
+                    rangeSubset.getAxisSubset().add(axisSubset);
+
                 } else {
-                    min.setValue(unparsed.get(0));
-                    max.setValue(unparsed.get(1));
-                    res.setValue(unparsed.get(2));
+                    List<String> unparsed = KvpUtils.readFlat(bands, KvpUtils.INNER_DELIMETER);
 
-                    interval.setMin(min);
-                    interval.setMax(max);
-                    interval.setRes(res);
+                    if (unparsed.size() == 0) {
+                        throw new WcsException(
+                                "Requested axis subset contains wrong number of values (should have at least 1): "
+                                        + unparsed.size(), WcsExceptionCode.InvalidParameterValue,
+                                "band");
+                    }
+
+                    final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
+
+                    axisSubset.setName(axisName);
+
+                    for (String bandValue : unparsed) {
+                        TypedLiteralType singleValue = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+                        singleValue.setValue(bandValue);
+
+                        axisSubset.getSingleValue().add(singleValue);
+
+                    }
+                    rangeSubset.getAxisSubset().add(axisSubset);
                 }
-
-                final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
-
-                axisSubset.setName("Band");
-
-                axisSubset.getInterval().add(interval);
-
-                rangeSubset.getAxisSubset().add(axisSubset);
-
-            } else {
-                List<String> unparsed = KvpUtils.readFlat(bands, KvpUtils.INNER_DELIMETER);
-
-                if (unparsed.size() == 0) {
-                    throw new WcsException(
-                            "Requested axis subset contains wrong number of values (should have at least 1): "
-                                    + unparsed.size(), WcsExceptionCode.InvalidParameterValue,
-                            "band");
-                }
-
-                final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
-
-                axisSubset.setName("Band");
-
-                for (String bandValue : unparsed) {
-                    TypedLiteralType singleValue = Wcs10Factory.eINSTANCE.createTypedLiteralType();
-                    singleValue.setValue(bandValue);
-
-                    axisSubset.getSingleValue().add(singleValue);
-
-                }
-                rangeSubset.getAxisSubset().add(axisSubset);
             }
+        } else if (axis instanceof Double || axis instanceof Integer) {
+            final AxisSubsetType axisSubset = Wcs10Factory.eINSTANCE.createAxisSubsetType();
+
+            axisSubset.setName(axisName);
+
+            TypedLiteralType singleValue = Wcs10Factory.eINSTANCE.createTypedLiteralType();
+            singleValue.setValue(String.valueOf(axis));
+
+            axisSubset.getSingleValue().add(singleValue);
+
+            rangeSubset.getAxisSubset().add(axisSubset);
         }
     }
 

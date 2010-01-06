@@ -51,7 +51,6 @@ import org.geotools.coverage.grid.GridEnvelope2D;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
@@ -186,6 +185,8 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             if(output==null)
             	throw new IllegalArgumentException("Output type was null");
             final CodeType outputCRS = output.getCrs();
+            if (outputCRS == null)
+                throw new IllegalArgumentException("Invalid output CRS"); 
             final int dimension = grid.getDimension().intValue();
             
 
@@ -249,11 +250,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 
                 
                 if (dimension == 3) {
-                    int z = /* TODO: (int) Math.round(originalEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2)); */
-                        (int) Math.round(requestedEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2));
-                    elevationLevels = z;
-                	if(elevationLevels<=0)
-                	    throw new WcsException("Invalid DEPTH value:"+elevationLevels, InvalidParameterValue,null);
+//                    int z = /* TODO: (int) Math.round(originalEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2)); */
+//                        (int) Math.round(requestedEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2));
+//                    elevationLevels = z;
+//                	if(elevationLevels<=0)
+                	    throw new WcsException("Invalid DEPTH value: "+elevationLevels, InvalidParameterValue,null);
                 } 
             }
             else
@@ -265,20 +266,49 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             // 
             
             double[] elevations = null;
-            if(dimension==3&&elevationLevels>0)
-            {
-                // compute the elevation levels, we have elevationLevels values
-                elevations=new double[elevationLevels];
+            // extract elevation values
+            List axisSubset = null;
+            if (request.getRangeSubset() != null) {
+                axisSubset = request.getRangeSubset().getAxisSubset();
+                if (axisSubset.size() > 0) {
+                    for (int a=0; a<axisSubset.size(); a++) {
+                        AxisSubsetType axis = (AxisSubsetType) axisSubset.get(a);    
 
-                elevations[0]=requestedEnvelope.getLowerCorner().getOrdinate(2); // TODO put the extrema
-                elevations[elevationLevels-1]=requestedEnvelope.getUpperCorner().getOrdinate(2);
-                if(elevationLevels>2){
-                    final int adjustedLevelsNum=elevationLevels-1;
-                    double step = (elevations[elevationLevels-1]-elevations[0])/adjustedLevelsNum;
-                    for(int i=1;i<adjustedLevelsNum;i++)
-                        elevations[i]=elevations[i-1]+step;
+                        String axisName = axis.getName();
+                        if (axisName.equalsIgnoreCase("ELEVATION")) {
+                            if (axis.getSingleValue().size() > 0) {
+                                elevations = new double[axis.getSingleValue().size()];
+                                for (int s = 0; s < axis.getSingleValue().size(); s++) {
+                                    elevations[s] = Double.parseDouble(((TypedLiteralType) axis.getSingleValue().get(s)).getValue());
+                                }
+                            } else if (axis.getInterval().size() > 0) {
+                                IntervalType interval = (IntervalType) axis.getInterval().get(0);
+                                int min = Integer.parseInt(interval.getMin().getValue());
+                                int max = Integer.parseInt(interval.getMax().getValue());
+                                int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
+
+                                elevations = new double[(int) (Math.floor(max - min) / res + 1)];
+                                for (int b = 0; b < elevations.length; b++)
+                                    elevations[b] = (min + b * res);
+                            }
+                        }
+                    }
                 }
             }
+//            if(dimension==3&&elevationLevels>0)
+//            {
+//                // compute the elevation levels, we have elevationLevels values
+//                elevations=new double[elevationLevels];
+//
+//                elevations[0]=requestedEnvelope.getLowerCorner().getOrdinate(2); // TODO put the extrema
+//                elevations[elevationLevels-1]=requestedEnvelope.getUpperCorner().getOrdinate(2);
+//                if(elevationLevels>2){
+//                    final int adjustedLevelsNum=elevationLevels-1;
+//                    double step = (elevations[elevationLevels-1]-elevations[0])/adjustedLevelsNum;
+//                    for(int i=1;i<adjustedLevelsNum;i++)
+//                        elevations[i]=elevations[i-1]+step;
+//                }
+//            }
             
             
             //
@@ -402,43 +432,46 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             // ImageIOUtilities.visualize(coverage.getRenderedImage());
             String interpolationType = null;
             if (request.getRangeSubset() != null) {
-                if (request.getRangeSubset().getAxisSubset().size() > 1) {
-                    throw new WcsException("Multi field coverages are not supported yet");
-                }
+//                if (request.getRangeSubset().getAxisSubset().size() > 1) {
+//                    throw new WcsException("Multi field coverages are not supported yet");
+//                }
 
                 interpolationType = request.getInterpolationMethod().getLiteral();
 
                 // extract the band indexes
-                List axisSubset = request.getRangeSubset().getAxisSubset();
+                axisSubset = request.getRangeSubset().getAxisSubset();
                 if (axisSubset.size() > 0) {
-                    AxisSubsetType axis = (AxisSubsetType) axisSubset.get(0);
+                    for (int a=0; a<axisSubset.size(); a++) {
+                        AxisSubsetType axis = (AxisSubsetType) axisSubset.get(a);    
 
-                    try {
-                        String axisName = axis.getName();
+                        try {
+                            String axisName = axis.getName();
+                            if (axisName.equalsIgnoreCase("Band")) {
+                                int[] bands = null;
+                                if (axis.getSingleValue().size() > 0) {
+                                    bands = new int[axis.getSingleValue().size()];
+                                    for (int s = 0; s < axis.getSingleValue().size(); s++) {
+                                        bands[s] = Integer.parseInt(((TypedLiteralType) axis.getSingleValue().get(s)).getValue()) - 1;
+                                    }
+                                } else if (axis.getInterval().size() > 0) {
+                                    IntervalType interval = (IntervalType) axis.getInterval().get(0);
+                                    int min = Integer.parseInt(interval.getMin().getValue());
+                                    int max = Integer.parseInt(interval.getMax().getValue());
+                                    int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
 
-                        int[] bands = null;
-                        if (axisName.equals("Band") && axis.getSingleValue().size() > 0) {
-                            bands = new int[axis.getSingleValue().size()];
-                            for (int s = 0; s < axis.getSingleValue().size(); s++) {
-                                bands[s] = Integer.parseInt(((TypedLiteralType) axis.getSingleValue().get(s)).getValue()) - 1;
+                                    bands = new int[(int) (Math.floor(max - min) / res + 1)];
+                                    for (int b = 0; b < bands.length; b++)
+                                        bands[b] = (min + b * res) - 1;
+                                }
+
+                                // finally execute the band select
+                                bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage,bands);
                             }
-                        } else if (axis.getInterval().size() > 0) {
-                            IntervalType interval = (IntervalType) axis.getInterval().get(0);
-                            int min = Integer.parseInt(interval.getMin().getValue());
-                            int max = Integer.parseInt(interval.getMax().getValue());
-                            int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
-
-                            bands = new int[(int) (Math.floor(max - min) / res + 1)];
-                            for (int b = 0; b < bands.length; b++)
-                                bands[b] = (min + b * res) - 1;
+                        } catch (Exception e) {
+                            // Warning: Axis not found!!!
+                            throw new WcsException("Band Select Operation: "
+                                    + e.getLocalizedMessage());
                         }
-
-                        // finally execute the band select
-                        bandSelectedCoverage = (GridCoverage2D) WCSUtils.bandSelect(coverage,bands);
-                    } catch (Exception e) {
-                        // Warning: Axis not found!!!
-                        throw new WcsException("Band Select Operation: "
-                                + e.getLocalizedMessage());
                     }
                 }
             }
@@ -775,32 +808,52 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
         } else if (rangeSubset.getAxisSubset().size() == 0)
             return;
 
-        AxisSubsetType axisSubset = (AxisSubsetType) rangeSubset.getAxisSubset().get(0);
+        for (int a=0; a<rangeSubset.getAxisSubset().size(); a++) {
+            AxisSubsetType axisSubset = (AxisSubsetType) rangeSubset.getAxisSubset().get(a);
+            
+            if (axisSubset.getName().equalsIgnoreCase("Band")) {
+                // prepare a support structure to quickly get the band index of a key
+                // (and remember we replaced spaces with underscores in the keys to
+                // avoid issues with the kvp parsing of indentifiers that include spaces)
 
-        // prepare a support structure to quickly get the band index of a key
-        // (and remember we replaced spaces with underscores in the keys to
-        // avoid issues with the kvp parsing of indentifiers that include spaces)
+                // check indexes
+                int[] bands = null;
+                if (axisSubset.getSingleValue().size() > 0) {
+                    bands = new int[1];
+                    bands[0] = Integer.parseInt(((TypedLiteralType) axisSubset.getSingleValue().get(0)).getValue());
+                } else if (axisSubset.getInterval().size() > 0) {
+                    IntervalType interval = (IntervalType) axisSubset.getInterval().get(0);
+                    int min = Integer.parseInt(interval.getMin().getValue());
+                    int max = Integer.parseInt(interval.getMax().getValue());
+                    int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
 
-        // check indexes
-        int[] bands = null;
-        if (axisSubset.getSingleValue().size() > 0) {
-            bands = new int[1];
-            bands[0] = Integer.parseInt(((TypedLiteralType) axisSubset.getSingleValue().get(0)).getValue());
-        } else if (axisSubset.getInterval().size() > 0) {
-            IntervalType interval = (IntervalType) axisSubset.getInterval().get(0);
-            int min = Integer.parseInt(interval.getMin().getValue());
-            int max = Integer.parseInt(interval.getMax().getValue());
-            int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue())
-                    : 1);
+                    bands = new int[(max - min) / res];
+                    for (int b = 0; b < bands.length; b++)
+                        bands[b] = min + (b * res);
+                }
 
-            bands = new int[(max - min) / res];
-            for (int b = 0; b < bands.length; b++)
-                bands[b] = min + (b * res);
+                if (bands == null)
+                    throw new WcsException("Invalid values for axis " + axisSubset.getName(),
+                            InvalidParameterValue, "AxisSubset");
+            } else if (axisSubset.getName().equalsIgnoreCase("ELEVATION")) {
+                double[] elevations = null;
+                if (axisSubset.getSingleValue().size() > 0) {
+                    elevations = new double[axisSubset.getSingleValue().size()];
+                    for (int s = 0; s < axisSubset.getSingleValue().size(); s++) {
+                        elevations[s] = Double.parseDouble(((TypedLiteralType) axisSubset.getSingleValue().get(s)).getValue());
+                    }
+                } else if (axisSubset.getInterval().size() > 0) {
+                    IntervalType interval = (IntervalType) axisSubset.getInterval().get(0);
+                    int min = Integer.parseInt(interval.getMin().getValue());
+                    int max = Integer.parseInt(interval.getMax().getValue());
+                    int res = (interval.getRes() != null ? Integer.parseInt(interval.getRes().getValue()) : 1);
+
+                    elevations = new double[(int) (Math.floor(max - min) / res + 1)];
+                    for (int b = 0; b < elevations.length; b++)
+                        elevations[b] = (min + b * res);
+                }
+            }
         }
-
-        if (bands == null)
-            throw new WcsException("Invalid values for axis " + axisSubset.getName(),
-                    InvalidParameterValue, "AxisSubset");
     }
 
 }

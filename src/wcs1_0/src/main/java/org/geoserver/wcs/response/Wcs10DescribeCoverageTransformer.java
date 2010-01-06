@@ -161,14 +161,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
 
             start("wcs:CoverageDescription", attributes);
             for (Iterator it = request.getCoverage().iterator(); it.hasNext();) {
-                String coverageName = (String) it.next();
-                String coverageId = null;
-                String fieldId = null;
-
-                coverageId = coverageName.indexOf("@") > 0 ? coverageName.substring(0, coverageName
-                        .indexOf("@")) : coverageName;
-                fieldId = coverageName.indexOf("@") > 0 ? coverageName.substring(coverageName
-                        .indexOf("@") + 1) : null;
+                String coverageId = (String) it.next();
 
                 // check the coverage is known
                 LayerInfo layer = catalog.getLayerByName(coverageId);
