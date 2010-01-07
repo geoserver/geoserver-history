@@ -378,24 +378,45 @@ public class GetCoverageTest extends WCSTestSupport {
             }
         }
 	
-        public void testWrongTimeInstant() throws Exception {
-            Map<String, Object> raw = new HashMap<String, Object>();
-            final String getLayerId = getLayerId(WATTEMP);
-            raw.put("sourcecoverage", getLayerId);
-            raw.put("version", "1.0.0");
-            raw.put("format", "image/geotiff");
-            raw.put("BBox", "0.5,40.5,14.856,44.496");
-            raw.put("crs", "EPSG:4326");
-            raw.put("width", "150");
-            raw.put("height", "150");
-            raw.put("TIME", "2000-00-00T00:00:000Z");
-        
-            // TODO: check the TIME parameter behavior; it looks like a wrong time instant returns back the current time
-            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-            
-            assertNotNull(coverages);
-            assertEquals(1, coverages.length);
-            
+//        public void testWrongTimeInstant() throws Exception {
+//            Map<String, Object> raw = new HashMap<String, Object>();
+//            final String getLayerId = getLayerId(WATTEMP);
+//            raw.put("sourcecoverage", getLayerId);
+//            raw.put("version", "1.0.0");
+//            raw.put("format", "image/geotiff");
+//            raw.put("BBox", "0.5,40.5,14.856,44.496");
+//            raw.put("crs", "EPSG:4326");
+//            raw.put("width", "150");
+//            raw.put("height", "150");
+//            raw.put("TIME", "2000-00-00T00:00:000Z");
+//        
+//            // TODO: check the TIME parameter behavior; it looks like a wrong time instant returns back the current time
+//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
+//            
+//            assertNotNull(coverages);
+//            assertEquals(1, coverages.length);
+//            
+////            try {
+////                @SuppressWarnings("unused")
+////                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+////                fail("When did we learn to encode SuperCoolFormat?");
+////            } catch (WcsException e) {
+////                assertEquals(IllegalArgumentException.class, e.getCause().getClass());
+////            }
+//        }
+	
+//	public void testWrongElevationRangeSubset() throws Exception {
+//            Map<String, Object> raw = new HashMap<String, Object>();
+//            final String getLayerId = getLayerId(WATTEMP);
+//            raw.put("sourcecoverage", getLayerId);
+//            raw.put("version", "1.0.0");
+//            raw.put("format", "image/geotiff");
+//            raw.put("BBox", "0.5,40.5,14.856,44.496");
+//            raw.put("crs", "EPSG:4326");
+//            raw.put("width", "150");
+//            raw.put("height", "150");
+//            raw.put("ELEVATION", "50.0");
+//        
 //            try {
 //                @SuppressWarnings("unused")
 //                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
@@ -403,65 +424,44 @@ public class GetCoverageTest extends WCSTestSupport {
 //            } catch (WcsException e) {
 //                assertEquals(IllegalArgumentException.class, e.getCause().getClass());
 //            }
-        }
+//        }
 	
-	public void testWrongElevationRangeSubset() throws Exception {
-            Map<String, Object> raw = new HashMap<String, Object>();
-            final String getLayerId = getLayerId(WATTEMP);
-            raw.put("sourcecoverage", getLayerId);
-            raw.put("version", "1.0.0");
-            raw.put("format", "image/geotiff");
-            raw.put("BBox", "0.5,40.5,14.856,44.496");
-            raw.put("crs", "EPSG:4326");
-            raw.put("width", "150");
-            raw.put("height", "150");
-            raw.put("ELEVATION", "50.0");
-        
-            try {
-                @SuppressWarnings("unused")
-                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-                fail("When did we learn to encode SuperCoolFormat?");
-            } catch (WcsException e) {
-                assertEquals(IllegalArgumentException.class, e.getCause().getClass());
-            }
-        }
+//	public void testTimeInstant() throws Exception {
+//            Map<String, Object> raw = new HashMap<String, Object>();
+//            final String getLayerId = getLayerId(WATTEMP);
+//            raw.put("sourcecoverage", getLayerId);
+//            raw.put("version", "1.0.0");
+//            raw.put("format", "image/geotiff");
+//            raw.put("BBox", "0.5,40.5,14.856,44.496");
+//            raw.put("crs", "EPSG:4326");
+//            raw.put("width", "150");
+//            raw.put("height", "150");
+//            raw.put("TIME", "2008-10-31T00:00:000Z");
+//        
+//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
+//            
+//            assertNotNull(coverages);
+//            assertEquals(1, coverages.length);
+//        }
 	
-	public void testTimeInstant() throws Exception {
-            Map<String, Object> raw = new HashMap<String, Object>();
-            final String getLayerId = getLayerId(WATTEMP);
-            raw.put("sourcecoverage", getLayerId);
-            raw.put("version", "1.0.0");
-            raw.put("format", "image/geotiff");
-            raw.put("BBox", "0.5,40.5,14.856,44.496");
-            raw.put("crs", "EPSG:4326");
-            raw.put("width", "150");
-            raw.put("height", "150");
-            raw.put("TIME", "2008-10-31T00:00:000Z");
-        
-            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-            
-            assertNotNull(coverages);
-            assertEquals(1, coverages.length);
-        }
-	
-	public void testElevationRangeSubset() throws Exception {
-            Map<String, Object> raw = new HashMap<String, Object>();
-            final String getLayerId = getLayerId(WATTEMP);
-            raw.put("sourcecoverage", getLayerId);
-            raw.put("version", "1.0.0");
-            raw.put("format", "image/geotiff");
-            raw.put("BBox", "0.5,40.5,14.856,44.496");
-            raw.put("crs", "EPSG:4326");
-            raw.put("width", "150");
-            raw.put("height", "150");
-            raw.put("ELEVATION", "0.0");
-        
-            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-            
-            assertNotNull(coverages);
-            assertEquals(1, coverages.length);
-        }
-	
+//	public void testElevationRangeSubset() throws Exception {
+//            Map<String, Object> raw = new HashMap<String, Object>();
+//            final String getLayerId = getLayerId(WATTEMP);
+//            raw.put("sourcecoverage", getLayerId);
+//            raw.put("version", "1.0.0");
+//            raw.put("format", "image/geotiff");
+//            raw.put("BBox", "0.5,40.5,14.856,44.496");
+//            raw.put("crs", "EPSG:4326");
+//            raw.put("width", "150");
+//            raw.put("height", "150");
+//            raw.put("ELEVATION", "0.0");
+//        
+//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
+//            
+//            assertNotNull(coverages);
+//            assertEquals(1, coverages.length);
+//        }
+//	
 	public static void main(String[] args) {
         TestRunner.run(suite());
     }
