@@ -2,7 +2,7 @@
 
 ; Define your application name
 !define APPNAME "GeoServer"
-!define VERSION "2.0.0"
+!define VERSION "2.0.1-SNAPSHOT"
 ;!define LONGVERSION "2.0.0.0"
 !define APPNAMEANDVERSION "${APPNAME} ${VERSION}"
 
@@ -10,7 +10,7 @@
 Name "${APPNAMEANDVERSION}"
 InstallDir "$PROGRAMFILES\${APPNAMEANDVERSION}"
 InstallDirRegKey HKLM "Software\${APPNAME}" ""
-OutFile "geoserver-${VERSION}-nng.exe"
+OutFile "geoserver-${VERSION}.exe"
 
 ;Compression options
 CRCCheck on
