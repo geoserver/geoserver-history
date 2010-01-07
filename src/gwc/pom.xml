@@ -37,7 +37,7 @@
   <dependency>
    <groupId>org.geowebcache</groupId>
    <artifactId>geowebcache</artifactId>
-   <version>1.2-SNAPSHOT</version>
+   <version>1.2.1</version>
    <exclusions>
    <!-- GeoServer - This doesn't actually do anything, specified in
         community/pom.xml -->
