@@ -19,8 +19,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 /**
- * An abstract ok/cancel dialog, subclasses will have to provide the actual contents and behavior
- * for ok/cancel
+ * An abstract OK/cancel dialog, subclasses will have to provide the actual contents and behavior
+ * for OK/cancel
  */
 @SuppressWarnings("serial")
 public class GeoServerDialog extends Panel {
@@ -33,17 +33,66 @@ public class GeoServerDialog extends Panel {
         super(id);
         add(window = new ModalWindow("dialog"));
     }
-    
+
     /**
      * Sets the window title
+     * 
      * @param title
      */
     public void setTitle(IModel title) {
         window.setTitle(title);
     }
 
+    public String getHeightUnit() {
+        return window.getHeightUnit();
+    }
+
+    public int getInitialHeight() {
+        return window.getInitialHeight();
+    }
+
+    public int getInitialWidth() {
+        return window.getInitialWidth();
+    }
+
+    public String getWidthUnit() {
+        return window.getWidthUnit();
+    }
+
+    public void setHeightUnit(String heightUnit) {
+        window.setHeightUnit(heightUnit);
+    }
+
+    public void setInitialHeight(int initialHeight) {
+        window.setInitialHeight(initialHeight);
+    }
+
+    public void setInitialWidth(int initialWidth) {
+        window.setInitialWidth(initialWidth);
+    }
+
+    public void setWidthUnit(String widthUnit) {
+        window.setWidthUnit(widthUnit);
+    }
+
+    public int getMinimalHeight() {
+        return window.getMinimalHeight();
+    }
+
+    public int getMinimalWidth() {
+        return window.getMinimalWidth();
+    }
+
+    public void setMinimalHeight(int minimalHeight) {
+        window.setMinimalHeight(minimalHeight);
+    }
+
+    public void setMinimalWidth(int minimalWidth) {
+        window.setMinimalWidth(minimalWidth);
+    }
+
     /**
-     * Shows an OK/cancel dialog. The delegate will provide contents and behaviour for the OK button
+     * Shows an OK/cancel dialog. The delegate will provide contents and behavior for the OK button
      * (and if needed, for the cancel one as well)
      * 
      * @param target
@@ -65,10 +114,9 @@ public class GeoServerDialog extends Panel {
             }
         });
         window.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
-        
+
             public void onClose(AjaxRequestTarget target) {
                 delegate.onClose(target);
-        
             }
         });
 
@@ -82,7 +130,7 @@ public class GeoServerDialog extends Panel {
      * 
      * @return
      */
-    Component sumbitLink(Component contents) {
+    AjaxSubmitLink sumbitLink(Component contents) {
         AjaxSubmitLink link = new AjaxSubmitLink("submit") {
 
             @Override
@@ -130,8 +178,10 @@ public class GeoServerDialog extends Panel {
             Form form = new Form("form");
             add(form);
             form.add(contents);
-            form.add(sumbitLink(contents));
+            AjaxSubmitLink submit = sumbitLink(contents);
+            form.add(submit);
             form.add(cancelLink());
+            form.setDefaultButton(submit);
         }
 
     }
@@ -155,8 +205,9 @@ public class GeoServerDialog extends Panel {
         protected abstract Component getContents(String id);
 
         /**
-         * Called when the dialog is closed, allows the delegate to perform
-         * ajax updates on the page underlying the dialog
+         * Called when the dialog is closed, allows the delegate to perform ajax updates on the page
+         * underlying the dialog
+         * 
          * @param target
          */
         public void onClose(AjaxRequestTarget target) {
