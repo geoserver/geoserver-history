@@ -19,15 +19,13 @@ Prerequisites
 
 The following are necessary to perform a GeoServer release:
 
-   #. Commit access to `GeoServer svn <https://svn.codehaus.org/geoserver>`_
-   #. Edit access to the `GeoServer wiki <http://geoserver.org>`_
-   #. Administration rights to the `GeoServer bug tracker <http://jira.codehaus.org/browse/GEOS>`_
+#. Commit access to `GeoServer svn <https://svn.codehaus.org/geoserver>`_
+#. Edit access to the `GeoServer wiki <http://geoserver.org>`_
+#. Administration rights to the `GeoServer bug tracker (JIRA) <http://jira.codehaus.org/browse/GEOS>`_
 
-For steps 2 and 3 above you may also ask someone on the developer list to 
-perform the associated steps.
+For steps 2 and 3 above you may also ask someone on the developer list to perform the associated steps.
 
-If a parallel GeoTools release is being preformed, see the `GeoTools Release Guide <http://docs.codehaus.org/display/GEOT/How+to+cut+a+release>`_. Alternatively
-you can (nicely) ask one of the GeoTools developers to perform the release for you.
+If a parallel GeoTools release is being preformed, see the `GeoTools Release Guide <http://docs.codehaus.org/display/GEOT/How+to+cut+a+release>`_. Alternatively you can (nicely) ask one of the GeoTools developers to perform the release for you.
 
 Update source code
 ------------------
@@ -101,21 +99,20 @@ Update version numbers in tag
 
 #. Upgrade the version number in the following files::
 
-     src/release/installer/win/geoserver.nsi
-     src/release/installer/win-ng/GeoServerEXE.nsi
-     src/release/installer/win-ng/bin/wrapper/wrapper.conf
+     src/release/installer/win/GeoServerEXE.nsi
+     src/release/installer/win/wrapper.conf
      src/release/installer/mac/GeoServer.app/Contents/Info.plist
      src/release/bin.xml
      src/release/doc.xml
      src/release/src.xml
      src/web/src/main/java/ApplicationResources*
-     doc/user/source/conf.py
-     doc/developer/source/conf.py
+     doc/en/user/source/conf.py
+     doc/en/developer/source/conf.py
      
 
    Example (using sed)::
 
-     sed -i 's/1.7.1/1.7.2/g' release/installer/win/geoserver.nsi
+     sed -i 's/1.7.1/1.7.2/g' src/release/installer/win/GeoServerEXE.nsi
 
 #. Commit changes::
 
@@ -124,7 +121,7 @@ Update version numbers in tag
 Upgrade branch pom versions
 ---------------------------
 
-#. Upgrade branch (not in the newly-created tag!) pom version numbers::
+#. Update branch (*not in the newly-created tag!*) pom version numbers to include the next version with a "-SNAPSHOT" suffix::
 
      find . -name pom.xml -exec sed -i 's/[VERSION]-SNAPSHOT/[NEWVERSION]-SNAPSHOT/g' {} \;
 
@@ -134,12 +131,12 @@ Upgrade branch pom versions
 
 #. Commit changes::
 
-      svn commit -m "Upgrading pom version to <NEWVERSION>-SNAPSHOT" .
+      svn commit -m "Upgrading pom version to [NEWVERSION]-SNAPSHOT" .
 
 Set tag pom versions
 --------------------
 
-#. Set tag pom version numbers::
+#. Set tag pom version numbers to the correct version number (and removing the "-SNAPSHOT" suffix)::
 
      find . -name pom.xml -exec sed -i 's/[VERSION]-SNAPSHOT/[VERSION]/g' {} \;
 
@@ -149,7 +146,7 @@ Set tag pom versions
 
 #. Commit changes::
 
-     svn commit -m "Setting pom versions to 1.7.1" .
+     svn commit -m "Setting pom versions to [VERSION]" .
 
 Build release artifacts
 -----------------------
@@ -190,7 +187,7 @@ Build documentation
 
 .. note::
 
-   Building the GeoServer documentation requires the following be installed
+   Building the GeoServer documentation requires the following be installed:
 
      * `Sphinx <http://sphinx.pocoo.org/>`_, version 0.6 or greater
 
@@ -324,82 +321,46 @@ Hand testing
 Start GeoServer with the release data directory and test by hand. A checklist of 
 things to test can be found in the :ref:`release_testing_checklist`.
 
-Build Windows installer (legacy)
---------------------------------
+Build Windows installer
+-----------------------
 
-.. note:: 
 
-   This step requires a Windows machine.
+.. note:: This step requires a Windows machine.
 
-#. If necessary download and install `NSIS <http://nsis.sourceforge.net/Main_Page>`_.
+#. Download and install `NSIS <http://nsis.sourceforge.net/>`_.
+
+#. Install the `NSIS Access Control plugin <http://nsis.sourceforge.net/AccessControl_plug-in>`_.  The simplest way to do this is to download the zip, extract the two .DLL files (:file:`AccessControl.dll` and :file:`AccessControlW.dll`) and copy them to the NSIS plugins directory (usually :file:`C:\\Program Files\\NSIS\\Plugins`).
 
 #. Unzip the binary GeoServer package::
 
         unzip geoserver-[VERSION]-bin.zip
 
-#. Copy the files from :file:`src/release/installer/win` to the root of the unpacked archive::
+#. Copy the files from :file:`src/release/installer/win` to the root of the unpacked archive (the same directory level as the :file:`start.jar`)::
 
-      geoserver.nsi
-      dataDirPage.ini
+      GeoServerEXE.nsi
       gs.ico
+      header.bmp
+      side_left.bmp
       splash.bmp
+      wrapper.conf
+      wrapper.dll
+      wrapper.exe
+      wrapper.jar
+      wrapper-server-license.txt
 
-   .. figure: win-installer1.png
+   .. figure:: win-installer1.png
       :align: center
 
-#. Right-click on the installer script :file:`geoserver.nsi` and select **Compile Script**.  
+#. Right-click on the installer script :file:`GeoServerEXE.nsi` and select :command:`Compile Script`.  
 
    .. figure:: win-installer2.png
       :align: center
 
-After successfully compiling the script an installer named :file:`geoserver-[VERSION].exe` will be located in the root of the unpacked archive.
+After successfully compiling the script, an installer named :file:`geoserver-[VERSION].exe` will be located in the root of the unpacked archive.
 
-Build Windows installer (new)
------------------------------
+.. figure:: win-installer3.png
+   :align: center
 
-.. note:: 
-
-   This step requires a Windows machine.
-
-#. If necessary download and install `NSIS <http://nsis.sourceforge.net/Main_Page>`_.
-
-#. Unzip the binary GeoServer package::
-
-      unzip geoserver-[VERSION]-bin.zip
-
-#. Copy the files from :file:`src/release/installer/win-ng` to the root of the unpacked 
-   archive::
-
-      GeoServerEXE.nsi
-      creds.ini
-      datadir.ini
-      jdk.ini
-      ready.ini
-      gs.ico
-      side_left.bmp
-      splash.bmp
-      header.bmp
-      wrapper.exe
-      wrapper-server-license.txt
-      bin/wrapper/wrapper.conf
-      bin/wrapper/lib/wrapper.dll
-      bin/wrapper/lib/wrapper.jar
-      bin/wrapper/lib/wrappertest.jar
-
-   .. figure:: win-installer3.png
-      :align: center
-
-   .. warning:: Be sure to preserve path information when copying!  There should be a :file:`wrapper` directory inside the :file:`bin` directory after copying!
-
-   .. figure:: win-installer4.png
-      :align: center
-
-#. Right-click on the installer script :file:`GeoServerEXE.nsi` and select **Compile Script**.  
-
-   .. figure:: win-installer5.png
-      :align: center
-
-After successfully compiling the script an installer named :file:`geoserver-[VERSION]-ng.exe` will be located in the root of the unpacked archive.
 
 Build Mac OS X installer
 ------------------------
