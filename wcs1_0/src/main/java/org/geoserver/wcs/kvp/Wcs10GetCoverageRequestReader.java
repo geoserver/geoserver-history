@@ -261,7 +261,7 @@ public class Wcs10GetCoverageRequestReader extends EMFKvpRequestReader {
                 final Object rz = kvp.get("resz");
                 if (rz != null) {
                     // afabiani: we consider 2D grdis only 
-                    throw new WcsException("3D grids are not supported.", InvalidParameterValue, "depth");
+                    throw new WcsException("3D grids are not supported.", InvalidParameterValue, "resz");
 //                    // eventual depth
 //                    final double resZ = Double.parseDouble((String) rz);
 //                    // check that the envelope is 3D or throw an error

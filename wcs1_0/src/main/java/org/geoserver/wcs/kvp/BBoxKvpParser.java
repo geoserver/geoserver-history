@@ -4,11 +4,14 @@
  */
 package org.geoserver.wcs.kvp;
 
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
+
 import java.util.List;
 
 import org.geoserver.ows.util.KvpUtils;
-import org.geoserver.platform.ServiceException;
 import org.geotools.geometry.GeneralEnvelope;
+import org.vfny.geoserver.wcs.WcsException;
+
 /**
  * Parsing a BBOX for WCS.
  * 
@@ -29,8 +32,8 @@ public class BBoxKvpParser extends Wcs10KvpParser {
         final int size = unparsed.size();
         // check to make sure that the bounding box has 4 coordinates
         if (unparsed.size() != 4) {
-            throw new IllegalArgumentException("Requested bounding box contains wrong"
-                    + "number of coordinates: " + unparsed.size());
+            throw new WcsException("Requested bounding box contains wrong"
+                    + "number of coordinates: " + unparsed.size(), InvalidParameterValue, "bbox");
         }
 
         // if it does, store them in an array of doubles
@@ -39,7 +42,7 @@ public class BBoxKvpParser extends Wcs10KvpParser {
             try {
                 bbox[i] = Double.parseDouble((String) unparsed.get(i));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Bounding box coordinate " + i + " is not parsable:" + unparsed.get(i));
+                throw new WcsException("Bounding box coordinate " + i + " is not parsable:" + unparsed.get(i), InvalidParameterValue, "bbox");
             }
         }
 
@@ -55,13 +58,13 @@ public class BBoxKvpParser extends Wcs10KvpParser {
 //        	maxz = bbox[5];
 //        }
         if (minx > maxx) {
-            throw new ServiceException("illegal bbox, minX: " + minx + " is "
-                    + "greater than maxX: " + maxx);
+            throw new WcsException("illegal bbox, minX: " + minx + " is "
+                    + "greater than maxX: " + maxx, InvalidParameterValue, "bbox");
         }
 
         if (miny > maxy) {
-            throw new ServiceException("illegal bbox, minY: " + miny + " is "
-                    + "greater than maxY: " + maxy);
+            throw new WcsException("illegal bbox, minY: " + miny + " is "
+                    + "greater than maxY: " + maxy, InvalidParameterValue, "bbox");
         }
         
 //        if (size== 6 &&minz > maxz) {
