@@ -24,7 +24,7 @@ public class JulianDate {
     public static double toJulian(Date dt) {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(dt);
-        int month = calendar.get(Calendar.MONTH + 1);
+        int month = calendar.get(Calendar.MONTH)+1;
         int year = calendar.get(Calendar.YEAR);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
