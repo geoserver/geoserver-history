@@ -194,6 +194,7 @@ public class GeoServerApplication extends SpringWebApplication {
                 htmlvalidator.setIgnoreKnownWicketBugs(true);
                 getRequestCycleSettings().addResponseFilter(htmlvalidator);
         }
+        getDebugSettings().setAjaxDebugModeEnabled(false);
 
         getApplicationSettings().setPageExpiredErrorPage(GeoServerExpiredPage.class);
     }
