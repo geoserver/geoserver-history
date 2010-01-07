@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.FileUtils;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.util.CoverageStoreUtils;
@@ -194,6 +195,7 @@ public class MockData implements TestData {
     public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
     public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
     public static QName WORLD = new QName(WCS_URI, "World", WCS_PREFIX);
+    public static QName WATTEMP = new QName(WCS_URI, "WaterTemp", WCS_PREFIX);
     public static String TIFF = "tiff";
     
     // DEFAULT
@@ -463,6 +465,8 @@ public class MockData implements TestData {
                 TIFF, styleName);
         addCoverage(WORLD, TestData.class.getResource("world.tiff"),
                 TIFF, styleName);
+        addCoverage(WATTEMP, TestData.class.getResource("wattemp-reduced"),
+                null, styleName);
     }
     
     /**
@@ -548,10 +552,18 @@ public class MockData implements TestData {
         }
         
         // create the coverage file
-        File f = new File(directory, name.getLocalPart() + "." + extension);
+        File f = new File(directory, name.getLocalPart() + (extension != null ? "." + extension : ""));
+        if (extension == null) {
+            f.mkdir();
+        }
         
         // copy over the contents
-        IOUtils.copy( coverage.openStream(), f );
+        if (!f.isDirectory())
+            IOUtils.copy( coverage.openStream(), f );
+        else {
+            final File srcDir = new File(coverage.toURI());
+            FileUtils.copyDirectory(srcDir, f, true);
+        }
         coverageInfo(name, f, styleName);
         
         // setup the meta information to be written in the catalog 
@@ -560,7 +572,7 @@ public class MockData implements TestData {
         coverageStoresNamespaces.put(name.getLocalPart(), name.getPrefix());
         Map params = new HashMap();
         params.put(CatalogWriter.COVERAGE_TYPE_KEY, format.getName());
-        params.put(CatalogWriter.COVERAGE_URL_KEY, "file:" + name.getPrefix() + "/" + name.getLocalPart() + "." + extension);
+        params.put(CatalogWriter.COVERAGE_URL_KEY, "file:" + name.getPrefix() + "/" + name.getLocalPart() + (extension != null ? "." + extension : ""));
         coverageStores.put(name.getLocalPart(), params);
     }
     
