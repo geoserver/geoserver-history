@@ -944,6 +944,7 @@
      <include>**/*.ftl</include>
      <include>**/*.ftl.disabled</include>
      <include>**/*.tiff</include>
+     <include>**/*.zip</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>

@@ -12,11 +12,13 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.geotools.util.logging.Logging;
@@ -277,5 +279,65 @@ public class IOUtils {
         }
         zipout.finish();
         zipout.flush();
+    }
+    
+    public static void decompress(final File inputFile, final File destDir)
+    throws IOException {
+        ZipFile zipFile = new ZipFile(inputFile);
+
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+        while(entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry)entries.nextElement();
+            InputStream stream = zipFile.getInputStream(entry);
+
+            if(entry.isDirectory()) {
+                // Assume directories are stored parents first then children.
+                (new File(destDir, entry.getName())).mkdir();
+                continue;
+            }
+
+            File newFile = new File(destDir, entry.getName());
+            FileOutputStream fos = new FileOutputStream(newFile);
+            try {
+                byte[] buf = new byte[1024];
+                int len;
+
+                while((len = stream.read(buf)) >= 0)
+                    saveCompressedStream(buf, fos, len);
+
+            } catch (IOException e) {
+                zipFile.close();
+                IOException ioe = new IOException("Not valid COAMPS archive file type.");
+                ioe.initCause(e);
+                throw ioe;
+            } finally {
+                fos.flush();
+                fos.close();
+
+                stream.close();
+            }
+        }
+        zipFile.close();
+    }
+    
+    /**
+     * @param len 
+     * @param stream
+     * @param fos
+     * @return 
+     * @throws IOException
+     */
+    public static void saveCompressedStream(final byte[] buffer, final OutputStream out, final int len) throws IOException {
+        try {
+            out.write(buffer, 0, len);
+
+        } catch (Exception e) {
+            out.flush();
+            out.close();
+            IOException ioe = new IOException("Not valid archive file type.");
+            ioe.initCause(e);
+            throw ioe;
+        }
     }
 }
