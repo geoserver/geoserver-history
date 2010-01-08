@@ -16,6 +16,7 @@ import org.geoserver.data.test.MockData;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -121,43 +122,19 @@ public class ReprojectionTest extends WFSTestSupport {
     }
     
     public void testGetFeatureWithProjectedBoxGet() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.0&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
-        Document dom = getAsDOM( q );
+        Document dom;
+        double[] cr = getTransformedPolygonsLayerBBox();
         
-        Element envelope = getFirstElementByTagName(dom, "gml:Box" );
-        String coordinates = getFirstElementByTagName(envelope, "gml:coordinates").getFirstChild().getNodeValue();
-        String lc = coordinates.split(" ")[0];
-        String uc = coordinates.split(" ")[1]
-                                           ;
-        double[] c = new double[]{
-            Double.parseDouble(lc.split( "," )[0]), Double.parseDouble(lc.split( "," )[1]),
-            Double.parseDouble(uc.split( "," )[0]), Double.parseDouble(uc.split( "," )[1]) 
-        };
-        double[] cr = new double[4];
-        tx.transform(c, 0, cr, 0, 2);
-        
-        q += "&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + "," + TARGET_CRS_CODE;
+        String q = "wfs?request=getfeature&service=wfs&version=1.0&typeName=" + MockData.POLYGONS.getLocalPart() 
+            + "&bbox=" + cr[0] + "," + cr[1] + "," + cr[2] + "," + cr[3] + "," + TARGET_CRS_CODE;
         dom = getAsDOM( q );
         
         assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
     }
     
     public void testGetFeatureWithProjectedBoxPost() throws Exception {
-        String q = "wfs?request=getfeature&service=wfs&version=1.0&typeName=" + 
-            MockData.POLYGONS.getLocalPart();
-        Document dom = getAsDOM( q );
-        Element envelope = getFirstElementByTagName(dom, "gml:Box" );
-        String coordinates = getFirstElementByTagName(envelope, "gml:coordinates").getFirstChild().getNodeValue();
-        String lc = coordinates.split(" ")[0];
-        String uc = coordinates.split(" ")[1]
-                                           ;
-        double[] c = new double[]{
-            Double.parseDouble(lc.split( "," )[0]), Double.parseDouble(lc.split( "," )[1]),
-            Double.parseDouble(uc.split( "," )[0]), Double.parseDouble(uc.split( "," )[1]) 
-        };
-        double[] cr = new double[4];
-        tx.transform(c, 0, cr, 0, 2);
+        Document dom;
+        double[] cr = getTransformedPolygonsLayerBBox();
         
         String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\""
             + " xmlns:" + MockData.POLYGONS.getPrefix() + "=\"" + MockData.POLYGONS.getNamespaceURI() + "\""
@@ -186,6 +163,68 @@ public class ReprojectionTest extends WFSTestSupport {
         dom = postAsDOM( "wfs", xml );
         
         assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+    }
+
+    /**
+     * See GEOT-3760
+     * @throws Exception
+     */
+    public void testGetFeatureWithProjectedBoxIntersectsPost() throws Exception {
+        Document dom;
+        double[] cr = getTransformedPolygonsLayerBBox();
+        
+        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\""
+            + " xmlns:" + MockData.POLYGONS.getPrefix() + "=\"" + MockData.POLYGONS.getNamespaceURI() + "\""
+            + " xmlns:ogc=\"http://www.opengis.net/ogc\" "
+            + " xmlns:gml=\"http://www.opengis.net/gml\" "
+            + " xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+            + "<wfs:Query typeName=\"" + MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart() 
+            + "\" srsName=\"" + TARGET_CRS_CODE + "\">"
+            + "<wfs:PropertyName>cgf:polygonProperty</wfs:PropertyName> "
+            + "<ogc:Filter>" 
+            +  "<ogc:Intersects>"
+            +   "<ogc:PropertyName>polygonProperty</ogc:PropertyName>" 
+            +   "<gml:Box>"
+            +      "<gml:coord>"
+            +        "<gml:X>" + cr[0] + "</gml:X>"
+            +        "<gml:Y>" + cr[1] + "</gml:Y>"
+            +      "</gml:coord>"
+            +      "<gml:coord>"
+            +        "<gml:X>" + cr[2] + "</gml:X>"
+            +        "<gml:Y>" + cr[3] + "</gml:Y>"
+            +      "</gml:coord>"
+            +   "</gml:Box>"  
+            +  "</ogc:Intersects>" 
+            + "</ogc:Filter>"
+            + "</wfs:Query> " + "</wfs:GetFeature>";
+        
+        dom = postAsDOM( "wfs", xml );
+        
+        assertEquals( 1, dom.getElementsByTagName( MockData.POLYGONS.getPrefix() + ":" + MockData.POLYGONS.getLocalPart()).getLength() );
+    }
+    
+    /**
+     * Returns the transformed corners of the POLYGON layer bbox
+     * @return
+     * @throws Exception
+     * @throws TransformException
+     */
+    private double[] getTransformedPolygonsLayerBBox() throws Exception, TransformException {
+        String q = "wfs?request=getfeature&service=wfs&version=1.0&typeName=" + 
+            MockData.POLYGONS.getLocalPart();
+        Document dom = getAsDOM( q );
+        Element envelope = getFirstElementByTagName(dom, "gml:Box" );
+        String coordinates = getFirstElementByTagName(envelope, "gml:coordinates").getFirstChild().getNodeValue();
+        String lc = coordinates.split(" ")[0];
+        String uc = coordinates.split(" ")[1]
+                                           ;
+        double[] c = new double[]{
+            Double.parseDouble(lc.split( "," )[0]), Double.parseDouble(lc.split( "," )[1]),
+            Double.parseDouble(uc.split( "," )[0]), Double.parseDouble(uc.split( "," )[1]) 
+        };
+        double[] cr = new double[4];
+        tx.transform(c, 0, cr, 0, 2);
+        return cr;
     }
     
     private void runTest( Document dom1, Document dom2 ) throws Exception {

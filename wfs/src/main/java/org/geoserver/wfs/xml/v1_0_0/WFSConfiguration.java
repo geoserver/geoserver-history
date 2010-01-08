@@ -28,6 +28,7 @@ import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.wfs.xml.FeatureTypeSchemaBuilder;
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
 import org.geoserver.wfs.xml.WFSHandlerFactory;
+import org.geoserver.wfs.xml.gml2.GMLBoxTypeBinding;
 import org.geoserver.wfs.xml.gml3.AbstractGeometryTypeBinding;
 import org.geotools.data.DataAccess;
 import org.geotools.filter.v1_0.OGCBBOXTypeBinding;
@@ -206,6 +207,13 @@ public class WFSConfiguration extends Configuration {
                 GML.AbstractGeometryType,
             new SetterInjectionComponentAdapter( 
                 GML.AbstractGeometryType, AbstractGeometryTypeBinding.class, 
+                new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
+            )
+        );
+        bindings.put(
+                GML.BoxType,
+            new SetterInjectionComponentAdapter( 
+                GML.BoxType, GMLBoxTypeBinding.class, 
                 new Parameter[]{ new OptionalComponentParameter(CoordinateReferenceSystem.class)} 
             )
         );
