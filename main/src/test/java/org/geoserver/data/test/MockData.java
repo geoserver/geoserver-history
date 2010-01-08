@@ -83,6 +83,7 @@ public class MockData implements TestData {
      */
     public static final String KEY_NATIVE_ENVELOPE = "native_envelope";
     static final Envelope DEFAULT_ENVELOPE = new Envelope(-180,180,-90,90);
+	public static final boolean SpatioTemporalRasterTests = false;
     
     // //// WMS 1.1.1
     /**
@@ -466,8 +467,9 @@ public class MockData implements TestData {
                 TIFF, styleName);
         addCoverage(WORLD, TestData.class.getResource("world.tiff"),
                 TIFF, styleName);
-        addCoverage(WATTEMP, TestData.class.getResource("watertemp.zip"),
-                null, styleName);
+        if(SpatioTemporalRasterTests)
+	        addCoverage(WATTEMP, TestData.class.getResource("watertemp.zip"),
+	                null, styleName);
     }
     
     /**
