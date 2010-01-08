@@ -14,6 +14,7 @@ import net.opengis.wcs10.GetCoverageType;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.kvp.Wcs10GetCoverageRequestReader;
+import org.geoserver.wcs.test.CoverageTestSupport;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
@@ -319,10 +320,10 @@ public class GetCoverageTest extends WCSTestSupport {
 	//
 	// ////////////////////////////////////////////////////////////////////
 	public void testUnacceptable3DBbox() throws Exception {
-		if(!MockData.SpatioTemporalRasterTests)
+		if(!CoverageTestSupport.SpatioTemporalRasterTests)
 			return;
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(MockData.WATTEMP);
+        final String getLayerId = getLayerId(CoverageTestSupport.WATTEMP);
         raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
@@ -342,10 +343,10 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 	
 	public void testUnacceptable3DParameters() throws Exception {
-		if(!MockData.SpatioTemporalRasterTests)
+		if(!CoverageTestSupport.SpatioTemporalRasterTests)
 			return;
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(MockData.WATTEMP);
+        final String getLayerId = getLayerId(CoverageTestSupport.WATTEMP);
         raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
@@ -383,10 +384,10 @@ public class GetCoverageTest extends WCSTestSupport {
     }
 	
     public void testWrongTimeInstant() throws Exception {
-		if(!MockData.SpatioTemporalRasterTests)
+		if(!CoverageTestSupport.SpatioTemporalRasterTests)
 			return;
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(MockData.WATTEMP);
+        final String getLayerId = getLayerId(CoverageTestSupport.WATTEMP);
         raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
@@ -412,10 +413,10 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 	
 	public void testWrongElevationRangeSubset() throws Exception {
-		if(!MockData.SpatioTemporalRasterTests)
+		if(!CoverageTestSupport.SpatioTemporalRasterTests)
 			return;
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(MockData.WATTEMP);
+        final String getLayerId = getLayerId(CoverageTestSupport.WATTEMP);
         raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
@@ -435,10 +436,10 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 	
 	public void testTimeInstant() throws Exception {
-		if(!MockData.SpatioTemporalRasterTests)
+		if(!CoverageTestSupport.SpatioTemporalRasterTests)
 			return;
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(MockData.WATTEMP);
+        final String getLayerId = getLayerId(CoverageTestSupport.WATTEMP);
         raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");
@@ -455,10 +456,10 @@ public class GetCoverageTest extends WCSTestSupport {
         }
 	
 	public void testElevationRangeSubset() throws Exception {
-		if(!MockData.SpatioTemporalRasterTests)
+		if(!CoverageTestSupport.SpatioTemporalRasterTests)
 			return;
         Map<String, Object> raw = new HashMap<String, Object>();
-        final String getLayerId = getLayerId(MockData.WATTEMP);
+        final String getLayerId = getLayerId(CoverageTestSupport.WATTEMP);
         raw.put("sourcecoverage", getLayerId);
         raw.put("version", "1.0.0");
         raw.put("format", "image/geotiff");

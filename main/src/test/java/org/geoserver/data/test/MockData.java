@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -83,7 +82,6 @@ public class MockData implements TestData {
      */
     public static final String KEY_NATIVE_ENVELOPE = "native_envelope";
     static final Envelope DEFAULT_ENVELOPE = new Envelope(-180,180,-90,90);
-	public static final boolean SpatioTemporalRasterTests = false;
     
     // //// WMS 1.1.1
     /**
@@ -197,7 +195,6 @@ public class MockData implements TestData {
     public static QName TASMANIA_BM = new QName(WCS_URI, "BlueMarble", WCS_PREFIX);
     public static QName ROTATED_CAD = new QName(WCS_URI, "RotatedCad", WCS_PREFIX);
     public static QName WORLD = new QName(WCS_URI, "World", WCS_PREFIX);
-    public static QName WATTEMP = new QName(WCS_URI, "watertemp", WCS_PREFIX);
     public static String TIFF = "tiff";
     
     // DEFAULT
@@ -467,9 +464,6 @@ public class MockData implements TestData {
                 TIFF, styleName);
         addCoverage(WORLD, TestData.class.getResource("world.tiff"),
                 TIFF, styleName);
-        if(SpatioTemporalRasterTests)
-	        addCoverage(WATTEMP, TestData.class.getResource("watertemp.zip"),
-	                null, styleName);
     }
     
     /**
