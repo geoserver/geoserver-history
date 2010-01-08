@@ -27,15 +27,16 @@ public class RequestWrapperTestSupport extends GeoServerTestSupport{
         "test\ncontaining\nnewlines"
 	};
 	
-	protected HttpServletRequest makeRequest(String body){
+	protected HttpServletRequest makeRequest(String body, String queryString){
 		MockHttpServletRequest request = new MockHttpServletRequest();
         request.setScheme("http");
         request.setServerName("localhost");
         request.setContextPath("/geoserver");
         request.setRequestURI("/geoserver");
-        request.setQueryString("");
+        request.setQueryString(queryString != null ? queryString : "");
         request.setRemoteAddr("127.0.0.1");
         request.setServletPath("/geoserver");
+        request.setContentType("application/x-www-form-urlencoded");
 
 		request.setMethod("POST");
 		request.setBodyContent(body);
