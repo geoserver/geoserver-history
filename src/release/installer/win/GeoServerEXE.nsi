@@ -365,13 +365,13 @@ Function DataDir
   ${NSD_CreateLabel} 0 0 100% 24u "If you have an existing data directory, please select its path.  \
                                    Otherwise, the default data directory will be used."
 
-  ${NSD_CreateRadioButton} 10u 36u 12u 12u
+  ${NSD_CreateRadioButton} 10u 36u 10u 10u
   Pop $DefaultDataDir
 
   ${NSD_CreateLabel} 25u 37u 250u 24u "Default data directory. Will be located at: \
                                        $\r$\n$INSTDIR\data_dir"
 
-  ${NSD_CreateRadioButton} 10u 80u 12u 12u
+  ${NSD_CreateRadioButton} 10u 80u 10u 10u
   Pop $ExistingDataDir
 
   ${NSD_CreateLabel} 25u 81u 250u 12u "Existing data directory:"
@@ -890,16 +890,20 @@ Section Uninstall
   IfFileExists "$INSTDIR\wrapper.exe" StopService StopManual
   StopService:
     ExecWait "$INSTDIR\wrapper.exe -r wrapper/wrapper.conf"
-    Goto Continue
+    Sleep 4000 ; to make sure it's fully stopped
     RMDir /r "$INSTDIR\wrapper" ; while we're here
+    Goto Continue
   StopManual:
-    Exec "$INSTDIR\bin\shutdown.bat"
+    ExecWait "$INSTDIR\bin\shutdown.bat"
+    Sleep 4000 ; to make sure it's fully stopped
   Continue:
-  Sleep 3000 ; to make sure it's fully stopped
+
 
   ; Remove env var
   Push GEOSERVER_HOME
   Call un.DeleteEnvVar
+
+  SetOutPath $TEMP
 
   ;Remove from registry...
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAMEANDVERSION}"
@@ -919,6 +923,7 @@ Section Uninstall
   RMDir /r "$INSTDIR\logs"
   RMDir /r "$INSTDIR\resources"
   RMDir /r "$INSTDIR\webapps"
+  RMDir /r "$INSTDIR\v*" ; EPSG DB
   Delete "$INSTDIR\*.*"
 
   RMDir "$INSTDIR\" ; no /r!
