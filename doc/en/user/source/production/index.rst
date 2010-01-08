@@ -13,3 +13,4 @@ GeoServer is geared towards many different uses, from a simple test server to th
    config
    data
    misc
+   troubleshooting
