@@ -132,45 +132,48 @@ public class PutStyles extends AbstractService {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
         LOGGER.fine("PutStyles POST");
-
-        Reader requestXml = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
-                        request.getInputStream()));
-
-        File temp = File.createTempFile("putStylesPost", "xml");
-        temp.deleteOnExit();
-
-        FileOutputStream fos = new FileOutputStream(temp);
-        BufferedOutputStream out = new BufferedOutputStream(fos);
-        StringBuffer sb = new StringBuffer();
-
-        if (requestXml == null) {
-            throw new NullPointerException();
-        }
-
-        int c;
-
-        while (-1 != (c = requestXml.read())) {
-            char chr = (char) c;
-            out.write(c);
-            sb.append(chr);
-        }
-
-        requestXml.close();
-        out.flush();
-        out.close();
-        requestXml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
-
-        PutStylesRequest serviceRequest = new PutStylesRequest((WMS) getServiceRef());
-        serviceRequest.setSldBody(sb.toString()); // save the SLD body in the request object
-
-        ServletContext context = request.getSession().getServletContext();
-
+        File temp = null;
+        
         try {
+            Reader requestXml = new BufferedReader(XmlCharsetDetector.getCharsetAwareReader(
+                            request.getInputStream()));
+    
+            temp = File.createTempFile("putStylesPost", "xml");
+    
+            FileOutputStream fos = new FileOutputStream(temp);
+            BufferedOutputStream out = new BufferedOutputStream(fos);
+            StringBuffer sb = new StringBuffer();
+    
+            if (requestXml == null) {
+                throw new NullPointerException();
+            }
+    
+            int c;
+    
+            while (-1 != (c = requestXml.read())) {
+                char chr = (char) c;
+                out.write(c);
+                sb.append(chr);
+            }
+    
+            requestXml.close();
+            out.flush();
+            out.close();
+            requestXml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
+    
+            PutStylesRequest serviceRequest = new PutStylesRequest((WMS) getServiceRef());
+            serviceRequest.setSldBody(sb.toString()); // save the SLD body in the request object
+    
+            ServletContext context = request.getSession().getServletContext();
+
             processSLD(serviceRequest, request, response, context);
         } catch (SldException e) {
             throw new ServletException(e);
         } catch (IOException e) {
             throw new ServletException(e);
+        } finally {
+            if(temp != null)
+                temp.delete();
         }
     }
 
@@ -337,34 +340,40 @@ public class PutStyles extends AbstractService {
         }
 
         // write out SLD so we can read it in and validate it
-        File temp = File.createTempFile("putStyles", "xml");
-        temp.deleteOnExit();
-
-        FileOutputStream fos = new FileOutputStream(temp);
-        BufferedOutputStream tempOut = new BufferedOutputStream(fos);
-
-        byte[] bytes = sld_body.getBytes();
-
-        for (int i = 0; i < bytes.length; i++) {
-            tempOut.write(bytes[i]);
-        }
-
-        tempOut.flush();
-        tempOut.close();
-
-        BufferedInputStream fs = new BufferedInputStream(new FileInputStream(temp));
-
-        // finish making our tempory file stream (for SLD validation)
-        CharArrayReader xml = new CharArrayReader(sld_body.toCharArray()); // put the xml into a 'Reader'
-
-        Node rootNode = generateDOM(xml);
-
-        // validate the SLD
-        SLDValidator validator = new SLDValidator();
-        List errors = validator.validateSLD(fs, context);
-
-        if (errors.size() != 0) {
-            throw new SldException(SLDValidator.getErrorMessage(xml, errors));
+        File temp = null;
+        Node rootNode = null;
+        try {
+            temp = File.createTempFile("putStyles", "xml");
+    
+            FileOutputStream fos = new FileOutputStream(temp);
+            BufferedOutputStream tempOut = new BufferedOutputStream(fos);
+    
+            byte[] bytes = sld_body.getBytes();
+    
+            for (int i = 0; i < bytes.length; i++) {
+                tempOut.write(bytes[i]);
+            }
+    
+            tempOut.flush();
+            tempOut.close();
+    
+            BufferedInputStream fs = new BufferedInputStream(new FileInputStream(temp));
+    
+            // finish making our tempory file stream (for SLD validation)
+            CharArrayReader xml = new CharArrayReader(sld_body.toCharArray()); // put the xml into a 'Reader'
+    
+            rootNode = generateDOM(xml);
+    
+            // validate the SLD
+            SLDValidator validator = new SLDValidator();
+            List errors = validator.validateSLD(fs, context);
+    
+            if (errors.size() != 0) {
+                throw new SldException(SLDValidator.getErrorMessage(xml, errors));
+            }
+        } finally {
+            if(temp != null)
+                temp.delete();
         }
 
         Node n_namedLayer = getNode(rootNode, "NamedLayer");

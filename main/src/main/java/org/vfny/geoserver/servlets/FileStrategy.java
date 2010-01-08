@@ -81,7 +81,6 @@ public class FileStrategy implements ServiceStrategy {
             throw newE;
         }
 
-        temp.deleteOnExit();
         safe = new BufferedOutputStream(new FileOutputStream(temp));
 
         return new DispatcherOutputStream(safe);
