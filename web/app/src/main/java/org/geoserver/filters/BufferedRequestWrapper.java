@@ -32,7 +32,7 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper{
         super(req);
         myWrappedRequest = req;
         myBuffer = buff;
-		logger.info("Created BufferedRequestWrapper with String: \"" + buff + "\" as buffer");
+		logger.fine("Created BufferedRequestWrapper with String: \"" + buff + "\" as buffer");
     }
 
     public ServletInputStream getInputStream() throws IOException{
