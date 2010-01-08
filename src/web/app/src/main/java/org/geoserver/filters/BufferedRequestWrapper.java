@@ -102,7 +102,7 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper{
 	protected void parseParameters(){
 		if (myParameterMap != null) return;
 		if (myWrappedRequest.getMethod().equals("POST") &&
-			myWrappedRequest.getContentType().equals("application/x-www-form-urlencoded")){
+			myWrappedRequest.getContentType().startsWith("application/x-www-form-urlencoded")) {
 			parseFormBody();
 		} else {
 			myParameterMap = super.getParameterMap();
@@ -111,10 +111,21 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper{
 
 	protected void parseFormBody(){
 		myParameterMap = new TreeMap();
+		
+		// parse the body
 		String[] pairs = myBuffer.split("\\&");
 		
 		for (int i = 0; i < pairs.length; i++){
 			parsePair(pairs[i]);
+		}
+		
+		// we should also parse parameters that came into the request thought
+		if(myWrappedRequest.getQueryString() != null) {
+		    pairs = myWrappedRequest.getQueryString().split("\\&");
+	        
+	        for (int i = 0; i < pairs.length; i++){
+	            parsePair(pairs[i]);
+	        }
 		}
 	}
 

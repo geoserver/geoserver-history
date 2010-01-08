@@ -5,16 +5,12 @@
 package org.geoserver.filters;
 
 import java.io.BufferedReader;
-import java.lang.reflect.Method;
+import java.util.Map;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Test;
-
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletContext;
 
 public class BufferedRequestWrapperTest extends RequestWrapperTestSupport{
 
@@ -38,7 +34,7 @@ public class BufferedRequestWrapperTest extends RequestWrapperTestSupport{
 	}
 
 	public void doInputStreamTest(String testString) throws Exception{
-		HttpServletRequest req = makeRequest(testString);
+		HttpServletRequest req = makeRequest(testString, null);
 
 		BufferedRequestWrapper wrapper = new BufferedRequestWrapper(req, testString);
 		ServletInputStream sis = req.getInputStream();
@@ -58,10 +54,9 @@ public class BufferedRequestWrapperTest extends RequestWrapperTestSupport{
 	}
 
     public void doGetReaderTest(String testString) throws Exception{
-		HttpServletRequest req = makeRequest(testString);
+		HttpServletRequest req = makeRequest(testString, null);
 
 		BufferedReader br = req.getReader();
-
 		while ((br.readLine()) != null){ /* clear out the body */ }
 
 		BufferedRequestWrapper wrapper = new BufferedRequestWrapper(req, testString);
@@ -75,4 +70,21 @@ public class BufferedRequestWrapperTest extends RequestWrapperTestSupport{
 
 		assertEquals(buff.toString(), testString);
 	}
+    
+    public void testMixedRequest() throws Exception {
+        String body = "a=1&b=2";
+        String queryString = "c=3&d=4";
+        HttpServletRequest req = makeRequest(body, queryString);
+
+        BufferedReader br = req.getReader();
+        while ((br.readLine()) != null){ /* clear out the body */ }
+
+        BufferedRequestWrapper wrapper = new BufferedRequestWrapper(req, body);
+        Map params = wrapper.getParameterMap();
+        assertEquals(4, params.size());
+        assertEquals("1", ((String[]) params.get("a"))[0]);
+        assertEquals("2", ((String[]) params.get("b"))[0]);
+        assertEquals("3", ((String[]) params.get("c"))[0]);
+        assertEquals("4", ((String[]) params.get("d"))[0]);
+    }
 }
