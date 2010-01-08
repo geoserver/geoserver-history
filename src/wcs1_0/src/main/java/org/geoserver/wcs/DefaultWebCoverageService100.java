@@ -188,12 +188,19 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             if (outputCRS == null)
                 throw new IllegalArgumentException("Invalid output CRS"); 
             final int dimension = grid.getDimension().intValue();
-            
+            // WE SUPPORT 3D DIMENSION ONLY VIA A BAND
+            if (dimension == 3) 
+          	    throw new WcsException("We support a third dimension only via a specifica Axis in Range", InvalidParameterValue,null);
+          
 
+            //
+            //	GRAB A READER
+            //
             // grab the reader using the default params,
             final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) meta.getGridCoverageReader(null, WCSUtils.LENIENT_HINT);
             if(reader==null)
-            	 return coverageResults.toArray(new GridCoverage2D[] {});
+            	// cannot instantiate a reader, we should return an empty array
+            	return coverageResults.toArray(new GridCoverage2D[] {});
             	
         	
             // get native elements and then play with the the requested ones
@@ -215,13 +222,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                  
 
             //
-            // Raster destination size
+            // PREPARE DESTINATION DIMENSIONS
             //
-            int elevationLevels=0;
             final Rectangle destinationSize;
             final AffineTransform2D destinationG2W;
             final GridEnvelope limits = grid.getLimits();
-            
             if (limits != null) {
             	//
             	// we have imposed limits from the request, we just use them as they are
@@ -231,7 +236,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 destinationSize = new Rectangle(lowers[0], lowers[1], limits.getSpan(0), limits.getSpan(1));
             } else if (grid.getOffsetVector() != null && grid.getOffsetVector().size() > 0) {
             	//
-            	// we have NO imposed limits from the request, we need to create a proper G2W with the RESOLUTIOn we where given.
+            	// we have NO imposed limits from the request, we need to create a proper G2W with the RESOLUTION we where given.
             	// Notice that this is specific to WCS 1.0.0 since the request just allow us to specify ResX and ResY
             	//
                 final VectorType offsetVector = (VectorType) grid.getOffsetVector().get(0);
@@ -240,7 +245,6 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 final double resY=(Double) offsetValues.get(1);
                 
                 final DirectPositionType origin_ = grid.getOrigin().getPos();
-                
                 destinationSize=null;                        
                 destinationG2W= new AffineTransform2D(
                 	resX, 	0d, 		
@@ -249,20 +253,13 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 );
                 
                 
-                if (dimension == 3) {
-//                    int z = /* TODO: (int) Math.round(originalEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2)); */
-//                        (int) Math.round(requestedEnvelope.getSpan(2) / (Double) offsetVector.getValue().get(2));
-//                    elevationLevels = z;
-//                	if(elevationLevels<=0)
-                	    throw new WcsException("Invalid DEPTH value: "+elevationLevels, InvalidParameterValue,null);
-                } 
             }
             else
-            	throw new WcsException("Invalid RectifiedGrid value:"+grid.toString(), InvalidParameterValue,null);
+            	throw new WcsException("Invalid Grid value:"+grid.toString(), InvalidParameterValue,null);
                 
 
             //
-            //			ELEVATION
+            //			ELEVATION SUPPORT VIA A SPECIFIC AXIS ELEVATION
             // 
             
             double[] elevations = null;
@@ -275,7 +272,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                         AxisSubsetType axis = (AxisSubsetType) axisSubset.get(a);    
 
                         String axisName = axis.getName();
-                        if (axisName.equalsIgnoreCase("ELEVATION")) {
+                        if (axisName.equalsIgnoreCase(WCSUtils.ELEVATION)) {
                             if (axis.getSingleValue().size() > 0) {
                                 elevations = new double[axis.getSingleValue().size()];
                                 for (int s = 0; s < axis.getSingleValue().size(); s++) {
@@ -339,9 +336,8 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             
             
             //
-            // Setting coverage reading params.
+            // SETTING COVERAGE READING PARAMS
             //
-            
             // get the group of parameters tha this reader supports
             final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
             GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, meta.getParameters());
@@ -350,15 +346,18 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             // read grid geometry
             final GridGeometry2D requestedGridGeometry;
             if(destinationSize!=null)
+            	// we have been asked to support a specific raster size, we will se the grid2world accordingly
             	requestedGridGeometry=new GridGeometry2D(
             		new GridEnvelope2D(destinationSize),
             		getHorizontalEnvelope(requestedEnvelope));
             else
+            	// we have been asked to support a specific g2w, we will set the raster size accordingly
             	requestedGridGeometry=new GridGeometry2D(
             			PixelInCell.CELL_CENTER,
             			destinationG2W,
                 		getHorizontalEnvelope(requestedEnvelope),
                 		null);
+            // NOTICE that we always have to respect the provided envelope 
             final ParameterValue<GeneralGridGeometry> requestedGridGeometryParam = new DefaultParameterDescriptor<GeneralGridGeometry>(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), GeneralGridGeometry.class, null, requestedGridGeometry).createValue();
 
     
@@ -390,7 +389,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
 	                //
 	                // ELEVATION
 	                //
-	                if(code.equalsIgnoreCase("ELEVATION")){
+	                if(code.equalsIgnoreCase(WCSUtils.ELEVATION)){
 	                    elevation=(ParameterValue) pd.createValue();
 	                    elevation.setValue(elevations[0]);
 	                }
@@ -835,7 +834,7 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
                 if (bands == null)
                     throw new WcsException("Invalid values for axis " + axisSubset.getName(),
                             InvalidParameterValue, "AxisSubset");
-            } else if (axisSubset.getName().equalsIgnoreCase("ELEVATION")) {
+            } else if (axisSubset.getName().equalsIgnoreCase(WCSUtils.ELEVATION)) {
                 double[] elevations = null;
                 if (axisSubset.getSingleValue().size() > 0) {
                     elevations = new double[axisSubset.getSingleValue().size()];

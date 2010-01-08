@@ -238,4 +238,6 @@ public class WCSUtils {
 
         return bandSelectedCoverage;
     }
+
+	public static final String ELEVATION = "ELEVATION";
 }

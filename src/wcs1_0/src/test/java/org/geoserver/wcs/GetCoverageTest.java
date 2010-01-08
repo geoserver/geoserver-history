@@ -1,7 +1,6 @@
 package org.geoserver.wcs;
 
 import static org.geoserver.data.test.MockData.TASMANIA_BM;
-import static org.geoserver.data.test.MockData.WATTEMP;
 import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.io.StringReader;
@@ -13,6 +12,7 @@ import junit.textui.TestRunner;
 import net.opengis.wcs10.GetCoverageType;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.kvp.Wcs10GetCoverageRequestReader;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
@@ -319,104 +319,89 @@ public class GetCoverageTest extends WCSTestSupport {
 	//
 	// ////////////////////////////////////////////////////////////////////
 	public void testUnacceptable3DBbox() throws Exception {
-            Map<String, Object> raw = new HashMap<String, Object>();
-            final String getLayerId = getLayerId(WATTEMP);
-            raw.put("sourcecoverage", getLayerId);
-            raw.put("version", "1.0.0");
-            raw.put("format", "image/geotiff");
-            raw.put("BBox", "0.5,40.5,14.856,44.496,0.0,50.0");
-            raw.put("crs", "EPSG:4326");
-            raw.put("width", "150");
-            raw.put("height", "150");
-        
-            try {
-                @SuppressWarnings("unused")
-                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-                fail("When did we learn to encode SuperCoolFormat?");
-            } catch (WcsException e) {
-                assertEquals(InvalidParameterValue.toString(), e.getCode());
-                assertEquals("bbox", e.getLocator());
-            }
+		if(!MockData.SpatioTemporalRasterTests)
+			return;
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String getLayerId = getLayerId(MockData.WATTEMP);
+        raw.put("sourcecoverage", getLayerId);
+        raw.put("version", "1.0.0");
+        raw.put("format", "image/geotiff");
+        raw.put("BBox", "0.5,40.5,14.856,44.496,0.0,50.0");
+        raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+    
+        try {
+            @SuppressWarnings("unused")
+                    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+            fail("When did we learn to encode SuperCoolFormat?");
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.toString(), e.getCode());
+            assertEquals("bbox", e.getLocator());
+        }
         }
 	
 	public void testUnacceptable3DParameters() throws Exception {
-            Map<String, Object> raw = new HashMap<String, Object>();
-            final String getLayerId = getLayerId(WATTEMP);
-            raw.put("sourcecoverage", getLayerId);
-            raw.put("version", "1.0.0");
-            raw.put("format", "image/geotiff");
-            raw.put("BBox", "0.5,40.5,14.856,44.496");
-            raw.put("crs", "EPSG:4326");
-            raw.put("width", "150");
-            raw.put("height", "150");
-            raw.put("depth", "100.0");
-        
-            try {
-                @SuppressWarnings("unused")
-                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-                fail("When did we learn to encode SuperCoolFormat?");
-            } catch (WcsException e) {
-                assertEquals(InvalidParameterValue.toString(), e.getCode());
-                assertEquals("depth", e.getLocator());
-            }
-            
-            raw.remove("width");
-            raw.remove("height");
-            raw.remove("depth");
-            
-            raw.put("resx", "0.1");
-            raw.put("resy", "0.1");
-            raw.put("resz", "1");
-            
-            try {
-                @SuppressWarnings("unused")
-                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-                fail("When did we learn to encode SuperCoolFormat?");
-            } catch (WcsException e) {
-                assertEquals(InvalidParameterValue.toString(), e.getCode());
-                assertEquals("resz", e.getLocator());
-            }
+		if(!MockData.SpatioTemporalRasterTests)
+			return;
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String getLayerId = getLayerId(MockData.WATTEMP);
+        raw.put("sourcecoverage", getLayerId);
+        raw.put("version", "1.0.0");
+        raw.put("format", "image/geotiff");
+        raw.put("BBox", "0.5,40.5,14.856,44.496");
+        raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+        raw.put("depth", "100.0");
+    
+        try {
+            @SuppressWarnings("unused")
+                    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+            fail("When did we learn to encode SuperCoolFormat?");
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.toString(), e.getCode());
+            assertEquals("depth", e.getLocator());
         }
+        
+        raw.remove("width");
+        raw.remove("height");
+        raw.remove("depth");
+        
+        raw.put("resx", "0.1");
+        raw.put("resy", "0.1");
+        raw.put("resz", "1");
+        
+        try {
+            @SuppressWarnings("unused")
+                    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+            fail("When did we learn to encode SuperCoolFormat?");
+        } catch (WcsException e) {
+            assertEquals(InvalidParameterValue.toString(), e.getCode());
+            assertEquals("resz", e.getLocator());
+        }
+    }
 	
-//        public void testWrongTimeInstant() throws Exception {
-//            Map<String, Object> raw = new HashMap<String, Object>();
-//            final String getLayerId = getLayerId(WATTEMP);
-//            raw.put("sourcecoverage", getLayerId);
-//            raw.put("version", "1.0.0");
-//            raw.put("format", "image/geotiff");
-//            raw.put("BBox", "0.5,40.5,14.856,44.496");
-//            raw.put("crs", "EPSG:4326");
-//            raw.put("width", "150");
-//            raw.put("height", "150");
-//            raw.put("TIME", "2000-00-00T00:00:000Z");
-//        
-//            // TODO: check the TIME parameter behavior; it looks like a wrong time instant returns back the current time
-//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//            
-//            assertNotNull(coverages);
-//            assertEquals(1, coverages.length);
-//            
-////            try {
-////                @SuppressWarnings("unused")
-////                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
-////                fail("When did we learn to encode SuperCoolFormat?");
-////            } catch (WcsException e) {
-////                assertEquals(IllegalArgumentException.class, e.getCause().getClass());
-////            }
-//        }
-	
-//	public void testWrongElevationRangeSubset() throws Exception {
-//            Map<String, Object> raw = new HashMap<String, Object>();
-//            final String getLayerId = getLayerId(WATTEMP);
-//            raw.put("sourcecoverage", getLayerId);
-//            raw.put("version", "1.0.0");
-//            raw.put("format", "image/geotiff");
-//            raw.put("BBox", "0.5,40.5,14.856,44.496");
-//            raw.put("crs", "EPSG:4326");
-//            raw.put("width", "150");
-//            raw.put("height", "150");
-//            raw.put("ELEVATION", "50.0");
-//        
+    public void testWrongTimeInstant() throws Exception {
+		if(!MockData.SpatioTemporalRasterTests)
+			return;
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String getLayerId = getLayerId(MockData.WATTEMP);
+        raw.put("sourcecoverage", getLayerId);
+        raw.put("version", "1.0.0");
+        raw.put("format", "image/geotiff");
+        raw.put("BBox", "0.5,40.5,14.856,44.496");
+        raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+        raw.put("TIME", "2000-00-00T00:00:000Z");
+    
+        // TODO: check the TIME parameter behavior; it looks like a wrong time instant returns back the current time
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        
+        assertNotNull(coverages);
+        assertEquals(1, coverages.length);
+        
 //            try {
 //                @SuppressWarnings("unused")
 //                        GridCoverage[] coverages = executeGetCoverageKvp(raw);
@@ -424,44 +409,71 @@ public class GetCoverageTest extends WCSTestSupport {
 //            } catch (WcsException e) {
 //                assertEquals(IllegalArgumentException.class, e.getCause().getClass());
 //            }
-//        }
+        }
 	
-//	public void testTimeInstant() throws Exception {
-//            Map<String, Object> raw = new HashMap<String, Object>();
-//            final String getLayerId = getLayerId(WATTEMP);
-//            raw.put("sourcecoverage", getLayerId);
-//            raw.put("version", "1.0.0");
-//            raw.put("format", "image/geotiff");
-//            raw.put("BBox", "0.5,40.5,14.856,44.496");
-//            raw.put("crs", "EPSG:4326");
-//            raw.put("width", "150");
-//            raw.put("height", "150");
-//            raw.put("TIME", "2008-10-31T00:00:000Z");
-//        
-//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//            
-//            assertNotNull(coverages);
-//            assertEquals(1, coverages.length);
-//        }
+	public void testWrongElevationRangeSubset() throws Exception {
+		if(!MockData.SpatioTemporalRasterTests)
+			return;
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String getLayerId = getLayerId(MockData.WATTEMP);
+        raw.put("sourcecoverage", getLayerId);
+        raw.put("version", "1.0.0");
+        raw.put("format", "image/geotiff");
+        raw.put("BBox", "0.5,40.5,14.856,44.496");
+        raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+        raw.put("ELEVATION", "50.0");
+    
+        try {
+            @SuppressWarnings("unused")
+                    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+            fail("When did we learn to encode SuperCoolFormat?");
+        } catch (WcsException e) {
+            assertEquals(IllegalArgumentException.class, e.getCause().getClass());
+        }
+        }
 	
-//	public void testElevationRangeSubset() throws Exception {
-//            Map<String, Object> raw = new HashMap<String, Object>();
-//            final String getLayerId = getLayerId(WATTEMP);
-//            raw.put("sourcecoverage", getLayerId);
-//            raw.put("version", "1.0.0");
-//            raw.put("format", "image/geotiff");
-//            raw.put("BBox", "0.5,40.5,14.856,44.496");
-//            raw.put("crs", "EPSG:4326");
-//            raw.put("width", "150");
-//            raw.put("height", "150");
-//            raw.put("ELEVATION", "0.0");
-//        
-//            GridCoverage[] coverages = executeGetCoverageKvp(raw);
-//            
-//            assertNotNull(coverages);
-//            assertEquals(1, coverages.length);
-//        }
-//	
+	public void testTimeInstant() throws Exception {
+		if(!MockData.SpatioTemporalRasterTests)
+			return;
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String getLayerId = getLayerId(MockData.WATTEMP);
+        raw.put("sourcecoverage", getLayerId);
+        raw.put("version", "1.0.0");
+        raw.put("format", "image/geotiff");
+        raw.put("BBox", "0.5,40.5,14.856,44.496");
+        raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+        raw.put("TIME", "2008-10-31T00:00:000Z");
+    
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        
+        assertNotNull(coverages);
+        assertEquals(1, coverages.length);
+        }
+	
+	public void testElevationRangeSubset() throws Exception {
+		if(!MockData.SpatioTemporalRasterTests)
+			return;
+        Map<String, Object> raw = new HashMap<String, Object>();
+        final String getLayerId = getLayerId(MockData.WATTEMP);
+        raw.put("sourcecoverage", getLayerId);
+        raw.put("version", "1.0.0");
+        raw.put("format", "image/geotiff");
+        raw.put("BBox", "0.5,40.5,14.856,44.496");
+        raw.put("crs", "EPSG:4326");
+        raw.put("width", "150");
+        raw.put("height", "150");
+        raw.put("ELEVATION", "0.0");
+    
+        GridCoverage[] coverages = executeGetCoverageKvp(raw);
+        
+        assertNotNull(coverages);
+        assertEquals(1, coverages.length);
+        }
+	
 	public static void main(String[] args) {
         TestRunner.run(suite());
     }
