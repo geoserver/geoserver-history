@@ -3,6 +3,17 @@
 Troubleshooting
 ===============
 
+Checking WFS requests
+----------------------------
+
+It often happens that users report issues with hand made WFS requests not working as expected. In the majority of the cases the request is malformed, but GeoServer does not complain and just ignores the malformed part (this behaviour is the default to make older WFS clients work fine with GeoServer). 
+
+If you want GeoServer to validate most WFS XML request you can post it to the following URL::
+  
+  http://host:port/geoserver/ows?strict=true
+  
+Any deviation from the required structure will be noted in an error message. The only request type that is not validated in any case is the INSERT one (this is a GeoServer own limitation).
+
 Leveraging GeoServer own log
 ----------------------------
 
@@ -63,7 +74,8 @@ jstack
 ````````
 
 `jstack <http://java.sun.com/javase/6/docs/technotes/tools/share/jstack.html>`_ is a tool extracting a the current stack trace for each thread running in the virtual machine. It can be used to identify scalability issues and to gather what the program is actually doing. 
-Usually people developers knowing about the inner workings of GeoServer can properly interpret its output, so it's likely to be requested by a developer trying to troubleshoot a problem, and its output, usually quite long, has to be redirected to a file and send over.
+
+It usually takes people knowing about the inner workings of GeoServer can properly interpret the jstack output.
   
 An example of usage::
 
@@ -116,10 +128,10 @@ And the file contents might look like::
 jmap
 ````
 
-`jmap <http://java.sun.com/javase/6/docs/technotes/tools/share/jmap.html>` is a tool to gather information about the a Java virtual machine. 
+`jmap <http://java.sun.com/javase/6/docs/technotes/tools/share/jmap.html>`_ is a tool to gather information about the a Java virtual machine. 
 It can be used in a few interesting ways.
 
-By running it without arguments (past the pid of the JVM) it will print out a *dump of the native libraries used by the JVM*. This can come in handy when one wants to double check GeoServer is actually using a certain version of a native library (e.g., GDAL)::
+By running it without arguments (past the pid of the JVM) it will print out a **dump of the native libraries used by the JVM**. This can come in handy when one wants to double check GeoServer is actually using a certain version of a native library (e.g., GDAL)::
 
 	> jmap 17251
 	
@@ -158,7 +170,7 @@ By running it without arguments (past the pid of the JVM) it will print out a *d
 	0xb7f60000	114K	/lib/ld-2.9.so
   
   
-It's also possible to get a quick summary about the heap status of the JVM::
+It's also possible to get a **quick summary of the JVM heap status**::
 
 	> jmap -heap 17251
 	
@@ -212,7 +224,7 @@ It's also possible to get a quick summary about the heap status of the JVM::
 
 In the result it can be seen that the JVM is allowed to use up to 742MB of memory, and that at the moment the JVM is using 130MB (rough sum of the capacities of each heap section). In case of a persistent memory leak the JVM will end up using whatever is allowed to and each section of the heap will be almost 100% used.
 
-To see how the memory is actually being used in a succinct way the following command can be used (on Windows, replace ``head -25`` with ``more``)::
+To see **how the memory is actually being used in a succinct way** the following command can be used (on Windows, replace ``head -25`` with ``more``)::
 
 	> jmap -histo:live 17251 | head -25
 	
@@ -245,7 +257,7 @@ To see how the memory is actually being used in a succinct way the following com
 By the dump we can see most of the memory is used by the GeoServer code itself (first 5 items) followed by the HSQL cache holding a few rows of the EPSG database. In case of a memory leak a few object types will hold the vast majority of the live heap.
 Mind, to look for a leak the dump should be gathered with the server almost idle. If, for example, the server is under a load of GetMap requests the main memory usage will be the byte[] holding the images while they are rendered, but that is not a leak, it's legitimate and temporary usage.
 
-In case of memory leaks a developer will probably ask for a full dump to analyze with a high end profiling tool. Such dump can be generated with the following command::
+In case of memory leaks a developer will probably ask for a **full heap dump** to analyze with a high end profiling tool. Such dump can be generated with the following command::
 
 	> jmap -dump:live,file=/tmp/dump.hprof 17251
 	Dumping heap to /tmp/dump.hprof ...
