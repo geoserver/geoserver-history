@@ -4,25 +4,41 @@
  */
 package org.geoserver.web.data.workspace;
 
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.IModel;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerApplication;
 
 /**
- * Detachable model for a specific workspace 
+ * Detachable model for a specific workspace. Implements IModel directly because
+ * we want it to be writable as well. 
+ * TODO: go back using LoadatableDetachableModel once we upgrade to Wicket 1.4, 
+ * see http://issues.apache.org/jira/browse/WICKET-27 and http://issues.apache.org/jira/browse/WICKET-2364 
  */
 @SuppressWarnings("serial")
-public class WorkspaceDetachableModel extends LoadableDetachableModel {
-
+public class WorkspaceDetachableModel implements IModel {
+    transient WorkspaceInfo workspace;
     String id;
     
     public WorkspaceDetachableModel( WorkspaceInfo workspace ) {
-        this.id = workspace.getId();
+        setObject(workspace);
     }
     
-    @Override
-    protected Object load() {
-        return GeoServerApplication.get().getCatalog().getWorkspace( id );
+    public Object getObject() {
+        if(workspace == null) {
+            workspace = GeoServerApplication.get().getCatalog().getWorkspace( id );
+        }
+        return workspace;
+    }
+
+
+
+    public void setObject(Object object) {
+        this.workspace = (WorkspaceInfo) object;
+        this.id = workspace.getId();
+    }
+
+    public void detach() {
+        this.workspace = null;
     }
 
 }
