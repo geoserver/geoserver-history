@@ -272,7 +272,6 @@
         <dependency>
           <groupId>com.ibm.icu</groupId>
           <artifactId>icu4j</artifactId>
-          <version>3.4.4</version>
         </dependency>
       </dependencies>
     </profile>
