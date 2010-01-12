@@ -53,20 +53,23 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertEquals("wfs:WFS_Capabilities", doc.getDocumentElement().getNodeName());
 
         // make sure non-feature types don't appear in FeatureTypeList
-        assertXpathCount(4, "//wfs:FeatureType", doc);
+        assertXpathCount(5, "//wfs:FeatureType", doc);
         ArrayList<String> featureTypeNames = new ArrayList<String>(4);
         featureTypeNames.add(evaluate("//wfs:FeatureType[1]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[2]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[3]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[4]/wfs:Name", doc));
+        featureTypeNames.add(evaluate("//wfs:FeatureType[5]/wfs:Name", doc));
         // Mapped Feture
-        assertEquals(featureTypeNames.contains("gsml:MappedFeature"), true);
+        assertTrue(featureTypeNames.contains("gsml:MappedFeature"));
         // Geologic Unit
-        assertEquals(featureTypeNames.contains("gsml:GeologicUnit"), true);
+        assertTrue(featureTypeNames.contains("gsml:GeologicUnit"));
         // FirstParentFeature
-        assertEquals(featureTypeNames.contains("ex:FirstParentFeature"), true);
+        assertTrue(featureTypeNames.contains("ex:FirstParentFeature"));
         // SecondParentFeature
-        assertEquals(featureTypeNames.contains("ex:SecondParentFeature"), true);
+        assertTrue(featureTypeNames.contains("ex:SecondParentFeature"));
+        // om:Observation
+        assertTrue(featureTypeNames.contains("om:Observation"));
     }
 
     /**
@@ -129,7 +132,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // EX include
         File exSchema = findFile("featureTypes/ex_FirstParentFeature/simpleContent.xsd", dataDir);
         assertNotNull(exSchema);
-        assertEquals(exSchema.exists(), true);
+        assertTrue(exSchema.exists());
         String exSchemaLocation = exSchema.toURI().toString();
         assertXpathEvaluatesTo(exSchemaLocation, "//xsd:include/@schemaLocation", doc);
         // nothing else
@@ -682,6 +685,37 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "    </wfs:Query> " //
                 + "</wfs:GetFeature>";
         checkGetMf4Only(xml);
+    }
+    
+    /**
+     * Test anyType as complex attributes. Previously the anyType attribute wouldn't be encoded at
+     * all.
+     */
+    public void testAnyType() {
+        final String OBSERVATION_ID_PREFIX = "observation:";
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=om:Observation");
+        LOGGER.info("WFS GetFeature&typename=om:Observation response:\n" + prettyString(doc));
+        // om:result in om:Observation is of anyType, and in this case I put in a mapped feature in
+        // it
+        // Because I'm lazy, I used the same properties file for observation where mf1 as observation
+        // contains mf1 as MappedFeature in result attribute
+        assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(4, "//om:Observation", doc);
+        String id = "mf1";
+        assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "//om:Observation[1]/@gml:id", doc);
+        assertXpathEvaluatesTo(id, "//om:Observation[1]/om:result/gsml:MappedFeature/@gml:id", doc);
+
+        id = "mf2";
+        assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "//om:Observation[2]/@gml:id", doc);
+        assertXpathEvaluatesTo(id, "//om:Observation[2]/om:result/gsml:MappedFeature/@gml:id", doc);
+
+        id = "mf3";
+        assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "//om:Observation[3]/@gml:id", doc);
+        assertXpathEvaluatesTo(id, "//om:Observation[3]/om:result/gsml:MappedFeature/@gml:id", doc);
+
+        id = "mf4";
+        assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "//om:Observation[4]/@gml:id", doc);
+        assertXpathEvaluatesTo(id, "//om:Observation[4]/om:result/gsml:MappedFeature/@gml:id", doc);
     }
     
     /**

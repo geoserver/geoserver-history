@@ -44,6 +44,7 @@ import org.geoserver.wfs.WFSInfo;
 import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Schemas;
+import org.geotools.xs.XS;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.FeatureType;
@@ -515,24 +516,32 @@ public abstract class FeatureTypeSchemaBuilder {
                 element.setName(attribute.getLocalName());
                 element.setNillable(attribute.isNillable());
 
-                Name typeName;
-                if (attribute.getType() instanceof ComplexType) {
-                    typeName = attribute.getType().getName();
-                    // If non-simple complex property not in schema, recurse.
-                    // Note that abstract types will of course not be resolved; these must be
-                    // configured at global level, so they can be found by the
-                    // encoder.
-                    if (schema.resolveTypeDefinition(typeName.getNamespaceURI(), typeName
-                            .getLocalPart()) == null) {
-                        buildComplexSchemaContent((ComplexType) attribute.getType(), schema,
-                                factory);
-                    }
-                } else {
-                    Class binding = attribute.getType().getBinding();
-                    typeName = findTypeName(binding);
-                    if (typeName == null) {
-                        throw new NullPointerException("Could not find a type for property: "
-                                + attribute.getName() + " of type: " + binding.getName());
+                Name typeName = attribute.getType().getName();
+                // skip if it's XS.AnyType. It's not added to XS.Profile, because
+                // a lot of types extend XS.AnyType causing it to be the returned
+                // binding.. I could make it so that it checks against all profiles
+                // but would that slow things down? At the moment, it returns the
+                // first matching one, so it doesn't go through all profiles.
+                if (!(typeName.getLocalPart().equals(XS.ANYTYPE.getLocalPart()) && typeName
+                        .getNamespaceURI().equals(XS.NAMESPACE))) {
+                    if (attribute.getType() instanceof ComplexType) {
+                        // If non-simple complex property not in schema, recurse.
+                        // Note that abstract types will of course not be resolved; these must be
+                        // configured at global level, so they can be found by the
+                        // encoder.
+                        if (schema.resolveTypeDefinition(typeName.getNamespaceURI(), typeName
+                                .getLocalPart()) == null) {
+                            buildComplexSchemaContent((ComplexType) attribute.getType(), schema,
+                                    factory);
+                        }
+                    } else {
+                        Class binding = attribute.getType().getBinding();
+                        typeName = findTypeName(binding);
+                        if (typeName == null) {
+                            throw new NullPointerException("Could not find a type for property: "
+                                    + attribute.getName() + " of type: " + binding.getName());
+
+                        }
                     }
                 }
 
