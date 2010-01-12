@@ -985,7 +985,7 @@ public class XStreamPersister {
             NumberRange range = (NumberRange) original;
             
             writer.startNode("min");
-            if ( Double.isInfinite( ((Double)range.getMinValue()).doubleValue() ) ) {
+            if ( Double.isInfinite( ((Number)range.getMinValue()).doubleValue() ) ) {
                 context.convertAnother( "-inf" );
             }
             else {
@@ -994,7 +994,7 @@ public class XStreamPersister {
             writer.endNode();
             
             writer.startNode("max");
-            if ( Double.isInfinite( ((Double)range.getMaxValue()).doubleValue() )) {
+            if ( Double.isInfinite( ((Number)range.getMaxValue()).doubleValue() )) {
                 context.convertAnother( "inf");
             }
             else {
