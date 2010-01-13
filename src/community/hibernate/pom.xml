@@ -1,25 +1,26 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>org.geoserver.community</groupId>
     <artifactId>hibernate</artifactId>
-    <packaging>jar</packaging>
     <version>2.0.2-SNAPSHOT</version>
     <name>Hibernate Catalog</name>
-    <url>http://maven.apache.org</url>
+
+    <packaging>jar</packaging>
+
+    <!-- set parent pom to community pom -->
+    <parent>
+        <groupId>org.geoserver</groupId>
+        <artifactId>community</artifactId>
+        <version>2.0.2-SNAPSHOT</version>
+    </parent>
+
 
     <properties>
         <gsversion>2.0.2-SNAPSHOT</gsversion>
     </properties>
-
-
-  <!-- set parent pom to community pom -->
-    <parent>
-        <groupId>org.geoserver</groupId>
-        <artifactId>community</artifactId>
-          <version>2.0.2-SNAPSHOT</version>
-    </parent>
 
     <repositories>
         <repository>
@@ -38,21 +39,19 @@
         </repository>
     </repositories>
 
-  <!-- declare depenency on geoserver main -->
     <dependencies>
+        <!-- declare depenDency on geoserver main -->
         <dependency>
             <groupId>org.geoserver</groupId>
             <artifactId>main</artifactId>
-            <version>${gsversion}</version>
         </dependency>
         <dependency>
-      <!-- As odd as it is, we're depending on the wms module because
-      the WMSInfoImpl class is there, and it carries out the dependencies
-      on the wfs and wcs modules where WFSInfoImpl and WCSInfoImpl classes
-      respectively. We should consider moving them to main. -->
+            <!-- As odd as it is, we're depending on the wms module because
+             the WMSInfoImpl class is there, and it carries out the dependencies
+            on the wfs and wcs modules where WFSInfoImpl and WCSInfoImpl classes
+            respectively. We should consider moving them to main. -->
             <groupId>org.geoserver</groupId>
             <artifactId>wms</artifactId>
-            <version>${gsversion}</version>
         </dependency>
 
         <dependency>
@@ -114,7 +113,13 @@
             <artifactId>gt-xsd-filter</artifactId>
         </dependency>
 
-    <!-- SCOPE TEST -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- SCOPE TEST -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -139,12 +144,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.5</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
-<!-- we may want to use some testing cases from the main package -->
+    <!-- we may want to use some testing cases from the main package -->
 <!--
     <dependency>
       <groupId>org.geoserver</groupId>
@@ -153,7 +157,6 @@
       <scope>test</scope>
     </dependency>
 -->
-
 
     <reporting>
         <plugins>
