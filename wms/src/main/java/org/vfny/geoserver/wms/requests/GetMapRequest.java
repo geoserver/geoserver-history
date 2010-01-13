@@ -19,10 +19,10 @@ import java.util.Map;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 import com.vividsolutions.jts.geom.Envelope;
 

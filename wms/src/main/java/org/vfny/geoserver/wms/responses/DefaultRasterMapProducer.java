@@ -41,6 +41,7 @@ import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
 import org.geoserver.wms.responses.decoration.WatermarkDecoration;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
@@ -53,7 +54,6 @@ import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for

@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 import javax.media.jai.TiledImage;
 
 import org.geotools.image.ImageWorker;
+import org.geotools.image.palette.CustomPaletteBuilder;
+import org.geotools.image.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Provides utility methods for the shared handling of images by the raster map
@@ -186,8 +186,7 @@ public class ImageUtils {
         //
         // /////////////////////////////////////////////////////////////////
         final ColorModel cm = originalImage.getColorModel();
-        final boolean dataTypeByte = originalImage.getSampleModel()
-                .getDataType() == DataBuffer.TYPE_BYTE;
+        final boolean dataTypeByte = originalImage.getSampleModel().getDataType() == DataBuffer.TYPE_BYTE;
         RenderedImage image;
 
         // /////////////////////////////////////////////////////////////////
@@ -219,8 +218,7 @@ public class ImageUtils {
                 // order to convert it to bitmask.
                 //
                 // //
-                image = new ImageWorker(originalImage)
-                        .forceBitmaskIndexColorModel().getRenderedImage();
+                image = new ImageWorker(originalImage).forceBitmaskIndexColorModel().getRenderedImage();
             }
         } else {
             // /////////////////////////////////////////////////////////////////
@@ -246,8 +244,7 @@ public class ImageUtils {
                 //
                 // //
                 // make sure we start from a componentcolormodel.
-                image = new ImageWorker(originalImage)
-                        .forceComponentColorModel().getRenderedImage();
+                image = new ImageWorker(originalImage).forceComponentColorModel().getRenderedImage();
 
                 // //
                 //
@@ -256,8 +253,7 @@ public class ImageUtils {
                 // //
                 int subsx = 1 + (int) (Math.log(image.getWidth()) / Math.log(32));
                 int subsy = 1 + (int) (Math.log(image.getHeight()) / Math.log(32));
-                image = new CustomPaletteBuilder(image, 256, subsx, subsy, 1)
-                        .buildPalette().getIndexedImage();
+                image = new CustomPaletteBuilder(image, 256, subsx, subsy, 1).buildPalette().getIndexedImage();
             }
         }
 

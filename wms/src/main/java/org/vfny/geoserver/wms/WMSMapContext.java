@@ -5,12 +5,11 @@
 package org.vfny.geoserver.wms;
 
 import java.awt.Color;
-import java.awt.image.IndexColorModel;
 
+import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.GraphicEnhancedMapContext;
 import org.geotools.map.MapLayer;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Extends DefaultMapContext to provide the whole set of request parameters a
