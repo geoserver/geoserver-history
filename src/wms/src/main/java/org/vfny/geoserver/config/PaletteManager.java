@@ -17,10 +17,9 @@ import javax.imageio.ImageReader;
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.stream.ImageInputStream;
 
+import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.responses.palette.EfficientInverseColorMapComputation;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Allows access to palettes (implemented as {@link IndexColorModel} classes)
