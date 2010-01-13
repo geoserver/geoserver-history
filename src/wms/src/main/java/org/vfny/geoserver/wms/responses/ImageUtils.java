@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 import javax.media.jai.TiledImage;
 
 import org.geotools.image.ImageWorker;
+import org.geotools.image.palette.CustomPaletteBuilder;
+import org.geotools.image.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.palette.CustomPaletteBuilder;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 /**
  * Provides utility methods for the shared handling of images by the raster map

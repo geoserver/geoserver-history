@@ -15,15 +15,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
+import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.responses.palette.InverseColorMapOp;
 
 import com.vividsolutions.jts.geom.Envelope;
 
