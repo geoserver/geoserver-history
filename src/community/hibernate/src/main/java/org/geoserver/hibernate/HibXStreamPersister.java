@@ -64,9 +64,9 @@ public class HibXStreamPersister extends XStreamPersister {
 		xs.addDefaultImplementation(
 				org.hibernate.collection.PersistentMap.class,
 				java.util.Map.class);
-
-		
-
+		xs.addDefaultImplementation(
+				org.hibernate.collection.PersistentList.class,
+				java.util.List.class);
 	}
 
 	public class HibernateMapConverter extends BreifMapConverter {
