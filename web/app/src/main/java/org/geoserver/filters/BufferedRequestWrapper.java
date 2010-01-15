@@ -1,23 +1,26 @@
 package org.geoserver.filters;
 
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletInputStream;
-import java.io.Reader;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Collections;
 import java.util.logging.Logger;
-import java.util.List;
-import java.util.ArrayList;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+
+import org.geotools.util.Converters;
 
 public class BufferedRequestWrapper extends HttpServletRequestWrapper{
     protected HttpServletRequest myWrappedRequest;
@@ -105,7 +108,18 @@ public class BufferedRequestWrapper extends HttpServletRequestWrapper{
 			myWrappedRequest.getContentType().startsWith("application/x-www-form-urlencoded")) {
 			parseFormBody();
 		} else {
-			myParameterMap = super.getParameterMap();
+			myParameterMap = new HashMap(super.getParameterMap());
+			
+            for (Object key : myParameterMap.keySet()) {
+                Object value = myParameterMap.get(key);
+                if (value instanceof List) {
+                    // ok, nothing to do
+                } else if (value instanceof String[]) {
+                    myParameterMap.put(key, Arrays.asList(((String[]) value)));
+                } else {
+                    myParameterMap.put(key, Converters.convert(value, List.class));
+                }
+            }
 		}
 	}
 
