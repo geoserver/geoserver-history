@@ -189,6 +189,7 @@
         <ref bean="wcs111TempStorageCleanerTask" />
       </list>
     </property>
+    <property name="deamon" value="true"/>
   </bean>
 
 </beans>
