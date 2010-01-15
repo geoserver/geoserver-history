@@ -12,6 +12,7 @@ import javax.servlet.ServletContextListener;
 
 import org.geotools.factory.Hints;
 import org.geotools.resources.image.ImageUtilities;
+import org.geotools.util.WeakCollectionCleaner;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -24,6 +25,7 @@ public class GeoserverInitStartupListener implements ServletContextListener {
             .getLogger("org.geoserver.logging");
 
     public void contextDestroyed(ServletContextEvent sce) {
+        WeakCollectionCleaner.DEFAULT.exit();
     }
 
     public void contextInitialized(ServletContextEvent sce) {
