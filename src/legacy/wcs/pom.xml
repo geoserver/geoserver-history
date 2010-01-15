@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.geoserver</groupId>
 		<artifactId>geoserver-legacy</artifactId>
-		<version>2.0.2-SNAPSHOT</version>
+		<version>2.0.2-OGS</version>
 	</parent>
 
 	<groupId>org.geoserver</groupId>
@@ -18,12 +18,12 @@
     <dependency>
        <groupId>org.geoserver</groupId>
        <artifactId>main-legacy</artifactId>
-       <version>2.0.2-SNAPSHOT</version>
+       <version>2.0.2-OGS</version>
     </dependency>
     <dependency>
        <groupId>org.geoserver</groupId>
        <artifactId>wcs</artifactId>
-       <version>2.0.2-SNAPSHOT</version>
+       <version>2.0.2-OGS</version>
     </dependency>
   </dependencies>
 
