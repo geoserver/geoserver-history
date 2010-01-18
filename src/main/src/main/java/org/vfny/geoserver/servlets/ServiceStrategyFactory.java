@@ -70,23 +70,19 @@ public class ServiceStrategyFactory implements OutputStrategyFactory, Applicatio
         // exception by using the file strategy.
         ServiceStrategy theStrategy = null;
 
-        if (geoServer.getGlobal().isVerboseExceptions()) {
-            theStrategy = (ServiceStrategy) context.getBean("fileServiceStrategy");
-        } else {
-            if (serviceStrategy == null) {
-                // none set, look up in web applicatino context
-                serviceStrategy = getServletContext().getInitParameter("serviceStrategy");
-            }
+        if (serviceStrategy == null) {
+            // none set, look up in web application context
+            serviceStrategy = getServletContext().getInitParameter("serviceStrategy");
+        }
 
-            // do a lookup
-            if (serviceStrategy != null) {
-                theStrategy = (ServiceStrategy) context.getBean(serviceStrategy);
-            }
+        // do a lookup
+        if (serviceStrategy != null) {
+            theStrategy = (ServiceStrategy) context.getBean(serviceStrategy);
         }
 
         if (theStrategy == null) {
-            // default to buffer
-            theStrategy = (ServiceStrategy) context.getBean("bufferServiceStrategy");
+            // default to partial buffer 2
+            theStrategy = (ServiceStrategy) context.getBean("PARTIAL-BUFFER2");
         }
 
         // clone the strategy since at the moment the strategies are marked as singletons
