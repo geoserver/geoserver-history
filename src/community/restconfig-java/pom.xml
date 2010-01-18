@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.geoserver</groupId>
 	<artifactId>restconfig-java</artifactId>
+	<name>restconfig-java</name>
 	<version>2.0.0</version>
 	<packaging>jar</packaging>
-	<name>geoserver-client-sdk</name>
 	<description>Geoserver REST Configuration Client SDK</description>
 	<properties>
 		<jersey-version>1.1.4.1</jersey-version>
