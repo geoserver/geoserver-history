@@ -17,11 +17,8 @@ import org.apache.wicket.validation.validator.AbstractValidator;
  * @author aaime
  * 
  */
+@SuppressWarnings("serial")
 public class XMLNameValidator extends AbstractValidator {
-    private String errorKey;
-
-    private String nameKey;
-
     private static Pattern XML_NAME_PATTERN;
 
     static {
