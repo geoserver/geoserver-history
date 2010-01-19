@@ -12,6 +12,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -140,6 +141,11 @@ public class GeoServerDialog extends Panel {
                     delegate = null;
                 }
             }
+            
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                delegate.onError(target, form);
+            }
 
         };
         link.setModel(new Model(contents));
@@ -203,6 +209,26 @@ public class GeoServerDialog extends Panel {
          * @return
          */
         protected abstract Component getContents(String id);
+
+        /**
+         * Called when the form inside the dialog breaks. By default adds all feedback
+         * panels to the target
+         * to the 
+         * @param target
+         * @param form
+         */
+        public void onError(final AjaxRequestTarget target, Form form) {
+            form.getPage().visitChildren(IFeedback.class, new IVisitor()
+            {
+                public Object component(Component component)
+                {
+                    if(component.getOutputMarkupId())
+                        target.addComponent(component);
+                    return IVisitor.CONTINUE_TRAVERSAL;
+                }
+
+            });
+        }
 
         /**
          * Called when the dialog is closed, allows the delegate to perform ajax updates on the page
