@@ -29,6 +29,7 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.namespace.NamespaceDetachableModel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.URIValidator;
+import org.geoserver.web.wicket.XMLNameValidator;
 import org.geotools.util.logging.Logging;
 
 /**
@@ -83,6 +84,8 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         };
         add(form);
         TextField name = new TextField("name", new PropertyModel(wsModel, "name"));
+        name.setRequired(true);
+        name.add(new XMLNameValidator());
         form.add(name);
         TextField uri = new TextField("uri", new PropertyModel(nsModel, "uRI"), String.class);
         uri.setRequired(true);

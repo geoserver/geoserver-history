@@ -19,6 +19,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.wicket.URIValidator;
+import org.geoserver.web.wicket.XMLNameValidator;
 
 /**
  * Allows creation of a new workspace
@@ -49,13 +50,15 @@ public class WorkspaceNewPage extends GeoServerSecuredPage {
                 if(defaultWs)
                     catalog.setDefaultWorkspace(ws);
                 
-                //TODO: set the response page to be the ediut 
+                //TODO: set the response page to be the edit 
                 setResponsePage(WorkspacePage.class );
             }
         };
         add(form);
         
         TextField nameTextField = new TextField("name");
+        nameTextField.setRequired(true);
+        nameTextField.add(new XMLNameValidator());
         form.add( nameTextField.setRequired(true) );
         
         nsUriTextField = new TextField( "uri", new Model() );
