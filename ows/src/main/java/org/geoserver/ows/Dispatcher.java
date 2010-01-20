@@ -232,14 +232,13 @@ public class Dispatcher extends AbstractController {
             if (result != null) {
                 response(result, request, operation);
             }
-            
-            fireFinishedCallback(request);
         } catch (AcegiSecurityException e) {
             // make Acegi exceptions flow so that exception transformer filter can handle them
             throw e;
         } catch (Throwable t) {
             exception(t, service, request);
         } finally {
+            fireFinishedCallback(request);
             REQUEST.remove();
         }
 
