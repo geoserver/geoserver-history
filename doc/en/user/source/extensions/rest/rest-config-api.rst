@@ -904,7 +904,7 @@ Operations
      - 405
      -
      -
-     -
+     - :ref:`purge <purge_parameter>`
 
 *Representations*:
 
@@ -954,6 +954,10 @@ name can be not be inferred from the SLD itself.
      - 200
      -
      -
+
+.. _purge_parameter:
+
+The ``purge`` parameter specifies whether the underlying SLD file for the style should be deleted on disk. It is specified as a boolean value ``(true|false)``. When set to ``true`` the underlying file will be deleted. 
 
 *Representations*:
 

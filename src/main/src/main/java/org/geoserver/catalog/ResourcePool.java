@@ -52,7 +52,6 @@ import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
@@ -1107,6 +1106,26 @@ public class ResourcePool {
             }
         }
     }
+    
+    /**
+     * Deletes a style from the configuration.
+     * 
+     * @param style The configuration for the style.
+     * @param purge Whether to delete the file from disk.
+     * 
+     */
+    public void deleteStyle( StyleInfo style, boolean purgeFile ) throws IOException {
+        synchronized ( styleCache ) {
+           
+            if( purgeFile ){
+                File styleFile = GeoserverDataDirectory.findStyleFile( style.getFilename(), true );
+                if( styleFile.exists() ){
+                    styleFile.delete();
+                }
+            }
+        }
+    }
+    
     
     /**
      * Disposes all cached resources.
