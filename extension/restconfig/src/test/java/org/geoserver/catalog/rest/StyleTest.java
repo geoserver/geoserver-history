@@ -7,6 +7,7 @@ package org.geoserver.catalog.rest;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.List;
 
 import net.sf.json.JSON;
@@ -170,6 +171,40 @@ public class StyleTest extends CatalogRESTTestSupport {
         assertNotNull( catalog.getStyleByName( "Ponds" ) );
     }
 
+    public void testDeleteWithoutPurge() throws Exception {
+        String xml = newSLDXML();
+
+        MockHttpServletResponse response = 
+            postAsServletResponse( "/rest/styles", xml, StyleResource.MEDIATYPE_SLD.toString());
+        assertNotNull( catalog.getStyleByName( "foo" ) );
+        
+        //ensure the style not deleted on disk
+        assertTrue(new File(getDataDirectory().findStyleDir(), "foo.sld").exists());
+        
+        response = deleteAsServletResponse("/rest/styles/foo");
+        assertEquals( 200, response.getStatusCode() );
+        
+        //ensure the style not deleted on disk
+        assertTrue(new File(getDataDirectory().findStyleDir(), "foo.sld").exists());
+    }
+    
+    public void testDeleteWithPurge() throws Exception {
+        String xml = newSLDXML();
+
+        MockHttpServletResponse response = 
+            postAsServletResponse( "/rest/styles", xml, StyleResource.MEDIATYPE_SLD.toString());
+        assertNotNull( catalog.getStyleByName( "foo" ) );
+        
+        //ensure the style not deleted on disk
+        assertTrue(new File(getDataDirectory().findStyleDir(), "foo.sld").exists());
+        
+        response = deleteAsServletResponse("/rest/styles/foo?purge=true");
+        assertEquals( 200, response.getStatusCode() );
+        
+        //ensure the style not deleted on disk
+        assertFalse(new File(getDataDirectory().findStyleDir(), "foo.sld").exists());
+    }
+    
     public void testGetAllByLayer() throws Exception {
         Document dom = getAsDOM( "/rest/layers/cite:BasicPolygons/styles.xml");
         LayerInfo layer = catalog.getLayerByName( "cite:BasicPolygons" );
