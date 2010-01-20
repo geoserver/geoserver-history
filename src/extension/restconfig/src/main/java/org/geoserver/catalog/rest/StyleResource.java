@@ -212,6 +212,12 @@ public class StyleResource extends AbstractCatalogResource {
         
         catalog.remove( s );
         
+        //check purge parameter to determine if the underlying file 
+        // should be deleted
+        String p = getRequest().getResourceRef().getQueryAsForm().getFirstValue("purge"); 
+        boolean purge = (p != null) ? Boolean.parseBoolean(p) : false;
+        catalog.getResourcePool().deleteStyle(s, purge);
+        
         LOGGER.info( "DELETE style " + style);
        
     }
