@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,7 +54,7 @@ public class QuickTileCache implements TransactionListener {
      */
     private CanonicalSet<MetaTileKey> metaTileKeys = CanonicalSet.newInstance(MetaTileKey.class);
 
-    private SoftValueHashMap tileCache = new SoftValueHashMap(0);
+    private WeakHashMap tileCache = new WeakHashMap();
 
     public QuickTileCache(GeoServer geoServer) {
         geoServer.addListener(new ConfigurationListenerAdapter() {
