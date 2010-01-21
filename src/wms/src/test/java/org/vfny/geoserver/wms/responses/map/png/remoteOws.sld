@@ -8,7 +8,7 @@
     <Name>LayerWithRemoteOWS</Name>
     <RemoteOWS>
       <Service>WFS</Service>
-      <OnlineResource xlink:href="http://sigma.openplans.org:8080/geoserver/wfs?" />
+      <OnlineResource xlink:href="http://demo.opengeo.org/geoserver/wfs?" />
     </RemoteOWS>
     <LayerFeatureConstraints>
       <FeatureTypeConstraint>
