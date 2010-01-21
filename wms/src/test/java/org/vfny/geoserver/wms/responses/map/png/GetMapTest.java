@@ -138,8 +138,7 @@ public class GetMapTest extends WMSTestSupport {
     }
     
     public void testRemoteOWSUserStyleGet() throws Exception {
-        if (!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER)
-                || !RemoteOWSTestSupport.isRemoteOwsUserStyleAvailable(LOGGER)) {
+        if (!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER)) {
             return;
         }
 

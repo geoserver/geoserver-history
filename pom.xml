@@ -992,7 +992,7 @@
       <include>**/*Test.java</include>
      </includes>
      <forkMode>once</forkMode>
-     <argLine>-Xmx${test.maxHeapSize} -enableassertions -Djava.awt.headless=${java.awt.headless}</argLine>
+     <argLine>-Xmx${test.maxHeapSize} -enableassertions -Djava.awt.headless=${java.awt.headless} -DremoteOwsTests=${remoteOwsTests}</argLine>
      <printSummary>true</printSummary>
      <testFailureIgnore>${allow.test.failure.ignore}</testFailureIgnore>
     </configuration>
@@ -1243,6 +1243,7 @@
   <jalopy.phase>disabled</jalopy.phase>
   <jalopy.srcExcludesPattern>disabled</jalopy.srcExcludesPattern>
   <test.maxHeapSize>512M</test.maxHeapSize>
+  <remoteOwsTests>false</remoteOwsTests>
  </properties>
 
  <profiles>
@@ -1310,6 +1311,12 @@
        <module>legacy</module>
      </modules>
    </profile>
+   <profile>
+     <id>remoteOwsTests</id>
+     <properties>
+       <remoteOwsTests>true</remoteOwsTests>
+     </properties>
+    </profile>
  </profiles>
 
 </project>
