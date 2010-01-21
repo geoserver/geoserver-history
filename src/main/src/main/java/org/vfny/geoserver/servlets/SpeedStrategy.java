@@ -50,7 +50,6 @@ public class SpeedStrategy implements ServiceStrategy {
     public DispatcherOutputStream getDestination(HttpServletResponse response)
         throws IOException {
         out = response.getOutputStream();
-        out = new BufferedOutputStream(out);
 
         return new DispatcherOutputStream(out);
     }
