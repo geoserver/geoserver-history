@@ -160,28 +160,26 @@ public class GetMapXmlReader extends XmlRequestReader {
         throws Exception {
         File temp = null;
 
-        if (validateSchema) //copy POST to a file
-         {
-            //make tempfile
-            temp = File.createTempFile("getMapPost", "xml");
-            temp.deleteOnExit();
-
-            FileOutputStream fos = new FileOutputStream(temp);
-            BufferedOutputStream out = new BufferedOutputStream(fos);
-
-            int c;
-
-            while (-1 != (c = xml.read())) {
-                out.write(c);
-            }
-
-            xml.close();
-            out.flush();
-            out.close();
-            xml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
-        }
-
         try {
+            if (validateSchema)  { //copy POST to a file
+                //make tempfile
+                temp = File.createTempFile("getMapPost", "xml");
+    
+                FileOutputStream fos = new FileOutputStream(temp);
+                BufferedOutputStream out = new BufferedOutputStream(fos);
+    
+                int c;
+    
+                while (-1 != (c = xml.read())) {
+                    out.write(c);
+                }
+    
+                xml.close();
+                out.flush();
+                out.close();
+                xml = new BufferedReader(new FileReader(temp)); // pretend like nothing has happened
+            }
+        
             javax.xml.parsers.DocumentBuilderFactory dbf = javax.xml.parsers.DocumentBuilderFactory
                 .newInstance();
 
