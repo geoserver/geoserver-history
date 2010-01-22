@@ -134,7 +134,7 @@ public class DefaultWebMapService implements WebMapService,
             String enabled = GeoServerExtensions.getProperty("OPTIMIZE_LINE_WIDTH", context);
             // default to true, but allow switching off
             if(enabled == null)
-                OPTIMIZE_LINE_WIDTH = true;
+                OPTIMIZE_LINE_WIDTH = false;
             else
                 OPTIMIZE_LINE_WIDTH = Boolean.valueOf(enabled);
         }

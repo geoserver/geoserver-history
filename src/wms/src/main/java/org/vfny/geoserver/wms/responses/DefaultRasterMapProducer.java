@@ -323,8 +323,8 @@ public abstract class DefaultRasterMapProducer extends
             rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
                     ShapefileRenderer.TEXT_RENDERING_OUTLINE);
         }
-        if(!DefaultWebMapService.isLineWidthOptimizationEnabled()) {
-            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, false);
+        if(DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, true);
         }
         if(DefaultWebMapService.isAdvancedProjectionHandlingEnabled()) {
             rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
