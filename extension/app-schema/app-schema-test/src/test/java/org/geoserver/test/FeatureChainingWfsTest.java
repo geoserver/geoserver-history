@@ -9,6 +9,7 @@ package org.geoserver.test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import junit.framework.Test;
 import org.geotools.data.complex.AppSchemaDataAccess;
@@ -22,13 +23,18 @@ import org.w3c.dom.Document;
  * @author Rini Angreani, Curtin University of Technology
  */
 public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
-    final String BASE_URL = "http://localhost:80/geoserver/";
 
-    final String DESCRIBE_FEATURE_TYPE_BASE = BASE_URL
-            + "wfs?request=DescribeFeatureType&version=1.1.0&service=WFS&typeName=";
-
-    final String DEFAULT_WFS_SCHEMA_URI = WFS.NAMESPACE
-            + " http://localhost:80/geoserver/schemas/wfs/1.1.0/wfs.xsd";
+    /**
+     * Pattern to match namespace/schemaLocation pair for WFS 1.1 schema.
+     * 
+     * <p>
+     * 
+     * Use of pattern is to support matching any port number on localhost (can't assume it is alwats
+     * port 80)..
+     */
+    private static final String DEFAULT_WFS_SCHEMALOCATION = Pattern.quote(WFS.NAMESPACE) + " "
+            + Pattern.quote("http://localhost:") + "\\d+"
+            + Pattern.quote("/geoserver/schemas/wfs/1.1.0/wfs.xsd");
 
     /**
      * Read-only test so can use one-time setup.
@@ -278,10 +284,12 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL;
         if (schemaLocation.startsWith(AbstractAppSchemaMockData.GSML_URI)) {
             // GSML schema location was encoded first
-            assertEquals(schemaLocation, gsmlLocation + " " + DEFAULT_WFS_SCHEMA_URI);
+            assertTrue(Pattern.matches(Pattern.quote(gsmlLocation) + " "
+                    + DEFAULT_WFS_SCHEMALOCATION, schemaLocation));
         } else {
             // WFS schema location was encoded first
-            assertEquals(schemaLocation, DEFAULT_WFS_SCHEMA_URI + " " + gsmlLocation);
+            assertTrue(Pattern.matches(DEFAULT_WFS_SCHEMALOCATION + " "
+                    + Pattern.quote(gsmlLocation), schemaLocation));
         }
 
         // mf1
