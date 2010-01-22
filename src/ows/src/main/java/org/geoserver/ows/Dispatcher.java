@@ -719,11 +719,17 @@ public class Dispatcher extends AbstractController {
                 }
             }
             
-            //TODO: initialize any header params (gzip,deflate,etc...)
             OutputStream output = outputStrategy.getDestination(req.httpResponse);
+            
+            // actually write out the response
             response.write(result, output, opDescriptor);
 
-            outputStrategy.flush(req.httpResponse);
+            // flush the output with detection of client shutting the door in our face
+            try {
+                outputStrategy.flush(req.httpResponse);
+            } catch(IOException e) {
+                throw new ClientStreamAbortedException(e);
+            }
 
             //flush the underlying out stream for good meaure
             req.httpResponse.getOutputStream().flush();
