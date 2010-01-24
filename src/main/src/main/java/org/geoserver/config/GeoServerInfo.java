@@ -195,6 +195,16 @@ public interface GeoServerInfo extends Info {
     void setUpdateSequence( int updateSequence );
     
     /**
+     * The size of the cache for feature type objects.
+     */
+    int getFeatureTypeCacheSize();
+
+    /**
+     * Sets the size of the cache for feature type objects.
+     */
+    void setFeatureTypeCacheSize(int featureTypeCacheSize);
+    
+    /**
      * A map of metadata for services.
      *
      * @uml.property name="metadata"

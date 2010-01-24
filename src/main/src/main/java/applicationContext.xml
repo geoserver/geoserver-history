@@ -95,6 +95,10 @@
     <property name="resourceLoader" ref="resourceLoader"/>
   </bean>
   
+  <!-- resource pool initializer -->
+  <bean id="resourcePoolInitializer" class="org.geoserver.catalog.ResourcePoolInitializer">
+  </bean>
+  
   <!-- security wrapper factories  -->
   <bean id="defaultDataSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureDataFactory"/>
   <bean id="defaultCatalogSecurityFactory" class="org.geoserver.security.decorators.DefaultSecureCatalogFactory"/>
