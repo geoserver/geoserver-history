@@ -37,7 +37,9 @@ public class GlobalSettingsPage extends ServerAdminPage {
         logLevelsAppend(form, loggingInfoModel);
         form.add(new CheckBox("stdOutLogging", new PropertyModel( loggingInfoModel, "stdOutLogging")));
         form.add(new TextField("loggingLocation", new PropertyModel( loggingInfoModel, "location")) );
-
+        
+        form.add(new TextField("featureTypeCacheSize"));
+        
         Button submit = new Button("submit", new StringResourceModel("submit", this, null)) {
             @Override
             public void onSubmit() {
