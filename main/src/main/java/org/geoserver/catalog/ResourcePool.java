@@ -68,6 +68,7 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.Schemas;
 import org.opengis.coverage.grid.GridCoverage;
@@ -121,6 +122,11 @@ public class ResourcePool {
             //fall through
         }
     }
+    
+    /**
+     * Default number of hard references
+     */
+    static int FEATURETYPE_CACHE_SIZE_DEFAULT = 100;
 
     Catalog catalog;
     HashMap<String, CoordinateReferenceSystem> crsCache;
@@ -136,7 +142,7 @@ public class ResourcePool {
         this.catalog = catalog;
         crsCache = new HashMap<String, CoordinateReferenceSystem>();
         dataStoreCache = new DataStoreCache();
-        featureTypeCache = new FeatureTypeCache();
+        featureTypeCache = new FeatureTypeCache(FEATURETYPE_CACHE_SIZE_DEFAULT);
         featureTypeAttributeCache = new FeatureTypeAttributeCache();
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
@@ -144,6 +150,19 @@ public class ResourcePool {
         listeners = new CopyOnWriteArrayList<Listener>();
         
         catalog.addListener( new CacheClearingListener() );
+    }
+    
+    /**
+     * Sets the size of the feature type cache.
+     * <p>
+     * A warning that calling this method will blow away the existing cache.
+     * </p>
+     */
+    public void setFeatureTypeCacheSize(int featureTypeCacheSize) {
+        synchronized (this) {
+            featureTypeCache.clear();
+            featureTypeCache = new FeatureTypeCache(featureTypeCacheSize);
+        }
     }
     
     /**
@@ -1143,6 +1162,10 @@ public class ResourcePool {
     }
     
     class FeatureTypeCache extends LRUMap {
+        
+        public FeatureTypeCache(int maxSize) {
+            super(maxSize);
+        }
         
         protected boolean removeLRU(LinkEntry entry) {
             FeatureTypeInfo info = (FeatureTypeInfo) entry.getKey();
