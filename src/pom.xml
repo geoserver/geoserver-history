@@ -872,6 +872,7 @@
      <include>**/*.xml</include>
      <include>**/*.utf</include>
      <include>**/*.properties</include>
+     <include>**/*.template</include>
      <include>**/*.serialized</include>
      <include>**/*.xsd</include>
      <include>META-INF/*.jai</include>
