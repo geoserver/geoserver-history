@@ -4,16 +4,6 @@
  */
 package org.geoserver.ows;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpServletResponse;
-import com.mockrunner.mock.web.MockServletInputStream;
-import com.mockrunner.mock.web.MockServletOutputStream;
-import junit.framework.TestCase;
-import org.geoserver.platform.Service;
-import org.geotools.util.Version;
-import org.geoserver.test.CodeExpectingHttpServletResponse;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,11 +11,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import junit.framework.TestCase;
+
+import org.geoserver.test.CodeExpectingHttpServletResponse;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
+
+import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.mockrunner.mock.web.MockServletInputStream;
 
 
 public class DispatcherTest extends TestCase {
@@ -97,7 +95,7 @@ public class DispatcherTest extends TestCase {
         request.setQueryString("service=hello&request=hello&message=Hello World!");
 
         Request req = new Request();
-        req.httpRequest = request;
+        req.setHttpRequest(request);
 
         dispatcher.parseKVP(req);
 
@@ -126,7 +124,7 @@ public class DispatcherTest extends TestCase {
         input.mark(8192);
 
         Request req = new Request();
-        req.input = input;
+        req.setInput(input);
 
         Object object = dispatcher.parseRequestXML(null,input, req);
         assertEquals(new Message("Hello world!"), object);
