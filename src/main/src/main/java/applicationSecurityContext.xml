@@ -73,12 +73,7 @@
       Note that GeoWebCache /gwc also depends on this chain
   -->
   <bean id="restFilterDefinitionMap" class="org.geoserver.security.RESTfulDefinitionSource">
-      <constructor-arg type="java.lang.String">
-          <value>
-               /**:GET=IS_AUTHENTICATED_ANONYMOUSLY
-               /**:POST,DELETE,PUT=ROLE_AUTHENTICATED,ROLE_ADMINISTRATOR
-          </value>
-      </constructor-arg>
+      <constructor-arg ref="restRulesDao"/>
   </bean>
 
   <!-- 
@@ -338,4 +333,8 @@
       <bean class="org.geoserver.security.OperationDefinitionSource" />
     </property>
   </bean>
+  
+    <!-- The dao used to deal with rest security -->
+   <bean id="restRulesDao" class="org.geoserver.security.RESTAccessRuleDAO">
+   </bean>
 </beans>
