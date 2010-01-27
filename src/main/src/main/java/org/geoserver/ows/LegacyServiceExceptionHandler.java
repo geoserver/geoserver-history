@@ -123,7 +123,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         // dtd location
         if (dtdLocation != null) {
-            String fullDtdLocation =  buildSchemaURL(baseURL(request.httpRequest), dtdLocation);
+            String fullDtdLocation =  buildSchemaURL(baseURL(request.getHttpRequest()), dtdLocation);
             sb.append("<!DOCTYPE ServiceExceptionReport SYSTEM \"" + fullDtdLocation + "\"> ");
         }
 
@@ -132,7 +132,7 @@ public class LegacyServiceExceptionHandler extends ServiceExceptionHandler {
 
         //xml schema location
         if ((schemaLocation != null) && (dtdLocation == null)) {
-            String fullSchemaLocation =  buildSchemaURL(baseURL(request.httpRequest), schemaLocation); 
+            String fullSchemaLocation =  buildSchemaURL(baseURL(request.getHttpRequest()), schemaLocation); 
 
             sb.append("xmlns=\"http://www.opengis.net/ogc\" ");
             sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
