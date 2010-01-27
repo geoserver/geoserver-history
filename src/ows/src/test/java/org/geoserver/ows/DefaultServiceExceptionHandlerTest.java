@@ -55,10 +55,10 @@ public class DefaultServiceExceptionHandlerTest extends TestCase {
         handler = new DefaultServiceExceptionHandler();
         
         requestInfo = new Request();
-        requestInfo.httpRequest = request;
-        requestInfo.httpResponse = response;
-        requestInfo.service = "hello";
-        requestInfo.version = "1.0.0";
+        requestInfo.setHttpRequest(request);
+        requestInfo.setHttpResponse(response);
+        requestInfo.setService("hello");
+        requestInfo.setVersion("1.0.0");
     }
 
     public void testHandleServiceException() throws Exception {

@@ -197,16 +197,17 @@ public class Dispatcher extends AbstractController {
         Request request = new Request();
 
         //set request / response
-        request.httpRequest = httpRequest;
-        request.httpResponse = httpResponse;
+        request.setHttpRequest(httpRequest);
+        request.setHttpResponse(httpResponse);
 
         Service service = null;
 
         try {
+            // initialize the request and allow callbacks to override it
+            request = init(request);
+
+            // store it in the thread local
             REQUEST.set(request);
-            
-            //initialize the request
-            init(request);
             
             //find the service
             try {
@@ -218,8 +219,8 @@ public class Dispatcher extends AbstractController {
             }
             
             //throw any outstanding errors
-            if (request.error != null) {
-                throw request.error;
+            if (request.getError() != null) {
+                throw request.getError();
             }
 
             //dispatch the operation
@@ -252,27 +253,27 @@ public class Dispatcher extends AbstractController {
     }
     
     Request init(Request request) throws ServiceException, IOException {
-        HttpServletRequest httpRequest = request.httpRequest;
+        HttpServletRequest httpRequest = request.getHttpRequest();
 
         //figure out method
-        request.get = "GET".equalsIgnoreCase(httpRequest.getMethod())
-            || "application/x-www-form-urlencoded".equals(httpRequest.getContentType());
+        request.setGet("GET".equalsIgnoreCase(httpRequest.getMethod())
+            || "application/x-www-form-urlencoded".equals(httpRequest.getContentType()));
 
         //create the kvp map
         parseKVP(request);
         
-        if ( !request.get ) { // && httpRequest.getInputStream().available() > 0) {
+        if ( !request.isGet() ) { // && httpRequest.getInputStream().available() > 0) {
             //wrap the input stream in a buffered input stream
-            request.input = reader(httpRequest);
+            request.setInput(reader(httpRequest));
 
             //mark the input stream
             char[] req = new char[1024];
-            request.input.mark(XML_LOOKAHEAD);
-            int read = request.input.read(req, 0, 1024);
+            request.getInput().mark(XML_LOOKAHEAD);
+            int read = request.getInput().read(req, 0, 1024);
             
             if (logger.isLoggable(Level.FINE)) {
                 if (read == -1) {
-                    request.input = null;
+                    request.setInput(null);
                 } else if (read < 1024) {
                     logger.fine("Raw XML request starts with: " + new String(req));
                 } else {
@@ -280,9 +281,9 @@ public class Dispatcher extends AbstractController {
                 }
             }
             if (read == -1)
-                request.input = null;
+                request.setInput(null);
             else
-                request.input.reset();
+                request.getInput().reset();
         }
 
         return fireInitCallback(request);
@@ -324,27 +325,27 @@ public class Dispatcher extends AbstractController {
 
     Service service(Request req) throws Exception {
         //check kvp
-        if (req.kvp != null) {
+        if (req.getKvp() != null) {
 
-            req.service = normalize((String) req.kvp.get("service"));
-            req.version = normalize((String) req.kvp.get("version"));
-            req.request = normalize((String) req.kvp.get("request"));
-            req.outputFormat = normalize((String) req.kvp.get("outputFormat"));
+            req.setService(normalize((String) req.getKvp().get("service")));
+            req.setVersion(normalize((String) req.getKvp().get("version")));
+            req.setRequest(normalize((String) req.getKvp().get("request")));
+            req.setOutputFormat(normalize((String) req.getKvp().get("outputFormat")));
         } 
         //check the body
-        if (req.input != null) {
-            Map xml = readOpPost(req.input);
-            if (req.service == null) {
-                req.service = normalize((String) xml.get("service"));    
+        if (req.getInput() != null) {
+            Map xml = readOpPost(req.getInput());
+            if (req.getService() == null) {
+                req.setService(normalize((String) xml.get("service")));    
             }
-            if (req.version == null) {
-                req.version = normalize((String) xml.get("version"));    
+            if (req.getVersion() == null) {
+                req.setVersion(normalize((String) xml.get("version")));    
             }
-            if (req.request == null) {
-                req.request = normalize((String) xml.get("request"));    
+            if (req.getRequest() == null) {
+                req.setRequest(normalize((String) xml.get("request")));    
             }
-            if (req.outputFormat == null) {
-                req.outputFormat = normalize((String) xml.get("outputFormat"));    
+            if (req.getOutputFormat() == null) {
+                req.setOutputFormat(normalize((String) xml.get("outputFormat")));    
             }
         }
 
@@ -352,21 +353,21 @@ public class Dispatcher extends AbstractController {
         //JD: for cite compliance, a service *must* be specified explicitley by 
         // either a kvp, or an xml attribute, however in reality the context 
         // is often a good way to infer the service or request 
-        String service = req.service;
+        String service = req.getService();
 
-        if ((service == null) || (req.request == null)) {
-            Map map = readOpContext(req.httpRequest);
+        if ((service == null) || (req.getRequest() == null)) {
+            Map map = readOpContext(req.getHttpRequest());
 
             if (service == null) {
                 service = normalize((String) map.get("service"));
 
                 if ((service != null) && !citeCompliant) {
-                    req.service = service;
+                    req.setService(service);
                 }
             }
 
-            if (req.request == null) {
-                req.request = normalize((String) map.get("request"));
+            if (req.getRequest() == null) {
+                req.setRequest(normalize((String) map.get("request")));
             }
         }
 
@@ -377,7 +378,7 @@ public class Dispatcher extends AbstractController {
         }
 
         //load from teh context
-        Service serviceDescriptor = findService(service, req.version);
+        Service serviceDescriptor = findService(service, req.getVersion());
         return fireServiceDispatchedCallback(req,serviceDescriptor);
     }
     
@@ -403,15 +404,15 @@ public class Dispatcher extends AbstractController {
 
     Operation dispatch(Request req, Service serviceDescriptor)
         throws Throwable {
-        if (req.request == null) {
-            String msg = "Could not determine geoserver request from http request " + req.httpRequest;
+        if (req.getRequest() == null) {
+            String msg = "Could not determine geoserver request from http request " + req.getHttpRequest();
             throw new ServiceException(msg, "MissingParameterValue", "request");
         }
 
         // ensure the requested operation exists
         boolean exists = false;
         for ( String op : serviceDescriptor.getOperations() ) {
-            if ( op.equalsIgnoreCase( req.request ) ) {
+            if ( op.equalsIgnoreCase( req.getRequest() ) ) {
                 exists = true;
                 break;
             }
@@ -419,11 +420,11 @@ public class Dispatcher extends AbstractController {
 
         // lookup the operation, initial lookup based on (service,request)
         Object serviceBean = serviceDescriptor.getService();
-        Method operation = OwsUtils.method(serviceBean.getClass(), req.request);
+        Method operation = OwsUtils.method(serviceBean.getClass(), req.getRequest());
 
         if (operation == null || !exists) {
             String msg = "No such operation " + req;
-            throw new ServiceException(msg, "OperationNotSupported", req.request);
+            throw new ServiceException(msg, "OperationNotSupported", req.getRequest());
         }
 
         //step 4: setup the paramters
@@ -434,15 +435,15 @@ public class Dispatcher extends AbstractController {
 
             //first check for servlet request and response
             if (parameterType.isAssignableFrom(HttpServletRequest.class)) {
-                parameters[i] = req.httpRequest;
+                parameters[i] = req.getHttpRequest();
             } else if (parameterType.isAssignableFrom(HttpServletResponse.class)) {
-                parameters[i] = req.httpResponse;
+                parameters[i] = req.getHttpResponse();
             }
             //next check for input and output
             else if (parameterType.isAssignableFrom(InputStream.class)) {
-                parameters[i] = req.httpRequest.getInputStream();
+                parameters[i] = req.getHttpRequest().getInputStream();
             } else if (parameterType.isAssignableFrom(OutputStream.class)) {
-                parameters[i] = req.httpResponse.getOutputStream();
+                parameters[i] = req.getHttpResponse().getOutputStream();
             } else {
                 //check for a request object
                 Object requestBean = null;
@@ -450,7 +451,7 @@ public class Dispatcher extends AbstractController {
                 //track an exception 
                 Throwable t = null;
 
-                if (req.kvp != null && req.kvp.size() > 0) {
+                if (req.getKvp() != null && req.getKvp().size() > 0) {
                     //use the kvp reader mechanism
                     try {
                         requestBean = parseRequestKVP(parameterType, req);
@@ -460,9 +461,9 @@ public class Dispatcher extends AbstractController {
                         t = e;
                     }
                 }
-                if (req.input != null) {
+                if (req.getInput() != null) {
                     //use the xml reader mechanism
-                    requestBean = parseRequestXML(requestBean,req.input, req);
+                    requestBean = parseRequestXML(requestBean,req.getInput(), req);
                 }
                 
                 //if no reader found for the request, throw exception
@@ -480,7 +481,7 @@ public class Dispatcher extends AbstractController {
                 // GEOS-934  and GEOS-1288
                 Method setBaseUrl = OwsUtils.setter(requestBean.getClass(), "baseUrl", String.class);
                 if (setBaseUrl != null) {
-                    setBaseUrl.invoke(requestBean, new String[] { RequestUtils.baseURL(req.httpRequest)});
+                    setBaseUrl.invoke(requestBean, new String[] { RequestUtils.baseURL(req.getHttpRequest())});
                 }
 
                 // another couple of thos of those lovley cite things, version+service has to specified for 
@@ -489,17 +490,17 @@ public class Dispatcher extends AbstractController {
                 // TODO: should make this configurable
                 if (requestBean != null) {
                     //if we dont have a version thus far, check the request object
-                    if (req.service == null) {
-                        req.service = lookupRequestBeanProperty(requestBean, "service", false);
+                    if (req.getService() == null) {
+                        req.setService(lookupRequestBeanProperty(requestBean, "service", false));
                     }
 
-                    if (req.version == null) {
-                        req.version = lookupRequestBeanProperty(requestBean, "version", false);
+                    if (req.getVersion() == null) {
+                        req.setVersion(lookupRequestBeanProperty(requestBean, "version", false));
                     }
 
-                    if (req.outputFormat == null) {
-                        req.outputFormat = lookupRequestBeanProperty(requestBean, "outputFormat",
-                                true);
+                    if (req.getOutputFormat() == null) {
+                        req.setOutputFormat(lookupRequestBeanProperty(requestBean, "outputFormat",
+                                true));
                     }
 
                     parameters[i] = requestBean;
@@ -511,21 +512,21 @@ public class Dispatcher extends AbstractController {
         // sure the "mandatory" parameters are specified, even though we 
         // succesfully dispatched the request.
         if (citeCompliant) {
-            if (!"GetCapabilities".equalsIgnoreCase(req.request)) {
-                if (req.version == null) {
+            if (!"GetCapabilities".equalsIgnoreCase(req.getRequest())) {
+                if (req.getVersion() == null) {
                     //must be a version on non-capabilities requests
                     throw new ServiceException("Could not determine version",
                         "MissingParameterValue", "version");
                 } else {
                     //version must be valid
-                    if (!req.version.matches("[0-99].[0-99].[0-99]")) {
-                        throw new ServiceException("Invalid version: " + req.version,
+                    if (!req.getVersion().matches("[0-99].[0-99].[0-99]")) {
+                        throw new ServiceException("Invalid version: " + req.getVersion(),
                             "InvalidParameterValue", "version");
                     }
 
                     //make sure the versoin actually exists
                     boolean found = false;
-                    Version version = new Version(req.version);
+                    Version version = new Version(req.getVersion());
 
                     for (Iterator s = loadServices().iterator(); s.hasNext();) {
                         Service service = (Service) s.next();
@@ -538,12 +539,12 @@ public class Dispatcher extends AbstractController {
                     }
 
                     if (!found) {
-                        throw new ServiceException("Invalid version: " + req.version,
+                        throw new ServiceException("Invalid version: " + req.getVersion(),
                             "InvalidParameterValue", "version");
                     }
                 }
 
-                if (req.service == null) {
+                if (req.getService() == null) {
                     //give up 
                     throw new ServiceException("Could not determine service",
                         "MissingParameterValue", "service");
@@ -551,7 +552,7 @@ public class Dispatcher extends AbstractController {
             }
         }
 
-        Operation op = new Operation(req.request, serviceDescriptor, operation, parameters);
+        Operation op = new Operation(req.getRequest(), serviceDescriptor, operation, parameters);
         return fireOperationDispatchedCallback(req,op);
     }
 
@@ -636,13 +637,13 @@ public class Dispatcher extends AbstractController {
                 //filter by output format
                 Set outputFormats = response.getOutputFormats();
 
-                if ((req.outputFormat != null) && (!outputFormats.isEmpty())
-                        && !outputFormats.contains(req.outputFormat)) {
+                if ((req.getOutputFormat() != null) && (!outputFormats.isEmpty())
+                        && !outputFormats.contains(req.getOutputFormat())) {
                     
                     //must do a case insensitive check
                     for ( Iterator of = outputFormats.iterator(); of.hasNext(); ) {
                         String outputFormat = (String) of.next();
-                        if( req.outputFormat.equalsIgnoreCase( outputFormat ) ) {
+                        if( req.getOutputFormat().equalsIgnoreCase( outputFormat ) ) {
                             continue O;
                         }
                     }
@@ -654,8 +655,8 @@ public class Dispatcher extends AbstractController {
             if (responses.isEmpty()) {
                 String msg = "No response: ( object = " + result.getClass();
 
-                if (req.outputFormat != null) {
-                    msg += (", outputFormat = " + req.outputFormat);
+                if (req.getOutputFormat() != null) {
+                    msg += (", outputFormat = " + req.getOutputFormat());
                 }
 
                 msg += " )";
@@ -701,38 +702,38 @@ public class Dispatcher extends AbstractController {
             response = fireResponseDispatchedCallback(req,opDescriptor,result,response);
 
             //load the output strategy to be used
-            ServiceStrategy outputStrategy = findOutputStrategy(req.httpResponse);
+            ServiceStrategy outputStrategy = findOutputStrategy(req.getHttpResponse());
 
             if (outputStrategy == null) {
                 outputStrategy = new DefaultOutputStrategy();
             }
 
             //set the mime type
-            req.httpResponse.setContentType(response.getMimeType(result, opDescriptor));
+            req.getHttpResponse().setContentType(response.getMimeType(result, opDescriptor));
 
             //set any extra headers, other than the mime-type
             if (response.getHeaders(result, opDescriptor) != null) {
                 String[][] headers = response.getHeaders(result, opDescriptor);
 
                 for (int i = 0; i < headers.length; i++) {
-                    req.httpResponse.addHeader(headers[i][0], headers[i][1]);
+                    req.getHttpResponse().addHeader(headers[i][0], headers[i][1]);
                 }
             }
             
-            OutputStream output = outputStrategy.getDestination(req.httpResponse);
+            OutputStream output = outputStrategy.getDestination(req.getHttpResponse());
             
             // actually write out the response
             response.write(result, output, opDescriptor);
 
             // flush the output with detection of client shutting the door in our face
             try {
-                outputStrategy.flush(req.httpResponse);
+                outputStrategy.flush(req.getHttpResponse());
             } catch(IOException e) {
                 throw new ClientStreamAbortedException(e);
             }
 
             //flush the underlying out stream for good meaure
-            req.httpResponse.getOutputStream().flush();
+            req.getHttpResponse().getOutputStream().flush();
         }
     }
 
@@ -1075,13 +1076,13 @@ public class Dispatcher extends AbstractController {
     }
 
     void preParseKVP(Request req) throws ServiceException {
-        HttpServletRequest request = req.httpRequest;
+        HttpServletRequest request = req.getHttpRequest();
 
         //unparsed kvp set
         Map kvp = request.getParameterMap();
 
         if (kvp == null || kvp.isEmpty()) {
-            req.kvp = Collections.EMPTY_MAP;
+            req.setKvp(Collections.EMPTY_MAP);
             //req.kvp = null;
             return;
         }
@@ -1090,16 +1091,16 @@ public class Dispatcher extends AbstractController {
         Map parsedKvp = KvpUtils.normalize(kvp);
         Map rawKvp = new KvpMap( parsedKvp );
         
-        req.kvp = parsedKvp;
-        req.rawKvp = rawKvp;
+        req.setKvp(parsedKvp);
+        req.setRawKvp(rawKvp);
     }
     
     void parseKVP(Request req) throws ServiceException {
         
         preParseKVP( req );
-        List<Throwable> errors = KvpUtils.parse( req.kvp );
+        List<Throwable> errors = KvpUtils.parse( req.getKvp() );
         if ( !errors.isEmpty() ) {
-            req.error = errors.get(0);
+            req.setError(errors.get(0));
         }
     }
 
@@ -1110,13 +1111,13 @@ public class Dispatcher extends AbstractController {
         if (kvpReader != null) {
             //check for http request awareness
             if (kvpReader instanceof HttpServletRequestAware) {
-                ((HttpServletRequestAware) kvpReader).setHttpRequest(request.httpRequest);
+                ((HttpServletRequestAware) kvpReader).setHttpRequest(request.getHttpRequest());
             }
 
             Object requestBean = kvpReader.createRequest();
 
             if (requestBean != null) {
-                requestBean = kvpReader.read(requestBean, request.kvp, request.rawKvp);
+                requestBean = kvpReader.read(requestBean, request.getKvp(), request.getRawKvp());
             }
 
             return requestBean;
@@ -1172,11 +1173,11 @@ public class Dispatcher extends AbstractController {
         }
 
         if (xmlReader instanceof HttpServletRequestAware) {
-            ((HttpServletRequestAware) xmlReader).setHttpRequest(request.httpRequest);
+            ((HttpServletRequestAware) xmlReader).setHttpRequest(request.getHttpRequest());
         }
 
         //return xmlReader.read(input);
-        return xmlReader.read( requestBean, input, request.kvp );
+        return xmlReader.read( requestBean, input, request.getKvp() );
     }
 
     Map readOpContext(HttpServletRequest request) {
@@ -1312,9 +1313,9 @@ public class Dispatcher extends AbstractController {
             HttpErrorCodeException ece = (HttpErrorCodeException) cause;
             try {
             	if(ece.getMessage() != null) {
-                	request.httpResponse.sendError(ece.getErrorCode(),ece.getMessage());
+                	request.getHttpResponse().sendError(ece.getErrorCode(),ece.getMessage());
             	} else {
-            		request.httpResponse.sendError(ece.getErrorCode());
+            		request.getHttpResponse().sendError(ece.getErrorCode());
             	}
             } 
             catch (IOException e) {
