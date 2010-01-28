@@ -58,33 +58,33 @@ public class GetCoverageTest extends WCSTestSupport {
     
     
 
-    public void testNullGridOrigin() throws Exception {
-        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + //
-            "<wcs:GetCoverage service=\"WCS\" " + //
-            "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
-            "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + //
-            "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + //
-            "  xsi:schemaLocation=\"http://www.opengis.net/wcs/1.1.1 " + //
-            "schemas/wcs/1.1.1/wcsAll.xsd\"\r\n" + //
-            "  version=\"1.1.1\" >\r\n" + //
-            "  <ows:Identifier>wcs:BlueMarble</ows:Identifier>\r\n" + //
-            "  <wcs:DomainSubset>\r\n" + //
-            "    <ows:BoundingBox crs=\"urn:ogc:def:crs:EPSG:6.6:4326\">\r\n" + //
-            "      <ows:LowerCorner>-90 -180</ows:LowerCorner>\r\n" + //
-            "      <ows:UpperCorner>90 180</ows:UpperCorner>\r\n" + //
-            "    </ows:BoundingBox>\r\n" + //
-            "  </wcs:DomainSubset>\r\n" + //
-            "  <wcs:Output format=\"image/tiff\">\r\n" + //
-            "    <wcs:GridCRS>\r\n" + //
-            "      <wcs:GridBaseCRS>urn:ogc:def:crs:EPSG:6.6:4326</wcs:GridBaseCRS>\r\n" + //
-            "      <wcs:GridType>urn:ogc:def:method:WCS:1.1:2dSimpleGrid</wcs:GridType>\r\n" + //
-            "      <wcs:GridOffsets>-1 2</wcs:GridOffsets>\r\n" + //
-            "    </wcs:GridCRS>\r\n" + //
-            "  </wcs:Output>\r\n" + //
-            "</wcs:GetCoverage>";
-    
-        executeGetCoverageXml(request);
-    }
+//    public void testNullGridOrigin() throws Exception {
+//        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + //
+//            "<wcs:GetCoverage service=\"WCS\" " + //
+//            "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
+//            "  xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\"\r\n" + //
+//            "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + //
+//            "  xsi:schemaLocation=\"http://www.opengis.net/wcs/1.1.1 " + //
+//            "schemas/wcs/1.1.1/wcsAll.xsd\"\r\n" + //
+//            "  version=\"1.1.1\" >\r\n" + //
+//            "  <ows:Identifier>wcs:BlueMarble</ows:Identifier>\r\n" + //
+//            "  <wcs:DomainSubset>\r\n" + //
+//            "    <ows:BoundingBox crs=\"urn:ogc:def:crs:EPSG:6.6:4326\">\r\n" + //
+//            "      <ows:LowerCorner>-90 -180</ows:LowerCorner>\r\n" + //
+//            "      <ows:UpperCorner>90 180</ows:UpperCorner>\r\n" + //
+//            "    </ows:BoundingBox>\r\n" + //
+//            "  </wcs:DomainSubset>\r\n" + //
+//            "  <wcs:Output format=\"image/tiff\">\r\n" + //
+//            "    <wcs:GridCRS>\r\n" + //
+//            "      <wcs:GridBaseCRS>urn:ogc:def:crs:EPSG:6.6:4326</wcs:GridBaseCRS>\r\n" + //
+//            "      <wcs:GridType>urn:ogc:def:method:WCS:1.1:2dSimpleGrid</wcs:GridType>\r\n" + //
+//            "      <wcs:GridOffsets>-1 2</wcs:GridOffsets>\r\n" + //
+//            "    </wcs:GridCRS>\r\n" + //
+//            "  </wcs:Output>\r\n" + //
+//            "</wcs:GetCoverage>";
+//    
+//        executeGetCoverageXml(request);
+//    }
     
     /**
      * Runs GetCoverage on the specified parameters and returns an array of coverages
@@ -180,18 +180,18 @@ public class GetCoverageTest extends WCSTestSupport {
 	    }
 	}
 
-	public void testDefaultGridOrigin() throws Exception {
-	    Map<String, Object> raw = new HashMap<String, Object>();
-	    final String getLayerId = getLayerId(TASMANIA_BM);
-	    raw.put("identifier", getLayerId);
-	    raw.put("format", "image/geotiff");
-	    raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
-	
-	    GridCoverage[] coverages = executeGetCoverageKvp(raw);
-	    AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
-	    assertEquals(0.0, tx.getTranslateX());
-	    assertEquals(0.0, tx.getTranslateY());
-	}
+//	public void testDefaultGridOrigin() throws Exception {
+//	    Map<String, Object> raw = new HashMap<String, Object>();
+//	    final String getLayerId = getLayerId(TASMANIA_BM);
+//	    raw.put("identifier", getLayerId);
+//	    raw.put("format", "image/geotiff");
+//	    raw.put("BoundingBox", "-45,146,-42,147,urn:ogc:def:crs:EPSG:6.6:4326");
+//	
+//	    GridCoverage[] coverages = executeGetCoverageKvp(raw);
+//	    AffineTransform2D tx = (AffineTransform2D) coverages[0].getGridGeometry().getGridToCRS();
+//	    assertEquals(0.0, tx.getTranslateX());
+//	    assertEquals(0.0, tx.getTranslateY());
+//	}
 
 	public void testWrongGridOrigin() throws Exception {
 	    Map<String, Object> raw = new HashMap<String, Object>();
