@@ -34,6 +34,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.xsd.XSDElementDeclaration;
+import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDSchema;
 import org.eclipse.xsd.XSDTypeDefinition;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -516,6 +517,11 @@ public class ResourcePool {
                             XSDElementDeclaration ce = (XSDElementDeclaration) c.next();
                             if ( at.getName().equals( ce.getName() ) ) {
                                 found = true;
+                                if (ce.getContainer() instanceof XSDParticle) {
+                                    XSDParticle part = (XSDParticle) ce.getContainer();
+                                    at.setMinOccurs(part.getMinOccurs());
+                                    at.setMaxOccurs(part.getMaxOccurs());
+                                }
                                 break;
                             }
                         }
