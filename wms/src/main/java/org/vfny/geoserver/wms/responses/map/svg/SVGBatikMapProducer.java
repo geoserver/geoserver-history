@@ -24,6 +24,7 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.map.MapContext;
@@ -71,9 +72,14 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 		rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
 		// we need the renderer to draw everything on the batik provided graphics object
 		rendererParams.put(StreamingRenderer.OPTIMIZE_FTS_RENDERING_KEY, Boolean.FALSE);
+		// render everything in vector form if possible
+        rendererParams.put(StreamingRenderer.VECTOR_RENDERING_KEY, Boolean.TRUE);
 		rendererParams.put("renderingBuffer", new Integer(mapContext
 				.getBuffer()));
-		renderer.setRendererHints(rendererParams);
+		if(DefaultWebMapService.isLineWidthOptimizationEnabled()) {
+            rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, true);
+        }
+        renderer.setRendererHints(rendererParams);
 		renderer.setContext(mapContext);
 	}
 
