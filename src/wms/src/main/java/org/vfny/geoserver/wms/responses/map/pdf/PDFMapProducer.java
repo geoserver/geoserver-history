@@ -163,8 +163,6 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             renderer.setRendererHints(rendererParams);
 
             Envelope dataArea = mapContext.getAreaOfInterest();
-            AffineTransform at = RendererUtilities.worldToScreenTransform(
-                    dataArea, paintArea);
 
             if (this.abortRequested) {
                 graphic.dispose();
@@ -189,9 +187,9 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             PDFMaxSizeEnforcer memoryChecker = new PDFMaxSizeEnforcer(renderer, graphic, maxMemory);
             
             // render the map
-            renderer.paint(graphic, paintArea, at);
+            renderer.paint(graphic, paintArea, dataArea);
             
-           // render the watermark
+            // render the watermark
             MapDecorationLayout.Block watermark = 
                 DefaultRasterMapProducer.getWatermark(this.mapContext.getRequest().getWMS().getServiceInfo());
 
