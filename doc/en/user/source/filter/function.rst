@@ -156,6 +156,9 @@ Most of the geometric function listed below refer to geometry relationship, to g
    * - geomLength
      - ``geometry``:Geometry
      - Returns the length/perimeter of this geometry (computed in cartesian space)
+   * - getGeometryN
+     - ``collection``:GeometryCollection, ``n``:Integer
+     - Returns the n-th geometry inside the collection
    * - getX
      - ``p``:Point
      - Returns the ``x`` ordinate of ``p``
@@ -183,6 +186,56 @@ Most of the geometric function listed below refer to geometry relationship, to g
    * - isEmpty
      - ``geometry``: Geometry
      - Returns true if the geometry does not contain any point (typical case, an empty geometry collection)
+   * - isValid
+     - ``geometry``: Geometry
+     - Returns true if the geometry is topologically valid (rings are closed, holes are inside the hull, and so on)
+   * - isSimple
+     - ``geometry``: Geometry
+     - Returns true if the geometry is simple, that is, it's not a collection of simpler geometries (not a GeometryCollection
+       or a Multi*)
+   * - isWithinDistance
+     - ``a``: Geometry, ``b``:Geometry, ``distance``: Double
+     - Returns true if the distance between ``a`` and ``b`` is less than ``distance`` (measured as an euclidean distance)
+   * - numGeometries
+     - ``collection``: GeometryCollection
+     - Returns the numer of geometries contained in the geometry collection
+   * - numInteriorRing
+     - ``poly``: Polygon
+     - Returns the number of interior rings (holes) inside the specified polygon
+   * - numPoint
+     - ``geometry``: Geometry
+     - Returns the number of points (vertices) contained in ``geometry``
+   * - overlaps
+     - ``a``: Geometry, ``b``:Geometry
+     - Returns true ``a`` overlaps with ``b``
+   * - pointN
+     - ``geometry``: Geometry, ``n``:Integer
+     - Returns the n-th point inside the specified geometry
+   * - relate
+     - ``a``: Geometry, ``b``:Geometry
+     - Returns the DE-9IM intesection matrix for ``a`` and ``b``
+   * - relatePattern
+     - ``a``: Geometry, ``b``:Geometry, ``pattern``:String
+     - Returns true if the DE-9IM intesection matrix for ``a`` and ``b`` matches the specified pattern
+   * - startPoint
+     - ``line``: LineString
+     - Returns the starting point of the specified geometry
+   * - symDifference
+     - ``a``: Geometry, ``b``:Geometry
+     - Returns the symmetrical difference between ``a`` and ``b`` (all points that are inside ``a`` or ``b``, but not both)
+   * - touches
+     - ``a``: Geometry, ``b``: Geometry
+     - Returns true if ``a`` touches ``b`` according to the SQL simple feature specification rules
+   * - toWKT
+     - ``geometry``: Geometry
+     - Returns the WKT representation of ``geometry``
+   * - union
+     - ``a``: Geometry, ``b``:Geometry
+     - Returns the union of ``a`` and ``b`` (the result may be a geometry collection)
+   * - within
+     - ``a``: Geometry, ``b``:Geometry
+     - Returns true is fully contained inside ``b``
+   
    
 	 
 Math Functions
@@ -245,10 +298,25 @@ Math Functions
      - Converts the number to Double
    
    
-   
+String functions
+-----------------   
 
-String parsing and formatting functions
----------------------------------------
+.. list-table::
+   :widths: 20 25 55
+   
+   * - **Name**
+     - **Arguments**
+     - **Description**
+   * - strConcat
+     - ``a``:String, ``b``:String
+     - Concatenates the two strings into one
+   * - strEndsWith
+     - ``a``:String, ``b``:String
+     - Concatenates the two strings into one
+   
+     
+Parsing and formatting functions
+--------------------------------
 
 .. list-table::
    :widths: 20 25 55
