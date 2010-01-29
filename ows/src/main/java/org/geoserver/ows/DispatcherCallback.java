@@ -84,6 +84,10 @@ public interface DispatcherCallback {
 
     /**
      * Called after the response to the operation has been executed.
+     * <p>
+     * This method is called regardless if the operation was successful or not. In the event of a
+     * request that resulted in an error, the error is available at {@link Request#error}. 
+     * </p>
      * 
      * @param request The request.
      */

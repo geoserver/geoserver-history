@@ -154,10 +154,17 @@
 		<constructor-arg ref="geoServer"/>
 	</bean>
 	
+	<!-- test servlet -->
+	<bean id="wfsTestServlet" class="org.springframework.web.servlet.mvc.ServletWrappingController">
+	  <property name="servletClass" value="org.vfny.geoserver.wfs.servlets.TestWfsPost"/>
+	  <property name="servletName" value="TestWfsPost"/>
+	</bean>
+	
 	<!-- http url mapping -->
-	<bean id="wfsURLMapping" 
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="alwaysUseFullPath" value="true"/>
+	<bean id="wfsURLMapping"
+        class="org.geoserver.ows.OWSHandlerMapping">
+        <constructor-arg ref="catalog"/> 
+		<property name="alwaysUseFullPath" value="true"/>
 		<property name="interceptors">
 			<list>
 				<ref bean="citeComplianceHack"/>
@@ -168,6 +175,7 @@
 			<props>
 				<prop key="/wfs">dispatcher</prop>
 				<prop key="/wfs/*">dispatcher</prop>
+				<prop key="/TestWfsPost">wfsTestServlet</prop>
 			</props>
 		</property>
 	</bean>
@@ -341,5 +349,13 @@
 	</bean>
     <bean id="CSVOutputFormat" class="org.geoserver.wfs.response.CSVOutputFormat">
         <constructor-arg index="0" ref="geoServer"/>
+    </bean>
+    
+    <!-- workspace qualifier -->
+    <bean id="wfsWorkspaceQualifier" class="org.geoserver.wfs.WFSWorkspaceQualifier">
+        <constructor-arg ref="catalog"/>
+    </bean>
+    <bean id="wfsLocalWorkspaceURLManger" class="org.geoserver.ows.LocalWorkspaceURLMangler">
+      <constructor-arg value="wfs"/>
     </bean>
 </beans>

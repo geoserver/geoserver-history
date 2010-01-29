@@ -230,7 +230,8 @@
 	
 	<!-- http url mapping -->
 	<bean id="wmsURLMapping" 
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		class="org.geoserver.ows.OWSHandlerMapping">
+		<constructor-arg ref="catalog"/>
 		<property name="alwaysUseFullPath" value="true"/>
 		<property name="mappings">
 			<props>
@@ -328,7 +329,8 @@
  	
 	<!-- http url mapping -->
 	<bean id="kmlURLMapping" 
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		class="org.geoserver.ows.OWSHandlerMapping">
+		<constructor-arg ref="catalog"/>
 		<property name="alwaysUseFullPath" value="true"/>
 		<property name="mappings">
 			<props>
@@ -412,4 +414,11 @@
           class="org.geoserver.wms.responses.decoration.ScaleLineDecoration"
           singleton="false"
     />
+    
+    <bean id="wmsWorkspaceQualifier" class="org.geoserver.wms.WMSWorkspaceQualifier">
+      <constructor-arg ref="catalog"/>
+    </bean>
+    <bean id="wmsLocalWorkspaceURLManger" class="org.geoserver.ows.LocalWorkspaceURLMangler">
+      <constructor-arg value="wms"/>
+    </bean>
 </beans>

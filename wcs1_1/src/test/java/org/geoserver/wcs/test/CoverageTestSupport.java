@@ -27,5 +27,6 @@ public abstract class CoverageTestSupport extends KvpRequestReaderTestSupport {
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         dataDirectory.addWellKnownCoverageTypes();
+        dataDirectory.addWcs10Coverages();
     }
 }

@@ -57,6 +57,15 @@ public class Request {
     protected String version;
 
     /**
+     * Pre context of the url path
+     */
+    protected String context;
+    /**
+     * Remaining path without context
+     */
+    protected String path; 
+    
+    /**
      * The output format of hte request
      */
     protected String outputFormat;
@@ -236,6 +245,53 @@ public class Request {
         this.outputFormat = outputFormat;
     }
 
+    /**
+     * The context of the url path of the request. 
+     * <p>
+     * The context is anything before the part that matches an ows service. For instance in: 
+     * <pre>
+     *   /foo/bar/wfs?...
+     * </pre>
+     * The context would be "/foo/bar".
+     * </p>
+     */
+    public String getContext() {
+        return context;
+    }
+    
+    /**
+     * Sets the context.
+     * 
+     * @set {@link #getContext()}
+     */
+    public void setContext(String context) {
+        this.context = context;
+    }
+    
+    /**
+     * The remainder part of the url path after the context.
+     * <p>
+     * In the following: 
+     * <pre>
+     *   /foo/bar/wfs?...
+     * </pre>
+     * The path would be "/wfs".
+     * </p>
+     * @see #getContext()
+     */
+    public String getPath() {
+        return path;
+    }
+    
+    /**
+     * Sets the patch.
+     * 
+     * @see #getPath()
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
+    
     /**
      * Allows callbacks to override the operation execution error
      * @param service

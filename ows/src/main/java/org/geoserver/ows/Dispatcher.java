@@ -286,6 +286,37 @@ public class Dispatcher extends AbstractController {
                 request.getInput().reset();
         }
 
+        // parse the request path into two components. (1) the 'path' which
+        // is the string after the last '/', and the 'context' which is the 
+        // string before the last '/'
+        String ctxPath = request.httpRequest.getContextPath();
+        String reqPath = request.httpRequest.getRequestURI();
+        reqPath = reqPath.substring(ctxPath.length());
+
+        //strip off leading and trailing slashes
+        if (reqPath.startsWith("/")) {
+            reqPath = reqPath.substring(1, reqPath.length());
+        }
+
+        if (reqPath.endsWith("/")) {
+            reqPath = reqPath.substring(0, reqPath.length() - 1);
+        }
+
+        String context = reqPath;
+        String path = null;
+        int index = context.lastIndexOf('/');
+        if ( index != -1) {
+            path = context.substring(index+1);
+            context = context.substring(0, index);
+        }
+        else {
+            path = reqPath;
+            context = null;
+        }
+        
+        request.setContext(context);
+        request.setPath(path);
+        
         return fireInitCallback(request);
     }
 
@@ -356,7 +387,7 @@ public class Dispatcher extends AbstractController {
         String service = req.getService();
 
         if ((service == null) || (req.getRequest() == null)) {
-            Map map = readOpContext(req.getHttpRequest());
+            Map map = readOpContext(req);
 
             if (service == null) {
                 service = normalize((String) map.get("service"));
@@ -379,6 +410,25 @@ public class Dispatcher extends AbstractController {
 
         //load from teh context
         Service serviceDescriptor = findService(service, req.getVersion());
+        if (serviceDescriptor == null) {
+            //hack for backwards compatability, try finding the service with the context instead 
+            // of the service
+            if (req.getContext() != null) {
+                serviceDescriptor = findService(req.getContext(), req.getVersion());
+                if (serviceDescriptor != null) {
+                    //found, assume that the client is using <service>/<request>
+                    if (req.getRequest() == null) {
+                        req.setRequest(req.getService());
+                    }
+                    req.setService(req.getContext());
+                    req.setContext(null);
+                }
+            }
+            if (serviceDescriptor == null) {
+                String msg = "No service: ( " + service + " )";
+                throw new ServiceException(msg, "InvalidParameterValue", "service");    
+            }
+        }
         return fireServiceDispatchedCallback(req,serviceDescriptor);
     }
     
@@ -772,8 +822,7 @@ public class Dispatcher extends AbstractController {
         }
 
         if (matches.isEmpty()) {
-            String msg = "No service: ( " + id + " )";
-            throw new ServiceException(msg, "InvalidParameterValue", "service");
+            return null;
         }
 
         Service sBean = null;
@@ -1180,30 +1229,13 @@ public class Dispatcher extends AbstractController {
         return xmlReader.read( requestBean, input, request.getKvp() );
     }
 
-    Map readOpContext(HttpServletRequest request) {
-        //try to get from request url
-        String ctxPath = request.getContextPath();
-        String reqPath = request.getRequestURI();
-        reqPath = reqPath.substring(ctxPath.length());
-
-        if (reqPath.startsWith("/")) {
-            reqPath = reqPath.substring(1, reqPath.length());
-        }
-
-        if (reqPath.endsWith("/")) {
-            reqPath = reqPath.substring(0, reqPath.length() - 1);
-        }
-
+    Map readOpContext(Request request) {
+        
         Map map = new HashMap();
-        int index = reqPath.indexOf('/');
-
-        if (index != -1) {
-            map.put("service", reqPath.substring(0, index));
-            map.put("request", reqPath.substring(index + 1));
-        } else {
-            map.put("service", reqPath);
+        if (request.getPath() != null) {
+            map.put("service", request.getPath());
         }
-
+        
         return map;
     }
 
@@ -1323,6 +1355,8 @@ public class Dispatcher extends AbstractController {
                 //TODO: something
             }
         }
+        
+        request.error = t;
     }
 
     void handleServiceException( ServiceException se, Service service, Request request ) {

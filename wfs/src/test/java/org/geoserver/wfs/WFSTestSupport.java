@@ -73,10 +73,9 @@ public abstract class WFSTestSupport extends GeoServerTestSupport {
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("xsd", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("gml", "http://www.opengis.net/gml");
-        namespaces.put(MockData.CITE_PREFIX, MockData.CITE_URI); 
-        namespaces.put(MockData.CDF_PREFIX, MockData.CDF_URI);
-        namespaces.put(MockData.CGF_PREFIX, MockData.CGF_URI);
-        namespaces.put(MockData.SF_PREFIX, MockData.SF_URI);
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        
+        getTestData().registerNamespaces(namespaces);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
 }

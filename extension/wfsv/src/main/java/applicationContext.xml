@@ -80,7 +80,8 @@
 
   <!-- http url mapping -->
   <bean id="wfsvURLMapping"
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    class="org.geoserver.ows.OWSHandlerMapping">
+    <constructor-arg ref="catalog"/>
     <property name="alwaysUseFullPath" value="true"/>    
     <property name="interceptors">
       <list>

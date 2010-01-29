@@ -18,15 +18,19 @@
 	</bean>
 
 	<!-- http url mapping -->
-	<bean id="wcsURLMapping" 
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<bean id="wcsURLMapping" class="org.geoserver.ows.OWSHandlerMapping">
+		<constructor-arg ref="catalog"/>
 		<property name="alwaysUseFullPath" value="true"/>
-		<property name="mappings">
-			<props>
-				<prop key="/wcs">dispatcher</prop>
-				<prop key="/wcs/**">dispatcher</prop>
-			</props>
-		</property>
+        <property name="mappings">
+          <props>
+            <prop key="/wcs">dispatcher</prop>
+            <prop key="/wcs/**">dispatcher</prop>
+          </props>
+        </property>
 	</bean>
 	
+	<bean id="wcsLocalWorkspaceURLManger" class="org.geoserver.ows.LocalWorkspaceURLMangler">
+      <constructor-arg value="wcs"/>
+    </bean>
+    
 </beans>

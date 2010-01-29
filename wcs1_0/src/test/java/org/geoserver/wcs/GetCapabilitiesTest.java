@@ -3,6 +3,8 @@ package org.geoserver.wcs;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
 
+import org.geoserver.config.GeoServer;
+import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;
 import org.w3c.dom.Document;
@@ -123,7 +125,7 @@ public class GetCapabilitiesTest extends WCSTestSupport {
     public void testSectionsAll() throws Exception {
         Document dom = getAsDOM(BASEPATH
                 + "?request=GetCapabilities&service=WCS&version=1.0.0&section=/");
-        print(dom);
+        
         checkValidationErrors(dom, WCS10_GETCAPABILITIES_SCHEMA);
         assertXpathEvaluatesTo("1", "count(//wcs:Service)", dom);
         assertXpathEvaluatesTo("1", "count(//wcs:Capability)", dom);
@@ -136,5 +138,26 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         assertXpathEvaluatesTo("1", "count(//wcs:Service)", dom);
         assertXpathEvaluatesTo("0", "count(//wcs:Capability)", dom);
         assertXpathEvaluatesTo("0", "count(//wcs:ContentMetadata)", dom);
+    }
+    
+    public void testWorkspaceQualified() throws Exception {
+        int expected = getCatalog().getCoverageStores().size();
+        Document dom = getAsDOM(BASEPATH
+                + "?request=GetCapabilities&service=WCS&version=1.0.0");
+        assertEquals( expected, xpath.getMatchingNodes("//wcs:CoverageOfferingBrief", dom).getLength());
+        
+        expected = getCatalog().getCoverageStoresByWorkspace(MockData.CDF_PREFIX).size();
+        dom = getAsDOM("cdf/wcs?request=GetCapabilities&service=WCS&version=1.0.0");
+        assertEquals( expected, xpath.getMatchingNodes("//wcs:CoverageOfferingBrief", dom).getLength());
+    }
+    
+    public void testLayerQualified() throws Exception {
+        int expected = getCatalog().getCoverageStores().size();
+        Document dom = getAsDOM(BASEPATH
+                + "?request=GetCapabilities&service=WCS&version=1.0.0");
+        assertEquals( expected, xpath.getMatchingNodes("//wcs:CoverageOfferingBrief", dom).getLength());
+        
+        dom = getAsDOM("wcs/World/wcs?request=GetCapabilities&service=WCS&version=1.0.0");
+        assertEquals( 1, xpath.getMatchingNodes("//wcs:CoverageOfferingBrief", dom).getLength());
     }
 }

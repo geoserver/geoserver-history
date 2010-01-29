@@ -150,7 +150,10 @@ public class DefaultWebCoverageService111 implements WebCoverageService111 {
             if (identifier == null)
                 throw new WcsException("Internal error, the coverage identifier must not be null", InvalidParameterValue, "identifier");
             meta = catalog.getCoverageByName(identifier.getValue());
-
+            if (meta == null) {
+                throw new WcsException("No such coverage: " + request.getIdentifier().getValue());
+            }
+            
             // first let's run some sanity checks on the inputs
             checkDomainSubset(meta, request.getDomainSubset());
             checkRangeSubset(meta, request.getRangeSubset());

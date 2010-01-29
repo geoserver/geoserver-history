@@ -146,7 +146,7 @@
             
                 // setup tiled layer
                 tiled = new OpenLayers.Layer.WMS(
-                    "${layerName} - Tiled", "${baseUrl}/wms",
+                    "${layerName} - Tiled", "${baseUrl}/${servicePath}",
                     {
                         <#list parameters as param>            
                         ${param.name}: '${param.value?js_string}',
@@ -163,7 +163,7 @@
             
                 // setup single tiled layer
                 untiled = new OpenLayers.Layer.WMS(
-                    "${layerName} - Untiled", "${baseUrl}/wms",
+                    "${layerName} - Untiled", "${baseUrl}/${servicePath}",
                     {
                         <#list parameters as param>            
                         ${param.name}: '${param.value?js_string}',
@@ -209,7 +209,7 @@
                         WIDTH: map.size.w,
                         HEIGHT: map.size.h,
                         format: format};
-                    OpenLayers.loadURL("${baseUrl}/wms", params, this, setHTML, setHTML);
+                    OpenLayers.loadURL("${baseUrl}/${servicePath}", params, this, setHTML, setHTML);
                     OpenLayers.Event.stop(e);
                 });
             }

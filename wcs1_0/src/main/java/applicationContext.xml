@@ -36,18 +36,7 @@
     </constructor-arg>
   </bean>
 
-  <!-- http url mapping -->
-  <bean id="wcs100URLMapping"
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-    <property name="mappings">
-      <props>
-        <prop key="/wcs">dispatcher</prop>
-        <prop key="/wcs/*">dispatcher</prop>
-      </props>
-    </property>
-  </bean>
-
-  <!-- Exception handler, we need to output ows 1.1 exceptions -->
+    <!-- Exception handler, we need to output ows 1.1 exceptions -->
 	<bean id="wcs100ExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
 		<constructor-arg ref="wcsService-1.0.0"/>
 	       <constructor-arg ref="geoServer"/>
@@ -118,5 +107,8 @@
 	class="org.geoserver.wcs.response.Wcs10GetCoverageResponse" singleton="false"> 
     <constructor-arg ref="catalog" />
   </bean>
-
+  
+  <bean id="workspaceQualifier" class="org.geoserver.wcs.WCS10WorkspaceQualifier">
+      <constructor-arg ref="catalog"/>
+  </bean>
 </beans>

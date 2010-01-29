@@ -56,7 +56,7 @@ public final class MapLayerInfo {
      * 
      * @uml.property name="name" multiplicity="(0 1)"
      */
-    private final String name;
+    private String name;
 
     /**
      * 
@@ -190,6 +190,10 @@ public final class MapLayerInfo {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+    
     /**
      * 
      * @uml.property name="type"

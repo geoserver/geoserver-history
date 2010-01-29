@@ -49,6 +49,8 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     
     protected int featureTypeCacheSize;
 
+    protected Boolean globalServices = true;
+    
     protected GeoServer geoServer;
 
     public GeoServerInfoImpl(GeoServer geoServer) {
@@ -181,6 +183,14 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     public void setFeatureTypeCacheSize(int featureTypeCacheSize) {
         this.featureTypeCacheSize = featureTypeCacheSize;
     }
+
+    public Boolean isGlobalServices() {
+        return globalServices;
+    }
+    
+    public void setGlobalServices(Boolean forceVirtualServices) {
+        this.globalServices = forceVirtualServices;
+    }
     
     public MetadataMap getMetadata() {
         return metadata;
@@ -195,7 +205,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     }
     
     public void setClientProperties(Map<Object, Object> properties) {
-        this.clientProperties = clientProperties;
+        this.clientProperties = properties;
     }
     
     public void dispose() {
@@ -228,6 +238,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         result = prime * result + updateSequence;
         result = prime * result + (verbose ? 1231 : 1237);
         result = prime * result + (verboseExceptions ? 1231 : 1237);
+        result = prime * result + (globalServices ? 1231 : 1237);
         return result;
     }
 
@@ -293,6 +304,8 @@ public class GeoServerInfoImpl implements GeoServerInfo {
             return false;
         if (verboseExceptions != other.isVerboseExceptions())
             return false;
+        if (globalServices != other.isGlobalServices())
+            return false;
         return true;
     }
 
@@ -301,4 +314,16 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         return new StringBuilder(getClass().getSimpleName()).append('[').append(title).append(']')
                 .toString();
     }
+    
+    
+    /*
+     * XStream specific method, needed to initialize members that are added over time.
+     */
+    public Object readResolve() {
+        if (this.globalServices == null) {
+            this.globalServices = true;
+        }
+        return this;
+    }
+    
 }

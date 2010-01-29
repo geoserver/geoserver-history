@@ -130,4 +130,38 @@ public class GetCapabilitiesTest extends WFSTestSupport {
             }
         }
     }
+    
+    public void testWorkspaceQualified() throws Exception {
+        // filter on an existing namespace
+        Document doc = getAsDOM("sf/wfs?service=WFS&version=1.0.0&request=getCapabilities");
+        
+        Element e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+        
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[starts-with(., sf)]", doc).getLength() > 0);
+        assertEquals(0, xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[not(starts-with(., sf))]", doc).getLength());
+
+        assertEquals(6, xpath.getMatchingNodes("//wfs:Get[contains(@onlineResource,'sf/wfs')]", doc).getLength());
+        assertEquals(6, xpath.getMatchingNodes("//wfs:Post[contains(@onlineResource,'sf/wfs')]", doc).getLength());
+        
+        //TODO: test with a non existing workspace
+    }
+    
+    public void testLayerQualified() throws Exception {
+        // filter on an existing namespace
+        Document doc = getAsDOM("sf/PrimitiveGeoFeature/wfs?service=WFS&version=1.0.0&request=getCapabilities");
+        
+        Element e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+        
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertEquals(1, xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[starts-with(., sf)]", doc).getLength());
+        assertEquals(0, xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[not(starts-with(., sf))]", doc).getLength());
+
+        assertEquals(6, xpath.getMatchingNodes("//wfs:Get[contains(@onlineResource,'sf/PrimitiveGeoFeature/wfs')]", doc).getLength());
+        assertEquals(6, xpath.getMatchingNodes("//wfs:Post[contains(@onlineResource,'sf/PrimitiveGeoFeature/wfs')]", doc).getLength());
+        
+        //TODO: test with a non existing workspace
+    }
 }

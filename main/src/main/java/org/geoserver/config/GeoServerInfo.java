@@ -203,6 +203,16 @@ public interface GeoServerInfo extends Info {
      * Sets the size of the cache for feature type objects.
      */
     void setFeatureTypeCacheSize(int featureTypeCacheSize);
+   
+    /**
+     * Flag determining if access to services should occur only through "virtual services". 
+     */
+    Boolean isGlobalServices();
+    
+    /**
+     * Sets the flag forcing access to services only through virtual services. 
+     */
+    void setGlobalServices(Boolean globalServices);
     
     /**
      * A map of metadata for services.

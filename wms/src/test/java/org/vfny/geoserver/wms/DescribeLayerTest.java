@@ -40,4 +40,15 @@ public class DescribeLayerTest extends WMSTestSupport {
 //        Document dom = getAsDOM(request);
 //        assertEquals("1.1.0", dom.getDocumentElement().getAttributes().getNamedItem("version").getNodeValue());
 //    }
+    
+    public void testWorkspaceQualified() throws Exception {
+        Document dom = getAsDOM("cite/wms?service=wms&version=1.1.1&request=DescribeLayer" +
+            "&layers=PrimitiveGeoFeature", true);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+        
+        dom = getAsDOM("sf/wms?service=wms&version=1.1.1&request=DescribeLayer" +
+                "&layers=PrimitiveGeoFeature", true);
+        assertEquals("WMS_DescribeLayerResponse", dom.getDocumentElement().getNodeName());
+        
+    }
 }

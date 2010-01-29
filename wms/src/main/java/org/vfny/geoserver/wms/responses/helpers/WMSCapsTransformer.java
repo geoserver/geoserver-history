@@ -359,7 +359,8 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Format", WMS_CAPS_MIME);
             
             // build the service URL and make sure it ends with &
-            String serviceUrl = buildURL(request.getBaseUrl(), "wms", params("SERVICE", "WMS"), URLType.SERVICE);
+            String serviceUrl = 
+                buildURL(request.getBaseUrl(), "wms", params("SERVICE", "WMS"), URLType.SERVICE);
             serviceUrl = appendQueryString(serviceUrl, "");
 
             handleDcpType(serviceUrl, serviceUrl);
