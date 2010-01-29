@@ -94,8 +94,6 @@ public class Wcs10CapsTransformer extends TransformerBase {
          */
         private GetCapabilitiesType request;
 
-        private String proxifiedBaseUrl;
-
         /**
          * Creates a new WCS100CapsTranslator object.
          * 
@@ -482,13 +480,8 @@ public class Wcs10CapsTransformer extends TransformerBase {
 
             // String baseURL = RequestUtils.proxifiedBaseURL(request.getBaseUrl(),
             // wcs.getGeoServer().getGlobal().getProxyBaseUrl());
-            String baseURL = proxifiedBaseUrl;
-            baseURL = /* ResponseUtils.appendPath(baseURL, */"wcs"/* ) */;
-
-            // ensure ends in "?" or "&"
-            baseURL = ResponseUtils.appendQueryString(baseURL, "");
-
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseURL);
+            String url = ResponseUtils.buildURL(request.getBaseUrl(), "wcs", null, URLType.SERVICE);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", url+"?");
 
             start("wcs:Get");
             start("wcs:OnlineResource", attributes);
@@ -498,7 +491,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
             end("wcs:DCPType");
 
             attributes = new AttributesImpl();
-            attributes.addAttribute("", "xlink:href", "xlink:href", "", baseURL);
+            attributes.addAttribute("", "xlink:href", "xlink:href", "", url+"?");
 
             start("wcs:DCPType");
             start("wcs:HTTP");

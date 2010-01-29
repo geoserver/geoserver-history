@@ -6,6 +6,7 @@ import java.util.ListIterator;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.LayerGroupInfo;
@@ -77,4 +78,39 @@ public class CapabilitiesTest extends WMSTestSupport {
 
         assertEquals(layers.size(), nodeLayers.getLength());
     }
+    
+    public void testWorkspaceQualified() throws Exception {
+        Document dom = dom(get("cite/wms?request=getCapabilities"), true);
+        Element e = dom.getDocumentElement();
+        assertEquals("WMT_MS_Capabilities", e.getLocalName());
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//Layer/Name[starts-with(., cite)]", dom).getLength() > 0);
+        assertEquals(0, xpath.getMatchingNodes("//Layer/Name[not(starts-with(., cite))]", dom).getLength());
+        
+        NodeList nodes = xpath.getMatchingNodes("//OnlineResource", dom);
+        assertTrue(nodes.getLength() > 0);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            e = (Element) nodes.item(i);
+            assertTrue(e.getAttribute("xlink:href").contains("geoserver/cite/wms"));
+        }
+        
+    }
+    
+    public void testLayerQualified() throws Exception {
+        Document dom = dom(get("cite/Forests/wms?request=getCapabilities"), true);
+        Element e = dom.getDocumentElement();
+        assertEquals("WMT_MS_Capabilities", e.getLocalName());
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertTrue(xpath.getMatchingNodes("//Layer/Name[starts-with(., cite:Forests)]", dom).getLength() == 1);
+        assertEquals(1, xpath.getMatchingNodes("//Layer/Layer", dom).getLength());
+        
+        NodeList nodes = xpath.getMatchingNodes("//OnlineResource", dom);
+        assertTrue(nodes.getLength() > 0);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            e = (Element) nodes.item(i);
+            assertTrue(e.getAttribute("xlink:href").contains("geoserver/cite/Forests/wms"));
+        }
+        
+    }
+    
 }

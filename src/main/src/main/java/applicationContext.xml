@@ -106,16 +106,26 @@
   <bean id="disabledServiceChecker" class="org.geoserver.ows.DisabledServiceCheck"/>
   
   <bean id="dispatcherMapping" 
-    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    class="org.geoserver.ows.OWSHandlerMapping">
+    <constructor-arg ref="catalog"/>
 	 <property name="alwaysUseFullPath" value="true"/>
 	 <property name="mappings">
       <props>
         <prop key="/ows">dispatcher</prop>
         <prop key="/ows/**">dispatcher</prop>
-        <prop key="/styles/**">filePublisher</prop>
-        <prop key="/www/**">filePublisher</prop>
       </props>
     </property>
+  </bean>
+  
+  <bean id="filePublisherMapping"
+    class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+     <property name="alwaysUseFullPath" value="true"/>
+     <property name="mappings">
+       <props>
+        <prop key="/styles/**">filePublisher</prop>
+        <prop key="/www/**">filePublisher</prop>
+       </props>
+     </property>
   </bean>
   
   <!-- geotools repository adapter for catalog -->
@@ -130,5 +140,12 @@
   
   <!-- xstream persister factory -->
   <bean id="xstreamPersisterFactory" class="org.geoserver.config.util.XStreamPersisterFactory"/>
+
+  <!-- workspace local callback -->
+  <bean id="workspaceLocal" class="org.geoserver.ows.LocalWorkspaceCallback">
+     <constructor-arg ref="geoServer"/>  
+  </bean>
+  
+  <bean id="workspaceLocalDataAccessManager" class="org.geoserver.ows.LocalWorkspaceDataAccessManager"/>
 
 </beans>

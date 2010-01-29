@@ -206,4 +206,13 @@ public class DescribeCoverageTest extends WCSTestSupport {
                 "wcs:Range/wcs:Field/wcs:Identifier", dom);
     }
     
+    public void testWorkspaceQualified() throws Exception {
+        Document dom = getAsDOM(
+            "cdf/wcs?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="+TASMANIA_DEM.getLocalPart());
+        assertEquals("ows:ExceptionReport", dom.getDocumentElement().getNodeName());
+        
+        dom = getAsDOM(
+            "wcs?request=DescribeCoverage&service=WCS&version=1.1.1&identifiers="+TASMANIA_DEM.getLocalPart());
+        assertEquals("wcs:CoverageDescriptions", dom.getDocumentElement().getNodeName());
+    }
 }

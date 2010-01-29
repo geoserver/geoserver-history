@@ -256,5 +256,19 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertXpathEvaluatesTo("1", "count(/ServiceExceptionReport)", dom);
     }
     
+    public void testLayerQualified() throws Exception {
+        String layer = "Forests";
+        String q = "?bbox=-0.002,-0.002,0.002,0.002&styles=&format=jpeg&info_format=text/plain&request=GetFeatureInfo&layers="
+                + layer + "&query_layers=" + layer + "&width=20&height=20&x=10&y=10";
+        String request = "cite/Ponds/wms" + q;
+        Document dom = getAsDOM(request);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+        
+        request = "cite/Forests/wms" + q;
+        String result = getAsString(request);
+        System.out.println(result);
+        assertNotNull(result);
+        assertTrue(result.indexOf("Green Forest") > 0);
+    }
     
 }

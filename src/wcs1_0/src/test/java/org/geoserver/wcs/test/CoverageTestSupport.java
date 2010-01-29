@@ -43,5 +43,6 @@ public abstract class CoverageTestSupport extends KvpRequestReaderTestSupport {
         if(SpatioTemporalRasterTests)
         	dataDirectory.addCoverage(WATTEMP, TestData.class.getResource("watertemp.zip"),
 	                null, styleName);
+        dataDirectory.addWcs10Coverages();
     }
 }

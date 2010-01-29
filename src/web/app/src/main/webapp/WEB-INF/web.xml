@@ -53,7 +53,7 @@
         <param-value>C:\eclipse\workspace\geoserver_trunk\cite\confCiteWFSPostGIS</param-value>
     </context-param> 
    -->
-  
+    
     <!-- pick up all spring application contexts -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -138,6 +138,17 @@
      <param-value>false</param-value>
      </init-param>
    </filter>
+   
+   <filter>
+     <filter-name>Advanced Dispatch Filter</filter-name>
+     <filter-class>org.geoserver.platform.AdvancedDispatchFilter</filter-class>
+     <!-- 
+     This filter allows for a single mapping to the spring dispatcher. However using /* as a mapping
+     in a servlet mapping causes the servlet path to be "/" of the request. This causes problems with
+     library like wicket and restlet. So this filter fakes the servlet path by assuming the first 
+     component of the path is the mapped path. 
+     -->
+   </filter>
 
     <filter-mapping>
       <filter-name>GZIP Compression Filter</filter-name>
@@ -167,6 +178,11 @@
       <url-pattern>/*</url-pattern>
     </filter-mapping>
     
+    <filter-mapping>
+      <filter-name>Advanced Dispatch Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
     <!-- general initializer, should be first thing to execute -->
     <listener>
       <listener-class>org.geoserver.GeoserverInitStartupListener</listener-class>
@@ -188,80 +204,12 @@
       <servlet-name>dispatcher</servlet-name>
       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     </servlet>
-    <servlet>
-	   <servlet-name>TestWfsPost</servlet-name>
-	   <servlet-class>org.vfny.geoserver.wfs.servlets.TestWfsPost</servlet-class>
-	</servlet>
     
+    <!-- single mapping to spring, this only works properly if the advanced dispatch filter is 
+         active -->
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
-        <url-pattern>/web/*</url-pattern>
-    </servlet-mapping>
-    <!-- TODO: find a way to remove this mighty list of mappings and have just one... -->
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/security/*</url-pattern>
-    </servlet-mapping>    
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/wms/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/wcs/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/wfs/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/ows/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/wfsv/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/wcs111/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-      <servlet-name>dispatcher</servlet-name>
-      <url-pattern>/kml/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-     <servlet-name>dispatcher</servlet-name>
-     <url-pattern>/styles/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-     <servlet-name>dispatcher</servlet-name>
-     <url-pattern>/www/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-     <servlet-name>dispatcher</servlet-name>
-     <url-pattern>/temp/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-     <servlet-name>dispatcher</servlet-name>
-     <url-pattern>/history/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-     <servlet-name>dispatcher</servlet-name>
-     <url-pattern>/gwc/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-     <servlet-name>dispatcher</servlet-name>
-     <url-pattern>/pdf/*</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
-     <servlet-name>TestWfsPost</servlet-name>
-     <url-pattern>/TestWfsPost/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
     
     <mime-mapping>

@@ -30,6 +30,7 @@ public class GlobalSettingsPage extends ServerAdminPage {
 
         form.add(new CheckBox("verbose"));
         form.add(new CheckBox("verboseExceptions"));
+        form.add(new CheckBox("globalServices"));
         form.add(new TextField("numDecimals"));
         form.add(new TextField("charset"));
         form.add(new TextField("proxyBaseUrl"));

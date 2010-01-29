@@ -3,6 +3,9 @@ package org.geoserver.security;
 import static org.easymock.EasyMock.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.acegisecurity.Authentication;
@@ -67,6 +70,14 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
 
     protected CoverageStoreInfo arcGridStore;
 
+    protected List<LayerInfo> layers;
+
+    protected List<FeatureTypeInfo> featureTypes;
+
+    protected List<CoverageInfo> coverages;
+
+    protected List<WorkspaceInfo> workspaces;
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -109,7 +120,6 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
         roadsStore = roads.getStore();
         landmarks = (FeatureTypeInfo) landmarksLayer.getResource();
         bases = (FeatureTypeInfo) basesLayer.getResource();
-
     }
 
     protected LayerInfo buildLayer(String name, WorkspaceInfo ws,
@@ -153,5 +163,53 @@ public abstract class AbstractAuthorizationTest extends SecureObjectsTest {
         Properties props = new Properties();
         props.load(getClass().getResourceAsStream(propertyFile));
         return new DefaultDataAccessManager(new MemoryDataAccessRuleDAO(catalog, props));
+    }
+    
+    /**
+     * Sets up a mock catalog.
+     */
+    protected void populateCatalog() {
+        // build resource collections
+        layers = Arrays.asList(statesLayer, roadsLayer, landmarksLayer, basesLayer, arcGridLayer);
+        featureTypes = new ArrayList<FeatureTypeInfo>();
+        coverages = new ArrayList<CoverageInfo>();
+        for (LayerInfo layer : layers) {
+            if (layer.getResource() instanceof FeatureTypeInfo)
+                featureTypes.add((FeatureTypeInfo) layer.getResource());
+            else
+                coverages.add((CoverageInfo) layer.getResource());
+        }
+        workspaces = Arrays.asList(toppWs, nurcWs);
+
+        // prime the catalog
+        catalog = createNiceMock(Catalog.class);
+        expect(catalog.getFeatureTypeByName("topp:states")).andReturn((FeatureTypeInfo) states)
+                .anyTimes();
+        expect(catalog.getResourceByName("topp:states", FeatureTypeInfo.class)).andReturn(
+                (FeatureTypeInfo) states).anyTimes();
+        expect(catalog.getLayerByName("topp:states")).andReturn(statesLayer).anyTimes();
+        expect(catalog.getCoverageByName("nurc:arcgrid")).andReturn((CoverageInfo) arcGrid)
+                .anyTimes();
+        expect(catalog.getResourceByName("nurc:arcgrid", CoverageInfo.class)).andReturn(
+                (CoverageInfo) arcGrid).anyTimes();
+        expect(catalog.getFeatureTypeByName("topp:roads")).andReturn((FeatureTypeInfo) roads)
+                .anyTimes();
+        expect(catalog.getFeatureTypeByName("topp:landmarks")).andReturn(
+                (FeatureTypeInfo) landmarks).anyTimes();
+        expect(catalog.getFeatureTypeByName("topp:bases")).andReturn((FeatureTypeInfo) bases)
+                .anyTimes();
+        expect(catalog.getDataStoreByName("states")).andReturn((DataStoreInfo) statesStore)
+                .anyTimes();
+        expect(catalog.getDataStoreByName("roads")).andReturn((DataStoreInfo) roadsStore)
+                .anyTimes();
+        expect(catalog.getCoverageStoreByName("arcGrid")).andReturn(
+                (CoverageStoreInfo) arcGridStore).anyTimes();
+        expect(catalog.getLayers()).andReturn(layers).anyTimes();
+        expect(catalog.getFeatureTypes()).andReturn(featureTypes).anyTimes();
+        expect(catalog.getCoverages()).andReturn(coverages).anyTimes();
+        expect(catalog.getWorkspaces()).andReturn(workspaces).anyTimes();
+        expect(catalog.getWorkspaceByName("topp")).andReturn(toppWs).anyTimes();
+        expect(catalog.getWorkspaceByName("nurc")).andReturn(nurcWs).anyTimes();
+        replay(catalog);
     }
 }

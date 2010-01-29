@@ -4,6 +4,7 @@ import java.util.Collections;
 
 import javax.xml.namespace.QName;
 
+import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
@@ -546,4 +547,75 @@ public class TransactionTest extends WFSTestSupport {
             
             
     }
+    
+    public void testInsertLayerQualified() throws Exception {
+        String xml = "<wfs:Transaction service=\"WFS\" version=\"1.1.0\" "
+            + " xmlns:wfs=\"http://www.opengis.net/wfs\" "
+            + " xmlns:gml=\"http://www.opengis.net/gml\" "
+            + " xmlns:cite=\"http://www.opengis.net/cite\">"
+            + "<wfs:Insert>"
+            + " <cite:RoadSegments>"
+            + "  <cite:the_geom>"
+            + "<gml:MultiLineString xmlns:gml=\"http://www.opengis.net/gml\""
+            + "    srsName=\"EPSG:4326\">"
+            + " <gml:lineStringMember>"
+            + "                  <gml:LineString>"
+            + "                   <gml:posList>4.2582 52.0643 4.2584 52.0648</gml:posList>"
+            + "                 </gml:LineString>"
+            + "               </gml:lineStringMember>"
+            + "             </gml:MultiLineString>"
+            + "  </cite:the_geom>"
+            + "  <cite:FID>foo</cite:FID>"
+            + "  <cite:NAME>bar</cite:NAME>" 
+            + " </cite:RoadSegments>"
+            + "</wfs:Insert>"
+            + "</wfs:Transaction>";
+    
+        Document dom = postAsDOM( "cite/Forests/wfs", xml );
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//ows:ExceptionReport)", dom);
+        
+        dom = postAsDOM( "cite/RoadSegments/wfs", xml );
+        assertEquals("wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+        assertEquals( "1", getFirstElementByTagName(dom, "wfs:totalInserted").getFirstChild().getNodeValue());
+
+    }
+    
+    public void testUpdateLayerQualified() throws Exception {
+        String xml =
+            "<wfs:Transaction service=\"WFS\" version=\"1.1.0\"" + 
+            " xmlns:cite=\"http://www.opengis.net/cite\"" +
+            " xmlns:ogc=\"http://www.opengis.net/ogc\"" +
+            " xmlns:gml=\"http://www.opengis.net/gml\"" +
+            " xmlns:wfs=\"http://www.opengis.net/wfs\">" +
+            " <wfs:Update typeName=\"RoadSegments\">" +
+            "   <wfs:Property>" +
+            "     <wfs:Name>cite:the_geom</wfs:Name>" +
+            "     <wfs:Value>" +
+            "      <gml:MultiLineString xmlns:gml=\"http://www.opengis.net/gml\">" + 
+            "       <gml:lineStringMember>" + 
+            "         <gml:LineString>" +
+            "            <gml:posList>4.2582 52.0643 4.2584 52.0648</gml:posList>" +
+            "         </gml:LineString>" +
+            "       </gml:lineStringMember>" +
+            "      </gml:MultiLineString>" +
+            "     </wfs:Value>" +
+            "   </wfs:Property>" + 
+            "   <ogc:Filter>" +
+            "     <ogc:PropertyIsEqualTo>" +
+            "       <ogc:PropertyName>FID</ogc:PropertyName>" + 
+            "       <ogc:Literal>102</ogc:Literal>" + 
+            "     </ogc:PropertyIsEqualTo>" + 
+            "   </ogc:Filter>" +
+            " </wfs:Update>" +
+           "</wfs:Transaction>"; 
+            
+            Document dom = postAsDOM( "cite/Forests/wfs", xml );
+            XMLAssert.assertXpathEvaluatesTo("1", "count(//ows:ExceptionReport)", dom);
+            
+            dom = postAsDOM("cite/RoadSegments/wfs", xml);
+            assertEquals("wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+            assertEquals( "1", getFirstElementByTagName(dom, "wfs:totalUpdated").getFirstChild().getNodeValue());
+         
+    }
+    
 }

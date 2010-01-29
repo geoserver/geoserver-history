@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.ows.LocalLayer;
+import org.geoserver.ows.LocalWorkspace;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
@@ -122,6 +124,18 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 
 			String baseUrl = mapContext.getRequest().getBaseUrl();
 			map.put("baseUrl", canonicUrl(baseUrl));
+			
+			//TODO: replace service path with call to buildURL since it does this 
+			// same dance
+			String servicePath = "wms";
+			if (LocalLayer.get() != null) {
+			    servicePath = LocalLayer.get().getName() + "/" + servicePath; 
+			}
+			if (LocalWorkspace.get() != null) {
+			    servicePath = LocalWorkspace.get().getName() + "/" + servicePath;
+			}
+			map.put("servicePath", servicePath);
+			
 			map.put("parameters", getLayerParameter(mapContext.getRequest()
 					.getHttpServletRequest()));
 			map.put("units", getOLUnits(mapContext.getRequest()));

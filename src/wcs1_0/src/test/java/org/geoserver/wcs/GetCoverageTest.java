@@ -6,6 +6,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletResponse;
+
 import junit.framework.Test;
 import junit.textui.TestRunner;
 import net.opengis.wcs10.GetCoverageType;
@@ -25,6 +27,9 @@ import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
+import org.vfny.geoserver.wcs.WcsException;
+import org.w3c.dom.Document;
+
 /**
  * Tests for GetCoverage operation on WCS.
  * 
@@ -125,7 +130,32 @@ public class GetCoverageTest extends WCSTestSupport {
         assertEquals("translatey",tx.getTranslateY(), expectedTx.getTranslateY(), 1E-6);
 	}
 
+    public void testWorkspaceQualified() throws Exception {
+        String queryString ="&request=getcoverage&service=wcs&version=1.0.0&format=image/geotiff&bbox=146,-45,147,-42"+
+            "&crs=EPSG:4326&width=150&height=150";
 
+        ServletResponse response = getAsServletResponse( 
+            "wcs?sourcecoverage="+TASMANIA_BM.getLocalPart()+queryString);
+        assertTrue(response.getContentType().startsWith("image/tiff"));
+        
+        Document dom = getAsDOM( 
+            "cdf/wcs?sourcecoverage="+TASMANIA_BM.getLocalPart()+queryString);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+    }
+
+    public void testLayerQualified() throws Exception {
+        String queryString ="&request=getcoverage&service=wcs&version=1.0.0&format=image/geotiff&bbox=146,-45,147,-42"+
+            "&crs=EPSG:4326&width=150&height=150";
+
+        ServletResponse response = getAsServletResponse( 
+            "wcs/BlueMarble/wcs?sourcecoverage=BlueMarble"+queryString);
+        assertTrue(response.getContentType().startsWith("image/tiff"));
+        
+        Document dom = getAsDOM( 
+            "wcs/DEM/wcs?sourcecoverage=BlueMarble"+queryString);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+    }
+    
     /**
      * Runs GetCoverage on the specified parameters and returns an array of coverages
      */

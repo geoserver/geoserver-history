@@ -27,6 +27,32 @@ import com.mockrunner.mock.web.MockServletInputStream;
 
 
 public class DispatcherTest extends TestCase {
+    public void testReadContextAndPath() throws Exception {
+        Dispatcher dispatcher = new Dispatcher();
+        
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setContextPath("/geoserver");
+        request.setRequestURI("/geoserver/hello");
+        request.setMethod("get");
+        
+        Request req = new Request();
+        req.httpRequest = request;
+        
+        dispatcher.init(req);
+        assertNull(req.context);
+        assertEquals("hello", req.path);
+        
+        request.setRequestURI("/geoserver/foo/hello");
+        dispatcher.init(req);
+        assertEquals("foo", req.context);
+        assertEquals("hello", req.path);
+        
+        request.setRequestURI("/geoserver/foo/baz/hello/");
+        dispatcher.init(req);
+        assertEquals("foo/baz", req.context);
+        assertEquals("hello", req.path);
+        
+    }
     public void testReadOpContext() throws Exception {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setContextPath("/geoserver");
@@ -34,26 +60,30 @@ public class DispatcherTest extends TestCase {
         request.setMethod("get");
 
         Dispatcher dispatcher = new Dispatcher();
-        Map map = dispatcher.readOpContext(request);
+        
+        Request req = new Request();
+        req.httpRequest = request;
+        dispatcher.init(req);
+        
+        Map map = dispatcher.readOpContext(req);
 
         assertEquals("hello", map.get("service"));
-        assertNull(map.get("request"));
-
+        
         request = new MockHttpServletRequest();
         request.setContextPath("/geoserver");
-        request.setRequestURI("/geoserver/hello/Hello");
+        request.setRequestURI("/geoserver/foobar/hello");
         request.setMethod("get");
-        map = dispatcher.readOpContext(request);
-
+        map = dispatcher.readOpContext(req);
+        assertEquals("hello", map.get("service"));
+        
         request = new MockHttpServletRequest();
         request.setContextPath("/geoserver");
-        request.setRequestURI("/geoserver/hello/Hello/");
-
+        request.setRequestURI("/geoserver/foobar/hello/");
         request.setMethod("get");
-        map = dispatcher.readOpContext(request);
+        map = dispatcher.readOpContext(req);
 
         assertEquals("hello", map.get("service"));
-        assertEquals("Hello", map.get("request"));
+        
     }
 
     public void testReadOpPost() throws Exception {

@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import junit.framework.Test;
 
+import org.custommonkey.xmlunit.XMLAssert;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.data.test.MockData;
@@ -109,6 +111,21 @@ public class DescribeFeatureTest extends WFSTestSupport {
             // %2c == , (url-encoded, comma is not considered a safe char)
             assertEquals( cat.getFeatureTypesByNamespace(ns).size(), types.split("%2c").length);
         }
+        
+    }
+    
+    public void testWorkspaceQualified() throws Exception {
+        Document doc = getAsDOM("sf/wfs?request=DescribeFeatureType&version=1.0.0");
+        
+        NodeList nl = doc.getElementsByTagName("xsd:complexType");
+        assertEquals( 3, nl.getLength());
+        
+        XMLAssert.assertXpathExists("//xsd:complexType[@name = 'AggregateGeoFeatureType']", doc);
+        XMLAssert.assertXpathExists("//xsd:complexType[@name = 'PrimitiveGeoFeatureType']", doc);
+        XMLAssert.assertXpathExists("//xsd:complexType[@name = 'GenericEntityType']", doc);
+        
+        doc = getAsDOM("sf/wfs?request=DescribeFeatureType&version=1.0.0&typename=cdf:Fifteen");
+        XMLAssert.assertXpathExists("//ogc:ServiceException", doc);
         
     }
 }

@@ -396,6 +396,13 @@ public class GetFeatureTest extends WFSTestSupport {
             assertNotNull( getFirstElementByTagName( location, "gml:Point" ) );
         }
     }
+ 
+    public void testLayerQualified() throws Exception {
+        testGetFifteenAll("cdf/Fifteen/wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs");
+        
+        Document dom = getAsDOM("cdf/Seven/wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs");
+        XMLAssert.assertXpathEvaluatesTo("1", "count(//ows:ExceptionReport)", dom);
+    }
     
     public static void main(String[] args) {
         TestRunner runner = new TestRunner();

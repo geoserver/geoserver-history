@@ -227,4 +227,36 @@ public class DescribeCoverageTest extends WCSTestSupport {
         // make sure we got the 3 bands
         assertEquals(1, dom.getElementsByTagName("wcs:interval").getLength());
     }
+    
+    public void testWorksapceQualified() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + // 
+                "<wcs:DescribeCoverage service=\"WCS\" " + //
+                "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
+                "  xmlns:wcs=\"http://www.opengis.net/wcs\"\r\n" + // 
+                "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + // 
+                "  version=\"1.0.0\" >\r\n" + //
+                "  <wcs:Coverage>" + TASMANIA_DEM.getLocalPart() + "</wcs:Coverage>\r\n" + // 
+                "</wcs:DescribeCoverage>";
+        Document dom = postAsDOM("cdf/wcs", request);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+        
+        dom = postAsDOM("wcs", request);
+        assertEquals("wcs:CoverageDescription", dom.getDocumentElement().getNodeName());
+    }
+    
+    public void testLayerQualified() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" + // 
+                "<wcs:DescribeCoverage service=\"WCS\" " + //
+                "xmlns:ows=\"http://www.opengis.net/ows/1.1\"\r\n" + // 
+                "  xmlns:wcs=\"http://www.opengis.net/wcs\"\r\n" + // 
+                "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \r\n" + // 
+                "  version=\"1.0.0\" >\r\n" + //
+                "  <wcs:Coverage>" + TASMANIA_DEM.getLocalPart() + "</wcs:Coverage>\r\n" + // 
+                "</wcs:DescribeCoverage>";
+        Document dom = postAsDOM("wcs/World/wcs", request);
+        assertEquals("ServiceExceptionReport", dom.getDocumentElement().getNodeName());
+        
+        dom = postAsDOM("wcs/DEM/wcs", request);
+        assertEquals("wcs:CoverageDescription", dom.getDocumentElement().getNodeName());
+    }
 }

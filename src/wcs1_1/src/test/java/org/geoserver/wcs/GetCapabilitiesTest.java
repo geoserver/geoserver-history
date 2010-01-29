@@ -226,5 +226,24 @@ public class GetCapabilitiesTest extends WCSTestSupport {
         assertXpathEvaluatesTo("1", "count(//wcs:Contents)", dom);
     }
 
+    public void testWorkspaceQualified() throws Exception {
+        int all = getCatalog().getCoverageStores().size() - 1;
+        Document dom = getAsDOM("wcs?request=GetCapabilities&service=WCS");
+        assertEquals(all, xpath.getMatchingNodes("//wcs:CoverageSummary", dom).getLength());
     
+        int some = getCatalog().getCoverageStoresByWorkspace("cdf").size();
+        assertTrue(some < all);
+        
+        dom = getAsDOM("cdf/wcs?request=GetCapabilities&service=WCS");
+        assertEquals(some, xpath.getMatchingNodes("//wcs:CoverageSummary", dom).getLength());
+    }
+ 
+    public void testLayerQualified() throws Exception {
+        int all = getCatalog().getCoverageStores().size() - 1;
+        Document dom = getAsDOM("wcs?request=GetCapabilities&service=WCS");
+        assertEquals(all, xpath.getMatchingNodes("//wcs:CoverageSummary", dom).getLength());
+    
+        dom = getAsDOM("wcs/BlueMarble/wcs?request=GetCapabilities&service=WCS");
+        assertEquals(1, xpath.getMatchingNodes("//wcs:CoverageSummary", dom).getLength());
+    }
 }

@@ -161,4 +161,21 @@ public class GetCapabilitiesTest extends WFSTestSupport {
             }
         }
     }
+    
+    public void testLayerQualified() throws Exception {
+     // filter on an existing namespace
+        Document doc = getAsDOM("sf/PrimitiveGeoFeature/wfs?service=WFS&version=1.1.0&request=getCapabilities");
+        
+        Element e = doc.getDocumentElement();
+        assertEquals("WFS_Capabilities", e.getLocalName());
+        
+        XpathEngine xpath =  XMLUnit.newXpathEngine();
+        assertEquals(1, xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[starts-with(., sf)]", doc).getLength());
+        assertEquals(0, xpath.getMatchingNodes("//wfs:FeatureType/wfs:Name[not(starts-with(., sf))]", doc).getLength());
+
+        assertEquals(7, xpath.getMatchingNodes("//ows:Get[contains(@xlink:href,'sf/PrimitiveGeoFeature/wfs')]", doc).getLength());
+        assertEquals(7, xpath.getMatchingNodes("//ows:Post[contains(@xlink:href,'sf/PrimitiveGeoFeature/wfs')]", doc).getLength());
+        
+        //TODO: test with a non existing workspace
+    }
 }

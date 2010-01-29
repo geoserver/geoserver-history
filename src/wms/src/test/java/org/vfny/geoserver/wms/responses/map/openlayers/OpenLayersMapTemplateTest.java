@@ -66,6 +66,7 @@ public class OpenLayersMapTemplateTest extends WMSTestSupport {
         map.put("units", "degrees");
         map.put("pureCoverage", "false");
         map.put("styles", new ArrayList());
+        map.put("servicePath", "wms");
         template.process(map, new OutputStreamWriter(output));
 
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

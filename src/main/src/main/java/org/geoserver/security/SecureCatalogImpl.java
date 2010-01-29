@@ -110,10 +110,16 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         if (manager == null) {
             manager = new DefaultDataAccessManager(GeoServerExtensions.bean(DataAccessRuleDAO.class));
         }
+        else {
+            if (manager instanceof DataAccessManagerWrapper) {
+                ((DataAccessManagerWrapper)manager).setDelegate(
+                    new DefaultDataAccessManager(GeoServerExtensions.bean(DataAccessRuleDAO.class)));
+            }
+        }
         return manager;
     }
 
-    SecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
+    protected SecureCatalogImpl(Catalog catalog, DataAccessManager manager) {
         super(catalog);
         this.accessManager = manager;
     }
