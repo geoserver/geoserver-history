@@ -11,4 +11,5 @@ GeoServer serves data using standard protocols established by the `Open Geospati
    wfs/index
    wms/index
    wcs/index
+   virtual-services
   
