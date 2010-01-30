@@ -21,9 +21,9 @@ public class GetFeatureTest extends WFSTestSupport {
     /**
      * This is a READ ONLY TEST so we can use one time setup
      */
-    public static Test suite() {
+    /*public static Test suite() {
         return new OneTimeTestSetup(new GetFeatureTest());
-    }
+    }*/
     
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
