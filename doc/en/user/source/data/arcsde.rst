@@ -50,7 +50,7 @@ Installing the ArcSDE extension
 .. warning:: Due to licensing requirements, not all files are included with the extension.  To install ArcSDE support, it is necessary to download additional files.  **Just installing the ArcSDE extension will have no effect.**
 
 GeoServer files
-```````````````
+````````````````
 
 #. Download the ArcSDE extension from the `GeoServer download page 
    <http://geoserver.org/display/GEOS/Download>`_.
@@ -61,7 +61,7 @@ GeoServer files
    the GeoServer installation.
 
 Required external files
-```````````````````````
+````````````````````````
 
 There are two files that are required but are not packaged with the GeoServer extension:
 
