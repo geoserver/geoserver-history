@@ -211,6 +211,7 @@ public class WMSCapsTransformerTest extends TestCase {
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
+        supportedCodes.addAll(CRS.getSupportedCodes("AUTO"));
         NodeList allCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
                 dom);
         assertEquals(supportedCodes.size(), allCrsCodes.getLength());
