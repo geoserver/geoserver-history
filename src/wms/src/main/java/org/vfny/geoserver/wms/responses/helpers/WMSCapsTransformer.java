@@ -4,18 +4,19 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.appendQueryString;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
-import java.awt.Dimension;
 import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,7 +41,6 @@ import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -563,8 +563,14 @@ public class WMSCapsTransformer extends TransformerBase {
             final Set<String> capabilitiesCrsIdentifiers;
             if(epsgCodes.isEmpty()){
                 comment("All supported EPSG projections:");
-                capabilitiesCrsIdentifiers = CRS.getSupportedCodes("EPSG");
-            }else{
+                capabilitiesCrsIdentifiers = new LinkedHashSet<String>();
+                for(String code: CRS.getSupportedCodes("AUTO")) {
+                    if("WGS84(DD)".equals(code))
+                        continue;
+                    capabilitiesCrsIdentifiers.add("AUTO:" + code);
+                }
+                capabilitiesCrsIdentifiers.addAll(CRS.getSupportedCodes("EPSG")); 
+            } else {
                 comment("Limited list of EPSG projections:");
                 capabilitiesCrsIdentifiers = new TreeSet<String>(epsgCodes);
             }
