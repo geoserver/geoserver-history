@@ -49,9 +49,11 @@ public class JAIInitializer implements GeoServerInitializer {
         jaiDef.setRenderingHint(JAI.KEY_CACHED_TILE_RECYCLING_ENABLED, jai.isRecycling());
         
         // tile factory and recycler
-        final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
-        jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
-        jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
+        if(jai.isRecycling()) {
+            final RecyclingTileFactory recyclingFactory = new RecyclingTileFactory();
+            jaiDef.setRenderingHint(JAI.KEY_TILE_FACTORY, recyclingFactory);
+            jaiDef.setRenderingHint(JAI.KEY_TILE_RECYCLER, recyclingFactory);
+        }
         
         // Setting up Cache Capacity
         SunTileCache jaiCache = (SunTileCache) jaiDef.getTileCache();
