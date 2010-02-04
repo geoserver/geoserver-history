@@ -27,6 +27,10 @@
      <groupId>org.springframework</groupId>
      <artifactId>spring-support</artifactId>
     </exclusion>
+    <exclusion>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-jdbc</artifactId>
+    </exclusion>
    </exclusions>
   </dependency>
   <dependency>
