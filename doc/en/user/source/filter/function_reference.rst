@@ -112,7 +112,7 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - **Description**
    * - Area
      - ``geometry``:Geometry
-     - The area of the specified geometry. Works in a cartesian plane, the result will be in the same unit of measure as the geometry coordinates (which also means the results won't make any sense for geographic data)
+     - The area of the specified geometry. Works in a Cartesian plane, the result will be in the same unit of measure as the geometry coordinates (which also means the results won't make any sense for geographic data)
    * - boundary
      - ``geometry``:Geometry
      - Returns the boundary of a geometry
@@ -121,10 +121,10 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns the number of dimensions of the geometry boundary
    * - buffer
      - ``geometry``:Geometry, ``distance``:Double
-     - Returns the buffere area around the geometry using the specified distance
+     - Returns the buffered area around the geometry using the specified distance
    * - bufferWithSegments
      - ``geometry``:Geometry, ``distance``:Double, ``segments``:Integer
-     - Returns the buffere area around the geometry using the specified distance and using the specified number of segments to represent a quadrant of a circle.
+     - Returns the buffered area around the geometry using the specified distance and using the specified number of segments to represent a quadrant of a circle.
    * - bufferWithSegments
      - ``geometry``:Geometry, ``distance``:Double, ``segments``:Integer
      - Returns the buffered area around the geometry using the specified distance and using the specified number of segments to represent a quadrant of a circle.
@@ -157,7 +157,7 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns the end point of the line
    * - envelope
      - ``geometry``:geometry
-     - Returns the polygon representing the envelope of the geometry, that is, the minimum rectangle with sides parellels to the axis containing it
+     - Returns the polygon representing the envelope of the geometry, that is, the minimum rectangle with sides parallels to the axis containing it
    * - equalsExact
      - ``a``:Geometry, ``b``:Geometry
      - Returns true if the two geometries are exactly equal, same coordinates in the same order
@@ -175,7 +175,7 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns the ``Geometry`` represented in the Well Known Text format contained in the ``wkt`` parameter
    * - geomLength
      - ``geometry``:Geometry
-     - Returns the length/perimeter of this geometry (computed in cartesian space)
+     - Returns the length/perimeter of this geometry (computed in Cartesian space)
    * - getGeometryN
      - ``collection``:GeometryCollection, ``n``:Integer
      - Returns the n-th geometry inside the collection
@@ -196,7 +196,7 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns the n-th interior ring of the polygon
    * - intersection
      - ``a``:Geometry, ``b``:Geometry
-     - Returns the intersection between ``a`` and ``b``. The intersection result can be anything including a geometry collection of etherogeneous, if the result is empty, it will be represented by an empty collection.
+     - Returns the intersection between ``a`` and ``b``. The intersection result can be anything including a geometry collection of heterogeneous, if the result is empty, it will be represented by an empty collection.
    * - intersects
      - ``a``:Geometry, ``b``:Geometry
      - Returns true if ``a`` intersects ``b``
@@ -208,10 +208,10 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns true if the geometry does not contain any point (typical case, an empty geometry collection)
    * - isometric
      - ``geometry``:Geometry, ``extrusion``:Double
-     - Returns a multipoligon containing the isometric extrusions of all segments part of the original geometry. The extrusion distance is ``extrusion`` and it's assume to be expressed in the same unit as the geometry coordinates. Can be used to get a cheap pseudo-3d map effect
+     - Returns a multi-polygon containing the isometric extrusions of all segments part of the original geometry. The extrusion distance is ``extrusion`` and it's assume to be expressed in the same unit as the geometry coordinates. Can be used to get a cheap pseudo-3d map effect
    * - isRing
      - ``line``:LineString
-     - Returns true if the ``line`` is actually a closed ring (equivalento to ``isRing(line) and isSimple(line)``)
+     - Returns true if the ``line`` is actually a closed ring (equivalent to ``isRing(line) and isSimple(line)``)
    * - isSimple
      - ``line``:LineString
      - Returns true if the geometry self intersects only at boundary points
@@ -223,13 +223,13 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns true if the distance between ``a`` and ``b`` is less than ``distance`` (measured as an euclidean distance)
    * - numGeometries
      - ``collection``: GeometryCollection
-     - Returns the numer of geometries contained in the geometry collection
+     - Returns the number of geometries contained in the geometry collection
    * - numInteriorRing
      - ``poly``: Polygon
      - Returns the number of interior rings (holes) inside the specified polygon
    * - numPoint
      - ``geometry``: Geometry
-     - Returns the number of points (vertices) contained in ``geometry``
+     - Returns the number of points (vertexes) contained in ``geometry``
    * - offset
      - ``geometry``: Geometry, ``offsetX``:Double, ``offsetY``:Double
      - Offsets all points in a geometry by the specified X and Y offsets. Offsets are working in the same coordinate system as the geometry own coordinates.
@@ -241,10 +241,10 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns the n-th point inside the specified geometry
    * - relate
      - ``a``: Geometry, ``b``:Geometry
-     - Returns the DE-9IM intesection matrix for ``a`` and ``b``
+     - Returns the DE-9IM intersection matrix for ``a`` and ``b``
    * - relatePattern
      - ``a``: Geometry, ``b``:Geometry, ``pattern``:String
-     - Returns true if the DE-9IM intesection matrix for ``a`` and ``b`` matches the specified pattern
+     - Returns true if the DE-9IM intersection matrix for ``a`` and ``b`` matches the specified pattern
    * - startPoint
      - ``line``: LineString
      - Returns the starting point of the specified geometry
@@ -262,7 +262,7 @@ Most of the geometric function listed below refer to geometry relationship, to g
      - Returns the union of ``a`` and ``b`` (the result may be a geometry collection)
    * - vertices
      - ``geom``: Geometry
-     - Returns a multipoints made with all the vertices of ``geom``
+     - Returns a multi-point made with all the vertices of ``geom``
    * - within
      - ``a``: Geometry, ``b``:Geometry
      - Returns true is fully contained inside ``b``
@@ -344,7 +344,7 @@ Math Functions
      - Returns the value of ``base`` raised to the power of ``exponent``
    * - random
      - None
-     - Returns a Double value with a positive sign, greater than or equal to ``0.0`` and less than ``1.0``. Returned values are chosen pseudorandomly with (approximately) uniform distribution from that range. 
+     - Returns a Double value with a positive sign, greater than or equal to ``0.0`` and less than ``1.0``. Returned values are chosen pseudo-randomly with (approximately) uniform distribution from that range. 
    * - rint
      - ``x``:Double
      -  Returns the Double value that is closest in value to the argument and is equal to a mathematical integer. If two double values that are mathematical integers are equally close, the result is the integer value that is even.
@@ -418,7 +418,7 @@ String functions
      - Returns the upper case version of the string
    * - strTrim
      - ``string``:String
-     - Returns a copy of the string, with leading and trailing whitespace omitted
+     - Returns a copy of the string, with leading and trailing white space omitted
    
    
    
@@ -449,7 +449,7 @@ Parsing and formatting functions
      - Parses a string into a double. The number can be expressed in normal or scientific form.
    * - parseInt
      - ``number``:String
-     - Parses a string into an i.nteger.
+     - Parses a string into an integer.
    * - parseLong
      - ``number``:String
      - Parses a string into a long integer
