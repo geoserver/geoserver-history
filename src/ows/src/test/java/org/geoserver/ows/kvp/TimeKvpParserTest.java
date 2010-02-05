@@ -28,7 +28,12 @@ public class TimeKvpParserTest extends TestCase {
     /**
      * Format of dates.
      */
-    private final static DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH'Z'");
+    private final static DateFormat format;
+    static{
+    	 format = new SimpleDateFormat("yyyy-MM-dd'T'HH'Z'");
+    	 format.setTimeZone(TimeKvpParser.UTC_TZ);
+
+    }
 
     /**
      * Tests only the increment part of the time parameter.
