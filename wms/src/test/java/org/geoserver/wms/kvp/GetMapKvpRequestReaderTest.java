@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 
 import junit.framework.Test;
 
@@ -21,6 +22,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.kvp.TimeKvpParser;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.RemoteOWSTestSupport;
@@ -135,6 +137,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(Double.valueOf(4), request.getElevation());
         
         Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         cal.set(2006, 1, 27, 22, 8, 12);
         List<Date> times = request.getTime();
         assertEquals(1, request.getTime().size());
