@@ -387,17 +387,18 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo("gu.25678", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/@gml:id", doc);
             // name
-            assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+            assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gml:name", doc);
-            assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification"
-                    + "/gsml:GeologicUnit/gml:name[@codeSpace='urn:ietf:rfc:2141']", doc);
-            assertXpathEvaluatesTo("Yaugher Volcanic Group", "//gsml:MappedFeature[@gml:id='" + id
+            assertXpathEvaluatesTo("Yaugher Volcanic Group 1", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]", doc);
             assertXpathEvaluatesTo("urn:ietf:rfc:2141", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[1]/@codeSpace", doc);
-            assertXpathEvaluatesTo("-Py", "//gsml:MappedFeature[@gml:id='" + id
+            assertXpathEvaluatesTo("Yaugher Volcanic Group 2", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
+            assertXpathEvaluatesTo("urn:ietf:rfc:2141", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]/@codeSpace", doc);
+            assertXpathEvaluatesTo("-Py", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:specification/gsml:GeologicUnit/gml:name[3]", doc);
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
             // occurence [sic]
@@ -752,12 +753,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
-        // there should be 3: 
+        // there should be 1: 
         // - mf1/gu.25699
-        // - mf2/gu.25678
-        // - mf3/gu.25678 which is encoded as xlink:href
-        assertXpathEvaluatesTo("3", "/wfs:FeatureCollection/@numberOfFeatures", doc);
-        assertXpathCount(3, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(1, "//gsml:MappedFeature", doc);
     }
 
 }
