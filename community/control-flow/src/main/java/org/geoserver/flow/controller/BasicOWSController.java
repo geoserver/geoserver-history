@@ -41,7 +41,7 @@ public class BasicOWSController extends SingleQueueFlowController {
     }
 
     @Override
-    protected boolean matchesRequest(Request request) {
+    boolean matchesRequest(Request request) {
         if (!service.equalsIgnoreCase(request.getService()))
             return false;
 
@@ -56,6 +56,30 @@ public class BasicOWSController extends SingleQueueFlowController {
             return false;
 
         return true;
+    }
+    
+    /**
+     * Returns the matched service (case insensitive)
+     * @return
+     */
+    public String getService() {
+        return service;
+    }
+
+    /**
+     * Returns the matched method (case insensitive)
+     * @return
+     */
+    public String getMethod() {
+        return method;
+    }
+
+    /**
+     * Returns the matched output format (case insensitive)
+     * @return
+     */
+    public String getOutputFormat() {
+        return outputFormat;
     }
 
     @Override

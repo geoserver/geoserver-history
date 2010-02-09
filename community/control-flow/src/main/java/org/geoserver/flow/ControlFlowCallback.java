@@ -6,7 +6,6 @@ package org.geoserver.flow;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,7 +75,7 @@ public class ControlFlowCallback extends AbstractDispatcherCallback implements
     }
 
     /**
-     * Reloads the flow controller list, sorts them by priority, and replaces the existing ones
+     * Reloads the flow controller list and replaces the existing ones
      */
     void reloadConfiguration() {
         try {
@@ -96,20 +95,6 @@ public class ControlFlowCallback extends AbstractDispatcherCallback implements
         configurator = GeoServerExtensions.bean(ControlFlowConfigurator.class, applicationContext);
         if (configurator == null)
             configurator = new DefaultControlFlowConfigurator();
-    }
-
-    /**
-     * Sorts the flow controllers based on their priority (lower number means higher priority)
-     * 
-     * @author Andrea Aime - OpenGeo
-     * 
-     */
-    static class ControllerPriorityComparator implements Comparator<FlowController> {
-
-        public int compare(FlowController o1, FlowController o2) {
-            return o1.getPriority() - o2.getPriority();
-        }
-
     }
 
 }
