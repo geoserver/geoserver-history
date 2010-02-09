@@ -28,9 +28,9 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 public class DefaultControlFlowConfigurator implements ControlFlowConfigurator {
     static final Logger LOGGER = Logging.getLogger(DefaultControlFlowConfigurator.class);
 
-    private PropertyFileWatcher configFile;
+    PropertyFileWatcher configFile;
 
-    private long timeout = -1;
+    long timeout = -1;
 
     public DefaultControlFlowConfigurator() {
         configFile = new PropertyFileWatcher(new File(GeoserverDataDirectory
