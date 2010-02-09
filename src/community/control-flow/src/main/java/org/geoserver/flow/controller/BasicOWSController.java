@@ -41,7 +41,7 @@ public class BasicOWSController extends SingleQueueFlowController {
     }
 
     @Override
-    protected boolean matchesRequest(Request request) {
+    boolean matchesRequest(Request request) {
         if (!service.equalsIgnoreCase(request.getService()))
             return false;
 
