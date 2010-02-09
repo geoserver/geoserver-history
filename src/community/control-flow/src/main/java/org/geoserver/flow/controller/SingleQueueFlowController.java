@@ -64,6 +64,6 @@ public abstract class SingleQueueFlowController implements FlowController {
         return retval;
     }
 
-    protected abstract boolean matchesRequest(Request request);
+    abstract boolean matchesRequest(Request request);
 
 }
