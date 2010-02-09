@@ -5,7 +5,6 @@ import org.geoserver.flow.controller.FlowControllerTestingThread.ThreadState;
 import org.geoserver.ows.Request;
 
 public class GlobalFlowControllerTest extends AbstractFlowControllerTest {
-
     private static final long MAX_WAIT = 1000;
     
     public void testPriority() {

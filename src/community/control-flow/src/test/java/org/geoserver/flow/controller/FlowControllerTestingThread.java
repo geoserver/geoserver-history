@@ -26,7 +26,7 @@ public class FlowControllerTestingThread extends Thread {
     public void run() {
         state = ThreadState.STARTED;
         try {
-            // System.out.println(this + " calling requestIncoming");
+            System.out.println(this + " calling requestIncoming");
             if(!controller.requestIncoming(request, timeout)) {
                 state = ThreadState.TIMED_OUT;
                 return;
@@ -37,7 +37,7 @@ public class FlowControllerTestingThread extends Thread {
         state = ThreadState.PROCESSING;
         
         try {
-            // System.out.println(this + " waiting");
+            System.out.println(this + " waiting");
             if(processingDelay > 0)
                 sleep(processingDelay);
         } catch(InterruptedException e) {
@@ -45,12 +45,12 @@ public class FlowControllerTestingThread extends Thread {
         }
         
         try {
-            // System.out.println(this + " calling requestComplete");
+            System.out.println(this + " calling requestComplete");
             controller.requestComplete(request);
         } catch(Throwable t) {
             this.error = t;
         }
         state = ThreadState.COMPLETE;
-        // System.out.println(this + " done");
+        System.out.println(this + " done");
     }
 }

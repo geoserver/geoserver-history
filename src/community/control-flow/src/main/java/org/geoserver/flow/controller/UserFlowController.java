@@ -32,7 +32,7 @@ public class UserFlowController implements FlowController {
 
     static String COOKIE_NAME = "GS_FLOW_CONTROL";
 
-    static String COOKIE_PREFIX = "GS_CFLOW_COOKIE";
+    static String COOKIE_PREFIX = "GS_CFLOW_";
 
     /**
      * Thread local holding the current request queue id TODO: consider having a user map in
