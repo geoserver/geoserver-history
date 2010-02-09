@@ -57,6 +57,30 @@ public class BasicOWSController extends SingleQueueFlowController {
 
         return true;
     }
+    
+    /**
+     * Returns the matched service (case insensitive)
+     * @return
+     */
+    public String getService() {
+        return service;
+    }
+
+    /**
+     * Returns the matched method (case insensitive)
+     * @return
+     */
+    public String getMethod() {
+        return method;
+    }
+
+    /**
+     * Returns the matched output format (case insensitive)
+     * @return
+     */
+    public String getOutputFormat() {
+        return outputFormat;
+    }
 
     @Override
     public String toString() {
