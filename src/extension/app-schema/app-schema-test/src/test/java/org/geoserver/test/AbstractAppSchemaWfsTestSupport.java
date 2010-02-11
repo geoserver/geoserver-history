@@ -279,9 +279,10 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
      */
     protected void prettyPrint(Document document, OutputStream output) {
         OutputFormat format = new OutputFormat(document);
-        format.setLineWidth(80);
+        // setIndenting must be first as it resets indent and line width
         format.setIndenting(true);
         format.setIndent(4);
+        format.setLineWidth(200);
         XMLSerializer serializer = new XMLSerializer(output, format);
         try {
             serializer.serialize(document);
