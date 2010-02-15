@@ -1,0 +1,16 @@
+<project name="python-libs" default="build">
+  <property name="geoscript.url" value="http://cloud.github.com/downloads/jdeolive/geoscript-py/geoscript-0.5-src.tar.gz"/>
+
+  <target name="build">
+    <tstamp/>
+    <get src="${geoscript.url}" dest="geoscript.tar.gz" usetimestamp="yes"/>
+    <untar compression="gzip" src="geoscript.tar.gz" dest="."/>
+    <zip destfile="src/main/python/geoscript.zip" basedir="." includes="geoscript/**/*.py"/>
+    <delete dir="geoscript"/>
+  </target>
+
+  <target name="clean">
+    <delete file="src/main/python/geoscript.zip"/>
+  </target>
+
+</project>
