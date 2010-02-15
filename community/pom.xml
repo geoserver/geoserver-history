@@ -133,6 +133,11 @@
         <module>release</module>
       </modules>
     </profile>
-
+    <profile>
+      <id>python</id>
+      <modules>
+        <module>python</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
