@@ -35,6 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import javax.xml.transform.stream.StreamSource;
 
@@ -47,7 +48,7 @@ import org.geotools.data.DataUtilities;
  * @author Simone Giannecchini, GeoSolutions SAS
  *
  */
-class IOUtils extends org.apache.commons.io.IOUtils {
+public class IOUtils extends org.apache.commons.io.IOUtils {
 
 
 	private final static Logger LOGGER = org.geotools.util.logging.Logging.getLogger(FileCleaner.class);	
@@ -744,6 +745,10 @@ class IOUtils extends org.apache.commons.io.IOUtils {
 		            IOUtils.copyStream(in, out, true, true);
 	
 		        }
+		        else {
+		            //if the entry is a directory attempt to make it
+		            new File(outputDirectory, entry.getName()).mkdirs();
+		        }
 		    }
 		}
 		finally {
@@ -757,6 +762,7 @@ class IOUtils extends org.apache.commons.io.IOUtils {
 	   
 	}
 	
+
 	/**
 	 * Singleton
 	 */

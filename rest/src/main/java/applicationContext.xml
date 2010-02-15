@@ -5,7 +5,8 @@
     <bean id="restWrapper" class="org.geoserver.rest.RESTDispatcher">
       <constructor-arg ref="geoServer"/>
     </bean>
-
+    <alias name="restWrapper" alias="restDispatcher"/>
+    
     <bean id="restletDispatcherMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
     <property name="alwaysUseFullPath" value="true"/>
     <property name="mappings">
