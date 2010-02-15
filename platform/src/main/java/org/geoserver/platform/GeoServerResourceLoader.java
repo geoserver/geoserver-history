@@ -152,7 +152,10 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
     public File find(File parent, String location) throws IOException {
         //first to an existance check
         File file = parent != null ? new File(parent,location) : new File(location);
-
+        if (file.exists()) {
+            return file;
+        }
+        
         if (file.isAbsolute()) {
             return file.exists() ? file : null;
         } else {
@@ -508,13 +511,26 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * 
      */
     public void copyFromClassPath( String resource, File target ) throws IOException {
+        copyFromClassPath( resource, target, null );
+    }
+    
+    /**
+     * Copies a resource relative to a particular class from the classpath to the specified file. 
+     */
+    public void copyFromClassPath( String resource, File target, Class scope ) throws IOException {
         InputStream is = null; 
         OutputStream os = null;
         byte[] buffer = new byte[4096];
         int read;
         
         try {
-            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
+            if (scope == null) {
+                is = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);    
+            }
+            else {
+                is = scope.getResourceAsStream(resource);
+            }
+            
             os = new FileOutputStream(target);
             while((read = is.read(buffer)) > 0)
                 os.write(buffer, 0, read);
