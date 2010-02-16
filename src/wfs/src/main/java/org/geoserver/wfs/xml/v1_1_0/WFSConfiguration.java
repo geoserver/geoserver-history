@@ -4,7 +4,6 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,11 +40,9 @@ import org.geotools.filter.v1_1.OGCConfiguration;
 import org.geotools.gml2.FeatureTypeCache;
 import org.geotools.gml3.GML;
 import org.geotools.gml3.GMLConfiguration;
-import org.geotools.gml3.bindings.SubstitutionGroupXSAnyTypeBinding;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.OptionalComponentParameter;
-import org.geotools.xml.Schemas;
 import org.geotools.xs.XS;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.type.FeatureType;
@@ -193,11 +190,6 @@ public class WFSConfiguration extends Configuration {
             FeatureReferenceTypeBinding.FeatureReferenceType, 
             FeatureReferenceTypeBinding.class
         );
-        
-        // support GML property type pattern
-        Schemas.unregisterComponent(container, XS.ANYTYPE);
-        container.registerComponentImplementation(XS.ANYTYPE,
-                SubstitutionGroupXSAnyTypeBinding.class);
     }
 
     public Catalog getCatalog() {
