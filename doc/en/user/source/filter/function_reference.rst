@@ -377,6 +377,9 @@ String functions
    * - **Name**
      - **Arguments**
      - **Description**
+   * - strCapitalize (since 2.0.2)
+     - ``sentence``:String
+     - Fully capitalizes the sentence. For example, "HoW aRe YOU?" will be turned into "How Are You?"
    * - strConcat
      - ``a``:String, ``b``:String
      - Concatenates the two strings into one
