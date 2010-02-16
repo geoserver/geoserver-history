@@ -131,6 +131,7 @@
       <id>communityRelease</id>
       <modules>
         <module>control-flow</module>
+        <module>printing</module>
         <module>release</module>
       </modules>
     </profile>
