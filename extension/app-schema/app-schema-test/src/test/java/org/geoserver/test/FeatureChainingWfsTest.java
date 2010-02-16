@@ -298,6 +298,12 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo(id, "//gsml:MappedFeature[1]/@gml:id", doc);
             assertXpathEvaluatesTo("GUNTHORPE FORMATION", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gml:name", doc);
+            // positionalAccuracy
+            assertXpathEvaluatesTo("200.0", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue", doc);
+            assertXpathEvaluatesTo("urn:ogc:def:uom:UCUM:m", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue/@uom", doc);
+            // shape
             assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // specification gu.25699
@@ -381,6 +387,12 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo(id, "//gsml:MappedFeature[2]/@gml:id", doc);
             assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gml:name", doc);
+            // positionalAccuracy
+            assertXpathEvaluatesTo("100.0", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue", doc);
+            assertXpathEvaluatesTo("urn:ogc:def:uom:UCUM:m", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue/@uom", doc);
+            // shape
             assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // gu.25678
@@ -484,6 +496,12 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo(id, "//gsml:MappedFeature[3]/@gml:id", doc);
             assertXpathEvaluatesTo("CLIFTON FORMATION", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gml:name", doc);
+            // positionalAccuracy
+            assertXpathEvaluatesTo("150.0", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue", doc);
+            assertXpathEvaluatesTo("urn:ogc:def:uom:UCUM:m", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue/@uom", doc);
+            // shape
             assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // gu.25678
@@ -500,6 +518,12 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathEvaluatesTo(id, "//gsml:MappedFeature[4]/@gml:id", doc);
             assertXpathEvaluatesTo("MURRADUC BASALT", "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gml:name", doc);
+            // positionalAccuracy
+            assertXpathEvaluatesTo("120.0", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue", doc);
+            assertXpathEvaluatesTo("urn:ogc:def:uom:UCUM:m", "//gsml:MappedFeature[@gml:id='" + id
+                    + "']/gsml:positionalAccuracy/gsml:CGI_NumericValue/gsml:principalValue/@uom", doc);
+            // shape
             assertXpathEvaluatesTo("-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // gu.25682
