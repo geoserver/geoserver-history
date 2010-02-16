@@ -546,4 +546,32 @@ public class TransactionTest extends WFSTestSupport {
             
             
     }
+    
+    public void testUpdateWithDifferentPrefix() throws Exception {
+        String xml =
+            "<wfs:Transaction service=\"WFS\" version=\"1.1.0\"" + 
+            " xmlns:ogc=\"http://www.opengis.net/ogc\"" +
+            " xmlns:gml=\"http://www.opengis.net/gml\"" +
+            " xmlns:wfs=\"http://www.opengis.net/wfs\">" +
+            " <wfs:Update xmlns:foo=\"http://www.opengis.net/cite\" typeName=\"foo:RoadSegments\">" +
+            "   <wfs:Property>" +
+            "     <wfs:Name>foo:the_geom</wfs:Name>" +
+            "     <wfs:Value>" +
+            "     </wfs:Value>" +
+            "   </wfs:Property>" + 
+            "   <ogc:Filter>" +
+            "     <ogc:PropertyIsEqualTo>" +
+            "       <ogc:PropertyName>FID</ogc:PropertyName>" + 
+            "       <ogc:Literal>102</ogc:Literal>" + 
+            "     </ogc:PropertyIsEqualTo>" + 
+            "   </ogc:Filter>" +
+            " </wfs:Update>" +
+           "</wfs:Transaction>";
+        
+        Document dom = postAsDOM( "wfs", xml );
+        assertEquals( "wfs:TransactionResponse", dom.getDocumentElement().getNodeName());
+        
+        Element updated = getFirstElementByTagName(dom, "wfs:totalUpdated");
+        assertEquals( "1", updated.getFirstChild().getNodeValue());
+    }
 }

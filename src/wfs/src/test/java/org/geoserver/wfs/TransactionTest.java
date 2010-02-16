@@ -215,4 +215,44 @@ public class TransactionTest extends WFSTestSupport {
         assertTrue(dom.getElementsByTagName("ogc:FeatureId").getLength() > 0);
         assertTrue(dom.getElementsByTagName("wfs:SUCCESS").getLength() > 0);
     }
+    
+    public void testUpdateWithDifferentPrefix() throws Exception {
+
+        // 1. do a getFeature
+        String getFeature = "<wfs:GetFeature " + "service=\"WFS\" "
+                + "version=\"1.0.0\" "
+                + "xmlns:cgf=\"http://www.opengis.net/cite/geometry\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " + "> "
+                + "<wfs:Query typeName=\"cgf:Polygons\"> "
+                + "<ogc:PropertyName>cite:id</ogc:PropertyName> "
+                + "</wfs:Query> " + "</wfs:GetFeature>";
+
+        Document dom = postAsDOM("wfs", getFeature);
+        assertEquals(1, dom.getElementsByTagName("gml:featureMember")
+                .getLength());
+        assertEquals("t0002", dom.getElementsByTagName("cgf:id").item(0)
+                .getFirstChild().getNodeValue());
+
+        // perform an update
+        String update = "<wfs:Transaction service=\"WFS\" version=\"1.0.0\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" "
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\"> "
+                + "<wfs:Update xmlns:foo=\"http://www.opengis.net/cite/geometry\" typeName=\"foo:Polygons\" > " + "<wfs:Property>"
+                + "<wfs:Name>id</wfs:Name>" + "<wfs:Value>t0003</wfs:Value>"
+                + "</wfs:Property>" + "<ogc:Filter>"
+                + "<ogc:PropertyIsEqualTo>"
+                + "<ogc:PropertyName>id</ogc:PropertyName>"
+                + "<ogc:Literal>t0002</ogc:Literal>"
+                + "</ogc:PropertyIsEqualTo>" + "</ogc:Filter>"
+                + "</wfs:Update>" + "</wfs:Transaction>";
+
+        dom = postAsDOM("wfs", update);
+
+        // do another get feature
+        dom = postAsDOM("wfs", getFeature);
+        assertEquals("t0003", dom.getElementsByTagName("cgf:id").item(0)
+                .getFirstChild().getNodeValue());
+    }
 }
