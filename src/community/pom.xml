@@ -28,6 +28,7 @@
       <configuration>
         <descriptors>
           <descriptor>release/ext-control-flow.xml</descriptor>
+          <descriptor>release/ext-printing.xml</descriptor>
         </descriptors>
       </configuration>
      </plugin>
