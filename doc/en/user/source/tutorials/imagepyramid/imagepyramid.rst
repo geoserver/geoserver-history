@@ -56,7 +56,14 @@ Once that is done the user will be asked to choose a coverage, which will be nam
 
    *Choosing the coverage for publishing*
 
-Publish the layer, review the layer configuration, submit and you'll be ready to use the pyramid:
+Publish the layer, and then setup the layer parameter `USE_JAI_IMAGEREAD` to `false` to get better scalability:
+
+.. figure:: layerParams.png
+   :align: center
+
+   *Tuning the pyramid parameters*
+
+Submit and go to the preview, the pyramid should be ready to use:
 
 .. figure:: preview.png
    :align: center
