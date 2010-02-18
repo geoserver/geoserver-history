@@ -19,6 +19,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -318,7 +319,16 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             element("href", href);
             LOGGER.fine(href);
             end("Icon");
-            encodeRegion(box, 256, 512);
+            
+            
+            // make it so that for coverages the lower zoom levels remain active as one zooms in for a longer
+            // amount of time
+            SimpleFeatureType layerFeatureType = (SimpleFeatureType) mapLayer.getFeatureSource().getSchema();
+            if(FeatureUtilities.isWrappedCoverage(layerFeatureType) || FeatureUtilities.isWrappedCoverageReader(layerFeatureType))
+                encodeRegion(box, 128, 2048);
+            else
+                encodeRegion(box, 128, 512);
+            
 
             encodeLatLonBox(box);
             end("GroundOverlay");
@@ -329,10 +339,8 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("Region");
 
             start("Lod");
-            element("minLodPixels", "128");
-            //element("minLodPixels", "" + minLodPixels );
-            element("maxLodPixels", "" + maxLodPixels);
-            //element("maxLodPixels", "-1" );
+            element("minLodPixels", "" + minLodPixels );
+            element("maxLodPixels", "" + maxLodPixels );
             end("Lod");
 
             encodeLatLonAltBox(box);
@@ -344,7 +352,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             start("NetworkLink");
             element("name", name);
 
-            encodeRegion(box, 512, -1);
+            encodeRegion(box, 128, -1);
 
             start("Link");
 

@@ -90,7 +90,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 end( "LatLonAltBox");
                 
                 start( "Lod" );
-                element( "minLodPixels", "256" );
+                element( "minLodPixels", "128" );
                 element( "maxLodPixels", "-1" );
                 end( "Lod" );
                 
