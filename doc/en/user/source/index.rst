@@ -24,6 +24,7 @@ This **User Manual** is a comprehensive guide to all aspects of using GeoServer.
    googleearth/index
    extensions/index
    tutorials/index
+   community/index
 
 
 
