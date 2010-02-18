@@ -24,6 +24,33 @@
     </li>
     <li>
       <fieldset>
+        <legend><span><wicket:message key="kmlOptions">KML Options</wicket:message></span></legend>
+        <ul>
+         <li>
+            <label><wicket:message key="defaultReflectorMode">reflector Mode</wicket:message></label>
+            <select wicket:id="kml.defaultReflectorMode"></select>
+         </li>
+         <li>
+            <label><wicket:message key="superoverlayMode">superoverlay Mode</wicket:message></label>
+            <select wicket:id="kml.superoverlayMode"></select>
+         </li>
+         <li>
+            <input class="field checkbox" type="checkbox" wicket:id="kml.kmattr"></input>
+            <label class="choice"><wicket:message key="kmattr">Show vector placemarks</wicket:message></label>
+         </li>
+         <li>
+            <input class="field checkbox" type="checkbox" wicket:id="kml.kmlplacemark"></input>
+            <label class="choice"><wicket:message key="kmlplacemark">Show raster placemarks</wicket:message></label>
+         </li>
+         <li>
+            <label><wicket:message key="kmScore">Raster/vector threshold (0-100, default 40)</wicket:message></label>
+            <input type="text" class="field" wicket:id="kml.kmscore"/>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>
+      <fieldset>
         <legend><span><wicket:message key="resourceLimits">ResourceConsumptionLimits</wicket:message></span></legend>
         <ul>
           <li>
@@ -66,21 +93,6 @@
     </li>
     <li>
       <fieldset>
-        <legend><span><wicket:message key="svgOptions">SVG Options</wicket:message></span></legend>
-        <ul>
-         <li>
-            <label><wicket:message key="svgProducer">SVG producer</wicket:message></label>
-            <select wicket:id="svg.producer"></select>
-          </li>
-          <li>
-            <input class="field checkbox" type="checkbox" wicket:id="svg.antialias"></input>
-            <label class="choice"><wicket:message key="enableAntialiasing">Enable antialiasing</wicket:message></label>
-          </li>
-        </ul>
-      </fieldset>
-    </li>
-    <li>
-      <fieldset>
         <legend><span><wicket:message key="pngOptions">PNG Options</wicket:message></span></legend>
         <ul>
           <li>
@@ -97,6 +109,21 @@
           <li>
             <label><wicket:message key="jpegCompression">Compression level (0-100, default 25)</wicket:message></label>
             <input class="field" type="text" wicket:id="jpeg.compression"></input>
+          </li>
+        </ul>
+      </fieldset>
+    </li>
+    <li>
+      <fieldset>
+        <legend><span><wicket:message key="svgOptions">SVG Options</wicket:message></span></legend>
+        <ul>
+         <li>
+            <label><wicket:message key="svgProducer">SVG producer</wicket:message></label>
+            <select wicket:id="svg.producer"></select>
+          </li>
+          <li>
+            <input class="field checkbox" type="checkbox" wicket:id="svg.antialias"></input>
+            <label class="choice"><wicket:message key="enableAntialiasing">Enable antialiasing</wicket:message></label>
           </li>
         </ul>
       </fieldset>

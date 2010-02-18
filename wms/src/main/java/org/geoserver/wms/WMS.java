@@ -54,6 +54,38 @@ public class WMS {
     public static final String SVG_SIMPLE = "Simple";
 
     public static final String SVG_BATIK = "Batik";
+    
+    /**
+     * KML reflector mode
+     */
+    public static String KML_REFLECTOR_MODE = "kmlReflectorMode";
+    
+    /**
+     * KML reflector mode values
+     */
+    public static final String KML_REFLECTOR_MODE_REFRESH = "refresh";
+    public static final String KML_REFLECTOR_MODE_SUPEROVERLAY = "superoverlay";
+    public static final String KML_REFLECTOR_MODE_DOWNLOAD = "download";
+    public static final String KML_REFLECTOR_MODE_DEFAULT = KML_REFLECTOR_MODE_REFRESH;
+
+    /**
+     * KML superoverlay sub-mode
+     */
+    public static final String KML_SUPEROVERLAY_MODE = "kmlSuperoverlayMode";
+    public static final String KML_SUPEROVERLAY_MODE_AUTO = "auto";
+    public static final String KML_SUPEROVERLAY_MODE_RASTER = "raster";
+    public static final String KML_SUPEROVERLAY_MODE_OVERVIEW = "overview";
+    public static final String KML_SUPEROVERLAY_MODE_HYBRID = "hybrid";
+    public static final String KML_SUPEROVERLAY_MODE_DEFAULT = KML_SUPEROVERLAY_MODE_AUTO;
+    
+    public static final String KML_KMLATTR = "kmlAttr";
+    public static final boolean KML_KMLATTR_DEFAULT = true;
+    public static final String KML_KMLPLACEMARK = "kmlPlacemark";
+    public static final boolean KML_KMLPLACEMARK_DEFAULT = false;
+
+    public static final String KML_KMSCORE = "kmlKmscore";
+    public static final int KML_KMSCORE_DEFAULT = 40;
+    
 
     private final GeoServer geoserver;
 
@@ -300,5 +332,29 @@ public class WMS {
     
     public int getMaxRenderingErrors() {
         return getServiceInfo().getMaxRenderingErrors();
+    }
+    
+    public String getKmlReflectorMode() {
+        String value = (String) getServiceInfo().getMetadata().get(KML_REFLECTOR_MODE);
+        return value != null ? value : KML_REFLECTOR_MODE_DEFAULT;
+    }
+    
+    public String getKmlSuperoverlayMode() {
+        String value = (String) getServiceInfo().getMetadata().get(KML_SUPEROVERLAY_MODE);
+        return value != null ? value : KML_SUPEROVERLAY_MODE_DEFAULT;
+    }
+    
+    public boolean getKmlKmAttr() {
+        Boolean kmAttr = Converters.convert(getServiceInfo().getMetadata().get(KML_KMLATTR), Boolean.class);
+        return kmAttr == null ? KML_KMLATTR_DEFAULT: kmAttr.booleanValue();
+    }
+    
+    public boolean getKmlPlacemark() {
+        Boolean kmAttr = Converters.convert(getServiceInfo().getMetadata().get(KML_KMLPLACEMARK), Boolean.class);
+        return kmAttr == null ? KML_KMLPLACEMARK_DEFAULT: kmAttr.booleanValue();
+    }
+    
+    public int getKmScore() {
+        return getMetadataPercentage(getServiceInfo().getMetadata(), KML_KMSCORE, KML_KMSCORE_DEFAULT);
     }
 }

@@ -48,6 +48,7 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
+import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
 import org.geotools.xml.transform.Translator;
 import org.geotools.xs.bindings.XSDateTimeBinding;
@@ -121,6 +122,11 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
      * The map layer being transformed
      */
     protected final MapLayer mapLayer;
+    
+    /**
+     * Whether vector name and description should  be generated or not
+     */
+    protected final boolean vectorNameDescription;
 
     /**
      * list of formats which correspond to the default formats in which
@@ -179,6 +185,12 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
     public KMLMapTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
+        
+        Object kmAttrObj = mapContext.getRequest().getFormatOptions().get("kmattr");
+        if(kmAttrObj != null) 
+            this.vectorNameDescription = Converters.convert(kmAttrObj, Boolean.class); 
+        else
+            this.vectorNameDescription = mapContext.getRequest().getWMS().getKmlKmAttr();
     }
 
     public abstract class KMLMapTranslatorSupport extends KMLTranslatorSupport {
@@ -186,6 +198,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * Geometry transformer
          */
         KMLGeometryTransformer.KMLGeometryTranslator geometryTranslator;
+        
 
         public KMLMapTranslatorSupport(ContentHandler contentHandler) {
             super(contentHandler);
@@ -372,7 +385,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             start("IconStyle");
 
             // make transparent if they didn't ask for attributes
-            if (!mapContext.getRequest().getKMattr()) {
+            if (vectorNameDescription) {
                 encodeColor("00ffffff");
             }
 
@@ -860,7 +873,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             start("Placemark", KMLUtils.attributes(new String[] { "id", feature.getID() }));
 
             // encode name + description only if kmattr was specified
-            if (mapContext.getRequest().getKMattr()) {
+            if (vectorNameDescription) {
                 // name
                 try {
                     encodePlacemarkName(feature, symbolizers);

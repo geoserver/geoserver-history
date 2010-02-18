@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -40,6 +41,12 @@ import org.geotools.referencing.CRS;
 public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
     
     static final List<String> SVG_RENDERERS = Arrays.asList(new String[] {WMS.SVG_BATIK, WMS.SVG_SIMPLE});
+    
+    static final List<String> KML_REFLECTOR_MODES = Arrays.asList(new String[] {WMS.KML_REFLECTOR_MODE_REFRESH, 
+            WMS.KML_REFLECTOR_MODE_SUPEROVERLAY, WMS.KML_REFLECTOR_MODE_DOWNLOAD});
+    
+    static final List<String> KML_SUPEROVERLAY_MODES = Arrays.asList(new String[] {WMS.KML_SUPEROVERLAY_MODE_AUTO, 
+            WMS.KML_SUPEROVERLAY_MODE_RASTER, WMS.KML_SUPEROVERLAY_MODE_OVERVIEW, WMS.KML_SUPEROVERLAY_MODE_HYBRID});
     
     protected Class<WMSInfo> getServiceClass() {
         return WMSInfo.class;
@@ -82,18 +89,36 @@ public class WMSAdminPage extends BaseServiceAdminPage<WMSInfo> {
         form.add(new CheckBox("svg.antialias", new MapModel(metadataModel, "svgAntiAlias")));
     	form.add(new DropDownChoice("svg.producer", new MapModel(metadataModel, "svgRenderer"), SVG_RENDERERS, new SVGMethodRenderer()));
     	// png compression levels
-    	MapModel pngCompression = new MapModel(metadataModel, WMS.PNG_COMPRESSION);
-    	if(pngCompression.getObject() == null)
-    	    pngCompression.setObject(WMS.PNG_COMPRESSION_DEFAULT);
+    	MapModel pngCompression = defaultedModel(metadataModel, WMS.PNG_COMPRESSION, WMS.PNG_COMPRESSION_DEFAULT);
         TextField pngCompressionField = new TextField("png.compression", pngCompression, Integer.class);
         pngCompressionField.add(new NumberValidator.RangeValidator(0, 100));
         form.add(pngCompressionField);
         // jpeg compression levels
-    	MapModel jpegCompression = new MapModel(metadataModel, WMS.JPEG_COMPRESSION);
-    	if(jpegCompression.getObject() == null)
-            jpegCompression.setObject(WMS.JPEG_COMPRESSION_DEFAULT);
+    	MapModel jpegCompression = defaultedModel(metadataModel, WMS.JPEG_COMPRESSION, WMS.JPEG_COMPRESSION_DEFAULT);
         TextField jpegCompressionField = new TextField("jpeg.compression", jpegCompression, Integer.class);
         form.add(jpegCompressionField);
+        
+        // kml handling
+        MapModel kmlReflectorMode = defaultedModel(metadataModel, WMS.KML_REFLECTOR_MODE, WMS.KML_REFLECTOR_MODE_DEFAULT);
+        form.add(new DropDownChoice("kml.defaultReflectorMode", kmlReflectorMode, KML_REFLECTOR_MODES));
+        
+        MapModel kmlSuperoverlayMode = defaultedModel(metadataModel, WMS.KML_SUPEROVERLAY_MODE, WMS.KML_SUPEROVERLAY_MODE_DEFAULT);
+        form.add(new DropDownChoice("kml.superoverlayMode", kmlSuperoverlayMode, KML_SUPEROVERLAY_MODES));
+        
+        form.add(new CheckBox("kml.kmattr", defaultedModel(metadataModel, WMS.KML_KMLATTR, WMS.KML_KMLATTR_DEFAULT)));
+        form.add(new CheckBox("kml.kmlplacemark", defaultedModel(metadataModel, WMS.KML_KMLPLACEMARK, WMS.KML_KMLPLACEMARK_DEFAULT)));
+        
+        MapModel kmScore = defaultedModel(metadataModel, WMS.KML_KMSCORE, WMS.KML_KMSCORE_DEFAULT);
+        TextField kmScoreField = new TextField("kml.kmscore", kmScore, Integer.class);
+        kmScoreField.add(new NumberValidator.RangeValidator(0, 100));
+        form.add(kmScoreField);
+    }
+    
+    MapModel defaultedModel(IModel baseModel, String key, Object defaultValue) {
+        MapModel model = new MapModel(baseModel, key);
+        if(model.getObject() == null)
+            model.setObject(defaultValue);
+        return model;
     }
     
     protected String getServiceName(){
