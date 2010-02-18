@@ -145,7 +145,9 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             // raster: no
             if (!isVectorLayer(layer)) return false;
 
-            String overlayMode = (String)mapContext.getRequest().getFormatOptions().get("overlayMode");
+            String overlayMode = (String) mapContext.getRequest().getFormatOptions().get("overlayMode");
+            if(overlayMode == null)
+                overlayMode = mapContext.getRequest().getWMS().getKmlSuperoverlayMode();
 
             if ("raster".equals(overlayMode)) return false;
 

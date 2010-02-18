@@ -22,6 +22,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -137,12 +138,11 @@ public class KMLRasterTransformer extends KMLMapTransformer {
 
             end("GroundOverlay");
 
-            // if the kmplacemark format option is true,
-            // add placmarks to the output
-            boolean kmplacemark = false;
-            if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
-                kmplacemark = ((Boolean) mapContext.getRequest()
-                        .getFormatOptions().get("kmplacemark")).booleanValue();
+            // if the kmplacemark format option is true, add placemarks to the output
+            GetMapRequest request = mapContext.getRequest();
+            boolean kmplacemark = request.getWMS().getKmlPlacemark();
+            if (request.getFormatOptions().get("kmplacemark") != null)
+                kmplacemark = (Boolean) request.getFormatOptions().get("kmplacemark");
             if (kmplacemark) {
                 FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
                 try {
@@ -171,15 +171,6 @@ public class KMLRasterTransformer extends KMLMapTransformer {
                     SimpleFeatureType featureType = features.getSchema();
                     FeatureTypeStyle[] fts = KMLUtils.filterFeatureTypeStyles(
                             mapLayer.getStyle(), featureType);
-
-                    // get the kmattr value
-                    boolean kmattr = true;
-                    if (mapContext.getRequest().getFormatOptions().containsKey(
-                            "kmattr")) {
-                        kmattr = ((Boolean) mapContext.getRequest()
-                                .getFormatOptions().get("kmattr"))
-                                .booleanValue();
-                    }
 
                     Iterator<SimpleFeature> iter = features.iterator();
                     while (iter.hasNext()) {

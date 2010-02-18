@@ -53,6 +53,7 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
+import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
 import org.geotools.util.Range;
 import org.opengis.feature.simple.SimpleFeature;
@@ -160,6 +161,12 @@ public class KMLWriter extends OutputStreamWriter {
 
     /** Holds the map layer set, styling info and area of interest bounds */
     private WMSMapContext mapContext;
+    
+    /**
+     * Whether vector name and description should  be generated or not
+     */
+    protected final boolean vectorNameDescription;
+    
 
     /**
      * Creates a new KMLWriter object.
@@ -180,6 +187,12 @@ public class KMLWriter extends OutputStreamWriter {
 
         WMS config = mapContext.getRequest().getWMS();
         transformer.setNumDecimals(config.getNumDecimals());
+        
+        Object kmAttrObj = mapContext.getRequest().getFormatOptions().get("kmattr");
+        if(kmAttrObj != null) 
+            this.vectorNameDescription = Converters.convert(kmAttrObj, Boolean.class); 
+        else
+            this.vectorNameDescription = mapContext.getRequest().getWMS().getKmlKmAttr();
     }
 
     /**
@@ -873,7 +886,7 @@ public class KMLWriter extends OutputStreamWriter {
 
     private void writeDescription(SimpleFeature feature,
             final SimpleFeatureType schema) throws IOException {
-        if (mapContext.getRequest().getKMattr()) {
+        if (vectorNameDescription) {
             // descriptions are "templatable" by users, so see if there is a
             // template available for use
             GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(
@@ -1205,7 +1218,7 @@ public class KMLWriter extends OutputStreamWriter {
             // ** LABEL **
             styleString.append("<IconStyle>");
 
-            if (!mapContext.getRequest().getKMattr()) { // if they don't want
+            if (!vectorNameDescription) { // if they don't want
                 // attributes
                 styleString.append("<color>#00ffffff</color>"); // fully
                 // transparent
@@ -1301,7 +1314,7 @@ public class KMLWriter extends OutputStreamWriter {
             final StringBuffer styleString = new StringBuffer();
             styleString.append("<IconStyle>");
 
-            if (!mapContext.getRequest().getKMattr()) { // if they don't want
+            if (!vectorNameDescription) { // if they don't want
                 // attributes
                 styleString.append("<color>#00ffffff</color>"); // fully
                 // transparent

@@ -223,7 +223,7 @@ public class EncodeKML {
             return false; // raster KMZ
         }
 
-        // For numbers in between, determine exponentionally based on kmscore value:
+        // For numbers in between, determine exponentially based on kmscore value:
         // 10^(kmscore/15)
         // This results in exponential growth.
         // The lowest bound is 1 feature and the highest bound is 3.98 million features
@@ -365,7 +365,12 @@ public class EncodeKML {
 
                 FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fSource.getFeatures(q);
 
-                int kmscore = mapContext.getRequest().getKMScore(); //KMZ score value
+                // decide wheter to render vector or raster based on kmscore
+                int kmscore = mapContext.getRequest().getWMS().getKmScore();
+                Object kmScoreObj = mapContext.getRequest().getFormatOptions().get("kmscore");
+                if(kmScoreObj != null) {
+                    kmscore = (Integer) kmScoreObj;
+                }
                 boolean useVector = useVectorOutput(kmscore, fc.size()); // kmscore = render vector/raster
 
                 if (useVector || !kmz) {
