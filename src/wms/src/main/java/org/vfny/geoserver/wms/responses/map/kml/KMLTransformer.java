@@ -171,7 +171,11 @@ public class KMLTransformer extends TransformerBase {
             if (kmz) {
                 //calculate kmscore to determine if we shoud write as vectors
                 // or pre-render
-                int kmscore = mapContext.getRequest().getKMScore();
+                int kmscore = mapContext.getRequest().getWMS().getKmScore();
+                Object kmScoreObj = mapContext.getRequest().getFormatOptions().get("kmscore");
+                if(kmScoreObj != null) {
+                    kmscore = (Integer) kmScoreObj;
+                }
                 boolean useVector = useVectorOutput(kmscore, features.size());
 
                 if (useVector) {

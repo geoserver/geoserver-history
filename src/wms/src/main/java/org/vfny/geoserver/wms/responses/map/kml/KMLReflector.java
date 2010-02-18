@@ -6,13 +6,14 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMapService;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -31,15 +32,6 @@ import org.vfny.geoserver.wms.responses.GetMapResponse;
 public class KMLReflector {
     private static Logger LOGGER = 
         org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.wms.responses.map.kml");
-
-    /** default 'kmscore' value */
-    public static final Integer KMSCORE = new Integer(50);
-
-    /** default 'kmattr' value */
-    public static final Boolean KMATTR = Boolean.TRUE;
-
-    /** default 'kmplacemark' value */
-    public static final Boolean KMPLACEMARK = Boolean.FALSE;
 
     /** default 'format' value */
     public static final String FORMAT = KMLMapProducer.MIME_TYPE;
@@ -72,15 +64,21 @@ public class KMLReflector {
      */
     WebMapService wms;
 
-    public KMLReflector(WebMapService wms) {
+    /**
+     * The WMS configuration
+     */
+    WMS wmsConfiguration;
+
+    public KMLReflector(WebMapService wms, WMS wmsConfiguration) {
         this.wms = wms;
+        this.wmsConfiguration = wmsConfiguration;
     }
 
     public void wms(GetMapRequest request, HttpServletResponse response) throws Exception {
-        doWms(request, response, wms);
+        doWms(request, response, wms, wmsConfiguration);
     }
         
-    public static void doWms(GetMapRequest request, HttpServletResponse response, WebMapService wms)
+    public static void doWms(GetMapRequest request, HttpServletResponse response, WebMapService wms, WMS wmsConfiguration)
         throws Exception {
             //set the content disposition
         StringBuffer filename = new StringBuffer();
@@ -110,9 +108,10 @@ public class KMLReflector {
         }
 
 
+        // setup the default mode
         String mode = caseInsensitiveParam(
                 request.getHttpServletRequest().getParameterMap(), 
-                "mode", "refresh");
+                "mode", wmsConfiguration.getKmlReflectorMode());
 
         if (!MODES.containsKey(mode)){
             throw new WmsException("Unknown KML mode: " + mode);
@@ -125,7 +124,7 @@ public class KMLReflector {
             String submode = caseInsensitiveParam(
                 request.getHttpServletRequest().getParameterMap(), 
                 "superoverlay_mode",
-                "auto"
+                wmsConfiguration.getKmlSuperoverlayMode()
                 );
 
             if ("raster".equalsIgnoreCase(submode)) {
@@ -139,19 +138,7 @@ public class KMLReflector {
             } else {
                 throw new WmsException("Unknown overlay mode: " + submode);
             }
-        } else if ("refresh".equals(mode)){
-            String submode = caseInsensitiveParam(
-                request.getHttpServletRequest().getParameterMap(), 
-                "refresh_mode",
-                null
-                );
-        } else if ("download".equals(mode)){
-            String submode = caseInsensitiveParam(
-                request.getHttpServletRequest().getParameterMap(), 
-                "download_mode",
-                null
-                );
-        }
+        } 
 
         //first set up some of the normal wms defaults
         if ( request.getWidth() < 1 ) {
@@ -174,11 +161,11 @@ public class KMLReflector {
         merge(fo, modeOptions);
 
         if ( fo.get( "kmattr") == null ) {
-            fo.put( "kmattr", KMATTR );
+            fo.put( "kmattr", wmsConfiguration.getKmlKmAttr() );
         } if ( fo.get( "kmscore" ) == null ) {
-            fo.put( "kmscore", KMSCORE );
+            fo.put( "kmscore", wmsConfiguration.getKmScore() );
         } if (fo.get("kmplacemark") == null) {
-            fo.put("kmplacemark", KMPLACEMARK);
+            fo.put("kmplacemark", wmsConfiguration.getKmlPlacemark());
         }
 
         //set the format
