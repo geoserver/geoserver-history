@@ -219,7 +219,7 @@
   
   <properties>
     <configId>minimal</configId>
-    <sde.version>9.2</sde.version>
+    <sde.version>9.3</sde.version>
   </properties>
 
   <profiles>
@@ -502,6 +502,26 @@
         <dependency>
           <groupId>org.geoserver.community</groupId>
           <artifactId>control-flow</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>pyramid</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geotools</groupId>
+          <artifactId>gt-imagepyramid</artifactId>
+          <version>${gt.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>charts</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.extension</groupId>
+          <artifactId>charts</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>
