@@ -9,15 +9,22 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
 import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,7 +35,14 @@ import javax.media.jai.InterpolationBilinear;
 import javax.media.jai.InterpolationNearest;
 import javax.media.jai.JAI;
 import javax.media.jai.LookupTableJAI;
+import javax.media.jai.PlanarImage;
+import javax.media.jai.ROI;
+import javax.media.jai.ROIShape;
+import javax.media.jai.operator.BandMergeDescriptor;
+import javax.media.jai.operator.ConstantDescriptor;
+import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
+import javax.media.jai.operator.MosaicDescriptor;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
@@ -40,14 +54,28 @@ import org.geoserver.wms.responses.MapDecoration;
 import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
 import org.geoserver.wms.responses.decoration.WatermarkDecoration;
+import org.geotools.coverage.grid.GridCoverage2D;
+import org.geotools.coverage.grid.GridEnvelope2D;
+import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.image.ImageWorker;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.MapLayer;
+import org.geotools.parameter.Parameter;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
+import org.geotools.resources.image.ColorUtilities;
 import org.geotools.styling.PointSymbolizer;
+import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Style;
 import org.geotools.styling.visitor.DuplicatingStyleVisitor;
+import org.opengis.feature.Feature;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.parameter.GeneralParameterValue;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -132,6 +160,8 @@ public abstract class DefaultRasterMapProducer extends
 
     /** true iff this image is metatiled */
     private boolean tiled = false;
+    
+    private List<GridCoverage2D> renderedCoverages = new ArrayList<GridCoverage2D>();
 
 
     /**
@@ -174,7 +204,48 @@ public abstract class DefaultRasterMapProducer extends
      */
     public void writeTo(OutputStream out)
     throws ServiceException, java.io.IOException {
-        formatImageOutputStream(this.image, out);
+        try {
+            formatImageOutputStream(this.image, out);
+            out.flush();
+        } finally {
+            // let go of the coverages created for rendering
+            for (GridCoverage2D coverage : renderedCoverages) {
+                coverage.dispose(true);
+            }
+            
+            // let go of the image chain as quick as possible to free memory
+            if(image instanceof PlanarImage) {
+                disposePlanarImageChain((PlanarImage) image, new HashSet<PlanarImage>());
+            } else if(image instanceof BufferedImage) {
+                ((BufferedImage) image).flush();
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+	static void disposePlanarImageChain(PlanarImage pi, HashSet<PlanarImage> visited) {
+        Vector sinks = pi.getSinks();
+        if(sinks != null) {
+            for (Object sink: sinks) {
+                if(sink instanceof PlanarImage && !visited.contains(sink))
+                    disposePlanarImageChain((PlanarImage) sink, visited);
+                else if(sink instanceof BufferedImage) {
+                    ((BufferedImage) sink).flush();
+                }
+            }
+        }
+        pi.dispose();
+        visited.add(pi);
+        Vector sources = pi.getSources();
+        if(sources != null) {
+            for (Object child : sources) {
+                if(child instanceof PlanarImage && !visited.contains(child))
+                    disposePlanarImageChain((PlanarImage) child, visited);
+                else if(child instanceof BufferedImage) {
+                    ((BufferedImage) child).flush();
+                }
+            }
+        }
     }
 
     /**
@@ -210,9 +281,8 @@ public abstract class DefaultRasterMapProducer extends
 
         // figure out a palette for buffered image creation
         IndexColorModel palette = null;
-        final InverseColorMapOp paletteInverter = mapContext
-        .getPaletteInverter();
-        final boolean transparent = mapContext.isTransparent();
+        final InverseColorMapOp paletteInverter = mapContext.getPaletteInverter();
+        final boolean transparent = mapContext.isTransparent() && isTransparencySupported();
         final Color bgColor = mapContext.getBgColor();
         if (paletteInverter != null && AA_NONE.equals(antialias)) {
             palette = paletteInverter.getIcm();
@@ -243,6 +313,26 @@ public abstract class DefaultRasterMapProducer extends
             long kbMax = maxMemory / KB;
             throw new WmsException("Rendering request would use " + kbUsed + "KB, whilst the " +
                     "maximum memory allowed is " + kbMax + "KB");
+        }
+        
+        // TODO: allow rendering to continue with vector layers
+        // TODO: allow rendering to continue with layout
+        // TODO: handle rotated rasters
+        // TODO: handle color conversions
+        // TODO: handle meta-tiling
+        // TODO: how to handle timeout here? I guess we need to move it into the dispatcher?
+        
+        // fast path for pure coverage rendering
+        if (mapContext.getLayerCount() == 1) {
+            try {
+                RenderedImage image = directRasterRender(mapContext, 0);
+                if(image != null) {
+                    this.image = image;
+                    return;
+                }
+            } catch (Exception e) {
+                throw new WmsException("Error rendering coverage on the fast path", null, e);
+            }
         }
 
         // we use the alpha channel if the image is transparent or if the meta tiler
@@ -301,10 +391,7 @@ public abstract class DefaultRasterMapProducer extends
         graphic.setRenderingHints(hintsMap);
 
         RenderingHints hints = new RenderingHints(hintsMap);
-//        if(DefaultWebMapService.useStreamingRenderer())
-            renderer = new StreamingRenderer();
-//        else
-//            renderer = new ShapefileRenderer();
+        renderer = new StreamingRenderer();
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);
 
@@ -553,10 +640,28 @@ public abstract class DefaultRasterMapProducer extends
      * @param paletteInverter
      * @return
      */
-    protected RenderedImage prepareImage(int width, int height,
+    final protected RenderedImage prepareImage(int width, int height,
             IndexColorModel palette, boolean transparent) {
-        return ImageUtils.createImage(width, height, palette, transparent);
+        return ImageUtils.createImage(width, height, isPaletteSupported() ? palette : null,
+                transparent && isTransparencySupported());
     }
+    
+    /**
+     * Returns true if the format supports image transparency, false otherwise
+     * @return true if the format supports image transparency, false otherwise
+     */
+    protected boolean isTransparencySupported() {
+        return true;
+    }
+    
+    /**
+     * Returns true if the format supports palette encoding, false otherwise
+     * @return true if the format supports palette encoding, false otherwise
+     */
+    protected boolean isPaletteSupported() {
+        return true;
+    }
+    
 
     /**
      * When you override {@link #prepareImage(int, int, IndexColorModel, boolean)} remember
@@ -569,7 +674,7 @@ public abstract class DefaultRasterMapProducer extends
      */
     protected long getDrawingSurfaceMemoryUse(int width, int height,
             IndexColorModel palette, boolean transparent) {
-        return ImageUtils.getDrawingSurfaceMemoryUse(width, height, palette, transparent);
+        return ImageUtils.getDrawingSurfaceMemoryUse(width, height, isPaletteSupported() ? palette : null,transparent && isTransparencySupported());
     }
 
     /**
@@ -587,7 +692,7 @@ public abstract class DefaultRasterMapProducer extends
      * @param source
      * @return
      */
-    private RenderedImage optimizeSampleModel(RenderedImage source) {
+    private static RenderedImage optimizeSampleModel(RenderedImage source) {
         int w = source.getWidth();
         int h = source.getHeight();
         ImageLayout layout = new ImageLayout();
@@ -598,7 +703,345 @@ public abstract class DefaultRasterMapProducer extends
         layout.setTileWidth(w);
         layout.setTileHeight(h);
         RenderingHints hints = new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout);
+        // TODO SIMONE why not format?
         return LookupDescriptor.create(source, IDENTITY_TABLE, hints);
+
     }
+    
+    /**
+     * Renders a single coverage as the final RenderedImage to be encoded, skipping all of the
+     * Java2D machinery and using a pure JAI chain of transformations instead. This considerably
+     * improves both scalability and performance
+     * @param mapContext The map definition (used for map size and transparency/color management)
+     * @param the layer that is supposed to contain a coverage
+     * @return the result of rendering the coverage, or null if there was no coverage, or the coverage 
+     *         could not be renderer for some reason
+     */
+    private RenderedImage directRasterRender(WMSMapContext mapContext, int layerIndex) throws IOException {
+        // extract the raster symbolizers and see if we can use the fast path
+        List<RasterSymbolizer> symbolizers = getRasterSymbolizers(mapContext, 0);
+        if(symbolizers.size() != 1)
+            return null;
+        RasterSymbolizer symbolizer = symbolizers.get(0);
+        
+        // extract the reader
+        Feature feature = mapContext.getLayer(0).getFeatureSource().getFeatures().features().next();
+        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) feature.getProperty("grid").getValue();
+        Object params = feature.getProperty("params").getValue();
+        
+        RenderedImage image = null;
+        
+        // if there is a output tile size hint, use it, otherwise use the output size itself 
+        final int tileSizeX; 
+        final int tileSizeY;
+        if(mapContext.getTileSize() != -1) {
+           tileSizeX = tileSizeY = mapContext.getTileSize();
+        } else {
+           tileSizeX = mapContext.getMapWidth();
+           tileSizeY = mapContext.getMapHeight();
+        }
+        
+        // prepare a final image layout should we need to perform a mosaic or a crop
+        final ImageLayout layout= new ImageLayout();
+        layout.setMinX(0);
+        layout.setMinY(0);
+        layout.setWidth(mapContext.getMapWidth());
+        layout.setHeight(mapContext.getMapHeight());
+        layout.setTileGridXOffset(0);
+        layout.setTileGridYOffset(0);
+        layout.setTileWidth(tileSizeX);
+        layout.setTileHeight(tileSizeY);
+        
+        // Check transparency and bg color
+        final boolean transparent = mapContext.isTransparent() && isTransparencySupported();
+        Color bgColor = mapContext.getBgColor();
+        
+        // set transparency
+        if(transparent)
+            bgColor= new Color(bgColor.getRed(),bgColor.getGreen(),bgColor.getBlue(),0);
+        
+        // grab the interpolation
+        Interpolation interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+        if (wms != null) {
+            if (WMSInterpolation.Nearest.equals(wms.getInterpolation())) {
+                interpolation = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
+            } else if (WMSInterpolation.Bilinear.equals(wms.getInterpolation())) {
+                interpolation = Interpolation.getInstance(Interpolation.INTERP_BILINEAR);
+            } else if (WMSInterpolation.Bicubic.equals(wms.getInterpolation())) {
+                interpolation = Interpolation.getInstance(Interpolation.INTERP_BICUBIC);
+            }
+        }
+
+        // read best available coverage and render it
+        final Rectangle rasterArea = new Rectangle(0, 0, mapContext.getMapWidth(), mapContext.getMapHeight());
+        final AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext.getAreaOfInterest(), rasterArea);
+        try {
+            final GridCoverage2D coverage = readBestCoverage(mapContext, reader, params, rasterArea, interpolation);
+            
+            // render the coverage
+            try {
+                if (coverage == null) {
+                    // we're outside of the coverage definition area, return an empty space
+                    Number[] bands;
+                    if(transparent) {
+                        bands = new Byte[] {(byte) bgColor.getRed(), (byte) bgColor.getGreen(), (byte) bgColor.getBlue(), (byte) bgColor.getAlpha()};
+                    } else {
+                        bands = new Byte[] {(byte) bgColor.getRed(), (byte) bgColor.getGreen(), (byte) bgColor.getBlue()};
+                    }
+                    image = ConstantDescriptor.create((float) mapContext.getMapWidth(), (float) mapContext.getMapHeight(), 
+                            bands, new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout));
+                } else {
+                    // create a solid color empty image
+                    final GridCoverageRenderer gcr = new GridCoverageRenderer(mapContext.getCoordinateReferenceSystem(), 
+                            mapContext.getAreaOfInterest(), 
+                            rasterArea,
+                            worldToScreen, null);
+                    image = gcr.renderImage(coverage, symbolizer, interpolation, mapContext.getBgColor(), tileSizeX, tileSizeY);
+                }
+            } finally {
+                // once the final image is rendered we need to clean up the planar image chain
+                // that the coverage references to
+                if (coverage != null)
+                    renderedCoverages.add(coverage);
+            }
+        } catch (Throwable e) {
+            throw new WmsException(e);
+        }
+        
+        // check if we managed to process the coverage into an image
+        if(image == null)
+            return null;
+        
+        // We need to find the background color expressed in terms of image color components
+        // (which depends on the color model nature, the input and output transparency)
+        // TODO: there must be a more general way to turn a color into the
+        // required components for a certain color model... right???
+        ColorModel cm = image.getColorModel();
+        double[] bgValues = null;
+        
+        PlanarImage[] alphaChannels = null;
+        
+        // in case of index color model we try to preserve it, so that output
+        // formats that can work with it can enjoy its extra compactness
+        if(cm instanceof IndexColorModel) {
+            IndexColorModel icm = (IndexColorModel) cm;
+            
+            // try to find the index that matches the requested background color
+            int bgColorIndex = -1;
+            if (cm.hasAlpha()) {
+                if (transparent) {
+                    bgColorIndex = icm.getTransparentPixel(); 
+                } else {
+                    bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
+                }
+                
+                if(bgColorIndex != -1)
+                    alphaChannels = new PlanarImage[] {new ImageWorker(image).forceComponentColorModel().retainLastBand().getPlanarImage()};
+            } else {
+                bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
+            }
+            
+            if(bgColorIndex == -1) {
+                // we need to expand the image to RGB 
+                image = new ImageWorker(image).forceComponentColorModel().getRenderedImage();
+                bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                        bgColor.getBlue(), transparent ? 0 : 255 };
+                cm = image.getColorModel();
+            } else {
+                bgValues = new double[] {bgColorIndex};
+            }
+        }
+        
+        // in case of component color model 
+        if (cm instanceof ComponentColorModel ){
+        	
+        	// convert to RGB if GRAY
+        	final ComponentColorModel ccm= (ComponentColorModel) cm;
+        	final boolean hasAlpha=cm.hasAlpha();
+        	
+        	
+        	// if we have a grayscale image expand to rgb
+        	if(ccm.getNumColorComponents() == 1) {
+	            // aaime TODO: the original color model might be able to produce the requested bg color
+	            // we should find a way to avoid the band expansion in that case
+	            // aaime TODO: what do we do if the number of color components is not 1, 3 or 4?
+	        	
+	        	// simone: keep into account alpha band
+        		final ImageWorker iw=new ImageWorker(image);
+	        	if(hasAlpha){
+	        		// get alpha
+	        		final RenderedImage alpha = iw.retainLastBand().getRenderedImage();
+	        		alphaChannels = new PlanarImage[] {PlanarImage.wrapRenderedImage(alpha)};
+	        		// get first band
+	        		final RenderedImage gray = new ImageWorker(image).retainFirstBand().getRenderedImage();
+	        		image=new ImageWorker(gray).bandMerge(3).addBand(alpha, false).forceComponentColorModel().forceColorSpaceRGB().getRenderedImage();
+	        	}
+	        	else
+	        		image =iw.bandMerge(3).forceComponentColorModel().forceColorSpaceRGB().getRenderedImage();
+	        	
+	        	// get back the ColorModel
+	            cm = image.getColorModel();
+        	}
+        	
+            if (hasAlpha) {
+                
+                // TODO: are there cases other than RGBA here? I guess
+                // if the cm does not have 4 bands we should expand to RGB first?
+                if (transparent) {
+                    bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                            bgColor.getBlue(), 0 };
+                } else {
+                    bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                            bgColor.getBlue(), 255 };
+                }
+            } else {
+                if (transparent) {
+                    // we need to expand the image with an alpha channel
+                    RenderedImage alpha = ConstantDescriptor.create(new Float(image.getMinX() + image.getWidth()), 
+                            new Float(image.getMinY() + image.getHeight()), new Byte[] {new Byte((byte) 255)}, null);
+                    image = BandMergeDescriptor.create(image, alpha, null);
+                    // this will work fine for all situation where the color components are <= 3
+                    // e.g., one band rasters with no colormap will have only one usually
+                    bgValues = new double[] {0, 0, 0, 0 };
+                } else {
+                    // TODO: handle the case where the component color model is not RGB
+                    // We cannot use ImageWorker as is because it basically seems to assume
+                    // component -> 3 band in forceComponentColorModel()
+                    // but I guess we'll need to turn the image into a 3 band RGB one. 
+                    bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
+                            bgColor.getBlue() };
+                }
+            }
+        } 
+        // TODO: handle other color models, as the direct one (can we ever get it?)
+
+        Rectangle imageBounds = PlanarImage.wrapRenderedImage(image).getBounds();
+        
+        // If we need to add a collar and apply a bg color, use mosaic for fast bg color application
+        // Else check if we need to crop a larger than required image
+        if(imageBounds.getWidth() < rasterArea.getWidth() || imageBounds.getHeight() < rasterArea.getHeight() 
+                || imageBounds.getMinX() > 0 || imageBounds.getMinY() > 0 || alphaChannels != null) {
+            // setup the ROI, otherwise we won't get solid color background collars around the image
+            Rectangle roi = new Rectangle(image.getMinX(), image.getMinY(), 
+                                          image.getWidth(), image.getHeight());
+            ROI[] rois = new ROI[] {new ROIShape(roi)};
+
+            // build the transparency thresholds
+            double[][] thresholds = new double[][] { { ColorUtilities.getThreshold(image.getSampleModel()
+                    .getDataType()) } };
+
+            // apply the mosaic
+            image = MosaicDescriptor.create(new RenderedImage[] { image },
+                    alphaChannels != null ? MosaicDescriptor.MOSAIC_TYPE_BLEND
+                                          : MosaicDescriptor.MOSAIC_TYPE_OVERLAY, 
+                alphaChannels, 
+                rois, 
+                thresholds, 
+                bgValues,
+                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,layout));
+        } else if(imageBounds.getWidth() > rasterArea.getWidth() || 
+                  imageBounds.getHeight() > rasterArea.getHeight()) {
+            // reduce the image to the actually required size
+            image = CropDescriptor.create(image, 0f, 0f, 
+                    (float) mapContext.getMapWidth(), (float) mapContext.getMapHeight(), 
+                    new RenderingHints(JAI.KEY_IMAGE_LAYOUT,layout));
+        }
+        
+        return image;
+    }
+
+    /**
+     * Reads the best matching grid out of a grid coverage applying sub-sampling and using overviews as necessary
+     * @param mapContext
+     * @param reader
+     * @param params
+     * @param rasterArea
+     * @param interpolation
+     * @return
+     * @throws IOException
+     */
+	private GridCoverage2D readBestCoverage(WMSMapContext mapContext,
+			AbstractGridCoverage2DReader reader, Object params,
+			final Rectangle rasterArea, Interpolation interpolation) throws IOException {
+	    
+	    if(!reader.getOriginalEnvelope().intersects(mapContext.getAreaOfInterest(), false))
+	        return null;
+	    
+		// //
+		// It is an AbstractGridCoverage2DReader, let's use parameters
+		// if we have any supplied by a user.
+		// //
+		// first I created the correct ReadGeometry
+		final Parameter<GridGeometry2D> readGG = new Parameter<GridGeometry2D>(AbstractGridFormat.READ_GRIDGEOMETRY2D);
+		readGG.setValue(new GridGeometry2D(new GridEnvelope2D(rasterArea), mapContext.getAreaOfInterest()));
+		// then I try to get read parameters associated with this
+		// coverage if there are any.
+		GridCoverage2D coverage = null;
+		if (params != null) {
+		    // //
+		    //
+		    // Getting parameters to control how to read this coverage.
+		    // Remember to check to actually have them before forwarding
+		    // them to the reader.
+		    //
+		    // //
+		    GeneralParameterValue[] readParams = (GeneralParameterValue[]) params;
+		    final int length = readParams.length;
+		    if (length > 0) {
+		        // we have a valid number of parameters, let's check if
+		        // also have a READ_GRIDGEOMETRY2D. In such case we just
+		        // override it with the one we just build for this
+		        // request.
+		        final String name = AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString();
+		        int i = 0;
+		        for (; i < length; i++)
+		            if (readParams[i].getDescriptor().getName().toString().equalsIgnoreCase(
+		                    name))
+		                break;
+		        // did we find anything?
+		        if (i < length) {
+		            // we found another READ_GRIDGEOMETRY2D, let's override it.
+		            ((Parameter) readParams[i]).setValue(readGG);
+		            coverage = (GridCoverage2D) reader.read(readParams);
+		        } else {
+		            // add the correct read geometry to the supplied
+		            // params since we did not find anything
+		            GeneralParameterValue[] readParams2 = new GeneralParameterValue[length + 1];
+		            System.arraycopy(readParams, 0, readParams2, 0, length);
+		            readParams2[length] = readGG;
+		            coverage = (GridCoverage2D) reader.read(readParams2);
+		        }
+		    }
+		}
+		// if for any reason the previous block did not produce a coverage (no params, empty params)
+		if(coverage == null) {
+		    coverage = (GridCoverage2D) reader.read(new GeneralParameterValue[] { readGG });
+		}
+		
+		return coverage;
+	}
+	
+    /**
+     * Returns the list of raster symbolizers contained in a specific layer of the map context (the
+     * full map context is provided in order to compute the current scale and thus determine the
+     * active rules)
+     * 
+     * @param mc
+     * @param layerIndex
+     * @return
+     */
+    List<RasterSymbolizer> getRasterSymbolizers(WMSMapContext mc, int layerIndex) {
+        double scaleDenominator = RendererUtilities.calculateOGCScale(mc.getAreaOfInterest(), mc.getMapWidth(), null);
+        MapLayer layer = mc.getLayer(layerIndex);
+        FeatureType featureType = layer.getFeatureSource().getSchema();
+        Style style = layer.getStyle();
+        
+        RasterSymbolizerVisitor visitor = new RasterSymbolizerVisitor(scaleDenominator, featureType);
+        style.accept(visitor);
+        
+        return visitor.getRasterSymbolizers(); 
+    }
+    
+    
 
 }

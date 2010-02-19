@@ -42,8 +42,19 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 
 	/** true if background transparency is requested */
 	private boolean transparent;
+	
+	/** suggested output tile size */
+	private int tileSize = -1;
 
-	/**
+	public int getTileSize() {
+        return tileSize;
+    }
+
+    public void setTileSize(int tileSize) {
+        this.tileSize = tileSize;
+    }
+
+    /**
 	 * the rendering buffer used to avoid issues with tiled rendering and big
 	 * strokes that may cross tile boundaries
 	 */
