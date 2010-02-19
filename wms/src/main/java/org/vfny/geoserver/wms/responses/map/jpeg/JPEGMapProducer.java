@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.jpeg;
 
-import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,30 +42,15 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
         
     }
 
-    @Override
-    protected RenderedImage prepareImage(int width, int height, IndexColorModel palette, boolean transparent) {
-        // there is no transparency in JPEG anyway :-)
-        transparent = false;
-        palette = null;
-        return super.prepareImage(width, height, palette, transparent);
-    }
-    
-    @Override
-    protected long getDrawingSurfaceMemoryUse(int width, int height, IndexColorModel palette,
-            boolean transparent) {
-        // there is no transparency in JPEG anyway :-)
-        transparent = false;
-        palette = null;
-        return super.getDrawingSurfaceMemoryUse(width, height, palette, transparent);
-    }
-
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
         throws IOException {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("About to write a JPEG image.");
         }
+        
         float quality = (100 - wms.getJpegCompression()) / 100.0f;
-        new ImageWorker(image).writeJPEG(outStream, "JPEG", quality, JPEGNativeAcc);
+        ImageWorker iw =  new ImageWorker(image);
+        iw.writeJPEG(outStream, "JPEG", quality, JPEGNativeAcc);
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
@@ -76,5 +60,15 @@ public final class JPEGMapProducer extends DefaultRasterMapProducer {
     public String getContentDisposition() {
         // can be null
         return null;
+    }
+    
+    @Override
+    protected boolean isTransparencySupported() {
+        return false;
+    }
+    
+    @Override
+    protected boolean isPaletteSupported() {
+        return false;
     }
 }
