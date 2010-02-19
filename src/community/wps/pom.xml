@@ -10,7 +10,7 @@
         <version>2.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.geoserver</groupId>
+    <groupId>org.geoserver.community</groupId>
     <artifactId>wps</artifactId>
     <packaging>jar</packaging>
     <version>${gs.version}</version>
