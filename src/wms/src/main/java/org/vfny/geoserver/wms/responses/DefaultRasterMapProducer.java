@@ -323,7 +323,7 @@ public abstract class DefaultRasterMapProducer extends
         // TODO: how to handle timeout here? I guess we need to move it into the dispatcher?
         
         // fast path for pure coverage rendering
-        if (mapContext.getLayerCount() == 1) {
+        if (mapContext.getLayerCount() == 1 && mapContext.getAngle() == 0.0) {
             try {
                 RenderedImage image = directRasterRender(mapContext, 0);
                 if(image != null) {
@@ -470,8 +470,8 @@ public abstract class DefaultRasterMapProducer extends
         timeout.start();
         try {
             // finally render the image
-            final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-            renderer.paint(graphic, paintArea, dataArea);
+        	final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
+            renderer.paint(graphic, paintArea, getRenderingTransform());
 
             // apply watermarking
             try {
@@ -511,6 +511,7 @@ public abstract class DefaultRasterMapProducer extends
                 this.image = preparedImage;
         }
     }
+
 
     /**
      * Set the Watermark Painter.

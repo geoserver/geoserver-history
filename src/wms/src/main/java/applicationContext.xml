@@ -125,6 +125,10 @@
  	<bean id="startIndexKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
  	    <constructor-arg value="startIndex"/>
  	</bean>
+ 	<bean id="angleKvpParser" class="org.geoserver.ows.kvp.DoubleKvpParser">
+		<constructor-arg value="angle"/>
+ 	</bean>
+ 	
  	
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
