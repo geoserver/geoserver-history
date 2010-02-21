@@ -45,6 +45,9 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 	
 	/** suggested output tile size */
 	private int tileSize = -1;
+	
+	/** map rotation in degrees */
+	private double angle;
 
 	public int getTileSize() {
         return tileSize;
@@ -187,4 +190,18 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 	public void setPaletteInverter(InverseColorMapOp paletteInverter) {
 		this.paletteInverter = paletteInverter;
 	}
+
+	/**
+	 * The clockwise rotation angle of the map, in degrees
+	 * @return
+	 */
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double rotation) {
+		this.angle = rotation;
+	}
+	
+	
 }

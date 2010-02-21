@@ -126,8 +126,6 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
 						RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 
-			Rectangle r = new Rectangle(g.getSVGCanvasSize());
-			
 			// enforce no more than x rendering errors
             int maxErrors = wmsConfig.getMaxRenderingErrors();
             MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
@@ -138,7 +136,7 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
             nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
             renderer.addRenderListener(nonIgnorableExceptionListener);
 
-            renderer.paint(g, r, renderer.getContext().getAreaOfInterest());
+            renderer.paint(g, new Rectangle(g.getSVGCanvasSize()), mapContext.getAreaOfInterest(), getRenderingTransform());
 			
 			// check if too many errors occurred
             if(errorChecker.exceedsMaxErrors()) {
