@@ -383,9 +383,8 @@ public abstract class DefaultRasterMapProducer extends
                 graphic);
         timeout.start();
         try {
-            // finally render the image
-            final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-            renderer.paint(graphic, paintArea, dataArea, getRenderingTransform());
+            // finally render the image;
+            renderer.paint(graphic, paintArea, getRenderingArea(), getRenderingTransform());
 
             // apply watermarking
             try {

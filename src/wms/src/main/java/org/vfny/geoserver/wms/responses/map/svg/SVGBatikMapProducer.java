@@ -139,7 +139,7 @@ class SVGBatikMapProducer extends AbstractGetMapProducer implements
             nonIgnorableExceptionListener = new RenderExceptionStrategy(renderer);
             renderer.addRenderListener(nonIgnorableExceptionListener);
 
-            renderer.paint(g, new Rectangle(g.getSVGCanvasSize()), mapContext.getAreaOfInterest(), getRenderingTransform());
+            renderer.paint(g, new Rectangle(g.getSVGCanvasSize()), getRenderingArea(), getRenderingTransform());
 			
 			// check if too many errors occurred
             if(errorChecker.exceedsMaxErrors()) {
