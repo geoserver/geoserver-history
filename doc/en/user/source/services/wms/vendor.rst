@@ -5,6 +5,12 @@ WMS vendor parameters
 
 WFS vendor parameters are options that are not defined in the official WFS specification, but are allowed by it.  GeoServer supports a range of custom WFS parameters.
 
+
+angle
+-----
+
+Starting with GeoServer 2.0.2 ``angle=x`` rotates the map around its center by `x` degrees clockwise. The rotation is supported in all raster formats, PDF and SVG based on the Batik producer (the default one).
+
 filter
 ------
 

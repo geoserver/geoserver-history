@@ -385,7 +385,7 @@ public abstract class DefaultRasterMapProducer extends
         try {
             // finally render the image
             final ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-            renderer.paint(graphic, paintArea, dataArea);
+            renderer.paint(graphic, paintArea, dataArea, getRenderingTransform());
 
             // apply watermarking
             try {
@@ -425,6 +425,7 @@ public abstract class DefaultRasterMapProducer extends
                 this.image = preparedImage;
         }
     }
+
 
     /**
      * Set the Watermark Painter.

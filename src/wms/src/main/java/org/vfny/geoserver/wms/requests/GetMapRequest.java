@@ -665,6 +665,18 @@ public class GetMapRequest extends WMSRequest {
         this.rawKvp = rawKvp;
     }
     
+    public double getAngle() {
+    	return this.optionalParams.angle;
+    }
+    
+    /**
+     * Sets the map rotation
+     * @param rotation
+     */
+    public void setAngle(double rotation) {
+    	this.optionalParams.angle = rotation;
+    }
+    
     /**
      * DOCUMENT ME!
      *
@@ -779,6 +791,9 @@ public class GetMapRequest extends WMSRequest {
         /** paging parameters */
         Integer maxFeatures;
         Integer startIndex;
+        
+        /** map rotation */
+        double angle;
     }
 
     /**

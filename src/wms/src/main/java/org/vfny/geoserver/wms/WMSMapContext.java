@@ -42,6 +42,9 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 
 	/** true if background transparency is requested */
 	private boolean transparent;
+	
+	/** map rotation in degrees */
+	private double angle;
 
 	/**
 	 * the rendering buffer used to avoid issues with tiled rendering and big
@@ -176,4 +179,18 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 	public void setPaletteInverter(InverseColorMapOp paletteInverter) {
 		this.paletteInverter = paletteInverter;
 	}
+
+	/**
+	 * The clockwise rotation angle of the map, in degrees
+	 * @return
+	 */
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double rotation) {
+		this.angle = rotation;
+	}
+	
+	
 }

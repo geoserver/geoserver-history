@@ -4,14 +4,18 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.GTRenderer;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 
@@ -183,4 +187,27 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     public Set<String> getOutputFormatNames() {
         return outputFormatNames;
     }
+    
+    /**
+     * Returns the transformation going from the map area space to the screen space taking into
+     * account map rotation
+     * @return
+     */
+    protected AffineTransform getRenderingTransform() {
+        Rectangle paintArea = new Rectangle(0, 0, mapContext.getMapWidth(), mapContext
+                .getMapHeight());
+        ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
+        AffineTransform tx;
+        if (mapContext.getAngle() != 0.0) {
+            tx = new AffineTransform();
+            tx.translate(paintArea.width / 2, paintArea.height / 2);
+            tx.rotate(Math.toRadians(mapContext.getAngle()));
+            tx.translate(-paintArea.width / 2, -paintArea.height / 2);
+            tx.concatenate(RendererUtilities.worldToScreenTransform(dataArea, paintArea));
+        } else {
+            tx = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
+        }
+        return tx;
+    }
+
 }

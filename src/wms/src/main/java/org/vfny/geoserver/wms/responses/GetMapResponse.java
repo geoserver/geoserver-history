@@ -191,6 +191,7 @@ public class GetMapResponse implements Response {
 
         map.setMapWidth(request.getWidth());
         map.setMapHeight(request.getHeight());
+        map.setAngle(request.getAngle());
         map.setBgColor(request.getBgColor());
         map.setTransparent(request.isTransparent());
         map.setBuffer(request.getBuffer());
