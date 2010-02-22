@@ -39,9 +39,17 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 //        return "/DEFAULT_LOGGING.properties";
 //    }
     
+    Map<String, Object> baseMap() {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        raw.put("service", "WCS");
+        raw.put("version", "1.1.1");
+        raw.put("request", "GetCoverage");
+        
+        return raw;
+    }
 
     public void testMissingParams() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
 
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
@@ -78,7 +86,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testUnknownCoverageParams() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = "fairyTales:rumpelstilskin";
         raw.put("identifier", layerId);
         raw.put("format", "SuperCoolFormat");
@@ -93,7 +101,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testBasic() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");
@@ -112,7 +120,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 
 
     public void testUnsupportedCRS() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");
@@ -128,7 +136,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testGridTypes() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");
@@ -171,7 +179,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testGridCS() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");
@@ -199,7 +207,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testGridOrigin() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");
@@ -232,7 +240,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testGridOffsets() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");
@@ -270,7 +278,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
      * @throws Exception
      */
     public void testRangeSubset() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = layerId(TASMANIA_BM);
         raw.put("identifier", layerId);
         raw.put("format", "image/tiff");

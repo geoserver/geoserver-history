@@ -67,7 +67,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
 
     public void testKvpBasic() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -81,10 +81,17 @@ public class GetCoverageTest extends WCSTestSupport {
         assertEquals(CRS.decode("urn:ogc:def:crs:EPSG:6.6:4326"), coverage.getEnvelope()
                 .getCoordinateReferenceSystem());
     }
+
+    private Map<String, Object> baseMap() {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        raw.put("service", "WCS");
+        raw.put("version", "1.1.1");
+        raw.put("request", "GetCoverage");
+        return raw;
+    }
     
     public void testAntimeridianWorld() throws Exception {
-        // for the moment, just make sure we don't die and return something, see 
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(WORLD);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -100,8 +107,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testAntimeridianTaz() throws Exception {
-        // for the moment, just make sure we don't die and return something, see 
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -129,7 +135,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
 
     public void testWrongFormatParams() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "SuperCoolFormat");
@@ -144,7 +150,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
 
     public void testDefaultGridOrigin() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -157,7 +163,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testWrongGridOrigin() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -173,7 +179,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
 
     public void testWrongGridOffsets() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -190,7 +196,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testNoGridOffsets() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -213,7 +219,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testGridOffsetsSubsample() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -239,7 +245,7 @@ public class GetCoverageTest extends WCSTestSupport {
      * @throws Exception
      */
     public void testInvalidRangeSubset() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -278,7 +284,7 @@ public class GetCoverageTest extends WCSTestSupport {
     
 //     disabling tests up until the gt2 code is working again
     public void testRangeSubsetSingle() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -297,7 +303,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testRangeSubsetMulti() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -311,7 +317,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testRangeSubsetSwap() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
@@ -325,7 +331,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testRangeSubsetOnlyInterpolation() throws Exception {
-          Map<String, Object> raw = new HashMap<String, Object>();
+          Map<String, Object> raw = baseMap();
           final String getLayerId = getLayerId(TASMANIA_BM);
           raw.put("identifier", getLayerId);
           raw.put("format", "image/geotiff");
@@ -336,7 +342,7 @@ public class GetCoverageTest extends WCSTestSupport {
     }
     
     public void testRangeSubsetOnlyField() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String getLayerId = getLayerId(TASMANIA_BM);
         raw.put("identifier", getLayerId);
         raw.put("format", "image/geotiff");
