@@ -175,7 +175,10 @@ public class AdvancedDispatchFilter implements Filter {
         }
 
         public String getPathInfo() {
-            return delegate.getPathInfo();
+            if(delegate.getPathInfo().startsWith(servletPath))
+                return delegate.getPathInfo().substring(servletPath.length());
+            else
+                return delegate.getPathInfo();
         }
 
         public String getPathTranslated() {
