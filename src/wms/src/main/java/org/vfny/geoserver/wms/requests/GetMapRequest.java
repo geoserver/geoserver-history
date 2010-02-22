@@ -39,7 +39,7 @@ public class GetMapRequest extends WMSRequest {
 
     /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
-    private static final String TRANSACTION_REQUEST_TYPE = "GetMap";
+    private static final String GETMAP_REQUEST_TYPE = "GetMap";
 
     /** set of mandatory request's parameters */
     private MandatoryParameters mandatoryParams = new MandatoryParameters();
@@ -59,7 +59,7 @@ public class GetMapRequest extends WMSRequest {
      * @param wms The WMS service config.
      */
     public GetMapRequest(WMS wms) {
-        super(TRANSACTION_REQUEST_TYPE, wms);
+        super(GETMAP_REQUEST_TYPE, wms);
     }
 
     /**

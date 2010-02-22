@@ -4,17 +4,28 @@
  */
 package org.geoserver.wms;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.geoserver.catalog.LayerGroupInfo;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.StyleInfo;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.projection.ProjectionException;
+import org.geotools.styling.NamedLayer;
+import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactory;
+import org.geotools.styling.StyledLayer;
+import org.geotools.styling.StyledLayerDescriptor;
+import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -27,6 +38,7 @@ import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.requests.GetStylesRequest;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
@@ -38,7 +50,6 @@ import org.vfny.geoserver.wms.servlets.Capabilities;
 import org.vfny.geoserver.wms.servlets.DescribeLayer;
 import org.vfny.geoserver.wms.servlets.GetFeatureInfo;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
-import org.vfny.geoserver.wms.servlets.GetMap;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -283,8 +294,60 @@ public class DefaultWebMapService implements WebMapService,
     public GetMapResponse reflect(GetMapRequest request) {
         return getMapReflect(request);
     }
+    
+    public StyledLayerDescriptor getStyles(GetStylesRequest request) {
+        if(request.getSldVer() != null 
+                && "".equals(request.getSldVer()) && !"1.0.0".equals(request.getSldVer()))
+            throw new WmsException("SLD version " + request.getSldVer() + " not supported");
+        
+        try {
+            StyleFactory factory = CommonFactoryFinder.getStyleFactory(null);
+            List<StyledLayer> layers = new ArrayList<StyledLayer>();
+            for(String layerName : request.getLayers()) {
+                NamedLayer namedLayer = factory.createNamedLayer();
+                layers.add(namedLayer);
+                namedLayer.setName(layerName);
+                LayerGroupInfo group = wms.getLayerGroupByName(layerName);
+                LayerInfo layer = wms.getLayerByName(layerName);
+                if(group != null) {
+                    // nothing to do, groups have no style
+                } else if(layer != null) {
+                    Style style = layer.getDefaultStyle().getStyle();
+                    // add the default style first
+                    style = cloneStyle(style);
+                    style.setDefault(true);
+                    style.setName(layer.getDefaultStyle().getName());
+                    namedLayer.styles().add(style);
+                    // add alternate styles
+                    for(StyleInfo si : layer.getStyles()) {
+                        style = cloneStyle(si.getStyle());
+                        style.setName(si.getName());
+                        namedLayer.styles().add(style);
+                    }
+                } else {
+                    // we should really add a code and a locator...
+                    throw new WmsException("Unknown layer " + layerName);
+                }
+            }
+            
+            
+            StyledLayerDescriptor sld = factory.createStyledLayerDescriptor();
+            sld.setStyledLayers((StyledLayer[]) layers.toArray(new StyledLayer[layers.size()]));
+            
+            return sld;
+        } catch(IOException e) {
+            throw new WmsException(e);
+        }
+    }
 
-    /**
+    private Style cloneStyle(Style style) {
+        DuplicatingStyleVisitor cloner = new DuplicatingStyleVisitor();
+        style.accept(cloner);
+        style = (Style) cloner.getCopy();
+        return style;
+    }
+
+    /**s
      * @see WebMapService#getMapReflect(GetMapRequest)
      */
     public GetMapResponse getMapReflect(GetMapRequest request) {

@@ -59,6 +59,7 @@ import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
+import org.vfny.geoserver.wms.responses.StylesResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -397,6 +398,12 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleDcpType(serviceUrl, null);
             end("GetLegendGraphic");
+            
+            start("GetStyles");
+            element("Format", StylesResponse.SLD_MIME_TYPE);
+            handleDcpType(serviceUrl, null);
+            end("GetStyles");
+
 
             end("Request");
         }
