@@ -4,10 +4,12 @@
  */
 package org.geoserver.wms;
 
+import org.geotools.styling.StyledLayerDescriptor;
 import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.requests.GetStylesRequest;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
@@ -68,4 +70,6 @@ public interface WebMapService {
     GetMapResponse reflect(GetMapRequest request);
 
     GetMapResponse getMapReflect(GetMapRequest request);
+
+    StyledLayerDescriptor getStyles(GetStylesRequest request);
 }

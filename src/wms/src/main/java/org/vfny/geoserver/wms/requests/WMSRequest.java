@@ -16,7 +16,7 @@ import org.vfny.geoserver.Request;
  */
 public class WMSRequest extends Request {
     public static final String WMS_SERVICE_TYPE = "WMS";
-    private WMS wms;
+    protected WMS wms;
 
     /**
      * Creates the new request, supplying the request name and the sevlet

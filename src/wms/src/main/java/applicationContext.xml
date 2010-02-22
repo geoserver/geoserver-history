@@ -76,6 +76,7 @@
             <value>Map</value>
             <value>reflect</value>
             <value>kml</value>
+            <value>GetStyles</value>
           </list>
         </constructor-arg>
  	</bean>
@@ -128,6 +129,12 @@
  	<bean id="angleKvpParser" class="org.geoserver.ows.kvp.DoubleKvpParser">
 		<constructor-arg value="angle"/>
  	</bean>
+ 	<bean id="stylesKvpParser" class="org.geoserver.ows.FlatKvpParser">
+		<constructor-arg index="0" value="layers"/>
+		<constructor-arg index="1" value="java.lang.String"/>
+		<property name="request" value="GetStyles"/>
+		<property name="service" value="WMS"/>
+ 	</bean>
  	
  	
  	<!-- kvp request readers -->
@@ -175,6 +182,10 @@
       	<constructor-arg index="2" ref="wms" />
 	</bean>
    -->
+	
+	<bean id="getStylesKvpReader" class="org.geoserver.wms.kvp.GetStylesKvpRequestReader">
+		<constructor-arg index="0" ref="wms"/> 
+	</bean>
 		
 	<!-- xml request readers -->
     <bean id="wmsCapabilitiesXmlReader" 
@@ -220,6 +231,7 @@
 		<constructor-arg value="org.vfny.geoserver.wms.responses.GetLegendGraphicResponse"/>
 		<constructor-arg ref="geoServer"/>
 	</bean>
+	<bean id="stylesResponse" class="org.vfny.geoserver.wms.responses.StylesResponse"/>
 	
 	<!-- Wrapping the PutStyles servlet in a controller while we wait to rewrite it for good -->
     <!-- GR: commenting out, putStyles is not being used nor maintained? -->
