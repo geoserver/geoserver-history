@@ -44,6 +44,7 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.data.wms.response.GetStylesResponse;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -399,7 +400,7 @@ public class WMSCapsTransformer extends TransformerBase {
 
             handleDcpType(serviceUrl, null);
             end("GetLegendGraphic");
-
+            
             end("Request");
         }
 

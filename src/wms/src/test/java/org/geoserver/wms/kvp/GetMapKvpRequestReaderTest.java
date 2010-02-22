@@ -86,6 +86,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         raw.put("bbox", "-10,-10,10,10");
         raw.put("height", "600");
         raw.put("width", "800");
+        raw.put("request", "GetMap");
 
         GetMapRequest request = (GetMapRequest) reader.createRequest();
         request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
