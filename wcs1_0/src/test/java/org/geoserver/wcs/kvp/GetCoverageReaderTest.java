@@ -36,7 +36,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     // }
 
     public void testMissingParams() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
 
         try {
             reader.read(reader.createRequest(), parseKvp(raw), raw);
@@ -76,8 +76,16 @@ public class GetCoverageReaderTest extends WCSTestSupport {
 
     }
 
-    public void testUnknownCoverageParams() throws Exception {
+    private Map<String, Object> baseMap() {
         Map<String, Object> raw = new HashMap<String, Object>();
+        raw.put("service", "WCS");
+        raw.put("version", "1.0.0");
+        raw.put("request", "GetCoverage");
+        return raw;
+    }
+
+    public void testUnknownCoverageParams() throws Exception {
+        Map<String, Object> raw = baseMap();
         final String layerId = "fairyTales:rumpelstilskin";
         raw.put("sourcecoverage", layerId);
         raw.put("format", "SuperCoolFormat");
@@ -93,7 +101,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testBasic() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = getLayerId(TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");
@@ -111,7 +119,7 @@ public class GetCoverageReaderTest extends WCSTestSupport {
     }
 
     public void testUnsupportedCRS() throws Exception {
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerId = getLayerId(TASMANIA_BM);
         raw.put("SourceCoverage", layerId);
         raw.put("version", "1.0.0");

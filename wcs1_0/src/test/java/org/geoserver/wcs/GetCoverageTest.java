@@ -68,6 +68,15 @@ public class GetCoverageTest extends WCSTestSupport {
     protected String getLogConfiguration() {
         return "/DEFAULT_LOGGING.properties";
     }
+    
+    private Map<String, Object> baseMap() {
+        Map<String, Object> raw = new HashMap<String, Object>();
+        raw.put("service", "WCS");
+        raw.put("version", "1.0.0");
+        raw.put("request", "GetCoverage");
+        return raw;
+    }
+    
     public void testDomainSubsetRxRy() throws Exception {
     	// get base  coverage
         final GridCoverage baseCoverage = catalog.getCoverageByName(TASMANIA_BM.getLocalPart()).getGridCoverage(null, null);
@@ -89,7 +98,7 @@ public class GetCoverageTest extends WCSTestSupport {
         envelopeBuilder.append(newEnvelope.getMaximum(0)).append(",");
         envelopeBuilder.append(newEnvelope.getMaximum(1));
         
-        Map<String, Object> raw = new HashMap<String, Object>();
+        Map<String, Object> raw = baseMap();
         final String layerID = getLayerId(TASMANIA_BM);
         raw.put("sourcecoverage", layerID);
         raw.put("version", "1.0.0");

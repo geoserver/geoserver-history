@@ -7,6 +7,7 @@ package org.geoserver.test.ows;
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.test.GeoServerTestSupport;
 import java.util.HashMap;
@@ -33,35 +34,19 @@ public abstract class KvpRequestReaderTestSupport extends GeoServerTestSupport {
      */
     protected Map parseKvp(Map /*<String,String>*/ raw)
         throws Exception {
-        //parse the raw values
-        List parsers = GeoServerExtensions.extensions(KvpParser.class, applicationContext);
-        Map kvp = new CaseInsensitiveMap(new HashMap());
-
-        for (Iterator e = raw.entrySet().iterator(); e.hasNext();) {
-            Map.Entry entry = (Map.Entry) e.next();
-            String key = (String) entry.getKey();
-            String val = (String) entry.getValue();
-            Object parsed = null;
-
-            for (Iterator p = parsers.iterator(); p.hasNext();) {
-                KvpParser parser = (KvpParser) p.next();
-
-                if (key.equalsIgnoreCase(parser.getKey())) {
-                    parsed = parser.parse(val);
-
-                    if (parsed != null) {
-                        break;
-                    }
-                }
-            }
-
-            if (parsed == null) {
-                parsed = val;
-            }
-
-            kvp.put(key, parsed);
+        
+        // parse like the dispatcher but make sure we don't change the original map
+        HashMap input = new HashMap(raw);
+        List<Throwable> errors = KvpUtils.parse(input);
+        if(errors != null && errors.size() > 0)
+            throw (Exception) errors.get(0);
+        
+        // make it case insensitive like the servlet+dispatcher maps
+        Map result = new HashMap();
+        for (Iterator it = input.keySet().iterator(); it.hasNext();) {
+            String key = (String) it.next();
+            result.put(key.toUpperCase(), input.get(key));
         }
-
-        return kvp;
+        return new CaseInsensitiveMap(result);
     }
 }
