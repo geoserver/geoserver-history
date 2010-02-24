@@ -35,6 +35,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -139,8 +140,13 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         //declare wfs schema location
         BaseRequestType gft = (BaseRequestType)getFeature.getParameters()[0];
         
-        encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
-                buildSchemaURL(gft.getBaseUrl(), "wfs/1.1.0/wfs.xsd"));
+        if (wfs.isCanonicalSchemaLocation()) {
+            encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
+                    WFS.CANONICAL_SCHEMA_LOCATION);
+        } else {
+            encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
+                    buildSchemaURL(gft.getBaseUrl(), "wfs/1.1.0/wfs.xsd"));
+        }
 
         //declare application schema namespaces
         Map<String, String> params = params("service", "WFS", "version", "1.1.0", "request", "DescribeFeatureType");

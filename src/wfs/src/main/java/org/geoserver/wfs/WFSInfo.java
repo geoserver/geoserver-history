@@ -162,4 +162,19 @@ public interface WFSInfo extends ServiceInfo {
      * 
      */
     void setFeatureBounding( boolean featureBounding);
+    
+    /**
+     * Get the flag that determines the encoding of the WFS schemaLocation. 
+     * True if the WFS schemaLocation should refer to the canonical location,
+     * false if the WFS schemaLocation should refer to a copy served by GeoServer.
+     */
+    boolean isCanonicalSchemaLocation();
+
+    /**
+     * Set the flag that determines the encoding of the WFS schemaLocation. 
+     * True if the WFS schemaLocation should refer to the canonical location,
+     * false if the WFS schemaLocation should refer to a copy served by GeoServer.
+     */
+    void setCanonicalSchemaLocation(boolean canonicalSchemaLocation);
+    
 }

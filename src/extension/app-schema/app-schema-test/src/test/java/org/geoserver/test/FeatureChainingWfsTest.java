@@ -9,11 +9,10 @@ package org.geoserver.test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 import junit.framework.Test;
+
 import org.geotools.data.complex.AppSchemaDataAccess;
-import org.geotools.wfs.v1_1.WFS;
 import org.w3c.dom.Document;
 
 /**
@@ -23,18 +22,6 @@ import org.w3c.dom.Document;
  * @author Rini Angreani, Curtin University of Technology
  */
 public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
-
-    /**
-     * Pattern to match namespace/schemaLocation pair for WFS 1.1 schema.
-     * 
-     * <p>
-     * 
-     * Use of pattern is to support matching any port number on localhost (can't assume it is alwats
-     * port 80)..
-     */
-    private static final String DEFAULT_WFS_SCHEMALOCATION = Pattern.quote(WFS.NAMESPACE) + " "
-            + Pattern.quote("http://localhost:") + "\\d+"
-            + Pattern.quote("/geoserver/schemas/wfs/1.1.0/wfs.xsd");
 
     /**
      * Read-only test so can use one-time setup.
@@ -282,14 +269,14 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         String schemaLocation = evaluate("/wfs:FeatureCollection/@xsi:schemaLocation", doc);
         String gsmlLocation = AbstractAppSchemaMockData.GSML_URI + " "
                 + AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL;
+        String wfsLocation = org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE + " "
+                + org.geoserver.wfs.xml.v1_1_0.WFS.CANONICAL_SCHEMA_LOCATION;
         if (schemaLocation.startsWith(AbstractAppSchemaMockData.GSML_URI)) {
             // GSML schema location was encoded first
-            assertTrue(Pattern.matches(Pattern.quote(gsmlLocation) + " "
-                    + DEFAULT_WFS_SCHEMALOCATION, schemaLocation));
+            assertEquals(gsmlLocation + " " + wfsLocation, schemaLocation);
         } else {
             // WFS schema location was encoded first
-            assertTrue(Pattern.matches(DEFAULT_WFS_SCHEMALOCATION + " "
-                    + Pattern.quote(gsmlLocation), schemaLocation));
+            assertEquals(wfsLocation + " " + gsmlLocation, schemaLocation);
         }
 
         // mf1
