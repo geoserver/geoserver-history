@@ -33,7 +33,6 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
     }
     
     protected void build(final IModel info, Form form) {
-        //max features
         form.add( new TextField( "maxFeatures" ) );
         form.add( new CheckBox("featureBounding") );
         
@@ -58,6 +57,8 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
 
         form.add(new GMLPanel("gml2", gml2Model));
         form.add(new GMLPanel("gml3", gml3Model));
+
+        form.add( new CheckBox("canonicalSchemaLocation") );
     }
     
     static class GMLPanel extends Panel {

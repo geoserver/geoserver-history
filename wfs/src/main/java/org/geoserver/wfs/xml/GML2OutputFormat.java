@@ -29,6 +29,7 @@ import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
+import org.geotools.wfs.WFS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -201,8 +202,12 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         transformer.setCollectionBounding(wfs.isFeatureBounding());
         transformer.setEncoding(Charset.forName(global.getCharset()));
 
-        String wfsSchemaloc = wfsSchemaLocation(global,request.getBaseUrl());
-        transformer.addSchemaLocation("http://www.opengis.net/wfs", wfsSchemaloc);
+        if (wfs.isCanonicalSchemaLocation()) {
+            transformer.addSchemaLocation(WFS.NAMESPACE, wfsCanonicalSchemaLocation());
+        } else {
+            String wfsSchemaloc = wfsSchemaLocation(global,request.getBaseUrl());
+            transformer.addSchemaLocation(WFS.NAMESPACE, wfsSchemaloc);
+        }
 
         for (Iterator it = ftNamespaces.keySet().iterator(); it.hasNext();) {
             String uri = (String) it.next();
@@ -292,6 +297,10 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         return buildSchemaURL(baseUrl, "wfs/1.0.0/WFS-basic.xsd");
     }
 
+    protected String wfsCanonicalSchemaLocation() {
+        return org.geoserver.wfs.xml.v1_0_0.WFS.CANONICAL_SCHEMA_LOCATION_BASIC;
+    }
+    
     protected String typeSchemaLocation(GeoServerInfo global, FeatureTypeInfo meta, String baseUrl) {
         Map<String, String> params = params("service", "WFS", "version", "1.0.0", 
                 "request", "DescribeFeatureType", "typeName", meta.getPrefixedName());

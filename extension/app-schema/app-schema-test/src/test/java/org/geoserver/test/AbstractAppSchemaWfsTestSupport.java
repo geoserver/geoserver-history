@@ -23,6 +23,7 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.geotools.data.complex.DataAccessRegistry;
 import org.w3c.dom.Document;
@@ -65,7 +66,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
      * The XpathEngine to be used for this namespace context.
      */
     private XpathEngine xpathEngine;
-
+    
     /**
      * Subclasses override this to construct the test data.
      * 
@@ -92,6 +93,27 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
         return (NamespaceTestData) super.getTestData();
     }  
     
+    /**
+     * Configure WFS to encode canonical schema location.
+     * 
+     * <p>
+     * 
+     * FIXME: This setting should go in wfs.xml for the mock data when tests migrated to new data
+     * directory format. Have to do it programmatically for now. To do this insert in wfs.xml just
+     * after the <tt>featureBounding</tt> setting:
+     * 
+     * <p>
+     * 
+     * <tt>&lt;canonicalSchemaLocation&gt;true&lt;/canonicalSchemaLocation&gt;<tt>
+     */
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
+        WFSInfo wfs = getGeoServer().getService(WFSInfo.class);
+        wfs.setCanonicalSchemaLocation(true);
+        getGeoServer().save(wfs);
+    }
+
     /**
      * Unregister all data access from registry to avoid stale data access being used by other unit
      * tests.
