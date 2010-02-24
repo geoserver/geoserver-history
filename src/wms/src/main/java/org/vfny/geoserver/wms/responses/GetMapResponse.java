@@ -31,8 +31,10 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
+import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
@@ -61,9 +63,9 @@ import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
- * A GetMapResponse object is responsible of generating a map based on a GetMap
- * request. The way the map is generated is independent of this class, wich will
- * use a delegate object based on the output format requested
+ * A GetMapResponse object is responsible of generating a map based on a GetMap request. The way the
+ * map is generated is independent of this class, wich will use a delegate object based on the
+ * output format requested
  * 
  * @author Gabriel Roldan, Axios Engineering
  * @author Simone Giannecchini - GeoSolutions SAS
@@ -71,14 +73,13 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public class GetMapResponse implements Response {
     /** DOCUMENT ME! */
-    static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(GetMapResponse.class.getName());
+    static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(GetMapResponse.class
+            .getName());
 
     private static FilterFactory filterFac = CommonFactoryFinder.getFilterFactory(null);
 
     /**
-     * The map producer that will be used for the production of a map in the
-     * requested format.
+     * The map producer that will be used for the production of a map in the requested format.
      */
     private GetMapProducer delegate;
 
@@ -100,14 +101,14 @@ public class GetMapResponse implements Response {
      * Creates a new GetMapResponse object.
      * 
      * @param availableProducers
-     *                the list of available map producers where to get one to handle the request
-     *                format at {@link #execute(Request)}
+     *            the list of available map producers where to get one to handle the request format
+     *            at {@link #execute(Request)}
      */
     public GetMapResponse(Collection<GetMapProducer> availableProducers) {
-        if(availableProducers == null){
+        if (availableProducers == null) {
             throw new NullPointerException("availableProducers");
         }
-        if(availableProducers.size() == 0){
+        if (availableProducers.size() == 0) {
             throw new IllegalArgumentException("No available map producers provided");
         }
         this.availableProducers = new ArrayList<GetMapProducer>(availableProducers);
@@ -115,18 +116,16 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Returns any extra headers that this service might want to set in the HTTP
-     * response object.
+     * Returns any extra headers that this service might want to set in the HTTP response object.
      * 
      */
     public HashMap<String, String> getResponseHeaders() {
-        return responseHeaders == null? null : new HashMap<String, String>(responseHeaders);
+        return responseHeaders == null ? null : new HashMap<String, String>(responseHeaders);
     }
 
     /**
-     * Implements the map production logic for a WMS GetMap request, delegating
-     * the encoding to the appropriate output format to a {@link GetMapProducer}
-     * appropriate for the required format.
+     * Implements the map production logic for a WMS GetMap request, delegating the encoding to the
+     * appropriate output format to a {@link GetMapProducer} appropriate for the required format.
      * 
      * <p>
      * Preconditions:
@@ -142,12 +141,11 @@ public class GetMapResponse implements Response {
      * @throws ServiceException
      *             if an error occurs creating the map from the provided request
      * 
-     * TODO: This method have become a 300+ lines monster, refactore it to
-     * private methods from which names one can inferr what's going on... but
-     * get a decent test coverage on it first as to avoid regressions as much as
-     * possible
+     *             TODO: This method have become a 300+ lines monster, refactore it to private
+     *             methods from which names one can inferr what's going on... but get a decent test
+     *             coverage on it first as to avoid regressions as much as possible
      */
-    @SuppressWarnings(value={"unchecked","deprecation"})
+    @SuppressWarnings(value = { "unchecked", "deprecation" })
     public void execute(Request req) throws ServiceException {
         final GetMapRequest request = (GetMapRequest) req;
         assertMandatory(request);
@@ -331,57 +329,56 @@ public class GetMapResponse implements Response {
                     layer.setQuery(definitionQuery);
                     mapContext.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
-                	
 
-                    
-                    
                     // /////////////////////////////////////////////////////////
                     //
                     // Adding a coverage layer
                     //
                     // /////////////////////////////////////////////////////////
-                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers[i].getCoverageReader();
+                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) layers[i]
+                            .getCoverageReader();
                     if (reader != null) {
 
-                    	// get the group of parameters tha this reader supports
-                        final ParameterValueGroup readParametersDescriptor = reader.getFormat().getReadParameters();
-                    	GeneralParameterValue[] readParameters = CoverageUtils.getParameters(readParametersDescriptor, layers[i].getCoverage().getParameters());                        
-                        
+                        // get the group of parameters tha this reader supports
+                        final ParameterValueGroup readParametersDescriptor = reader.getFormat()
+                                .getReadParameters();
+                        GeneralParameterValue[] readParameters = CoverageUtils.getParameters(
+                                readParametersDescriptor, layers[i].getCoverage().getParameters());
+
                         //
                         // Setting coverage reading params.
                         //
 
                         /*
-                         * Test if the parameter "TIME" is present in the WMS
-                         * request, and by the way in the reading parameters. If
-                         * it is the case, one can adds it to the request. If an
-                         * exception is thrown, we have nothing to do.
+                         * Test if the parameter "TIME" is present in the WMS request, and by the
+                         * way in the reading parameters. If it is the case, one can adds it to the
+                         * request. If an exception is thrown, we have nothing to do.
                          */
-                    	final List dateTime = request.getTime();
-                    	final boolean hasTime=dateTime!=null&&dateTime.size()>0;
-                        final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor.getDescriptor().descriptors();
-                        if(hasTime)
-                            for(GeneralParameterDescriptor pd:parameterDescriptors){
+                        final List dateTime = request.getTime();
+                        final boolean hasTime = dateTime != null && dateTime.size() > 0;
+                        final List<GeneralParameterDescriptor> parameterDescriptors = readParametersDescriptor
+                                .getDescriptor().descriptors();
+                        if (hasTime)
+                            for (GeneralParameterDescriptor pd : parameterDescriptors) {
 
                                 // TIME
-                                if(pd.getName().getCode().equalsIgnoreCase("TIME")){
-                                    final ParameterValue time=(ParameterValue) pd.createValue();
+                                if (pd.getName().getCode().equalsIgnoreCase("TIME")) {
+                                    final ParameterValue time = (ParameterValue) pd.createValue();
                                     if (time != null) {
                                         time.setValue(request.getTime());
                                     }
 
                                     // add to the list
-                                    GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
-                                    System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-                                    readParametersClone[readParameters.length]=time;
-                                    readParameters=readParametersClone;
+                                    GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
+                                    System.arraycopy(readParameters, 0, readParametersClone, 0,
+                                            readParameters.length);
+                                    readParametersClone[readParameters.length] = time;
+                                    readParameters = readParametersClone;
 
-                                    // leave 
+                                    // leave
                                     break;
                                 }
                             }
-                        
-                            
 
                         // uncomment when the DIM_RANGE vendor parameter will be
                         // enabled
@@ -397,51 +394,48 @@ public class GetMapResponse implements Response {
                         // }
 
                         /*
-                         * Test if the parameter "TIME" is present in the WMS
-                         * request, and by the way in the reading parameters. If
-                         * it is the case, one can adds it to the request. If an
-                         * exception is thrown, we have nothing to do.
+                         * Test if the parameter "TIME" is present in the WMS request, and by the
+                         * way in the reading parameters. If it is the case, one can adds it to the
+                         * request. If an exception is thrown, we have nothing to do.
                          */
-                    	final double  elevationValue = request.getElevation();
-                    	final boolean hasElevation=!Double.isNaN(elevationValue);
-                    	if(hasElevation)
-                    	    for(GeneralParameterDescriptor pd:parameterDescriptors){
+                        final double elevationValue = request.getElevation();
+                        final boolean hasElevation = !Double.isNaN(elevationValue);
+                        if (hasElevation)
+                            for (GeneralParameterDescriptor pd : parameterDescriptors) {
 
-                    	        // ELEVATION
-                    	        if(pd.getName().getCode().equalsIgnoreCase("ELEVATION")){
-                    	            final ParameterValue elevation=(ParameterValue) pd.createValue();
-                    	            if (elevation != null) {
-                    	                elevation.setValue(request.getElevation());
-                    	            }
+                                // ELEVATION
+                                if (pd.getName().getCode().equalsIgnoreCase("ELEVATION")) {
+                                    final ParameterValue elevation = (ParameterValue) pd
+                                            .createValue();
+                                    if (elevation != null) {
+                                        elevation.setValue(request.getElevation());
+                                    }
 
-                    	            // add to the list
-                    	            GeneralParameterValue[] readParametersClone= new GeneralParameterValue[readParameters.length+1];
-                    	            System.arraycopy(readParameters, 0,readParametersClone , 0, readParameters.length);
-                    	            readParametersClone[readParameters.length]=elevation;
-                    	            readParameters=readParametersClone;
+                                    // add to the list
+                                    GeneralParameterValue[] readParametersClone = new GeneralParameterValue[readParameters.length + 1];
+                                    System.arraycopy(readParameters, 0, readParametersClone, 0,
+                                            readParameters.length);
+                                    readParametersClone[readParameters.length] = elevation;
+                                    readParameters = readParametersClone;
 
-                    	            // leave 
-                    	            break;
-                    	        }
-                    	    }
-
+                                    // leave
+                                    break;
+                                }
+                            }
 
                         try {
 
-                            layer = new DefaultMapLayer(
-                            		FeatureUtilities.wrapGridCoverageReader(
-                            				reader, 
-                            				readParameters
-                            				)
-                            		,layerStyle
-                            		);
+                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
+                                    reader, readParameters), layerStyle);
 
                             layer.setTitle(layers[i].getCoverage().getName());
                             layer.setQuery(Query.ALL);
                             mapContext.addLayer(layer);
                         } catch (IllegalArgumentException e) {
                             if (LOGGER.isLoggable(Level.SEVERE)) {
-                                LOGGER.log(Level.SEVERE, new StringBuilder("Wrapping GC in feature source: ").append( e.getLocalizedMessage()).toString(), e);
+                                LOGGER.log(Level.SEVERE, new StringBuilder(
+                                        "Wrapping GC in feature source: ").append(
+                                        e.getLocalizedMessage()).toString(), e);
                             }
 
                             throw new WmsException(
@@ -458,6 +452,9 @@ public class GetMapResponse implements Response {
                 }
             }
 
+            // setup the SLD variable substitution environment
+            EnvFunction.setLocalValues(request.getEnv());
+
             // /////////////////////////////////////////////////////////
             //
             // Producing the map in the requested format.
@@ -466,11 +463,11 @@ public class GetMapResponse implements Response {
             this.delegate.produceMap();
 
             if (cachingPossible) {
-                if(responseHeaders == null){
+                if (responseHeaders == null) {
                     responseHeaders = new HashMap<String, String>();
                 }
                 responseHeaders.put("Cache-Control", "max-age=" + maxAge + ", must-revalidate");
-                
+
                 Date expires = new Date();
                 expires.setTime(expires.getTime() + maxAge * 1000);
                 DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
@@ -485,9 +482,11 @@ public class GetMapResponse implements Response {
         } catch (Exception e) {
             clearMapContext();
             throw new WmsException(e, "Internal error ", "");
+        } finally {
+            EnvFunction.clearLocalValues();
         }
     }
-    
+
     /**
      * Asserts the mandatory GetMap parameters have been provided.
      * <p>
@@ -529,24 +528,22 @@ public class GetMapResponse implements Response {
                     .append(env).toString(), "InvalidBBox");
         }
     }
-    
 
     /**
-     * Returns the list of filters resulting of comining the layers definition
-     * filters with the per layer filters made by the user.
+     * Returns the list of filters resulting of comining the layers definition filters with the per
+     * layer filters made by the user.
      * <p>
-     * If <code>requestFilters != null</code>, it shall contain the same
-     * number of elements than <code>layers</code>, as filters are requested
-     * one per layer.
+     * If <code>requestFilters != null</code>, it shall contain the same number of elements than
+     * <code>layers</code>, as filters are requested one per layer.
      * </p>
      * 
      * @param requestFilters
      *            the list of filters sent by the user, or <code>null</code>
      * @param layers
-     *            the layers requested in the GetMap request, where to get the
-     *            per layer definition filters from.
-     * @return a list of filters, one per layer, resulting of anding the user
-     *         requested filter and the layer definition filter
+     *            the layers requested in the GetMap request, where to get the per layer definition
+     *            filters from.
+     * @return a list of filters, one per layer, resulting of anding the user requested filter and
+     *         the layer definition filter
      */
     private Filter[] buildLayersFilters(List<Filter> requestFilters, MapLayerInfo[] layers) {
         final int nLayers = layers.length;
@@ -575,25 +572,26 @@ public class GetMapResponse implements Response {
                     layerDefinitionFilter = Filter.INCLUDE;
                 }
                 combined = filterFac.and(layerDefinitionFilter, userRequestedFilter);
-                
+
                 FeatureTypeConstraint[] featureTypeConstraints = layer.getLayerFeatureConstraints();
                 if (featureTypeConstraints != null) {
-	                List<Filter> filters = new ArrayList<Filter>();
-					for (int j=0;j<featureTypeConstraints.length; j++) {
-						FeatureTypeConstraint featureTypeConstraint =  featureTypeConstraints[j];
-						filters.add(featureTypeConstraint.getFilter());
-					};
-					combined = filterFac.and(combined, filterFac.and(filters));
+                    List<Filter> filters = new ArrayList<Filter>();
+                    for (int j = 0; j < featureTypeConstraints.length; j++) {
+                        FeatureTypeConstraint featureTypeConstraint = featureTypeConstraints[j];
+                        filters.add(featureTypeConstraint.getFilter());
+                    }
+                    ;
+                    combined = filterFac.and(combined, filterFac.and(filters));
                 }
                 combinedList[i] = combined;
-            }        
+            }
         }
         return combinedList;
     }
 
     /**
-     * asks the internal GetMapDelegate for the MIME type of the map that it
-     * will generate or is ready to, and returns it
+     * asks the internal GetMapDelegate for the MIME type of the map that it will generate or is
+     * ready to, and returns it
      * 
      * @param gs
      *            DOCUMENT ME!
@@ -642,8 +640,8 @@ public class GetMapResponse implements Response {
 
     /**
      * delegates the writing and encoding of the results of the request to the
-     * <code>GetMapDelegate</code> wich is actually processing it, and has
-     * been obtained when <code>execute(Request)</code> was called
+     * <code>GetMapDelegate</code> wich is actually processing it, and has been obtained when
+     * <code>execute(Request)</code> was called
      * 
      * @param out
      *            the output to where the map must be written
@@ -655,8 +653,7 @@ public class GetMapResponse implements Response {
      *             if the delegate throws an IOException inside its
      *             <code>writeTo(OuptutStream)</code>, mostly due to
      * @throws IllegalStateException
-     *             if this method is called before <code>execute(Request)</code>
-     *             has succeed
+     *             if this method is called before <code>execute(Request)</code> has succeed
      */
     public void writeTo(OutputStream out) throws ServiceException, IOException {
         try { // mapcontext can leak memory -- we make sure we done (see
@@ -679,8 +676,7 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Clearing the map context is paramount, otherwise we end up with a memory
-     * leak
+     * Clearing the map context is paramount, otherwise we end up with a memory leak
      */
     void clearMapContext() {
         try {
@@ -696,20 +692,19 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * Finds out a {@link GetMapProducer} specialized in generating the
-     * requested map format, registered in the spring context.
+     * Finds out a {@link GetMapProducer} specialized in generating the requested map format,
+     * registered in the spring context.
      * 
      * @param outputFormat
-     *            a request parameter object wich holds the processed request
-     *            objects, such as layers, bbox, outpu format, etc.
+     *            a request parameter object wich holds the processed request objects, such as
+     *            layers, bbox, outpu format, etc.
      * 
-     * @return A specialization of <code>GetMapDelegate</code> wich can
-     *         produce the requested output map format
+     * @return A specialization of <code>GetMapDelegate</code> wich can produce the requested output
+     *         map format
      * 
      * @throws WmsException
-     *             if no specialization is configured for the output format
-     *             specified in <code>request</code> or if it can't be
-     *             instantiated
+     *             if no specialization is configured for the output format specified in
+     *             <code>request</code> or if it can't be instantiated
      */
     private GetMapProducer getDelegate(final String outputFormat) throws WmsException {
         final GetMapProducer producer = WMSExtensions.findMapProducer(outputFormat,
@@ -741,8 +736,7 @@ public class GetMapResponse implements Response {
     }
 
     /**
-     * This is package visible only to allow getting to the delegate from inside
-     * unit tests
+     * This is package visible only to allow getting to the delegate from inside unit tests
      * 
      * @return
      */

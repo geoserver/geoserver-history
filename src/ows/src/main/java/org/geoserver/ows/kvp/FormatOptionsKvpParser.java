@@ -32,7 +32,17 @@ public class FormatOptionsKvpParser extends KvpParser implements ApplicationCont
     ApplicationContext applicationContext;
 
     public FormatOptionsKvpParser() {
-        super("format_options", Map.class);
+        this("format_options");
+    }
+ 
+    /**
+     * Builds a {@link FormatOptionsKvpParser} with a user specified key (for params that have the
+     * syntax of format_options, but not the same name)
+     * 
+     * @param key
+     */
+    public FormatOptionsKvpParser(String key) {
+        super(key, Map.class);
     }
 
     public void setApplicationContext(ApplicationContext applicationContext)
