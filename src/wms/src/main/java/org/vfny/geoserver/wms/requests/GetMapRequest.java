@@ -49,6 +49,9 @@ public class GetMapRequest extends WMSRequest {
 
     /** format options */
     private Map /*<String,Object>*/ formatOptions = new CaseInsensitiveMap(new HashMap());
+    
+    /** format options */
+    private Map /*<String,Object>*/ env = new HashMap();
 
     /** raw kvp parameters non-parsed */
     private Map /*<String,String>*/ rawKvp;
@@ -120,6 +123,14 @@ public class GetMapRequest extends WMSRequest {
      */
     public Map getFormatOptions() {
         return formatOptions;
+    }
+
+    /**
+     * Map of strings that make up the SLD enviroment for variable substitution
+     * @return
+     */
+    public Map getEnv() {
+        return env;
     }
 
     /**
@@ -414,6 +425,14 @@ public class GetMapRequest extends WMSRequest {
      */
     public void setFormatOptions(Map formatOptions) {
         this.formatOptions = formatOptions;
+    }
+
+    /**
+     * Sets the SLD environment substitution
+     * @param enviroment
+     */
+    public void setEnv(Map enviroment) {
+        this.env = enviroment;
     }
 
     /**

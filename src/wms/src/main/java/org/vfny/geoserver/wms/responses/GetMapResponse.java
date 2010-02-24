@@ -31,6 +31,7 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.map.MapLayer;
@@ -413,6 +414,9 @@ public class GetMapResponse implements Response {
                     }
                 }
             }
+            
+            // setup the SLD variable substitution environment
+            EnvFunction.setLocalValues(request.getEnv());
 
             // /////////////////////////////////////////////////////////
             //
@@ -441,6 +445,8 @@ public class GetMapResponse implements Response {
         } catch (Exception e) {
             clearMapContext();
             throw new WmsException(e, "Internal error ", "");
+        } finally {
+            EnvFunction.clearLocalValues();
         }
     }
     

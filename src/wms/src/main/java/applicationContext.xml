@@ -97,6 +97,9 @@
 		<constructor-arg value="height"/>
  	</bean>
  	<bean id="wmsFormatOptionsKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser"/>
+ 	<bean id="wmsEnviromentKvpParser" class="org.geoserver.ows.kvp.FormatOptionsKvpParser">
+ 		<constructor-arg index="0" value="env"/>
+ 	</bean>
  	<bean id="bgColorKvpParser" class="org.geoserver.wms.kvp.ColorKvpParser">
 		<constructor-arg value="bgcolor"/>
  	</bean> 	
