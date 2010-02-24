@@ -7,6 +7,7 @@ package org.vfny.geoserver.wms.responses;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
+import org.geotools.filter.function.EnvFunction;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.wms.WmsException;
@@ -93,8 +94,14 @@ public class GetFeatureInfoResponse implements Response {
         LOGGER.entering(getClass().getName(), "execute", new Object[] { request });
 
         GetFeatureInfoRequest getFeatureInfoReq = (GetFeatureInfoRequest) request;
-        this.delegate = getDelegate(getFeatureInfoReq);
-        delegate.execute(request);
+        
+        EnvFunction.setLocalValues(getFeatureInfoReq.getGetMapRequest().getEnv());
+        try {
+            this.delegate = getDelegate(getFeatureInfoReq);
+            delegate.execute(request);
+        } finally {
+            EnvFunction.clearLocalValues();
+        }
     }
 
     /**
