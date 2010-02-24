@@ -5,39 +5,11 @@ WMS vendor parameters
 
 WFS vendor parameters are options that are not defined in the official WFS specification, but are allowed by it.  GeoServer supports a range of custom WFS parameters.
 
-
 angle
 -----
 
 Starting with GeoServer 2.0.2 ``angle=x`` rotates the map around its center by `x` degrees clockwise. The rotation is supported in all raster formats, PDF and SVG based on the Batik producer (the default one).
 
-filter
-------
-
-The WMS specification does not allow for much filtering of data.  GeoServer's WMS filter options are expanded to match those allowed by WFS.
-
-The ``filter`` parameter encodes a list of OGC filters (in XML).  The list is enclosed in () parenthesis.  When this parameter is used in a GET request, the brackets of XML need to be URL-encoded.  If more than one layer is specified in the ``layers`` parameter, then more than one filter can be specified here, each corresponding to a layer.
-
-An example of an OGC filter encoded as part of a GET request::
-
-   filter=%3CFilter%20xmlns:gml=%22http://www.opengis.net/gml%22%3E%3CIntersects%3E%3CPropertyName%3Ethe_geom%3C/PropertyName%3E%3Cgml:Point%20srsName=%224326%22%3E%3Cgml:coordinates%3E-74.817265,40.5296504%3C/gml:coordinates%3E%3C/gml:Point%3E%3C/Intersects%3E%3C/Filter%3E
-
-cql_filter
-----------
-
-The ``cql_filter`` parameter is similar to the ``filter`` parameter, expect that the filter is encoded using CQL (Common Query Language).  This makes the request much more human readable.  However, CQL isn't as flexible as OGC filters, and can't encode as many types of filters as the OGC specification does. In particular, filters by feature ID are not supported.  If more than one layer is specified in the ``layers`` parameter, then more than one filter can be specified here, each corresponding to a layer.
-
-An example of the same filter as above using CQL::
-
-   cql_filter=INTERSECT(the_geom,%20POINT%20(-74.817265%2040.5296504))
-
-featureid
----------
-
-The ``featureid`` parameter filters by feature ID, a unique value given to all features.  Multiple features can be selected by separating the featureids by comma, as seen in this example::
-
-   featureid=states.1,states.45  
-   
 buffer
 ------
 
@@ -60,6 +32,88 @@ In case the automatic evaluation fails, the following defaults apply:
 
   * 0 pixels for :ref:`wms_getmap` requests
   * 2 pixels for :ref:`wms_getfeatureinfo` requests
+
+cql_filter
+----------
+
+The ``cql_filter`` parameter is similar to the ``filter`` parameter, expect that the filter is encoded using CQL (Common Query Language).  This makes the request much more human readable.  However, CQL isn't as flexible as OGC filters, and can't encode as many types of filters as the OGC specification does. In particular, filters by feature ID are not supported.  If more than one layer is specified in the ``layers`` parameter, then more than one filter can be specified here, each corresponding to a layer.
+
+An example of the same filter as above using CQL::
+
+   cql_filter=INTERSECT(the_geom,%20POINT%20(-74.817265%2040.5296504))
+
+env
+---
+
+The ``env`` parameter defines the set of substitution values that can be used in SLD variable substitution. The syntax is::
+
+  param1:value1;param2:value2;...
+
+featureid
+---------
+
+The ``featureid`` parameter filters by feature ID, a unique value given to all features.  Multiple features can be selected by separating the featureids by comma, as seen in this example::
+
+   featureid=states.1,states.45  
+
+filter
+------
+
+The WMS specification does not allow for much filtering of data.  GeoServer's WMS filter options are expanded to match those allowed by WFS.
+
+The ``filter`` parameter encodes a list of OGC filters (in XML).  The list is enclosed in () parenthesis.  When this parameter is used in a GET request, the brackets of XML need to be URL-encoded.  If more than one layer is specified in the ``layers`` parameter, then more than one filter can be specified here, each corresponding to a layer.
+
+An example of an OGC filter encoded as part of a GET request::
+
+   filter=%3CFilter%20xmlns:gml=%22http://www.opengis.net/gml%22%3E%3CIntersects%3E%3CPropertyName%3Ethe_geom%3C/PropertyName%3E%3Cgml:Point%20srsName=%224326%22%3E%3Cgml:coordinates%3E-74.817265,40.5296504%3C/gml:coordinates%3E%3C/gml:Point%3E%3C/Intersects%3E%3C/Filter%3E
+
+kmattr
+------
+
+The ``kmattr`` parameter determines whether the KML returned by GeoServer should include clickable attributes or not.  This parameter primarily affects Google Earth rendering.  The syntax is::
+
+   kmattr=[true|false]
+
+kmscore
+-------
+
+The ``kmscore`` parameter sets whether GeoServer should render KML data as vector or raster.  This parameter primarily affects Google Earth rendering.  The syntax is::
+
+   kmscore=<value>
+
+The possible values for this parameter are between ``0`` (force raster output) and ``100`` (force vector output).
+
+layout
+------
+
+The ``layout`` option chooses a named layout for decorations, a tool for visually annotating GeoServer's WMS output.  Layouts can be used to add information such as compasses and legends to the maps you retrieve from GeoServer.  :ref:`wms_decorations` are discussed further in the :ref:`advanced_config` section.
+
+
+maxFeatures and startIndex
+--------------------------
+
+GeoServer WMS supports the parameters ``maxFeatures`` and ``startIndex``.  Both can be used together to provide "paging" support.  This is helpful in situations such as KML crawling, where it is desirable to be able to retrieve the map in sections when there are a large number of features.
+
+Note that not every layer will support paging.
+
+The ``startindex`` parameter specifies with a positive integer the index in an ordered list of features to start rendering.  For a layer to be queried this way, the underlying feature source shall support paging (such as PostGIS).
+
+The ``maxfeatures`` parameter sets a limit on the amount of features rendered, using a positive integer.  When used with ``startindex``, the features rendered will be the ones starting at the ``startindex`` value.
+
+
+namespace
+---------
+
+WMS :ref:`wms_getcap` requests can be filtered to only return layers corresponding to a particular namespace.  The syntax is::
+
+   namespace=<namespace>
+
+where ``<namespace>`` is the namespace prefix.
+
+Using an invalid namespace prefix will not cause any errors, but the document returned will not contain information on any layers, only layer groups.
+
+.. note::  This only affects the capabilities document, and not any other requests. WMS requests given to other layers, even when a different namespace is specified, will still be processed.
+
 
 palette
 ------- 
@@ -117,50 +171,3 @@ where ``x`` and ``y`` are the coordinates of the lower left corner (the "origin"
         {buffer: 0} 
     );
 
-
-
-kmattr
-------
-
-The ``kmattr`` parameter determines whether the KML returned by GeoServer should include clickable attributes or not.  This parameter primarily affects Google Earth rendering.  The syntax is::
-
-   kmattr=[true|false]
-
-kmscore
--------
-
-The ``kmscore`` parameter sets whether GeoServer should render KML data as vector or raster.  This parameter primarily affects Google Earth rendering.  The syntax is::
-
-   kmscore=<value>
-
-The possible values for this parameter are between ``0`` (force raster output) and ``100`` (force vector output).
-
-maxFeatures and startIndex
---------------------------
-
-GeoServer WMS supports the parameters ``maxFeatures`` and ``startIndex``.  Both can be used together to provide "paging" support.  This is helpful in situations such as KML crawling, where it is desirable to be able to retrieve the map in sections when there are a large number of features.
-
-Note that not every layer will support paging.
-
-The ``startindex`` parameter specifies with a positive integer the index in an ordered list of features to start rendering.  For a layer to be queried this way, the underlying feature source shall support paging (such as PostGIS).
-
-The ``maxfeatures`` parameter sets a limit on the amount of features rendered, using a positive integer.  When used with ``startindex``, the features rendered will be the ones starting at the ``startindex`` value.
-
-layout
-------
-
-The ``layout`` option chooses a named layout for decorations, a tool for visually annotating GeoServer's WMS output.  Layouts can be used to add information such as compasses and legends to the maps you retrieve from GeoServer.  :ref:`wms_decorations` are discussed further in the :ref:`advanced_config` section.
-
-
-namespace
----------
-
-WMS :ref:`wms_getcap` requests can be filtered to only return layers corresponding to a particular namespace.  The syntax is::
-
-   namespace=<namespace>
-
-where ``<namespace>`` is the namespace prefix.
-
-Using an invalid namespace prefix will not cause any errors, but the document returned will not contain information on any layers, only layer groups.
-
-.. note::  This only affects the capabilities document, and not any other requests. WMS requests given to other layers, even when a different namespace is specified, will still be processed.
