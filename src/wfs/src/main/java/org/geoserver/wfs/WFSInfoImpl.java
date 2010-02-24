@@ -11,6 +11,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     protected ServiceLevel serviceLevel = ServiceLevel.COMPLETE;
     protected int maxFeatures = Integer.MAX_VALUE;
     protected boolean featureBounding = true;
+    protected boolean canonicalSchemaLocation = false;
     
     public WFSInfoImpl() {
         setId( "wfs" );
@@ -48,6 +49,20 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         return featureBounding;
     }
     
+    /**
+     * @see org.geoserver.wfs.WFSInfo#isCanonicalSchemaLocation()
+     */
+    public boolean isCanonicalSchemaLocation() {
+        return canonicalSchemaLocation;
+    }
+
+    /**
+     * @see org.geoserver.wfs.WFSInfo#setCanonicalSchemaLocation(boolean)
+     */
+    public void setCanonicalSchemaLocation(boolean canonicalSchemaLocation) {
+        this.canonicalSchemaLocation = canonicalSchemaLocation;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -55,6 +70,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         result = prime * result + ((gml == null) ? 0 : gml.hashCode());
         result = prime * result + maxFeatures;
         result = prime * result + (featureBounding ? 1231 : 1237);
+        result = prime * result + (canonicalSchemaLocation ? 53 : 67);
         result = prime * result
                 + ((serviceLevel == null) ? 0 : serviceLevel.hashCode());
         return result;
@@ -77,6 +93,8 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         if (maxFeatures != other.getMaxFeatures())
             return false;
         if (featureBounding != other.isFeatureBounding())
+            return false;
+        if (canonicalSchemaLocation != other.isCanonicalSchemaLocation())
             return false;
         if (serviceLevel == null) {
             if (other.getServiceLevel() != null)
