@@ -22,6 +22,7 @@ import org.geotools.data.LockingManager;
 
 import com.sun.media.imageioimpl.common.PackageUtil;
 import com.sun.media.jai.util.SunTileCache;
+import org.geoserver.config.GeoServerInfo;
 
 public class StatusPage extends ServerAdminPage {
 
@@ -52,6 +53,8 @@ public class StatusPage extends ServerAdminPage {
 
     private static final String KEY_JAI_TILE_THREAD_PRIORITY = "jai_tile_thread_priority";
 
+    private static final String KEY_UPDATE_SEQUENCE = "update_sequence";
+
     public StatusPage() {
         values = new HashMap<String, String>();
         updateModel();
@@ -69,6 +72,7 @@ public class StatusPage extends ServerAdminPage {
         add(new Label("jai.memory.threshold", new MapModel(values, KEY_JAI_MEM_THRESHOLD)));
         add(new Label("jai.tile.threads", new MapModel(values, KEY_JAI_TILE_THREADS)));
         add(new Label("jai.tile.priority", new MapModel(values, KEY_JAI_TILE_THREAD_PRIORITY)));
+        add(new Label("updateSequence", new MapModel(values, KEY_UPDATE_SEQUENCE)));
 
         add(new Link("free.locks") {
             private static final long serialVersionUID = 1L;
@@ -133,7 +137,8 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_JAI_AVAILABLE, Boolean.toString(isNativeJAIAvailable()));
         values.put(KEY_JAI_IMAGEIO_AVAILABLE, Boolean.toString(PackageUtil.isCodecLibAvailable()));
 
-        JAIInfo jaiInfo = getGeoServer().getGlobal().getJAI();
+        GeoServerInfo geoServerInfo = getGeoServer().getGlobal();
+        JAIInfo jaiInfo = geoServerInfo.getJAI();
         JAI jai =  jaiInfo.getJAI();
         SunTileCache jaiCache = jaiInfo.getTileCache();
 
@@ -143,6 +148,8 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_JAI_TILE_THREADS, Integer.toString(jai.getTileScheduler().getParallelism()));
         values.put(KEY_JAI_TILE_THREAD_PRIORITY, Integer.toString(jai.getTileScheduler()
                 .getPriority()));
+
+        values.put(KEY_UPDATE_SEQUENCE, Integer.toString(geoServerInfo.getUpdateSequence()));
     }
 
     boolean isNativeJAIAvailable() {
