@@ -4,6 +4,7 @@
  */
 package org.vfny.geoserver.wms.requests;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.geoserver.wms.WMS;
@@ -11,13 +12,13 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.feature.type.FeatureType;
 
-
 /**
  * Holds the parsed parameters for a GetLegendGraphic WMS request.
- *
+ * 
  * <p>
- * The GET parameters of the GetLegendGraphic operation are defined as follows
- * (from SLD 1.0 spec, ch.12):<br>
+ * The GET parameters of the GetLegendGraphic operation are defined as follows (from SLD 1.0 spec,
+ * ch.12):<br>
+ * 
  * <pre>
  * <table>
  *  <tr><td><b>Parameter</b></td><td><b>Required</b></td><td><b>Description</b></td></tr>
@@ -36,19 +37,23 @@ import org.opengis.feature.type.FeatureType;
  *  <tr><td>EXCEPTIONS </td><td>Optional </td><td>This gives the MIME type of the format in which to return exceptions. Allowed values are the same as for the EXCEPTIONS= parameter of the WMS GetMap request.</td></tr>
  *  <tr><td>TRANSPARENT </td><td>Optional </td><td><code>true</code> if the legend image background should be transparent. Defaults to <code>false</code>.</td></tr>
  *  </table>
- *  </pre>
+ * </pre>
+ * 
  * </p>
- *
+ *<p>
+ * There's also a custom {@code STRICT} parameter that defaults to {@code true} and controls whether
+ * the mandatory parameters are to be checked. This is useful mainly to be able of requesting a
+ * legend graphic for no layer in particular, so the LAYER parameter can be omitted.
+ *</p>
  * <p>
- * The GetLegendGraphic operation itself is optional for an SLD-enabled WMS. It
- * provides a general mechanism for acquiring legend symbols, beyond the
- * LegendURL reference of WMS Capabilities. Servers supporting the
- * GetLegendGraphic call might code LegendURL references as GetLegendGraphic
- * for interface consistency. Vendorspecific parameters may be added to
- * GetLegendGraphic requests and all of the usual OGC-interface options and
- * rules apply. No XML-POST method for GetLegendGraphic is presently defined.
+ * The GetLegendGraphic operation itself is optional for an SLD-enabled WMS. It provides a general
+ * mechanism for acquiring legend symbols, beyond the LegendURL reference of WMS Capabilities.
+ * Servers supporting the GetLegendGraphic call might code LegendURL references as GetLegendGraphic
+ * for interface consistency. Vendorspecific parameters may be added to GetLegendGraphic requests
+ * and all of the usual OGC-interface options and rules apply. No XML-POST method for
+ * GetLegendGraphic is presently defined.
  * </p>
- *
+ * 
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
@@ -134,6 +139,8 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * Whether the legend graphic background shall be transparent or not.
      */
     private boolean transparent;
+
+    private boolean strict = true;
 
     /**
      * Creates a new GetLegendGraphicRequest object.
@@ -337,7 +344,7 @@ public class GetLegendGraphicRequest extends WMSRequest {
      * @return
      */
     public Map getLegendOptions() {
-        return legendOptions;
+        return legendOptions == null? Collections.EMPTY_MAP : legendOptions;
     }
     
     /**
@@ -375,5 +382,19 @@ public class GetLegendGraphicRequest extends WMSRequest {
      */
     public boolean isTransparent() {
         return transparent;
+    }
+
+    /**
+     * Returns the value for the legacy {@code STRICT} parameter that controls whether LAYER is
+     * actually required (if not, STYLE shall be provided)
+     * 
+     * @return {@code true} by default, the value set thru {@link #setStrict(boolean)} otherwise
+     */
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 }

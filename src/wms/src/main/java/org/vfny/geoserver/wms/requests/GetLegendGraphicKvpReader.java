@@ -25,6 +25,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.resources.coverage.FeatureUtilities;
@@ -33,7 +34,6 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.geotools.styling.StyleFactoryFinder;
 import org.geotools.util.NullProgressListener;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -64,7 +64,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * Factory to create styles from inline or remote SLD documents (aka, from SLD_BODY or SLD
      * parameters).
      */
-    private static final StyleFactory styleFactory = StyleFactoryFinder.createStyleFactory();
+    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(GeoTools.getDefaultHints());
 
     /**
      * Creates a new GetLegendGraphicKvpReader object.
@@ -111,45 +111,59 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         // }
         final String layer = getValue("LAYER");
         final String format = getValue("FORMAT");
-        if (layer == null) {
+        final boolean strict;
+        {
+            String strictParam = getValue("STRICT");
+            strict = strictParam == null? true : Boolean.valueOf(strictParam).booleanValue();
+        }
+        request.setStrict(strict);
+        if (strict && layer == null) {
             throw new ServiceException("LAYER parameter not present for GetLegendGraphic",
                     "LayerNotDefined");
         }
-        if (format == null) {
+        if (strict && format == null) {
             throw new ServiceException("Missing FORMAT parameter for GetLegendGraphic",
                     "MissingFormat");
         }
 
         WMS wms = request.getWMS();
-        LayerInfo layerInfo = wms.getLayerByName(layer);
-        if(layerInfo==null)
-        	 throw new WmsException(layer+" layer does not exists.");
-        MapLayerInfo mli = new MapLayerInfo(layerInfo);
-
-        try {
-            if (layerInfo.getType() == Type.VECTOR) {
-                FeatureType featureType = mli.getFeature().getFeatureType();
-                request.setLayer(featureType);
-            } else if (layerInfo.getType() == Type.RASTER) {
-                CoverageInfo coverageInfo = mli.getCoverage();
-                
-                //it much safer to wrap a reader rather than a coverage in most cases, OOM can occur otherwise
-                final AbstractGridCoverage2DReader reader=(AbstractGridCoverage2DReader) coverageInfo.getGridCoverageReader(new NullProgressListener(), GeoTools.getDefaultHints());
-                final FeatureCollection<SimpleFeatureType, SimpleFeature> feature= 
-                FeatureUtilities.wrapGridCoverageReader(reader,null);
-                request.setLayer(feature.getSchema());
+        MapLayerInfo mli = null;
+        if (layer != null) {
+            LayerInfo layerInfo = wms.getLayerByName(layer);
+            if (layerInfo == null) {
+                throw new WmsException(layer + " layer does not exists.");
             }
-        } catch (IOException e) {
-            throw new WmsException(e);
-        } catch (NoSuchElementException ne) {
-            throw new WmsException(ne, new StringBuffer(layer).append(" layer does not exists.")
-                    .toString(), ne.getLocalizedMessage());
-        } catch (Exception te) {
-            throw new WmsException(te, "Can't obtain the schema for the required layer.", te
-                    .getLocalizedMessage());
-        }
 
-        if (!GetLegendGraphicResponse.supportsFormat(format)) {
+            mli = new MapLayerInfo(layerInfo);
+
+            try {
+                if (layerInfo.getType() == Type.VECTOR) {
+                    FeatureType featureType = mli.getFeature().getFeatureType();
+                    request.setLayer(featureType);
+                } else if (layerInfo.getType() == Type.RASTER) {
+                    CoverageInfo coverageInfo = mli.getCoverage();
+
+                    // it much safer to wrap a reader rather than a coverage in most cases, OOM can
+                    // occur otherwise
+                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) coverageInfo
+                            .getGridCoverageReader(new NullProgressListener(), GeoTools
+                                    .getDefaultHints());
+                    final FeatureCollection<SimpleFeatureType, SimpleFeature> feature = FeatureUtilities
+                            .wrapGridCoverageReader(reader, null);
+                    request.setLayer(feature.getSchema());
+                }
+            } catch (IOException e) {
+                throw new WmsException(e);
+            } catch (NoSuchElementException ne) {
+                throw new WmsException(ne, new StringBuffer(layer)
+                        .append(" layer does not exists.").toString(), ne.getLocalizedMessage());
+            } catch (Exception te) {
+                throw new WmsException(te, "Can't obtain the schema for the required layer.", te
+                        .getLocalizedMessage());
+            }
+        }
+        
+        if (format != null && !GetLegendGraphicResponse.supportsFormat(format)) {
             throw new WmsException(new StringBuffer("Invalid graphic format: ").append(format)
                     .toString(), "InvalidFormat");
         }

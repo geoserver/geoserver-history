@@ -24,7 +24,10 @@ import org.geotools.renderer.i18n.Errors;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Rule;
+import org.geotools.styling.Style;
+import org.geotools.styling.Symbolizer;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
@@ -533,6 +536,23 @@ public class LegendUtils {
 		}
 		return found;
 	}
+
+
+    /**
+     * Checks if the provided style contains at least one {@link RasterSymbolizer}
+     */
+    public static boolean checkRasterSymbolizer(final Style style) {
+        for (FeatureTypeStyle fts : style.featureTypeStyles()) {
+            for (Rule r : fts.rules()) {
+                for (Symbolizer s : r.symbolizers()) {
+                    if (s instanceof RasterSymbolizer) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
 
 
