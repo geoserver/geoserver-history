@@ -42,11 +42,11 @@ import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
  * @version $Id$
  */
 public class DefaultRasterLegendProducerTest extends WMSTestSupport {
-    /** DOCUMENT ME! */
+
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(DefaultRasterLegendProducerTest.class.getPackage()
                                                                                                .getName());
 
-    /** DOCUMENT ME! */
+
     private DefaultRasterLegendProducer legendProducer;
     GetLegendGraphic service;
 
@@ -59,12 +59,8 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
         dataDirectory.addStyle("rainfall_ramp", MockData.class.getResource("rainfall_ramp.sld"));
         dataDirectory.addStyle("rainfall_classes", MockData.class.getResource("rainfall_classes.sld"));
     }
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws Exception DOCUMENT ME!
-     * @throws UnsupportedOperationException DOCUMENT ME!
-     */
+
+    @Override
     public void setUpInternal() throws Exception {
         super.setUpInternal();
         this.legendProducer = new DefaultRasterLegendProducer() {
@@ -81,11 +77,8 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
         service = new GetLegendGraphic(getWMS());
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws Exception DOCUMENT ME!
-     */
+
+    @Override
     public void tearDownInternal() throws Exception {
         this.legendProducer = null;
         super.tearDownInternal();
@@ -95,8 +88,6 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
      * Tests that a legend is produced for the explicitly specified rule, when
      * the FeatureTypeStyle has more than one rule, and one of them is
      * requested by the RULE parameter.
-     *
-     * @throws Exception DOCUMENT ME!
      */
     public void testUserSpecifiedRule() throws Exception {
         //load a style with 3 rules
@@ -137,7 +128,6 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
 	 * the FeatureTypeStyle has more than one rule, and one of them is
 	 * requested by the RULE parameter.
 	 *
-	 * @throws Exception DOCUMENT ME!
 	 */
 	public void testRainfall() throws Exception {
 	    //load a style with 3 rules
@@ -174,4 +164,32 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
 	    
 	}
 
+    /**
+     * Tests that the legend graphic is still produced when the request's strict parameter is set to
+     * false and a layer is not specified
+     */
+    public void testNoLayerProvidedAndNonStrictRequest() throws Exception {
+        Style style = getCatalog().getStyleByName("rainfall").getStyle();
+        assertNotNull(style);
+
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+        req.setStrict(false);
+        req.setLayer(null);
+        req.setStyle(style);
+
+        final int HEIGHT_HINT = 30;
+        req.setHeight(HEIGHT_HINT);
+
+        // use default values for the rest of parameters
+        this.legendProducer.produceLegendGraphic(req);
+
+        BufferedImage legend = this.legendProducer.getLegendGraphic();
+
+        // was the legend painted?
+        assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+
+        // was the legend painted?
+        assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+
+    }
 }

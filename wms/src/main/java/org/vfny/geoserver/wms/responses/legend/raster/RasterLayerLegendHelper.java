@@ -85,11 +85,11 @@ public class RasterLayerLegendHelper {
 	private void parseRequest(final GetLegendGraphicRequest request) {
 		// get the requested layer
 		// and check that it is actually a grid
-		final FeatureType layer = request.getLayer();
-		boolean found =false;
-		found = LegendUtils.checkGridLayer(layer);
-		if(!found)
-			throw new IllegalArgumentException("Unable to create legend for non raster style");
+//		final FeatureType layer = request.getLayer();
+//		boolean found =false;
+//		found = LegendUtils.checkGridLayer(layer);
+//		if(!found)
+//			throw new IllegalArgumentException("Unable to create legend for non raster style");
 		
 		// get the style and its rules
 		final Style gt2Style = request.getStyle();
