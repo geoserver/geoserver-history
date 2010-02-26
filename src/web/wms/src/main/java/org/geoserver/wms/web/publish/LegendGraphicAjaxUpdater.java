@@ -42,11 +42,14 @@ class LegendGraphicAjaxUpdater implements Serializable {
         String url = wmsURL
                 + "REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&STRICT=false&style=";
         StyleInfo styleInfo = (StyleInfo) styleInfoModel.getObject();
-        String style = styleInfo.getName();
-        url += style;
-        image.add(new AttributeModifier("src", new Model(url)));
-        if (target != null) {
-            target.addComponent(image);
+        if (styleInfo != null) {
+            String style = styleInfo.getName();
+            url += style;
+            image.add(new AttributeModifier("src", new Model(url)));
+            if (target != null) {
+                target.addComponent(image);
+            }
         }
     }
+
 }
