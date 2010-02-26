@@ -28,13 +28,13 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
     GetLegendGraphicKvpReader requestReader;
 
     /** test values for required parameters */
-    Map requiredParameters;
+    Map<String, String> requiredParameters;
 
     /** test values for optional parameters */
-    Map optionalParameters;
+    Map<String, String> optionalParameters;
 
     /** both required and optional parameters joint up */
-    Map allParameters;
+    Map<String, String> allParameters;
 
     /** mock request */
     MockHttpServletRequest httpRequest;
@@ -70,13 +70,13 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
      */
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
-        requiredParameters = new HashMap();
+        requiredParameters = new HashMap<String, String>();
         requiredParameters.put("VERSION", "1.0.0");
         requiredParameters.put("REQUEST", "GetLegendGraphic");
         requiredParameters.put("LAYER", "cite:Ponds");
         requiredParameters.put("FORMAT", "image/png");
 
-        optionalParameters = new HashMap();
+        optionalParameters = new HashMap<String, String>();
         optionalParameters.put("STYLE", "Ponds");
         optionalParameters.put("FEATURETYPE", "fake_not_used");
         // optionalParameters.put("RULE", "testRule");
@@ -84,7 +84,7 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
         optionalParameters.put("WIDTH", "120");
         optionalParameters.put("HEIGHT", "90");
         // ??optionalParameters.put("EXCEPTIONS", "");
-        allParameters = new HashMap(requiredParameters);
+        allParameters = new HashMap<String, String>(requiredParameters);
         allParameters.putAll(optionalParameters);
 
         wms = getWMS();
@@ -148,5 +148,21 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
         }catch(ServiceException e){
             assertEquals("MissingFormat", e.getCode());
         }
+    }
+
+
+    public void testStrictParameter() {
+        GetLegendGraphicRequest request;
+        
+        //default value
+        requestReader = new GetLegendGraphicKvpReader(allParameters, wms);
+        request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
+        assertTrue(request.isStrict());
+
+        allParameters.put("STRICT", "false");
+        allParameters.remove("LAYER");
+        requestReader = new GetLegendGraphicKvpReader(allParameters, wms);
+        request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
+        assertFalse(request.isStrict());
     }
 }

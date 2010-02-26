@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.geotools.data.DataUtilities;
+import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.geometry.jts.LiteShape2;
 import org.geotools.renderer.lite.StyledShapePainter;
@@ -154,19 +156,32 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     public void produceLegendGraphic(GetLegendGraphicRequest request)
         throws WmsException {
     	
-        final FeatureType layer=request.getLayer();
-        if(LegendUtils.checkGridLayer(layer))
-        {
-        	final RasterLayerLegendHelper rasterLegendHelper= new RasterLayerLegendHelper(request);
-        	this.legendGraphic= rasterLegendHelper.getLegend();
-        	return;
-        	
-        }
-		final Feature temp = createSampleFeature(layer);
-		if(!(temp instanceof SimpleFeature))
-			throw new WmsException("");
-		final SimpleFeature sampleFeature=(SimpleFeature) temp;		
         final Style gt2Style = request.getStyle();
+        if(gt2Style == null){
+            throw new NullPointerException("request.getStyle()");
+        }
+
+        final FeatureType layer =request.getLayer();
+        boolean strict = request.isStrict();
+        final boolean buildRasterLegend = (!strict && layer == null && LegendUtils
+                .checkRasterSymbolizer(gt2Style))
+                || LegendUtils.checkGridLayer(layer);
+        if (buildRasterLegend) {
+            final RasterLayerLegendHelper rasterLegendHelper = new RasterLayerLegendHelper(request);
+            this.legendGraphic = rasterLegendHelper.getLegend();
+            return;
+        }
+
+        final SimpleFeature sampleFeature;
+        if (layer == null) {
+            sampleFeature = createSampleFeature();
+        } else {
+            final Feature temp = createSampleFeature(layer);
+            if (!(temp instanceof SimpleFeature)) {
+                throw new UnsupportedOperationException("not a SimpleFeature");
+            }
+            sampleFeature = (SimpleFeature) temp;
+        }
         final FeatureTypeStyle[] ftStyles = gt2Style.getFeatureTypeStyles();
         final double scaleDenominator = request.getScale();
 
@@ -471,6 +486,16 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
         return sampleShape;
     }
 
+    private SimpleFeature createSampleFeature() {
+        SimpleFeatureType type;
+        try {
+            type = DataUtilities.createType("Sample", "the_geom:Geometry");
+        } catch (SchemaException e) {
+            throw new RuntimeException(e);
+        }
+        return SimpleFeatureBuilder.template((SimpleFeatureType) type, null);
+    }
+    
     /**
      * Creates a sample Feature instance in the hope that it can be used in the
      * rendering of the legend graphic.
