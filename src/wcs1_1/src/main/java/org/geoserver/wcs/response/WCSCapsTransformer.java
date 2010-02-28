@@ -113,11 +113,11 @@ public class WCSCapsTransformer extends TransformerBase {
             this.request = (GetCapabilitiesType) o;
 
             // check the update sequence
-            final int updateSequence = wcs.getGeoServer().getGlobal().getUpdateSequence();
-            int requestedUpdateSequence = -1;
+            final long updateSequence = wcs.getGeoServer().getGlobal().getUpdateSequence();
+            long requestedUpdateSequence = -1;
             if (request.getUpdateSequence() != null) {
                 try {
-                    requestedUpdateSequence = Integer.parseInt(request.getUpdateSequence());
+                    requestedUpdateSequence = Long.parseLong(request.getUpdateSequence());
                 } catch (NumberFormatException e) {
                     throw new WcsException("Invalid update sequence number format, "
                             + "should be an integer", WcsExceptionCode.InvalidUpdateSequence,

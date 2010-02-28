@@ -147,5 +147,9 @@
   </bean>
   
   <bean id="workspaceLocalDataAccessManager" class="org.geoserver.ows.LocalWorkspaceDataAccessManager"/>
+  
+  <bean id="updateSequenceListener" class="org.geoserver.config.UpdateSequenceListener">
+	<constructor-arg ref="geoServer"/>
+  </bean>
 
 </beans>

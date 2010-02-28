@@ -170,7 +170,7 @@ public class WMS {
         return proxyBaseUrl;
     }
 
-    public int getUpdateSequence() {
+    public long getUpdateSequence() {
         GeoServerInfo global = getGeoServer().getGlobal();
         return global.getUpdateSequence();
     }
