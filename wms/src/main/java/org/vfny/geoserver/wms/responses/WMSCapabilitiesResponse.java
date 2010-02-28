@@ -110,15 +110,15 @@ public class WMSCapabilitiesResponse implements Response {
         final WMSCapabilitiesRequest capreq = (WMSCapabilitiesRequest)request;
         final WMS wmsConfig = capreq.getWMS();
         
-        int reqUS = -1;
+        long reqUS = -1;
         if (capreq.getUpdateSequence() != null && !"".equals(capreq.getUpdateSequence().trim())) {
 	        try {
-	        	reqUS = Integer.parseInt(capreq.getUpdateSequence());
+	        	reqUS = Long.parseLong(capreq.getUpdateSequence());
 	        } catch (NumberFormatException nfe) {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
-        int geoUS =  wmsConfig.getUpdateSequence();
+        long geoUS = wmsConfig.getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new org.geoserver.platform.ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
     	}

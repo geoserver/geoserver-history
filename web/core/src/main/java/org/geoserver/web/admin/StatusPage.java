@@ -149,7 +149,7 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_JAI_TILE_THREAD_PRIORITY, Integer.toString(jai.getTileScheduler()
                 .getPriority()));
 
-        values.put(KEY_UPDATE_SEQUENCE, Integer.toString(geoServerInfo.getUpdateSequence()));
+        values.put(KEY_UPDATE_SEQUENCE, Long.toString(geoServerInfo.getUpdateSequence()));
     }
 
     boolean isNativeJAIAvailable() {

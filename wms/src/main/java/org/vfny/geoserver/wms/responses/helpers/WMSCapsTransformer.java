@@ -4,7 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.appendQueryString;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,7 +47,6 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.data.wms.response.GetStylesResponse;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
