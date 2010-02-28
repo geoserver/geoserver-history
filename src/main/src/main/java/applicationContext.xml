@@ -131,4 +131,7 @@
   <!-- xstream persister factory -->
   <bean id="xstreamPersisterFactory" class="org.geoserver.config.util.XStreamPersisterFactory"/>
 
+  <bean id="updateSequenceListener" class="org.geoserver.config.UpdateSequenceListener">
+	<constructor-arg ref="geoServer"/>
+  </bean>
 </beans>

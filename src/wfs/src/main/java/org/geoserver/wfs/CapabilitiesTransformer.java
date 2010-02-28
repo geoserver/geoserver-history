@@ -106,15 +106,15 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
      * @throws ServiceException
      */
     public void verifyUpdateSequence(GetCapabilitiesType request) throws ServiceException {
-    	int reqUS = -1;
+    	long reqUS = -1;
         if (request.getUpdateSequence() != null) {
 	        try {
-	        	reqUS = Integer.parseInt(request.getUpdateSequence());
+	        	reqUS = Long.parseLong(request.getUpdateSequence());
 	        } catch (NumberFormatException nfe) {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
-        int geoUS = wfs.getGeoServer().getGlobal().getUpdateSequence();
+        long geoUS = wfs.getGeoServer().getGlobal().getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new ServiceException("Client supplied an updateSequence that is greater than the current sever updateSequence","InvalidUpdateSequence");
     	}

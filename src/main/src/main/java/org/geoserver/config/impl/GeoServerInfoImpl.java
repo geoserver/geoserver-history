@@ -42,7 +42,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
 
     protected Map<Object, Object> clientProperties = new HashMap<Object, Object>();
 
-    protected int updateSequence;
+    protected long updateSequence;
     
     protected String adminUsername;
     protected String adminPassword;
@@ -150,11 +150,11 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         this.verboseExceptions = verboseExceptions;
     }
 
-    public int getUpdateSequence() {
+    public long getUpdateSequence() {
         return updateSequence;
     }
     
-    public void setUpdateSequence( int updateSequence ) {
+    public void setUpdateSequence( long updateSequence ) {
         this.updateSequence = updateSequence;
     }
 
@@ -225,7 +225,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         result = prime * result
                 + ((schemaBaseUrl == null) ? 0 : schemaBaseUrl.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + updateSequence;
+        result = prime * result + new Long(updateSequence).hashCode();
         result = prime * result + (verbose ? 1231 : 1237);
         result = prime * result + (verboseExceptions ? 1231 : 1237);
         return result;

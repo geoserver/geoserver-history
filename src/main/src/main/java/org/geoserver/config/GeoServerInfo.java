@@ -187,12 +187,12 @@ public interface GeoServerInfo extends Info {
      * document.
      * </p>
      */
-    int getUpdateSequence();
+    long getUpdateSequence();
     
     /**
      * Sets the update sequence.
      */
-    void setUpdateSequence( int updateSequence );
+    void setUpdateSequence( long updateSequence );
     
     /**
      * The size of the cache for feature type objects.

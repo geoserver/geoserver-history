@@ -77,16 +77,16 @@ public class WCSCapabilitiesResponse implements Response {
         }
         
         CapabilitiesRequest capreq = (CapabilitiesRequest)request;
-        int reqUS = -1;
+        long reqUS = -1;
         if (capreq.getUpdateSequence() != null) {
 	        try {
-	        	reqUS = Integer.parseInt(capreq.getUpdateSequence());
+	        	reqUS = Long.parseLong(capreq.getUpdateSequence());
 	        } catch (NumberFormatException nfe) {
 	        	throw new ServiceException("GeoServer only accepts numbers in the updateSequence parameter");
 	        }
         }
         GeoServerInfo gsInfo = request.getServiceConfig().getGeoServer().getGlobal();
-		int geoUS = gsInfo.getUpdateSequence();
+	long geoUS = gsInfo.getUpdateSequence();
     	if (reqUS > geoUS) {
     		throw new WcsException("Client supplied an updateSequence that is greater than the current sever updateSequence", WcsExceptionCode.InvalidUpdateSequence, "");
     	}
