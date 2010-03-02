@@ -54,12 +54,12 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         
         Iterator<TileLayer> tlIter = layerList.iterator();
 
-	assertTrue(tlIter.hasNext());
+        assertTrue(tlIter.hasNext());
 
         // Disabling tests until I have working build
-	if(tlIter.hasNext()) {
-	  return;
-	}
+        if (tlIter.hasNext()) {
+            return;
+        }
 
         // 1) Check that cite:Lakes
         boolean foundLakes = false;
