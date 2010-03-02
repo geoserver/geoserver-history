@@ -19,9 +19,13 @@
      <groupId>org.geoserver</groupId>
      <artifactId>main</artifactId>
     </dependency>
-   <dependency>
+    <dependency>
      <groupId>org.geoserver</groupId>
      <artifactId>wfs</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.geoserver</groupId>
+     <artifactId>wms</artifactId>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
