@@ -109,7 +109,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     }
 
     public String getRequestURI() {
-        throw new ServletDebugException();
+        return "geoserver/gwc";
     }
 
     public StringBuffer getRequestURL() {
