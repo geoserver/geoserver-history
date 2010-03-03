@@ -9,7 +9,6 @@ import static org.geoserver.ows.util.ResponseUtils.*;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,8 +17,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,22 +49,22 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
 import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
-import org.geotools.xml.transform.Translator;
 import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.filter.expression.Expression;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.expression.Expression;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.vfny.geoserver.wms.responses.featureInfo.FeatureHeightTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTimeTemplate;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureHeightTemplate;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.CoordinateFilter;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -337,6 +336,10 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             return symbolizerList;
         }
         
+        protected boolean hasLabels() {
+            return false;
+        }
+        
         /**
          * Encode a KML Style for a particular feature.
          *
@@ -362,8 +365,6 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
          * Encodes an IconStyle for a feature.
          */
         protected void encodeDefaultIconStyle(SimpleFeature feature) {
-            // encode the style for the icon
-
             // figure out if line or polygon
             boolean line = feature.getDefaultGeometry() != null
                     && (feature.getDefaultGeometry() instanceof LineString || feature
@@ -384,7 +385,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             // start IconStyle
             start("IconStyle");
 
-            // make transparent if they didn't ask for attributes
+            // make transparent if they ask for attributes, since we'll have a label
             if (vectorNameDescription) {
                 encodeColor("00ffffff");
             }
@@ -456,7 +457,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 if (iconStyles.isEmpty()) {
                     // Add a default point symbolizer, so people have something
                     // to click on
-                    encodeDefaultIconStyle(feature);
+                     encodeDefaultIconStyle(feature);
                 } else {
                     Iterator<PointSymbolizer> iter = iconStyles.iterator();
                     while (iter.hasNext()) {
@@ -939,7 +940,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
 
             // geometry
             if (markGeometry == null) {
-                encodePlacemarkGeometry(geometry, centroid, symbolizers);
+                Coordinate labelPoint = vectorNameDescription ? centroid : null;
+                encodePlacemarkGeometry(geometry, labelPoint, symbolizers);
             } else {
                 // if given a specific placemark geometry, encode a point
                 // at the geometry coordinates
@@ -1127,40 +1129,17 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             // geometry + centroid
             if (geometry instanceof Point || (geometry instanceof MultiPoint)
                     && ((MultiPoint) geometry).getNumPoints() == 1) {
-
-                // This adds attributes that violate the KML specs
-                // encodeGeometry( geometry, styles );
-
-                // Cut and paste from below
-                start("Point");
-                if (!Double.isNaN(centroid.z)) {
-                    geometryTranslator.insertExtrudeTags(geometry);
-                    element("coordinates", centroid.x + "," + centroid.y + ","
-                            + centroid.z);
-                } else {
-                    element("coordinates", centroid.x + "," + centroid.y);
-                }
-                end("Point");
-                // End cut and paste
+                encodeGeometry( geometry, symbolizers );
             } else {
                 start("MultiGeometry");
 
                 if (!Double.isNaN(geometry.getCoordinate().z)) {
                     centroid.z = geometry.getCoordinate().z;
                 }
-
-                // the centroid
-                start("Point");
-
-                if (!Double.isNaN(centroid.z)) {
-                    geometryTranslator.insertExtrudeTags(geometry);
-                    element("coordinates", centroid.x + "," + centroid.y + ","
-                            + centroid.z);
-                } else {
-                    element("coordinates", centroid.x + "," + centroid.y);
+                
+                if(centroid != null) {
+                    encodeGeometry(new GeometryFactory().createPoint(centroid), null);
                 }
-
-                end("Point");
 
                 // the actual geometry
                 encodeGeometry(geometry, symbolizers);
@@ -1183,6 +1162,19 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                 for (int i = 0; i < collection.getNumGeometries(); i++) {
                     encodeGeometry(collection.getGeometryN(i), symbolizers);
                 }
+            } else if(geometry instanceof Point) {
+                Coordinate centroid = ((Point) geometry).getCoordinate();
+                start("Point");
+                
+                if (!Double.isNaN(centroid.z)) {
+                    geometryTranslator.insertExtrudeTags(geometry);
+                    element("coordinates", centroid.x + "," + centroid.y + ","
+                            + centroid.z);
+                } else {
+                    element("coordinates", centroid.x + "," + centroid.y);
+                }
+
+                end("Point");
             } else {
                 geometryTranslator.encode(geometry);
             }
