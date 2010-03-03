@@ -64,18 +64,28 @@ import org.geotools.image.ImageWorker;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.MapLayer;
 import org.geotools.parameter.Parameter;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.renderedimage.viewer.RenderedImageBrowser;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.resources.image.ColorUtilities;
+import org.geotools.styling.Graphic;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.RasterSymbolizer;
+import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.geotools.styling.StyleFactoryImpl;
+import org.geotools.styling.Symbolizer;
 import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
+import org.opengis.referencing.FactoryException;
+import org.opengis.style.Description;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -964,8 +974,16 @@ public abstract class DefaultRasterMapProducer extends
 			AbstractGridCoverage2DReader reader, Object params,
 			final Rectangle rasterArea, Interpolation interpolation) throws IOException {
 	    
-	    if(!reader.getOriginalEnvelope().intersects(mapContext.getAreaOfInterest(), false))
-	        return null;
+	    try {
+	        ReferencedEnvelope dataEnvelope = new ReferencedEnvelope(reader.getOriginalEnvelope()).transform(DefaultGeographicCRS.WGS84, true);
+	        ReferencedEnvelope requestEnvelope = mapContext.getAreaOfInterest().transform(DefaultGeographicCRS.WGS84, true);
+	        if(!dataEnvelope.intersects((BoundingBox) requestEnvelope))
+	            return null;
+	    } catch(Exception e) {
+	        LOGGER.log(Level.WARNING, "Failed to compare data and request envelopes, proceeding with rendering anyways", e);
+	    }
+	    
+	    
 	    
 		// //
 		// It is an AbstractGridCoverage2DReader, let's use parameters
