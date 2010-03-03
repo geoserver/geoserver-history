@@ -40,14 +40,11 @@ import org.geoserver.wms.responses.MapDecoration;
 import org.geoserver.wms.responses.MapDecorationLayout;
 import org.geoserver.wms.responses.MetatiledMapDecorationLayout;
 import org.geoserver.wms.responses.decoration.WatermarkDecoration;
-import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
-import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.Style;
-import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -337,16 +334,8 @@ public abstract class DefaultRasterMapProducer extends
         if (kmplacemark) {
             // create a StyleVisitor that copies a style, but removes the
             // PointSymbolizers and TextSymbolizers
-            DuplicatingStyleVisitor dupVisitor = new DuplicatingStyleVisitor() {
-                public void visit(PointSymbolizer ps) {
-                    pages.push(null);
-                }
-
-                public void visit(org.geotools.styling.TextSymbolizer ts) {
-                    pages.push(null);
-                }
-            };
-
+            KMLStyleFilteringVisitor dupVisitor = new KMLStyleFilteringVisitor();
+            
             // Remove PointSymbolizers and TextSymbolizers from the
             // layers' Styles to prevent their rendering on the
             // raster image. Both are better served with the
