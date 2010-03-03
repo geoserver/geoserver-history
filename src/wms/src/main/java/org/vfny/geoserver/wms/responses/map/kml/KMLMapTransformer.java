@@ -336,10 +336,6 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             return symbolizerList;
         }
         
-        protected boolean hasLabels() {
-            return false;
-        }
-        
         /**
          * Encode a KML Style for a particular feature.
          *
