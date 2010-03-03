@@ -65,27 +65,17 @@ import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.MapLayer;
 import org.geotools.parameter.Parameter;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.renderedimage.viewer.RenderedImageBrowser;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
 import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.resources.image.ColorUtilities;
-import org.geotools.styling.Graphic;
-import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.RasterSymbolizer;
-import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
-import org.geotools.styling.StyleFactoryImpl;
-import org.geotools.styling.Symbolizer;
-import org.geotools.styling.visitor.DuplicatingStyleVisitor;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.filter.Filter;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
-import org.opengis.referencing.FactoryException;
-import org.opengis.style.Description;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -433,16 +423,8 @@ public abstract class DefaultRasterMapProducer extends
         if (kmplacemark) {
             // create a StyleVisitor that copies a style, but removes the
             // PointSymbolizers and TextSymbolizers
-            DuplicatingStyleVisitor dupVisitor = new DuplicatingStyleVisitor() {
-                public void visit(PointSymbolizer ps) {
-                    pages.push(null);
-                }
-
-                public void visit(org.geotools.styling.TextSymbolizer ts) {
-                    pages.push(null);
-                }
-            };
-
+            KMLStyleFilteringVisitor dupVisitor = new KMLStyleFilteringVisitor();
+            
             // Remove PointSymbolizers and TextSymbolizers from the
             // layers' Styles to prevent their rendering on the
             // raster image. Both are better served with the
