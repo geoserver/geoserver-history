@@ -13,3 +13,4 @@ This section is devoted to GeoServer community modules. Community modules are co
 .. toctree::
    :maxdepth: 1 
 
+   css/index
