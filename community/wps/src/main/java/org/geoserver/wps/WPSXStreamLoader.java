@@ -6,7 +6,9 @@
 package org.geoserver.wps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;
@@ -47,13 +49,25 @@ public class WPSXStreamLoader extends XStreamServiceLoader<WPSInfo> {
     
     @Override
     protected WPSInfo initialize(WPSInfo service) {
+        // TODO: move this code block to the parent class
+        if ( service.getKeywords() == null ) {
+            ((WPSInfoImpl)service).setKeywords( new ArrayList() );
+        }
+        if ( service.getExceptionFormats() == null ) {
+            ((WPSInfoImpl)service).setExceptionFormats( new ArrayList() );
+        }
+        if ( service.getMetadata() == null ) {
+            ((WPSInfoImpl)service).setMetadata( new MetadataMap() );
+        }
+        if ( service.getClientProperties() == null ) {
+            ((WPSInfoImpl)service).setClientProperties( new HashMap() );
+        }
         if ( service.getVersions() == null ) {
             ((WPSInfoImpl)service).setVersions( new ArrayList() );
         }
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.0.0") );
         }
-        System.out.println("Init keywords:"+service.getKeywords());
         return service;
     }
 }
