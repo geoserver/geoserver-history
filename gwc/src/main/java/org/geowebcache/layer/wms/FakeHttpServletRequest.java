@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -202,7 +203,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     }
 
     public String getParameter(String arg0) {
-        throw new ServletDebugException();
+        return parameterMap.get(arg0);
     }
 
     public Map getParameterMap() {
@@ -210,7 +211,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     }
 
     public Enumeration getParameterNames() {
-        throw new ServletDebugException();
+        return Collections.enumeration(parameterMap.keySet());
     }
 
     public String[] getParameterValues(String arg0) {
