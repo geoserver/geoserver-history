@@ -4,10 +4,8 @@ import java.util.logging.Logger;
 
 import org.geotools.util.logging.Logging;
 import org.geowebcache.layer.wms.WMSLayer;
-import org.geowebcache.mime.MimeType;
 import org.geowebcache.storage.StorageBroker;
 import org.geowebcache.storage.StorageException;
-import org.geowebcache.storage.TileRangeObject;
 
 public class GWCCleanser {
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCCleanser");
