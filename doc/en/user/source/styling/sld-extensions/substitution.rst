@@ -66,7 +66,7 @@ The following symbolizer has been parametrized in three places, every time with 
 
 The SLD renders the sample ``sf:bugsites`` as follows when no parameter is provided in the request:
 
-.. figure:: image/default.png
+.. figure:: images/default.png
 
    *Default rendering* 
 
@@ -76,6 +76,6 @@ If the request is changed to include the following parameter::
    
 the result will be instead:
 
-.. figure:: image/triangles.png
+.. figure:: images/triangles.png
 
    *Rendering with parameters* 

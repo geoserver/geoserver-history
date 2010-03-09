@@ -1,0 +1,13 @@
+.. _sld_parameter_substitution:
+
+SLD Extensions in GeoServer
+===========================
+
+GeoServer sports a number of vendor specific extensions to SLD 1.0.
+While not portable they allow to make map making more flexible and to generate better looking maps.
+
+.. toctree::
+   :maxdepth: 2
+
+   geometry-transformations
+   substitution
