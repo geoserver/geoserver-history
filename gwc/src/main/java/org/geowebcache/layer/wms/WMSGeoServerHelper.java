@@ -12,7 +12,10 @@ import java.util.logging.Logger;
 import org.geoserver.ows.Dispatcher;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.layer.TileResponseReceiver;
+import org.geowebcache.mime.XMLMime;
+import org.geowebcache.util.ServletUtils;
 
 public class WMSGeoServerHelper extends WMSSourceHelper {
     
@@ -28,6 +31,17 @@ public class WMSGeoServerHelper extends WMSSourceHelper {
             WMSLayer layer, String wmsParams, String expectedMimeType)
             throws GeoWebCacheException {
         
+        // work around GWC setting the wrong regionation params
+        if(tileRespRecv instanceof ConveyorTile &&
+                ((ConveyorTile) tileRespRecv).getMimeType() == XMLMime.kml) {
+            // handle format options in the middle of the request
+            wmsParams = wmsParams.replaceAll("&format_options=.*&", "&");
+            // handle format options at the end of the request 
+            // (which is where it should be with the current GWC code)
+            wmsParams = wmsParams.replaceAll("&format_options=.*$", "");
+            wmsParams += "&format_options=" + ServletUtils.URLEncode("regionateBy:auto"); 
+        }
+        
         FakeHttpServletRequest req = new FakeHttpServletRequest(wmsParams);
         FakeHttpServletResponse resp = new FakeHttpServletResponse();
         
@@ -40,13 +54,20 @@ public class WMSGeoServerHelper extends WMSSourceHelper {
         }
         
         if(super.mimeStringCheck(expectedMimeType, resp.getContentType())) {
-            byte[] bytes = resp.getBytes();
-            
-            log.finer("Received " + bytes.length);
-            
-            tileRespRecv.setStatus(200);
-            
-            return bytes;
+            int responseCode = resp.getResponseCode();
+            tileRespRecv.setStatus(responseCode);
+            if(responseCode == 200) {
+                byte[] bytes = resp.getBytes();
+                
+                log.finer("Received " + bytes.length);
+                
+                return bytes;
+            } else if(responseCode == 204) {
+                return new byte[0];
+            } else {
+                throw new GeoWebCacheException("Unexpected response from GeoServer for request " 
+                        + wmsParams + ", got response code " + responseCode);
+            }
         } else {
             log.severe("Unexpected response from GeoServer for request: " + wmsParams);
             
