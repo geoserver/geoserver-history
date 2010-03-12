@@ -29,8 +29,18 @@ public class FakeHttpServletResponse implements HttpServletResponse {
     
     HashMap<String,String> headers = new HashMap<String,String>();
     
+    int responseCode = 200;
+    
     public byte[] getBytes() {
         return fos.getBytes();
+    }
+    
+    /**
+     * Returns the response code (usually 200, but might be 204 or another one) 
+     * @return
+     */
+    public int getResponseCode() {
+        return responseCode;
     }
     
     /**
@@ -38,7 +48,6 @@ public class FakeHttpServletResponse implements HttpServletResponse {
      */
     public void addCookie(Cookie arg0) {
         throw new ServletDebugException();
-        
     }
 
     public void addDateHeader(String arg0, long arg1) {
@@ -77,11 +86,11 @@ public class FakeHttpServletResponse implements HttpServletResponse {
     }
 
     public void sendError(int arg0) throws IOException {
-        throw new ServletDebugException();
+        responseCode = arg0;
     }
 
     public void sendError(int arg0, String arg1) throws IOException {
-        throw new ServletDebugException();
+        responseCode = arg0;
     }
 
     public void sendRedirect(String arg0) throws IOException {
