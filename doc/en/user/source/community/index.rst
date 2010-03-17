@@ -3,7 +3,7 @@
 Community
 =========
 
-This section is devoted to GeoServer community modules. Community modules are considered "pending" in that they are not officially part of the GeoServer project. 
+This section is devoted to GeoServer community modules. Community modules are considered "pending" in that they are not officially part of the GeoServer releases. They are however built along with the `nightly builds <http://gridlock.openplans.org/geoserver/>`_, so you can download and play with them.
 
 .. warning::
 
@@ -13,4 +13,5 @@ This section is devoted to GeoServer community modules. Community modules are co
 .. toctree::
    :maxdepth: 1 
 
+   controlflow/index
    css/index
