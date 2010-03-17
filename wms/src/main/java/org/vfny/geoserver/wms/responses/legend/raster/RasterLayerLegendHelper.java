@@ -6,7 +6,9 @@ package org.vfny.geoserver.wms.responses.legend.raster;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
@@ -26,7 +28,6 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.util.NumberRange;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.LegendUtils;
 import org.vfny.geoserver.wms.responses.legend.raster.ColorMapLegendCreator.Builder;
@@ -50,9 +51,6 @@ public class RasterLayerLegendHelper {
             final File rasterLegend = new File(stylesDirectory, "rasterLegend.png");
             if (rasterLegend.exists())
                 imgShape = ImageIO.read(rasterLegend);
-            else
-                imgShape = ImageIO.read(DefaultRasterLegendProducer.class
-                        .getResource("rasterLegend.png"));
         } catch (Throwable e) {
             imgShape = null;
         }
@@ -210,20 +208,51 @@ public class RasterLayerLegendHelper {
                 image = cMapLegendCreator.getLegend();
 
             else {
-                if (defaultLegend == null)
-                    throw new IllegalStateException("Unable to get default legend");
-
                 image = ImageUtils.createImage(width, height, (IndexColorModel) null, transparent);
                 final Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor,
                         image, new HashMap());
-                graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
-                graphics.drawImage(defaultLegend, 0, 0, width, height, null);
+                if (defaultLegend == null) {
+                    drawRasterIcon(graphics);
+                } else {
+                    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                            RenderingHints.VALUE_ANTIALIAS_ON);
+                    graphics.drawImage(defaultLegend, 0, 0, width, height, null);
+                }
                 graphics.dispose();
             }
         }
 
         return image;
+    }
+
+    /**
+     * Builds a geosilk like raster icon
+     */
+    void drawRasterIcon(Graphics2D graphics) {
+        Color blue = new Color(Integer.parseInt("5e72be", 16));
+        Color cyan = new Color(Integer.parseInt("a2c0eb", 16));
+        
+        // color bg in blue
+        graphics.setColor(blue);
+        graphics.fillRect(0, 0, width, height);
+        
+        // create checkerboard with cyan
+        graphics.setColor(cyan);
+        for(int j = 0; j < height / 2; j++) {
+            for(int i = (j % 2); i < width / 2; i+=2) {
+                graphics.fillRect(i * 2, j * 2, 2, 2);
+            }
+        }
+        
+        // overlay a shade of blue that becomes more solid on the lower right corner
+        GradientPaint paint = new GradientPaint(new Point(0,0), new Color(0, 0, 255, 0), 
+                new Point(width, height), new Color(0, 0, 255, 100));
+        graphics.setPaint(paint);
+        graphics.fillRect(0, 0, width, height);
+        
+        // blue border
+        graphics.setColor(Color.BLUE);
+        graphics.drawRect(0, 0, width - 1, height -1 );
     }
 
 }
