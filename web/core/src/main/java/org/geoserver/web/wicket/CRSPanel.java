@@ -288,7 +288,7 @@ public class CRSPanel extends FormComponentPanel {
             add( wktLabel );
             
             if ( crs != null ) {
-                wktLabel.setModel( new Model( crs.toWKT() ) );
+                wktLabel.setModel( new Model( crs.toString() ) );
             }
         }
     }
