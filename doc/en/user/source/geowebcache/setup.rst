@@ -6,20 +6,7 @@ Setup
 Pointing GeoWebCache to GeoServer's WMS
 ---------------------------------------
 
-By default, GeoWebCache expects GeoServer to be accessible at the following URL::
-
-   http://localhost:8080/geoserver
-   
-To point GeoWebCache elsewhere, you will need to specify the location of your GeoServer instance's WMS GetCapabilities path.  Stop GeoServer if it is currently running, and then add the following code to your GeoServer's ``web.xml`` file (located in the ``WEB-INF`` directory):
-
-.. code-block:: xml 
-
-   <context-param>
-      <param-name>GEOSERVER_WMS_URL</param-name>
-      <param-value>http://example.com:8082/geoserver/wms</param-value>
-   </context-param>
-
-Make sure to replace the URL inside ``<param-value>`` with your GeoServer instance's WMS path.  This means the context path of GeoServer, usually /geoserver, with "/wms" appended.  Restart GeoServer when done.
+As of GeoServer 2.0.1, all communication between GeoServer and GeoWebCache happens by passing messages inside the JVM. The ``GEOWESERVER_WMS_URL`` parameter in ``web.xml`` is therefore deprecated.
 
 Setting the directory for cached data
 -------------------------------------
@@ -35,6 +22,15 @@ GeoWebCache will automatically store cached tiles in the ``gwc`` directory insid
 
 Make sure to change the path inside ``<param-value>`` to the desired path.  Restart GeoServer when done.
 
+Manually configuring GeoWebCache
+--------------------------------
+
+If you need to use more of the GeoWebCache's features than the automatic configuration offers then you can create a ``gwc`` directory inside the GeoServer data directory, and in it place a ``geowebcache.xml`` file. Please refer to the GeoWebCache documentation for details.
+
+
+Check the logfiles after starting GeoServer to verify that this file has been read.
+
+
 GeoWebCache with multiple GeoServer instances
 ---------------------------------------------
 
@@ -43,7 +39,6 @@ he second instance is started.
 
 Two possible workarounds::
 
-   #. Delete gwc*.jar in WEB-INF/lib and restart GeoServer. This disables GeoWebCache. If you wish, you can run a separate instance in front of all your GeoServer instances.
-   #. Set the variable GEOWEBCACHE_CACHE_DIR, described above, to point to a local directory for each instance.
-
+   * Delete gwc*.jar in WEB-INF/lib and restart GeoServer. This disables GeoWebCache. If you wish, you can run a separate instance in front of all your GeoServer instances.
+   * Set the variable GEOWEBCACHE_CACHE_DIR, described above, to point to a local directory for each instance.
 
