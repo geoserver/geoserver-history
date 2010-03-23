@@ -673,6 +673,7 @@ public class XStreamPersister {
                 writer.startNode("id");
                 writer.setValue( id );
                 writer.endNode();
+                callback.postEncodeReference( source, id, writer, context );
             }
             else {
                 //use name if no id set
@@ -681,13 +682,13 @@ public class XStreamPersister {
                     writer.startNode("name");
                     writer.setValue( name );
                     writer.endNode();
+                    callback.postEncodeReference( source, name, writer, context );
                 }
                 else {
                     throw new IllegalArgumentException( "Unable to marshal reference with no id or name.");
                 }
             }
             
-            callback.postEncodeReference( source, id, writer, context );
         }
         
         public Object unmarshal(HierarchicalStreamReader reader,
