@@ -149,5 +149,11 @@
         <module>css</module>
       </modules>
     </profile>
+    <profile>
+      <id>gss</id>
+      <modules>
+        <module>gss</module>
+      </modules>
+    </profile>
   </profiles>
 </project>

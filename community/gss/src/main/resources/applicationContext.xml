@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="gssLoader" class="org.geoserver.gss.GSSXStreamLoader">
+	  <constructor-arg ref="resourceLoader"/>
+	</bean>
+    
+	<!-- wfs service -->
+	<bean id="gssServiceTarget" class="org.geoserver.gss.DefaultGeoServerSynchronizationService">
+		<constructor-arg ref="geoServer"/>
+	</bean>
+
+    <bean id="gssLogger" class="org.geoserver.ows.util.EMFLogger">
+      <constructor-arg type="java.lang.String" value="org.geoserver.gss"/>
+    </bean>
+	<bean id="gssService" class="org.springframework.aop.framework.ProxyFactoryBean">
+	  <property name="proxyInterfaces">
+	  	<value>org.geoserver.gss.GeoServerSynchronizationService</value>
+	  </property>
+	  <property name="interceptorNames">
+	  	<list>
+	  		<value>gssLogger</value>
+	  		<value>gssServiceTarget</value>
+	  	</list>
+	  </property>
+	</bean>
+  
+	<!-- service descriptors -->
+	<bean id="gssService-1.0.0" class="org.geoserver.platform.Service">
+		<constructor-arg index="0" value="gss"/>
+		<constructor-arg index="1" ref="gssService"/>
+		<constructor-arg index="2" value="1.0.0"/>
+		<constructor-arg index="3">
+		  <list>
+		    <value>GetCentralRevision</value>
+		    <value>PostDiff</value>
+		    <value>GetDiff</value>
+		  </list>
+		</constructor-arg>
+	</bean>
+   
+   <!-- KVP request readers --> 
+   <bean id="getCentralRevisionKvpReader" class="org.geoserver.ows.KvpRequestReader">
+       <constructor-arg index="0" value="org.geoserver.gss.GetCentralRevisionType"/>
+   </bean>
+   
+   <!-- XML handling -->
+  <bean id="gssXsd" class="org.geoserver.gss.xml.GSS">
+    <constructor-arg ref="wfsXsd-1.1"/>
+  </bean>
+  
+  <bean id="gssXmlConfiguration"
+    class="org.geoserver.gss.xml.GSSConfiguration">
+    <constructor-arg ref="wfsXmlConfiguration-1.1" />
+    <constructor-arg ref="gssXsd"/>
+    <constructor-arg ref="catalog"/>
+  </bean>
+  
+  <!--  Output formats -->
+  <bean id ="centralRevisionsOutputFormat" class="org.geoserver.gss.response.CentralRevisionsOutputFormat">
+    <constructor-arg index="0" ref="gssXmlConfiguration"/>
+    <constructor-arg index="1" ref="gssXsd"/>
+  </bean>
+</beans>
