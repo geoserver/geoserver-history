@@ -1,0 +1,20 @@
+<dataStore>
+  <id>synchStore</id>
+  <connectionParameters>
+    <entry key="namespace">http://www.openplans.org/topp</entry>
+    <entry key="port">${port}</entry>
+    <entry key="passwd">${passwd}</entry>
+    <entry key="dbtype">postgis-versioned</entry>
+    <entry key="host">${host}</entry>
+    <entry key="version enable all">true</entry>
+    <entry key="loose bbox">true</entry>
+    <entry key="user">${user}</entry>
+    <entry key="database">${database}</entry>
+    <entry key="wkb enabled">true</entry>
+  </connectionParameters>
+  <workspace>
+    <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffd</id>
+  </workspace>
+  <name>synch</name>
+  <enabled>true</enabled>
+</dataStore>
