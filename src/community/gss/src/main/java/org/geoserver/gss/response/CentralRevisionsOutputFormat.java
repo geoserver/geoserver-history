@@ -9,13 +9,19 @@ import java.io.OutputStream;
 
 import org.geoserver.gss.CentralRevisionsType;
 import org.geoserver.gss.CentralRevisionsType.LayerRevision;
+import org.geoserver.gss.xml.GSS;
+import org.geoserver.gss.xml.GSSConfiguration;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.gss.xml.GSS;
-import org.geoserver.gss.xml.GSSConfiguration;
 import org.geotools.xml.Encoder;
 
+/**
+ * Encodes a {@link CentralRevisionsType} into an XML response
+ * 
+ * @author aaime
+ * 
+ */
 public class CentralRevisionsOutputFormat extends Response {
 
     GSSConfiguration configuration;

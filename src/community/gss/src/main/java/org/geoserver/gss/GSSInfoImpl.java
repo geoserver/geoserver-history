@@ -7,9 +7,15 @@ package org.geoserver.gss;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.config.impl.ServiceInfoImpl;
 
+/**
+ * @see GSSInfo
+ * @author aaime
+ * 
+ */
 public class GSSInfoImpl extends ServiceInfoImpl implements GSSInfo {
 
     DataStoreInfo versioningDataStore;
+
     GSSMode mode;
 
     public GSSMode getMode() {
@@ -23,7 +29,7 @@ public class GSSInfoImpl extends ServiceInfoImpl implements GSSInfo {
     public GSSInfoImpl() {
         setId("gss");
     }
-    
+
     public DataStoreInfo getVersioningDataStore() {
         return versioningDataStore;
     }

@@ -7,6 +7,9 @@ package org.geoserver.gss;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.config.ServiceInfo;
 
+/**
+ * The configuration of GSS
+ */
 public interface GSSInfo extends ServiceInfo {
 
     public enum GSSMode {

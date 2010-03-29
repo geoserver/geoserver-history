@@ -10,7 +10,7 @@ import org.geotools.xml.Configuration;
 import org.picocontainer.MutablePicoContainer;
 
 /**
- * Parser configuration for the http://www.opengis.net/wfsv schema.
+ * Parser configuration for the http://geoserver.org/gss schema.
  */
 public class GSSConfiguration extends Configuration {
     Catalog catalog;

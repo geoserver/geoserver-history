@@ -12,6 +12,11 @@ import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.wfs.WFSInfoImpl;
 import org.geotools.util.Version;
 
+/**
+ * Loads GSS configuration from the disk
+ * 
+ * @author aaime
+ */
 public class GSSXStreamLoader extends XStreamServiceLoader<GSSInfo> {
 
     public GSSXStreamLoader(GeoServerResourceLoader resourceLoader) {
@@ -29,11 +34,11 @@ public class GSSXStreamLoader extends XStreamServiceLoader<GSSInfo> {
 
     @Override
     protected GSSInfo initialize(GSSInfo service) {
-        if ( service.getVersions() == null ) {
-            ((WFSInfoImpl)service).setVersions( new ArrayList() );
+        if (service.getVersions() == null) {
+            ((WFSInfoImpl) service).setVersions(new ArrayList());
         }
-        if ( service.getVersions().isEmpty() ) {
-            service.getVersions().add( new Version( "1.0.0" ) );
+        if (service.getVersions().isEmpty()) {
+            service.getVersions().add(new Version("1.0.0"));
         }
         return service;
     }

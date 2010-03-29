@@ -4,6 +4,11 @@
  */
 package org.geoserver.gss;
 
+/**
+ * Base class for GSS requests
+ * @author aaime
+ *
+ */
 public class GSSRequest {
     String service;
 
