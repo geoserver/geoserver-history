@@ -875,7 +875,7 @@ public class XStreamPersister {
                 writer.startNode("scaleX"); writer.setValue(Double.toString( atx.getScaleX())); writer.endNode();
                 writer.startNode("scaleY"); writer.setValue(Double.toString( atx.getScaleY())); writer.endNode();
                 writer.startNode("shearX"); writer.setValue(Double.toString( atx.getShearX())); writer.endNode();
-                writer.startNode("shearX"); writer.setValue(Double.toString( atx.getShearY())); writer.endNode();
+                writer.startNode("shearY"); writer.setValue(Double.toString( atx.getShearY())); writer.endNode();
                 writer.startNode("translateX"); writer.setValue(Double.toString( atx.getTranslateX())); writer.endNode();
                 writer.startNode("translateY"); writer.setValue(Double.toString( atx.getTranslateY())); writer.endNode();
                 writer.endNode();
