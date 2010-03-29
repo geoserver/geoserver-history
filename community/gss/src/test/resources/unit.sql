@@ -9,6 +9,7 @@ DROP TABLE restricted cascade;
 -- clean up GSS metadata tables
 DROP TABLE synch_tables cascade;
 DROP TABLE synch_history cascade;
+DROP TABLE synch_conflicts cascade;
 
 -- restricted areas
 CREATE TABLE restricted (gid serial NOT NULL, cat bigint, the_geom geometry, CONSTRAINT enforce_dims_the_geom CHECK ((ndims(the_geom) = 2)), CONSTRAINT enforce_geotype_the_geom CHECK (((geometrytype(the_geom) = 'MULTIPOLYGON'::text) OR (the_geom IS NULL))), CONSTRAINT enforce_srid_the_geom CHECK ((srid(the_geom) = 26713)));

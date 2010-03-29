@@ -52,12 +52,13 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
     static final String SYNCH_CONFLICTS = "synch_conflicts";
 
-    static final String SYNCH_CONFLICTS_CREATION = "CREATE TABLE synch_conflicts(\n"
-            + "table_name VARCHAR(256) NOT NULL,\n" // 
-            + "feature_id BIGINT NOT NULL,\n" //
-            + "local_revision BIGINT NOT NULL,\n" // 
-            + "resolved BOOLEAN NOT NULL,\n" //
-            + "primary key(table_name, feature_id, local_revision))";
+    static final String SYNCH_CONFLICTS_CREATION = "CREATE TABLE synch_conflicts(\n" + 
+    		"table_name VARCHAR(256) NOT NULL,\n" + 
+    		"feature_id BIGINT NOT NULL,\n" + 
+    		"local_revision BIGINT NOT NULL,\n" + 
+    		"resolved BOOLEAN NOT NULL,\n" + 
+    		"difference TEXT,\n" + 
+    		"primary key(table_name, feature_id, local_revision))";
 
     private FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
@@ -89,14 +90,14 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                     + "versioning datastore is not available/disabled");
         }
 
-        VersionedPostgisDataStore dataStore;
+        FeatureIterator<SimpleFeature> fi = null;
         try {
             DataAccess ds = info.getVersioningDataStore().getDataStore(null);
             if (!(ds instanceof VersionedPostgisDataStore)) {
                 throw new GSSServiceException(
                         "The store attached to the gss module is not a PostGIS versioning one");
             }
-            dataStore = (VersionedPostgisDataStore) ds;
+            VersionedPostgisDataStore dataStore = (VersionedPostgisDataStore) ds;
 
             if (info.getMode() == GSSMode.Unit) {
                 // check the required metadata tables are there, if not, create them
@@ -112,13 +113,25 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 dataStore.setVersioned(SYNCH_HISTORY, false, null, null);
                 
                 if (!typeNames.contains(SYNCH_CONFLICTS)) {
-                    runStatement(dataStore, SYNCH_CONFLICTS);
+                    runStatement(dataStore, SYNCH_CONFLICTS_CREATION);
                 }
-                dataStore.setVersioned(SYNCH_HISTORY, false, null, null);
+                dataStore.setVersioned(SYNCH_CONFLICTS, true, null, null);
+                
+                // version enable all tables that are supposed to be shared
+                fi = dataStore.getFeatureSource(SYNCH_TABLES).getFeatures().features();
+                while(fi.hasNext()) {
+                    String tableName = (String) fi.next().getAttribute("table_name");
+                    dataStore.setVersioned(tableName, true, null, null);
+                }
+                fi.close();
             }
         } catch (Exception e) {
             throw new GSSServiceException("A problem occurred while checking the versioning store",
                     e);
+        } finally {
+            if(fi != null) {
+                fi.close();
+            }
         }
 
     }
