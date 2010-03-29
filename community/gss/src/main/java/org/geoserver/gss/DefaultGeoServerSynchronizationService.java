@@ -48,11 +48,19 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             + "table_name VARCHAR(256) NOT NULL,\n" //
             + "local_revision BIGINT NOT NULL,\n" //
             + "central_revision BIGINT,\n" //
-            + "conflictIds TEXT,\n" //
             + "primary key(table_name, local_revision))";
 
+    static final String SYNCH_CONFLICTS = "synch_conflicts";
+
+    static final String SYNCH_CONFLICTS_CREATION = "CREATE TABLE synch_conflicts(\n"
+            + "table_name VARCHAR(256) NOT NULL,\n" // 
+            + "feature_id BIGINT NOT NULL,\n" //
+            + "local_revision BIGINT NOT NULL,\n" // 
+            + "resolved BOOLEAN NOT NULL,\n" //
+            + "primary key(table_name, feature_id, local_revision))";
+
     private FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
-    
+
     private Catalog catalog;
 
     private GSSInfo info;
@@ -100,6 +108,11 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
                 if (!typeNames.contains(SYNCH_HISTORY)) {
                     runStatement(dataStore, SYNCH_HISTORY_CREATION);
+                }
+                dataStore.setVersioned(SYNCH_HISTORY, false, null, null);
+                
+                if (!typeNames.contains(SYNCH_CONFLICTS)) {
+                    runStatement(dataStore, SYNCH_CONFLICTS);
                 }
                 dataStore.setVersioned(SYNCH_HISTORY, false, null, null);
             }
@@ -152,35 +165,36 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             if (fti == null) {
                 throw new GSSServiceException("Could not locate typeName: " + typeName);
             }
-            
+
             FeatureIterator<SimpleFeature> fi = null;
             try {
                 // get the versioning data store
-                VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore().getDataStore(null);
-                
+                VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
+                        .getDataStore(null);
+
                 // check the table is actually synch-ed
                 DefaultQuery q = new DefaultQuery();
                 q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
                 int count = ds.getFeatureSource(SYNCH_TABLES).getCount(q);
-                if(count == 0) {
+                if (count == 0) {
                     throw new GSSServiceException(fti.getName() + " is not a synchronised layer");
                 }
-                
+
                 // gather the record from the synch history table
                 q = new DefaultQuery();
                 q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
-                q.setSortBy(new SortBy[] {ff.sort("central_revision", SortOrder.DESCENDING)});
+                q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING) });
                 q.setMaxFeatures(1);
                 fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
                 long revision = -1;
-                if(fi.hasNext()) {
-                   revision = ((Number) fi.next().getAttribute("central_revision")).longValue(); 
+                if (fi.hasNext()) {
+                    revision = ((Number) fi.next().getAttribute("central_revision")).longValue();
                 }
                 cr.getLayerRevisions().add(new LayerRevision(typeName, revision));
-            } catch(IOException e) {
+            } catch (IOException e) {
                 throw new GSSServiceException("Could not compute the response", e);
             } finally {
-                if(fi != null) {
+                if (fi != null) {
                     fi.close();
                 }
             }

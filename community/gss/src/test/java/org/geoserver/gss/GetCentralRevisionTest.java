@@ -36,11 +36,11 @@ public class GetCentralRevisionTest extends GSSTestSupport {
         fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_HISTORY);
         fb = new SimpleFeatureBuilder(fs.getSchema());
         // just one
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"restricted", 150, 172, null})));
+        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"restricted", 150, 172})));
         // three synchs occurred on this layer
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 150, 160, null})));
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 182, 210, null})));
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 193, 340, null})));
+        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 150, 160})));
+        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 182, 210})));
+        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 193, 340})));
     }
     
     /**
