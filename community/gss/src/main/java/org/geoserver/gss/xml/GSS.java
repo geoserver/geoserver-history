@@ -15,7 +15,7 @@ import org.geotools.xml.XSD;
 
 /**
  * This interface contains the qualified names of all the types,elements, and attributes in the
- * http://www.opengis.net/gss schema.
+ * http://geoserver.org/gss schema.
  */
 public class GSS extends XSD {
 

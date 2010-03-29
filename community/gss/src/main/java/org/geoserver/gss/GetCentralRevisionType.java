@@ -9,6 +9,11 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+/**
+ * The GetCentralRevision request
+ * 
+ * @author aaime
+ */
 public class GetCentralRevisionType extends GSSRequest {
     List<QName> typeName = new ArrayList<QName>();
 

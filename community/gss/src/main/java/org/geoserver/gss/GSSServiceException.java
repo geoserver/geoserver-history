@@ -6,7 +6,9 @@ package org.geoserver.gss;
 
 import org.geoserver.platform.ServiceException;
 
-
+/**
+ * A generic GSS exception
+ */
 public class GSSServiceException extends ServiceException {
     private static final long serialVersionUID = 7001211051719019724L;
 

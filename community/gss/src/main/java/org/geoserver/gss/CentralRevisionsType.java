@@ -9,6 +9,10 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+/**
+ * Represents the response to the GetCentralRevision call
+ * @author aaime
+ */
 public class CentralRevisionsType {
 
     public static class LayerRevision {

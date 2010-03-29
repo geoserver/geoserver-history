@@ -33,6 +33,9 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 
+/**
+ * The GSS implementation
+ */
 public class DefaultGeoServerSynchronizationService implements GeoServerSynchronizationService {
 
     static final String SYNCH_TABLES = "synch_tables";
@@ -76,6 +79,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
      * the ckecks for every request
      */
     void ensureEnabled() {
+        // basic sanity checks on the config
         if (info == null) {
             throw new GSSServiceException(
                     "The service is not properly configured, gssInfo not found");
@@ -92,6 +96,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
         FeatureIterator<SimpleFeature> fi = null;
         try {
+            // basic sanity checks on the datastore
             DataAccess ds = info.getVersioningDataStore().getDataStore(null);
             if (!(ds instanceof VersionedPostgisDataStore)) {
                 throw new GSSServiceException(
