@@ -36,6 +36,7 @@ public class GSSConfiguration extends Configuration {
         container.registerComponentImplementation(GSS.GetCentralRevisionType, GetCentralRevisionTypeBinding.class);
         container.registerComponentImplementation(GSS.CentralRevisionsType, CentralRevisionsTypeBinding.class);
         container.registerComponentImplementation(GSS.LayerRevisionType, LayerRevisionTypeBinding.class);
+        container.registerComponentImplementation(GSS.PostDiffType, PostDiffTypeBinding.class);
     }
     
 //    public void configureContext(MutablePicoContainer bindings) {

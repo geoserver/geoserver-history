@@ -25,10 +25,12 @@ public class GSS extends XSD {
     public static final QName GetCentralRevisionType = new QName(NAMESPACE, "GetCentralRevisionType");
     public static final QName CentralRevisionsType = new QName(NAMESPACE, "CentralRevisionsType");
     public static final QName LayerRevisionType = new QName(NAMESPACE, "LayerRevisionType");
+    public static final QName PostDiffType = new QName(NAMESPACE, "PostDiffType");
     
     /* Element definitions */
     public static final QName GetCentralRevision = new QName(NAMESPACE, "GetCentralRevision");
     public static final QName CentralRevisions = new QName(NAMESPACE, "CentralRevisions");
+    public static final QName PostDiff = new QName(NAMESPACE, "PostDiff");
 
     /** wfs dependency */
     WFS wfs;
