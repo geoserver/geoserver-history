@@ -73,6 +73,6 @@
    
    <xsd:element name="PostDiffResponse" type="gss:PostDiffResponseType"/>
    <xsd:complexType name="PostDiffResponseType">
-     <xsd:attribute name="success" fixed="true" use="required"/>
+     <xsd:attribute name="success" fixed="true" use="required" default="true" type="xsd:boolean"/>
    </xsd:complexType>
 </xsd:schema>
