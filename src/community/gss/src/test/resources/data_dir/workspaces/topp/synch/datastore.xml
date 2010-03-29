@@ -11,6 +11,7 @@
     <entry key="user">${user}</entry>
     <entry key="database">${database}</entry>
     <entry key="wkb enabled">true</entry>
+    <entry key="version enable all">false</entry>
   </connectionParameters>
   <workspace>
     <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffd</id>
