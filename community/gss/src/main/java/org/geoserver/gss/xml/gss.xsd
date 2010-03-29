@@ -40,10 +40,9 @@
    </xsd:complexType>
    
    <!-- ================================================================== -->
-   <!-- = GetCentralRevision Response                                     = -->
+   <!-- = GetCentralRevision Response                                    = -->
    <!-- ================================================================== -->
-   <xsd:element name="CentralRevisions" type="gss:CentralRevisionsType">
-   </xsd:element>
+   <xsd:element name="CentralRevisions" type="gss:CentralRevisionsType"/>
    <xsd:complexType name="LayerRevisionType">
       <xsd:attribute name="typeName" type="xsd:QName" use="required"/>
       <xsd:attribute name="centralRevision" type="xsd:int" use="required"/>
@@ -57,5 +56,23 @@
       <xsd:sequence>
          <xsd:element name="LayerRevision" type="gss:LayerRevisionType" minOccurs="1" maxOccurs="unbounded"/>
       </xsd:sequence>
+   </xsd:complexType>
+   
+   <!-- ================================================================== -->
+   <!-- = PostDiff                                                       = -->
+   <!-- ================================================================== -->
+   <xsd:element name="PostDiff" type="gss:PostDiffType"/>
+   <xsd:complexType name="PostDiffType">
+     <xsd:sequence>
+        <xsd:element name="Changes" type="wfs:TransactionType"/>
+     </xsd:sequence>
+     <xsd:attribute name="typeName" type="xsd:QName" use="required"/>
+     <xsd:attribute name="fromVersion" type="xsd:int" use="required"/>
+     <xsd:attribute name="toVersion" type="xsd:int" use="required"/>
+   </xsd:complexType>
+   
+   <xsd:element name="PostDiffResponse" type="gss:PostDiffResponseType"/>
+   <xsd:complexType name="PostDiffResponseType">
+     <xsd:attribute name="success" fixed="true" use="required"/>
    </xsd:complexType>
 </xsd:schema>

@@ -39,11 +39,13 @@ public abstract class GSSXMLTestSupport extends XMLTestSupport {
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("sf", SF_NAMESPACE);
         namespaces.put("gss", GSS.NAMESPACE);
+        namespaces.put("wfs", WFS.NAMESPACE);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
 
     @Override
     protected Configuration createConfiguration() {
+        // enough mocking to make tests work, we don't even attempt to create a real mock catalog
         ResourcePool resourcePool = createNiceMock(ResourcePool.class);
         
         Catalog catalog = createNiceMock(Catalog.class);
