@@ -1,4 +1,4 @@
-.. _wms_vendor_parameters:
+.. _wms_global_variables:
 
 Global variables affecting WMS 
 ================================

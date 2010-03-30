@@ -69,6 +69,7 @@ The best way to understand these is with examples:
 
 AnchorPoint
 ```````````
+
 The anchor point determines where the label is placed relative to the label point. These measurements are relative to the bounding box of the label. The (x,y) location inside the label's bounding box (specified by the AnchorPoint) is placed at the label point.
 
 .. figure:: img/label_bbox.gif
@@ -247,12 +248,10 @@ Priority Labeling (<Priority>)
 
 GeoServer has extended the standard SLD to also include priority labeling. This allows you to control which labels are rendered in preference to other labels.
 
-For example, lets assume you have a data set like this:
-
-.. code-block::
+For example, lets assume you have a data set like this::
 
    City Name   | population
-  -------------+------------
+   ------------+------------
    Yonkers     |     197,818
    Jersey City |     237,681
    Newark      |     280,123

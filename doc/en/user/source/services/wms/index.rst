@@ -11,4 +11,5 @@ Web Map Service
    configuration
    vendor
    global
+   get_legend_graphic/legendgraphic
    reference

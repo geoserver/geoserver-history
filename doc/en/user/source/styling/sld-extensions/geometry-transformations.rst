@@ -138,6 +138,6 @@ GeoServer set of transformations functions also contains a number of set related
 Buffering can often be approximated by adopting very large strokes and round line joins and line caps, without actually have to perform the geometry transformation.
 
 Adding new transformations
------------------------
+--------------------------
 
 Filter functions are pluggable, meaning it's possible to build new ones in Java and then drop the resulting .jar file in GeoServer as a plugin. A guide is not available at this time, but have a look into the GeoTools main module for examples.

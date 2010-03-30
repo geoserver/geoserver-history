@@ -13,7 +13,7 @@ This kind of control is useful for a number of reasons:
 The control flow method does not normally reject requests, it just queues up those in excess and executes them late. However, it's possible to configure the module to reject requests that have been waited in queue for too long.
 
 Rule syntax reference
-----------------------
+---------------------
 
 The current implementation of the control flow module reads its rules from a ``controlflow.properties`` property file located in the :ref:`GeoServer data directory <data_directory>`.
 
@@ -31,7 +31,7 @@ Per request control
 
 A per request type control can be demanded using the following syntax::
 
-ows.<service>[.<request>[.<outputFormat>]]=<count>
+   ows.<service>[.<request>[.<outputFormat>]]=<count>
 
 Where:
 

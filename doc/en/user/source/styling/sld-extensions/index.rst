@@ -1,4 +1,4 @@
-.. _sld_parameter_substitution:
+.. _sld_extensions:
 
 SLD Extensions in GeoServer
 ===========================

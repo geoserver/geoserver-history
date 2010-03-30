@@ -1,4 +1,4 @@
-.. _tutorials_palettedimages:
+.. _tutorials_imagepyramid:
 
 Building and using an image pyramid
 ===================================
