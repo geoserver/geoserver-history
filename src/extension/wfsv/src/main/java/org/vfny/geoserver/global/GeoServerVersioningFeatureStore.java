@@ -70,4 +70,8 @@ public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore
             throws IOException {
         return getFeatures(Query.ALL);
     }
+
+    public String getVersion() throws IOException, UnsupportedOperationException {
+        return ((VersioningFeatureStore) source).getVersion();
+    }
 }
