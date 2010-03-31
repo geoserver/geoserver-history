@@ -1,5 +1,7 @@
 package org.geoserver.test;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -882,6 +884,29 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
                 sb.append(ve.getMessage()).append("\n");
             }
             fail(sb.toString());
+        }
+    }
+    
+    /**
+     * Performs basic checks on an OWS 1.0 exception, to ensure it's well formed
+     */
+    protected void checkOws10Exception(Document dom) throws Exception {
+        checkOws10Exception(dom,null);
+    }
+    /**
+     * Performs basic checks on an OWS 1.0 exception, to ensure it's well formed
+     * and ensuring that a particular exceptionCode is used.
+     */
+    protected void checkOws10Exception(Document dom, String exceptionCode) throws Exception {
+        Element root = dom.getDocumentElement();
+        assertEquals("ows:ExceptionReport", root.getNodeName() );
+        assertEquals( "1.0.0", root.getAttribute( "version") );
+        assertEquals("http://www.opengis.net/ows", root.getAttribute( "xmlns:ows"));
+        assertEquals( 1, dom.getElementsByTagName( "ows:Exception").getLength() );
+        
+        if ( exceptionCode != null ) {
+            Element ex = (Element) dom.getElementsByTagName( "ows:Exception").item(0);
+            assertEquals( exceptionCode, ex.getAttribute( "exceptionCode") );
         }
     }
     
