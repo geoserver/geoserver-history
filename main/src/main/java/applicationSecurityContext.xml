@@ -39,6 +39,8 @@
         /wms/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
         /wcs/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
         /rest/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,restFilterInvocationInterceptor
+        /gwc/rest/web/**=anonymousProcessingFilter,consoleExceptionTranslationFilter,filterInvocationInterceptor
+        /gwc/rest/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,restFilterInvocationInterceptor
         /**=httpSessionContextIntegrationFilterWithASCTrue,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,consoleExceptionTranslationFilter,filterInvocationInterceptor
       </value>
       <!-- 
