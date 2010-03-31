@@ -3,6 +3,8 @@ package org.geoserver.gss;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
 
+import java.util.Map;
+
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.VersioningDataStore;
@@ -19,8 +21,10 @@ public class GetCentralRevisionTest extends GSSTestSupport {
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
         
-        // force the GSS service to be loaded and create the metadata tables
-        getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=topp:restricted");
+        // initialize the GSS service
+        Map gssBeans = applicationContext.getBeansOfType(DefaultGeoServerSynchronizationService.class);
+        DefaultGeoServerSynchronizationService gss = (DefaultGeoServerSynchronizationService) gssBeans.values().iterator().next();
+        gss.ensureUnitEnabled();
         
         VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(null);
         assertNotNull(synch.getSchema(SYNCH_HISTORY));
@@ -35,12 +39,11 @@ public class GetCentralRevisionTest extends GSSTestSupport {
         
         fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_HISTORY);
         fb = new SimpleFeatureBuilder(fs.getSchema());
-        // just one
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"restricted", 150, 172})));
         // three synchs occurred on this layer
         fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 150, 160})));
         fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 182, 210})));
         fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 193, 340})));
+        // and none on restricted
     }
     
     /**
@@ -48,7 +51,7 @@ public class GetCentralRevisionTest extends GSSTestSupport {
      * @throws Exception
      */
     public void testCentralRevisionUnknownLayer() throws Exception {
-        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=topp:missing");
+        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=sf:missing");
         validate(response);
         Document doc = dom(response);
         // print(doc);
@@ -60,31 +63,31 @@ public class GetCentralRevisionTest extends GSSTestSupport {
      * @throws Exception
      */
     public void testCentralRevisionLocalLayer() throws Exception {
-        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=topp:archsites");
+        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=sf:archsites");
         validate(response);
         Document doc = dom(response);
-        print(doc);
+        // print(doc);
         checkOwsException(doc);
     }
     
 
     public void testCentralRevisionRestricted() throws Exception {
-        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=topp:restricted");
+        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=sf:restricted");
         validate(response);
         Document doc = dom(response);
         // print(doc);
         
-        assertXpathEvaluatesTo("172", "//gss:CentralRevisions/gss:LayerRevision/@centralRevision", doc);
+        // no synchronization, give me everything back
+        assertXpathEvaluatesTo("-1", "//gss:CentralRevisions/gss:LayerRevision/@centralRevision", doc);
     }
     
     public void testCentralRevisionRoads() throws Exception {
-        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=topp:roads");
+        MockHttpServletResponse response = getAsServletResponse(root() + "service=gss&request=GetCentralRevision&typeName=sf:roads");
         validate(response);
         Document doc = dom(response);
         // print(doc);
         
         assertXpathEvaluatesTo("340", "//gss:CentralRevisions/gss:LayerRevision/@centralRevision", doc);
     }
-    
     
 }

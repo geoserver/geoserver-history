@@ -2,9 +2,11 @@ package org.geoserver.gss;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,7 +79,7 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
         namespaces.put("ows", "http://www.opengis.net/ows");
         namespaces.put("ogc", "http://www.opengis.net/ogc");
         namespaces.put("gml", "http://www.opengis.net/gml");
-        namespaces.put("topp", "http://www.openplans.org/topp");
+        namespaces.put("sf", "http://www.openplans.org/spearfish");
         namespaces.put("gss", "http://geoserver.org/gss");
         namespaces.put("xs", "http://www.w3.org/2001/XMLSchema");
         namespaces.put("", "http://www.opengis.net/ogc");
@@ -114,7 +116,7 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
                 SAXParseException se = (SAXParseException) it.next();
                 System.out.println(se);
             }
-            print(dom(response));
+            // print(dom(response));
             fail("Document is not valid, see standard output for a document dump and validation exceptions");
         }
     }
@@ -134,6 +136,23 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
     protected void checkOwsException(Document dom) throws Exception {
         assertXpathEvaluatesTo("1.0.0", "/ows:ExceptionReport/@version", dom);
         assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport/ows:Exception)", dom);
+    }
+    
+    /**
+     * Loads a text file in the classpath into a String
+     * @param path Path relative to the calling class
+     * @return
+     * @throws Exception
+     */
+    protected String loadTextResource(String path) throws Exception {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(path)));
+        String line;
+        while((line = br.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        br.close();
+        return sb.toString();
     }
 
 }

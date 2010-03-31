@@ -18,9 +18,12 @@
       schemaLocation="../../filter/1.1.0/filter.xsd" />
 
 
-   <!-- ================================================================== -->
-   <!-- = GetCentralRevision Request                                     = -->
-   <!-- ================================================================== -->
+   <!-- ==================================================================
+-->
+   <!-- = GetCentralRevision Request                                     =
+-->
+   <!-- ==================================================================
+-->
    <xsd:element name="GetCentralRevision" type="gss:GetCentralRevisionType">
    </xsd:element>
    <xsd:complexType name="GetCentralRevisionType">
@@ -39,9 +42,12 @@
       </xsd:complexContent>
    </xsd:complexType>
    
-   <!-- ================================================================== -->
-   <!-- = GetCentralRevision Response                                    = -->
-   <!-- ================================================================== -->
+   <!-- ==================================================================
+-->
+   <!-- = GetCentralRevision Response                                    =
+-->
+   <!-- ==================================================================
+-->
    <xsd:element name="CentralRevisions" type="gss:CentralRevisionsType"/>
    <xsd:complexType name="LayerRevisionType">
       <xsd:attribute name="typeName" type="xsd:QName" use="required"/>
@@ -58,21 +64,28 @@
       </xsd:sequence>
    </xsd:complexType>
    
-   <!-- ================================================================== -->
-   <!-- = PostDiff                                                       = -->
-   <!-- ================================================================== -->
+   <!-- ==================================================================
+-->
+   <!-- = PostDiff                                                       =
+-->
+   <!-- ==================================================================
+-->
    <xsd:element name="PostDiff" type="gss:PostDiffType"/>
    <xsd:complexType name="PostDiffType">
-     <xsd:sequence>
-        <xsd:element name="Changes" type="wfs:TransactionType"/>
-     </xsd:sequence>
-     <xsd:attribute name="typeName" type="xsd:QName" use="required"/>
-     <xsd:attribute name="fromVersion" type="xsd:int" use="required"/>
-     <xsd:attribute name="toVersion" type="xsd:int" use="required"/>
+      <xsd:complexContent>
+         <xsd:extension base="wfs:BaseRequestType">
+            <xsd:sequence>
+               <xsd:element name="Changes" type="wfs:TransactionType" />
+            </xsd:sequence>
+            <xsd:attribute name="typeName" type="xsd:QName" use="required" />
+            <xsd:attribute name="fromVersion" type="xsd:int" use="required" />
+            <xsd:attribute name="toVersion" type="xsd:int" use="required" />
+         </xsd:extension>
+      </xsd:complexContent>
    </xsd:complexType>
    
    <xsd:element name="PostDiffResponse" type="gss:PostDiffResponseType"/>
    <xsd:complexType name="PostDiffResponseType">
-     <xsd:attribute name="success" fixed="true" use="required" default="true" type="xsd:boolean"/>
+     <xsd:attribute name="success" fixed="true" use="required" type="xsd:boolean"/>
    </xsd:complexType>
 </xsd:schema>

@@ -18,4 +18,11 @@ public interface GeoServerSynchronizationService {
      * @return
      */
     public CentralRevisionsType getCentralRevision(GetCentralRevisionType request);
+    
+    /**
+     * Applies a diff coming from Central
+     * @param request
+     * @return
+     */
+    public PostDiffResponseType postDiff(PostDiffType request);
 }
