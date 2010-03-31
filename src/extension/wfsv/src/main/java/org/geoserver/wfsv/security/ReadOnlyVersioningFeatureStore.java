@@ -60,5 +60,9 @@ public class ReadOnlyVersioningFeatureStore extends
     public void rollback(String toVersion, Filter filter, String[] users) throws IOException {
         throw unsupportedOperation();
     }
+    
+    public String getVersion() throws IOException, UnsupportedOperationException {
+        throw unsupportedOperation();
+    }
 
 }

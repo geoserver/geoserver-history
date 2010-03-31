@@ -12,6 +12,7 @@ import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureLocking;
 import org.geotools.data.VersioningFeatureSource;
+import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
@@ -59,6 +60,10 @@ public class ReadOnlyVersioningFeatureLocking extends
     }
 
     public void rollback(String toVersion, Filter filter, String[] users) throws IOException {
+        throw unsupportedOperation();
+    }
+    
+    public String getVersion() throws IOException, UnsupportedOperationException {
         throw unsupportedOperation();
     }
 
