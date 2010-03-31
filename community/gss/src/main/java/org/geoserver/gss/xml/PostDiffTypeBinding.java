@@ -9,7 +9,7 @@ import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
-public class PostDiffTypeBinding extends AbstractComplexBinding {
+public class PostDiffTypeBinding extends GSSRequestBinding {
 
     public QName getTarget() {
         return GSS.PostDiffType;
@@ -34,6 +34,7 @@ public class PostDiffTypeBinding extends AbstractComplexBinding {
         if(node.hasChild("Changes")) {
             pd.setTransaction((TransactionType) node.getChildValue("Changes"));
         }
+        setServiceVersion(node, pd);
         
         return pd;
     }

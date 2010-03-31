@@ -13,7 +13,7 @@ import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
-public class GetCentralRevisionTypeBinding extends AbstractComplexBinding {
+public class GetCentralRevisionTypeBinding extends GSSRequestBinding {
 
     public QName getTarget() {
         return GSS.GetCentralRevisionType;
@@ -28,6 +28,7 @@ public class GetCentralRevisionTypeBinding extends AbstractComplexBinding {
         List<QName> typeNames = node.getChildValues(QName.class);
         GetCentralRevisionType result = new GetCentralRevisionType();
         result.getTypeNames().addAll(typeNames);
+        setServiceVersion(node, result);
         
         return result;
     }
