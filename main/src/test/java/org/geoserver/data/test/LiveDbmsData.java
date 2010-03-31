@@ -219,6 +219,14 @@ public class LiveDbmsData extends LiveData {
     }
 
     /**
+     * Returns the filtered paths list as a live list (can be modified directly)
+     * @return
+     */
+    public List<String> getFilteredPaths() {
+        return filteredPaths;
+    }
+
+    /**
      * Permanently disable this test logging the specificed warning message (the reason
      * why the test is being disabled)
      * @param warning
