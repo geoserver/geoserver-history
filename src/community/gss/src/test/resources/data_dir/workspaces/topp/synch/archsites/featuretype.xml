@@ -3,7 +3,7 @@
   <name>archsites</name>
   <nativeName>archsites</nativeName>
   <namespace>
-    <id>toppNamespace</id>
+    <id>sfNamespace</id>
   </namespace>
   <nativeCRS>PROJCS[&quot;NAD27 / UTM zone 13N&quot;, 
   GEOGCS[&quot;NAD27&quot;, 

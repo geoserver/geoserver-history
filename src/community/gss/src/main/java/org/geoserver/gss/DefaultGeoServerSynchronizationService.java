@@ -157,7 +157,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         }
     }
 
-    void ensureClientEnabled() {
+    void ensureUnitEnabled() {
         ensureEnabled();
 
         if (info.getMode() == GSSMode.Central) {
@@ -167,7 +167,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
     }
 
     public CentralRevisionsType getCentralRevision(GetCentralRevisionType request) {
-        ensureClientEnabled();
+        ensureUnitEnabled();
 
         CentralRevisionsType cr = new CentralRevisionsType();
         for (QName typeName : request.getTypeNames()) {
@@ -219,6 +219,12 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         }
 
         return cr;
+    }
+
+    public PostDiffResponseType postDiff(PostDiffType request) {
+        // TODO : actually implement the method
+        
+        return new PostDiffResponseType();
     }
 
 }

@@ -56,9 +56,21 @@
     <constructor-arg ref="gssXsd"/>
     <constructor-arg ref="catalog"/>
   </bean>
+
+   <!--  XML readers -->
+   <bean id="postDiffReader" class="org.geoserver.gss.xml.GSSXmlReader">
+      <constructor-arg ref="geoServer" />
+      <constructor-arg ref="gssXmlConfiguration" />
+      <constructor-arg type="java.lang.String" value="PostDiff" />
+   </bean>
   
   <!--  Output formats -->
   <bean id ="centralRevisionsOutputFormat" class="org.geoserver.gss.response.CentralRevisionsOutputFormat">
+    <constructor-arg index="0" ref="gssXmlConfiguration"/>
+    <constructor-arg index="1" ref="gssXsd"/>
+  </bean>
+  
+  <bean id ="postDiffResponseOutputFormat" class="org.geoserver.gss.response.PostDiffResponseOutputFormat">
     <constructor-arg index="0" ref="gssXmlConfiguration"/>
     <constructor-arg index="1" ref="gssXsd"/>
   </bean>

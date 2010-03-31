@@ -1,7 +1,7 @@
 <dataStore>
   <id>synchStore</id>
   <connectionParameters>
-    <entry key="namespace">http://www.openplans.org/topp</entry>
+    <entry key="namespace">http://www.openplans.org/spearfish</entry>
     <entry key="port">${port}</entry>
     <entry key="passwd">${passwd}</entry>
     <entry key="dbtype">postgis-versioned</entry>
@@ -14,7 +14,7 @@
     <entry key="version enable all">false</entry>
   </connectionParameters>
   <workspace>
-    <id>WorkspaceInfoImpl--570ae188:124761b8d78:-7ffd</id>
+    <id>sfWorkspace</id>
   </workspace>
   <name>synch</name>
   <enabled>true</enabled>
