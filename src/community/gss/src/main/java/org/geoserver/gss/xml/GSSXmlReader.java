@@ -4,23 +4,23 @@
  */
 package org.geoserver.gss.xml;
 
-import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.config.GeoServer;
-import org.geoserver.gss.PostDiffType;
-import org.geoserver.ows.XmlRequestReader;
-import org.geoserver.wfs.WFSException;
-import org.geoserver.wfs.WFSInfo;
-import org.geotools.util.Version;
-import org.geotools.xml.Configuration;
-import org.geotools.xml.Parser;
-import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.config.GeoServer;
+import org.geoserver.gss.PostDiffType;
+import org.geoserver.ows.XmlRequestReader;
+import org.geoserver.wfs.WFSException;
+import org.geotools.util.Version;
+import org.geotools.xml.Configuration;
+import org.geotools.xml.Parser;
+import org.xml.sax.InputSource;
 
 /**
  * Xml reader for GSS 1.1.0 xml requests.

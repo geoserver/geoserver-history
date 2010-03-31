@@ -16,6 +16,8 @@ public class GetCentralRevisionTypeBindingTest extends GSSXMLTestSupport {
         assertEquals(1, gcr.getTypeNames().size());
         assertEquals("archsites", gcr.getTypeNames().get(0).getLocalPart());
         assertEquals(SF_NAMESPACE, gcr.getTypeNames().get(0).getNamespaceURI());
+        assertEquals("GSS", gcr.getService());
+        assertEquals("1.0.0", gcr.getVersion());
     }
     
     public void testParseTwo() throws Exception {
