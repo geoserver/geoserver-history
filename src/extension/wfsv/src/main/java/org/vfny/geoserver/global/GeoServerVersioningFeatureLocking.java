@@ -78,4 +78,8 @@ public class GeoServerVersioningFeatureLocking extends GeoServerFeatureLocking
             throws IOException {
         return getFeatures(Query.ALL);
     }
+    
+    public String getVersion() throws IOException, UnsupportedOperationException {
+        return ((VersioningFeatureStore) source).getVersion();
+    }
 }
