@@ -1,6 +1,7 @@
 package org.geoserver.gss;
 
 import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
+import static org.geotools.data.DataUtilities.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -24,7 +25,7 @@ import org.geoserver.data.test.TestData;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.gss.xml.GSSConfiguration;
 import org.geoserver.test.GeoServerAbstractTestSupport;
-import org.geotools.data.DataUtilities;
+
 import org.geotools.data.FeatureStore;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -49,7 +50,12 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
 
     static XpathEngine xpath;
+
     FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+
+    DefaultGeoServerSynchronizationService gss;
+
+    VersioningDataStore synchStore;
 
     // protected String getLogConfiguration() {
     // return "/DEFAULT_LOGGING.properties";
@@ -65,7 +71,7 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
         filteredPaths.add("workspaces/topp/synch/datastore.xml");
         return data;
     }
-    
+
     @Override
     protected void setUpInternal() throws Exception {
         // configure the GSS service
@@ -74,26 +80,31 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
         gssInfo.setMode(GSSMode.Unit);
         gssInfo.setVersioningDataStore(getCatalog().getDataStoreByName("synch"));
         gs.save(gssInfo);
-        
+
         // initialize the GSS service
-        Map gssBeans = applicationContext.getBeansOfType(DefaultGeoServerSynchronizationService.class);
-        DefaultGeoServerSynchronizationService gss = (DefaultGeoServerSynchronizationService) gssBeans.values().iterator().next();
+        Map gssBeans = applicationContext
+                .getBeansOfType(DefaultGeoServerSynchronizationService.class);
+        gss = (DefaultGeoServerSynchronizationService) gssBeans.values().iterator().next();
         gss.ensureUnitEnabled();
 
         // mark some tables as version enabled
-        VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(null);
-        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_TABLES);
+        synchStore = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(
+                null);
+        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synchStore
+                .getFeatureSource(SYNCH_TABLES);
         SimpleFeatureBuilder fb = new SimpleFeatureBuilder(fs.getSchema());
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"restricted", "2"})));
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", "2"})));
-        synch.setVersioned("restricted", true, null, null);
-        synch.setVersioned("roads", true, null, null);
+        fs.addFeatures(collection(fb.buildFeature(null, new Object[] { "restricted", "2" })));
+        fs.addFeatures(collection(fb.buildFeature(null, new Object[] { "roads", "2" })));
+        synchStore.setVersioned("restricted", true, null, null);
+        synchStore.setVersioned("roads", true, null, null);
 
-        assertNotNull(synch.getSchema(SYNCH_HISTORY));
-        assertFalse(synch.isVersioned(SYNCH_HISTORY));
-        assertNotNull(synch.getSchema(SYNCH_TABLES));
-        assertFalse(synch.isVersioned(SYNCH_TABLES));
+        assertNotNull(synchStore.getSchema(SYNCH_HISTORY));
+        assertFalse(synchStore.isVersioned(SYNCH_HISTORY));
+        assertNotNull(synchStore.getSchema(SYNCH_TABLES));
+        assertFalse(synchStore.isVersioned(SYNCH_TABLES));
 
+        assertEquals(0, gss.getActiveConflicts("restricted").size());
+        assertEquals(0, gss.getActiveConflicts("roads").size());
     }
 
     @Override
@@ -132,6 +143,7 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
 
     /**
      * Validates
+     * 
      * @param document
      * @throws Exception
      */
@@ -153,21 +165,25 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
     /**
      * Parses the mock response into a DOM tree
      */
-    protected Document dom(MockHttpServletResponse response) throws IOException, SAXException, ParserConfigurationException {
+    protected Document dom(MockHttpServletResponse response) throws IOException, SAXException,
+            ParserConfigurationException {
         return dom(new ByteArrayInputStream(response.getOutputStreamContent().getBytes()));
     }
-    
+
     /**
      * Loads a text file in the classpath into a String
-     * @param path Path relative to the calling class
+     * 
+     * @param path
+     *            Path relative to the calling class
      * @return
      * @throws Exception
      */
     protected String loadTextResource(String path) throws Exception {
         StringBuilder sb = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(path)));
+        BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass()
+                .getResourceAsStream(path)));
         String line;
-        while((line = br.readLine()) != null) {
+        while ((line = br.readLine()) != null) {
             sb.append(line).append("\n");
         }
         br.close();

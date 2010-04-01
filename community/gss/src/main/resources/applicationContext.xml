@@ -8,7 +8,8 @@
     
 	<!-- wfs service -->
 	<bean id="gssServiceTarget" class="org.geoserver.gss.DefaultGeoServerSynchronizationService">
-		<constructor-arg ref="geoServer"/>
+		<constructor-arg index="0" ref="geoServer"/>
+        <constructor-arg index="1" ref="gssXmlConfiguration"/>
 	</bean>
 
     <bean id="gssLogger" class="org.geoserver.ows.util.EMFLogger">
