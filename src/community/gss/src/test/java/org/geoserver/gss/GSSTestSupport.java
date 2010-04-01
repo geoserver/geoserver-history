@@ -1,6 +1,6 @@
 package org.geoserver.gss;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -21,11 +21,18 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.LiveDbmsData;
 import org.geoserver.data.test.TestData;
-import org.geoserver.gss.GSSInfo;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.gss.xml.GSSConfiguration;
 import org.geoserver.test.GeoServerAbstractTestSupport;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.VersioningDataStore;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.xml.Parser;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.FilterFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -42,6 +49,7 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
 
     static XpathEngine xpath;
+    FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
     // protected String getLogConfiguration() {
     // return "/DEFAULT_LOGGING.properties";
@@ -60,11 +68,32 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
     
     @Override
     protected void setUpInternal() throws Exception {
+        // configure the GSS service
         GeoServer gs = getGeoServer();
         GSSInfo gssInfo = gs.getService(GSSInfo.class);
         gssInfo.setMode(GSSMode.Unit);
         gssInfo.setVersioningDataStore(getCatalog().getDataStoreByName("synch"));
         gs.save(gssInfo);
+        
+        // initialize the GSS service
+        Map gssBeans = applicationContext.getBeansOfType(DefaultGeoServerSynchronizationService.class);
+        DefaultGeoServerSynchronizationService gss = (DefaultGeoServerSynchronizationService) gssBeans.values().iterator().next();
+        gss.ensureUnitEnabled();
+
+        // mark some tables as version enabled
+        VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(null);
+        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_TABLES);
+        SimpleFeatureBuilder fb = new SimpleFeatureBuilder(fs.getSchema());
+        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"restricted", "2"})));
+        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", "2"})));
+        synch.setVersioned("restricted", true, null, null);
+        synch.setVersioned("roads", true, null, null);
+
+        assertNotNull(synch.getSchema(SYNCH_HISTORY));
+        assertFalse(synch.isVersioned(SYNCH_HISTORY));
+        assertNotNull(synch.getSchema(SYNCH_TABLES));
+        assertFalse(synch.isVersioned(SYNCH_TABLES));
+
     }
 
     @Override
@@ -126,16 +155,6 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
      */
     protected Document dom(MockHttpServletResponse response) throws IOException, SAXException, ParserConfigurationException {
         return dom(new ByteArrayInputStream(response.getOutputStreamContent().getBytes()));
-    }
-    
-    /**
-     * Cheks the DOM represents an OWS 1.0 exception
-     * @param dom
-     * @throws Exception
-     */
-    protected void checkOwsException(Document dom) throws Exception {
-        assertXpathEvaluatesTo("1.0.0", "/ows:ExceptionReport/@version", dom);
-        assertXpathEvaluatesTo("1", "count(/ows:ExceptionReport/ows:Exception)", dom);
     }
     
     /**

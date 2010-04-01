@@ -21,24 +21,9 @@ public class GetCentralRevisionTest extends GSSTestSupport {
     protected void setUpInternal() throws Exception {
         super.setUpInternal();
         
-        // initialize the GSS service
-        Map gssBeans = applicationContext.getBeansOfType(DefaultGeoServerSynchronizationService.class);
-        DefaultGeoServerSynchronizationService gss = (DefaultGeoServerSynchronizationService) gssBeans.values().iterator().next();
-        gss.ensureUnitEnabled();
-        
         VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(null);
-        assertNotNull(synch.getSchema(SYNCH_HISTORY));
-        assertFalse(synch.isVersioned(SYNCH_HISTORY));
-        assertNotNull(synch.getSchema(SYNCH_TABLES));
-        assertFalse(synch.isVersioned(SYNCH_TABLES));
-
-        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_TABLES);
+        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_HISTORY);
         SimpleFeatureBuilder fb = new SimpleFeatureBuilder(fs.getSchema());
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"restricted", "2"})));
-        fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", "2"})));
-        
-        fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synch.getFeatureSource(SYNCH_HISTORY);
-        fb = new SimpleFeatureBuilder(fs.getSchema());
         // three synchs occurred on this layer
         fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 150, 160})));
         fs.addFeatures(DataUtilities.collection(fb.buildFeature(null, new Object[] {"roads", 182, 210})));
@@ -55,7 +40,7 @@ public class GetCentralRevisionTest extends GSSTestSupport {
         validate(response);
         Document doc = dom(response);
         // print(doc);
-        checkOwsException(doc);
+        checkOws10Exception(doc, "InvalidParameterValue");
     }
     
     /**
@@ -67,7 +52,7 @@ public class GetCentralRevisionTest extends GSSTestSupport {
         validate(response);
         Document doc = dom(response);
         // print(doc);
-        checkOwsException(doc);
+        checkOws10Exception(doc, "InvalidParameterValue");
     }
     
 

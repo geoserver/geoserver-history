@@ -3,7 +3,7 @@
    xmlns:sf="http://www.openplans.org/spearfish"
    xmlns:wfs="http://www.opengis.net/wfs"
    service="gss" version="1.0.0" 
-   fromVersion="0" toVersion="12" typeName="sf:restricted">
+   fromVersion="-1" toVersion="12" typeName="sf:restricted">
    <gss:Changes>
       <wfs:Insert>
          <sf:restricted gml:id="restricted.e9cba212-d79d-4569-aa0a-48f6b80539ee">
@@ -29,7 +29,7 @@
          </ogc:Filter>
       </wfs:Update>
       <wfs:Delete typeName="sf:restricted">
-         <ogc:Filter>
+         <ogc:Filter>                      
             <ogc:FeatureId fid="restricted.d91fe390-bdc7-4b22-9316-2cd6c8737ef5" />
          </ogc:Filter>
       </wfs:Delete>
