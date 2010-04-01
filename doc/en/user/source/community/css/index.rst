@@ -14,6 +14,7 @@ Read on for information about:
 .. toctree:: 
    :maxdepth: 1
 
+   tutorial
    filters
    metadata
    multivalues
