@@ -1,15 +1,20 @@
 package org.geoserver.community.css.filter
 
+import collection.jcl.Conversions._
+
 import org.opengis.filter.{
+  And,
   BinaryComparisonOperator,
   Filter,
   Not,
+  Or,
   PropertyIsEqualTo,
   PropertyIsGreaterThanOrEqualTo,
   PropertyIsGreaterThan,
   PropertyIsLessThanOrEqualTo,
   PropertyIsLessThan,
-  PropertyIsLike
+  PropertyIsLike,
+  PropertyIsNotEqualTo
 }
 
 import org.opengis.filter.expression.{Expression, Literal, PropertyName}
@@ -27,31 +32,54 @@ trait FilterOps {
     def compare(you: AnyRef) = me.compareTo(you)
   }
 
+  private def conflicting(a: Filter, b: Filter) =
+    constrain(a, b) == Filter.EXCLUDE
+
+  private def operatorConstraintRules[A](rA: Comparable[A], rB: Comparable[A])
+  : PartialFunction[(Symbol, Symbol), Filter => Filter] = {
+    val cmp = rA.compareTo(rB.asInstanceOf[A])
+    return {
+      case ('=,            '=)       if cmp != 0 => { _ => Filter.EXCLUDE }
+      case ('=,            '=)       if cmp == 0 => identity
+      case ('= | '< | '<=, '>)       if cmp <= 0 => { _ => Filter.EXCLUDE }
+      case ('= | '> | '>=, '<)       if cmp >= 0 => { _ => Filter.EXCLUDE }
+      case ('<=,           '<=)      if cmp <= 0 => identity
+      case ('<,            '< | '<=) if cmp <= 0 => identity
+      case ('<=,           '< | '<=) if cmp <  0 => identity
+      case ('>=,           '>=)      if cmp >= 0 => identity
+      case ('>,            '> | '>=) if cmp >= 0 => identity
+      case ('>=,           '> | '>=) if cmp >  0 => identity
+    }
+  }
+
   private val constraintRules: PartialFunction[(Filter, Filter),Filter] = {
-    case (a, b) if redundant(a, b) => a
     case (Filter.INCLUDE, f) => f
-    case (BinOp(('=), lA, Lit(rA)), BinOp('=, lB, Lit(rB))) 
-      if equivalent(lA, lB) && rA != rB
-      => Filter.EXCLUDE
-    case (BinOp(('= | '< | '<=), lA, Lit(rA)), BinOp('>, lB, Lit(rB))) 
-      if equivalent(lA, lB) && rA <= rB
-      => Filter.EXCLUDE
-    case (BinOp(('= | '> | '>=), lA, Lit(rA)), BinOp('<, lB, Lit(rB))) 
-      if equivalent(lA, lB) && rA >= rB
-      => Filter.EXCLUDE
-    case (filter@BinOp('<=, lA, Lit(rA)), BinOp('< | '<=, lB, Lit(rB)))
-      if equivalent(lA, lB) && rA < rB
-      => filter
-    case (filter@BinOp('<, lA, Lit(rA)), BinOp('< | '<=, lB, Lit(rB)))
-      if equivalent(lA, lB) && rA <= rB
-      => filter
-    case (filter@BinOp('>=, lA, Lit(rA)), BinOp('> | '>=, lB, Lit(rB)))
-      if equivalent(lA, lB) && rA > rB
-      => filter
-    case (filter@BinOp('>, lA, Lit(rA)), BinOp('< | '>=, lB, Lit(rB)))
-      if equivalent(lA, lB) && rA >= rB
-      => filter
-    case (a: Not, b) if equivalent(a.getFilter, b) => Filter.EXCLUDE
+    case (a@BinOp(opA, lA, Lit(rA)), BinOp(opB, lB, Lit(rB)))
+      if (equivalent(lA, lB)) &&
+         (operatorConstraintRules(rA, rB) isDefinedAt (opA, opB))
+      => operatorConstraintRules(rA, rB)((opA, opB)) (a)
+    case (a: Not, b) if equivalent(a.getFilter, b) =>
+      Filter.EXCLUDE
+    case (a: And, b) =>
+      if (a.getChildren().exists(conflicting(_, b))) {
+        Filter.EXCLUDE
+      } else {
+        val children = new java.util.ArrayList[Filter]
+        children.addAll(a.getChildren())
+        children.add(b)
+        filters.and(children)
+      }
+    case (a: Or, b) =>
+      val children = new java.util.ArrayList[Filter]
+      for (child <- a.getChildren() if !conflicting(child, b)) {
+        children.add(constrain(child, b))
+      }
+      children.size() match {
+        case 0 => Filter.EXCLUDE
+        case 1 => children.get(0)
+        case _ => filters.or(children)
+      }
+    case (a, b) if redundant(a, b) => a
   }
 
   private val redundancyRules: PartialFunction[(Filter, Filter), Boolean] = {
@@ -67,6 +95,7 @@ trait FilterOps {
         case ('=, '<=) => rA <= rB
         case ('=, '=) => rA == rB
         case ('<, '<) => rA < rB
+        case ('<, '<>) => rA <= rB
         case ('<=, '<) => rA < rB
         case ('<, '<=) => rA < rB
         case ('<=, '<=) => rA <= rB
@@ -79,20 +108,48 @@ trait FilterOps {
     case _ => false
   }
 
-  def constrain(a: Filter, b: Filter): Filter = 
-    if (constraintRules isDefinedAt (a, b)) {
-      constraintRules((a, b)) 
-    } else if (constraintRules isDefinedAt (b, a)) {
-      constraintRules((b, a))
-    } else {
-      a
-    }
+  def constrainOption(a: Filter, b: Filter): Option[Filter] = 
+    if (constraintRules isDefinedAt (a, b)) Some(constraintRules((a, b)))
+    else if (constraintRules isDefinedAt (b, a)) Some(constraintRules((b, a)))
+    else None
 
-  def redundant(a: Filter, b: Filter): Boolean = redundancyRules((a, b))
+  def constrain(a: Filter, b: Filter): Filter = 
+    constrainOption(a, b) getOrElse a
+
+  def redundant(a: Filter, b: Filter): Boolean =
+    redundancyRules((negate(negate(a)), negate(negate(b))))
 
   def negate(x: Filter): Filter = x match {
-    case lhs Gt rhs => filters.less(lhs, rhs)
-    case lhs Lt rhs => filters.greater(lhs, rhs)
+    case BinOp(op, lhs, rhs) =>
+      op match {
+        case '=  => filters.notEqual(lhs, rhs)
+        case '<> => filters.equals(lhs, rhs)
+        case '<  => filters.greaterOrEqual(lhs, rhs)
+        case '<= => filters.greater(lhs, rhs)
+        case '>  => filters.lessOrEqual(lhs, rhs)
+        case '>= => filters.less(lhs, rhs)
+      }
+    case (n: Not) => n.getFilter()
+    case (a: And) => 
+      val children = new java.util.ArrayList[Filter]
+      for (c <- a.getChildren()) {
+        children.add(negate(c))
+      }
+      children.size() match {
+        case 0 => Filter.EXCLUDE
+        case 1 => children.get(0)
+        case _ => filters.or(children)
+      }
+    case (o: Or) => 
+      val children = new java.util.ArrayList[Filter]
+      for (c <- o.getChildren()) {
+        children.add(negate(c))
+      }
+      children.size() match {
+        case 0 => Filter.EXCLUDE
+        case 1 => children.get(0)
+        case _ => filters.and(children)
+      }
     case _ => filters.not(x)
   }
 
@@ -134,7 +191,7 @@ trait FilterOps {
             case _: PropertyIsGreaterThanOrEqualTo => '>=
             case _: PropertyIsLessThan => '<
             case _: PropertyIsLessThanOrEqualTo => '<=
-            case _ => Symbol("?")
+            case _: PropertyIsNotEqualTo => '<>
           }
           Some((symbol, binop.getExpression1(), binop.getExpression2()))
         case _ => None
@@ -144,44 +201,6 @@ trait FilterOps {
   object Not {
     def unapply(f: Filter): Option[Filter] = f match {
       case f: Not => Some(f.getFilter)
-      case _ => None
-    }
-  }
-
-  object Eq {
-    def unapply(f: Filter): Option[(Expression, Expression)] = f match {
-      case f: PropertyIsEqualTo => Some((f.getExpression1, f.getExpression2))
-      case _ => None
-    }
-  }
-
-  object GtEq {
-    def unapply(f: Filter): Option[(Expression, Expression)] = f match {
-      case f: PropertyIsGreaterThanOrEqualTo =>
-        Some((f.getExpression1, f.getExpression2))
-      case _ => None
-    }
-  }
-
-  object Gt {
-    def unapply(f: Filter): Option[(Expression, Expression)] = f match {
-      case f: PropertyIsGreaterThan => 
-        Some((f.getExpression1, f.getExpression2))
-      case _ => None
-    }
-  }
-
-  object Lt {
-    def unapply(f: Filter): Option[(Expression, Expression)] = f match {
-      case f: PropertyIsLessThan => Some((f.getExpression1, f.getExpression2))
-      case _ => None
-    }
-  }
-
-  object LtEq {
-    def unapply(f: Filter): Option[(Expression, Expression)] = f match {
-      case f: PropertyIsLessThanOrEqualTo => 
-        Some((f.getExpression1, f.getExpression2))
       case _ => None
     }
   }

@@ -20,8 +20,8 @@ class RegressionTest extends JUnitSuite with MustMatchersForJUnit with TypeMatch
     val styleSheet = CssParser.parse(in("/exclusive.css")).get
     val sld = Translator.css2sld(styleSheet)
     sld.featureTypeStyles.size must be (2)
-    sld.featureTypeStyles.get(0).rules.size must be (9)
-    sld.featureTypeStyles.get(1).rules.size must be (9)
+    sld.featureTypeStyles.get(0).rules must have (size(9))
+    sld.featureTypeStyles.get(1).rules must have (size(9))
   }
 
   @Test def percentage = {
@@ -81,11 +81,7 @@ class RegressionTest extends JUnitSuite with MustMatchersForJUnit with TypeMatch
 
   @Test def expression = {
     val styleSheet = CssParser.parse(in("/states.css")).get
-    val rules = styleSheet filter {
-      (x: Product) => x.isInstanceOf[Rule]
-    } map {
-      _.asInstanceOf[Rule]
-    }
+    val rules = styleSheet 
 
     val strokeWidth = rules(0).properties(3)
     strokeWidth.name must be ("stroke-width")
@@ -96,12 +92,13 @@ class RegressionTest extends JUnitSuite with MustMatchersForJUnit with TypeMatch
     val styleSheet = CssParser.parse(in("/railroad.css")).get
     val style = Translator.css2sld(styleSheet)
     val rule = style.featureTypeStyles.get(0).rules.get(1)
-    rule.getFilter must have (parent (classOf[org.opengis.filter.Not]))
+    rule.getFilter must have (parent (classOf[org.opengis.filter.PropertyIsNotEqualTo]))
     val sym = rule.symbolizers.get(0)
     sym must have (parent (classOf[org.geotools.styling.LineSymbolizer]))
     val lineSym = sym.asInstanceOf[org.geotools.styling.LineSymbolizer]
     val mark = lineSym.getStroke.getGraphicStroke.graphicalSymbols.get(0)
     mark must have (parent (classOf[org.geotools.styling.Mark]))
-    mark.asInstanceOf[org.geotools.styling.Mark].getWellKnownName.evaluate(null) must be ("hatch")
+    mark.asInstanceOf[org.geotools.styling.Mark]
+       .getWellKnownName.evaluate(null) must be ("hatch")
   }
 }
