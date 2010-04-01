@@ -8,11 +8,21 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.PropertyType;
+import net.opengis.wfs.UpdateElementType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -21,15 +31,25 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.gss.CentralRevisionsType.LayerRevision;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geotools.data.DataAccess;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
+import org.geotools.data.DefaultTransaction;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.data.VersioningDataStore;
+import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.data.postgis.VersionedPostgisDataStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 
@@ -37,6 +57,8 @@ import org.opengis.filter.sort.SortOrder;
  * The GSS implementation
  */
 public class DefaultGeoServerSynchronizationService implements GeoServerSynchronizationService {
+
+    static final Logger LOGGER = Logging.getLogger(DefaultGeoServerSynchronizationService.class);
 
     static final String SYNCH_TABLES = "synch_tables";
 
@@ -55,13 +77,10 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
     static final String SYNCH_CONFLICTS = "synch_conflicts";
 
-    static final String SYNCH_CONFLICTS_CREATION = "CREATE TABLE synch_conflicts(\n" + 
-    		"table_name VARCHAR(256) NOT NULL,\n" + 
-    		"feature_id BIGINT NOT NULL,\n" + 
-    		"local_revision BIGINT NOT NULL,\n" + 
-    		"resolved BOOLEAN NOT NULL,\n" + 
-    		"difference TEXT,\n" + 
-    		"primary key(table_name, feature_id, local_revision))";
+    static final String SYNCH_CONFLICTS_CREATION = "CREATE TABLE synch_conflicts(\n"
+            + "table_name VARCHAR(256) NOT NULL,\n" + "feature_id BIGINT NOT NULL,\n"
+            + "local_revision BIGINT NOT NULL,\n" + "resolved BOOLEAN NOT NULL,\n"
+            + "difference TEXT,\n" + "primary key(table_name, feature_id, local_revision))";
 
     private FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
@@ -116,15 +135,15 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                     runStatement(dataStore, SYNCH_HISTORY_CREATION);
                 }
                 dataStore.setVersioned(SYNCH_HISTORY, false, null, null);
-                
+
                 if (!typeNames.contains(SYNCH_CONFLICTS)) {
                     runStatement(dataStore, SYNCH_CONFLICTS_CREATION);
                 }
                 dataStore.setVersioned(SYNCH_CONFLICTS, true, null, null);
-                
+
                 // version enable all tables that are supposed to be shared
                 fi = dataStore.getFeatureSource(SYNCH_TABLES).getFeatures().features();
-                while(fi.hasNext()) {
+                while (fi.hasNext()) {
                     String tableName = (String) fi.next().getAttribute("table_name");
                     dataStore.setVersioned(tableName, true, null, null);
                 }
@@ -134,7 +153,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             throw new GSSServiceException("A problem occurred while checking the versioning store",
                     e);
         } finally {
-            if(fi != null) {
+            if (fi != null) {
                 fi.close();
             }
         }
@@ -166,65 +185,183 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         }
     }
 
+    /**
+     * Responds a GetCentralRevision reuest
+     */
     public CentralRevisionsType getCentralRevision(GetCentralRevisionType request) {
         ensureUnitEnabled();
 
         CentralRevisionsType cr = new CentralRevisionsType();
         for (QName typeName : request.getTypeNames()) {
-            NamespaceInfo ns = catalog.getNamespaceByURI(typeName.getNamespaceURI());
-            if (ns == null) {
-                ns = catalog.getNamespaceByPrefix(typeName.getPrefix());
-            }
-            if (ns == null) {
-                throw new GSSServiceException("Could not locate typeName: " + typeName);
-            }
-
-            FeatureTypeInfo fti = catalog.getFeatureTypeByName(ns, typeName.getLocalPart());
-            if (fti == null) {
-                throw new GSSServiceException("Could not locate typeName: " + typeName);
-            }
-
-            FeatureIterator<SimpleFeature> fi = null;
-            try {
-                // get the versioning data store
-                VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
-                        .getDataStore(null);
-
-                // check the table is actually synch-ed
-                DefaultQuery q = new DefaultQuery();
-                q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
-                int count = ds.getFeatureSource(SYNCH_TABLES).getCount(q);
-                if (count == 0) {
-                    throw new GSSServiceException(fti.getName() + " is not a synchronised layer");
-                }
-
-                // gather the record from the synch history table
-                q = new DefaultQuery();
-                q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
-                q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING) });
-                q.setMaxFeatures(1);
-                fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
-                long revision = -1;
-                if (fi.hasNext()) {
-                    revision = ((Number) fi.next().getAttribute("central_revision")).longValue();
-                }
-                cr.getLayerRevisions().add(new LayerRevision(typeName, revision));
-            } catch (IOException e) {
-                throw new GSSServiceException("Could not compute the response", e);
-            } finally {
-                if (fi != null) {
-                    fi.close();
-                }
-            }
+            long revision = getLastCentralRevision(typeName);
+            cr.getLayerRevisions().add(new LayerRevision(typeName, revision));
         }
 
         return cr;
     }
 
-    public PostDiffResponseType postDiff(PostDiffType request) {
-        // TODO : actually implement the method
-        
-        return new PostDiffResponseType();
+    /**
+     * Checks the feature type exists, it's actually synchronised, and returns the last known
+     * central revision
+     * 
+     * @param typeName
+     * @return
+     */
+    long getLastCentralRevision(QName typeName) {
+        NamespaceInfo ns = catalog.getNamespaceByURI(typeName.getNamespaceURI());
+        if (ns == null) {
+            ns = catalog.getNamespaceByPrefix(typeName.getPrefix());
+        }
+        if (ns == null) {
+            throw new GSSServiceException("Could not locate typeName: " + typeName,
+                    "InvalidParameterValue", "typeName");
+        }
+
+        FeatureTypeInfo fti = catalog.getFeatureTypeByName(ns, typeName.getLocalPart());
+        if (fti == null) {
+            throw new GSSServiceException("Could not locate typeName: " + typeName,
+                    "InvalidParameterValue", "typeName");
+        }
+
+        FeatureIterator<SimpleFeature> fi = null;
+        try {
+            // get the versioning data store
+            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
+                    .getDataStore(null);
+
+            // check the table is actually synch-ed
+            DefaultQuery q = new DefaultQuery();
+            q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
+            int count = ds.getFeatureSource(SYNCH_TABLES).getCount(q);
+            if (count == 0) {
+                throw new GSSServiceException(fti.getName() + " is not a synchronised layer",
+                        "InvalidParameterValue", "typeName");
+            }
+
+            // generate conflicts
+
+            // apply diffs
+
+            // gather the record from the synch history table
+            q = new DefaultQuery();
+            q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
+            q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING) });
+            q.setMaxFeatures(1);
+            fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
+
+            if (fi.hasNext()) {
+                return ((Number) fi.next().getAttribute("central_revision")).longValue();
+            }
+        } catch (IOException e) {
+            throw new GSSServiceException("Could not compute the response", e);
+        } finally {
+            if (fi != null) {
+                fi.close();
+            }
+        }
+        return -1;
     }
 
+    public PostDiffResponseType postDiff(PostDiffType request) {
+        ensureUnitEnabled();
+
+        // check the layer is actually shared and get the latest known central revision
+        long centralRevision = getLastCentralRevision(request.getTypeName());
+
+        if (request.getFromVersion() != centralRevision) {
+            throw new GSSServiceException("Invalid fromVersion, it should be " + centralRevision,
+                    "InvalidParameterValue", "fromVersion");
+        }
+
+        if (request.getFromVersion() > request.getToVersion()) {
+            throw new GSSServiceException("Invalid toVersion, it should be higher than "
+                    + request.getToVersion(), "InvalidParameterValue", "toVersion");
+        }
+
+        // make sure all of the changes are applied in one hit, or none is
+        // very important, make sure all versioning writes use the same transaction or they
+        // will deadlock
+        Transaction transaction = new DefaultTransaction();
+        try {
+            String tableName = request.getTypeName().getLocalPart();
+            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
+                    .getDataStore(null);
+            
+            // grab the feature stores and bind them all to the same transaction
+            VersioningFeatureStore conflicts = (VersioningFeatureStore) ds.getFeatureSource(SYNCH_CONFLICTS);
+            conflicts.setTransaction(transaction);
+            FeatureStore history = (FeatureStore) ds.getFeatureSource(SYNCH_HISTORY);
+            history.setTransaction(transaction);
+            VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(tableName);
+            fs.setTransaction(transaction);
+            SimpleFeatureType ft = fs.getSchema();
+
+            // get a hold on a revision number early so that we don't get concurrent changes
+            // from the user (the datastore will make it so that no new revision numbers will
+            // be generated until we commit or rollback this transaction
+            long newLocalRevision = Long.parseLong(conflicts.getVersion());
+
+            // TODO: handle conflicts!
+
+            // apply changes
+            if (request.getTransaction() != null) {
+                List<DeleteElementType> deletes = request.getTransaction().getDelete();
+                List<UpdateElementType> updates = request.getTransaction().getUpdate();
+                List<InsertElementType> inserts = request.getTransaction().getInsert();
+
+                for (DeleteElementType delete : deletes) {
+                    fs.removeFeatures(delete.getFilter());
+                }
+                for (UpdateElementType update : updates) {
+                    List<PropertyType> props = update.getProperty();
+                    List<AttributeDescriptor> atts = new ArrayList<AttributeDescriptor>(props
+                            .size());
+                    List<Object> values = new ArrayList<Object>(props.size());
+                    for (PropertyType prop : props) {
+                        atts.add(ft.getDescriptor(prop.getName().getLocalPart()));
+                        values.add(prop.getValue());
+                    }
+                    AttributeDescriptor[] attArray = (AttributeDescriptor[]) atts
+                            .toArray(new AttributeDescriptor[atts.size()]);
+                    Object[] valArray = (Object[]) values.toArray(new Object[values.size()]);
+                    fs.modifyFeatures(attArray, valArray, update.getFilter());
+                }
+                for (InsertElementType insert : inserts) {
+                    List<SimpleFeature> features = insert.getFeature();
+                    fs.addFeatures(DataUtilities.collection(features));
+                }
+            }
+
+            // save/update the synchronisation metadata
+            long newCentralRevision = request.getToVersion();
+            PropertyIsEqualTo ftSyncRecord = ff.equals(ff.property("table_name"), ff
+                    .literal(tableName));
+            SimpleFeatureType hft = (SimpleFeatureType) history.getSchema();
+            SimpleFeature f = SimpleFeatureBuilder.build(hft, new Object[] { tableName,
+                    newLocalRevision, newCentralRevision }, null);
+            history.addFeatures(DataUtilities.collection(f));
+
+            // commit all the changes
+            transaction.commit();
+        } catch (Throwable t) {
+            // make sure we rollback the transaction in case of _any_ exception
+            try {
+                transaction.rollback();
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Rollback failed. This is unexpected", e);
+            }
+
+            throw new GSSServiceException("Error occurred while applyling the diff", t);
+        } finally {
+            // very important to close transaction, as it holds a connection to the db
+            try {
+                transaction.close();
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Tranaction close failed. This is unexpected", e);
+            }
+
+        }
+
+        return new PostDiffResponseType();
+    }
 }
