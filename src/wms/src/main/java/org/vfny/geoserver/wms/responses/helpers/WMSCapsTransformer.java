@@ -762,7 +762,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 AbstractGridCoverage2DReader reader = null;
                 try {
                     reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
-                } catch (IOException e) {
+                } catch (Throwable t) {
                     LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
                 }
                 
