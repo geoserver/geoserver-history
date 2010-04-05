@@ -434,7 +434,7 @@ properties::
       stroke-width: 0.2;
     }
 
-    [@scale < 20000000 {
+    [@scale < 20000000] {
       label: [STATE_ABBR];
       font-family: "Times New Roman";
       font-style: normal;
