@@ -1210,6 +1210,12 @@
  </reporting>
 
  <distributionManagement>
+  <repository>
+   <id>opengeo</id>
+   <name>OpenGeo Maven Repository</name>
+   <url>dav:http://repo.opengeo.org</url>
+   <uniqueVersion>false</uniqueVersion>
+  </repository>
   <snapshotRepository>
    <id>opengeo</id>
    <name>OpenGeo Maven Repository</name>
