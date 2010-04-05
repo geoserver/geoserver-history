@@ -22,8 +22,9 @@ The following are necessary to perform a GeoServer release:
 #. Commit access to `GeoServer svn <https://svn.codehaus.org/geoserver>`_
 #. Edit access to the `GeoServer wiki <http://geoserver.org>`_
 #. Administration rights to the `GeoServer bug tracker (JIRA) <http://jira.codehaus.org/browse/GEOS>`_
+#. Write access to `GeoServer Maven Repository <http://repo.opengeo.org/>`_
 
-For steps 2 and 3 above you may also ask someone on the developer list to perform the associated steps.
+For steps 2 through 4 above you may also ask someone on the developer list to perform the associated steps.
 
 If a parallel GeoTools release is being preformed, see the `GeoTools Release Guide <http://docs.codehaus.org/display/GEOT/How+to+cut+a+release>`_. Alternatively you can (nicely) ask one of the GeoTools developers to perform the release for you.
 
@@ -321,9 +322,15 @@ Hand testing
 Start GeoServer with the release data directory and test by hand. A checklist of 
 things to test can be found in the :ref:`release_testing_checklist`.
 
+Deploy Artifacts
+----------------
+
+Deploy artifacts to the maven repository using the following command::
+
+   mvn deploy
+
 Build Windows installer
 -----------------------
-
 
 .. note:: This step requires a Windows machine.
 
