@@ -7,7 +7,6 @@ package org.geoserver.wfsv.response.v1_1_0;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,37 +16,24 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.BaseRequestType;
-import net.opengis.wfs.DeleteElementType;
-import net.opengis.wfs.InsertElementType;
-import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionType;
-import net.opengis.wfs.UpdateElementType;
-import net.opengis.wfs.WfsFactory;
 import net.opengis.wfsv.GetDiffType;
 
-import org.eclipse.emf.common.util.EList;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-
-import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
-import org.geoserver.wfsv.VersioningTransactionConveter;
-import org.geotools.data.postgis.FeatureDiff;
-import org.geotools.data.postgis.FeatureDiffReader;
+import org.geoserver.wfsv.VersioningTransactionConverter;
+import org.geotools.data.FeatureDiffReader;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.opengis.filter.identity.FeatureId;
 
 
 
@@ -123,7 +109,7 @@ public abstract class AbstractTransactionOutputFormat extends Response {
         final FeatureDiffReader[] diffReaders = (FeatureDiffReader[]) value;
 
         // create a new feature collcetion type with just the numbers
-        VersioningTransactionConveter converter = new VersioningTransactionConveter();
+        VersioningTransactionConverter converter = new VersioningTransactionConverter();
         final TransactionType transaction = converter.convert(diffReaders, TransactionType.class);
 
         //declare wfs schema location
