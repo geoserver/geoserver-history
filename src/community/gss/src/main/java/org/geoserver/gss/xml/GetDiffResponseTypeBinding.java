@@ -8,52 +8,51 @@ import javax.xml.namespace.QName;
 
 import net.opengis.wfs.TransactionType;
 
-import org.geoserver.gss.PostDiffType;
+import org.geoserver.gss.GetDiffResponseType;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
-public class PostDiffTypeBinding extends GSSRequestBinding {
+public class GetDiffResponseTypeBinding extends GSSRequestBinding {
 
     public QName getTarget() {
-        return GSS.PostDiffType;
+        return GSS.GetDiffResponse;
     }
 
     public Class getType() {
-        return PostDiffType.class;
+        return GetDiffResponseType.class;
     }
 
     @Override
     public Object parse(ElementInstance instance, Node node, Object value) throws Exception {
-        PostDiffType pd = new PostDiffType();
+        GetDiffResponseType gdr = new GetDiffResponseType();
         if (node.hasAttribute("fromVersion")) {
-            pd.setFromVersion(((Number) node.getAttributeValue("fromVersion")).longValue());
+            gdr.setFromVersion(((Number) node.getAttributeValue("fromVersion")).longValue());
         }
         if (node.hasAttribute("toVersion")) {
-            pd.setToVersion(((Number) node.getAttributeValue("toVersion")).longValue());
+            gdr.setToVersion(((Number) node.getAttributeValue("toVersion")).longValue());
         }
         if (node.hasAttribute("typeName")) {
-            pd.setTypeName((QName) node.getAttributeValue("typeName"));
+            gdr.setTypeName((QName) node.getAttributeValue("typeName"));
         }
         if (node.hasChild("Changes")) {
-            pd.setTransaction((TransactionType) node.getChildValue("Changes"));
+            gdr.setTransaction((TransactionType) node.getChildValue("Changes"));
         }
-        setServiceVersion(node, pd);
 
-        return pd;
+        return gdr;
     }
 
     @Override
     public Object getProperty(Object object, QName name) throws Exception {
-        PostDiffType pd = (PostDiffType) object;
+        GetDiffResponseType gdr = (GetDiffResponseType) object;
 
         if (name.getLocalPart().equals("typeName")) {
-            return pd.getTypeName();
+            return gdr.getTypeName();
         } else if (name.getLocalPart().equals("fromVersion")) {
-            return pd.getFromVersion();
+            return gdr.getFromVersion();
         } else if (name.getLocalPart().equals("toVersion")) {
-            return pd.getToVersion();
+            return gdr.getToVersion();
         } else if (name.getLocalPart().equals("Changes")) {
-            return pd.getTransaction();
+            return gdr.getTransaction();
         }
 
         return super.getProperty(object, name);

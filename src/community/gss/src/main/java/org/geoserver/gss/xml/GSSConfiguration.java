@@ -17,7 +17,7 @@ public class GSSConfiguration extends Configuration {
 
     /**
      * Creates a new configuration.
-     *
+     * 
      * @generated
      */
     public GSSConfiguration(WFSConfiguration wfsConfiguration, GSS gss, Catalog catalog) {
@@ -25,24 +25,31 @@ public class GSSConfiguration extends Configuration {
         this.catalog = catalog;
         addDependency(wfsConfiguration);
     }
-    
+
     public Catalog getCatalog() {
         return catalog;
     }
 
     @Override
     protected void registerBindings(MutablePicoContainer container) {
-        //Types
-        container.registerComponentImplementation(GSS.GetCentralRevisionType, GetCentralRevisionTypeBinding.class);
-        container.registerComponentImplementation(GSS.CentralRevisionsType, CentralRevisionsTypeBinding.class);
-        container.registerComponentImplementation(GSS.LayerRevisionType, LayerRevisionTypeBinding.class);
+        // Types
+        container.registerComponentImplementation(GSS.GetCentralRevisionType,
+                GetCentralRevisionTypeBinding.class);
+        container.registerComponentImplementation(GSS.CentralRevisionsType,
+                CentralRevisionsTypeBinding.class);
+        container.registerComponentImplementation(GSS.LayerRevisionType,
+                LayerRevisionTypeBinding.class);
         container.registerComponentImplementation(GSS.PostDiffType, PostDiffTypeBinding.class);
-        container.registerComponentImplementation(GSS.PostDiffResponseType, PostDiffResponseTypeBinding.class);
+        container.registerComponentImplementation(GSS.PostDiffResponseType,
+                PostDiffResponseTypeBinding.class);
+        container.registerComponentImplementation(GSS.GetDiffType, GetDiffTypeBinding.class);
+        container.registerComponentImplementation(GSS.GetDiffResponseType,
+                GetDiffResponseTypeBinding.class);
     }
-    
-//    public void configureContext(MutablePicoContainer bindings) {
-//        super.configureContext(bindings);
-//        // bindings.registerComponentInstance(WfsvFactory.eINSTANCE);
-//        // bindings.registerComponentInstance(new VersionedFeaturePropertyExtractor(catalog));
-//    }
+
+    // public void configureContext(MutablePicoContainer bindings) {
+    // super.configureContext(bindings);
+    // // bindings.registerComponentInstance(WfsvFactory.eINSTANCE);
+    // // bindings.registerComponentInstance(new VersionedFeaturePropertyExtractor(catalog));
+    // }
 }

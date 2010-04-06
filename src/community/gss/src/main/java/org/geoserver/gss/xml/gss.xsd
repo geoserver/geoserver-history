@@ -18,12 +18,11 @@
       schemaLocation="../../filter/1.1.0/filter.xsd" />
 
 
-   <!-- ==================================================================
--->
-   <!-- = GetCentralRevision Request                                     =
--->
-   <!-- ==================================================================
--->
+   <!--
+      ==================================================================
+      = GetCentralRevision Request =
+      ==================================================================
+   -->
    <xsd:element name="GetCentralRevision" type="gss:GetCentralRevisionType">
    </xsd:element>
    <xsd:complexType name="GetCentralRevisionType">
@@ -36,56 +35,90 @@
       <xsd:complexContent>
          <xsd:extension base="wfs:BaseRequestType">
             <xsd:sequence>
-                <xsd:element name="TypeName" type="xsd:QName"  minOccurs="0" maxOccurs="unbounded"/>
+               <xsd:element name="TypeName" type="xsd:QName"
+                  minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
-   
-   <!-- ==================================================================
--->
-   <!-- = GetCentralRevision Response                                    =
--->
-   <!-- ==================================================================
--->
-   <xsd:element name="CentralRevisions" type="gss:CentralRevisionsType"/>
+
+   <!--
+      ==================================================================
+      = GetCentralRevision Response =
+      ==================================================================
+   -->
+   <xsd:element name="CentralRevisions" type="gss:CentralRevisionsType" />
    <xsd:complexType name="LayerRevisionType">
-      <xsd:attribute name="typeName" type="xsd:QName" use="required"/>
-      <xsd:attribute name="centralRevision" type="xsd:int" use="required"/>
+      <xsd:attribute name="typeName" type="xsd:QName" use="required" />
+      <xsd:attribute name="centralRevision" type="xsd:int"
+         use="required" />
    </xsd:complexType>
    <xsd:complexType name="CentralRevisionsType">
       <xsd:annotation>
          <xsd:documentation>
-            Returns a list of central revisions for the queried layers
+            Returns a list of central revisions for the
+            queried layers
          </xsd:documentation>
       </xsd:annotation>
       <xsd:sequence>
-         <xsd:element name="LayerRevision" type="gss:LayerRevisionType" minOccurs="1" maxOccurs="unbounded"/>
+         <xsd:element name="LayerRevision" type="gss:LayerRevisionType"
+            minOccurs="1" maxOccurs="unbounded" />
       </xsd:sequence>
    </xsd:complexType>
-   
-   <!-- ==================================================================
--->
-   <!-- = PostDiff                                                       =
--->
-   <!-- ==================================================================
--->
-   <xsd:element name="PostDiff" type="gss:PostDiffType"/>
+
+   <!--
+      ==================================================================
+      = PostDiff =
+      ==================================================================
+   -->
+   <xsd:element name="PostDiff" type="gss:PostDiffType" />
    <xsd:complexType name="PostDiffType">
       <xsd:complexContent>
          <xsd:extension base="wfs:BaseRequestType">
             <xsd:sequence>
                <xsd:element name="Changes" type="wfs:TransactionType" />
             </xsd:sequence>
-            <xsd:attribute name="typeName" type="xsd:QName" use="required" />
-            <xsd:attribute name="fromVersion" type="xsd:int" use="required" />
-            <xsd:attribute name="toVersion" type="xsd:int" use="required" />
+            <xsd:attribute name="typeName" type="xsd:QName"
+               use="required" />
+            <xsd:attribute name="fromVersion" type="xsd:int"
+               use="required" />
+            <xsd:attribute name="toVersion" type="xsd:int"
+               use="required" />
          </xsd:extension>
       </xsd:complexContent>
    </xsd:complexType>
-   
-   <xsd:element name="PostDiffResponse" type="gss:PostDiffResponseType"/>
+
+   <xsd:element name="PostDiffResponse" type="gss:PostDiffResponseType" />
    <xsd:complexType name="PostDiffResponseType">
-     <xsd:attribute name="success" fixed="true" use="required" type="xsd:boolean"/>
+      <xsd:attribute name="success" fixed="true" use="required"
+         type="xsd:boolean" />
+   </xsd:complexType>
+
+   <!--
+      ==================================================================
+      = GetDiff =
+      ==================================================================
+   -->
+   <xsd:element name="GetDiff" type="gss:GetDiffType" />
+   <xsd:complexType name="GetDiffType">
+      <xsd:complexContent>
+         <xsd:extension base="wfs:BaseRequestType">
+            <xsd:attribute name="typeName" type="xsd:QName"
+               use="required" />
+            <xsd:attribute name="fromVersion" type="xsd:int"
+               use="required" />
+         </xsd:extension>
+      </xsd:complexContent>
+   </xsd:complexType>
+
+   <xsd:element name="GetDiffResponse" type="gss:GetDiffResponseType" />
+   <xsd:complexType name="GetDiffResponseType">
+      <xsd:sequence>
+         <xsd:element name="Changes" type="wfs:TransactionType" />
+      </xsd:sequence>
+      <xsd:attribute name="typeName" type="xsd:QName" use="required" />
+      <xsd:attribute name="fromVersion" type="xsd:int"
+         use="required" />
+      <xsd:attribute name="toVersion" type="xsd:int" use="required" />
    </xsd:complexType>
 </xsd:schema>
