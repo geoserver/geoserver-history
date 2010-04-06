@@ -12,7 +12,7 @@ import net.opengis.wfsv.GetVersionedFeatureType;
 import net.opengis.wfsv.VersionedFeatureCollectionType;
 
 import org.geoserver.wfs.WebFeatureService;
-import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.data.FeatureDiffReader;
 
 /**
  * Versioned Web Feature Service implementation, extensions to both WFS 1.0 and

@@ -4,18 +4,20 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import org.geoserver.ows.Response;
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.template.GeoServerTemplateLoader;
-import org.geotools.data.postgis.FeatureDiffReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+
+import org.geoserver.ows.Response;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.template.GeoServerTemplateLoader;
+import org.geotools.data.FeatureDiffReader;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 
 /**

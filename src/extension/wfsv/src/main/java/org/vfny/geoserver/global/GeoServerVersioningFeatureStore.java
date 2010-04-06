@@ -4,18 +4,19 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.IOException;
+
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
-import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import java.io.IOException;
 
 
 public class GeoServerVersioningFeatureStore extends GeoServerFeatureStore

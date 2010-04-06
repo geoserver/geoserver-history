@@ -4,15 +4,17 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
+import org.geoserver.template.FeatureWrapper;
+import org.geotools.data.FeatureDiffReader;
+
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import org.geoserver.template.FeatureWrapper;
-import org.geotools.data.postgis.FeatureDiffReader;
-import java.util.Arrays;
-import java.util.HashMap;
 
 
 /**

@@ -29,10 +29,9 @@ import org.geoserver.wfs.DescribeFeatureType;
 import org.geoserver.wfs.GetCapabilities;
 import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.LockFeature;
-
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
-import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.data.FeatureDiffReader;
 import org.geotools.util.Version;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.filter.FilterFactory;
