@@ -44,9 +44,11 @@ public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
         // GeologicUnit is the output type with a mock MO:EarthResource data access as an
         // input
         addFeatureType(GSML_PREFIX, "GeologicUnit", "EarthResourceToGeologicUnit.xml",
-                "EarthResource.properties", "CGITermValue.xml", "CGITermValue.properties",
-                "exposureColor.properties", "CompositionPart.xml", "CompositionPart.properties", 
-                "ControlledConcept.xml", "ControlledConcept.properties");
+                "EarthResource.properties");
+        addFeatureType(GSML_PREFIX, "CompositionPart", "CompositionPart.xml",
+                "CompositionPart.properties", "ControlledConcept.xml",
+                "ControlledConcept.properties");
+        addFeatureType(GSML_PREFIX, "CGI_TermValue", "CGITermValue.xml", "CGITermValue.properties");
 
         // create mock minOcc data access which is a non app-schema type
         // this comes from GeoTools - DataAccessIntegrationTest class
