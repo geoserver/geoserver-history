@@ -38,6 +38,7 @@ import org.geoserver.platform.ServiceException;
 
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfsv.VersioningTransactionConveter;
 import org.geotools.data.postgis.FeatureDiff;
 import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.xml.Configuration;
@@ -122,74 +123,9 @@ public abstract class AbstractTransactionOutputFormat extends Response {
         final FeatureDiffReader[] diffReaders = (FeatureDiffReader[]) value;
 
         // create a new feature collcetion type with just the numbers
-        final TransactionType transaction = WfsFactory.eINSTANCE.createTransactionType();
+        VersioningTransactionConveter converter = new VersioningTransactionConveter();
+        final TransactionType transaction = converter.convert(diffReaders, TransactionType.class);
 
-        for (int i = 0; i < diffReaders.length; i++) {
-            final FeatureDiffReader diffReader = diffReaders[i];
-
-            // create a single insert element, a single delete element, and as
-            // many update elements as needed
-            final SimpleFeatureType schema = diffReader.getSchema();
-            final QName typeName = new QName(schema.getName().getNamespaceURI(),
-                    schema.getTypeName());
-            final Set deletedIds = new HashSet();
-            final InsertElementType insert = WfsFactory.eINSTANCE.createInsertElementType();
-
-            while (diffReader.hasNext()) {
-                FeatureDiff diff = diffReader.next();
-
-                switch (diff.getState()) {
-                case FeatureDiff.INSERTED:
-                    insert.getFeature().add(diff.getFeature());
-
-                    break;
-
-                case FeatureDiff.DELETED:
-                    deletedIds.add(filterFactory.featureId(diff.getID()));
-
-                    break;
-
-                case FeatureDiff.UPDATED:
-
-                    final UpdateElementType update = WfsFactory.eINSTANCE.createUpdateElementType();
-                    final EList properties = update.getProperty();
-
-                    SimpleFeature f = diff.getFeature();
-
-                    for (Iterator it = diff.getChangedAttributes().iterator(); it.hasNext();) {
-                        final PropertyType property = WfsFactory.eINSTANCE.createPropertyType();
-                        String name = (String) it.next();
-                        property.setName(new QName(name));
-                        property.setValue(f.getAttribute(name));
-                        properties.add(property);
-                    }
-
-                    FeatureId featureId = filterFactory.featureId(diff.getID());
-                    final Filter filter = filterFactory.id(Collections.singleton(featureId));
-                    update.setFilter(filter);
-                    update.setTypeName(typeName);
-                    transaction.getUpdate().add(update);
-
-                    break;
-
-                default:
-                    throw new WFSException("Could not handle diff type " + diff.getState());
-                }
-            }
-
-            // create insert and delete elements if needed
-            if (insert.getFeature().size() > 0) {
-                transaction.getInsert().add(insert);
-            }
-
-            if (deletedIds.size() > 0) {
-                final DeleteElementType delete = WfsFactory.eINSTANCE.createDeleteElementType();
-                delete.setFilter(filterFactory.id(deletedIds));
-                delete.setTypeName(typeName);
-                transaction.getDelete().add(delete);
-            }
-        }
-        
         //declare wfs schema location
         BaseRequestType gft = (BaseRequestType) operation.getParameters()[0];
 
