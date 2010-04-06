@@ -22,17 +22,33 @@ public class GSS extends XSD {
     public static final String NAMESPACE = "http://geoserver.org/gss";
 
     /* Type Definitions */
-    public static final QName GetCentralRevisionType = new QName(NAMESPACE, "GetCentralRevisionType");
+    public static final QName GetCentralRevisionType = new QName(NAMESPACE,
+            "GetCentralRevisionType");
+
     public static final QName CentralRevisionsType = new QName(NAMESPACE, "CentralRevisionsType");
+
     public static final QName LayerRevisionType = new QName(NAMESPACE, "LayerRevisionType");
+
     public static final QName PostDiffType = new QName(NAMESPACE, "PostDiffType");
+
     public static final QName PostDiffResponseType = new QName(NAMESPACE, "PostDiffResponseType");
-    
+
+    public static final QName GetDiffType = new QName(NAMESPACE, "GetDiffType");
+
+    public static final QName GetDiffResponseType = new QName(NAMESPACE, "GetDiffResponseType");
+
     /* Element definitions */
     public static final QName GetCentralRevision = new QName(NAMESPACE, "GetCentralRevision");
+
     public static final QName CentralRevisions = new QName(NAMESPACE, "CentralRevisions");
+
     public static final QName PostDiff = new QName(NAMESPACE, "PostDiff");
+
     public static final QName PostDiffResponse = new QName(NAMESPACE, "PostDiffResponse");
+
+    public static final QName GetDiff = new QName(NAMESPACE, "GetDiff");
+
+    public static final QName GetDiffResponse = new QName(NAMESPACE, "GetDiffResponse");
 
     /** wfs dependency */
     WFS wfs;
