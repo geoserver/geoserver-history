@@ -493,10 +493,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // gu.25678
             assertXpathEvaluatesTo("#gu.25678", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/@xlink:href", doc);
+                    + "']/gsml:specification/@xlink:href", doc);
             // make sure nothing else is encoded
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit/gml:name", doc);
+                    + "']/gsml:specification/gsml:GeologicUnit", doc);
         }
 
         // mf4
@@ -768,6 +768,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // - mf1/gu.25699
         assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(1, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("mf1", "//gsml:MappedFeature/@gml:id", doc);
     }
 
 }
