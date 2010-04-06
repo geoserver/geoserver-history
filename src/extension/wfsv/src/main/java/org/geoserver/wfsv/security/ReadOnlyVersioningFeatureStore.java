@@ -8,11 +8,11 @@ import java.io.IOException;
 
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geoserver.security.decorators.ReadOnlyFeatureStore;
+import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
-import org.geotools.data.postgis.FeatureDiffReader;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;

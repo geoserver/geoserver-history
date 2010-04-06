@@ -4,12 +4,14 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
-import org.geotools.data.postgis.FeatureDiffReader;
 import java.io.IOException;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.data.FeatureDiffReader;
+import org.geotools.data.postgis.FeatureDiffReaderImpl;
 
 
 /**
@@ -30,7 +32,7 @@ public class FeatureDiffCollection extends AbstractCollection {
 
     public Iterator iterator() {
         try {
-            return new FeatureDiffReaderIterator(new FeatureDiffReader(reader));
+            return new FeatureDiffReaderIterator(new FeatureDiffReaderImpl((FeatureDiffReaderImpl) reader));
         } catch (Exception e) {
             close(reader);
             throw new RuntimeException(e);
@@ -41,7 +43,7 @@ public class FeatureDiffCollection extends AbstractCollection {
         FeatureDiffReader clone = null;
 
         try {
-            clone = new FeatureDiffReader(reader);
+            clone = new FeatureDiffReaderImpl((FeatureDiffReaderImpl) reader);
 
             int size = 0;
 

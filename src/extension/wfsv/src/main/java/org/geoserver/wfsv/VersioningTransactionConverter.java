@@ -21,8 +21,8 @@ import net.opengis.wfs.WfsFactory;
 
 import org.eclipse.emf.common.util.EList;
 import org.geoserver.wfs.WFSException;
-import org.geotools.data.postgis.FeatureDiff;
-import org.geotools.data.postgis.FeatureDiffReader;
+import org.geotools.data.FeatureDiff;
+import org.geotools.data.FeatureDiffReader;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.util.Converter;
 import org.opengis.feature.simple.SimpleFeature;
@@ -37,7 +37,7 @@ import org.opengis.filter.identity.FeatureId;
  * @author Andrea Aime - OpenGeo
  * 
  */
-public class VersioningTransactionConveter implements Converter {
+public class VersioningTransactionConverter implements Converter {
 
     FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory(null);
 

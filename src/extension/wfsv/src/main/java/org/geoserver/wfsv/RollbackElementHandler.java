@@ -24,10 +24,10 @@ import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.WFSTransactionException;
+import org.geotools.data.FeatureDiff;
+import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
-import org.geotools.data.postgis.FeatureDiff;
-import org.geotools.data.postgis.FeatureDiffReader;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 
