@@ -47,7 +47,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
         // make sure non-feature types don't appear in FeatureTypeList
         assertXpathCount(5, "//wfs:FeatureType", doc);
-        ArrayList<String> featureTypeNames = new ArrayList<String>(5);
+        ArrayList<String> featureTypeNames = new ArrayList<String>(4);
         featureTypeNames.add(evaluate("//wfs:FeatureType[1]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[2]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[3]/wfs:Name", doc));
@@ -493,10 +493,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                     "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:shape//gml:posList", doc);
             // gu.25678
             assertXpathEvaluatesTo("#gu.25678", "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/@xlink:href", doc);
+                    + "']/gsml:specification/gsml:GeologicUnit/@xlink:href", doc);
             // make sure nothing else is encoded
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
-                    + "']/gsml:specification/gsml:GeologicUnit", doc);
+                    + "']/gsml:specification/gsml:GeologicUnit/gml:name", doc);
         }
 
         // mf4
@@ -768,7 +768,6 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // - mf1/gu.25699
         assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(1, "//gsml:MappedFeature", doc);
-        assertXpathEvaluatesTo("mf1", "//gsml:MappedFeature/@gml:id", doc);
     }
 
 }
