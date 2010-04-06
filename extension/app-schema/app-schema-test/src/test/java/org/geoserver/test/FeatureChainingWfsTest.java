@@ -47,7 +47,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
         // make sure non-feature types don't appear in FeatureTypeList
         assertXpathCount(5, "//wfs:FeatureType", doc);
-        ArrayList<String> featureTypeNames = new ArrayList<String>(4);
+        ArrayList<String> featureTypeNames = new ArrayList<String>(5);
         featureTypeNames.add(evaluate("//wfs:FeatureType[1]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[2]/wfs:Name", doc));
         featureTypeNames.add(evaluate("//wfs:FeatureType[3]/wfs:Name", doc));

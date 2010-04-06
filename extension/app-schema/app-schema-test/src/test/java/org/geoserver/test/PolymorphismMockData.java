@@ -36,7 +36,7 @@ public class PolymorphismMockData extends AbstractAppSchemaMockData {
         putNamespace(GSML_PREFIX, GSML_URI);
         addFeatureType(EX_PREFIX, "PolymorphicFeature", "polymorphism.xml",
                 "PolymorphicFeature.properties", "CGITermValue.xml", "CGITermValue.properties",
-                "polymorphism.xsd");
+                "exposureColor.properties", "polymorphism.xsd");
         // TODO: this is a workaround for http://jira.codehaus.org/browse/GEOT-2932
         // remove MappedFeature definition below when it's fixed, since we don't need it
         addFeatureType(GSML_PREFIX, "MappedFeature", "MappedFeaturePropertyfile.xml",
