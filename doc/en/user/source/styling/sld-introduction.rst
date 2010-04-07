@@ -38,7 +38,7 @@ FeatureTypeStyle
 A basic style
 -------------
 
-This SLD takes a layer that contains points, and styles them as red circles with a size of 6 pixels.  (This is the first example in the :ref:`sld_cook_book_points` section of the :ref:`sld_cook_book`.)
+This SLD takes a layer that contains points, and styles them as red circles with a size of 6 pixels.  (This is the first example in the :ref:`sld_cookbook_points` section of the :ref:`sld_cookbook`.)
 
 .. code-block:: xml 
    :linenos: 
@@ -76,7 +76,7 @@ This SLD takes a layer that contains points, and styles them as red circles with
    
 Don't let the lengthy nature of this simple example intimidate; only a few lines are really important to understand.  **Line 14** states that we are using a "PointSymbolizer", a style for point data.  **Line 17** states that we are using a "well known name", a circle, to style the points.  There are many well known names for shapes such as "square", "star", "triangle", etc.  **Lines 18-20** states to fill the shape with a color of ``#FF0000`` (red).  This is an RGB color code, written in hexadecimal, in the form of #RRGGBB.  Finally, **line 22** specifies that the size of the shape is 6 pixels in width.  The rest of the structure contains metadata about the style, such as Name/Title/Abstract.
 
-Many more examples can be found in the :ref:`sld_cook_book`.
+Many more examples can be found in the :ref:`sld_cookbook`.
  
 .. note:: You will find that some tags have prefixes, such as ``ogc:`` in front of them.  The reason for this is because they are **XML namespaces**.  In the tag on **lines 2-7**, there are two XML namespaces, one called ``xmlns``, and one called ``xmlns:ogc``.  Tags corresponding to the first namespace do not need a prefix, but tags corresponding to the second require a prefix of ``ogc:``.  It should be pointed out that the name of the namespaces are not important:  The first namespace could be ``xmlns:sld`` (as it often is) and then all of the tags in this example would require an ``sld:`` prefix.  The important part is that the namespaces need to match the tags.
 
