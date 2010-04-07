@@ -61,7 +61,7 @@ Within the ``<CssParameter>`` tag, there are also additional parameters that go 
 Example
 -------
 
-Consider the following symbolizer taken from the Simple Point example in the :ref:`sld_cook_book_polygons` section in the :ref:`sld_cook_book`.
+Consider the following symbolizer taken from the Simple Point example in the :ref:`sld_cookbook_polygons` section in the :ref:`sld_cookbook`.
 
 .. code-block:: xml 
    :linenos: 
@@ -74,4 +74,4 @@ Consider the following symbolizer taken from the Simple Point example in the :re
           
 This symbolizer contains only a ``<Fill>`` tag.  Inside this tag is a ``<CssParameter>`` that specifies a fill color for the polygont o be ``#000080``, or a muted blue.
  
- Further examples can be found in the :ref:`sld_cook_book_polygons` section of the :ref:`sld_cook_book`.
+ Further examples can be found in the :ref:`sld_cookbook_polygons` section of the :ref:`sld_cookbook`.

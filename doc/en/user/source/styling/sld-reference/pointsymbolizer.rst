@@ -68,7 +68,7 @@ Within the ``<Mark>`` tag, there are also additional tags:
 Example
 -------
 
-Consider the following symbolizer taken from the Simple Point example in the :ref:`sld_cook_book_points` section in the :ref:`sld_cook_book`.
+Consider the following symbolizer taken from the Simple Point example in the :ref:`sld_cookbook_points` section in the :ref:`sld_cookbook`.
 
 .. code-block:: xml 
    :linenos: 
@@ -91,4 +91,4 @@ The symbolizer contains a ``<Graphic>`` tag, which is required.  Inside this tag
 #. Points will be rendered as circles
 #. Circles will be rendered with a diameter of 6 pixels and filled with the color red
 
-Further examples can be found in the :ref:`sld_cook_book_points` section of the :ref:`sld_cook_book`.
+Further examples can be found in the :ref:`sld_cookbook_points` section of the :ref:`sld_cookbook`.
