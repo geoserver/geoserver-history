@@ -53,16 +53,18 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
      * mappingName is used as linkElement.
      */
     public void testFirstValueFilters() {
-        // <targetAttribute>ex:firstValue</targetAttribute>
-        // <sourceExpression>
-        // <OCQL>VALUE_ID</OCQL>
-        // <linkElement>
-        // Recode(CLASS_TEXT, 'numeric', 'NumericType', 'literal', 'gsml:CGI_TermValue', 'invalid',
-        // Expression.NIL)
-        // </linkElement>
-        // <linkField>FEATURE_LINK</linkField>
-        // </sourceExpression>
-        // <isMultiple>true</isMultiple>
+//        <AttributeMapping>
+//        <!-- Test feature chaining and polymorphism -->
+//                <targetAttribute>ex:firstValue</targetAttribute>        
+//                <sourceExpression>
+//                        <OCQL>VALUE_ID</OCQL>   
+//                        <linkElement>
+//                            Recode(CLASS_TEXT, 'numeric', 'gsml:CGI_NumericValue', 'literal', 'gsml:CGI_TermValue', 'invalid', Expression.NIL)
+//                        </linkElement>
+//                        <linkField>FEATURE_LINK</linkField>
+//                </sourceExpression>                                     
+//                <isMultiple>true</isMultiple>
+//        </AttributeMapping>
         String xml = //
         "<wfs:GetFeature " //
                 + "service=\"WFS\" " //
@@ -105,15 +107,15 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
      * mappingName is used as linkElement.
      */
     public void testSecondValueFilters() {
-        // <AttributeMapping>
-        // <!-- Test polymorphism with no feature chaining i.e. no linkField -->
-        // <targetAttribute>ex:secondValue</targetAttribute>
-        // <sourceExpression>
-        // <linkElement>
-        // if_then_else(equalTo(CLASS_TEXT, 'numeric'), 'NumericType', 'TermValue2')
-        // </linkElement>
-        // </sourceExpression>
-        // </AttributeMapping>
+//        <AttributeMapping>
+//        <!-- Test polymorphism with no feature chaining i.e. no linkField -->
+//            <targetAttribute>ex:secondValue</targetAttribute>
+//            <sourceExpression>
+//                    <linkElement>
+//                        if_then_else(equalTo(CLASS_TEXT, 'numeric'), 'gsml:CGI_NumericValue',  'ex:TermValue')
+//                    </linkElement>
+//            </sourceExpression>
+//        </AttributeMapping>
         String xml = //
         "<wfs:GetFeature " //
                 + "service=\"WFS\" " //
@@ -165,16 +167,17 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
      * Tests filtering mapping of any type works.
      */
     public void testAnyTypeFilters() {
-        // <AttributeMapping>
-        // <!-- Test polymorphism with anyType -->
-        // <targetAttribute>ex:anyValue</targetAttribute>
-        // <sourceExpression>
-        // <linkElement>
-        // Recode(CLASS_TEXT, 'NULL', 'NullValue', 'numeric', 'NumericType', 'literal',
-        // 'TermValue2')
-        // </linkElement>
-        // </sourceExpression>
-        // </AttributeMapping>
+//        <AttributeMapping>
+//        <!-- Test polymorphism with anyType -->
+//            <targetAttribute>ex:anyValue</targetAttribute>
+//            <sourceExpression>
+//                    <linkElement>
+//                    <!-- This is not a good example of testing null value, more so testing a string value of 'NULL',
+//                         because there's a bug preventing us from having null values at the moment :( -->
+//                        Recode(CLASS_TEXT, 'NULL', 'ex:NullValue', 'numeric', 'gsml:CGI_NumericValue', 'literal', 'ex:TermValue')
+//                    </linkElement>
+//            </sourceExpression>
+//        </AttributeMapping>
         String xml = //
         "<wfs:GetFeature " //
                 + "service=\"WFS\" " //
@@ -216,15 +219,24 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
      * Tests filtering feature chaining where it's linked by mappingName.
      */
     public void testMappingNameFilters() {
-        // <AttributeMapping>
-        // <!-- Test polymorphism using normal feature chaining with no conditions -->
-        // <targetAttribute>ex:thirdValue</targetAttribute>
-        // <sourceExpression>
-        // <OCQL>VALUE_ID</OCQL>
-        // <linkElement>NumericType</linkElement>
-        // <linkField>FEATURE_LINK</linkField>
-        // </sourceExpression>
-        // </AttributeMapping>
+//        <AttributeMapping>
+//        <!-- Test polymorphism using normal feature chaining with no conditions -->
+//            <targetAttribute>ex:thirdValue</targetAttribute>
+//            <sourceExpression>
+//                    <OCQL>VALUE_ID</OCQL>
+//                    <linkElement>gsml:CGI_NumericValue</linkElement>
+//                    <linkField>FEATURE_LINK</linkField>
+//            </sourceExpression>
+//    </AttributeMapping>
+//    <AttributeMapping>
+//        <!-- See above -->
+//            <targetAttribute>ex:thirdValue</targetAttribute>
+//            <sourceExpression>
+//                    <OCQL>VALUE_ID</OCQL>
+//                    <linkElement>gsml:CGI_TermValue</linkElement>
+//                    <linkField>FEATURE_LINK</linkField>
+//            </sourceExpression>
+//    </AttributeMapping>
         String xml = //
         "<wfs:GetFeature " //
                 + "service=\"WFS\" " //
