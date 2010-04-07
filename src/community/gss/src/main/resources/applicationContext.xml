@@ -64,6 +64,12 @@
       <constructor-arg ref="gssXmlConfiguration" />
       <constructor-arg type="java.lang.String" value="PostDiff" />
    </bean>
+   
+   <bean id="getDiffReader" class="org.geoserver.gss.xml.GSSXmlReader">
+      <constructor-arg ref="geoServer" />
+      <constructor-arg ref="gssXmlConfiguration" />
+      <constructor-arg type="java.lang.String" value="GetDiff" />
+   </bean>
   
   <!--  Output formats -->
   <bean id ="centralRevisionsOutputFormat" class="org.geoserver.gss.response.CentralRevisionsOutputFormat">

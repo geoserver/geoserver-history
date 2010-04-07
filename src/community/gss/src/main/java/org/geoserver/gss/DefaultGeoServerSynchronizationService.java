@@ -38,6 +38,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.gss.CentralRevisionsType.LayerRevision;
+import org.geoserver.gss.GSSException.GSSExceptionCode;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.gss.xml.GSSConfiguration;
 import org.geotools.data.DataAccess;
@@ -82,8 +83,16 @@ import org.xml.sax.SAXException;
  */
 public class DefaultGeoServerSynchronizationService implements GeoServerSynchronizationService {
 
+    // exception locator constant
+    static final String TO_VERSION = "toVersion";
+
+    static final String TYPE_NAME = "typeName";
+
+    static final String FROM_VERSION = "fromVersion";
+
     static final Logger LOGGER = Logging.getLogger(DefaultGeoServerSynchronizationService.class);
 
+    // metadata tables and sql to build them
     static final String SYNCH_TABLES = "synch_tables";
 
     static final String UNIT_SYNC_TABLES_CREATION = "CREATE TABLE synch_tables(\n"
@@ -120,7 +129,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
     GSSConfiguration configuration;
 
-    public DefaultGeoServerSynchronizationService(GeoServer geoServer, GSSConfiguration configuration) {
+    public DefaultGeoServerSynchronizationService(GeoServer geoServer,
+            GSSConfiguration configuration) {
         this.catalog = geoServer.getCatalog();
         this.info = geoServer.getService(GSSInfo.class);
         this.configuration = configuration;
@@ -133,16 +143,15 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
     void ensureEnabled() {
         // basic sanity checks on the config
         if (info == null) {
-            throw new GSSServiceException(
-                    "The service is not properly configured, gssInfo not found");
+            throw new GSSException("The service is not properly configured, gssInfo not found");
         }
 
         if (info.getMode() == null) {
-            throw new GSSServiceException("The gss mode has not been configured");
+            throw new GSSException("The gss mode has not been configured");
         }
 
         if (info.getVersioningDataStore() == null || !info.getVersioningDataStore().isEnabled()) {
-            throw new GSSServiceException("The service is disabled as the "
+            throw new GSSException("The service is disabled as the "
                     + "versioning datastore is not available/disabled");
         }
 
@@ -151,7 +160,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             // basic sanity checks on the datastore
             DataAccess ds = info.getVersioningDataStore().getDataStore(null);
             if (!(ds instanceof VersionedPostgisDataStore)) {
-                throw new GSSServiceException(
+                throw new GSSException(
                         "The store attached to the gss module is not a PostGIS versioning one");
             }
             VersionedPostgisDataStore dataStore = (VersionedPostgisDataStore) ds;
@@ -183,8 +192,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 fi.close();
             }
         } catch (Exception e) {
-            throw new GSSServiceException("A problem occurred while checking the versioning store",
-                    e);
+            throw new GSSException("A problem occurred while checking the versioning store", e);
         } finally {
             if (fi != null) {
                 fi.close();
@@ -213,8 +221,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         ensureEnabled();
 
         if (info.getMode() == GSSMode.Central) {
-            throw new GSSServiceException(
-                    "gss configured in Central mode, won't to Unit service calls");
+            throw new GSSException("gss configured in Central mode, won't to Unit service calls");
         }
     }
 
@@ -250,14 +257,14 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             ns = catalog.getNamespaceByPrefix(typeName.getPrefix());
         }
         if (ns == null) {
-            throw new GSSServiceException("Could not locate typeName: " + typeName,
-                    "InvalidParameterValue", "typeName");
+            throw new GSSException("Could not locate typeName: " + typeName,
+                    GSSExceptionCode.InvalidParameterValue, TYPE_NAME);
         }
 
         FeatureTypeInfo fti = catalog.getFeatureTypeByName(ns, typeName.getLocalPart());
         if (fti == null) {
-            throw new GSSServiceException("Could not locate typeName: " + typeName,
-                    "InvalidParameterValue", "typeName");
+            throw new GSSException("Could not locate typeName: " + typeName,
+                    GSSExceptionCode.InvalidParameterValue, TYPE_NAME);
         }
 
         FeatureIterator<SimpleFeature> fi = null;
@@ -271,8 +278,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
             int count = ds.getFeatureSource(SYNCH_TABLES).getCount(q);
             if (count == 0) {
-                throw new GSSServiceException(fti.getName() + " is not a synchronized layer",
-                        "InvalidParameterValue", "typeName");
+                throw new GSSException(fti.getName() + " is not a synchronized layer",
+                        GSSExceptionCode.InvalidParameterValue, TYPE_NAME);
             }
 
             // generate conflicts
@@ -292,7 +299,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 return null;
             }
         } catch (IOException e) {
-            throw new GSSServiceException("Could not compute the response", e);
+            throw new GSSException("Could not compute the response", e);
         } finally {
             if (fi != null) {
                 fi.close();
@@ -313,13 +320,13 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         }
 
         if (request.getFromVersion() != lastCentralRevision) {
-            throw new GSSServiceException("Invalid fromVersion, it should be "
-                    + lastCentralRevision, "InvalidParameterValue", "fromVersion");
+            throw new GSSException("Invalid fromVersion, it should be " + lastCentralRevision,
+                    GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
         }
 
         if (request.getFromVersion() > request.getToVersion()) {
-            throw new GSSServiceException("Invalid toVersion, it should be higher than "
-                    + request.getToVersion(), "InvalidParameterValue", "toVersion");
+            throw new GSSException("Invalid toVersion, it should be higher than "
+                    + request.getToVersion(), GSSExceptionCode.InvalidParameterValue, TO_VERSION);
         }
 
         // make sure all of the changes are applied in one hit, or none
@@ -371,13 +378,14 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                         newLocalRevisionId, ff.id(changedFids), null);
                 while (localChanges.hasNext()) {
                     FeatureDiff fd = localChanges.next();
+                    FeatureId diffFeatureId = ff.featureId(fd.getID());
                     if (fd.getState() == FeatureDiff.INSERTED) {
-                        throw new GSSServiceException(
+                        throw new GSSException(
                                 "A new locally inserted feature has the same "
                                         + "id as a modified feature coming from Central, this is impossible, "
                                         + "there is either a bug in ID generation or someone manually tampered with it!");
                     } else if (fd.getState() == FeatureDiff.DELETED) {
-                        if (deletedFids.contains(fd.getID())) {
+                        if (deletedFids.contains(diffFeatureId)) {
                             // nothing to do, both central and unit deleted the same feature,
                             // it's a clean merge
                         } else {
@@ -385,7 +393,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                                     newLocalRevision, fd.getID());
                         }
                     } else {
-                        if (updatedFids.contains(fd.getID())) {
+                        if (updatedFids.contains(diffFeatureId)) {
                             if (isSameUpdate(fd, findUpdate(fd.getID(), updates))) {
                                 // nothing to do, both central and unit changed the feature
                                 // in the same way, it's a clean merge
@@ -444,7 +452,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 LOGGER.log(Level.SEVERE, "Rollback failed. This is unexpected", e);
             }
 
-            throw new GSSServiceException("Error occurred while applyling the diff", t);
+            throw new GSSException("Error occurred while applyling the diff", t);
         } finally {
             // very important to close transaction, as it holds a connection to the db
             try {
@@ -458,38 +466,50 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         return new PostDiffResponseType();
     }
 
+    public GetDiffResponseType getDiff(GetDiffType request) {
+        SimpleFeature record = getLastSynchronizationRecord(request.getTypeName());
+        if (record == null) {
+            throw new GSSException(
+                    "Out of order invocation, no PostDiff was called before GetDiff",
+                    GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
+        }
+
+        return null;
+    }
+
     /**
-     * Returns true if the feature diff and the update element would apply the same change 
+     * Returns true if the feature diff and the update element would apply the same change
      */
     boolean isSameUpdate(FeatureDiff fd, UpdateElementType update) {
         List<PropertyType> updateProperties = update.getProperty();
         Set<String> fdAttributes = new HashSet<String>(fd.getChangedAttributes());
-        if(updateProperties.size() != fdAttributes.size()) {
+        if (updateProperties.size() != fdAttributes.size()) {
             return false;
         }
-        
-        for(PropertyType pt : updateProperties) {
+
+        for (PropertyType pt : updateProperties) {
             String attName = pt.getName().getLocalPart();
-            if(!fdAttributes.contains(attName)) {
+            if (!fdAttributes.contains(attName)) {
                 return false;
             }
-            
+
             // compare the values (mind, the upValue comes from a parser, might
             // not be the right type, use converters)
             Object fdValue = fd.getFeature().getAttribute(attName);
             Object upValue = pt.getValue();
-            
-            if(fdValue == null && upValue == null) {
+
+            if (fdValue == null && upValue == null) {
                 continue;
-            } else if(fdValue != null && upValue != null) {
-                Class target = fd.getFeature().getType().getDescriptor(attName).getType().getBinding();
+            } else if (fdValue != null && upValue != null) {
+                Class target = fd.getFeature().getType().getDescriptor(attName).getType()
+                        .getBinding();
                 upValue = Converters.convert(upValue, target);
-                if(upValue == null) {
+                if (upValue == null) {
                     // could not perform a conversion to the target type, evidently not equal
                     return false;
                 }
                 // ok, same type, they should be comparable now
-                if(!fdValue.equals(upValue)) {
+                if (!fdValue.equals(upValue)) {
                     return false;
                 }
             } else {
@@ -497,20 +517,20 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 return false;
             }
         }
-        
+
         // did we really manage to go thru all those checks? Wow, it's the same change all right
         return true;
     }
 
     /**
-     * Finds the update element that's modifying a certain id (assuming the updates
-     * are using ID filters)
+     * Finds the update element that's modifying a certain id (assuming the updates are using ID
+     * filters)
      */
     UpdateElementType findUpdate(String featureId, List<UpdateElementType> updates) {
         for (UpdateElementType update : updates) {
             Set<Identifier> ids = ((Id) update.getFilter()).getIdentifiers();
             for (Identifier id : ids) {
-                if(id.toString().equals(featureId)) {
+                if (id.toString().equals(featureId)) {
                     return update;
                 }
             }
@@ -542,7 +562,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         Id filter = ff.id(Collections.singleton(ff.featureId(id)));
         layer.rollback(lastLocalRevisionId, filter, null);
     }
-    
+
     /**
      * Rolls back the locally modified feature and store a conflict record
      * 
@@ -577,8 +597,9 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
      */
     String toGML3(SimpleFeature feature) throws IOException {
         Encoder encoder = new Encoder(configuration, configuration.getXSD().getSchema());
-        NamespaceInfo nsi = catalog.getNamespaceByURI(feature.getType().getName().getNamespaceURI());
-        if(nsi != null) {
+        NamespaceInfo nsi = catalog
+                .getNamespaceByURI(feature.getType().getName().getNamespaceURI());
+        if (nsi != null) {
             encoder.getNamespaces().declarePrefix(nsi.getPrefix(), nsi.getURI());
         }
         encoder.setEncoding(Charset.forName("UTF-8"));
@@ -586,9 +607,10 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         encoder.encode(feature, GML._Feature, bos);
         return bos.toString("UTF-8");
     }
-    
+
     /**
      * Parses the representation of a GML3 feature back into a {@link SimpleFeature}
+     * 
      * @param gml3
      * @return
      * @throws IOException
@@ -598,7 +620,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             Parser parser = new Parser(configuration);
             parser.setStrict(false);
             return (SimpleFeature) parser.parse(new StringReader(gml3));
-        } catch(ParserConfigurationException e) {
+        } catch (ParserConfigurationException e) {
             throw (IOException) new IOException("Failure parsing the feature").initCause(e);
         } catch (SAXException e) {
             throw (IOException) new IOException("Failure parsing the feature").initCause(e);
@@ -615,8 +637,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         for (EObject object : objects) {
             Filter f = (Filter) EMFUtils.get(object, "filter");
             if (!(f instanceof Id)) {
-                throw new GSSServiceException(
-                        "Unexpected filter type, GSS can only handle FID filters");
+                throw new GSSException("Unexpected filter type, GSS can only handle FID filters");
             }
 
             for (Identifier id : ((Id) f).getIdentifiers()) {
@@ -665,4 +686,5 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         Filter tableFilter = ff.equals(ff.property("table_name"), ff.literal(tableName));
         return conflicts.getFeatures(ff.and(unresolved, tableFilter));
     }
+
 }
