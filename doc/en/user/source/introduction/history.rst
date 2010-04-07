@@ -3,7 +3,7 @@
 History
 =======
 
-GeoServer was started in 2001 by `The Open Planning Project <http://theopenplanningproject.org/>`_ (TOPP), a non-profit technology incubator based in New York. TOPP was creating a suite a tools to enable open democracy and to help make government more transparent. The first of these was GeoServer, which came out of a recognition that a suite of tools to enable citizen involvement in government and urban planning would be greatly enhanced by the ability to share spatial data. 
+GeoServer was started in 2001 by `The Open Planning Project <http://theopenplanningproject.org/>`_ (TOPP), a non-profit technology incubator based in New York. TOPP was creating a suite of tools to enable open democracy and to help make government more transparent. The first of these was GeoServer, which came out of a recognition that a suite of tools to enable citizen involvement in government and urban planning would be greatly enhanced by the ability to share spatial data. 
 
 The GeoServer founders envisioned a Geospatial Web, analogous to the World Wide Web. With the World Wide Web, one can search for and download text. With the Geospatial Web, one can search for and download spatial data. Data providers would be able to publish their data straight to this web, and users could directly access it, as opposed to the now indirect and cumbersome methods of sharing data that exist today. 
 
