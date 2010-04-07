@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.custommonkey.xmlunit.exceptions.XpathException;
+import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningDataStore;
@@ -42,7 +43,7 @@ public class PostDiffTest extends GSSTestSupport {
         validate(response);
         Document dom = dom(response);
         // print(dom);
-        checkOws10Exception(dom, "InvalidParameterValue");
+        checkOws10Exception(dom, "InvalidParameterValue", "typeName");
     }
 
     public void testInvalidFromVersion() throws Exception {
@@ -50,7 +51,7 @@ public class PostDiffTest extends GSSTestSupport {
                 loadTextResource("PostDiffInvalidFrom.xml"));
         validate(response);
         Document dom = dom(response);
-        checkOws10Exception(dom, "InvalidParameterValue");
+        checkOws10Exception(dom, "InvalidParameterValue", "fromVersion");
     }
 
     public void testEmpty() throws Exception {
@@ -71,11 +72,78 @@ public class PostDiffTest extends GSSTestSupport {
         assertEquals(12l, f.getAttribute("central_revision"));
     }
 
+    /**
+     * No local changes, no conflicts
+     * @throws Exception
+     */
     public void testFirstSynch() throws Exception {
         // grab the datastore so that we can assess the initial situation
         FeatureSource<SimpleFeatureType, SimpleFeature> restricted = synchStore
                 .getFeatureSource("restricted");
         assertEquals(4, restricted.getCount(Query.ALL));
+
+        // get the response and do the basic checks
+        MockHttpServletResponse response = postAsServletResponse(root(true),
+                loadTextResource("PostDiffInitial.xml"));
+        checkPositiveResponse(response);
+        checkPostDiffInitialChanges(restricted);
+
+        // check there are no conflicts
+        assertEquals(0, gss.getActiveConflicts("restricted").size());
+    }
+    
+    /**
+     * Local but not conflicting changes
+     * @throws Exception
+     */
+    public void testLocalChangesNoConflict() throws Exception {
+        // grab the datastore so that we can make some changes that will not generate conflicts
+        VersioningFeatureStore restricted = (VersioningFeatureStore) synchStore.getFeatureSource("restricted");
+        SimpleFeatureType schema = restricted.getSchema();
+        // modify the fourth feature, change its cat from 400 to 450
+        Id updateFilter = ff.id(singleton(ff.featureId("restricted.1b99be2b-2480-4742-ad52-95c294efda3b")));
+        restricted.modifyFeatures(schema.getDescriptor("cat"), 450, updateFilter);
+        // remove the third feature
+        Id removeFilter = ff.id(singleton(ff.featureId("restricted.c15e76ab-e44b-423e-8f85-f6d9927b878a")));
+        restricted.removeFeatures(removeFilter);
+        assertEquals(3, restricted.getCount(Query.ALL));
+        
+
+        // get the response and do the basic checks
+        MockHttpServletResponse response = postAsServletResponse(root(true),
+                loadTextResource("PostDiffInitial.xml"));
+        checkPositiveResponse(response);
+        checkPostDiffInitialChanges(restricted);
+
+        // check there are no conflicts
+        assertEquals(0, gss.getActiveConflicts("restricted").size());
+        
+        // check the local changes are still there
+        assertEquals(0, restricted.getCount(new DefaultQuery(null, removeFilter)));
+        FeatureIterator<SimpleFeature> fi;
+        fi = restricted.getFeatures(updateFilter).features();
+        assertTrue(fi.hasNext());
+        SimpleFeature f = fi.next();
+        fi.close();
+        assertEquals(450l, f.getAttribute("cat"));
+    }
+    
+    /**
+     * Sheer luck, the local changes are on the same feature, and are the same changes Central is pushing onto us
+     * @throws Exception
+     */
+    public void testCleanMerge() throws Exception {
+        // grab the datastore 
+        VersioningFeatureStore restricted = (VersioningFeatureStore) synchStore.getFeatureSource("restricted");
+        SimpleFeatureType schema = restricted.getSchema();
+        // make the same changes as in the post diff
+        Id updateFilter = ff.id(singleton(ff.featureId("restricted.be7cafea-d0b7-4257-9b9c-1ed3de3f7ef4")));
+        restricted.modifyFeatures(schema.getDescriptor("cat"), -48, updateFilter);
+        // remove the third feature
+        Id removeFilter = ff.id(singleton(ff.featureId("restricted.d91fe390-bdc7-4b22-9316-2cd6c8737ef5")));
+        restricted.removeFeatures(removeFilter);
+        assertEquals(3, restricted.getCount(Query.ALL));
+        
 
         // get the response and do the basic checks
         MockHttpServletResponse response = postAsServletResponse(root(true),
@@ -152,8 +220,6 @@ public class PostDiffTest extends GSSTestSupport {
     void checkPostDiffInitialChanges(
             FeatureSource<SimpleFeatureType, SimpleFeature> restricted) throws IOException {
         // check from the datastore we actually have applied the diff
-        // we should stil have 4 features (1 added, 1 removed, one modified)
-        assertEquals(4, restricted.getCount(Query.ALL));
         SimpleFeature deleted = gss.getFeatureById(restricted,
                 "restricted.d91fe390-bdc7-4b22-9316-2cd6c8737ef5");
         assertNull(deleted);
