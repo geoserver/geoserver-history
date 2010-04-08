@@ -41,6 +41,7 @@ import org.geoserver.gss.CentralRevisionsType.LayerRevision;
 import org.geoserver.gss.GSSException.GSSExceptionCode;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.gss.xml.GSSConfiguration;
+import org.geoserver.wfsv.VersioningTransactionConverter;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
@@ -71,6 +72,7 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
+import org.opengis.filter.Not;
 import org.opengis.filter.PropertyIsEqualTo;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.identity.Identifier;
@@ -111,12 +113,15 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
     static final String SYNCH_CONFLICTS = "synch_conflicts";
 
+    // conflict can be in 'c', conflict, 'r', resolved or 'm', clean merge state
+    // clean merge is a marker stating that the same change occurred both locally
+    // and in central, and as such it should not be reported in GetDiff
     static final String SYNCH_CONFLICTS_CREATION = "CREATE TABLE synch_conflicts(\n"
             + "id SERIAL PRIMARY KEY,\n" + "table_name VARCHAR(256) NOT NULL,\n" // 
             + "feature_id UUID NOT NULL,\n" //
             + "local_revision BIGINT NOT NULL,\n" //  
             + "date_created TIMESTAMP NOT NULL,\n" // 
-            + "resolved BOOLEAN NOT NULL,\n" //  
+            + "state CHAR(1) NOT NULL CHECK (state in ('c', 'r', 'm')),\n" //  
             + "date_resolved TIMESTAMP,\n" //
             + "local_feature TEXT,\n" // 
             + "unique(table_name, feature_id, local_revision))";
@@ -231,17 +236,22 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
     public CentralRevisionsType getCentralRevision(GetCentralRevisionType request) {
         ensureUnitEnabled();
 
-        CentralRevisionsType cr = new CentralRevisionsType();
-        for (QName typeName : request.getTypeNames()) {
-            SimpleFeature record = getLastSynchronizationRecord(typeName);
-            long revision = -1;
-            if (record != null) {
-                revision = ((Number) record.getAttribute("central_revision")).longValue();
+        try {
+            CentralRevisionsType cr = new CentralRevisionsType();
+            for (QName typeName : request.getTypeNames()) {
+                checkSyncronized(typeName);
+                SimpleFeature record = getLastSynchronizationRecord(typeName);
+                long revision = -1;
+                if (record != null) {
+                    revision = ((Number) record.getAttribute("central_revision")).longValue();
+                }
+                cr.getLayerRevisions().add(new LayerRevision(typeName, revision));
             }
-            cr.getLayerRevisions().add(new LayerRevision(typeName, revision));
-        }
 
-        return cr;
+            return cr;
+        } catch (IOException e) {
+            throw new GSSException("Could not compute the response", e);
+        }
     }
 
     /**
@@ -251,7 +261,40 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
      * @param typeName
      * @return
      */
-    SimpleFeature getLastSynchronizationRecord(QName typeName) {
+    SimpleFeature getLastSynchronizationRecord(QName typeName) throws IOException {
+        FeatureIterator<SimpleFeature> fi = null;
+        try {
+            // get the versioning data store
+            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
+                    .getDataStore(null);
+
+            // gather the record from the synch history table
+            DefaultQuery q = new DefaultQuery();
+            q.setFilter(ff.equal(ff.property("table_name"), ff.literal(typeName.getLocalPart()),
+                    true));
+            q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING) });
+            q.setMaxFeatures(1);
+            fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
+
+            if (fi.hasNext()) {
+                return fi.next();
+            } else {
+                return null;
+            }
+        } finally {
+            if (fi != null) {
+                fi.close();
+            }
+        }
+    }
+
+    /**
+     * Check the typeName exists and is one of the synchronised tables
+     * 
+     * @param typeName
+     * @throws IOException
+     */
+    void checkSyncronized(QName typeName) throws IOException {
         NamespaceInfo ns = catalog.getNamespaceByURI(typeName.getNamespaceURI());
         if (ns == null) {
             ns = catalog.getNamespaceByPrefix(typeName.getPrefix());
@@ -267,73 +310,51 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                     GSSExceptionCode.InvalidParameterValue, TYPE_NAME);
         }
 
-        FeatureIterator<SimpleFeature> fi = null;
-        try {
-            // get the versioning data store
-            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
-                    .getDataStore(null);
+        // get the versioning data store
+        VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore().getDataStore(
+                null);
 
-            // check the table is actually synch-ed
-            DefaultQuery q = new DefaultQuery();
-            q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
-            int count = ds.getFeatureSource(SYNCH_TABLES).getCount(q);
-            if (count == 0) {
-                throw new GSSException(fti.getName() + " is not a synchronized layer",
-                        GSSExceptionCode.InvalidParameterValue, TYPE_NAME);
-            }
-
-            // generate conflicts
-
-            // apply diffs
-
-            // gather the record from the synch history table
-            q = new DefaultQuery();
-            q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
-            q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING) });
-            q.setMaxFeatures(1);
-            fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
-
-            if (fi.hasNext()) {
-                return fi.next();
-            } else {
-                return null;
-            }
-        } catch (IOException e) {
-            throw new GSSException("Could not compute the response", e);
-        } finally {
-            if (fi != null) {
-                fi.close();
-            }
+        // check the table is actually synch-ed
+        DefaultQuery q = new DefaultQuery();
+        q.setFilter(ff.equal(ff.property("table_name"), ff.literal(fti.getName()), true));
+        int count = ds.getFeatureSource(SYNCH_TABLES).getCount(q);
+        if (count == 0) {
+            throw new GSSException(fti.getName() + " is not a synchronized layer",
+                    GSSExceptionCode.InvalidParameterValue, TYPE_NAME);
         }
     }
 
     public PostDiffResponseType postDiff(PostDiffType request) {
         ensureUnitEnabled();
 
-        // check the layer is actually shared and get the latest known central revision
-        SimpleFeature record = getLastSynchronizationRecord(request.getTypeName());
-        long lastCentralRevision = -1;
-        long lastLocalRevision = -1;
-        if (record != null) {
-            lastCentralRevision = ((Number) record.getAttribute("central_revision")).longValue();
-            lastLocalRevision = ((Number) record.getAttribute("local_revision")).longValue();
-        }
-
-        if (request.getFromVersion() != lastCentralRevision) {
-            throw new GSSException("Invalid fromVersion, it should be " + lastCentralRevision,
-                    GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
-        }
-
-        if (request.getFromVersion() > request.getToVersion()) {
-            throw new GSSException("Invalid toVersion, it should be higher than "
-                    + request.getToVersion(), GSSExceptionCode.InvalidParameterValue, TO_VERSION);
-        }
-
-        // make sure all of the changes are applied in one hit, or none
-        // very important, make sure all versioning writes use the same transaction or they
-        // will deadlock each other
         Transaction transaction = new DefaultTransaction();
         try {
+            // check the layer is actually shared and get the latest known central revision
+            checkSyncronized(request.getTypeName());
+            SimpleFeature record = getLastSynchronizationRecord(request.getTypeName());
+            long lastCentralRevision = -1;
+            long lastLocalRevision = -1;
+            if (record != null) {
+                lastCentralRevision = ((Number) record.getAttribute("central_revision"))
+                        .longValue();
+                lastLocalRevision = ((Number) record.getAttribute("local_revision")).longValue();
+            }
+
+            if (request.getFromVersion() != lastCentralRevision) {
+                throw new GSSException("Invalid fromVersion, it should be " + lastCentralRevision,
+                        GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
+            }
+
+            if (request.getFromVersion() > request.getToVersion()) {
+                throw new GSSException("Invalid toVersion, it should be higher than "
+                        + request.getToVersion(), GSSExceptionCode.InvalidParameterValue,
+                        TO_VERSION);
+            }
+
+            // make sure all of the changes are applied in one hit, or none
+            // very important, make sure all versioning writes use the same transaction or they
+            // will deadlock each other
+
             String tableName = request.getTypeName().getLocalPart();
             VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
                     .getDataStore(null);
@@ -386,8 +407,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                                         + "there is either a bug in ID generation or someone manually tampered with it!");
                     } else if (fd.getState() == FeatureDiff.DELETED) {
                         if (deletedFids.contains(diffFeatureId)) {
-                            // nothing to do, both central and unit deleted the same feature,
-                            // it's a clean merge
+                            saveCleanMergeMarker(fs, conflicts, lastLocalRevisionId,
+                                    newLocalRevision, fd.getID());
                         } else {
                             handleDeletionConflict(fs, conflicts, lastLocalRevisionId,
                                     newLocalRevision, fd.getID());
@@ -395,8 +416,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                     } else {
                         if (updatedFids.contains(diffFeatureId)) {
                             if (isSameUpdate(fd, findUpdate(fd.getID(), updates))) {
-                                // nothing to do, both central and unit changed the feature
-                                // in the same way, it's a clean merge
+                                saveCleanMergeMarker(fs, conflicts, lastLocalRevisionId,
+                                        newLocalRevision, fd.getID());
                             } else {
                                 handleUpdateConflict(fs, conflicts, lastLocalRevisionId,
                                         newLocalRevision, fd.getID());
@@ -451,8 +472,12 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Rollback failed. This is unexpected", e);
             }
-
-            throw new GSSException("Error occurred while applyling the diff", t);
+            
+            if(t instanceof GSSException) {
+                throw (GSSException) t;
+            } else {
+                new GSSException("Error occurred while applyling the diff", t);
+            }
         } finally {
             // very important to close transaction, as it holds a connection to the db
             try {
@@ -467,14 +492,118 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
     }
 
     public GetDiffResponseType getDiff(GetDiffType request) {
-        SimpleFeature record = getLastSynchronizationRecord(request.getTypeName());
-        if (record == null) {
-            throw new GSSException(
-                    "Out of order invocation, no PostDiff was called before GetDiff",
-                    GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
-        }
+        FeatureIterator<SimpleFeature> fi = null;
+        try {
+            checkSyncronized(request.getTypeName());
+            SimpleFeature record = getLastSynchronizationRecord(request.getTypeName());
+            if (record == null) {
+                throw new GSSException(
+                        "Out of order invocation, no PostDiff was called before GetDiff",
+                        GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
+            }
 
-        return null;
+            // the local revision at the last server update
+            long lastPostRevision = (Long) record.getAttribute("local_revision");
+            if (request.getFromVersion() > lastPostRevision) {
+                throw new GSSException(
+                        "Invalid fromVersion, it's more recent than the latest PostDiff synchronisation",
+                        GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
+            }
+
+            // ok, we need to find what revisions we have to jump over (the synch ones)
+            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
+                    .getDataStore(null);
+
+            // gather all records in the synch history that happened after the requested revision
+            DefaultQuery q = new DefaultQuery();
+            String tableName = request.getTypeName().getLocalPart();
+            Filter tableFilter = ff.equal(ff.property("table_name"), ff.literal(tableName), true);
+            Filter revisionFilter = ff.greater(ff.property("local_revision"), ff.literal(request
+                    .getFromVersion()));
+            q.setFilter(ff.and(tableFilter, revisionFilter));
+            q.setSortBy(new SortBy[] { ff.sort("local_revision", SortOrder.ASCENDING) });
+            fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
+
+            // build a list so that taking elements pair-wise we get the intervals we need to query
+            // (we won't sent local changes happened after the last PostDiff as there is no way
+            // to know if they would conflict with Central or not)
+            List<Long> intervals = new ArrayList<Long>();
+            intervals.add(request.getFromVersion());
+            while (fi.hasNext()) {
+                intervals.add((Long) fi.next().getAttribute("local_revision"));
+            }
+            fi.close();
+            
+            // gather the ids of the features still under conflict, we don't want to load their diffs
+            Filter nonConflictingFilter = getFidConflictFilter(tableName, getActiveConflicts(tableName));
+
+            // gather all of the diff readers for the non conflicting features
+            VersioningFeatureSource fs = (VersioningFeatureSource) ds.getFeatureSource(tableName);
+            FeatureDiffReader[] readers = new FeatureDiffReader[intervals.size() - 1];
+            for (int i = 1; i < intervals.size(); i++) {
+                // mind we need to skip the actual synch points, so we subtract 1
+                // from the revision number
+                String fromVersion = String.valueOf(intervals.get(i - 1));
+                String toVersion = String.valueOf(intervals.get(i) - 1);
+
+                Filter filter = nonConflictingFilter;
+                // skip over all the clean merges
+                Filter cleanMerges = getFidConflictFilter(tableName, getCleanMerges(tableName, intervals.get(i)));
+                if(cleanMerges != Filter.INCLUDE) {
+                    if(filter != Filter.INCLUDE) {
+                        filter = ff.and(cleanMerges, filter);
+                    } else {
+                        filter = cleanMerges;
+                    }
+                } 
+                
+                readers[i - 1] = fs.getDifferences(fromVersion, toVersion, filter, null);
+            }
+
+            // now we need to merge the readers into a global set of changes, skip
+            // the changes on the conflicting features, and turn everything into a
+            // transaction (easy no?)
+            FeatureDiffReader differences = new MergingFeatureDiffReader(readers);
+            TransactionType transaction = new VersioningTransactionConverter().convert(differences,
+                    TransactionType.class);
+            transaction.setReleaseAction(null);
+            transaction.setVersion(null);
+            transaction.setService(null);
+
+            GetDiffResponseType response = new GetDiffResponseType();
+            response.setFromVersion(request.getFromVersion());
+            response.setToVersion(lastPostRevision);
+            response.setTypeName(request.getTypeName());
+            response.setTransaction(transaction);
+            return response;
+        } catch (IOException e) {
+            throw new GSSException("Failed to compute the GetDiff response", e);
+        } finally {
+            if (fi != null) {
+                fi.close();
+            }
+        }
+    }
+    
+    /**
+     * Gathers all of the conflicts ids and builds a fid filter excluding all of them
+     * @return
+     */
+    Filter getFidConflictFilter(String tableName, FeatureCollection conflicts) {
+        FeatureIterator<SimpleFeature> fi = null; 
+        try {
+            fi = conflicts.features();
+            Set<FeatureId> conflictIds = new HashSet<FeatureId>();
+            while (fi.hasNext()) {
+                conflictIds.add(ff.featureId(tableName + "." + fi.next().getAttribute("feature_id")));
+            }
+            fi.close();
+            return conflictIds.size() > 0 ? ff.not(ff.id(conflictIds)) : Filter.INCLUDE;
+        } finally {
+            if(fi != null) {
+                fi.close();
+            }
+        }
     }
 
     /**
@@ -552,7 +681,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 id.substring(id.lastIndexOf(".") + 1), // feature uuid
                 newLocalRevision, // local revision
                 new Date(), // date created
-                false, // resolved?
+                'c', // not resolved, conflict
                 null, // date fixed
                 null // local feature, none since it was locally removed
                 }, null);
@@ -561,6 +690,27 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         // roll back the local changes
         Id filter = ff.id(Collections.singleton(ff.featureId(id)));
         layer.rollback(lastLocalRevisionId, filter, null);
+    }
+
+    /**
+     * Stores a clean merge marker
+     * 
+     * @param lastLocalRevisionId
+     * @param id
+     */
+    void saveCleanMergeMarker(VersioningFeatureStore layer, VersioningFeatureStore conflicts,
+            String lastLocalRevisionId, long newLocalRevision, String id) throws IOException {
+        // create a conflict feature. For local deletions we just don't store the feature
+        SimpleFeature conflict = SimpleFeatureBuilder.build(conflicts.getSchema(), new Object[] {
+                layer.getSchema().getTypeName(), // table_name
+                id.substring(id.lastIndexOf(".") + 1), // feature uuid
+                newLocalRevision, // local revision
+                new Date(), // date created
+                'm', // clean merge marker
+                null, // date fixed
+                null // local feature, none since it was locally removed
+                }, null);
+        conflicts.addFeatures(collection(conflict));
     }
 
     /**
@@ -577,7 +727,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 id.substring(id.lastIndexOf(".") + 1), // feature uuid
                 newLocalRevision, // local revision
                 new Date(), // date created
-                false, // resolved?
+                'c', // resolved?
                 null, // date fixed
                 toGML3(getFeatureById(layer, id)) // local feature value
                 }, null);
@@ -669,11 +819,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
     }
 
     /**
-     * Returns all active conflicts for the specified type
-     * 
-     * @param typeName
-     * @return
-     * @throws IOException
+     * Returns all the active conflicts for the specified table
      */
     FeatureCollection<SimpleFeatureType, SimpleFeature> getActiveConflicts(String tableName)
             throws IOException {
@@ -682,9 +828,25 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         VersioningFeatureSource conflicts = (VersioningFeatureSource) ds
                 .getFeatureSource(SYNCH_CONFLICTS);
 
-        Filter unresolved = ff.equals(ff.property("resolved"), ff.literal("false"));
+        Filter unresolved = ff.equals(ff.property("state"), ff.literal(String.valueOf('c')));
         Filter tableFilter = ff.equals(ff.property("table_name"), ff.literal(tableName));
         return conflicts.getFeatures(ff.and(unresolved, tableFilter));
+    }
+    
+    /**
+     * Returns the clean merges occurred at the specified revision
+     */
+    FeatureCollection<SimpleFeatureType, SimpleFeature> getCleanMerges(String tableName, long revision)
+            throws IOException {
+        VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore().getDataStore(
+                null);
+        VersioningFeatureSource conflicts = (VersioningFeatureSource) ds
+                .getFeatureSource(SYNCH_CONFLICTS);
+
+        Filter unresolved = ff.equals(ff.property("state"), ff.literal(String.valueOf('m')));
+        Filter tableFilter = ff.equals(ff.property("table_name"), ff.literal(tableName));
+        Filter version = ff.equals(ff.property("local_revision"), ff.literal(revision));
+        return conflicts.getFeatures(ff.and(ff.and(unresolved, tableFilter), version));
     }
 
 }
