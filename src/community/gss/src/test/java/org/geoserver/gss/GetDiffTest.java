@@ -95,7 +95,7 @@ public class GetDiffTest extends GSSTestSupport {
         response = postAsServletResponse(root(true), loadTextResource("GetDiffInitial.xml"));
         validate(response);
         Document dom = dom(response);
-        print(dom);
+        // print(dom);
         
         // we should have got back an empty transaction
         // ... check the main element
@@ -150,6 +150,54 @@ public class GetDiffTest extends GSSTestSupport {
         assertXpathEvaluatesTo("sf:restricted", "/gss:GetDiffResponse/gss:Changes/wfs:Delete/@typeName", dom);
         assertXpathEvaluatesTo("restricted.c15e76ab-e44b-423e-8f85-f6d9927b878a", "/gss:GetDiffResponse/gss:Changes/wfs:Delete/ogc:Filter/ogc:FeatureId/@fid", dom);
         assertXpathEvaluatesTo("restricted.c15e76ab-e44b-423e-8f85-f6d9927b878a", "/gss:GetDiffResponse/gss:Changes/wfs:Delete/ogc:Filter/ogc:FeatureId/@fid", dom);
+    }
+    
+    /**
+     * This time we mix some conflicting and non conflicting changes
+     */
+    public void testConflicts() throws Exception {
+        VersioningFeatureStore restricted = (VersioningFeatureStore) synchStore.getFeatureSource("restricted");
+        SimpleFeatureType schema = restricted.getSchema();
+        // modify the fourth feature, change its cat from 400 to 450
+        Id updateFilter = ff.id(singleton(ff.featureId("restricted.1b99be2b-2480-4742-ad52-95c294efda3b")));
+        restricted.modifyFeatures(schema.getDescriptor("cat"), 450, updateFilter);
+        // a update that will generate a conflict
+        updateFilter = ff.id(singleton(ff.featureId("restricted.d91fe390-bdc7-4b22-9316-2cd6c8737ef5")));
+        restricted.modifyFeatures(schema.getDescriptor("cat"), 347, updateFilter);
+        // an update that will generate a clean merge
+        updateFilter = ff.id(singleton(ff.featureId("restricted.be7cafea-d0b7-4257-9b9c-1ed3de3f7ef4")));
+        restricted.modifyFeatures(schema.getDescriptor("cat"), -48, updateFilter);
+
+        // execute the postDiff
+        MockHttpServletResponse response = postAsServletResponse(root(true),
+                loadTextResource("PostDiffInitial.xml"));
+        checkPostDiffSuccessResponse(response);
+        
+        // check there is one conflict and one clean merge
+        assertEquals(1, gss.getActiveConflicts("restricted").size());
+        assertEquals(1, gss.getCleanMerges("restricted", 7).size());
+        
+        // run GetDiff
+        response = postAsServletResponse(root(true), loadTextResource("GetDiffInitial.xml"));
+        validate(response);
+        Document dom = dom(response);
+        // print(dom);
+        
+        // check the document contents are the expected ones
+        // ... check the main element
+        assertXpathEvaluatesTo("-1", "/gss:GetDiffResponse/@fromVersion", dom);
+        assertXpathEvaluatesTo("7", "/gss:GetDiffResponse/@toVersion", dom);
+        assertXpathEvaluatesTo("sf:restricted", "/gss:GetDiffResponse/@typeName", dom);
+        // ... check we get only one change, the non conflicting one
+        assertXpathEvaluatesTo("1", "count(/gss:GetDiffResponse/gss:Changes)", dom);
+        // check the update one
+        assertXpathEvaluatesTo("sf:restricted", "/gss:GetDiffResponse/gss:Changes/wfs:Update/@typeName", dom);
+        assertXpathEvaluatesTo("1", "count(/gss:GetDiffResponse/gss:Changes/wfs:Update/ogc:Filter/ogc:FeatureId)", dom);
+        assertXpathEvaluatesTo("restricted.1b99be2b-2480-4742-ad52-95c294efda3b", "/gss:GetDiffResponse/gss:Changes/wfs:Update/ogc:Filter/ogc:FeatureId/@fid", dom);
+        assertXpathEvaluatesTo("1", "count(/gss:GetDiffResponse/gss:Changes/wfs:Update/wfs:Property)", dom);
+        assertXpathEvaluatesTo("cat", "/gss:GetDiffResponse/gss:Changes/wfs:Update/wfs:Property/wfs:Name", dom);
+        assertXpathEvaluatesTo("450", "/gss:GetDiffResponse/gss:Changes/wfs:Update/wfs:Property/wfs:Value", dom);
+
     }
     
     
