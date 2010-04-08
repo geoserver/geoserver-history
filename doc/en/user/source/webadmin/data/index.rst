@@ -9,10 +9,10 @@ This section is the largest and perhaps the most important section of the Web Ad
 
 As seen in the example below, the data view page displays a table of indexed data. 
 
-.. figure:: ../images/data_style.png
+.. figure:: ../images/data_layers.png
    :align: center
    
-   *Styles View page*
+   *Layers page*
    
 To alphabetically sort a data type, click on the column header. 
 
