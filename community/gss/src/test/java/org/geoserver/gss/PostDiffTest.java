@@ -1,14 +1,10 @@
 package org.geoserver.gss;
 
 import static java.util.Collections.*;
-import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
 
 import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -20,7 +16,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Id;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
@@ -42,7 +37,7 @@ public class PostDiffTest extends GSSTestSupport {
                 loadTextResource("PostDiffUnknown.xml"));
         validate(response);
         Document dom = dom(response);
-        // print(dom);
+        print(dom);
         checkOws10Exception(dom, "InvalidParameterValue", "typeName");
     }
 
@@ -57,7 +52,7 @@ public class PostDiffTest extends GSSTestSupport {
     public void testEmpty() throws Exception {
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffEmpty.xml"));
-        checkPositiveResponse(response);
+        checkPostDiffSuccessResponse(response);
 
         // check the lasts known Central revision is updated
         VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch")
@@ -85,7 +80,7 @@ public class PostDiffTest extends GSSTestSupport {
         // get the response and do the basic checks
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffInitial.xml"));
-        checkPositiveResponse(response);
+        checkPostDiffSuccessResponse(response);
         checkPostDiffInitialChanges(restricted);
 
         // check there are no conflicts
@@ -112,7 +107,7 @@ public class PostDiffTest extends GSSTestSupport {
         // get the response and do the basic checks
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffInitial.xml"));
-        checkPositiveResponse(response);
+        checkPostDiffSuccessResponse(response);
         checkPostDiffInitialChanges(restricted);
 
         // check there are no conflicts
@@ -148,7 +143,7 @@ public class PostDiffTest extends GSSTestSupport {
         // get the response and do the basic checks
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffInitial.xml"));
-        checkPositiveResponse(response);
+        checkPostDiffSuccessResponse(response);
         checkPostDiffInitialChanges(restricted);
 
         // check there are no conflicts
@@ -164,7 +159,7 @@ public class PostDiffTest extends GSSTestSupport {
         // get the response and do the basic checks
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffInitial.xml"));
-        checkPositiveResponse(response);
+        checkPostDiffSuccessResponse(response);
         checkPostDiffInitialChanges(restricted);
         
         // check we actually have stored the deletion conflict (the deleted feature has been updated
@@ -177,7 +172,7 @@ public class PostDiffTest extends GSSTestSupport {
         
         assertEquals("restricted", f.getAttribute("table_name"));
         assertEquals("be7cafea-d0b7-4257-9b9c-1ed3de3f7ef4", f.getAttribute("feature_id"));
-        assertEquals(false, f.getAttribute("resolved"));
+        assertEquals("c", f.getAttribute("state"));
         assertNull(f.getAttribute("local_feature"));
     }
     
@@ -192,7 +187,7 @@ public class PostDiffTest extends GSSTestSupport {
         // get the response and do the basic checks
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffInitial.xml"));
-        checkPositiveResponse(response);
+        checkPostDiffSuccessResponse(response);
         checkPostDiffInitialChanges(restricted);
         
         // check we actually have stored the update conflict 
@@ -204,7 +199,7 @@ public class PostDiffTest extends GSSTestSupport {
         
         assertEquals("restricted", f.getAttribute("table_name"));
         assertEquals("be7cafea-d0b7-4257-9b9c-1ed3de3f7ef4", f.getAttribute("feature_id"));
-        assertEquals(false, f.getAttribute("resolved"));
+        assertEquals("c", f.getAttribute("state"));
         assertNotNull(f.getAttribute("local_feature"));
         // TODO: make sure the stored feature is the value before the rollback
         
@@ -232,26 +227,5 @@ public class PostDiffTest extends GSSTestSupport {
         assertNotNull(added);
         assertEquals(123l, added.getAttribute("cat"));
     }
-
-    /**
-     * Makes sure the response is a valid and positive PostDiff one
-     * @param response
-     * @throws Exception
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     * @throws XpathException
-     */
-    Document checkPositiveResponse(MockHttpServletResponse response) throws Exception,
-            IOException, SAXException, ParserConfigurationException, XpathException {
-        validate(response);
-        Document dom = dom(response);
-        // print(dom);
-
-        // basic response checks
-        assertXpathExists("/gss:PostDiffResponse", dom);
-        assertXpathEvaluatesTo("true", "/gss:PostDiffResponse/@success", dom);
-        
-        return dom;
-    }
+    
 }

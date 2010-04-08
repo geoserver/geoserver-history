@@ -81,4 +81,9 @@
     <constructor-arg index="0" ref="gssXmlConfiguration"/>
     <constructor-arg index="1" ref="gssXsd"/>
   </bean>
+  
+  <bean id ="getDiffResponseOutputFormat" class="org.geoserver.gss.response.GetDiffResponseOutputFormat">
+    <constructor-arg index="0" ref="gssXmlConfiguration"/>
+    <constructor-arg index="1" ref="gssXsd"/>
+  </bean>
 </beans>

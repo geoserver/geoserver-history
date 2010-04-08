@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.geotools.data.FeatureDiff;
@@ -18,8 +19,9 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
  * Merges the diffs of the various delegates into one. Delegates will be examined in order to build
- * a global diff. This class is used to get a history of all the local changes that still haven't
- * been communicated to Central, skipping Central own changes
+ * a global diff. All changes to feaures under conflict will be ignored. This class is used to get a
+ * history of all the local changes that still haven't been communicated to Central, skipping
+ * Central own changes.
  * 
  * @author Andrea Aime - OpenGeo
  * 
@@ -70,7 +72,7 @@ class MergingFeatureDiffReader implements FeatureDiffReader {
      * The next difference we're going to return
      */
     FeatureDiff nextDifference;
-
+    
     /**
      * Builds a new merging reader. Mind, the order of the delegates is important, as changes are
      * built up in order
@@ -197,20 +199,28 @@ class MergingFeatureDiffReader implements FeatureDiffReader {
     void advance() throws IOException {
         for (int i = 0; i < delegates.length; i++) {
             if (delegates[i] != null && !featureRead[i]) {
-                if (delegates[i].hasNext()) {
+                // read the next diff that is not linked to a conflicting feature
+                while (delegates[i].hasNext()) {
                     // grab a new feature diff
                     FeatureDiff fd = delegates[i].next();
-
+                    String fid = fd.getID();
+                    
                     // is it about a feature id we already know about?
                     FeatureDiff[] history;
-                    if (sortedFids.contains(fd.getID())) {
-                        history = diffHistory.get(fd.getID());
+                    if (sortedFids.contains(fid)) {
+                        history = diffHistory.get(fid);
                     } else {
                         history = new FeatureDiff[delegates.length];
-                        diffHistory.put(fd.getID(), history);
+                        diffHistory.put(fid, history);
+                        sortedFids.add(fid);
                     }
                     history[i] = fd;
-                } else {
+                    // ok, we're done
+                    break;
+                } 
+                
+                // did we exit the loop because the reader ended?
+                if(!delegates[i].hasNext()) {
                     // close the delegate and get rid of it
                     delegates[i].close();
                     delegates[i] = null;

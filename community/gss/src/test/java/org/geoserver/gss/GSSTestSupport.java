@@ -1,5 +1,6 @@
 package org.geoserver.gss;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
 import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
 import static org.geotools.data.DataUtilities.*;
 
@@ -25,7 +26,6 @@ import org.geoserver.data.test.TestData;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.gss.xml.GSSConfiguration;
 import org.geoserver.test.GeoServerAbstractTestSupport;
-
 import org.geotools.data.FeatureStore;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.factory.CommonFactoryFinder;
@@ -188,6 +188,22 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
         }
         br.close();
         return sb.toString();
+    }
+
+    /**
+     * Makes sure the response is a valid and positive PostDiff one
+     */
+    protected Document checkPostDiffSuccessResponse(MockHttpServletResponse response)
+            throws Exception {
+        validate(response);
+        Document dom = dom(response);
+        // print(dom);
+
+        // basic response checks
+        assertXpathExists("/gss:PostDiffResponse", dom);
+        assertXpathEvaluatesTo("true", "/gss:PostDiffResponse/@success", dom);
+
+        return dom;
     }
 
 }

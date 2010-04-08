@@ -7,7 +7,7 @@ package org.geoserver.gss.response;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.geoserver.gss.PostDiffResponseType;
+import org.geoserver.gss.GetDiffResponseType;
 import org.geoserver.gss.xml.GSS;
 import org.geoserver.gss.xml.GSSConfiguration;
 import org.geoserver.ows.Response;
@@ -16,19 +16,19 @@ import org.geoserver.platform.ServiceException;
 import org.geotools.xml.Encoder;
 
 /**
- * Encodes a {@link PostDiffResponseType} into an XML response
+ * Encodes a {@link GetDiffResponseType} into an XML response
  * 
  * @author aaime
  * 
  */
-public class PostDiffResponseOutputFormat extends Response {
+public class GetDiffResponseOutputFormat extends Response {
 
     GSSConfiguration configuration;
 
     GSS gss;
 
-    public PostDiffResponseOutputFormat(GSSConfiguration configuration, GSS gss) {
-        super(PostDiffResponseType.class);
+    public GetDiffResponseOutputFormat(GSSConfiguration configuration, GSS gss) {
+        super(GetDiffResponseType.class);
         this.configuration = configuration;
         this.gss = gss;
     }
@@ -41,10 +41,10 @@ public class PostDiffResponseOutputFormat extends Response {
     @Override
     public void write(Object value, OutputStream output, Operation operation) throws IOException,
             ServiceException {
-        PostDiffResponseType response = (PostDiffResponseType) value;
+        GetDiffResponseType response = (GetDiffResponseType) value;
         Encoder encoder = new Encoder(configuration, gss.getSchema());
 
-        encoder.encode(response, GSS.PostDiffResponse, output);
+        encoder.encode(response, GSS.GetDiffResponse, output);
     }
 
 }
