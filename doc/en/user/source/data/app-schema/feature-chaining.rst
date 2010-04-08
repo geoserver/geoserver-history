@@ -282,9 +282,7 @@ If we have a many-to-many relationship, we have to use one denormalized view for
 
 .. note:: 
 
-   * For many-to-many relationships, we can't use the same denormalized view for both sides of the nesting.
-
-   * If OCQL on the nested type refers to the id, it should be converted into a String, since the value it's comparing against in the parent feature is a string representation of the id. The function getId() however, returns a java object FeatureId instance. Perhaps this should be fixed in the future, but at the moment, functions such as strTrim() or strConcat() would do the job. This is shown in the CompositionPart example above. This hack is not needed for OCQL on the "container" feature type. 
+   * For many-to-many relationships, we can't use the same denormalized view for both sides of the nesting.   
 
 Test this configuration by running a getFeature request for the nested feature type on its own.  
 
