@@ -26,6 +26,7 @@ Contents
    installation
    configuration
    mapping-file
+   vocab-functions
    property-interpolation
    data-stores
    feature-chaining

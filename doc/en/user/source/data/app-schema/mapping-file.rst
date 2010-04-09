@@ -203,6 +203,8 @@ You can use CQL expressions to calculate the content of the element. This exampl
         <OCQL>strConCat(FIRST , strConCat(' followed by ', SECOND))</OCQL>
     </sourceExpression>
 
+You can also use CQL expressions for vocabulary translations. Read more about it in :ref:`app-schema.vocab-functions`.
+
 .. warning:: Avoid use of CQL expressions for properties that users will want to query, because the current implementation cannot reverse these expressions to generate efficient SQL, and will instead read all features to calculate the property to find the features that match the filter query. Falling back to brute force search makes queries on CQL-calculated expressions very slow. If you must concatenate strings to generate content, you may find that doing this in your database is much faster.
 
 
