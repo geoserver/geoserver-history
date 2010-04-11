@@ -74,12 +74,5 @@
                         <version>4.4</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.geoserver</groupId>
-			<artifactId>main</artifactId>
-			<version>${project.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 </project>
