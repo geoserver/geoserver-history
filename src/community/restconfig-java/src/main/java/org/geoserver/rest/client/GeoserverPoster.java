@@ -418,7 +418,7 @@ public class GeoserverPoster {
 	 */
 	public LayerGroup getLayerGroup(final String name) throws IOException {
 
-		if((name == null) || name.isEmpty()) {
+		if((name == null) || name.length() == 0) {
 			throw new IllegalArgumentException("Unknown Layer Group: " + name);
 		}
 
@@ -447,7 +447,7 @@ public class GeoserverPoster {
 	 */
 	public Workspace getWorkspace(final String workspaceName) throws IOException {
 
-		if((workspaceName == null) || workspaceName.isEmpty()) {
+		if((workspaceName == null) || workspaceName.length() == 0) {
 			throw new IllegalArgumentException("Unknown workspace: " + workspaceName);
 		}
 
