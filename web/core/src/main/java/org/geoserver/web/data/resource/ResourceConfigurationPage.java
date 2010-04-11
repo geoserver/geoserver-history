@@ -6,7 +6,6 @@ package org.geoserver.web.data.resource;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,6 +32,7 @@ import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -43,6 +43,7 @@ import org.geoserver.web.publish.LayerConfigurationPanelInfo;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.feature.NameImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
 
@@ -61,6 +62,8 @@ import org.opengis.coverage.grid.GridGeometry;
 public class ResourceConfigurationPage extends GeoServerSecuredPage {
 
     public static final String NAME = "name";
+    
+    public static final String WORKSPACE = "wsName";
 
     private IModel myResourceModel;
 
@@ -69,11 +72,23 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
     private boolean isNew;
     
     public ResourceConfigurationPage(PageParameters parameters) {
-        this(parameters.getString(NAME));
+        this(parameters.getString(WORKSPACE), parameters.getString(NAME));
     }
 
-    public ResourceConfigurationPage(String layerName) {
-        LayerInfo layer = getCatalog().getLayerByName(layerName);
+    public ResourceConfigurationPage(String workspaceName, String layerName) {
+        LayerInfo layer;
+        if(workspaceName != null) {
+            NamespaceInfo ns = getCatalog().getNamespaceByPrefix(workspaceName);
+            if(ns == null) {
+                // unlikely to happen, requires someone making modifications on the workspaces
+                // with a layer page open in another tab/window
+                throw new RuntimeException("Could not find workspace " + workspaceName);
+            }
+            String nsURI = ns.getURI();
+            layer = getCatalog().getLayerByName(new NameImpl(nsURI, layerName));
+        } else {
+            layer = getCatalog().getLayerByName(layerName);
+        }
         
         if(layer == null) {
             error(new ParamResourceModel("ResourceConfigurationPage.notFound", this, layerName).getString());

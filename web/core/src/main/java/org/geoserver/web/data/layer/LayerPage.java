@@ -102,9 +102,10 @@ public class LayerPage extends GeoServerSecuredPage {
 
     private Component layerLink(String id, final IModel model) {
         IModel layerNameModel = NAME.getModel(model);
+        String wsName = (String) WORKSPACE.getModel(model).getObject();
         String layerName = (String) layerNameModel.getObject();
         return new SimpleBookmarkableLink(id, ResourceConfigurationPage.class, layerNameModel, 
-                ResourceConfigurationPage.NAME, layerName);
+                ResourceConfigurationPage.NAME, layerName, ResourceConfigurationPage.WORKSPACE, wsName);
     }
 
     private Component storeLink(String id, final IModel model) {
