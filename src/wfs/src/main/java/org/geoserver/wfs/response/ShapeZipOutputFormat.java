@@ -182,6 +182,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             };
             ZipOutputStream zipOut = new ZipOutputStream(output);
             IOUtils.zipDirectory(tempDir, zipOut, filter);
+            zipOut.finish();
 
             // This is an error, because this closes the output stream too... it's
             // not the right place to do so
