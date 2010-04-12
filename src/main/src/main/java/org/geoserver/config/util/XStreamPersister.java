@@ -771,12 +771,16 @@ public class XStreamPersister {
         public String toString(Object obj) {
             CoordinateReferenceSystem crs = (CoordinateReferenceSystem) obj;
             try {
-                return "EPSG:" + CRS.lookupEpsgCode(crs, true);
+                Integer epsg = CRS.lookupEpsgCode(crs, true);
+                if (epsg != null) {
+                    return "EPSG:" + epsg;
+                }
             } 
             catch (FactoryException e) {
                 XStreamPersister.LOGGER.warning( "Could not determine epsg code of crs, encoding as WKT");
-                return crs.toWKT();
             }
+            
+            return crs.toWKT();
         }
         
         @Override
