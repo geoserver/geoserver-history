@@ -236,11 +236,20 @@ public class IOUtils {
     }
     
     /**
-     * Zips up the directory contents into the specified {@link ZipOutputStream}. 
-     * @param directory The directory whose contents have to be zipped up
-     * @param zipout The {@link ZipOutputStream} that will be populated by the files found
-     * @param filter An optional filter that can be used to select only certain files. 
-     * Can be null, in that case all files in the directory will be zipped
+     * Zips up the directory contents into the specified {@link ZipOutputStream}.
+     * <p>
+     * Note this method does not take ownership of the provided zip output stream, meaning the
+     * client code is responsible for calling {@link ZipOutputStream#finish() finish()} when it's
+     * done adding zip entries.
+     * </p>
+     *
+     * @param directory
+     *            The directory whose contents have to be zipped up
+     * @param zipout
+     *            The {@link ZipOutputStream} that will be populated by the files found
+     * @param filter
+     *            An optional filter that can be used to select only certain files. Can be null, in
+     *            that case all files in the directory will be zipped
      * @throws IOException
      * @throws FileNotFoundException
      */
@@ -256,28 +265,30 @@ public class IOUtils {
     private static void zipDirectory(File directory, String prefix, ZipOutputStream zipout, final FilenameFilter filter)
             throws IOException, FileNotFoundException {
         File[] files = directory.listFiles(filter);
+        // copy file by reading 4k at a time (faster than buffered reading)
+        byte[] buffer = new byte[4 * 1024];
         for (File file : files) {
             if (file.exists()) {
                 if(file.isDirectory()) {
-                    // recurse and append 
+                    // recurse and append
                     zipDirectory(file, prefix + file.getName() + "/", zipout, filter);
                 } else {
                     ZipEntry entry = new ZipEntry(prefix  + file.getName());
                     zipout.putNextEntry(entry);
-    
-                    // copy file by reading 4k at a time (faster than buffered reading)
+   
                     InputStream in = new FileInputStream(file);
                     int c;
-                    byte[] buffer = new byte[4 * 1024];
-                    while (-1 != (c = in.read(buffer))) {
-                        zipout.write(buffer, 0, c);
+                    try {
+                        while (-1 != (c = in.read(buffer))) {
+                            zipout.write(buffer, 0, c);
+                        }
+                        zipout.closeEntry();
+                    } finally {
+                        in.close();
                     }
-                    zipout.closeEntry();
-                    in.close();
                 }
             }
         }
-        zipout.finish();
         zipout.flush();
     }
     
