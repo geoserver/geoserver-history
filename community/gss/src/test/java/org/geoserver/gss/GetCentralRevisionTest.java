@@ -1,9 +1,7 @@
 package org.geoserver.gss;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
-import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
-
-import java.util.Map;
+import static org.geoserver.gss.GSSCore.*;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
