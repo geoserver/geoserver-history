@@ -1,7 +1,7 @@
 package org.geoserver.gss;
 
 import static org.custommonkey.xmlunit.XMLAssert.*;
-import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
+import static org.geoserver.gss.GSSCore.*;
 import static org.geotools.data.DataUtilities.*;
 
 import java.io.BufferedReader;
@@ -85,7 +85,7 @@ public abstract class GSSTestSupport extends GeoServerAbstractTestSupport {
         Map gssBeans = applicationContext
                 .getBeansOfType(DefaultGeoServerSynchronizationService.class);
         gss = (DefaultGeoServerSynchronizationService) gssBeans.values().iterator().next();
-        gss.ensureUnitEnabled();
+        gss.core.ensureUnitEnabled();
 
         // mark some tables as version enabled
         synchStore = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(

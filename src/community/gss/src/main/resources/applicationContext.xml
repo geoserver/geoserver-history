@@ -86,4 +86,30 @@
     <constructor-arg index="0" ref="gssXmlConfiguration"/>
     <constructor-arg index="1" ref="gssXsd"/>
   </bean>
+  
+   <!-- Central's scheduled synchronisation manager -->
+  <bean id="gssCentralManager" class="org.geoserver.gss.SynchronizationManager">
+    <constructor-arg index="0" ref="geoServer" />
+  </bean>
+
+  <!-- Definition of how often the scheduled task runs -->
+  <bean id="gssCentralManagerTask"
+    class="org.springframework.scheduling.timer.ScheduledTimerTask">
+    <!-- wait 10 seconds before starting repeated execution (this is to allow unit testing) -->
+    <property name="delay" value="10000" />
+    <!-- run every 60 seconds -->
+    <property name="period" value="60000" />
+    <property name="timerTask" ref="gssCentralManager" />
+  </bean>
+  
+  <!-- And finally the class that instantiates the scheduled tasks and makes them run -->
+  <bean id="gssTimerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean" lazy-init="false">
+    <property name="scheduledTimerTasks">
+      <list>
+        <ref bean="gssCentralManagerTask" />
+      </list>
+    </property>
+    <property name="daemon" value="true"/>
+  </bean>
+  
 </beans>

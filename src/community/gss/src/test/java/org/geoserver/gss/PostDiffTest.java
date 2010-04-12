@@ -1,7 +1,7 @@
 package org.geoserver.gss;
 
 import static java.util.Collections.*;
-import static org.geoserver.gss.DefaultGeoServerSynchronizationService.*;
+import static org.geoserver.gss.GSSCore.*;
 
 import java.io.IOException;
 
