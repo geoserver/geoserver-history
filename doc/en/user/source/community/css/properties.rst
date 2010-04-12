@@ -147,6 +147,10 @@ Text Symbology
       * string
       * The name of the font or font family to use for labels
       * yes
+    - * ``font-fill``
+      * fill
+      * The fill to use when rendering fonts
+      * yes
     - * ``font-style`` 
       * keyword: normal, italic, oblique
       * The style for the lettering 
