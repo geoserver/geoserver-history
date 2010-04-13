@@ -22,7 +22,6 @@ import org.w3c.dom.Document;
  * @author Rini Angreani, Curtin University of Technology
  */
 public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
-
     /**
      * Read-only test so can use one-time setup.
      * 
@@ -139,7 +138,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER
                 .info("WFS DescribeFeatureType, typename=gsml:MappedFeature,ex:FirstParentFeature response:\n"
                         + prettyString(doc));
-        testDescribeFeatureTypeImports(doc, exSchemaLocation);
+        testDescribeFeatureTypeImports(doc, exSchemaLocation, false);
 
         /**
          * All type names specified, should result the same as above
@@ -148,44 +147,54 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER
                 .info("WFS DescribeFeatureType, typename=gsml:MappedFeature,gsml:GeologicUnit,ex:FirstParentFeature,ex:SecondParentFeature response:\n"
                         + prettyString(doc));
-        testDescribeFeatureTypeImports(doc, exSchemaLocation);
+        testDescribeFeatureTypeImports(doc, exSchemaLocation, false);
 
         /**
          * No type name specified, should result the same as all type names
          */
         doc = getAsDOM("wfs?request=DescribeFeatureType");
         LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
-        // FIXME: disabled as workaround for GEOS-3722
-        // testDescribeFeatureTypeImports(doc, exSchemaLocation);
+        testDescribeFeatureTypeImports(doc, exSchemaLocation, true);
     }
 
-    private void testDescribeFeatureTypeImports(Document doc, String exSchemaLocation) {
+    private void testDescribeFeatureTypeImports(Document doc, String exSchemaLocation,
+            boolean omIncluded) {
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
         assertXpathCount(0, "//@targetNamespace", doc);
-        assertXpathCount(2, "//xsd:import", doc);
+        assertXpathCount(omIncluded ? 3 : 2, "//xsd:import", doc);
         assertXpathCount(0, "//xsd:include", doc);
 
-        // order is unimportant, and could change, so we don't test the order
-        String firstNamespace = evaluate("//xsd:import[1]/@namespace", doc);
-        if (firstNamespace.equals(AbstractAppSchemaMockData.GSML_URI)) {
-            // GSML import
-            assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL,
-                    "//xsd:import[1]/@schemaLocation", doc);
-            // EX import
-            assertXpathEvaluatesTo(FeatureChainingMockData.EX_URI, "//xsd:import[2]/@namespace",
-                    doc);
-            assertXpathEvaluatesTo(exSchemaLocation, "//xsd:import[2]/@schemaLocation", doc);
-        } else {
-            // EX import
-            assertXpathEvaluatesTo(FeatureChainingMockData.EX_URI, "//xsd:import[1]/@namespace",
-                    doc);
-            assertXpathEvaluatesTo(exSchemaLocation, "//xsd:import[1]/@schemaLocation", doc);
-            // GSML import
-            assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI,
-                    "//xsd:import[2]/@namespace", doc);
-            assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL,
-                    "//xsd:import[2]/@schemaLocation", doc);
+        ArrayList<String> namespaces = new ArrayList<String>();
+        namespaces.add(AbstractAppSchemaMockData.GSML_URI);
+        namespaces.add(FeatureChainingMockData.EX_URI);
+        if (omIncluded) {
+            namespaces.add(FeatureChainingMockData.OM_URI);
         }
+        int length = omIncluded ? 3 : 2;
+        // order is unimportant, and could change, so we don't test the order
+        for (int i = 1; i <= length; i++) {
+            String namespace = evaluate("//xsd:import[" + i + "]/@namespace", doc);
+            String schemaLocation = "//xsd:import[" + i + "]/@schemaLocation";
+            if (namespace.equals(AbstractAppSchemaMockData.GSML_URI)) {
+                // GSML import
+                assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL,
+                        schemaLocation, doc);
+                namespaces.remove(AbstractAppSchemaMockData.GSML_URI);
+            } else if (namespace.equals(FeatureChainingMockData.EX_URI)) {
+                // EX import
+                assertXpathEvaluatesTo(exSchemaLocation, schemaLocation, doc);
+                namespaces.remove(FeatureChainingMockData.EX_URI);
+            } else {
+                // OM import
+                assertTrue(omIncluded);
+                assertEquals(FeatureChainingMockData.OM_URI, namespace);
+                assertXpathEvaluatesTo(FeatureChainingMockData.OM_SCHEMA_LOCATION_URL,
+                        schemaLocation, doc);
+                namespaces.remove(FeatureChainingMockData.OM_URI);
+            }
+        }
+        // ensure there's no repeats in the imports
+        assertTrue(namespaces.isEmpty());
         // nothing else
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
