@@ -33,7 +33,7 @@ The CSS extension adds a page to the GeoServer web UI, linked from the sidebar.
 This page is only visible to logged-in administrators since it can modify the
 styles in GeoServer.  
 
-.. figure:: css_demo_page.png
+.. figure:: images/css_demo_page.png
    :align: center
 
    *The CSS demo page can be used to switch between layers and styles.  Note the sidebar link, highlighted in red.*
@@ -46,8 +46,8 @@ pre-existing styles since existing SLD styles are not reflected in the CSS.
 The :guilabel:`Create` link allows creating a new style with a CSS file
 attached to it.
 
-Creating a States Style
------------------------
+A States CSS Style
+------------------
 
 .. highlight:: xml
 
@@ -157,8 +157,22 @@ The SLD file for the default states layer looks like this::
         </NamedLayer>
     </StyledLayerDescriptor>
 
+Creating a Style
+................
 Now, let's start on a CSS file that accomplishes the same thing.  First, use
 the :guilabel:`Create` link to start a new style.
+
+.. figure:: images/create_css.jpg
+   :align: center
+
+   *Start a new CSS style with the create link.*
+   
+Next, save a name for the style and again click :guilabel:`Create`. For this example, we've chosen ``css_population``.
+
+.. figure:: images/new_css.jpg
+   :align: center
+
+   *Start a new CSS style with the Create link.*
 
 .. highlight:: css
 
@@ -169,10 +183,15 @@ This creates an example style with the following source::
       stroke: black;
       mark: symbol(square);
     }
+    
+.. figure:: images/example_style.jpg
+   :align: center
 
-This demonstrates the basic elements of a CSS style:
+   *Default example style.*
 
-A **selector** that identifies some part of the data to style.  Here, the
+This example style demonstrates the basic elements of a CSS style:
+
+A **selector** identifies the part of the data to style.  Here, the
 selector is ``*``, indicating that all data should use the style properties.
 
 **Properties** inside curly braces (``{}``) which specify how the affected
@@ -181,7 +200,7 @@ colons (``:``).
 
 We can also see the basics for styling a polygon (``fill``), line (``stroke``), or point
 marker (``mark``).  Note that while the stroke and fill use colors, the marker
-simply identifies a Well-Known Mark with the ``symbol`` function.
+identifies a Well-Known Mark with the ``symbol`` function.
 
 .. seealso:: 
 
@@ -190,8 +209,11 @@ simply identifies a Well-Known Mark with the ``symbol`` function.
 
 .. highlight:: xml
 
-Let's use these basics to start translating the states style.  The first Rule
-in the SLD applies to states where the PERSONS field is less than two million::
+From SLD to CSS
+...............
+Let's use these basics to start translating the states style.  The first rule
+in the SLD applies to states where the PERSONS field is less than two million. State populations
+in this range are painted a green.::
 
     <Rule>
       <Title>&lt; 2M</Title>
@@ -212,8 +234,8 @@ in the SLD applies to states where the PERSONS field is less than two million::
 
 .. highlight:: css
 
-Using a :doc:`CQL</tutorials/cql/cql_tutorial>`-based selector, and copying the
-names and values of the CssParameters over, we get::
+Using a :doc:`CQL</tutorials/cql/cql_tutorial>`-based selector, with the
+names and values of the CssParameters, we get::
 
     [PERSONS < 2000000] {
       fill: #4DFF4D;
@@ -222,8 +244,16 @@ names and values of the CssParameters over, we get::
 
 .. highlight:: xml
 
-For the second style, we have a ``PropertyIsBetween`` filter, which doesn't
-directly translate to CSS::
+Replace the example SLD with the above style and press :guilabel:`Submit` 
+at the bottom of the page.
+
+.. figure:: images/style1.jpg
+   :align: center
+
+   *A CSS style with the first CSS style*
+  
+For the second rule, we have a ``PropertyIsBetween`` filter. Here states with 
+a population between two and four million are painted a red.::
 
     <Rule>
       <Title>2M - 4M</Title>
@@ -249,7 +279,7 @@ directly translate to CSS::
 
 .. highlight:: css
 
-However, ``PropertyIsBetween`` can easily be replaced by a combination of
+The ``PropertyIsBetween`` filter does not directly translate to CSS.  Instead, we use a combination of
 two comparison selectors.  In CSS, you can apply multiple selectors to a rule
 by simply placing them one after the other.  Selectors separated by only
 whitespace must ALL be satisfied for a style to apply.  Multiple such groups
@@ -261,8 +291,39 @@ applied.  Thus, the CSS equivalent of the second rule is::
       fill: #FF4D4D;
       fill-opacity: 0.7;
     }
+    
+Append this second rule to ``css_population`` and press :guilabel:`Submit`.
 
-The third rule can be handled in much the same manner as the first::
+.. figure:: images/style2.jpg
+   :align: center
+
+   *The States layer with the first two CSS styles*
+
+Structurally the third rule is very similar to the first; the ``PropertyIsGreaterThan`` filter 
+replaces the ``PropertyIsLessThan`` filter. States with a population greater than four million
+are painted a blue.:: 
+
+    <Rule>
+      <Title>&gt; 4M</Title>
+      <!-- like a linesymbolizer but with a fill too -->
+      <ogc:Filter>
+        <ogc:PropertyIsGreaterThan>
+         <ogc:PropertyName>PERSONS</ogc:PropertyName>
+         <ogc:Literal>4000000</ogc:Literal>
+        </ogc:PropertyIsGreaterThan>
+      </ogc:Filter>
+      <PolygonSymbolizer>
+         <Fill>
+            <!-- CssParameters allowed are fill (the color) and fill-opacity -->
+            <CssParameter name="fill">#4D4DFF</CssParameter>
+            <CssParameter name="fill-opacity">0.7</CssParameter>
+         </Fill>
+      </PolygonSymbolizer>
+    </Rule>
+    
+.. highlight:: css
+
+Our third CSS rule can be handled in much the same manner as the first::
 
     [PERSONS > 4000000] {
       fill: #4D4DFF;
@@ -271,7 +332,14 @@ The third rule can be handled in much the same manner as the first::
 
 .. highlight:: xml
 
-The fourth and final rule is a bit different.  It applies a label and outline to
+Again, this style to ``css_population`` and press :guilabel:`Submit`.
+
+.. figure:: images/style3.jpg
+   :align: center
+
+   *The States layer with three CSS styles*
+
+The fourth and final rule is a bit different.  It applies a label and an outline to
 all the states::
 
     <Rule>
@@ -303,12 +371,15 @@ all the states::
 
 .. highlight:: css
 
-This introduces the idea of rendering an extracted value (``STATE_ABBR``)
-directly into the map, unlike all of the rules thus far.  For this, you can use
+Unlike all previous rules thus, this labeling requires rendering an extracted value (``STATE_ABBR``)
+directly into the map.  For this, you can use
 a CQL expression wrapped in square braces (``[]``) as the value of a CSS
 property.  It is also necessary to surround values containing whitespace, such
-as ``Times New Roman``, with single- or double-quotes (``"``, ``'``).  With
-these details in mind, let's write the rule::
+as ``Times New Roman``, with single- or double-quotes (``"``, ``'``).  
+
+For the state outline, you can specify the ``stroke-width``. Since this rule applies 
+to all states, we use the ``*`` selector. With these details in mind, let's write 
+the final CSS style::
 
     * {
       stroke-width: 0.2;
@@ -351,6 +422,11 @@ Putting it all together, you should now have a style that looks like::
 Press the :guilabel:`Submit` button at the bottom of the CSS form to see your
 style applied to the states layer.
 
+.. figure:: images/style4.jpg
+   :align: center
+
+   *The States layer population styles and labels*
+      
 Surprise! The borders are missing.  What happened?  In the GeoServer CSS
 module, each type of symbolizer has a "key" property which controls whether it
 is applied.  Without these "key" properties, subordinate properties are
@@ -383,7 +459,14 @@ so that that last rule ends up looking like::
       font-style: normal;
       font-size: 14;
     }
+    
+Press :guilabel:`Submit` to see the fully translated style.
 
+.. figure:: images/style5.jpg
+   :align: center
+
+   *The States layer population styles, labels, and outlines*
+   
 Refining the Style
 ------------------
 
@@ -392,12 +475,15 @@ Removing Duplicated Properties
 
 The style that we have right now is only 23 lines, a nice improvement over the 
 103 lines of XML that we started with.  However, we are still repeating the
-``fill-opacity`` attribute everywhere.  We can move it into the ``*`` rule and
-have it applied everywhere.  This works because the GeoServer CSS module
-emulates **cascading**, the "C" part of "CSS".  While SLD uses a painter's
-model where each rule is processed independently, a cascading style allows you
-to provide general style properties and override only specific properties for
-particular features.  Anyway, this takes the style down to only 21 lines::
+``fill-opacity`` attribute in every style. Moving the opacity attribute to the ``*`` rule 
+accomplishes the same effect.  This works because the GeoServer CSS module
+emulates **cascading**, the "C" part of "CSS".  While SLD uses a `painter's
+model <http://www.w3.org/TR/SVG/render.html#PaintersModel>`_ 
+where each rule is processed independently, a cascading style allows you
+to provide general style properties and override specific properties for
+particular features.  
+
+Changing the placement of the opacity attribute takes our CSS style down to 21 lines::
 
     [PERSONS < 2000000] {
       fill: #4DFF4D;
@@ -424,10 +510,17 @@ Scale-Dependent Styles
 ......................
 
 The labels for this style are nice, but at lower zoom levels they seem a little
-crowded.  We can easily move the labels to a rule that doesn't activate until
+crowded.  
+
+.. figure:: images/style6.jpg
+   :align: center
+
+   *Crowded labeling at lower zoom levels*
+   
+We can easily move the labels to a rule that doesn't activate until
 the scale denominator is below 2000000.  We do want to keep the stroke and
 fill-opacity at all zoom levels, so we can separate them from the label
-properties::
+properties.  Replace the previous ``*`` rule with the following::
 
     * {
       fill-opacity: 0.7;
@@ -440,7 +533,12 @@ properties::
       font-style: normal;
       font-size: 14;
     }
+    
+.. figure:: images/style7.jpg
+   :align: center
 
+   *Scale-dependent labeling*
+       
 Setting Titles for the Legend
 .............................
 
@@ -454,29 +552,33 @@ specially formatted comments before each rule.  We can add titles like so::
     /* @title Population < 2M */
     [PERSONS < 2000000] {
       fill: #4DFF4D;
-      fill-opacity: 0.7;
     }
     
     /* @title 2M < Population < 4M */
     [PERSONS > 2000000] [PERSONS < 4000000] {
       fill: #FF4D4D;
-      fill-opacity: 0.7;
     }
     
     /* @title Population > 4M */
     [PERSONS > 4000000] {
       fill: #4D4DFF;
+    }
+
+    /* @title Opacity */
+    * {
       fill-opacity: 0.7;
+      stroke-width: 0.2;
     }
 
     /* @title Boundaries */
-    * {
-      stroke-width: 0.2;
+    [@scale < 20000000] {
       label: [STATE_ABBR];
       font-family: "Times New Roman";
       font-style: normal;
       font-size: 14;
     }
+    
+
 
 Because of the way that CSS is translated to SLD, each SLD rule is a
 combination of several CSS rules.  This is handled by combining the titles with
