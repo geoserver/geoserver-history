@@ -966,6 +966,11 @@ public class CatalogImpl implements Catalog {
         if ( existing != null && !existing.getId().equals( namespace.getId() ) ) {
             throw new IllegalArgumentException( "Namespace with prefix '" + namespace.getPrefix() + "' already exists.");
         }
+        
+        existing = getNamespaceByURI( namespace.getURI() );
+        if ( existing != null && !existing.getId().equals( namespace.getId() ) ) {
+            throw new IllegalArgumentException( "Namespace with URI '" + namespace.getURI() + "' already exists.");
+        }
     
         if ( isNull(namespace.getURI()) ) {
             throw new NullPointerException( "Namespace uri must not be null");
