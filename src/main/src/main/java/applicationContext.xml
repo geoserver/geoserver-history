@@ -151,5 +151,9 @@
   <bean id="updateSequenceListener" class="org.geoserver.config.UpdateSequenceListener">
 	<constructor-arg ref="geoServer"/>
   </bean>
+  
+  <bean id="namespaceWorkspaceConsistencyListener" class="org.geoserver.catalog.NamespaceWorkspaceConsistencyListener">
+    <constructor-arg ref="catalog"/>
+  </bean>
 
 </beans>
