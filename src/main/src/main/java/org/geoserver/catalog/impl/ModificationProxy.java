@@ -90,6 +90,10 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                 //if collection, create a wrapper
                 if ( Collection.class.isAssignableFrom( method.getReturnType() ) ) {
                     Collection real = (Collection) method.invoke( proxyObject, null );
+                    if(real == null) {
+                        // in this case there is nothing we can do
+                        return null;
+                    }
                     Collection wrap = real.getClass().newInstance();
                     wrap.addAll( real );
                     properties().put( property, wrap );

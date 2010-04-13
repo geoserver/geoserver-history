@@ -40,9 +40,6 @@ public class WCSXStreamLoader extends XStreamServiceLoader<WCSInfo> {
 
     @Override
     protected WCSInfo initialize(WCSInfo service) {
-        if (service.getVersions() == null) {
-            ((WCSInfoImpl) service).setVersions(new ArrayList<String>());
-        }
         if (service.getExceptionFormats() == null) {
             ((WCSInfoImpl) service).setExceptionFormats(new ArrayList<String>());
         }        
