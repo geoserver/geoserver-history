@@ -13,5 +13,5 @@ import java.net.URL;
  */
 public interface GSSClientFactory {
 
-    public GSSClient createClient(URL gssServiceURL);
+    public GSSClient createClient(URL gssServiceURL, String username, String password);
 }

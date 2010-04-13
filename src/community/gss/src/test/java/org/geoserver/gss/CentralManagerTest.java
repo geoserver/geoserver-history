@@ -88,7 +88,7 @@ public class CentralManagerTest extends GeoServerAbstractTestSupport {
         
         // add some units
         fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synchStore.getFeatureSource(SYNCH_UNITS);
-        long mangoId = addFeature(fs, "unit-mango", "http://mango.org/gss", null, null, null, null, 60, 10, false);
+        long mangoId = addFeature(fs, "unit-mango", "http://localhost:8081/geoserver/ows", null, null, null, null, 60, 10, false);
         
         // link units and tables
         fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synchStore.getFeatureSource(SYNCH_UNIT_TABLES);

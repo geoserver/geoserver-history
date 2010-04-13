@@ -24,6 +24,10 @@
          <scope>provided</scope>
       </dependency>
       <dependency>
+         <groupId>commons-httpclient</groupId>
+         <artifactId>commons-httpclient</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.geoserver</groupId>
          <artifactId>main</artifactId>
          <classifier>tests</classifier>
