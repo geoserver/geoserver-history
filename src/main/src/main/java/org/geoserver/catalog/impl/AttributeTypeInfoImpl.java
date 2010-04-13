@@ -18,10 +18,9 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     protected boolean nillable;
     protected transient AttributeDescriptor attribute;
     protected MetadataMap metadata = new MetadataMap();
+    
     protected FeatureTypeInfo featureType;
-    protected Class binding;
-    protected Integer length;
-        
+    
     public String getId() {
         return id;
     }
@@ -89,21 +88,5 @@ public class AttributeTypeInfoImpl implements AttributeTypeInfo {
     @Override
     public String toString() {
         return name;
-    }
-    
-    public Class getBinding() {
-        return binding;
-    }
-
-    public void setBinding(Class binding) {
-        this.binding = binding;
-    }
-
-    public Integer getLength() {
-        return length;
-    }
-
-    public void setLength(Integer length) {
-        this.length = length;
     }
 }

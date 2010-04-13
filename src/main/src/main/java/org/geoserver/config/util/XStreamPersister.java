@@ -74,6 +74,8 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.crs.DefaultProjectedCRS;
+import org.geotools.referencing.operation.DefaultMathTransformFactory;
+import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
@@ -81,6 +83,8 @@ import org.opengis.coverage.grid.GridGeometry;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.MathTransformFactory;
+import org.opengis.referencing.operation.Matrix;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
@@ -412,25 +416,6 @@ public class XStreamPersister {
         }
         
         return obj;
-    }
-    
-    /**
-     * Builds a converter that will marshal/unmarshal the target class by reference, that is, by
-     * storing the object id as opposed to fully serializing it
-     * @param clazz
-     * @return
-     */
-    public ReferenceConverter buildReferenceConverter(Class clazz) {
-        return new ReferenceConverter(clazz);
-    }
-    
-    /**
-     * Same as {@link #buildReferenceConverter(Class)}, but works against a collection of objects
-     * @param clazz
-     * @return
-     */
-    public ReferenceCollectionConverter buildReferenceCollectionConverter(Class clazz) {
-        return new ReferenceCollectionConverter(clazz);
     }
 
     /**
