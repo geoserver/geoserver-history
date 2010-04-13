@@ -9,13 +9,16 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.ServiceLoader;
+import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.platform.GeoServerResourceLoader;
-
-import com.thoughtworks.xstream.XStream;
+import org.geotools.util.Version;
 
 /**
  * Service loader which loads and saves a service configuration with xstream.
@@ -63,7 +66,35 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
         }
     }
 
-    protected T initialize( T service ) {
+    /**
+     * Fills in the blanks of the service object loaded by XStream. This implementation makes sure
+     * all collections in {@link ServiceInfoImpl} are initialized, subclasses should override to add
+     * more specific initializations (such as the actual supported versions and so on)
+     * 
+     * @param service
+     * @return
+     */
+    protected T initialize(T service) {
+        if (service instanceof ServiceInfoImpl) {
+            // initialize all collections to 
+            ServiceInfoImpl impl = (ServiceInfoImpl) service;
+            if (impl.getClientProperties() == null) {
+                impl.setClientProperties(new HashMap());
+            }
+            if (impl.getExceptionFormats() == null) {
+                impl.setExceptionFormats(new ArrayList());
+            }
+            if (impl.getKeywords() == null) {
+                impl.setKeywords(new ArrayList());
+            }
+            if (impl.getMetadata() == null) {
+                impl.setMetadata(new MetadataMap());
+            }
+            if (impl.getVersions() == null) {
+                impl.setVersions(new ArrayList());
+            }
+        }
+
         return service;
     }
     

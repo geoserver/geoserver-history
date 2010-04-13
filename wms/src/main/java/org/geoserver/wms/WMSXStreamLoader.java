@@ -36,9 +36,6 @@ public class WMSXStreamLoader extends XStreamServiceLoader<WMSInfo> {
     
     @Override
     protected WMSInfo initialize(WMSInfo service) {
-        if ( service.getVersions() == null ) {
-            ((WMSInfoImpl)service).setVersions( new ArrayList() );
-        }
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.1.1" ) );
         }
