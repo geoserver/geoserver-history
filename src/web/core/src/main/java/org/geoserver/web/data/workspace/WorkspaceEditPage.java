@@ -110,107 +110,16 @@ public class WorkspaceEditPage extends GeoServerSecuredPage {
         NamespaceInfo namespaceInfo = (NamespaceInfo) nsModel.getObject();
         WorkspaceInfo workspaceInfo = (WorkspaceInfo) wsModel.getObject();
         
-        //sync up workspace name with namespace prefix, temp measure
+        // sync up workspace name with namespace prefix, temp measure until the two become separate
         namespaceInfo.setPrefix(workspaceInfo.getName());
         
         // this will ensure all datastore namespaces are updated when the workspace is modified
-        DataStoreNamespaceUpdatingListener listener = new DataStoreNamespaceUpdatingListener(
-                workspaceInfo, catalog);
-        catalog.addListener(listener);
-
-        try {
-            catalog.save(workspaceInfo);
-            catalog.save(namespaceInfo);
-            if(defaultWs)
-                catalog.setDefaultWorkspace(workspaceInfo);
-        } finally {
-            catalog.removeListener(listener);
+        catalog.save(workspaceInfo);
+        catalog.save(namespaceInfo);
+        if(defaultWs) {
+            catalog.setDefaultWorkspace(workspaceInfo);
         }
         setResponsePage(WorkspacePage.class);
-    }
-
-    /**
-     * Listens to Catalog's namespace URI modifications and updates the "namespace"
-     * {@link DataStoreInfo#getConnectionParameters() connection parameter} for all the datastores
-     * configured for the workspace
-     */
-    private static final class DataStoreNamespaceUpdatingListener implements CatalogListener {
-
-        private final WorkspaceInfo workspaceInfo;
-
-        private final Catalog catalog;
-
-        public DataStoreNamespaceUpdatingListener(final WorkspaceInfo workspaceInfo,
-                final Catalog catalog) {
-            this.workspaceInfo = workspaceInfo;
-            this.catalog = catalog;
-        }
-
-        /**
-         * @see CatalogListener#handlePostModifyEvent(CatalogPostModifyEvent)
-         */
-        public void handlePostModifyEvent(CatalogPostModifyEvent event) {
-            if (event.getSource() instanceof NamespaceInfo) {
-                LOGGER.info("Updating namespace parameter for all DataStoreInfo"
-                        + " objects in workspace " + workspaceInfo.getName());
-
-                final NamespaceInfo nsInfo = (NamespaceInfo) event.getSource();
-                String namespaceURI = nsInfo.getURI();
-
-                List<DataStoreInfo> stores = catalog.getDataStoresByWorkspace(workspaceInfo);
-                if (stores.size() > 0) {
-                    for (DataStoreInfo store : stores) {
-                        if (store.getConnectionParameters().containsKey("namespace")) {
-                            store.getConnectionParameters().put("namespace", namespaceURI);
-                            LOGGER.info("Setting namespace for store " + store.getName()
-                                    + " to be " + namespaceURI);
-                            catalog.save(store);
-                        }
-                    }
-                    LOGGER.info("namespace parameter for " + stores.size()
-                            + " stores in workspace " + workspaceInfo.getName()
-                            + " successfully updated");
-                } else {
-                    LOGGER.info("No stores in workspace " + workspaceInfo.getName());
-                }
-            }
-        }
-
-        /**
-         * Ignored event
-         * 
-         * @see CatalogListener#handleModifyEvent(CatalogModifyEvent)
-         */
-        public void handleModifyEvent(CatalogModifyEvent event) {
-            // ignore
-        }
-
-        /**
-         * Ignored event
-         * 
-         * @see CatalogListener#handleRemoveEvent(CatalogRemoveEvent)
-         */
-        public void reloaded() {
-            // ignore
-        }
-
-        /**
-         * Ignored event
-         * 
-         * @see CatalogListener#handleRemoveEvent(CatalogRemoveEvent)
-         */
-        public void handleRemoveEvent(CatalogRemoveEvent event) {
-            // ignore
-        }
-
-        /**
-         * Ignored event
-         * 
-         * @see CatalogListener#handleAddEvent(CatalogAddEvent)
-         */
-        public void handleAddEvent(CatalogAddEvent event) {
-            // ignore
-        }
     }
 
 }
