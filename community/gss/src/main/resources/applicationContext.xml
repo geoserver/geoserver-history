@@ -87,9 +87,15 @@
     <constructor-arg index="1" ref="gssXsd"/>
   </bean>
   
-   <!-- Central's scheduled synchronisation manager -->
+  <!-- The http client factory used by central to connect to the -->
+  <bean id="clientFactory" class="org.geoserver.gss.HTTPGSSClientFactory">
+    <constructor-arg index="0" ref="gssXmlConfiguration"/>
+  </bean>
+  
+  <!-- Central's scheduled synchronisation manager -->
   <bean id="gssCentralManager" class="org.geoserver.gss.SynchronizationManager">
     <constructor-arg index="0" ref="geoServer" />
+    <constructor-arg index="1" ref="clientFactory" />
   </bean>
 
   <!-- Definition of how often the scheduled task runs -->

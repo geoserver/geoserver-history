@@ -56,10 +56,11 @@ public class SynchronizationManager extends TimerTask {
 
     GSSClientFactory clientFactory;
 
-    public SynchronizationManager(GeoServer geoServer) {
+    public SynchronizationManager(GeoServer geoServer, GSSClientFactory clientFactory) {
         this.catalog = geoServer.getCatalog();
         this.info = geoServer.getService(GSSInfo.class);
         this.core = new GSSCore(info);
+        this.clientFactory = clientFactory;
     }
 
     /**
@@ -68,8 +69,6 @@ public class SynchronizationManager extends TimerTask {
      */
     @Override
     public void run() {
-        LOGGER.info("Performing scheduled synchronisation");
-
         try {
             synchronizeOustandlingLayers();
         } catch (IOException e) {
@@ -88,6 +87,8 @@ public class SynchronizationManager extends TimerTask {
         if (info.getMode() != GSSMode.Central) {
             return;
         }
+        
+        LOGGER.info("Performing scheduled synchronisation");
 
         // make sure we're running in "Central" mode
         core.ensureCentralEnabled();
@@ -110,11 +111,13 @@ public class SynchronizationManager extends TimerTask {
                 SimpleFeature layer = fi.next();
                 String layerName = (String) layer.getAttribute("table_name");
                 String address = (String) layer.getAttribute("unit_address");
+                String user = (String) layer.getAttribute("synch_user");
+                String password = (String) layer.getAttribute("synch_password");
                 Long getDiffCentralRevision = (Long) layer.getAttribute("getdiff_central_revision");
                 Long lastUnitRevision = (Long) layer.getAttribute("last_unit_revision");
 
                 // get the last central revision the client knows about
-                GSSClient client = getClient(address);
+                GSSClient client = getClient(address, user, password);
                 long clientCentralRevision = client.getCentralRevision(layerName);
 
                 // compute the diff that we have to send the client. Notice that we have
@@ -177,8 +180,9 @@ public class SynchronizationManager extends TimerTask {
 
     }
 
-    protected GSSClient getClient(String address) throws MalformedURLException {
-        return clientFactory.createClient(new URL(address));
+    protected GSSClient getClient(String address, String username, String password)
+            throws MalformedURLException {
+        return clientFactory.createClient(new URL(address), username, password);
     }
 
 }
