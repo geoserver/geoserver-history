@@ -1,6 +1,10 @@
 package org.geoserver.gss;
 
+import static org.geoserver.gss.GSSCore.*;
+import static org.geotools.data.DataUtilities.*;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -11,9 +15,14 @@ import org.geoserver.data.test.LiveDbmsData;
 import org.geoserver.data.test.TestData;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.test.GeoServerAbstractTestSupport;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.FilterFactory;
+import org.opengis.filter.identity.FeatureId;
 
 /**
  * Tests the central manager
@@ -66,10 +75,35 @@ public class CentralManagerTest extends GeoServerAbstractTestSupport {
         // disable automated scheduling, we control how does what here
         Timer timer = (Timer) applicationContext.getBean("gssTimerFactory");
         timer.cancel();
+        
+        // make some tables synchronised
+        synchStore = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(
+                null);
+        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synchStore
+                .getFeatureSource(SYNCH_TABLES);
+        long restrectedId = addFeature(fs , "restricted", "2");
+        long roadsId = addFeature(fs, "roads", "2");
+        synchStore.setVersioned("restricted", true, null, null);
+        synchStore.setVersioned("roads", true, null, null);
+        
+        // add some units
+        fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synchStore.getFeatureSource(SYNCH_UNITS);
+        long mangoId = addFeature(fs, "unit-mango", "http://mango.org/gss", null, null, null, null, 60, 10, false);
+        
+        // link units and tables
+        fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) synchStore.getFeatureSource(SYNCH_UNIT_TABLES);
+        addFeature(fs, mangoId, restrectedId, null, null, null, null);
     }
     
-    public void testVoid() {
-        synch.run();
+    long addFeature(FeatureStore<SimpleFeatureType, SimpleFeature> fs, Object... attributes) throws IOException {
+        SimpleFeatureBuilder fb = new SimpleFeatureBuilder(fs.getSchema());
+        List<FeatureId> ids = fs.addFeatures(collection((fb.buildFeature(null, attributes))));
+        String id = ids.get(0).getID();
+        return Long.parseLong(id.substring(fs.getSchema().getTypeName().length() + 1));
+    }
+    
+    public void testVoid() throws Exception {
+        synch.synchronizeOustandlingLayers();
     }
 
 }
