@@ -42,7 +42,7 @@ public class GSSCore {
     // metadata tables and sql to build them
     static final String SYNCH_TABLES = "synch_tables";
 
-    static final String UNIT_SYNC_TABLES_CREATION = "CREATE TABLE synch_tables(\n"
+    static final String SYNC_TABLES_CREATION = "CREATE TABLE synch_tables(\n"
             + "table_id SERIAL PRIMARY KEY, \n" // 
             + "table_name VARCHAR(256) NOT NULL, \n" //
             + "type CHAR(1) NOT NULL CHECK (type in ('p', 'b', '2')))";
@@ -76,7 +76,7 @@ public class GSSCore {
     static final String SYNCH_UNITS_CREATION = "CREATE TABLE synch_units (\n" //
             + "  unit_id SERIAL PRIMARY KEY,\n" //
             + "  unit_name VARCHAR(1024) NOT NULL,\n" //
-            + "  address VARCHAR(2048) NOT NULL,\n" // 
+            + "  unit_address VARCHAR(2048) NOT NULL,\n" // 
             + "  synch_user VARCHAR(256),\n" //
             + "  synch_password VARCHAR(256),\n" // 
             + "  time_start TIME,\n" // 
@@ -91,13 +91,14 @@ public class GSSCore {
 
     static final String SYNCH_UNIT_TABLES_CREATION = // 
     "CREATE TABLE synch_unit_tables (\n" + //
-            "   unit_id INTEGER NOT NULL,\n" + //
-            "   table_id INTEGER NOT NULL,\n" + //
+            "   id SERIAL PRIMARY KEY," + //
+            "   unit_id INTEGER NOT NULL REFERENCES synch_units(unit_id),\n" + //
+            "   table_id INTEGER NOT NULL REFERENCES synch_tables(table_id),\n" + //
             "   last_synchronization TIMESTAMP,\n" + // 
             "   last_failure TIMESTAMP,\n" + //
             "   getdiff_central_revision BIGINT,\n" + // 
             "   last_unit_revision BIGINT,\n" + //
-            "   PRIMARY KEY (unit_id, table_id)\n" + // 
+            "   unique (unit_id, table_id)\n" + // 
             ")";
 
     static final String SYNCH_OUTSTANDING = "synch_outstanding";
@@ -118,7 +119,8 @@ public class GSSCore {
             "        OR (time_start IS NULL) OR (time_end IS NULL))\n" + //
             "      AND ((now() - last_synchronization > synch_interval * interval '1 minute') \n" + // 
             "        OR last_synchronization IS NULL)\n" + //
-            "      AND (now() - last_failure > synch_retry * interval '1 minute');" +
+            "      AND (last_failure is null OR" +
+            "           now() - last_failure > synch_retry * interval '1 minute');\n" +
             "INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY')";
 
     GSSInfo info;
@@ -160,7 +162,7 @@ public class GSSCore {
 
             // the synchronized tables list
             if (!typeNames.contains(SYNCH_TABLES)) {
-                runStatement(dataStore, UNIT_SYNC_TABLES_CREATION);
+                runStatement(dataStore, SYNC_TABLES_CREATION);
             }
             dataStore.setVersioned(SYNCH_TABLES, false, null, null);
 
@@ -191,12 +193,12 @@ public class GSSCore {
                 if (!typeNames.contains(SYNCH_UNITS)) {
                     runStatement(dataStore, SYNCH_UNITS_CREATION);
                 }
-                dataStore.setVersioned(SYNCH_UNITS, true, null, null);
+                dataStore.setVersioned(SYNCH_UNITS, false, null, null);
 
                 if (!typeNames.contains(SYNCH_UNIT_TABLES)) {
                     runStatement(dataStore, SYNCH_UNIT_TABLES_CREATION);
                 }
-                dataStore.setVersioned(SYNCH_UNITS, true, null, null);
+                dataStore.setVersioned(SYNCH_UNITS, false, null, null);
 
                 if (!typeNames.contains(SYNCH_OUTSTANDING)) {
                     runStatement(dataStore, SYNCH_OUTSTANDING_CREATION);
@@ -275,5 +277,23 @@ public class GSSCore {
             store.addFeatures(DataUtilities.collection(features));
         }
 
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("Unit tables creation");
+        System.out.println("--------------------");
+        System.out.println();
+        System.out.println(SYNC_TABLES_CREATION);
+        System.out.println(SYNCH_HISTORY_CREATION);
+        System.out.println(SYNCH_CONFLICTS_CREATION);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("Central tables creation");
+        System.out.println("--------------------");
+        System.out.println();
+        System.out.println(SYNCH_UNITS_CREATION);
+        System.out.println(SYNCH_UNIT_TABLES_CREATION);
+        System.out.println(SYNCH_OUTSTANDING_CREATION);
     }
 }
