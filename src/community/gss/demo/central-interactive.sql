@@ -73,7 +73,8 @@ CREATE TABLE synch_units (
 SELECT AddGeometryColumn('synch_units','geom',4326,'GEOMETRY',2);
 
 CREATE TABLE synch_unit_tables (
-   id SERIAL PRIMARY KEY,   unit_id INTEGER NOT NULL REFERENCES synch_units(unit_id),
+   id SERIAL PRIMARY KEY,   
+   unit_id INTEGER NOT NULL REFERENCES synch_units(unit_id),
    table_id INTEGER NOT NULL REFERENCES synch_tables(table_id),
    last_synchronization TIMESTAMP,
    last_failure TIMESTAMP,
@@ -98,12 +99,23 @@ WHERE ((time_start < LOCALTIME AND LOCALTIME < time_end)
       AND ((now() - last_synchronization > synch_interval * interval '1 minute') 
         OR last_synchronization IS NULL)
       AND (last_failure is null OR           now() - last_failure > synch_retry * interval '1 minute');
-INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY')
+INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY');
   
 -- Mark tables as synchronized. The other metadata tables will be filled 
 -- as the protocol starts rolling
-INSERT INTO synch_tables VALUES(select nextval('synch_tables_table_id_seq'), 'restricted', '2');
-INSERT INTO synch_tables VALUES(select nextval('synch_tables_table_id_seq'), 'roads', '2');
-INSERT INTO synch_tables VALUES(select nextval('synch_tables_table_id_seq'), 'archsites', '2');  
+INSERT INTO synch_tables VALUES(nextval('synch_tables_table_id_seq'), 'restricted', '2');
+INSERT INTO synch_tables VALUES(nextval('synch_tables_table_id_seq'), 'roads', '2');
+INSERT INTO synch_tables VALUES(nextval('synch_tables_table_id_seq'), 'archsites', '2');  
 
--- TODO: insert units and the tables relationships
+-- setup two units, they will synch up every minute (actually using 0.5, thirty seconds, to make sure all layers will synch up when the
+-- synch loop checks for unsynchronised tables, which happens once per minute)
+INSERT INTO synch_units VALUES(nextval('synch_units_unit_id_seq'), 'unit1', 'http://localhost:8081/geoserver/ows', null, null, null, null, 0.5, 1, false);
+INSERT INTO synch_units VALUES(nextval('synch_units_unit_id_seq'), 'unit2', 'http://localhost:8082/geoserver/ows', null, null, null, null, 0.5, 1, false);
+
+-- setup the layers for the two units
+INSERT INTO synch_unit_tables(unit_id, table_id) VALUES(1, 1);
+INSERT INTO synch_unit_tables(unit_id, table_id) VALUES(1, 2);
+INSERT INTO synch_unit_tables(unit_id, table_id) VALUES(1, 3);
+INSERT INTO synch_unit_tables(unit_id, table_id) VALUES(2, 1);
+INSERT INTO synch_unit_tables(unit_id, table_id) VALUES(2, 2);
+INSERT INTO synch_unit_tables(unit_id, table_id) VALUES(2, 3);
