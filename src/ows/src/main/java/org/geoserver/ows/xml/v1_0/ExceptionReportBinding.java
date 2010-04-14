@@ -5,6 +5,8 @@
 package org.geoserver.ows.xml.v1_0;
 
 import net.opengis.ows10.ExceptionReportType;
+import net.opengis.ows10.Ows10Factory;
+
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
@@ -49,6 +51,11 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class ExceptionReportBinding extends AbstractComplexEMFBinding {
+    
+    public ExceptionReportBinding(Ows10Factory owsfactory) {
+        super(owsfactory);
+    }
+    
     /**
      * @generated
      */
@@ -64,17 +71,5 @@ public class ExceptionReportBinding extends AbstractComplexEMFBinding {
      */
     public Class getType() {
         return ExceptionReportType.class;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
-        //TODO: implement
-        return null;
     }
 }
