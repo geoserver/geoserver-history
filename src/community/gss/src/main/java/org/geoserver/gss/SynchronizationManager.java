@@ -97,8 +97,6 @@ public class SynchronizationManager extends TimerTask {
             return;
         }
 
-        LOGGER.info("Performing scheduled synchronisation");
-
         // make sure we're running in "Central" mode
         core.ensureCentralEnabled();
 
@@ -112,6 +110,9 @@ public class SynchronizationManager extends TimerTask {
                     .getFeatureSource(SYNCH_OUTSTANDING);
             DefaultQuery q = new DefaultQuery(SYNCH_OUTSTANDING);
             q.setSortBy(new SortBy[] { ff.sort("last_synchronization", SortOrder.ASCENDING) });
+            
+            LOGGER.info("Performing scheduled synchronisation");
+            
             fi = outstanding.getFeatures(q).features();
 
             // the set of units we failed to synchronize with. The problem might be a connection
@@ -204,7 +205,9 @@ public class SynchronizationManager extends TimerTask {
                             .getFeatureSource(SYNCH_UNIT_TABLES);
                     tuMetadata.setTransaction(transaction);
                     SimpleFeatureType tuSchema = tuMetadata.getSchema();
-                    if (core.isEmpty(unitChanges) && core.isEmpty(centralChanges)) {
+                    int unitChangeCount = core.countChanges(unitChanges);
+                    int centralChangeCount = core.countChanges(centralChanges);
+                    if (unitChangeCount == 0 && centralChangeCount == 0) {
                         // just update the last_synch marker, as nothing else happened and
                         // this way we can avoid eating away central revision number (which
                         // might go up very rapidly otherwise)
@@ -231,7 +234,9 @@ public class SynchronizationManager extends TimerTask {
                     // close up
                     transaction.commit();
                     LOGGER.log(Level.INFO, "Successfull synchronisation of table " + tableName
-                            + " for unit " + unitName);
+                            + " for unit " + unitName + "(" + centralChangeCount 
+                            + " changes sent to the Unit, " + unitChangeCount 
+                            + " change incoming from the Unit)");
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Synchronisation of table " + tableName + " for unit "
                             + unitName + " failed", e);
