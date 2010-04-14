@@ -1,7 +1,3 @@
----------------------------
-WARNING -> THE INSTRUCTIONS ARE A WORK IN PROGRESS, DON'T TRY TO FOLLOW THEM JUST YET
----------------------------
-
 SETTING UP A DEMO SYNCH SETUP
 -----------------------------
 
@@ -66,6 +62,6 @@ cp -r central /path/to/data_dir_folder/central
 TESTING
 -------------
 
-At this point Central should connect once every 5 minutes to the two units and perform the synchronisation.
-Use either direct editing against postgis or (better) a knowledgeable client to edit data into the
-two units and observe data flowing by in the databases and evetual conflict being created.
+At this point Central should connect once every minutes to the two units and perform the synchronization.
+The main remaining issue is how to edit the data... standard uDig cannot edit it because of the
+UUID primary key usage, you need a build using the versioning datastore.
