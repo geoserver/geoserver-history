@@ -14,9 +14,12 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.TransactionType;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geoserver.wfsv.VersioningTransactionConverter;
@@ -109,7 +112,7 @@ public class SynchronizationManager extends TimerTask {
             while (fi.hasNext()) {
                 // extract relevant attributes
                 SimpleFeature layer = fi.next();
-                String layerName = (String) layer.getAttribute("table_name");
+                String tableName = (String) layer.getAttribute("table_name");
                 String address = (String) layer.getAttribute("unit_address");
                 String user = (String) layer.getAttribute("synch_user");
                 String password = (String) layer.getAttribute("synch_password");
@@ -118,12 +121,13 @@ public class SynchronizationManager extends TimerTask {
 
                 // get the last central revision the client knows about
                 GSSClient client = getClient(address, user, password);
+                QName layerName = getLayerName(tableName);
                 long clientCentralRevision = client.getCentralRevision(layerName);
 
                 // compute the diff that we have to send the client. Notice that we have
                 // to skip over the local change occurred when we last performed a GetDiff
                 // against the client
-                VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(layerName);
+                VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(tableName);
                 transaction = new DefaultTransaction();
                 fs.setTransaction(transaction);
                 String fromRevision = clientCentralRevision == -1 ? "FIRST" : String
@@ -178,6 +182,17 @@ public class SynchronizationManager extends TimerTask {
             }
         }
 
+    }
+
+    /**
+     * Turns a table name into a fully qualified layer name
+     * @param tableName
+     * @return
+     */
+    QName getLayerName(String tableName) {
+        String wsName = info.getVersioningDataStore().getWorkspace().getName();
+        NamespaceInfo ns = catalog.getNamespaceByPrefix(wsName);
+        return new QName(ns.getURI(), tableName, ns.getPrefix());
     }
 
     protected GSSClient getClient(String address, String username, String password)
