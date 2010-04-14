@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -111,6 +113,10 @@ public class SynchronizationManager extends TimerTask {
             DefaultQuery q = new DefaultQuery(SYNCH_OUTSTANDING);
             q.setSortBy(new SortBy[] { ff.sort("last_synchronization", SortOrder.ASCENDING) });
             fi = outstanding.getFeatures(q).features();
+            
+            // the set of units we failed to synchronize with. The problem might be a connection
+            // timeout, we don't really want to multiply the timeout by the number of layers
+            Set<Integer> unitBlacklist = new HashSet<Integer>();
 
             while (fi.hasNext()) {
                 // extract relevant attributes
@@ -124,6 +130,13 @@ public class SynchronizationManager extends TimerTask {
                 String password = (String) layer.getAttribute("synch_password");
                 Long getDiffCentralRevision = (Long) layer.getAttribute("getdiff_central_revision");
                 Long lastUnitRevision = (Long) layer.getAttribute("last_unit_revision");
+                
+                // avoid the unit that already failed this run, we'll try next run
+                if(unitBlacklist.contains(unitId)) {
+                    LOGGER.log(Level.INFO, "Unit " + unitName + " is blacklisted " +
+                    		"for this run, skipping " + tableName);
+                    continue;
+                }
 
                 Transaction transaction = null;
                 try {
@@ -218,6 +231,9 @@ public class SynchronizationManager extends TimerTask {
                     Filter filter = ff.and(ff.equals(ff.property("table_id"), ff.literal(tableId)),
                             ff.equals(ff.property("unit_id"), ff.literal(unitId)));
                     tuMetadata.modifyFeatures(atts, values, filter);
+                    
+                    // blacklist the unit, we'll retry later
+                    unitBlacklist.add(unitId);
                 } finally {
                     if (transaction != null) {
                         transaction.close();
