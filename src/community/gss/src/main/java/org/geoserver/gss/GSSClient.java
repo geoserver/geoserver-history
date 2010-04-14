@@ -6,6 +6,8 @@ package org.geoserver.gss;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.TransactionType;
 
 /**
@@ -19,16 +21,16 @@ public interface GSSClient {
     /**
      * Grabs the latest central revision number known to the client for the specified layer
      */
-    public long getCentralRevision(String layerName) throws IOException;
+    public long getCentralRevision(QName layerName) throws IOException;
 
     /**
      * Posts the changes occurred locally between fromRevision and toRevision to the client
      */
-    public void postDiff(String layerName, long fromVersion, long toVersion, TransactionType changes)
+    public void postDiff(QName layerName, long fromVersion, long toVersion, TransactionType changes)
             throws IOException;
 
     /**
      * Grabs the changes occurred on the unit since the fromVersion unit revision
      */
-    public TransactionType getDiff(String layerName, long fromVersion) throws IOException;
+    public TransactionType getDiff(QName layerName, long fromVersion) throws IOException;
 }

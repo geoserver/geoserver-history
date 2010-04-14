@@ -9,6 +9,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.ows10.ExceptionReportType;
 import net.opengis.ows10.ExceptionType;
 import net.opengis.wfs.TransactionType;
@@ -57,11 +59,11 @@ public class HTTPGSSClient implements GSSClient {
         this.password = password;
     }
 
-    public long getCentralRevision(String layerName) throws IOException {
+    public long getCentralRevision(QName layerName) throws IOException {
         // grab the response and parse it to an object representation
         Object response;
         GetMethod method = new GetMethod(address
-                + "?service=GSS&version=1.0.0&request=GetCentralRevision&typeName=" + layerName);
+                + "?service=GSS&version=1.0.0&request=GetCentralRevision&typeName=" + prefixedName(layerName));
         try {
             int statusCode = client.executeMethod(method);
 
@@ -84,8 +86,7 @@ public class HTTPGSSClient implements GSSClient {
         if (response instanceof CentralRevisionsType) {
             CentralRevisionsType cr = (CentralRevisionsType) response;
             for (LayerRevision lr : cr.getLayerRevisions()) {
-                String qname = lr.getTypeName().getPrefix() + ":" + lr.getTypeName().getLocalPart();
-                if (qname.equals(layerName)) {
+                if (layerName.equals(lr.getTypeName())) {
                     return lr.getCentralRevision();
                 }
             }
@@ -101,6 +102,10 @@ public class HTTPGSSClient implements GSSClient {
             throw new IOException("The response was parsed to an unrecognized object type: "
                     + response.getClass());
         }
+    }
+
+    String prefixedName(QName layerName) {
+        return layerName.getPrefix() + ":" + layerName.getLocalPart();
     }
 
     IOException convertServiceException(String intro, ExceptionReportType response) {
@@ -119,11 +124,11 @@ public class HTTPGSSClient implements GSSClient {
         return new IOException(sb.toString());
     }
 
-    public TransactionType getDiff(String layerName, long fromVersion) throws IOException {
+    public TransactionType getDiff(QName layerName, long fromVersion) throws IOException {
         throw new UnsupportedOperationException();
     }
 
-    public void postDiff(String layerName, long fromVersion, long toVersion, TransactionType changes)
+    public void postDiff(QName layerName, long fromVersion, long toVersion, TransactionType changes)
             throws IOException {
         throw new UnsupportedOperationException();
     }
