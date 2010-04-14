@@ -49,10 +49,9 @@ import javax.xml.namespace.QName;
  * @generated
  */
 public class ExceptionTypeBinding extends AbstractComplexEMFBinding {
-    Ows10Factory owsfactory;
 
     public ExceptionTypeBinding(Ows10Factory owsfactory) {
-        this.owsfactory = owsfactory;
+        super(owsfactory);
     }
 
     /**
@@ -70,17 +69,5 @@ public class ExceptionTypeBinding extends AbstractComplexEMFBinding {
      */
     public Class getType() {
         return ExceptionType.class;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     *
-     * @generated modifiable
-     */
-    public Object parse(ElementInstance instance, Node node, Object value)
-        throws Exception {
-        //TODO: implement
-        return null;
     }
 }
