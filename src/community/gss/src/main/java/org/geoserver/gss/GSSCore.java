@@ -81,8 +81,8 @@ public class GSSCore {
             + "  synch_password VARCHAR(256),\n" // 
             + "  time_start TIME,\n" // 
             + "  time_end TIME,\n" // 
-            + "  synch_interval INTEGER,\n" // 
-            + "  synch_retry INTEGER,\n" // 
+            + "  synch_interval REAL,\n" // 
+            + "  synch_retry REAL,\n" // 
             + "  errors BOOLEAN\n" //
             + ");\n" // 
             + "select AddGeometryColumn('synch_units','geom',4326,'GEOMETRY',2)";
