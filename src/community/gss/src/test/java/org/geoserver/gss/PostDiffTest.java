@@ -66,6 +66,26 @@ public class PostDiffTest extends GSSTestSupport {
 
         assertEquals(12l, f.getAttribute("central_revision"));
     }
+    
+    public void testEmpty2() throws Exception {
+        // a slightly different test for a failure encontered in real world testing
+        // with a transaction element specified, but empty
+        MockHttpServletResponse response = postAsServletResponse(root(true),
+                loadTextResource("PostDiffEmpty2.xml"));
+        checkPostDiffSuccessResponse(response);
+
+        // check the lasts known Central revision is updated
+        VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch")
+                .getDataStore(null);
+        FeatureSource<SimpleFeatureType, SimpleFeature> fs = synch.getFeatureSource(SYNCH_HISTORY);
+        FeatureCollection fc = fs.getFeatures(ff.equals(ff.property("table_name"), ff
+                .literal("restricted")));
+        FeatureIterator fi = fc.features();
+        SimpleFeature f = (SimpleFeature) fi.next();
+        fi.close();
+
+        assertEquals(12l, f.getAttribute("central_revision"));
+    }
 
     /**
      * No local changes, no conflicts

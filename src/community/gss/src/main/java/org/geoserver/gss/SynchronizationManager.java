@@ -9,6 +9,7 @@ import static org.geoserver.gss.GSSCore.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.data.VersioningDataStore;
 import org.geotools.data.VersioningFeatureStore;
@@ -35,6 +37,8 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
@@ -90,7 +94,7 @@ public class SynchronizationManager extends TimerTask {
         if (info.getMode() != GSSMode.Central) {
             return;
         }
-        
+
         LOGGER.info("Performing scheduled synchronisation");
 
         // make sure we're running in "Central" mode
@@ -98,7 +102,6 @@ public class SynchronizationManager extends TimerTask {
 
         FeatureIterator<SimpleFeature> fi = null;
         FeatureIterator<SimpleFeature> li = null;
-        Transaction transaction = null;
         try {
             // grab the layers to be synchronised
             VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
@@ -112,6 +115,9 @@ public class SynchronizationManager extends TimerTask {
             while (fi.hasNext()) {
                 // extract relevant attributes
                 SimpleFeature layer = fi.next();
+                int unitId = (Integer) layer.getAttribute("unit_id");
+                int tableId = (Integer) layer.getAttribute("table_id");
+                String unitName = (String) layer.getAttribute("unit_name");
                 String tableName = (String) layer.getAttribute("table_name");
                 String address = (String) layer.getAttribute("unit_address");
                 String user = (String) layer.getAttribute("synch_user");
@@ -119,56 +125,104 @@ public class SynchronizationManager extends TimerTask {
                 Long getDiffCentralRevision = (Long) layer.getAttribute("getdiff_central_revision");
                 Long lastUnitRevision = (Long) layer.getAttribute("last_unit_revision");
 
-                // get the last central revision the client knows about
-                GSSClient client = getClient(address, user, password);
-                QName layerName = getLayerName(tableName);
-                long clientCentralRevision = client.getCentralRevision(layerName);
+                Transaction transaction = null;
+                try {
+                    transaction = new DefaultTransaction();
 
-                // compute the diff that we have to send the client. Notice that we have
-                // to skip over the local change occurred when we last performed a GetDiff
-                // against the client
-                VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(tableName);
-                transaction = new DefaultTransaction();
-                fs.setTransaction(transaction);
-                String fromRevision = clientCentralRevision == -1 ? "FIRST" : String
-                        .valueOf(clientCentralRevision);
-                TransactionType changes;
-                if (getDiffCentralRevision == null) {
-                    // first time
-                    FeatureDiffReader fdr = fs.getDifferences(fromRevision, "LAST", null, null);
-                    changes = new VersioningTransactionConverter().convert(fdr,
-                            TransactionType.class);
-                } else {
-                    // we need to jump over the last local changes
-                    String before = String.valueOf(getDiffCentralRevision - 1);
-                    String after = String.valueOf(getDiffCentralRevision);
-                    FeatureDiffReader fdr1 = fs.getDifferences(fromRevision, before, null, null);
-                    FeatureDiffReader fdr2 = fs.getDifferences(after, "LAST", null, null);
-                    FeatureDiffReader[] fdr = new FeatureDiffReader[] { fdr1, fdr2 };
-                    changes = new VersioningTransactionConverter().convert(fdr,
-                            TransactionType.class);
+                    // get the last central revision the client knows about
+                    GSSClient client = getClient(address, user, password);
+                    QName layerName = getLayerName(tableName);
+                    long clientCentralRevision = client.getCentralRevision(layerName);
+
+                    // compute the diff that we have to send the client. Notice that we have
+                    // to skip over the local change occurred when we last performed a GetDiff
+                    // against the client
+                    VersioningFeatureStore fs = (VersioningFeatureStore) ds
+                            .getFeatureSource(tableName);
+                    fs.setTransaction(transaction);
+                    String fromRevision = clientCentralRevision == -1 ? "FIRST" : String
+                            .valueOf(clientCentralRevision);
+                    TransactionType changes;
+                    if (getDiffCentralRevision == null) {
+                        // first time
+                        FeatureDiffReader fdr = fs.getDifferences(fromRevision, "LAST", null, null);
+                        changes = new VersioningTransactionConverter().convert(fdr,
+                                TransactionType.class);
+                    } else {
+                        // we need to jump over the last local changes
+                        String before = String.valueOf(getDiffCentralRevision - 1);
+                        String after = String.valueOf(getDiffCentralRevision);
+                        FeatureDiffReader fdr1 = fs
+                                .getDifferences(fromRevision, before, null, null);
+                        FeatureDiffReader fdr2 = fs.getDifferences(after, "LAST", null, null);
+                        FeatureDiffReader[] fdr = new FeatureDiffReader[] { fdr1, fdr2 };
+                        changes = new VersioningTransactionConverter().convert(fdr,
+                                TransactionType.class);
+                    }
+
+                    // what is the latest change on this layer? (worst case it's the last GetDiff
+                    // from
+                    // this Unit)
+                    long lastRevision = -1;
+                    li = fs.getLog("LAST", fromRevision, null, null, 1).features();
+                    if (li.hasNext()) {
+                        lastRevision = (Long) li.next().getAttribute("revision");
+                    }
+                    li.close();
+
+                    // finally run the PostDiff
+                    PostDiffType postDiff = new PostDiffType();
+                    postDiff.setTypeName(layerName);
+                    postDiff.setFromVersion(clientCentralRevision);
+                    postDiff.setToVersion(lastRevision);
+                    postDiff.setTransaction(changes);
+                    client.postDiff(postDiff);
+
+                    // grab the changes from the client and apply them locally
+                    GetDiffType getDiff = new GetDiffType();
+                    getDiff.setFromVersion(lastUnitRevision == null ? -1 : lastRevision);
+                    getDiff.setTypeName(layerName);
+                    GetDiffResponseType gdr = client.getDiff(getDiff);
+                    core.applyChanges(gdr.getTransaction(), fs);
+
+                    // mark down this layer as succesfully synchronised
+                    FeatureStore<SimpleFeatureType, SimpleFeature> tuMetadata = (FeatureStore<SimpleFeatureType, SimpleFeature>) ds
+                            .getFeatureSource(SYNCH_UNIT_TABLES);
+                    tuMetadata.setTransaction(transaction);
+                    SimpleFeatureType tuSchema = tuMetadata.getSchema();
+                    AttributeDescriptor[] atts = new AttributeDescriptor[] {
+                            tuSchema.getDescriptor("last_synchronization"),
+                            tuSchema.getDescriptor("getdiff_central_revision"),
+                            tuSchema.getDescriptor("last_unit_revision")};
+                    Object[] values = new Object[] { new Date(), Long.parseLong(fs.getVersion()),
+                            gdr.getToVersion() };
+                    Filter filter = ff.and(ff.equals(ff.property("table_id"), ff.literal(tableId)),
+                            ff.equals(ff.property("unit_id"), ff.literal(unitId)));
+                    tuMetadata.modifyFeatures(atts, values, filter);
+
+                    // close up
+                    transaction.commit();
+                    LOGGER.log(Level.INFO, "Successfull synchronisation of table " + tableName
+                            + " for unit " + unitName);
+                } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "Synchronisation of table " + tableName + " for unit "
+                            + unitName + " failed", e);
+
+                    // if anything at all went bad mark the layer synch as failed
+                    FeatureStore<SimpleFeatureType, SimpleFeature> tuMetadata = (FeatureStore<SimpleFeatureType, SimpleFeature>) ds
+                            .getFeatureSource(SYNCH_UNIT_TABLES);
+                    SimpleFeatureType tuSchema = tuMetadata.getSchema();
+                    AttributeDescriptor[] atts = new AttributeDescriptor[] { tuSchema
+                            .getDescriptor("last_failure"), };
+                    Object[] values = new Object[] { new Date() };
+                    Filter filter = ff.and(ff.equals(ff.property("table_id"), ff.literal(tableId)),
+                            ff.equals(ff.property("unit_id"), ff.literal(unitId)));
+                    tuMetadata.modifyFeatures(atts, values, filter);
+                } finally {
+                    if (transaction != null) {
+                        transaction.close();
+                    }
                 }
-
-                // what is the latest change on this layer? (worst case it's the last GetDiff from
-                // this Unit)
-                long lastRevision = -1;
-                li = fs.getLog("LAST", fromRevision, null, null, 1).features();
-                if (li.hasNext()) {
-                    lastRevision = (Long) li.next().getAttribute("revision");
-                }
-                li.close();
-
-                // finally run the PostDiff
-                client.postDiff(layerName, clientCentralRevision, lastRevision, changes);
-
-                // grab the changes from the client and apply them locally
-                TransactionType tt = client.getDiff(layerName, lastUnitRevision == null ? -1
-                        : lastRevision);
-                core.applyChanges(changes, fs);
-
-                // close up
-                transaction.commit();
-                transaction.close();
             }
         } finally {
             if (fi != null) {
@@ -177,15 +231,13 @@ public class SynchronizationManager extends TimerTask {
             if (li != null) {
                 li.close();
             }
-            if (transaction != null) {
-                transaction.close();
-            }
         }
 
     }
 
     /**
      * Turns a table name into a fully qualified layer name
+     * 
      * @param tableName
      * @return
      */

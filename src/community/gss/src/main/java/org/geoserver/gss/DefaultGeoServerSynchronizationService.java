@@ -61,7 +61,6 @@ import org.geotools.xml.Encoder;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
@@ -264,48 +263,54 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 Set<FeatureId> changedFids = new HashSet<FeatureId>();
                 changedFids.addAll(deletedFids);
                 changedFids.addAll(updatedFids);
-                // limit the changeset to the window between the last and the current
-                // synchronization
-                String lastLocalRevisionId = lastLocalRevision != -1 ? String
-                        .valueOf(lastLocalRevision) : "FIRST";
-                String newLocalRevisionId = String.valueOf(newLocalRevision);
-                FeatureDiffReader localChanges = fs.getDifferences(lastLocalRevisionId,
-                        newLocalRevisionId, ff.id(changedFids), null);
-                while (localChanges.hasNext()) {
-                    FeatureDiff fd = localChanges.next();
-                    FeatureId diffFeatureId = ff.featureId(fd.getID());
-                    if (fd.getState() == FeatureDiff.INSERTED) {
-                        throw new GSSException(
-                                "A new locally inserted feature has the same "
-                                        + "id as a modified feature coming from Central, this is impossible, "
-                                        + "there is either a bug in ID generation or someone manually tampered with it!");
-                    } else if (fd.getState() == FeatureDiff.DELETED) {
-                        if (deletedFids.contains(diffFeatureId)) {
-                            saveCleanMergeMarker(fs, conflicts, lastLocalRevisionId,
-                                    newLocalRevision, fd.getID());
-                        } else {
-                            handleDeletionConflict(fs, conflicts, lastLocalRevisionId,
-                                    newLocalRevision, fd.getID());
-                        }
-                    } else {
-                        if (updatedFids.contains(diffFeatureId)) {
-                            if (isSameUpdate(fd, findUpdate(fd.getID(), updates))) {
+                
+                // any possibility of conflict? If empty grabbing the corresponding local changes
+                // will fail
+                if(changedFids.size() > 0) {
+                    // limit the changeset to the window between the last and the current
+                    // synchronization
+                    String lastLocalRevisionId = lastLocalRevision != -1 ? String
+                            .valueOf(lastLocalRevision) : "FIRST";
+                    String newLocalRevisionId = String.valueOf(newLocalRevision);
+                    FeatureDiffReader localChanges = fs.getDifferences(lastLocalRevisionId,
+                            newLocalRevisionId, ff.id(changedFids), null);
+                    while (localChanges.hasNext()) {
+                        FeatureDiff fd = localChanges.next();
+                        FeatureId diffFeatureId = ff.featureId(fd.getID());
+                        if (fd.getState() == FeatureDiff.INSERTED) {
+                            throw new GSSException(
+                                    "A new locally inserted feature has the same "
+                                            + "id as a modified feature coming from Central, this is impossible, "
+                                            + "there is either a bug in ID generation or someone manually tampered with it!");
+                        } else if (fd.getState() == FeatureDiff.DELETED) {
+                            if (deletedFids.contains(diffFeatureId)) {
                                 saveCleanMergeMarker(fs, conflicts, lastLocalRevisionId,
                                         newLocalRevision, fd.getID());
+                            } else {
+                                handleDeletionConflict(fs, conflicts, lastLocalRevisionId,
+                                        newLocalRevision, fd.getID());
+                            }
+                        } else {
+                            if (updatedFids.contains(diffFeatureId)) {
+                                if (isSameUpdate(fd, findUpdate(fd.getID(), updates))) {
+                                    saveCleanMergeMarker(fs, conflicts, lastLocalRevisionId,
+                                            newLocalRevision, fd.getID());
+                                } else {
+                                    handleUpdateConflict(fs, conflicts, lastLocalRevisionId,
+                                            newLocalRevision, fd.getID());
+                                }
                             } else {
                                 handleUpdateConflict(fs, conflicts, lastLocalRevisionId,
                                         newLocalRevision, fd.getID());
                             }
-                        } else {
-                            handleUpdateConflict(fs, conflicts, lastLocalRevisionId,
-                                    newLocalRevision, fd.getID());
                         }
                     }
                 }
 
-                // not that conflicting local changes have been moved out of the way, apply the
+                // now that conflicting local changes have been moved out of the way, apply the
                 // central ones
                 core.applyChanges(changes, fs);
+                
             }
 
             // save/update the synchronisation metadata
@@ -330,7 +335,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             if (t instanceof GSSException) {
                 throw (GSSException) t;
             } else {
-                new GSSException("Error occurred while applyling the diff", t);
+                throw new GSSException("Error occurred while applyling the diff", t);
             }
         } finally {
             // very important to close transaction, as it holds a connection to the db

@@ -81,7 +81,7 @@ public class HTTPGSSClient implements GSSClient {
         GetMethod method = new GetMethod(address
                 + "?service=GSS&version=1.0.0&request=GetCentralRevision&typeName="
                 + prefixedName(layerName));
-        Object response = executeMethod(layerName, method);
+        Object response = executeMethod(method);
 
         // interpret the parsed response
         if (response instanceof CentralRevisionsType) {
@@ -106,31 +106,44 @@ public class HTTPGSSClient implements GSSClient {
         return layerName.getPrefix() + ":" + layerName.getLocalPart();
     }
 
-    public TransactionType getDiff(QName layerName, long fromVersion) throws IOException {
-        throw new UnsupportedOperationException();
+    public GetDiffResponseType getDiff(GetDiffType getDiff) throws IOException {
+        // prepare the encoder
+        Encoder encoder = new Encoder(configuration, configuration.getXSD().getSchema());
+        QName layerName = getDiff.getTypeName();
+        encoder.getNamespaces().declarePrefix(layerName.getPrefix(), layerName.getNamespaceURI());
+        encoder.setEncoding(Charset.forName("UTF-8"));
+
+        // prepare POST request
+        PostMethod method = new PostMethod(address.toExternalForm());
+        method.setContentChunked(true);
+        method.setRequestEntity(new XMLEntity(getDiff, GSS.GetDiff, encoder));
+
+        // execute the request and interpret the response
+        Object response = executeMethod(method);
+        if (response instanceof GetDiffResponseType) {
+            return (GetDiffResponseType) response;
+        } else {
+            if (response == null) {
+                throw new IOException("The response was parsed to a null object");
+            }
+            throw new IOException("The response was parsed to an unrecognized object type: "
+                    + response.getClass());
+        }
+
     }
 
-    public void postDiff(QName layerName, long fromVersion, long toVersion, TransactionType changes)
+    public void postDiff(PostDiffType postDiff)
             throws IOException {
-        // build the post diff request
-        PostDiffType postDiff = new PostDiffType();
-        postDiff.setTypeName(layerName);
-        postDiff.setFromVersion(fromVersion);
-        postDiff.setToVersion(toVersion);
-        postDiff.setTransaction(changes);
-
         // prepare the encoder
-        Encoder encoder = buildEncoderForTransaction(changes);
+        Encoder encoder = buildEncoderForTransaction(postDiff.getTransaction());
 
         // prepare POST request
         PostMethod method = new PostMethod(address.toExternalForm());
         method.setContentChunked(true);
         method.setRequestEntity(new XMLEntity(postDiff, GSS.PostDiff, encoder));
 
-        // execute the request
-        Object response = executeMethod(layerName, method);
-
-        // interpret the parsed response
+        // execute the request and interpret the parsed response
+        Object response = executeMethod(method);
         if (response instanceof PostDiffResponseType) {
             // that's fine, it's like a placeholder for now
         } else {
@@ -148,7 +161,7 @@ public class HTTPGSSClient implements GSSClient {
      * 
      * @throws IOException
      */
-    Object executeMethod(QName layerName, HttpMethod method) throws IOException {
+    Object executeMethod(HttpMethod method) throws IOException {
         Object response;
         try {
             // plain execution
