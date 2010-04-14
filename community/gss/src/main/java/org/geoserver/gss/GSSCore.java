@@ -294,26 +294,22 @@ public class GSSCore {
     }
 
     /**
-     * Returns true if the transaction is null or empty (that is, has no insert/update/delete
-     * elements inside)
+     * Returns the number of changes contained in the transaction
      * 
      * @param changes
      * @return
      */
-    public boolean isEmpty(TransactionType changes) {
+    public int countChanges(TransactionType changes) {
         if(changes == null) {
-            return true;
+            return 0;
         }
         
-        if(changes.getDelete().size() > 0) {
-            return false;
-        } else if(changes.getUpdate().size() > 0) {
-            return false;
-        } else if(changes.getInsert().size() > 0) {
-            return false;
-        }
+        int count = 0;
+        count += changes.getDelete().size();
+        count += changes.getUpdate().size();
+        count += changes.getInsert().size();
         
-        return true;
+        return count;
     }
 
     public static void main(String[] args) {
