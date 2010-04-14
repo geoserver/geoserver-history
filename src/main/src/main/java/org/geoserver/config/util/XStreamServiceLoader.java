@@ -18,7 +18,6 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.ServiceLoader;
 import org.geoserver.config.impl.ServiceInfoImpl;
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geotools.util.Version;
 
 /**
  * Service loader which loads and saves a service configuration with xstream.
@@ -126,6 +125,7 @@ public abstract class XStreamServiceLoader<T extends ServiceInfo> implements Ser
      */
     protected void initXStreamPersister( XStreamPersister xp, GeoServer gs ) {
         xp.setGeoServer( gs );
+        xp.setCatalog( gs.getCatalog() );
         xp.getXStream().alias( filenameBase, getServiceClass() );
     }
     
