@@ -7,6 +7,7 @@ package org.geoserver.gss;
 import java.util.ArrayList;
 
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.XStreamPersister;
@@ -38,6 +39,7 @@ public class GSSXStreamLoader extends XStreamServiceLoader<GSSInfo> {
 
     @Override
     protected void initXStreamPersister(XStreamPersister xp, GeoServer gs) {
+        super.initXStreamPersister(xp, gs);
         XStream xs = xp.getXStream();
         xs.alias("gss", GSSInfo.class, GSSInfoImpl.class);
         xs.registerLocalConverter(GSSInfoImpl.class, "versioningDataStore", xp.buildReferenceConverter(DataStoreInfo.class));

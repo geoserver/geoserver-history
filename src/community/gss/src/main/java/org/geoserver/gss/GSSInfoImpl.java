@@ -28,6 +28,7 @@ public class GSSInfoImpl extends ServiceInfoImpl implements GSSInfo {
 
     public GSSInfoImpl() {
         setId("gss");
+        setName("GSS");
     }
 
     public DataStoreInfo getVersioningDataStore() {
