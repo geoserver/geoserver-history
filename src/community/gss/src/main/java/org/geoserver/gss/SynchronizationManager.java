@@ -113,7 +113,7 @@ public class SynchronizationManager extends TimerTask {
             DefaultQuery q = new DefaultQuery(SYNCH_OUTSTANDING);
             q.setSortBy(new SortBy[] { ff.sort("last_synchronization", SortOrder.ASCENDING) });
             fi = outstanding.getFeatures(q).features();
-            
+
             // the set of units we failed to synchronize with. The problem might be a connection
             // timeout, we don't really want to multiply the timeout by the number of layers
             Set<Integer> unitBlacklist = new HashSet<Integer>();
@@ -130,11 +130,11 @@ public class SynchronizationManager extends TimerTask {
                 String password = (String) layer.getAttribute("synch_password");
                 Long getDiffCentralRevision = (Long) layer.getAttribute("getdiff_central_revision");
                 Long lastUnitRevision = (Long) layer.getAttribute("last_unit_revision");
-                
+
                 // avoid the unit that already failed this run, we'll try next run
-                if(unitBlacklist.contains(unitId)) {
-                    LOGGER.log(Level.INFO, "Unit " + unitName + " is blacklisted " +
-                    		"for this run, skipping " + tableName);
+                if (unitBlacklist.contains(unitId)) {
+                    LOGGER.log(Level.INFO, "Unit " + unitName + " is blacklisted "
+                            + "for this run, skipping " + tableName);
                     continue;
                 }
 
@@ -155,11 +155,11 @@ public class SynchronizationManager extends TimerTask {
                     fs.setTransaction(transaction);
                     String fromRevision = clientCentralRevision == -1 ? "FIRST" : String
                             .valueOf(clientCentralRevision);
-                    TransactionType changes;
+                    TransactionType centralChanges;
                     if (getDiffCentralRevision == null) {
                         // first time
                         FeatureDiffReader fdr = fs.getDifferences(fromRevision, "LAST", null, null);
-                        changes = new VersioningTransactionConverter().convert(fdr,
+                        centralChanges = new VersioningTransactionConverter().convert(fdr,
                                 TransactionType.class);
                     } else {
                         // we need to jump over the last local changes
@@ -169,7 +169,7 @@ public class SynchronizationManager extends TimerTask {
                                 .getDifferences(fromRevision, before, null, null);
                         FeatureDiffReader fdr2 = fs.getDifferences(after, "LAST", null, null);
                         FeatureDiffReader[] fdr = new FeatureDiffReader[] { fdr1, fdr2 };
-                        changes = new VersioningTransactionConverter().convert(fdr,
+                        centralChanges = new VersioningTransactionConverter().convert(fdr,
                                 TransactionType.class);
                     }
 
@@ -188,7 +188,7 @@ public class SynchronizationManager extends TimerTask {
                     postDiff.setTypeName(layerName);
                     postDiff.setFromVersion(clientCentralRevision);
                     postDiff.setToVersion(lastRevision);
-                    postDiff.setTransaction(changes);
+                    postDiff.setTransaction(centralChanges);
                     client.postDiff(postDiff);
 
                     // grab the changes from the client and apply them locally
@@ -196,22 +196,37 @@ public class SynchronizationManager extends TimerTask {
                     getDiff.setFromVersion(lastUnitRevision == null ? -1 : lastRevision);
                     getDiff.setTypeName(layerName);
                     GetDiffResponseType gdr = client.getDiff(getDiff);
-                    core.applyChanges(gdr.getTransaction(), fs);
+                    TransactionType unitChanges = gdr.getTransaction();
+                    core.applyChanges(unitChanges, fs);
 
                     // mark down this layer as succesfully synchronised
                     FeatureStore<SimpleFeatureType, SimpleFeature> tuMetadata = (FeatureStore<SimpleFeatureType, SimpleFeature>) ds
                             .getFeatureSource(SYNCH_UNIT_TABLES);
                     tuMetadata.setTransaction(transaction);
                     SimpleFeatureType tuSchema = tuMetadata.getSchema();
-                    AttributeDescriptor[] atts = new AttributeDescriptor[] {
-                            tuSchema.getDescriptor("last_synchronization"),
-                            tuSchema.getDescriptor("getdiff_central_revision"),
-                            tuSchema.getDescriptor("last_unit_revision")};
-                    Object[] values = new Object[] { new Date(), Long.parseLong(fs.getVersion()),
-                            gdr.getToVersion() };
-                    Filter filter = ff.and(ff.equals(ff.property("table_id"), ff.literal(tableId)),
-                            ff.equals(ff.property("unit_id"), ff.literal(unitId)));
-                    tuMetadata.modifyFeatures(atts, values, filter);
+                    if (core.isEmpty(unitChanges) && core.isEmpty(centralChanges)) {
+                        // just update the last_synch marker, as nothing else happened and
+                        // this way we can avoid eating away central revision number (which
+                        // might go up very rapidly otherwise)
+                        AttributeDescriptor[] atts = new AttributeDescriptor[] {
+                                tuSchema.getDescriptor("last_synchronization")};
+                        Object[] values = new Object[] { new Date()};
+                        Filter filter = ff.and(ff.equals(ff.property("table_id"), ff
+                                .literal(tableId)), ff.equals(ff.property("unit_id"), ff
+                                .literal(unitId)));
+                        tuMetadata.modifyFeatures(atts, values, filter);
+                    } else {
+                        AttributeDescriptor[] atts = new AttributeDescriptor[] {
+                                tuSchema.getDescriptor("last_synchronization"),
+                                tuSchema.getDescriptor("getdiff_central_revision"),
+                                tuSchema.getDescriptor("last_unit_revision") };
+                        Object[] values = new Object[] { new Date(),
+                                Long.parseLong(fs.getVersion()), gdr.getToVersion() };
+                        Filter filter = ff.and(ff.equals(ff.property("table_id"), ff
+                                .literal(tableId)), ff.equals(ff.property("unit_id"), ff
+                                .literal(unitId)));
+                        tuMetadata.modifyFeatures(atts, values, filter);
+                    }
 
                     // close up
                     transaction.commit();
@@ -231,7 +246,7 @@ public class SynchronizationManager extends TimerTask {
                     Filter filter = ff.and(ff.equals(ff.property("table_id"), ff.literal(tableId)),
                             ff.equals(ff.property("unit_id"), ff.literal(unitId)));
                     tuMetadata.modifyFeatures(atts, values, filter);
-                    
+
                     // blacklist the unit, we'll retry later
                     unitBlacklist.add(unitId);
                 } finally {
