@@ -249,6 +249,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
             // apply changes
             TransactionType changes = request.getTransaction();
+            LOGGER.info("About to apply " + core.countChanges(changes) + " changes coming from Central");
             if (changes != null) {
                 List<DeleteElementType> deletes = changes.getDelete();
                 List<UpdateElementType> updates = changes.getUpdate();
@@ -324,6 +325,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
             // commit all the changes
             transaction.commit();
+            
+            LOGGER.info(core.countChanges(changes) + " changes coming from Central succesfully applied");
         } catch (Throwable t) {
             // make sure we rollback the transaction in case of _any_ exception
             try {
@@ -433,6 +436,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             transaction.setReleaseAction(null);
             transaction.setVersion(null);
             transaction.setService(null);
+            LOGGER.info("Sending back to Central " + core.countChanges(transaction) + " changes");
 
             GetDiffResponseType response = new GetDiffResponseType();
             response.setFromVersion(request.getFromVersion());

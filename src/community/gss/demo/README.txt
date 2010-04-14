@@ -63,6 +63,7 @@ TESTING
 -------------
 
 At this point Central should connect once every minutes to the two units and perform the synchronization.
+The logs on both Central and Unit side should provide with hints about what's going on.  
 The main remaining issue is how to edit the data... standard uDig cannot edit it because of the
 UUID primary key usage, you need a build using a recent versioning datastore to deal with that
 kind of primary key.
