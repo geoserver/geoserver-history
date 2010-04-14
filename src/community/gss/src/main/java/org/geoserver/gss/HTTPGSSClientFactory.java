@@ -5,6 +5,7 @@ import java.net.URL;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.gss.xml.GSSConfiguration;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -21,8 +22,11 @@ public class HTTPGSSClientFactory implements DisposableBean, GSSClientFactory {
 
     GSSConfiguration configuration;
 
-    public HTTPGSSClientFactory(GSSConfiguration configuration) {
+    Catalog catalog;
+
+    public HTTPGSSClientFactory(GSSConfiguration configuration, Catalog catalog) {
         this.configuration = configuration;
+        this.catalog = catalog;
     }
 
     HttpClient getClient() {
@@ -40,7 +44,8 @@ public class HTTPGSSClientFactory implements DisposableBean, GSSClientFactory {
     }
 
     public GSSClient createClient(URL gssServiceURL, String username, String password) {
-        return new HTTPGSSClient(getClient(), configuration, gssServiceURL, username, password);
+        return new HTTPGSSClient(getClient(), configuration, catalog, gssServiceURL, username,
+                password);
     }
 
     public void destroy() throws Exception {

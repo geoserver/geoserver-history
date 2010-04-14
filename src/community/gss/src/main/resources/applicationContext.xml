@@ -90,6 +90,7 @@
   <!-- The http client factory used by central to connect to the -->
   <bean id="clientFactory" class="org.geoserver.gss.HTTPGSSClientFactory">
     <constructor-arg index="0" ref="gssXmlConfiguration"/>
+    <constructor-arg index="1" ref="catalog"/>
   </bean>
   
   <!-- Central's scheduled synchronisation manager -->
