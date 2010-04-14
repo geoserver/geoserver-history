@@ -26,11 +26,11 @@ public interface GSSClient {
     /**
      * Posts the changes occurred locally between fromRevision and toRevision to the client
      */
-    public void postDiff(QName layerName, long fromVersion, long toVersion, TransactionType changes)
+    public void postDiff(PostDiffType postdiff)
             throws IOException;
 
     /**
      * Grabs the changes occurred on the unit since the fromVersion unit revision
      */
-    public TransactionType getDiff(QName layerName, long fromVersion) throws IOException;
+    public GetDiffResponseType getDiff(GetDiffType getDiff) throws IOException;
 }
