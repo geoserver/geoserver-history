@@ -104,24 +104,39 @@ public class GSSCore {
     static final String SYNCH_OUTSTANDING = "synch_outstanding";
 
     static final String SYNCH_OUTSTANDING_CREATION = //
-    "CREATE VIEW synch_outstanding \n" + //
-            "AS SELECT synch_tables.*, \n" + //
-            "          synch_units.*, \n" + //
-            "          synch_unit_tables.last_synchronization,\n" + // 
-            "          synch_unit_tables.last_failure, \n" + //
-            "          synch_unit_tables.getdiff_central_revision, \n" + // 
-            "          synch_unit_tables.last_unit_revision\n" + //
-            "FROM (synch_units inner join synch_unit_tables \n" + //
-            "                  on synch_units.unit_id = synch_unit_tables.unit_id)\n" + // 
-            "     inner join synch_tables \n" + //
-            "     on synch_tables.table_id = synch_unit_tables.table_id\n" + // 
-            "WHERE ((time_start < LOCALTIME AND LOCALTIME < time_end) \n" + //
-            "        OR (time_start IS NULL) OR (time_end IS NULL))\n" + //
-            "      AND ((now() - last_synchronization > synch_interval * interval '1 minute') \n" + // 
-            "        OR last_synchronization IS NULL)\n" + //
-            "      AND (last_failure is null OR" +
-            "           now() - last_failure > synch_retry * interval '1 minute');\n" +
-            "INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY')";
+    "CREATE VIEW synch_outstanding \n"
+            + //
+            "AS SELECT synch_tables.*, \n"
+            + //
+            "          synch_units.*, \n"
+            + //
+            "          synch_unit_tables.last_synchronization,\n"
+            + // 
+            "          synch_unit_tables.last_failure, \n"
+            + //
+            "          synch_unit_tables.getdiff_central_revision, \n"
+            + // 
+            "          synch_unit_tables.last_unit_revision\n"
+            + //
+            "FROM (synch_units inner join synch_unit_tables \n"
+            + //
+            "                  on synch_units.unit_id = synch_unit_tables.unit_id)\n"
+            + // 
+            "     inner join synch_tables \n"
+            + //
+            "     on synch_tables.table_id = synch_unit_tables.table_id\n"
+            + // 
+            "WHERE ((time_start < LOCALTIME AND LOCALTIME < time_end) \n"
+            + //
+            "        OR (time_start IS NULL) OR (time_end IS NULL))\n"
+            + //
+            "      AND ((now() - last_synchronization > synch_interval * interval '1 minute') \n"
+            + // 
+            "        OR last_synchronization IS NULL)\n"
+            + //
+            "      AND (last_failure is null OR"
+            + "           now() - last_failure > synch_retry * interval '1 minute');\n"
+            + "INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY')";
 
     GSSInfo info;
 
@@ -276,9 +291,31 @@ public class GSSCore {
             List<SimpleFeature> features = insert.getFeature();
             store.addFeatures(DataUtilities.collection(features));
         }
-
     }
-    
+
+    /**
+     * Returns true if the transaction is null or empty (that is, has no insert/update/delete
+     * elements inside)
+     * 
+     * @param changes
+     * @return
+     */
+    public boolean isEmpty(TransactionType changes) {
+        if(changes == null) {
+            return true;
+        }
+        
+        if(changes.getDelete().size() > 0) {
+            return false;
+        } else if(changes.getUpdate().size() > 0) {
+            return false;
+        } else if(changes.getInsert().size() > 0) {
+            return false;
+        }
+        
+        return true;
+    }
+
     public static void main(String[] args) {
         System.out.println("Unit tables creation");
         System.out.println("--------------------");
