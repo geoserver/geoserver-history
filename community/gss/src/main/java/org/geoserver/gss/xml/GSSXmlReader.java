@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.gss.GetDiffResponseType;
 import org.geoserver.gss.PostDiffType;
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wfs.WFSException;
@@ -69,7 +70,7 @@ public class GSSXmlReader extends XmlRequestReader {
         Object parsed = parser.parse(source);
 
         // unfortunately insert elements in transactions cannot be validated...
-        if(!(parsed instanceof PostDiffType)) {
+        if(!(parsed instanceof PostDiffType) && !(parsed instanceof GetDiffResponseType)) {
             if (!parser.getValidationErrors().isEmpty()) {
                 WFSException exception = new WFSException("Invalid request", "InvalidParameterValue");
     

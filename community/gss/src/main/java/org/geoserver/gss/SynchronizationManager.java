@@ -176,8 +176,7 @@ public class SynchronizationManager extends TimerTask {
                     }
 
                     // what is the latest change on this layer? (worst case it's the last GetDiff
-                    // from
-                    // this Unit)
+                    // from this Unit)
                     long lastRevision = -1;
                     li = fs.getLog("LAST", fromRevision, null, null, 1).features();
                     if (li.hasNext()) {

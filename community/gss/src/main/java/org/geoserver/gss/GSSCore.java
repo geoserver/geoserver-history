@@ -268,6 +268,9 @@ public class GSSCore {
      */
     public void applyChanges(TransactionType changes,
             FeatureStore<SimpleFeatureType, SimpleFeature> store) throws IOException {
+        if(changes == null)
+            return;
+        
         List<DeleteElementType> deletes = changes.getDelete();
         List<UpdateElementType> updates = changes.getUpdate();
         List<InsertElementType> inserts = changes.getInsert();
