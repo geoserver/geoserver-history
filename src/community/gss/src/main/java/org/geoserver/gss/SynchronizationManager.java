@@ -9,6 +9,7 @@ import static org.geoserver.gss.GSSCore.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -110,9 +111,9 @@ public class SynchronizationManager extends TimerTask {
                     .getFeatureSource(SYNCH_OUTSTANDING);
             DefaultQuery q = new DefaultQuery(SYNCH_OUTSTANDING);
             q.setSortBy(new SortBy[] { ff.sort("last_synchronization", SortOrder.ASCENDING) });
-            
+
             LOGGER.info("Performing scheduled synchronisation");
-            
+
             fi = outstanding.getFeatures(q).features();
 
             // the set of units we failed to synchronize with. The problem might be a connection
@@ -211,9 +212,9 @@ public class SynchronizationManager extends TimerTask {
                         // just update the last_synch marker, as nothing else happened and
                         // this way we can avoid eating away central revision number (which
                         // might go up very rapidly otherwise)
-                        AttributeDescriptor[] atts = new AttributeDescriptor[] {
-                                tuSchema.getDescriptor("last_synchronization")};
-                        Object[] values = new Object[] { new Date()};
+                        AttributeDescriptor[] atts = new AttributeDescriptor[] { tuSchema
+                                .getDescriptor("last_synchronization") };
+                        Object[] values = new Object[] { new Date() };
                         Filter filter = ff.and(ff.equals(ff.property("table_id"), ff
                                 .literal(tableId)), ff.equals(ff.property("unit_id"), ff
                                 .literal(unitId)));
@@ -231,15 +232,21 @@ public class SynchronizationManager extends TimerTask {
                         tuMetadata.modifyFeatures(atts, values, filter);
                     }
 
+                    // mark the unit as succeffully updated
+                    updateUnitStatus(ds, transaction, unitId, false);
+
                     // close up
                     transaction.commit();
                     LOGGER.log(Level.INFO, "Successfull synchronisation of table " + tableName
-                            + " for unit " + unitName + "(" + centralChangeCount 
-                            + " changes sent to the Unit, " + unitChangeCount 
+                            + " for unit " + unitName + "(" + centralChangeCount
+                            + " changes sent to the Unit, " + unitChangeCount
                             + " change incoming from the Unit)");
                 } catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Synchronisation of table " + tableName + " for unit "
                             + unitName + " failed", e);
+
+                    // rollback all current changes
+                    transaction.rollback();
 
                     // if anything at all went bad mark the layer synch as failed
                     FeatureStore<SimpleFeatureType, SimpleFeature> tuMetadata = (FeatureStore<SimpleFeatureType, SimpleFeature>) ds
@@ -251,6 +258,9 @@ public class SynchronizationManager extends TimerTask {
                     Filter filter = ff.and(ff.equals(ff.property("table_id"), ff.literal(tableId)),
                             ff.equals(ff.property("unit_id"), ff.literal(unitId)));
                     tuMetadata.modifyFeatures(atts, values, filter);
+
+                    // mark the unit as failed
+                    updateUnitStatus(ds, Transaction.AUTO_COMMIT, unitId, true);
 
                     // blacklist the unit, we'll retry later
                     unitBlacklist.add(unitId);
@@ -269,6 +279,28 @@ public class SynchronizationManager extends TimerTask {
             }
         }
 
+    }
+
+    /**
+     * Updates the "errors" flag in the specified unit
+     * @param ds
+     * @param transaction
+     * @param unitId
+     * @param success
+     * @throws IOException
+     */
+    void updateUnitStatus(VersioningDataStore ds, Transaction transaction, int unitId,
+            boolean errors) throws IOException {
+        FeatureStore<SimpleFeatureType, SimpleFeature> fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) ds
+                .getFeatureSource(SYNCH_UNITS);
+
+        SimpleFeatureType tuSchema = fs.getSchema();
+        AttributeDescriptor[] atts = new AttributeDescriptor[] { tuSchema.getDescriptor("errors") };
+        Object[] values = new Object[] { errors };
+        Filter filter = ff.id(Collections.singleton(ff.featureId(SYNCH_UNITS + "." + unitId)));
+
+        fs.setTransaction(transaction);
+        fs.modifyFeatures(atts, values, filter);
     }
 
     /**

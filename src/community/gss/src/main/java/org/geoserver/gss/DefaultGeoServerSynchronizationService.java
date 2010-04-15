@@ -24,7 +24,6 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.opengis.wfs.DeleteElementType;
-import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
@@ -240,7 +239,6 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             history.setTransaction(transaction);
             VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(tableName);
             fs.setTransaction(transaction);
-            SimpleFeatureType ft = fs.getSchema();
 
             // get a hold on a revision number early so that we don't get concurrent changes
             // from the user (the datastore will make it so that no new revision numbers will
@@ -249,11 +247,11 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
             // apply changes
             TransactionType changes = request.getTransaction();
-            LOGGER.info("About to apply " + core.countChanges(changes) + " changes coming from Central");
+            LOGGER.info("About to apply " + core.countChanges(changes)
+                    + " changes coming from Central");
             if (changes != null) {
                 List<DeleteElementType> deletes = changes.getDelete();
                 List<UpdateElementType> updates = changes.getUpdate();
-                List<InsertElementType> inserts = changes.getInsert();
 
                 // We need to find conflicts: local changes occurred since last synchronisation
                 // that hit the same features contained in this changeset. For those we need
@@ -264,10 +262,10 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 Set<FeatureId> changedFids = new HashSet<FeatureId>();
                 changedFids.addAll(deletedFids);
                 changedFids.addAll(updatedFids);
-                
+
                 // any possibility of conflict? If empty grabbing the corresponding local changes
                 // will fail
-                if(changedFids.size() > 0) {
+                if (changedFids.size() > 0) {
                     // limit the changeset to the window between the last and the current
                     // synchronization
                     String lastLocalRevisionId = lastLocalRevision != -1 ? String
@@ -311,7 +309,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 // now that conflicting local changes have been moved out of the way, apply the
                 // central ones
                 core.applyChanges(changes, fs);
-                
+
             }
 
             // save/update the synchronisation metadata
@@ -325,8 +323,9 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
             // commit all the changes
             transaction.commit();
-            
-            LOGGER.info(core.countChanges(changes) + " changes coming from Central succesfully applied");
+
+            LOGGER.info(core.countChanges(changes)
+                    + " changes coming from Central succesfully applied");
         } catch (Throwable t) {
             // make sure we rollback the transaction in case of _any_ exception
             try {
@@ -458,7 +457,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
      * 
      * @return
      */
-    Filter getFidConflictFilter(String tableName, FeatureCollection conflicts) {
+    Filter getFidConflictFilter(String tableName,
+            FeatureCollection<SimpleFeatureType, SimpleFeature> conflicts) {
         FeatureIterator<SimpleFeature> fi = null;
         try {
             fi = conflicts.features();
