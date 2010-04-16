@@ -466,13 +466,15 @@ public class CatalogBuilder {
                 bounds = new ReferencedEnvelope(bounds, crs);
             }
             
-            // expansion factor if the bounds are empty or one dimensional 
-            double expandBy = 1; // 1 meter
-            if(bounds.getCoordinateReferenceSystem() instanceof GeographicCRS) {
-                expandBy = 0.0001;
-            }
-            if(bounds.getWidth() == 0 || bounds.getHeight() == 0) {
-                bounds.expandBy(expandBy);
+            if(bounds != null) {
+                // expansion factor if the bounds are empty or one dimensional 
+                double expandBy = 1; // 1 meter
+                if(bounds.getCoordinateReferenceSystem() instanceof GeographicCRS) {
+                    expandBy = 0.0001;
+                }
+                if(bounds.getWidth() == 0 || bounds.getHeight() == 0) {
+                    bounds.expandBy(expandBy);
+                }
             }
             
         } else if(rinfo instanceof CoverageInfo) {
