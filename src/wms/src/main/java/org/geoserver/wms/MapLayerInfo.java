@@ -173,6 +173,10 @@ public final class MapLayerInfo {
     public FeatureTypeInfo getFeature() {
         return (FeatureTypeInfo) layerInfo.getResource();
     }
+    
+    public ResourceInfo getResource() {
+        return layerInfo.getResource();
+    }
 
     /**
      * 
