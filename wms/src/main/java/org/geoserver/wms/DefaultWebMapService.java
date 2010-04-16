@@ -400,7 +400,8 @@ public class DefaultWebMapService implements WebMapService,
         for (int i = 0; useNativeBounds && i < layers.length; i++) {
             if (layers[i] != null) {
                 String layerSRS = layers[i].getSRS();
-                useNativeBounds = reqSRS.equalsIgnoreCase(layerSRS);
+                useNativeBounds = reqSRS.equalsIgnoreCase(layerSRS) 
+                    && layers[i].getResource().getNativeBoundingBox() != null;
             } else {
                 useNativeBounds = false;
             }
