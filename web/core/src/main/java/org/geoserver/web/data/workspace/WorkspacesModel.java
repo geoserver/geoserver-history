@@ -30,10 +30,8 @@ public class WorkspacesModel extends LoadableDetachableModel {
     class WorkspaceComparator implements Comparator<WorkspaceInfo> {
 
         public int compare(WorkspaceInfo w1, WorkspaceInfo w2) {
-            return w1.getName().compareTo(w2.getName());
+            return w1.getName().compareToIgnoreCase(w2.getName());
         }
-
-        
         
     }
 }
