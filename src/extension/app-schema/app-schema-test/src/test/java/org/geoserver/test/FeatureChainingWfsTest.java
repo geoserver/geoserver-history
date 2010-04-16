@@ -122,11 +122,18 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathCount(1, "//xsd:include", doc);
         assertXpathCount(0, "//xsd:import", doc);
         // EX include
-        File exSchema = findFile("featureTypes/ex_FirstParentFeature/simpleContent.xsd", dataDir);
-        assertNotNull(exSchema);
-        assertTrue(exSchema.exists());
-        String exSchemaLocation = exSchema.toURI().toString();
-        assertXpathEvaluatesTo(exSchemaLocation, "//xsd:include/@schemaLocation", doc);
+        File exSchemaOne = findFile("featureTypes/ex_FirstParentFeature/simpleContent.xsd", dataDir);
+        assertNotNull(exSchemaOne);
+        assertTrue(exSchemaOne.exists());
+        String exSchemaOneLocation = exSchemaOne.toURI().toString();
+        File exSchemaTwo = findFile("featureTypes/ex_SecondParentFeature/simpleContent.xsd", dataDir);
+        assertNotNull(exSchemaTwo);
+        assertTrue(exSchemaTwo.exists());
+        String exSchemaTwoLocation = exSchemaTwo.toURI().toString();
+        String schemaLocation = evaluate("//xsd:include/@schemaLocation", doc);
+        if (!schemaLocation.equals(exSchemaOneLocation)) {
+            assertEquals(exSchemaTwoLocation, schemaLocation);
+        }
         // nothing else
         assertXpathCount(0, "//xsd:complexType", doc);
         assertXpathCount(0, "//xsd:element", doc);
@@ -138,7 +145,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER
                 .info("WFS DescribeFeatureType, typename=gsml:MappedFeature,ex:FirstParentFeature response:\n"
                         + prettyString(doc));
-        testDescribeFeatureTypeImports(doc, exSchemaLocation, false);
+        testDescribeFeatureTypeImports(doc, exSchemaOneLocation, null, null);
 
         /**
          * All type names specified, should result the same as above
@@ -147,30 +154,30 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER
                 .info("WFS DescribeFeatureType, typename=gsml:MappedFeature,gsml:GeologicUnit,ex:FirstParentFeature,ex:SecondParentFeature response:\n"
                         + prettyString(doc));
-        testDescribeFeatureTypeImports(doc, exSchemaLocation, false);
+        testDescribeFeatureTypeImports(doc, exSchemaOneLocation, exSchemaTwoLocation, null);
 
         /**
          * No type name specified, should result the same as all type names
          */
         doc = getAsDOM("wfs?request=DescribeFeatureType");
         LOGGER.info("WFS DescribeFeatureType response:\n" + prettyString(doc));
-        testDescribeFeatureTypeImports(doc, exSchemaLocation, true);
+        testDescribeFeatureTypeImports(doc, exSchemaOneLocation, exSchemaTwoLocation,
+                FeatureChainingMockData.OM_SCHEMA_LOCATION_URL);
     }
 
-    private void testDescribeFeatureTypeImports(Document doc, String exSchemaLocation,
-            boolean omIncluded) {
+    private void testDescribeFeatureTypeImports(Document doc, String exSchemaOneLocation,
+            String exSchemaTwoLocation, String omSchemaLocation) {
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
         assertXpathCount(0, "//@targetNamespace", doc);
-        assertXpathCount(omIncluded ? 3 : 2, "//xsd:import", doc);
+        int length = omSchemaLocation != null ? 3 : 2;
+        assertXpathCount(length, "//xsd:import", doc);
         assertXpathCount(0, "//xsd:include", doc);
-
         ArrayList<String> namespaces = new ArrayList<String>();
         namespaces.add(AbstractAppSchemaMockData.GSML_URI);
         namespaces.add(FeatureChainingMockData.EX_URI);
-        if (omIncluded) {
+        if (omSchemaLocation != null) {
             namespaces.add(FeatureChainingMockData.OM_URI);
         }
-        int length = omIncluded ? 3 : 2;
         // order is unimportant, and could change, so we don't test the order
         for (int i = 1; i <= length; i++) {
             String namespace = evaluate("//xsd:import[" + i + "]/@namespace", doc);
@@ -182,11 +189,16 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 namespaces.remove(AbstractAppSchemaMockData.GSML_URI);
             } else if (namespace.equals(FeatureChainingMockData.EX_URI)) {
                 // EX import
-                assertXpathEvaluatesTo(exSchemaLocation, schemaLocation, doc);
+                String loc = evaluate(schemaLocation, doc);
+                if (!loc.equals(exSchemaOneLocation)) {
+                    // probably the 2nd one, which is the same, but located differently
+                    assertNotNull(exSchemaTwoLocation);
+                    assertEquals(exSchemaTwoLocation, loc);
+                }
                 namespaces.remove(FeatureChainingMockData.EX_URI);
             } else {
                 // OM import
-                assertTrue(omIncluded);
+                assertTrue(omSchemaLocation != null);
                 assertEquals(FeatureChainingMockData.OM_URI, namespace);
                 assertXpathEvaluatesTo(FeatureChainingMockData.OM_SCHEMA_LOCATION_URL,
                         schemaLocation, doc);
