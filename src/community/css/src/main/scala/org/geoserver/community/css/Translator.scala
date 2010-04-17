@@ -120,6 +120,23 @@ object Translator extends CssOps with SelectorOps {
     case _ => null
   }
 
+  def anchor(xs: List[Value]): gt.AnchorPoint = xs map {
+    case Literal(l) => filters.literal(scale(l))
+    case Expression(cql) => org.geotools.filter.text.ecql.ECQL.toExpression(cql)
+    case _ => null
+  } take 2 match {
+    case List(x, y) => styles.createAnchorPoint(x, y)
+    case _ => null
+  }
+
+  def displacement(xs: List[Value]): List[OGCExpression] = xs map {
+    case Literal(body) =>
+      filters.literal(body.replaceFirst("px$", ""))
+    case Expression(cql) =>
+      org.geotools.filter.text.ecql.ECQL.toExpression(cql)
+    case _ => null
+  }
+
   def lengthArray(xs: List[Value]): Array[Float] = {
     xs.flatMap(_ match {
       case Literal(body) => Some(body.toFloat)
@@ -272,23 +289,19 @@ object Translator extends CssOps with SelectorOps {
           val mark = buildMark(fillParams._2, size, rotation)
           val externalGraphic = buildExternalGraphic(fillParams._1, mimetype)
 
-          if (mark != null || externalGraphic != null) {
-            styles.createGraphic(
-              externalGraphic,
-              mark,
-              null,
-              opacity,
-              size,
-              rotation
-            )
-          } else null
+          styles.createGraphic(
+            externalGraphic,
+            mark,
+            null,
+            opacity,
+            size,
+            rotation
+          )
         }
 
-        if (graphic != null) {
-          val sym = styles.createPointSymbolizer(graphic, null)
-          sym.setGeometry(geom)
-          sym
-        } else null
+        val sym = styles.createPointSymbolizer(graphic, null)
+        sym.setGeometry(geom)
+        sym
       }
 
     val textSyms: List[TextSymbolizer] =
@@ -296,6 +309,9 @@ object Translator extends CssOps with SelectorOps {
         val fillParams = props.get("font-fill").map(fill)
         val fontFamily = props.get("font-family")
         val fontOpacity = props.get("font-opacity").map(scale)
+        val anchorPoint = props.get("label-anchor").map(anchor)
+        val offset = props.get("label-offset").map(displacement)
+        val rotation = props.get("label-rotation").map(angle)
         val geom = (props.get("label-geometry") orElse props.get("geometry"))
           .map(expression).getOrElse(null)
 
@@ -341,15 +357,30 @@ object Translator extends CssOps with SelectorOps {
           )
         } else null
 
+        val placement = offset match {
+          case Some(List(d)) => styles.createLinePlacement(d)
+          case Some(x :: y :: Nil) =>
+            styles.createPointPlacement(
+              anchorPoint.getOrElse(styles.getDefaultPointPlacement().getAnchorPoint()),
+              styles.createDisplacement(x, y),
+              rotation.getOrElse(styles.getDefaultPointPlacement().getRotation())
+            )
+          case _ => null
+        }
+
         val sym = styles.createTextSymbolizer(
           styles.createFill(fillParams.map(_._3).getOrElse(null), null, fontOpacity.getOrElse(null), fontFill),
           font,
           halo,
           expression(props("label")),
-          null, //TODO: LabelPlacement
-          null  //The geometry, defaults to auto-detect, which is what we want
+          placement,
+          null  //the geometry, but only as a string. the setter accepts an expression
         )
         sym.setGeometry(geom)
+
+        for (priority <- props.get("-gt-label-priority") map expression) {
+          sym.setPriority(priority)
+        }
 
         for ((cssName, sldName) <- gtVendorOpts) {
           val vendorOpt = props.get(cssName).map(keyword)
