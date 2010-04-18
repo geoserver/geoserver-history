@@ -126,8 +126,8 @@ Polygon Symbology
       * A rotation to be applied (clockwise) to the fill image. 
       * yes
 
-Text Symbology
---------------
+Text Symbology (Labeling)
+-------------------------
 
 .. list-table:: 
 
@@ -163,7 +163,7 @@ Text Symbology
       * length
       * The size for the font to display. 
       * yes
-    - * ``halo-size``  
+    - * ``halo-radius``  
       * length
       * The size of a halo to display around the lettering (to enhance
         readability). This is *required* to activate the halo feature. 
@@ -176,7 +176,100 @@ Text Symbology
       * percentage
       * The opacity of the halo, from 0 (fully transparent) to 1.0 (fully opaque). 
       * yes
-
+    - * ``-gt-label-padding``
+      * length
+      * The amount of 'padding' space to provide around labels.  Labels will
+        not be rendered closer together than this threshold.  This is
+        equivalent to the :ref:`spaceAround<labeling_space_around>` vendor parameter.
+      * no
+    - * ``-gt-label-group``
+      * one of: ``true`` or ``false``
+      * If true, the render will treat features with the same label text as a
+        single feature for the purpose of labeling.  This is equivalent to the 
+        :ref:`group<labeling_group>` vendor parameter.
+      * no
+    - * ``-gt-label-max-displacement``
+      * length
+      * If set, this is the maximum displacement that the renderer will apply
+        to a label.  Labels that need larger displacements to avoid collisions
+        will simply be omitted.  This is equivalent to the
+        :ref:`maxDisplacement<labeling_max_displacement>` vendor parameter.
+      * no
+    - * ``-gt-label-min-group-distance``
+      * length
+      * This is equivalent to the minGroupDistance vendor parameter in SLD.
+      * no
+    - * ``-gt-label-repeat``
+      * length
+      * If set, the renderer will repeat labels at this interval along a line.
+        This is equivalent to the :ref:`repeat<labeling_repeat>` vendor parameter.
+      * no
+    - * ``-gt-label-all-group``
+      * one of ``true`` or ``false``
+      * when using grouping, whether to label only the longest line that could
+        be built by merging the lines forming the group, or also the other
+        ones.  This is equivalent to the :ref:`allGroup<labeling_all_group>`
+        vendor parameter.
+      * no
+    - * ``-gt-label-remove-overlaps``
+      * one of ``true`` or ``false``
+      * If enabled, the renderer will remove overlapping lines within a group
+        to avoid duplicate labels.  This is equivalent to the
+        removeOverlaps vendor parameter.
+      * no
+    - * ``-gt-label-allow-overruns``
+      * one of ``true`` or ``false``
+      * Determines whether the renderer will show labels that are longer than
+        the lines being labelled.  This is equivalent to the allowOverrun
+        vendor parameter.
+      * no
+    - * ``-gt-label-follow-line``
+      * one of ``true`` or ``false``
+      * If enabled, the render will curve labels to follow the lines being
+        labelled.  This is equivalent to the
+        :ref:`followLine<labeling_follow_line>` vendor parameter.
+      * no
+    - * ``-gt-label-max-angle-delta``
+      * one of ``true`` or ``false``
+      * The maximum amount of curve allowed between two characters of a label;
+        only applies when '-gt-follow-line: true' is set.  This is equivalent
+        to the :ref:`maxAngleDelta<labeling_max_angle_delta>` vendor parameter.
+      * no
+    - * ``-gt-label-auto-wrap``
+      * length
+      * Labels will be wrapped to multiple lines if they exceed this length in
+        pixels.  This is equivalent to the :ref:`autoWrap<labeling_autowrap>`
+        vendor parameter.
+      * no
+    - * ``-gt-label-force-ltr``
+      * one of ``true`` or ``false``
+      * By default, the renderer will flip labels whose normal orientation
+        would cause them to be upside-down. Set this parameter to false if you
+        are using some icon character label like an arrow to show a line's
+        direction.  This is equivalent to the
+        :ref:`forceLeftToRight<labeling_force_left_to_right>` vendor parameter.
+      * no
+    - * ``-gt-label-conflict-resolution``
+      * one of ``true`` or ``false``
+      * Set this to false to disable label conflict resolution, allowing
+        overlapping labels to be rendered.  This is equivalent to the
+        :ref:`conflictResolution<labeling_conflict_resolution>` vendor
+        parameter.
+      * no
+    - * ``-gt-label-fit-goodness``
+      * scale
+      * The renderer will omit labels that fall below this "match quality"
+        score.  The scoring rules differ for each geometry type.  This is
+        equivalent to the :ref:`goodnessOfFit<labeling_goodness_of_fit>` vendor
+        parameter.
+      * no
+    - * ``-gt-label-priority``
+      * expression
+      * This option specifies an expression to use in determining which
+        features to prefer if there are labeling conflicts.  This is equivalent
+        to the :ref:`Priority<labeling_priority>` SLD extension.
+      * yes
+  
 Shared
 ------
 
