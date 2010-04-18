@@ -28,7 +28,7 @@ object Translator extends CssOps with SelectorOps {
     "-gt-label-repeat" -> "repeat",
     "-gt-label-all-group" -> "allGroup",
     "-gt-label-remove-overlaps" -> "removeOverlaps",
-    "-gt-label-allow-overruns" -> "allowOveruns",
+    "-gt-label-allow-overruns" -> "allowOverrun",
     "-gt-label-follow-line" -> "followLine",
     "-gt-label-max-angle-delta" -> "maxAngleDelta",
     "-gt-label-auto-wrap" -> "autoWrap",
@@ -382,9 +382,11 @@ object Translator extends CssOps with SelectorOps {
           sym.setPriority(priority)
         }
 
-        for ((cssName, sldName) <- gtVendorOpts) {
-          val vendorOpt = props.get(cssName).map(keyword)
-          vendorOpt.foreach(opt => sym.getOptions().put(sldName, opt))
+        for (
+          (cssName, sldName) <- gtVendorOpts;
+          value <- props.get(cssName)
+        ) {
+          sym.getOptions().put(sldName, keyword(value))
         }
 
         sym
