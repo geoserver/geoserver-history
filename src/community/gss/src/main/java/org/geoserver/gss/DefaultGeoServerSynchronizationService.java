@@ -238,8 +238,9 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             FeatureStore history = (FeatureStore) ds.getFeatureSource(SYNCH_HISTORY);
             PropertyIsEqualTo ftSyncRecord = ff.equals(ff.property("table_name"), ff.literal(tableName));
             TransactionType changes = request.getTransaction();
+            int changesCount = core.countChanges(changes);
             // ... if we have no changes from remote
-            if(core.countChanges(changes) == 0) {
+            if(changesCount == 0) {
                 // ... and we have no changes locally
                 String lastLocalRevisionId = lastLocalRevision != -1 ? String.valueOf(lastLocalRevision) : "FIRST";
                 if(fs.getLog(lastLocalRevisionId, "LAST", null, null, 1).size() == 0) {
@@ -261,8 +262,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             
             // setup the commit message and author
             transaction.putProperty(VersioningDataStore.AUTHOR, "gss");
-            transaction.putProperty(VersioningDataStore.MESSAGE, "Applied changes coming from " +
-                    "Central on layer '" + request.getTypeName().getLocalPart() + "'");
+            transaction.putProperty(VersioningDataStore.MESSAGE, "Applying " + changesCount 
+                    + " changes coming from Central on layer '" + tableName + "'");
 
             // grab the feature stores and bind them all to the same transaction
             VersioningFeatureStore conflicts = (VersioningFeatureStore) ds
