@@ -144,9 +144,6 @@ public class SynchronizationManager extends TimerTask {
                 try {
                     // build the transaction with the proper author and commit message
                     transaction = new DefaultTransaction();
-                    transaction.putProperty(VersioningDataStore.AUTHOR, "gss");
-                    transaction.putProperty(VersioningDataStore.MESSAGE, "Applying changes from Unit '" 
-                            + unitName + "' on table '" + tableName);
 
                     // get the last central revision the client knows about
                     GSSClient client = getClient(address, user, password);
@@ -181,7 +178,7 @@ public class SynchronizationManager extends TimerTask {
 
                     // what is the latest change on this layer? (worst case it's the last GetDiff
                     // from this Unit)
-                    long lastRevision = -1;
+                    long lastRevision = clientCentralRevision;
                     li = fs.getLog("LAST", fromRevision, null, null, 1).features();
                     if (li.hasNext()) {
                         lastRevision = (Long) li.next().getAttribute("revision");
@@ -203,7 +200,7 @@ public class SynchronizationManager extends TimerTask {
                     GetDiffResponseType gdr = client.getDiff(getDiff);
                     TransactionType unitChanges = gdr.getTransaction();
                     core.applyChanges(unitChanges, fs);
-
+                    
                     // mark down this layer as succesfully synchronised
                     FeatureStore<SimpleFeatureType, SimpleFeature> tuMetadata = (FeatureStore<SimpleFeatureType, SimpleFeature>) ds
                             .getFeatureSource(SYNCH_UNIT_TABLES);
@@ -237,6 +234,12 @@ public class SynchronizationManager extends TimerTask {
 
                     // mark the unit as succeffully updated
                     updateUnitStatus(ds, transaction, unitId, false);
+                    
+                    // the the commit log
+                    transaction.putProperty(VersioningDataStore.AUTHOR, "gss");
+                    transaction.putProperty(VersioningDataStore.MESSAGE, "Synchronizing with Unit '" 
+                            + unitName + "' on table '" + tableName + "': " + centralChangeCount 
+                            + " changes sent and " + unitChangeCount + " changes received");
 
                     // close up
                     transaction.commit();
