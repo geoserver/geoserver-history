@@ -142,7 +142,11 @@ public class SynchronizationManager extends TimerTask {
 
                 Transaction transaction = null;
                 try {
+                    // build the transaction with the proper author and commit message
                     transaction = new DefaultTransaction();
+                    transaction.putProperty(VersioningDataStore.AUTHOR, "gss");
+                    transaction.putProperty(VersioningDataStore.MESSAGE, "Applying changes from Unit '" 
+                            + unitName + "' on table '" + tableName);
 
                     // get the last central revision the client knows about
                     GSSClient client = getClient(address, user, password);

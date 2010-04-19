@@ -226,18 +226,47 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             // make sure all of the changes are applied in one hit, or none
             // very important, make sure all versioning writes use the same transaction or they
             // will deadlock each other
-
-            String tableName = request.getTypeName().getLocalPart();
             VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
                     .getDataStore(null);
+            
+            // see if there is anything at all to do, if both sides have no changes there
+            // is no point eating away a revision number (this avoid the local revision number to
+            // skyrocket for nothing if there are frequent synchronisations)
+            String tableName = request.getTypeName().getLocalPart();
+            VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(tableName);
+            FeatureStore history = (FeatureStore) ds.getFeatureSource(SYNCH_HISTORY);
+            PropertyIsEqualTo ftSyncRecord = ff.equals(ff.property("table_name"), ff.literal(tableName));
+            TransactionType changes = request.getTransaction();
+            // ... if we have no changes from remote
+            if(core.countChanges(changes) == 0) {
+                // ... and we have no changes locally
+                String lastLocalRevisionId = lastLocalRevision != -1 ? String.valueOf(lastLocalRevision) : "FIRST";
+                if(fs.getLog(lastLocalRevisionId, "LAST", null, null, 1).size() == 0) {
+                    // add a new record without the need to grab a new local revision
+                    // (if necessary, that is, if at least the Central revision changed)
+                    long newCentralRevision = request.getToVersion();
+                    if(lastCentralRevision != newCentralRevision) {
+                        SimpleFeatureType hft = (SimpleFeatureType) history.getSchema();
+                        SimpleFeature f = SimpleFeatureBuilder.build(hft, new Object[] { tableName,
+                                lastLocalRevision, newCentralRevision }, null);
+                        history.addFeatures(DataUtilities.collection(f));
+                    }
+                    
+                    // ... let's just return directly, no need to store or do anything
+                    return new PostDiffResponseType();
+                }
+            }
+            
+            // setup the commit message and author
+            transaction.putProperty(VersioningDataStore.AUTHOR, "gss");
+            transaction.putProperty(VersioningDataStore.MESSAGE, "Applied changes coming from " +
+                    "Central on layer '" + request.getTypeName().getLocalPart() + "'");
 
             // grab the feature stores and bind them all to the same transaction
             VersioningFeatureStore conflicts = (VersioningFeatureStore) ds
                     .getFeatureSource(SYNCH_CONFLICTS);
             conflicts.setTransaction(transaction);
-            FeatureStore history = (FeatureStore) ds.getFeatureSource(SYNCH_HISTORY);
             history.setTransaction(transaction);
-            VersioningFeatureStore fs = (VersioningFeatureStore) ds.getFeatureSource(tableName);
             fs.setTransaction(transaction);
 
             // get a hold on a revision number early so that we don't get concurrent changes
@@ -246,10 +275,9 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             long newLocalRevision = Long.parseLong(conflicts.getVersion());
 
             // apply changes
-            TransactionType changes = request.getTransaction();
             LOGGER.info("About to apply " + core.countChanges(changes)
                     + " changes coming from Central");
-            if (changes != null) {
+            if (core.countChanges(changes) > 0) {
                 List<DeleteElementType> deletes = changes.getDelete();
                 List<UpdateElementType> updates = changes.getUpdate();
 
@@ -268,9 +296,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 if (changedFids.size() > 0) {
                     // limit the changeset to the window between the last and the current
                     // synchronization
-                    String lastLocalRevisionId = lastLocalRevision != -1 ? String
-                            .valueOf(lastLocalRevision) : "FIRST";
                     String newLocalRevisionId = String.valueOf(newLocalRevision);
+                    String lastLocalRevisionId = lastLocalRevision != -1 ? String.valueOf(lastLocalRevision) : "FIRST";
                     FeatureDiffReader localChanges = fs.getDifferences(lastLocalRevisionId,
                             newLocalRevisionId, ff.id(changedFids), null);
                     while (localChanges.hasNext()) {
@@ -314,8 +341,6 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
             // save/update the synchronisation metadata
             long newCentralRevision = request.getToVersion();
-            PropertyIsEqualTo ftSyncRecord = ff.equals(ff.property("table_name"), ff
-                    .literal(tableName));
             SimpleFeatureType hft = (SimpleFeatureType) history.getSchema();
             SimpleFeature f = SimpleFeatureBuilder.build(hft, new Object[] { tableName,
                     newLocalRevision, newCentralRevision }, null);
