@@ -27,6 +27,7 @@ import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
+import net.opengis.wfs.WfsFactory;
 
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.catalog.Catalog;
@@ -243,9 +244,10 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                 String lastLocalRevisionId = lastLocalRevision != -1 ? String.valueOf(lastLocalRevision) : "FIRST";
                 if(fs.getLog(lastLocalRevisionId, "LAST", null, null, 1).size() == 0) {
                     // add a new record without the need to grab a new local revision
-                    // (if necessary, that is, if at least the Central revision changed)
+                    // (if necessary, that is, if at least the Central revision changed or if
+                    // we don't have a synch history at all)
                     long newCentralRevision = request.getToVersion();
-                    if(lastCentralRevision != newCentralRevision) {
+                    if(lastCentralRevision != newCentralRevision || record == null) {
                         SimpleFeatureType hft = (SimpleFeatureType) history.getSchema();
                         SimpleFeature f = SimpleFeatureBuilder.build(hft, new Object[] { tableName,
                                 lastLocalRevision, newCentralRevision }, null);
@@ -422,41 +424,48 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             }
             fi.close();
 
-            // gather the ids of the features still under conflict, we don't want to load their
-            // diffs
-            Filter nonConflictingFilter = getFidConflictFilter(tableName,
-                    getActiveConflicts(tableName));
-
-            // gather all of the diff readers for the non conflicting features
-            VersioningFeatureSource fs = (VersioningFeatureSource) ds.getFeatureSource(tableName);
-            FeatureDiffReader[] readers = new FeatureDiffReader[intervals.size() - 1];
-            for (int i = 1; i < intervals.size(); i++) {
-                // mind we need to skip the actual synch points, so we subtract 1
-                // from the revision number
-                String fromVersion = String.valueOf(intervals.get(i - 1));
-                String toVersion = String.valueOf(intervals.get(i) - 1);
-
-                Filter filter = nonConflictingFilter;
-                // skip over all the clean merges
-                Filter cleanMerges = getFidConflictFilter(tableName, getCleanMerges(tableName,
-                        intervals.get(i)));
-                if (cleanMerges != Filter.INCLUDE) {
-                    if (filter != Filter.INCLUDE) {
-                        filter = ff.and(cleanMerges, filter);
-                    } else {
-                        filter = cleanMerges;
+            TransactionType transaction;
+            if(intervals.size() > 1) {
+                // gather the ids of the features still under conflict, we don't want to load their
+                // diffs
+                Filter nonConflictingFilter = getFidConflictFilter(tableName,
+                        getActiveConflicts(tableName));
+    
+                // gather all of the diff readers for the non conflicting features
+                VersioningFeatureSource fs = (VersioningFeatureSource) ds.getFeatureSource(tableName);
+                FeatureDiffReader[] readers = new FeatureDiffReader[intervals.size() - 1];
+                for (int i = 1; i < intervals.size(); i++) {
+                    // mind we need to skip the actual synch points, so we subtract 1
+                    // from the revision number
+                    String fromVersion = String.valueOf(intervals.get(i - 1));
+                    String toVersion = String.valueOf(intervals.get(i) - 1);
+    
+                    Filter filter = nonConflictingFilter;
+                    // skip over all the clean merges
+                    Filter cleanMerges = getFidConflictFilter(tableName, getCleanMerges(tableName,
+                            intervals.get(i)));
+                    if (cleanMerges != Filter.INCLUDE) {
+                        if (filter != Filter.INCLUDE) {
+                            filter = ff.and(cleanMerges, filter);
+                        } else {
+                            filter = cleanMerges;
+                        }
                     }
+    
+                    readers[i - 1] = fs.getDifferences(fromVersion, toVersion, filter, null);
                 }
-
-                readers[i - 1] = fs.getDifferences(fromVersion, toVersion, filter, null);
+    
+                // now we need to merge the readers into a global set of changes, skip
+                // the changes on the conflicting features, and turn everything into a
+                // transaction (easy no?)
+                FeatureDiffReader differences = new MergingFeatureDiffReader(readers);
+                transaction = new VersioningTransactionConverter().convert(differences,
+                        TransactionType.class);
+            } else {
+                // no local changes to return, it happens only if we never had local changes
+                // in the current history
+                transaction = WfsFactory.eINSTANCE.createTransactionType();
             }
-
-            // now we need to merge the readers into a global set of changes, skip
-            // the changes on the conflicting features, and turn everything into a
-            // transaction (easy no?)
-            FeatureDiffReader differences = new MergingFeatureDiffReader(readers);
-            TransactionType transaction = new VersioningTransactionConverter().convert(differences,
-                    TransactionType.class);
             transaction.setReleaseAction(null);
             transaction.setVersion(null);
             transaction.setService(null);
