@@ -218,8 +218,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             }
 
             if (request.getFromVersion() > request.getToVersion()) {
-                throw new GSSException("Invalid toVersion, it should be higher than "
-                        + request.getToVersion(), GSSExceptionCode.InvalidParameterValue,
+                throw new GSSException("Invalid toVersion " + request.getToVersion() + ", it should be higher than fromVersion: "
+                        + request.getFromVersion(), GSSExceptionCode.InvalidParameterValue,
                         TO_VERSION);
             }
 
@@ -344,7 +344,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             try {
                 transaction.close();
             } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Tranaction close failed. This is unexpected", e);
+                LOGGER.log(Level.SEVERE, "Transaction close failed. This is unexpected", e);
             }
 
         }
