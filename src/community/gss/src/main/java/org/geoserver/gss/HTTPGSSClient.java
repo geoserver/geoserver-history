@@ -74,6 +74,7 @@ public class HTTPGSSClient implements GSSClient {
         this.client = client;
         this.username = username;
         this.password = password;
+        this.catalog = catalog;
     }
 
     public long getCentralRevision(QName layerName) throws IOException {
