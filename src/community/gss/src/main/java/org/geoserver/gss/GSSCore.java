@@ -54,7 +54,7 @@ public class GSSCore {
             + "table_name VARCHAR(256) NOT NULL,\n" //
             + "local_revision BIGINT NOT NULL,\n" //
             + "central_revision BIGINT,\n" //
-            + "unique(table_name, local_revision))";
+            + "unique(table_name, local_revision, central_revision))";
 
     static final String SYNCH_CONFLICTS = "synch_conflicts";
 
@@ -105,36 +105,21 @@ public class GSSCore {
 
     static final String SYNCH_OUTSTANDING_CREATION = //
     "CREATE VIEW synch_outstanding \n"
-            + //
-            "AS SELECT synch_tables.*, \n"
-            + //
-            "          synch_units.*, \n"
-            + //
-            "          synch_unit_tables.last_synchronization,\n"
-            + // 
-            "          synch_unit_tables.last_failure, \n"
-            + //
-            "          synch_unit_tables.getdiff_central_revision, \n"
-            + // 
-            "          synch_unit_tables.last_unit_revision\n"
-            + //
-            "FROM (synch_units inner join synch_unit_tables \n"
-            + //
-            "                  on synch_units.unit_id = synch_unit_tables.unit_id)\n"
-            + // 
-            "     inner join synch_tables \n"
-            + //
-            "     on synch_tables.table_id = synch_unit_tables.table_id\n"
-            + // 
-            "WHERE ((time_start < LOCALTIME AND LOCALTIME < time_end) \n"
-            + //
-            "        OR (time_start IS NULL) OR (time_end IS NULL))\n"
-            + //
-            "      AND ((now() - last_synchronization > synch_interval * interval '1 minute') \n"
-            + // 
-            "        OR last_synchronization IS NULL)\n"
-            + //
-            "      AND (last_failure is null OR"
+            + "AS SELECT synch_tables.*, \n"
+            + "          synch_units.*, \n"
+            + "          synch_unit_tables.last_synchronization,\n"
+            + "          synch_unit_tables.last_failure, \n"
+            + "          synch_unit_tables.getdiff_central_revision, \n"
+            + "          synch_unit_tables.last_unit_revision\n"
+            + "FROM (synch_units inner join synch_unit_tables \n"
+            + "                  on synch_units.unit_id = synch_unit_tables.unit_id)\n"
+            + "     inner join synch_tables \n"
+            + "     on synch_tables.table_id = synch_unit_tables.table_id\n"
+            + "WHERE ((time_start < LOCALTIME AND LOCALTIME < time_end) \n"
+            + "        OR (time_start IS NULL) OR (time_end IS NULL))\n"
+            + "      AND ((now() - last_synchronization > synch_interval * interval '1 minute') \n"
+            + "        OR last_synchronization IS NULL)\n"
+            + "      AND (last_failure is null OR"
             + "           now() - last_failure > synch_retry * interval '1 minute');\n"
             + "INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY')";
 
@@ -268,9 +253,9 @@ public class GSSCore {
      */
     public void applyChanges(TransactionType changes,
             FeatureStore<SimpleFeatureType, SimpleFeature> store) throws IOException {
-        if(changes == null)
+        if (changes == null)
             return;
-        
+
         List<DeleteElementType> deletes = changes.getDelete();
         List<UpdateElementType> updates = changes.getUpdate();
         List<InsertElementType> inserts = changes.getInsert();
@@ -303,15 +288,15 @@ public class GSSCore {
      * @return
      */
     public int countChanges(TransactionType changes) {
-        if(changes == null) {
+        if (changes == null) {
             return 0;
         }
-        
+
         int count = 0;
         count += changes.getDelete().size();
         count += changes.getUpdate().size();
         count += changes.getInsert().size();
-        
+
         return count;
     }
 

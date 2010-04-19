@@ -9,12 +9,16 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningDataStore;
+import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Id;
+import org.opengis.filter.PropertyIsEqualTo;
+import org.opengis.filter.sort.SortBy;
+import org.opengis.filter.sort.SortOrder;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -49,29 +53,73 @@ public class PostDiffTest extends GSSTestSupport {
         checkOws10Exception(dom, "InvalidParameterValue", "fromVersion");
     }
 
-    public void testEmpty() throws Exception {
+    public void testEmptyRepeated() throws Exception {
+        VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch").getDataStore(null);
+        VersioningFeatureSource restricted = (VersioningFeatureSource) synch.getFeatureSource("restricted");
+        long revisionStart = getLastRevision(restricted);
+        
         MockHttpServletResponse response = postAsServletResponse(root(true),
                 loadTextResource("PostDiffEmpty.xml"));
         checkPostDiffSuccessResponse(response);
-
+        
         // check the lasts known Central revision is updated
-        VersioningDataStore synch = (VersioningDataStore) getCatalog().getDataStoreByName("synch")
-                .getDataStore(null);
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = synch.getFeatureSource(SYNCH_HISTORY);
-        FeatureCollection fc = fs.getFeatures(ff.equals(ff.property("table_name"), ff
-                .literal("restricted")));
-        FeatureIterator fi = fc.features();
-        SimpleFeature f = (SimpleFeature) fi.next();
-        fi.close();
+        assertEquals(new Long(12), getLastCentralRevision(synch, "restricted"));
+        
+        // check we did not eat away a local revision number
+        long revisionAfterFirst = getLastRevision(restricted);
+        assertEquals(revisionStart, revisionAfterFirst);
+        
+        // execute a second empty update
+        response = postAsServletResponse(root(true), loadTextResource("PostDiffEmptySecond.xml"));
+        checkPostDiffSuccessResponse(response);
+        
+        // check the lasts known Central revision is updated
+        assertEquals(new Long(24), getLastCentralRevision(synch, "restricted"));
+        
+        // check we did not eat away a local revision number
+        long revisionAfterSecond = getLastRevision(restricted);
+        assertEquals(revisionStart, revisionAfterSecond);
+    }
 
-        assertEquals(12l, f.getAttribute("central_revision"));
+    Long getLastCentralRevision(VersioningDataStore synch, String tableName) throws IOException {
+        FeatureIterator<SimpleFeature> fi = null;
+        try {
+            FeatureSource<SimpleFeatureType, SimpleFeature> fs = synch.getFeatureSource(SYNCH_HISTORY);
+            PropertyIsEqualTo tableFilter = ff.equals(ff.property("table_name"), ff.literal(tableName));
+            DefaultQuery q = new DefaultQuery(SYNCH_HISTORY, tableFilter);
+            q.setSortBy(new SortBy[] {ff.sort("local_revision", SortOrder.DESCENDING), 
+                    ff.sort("central_revision", SortOrder.DESCENDING)});
+            q.setMaxFeatures(1);
+            fi = fs.getFeatures(q).features();
+            SimpleFeature f = (SimpleFeature) fi.next();
+            
+            return (Long) f.getAttribute("central_revision");
+        } finally {
+            if(fi != null) {
+                fi.close();
+            }
+        }
     }
     
-    public void testEmpty2() throws Exception {
+    long getLastRevision(VersioningFeatureSource fs) throws IOException {
+        FeatureIterator<SimpleFeature> fi = null;
+        try {
+            fi = fs.getLog("LAST", "FIRST", null, null, 1).features();
+            if(fi.hasNext()) {
+                return (Long) fi.next().getAttribute("revision");
+            } else {
+                return -1;
+            }
+        } finally {
+            fi.close();
+        }
+    }
+    
+    public void testEmptyTransaction() throws Exception {
         // a slightly different test for a failure encontered in real world testing
         // with a transaction element specified, but empty
         MockHttpServletResponse response = postAsServletResponse(root(true),
-                loadTextResource("PostDiffEmpty2.xml"));
+                loadTextResource("PostDiffEmptyTransaction.xml"));
         checkPostDiffSuccessResponse(response);
 
         // check the lasts known Central revision is updated
