@@ -166,7 +166,7 @@ class SLDTest extends JUnitSuite with MustMatchersForJUnit {
     vendor("goodnessOfFit") must be (Some("0.50"))
     vendor("conflictResolution") must be (Some("true"))
     vendor("removeOverlaps") must be (Some("false"))
-    vendor("allowOveruns") must be (Some("true"))
+    vendor("allowOverrun") must be (Some("true"))
     vendor("minGroupDistance") must be (Some("-1"))
     vendor("spaceAround") must be (Some("0"))
     vendor("group") must be (Some("false"))
