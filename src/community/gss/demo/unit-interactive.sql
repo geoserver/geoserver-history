@@ -62,7 +62,7 @@ CREATE TABLE synch_history(
   table_name VARCHAR(256) NOT NULL,
   local_revision BIGINT NOT NULL,
   central_revision BIGINT,
-  unique(table_name, local_revision));
+  unique(table_name, local_revision, central_revision));
   
 CREATE TABLE synch_conflicts(
   id SERIAL PRIMARY KEY,
