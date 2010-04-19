@@ -242,6 +242,8 @@ Geoserver Specific Enhanced Options
 
 The following options are all extensions of the SLD specification.  Using these options gives much more control over how the map looks, since the SLD standard isn't expressive enough to handle all the options one might want.  In time we hope to have them be an official part of the specification.  
 
+.. _labeling_priority:
+
 Priority Labeling (<Priority>)
 ``````````````````````````````
 
@@ -290,6 +292,8 @@ New York is labeled in preference to the less populated cities. Without priority
 
 Notice that larger cities are more readily named than smaller cities.
 
+.. _labeling_group:
+
 Grouping Geometries (<VendorOption name="group">)
 `````````````````````````````````````````````````
 
@@ -326,6 +330,8 @@ With the grouping option on, all the geometries with the same label are grouped 
 
 .. warning::  Watch out - you could group together two sets of features by accident. For example, you could create a single group for "Paris" which contains features for Paris (France) and Paris (Texas).
 
+.. _labeling_space_around:
+
 Overlapping and Separating Labels (<VendorOption name="spaceAround">)
 `````````````````````````````````````````````````````````````````````
 
@@ -356,6 +362,8 @@ With a spaceAround value of 10 for all TextSymbolizers, each label will be 20 pi
 
   You can have multiple TextSymbolizers in your SLD file, each with a different spaceAround option. This will normally do what you would think if all your spaceAround options are >=0. If you have negative values ('allow overlap') then these labels can overlap labels that you've said should not be overlapping. If you dont like this behavior, its not too difficult to change - feel free to submit a patch!
 
+.. _labeling_follow_line:
+
 followLine
 ``````````
 
@@ -373,6 +381,8 @@ It is required to use *<LinePlacement>* along with this option to ensure that al
     <LinePlacement/>
   </LabelPlacement>
 
+.. _labeling_max_displacement:
+
 maxDisplacement
 ```````````````
 
@@ -384,6 +394,7 @@ When used in conjunction with **repeat**, the value for **maxDisplacement** shou
 
   <VendorOption name="maxDisplacement">10</VendorOption> 
 
+.. _labeling_repeat:
 
 repeat
 ``````
@@ -395,6 +406,8 @@ The **repeat** option determines how often GeoServer labels a line. Normally Geo
   <VendorOption name="repeat">100</VendorOption>
 
 
+.. _labeling_all_group:
+
 labelAllGroup
 `````````````
 
@@ -404,6 +417,7 @@ The **labelAllGroup** option makes sure that all of the segments in a line group
 
   <VendorOption name="labelAllGroup">true</VendorOption>
 
+.. _labeling_max_angle_delta:
 
 maxAngleDelta
 `````````````
@@ -414,6 +428,7 @@ Designed to use used in conjuection with **followLine**, the **maxAngleDelta** o
 
   <VendorOption name="maxAngleDelta">15</VendorOption>
 
+.. _labeling_autowrap:
 
 autoWrap
 ````````
@@ -424,6 +439,7 @@ The **autoWrap** option wraps labels when they exceed the given value, given in 
 
   <VendorOption name="autoWrap">50</VendorOption>
 
+.. _labeling_force_left_to_right:
 
 forceLeftToRight
 ````````````````
@@ -436,6 +452,7 @@ The following setting disables label flipping, making the label always follow th
 
   <VendorOption name="forceLeftToRigth">false</VendorOption>
 
+.. _labeling_conflict_resolution:
 
 conflictResolution
 ``````````````````
@@ -445,6 +462,8 @@ By default labels are subjected to conflict resolution, meaning the renderer wil
 .. code-block:: xml
 
   <VendorOption name="conflictResolution">false</VendorOption>
+
+.. _labeling_goodness_of_fit:
 
 Goodness of Fit
 ---------------
