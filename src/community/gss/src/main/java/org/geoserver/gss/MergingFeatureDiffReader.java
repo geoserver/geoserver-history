@@ -79,7 +79,7 @@ class MergingFeatureDiffReader implements FeatureDiffReader {
      * 
      * @param delegates
      */
-    public MergingFeatureDiffReader(FeatureDiffReader[] delegates) throws IOException {
+    public MergingFeatureDiffReader(FeatureDiffReader... delegates) throws IOException {
         this.delegates = new FeatureDiffReader[delegates.length];
         System.arraycopy(delegates, 0, this.delegates, 0, delegates.length);
         this.featureRead = new boolean[delegates.length];
@@ -108,8 +108,8 @@ class MergingFeatureDiffReader implements FeatureDiffReader {
         advance();
         while (sortedFids.size() > 0) {
             nextDifference = buildNextDiff();
-            if (nextDifference.getState() != FeatureDiff.UPDATED
-                    || nextDifference.getChangedAttributes().size() > 0) {
+            if (nextDifference != null && (nextDifference.getState() != FeatureDiff.UPDATED
+                    || nextDifference.getChangedAttributes().size() > 0)) {
                 return true;
             } else {
                 // we grabbed the result of a revert over modifications -> two modification changes
@@ -159,10 +159,12 @@ class MergingFeatureDiffReader implements FeatureDiffReader {
             if (diff != null) {
                 if (diff.getState() == FeatureDiff.INSERTED) {
                     // is this the rollback of a removal?
-                    if (removed) {
-                        to = diff.getFeature();
+                    if(removed == true) {
+                        from = null;
+                        to = null;
                     } else {
-                        from = diff.getFeature();
+                        from = null;
+                        to = diff.getFeature();
                     }
                     removed = false;
                 } else if (diff.getState() == FeatureDiff.DELETED) {
@@ -187,6 +189,10 @@ class MergingFeatureDiffReader implements FeatureDiffReader {
                     to = diff.getFeature();
                 }
             }
+        }
+        
+        if(from == null && to == null) {
+            return null;
         }
 
         return new FeatureDiffImpl(from, to);
