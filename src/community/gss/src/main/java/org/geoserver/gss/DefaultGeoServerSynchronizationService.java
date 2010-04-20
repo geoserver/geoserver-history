@@ -145,7 +145,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             DefaultQuery q = new DefaultQuery();
             q.setFilter(ff.equal(ff.property("table_name"), ff.literal(typeName.getLocalPart()),
                     true));
-            q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING) });
+            q.setSortBy(new SortBy[] { ff.sort("central_revision", SortOrder.DESCENDING),
+                    ff.sort("local_revision", SortOrder.DESCENDING)});
             q.setMaxFeatures(1);
             fi = ds.getFeatureSource(SYNCH_HISTORY).getFeatures(q).features();
 
@@ -397,7 +398,8 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             long lastPostRevision = (Long) record.getAttribute("local_revision");
             if (request.getFromVersion() > lastPostRevision) {
                 throw new GSSException(
-                        "Invalid fromVersion, it's more recent than the latest PostDiff synchronisation",
+                        "Invalid fromVersion, " + request.getFromVersion() + ", it is more recent than " +
+                        		"the latest PostDiff synchronisation: " + lastPostRevision,
                         GSSExceptionCode.InvalidParameterValue, FROM_VERSION);
             }
 
