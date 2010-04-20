@@ -1,10 +1,7 @@
 package org.geoserver.web.admin;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -18,16 +15,10 @@ import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.LoggingInfo;
-import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerHomePage;
 
 public class GlobalSettingsPage extends ServerAdminPage {
     private static final long serialVersionUID = 4716657682337915996L;
-
-    static final List<String> DEFAULT_LOG_PROFILES = Arrays.asList("DEFAULT_LOGGING.properties",
-            "VERBOSE_LOGGING.properties", "PRODUCTION_LOGGING.properties",
-            "GEOTOOLS_DEVELOPER_LOGGING.properties", "GEOSERVER_DEVELOPER_LOGGING.properties");
 
     public GlobalSettingsPage() {
         final IModel globalInfoModel = getGlobalInfoModel();
@@ -70,28 +61,9 @@ public class GlobalSettingsPage extends ServerAdminPage {
     }
 
     private void logLevelsAppend(Form form, IModel loggingInfoModel) {
-        // search for *LOGGING.properties files in the data directory
-        GeoServerResourceLoader loader = GeoServerApplication.get().getBeanOfType(
-                GeoServerResourceLoader.class);
-        List<String> logProfiles = null;
-        try {
-            File logsDirectory = loader.find("logs");
-            if(logsDirectory.exists() && logsDirectory.isDirectory()) {
-                String[] propFiles = logsDirectory.list(new FilenameFilter() {
-                    
-                    public boolean accept(File dir, String name) {
-                        return name.toLowerCase().endsWith("logging.properties");
-                    }
-                });
-                logProfiles = Arrays.asList(propFiles);
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING,
-                    "Could not load the list of log configurations from the data directory", e);
-        }
-        // if none is found use the default set
-        if(logProfiles == null || logProfiles.size() == 0)
-            logProfiles = DEFAULT_LOG_PROFILES;
+        List<String> logProfiles = Arrays.asList("DEFAULT_LOGGING.properties",
+                "VERBOSE_LOGGING.properties", "PRODUCTION_LOGGING.properties",
+                "GEOTOOLS_DEVELOPER_LOGGING.properties", "GEOSERVER_DEVELOPER_LOGGING.properties");
 
         form.add(new ListChoice("log4jConfigFile", new PropertyModel(loggingInfoModel,
                 "level"), logProfiles));
