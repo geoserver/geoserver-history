@@ -36,7 +36,9 @@ public class DeveloperToolbar extends Panel {
             public void onClick(AjaxRequestTarget target) {
                 try {
                     GeoServerLoader loader = (GeoServerLoader) GeoServerApplication.get().getBean("geoServerLoader");
-                    loader.reload();
+                    synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+                        loader.reload();
+                    }
                     info("Catalog and configuration reloaded");
                 } catch(Exception e) {
                     error(e);
