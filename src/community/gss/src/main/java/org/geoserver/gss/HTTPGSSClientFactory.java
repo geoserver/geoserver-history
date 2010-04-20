@@ -36,6 +36,7 @@ public class HTTPGSSClientFactory implements DisposableBean, GSSClientFactory {
             // setting timeouts (one minute hard coded, TODO: make this configurable)
             params.setSoTimeout(60 * 1000);
             params.setConnectionTimeout(60 * 1000);
+            params.setDefaultMaxConnectionsPerHost(1);
             MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
             manager.setParams(params);
             client.setHttpConnectionManager(manager);
