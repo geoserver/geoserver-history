@@ -21,7 +21,9 @@ import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.ConfigurationListenerAdapter;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.ServiceInfo;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataUtilities;
@@ -130,8 +132,35 @@ public class GSSCore {
 
     public GSSCore(GeoServer geoServer) {
         this.geoServer = geoServer;
+
+        // try to version enable the tables that need to
+        versionEnableTables();
+
+        // add a listener that will try to version enable tables on config changes
+        geoServer.addListener(new ConfigurationListenerAdapter() {
+            
+            @Override
+            public void handlePostServiceChange(ServiceInfo service) {
+                if (service instanceof GSSInfo) {
+                    versionEnableTables();
+                }
+            }
+            
+            @Override
+            public void handlePostGlobalChange(org.geoserver.config.GeoServerInfo global) {
+                versionEnableTables();
+            }
+        });
     }
-    
+
+    void versionEnableTables() {
+        try {
+            ensureEnabled();
+        } catch (Exception e) {
+            // nothing to do really, the service might not be configured enough
+        }
+    }
+
     GSSInfo getServiceInfo() {
         return geoServer.getService(GSSInfo.class);
     }
@@ -142,7 +171,7 @@ public class GSSCore {
      */
     void ensureEnabled() {
         GSSInfo info = getServiceInfo();
-        
+
         // basic sanity checks on the config
         if (info == null) {
             throw new GSSException("The service is not properly configured, gssInfo not found");
@@ -253,34 +282,36 @@ public class GSSCore {
             throw new GSSException("gss configured in Unit mode, won't do synchronisation services");
         }
     }
-    
+
     /**
      * Finds the versioning datastore configured for this service
+     * 
      * @return
      * @throws IOException
      */
     public VersioningDataStore getVersioningStore() throws IOException {
         return (VersioningDataStore) getServiceInfo().getVersioningDataStore().getDataStore(null);
     }
-    
+
     /**
      * Returns the datastore configuration for this service
+     * 
      * @return
      * @throws IOException
      */
     public DataStoreInfo getVersioningStoreInfo() {
         return getServiceInfo().getVersioningDataStore();
     }
-    
+
     /**
      * Returns the operation mode
+     * 
      * @return
      */
     public GSSMode getMode() {
         return getServiceInfo().getMode();
     }
 
-    
     /**
      * Applies the specified transaction to the provided feature store
      * 

@@ -91,12 +91,12 @@ public class SynchronizationManager extends TimerTask {
      * @throws IOException
      */
     public void synchronizeOustandlingLayers() throws IOException {
+        // make sure we're properly configured
+        core.ensureEnabled();
+        
         if (core.getMode() != GSSMode.Central) {
             return;
         }
-
-        // make sure we're running in "Central" mode
-        core.ensureCentralEnabled();
 
         FeatureIterator<SimpleFeature> fi = null;
         FeatureIterator<SimpleFeature> li = null;
