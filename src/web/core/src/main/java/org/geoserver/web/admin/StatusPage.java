@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.media.jai.JAI;
 
@@ -14,7 +15,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.config.JAIInfo;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
@@ -117,6 +120,25 @@ public class StatusPage extends ServerAdminPage {
                 }
                 catch( Exception e ) {
                     error(e);
+                }
+                target.addComponent(feedbackPanel);
+            }
+        });
+        
+        add(new AjaxLink("reload.catalogConfig") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                try {
+                    GeoServerLoader loader = GeoServerExtensions.bean(GeoServerLoader.class);
+                    synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+                        getCatalog().getResourcePool().dispose();
+                        loader.reload();
+                        
+                        info(getLocalizer().getString("catalogConfigReloadedSuccessfully", StatusPage.this));
+                    }
+                } catch(Exception e) {
+                    LOGGER.log(Level.SEVERE, "An error occurred while reloading the catalog", e);
+                    error(e.getMessage());
                 }
                 target.addComponent(feedbackPanel);
             }

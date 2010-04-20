@@ -68,6 +68,11 @@
     	<td class="actions"></td>
     </tr>
     <tr class="even">
+    	<th scope="row"><wicket:message key="updateSequence">Update Sequence</wicket:message></th>
+    	<td wicket:id="updateSequence">N/A</td>
+    	<td class="actions"></td>
+    </tr>
+    <tr class="odd">
         <th scope="row"><wicket:message key="resourceCache">Resource Cache</wicket:message></th>
         <td></td>
         <td class="actions">
@@ -77,10 +82,15 @@
           </div>
         </td>
     </tr>
-    <tr class="odd">
-    	<th scope="row"><wicket:message key="updateSequence">Update Sequence</wicket:message></th>
-    	<td wicket:id="updateSequence">N/A</td>
-    	<td class="actions"></td>
+    <tr class="even">
+        <th scope="row"><wicket:message key="catalogConfig">Catalog and configuration</wicket:message></th>
+        <td></td>
+        <td class="actions">
+          <div class="button-group selfclear">
+            <a href="#" wicket:id="reload.catalogConfig"><wicket:message key="reload">Reload</wicket:message>
+            </a>
+          </div>
+        </td>
     </tr>
   </tbody>
 </table>
