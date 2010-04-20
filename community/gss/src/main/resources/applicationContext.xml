@@ -6,25 +6,10 @@
 	  <constructor-arg ref="resourceLoader"/>
 	</bean>
     
-	<!-- wfs service -->
-	<bean id="gssServiceTarget" class="org.geoserver.gss.DefaultGeoServerSynchronizationService">
+	<!-- gss service -->
+	<bean id="gssService" class="org.geoserver.gss.DefaultGeoServerSynchronizationService">
 		<constructor-arg index="0" ref="geoServer"/>
         <constructor-arg index="1" ref="gssXmlConfiguration"/>
-	</bean>
-
-    <bean id="gssLogger" class="org.geoserver.ows.util.EMFLogger">
-      <constructor-arg type="java.lang.String" value="org.geoserver.gss"/>
-    </bean>
-	<bean id="gssService" class="org.springframework.aop.framework.ProxyFactoryBean">
-	  <property name="proxyInterfaces">
-	  	<value>org.geoserver.gss.GeoServerSynchronizationService</value>
-	  </property>
-	  <property name="interceptorNames">
-	  	<list>
-	  		<value>gssLogger</value>
-	  		<value>gssServiceTarget</value>
-	  	</list>
-	  </property>
 	</bean>
   
 	<!-- service descriptors -->

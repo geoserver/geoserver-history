@@ -4,13 +4,18 @@
  */
 package org.geoserver.gss;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
@@ -27,11 +32,13 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.gss.CentralRevisionsType.LayerRevision;
 import org.geoserver.gss.xml.GSS;
 import org.geoserver.gss.xml.GSSConfiguration;
+import org.geotools.util.logging.Logging;
 import org.geotools.xml.Encoder;
 import org.geotools.xml.Parser;
 import org.opengis.feature.simple.SimpleFeature;
@@ -45,6 +52,8 @@ import org.xml.sax.helpers.NamespaceSupport;
  * 
  */
 public class HTTPGSSClient implements GSSClient {
+    
+    static final Logger LOGGER = Logging.getLogger(HTTPGSSClient.class);
 
     HttpClient client;
 
@@ -165,6 +174,24 @@ public class HTTPGSSClient implements GSSClient {
     Object executeMethod(HttpMethod method) throws IOException {
         Object response;
         try {
+            if(LOGGER.isLoggable(Level.FINE)) {
+                if(method instanceof GetMethod) {
+                    GetMethod gm = (GetMethod) method;
+                    LOGGER.fine("Sending GET request: " + method.getURI());
+                } else if(method instanceof PostMethod) {
+                    PostMethod pm = (PostMethod) method;
+                    XMLEntity entity = (XMLEntity) pm.getRequestEntity();
+                    String request = entity.toString();
+                    LOGGER.fine("Sending POST request: " + method.getURI() + "\n" 
+                            + request);
+                    // ugly, but Encoder cannot be reused, so we have to set a new entity
+                    // that uses the already generated string
+                    pm.setRequestEntity(new StringRequestEntity(request, "text/xml", "UTF-8"));
+                } else {
+                    LOGGER.fine("Sending unknown method type : " + method);
+                }
+            }
+            
             // plain execution
             int statusCode = client.executeMethod(method);
 
@@ -177,7 +204,15 @@ public class HTTPGSSClient implements GSSClient {
             Parser parser = new Parser(configuration);
             parser.setStrict(true);
             parser.setFailOnValidationError(true);
-            response = parser.parse(method.getResponseBodyAsStream());
+            InputStream is;
+            if(LOGGER.isLoggable(Level.FINE)) {
+                String responseString = method.getResponseBodyAsString();
+                LOGGER.log(Level.FINE, "Response from Unit: " + responseString);
+                is = new ByteArrayInputStream(responseString.getBytes());
+            } else {
+                is = method.getResponseBodyAsStream();
+            }
+            response = parser.parse(is);
         } catch (Exception e) {
             throw (IOException) new IOException("Error occurred while executing "
                     + "a call to the Unit").initCause(e);
@@ -277,7 +312,21 @@ public class HTTPGSSClient implements GSSClient {
         public void writeRequest(OutputStream os) throws IOException {
             encoder.encode(object, element, os);
         }
+        
+        @Override
+        public String toString() {
+            try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                encoder.setIndenting(true);
+                encoder.encode(object, element, bos);
+                return bos.toString();
+            } catch(IOException e) {
+                return "XMLEntity toString failed: " + e.getMessage();
+            }
+        }
 
     }
-
+    
+    
+    
 }
