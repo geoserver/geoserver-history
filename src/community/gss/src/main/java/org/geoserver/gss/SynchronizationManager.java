@@ -174,10 +174,10 @@ public class SynchronizationManager extends TimerTask {
 
                     // what is the latest change on this layer? (worst case it's the last GetDiff
                     // from this Unit)
-                    long lastRevision = clientCentralRevision;
+                    long lastCentralRevision = clientCentralRevision;
                     li = fs.getLog("LAST", fromRevision, null, null, 1).features();
                     if (li.hasNext()) {
-                        lastRevision = (Long) li.next().getAttribute("revision");
+                        lastCentralRevision = (Long) li.next().getAttribute("revision");
                     }
                     li.close();
 
@@ -185,13 +185,13 @@ public class SynchronizationManager extends TimerTask {
                     PostDiffType postDiff = new PostDiffType();
                     postDiff.setTypeName(layerName);
                     postDiff.setFromVersion(clientCentralRevision);
-                    postDiff.setToVersion(lastRevision);
+                    postDiff.setToVersion(lastCentralRevision);
                     postDiff.setTransaction(centralChanges);
                     client.postDiff(postDiff);
 
                     // grab the changes from the client and apply them locally
                     GetDiffType getDiff = new GetDiffType();
-                    getDiff.setFromVersion(lastUnitRevision == null ? -1 : lastRevision);
+                    getDiff.setFromVersion(lastUnitRevision == null ? -1 : lastUnitRevision);
                     getDiff.setTypeName(layerName);
                     GetDiffResponseType gdr = client.getDiff(getDiff);
                     TransactionType unitChanges = gdr.getTransaction();
