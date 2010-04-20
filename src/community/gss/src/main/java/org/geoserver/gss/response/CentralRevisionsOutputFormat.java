@@ -44,6 +44,7 @@ public class CentralRevisionsOutputFormat extends Response {
             ServiceException {
         CentralRevisionsType cr = (CentralRevisionsType) value;
         Encoder encoder = new Encoder(configuration, gss.getSchema());
+        encoder.setIndenting(true);
 
         // declare namespaces to make the output validate
         for (LayerRevision l : cr.getLayerRevisions()) {
