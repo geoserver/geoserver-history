@@ -43,6 +43,7 @@ public class GetDiffResponseOutputFormat extends Response {
             ServiceException {
         GetDiffResponseType response = (GetDiffResponseType) value;
         Encoder encoder = new Encoder(configuration, gss.getSchema());
+        encoder.setIndenting(true);
 
         encoder.encode(response, GSS.GetDiffResponse, output);
     }
