@@ -177,12 +177,12 @@ public class HTTPGSSClient implements GSSClient {
             if(LOGGER.isLoggable(Level.FINE)) {
                 if(method instanceof GetMethod) {
                     GetMethod gm = (GetMethod) method;
-                    LOGGER.fine("Sending GET request: " + method.getURI());
+                    LOGGER.fine("Sending GET request:\n " + method.getURI());
                 } else if(method instanceof PostMethod) {
                     PostMethod pm = (PostMethod) method;
                     XMLEntity entity = (XMLEntity) pm.getRequestEntity();
                     String request = entity.toString();
-                    LOGGER.fine("Sending POST request: " + method.getURI() + "\n" 
+                    LOGGER.fine("Sending POST request:\n " + method.getURI() + "\n" 
                             + request);
                     // ugly, but Encoder cannot be reused, so we have to set a new entity
                     // that uses the already generated string
@@ -207,7 +207,7 @@ public class HTTPGSSClient implements GSSClient {
             InputStream is;
             if(LOGGER.isLoggable(Level.FINE)) {
                 String responseString = method.getResponseBodyAsString();
-                LOGGER.log(Level.FINE, "Response from Unit: " + responseString);
+                LOGGER.log(Level.FINE, "Response from Unit:\n" + responseString);
                 is = new ByteArrayInputStream(responseString.getBytes());
             } else {
                 is = method.getResponseBodyAsStream();

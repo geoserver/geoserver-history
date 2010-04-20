@@ -98,11 +98,6 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         this.catalog = geoServer.getCatalog();
         this.configuration = configuration;
         this.core = new GSSCore(geoServer);
-        try {
-            core.ensureEnabled();
-        } catch(Exception e) {
-            
-        }
     }
 
     /**
