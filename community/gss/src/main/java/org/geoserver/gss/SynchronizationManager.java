@@ -60,16 +60,13 @@ public class SynchronizationManager extends TimerTask {
 
     Catalog catalog;
 
-    GSSInfo info;
-
     GSSCore core;
 
     GSSClientFactory clientFactory;
 
     public SynchronizationManager(GeoServer geoServer, GSSClientFactory clientFactory) {
         this.catalog = geoServer.getCatalog();
-        this.info = geoServer.getService(GSSInfo.class);
-        this.core = new GSSCore(info);
+        this.core = new GSSCore(geoServer);
         this.clientFactory = clientFactory;
     }
 
@@ -94,7 +91,7 @@ public class SynchronizationManager extends TimerTask {
      * @throws IOException
      */
     public void synchronizeOustandlingLayers() throws IOException {
-        if (info.getMode() != GSSMode.Central) {
+        if (core.getMode() != GSSMode.Central) {
             return;
         }
 
@@ -105,8 +102,7 @@ public class SynchronizationManager extends TimerTask {
         FeatureIterator<SimpleFeature> li = null;
         try {
             // grab the layers to be synchronised
-            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
-                    .getDataStore(null);
+            VersioningDataStore ds = core.getVersioningStore();
             FeatureSource<SimpleFeatureType, SimpleFeature> outstanding = ds
                     .getFeatureSource(SYNCH_OUTSTANDING);
             DefaultQuery q = new DefaultQuery(SYNCH_OUTSTANDING);
@@ -316,7 +312,7 @@ public class SynchronizationManager extends TimerTask {
      * @return
      */
     QName getLayerName(String tableName) {
-        String wsName = info.getVersioningDataStore().getWorkspace().getName();
+        String wsName = core.getVersioningStoreInfo().getWorkspace().getName();
         NamespaceInfo ns = catalog.getNamespaceByPrefix(wsName);
         return new QName(ns.getURI(), tableName, ns.getPrefix());
     }

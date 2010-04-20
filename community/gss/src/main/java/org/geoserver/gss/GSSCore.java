@@ -20,11 +20,14 @@ import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 
+import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServer;
 import org.geoserver.gss.GSSInfo.GSSMode;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
+import org.geotools.data.VersioningDataStore;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.data.postgis.VersionedPostgisDataStore;
 import org.geotools.feature.FeatureIterator;
@@ -123,10 +126,14 @@ public class GSSCore {
             + "           now() - last_failure > synch_retry * interval '1 minute');\n"
             + "INSERT INTO geometry_columns VALUES('', 'public', 'synch_outstanding', 'geom', 2, 4326, 'GEOMETRY')";
 
-    GSSInfo info;
+    GeoServer geoServer;
 
-    public GSSCore(GSSInfo info) {
-        this.info = info;
+    public GSSCore(GeoServer geoServer) {
+        this.geoServer = geoServer;
+    }
+    
+    GSSInfo getServiceInfo() {
+        return geoServer.getService(GSSInfo.class);
     }
 
     /**
@@ -134,6 +141,8 @@ public class GSSCore {
      * the ckecks for every request
      */
     void ensureEnabled() {
+        GSSInfo info = getServiceInfo();
+        
         // basic sanity checks on the config
         if (info == null) {
             throw new GSSException("The service is not properly configured, gssInfo not found");
@@ -232,7 +241,7 @@ public class GSSCore {
     public void ensureUnitEnabled() {
         ensureEnabled();
 
-        if (info.getMode() != GSSMode.Unit) {
+        if (getServiceInfo().getMode() != GSSMode.Unit) {
             throw new GSSException("gss configured in Central mode, won't do Unit service calls");
         }
     }
@@ -240,11 +249,38 @@ public class GSSCore {
     public void ensureCentralEnabled() {
         ensureEnabled();
 
-        if (info.getMode() != GSSMode.Central) {
+        if (getServiceInfo().getMode() != GSSMode.Central) {
             throw new GSSException("gss configured in Unit mode, won't do synchronisation services");
         }
     }
+    
+    /**
+     * Finds the versioning datastore configured for this service
+     * @return
+     * @throws IOException
+     */
+    public VersioningDataStore getVersioningStore() throws IOException {
+        return (VersioningDataStore) getServiceInfo().getVersioningDataStore().getDataStore(null);
+    }
+    
+    /**
+     * Returns the datastore configuration for this service
+     * @return
+     * @throws IOException
+     */
+    public DataStoreInfo getVersioningStoreInfo() {
+        return getServiceInfo().getVersioningDataStore();
+    }
+    
+    /**
+     * Returns the operation mode
+     * @return
+     */
+    public GSSMode getMode() {
+        return getServiceInfo().getMode();
+    }
 
+    
     /**
      * Applies the specified transaction to the provided feature store
      * 

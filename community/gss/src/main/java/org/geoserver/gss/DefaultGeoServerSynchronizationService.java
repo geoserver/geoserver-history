@@ -89,8 +89,6 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
 
     Catalog catalog;
 
-    GSSInfo info;
-
     GSSConfiguration configuration;
 
     GSSCore core;
@@ -98,9 +96,13 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
     public DefaultGeoServerSynchronizationService(GeoServer geoServer,
             GSSConfiguration configuration) {
         this.catalog = geoServer.getCatalog();
-        this.info = geoServer.getService(GSSInfo.class);
         this.configuration = configuration;
-        this.core = new GSSCore(info);
+        this.core = new GSSCore(geoServer);
+        try {
+            core.ensureEnabled();
+        } catch(Exception e) {
+            
+        }
     }
 
     /**
@@ -138,8 +140,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         FeatureIterator<SimpleFeature> fi = null;
         try {
             // get the versioning data store
-            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
-                    .getDataStore(null);
+            VersioningDataStore ds = core.getVersioningStore();
 
             // gather the record from the synch history table
             DefaultQuery q = new DefaultQuery();
@@ -185,8 +186,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
         }
 
         // get the versioning data store
-        VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore().getDataStore(
-                null);
+        VersioningDataStore ds = core.getVersioningStore();
 
         // check the table is actually synch-ed
         DefaultQuery q = new DefaultQuery();
@@ -228,8 +228,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             // make sure all of the changes are applied in one hit, or none
             // very important, make sure all versioning writes use the same transaction or they
             // will deadlock each other
-            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
-                    .getDataStore(null);
+            VersioningDataStore ds = core.getVersioningStore();
             
             // see if there is anything at all to do, if both sides have no changes there
             // is no point eating away a revision number (this avoid the local revision number to
@@ -404,8 +403,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
             }
 
             // ok, we need to find what revisions we have to jump over (the synch ones)
-            VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore()
-                    .getDataStore(null);
+            VersioningDataStore ds = core.getVersioningStore();
 
             // gather all records in the synch history that happened after the requested revision
             DefaultQuery q = new DefaultQuery();
@@ -730,8 +728,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
      */
     FeatureCollection<SimpleFeatureType, SimpleFeature> getActiveConflicts(String tableName)
             throws IOException {
-        VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore().getDataStore(
-                null);
+        VersioningDataStore ds = core.getVersioningStore();
         VersioningFeatureSource conflicts = (VersioningFeatureSource) ds
                 .getFeatureSource(SYNCH_CONFLICTS);
 
@@ -745,8 +742,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
      */
     FeatureCollection<SimpleFeatureType, SimpleFeature> getCleanMerges(String tableName,
             long revision) throws IOException {
-        VersioningDataStore ds = (VersioningDataStore) info.getVersioningDataStore().getDataStore(
-                null);
+        VersioningDataStore ds = core.getVersioningStore();
         VersioningFeatureSource conflicts = (VersioningFeatureSource) ds
                 .getFeatureSource(SYNCH_CONFLICTS);
 
