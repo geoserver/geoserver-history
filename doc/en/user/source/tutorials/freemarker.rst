@@ -10,7 +10,7 @@ This tutorial will introduce you to a more in depth view of what FreeMarker temp
 
 `Freemarker <http://www.freemarker.org/>`_ is a simple yet powerful template engine that GeoServer uses whenever developer allowed user customization of outputs. In particular, at the time of writing it's used to allow customization of GetFeatureInfo, GeoRSS and KML outputs.
 
-Freemarker allows for simple variable expansions, as in ``$\{myVarName\}``, expansion of nested properties, such as in ``$\{feature.myAtt.value\}``, up to little programs using loops, ifs and variables.
+Freemarker allows for simple variable expansions, as in ``${myVarName}``, expansion of nested properties, such as in ``${feature.myAtt.value}``, up to little programs using loops, ifs and variables.
 Most of the relevant information about how to approach template writing is included in the Freemarker's `Designer guide <http://www.freemarker.org/docs/dgui.html>`_ and won't be repeated here: the guide, along with the :ref:`getutorial_kmlplacemark` and :ref:`tutorials_getfeatureinfo` tutorials should be good enough to give you a good grip on how a template is built.
 
 Template Lookup
@@ -33,7 +33,7 @@ Freemarker calls "data model" the set of data provided to the template. Each out
 The data model is a sort of a tree, where each element has a name and a type. Besides basic types, we'll use:
 
 * list: a flat list of items that you can scan thru using the FreeMarker ``<#list>`` directive;
-* map: a key/value map, that you usually access using the dot notation, as in ``$\{myMap.myKey\``}, and can be nested;
+* map: a key/value map, that you usually access using the dot notation, as in ``${myMap.myKey``}, and can be nested;
 * listMap: a special construct that is, at the same time, a Map, and a list of the values.
 
 Here are the three data models (as you can see there are redundancies, in particular in attributes, we chose this approach to make template building easier):
@@ -59,6 +59,7 @@ Here are the three data models (as you can see there are redundancies, in partic
   * value: the attribute value (as a string)
 
 * type (map)  
+
   * name (string): the type name (same as typeName)
   * title (string): The title configured in the admin console
   * abstract (string): The abstract for the type
