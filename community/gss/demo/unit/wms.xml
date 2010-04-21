@@ -1,6 +1,6 @@
 <wms>
   <id>wms</id>
-  <enabled>false</enabled>
+  <enabled>true</enabled>
   <name>WMS</name>
   <title>GeoServer Web Map Service</title>
   <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>

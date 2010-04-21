@@ -1,6 +1,5 @@
 <wfs>
   <id>wfs</id>
-  <enabled>false</enabled>
   <name>WFS</name>
   <title>GeoServer Web Feature Service</title>
   <maintainer>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10311</maintainer>
