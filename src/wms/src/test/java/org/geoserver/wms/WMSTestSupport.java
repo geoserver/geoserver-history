@@ -64,6 +64,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         super.oneTimeSetUp();
         
         Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
         getTestData().registerNamespaces(namespaces);
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
