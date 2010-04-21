@@ -1,22 +1,17 @@
 package org.vfny.geoserver.wms.responses;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import junit.framework.Test;
+import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLUnit.*;
 
-import org.geoserver.data.test.MockData;
-import org.geoserver.wms.WMSTestSupport;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.AttributionInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.config.GeoServerInfo;
+import org.geoserver.catalog.StyleInfo;
+import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
 public class GetCapabilitiesTest extends WMSTestSupport {
-    /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
- //    public static Test suite() {
-//         return new OneTimeTestSetup(new GetCapabilitiesTest());
-  //   }
     
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
@@ -64,7 +59,7 @@ public class GetCapabilitiesTest extends WMSTestSupport {
         getCatalog().save(points);
 
         doc = getAsDOM("wms?service=WMS&request=getCapabilities", true);
-        print(doc);
+        // print(doc);
         assertXpathEvaluatesTo("1", "count(//Attribution)", doc);
         assertXpathEvaluatesTo("1", "count(//Attribution/Title)", doc);
         assertXpathEvaluatesTo("1", "count(//Attribution/OnlineResource)", doc);
@@ -78,9 +73,33 @@ public class GetCapabilitiesTest extends WMSTestSupport {
         getCatalog().save(points);
 
         doc = getAsDOM("wms?service=WMS&request=getCapabilities", true);
-        print(doc);
+        // print(doc);
         assertXpathEvaluatesTo("1", "count(//Attribution)", doc);
         assertXpathEvaluatesTo("1", "count(//Attribution/Title)", doc);
         assertXpathEvaluatesTo("1", "count(//Attribution/LogoURL)", doc);
+    }
+    
+    public void testAlternateStyles() throws Exception {
+        // add an alternate style to Fifteen
+        StyleInfo pointStyle = getCatalog().getStyleByName("point");
+        LayerInfo layer = getCatalog().getLayerByName("Fifteen");
+        layer.getStyles().add(pointStyle);
+        getCatalog().save(layer);
+        
+        Document doc = getAsDOM("wms?service=WMS&request=getCapabilities", true);
+        print(doc);
+        
+        assertXpathEvaluatesTo("1", "count(//Layer[Name='cdf:Fifteen'])", doc);
+        assertXpathEvaluatesTo("2", "count(//Layer[Name='cdf:Fifteen']/Style)", doc);
+        
+        XpathEngine xpath = newXpathEngine();
+        String href = xpath.evaluate("//Layer[Name='cdf:Fifteen']/Style[Name='Default']/LegendURL/OnlineResource/@xlink:href", doc);
+        assertTrue(href.contains("GetLegendGraphic"));
+        assertTrue(href.contains("layer=Fifteen"));
+        assertFalse(href.contains("style"));
+        href = xpath.evaluate("//Layer[Name='cdf:Fifteen']/Style[Name='point']/LegendURL/OnlineResource/@xlink:href", doc);
+        assertTrue(href.contains("GetLegendGraphic"));
+        assertTrue(href.contains("layer=Fifteen"));
+        assertTrue(href.contains("style=point"));
     }
 }
