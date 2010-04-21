@@ -155,17 +155,19 @@ public class SynchronizationManager extends TimerTask {
                     String fromRevision = clientCentralRevision == -1 ? "FIRST" : String
                             .valueOf(clientCentralRevision);
                     TransactionType centralChanges;
-                    if (getDiffCentralRevision == null) {
-                        // first time
+                    LOGGER.log(Level.INFO, "About to compute PostDiff changes. Last central revision known to client " + clientCentralRevision + ", last GetDiff central revision " + getDiffCentralRevision);
+                    if (getDiffCentralRevision == null || clientCentralRevision >= getDiffCentralRevision) {
+                        // either first time or we don't need to make jumps
+                        LOGGER.log(Level.INFO, "First PostDiff or clientRevion same as the last central one, computing diff from " + fromRevision +  " to LAST");
                         FeatureDiffReader fdr = fs.getDifferences(fromRevision, "LAST", null, null);
                         centralChanges = new VersioningTransactionConverter().convert(fdr,
                                 TransactionType.class);
-                    } else {
+                    } else  {
                         // we need to jump over the last local changes
                         String before = String.valueOf(getDiffCentralRevision - 1);
                         String after = String.valueOf(getDiffCentralRevision);
-                        FeatureDiffReader fdr1 = fs
-                                .getDifferences(fromRevision, before, null, null);
+                        LOGGER.log(Level.INFO, "Client revision lower than the server one, computing diff from " + fromRevision +  " to " + before + " and merging with diffs from " + after + " to LAST");
+                        FeatureDiffReader fdr1 = fs.getDifferences(fromRevision, before, null, null);
                         FeatureDiffReader fdr2 = fs.getDifferences(after, "LAST", null, null);
                         FeatureDiffReader[] fdr = new FeatureDiffReader[] { fdr1, fdr2 };
                         centralChanges = new VersioningTransactionConverter().convert(fdr,
