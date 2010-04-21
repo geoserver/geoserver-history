@@ -13,11 +13,14 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.custommonkey.xmlunit.SimpleNamespaceContext;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
@@ -54,6 +57,15 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      */
     protected WMS getWMS() {
         return new WMS(getGeoServer());
+    }
+    
+    @Override
+    protected void oneTimeSetUp() throws Exception {
+        super.oneTimeSetUp();
+        
+        Map<String, String> namespaces = new HashMap<String, String>();
+        namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
     
     @Override

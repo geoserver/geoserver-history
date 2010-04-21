@@ -758,7 +758,7 @@ public class WMSCapsTransformer extends TransformerBase {
             element("Name", defaultStyle.getName());
             element("Title", ftStyle.getTitle());
             element("Abstract", ftStyle.getAbstract());
-            handleLegendURL(layer.getName(), layer.getLegend());
+            handleLegendURL(layer.getName(), layer.getLegend(), null);
             end("Style");
 
             Set<StyleInfo> styles = layer.getStyles();
@@ -773,7 +773,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 element("Name", styleInfo.getName());
                 element("Title", ftStyle.getTitle());
                 element("Abstract", ftStyle.getAbstract());
-                handleLegendURL(layer.getName(), layer.getLegend());
+                handleLegendURL(layer.getName(), null, styleInfo);
                 end("Style");
             }
 
@@ -890,7 +890,7 @@ public class WMSCapsTransformer extends TransformerBase {
          * @task TODO: figure out how to unhack legend parameters such as WIDTH,
          *       HEIGHT and FORMAT
          */
-        protected void handleLegendURL(String layerName, LegendInfo legend) {
+        protected void handleLegendURL(String layerName, LegendInfo legend, StyleInfo style) {
             if (legend != null) {
                 if (LOGGER.isLoggable(Level.FINE)) {
                     LOGGER.fine("using user supplied legend URL");
@@ -963,6 +963,9 @@ public class WMSCapsTransformer extends TransformerBase {
                         "width", String.valueOf(GetLegendGraphicRequest.DEFAULT_WIDTH),
                         "height", String.valueOf(GetLegendGraphicRequest.DEFAULT_HEIGHT),
                         "layer", layerName);
+                if(style != null) {
+                    params.put("style", style.getName());
+                }
                 String legendURL = buildURL(request.getBaseUrl(), "wms", params, URLType.SERVICE);
 
                 attrs.addAttribute("", "xmlns:xlink", "xmlns:xlink", "", XLINK_NS);
