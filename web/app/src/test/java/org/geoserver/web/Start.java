@@ -34,11 +34,7 @@ public class Start {
         try {
             jettyServer = new Server();
 
-            // don't even think of serving more than XX requests in parallel... we
-            // have a limit in our processing and memory capacities
-            BoundedThreadPool tp = new BoundedThreadPool();
-            tp.setMinThreads(8);
-            tp.setMaxThreads(8);
+
 
             SocketConnector conn = new SocketConnector();
             String portVariable = System.getProperty("jetty.port");
@@ -46,10 +42,16 @@ public class Start {
             if(port <= 0)
             	port = 8080;
             conn.setPort(port);
-            conn.setThreadPool(tp);
             conn.setAcceptQueueSize(100);
             conn.setMaxIdleTime(1000 * 60 * 60);
             conn.setSoLingerTime(-1);
+            
+            // Use this to set a limit on the number of threads used to respond requests
+            // BoundedThreadPool tp = new BoundedThreadPool();
+            // tp.setMinThreads(8);
+            // tp.setMaxThreads(8);
+            // conn.setThreadPool(tp);
+            
             jettyServer.setConnectors(new Connector[] { conn });
 
             WebAppContext wah = new WebAppContext();
