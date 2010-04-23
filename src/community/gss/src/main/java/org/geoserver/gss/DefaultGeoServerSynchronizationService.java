@@ -329,6 +329,7 @@ public class DefaultGeoServerSynchronizationService implements GeoServerSynchron
                             }
                         }
                     }
+                    localChanges.close();
                 }
 
                 // now that conflicting local changes have been moved out of the way, apply the
