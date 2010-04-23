@@ -534,8 +534,8 @@ public class Transaction {
         
         // Ok, this is a hack. We assume there is only one versioning datastore, the postgis one,
         // and that we can the following properties won't hurt transactio processing anyways...
-        transaction.putProperty("PgVersionedCommitAuthor", username);
-        transaction.putProperty("PgVersionedCommitMessage", request.getHandle());
+        transaction.putProperty("VersioningCommitAuthor", username);
+        transaction.putProperty("VersioningCommitMessage", request.getHandle());
     
         return transaction;
     }
