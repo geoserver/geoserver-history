@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
+import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
@@ -31,10 +33,19 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
     static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.kml");
     
     /**
-     * flag controlling wether the network link should be a super overlay.
+     * flag controlling whether the network link should be a super overlay.
      */
     boolean encodeAsRegion = false;
+    
+    /**
+     * flag controlling whether the network link should be a direct GWC one when possible
+     */
+    boolean cachedMode = false;
  
+    public void setCachedMode(boolean cachedMode) {
+        this.cachedMode = cachedMode;
+    }
+
     public Translator createTranslator(ContentHandler handler) {
         return new KMLNetworkLinkTranslator( handler );
     }
@@ -69,47 +80,76 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             end( "kml" );
         }
         
-        protected void encodeAsSuperOverlay( GetMapRequest request ) {
+        protected void encodeAsSuperOverlay(GetMapRequest request) {
             MapLayerInfo[] layers = request.getLayers();
             List<Style> styles = request.getStyles();
             for ( int i = 0; i < layers.length; i++ ) {
-                start("NetworkLink");
-                element( "name", layers[i].getName() );
-                element( "open", "1" );
-                element( "visibility", "1" );
-             
-                //region
-                start( "Region" );
-                
-                Envelope bbox = request.getBbox();
-                start( "LatLonAltBox" );
-                element( "north", ""+bbox.getMaxY() );
-                element( "south", ""+bbox.getMinY() );
-                element( "east", ""+bbox.getMaxX() );
-                element( "west", ""+bbox.getMinX() );
-                end( "LatLonAltBox");
-                
-                start( "Lod" );
-                element( "minLodPixels", "128" );
-                element( "maxLodPixels", "-1" );
-                end( "Lod" );
-                
-                end( "Region" );
-                
-                //link
-                start("Link" );
-  
-                String style = i < styles.size()? styles.get(i).getName() : null;
-                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), i, style, null, null);
-                start( "href" );
-                cdata( href );
-                end( "href" );
-                
-//                element( "viewRefreshMode", "onRegion" );
-                end( "Link" );
-                
-                end( "NetworkLink");
+                if("cached".equals(KMLUtils.getSuperoverlayMode(request)) &&
+                        KMLUtils.isRequestGWCCompatible(request, i)) {
+                    encodeGWCLink(request, layers[i]);
+                } else {
+                    encodeLayerSuperOverlay(request, layers, styles, i);
+                }
             }
+        }
+        
+        public void encodeGWCLink(GetMapRequest request, MapLayerInfo mapLayer) {
+            start("NetworkLink");
+            String prefixedName = mapLayer.getResource().getPrefixedName();
+            element("name", "GWC-" + prefixedName);
+            
+            start("Link");
+
+            String baseURL = ResponseUtils.baseURL(request.getHttpServletRequest());
+            String type = mapLayer.getType() == MapLayerInfo.TYPE_RASTER ? "png" : "kml";
+            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" 
+                    + prefixedName + "." + type + ".kml");
+            element("href", url);
+            element("viewRefreshMode", "never");
+
+            end("Link");
+
+            end("NetworkLink");
+        }
+
+        private void encodeLayerSuperOverlay(GetMapRequest request, MapLayerInfo[] layers,
+                List<Style> styles, int i) {
+            start("NetworkLink");
+            element( "name", layers[i].getName() );
+            element( "open", "1" );
+            element( "visibility", "1" );
+          
+            //region
+            start( "Region" );
+            
+            Envelope bbox = request.getBbox();
+            start( "LatLonAltBox" );
+            element( "north", ""+bbox.getMaxY() );
+            element( "south", ""+bbox.getMinY() );
+            element( "east", ""+bbox.getMaxX() );
+            element( "west", ""+bbox.getMinX() );
+            end( "LatLonAltBox");
+            
+            start( "Lod" );
+            element( "minLodPixels", "128" );
+            element( "maxLodPixels", "-1" );
+            end( "Lod" );
+            
+            end( "Region" );
+            
+            //link
+            start("Link" );
+  
+            String style = i < styles.size()? styles.get(i).getName() : null;
+            String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), i, style, null, null);
+            start( "href" );
+            cdata( href );
+            end( "href" );
+            
+//                element( "viewRefreshMode", "onRegion" );
+            end( "Link" );
+            
+            end( "NetworkLink");
         }
         
         protected void encodeAsOverlay( GetMapRequest request ) {

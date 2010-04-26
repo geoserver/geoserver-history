@@ -299,7 +299,7 @@ public class GetMapResponse implements Response {
                     }
 
                     layer = new FeatureSourceMapLayer(source, layerStyle);
-                    layer.setTitle(layers[i].getFeature().getName());
+                    layer.setTitle(layers[i].getFeature().getPrefixedName());
 
                     final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema()
                             .getName().getLocalPart());
@@ -428,7 +428,7 @@ public class GetMapResponse implements Response {
                             layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
                                     reader, readParameters), layerStyle);
 
-                            layer.setTitle(layers[i].getCoverage().getName());
+                            layer.setTitle(layers[i].getCoverage().getPrefixedName());
                             layer.setQuery(Query.ALL);
                             mapContext.addLayer(layer);
                         } catch (IllegalArgumentException e) {

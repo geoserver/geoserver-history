@@ -139,10 +139,7 @@ public class KMLRasterTransformer extends KMLMapTransformer {
             end("GroundOverlay");
 
             // if the kmplacemark format option is true, add placemarks to the output
-            GetMapRequest request = mapContext.getRequest();
-            boolean kmplacemark = request.getWMS().getKmlPlacemark();
-            if (request.getFormatOptions().get("kmplacemark") != null)
-                kmplacemark = (Boolean) request.getFormatOptions().get("kmplacemark");
+            boolean kmplacemark = KMLUtils.getKmplacemark(mapContext.getRequest());
             if (kmplacemark) {
                 FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
                 try {

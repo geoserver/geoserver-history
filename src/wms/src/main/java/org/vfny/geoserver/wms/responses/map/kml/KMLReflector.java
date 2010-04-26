@@ -135,6 +135,8 @@ public class KMLReflector {
                 modeOptions.put("overlaymode", "hybrid");
             } else if ("auto".equalsIgnoreCase(submode)) {
                 modeOptions.put("overlaymode", "auto");
+            } else if("cached".equalsIgnoreCase(submode)) {
+                modeOptions.put("overlaymode", "cached");
             } else {
                 throw new WmsException("Unknown overlay mode: " + submode);
             }
@@ -201,6 +203,7 @@ public class KMLReflector {
             Charset encoding = request.getWMS().getCharSet();
             transformer.setEncoding(encoding);
             transformer.setEncodeAsRegion(superoverlay);
+            transformer.setCachedMode("cached".equals(KMLUtils.getSuperoverlayMode(request)));
             transformer.transform( request, response.getOutputStream() );
         }
     }
