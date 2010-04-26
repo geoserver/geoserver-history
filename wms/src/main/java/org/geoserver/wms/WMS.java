@@ -76,6 +76,7 @@ public class WMS {
     public static final String KML_SUPEROVERLAY_MODE_RASTER = "raster";
     public static final String KML_SUPEROVERLAY_MODE_OVERVIEW = "overview";
     public static final String KML_SUPEROVERLAY_MODE_HYBRID = "hybrid";
+    public static final String KML_SUPEROVERLAY_MODE_CACHED = "cached";
     public static final String KML_SUPEROVERLAY_MODE_DEFAULT = KML_SUPEROVERLAY_MODE_AUTO;
     
     public static final String KML_KMLATTR = "kmlAttr";
