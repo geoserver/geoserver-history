@@ -188,11 +188,7 @@ public class KMLWriter extends OutputStreamWriter {
         WMS config = mapContext.getRequest().getWMS();
         transformer.setNumDecimals(config.getNumDecimals());
         
-        Object kmAttrObj = mapContext.getRequest().getFormatOptions().get("kmattr");
-        if(kmAttrObj != null) 
-            this.vectorNameDescription = Converters.convert(kmAttrObj, Boolean.class); 
-        else
-            this.vectorNameDescription = mapContext.getRequest().getWMS().getKmlKmAttr();
+        this.vectorNameDescription = KMLUtils.getKMAttr(mapContext.getRequest());
     }
 
     /**

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
@@ -29,6 +30,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.geotools.util.Converters;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -39,6 +41,7 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -49,7 +52,6 @@ import com.vividsolutions.jts.geom.Envelope;
  * Some convenience methods used by the kml transformers.
  *
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- * @deprecated use {@link WMSRequests}.
  */
 public class KMLUtils {
     /**
@@ -627,4 +629,149 @@ public class KMLUtils {
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
         return ff.or(filters);
     }
+    
+    /**
+     * Returns the superoverlay mode (either specified in the request, or the default one)
+     * @return
+     */
+    public static String getSuperoverlayMode(GetMapRequest request) {
+        String overlayMode = (String) request.getFormatOptions().get("superoverlay_mode");
+        if(overlayMode != null) {
+            return overlayMode;
+        } 
+        
+        overlayMode = (String) request.getFormatOptions().get("overlayMode");
+        if(overlayMode != null) {
+            return overlayMode;
+        } else {
+            return request.getWMS().getKmlSuperoverlayMode();
+        }
+    }
+    
+    /**
+     * Returns the the kmattr value (either specified in the request, or the default one) 
+     * @param mapContext
+     * @return
+     */
+    public static boolean getKMAttr(GetMapRequest request) {
+        Object kmattr = request.getFormatOptions().get("kmattr");
+        if (kmattr != null) {
+            return Converters.convert(kmattr, Boolean.class);
+        } else {
+            return request.getWMS().getKmlKmAttr();
+        }
+    }
+    
+    /**
+     * Returns the the kmplacemark value (either specified in the request, or the default one) 
+     * @param mapContext
+     * @return
+     */
+    public static boolean getKmplacemark(GetMapRequest request) {
+        Object kmplacemark = request.getFormatOptions().get("kmplacemark");
+        if (kmplacemark != null) {
+            return Converters.convert(kmplacemark, Boolean.class);
+        } else {
+            return request.getWMS().getKmlPlacemark();
+        }
+    }
+    
+    /**
+     * Returns the the kmscore value (either specified in the request, or the default one) 
+     * @param mapContext
+     * @return
+     */
+    public static int getKmScore(GetMapRequest request ) {
+        Object kmscore = request.getFormatOptions().get("kmscore");
+        if (kmscore != null) {
+            return Converters.convert(kmscore, Integer.class);
+        } else {
+            return request.getWMS().getKmScore();
+        }
+    }
+
+    
+    /**
+     * Returns true if the request is GWC compatible
+     * @param mapContext
+     * @return
+     */
+    public static boolean isRequestGWCCompatible(GetMapRequest request, int layerIndex) {
+        // check the kml params are the same as the defaults (GWC uses always the defaults)
+        boolean requestKmAttr = KMLUtils.getKMAttr(request);
+        if(requestKmAttr != request.getWMS().getKmlKmAttr()) {
+            return false;
+        }
+            
+        boolean requestKmplacemark = KMLUtils.getKmplacemark(request);
+        if(requestKmplacemark != request.getWMS().getKmlPlacemark()) {
+            return false;
+        }
+        
+        int requestKmscore = KMLUtils.getKmScore(request);
+        if(requestKmscore != request.getWMS().getKmScore()) {
+            return false;
+        }
+        
+        // check the layer is local
+        if(request.getLayers()[layerIndex].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+            return false;
+        }
+        
+        // check the layer is using the default style
+        Style requestedStyle = request.getStyles().get(layerIndex);
+        Style defaultStyle = request.getLayers()[layerIndex].getDefaultStyle();
+        if(!defaultStyle.equals(requestedStyle)) {
+            return false;
+        }
+        
+        // check there is no extra filtering applied to the layer
+        List<Filter> filters = request.getFilter();
+        if(filters != null && filters.size() > 0 && filters.get(layerIndex) != Filter.INCLUDE) {
+            return false;
+        }
+        
+        // no fiddling with antialiasing settings
+        String antialias = (String) request.getFormatOptions().get("antialias");
+        if(antialias != null && !"FULL".equalsIgnoreCase(antialias)) {
+            return false;
+        }
+        
+        // no custom palette
+        if(request.getPalette() != null) {
+            return false;
+        }
+        
+        // no custom start index
+        if(request.getStartIndex() != null && request.getStartIndex() != 0) {
+            return false;
+        }
+        
+        // no custom max features
+        if(request.getMaxFeatures() != null) {
+            return false;
+        }
+        
+        // ok, it seems everything is the same as GWC cached it
+        return true;
+    }
+    
+    /**
+     * Returns true if the request is GWC compatible
+     * @param mapContext
+     * @return
+     */
+    public static boolean isRequestGWCCompatible(WMSMapContext mapContext, MapLayer layer) {
+        MapLayer[] layers = mapContext.getLayers();
+        for(int i = 0; i < layers.length; i++) {
+            if(layers[i] == layer) {
+                return isRequestGWCCompatible(mapContext.getRequest(), i);
+            }
+        }
+        LOGGER.warning("Could not find map layer " + layer.getTitle() + " in the map context");
+        
+        return false;
+    }
+    
+    
 }

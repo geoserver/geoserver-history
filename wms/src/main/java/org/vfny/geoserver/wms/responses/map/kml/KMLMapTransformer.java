@@ -185,11 +185,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
         
-        Object kmAttrObj = mapContext.getRequest().getFormatOptions().get("kmattr");
-        if(kmAttrObj != null) 
-            this.vectorNameDescription = Converters.convert(kmAttrObj, Boolean.class); 
-        else
-            this.vectorNameDescription = mapContext.getRequest().getWMS().getKmlKmAttr();
+        this.vectorNameDescription = KMLUtils.getKMAttr(mapContext.getRequest());
     }
 
     public abstract class KMLMapTranslatorSupport extends KMLTranslatorSupport {
