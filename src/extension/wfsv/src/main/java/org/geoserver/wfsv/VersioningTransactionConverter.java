@@ -111,6 +111,7 @@ public class VersioningTransactionConverter implements Converter {
                 throw new WFSException("Could not handle diff type " + diff.getState());
             }
         }
+        diffReader.close();
 
         // create insert and delete elements if needed
         if (insert.getFeature().size() > 0) {
