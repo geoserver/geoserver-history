@@ -44,7 +44,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         checkPolymorphicFeatureChaining();
         checkPolymorphismOnly();
         checkFeatureChainingOnly();
-        checkNullValues();
+        checkXlinkHrefValues();
         checkAnyType();
     }
 
@@ -59,7 +59,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
 //                <sourceExpression>
 //                        <OCQL>VALUE_ID</OCQL>   
 //                        <linkElement>
-//                            Recode(CLASS_TEXT, 'numeric', 'gsml:CGI_NumericValue', 'literal', 'gsml:CGI_TermValue', 'invalid', Expression.NIL)
+//                            Recode(CLASS_TEXT, 'numeric', 'NumericType', 'literal', 'gsml:CGI_TermValue')
 //                        </linkElement>
 //                        <linkField>FEATURE_LINK</linkField>
 //                </sourceExpression>                                     
@@ -112,7 +112,8 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
 //            <targetAttribute>ex:secondValue</targetAttribute>
 //            <sourceExpression>
 //                    <linkElement>
-//                        if_then_else(equalTo(CLASS_TEXT, 'numeric'), 'gsml:CGI_NumericValue',  'ex:TermValue')
+//                        if_then_else(isNull(CLASS_TEXT), Expression.Nil,
+//                            if_then_else(equalTo(CLASS_TEXT, 'numeric'), 'NumericType',  'TermValue2'))
 //                    </linkElement>
 //            </sourceExpression>
 //        </AttributeMapping>
@@ -168,16 +169,16 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
      */
     public void testAnyTypeFilters() {
 //        <AttributeMapping>
-//        <!-- Test polymorphism with anyType -->
+//        <!-- Test polymorphism with anyType  -->
 //            <targetAttribute>ex:anyValue</targetAttribute>
 //            <sourceExpression>
 //                    <linkElement>
-//                    <!-- This is not a good example of testing null value, more so testing a string value of 'NULL',
-//                         because there's a bug preventing us from having null values at the moment :( -->
-//                        Recode(CLASS_TEXT, 'NULL', 'ex:NullValue', 'numeric', 'gsml:CGI_NumericValue', 'literal', 'ex:TermValue')
+//                       Recode(CLASS_TEXT, Expression.Nil, toXlinkHref('urn:ogc:def:nil:OGC::missing'),
+//                           'numeric', toXlinkHref(strConcat('urn:numeric-value::', NUMERIC_VALUE)),
+//                           'literal', 'TermValue2')
 //                    </linkElement>
 //            </sourceExpression>
-//        </AttributeMapping>
+//         </AttributeMapping>
         String xml = //
         "<wfs:GetFeature " //
                 + "service=\"WFS\" " //
@@ -316,6 +317,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "x",
                 "//ex:PolymorphicFeature[@gml:id='f2']/ex:firstValue/gsml:CGI_TermValue/gsml:value",
                 doc);
+        assertXpathEvaluatesTo(
+                "some:uri",
+                "//ex:PolymorphicFeature[@gml:id='f2']/ex:firstValue/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
 
         // f3: make sure firstValue is null
         assertXpathCount(0, "//ex:PolymorphicFeature[@gml:id='f3']/ex:firstValue", doc);
@@ -332,6 +337,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo(
                 "y",
                 "//ex:PolymorphicFeature[@gml:id='f5']/ex:firstValue/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "some:uri",
+                "//ex:PolymorphicFeature[@gml:id='f5']/ex:firstValue/gsml:CGI_TermValue/gsml:value/@codeSpace",
                 doc);
 
         // f6: make sure firstValue is null
@@ -384,16 +393,8 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "//ex:PolymorphicFeature[@gml:id='f3']/ex:secondValue/gsml:CGI_NumericValue/gsml:principalValue/@uom",
                 doc);
 
-        // f4: make sure only 1 gsml:CGI_TermValue is encoded
-        assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f4']/ex:secondValue", doc);
-        assertXpathCount(1,
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:secondValue/gsml:CGI_TermValue", doc);
-        assertXpathCount(0,
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:secondValue/gsml:CGI_NumericValue", doc);
-        assertXpathEvaluatesTo(
-                "1",
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:secondValue/gsml:CGI_TermValue/gsml:value",
-                doc);
+        // f4: make sure nothing is encoded
+        assertXpathCount(0, "//ex:PolymorphicFeature[@gml:id='f4']/ex:secondValue", doc);
 
         // f5: make sure only 1 gsml:CGI_TermValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f5']/ex:secondValue", doc);
@@ -448,6 +449,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "x",
                 "//ex:PolymorphicFeature[@gml:id='f2']/ex:thirdValue/gsml:CGI_TermValue/gsml:value",
                 doc);
+        assertXpathEvaluatesTo(
+                "some:uri",
+                "//ex:PolymorphicFeature[@gml:id='f2']/ex:thirdValue/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
 
         // f3: make sure only 1 gsml:CGI_TermValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f3']/ex:thirdValue", doc);
@@ -458,6 +463,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo(
                 "y",
                 "//ex:PolymorphicFeature[@gml:id='f3']/ex:thirdValue/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "some:uri",
+                "//ex:PolymorphicFeature[@gml:id='f3']/ex:thirdValue/gsml:CGI_TermValue/gsml:value/@codeSpace",
                 doc);
 
         // f4: make sure only 1 gsml:CGI_NumericValue is encoded
@@ -485,6 +494,10 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "y",
                 "//ex:PolymorphicFeature[@gml:id='f5']/ex:thirdValue/gsml:CGI_TermValue/gsml:value",
                 doc);
+        assertXpathEvaluatesTo(
+                "some:uri",
+                "//ex:PolymorphicFeature[@gml:id='f5']/ex:thirdValue/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
 
         // f6: make sure only 1 gsml:CGI_NumericValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f6']/ex:thirdValue", doc);
@@ -503,63 +516,53 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     }
 
     /**
-     * This is to test that conditional polymorphism can be used to encode null values.
+     * This is to test referential polymorphism, mixed with sub-type polymorphism.
      */
-    private void checkNullValues() {
+    private void checkXlinkHrefValues() {
 
-        // f1: make sure only 1 NullValue is encoded
+        // f1: make sure only null reference is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue", doc);
-        assertXpathCount(1,
-                "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue/gsml:CGI_TermValue", doc);
         assertXpathCount(0,
-                "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue/gsml:CGI_NumericValue", doc);
+                "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue/ex:firstParentFeature", doc);
         assertXpathEvaluatesTo(
                 "urn:ogc:def:nil:OGC::missing",
-                "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue/gsml:CGI_TermValue/gsml:value",
+                "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue/@xlink:href",
                 doc);
 
-        // f2: make sure only 1 NullValue is encoded
+        // f2: make sure only 1 null reference is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f2']/ex:fourthValue", doc);
-        assertXpathCount(1,
-                "//ex:PolymorphicFeature[@gml:id='f2']/ex:fourthValue/gsml:CGI_TermValue", doc);
         assertXpathCount(0,
-                "//ex:PolymorphicFeature[@gml:id='f2']/ex:fourthValue/gsml:CGI_NumericValue", doc);
+                "//ex:PolymorphicFeature[@gml:id='f2']/ex:fourthValue/ex:firstParentFeature", doc);
         assertXpathEvaluatesTo(
                 "urn:ogc:def:nil:OGC::missing",
-                "//ex:PolymorphicFeature[@gml:id='f2']/ex:fourthValue/gsml:CGI_TermValue/gsml:value",
+                "//ex:PolymorphicFeature[@gml:id='f2']/ex:fourthValue/@xlink:href",
                 doc);
 
-        // f3: make sure only 1 NullValue is encoded
+        // f3: make sure only 1 null reference is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f3']/ex:fourthValue", doc);
-        assertXpathCount(1,
-                "//ex:PolymorphicFeature[@gml:id='f3']/ex:fourthValue/gsml:CGI_TermValue", doc);
         assertXpathCount(0,
-                "//ex:PolymorphicFeature[@gml:id='f3']/ex:fourthValue/gsml:CGI_NumericValue", doc);
+                "//ex:PolymorphicFeature[@gml:id='f3']/ex:fourthValue/ex:firstParentFeature", doc);
         assertXpathEvaluatesTo(
                 "urn:ogc:def:nil:OGC::missing",
-                "//ex:PolymorphicFeature[@gml:id='f3']/ex:fourthValue/gsml:CGI_TermValue/gsml:value",
+                "//ex:PolymorphicFeature[@gml:id='f3']/ex:fourthValue/@xlink:href",
                 doc);
 
-        // f4: make sure only 1 NullValue is encoded
+        // f4: make sure only 1 null reference is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f4']/ex:fourthValue", doc);
-        assertXpathCount(1,
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:fourthValue/gsml:CGI_TermValue", doc);
         assertXpathCount(0,
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:fourthValue/gsml:CGI_NumericValue", doc);
+                "//ex:PolymorphicFeature[@gml:id='f4']/ex:fourthValue/ex:firstParentFeature", doc);
         assertXpathEvaluatesTo(
                 "urn:ogc:def:nil:OGC::missing",
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:fourthValue/gsml:CGI_TermValue/gsml:value",
+                "//ex:PolymorphicFeature[@gml:id='f4']/ex:fourthValue/@xlink:href",
                 doc);
 
-        // f5: make sure only 1 NullValue is encoded
+        // f5: make sure only 1 null reference is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f5']/ex:fourthValue", doc);
-        assertXpathCount(1,
-                "//ex:PolymorphicFeature[@gml:id='f5']/ex:fourthValue/gsml:CGI_TermValue", doc);
         assertXpathCount(0,
-                "//ex:PolymorphicFeature[@gml:id='f5']/ex:fourthValue/gsml:CGI_NumericValue", doc);
+                "//ex:PolymorphicFeature[@gml:id='f5']/ex:fourthValue/ex:firstParentFeature", doc);
         assertXpathEvaluatesTo(
                 "urn:ogc:def:nil:OGC::missing",
-                "//ex:PolymorphicFeature[@gml:id='f5']/ex:fourthValue/gsml:CGI_TermValue/gsml:value",
+                "//ex:PolymorphicFeature[@gml:id='f5']/ex:fourthValue/@xlink:href",
                 doc);
 
         // f6: make sure only 1 gsml:CGI_NumericValue is encoded
@@ -587,15 +590,11 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue", doc);
         assertXpathCount(0, "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue/gsml:CGI_TermValue",
                 doc);
-        assertXpathCount(1,
+        assertXpathCount(0,
                 "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue/gsml:CGI_NumericValue", doc);
         assertXpathEvaluatesTo(
-                "1.0",
-                "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue/gsml:CGI_NumericValue/gsml:principalValue",
-                doc);
-        assertXpathEvaluatesTo(
-                "m",
-                "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue/gsml:CGI_NumericValue/gsml:principalValue/@uom",
+                "urn:numeric-value::1",
+                "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue/@xlink:href",
                 doc);
 
         // f2: make sure only 1 ex:anyValue is encoded
@@ -612,25 +611,21 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue", doc);
         assertXpathCount(0, "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue/gsml:CGI_TermValue",
                 doc);
-        assertXpathCount(1,
+        assertXpathCount(0,
                 "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue/gsml:CGI_NumericValue", doc);
         assertXpathEvaluatesTo(
-                "0.0",
-                "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue/gsml:CGI_NumericValue/gsml:principalValue",
-                doc);
-        assertXpathEvaluatesTo(
-                "m",
-                "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue/gsml:CGI_NumericValue/gsml:principalValue/@uom",
+                "urn:numeric-value::0",
+                "//ex:PolymorphicFeature[@gml:id='f3']/ex:anyValue/@xlink:href",
                 doc);
 
-        // f4: make sure only 1 NullValue is encoded
+        // f4: make sure there's only null reference encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f4']/ex:anyValue", doc);
-        assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f4']/ex:anyValue/gsml:CGI_TermValue",
+        assertXpathCount(0, "//ex:PolymorphicFeature[@gml:id='f4']/ex:anyValue/gsml:CGI_TermValue",
                 doc);
         assertXpathCount(0,
                 "//ex:PolymorphicFeature[@gml:id='f4']/ex:anyValue/gsml:CGI_NumericValue", doc);
         assertXpathEvaluatesTo("urn:ogc:def:nil:OGC::missing",
-                "//ex:PolymorphicFeature[@gml:id='f4']/ex:anyValue/gsml:CGI_TermValue/gsml:value",
+                "//ex:PolymorphicFeature[@gml:id='f4']/ex:anyValue/@xlink:href",
                 doc);
 
         // f5: make sure only 1 ex:anyValue is encoded
