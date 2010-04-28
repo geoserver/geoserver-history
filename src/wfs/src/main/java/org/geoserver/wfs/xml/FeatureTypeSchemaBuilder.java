@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,6 +37,7 @@ import org.eclipse.xsd.util.XSDConstants;
 import org.eclipse.xsd.util.XSDSchemaLocator;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
@@ -137,6 +139,13 @@ public abstract class FeatureTypeSchemaBuilder {
             String targetNamespace = catalog.getNamespaceByPrefix(targetPrefix).getURI();
             schema.setTargetNamespace(targetNamespace);
             schema.getQNamePrefixToNamespaceMap().put(targetPrefix, targetNamespace);
+            // add secondary namespaces from catalog
+            for (NamespaceInfo nameSpaceinfo : catalog.getNamespaces()) {
+                if (!schema.getQNamePrefixToNamespaceMap().containsKey(nameSpaceinfo.getPrefix())) {
+                    schema.getQNamePrefixToNamespaceMap().put(nameSpaceinfo.getPrefix(),
+                            nameSpaceinfo.getURI());
+                }
+            }
             // would result in 1 xsd:include if schema location is specified
             try {
                 FeatureType featureType = featureTypeInfos[0].getFeatureType();
@@ -307,6 +316,14 @@ public abstract class FeatureTypeSchemaBuilder {
 
             for (Iterator e = schema.getElementDeclarations().iterator(); e.hasNext();) {
                 wfsSchema.getElementDeclarations().add(e.next());
+            }
+            
+            // add secondary namespaces from catalog
+            for (Map.Entry entry : (Set<Map.Entry>) schema.getQNamePrefixToNamespaceMap()
+                    .entrySet()) {
+                if (!wfsSchema.getQNamePrefixToNamespaceMap().containsKey(entry.getKey())) {
+                    wfsSchema.getQNamePrefixToNamespaceMap().put(entry.getKey(), entry.getValue());
+                }
             }
         }
 
