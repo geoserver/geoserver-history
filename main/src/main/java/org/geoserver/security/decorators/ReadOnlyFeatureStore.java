@@ -18,6 +18,7 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 
@@ -83,6 +84,16 @@ public class ReadOnlyFeatureStore<T extends FeatureType, F extends Feature> exte
         } else {
             return new UnsupportedOperationException(typeName + " is read only");
         }
+    }
+
+    public void modifyFeatures(Name[] attributeNames, Object[] attributeValues, Filter filter)
+            throws IOException {
+        throw unsupportedOperation();
+    }
+
+    public void modifyFeatures(Name attributeName, Object attributeValue, Filter filter)
+            throws IOException {
+        throw unsupportedOperation();
     }
 
 }

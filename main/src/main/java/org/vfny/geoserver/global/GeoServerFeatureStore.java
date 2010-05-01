@@ -17,6 +17,7 @@ import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -61,8 +62,8 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Sim
      *
      * @return DOCUMENT ME!
      */
-    FeatureStore<SimpleFeatureType, SimpleFeature> store() {
-        return (FeatureStore<SimpleFeatureType, SimpleFeature>) source;
+    SimpleFeatureStore store() {
+        return (SimpleFeatureStore) source;
     }
 
     /**
@@ -164,5 +165,37 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements Sim
      */
     public Transaction getTransaction() {
         return store().getTransaction();
+    }
+
+    public void modifyFeatures(String name, Object attributeValue, Filter filter)
+            throws IOException {
+        filter = makeDefinitionFilter(filter);
+
+        store().modifyFeatures(name, attributeValue, filter);
+        
+    }
+
+    public void modifyFeatures(String[] names, Object[] attributeValues, Filter filter)
+            throws IOException {
+        filter = makeDefinitionFilter(filter);
+
+        store().modifyFeatures(names, attributeValues, filter);
+        
+    }
+
+    public void modifyFeatures(Name[] attributeNames, Object[] attributeValues, Filter filter)
+            throws IOException {
+        filter = makeDefinitionFilter(filter);
+
+        store().modifyFeatures(attributeNames, attributeValues, filter);
+        
+    }
+
+    public void modifyFeatures(Name attributeName, Object attributeValue, Filter filter)
+            throws IOException {
+        filter = makeDefinitionFilter(filter);
+
+        store().modifyFeatures(attributeName, attributeValue, filter);
+        
     }
 }
