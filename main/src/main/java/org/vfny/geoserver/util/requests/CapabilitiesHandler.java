@@ -4,13 +4,14 @@
  */
 package org.vfny.geoserver.util.requests;
 
-import org.vfny.geoserver.servlets.AbstractService;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

@@ -4,13 +4,14 @@
  */
 package org.geoserver.ows.util;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * A generic service object invocation logger based on EMF reflection

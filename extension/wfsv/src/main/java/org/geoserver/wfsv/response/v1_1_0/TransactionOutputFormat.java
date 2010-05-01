@@ -1,12 +1,13 @@
 package org.geoserver.wfsv.response.v1_1_0;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.util.Map;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.FilterFactory;

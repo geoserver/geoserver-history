@@ -4,21 +4,22 @@
  */
 package org.vfny.geoserver.wms.responses.legend.png;
 
-import org.geoserver.platform.ServiceException;
-import org.geotools.image.ImageWorker;
-import org.geotools.resources.image.ImageUtilities;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import java.awt.image.BufferedImage;
 import java.awt.image.DirectColorModel;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
+
+import org.geoserver.platform.ServiceException;
+import org.geotools.image.ImageWorker;
+import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 
 
 /**

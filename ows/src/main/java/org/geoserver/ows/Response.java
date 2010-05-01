@@ -4,13 +4,13 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
+
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
 
 
 /**

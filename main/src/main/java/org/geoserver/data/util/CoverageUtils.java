@@ -5,35 +5,22 @@
 package org.geoserver.data.util;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GeneralGridGeometry;
-import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.parameter.DefaultParameterDescriptor;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.operation.BufferedCoordinateOperationFactory;
 import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterDescriptor;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.CoordinateOperation;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.OperationNotFoundException;
 
 
 /**

@@ -15,6 +15,7 @@ import org.geoserver.feature.DefaultCRSFilterVisitor;
 import org.geoserver.feature.ReprojectingFilterVisitor;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureLocking;
@@ -25,8 +26,9 @@ import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -61,12 +63,12 @@ import org.opengis.referencing.operation.TransformException;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, SimpleFeature> {
+public class GeoServerFeatureSource implements SimpleFeatureSource {
     /** Shared package logger */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.global");
 
     /** FeatureSource being served up */
-    protected FeatureSource<SimpleFeatureType, SimpleFeature> source;
+    protected SimpleFeatureSource source;
     
     /** The single filter factory for this source (grabbing it has a high sync penalty */
     FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
@@ -100,7 +102,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
      */
     GeoServerFeatureSource(FeatureSource<SimpleFeatureType, SimpleFeature> source, SimpleFeatureType schema, Filter definitionQuery,
         CoordinateReferenceSystem declaredCRS, int srsHandling) {
-        this.source = source;
+        this.source = DataUtilities.simple(source);
         this.schema = schema;
         this.definitionQuery = definitionQuery;
         this.declaredCRS = declaredCRS;
@@ -328,7 +330,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
      *
      * @see org.geotools.data.FeatureSource#getFeatures(org.geotools.data.Query)
      */
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Query query)
+    public SimpleFeatureCollection getFeatures(Query query)
             throws IOException {
         Query reprojected = reprojectFilter(query);
         Query newQuery = adaptQuery(reprojected, schema);
@@ -336,7 +338,7 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         CoordinateReferenceSystem targetCRS = query.getCoordinateSystemReproject();
         try {
             //this is the raw "unprojected" feature collection
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures(newQuery);
+            SimpleFeatureCollection fc = source.getFeatures(newQuery);
             return applyProjectionPolicies(targetCRS, fc);
         } catch (Exception e) {
             throw new DataSourceException(e);
@@ -392,9 +394,9 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
      * Wraps feature collection as needed in order to respect the current projection policy and the
      * target CRS, if any (can be null, in that case only the projection policy is applied)
      */
-    protected FeatureCollection<SimpleFeatureType, SimpleFeature> applyProjectionPolicies(
+    protected SimpleFeatureCollection applyProjectionPolicies(
             CoordinateReferenceSystem targetCRS,
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc)
+            SimpleFeatureCollection fc)
             throws IOException, SchemaException, TransformException,
             OperationNotFoundException, FactoryException {
         if ( fc.getSchema().getGeometryDescriptor() == null ) {
@@ -484,12 +486,12 @@ public class GeoServerFeatureSource implements FeatureSource<SimpleFeatureType, 
         return newQuery;
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Filter filter)
+    public SimpleFeatureCollection getFeatures(Filter filter)
             throws IOException {
         return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures() throws IOException {
+    public SimpleFeatureCollection getFeatures() throws IOException {
         return getFeatures(Query.ALL);
     }
 

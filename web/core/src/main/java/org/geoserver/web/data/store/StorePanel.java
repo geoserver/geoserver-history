@@ -4,7 +4,10 @@
  */
 package org.geoserver.web.data.store;
 
-import static org.geoserver.web.data.store.StoreProvider.*;
+import static org.geoserver.web.data.store.StoreProvider.ENABLED;
+import static org.geoserver.web.data.store.StoreProvider.NAME;
+import static org.geoserver.web.data.store.StoreProvider.TYPE;
+import static org.geoserver.web.data.store.StoreProvider.WORKSPACE;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;

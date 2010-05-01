@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
-import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;

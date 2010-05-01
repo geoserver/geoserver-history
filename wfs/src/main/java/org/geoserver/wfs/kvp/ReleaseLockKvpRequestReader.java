@@ -4,8 +4,9 @@
  */
 package org.geoserver.wfs.kvp;
 
-import org.geoserver.ows.KvpRequestReader;
 import java.util.Map;
+
+import org.geoserver.ows.KvpRequestReader;
 
 
 public class ReleaseLockKvpRequestReader extends KvpRequestReader {

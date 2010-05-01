@@ -5,9 +5,7 @@
 package org.geoserver.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.rest.format.DataFormat;
@@ -15,7 +13,6 @@ import org.geoserver.rest.format.ReflectiveHTMLFormat;
 import org.geoserver.rest.format.ReflectiveJSONFormat;
 import org.geoserver.rest.format.ReflectiveXMLFormat;
 import org.restlet.Context;
-import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;

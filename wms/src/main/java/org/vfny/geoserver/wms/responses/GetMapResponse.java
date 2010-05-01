@@ -30,19 +30,17 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
-import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -232,7 +230,7 @@ public class GetMapResponse implements Response {
                 if (layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                     cachingPossible = false;
 
-                    final FeatureSource<SimpleFeatureType, SimpleFeature> source = layers[i]
+                    final SimpleFeatureSource source = layers[i]
                             .getRemoteFeatureSource();
                     layer = new DefaultMapLayer(source, layerStyle);
                     layer.setTitle(layers[i].getRemoteFeatureSource().getSchema().getTypeName());

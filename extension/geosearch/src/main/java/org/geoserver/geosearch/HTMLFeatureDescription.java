@@ -1,6 +1,6 @@
 package org.geoserver.geosearch;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.io.IOException;
 import java.util.HashMap;

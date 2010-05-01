@@ -4,12 +4,12 @@
  */
 package org.geoserver.wms.web.publish;
 
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.web.util.MapModel;
-import org.geoserver.web.publish.LayerConfigurationPanel;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.markup.html.form.CheckBox;
+import org.geoserver.catalog.LayerInfo;
+import org.geoserver.web.publish.LayerConfigurationPanel;
+import org.geoserver.web.util.MapModel;
 
 /**
  * Configures a {@link LayerInfo} geo-search related metadata

@@ -1,6 +1,6 @@
 package org.geoserver.ows;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.util.Collections;
 

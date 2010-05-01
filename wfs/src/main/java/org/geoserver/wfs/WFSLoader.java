@@ -3,7 +3,6 @@ package org.geoserver.wfs;
 import java.util.Map;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.util.LegacyServiceLoader;
 import org.geoserver.config.util.LegacyServicesReader;
 import org.geoserver.wfs.GMLInfo.SrsNameStyle;

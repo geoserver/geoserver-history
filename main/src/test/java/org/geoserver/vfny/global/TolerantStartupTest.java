@@ -6,14 +6,10 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
-import org.springframework.core.io.ResourceLoader;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 public class TolerantStartupTest extends GeoServerTestSupport {
     

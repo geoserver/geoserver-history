@@ -23,10 +23,9 @@ import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geoserver.wms.WMS;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 
 
@@ -89,7 +88,7 @@ public class GmlFeatureInfoResponse extends AbstractFeatureInfoResponse {
         gfreq.setBaseUrl(fInfoReq.getBaseUrl());
 
         for (Iterator i = results.iterator(); i.hasNext();) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc = (FeatureCollection)i.next();
+            SimpleFeatureCollection fc = (SimpleFeatureCollection)i.next();
             features.getFeature().add(fc);
             
             QueryType qt = WfsFactory.eINSTANCE.createQueryType();

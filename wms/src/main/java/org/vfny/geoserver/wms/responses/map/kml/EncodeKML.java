@@ -26,11 +26,11 @@ import javax.media.jai.GraphicsJAI;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.ImageWorker;
@@ -39,7 +39,6 @@ import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -288,8 +287,8 @@ public class EncodeKML {
             writer.startDocument(layer.getTitle(), null);
 
             //FeatureReader featureReader = null;
-            FeatureSource<SimpleFeatureType, SimpleFeature> fSource;
-            fSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
+            SimpleFeatureSource fSource;
+            fSource = (SimpleFeatureSource) layer.getFeatureSource();
             SimpleFeatureType schema = fSource.getSchema();
 
             //GeometryAttributeType geometryAttribute = schema.getDefaultGeometry();
@@ -363,7 +362,7 @@ public class EncodeKML {
 
                 q.setCoordinateSystem(layer.getFeatureSource().getSchema().getCoordinateReferenceSystem());
 
-                FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fSource.getFeatures(q);
+                SimpleFeatureCollection fc = fSource.getFeatures(q);
 
                 // decide wheter to render vector or raster based on kmscore
                 int kmscore = mapContext.getRequest().getWMS().getKmScore();

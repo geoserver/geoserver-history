@@ -5,7 +5,6 @@ import java.util.HashMap;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.data.test.MockData;

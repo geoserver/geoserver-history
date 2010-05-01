@@ -1,7 +1,6 @@
 package org.geoserver.data.test;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * A test data directory creator and accessor, used for functional testing

@@ -4,12 +4,12 @@
  */
 package org.geoserver.wfs.kvp;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.ows.FlatKvpParser;
 import org.geoserver.wfs.WFSException;
-
-import javax.xml.namespace.QName;
 
 
 /**

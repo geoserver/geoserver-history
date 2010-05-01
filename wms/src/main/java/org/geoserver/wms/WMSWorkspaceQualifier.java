@@ -5,7 +5,6 @@ import java.util.List;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-
 import org.geoserver.ows.Request;
 import org.geoserver.ows.WorkspaceQualifyingCallback;
 import org.geoserver.ows.util.KvpUtils;

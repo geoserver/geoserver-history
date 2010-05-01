@@ -8,16 +8,14 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 
+import org.geoserver.data.util.IOUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ui.context.Theme;
 import org.springframework.web.context.WebApplicationContext;
-
-import org.geoserver.data.util.IOUtils;
 
 /**
  * A spring application context used for GeoServer testing.

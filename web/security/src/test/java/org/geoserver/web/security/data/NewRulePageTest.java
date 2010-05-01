@@ -1,10 +1,8 @@
 package org.geoserver.web.security.data;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.acegisecurity.userdetails.UserDetails;
 import org.apache.wicket.extensions.markup.html.form.palette.component.Recorder;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.FormTester;

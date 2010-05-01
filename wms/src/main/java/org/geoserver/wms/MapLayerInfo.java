@@ -16,13 +16,13 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.FeatureTypeConstraint;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -44,7 +44,7 @@ public final class MapLayerInfo {
     /**
      * The feature source for the remote WFS layer (see REMOVE_OWS_TYPE/URL in the SLD spec)
      */
-    private final FeatureSource<SimpleFeatureType, SimpleFeature> remoteFeatureSource;
+    private final SimpleFeatureSource remoteFeatureSource;
 
     /**
      * 
@@ -79,7 +79,7 @@ public final class MapLayerInfo {
      */
     private FeatureTypeConstraint[] layerFeatureConstraints;
 
-    public MapLayerInfo(FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource) {
+    public MapLayerInfo(SimpleFeatureSource remoteSource) {
         this.remoteFeatureSource = remoteSource;
         this.layerInfo = null;
         name = remoteFeatureSource.getSchema().getTypeName();
@@ -223,7 +223,7 @@ public final class MapLayerInfo {
      * 
      * @return
      */
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getRemoteFeatureSource() {
+    public SimpleFeatureSource getRemoteFeatureSource() {
         return remoteFeatureSource;
     }
 

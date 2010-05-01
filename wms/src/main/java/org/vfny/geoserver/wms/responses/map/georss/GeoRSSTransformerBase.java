@@ -12,16 +12,15 @@ import java.util.logging.Logger;
 
 import org.geoserver.feature.ReprojectingFeatureCollection;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.transform.TransformerBase;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -224,10 +223,10 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
                 MapLayer layer = map.getLayer(i);
                 DefaultQuery query = new DefaultQuery(layer.getQuery());
 
-                FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
+                SimpleFeatureCollection features = null;
                 try {
-                    FeatureSource<SimpleFeatureType, SimpleFeature> source;
-                    source = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
+                    SimpleFeatureSource source;
+                    source = (SimpleFeatureSource) layer.getFeatureSource();
                     
                     GeometryDescriptor gd = source.getSchema().getGeometryDescriptor();
                     if(gd == null) {

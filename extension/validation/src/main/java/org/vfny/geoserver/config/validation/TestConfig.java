@@ -11,11 +11,6 @@
  */
 package org.vfny.geoserver.config.validation;
 
-import org.geotools.validation.dto.ArgumentDTO;
-import org.geotools.validation.dto.PlugInDTO;
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.xml.ArgHelper;
-import org.geotools.validation.xml.ValidationException;
 import java.beans.PropertyDescriptor;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -23,6 +18,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.geotools.validation.dto.ArgumentDTO;
+import org.geotools.validation.dto.PlugInDTO;
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.xml.ArgHelper;
+import org.geotools.validation.xml.ValidationException;
 
 
 /**

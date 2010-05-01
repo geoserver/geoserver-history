@@ -56,6 +56,7 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeTypeBuilder;
@@ -69,13 +70,11 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
-import org.geotools.util.SoftValueHashMap;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.Schemas;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridCoverageReader;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
@@ -708,7 +707,7 @@ public class ResourcePool {
         }
         
         DataStore dataStore = (DataStore) dataAccess;
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs;
+        SimpleFeatureSource fs;
                 
         //
         // aliasing and type mapping

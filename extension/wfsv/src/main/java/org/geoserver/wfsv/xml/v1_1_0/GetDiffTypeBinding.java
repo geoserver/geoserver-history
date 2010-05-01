@@ -4,13 +4,15 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetDiffType;
 import net.opengis.wfsv.WfsvFactory;
+
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
 
 
 /**

@@ -4,14 +4,18 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import java.net.URI;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.PropertyType;
-import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfsv.VersionedUpdateElementType;
 import net.opengis.wfsv.WfsvFactory;
-import org.geotools.xml.*;
+
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
-import java.net.URI;
-import javax.xml.namespace.QName;
 
 
 /**

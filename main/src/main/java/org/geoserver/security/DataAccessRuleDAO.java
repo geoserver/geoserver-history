@@ -7,27 +7,20 @@ package org.geoserver.security;
 import static org.geoserver.security.DataAccessRule.ANY;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.global.ConfigurationException;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
  * Allows one to manage the rules used by the per layer security subsystem

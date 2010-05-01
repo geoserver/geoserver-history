@@ -4,8 +4,9 @@
  */
 package org.vfny.geoserver.wms;
 
-import org.geotools.factory.Factory;
 import java.util.Set;
+
+import org.geotools.factory.Factory;
 
 
 /**

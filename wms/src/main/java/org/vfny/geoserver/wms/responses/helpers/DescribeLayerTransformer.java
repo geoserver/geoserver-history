@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.appendQueryString;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +16,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;

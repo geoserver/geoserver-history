@@ -1,6 +1,8 @@
 package org.geoserver.wfsv.security;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 import org.acegisecurity.AcegiSecurityException;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;

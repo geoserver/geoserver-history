@@ -4,13 +4,14 @@
  */
 package org.geoserver.ows;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.geotools.util.Version;
 import java.io.Reader;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.geotools.util.Version;
 
 
 /**

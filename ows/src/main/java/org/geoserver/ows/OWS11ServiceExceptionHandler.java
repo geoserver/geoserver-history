@@ -4,7 +4,8 @@
  */
 package org.geoserver.ows;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.baseURL;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.opengis.ows11.ExceptionReportType;
 import net.opengis.ows11.Ows11Factory;
 
-import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;
 import org.geotools.ows.v1_1.OWS;

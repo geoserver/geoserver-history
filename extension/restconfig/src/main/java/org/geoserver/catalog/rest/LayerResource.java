@@ -12,12 +12,10 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.config.util.XStreamPersister;
-import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.data.Status;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;

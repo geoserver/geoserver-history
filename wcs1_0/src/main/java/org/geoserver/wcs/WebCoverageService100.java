@@ -8,8 +8,8 @@ import net.opengis.wcs10.DescribeCoverageType;
 import net.opengis.wcs10.GetCapabilitiesType;
 import net.opengis.wcs10.GetCoverageType;
 
-import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
 import org.geoserver.wcs.response.Wcs10CapsTransformer;
+import org.geoserver.wcs.response.Wcs10DescribeCoverageTransformer;
 import org.opengis.coverage.grid.GridCoverage;
 
 /**

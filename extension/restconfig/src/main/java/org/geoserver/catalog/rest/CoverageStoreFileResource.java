@@ -6,7 +6,6 @@ package org.geoserver.catalog.rest;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.List;
 
@@ -15,20 +14,15 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.StyleInfo;
-import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.opengis.coverage.grid.Format;
 import org.restlet.data.Form;
-import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.resource.StringRepresentation;
 
 public class CoverageStoreFileResource extends StoreFileResource {
 

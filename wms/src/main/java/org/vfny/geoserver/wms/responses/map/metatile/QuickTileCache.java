@@ -25,7 +25,6 @@ import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
 import org.geotools.util.CanonicalSet;
-import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 import com.vividsolutions.jts.geom.Envelope;

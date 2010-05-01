@@ -3,7 +3,6 @@ package org.geoserver.wcs;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
 
-import org.geoserver.config.GeoServer;
 import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.vfny.geoserver.wcs.WcsException.WcsExceptionCode;

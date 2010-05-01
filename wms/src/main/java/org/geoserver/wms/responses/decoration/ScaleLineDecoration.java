@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geotools.renderer.lite.RendererUtilities;
 import org.geoserver.wms.responses.MapDecoration;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 public class ScaleLineDecoration implements MapDecoration {

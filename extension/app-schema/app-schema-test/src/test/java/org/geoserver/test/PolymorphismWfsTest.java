@@ -7,6 +7,7 @@
 package org.geoserver.test;
 
 import junit.framework.Test;
+
 import org.w3c.dom.Document;
 
 /**

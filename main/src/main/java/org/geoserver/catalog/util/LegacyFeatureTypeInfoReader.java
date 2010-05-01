@@ -17,8 +17,6 @@ import java.util.StringTokenizer;
 
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import com.vividsolutions.jts.geom.Envelope;
 

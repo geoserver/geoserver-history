@@ -1,7 +1,5 @@
 package org.geoserver.catalog.impl;
 
-import java.awt.Dimension;
-import java.net.URL;
 import org.geoserver.catalog.AttributionInfo;
 
 /**

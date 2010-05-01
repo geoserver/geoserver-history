@@ -3,8 +3,6 @@ package org.geoserver.wms.xml;
 import java.io.Reader;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geotools.factory.CommonFactoryFinder;

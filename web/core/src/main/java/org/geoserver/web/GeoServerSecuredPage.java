@@ -11,7 +11,6 @@ import org.acegisecurity.Authentication;
 import org.acegisecurity.ui.AbstractProcessingFilter;
 import org.acegisecurity.ui.ExceptionTranslationFilter;
 import org.acegisecurity.ui.savedrequest.SavedRequest;
-import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
 import org.apache.wicket.protocol.http.WebRequest;
 
 

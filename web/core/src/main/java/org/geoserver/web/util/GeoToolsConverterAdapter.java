@@ -4,10 +4,10 @@
  */
 package org.geoserver.web.util;
 
+import java.util.Locale;
+
 import org.apache.wicket.util.convert.IConverter;
 import org.geotools.util.Converter;
-
-import java.util.Locale;
 
 public class GeoToolsConverterAdapter implements IConverter {
     Converter myConverter;

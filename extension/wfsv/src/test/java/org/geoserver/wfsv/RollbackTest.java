@@ -1,8 +1,7 @@
 package org.geoserver.wfsv;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import org.custommonkey.xmlunit.XMLUnit;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

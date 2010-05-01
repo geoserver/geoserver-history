@@ -6,14 +6,15 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import java.math.BigInteger;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.GetGmlObjectType;
 import net.opengis.wfs.WfsFactory;
+
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.identity.GmlObjectId;
-
-import javax.xml.namespace.QName;
 
 
 /**

@@ -4,25 +4,22 @@
  */
 package org.geoserver.feature;
 
-import org.geotools.data.DataUtilities;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureWriter;
-
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.IllegalAttributeException;
-import org.geotools.feature.collection.DelegateFeatureIterator;
+import org.geotools.feature.collection.DelegateSimpleFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.identity.FeatureId;
-
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * FeatureCollection with "casts" features from on feature type to another.
@@ -33,7 +30,7 @@ import java.util.NoSuchElementException;
 public class RetypingFeatureCollection extends DecoratingFeatureCollection {
     SimpleFeatureType target;
 
-    public RetypingFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> delegate,
+    public RetypingFeatureCollection(SimpleFeatureCollection delegate,
             SimpleFeatureType target) {
         super(delegate);
         this.target = target;
@@ -52,12 +49,12 @@ public class RetypingFeatureCollection extends DecoratingFeatureCollection {
         delegate.close(retyping.delegate);
     }
 
-    public FeatureIterator<SimpleFeature> features() {
-        return new DelegateFeatureIterator<SimpleFeature>(this, iterator());
+    public SimpleFeatureIterator features() {
+        return new DelegateSimpleFeatureIterator(this, iterator());
     }
 
-    public void close(FeatureIterator<SimpleFeature> iterator) {
-        DelegateFeatureIterator<SimpleFeature> delegate = (DelegateFeatureIterator<SimpleFeature>) iterator;
+    public void close(SimpleFeatureIterator iterator) {
+        DelegateSimpleFeatureIterator delegate = (DelegateSimpleFeatureIterator) iterator;
         delegate.close();
     }
 

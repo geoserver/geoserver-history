@@ -4,7 +4,23 @@
  */
 package org.geoserver.wfs.xml;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.zip.GZIPOutputStream;
+
+import javax.xml.transform.TransformerException;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
@@ -15,37 +31,20 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
-
 import org.geotools.gml.producer.FeatureTransformer;
 import org.geotools.gml.producer.FeatureTransformer.FeatureTypeNamespaces;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.referencing.CRS;
 import org.geotools.wfs.WFS;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.zip.GZIPOutputStream;
-import javax.xml.transform.TransformerException;
 
 
 /**
@@ -142,8 +141,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
         int numDecimals = -1;
         for (int i = 0; i < results.getFeature().size(); i++) {
             //FeatureResults features = (FeatureResults) f.next();
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features;
-            features = (FeatureCollection) results.getFeature().get(i);
+            SimpleFeatureCollection features = (SimpleFeatureCollection) results.getFeature().get(i);
             SimpleFeatureType featureType = features.getSchema();
 
             FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());

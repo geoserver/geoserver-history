@@ -4,15 +4,16 @@
  */
 package org.geoserver.template;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.MapModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 
 /**

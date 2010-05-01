@@ -30,11 +30,11 @@ import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.filter.ExpressionDOMParser;
 import org.geotools.referencing.CRS;
@@ -467,7 +467,7 @@ public class GetMapXmlReader extends XmlRequestReader {
         // SPECIAL CASE - we make the temporary version
         final DataStore inlineDatastore = ul.getInlineFeatureDatastore();
 
-        final FeatureSource<SimpleFeatureType, SimpleFeature> source;
+        final SimpleFeatureSource source;
         // what if they didn't put an "srsName" on their geometry in their
         // inlinefeature?
         // I guess we should assume they mean their geometry to exist in the

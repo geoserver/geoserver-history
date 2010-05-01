@@ -23,9 +23,7 @@ import org.acegisecurity.userdetails.UserDetailsService;
 import org.acegisecurity.userdetails.memory.UserAttribute;
 import org.acegisecurity.userdetails.memory.UserAttributeEditor;
 import org.geoserver.config.GeoServer;
-import org.geoserver.security.PropertyFileWatcher;
 import org.vfny.geoserver.global.ConfigurationException;
-
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**

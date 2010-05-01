@@ -4,7 +4,8 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.io.File;
 import java.io.FileInputStream;

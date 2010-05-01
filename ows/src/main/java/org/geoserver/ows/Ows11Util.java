@@ -9,14 +9,6 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.emf.ecore.EObject;
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.platform.ServiceException;
-import org.geotools.feature.NameImpl;
-import org.geotools.xml.EMFUtils;
-import org.opengis.feature.type.Name;
-import org.opengis.util.InternationalString;
-
 import net.opengis.ows11.CodeType;
 import net.opengis.ows11.DCPType;
 import net.opengis.ows11.DomainMetadataType;
@@ -26,6 +18,14 @@ import net.opengis.ows11.KeywordsType;
 import net.opengis.ows11.LanguageStringType;
 import net.opengis.ows11.Ows11Factory;
 import net.opengis.ows11.RequestMethodType;
+
+import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.ServiceException;
+import org.geotools.feature.NameImpl;
+import org.geotools.xml.EMFUtils;
+import org.opengis.feature.type.Name;
+import org.opengis.util.InternationalString;
 
 public class Ows11Util {
 

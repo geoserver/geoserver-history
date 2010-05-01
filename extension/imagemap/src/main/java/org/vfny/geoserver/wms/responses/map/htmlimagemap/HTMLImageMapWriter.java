@@ -4,44 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.map.htmlimagemap;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import org.geotools.data.DataSourceException;
-import org.opengis.feature.simple.SimpleFeature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.operation.DefaultMathTransformFactory;
-import org.geotools.referencing.operation.matrix.GeneralMatrix;
-import org.geotools.renderer.lite.RendererUtilities;
-import org.geotools.styling.FeatureTypeStyle;
-import org.geotools.styling.LineSymbolizer;
-import org.geotools.styling.Mark;
-import org.geotools.styling.PointSymbolizer;
-import org.geotools.styling.Rule;
-import org.geotools.styling.SLD;
-import org.geotools.styling.Style;
-import org.geotools.styling.Symbolizer;
-import org.geotools.styling.TextSymbolizer;
-import org.geotools.util.Converters;
-import org.opengis.filter.Filter;
-import org.opengis.filter.expression.Expression;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.map.htmlimagemap.holes.HolesRemover;
-
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
@@ -58,6 +20,44 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geotools.data.DataSourceException;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.operation.DefaultMathTransformFactory;
+import org.geotools.referencing.operation.matrix.GeneralMatrix;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.LineSymbolizer;
+import org.geotools.styling.Mark;
+import org.geotools.styling.PointSymbolizer;
+import org.geotools.styling.Rule;
+import org.geotools.styling.SLD;
+import org.geotools.styling.Style;
+import org.geotools.styling.Symbolizer;
+import org.geotools.styling.TextSymbolizer;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.expression.Expression;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
+import org.vfny.geoserver.wms.WMSMapContext;
+import org.vfny.geoserver.wms.responses.map.htmlimagemap.holes.HolesRemover;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 /**
@@ -151,16 +151,16 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      * @throws IOException if an error occurs during encoding
      * @throws AbortedException if the operation is aborted
      */
-    public void writeFeatures(FeatureCollection<SimpleFeatureType,SimpleFeature> fColl, Style style,FeatureTypeStyle[] ftsList)
+    public void writeFeatures(SimpleFeatureCollection fColl, Style style,FeatureTypeStyle[] ftsList)
         throws IOException, AbortedException {
         SimpleFeature ft;
-        FeatureIterator<SimpleFeature> iter=null;
+        SimpleFeatureIterator iter=null;
         try {
             SimpleFeatureType featureType = fColl.getSchema();
             Class<?> gtype = featureType.getGeometryDescriptor().getType().getBinding();
             
             // iterates through the single features
-            iter=fColl.features();
+            iter = fColl.features();
             while (iter.hasNext()) {
                 ft = iter.next();      
                 Geometry geo=(Geometry)ft.getDefaultGeometry();

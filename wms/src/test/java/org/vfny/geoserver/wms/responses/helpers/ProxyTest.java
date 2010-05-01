@@ -1,6 +1,6 @@
 package org.vfny.geoserver.wms.responses.helpers;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import java.util.Collections;
 import java.util.HashMap;

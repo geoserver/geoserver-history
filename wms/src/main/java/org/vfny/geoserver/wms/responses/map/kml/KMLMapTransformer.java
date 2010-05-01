@@ -4,7 +4,9 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.appendPath;
+import static org.geoserver.ows.util.ResponseUtils.baseURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.awt.Color;
 import java.io.File;
@@ -47,7 +49,6 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.SLD;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
-import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
 import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.simple.SimpleFeature;

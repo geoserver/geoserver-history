@@ -4,14 +4,14 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
+import java.io.Reader;
+import java.util.logging.Logger;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
-
-import org.vfny.geoserver.servlets.AbstractService;
-import java.io.Reader;
-import java.util.logging.Logger;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

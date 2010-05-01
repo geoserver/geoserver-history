@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.Service;
 import org.geoserver.test.GeoServerTestSupport;

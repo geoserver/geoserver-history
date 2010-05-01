@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.Test;
 import junit.textui.TestRunner;
 
 import org.custommonkey.xmlunit.XMLAssert;

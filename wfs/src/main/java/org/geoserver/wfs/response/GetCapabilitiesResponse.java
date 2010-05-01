@@ -4,16 +4,19 @@
  */
 package org.geoserver.wfs.response;
 
-import net.opengis.wfs.GetCapabilitiesType;
-import org.geoserver.ows.Response;
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.platform.Operation;
-import org.geotools.xml.transform.TransformerBase;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.transform.TransformerException;
+
+import net.opengis.wfs.GetCapabilitiesType;
+
+import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.Operation;
+import org.geotools.xml.transform.TransformerBase;
 
 
 public class GetCapabilitiesResponse extends Response {

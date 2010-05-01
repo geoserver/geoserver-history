@@ -4,16 +4,17 @@
  */
 package org.geoserver.ows.adapters;
 
-import org.geoserver.config.ServiceInfo;
-import org.geoserver.config.impl.GeoServerImpl;
-import org.geoserver.ows.HttpServletRequestAware;
-import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
+
+import org.geoserver.config.ServiceInfo;
+import org.geoserver.config.impl.GeoServerImpl;
+import org.geoserver.ows.HttpServletRequestAware;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 
 
 public class XmlRequestReaderAdapter extends org.geoserver.ows.XmlRequestReader

@@ -4,8 +4,6 @@
  */
 package org.geoserver.wfs.xml.gml3;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import org.geoserver.wfs.WFSException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
@@ -15,8 +13,9 @@ import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.CoordinateSystemAxis;
 import org.picocontainer.MutablePicoContainer;
+
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Subclass of {@link org.geotools.gml3.bindings.AbstractGeometryTypeBinding} which performs some

@@ -1,21 +1,9 @@
 package org.geoserver.security;
 
-import static org.easymock.EasyMock.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.acegisecurity.AcegiSecurityException;
 import org.acegisecurity.context.SecurityContextHolder;
-import org.easymock.EasyMock;
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.CoverageStoreInfo;
-import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
 import org.geoserver.security.decorators.SecuredDataStoreInfo;

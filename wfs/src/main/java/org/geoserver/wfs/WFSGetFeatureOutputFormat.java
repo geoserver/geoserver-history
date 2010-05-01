@@ -4,17 +4,19 @@
  */
 package org.geoserver.wfs;
 
-import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.ResultTypeType;
-import org.geoserver.ows.Response;
-import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.ServiceException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.ResultTypeType;
+
+import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
 
 
 /**

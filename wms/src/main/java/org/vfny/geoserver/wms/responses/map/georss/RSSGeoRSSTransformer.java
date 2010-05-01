@@ -9,14 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.geoserver.wms.util.WMSRequests;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
-import org.geotools.map.MapLayer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
@@ -77,7 +73,7 @@ public class RSSGeoRSSTransformer extends GeoRSSTransformerBase {
         void encodeItems(WMSMapContext map) throws IOException {
             List featureCollections = loadFeatureCollections(map);
             for (Iterator f = featureCollections.iterator(); f.hasNext(); ) {
-                FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) f.next();
+                SimpleFeatureCollection features = (SimpleFeatureCollection) f.next();
                 FeatureIterator <SimpleFeature> iterator = null;
 
                 try {

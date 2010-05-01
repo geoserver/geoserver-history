@@ -4,14 +4,16 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.WfsFactory;
+
 import org.eclipse.emf.ecore.EObject;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.EMFUtils;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
 
 
 /**

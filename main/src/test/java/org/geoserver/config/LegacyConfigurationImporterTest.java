@@ -1,15 +1,11 @@
 package org.geoserver.config;
 
-import java.io.File;
+import junit.framework.TestCase;
 
-import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.GeoServerFactoryImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.util.LegacyConfigurationImporter;
 import org.geotools.data.DataUtilities;
-
-import junit.framework.TestCase;
 
 public class LegacyConfigurationImporterTest extends TestCase {
 

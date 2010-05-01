@@ -1,7 +1,5 @@
 package org.geoserver.wfs;
 
-import java.util.ArrayList;
-
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamServiceLoader;

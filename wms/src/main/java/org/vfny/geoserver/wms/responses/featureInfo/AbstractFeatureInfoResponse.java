@@ -35,6 +35,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.store.FilteringFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -62,7 +63,6 @@ import org.opengis.coverage.CannotEvaluateException;
 import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -495,7 +495,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                     try {
                         final double[] pixelValues = coverage.evaluate(position,(double[]) null);
-                        final FeatureCollection<SimpleFeatureType, SimpleFeature> pixel;
+                        final SimpleFeatureCollection pixel;
                         pixel = wrapPixelInFeatureCollection(coverage, pixelValues, cinfo.getQualifiedName());
                         metas.add(requestedLayers[i]);
                         results.add(pixel);
@@ -561,7 +561,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         return pixelRect;
     }
 
-    private FeatureCollection<SimpleFeatureType, SimpleFeature> wrapPixelInFeatureCollection(
+    private SimpleFeatureCollection wrapPixelInFeatureCollection(
             GridCoverage2D coverage, double[] pixelValues, Name coverageName)
             throws SchemaException {
         

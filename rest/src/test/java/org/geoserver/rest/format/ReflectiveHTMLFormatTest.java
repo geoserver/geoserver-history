@@ -4,12 +4,11 @@
  */
 package org.geoserver.rest.format;
 
+import junit.framework.TestCase;
+
 import org.geoserver.rest.Foo;
-import org.geoserver.rest.format.ReflectiveHTMLFormat;
 import org.restlet.data.Request;
 import org.restlet.resource.Representation;
-
-import junit.framework.TestCase;
 
 public class ReflectiveHTMLFormatTest extends TestCase {
 

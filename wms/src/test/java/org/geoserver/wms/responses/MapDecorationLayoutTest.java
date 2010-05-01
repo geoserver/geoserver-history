@@ -1,7 +1,5 @@
 package org.geoserver.wms.responses;
 
-import org.vfny.geoserver.wms.WMSMapContext;
-
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,6 +9,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.vfny.geoserver.wms.WMSMapContext;
 
 public class MapDecorationLayoutTest extends TestCase {
     public TestSuite suite() { return new TestSuite(MapDecorationLayout.class); }

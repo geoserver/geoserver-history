@@ -2,12 +2,12 @@ package org.geoserver.catalog.impl;
 
 import java.util.List;
 
+import org.geoserver.catalog.CascadeRemovalReporter;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
-import org.geoserver.catalog.CascadeRemovalReporter;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;

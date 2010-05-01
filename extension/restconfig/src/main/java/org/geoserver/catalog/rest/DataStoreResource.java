@@ -13,7 +13,6 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
-import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;

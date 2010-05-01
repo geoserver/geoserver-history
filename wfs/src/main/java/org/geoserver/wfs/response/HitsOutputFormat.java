@@ -4,6 +4,10 @@
  */
 package org.geoserver.wfs.response;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.ResultTypeType;
@@ -18,10 +22,6 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.xml.Encoder;
-import org.xml.sax.SAXException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 
 /**

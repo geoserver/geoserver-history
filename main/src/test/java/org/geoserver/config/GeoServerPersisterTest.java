@@ -17,8 +17,6 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.config.util.XStreamPersister;
-import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.config.util.XStreamPersisterFactory;
 import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;

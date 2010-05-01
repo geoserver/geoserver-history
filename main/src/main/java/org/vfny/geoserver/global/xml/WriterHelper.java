@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.global.xml;
 
-import org.vfny.geoserver.global.ConfigurationException;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collections;
@@ -12,6 +11,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+import org.vfny.geoserver.global.ConfigurationException;
 
 
 /**

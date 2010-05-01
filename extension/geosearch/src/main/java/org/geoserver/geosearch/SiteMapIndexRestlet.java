@@ -2,11 +2,6 @@ package org.geoserver.geosearch;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.NamespaceInfo;
-
-import java.util.List;
-import java.util.Iterator;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;

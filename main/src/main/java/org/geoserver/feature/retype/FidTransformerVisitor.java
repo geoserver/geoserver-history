@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.store.ReTypingFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.identity.FeatureIdImpl;
 import org.geotools.filter.visitor.DuplicatingFilterVisitor;

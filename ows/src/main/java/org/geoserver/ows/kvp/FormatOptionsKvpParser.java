@@ -4,18 +4,19 @@
  */
 package org.geoserver.ows.kvp;
 
-import org.geoserver.ows.KvpParser;
-import org.geoserver.ows.util.CaseInsensitiveMap;
-import org.geoserver.platform.GeoServerExtensions;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+
+import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.platform.GeoServerExtensions;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 
 /**

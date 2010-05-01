@@ -13,10 +13,10 @@ import net.opengis.wfs.WfsFactory;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFSTestSupport;
-import org.geoserver.wfs.response.CSVOutputFormat;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -72,7 +72,7 @@ public class CSVOutputFormatTest extends WFSTestSupport {
         MemoryDataStore data = new MemoryDataStore();
         data.addFeature(f1);
         data.addFeature(f2);
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = data.getFeatureSource("funnyLabels");
+        SimpleFeatureSource fs = data.getFeatureSource("funnyLabels");
         
         // build the request objects and feed the output format
         GetFeatureType gft = WfsFactory.eINSTANCE.createGetFeatureType();

@@ -4,30 +4,23 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.config.GeoServerDataDirectory;
-import org.geoserver.config.GeoServerLoader;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
-/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, availible at the root
- * application directory.
- */
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
-import javax.servlet.ServletContext;
 
 
 /**

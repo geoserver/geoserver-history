@@ -5,14 +5,11 @@
 package org.geoserver.filters;
 
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-
-import java.util.Set;
 import java.util.Iterator;
-import java.util.zip.GZIPOutputStream;
+import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;

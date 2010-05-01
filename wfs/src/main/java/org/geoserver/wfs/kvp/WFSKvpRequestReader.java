@@ -5,14 +5,8 @@
 package org.geoserver.wfs.kvp;
 
 import net.opengis.wfs.WfsFactory;
-import org.eclipse.emf.ecore.EObject;
-import org.geoserver.ows.KvpRequestReader;
+
 import org.geoserver.ows.kvp.EMFKvpRequestReader;
-import org.geoserver.ows.util.OwsUtils;
-import org.geotools.xml.EMFUtils;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Map;
 
 
 /**

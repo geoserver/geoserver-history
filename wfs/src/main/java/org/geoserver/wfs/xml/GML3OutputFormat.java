@@ -4,7 +4,9 @@
  */
 package org.geoserver.wfs.xml;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
 import java.io.OutputStream;

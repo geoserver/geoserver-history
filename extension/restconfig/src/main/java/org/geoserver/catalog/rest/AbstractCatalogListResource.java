@@ -6,8 +6,6 @@ package org.geoserver.catalog.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.util.XStreamPersister;

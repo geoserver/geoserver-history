@@ -1,10 +1,10 @@
 package org.geoserver.security;
 
+import junit.framework.TestCase;
+
 import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import junit.framework.TestCase;
 
 public abstract class SecureObjectsTest extends TestCase {
     

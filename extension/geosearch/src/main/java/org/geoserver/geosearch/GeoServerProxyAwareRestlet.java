@@ -1,22 +1,9 @@
 package org.geoserver.geosearch;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.ows.util.RequestUtils;
-
+import org.jdom.Namespace;
 import org.restlet.Restlet;
 import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Method;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class GeoServerProxyAwareRestlet extends Restlet {
 

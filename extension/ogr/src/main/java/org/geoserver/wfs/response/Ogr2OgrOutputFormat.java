@@ -29,13 +29,10 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.gml.producer.FeatureTransformer;
-import org.geotools.gml2.bindings.GML2EncodingUtils;
-import org.opengis.feature.GeometryAttribute;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -192,10 +189,10 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
         // actually export each feature collection
         try {
             Iterator outputFeatureCollections = featureCollection.getFeature().iterator();
-            FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection;
+            SimpleFeatureCollection curCollection;
 
             while (outputFeatureCollections.hasNext()) {
-                curCollection = (FeatureCollection<SimpleFeatureType, SimpleFeature>) outputFeatureCollections
+                curCollection = (SimpleFeatureCollection) outputFeatureCollections
                         .next();
 
                 // write out the gml
@@ -230,7 +227,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
      * @return
      */
     private File writeToDisk(File tempDir,
-            FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection) throws Exception {
+            SimpleFeatureCollection curCollection) throws Exception {
         if(isShapefileCompatible(curCollection.getSchema())) 
             return writeShapefile(tempDir, curCollection);
         else
@@ -238,10 +235,10 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
     }
 
     private File writeShapefile(File tempDir,
-            FeatureCollection<SimpleFeatureType, SimpleFeature> collection) {
+            SimpleFeatureCollection collection) {
         SimpleFeatureType schema = collection.getSchema();
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> fstore = null;
+        SimpleFeatureStore fstore = null;
         DataStore dstore = null;
         File file = null;
         try {
@@ -249,7 +246,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
             dstore = new ShapefileDataStore(file.toURL());
             dstore.createSchema(schema);
             
-            fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource(schema.getTypeName());
+            fstore = (SimpleFeatureStore) dstore.getFeatureSource(schema.getTypeName());
             fstore.addFeatures(collection);
         } catch (IOException ioe) {
             LOGGER.log(Level.WARNING,
@@ -285,7 +282,7 @@ public class Ogr2OgrOutputFormat extends WFSGetFeatureOutputFormat {
     }
 
     private File writeGML(File tempDir,
-            FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection) throws Exception {
+            SimpleFeatureCollection curCollection) throws Exception {
         // create the temp file for this output
         File outFile = new File(tempDir, curCollection.getSchema().getTypeName() + ".gml");
 

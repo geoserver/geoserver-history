@@ -4,16 +4,16 @@
  */
 package org.geoserver.test.ows;
 
-import org.geoserver.ows.KvpParser;
-import org.geoserver.ows.KvpRequestReader;
-import org.geoserver.ows.util.CaseInsensitiveMap;
-import org.geoserver.ows.util.KvpUtils;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.test.GeoServerTestSupport;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.KvpRequestReader;
+import org.geoserver.ows.util.CaseInsensitiveMap;
+import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.test.GeoServerTestSupport;
 
 
 /**

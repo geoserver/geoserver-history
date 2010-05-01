@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.helpers;
 
-import org.geotools.renderer.lite.StreamingRenderer;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;

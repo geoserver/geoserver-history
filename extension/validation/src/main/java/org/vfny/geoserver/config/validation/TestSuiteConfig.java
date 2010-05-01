@@ -11,11 +11,12 @@
  */
 package org.vfny.geoserver.config.validation;
 
-import org.geotools.validation.dto.TestDTO;
-import org.geotools.validation.dto.TestSuiteDTO;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.geotools.validation.dto.TestDTO;
+import org.geotools.validation.dto.TestSuiteDTO;
 
 
 /**

@@ -4,12 +4,12 @@
  */
 package org.geoserver.template;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.TemplateLoader;
-import freemarker.template.Configuration;
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.NoSuchElementException;
+import java.util.logging.Logger;
 
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -18,12 +18,13 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.NoSuchElementException;
-import java.util.logging.Logger;
+
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
 
 
 /**

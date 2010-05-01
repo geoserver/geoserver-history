@@ -4,7 +4,6 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.ows.KvpParser;
 
 
 public class MessageKvpParser extends KvpParser {

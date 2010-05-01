@@ -4,7 +4,6 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;

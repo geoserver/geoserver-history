@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.config.ServiceInfo;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;

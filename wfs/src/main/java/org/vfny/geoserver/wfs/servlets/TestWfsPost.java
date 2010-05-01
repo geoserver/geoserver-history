@@ -4,7 +4,6 @@
  */
 package org.vfny.geoserver.wfs.servlets;
 
-import org.apache.commons.codec.binary.Base64;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,11 +13,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLDecoder;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.codec.binary.Base64;
 
 
 /**

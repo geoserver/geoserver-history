@@ -15,13 +15,12 @@ import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
-import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.xml.transform.Translator;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -306,7 +305,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             try{
                 numFeatures = 
                     (KMLUtils.loadFeatureCollection(
-                        (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource(),
+                        (SimpleFeatureSource) mapLayer.getFeatureSource(),
                         mapLayer,
                         mapContext
                         ).size()/* == 0*/);

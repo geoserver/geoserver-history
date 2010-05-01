@@ -4,36 +4,40 @@
  */
 package org.geoserver.wfs;
 
-import com.vividsolutions.jts.geom.Envelope;
-import net.opengis.wfs.AllSomeType;
-import net.opengis.wfs.DeleteElementType;
-import net.opengis.wfs.TransactionResponseType;
-import net.opengis.wfs.TransactionType;
-import org.eclipse.emf.ecore.EObject;
-import org.geoserver.config.GeoServer;
-import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureLockException;
-import org.geotools.data.FeatureLocking;
-import org.geotools.data.FeatureStore;
-import org.geotools.data.FeatureWriter;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.factory.GeoTools;
-import org.geotools.xml.EMFUtils;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.FilterFactory2;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.AllSomeType;
+import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.TransactionResponseType;
+import net.opengis.wfs.TransactionType;
+
+import org.eclipse.emf.ecore.EObject;
+import org.geoserver.config.GeoServer;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.DefaultQuery;
+import org.geotools.data.FeatureLockException;
+import org.geotools.data.FeatureLocking;
+import org.geotools.data.FeatureStore;
+import org.geotools.data.FeatureWriter;
+import org.geotools.data.simple.SimpleFeatureLocking;
+import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.xml.EMFUtils;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**
@@ -86,8 +90,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
         String handle = delete.getHandle();
         long deleted = response.getTransactionSummary().getTotalDeleted().longValue();
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> store;
-        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) featureStores.get(elementName);
+        SimpleFeatureStore store = DataUtilities.simple((FeatureStore) featureStores.get(elementName));
 
         if (store == null) {
             throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
@@ -121,8 +124,8 @@ public class DeleteElementHandler implements TransactionElementHandler {
 
             if ((request.getLockId() != null) && store instanceof FeatureLocking
                     && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
-                FeatureLocking<SimpleFeatureType, SimpleFeature> locking;
-                locking = (FeatureLocking<SimpleFeatureType, SimpleFeature>) store;
+                SimpleFeatureLocking locking;
+                locking = (SimpleFeatureLocking) store;
 
                 // TODO: Revisit Lock/Delete interaction in gt2
                 if (false) {

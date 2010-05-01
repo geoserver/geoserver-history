@@ -4,7 +4,8 @@
  */
 package org.geoserver.wcs.response;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.appendPath;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,7 +22,6 @@ import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wcs.WCSInfo;

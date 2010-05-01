@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.requests;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +15,6 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.wms.WmsException;
 

@@ -4,17 +4,18 @@
  */
 package org.geoserver.ows.adapters;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 
 /**

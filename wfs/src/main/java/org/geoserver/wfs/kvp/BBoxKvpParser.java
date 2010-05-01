@@ -4,7 +4,8 @@
  */
 package org.geoserver.wfs.kvp;
 
-import com.vividsolutions.jts.geom.Envelope;
+import java.util.List;
+
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
@@ -12,7 +13,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import java.util.List;
+import com.vividsolutions.jts.geom.Envelope;
 
 
 public class BBoxKvpParser extends KvpParser {

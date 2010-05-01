@@ -4,26 +4,8 @@
  */
 package org.geoserver.wfs.response;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
-import net.opengis.wfs.GetFeatureType;
-import net.opengis.wfs.LockFeatureResponseType;
-import net.opengis.wfs.LockFeatureType;
-import net.opengis.wfs.TransactionType;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
 
-import org.geoserver.catalog.Catalog;
-import org.geoserver.config.GeoServer;
-import org.geoserver.ows.Response;
-import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.platform.Operation;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.WFSInfo;
-import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
-import org.geotools.util.Version;
-import org.geotools.xml.Encoder;
-import org.opengis.filter.identity.FeatureId;
-import org.xml.sax.SAXException;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,6 +13,20 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
+
+import net.opengis.wfs.LockFeatureResponseType;
+import net.opengis.wfs.LockFeatureType;
+
+import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
+import org.geoserver.ows.Response;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
+import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.util.Version;
+import org.geotools.xml.Encoder;
+import org.opengis.filter.identity.FeatureId;
 
 
 public class LockFeatureTypeResponse extends Response {

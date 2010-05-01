@@ -25,7 +25,6 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.layer.LayerDetachableModel;
-import org.geoserver.web.data.store.StorePage;
 import org.geoserver.web.data.style.StyleDetachableModel;
 import org.geoserver.web.wicket.CRSPanel;
 import org.geoserver.web.wicket.EnvelopePanel;

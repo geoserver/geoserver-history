@@ -10,8 +10,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import javax.media.jai.widget.ScrollingImagePanel;
-import javax.swing.JFrame;
 import javax.xml.namespace.QName;
 
 import org.geoserver.catalog.CoverageInfo;
@@ -20,17 +18,14 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.coverage.grid.GridCoverage2D;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.LegendUtils;
-import org.vfny.geoserver.wms.responses.featureinfo.GetFeatureInfoTest;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 
@@ -141,7 +136,7 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
 	    assertNotNull(cInfo);
 	    
         GridCoverage coverage = cInfo.getGridCoverage(null, null);
-        FeatureCollection<SimpleFeatureType, SimpleFeature> feature;
+        SimpleFeatureCollection feature;
         feature = FeatureUtilities.wrapGridCoverage((GridCoverage2D) coverage);
         req.setLayer(feature.getSchema());
 	    req.setStyle(multipleRulesStyle);

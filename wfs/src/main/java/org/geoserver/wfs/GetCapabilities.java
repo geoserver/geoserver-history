@@ -6,18 +6,12 @@ package org.geoserver.wfs;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
 
 import net.opengis.wfs.GetCapabilitiesType;
 
 import org.geoserver.catalog.Catalog;
-import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.CapabilitiesTransformer.WFS1_0;
-import org.geotools.util.Version;
 
 /**
  * Web Feature Service GetCapabilities operation.

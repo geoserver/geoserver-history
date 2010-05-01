@@ -4,7 +4,7 @@
  */
 package org.geoserver.wcs.kvp;
 
-import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.*;
+import static org.vfny.geoserver.wcs.WcsException.WcsExceptionCode.InvalidParameterValue;
 
 import java.util.Arrays;
 import java.util.List;

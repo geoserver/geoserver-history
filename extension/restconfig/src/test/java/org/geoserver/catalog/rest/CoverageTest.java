@@ -6,7 +6,6 @@ package org.geoserver.catalog.rest;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import java.io.File;
 import java.net.URL;
 
 import net.sf.json.JSON;

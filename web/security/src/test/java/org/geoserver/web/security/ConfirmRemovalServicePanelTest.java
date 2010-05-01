@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.wicket.Component;
-import org.geoserver.security.AccessMode;
-import org.geoserver.security.DataAccessRule;
 import org.geoserver.security.ServiceAccessRule;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;

@@ -25,8 +25,8 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -81,7 +81,7 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
         HSSFWorkbook wb = new HSSFWorkbook();
         
         for (Iterator it = featureCollection.getFeature().iterator(); it.hasNext();) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc = (FeatureCollection<SimpleFeatureType, SimpleFeature>) it.next();
+            SimpleFeatureCollection fc = (SimpleFeatureCollection) it.next();
     	
             // create the sheet for this feature collection    	
         	HSSFSheet sheet = wb.createSheet(fc.getSchema().getTypeName());
@@ -102,7 +102,7 @@ public class ExcelOutputFormat extends WFSGetFeatureOutputFormat {
             }
             
             // write out the features
-            FeatureIterator<SimpleFeature> i = fc.features();
+            SimpleFeatureIterator i = fc.features();
             int r = 0; // row index
             try {
             	HSSFRow row;

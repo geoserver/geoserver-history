@@ -4,15 +4,12 @@
  */
 package org.geoserver.config.util;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.geoserver.catalog.MetadataLinkInfo;
-import org.geoserver.catalog.util.ReaderUtils;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
-import org.w3c.dom.Element;
 
 /**
  * Extension point for loading services from the services.xml file.

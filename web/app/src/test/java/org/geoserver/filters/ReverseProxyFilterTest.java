@@ -21,7 +21,6 @@ import junit.framework.TestCase;
 
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.geoserver.config.GeoServer;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.GeoServerExtensions;

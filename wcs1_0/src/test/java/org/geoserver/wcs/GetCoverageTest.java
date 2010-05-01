@@ -27,7 +27,6 @@ import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.coverage.grid.GridEnvelope;
 import org.opengis.referencing.datum.PixelInCell;
 import org.opengis.referencing.operation.MathTransform;
-import org.vfny.geoserver.wcs.WcsException;
 import org.w3c.dom.Document;
 
 /**

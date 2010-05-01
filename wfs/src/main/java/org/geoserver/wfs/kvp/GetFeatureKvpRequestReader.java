@@ -24,7 +24,6 @@ import org.geoserver.wfs.WFSException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.xml.EMFUtils;
-import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;

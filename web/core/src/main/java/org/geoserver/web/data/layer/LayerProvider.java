@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 

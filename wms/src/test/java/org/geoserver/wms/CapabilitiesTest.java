@@ -6,10 +6,8 @@ import java.util.ListIterator;
 
 import junit.framework.Test;
 
-import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;

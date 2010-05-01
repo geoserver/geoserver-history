@@ -9,7 +9,6 @@ import org.apache.wicket.model.Model;
 import org.geoserver.web.ComponentBuilder;
 import org.geoserver.web.FormTestPage;
 import org.geoserver.web.GeoServerWicketTestSupport;
-import org.geoserver.web.wicket.WicketHierarchyPrinter;
 
 public class GeoServerFileChooserTest extends GeoServerWicketTestSupport {
 

@@ -4,6 +4,8 @@
  */
 package org.geoserver.wfsv.xml.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfsv.RollbackType;
 import net.opengis.wfsv.WfsvFactory;
 
@@ -12,7 +14,6 @@ import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.filter.Filter;
-import javax.xml.namespace.QName;
 
 
 /**

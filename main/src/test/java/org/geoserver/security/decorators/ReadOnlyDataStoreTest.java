@@ -1,13 +1,16 @@
 package org.geoserver.security.decorators;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createNiceMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 
 import org.acegisecurity.AcegiSecurityException;
 import org.geoserver.security.SecureObjectsTest;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 
@@ -18,7 +21,8 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        FeatureStore fs = createNiceMock(FeatureStore.class);
+        SimpleFeatureStore fs = createNiceMock(SimpleFeatureStore.class);
+        expect(fs.getSchema()).andReturn(DataUtilities.createType("test", "g:Polygon,name:String")).anyTimes();
         replay(fs);
         ds = createNiceMock(DataStore.class);
         expect(ds.getFeatureSource("blah")).andReturn(fs);
@@ -27,8 +31,6 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
 
     public void testDontChallenge() throws Exception {
         ReadOnlyDataStore ro = new ReadOnlyDataStore(ds, WrapperPolicy.HIDE);
-        ReadOnlyFeatureSource fs = (ReadOnlyFeatureSource) ro.getFeatureSource("blah");
-        assertEquals(WrapperPolicy.HIDE, fs.policy);
 
         try {
             ro.createSchema(null);
@@ -72,8 +74,6 @@ public class ReadOnlyDataStoreTest extends SecureObjectsTest {
     
     public void testChallenge() throws Exception {
         ReadOnlyDataStore ro = new ReadOnlyDataStore(ds, WrapperPolicy.RO_CHALLENGE);
-        ReadOnlyFeatureStore fs = (ReadOnlyFeatureStore) ro.getFeatureSource("blah");
-        assertEquals(WrapperPolicy.RO_CHALLENGE, fs.policy);
 
         try {
             ro.createSchema(null);

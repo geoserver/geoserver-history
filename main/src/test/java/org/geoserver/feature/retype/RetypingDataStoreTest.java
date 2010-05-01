@@ -21,13 +21,15 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
-import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.property.PropertyDataStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureLocking;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -101,9 +103,9 @@ public class RetypingDataStoreTest extends TestCase {
 
     public void testGetFeaturesFeatureSource() throws Exception {
         // check the schemas in feature source and feature collection
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = rts.getFeatureSource(RENAMED);
+        SimpleFeatureSource fs = rts.getFeatureSource(RENAMED);
         assertEquals(RENAMED, fs.getSchema().getName().getLocalPart());
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs.getFeatures();
+        SimpleFeatureCollection fc = fs.getFeatures();
         assertEquals(RENAMED, fc.getSchema().getName().getLocalPart());
         assertTrue(fc.size() > 0);
 
@@ -134,14 +136,14 @@ public class RetypingDataStoreTest extends TestCase {
 
     public void testFeautureSourceFidFilter() throws Exception {
         // grab the last feature in the collection (there are more than one)
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = rts.getFeatureSource(RENAMED);
+        SimpleFeatureSource fs = rts.getFeatureSource(RENAMED);
 
         // build a filter that will retrieve that feature only
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
         final String fid = RENAMED + ".1107531701011";
         Filter fidFilter = ff.id(Collections.singleton(ff.featureId(fid)));
 
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs.getFeatures(new DefaultQuery(RENAMED, fidFilter));
+        SimpleFeatureCollection fc = fs.getFeatures(new DefaultQuery(RENAMED, fidFilter));
         assertEquals(RENAMED, fc.getSchema().getName().getLocalPart());
         assertEquals(1, fc.size());
         FeatureIterator <SimpleFeature> it = fc.features();
@@ -166,8 +168,8 @@ public class RetypingDataStoreTest extends TestCase {
     public void testDelete() throws Exception {
         final DefaultQuery queryAll = new DefaultQuery(RENAMED);
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> store;
-        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
+        SimpleFeatureStore store;
+        store = (SimpleFeatureStore) rts.getFeatureSource(RENAMED);
         int count = store.getCount(queryAll);
         store.removeFeatures(fidFilter);
 
@@ -177,8 +179,8 @@ public class RetypingDataStoreTest extends TestCase {
     public void testModify() throws Exception {
         final DefaultQuery queryAll = new DefaultQuery(RENAMED);
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> store;
-        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
+        SimpleFeatureStore store;
+        store = (SimpleFeatureStore) rts.getFeatureSource(RENAMED);
         SimpleFeature original = store.getFeatures(fidFilter).features().next();
         String newAddress = ((String) original.getAttribute("ADDRESS")) + " xxx";
 
@@ -199,7 +201,7 @@ public class RetypingDataStoreTest extends TestCase {
         SimpleFeatureType type = DataUtilities.createType("trees",
                 "the_geom:Point,FID:String,NAME:String");
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> fs = createMock(FeatureStore.class);
+        SimpleFeatureStore fs = createMock(SimpleFeatureStore.class);
         expect(fs.addFeatures(isA(FeatureCollection.class))).andReturn(
                 Collections.singletonList((FeatureId)(new FeatureIdImpl("trees.105"))));
         replay(fs);
@@ -223,9 +225,9 @@ public class RetypingDataStoreTest extends TestCase {
         sfb.set("FID", "023");
         sfb.set("NAME", "Old oak");
         SimpleFeature feature = sfb.buildFeature(null);
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = DataUtilities.collection(feature);
+        SimpleFeatureCollection fc = DataUtilities.collection(feature);
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> store = (FeatureStore) rts.getFeatureSource("oaks");
+        SimpleFeatureStore store = (SimpleFeatureStore) rts.getFeatureSource("oaks");
         List<FeatureId> ids = store.addFeatures(fc);
         assertEquals(1, ids.size());
         String id = ((FeatureId) ids.iterator().next()).getID();
@@ -233,16 +235,16 @@ public class RetypingDataStoreTest extends TestCase {
     }
 
     public void testLockUnlockFilter() throws Exception {
-        FeatureLocking<SimpleFeatureType, SimpleFeature> fl;
-        fl = (FeatureLocking<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
+        SimpleFeatureLocking fl;
+        fl = (SimpleFeatureLocking) rts.getFeatureSource(RENAMED);
         final FeatureLock lock = FeatureLockFactory.generate(10 * 60 * 1000);
         Transaction t = new DefaultTransaction();
         t.addAuthorization(lock.getAuthorization());
         fl.setTransaction(t);
         fl.setFeatureLock(lock);
 
-        FeatureLocking<SimpleFeatureType, SimpleFeature> fl2;
-        fl2 = (FeatureLocking<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
+        SimpleFeatureLocking fl2;
+        fl2 = (SimpleFeatureLocking) rts.getFeatureSource(RENAMED);
         fl.setFeatureLock(lock);
         fl2.setTransaction(new DefaultTransaction());
 
@@ -254,16 +256,16 @@ public class RetypingDataStoreTest extends TestCase {
     }
     
     public void testLockUnlockQuery() throws Exception {
-        FeatureLocking<SimpleFeatureType, SimpleFeature> fl;
-        fl = (FeatureLocking<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
+        SimpleFeatureLocking fl;
+        fl = (SimpleFeatureLocking) rts.getFeatureSource(RENAMED);
         final FeatureLock lock = FeatureLockFactory.generate(10 * 60 * 1000);
         Transaction t = new DefaultTransaction();
         t.addAuthorization(lock.getAuthorization());
         fl.setTransaction(t);
         fl.setFeatureLock(lock);
 
-        FeatureLocking<SimpleFeatureType, SimpleFeature> fl2;
-        fl2 = (FeatureLocking<SimpleFeatureType, SimpleFeature>) rts.getFeatureSource(RENAMED);
+        SimpleFeatureLocking fl2;
+        fl2 = (SimpleFeatureLocking) rts.getFeatureSource(RENAMED);
         fl.setFeatureLock(lock);
         fl2.setTransaction(new DefaultTransaction());
 
@@ -277,7 +279,7 @@ public class RetypingDataStoreTest extends TestCase {
 
     public void testQueryWithPropertyNames() throws Exception {
         // check the schemas in feature source and feature collection
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = rts.getFeatureSource(RENAMED);
+        SimpleFeatureSource fs = rts.getFeatureSource(RENAMED);
         DefaultQuery q = new DefaultQuery(RENAMED, Filter.INCLUDE, new String[] { "ADDRESS"} );
         FeatureCollection<SimpleFeatureType,SimpleFeature> fc = fs.getFeatures( q );
         assertEquals( 1, fc.getSchema().getAttributeCount() );

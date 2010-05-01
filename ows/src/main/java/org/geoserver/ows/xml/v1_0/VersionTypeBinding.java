@@ -4,10 +4,12 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.ows10.Ows10Factory;
+
 import org.geotools.xml.AbstractSimpleBinding;
 import org.geotools.xml.InstanceComponent;
-import javax.xml.namespace.QName;
 
 
 /**

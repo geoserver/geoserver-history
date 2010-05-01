@@ -4,7 +4,11 @@
  */
 package org.geoserver.web.demo;
 
-import static org.geoserver.web.demo.PreviewLayerProvider.*;
+import static org.geoserver.web.demo.PreviewLayerProvider.ALL;
+import static org.geoserver.web.demo.PreviewLayerProvider.COMMON;
+import static org.geoserver.web.demo.PreviewLayerProvider.NAME;
+import static org.geoserver.web.demo.PreviewLayerProvider.TITLE;
+import static org.geoserver.web.demo.PreviewLayerProvider.TYPE;
 
 import java.util.ArrayList;
 import java.util.Collections;

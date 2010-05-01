@@ -4,7 +4,7 @@
  */
 package org.geoserver.wcs.response;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,8 +24,6 @@ import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
-import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.WCSInfo;
 import org.geoserver.wcs.kvp.GridType;
 import org.geotools.geometry.jts.ReferencedEnvelope;

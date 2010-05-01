@@ -6,11 +6,11 @@ package org.geoserver.wfs;
 
 import javax.xml.namespace.QName;
 
+import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.UpdateElementType;
 
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
+import org.geotools.data.simple.SimpleFeatureCollection;
 
 
 /**
@@ -20,17 +20,17 @@ import org.opengis.feature.simple.SimpleFeatureType;
  */
 public class TransactionEvent {
     private TransactionEventType type;
-    private FeatureCollection<SimpleFeatureType, SimpleFeature> affectedFeatures;
+    private SimpleFeatureCollection affectedFeatures;
     private QName layerName;
     private Object source;
 
     public TransactionEvent(TransactionEventType type, QName layerName,
-            FeatureCollection<SimpleFeatureType, SimpleFeature> affectedFeatures) {
+            SimpleFeatureCollection affectedFeatures) {
         this( type, layerName, affectedFeatures, null );
     }
     
     public TransactionEvent(TransactionEventType type, QName layerName,
-            FeatureCollection<SimpleFeatureType, SimpleFeature> affectedFeatures, Object source) {
+            SimpleFeatureCollection affectedFeatures, Object source) {
         this.type = type;
         this.layerName = layerName;
         this.affectedFeatures = affectedFeatures;
@@ -49,7 +49,7 @@ public class TransactionEvent {
      * when the event is being thrown, if you store the event and try to access the collection later
      * there is no guarantee it will still be usable.
      */
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getAffectedFeatures() {
+    public SimpleFeatureCollection getAffectedFeatures() {
         return affectedFeatures;
     }
     

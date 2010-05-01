@@ -1,6 +1,6 @@
 package org.geoserver.geosearch;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import org.geoserver.ows.URLMangler.URLType;
 import org.geotools.geometry.jts.JTS;

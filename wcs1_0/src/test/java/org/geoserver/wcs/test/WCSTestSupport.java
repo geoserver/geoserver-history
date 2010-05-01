@@ -17,7 +17,6 @@ import javax.xml.validation.SchemaFactory;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
-import org.geoserver.data.test.MockData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

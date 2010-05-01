@@ -11,8 +11,6 @@ import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
-import com.mockrunner.mock.web.MockHttpServletResponse;
-
 public class GetFeatureInfoTest extends WMSTestSupport {
     
     public static String WCS_PREFIX = "wcs";

@@ -12,7 +12,7 @@ import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureSource;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -22,8 +22,7 @@ import org.opengis.filter.Filter;
  * 
  * @author Andrea Aime - TOPP
  */
-public class ReadOnlyVersioningFeatureSource extends
-        ReadOnlyFeatureSource<SimpleFeatureType, SimpleFeature> implements VersioningFeatureSource {
+public class ReadOnlyVersioningFeatureSource extends ReadOnlyFeatureSource<SimpleFeatureType, SimpleFeature> implements VersioningFeatureSource {
 
     ReadOnlyVersioningFeatureSource(FeatureSource delegate, WrapperPolicy policy) {
         super(delegate, policy);
@@ -35,25 +34,42 @@ public class ReadOnlyVersioningFeatureSource extends
                 userIds);
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getLog(String fromVersion,
+    public SimpleFeatureCollection getLog(String fromVersion,
             String toVersion, Filter filter, String[] userIds, int maxRows) throws IOException {
         return ((VersioningFeatureSource) delegate).getLog(fromVersion, toVersion, filter, userIds,
                 maxRows);
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures()
+    public SimpleFeatureCollection getVersionedFeatures()
             throws IOException {
         return ((VersioningFeatureSource) delegate).getVersionedFeatures();
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures(Query q)
+    public SimpleFeatureCollection getVersionedFeatures(Query q)
             throws IOException {
         return ((VersioningFeatureSource) delegate).getVersionedFeatures(q);
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures(Filter f)
+    public SimpleFeatureCollection getVersionedFeatures(Filter f)
             throws IOException {
         return ((VersioningFeatureSource) delegate).getVersionedFeatures(f);
     }
+    
+    @Override
+    public SimpleFeatureCollection getFeatures() throws IOException {
+        return ((VersioningFeatureSource) delegate).getFeatures();
+    }
+    
+    @Override
+    public SimpleFeatureCollection getFeatures(Filter filter)
+            throws IOException {
+        return ((VersioningFeatureSource) delegate).getFeatures(filter);
+    }
+    
+    @Override
+    public SimpleFeatureCollection getFeatures(Query query) throws IOException {
+        return ((VersioningFeatureSource) delegate).getFeatures(query);
+    }
+
 
 }

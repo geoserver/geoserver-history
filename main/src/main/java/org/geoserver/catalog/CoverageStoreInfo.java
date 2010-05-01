@@ -4,11 +4,7 @@
  */
 package org.geoserver.catalog;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import org.geotools.coverage.grid.io.AbstractGridFormat;
-import org.opengis.util.ProgressListener;
 
 /**
  * A raster or coverage based store.

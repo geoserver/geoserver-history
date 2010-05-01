@@ -9,7 +9,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 
-import org.apache.commons.httpclient.URIException;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geotools.util.Converters;

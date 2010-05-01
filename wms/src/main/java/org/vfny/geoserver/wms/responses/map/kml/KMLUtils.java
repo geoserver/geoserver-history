@@ -17,11 +17,11 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -412,8 +412,8 @@ public class KMLUtils {
                 .toArray(new FeatureTypeStyle[filtered.size()]);
     }
 
-    public static FeatureCollection<SimpleFeatureType, SimpleFeature> loadFeatureCollection(
-            FeatureSource<SimpleFeatureType, SimpleFeature> featureSource,
+    public static SimpleFeatureCollection loadFeatureCollection(
+            SimpleFeatureSource featureSource,
             MapLayer layer, WMSMapContext mapContext) throws Exception {
         SimpleFeatureType schema = featureSource.getSchema();
 

@@ -4,15 +4,16 @@
  */
 package org.geoserver.ows;
 
-import org.geotools.util.Version;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import java.io.Reader;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.geotools.util.Version;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 
 public class MessageXmlParser extends XmlRequestReader {

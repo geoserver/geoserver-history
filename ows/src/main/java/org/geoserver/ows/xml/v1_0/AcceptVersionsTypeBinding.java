@@ -4,13 +4,14 @@
  */
 package org.geoserver.ows.xml.v1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.ows10.AcceptVersionsType;
 import net.opengis.ows10.Ows10Factory;
-import org.geotools.xml.AbstractComplexBinding;
+
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
 
 
 /**

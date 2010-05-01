@@ -8,13 +8,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.geoserver.ows.xml.v1_0.OWSConfiguration;
-import org.w3c.dom.Document;
-
+import junit.framework.TestCase;
 import net.opengis.ows10.AcceptVersionsType;
 import net.opengis.ows10.GetCapabilitiesType;
 import net.opengis.ows10.Ows10Factory;
-import junit.framework.TestCase;
+
+import org.geoserver.ows.xml.v1_0.OWSConfiguration;
+import org.w3c.dom.Document;
 
 public class XmlObjectEncodingResponseTest extends TestCase {
 

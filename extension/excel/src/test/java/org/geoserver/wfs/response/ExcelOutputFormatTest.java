@@ -1,8 +1,6 @@
 package org.geoserver.wfs.response;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -15,8 +13,6 @@ import org.geotools.data.Query;
 import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.FeatureType;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 

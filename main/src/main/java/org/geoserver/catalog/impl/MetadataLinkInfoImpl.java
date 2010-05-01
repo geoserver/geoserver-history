@@ -4,7 +4,6 @@
  */
 package org.geoserver.catalog.impl;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.MetadataLinkInfo;
 
 public class MetadataLinkInfoImpl implements MetadataLinkInfo {

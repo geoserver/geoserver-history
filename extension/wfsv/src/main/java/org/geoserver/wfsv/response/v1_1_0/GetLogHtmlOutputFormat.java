@@ -4,25 +4,26 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.GetLogType;
+
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.template.GeoServerTemplateLoader;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 
 /**
@@ -64,7 +65,7 @@ public class GetLogHtmlOutputFormat extends Response {
     public void write(Object value, OutputStream output, Operation operation)
         throws IOException, ServiceException {
         FeatureCollectionType fct = (FeatureCollectionType) value;
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = (FeatureCollection) fct.getFeature().get(0);
+        SimpleFeatureCollection fc = (SimpleFeatureCollection) fct.getFeature().get(0);
 
         // setup template subsystem
         GeoServerTemplateLoader templateLoader = new GeoServerTemplateLoader(getClass());

@@ -1,10 +1,10 @@
 package org.geoserver.web.wicket;
 
+import junit.framework.TestCase;
+
 import org.apache.wicket.model.Model;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
-import junit.framework.TestCase;
 
 public class WKTToCRSModelTest extends TestCase {
     

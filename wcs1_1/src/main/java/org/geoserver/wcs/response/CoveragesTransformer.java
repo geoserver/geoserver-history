@@ -4,15 +4,13 @@
  */
 package org.geoserver.wcs.response;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
 
 import java.util.logging.Logger;
 
 import net.opengis.wcs11.GetCoverageType;
 
 import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.wcs.WCSInfo;
 import org.geotools.util.logging.Logging;
 import org.geotools.xml.transform.TransformerBase;

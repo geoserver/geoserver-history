@@ -37,12 +37,13 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geotools.data.DataStore;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
@@ -137,9 +138,9 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         // target charset
         Charset charset = getShapefileCharset(getFeature);
         try {
-            Iterator<FeatureCollection<SimpleFeatureType, SimpleFeature>> outputFeatureCollections;
+            Iterator<SimpleFeatureCollection> outputFeatureCollections;
             outputFeatureCollections = featureCollection.getFeature().iterator();
-            FeatureCollection<SimpleFeatureType, SimpleFeature> curCollection;
+            SimpleFeatureCollection curCollection;
 
             // if an emtpy result out of feature type with unknown geometry is created, the
             // zip file will be empty and the zip output stream will break
@@ -165,8 +166,8 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             
             // take care of the case the output is completely empty
             if(!shapefileCreated) {
-                FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
-                fc = (FeatureCollection<SimpleFeatureType, SimpleFeature>) featureCollection.getFeature().iterator().next();
+                SimpleFeatureCollection fc;
+                fc = (SimpleFeatureCollection) featureCollection.getFeature().iterator().next();
                 fc = remapCollectionSchema(fc, Point.class);
                 writeCollectionToShapefile(fc, tempDir, getShapefileCharset(getFeature));
                 createEmptyZipWarning(tempDir);
@@ -213,7 +214,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * @param c the featurecollection to write
      * @param tempDir the temp directory into which it should be written
      */
-    private void writeCollectionToShapefile(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
+    private void writeCollectionToShapefile(SimpleFeatureCollection c, File tempDir, Charset charset) {
         c = remapCollectionSchema(c, null);
         
         SimpleFeatureType schema = c.getSchema();
@@ -226,7 +227,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         	c = new RetypingFeatureCollection(c, renamed);
         }
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> fstore = null;
+        SimpleFeatureStore fstore = null;
         ShapefileDataStore dstore = null;
         try {
             // create attribute name mappings, to be compatible 
@@ -235,13 +236,13 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             //  - field names have a max length of 10
             Map<String,String> attributeMappings=createAttributeMappings(c.getSchema());
             // wraps the original collection in a remapping wrapper
-            FeatureCollection remapped=new RemappingFeatureCollection(c,attributeMappings);
+            SimpleFeatureCollection remapped = new RemappingFeatureCollection(c,attributeMappings);
             SimpleFeatureType remappedSchema=(SimpleFeatureType)remapped.getSchema();
             dstore = buildStore(tempDir, charset,  remappedSchema); 
-            fstore = (FeatureStore<SimpleFeatureType, SimpleFeature>) dstore.getFeatureSource();
+            fstore = (SimpleFeatureStore) dstore.getFeatureSource();
             // we need retyping too, because the shapefile datastore
             // could have sorted fields in a different order
-            FeatureCollection<SimpleFeatureType, SimpleFeature> retyped = new RetypingFeatureCollection(remapped, fstore.getSchema());
+            SimpleFeatureCollection retyped = new RetypingFeatureCollection(remapped, fstore.getSchema());
             fstore.addFeatures(retyped);
           
         } catch (IOException ioe) {
@@ -262,7 +263,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * @param targetGeometry
      * @return
      */
-    FeatureCollection<SimpleFeatureType, SimpleFeature> remapCollectionSchema(FeatureCollection<SimpleFeatureType, SimpleFeature> fc, Class targetGeometry) {
+    SimpleFeatureCollection remapCollectionSchema(SimpleFeatureCollection fc, Class targetGeometry) {
         SimpleFeatureType schema = fc.getSchema();
         
         // having dots in the name prevents various programs to recognize the file as a shapefile
@@ -356,14 +357,14 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
      * @param tempDir the temp directory into which it should be written
      * @return true if a shapefile has been created, false otherwise
      */
-    private boolean writeCollectionToShapefiles(FeatureCollection<SimpleFeatureType, SimpleFeature> c, File tempDir, Charset charset) {
+    private boolean writeCollectionToShapefiles(SimpleFeatureCollection c, File tempDir, Charset charset) {
         c = remapCollectionSchema(c, null);
         SimpleFeatureType schema = c.getSchema();
         
         boolean shapefileCreated = false;
         
         Map<Class, StoreWriter> writers = new HashMap<Class, StoreWriter>();
-        FeatureIterator<SimpleFeature> it;
+        SimpleFeatureIterator it;
         try {
             it = c.features(); 
             while(it.hasNext()) {

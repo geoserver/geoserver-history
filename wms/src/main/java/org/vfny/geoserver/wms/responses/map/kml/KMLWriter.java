@@ -29,8 +29,8 @@ import org.geoserver.template.GeoServerTemplateLoader;
 import org.geoserver.wms.WMS;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.DataSourceException;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.geometry.jts.JTS;
@@ -53,7 +53,6 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.geotools.styling.TextSymbolizer;
-import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
 import org.geotools.util.Range;
 import org.opengis.feature.simple.SimpleFeature;
@@ -266,7 +265,7 @@ public class KMLWriter extends OutputStreamWriter {
     }
 
     public void writeFeaturesAsRaster(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final MapLayer layer, final int order) throws IOException,
             AbortedException {
         Style style = layer.getStyle();
@@ -287,7 +286,7 @@ public class KMLWriter extends OutputStreamWriter {
     }
 
     public void writeFeaturesAsVectors(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final MapLayer layer) throws IOException, AbortedException {
         Style style = layer.getStyle();
 
@@ -307,7 +306,7 @@ public class KMLWriter extends OutputStreamWriter {
     }
 
     public void writeCoverages(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final MapLayer layer) throws IOException, AbortedException {
         Style style = layer.getStyle();
 
@@ -503,7 +502,7 @@ public class KMLWriter extends OutputStreamWriter {
      *        split into separate tempory files then joined.
      */
     private void processStylersVector(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final FeatureTypeStyle[] featureStylers, final MapLayer layer)
             throws IOException, IllegalAttributeException {
         final int ftsLength = featureStylers.length;
@@ -531,7 +530,7 @@ public class KMLWriter extends OutputStreamWriter {
                 // re-evaluate sensible ranges for GE
                 NumberRange scaleRange = new NumberRange(scaleDenominator,
                         scaleDenominator);
-                FeatureIterator<SimpleFeature> reader = features.features();
+                SimpleFeatureIterator reader = features.features();
 
                 while (true) {
                     try {
@@ -655,7 +654,7 @@ public class KMLWriter extends OutputStreamWriter {
      *        split into separate tempory files then joined.
      */
     private void processStylersCoverage(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final FeatureTypeStyle[] featureStylers, final MapLayer layer)
             throws IOException, IllegalAttributeException {
         final int ftStylesLength = featureStylers.length;
@@ -679,7 +678,7 @@ public class KMLWriter extends OutputStreamWriter {
                     return;
                 }
 
-                FeatureIterator<SimpleFeature> reader = features.features();
+                SimpleFeatureIterator reader = features.features();
 
                 // we aren't going to iterate through the features because we
                 // just need to prepare
@@ -752,7 +751,7 @@ public class KMLWriter extends OutputStreamWriter {
      * @throws IllegalAttributeException
      */
     private void processStylersRaster(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final FeatureTypeStyle[] featureStylers, final MapLayer layer,
             final int order) throws IOException, IllegalAttributeException {
         startFolder("layer_" + order, layer.getTitle());
@@ -780,7 +779,7 @@ public class KMLWriter extends OutputStreamWriter {
                     return;
                 }
 
-                FeatureIterator<SimpleFeature> reader = features.features();
+                SimpleFeatureIterator reader = features.features();
 
                 // we aren't going to iterate through the features because we
                 // just need to prepare
@@ -1065,7 +1064,7 @@ public class KMLWriter extends OutputStreamWriter {
      *            the style factory happy
      */
     private boolean processSymbolizers(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+            final SimpleFeatureCollection features,
             final SimpleFeature feature, final Symbolizer[] symbolizers,
             Range scaleRange, final MapLayer layer, final int order,
             final int layerCounter, StringBuffer title, boolean vectorResult)

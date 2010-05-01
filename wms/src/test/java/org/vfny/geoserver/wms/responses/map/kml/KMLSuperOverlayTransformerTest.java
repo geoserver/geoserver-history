@@ -18,8 +18,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.w3c.dom.Document;
 
-import com.vividsolutions.jts.geom.Envelope;
-
 
 public class KMLSuperOverlayTransformerTest extends WMSTestSupport {
 

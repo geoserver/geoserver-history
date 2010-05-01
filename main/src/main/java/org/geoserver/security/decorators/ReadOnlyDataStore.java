@@ -10,9 +10,11 @@ import org.geoserver.security.SecureCatalogImpl;
 import org.geoserver.security.SecureCatalogImpl.Response;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
@@ -35,27 +37,27 @@ public class ReadOnlyDataStore extends DecoratingDataStore {
     }
 
     @Override
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(Name typeName)
+    public SimpleFeatureSource getFeatureSource(Name typeName)
             throws IOException {
-        final FeatureSource<SimpleFeatureType, SimpleFeature> fs = super.getFeatureSource(typeName);
+        final SimpleFeatureSource fs = super.getFeatureSource(typeName);
         return wrapFeatureSource(fs);
     }
 
     @Override
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(String typeName)
+    public SimpleFeatureSource getFeatureSource(String typeName)
             throws IOException {
-        final FeatureSource<SimpleFeatureType, SimpleFeature> fs = super.getFeatureSource(typeName);
+        final SimpleFeatureSource fs = super.getFeatureSource(typeName);
         return wrapFeatureSource(fs);
             
     }
 
     @SuppressWarnings("unchecked")
-    FeatureSource<SimpleFeatureType, SimpleFeature> wrapFeatureSource(
-            final FeatureSource<SimpleFeatureType, SimpleFeature> fs) {
+    SimpleFeatureSource wrapFeatureSource(
+            final SimpleFeatureSource fs) {
         if (fs == null)
             return null;
         
-        return (FeatureSource) SecuredObjects.secure(fs, policy);
+        return DataUtilities.simple((FeatureSource) SecuredObjects.secure(fs, policy));
     }
 
     @Override

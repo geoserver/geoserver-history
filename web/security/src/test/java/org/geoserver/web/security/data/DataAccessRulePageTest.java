@@ -1,6 +1,5 @@
 package org.geoserver.web.security.data;
 
-import org.apache.wicket.Component;
 import org.geoserver.data.test.MockData;
 import org.geoserver.security.AccessMode;
 import org.geoserver.security.DataAccessRule;

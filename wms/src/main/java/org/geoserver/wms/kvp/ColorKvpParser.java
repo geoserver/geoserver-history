@@ -4,9 +4,10 @@
  */
 package org.geoserver.wms.kvp;
 
+import java.awt.Color;
+
 import org.geoserver.ows.KvpParser;
 import org.vfny.geoserver.wms.WmsException;
-import java.awt.Color;
 
 
 /**

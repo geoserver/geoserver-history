@@ -1,6 +1,8 @@
 package org.geoserver.wfsv.response.v1_0_0;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.util.Map;
 

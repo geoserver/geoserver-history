@@ -17,7 +17,6 @@ import net.sf.json.JSONException;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wfs.GMLInfo;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.feature.FeatureCollection;

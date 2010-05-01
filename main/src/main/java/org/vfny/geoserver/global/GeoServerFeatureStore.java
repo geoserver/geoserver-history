@@ -4,10 +4,15 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.geoserver.feature.RetypingFeatureCollection;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -15,9 +20,6 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -38,8 +40,7 @@ import java.util.Set;
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class GeoServerFeatureStore extends GeoServerFeatureSource implements
-        FeatureStore<SimpleFeatureType, SimpleFeature> {
+public class GeoServerFeatureStore extends GeoServerFeatureSource implements SimpleFeatureStore {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *
@@ -75,7 +76,7 @@ public class GeoServerFeatureStore extends GeoServerFeatureSource implements
 
         //check if the feature collection needs to be retyped
         if (!store.getSchema().equals(fc.getSchema())) {
-            fc = new RetypingFeatureCollection(fc, store.getSchema());
+            fc = new RetypingFeatureCollection(DataUtilities.simple(fc), store.getSchema());
         }
 
         return store().addFeatures(fc);

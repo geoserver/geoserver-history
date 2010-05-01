@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
@@ -25,7 +26,6 @@ import org.geotools.data.LockingManager;
 
 import com.sun.media.imageioimpl.common.PackageUtil;
 import com.sun.media.jai.util.SunTileCache;
-import org.geoserver.config.GeoServerInfo;
 
 public class StatusPage extends ServerAdminPage {
 

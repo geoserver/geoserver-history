@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.crs;
 
-import org.geotools.referencing.factory.epsg.FactoryUsingWKT;
-import org.vfny.geoserver.global.GeoserverDataDirectory;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
+
+import org.geotools.referencing.factory.epsg.FactoryUsingWKT;
+import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 
 /**

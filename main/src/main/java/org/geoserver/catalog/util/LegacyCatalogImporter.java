@@ -4,27 +4,16 @@
  */
 package org.geoserver.catalog.util;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.IOUtils;
-import org.eclipse.xsd.XSDElementDeclaration;
-import org.eclipse.xsd.XSDParticle;
-import org.eclipse.xsd.XSDSchema;
-import org.eclipse.xsd.XSDTypeDefinition;
-import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogFactory;
 import org.geoserver.catalog.CoverageDimensionInfo;
@@ -46,18 +35,14 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.data.DataAccess;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.gml2.GML;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.DefaultMathTransformFactory;
 import org.geotools.referencing.operation.matrix.GeneralMatrix;
 import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
-import org.geotools.xml.Schemas;
 import org.opengis.feature.Feature;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
-import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 

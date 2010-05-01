@@ -27,8 +27,8 @@ import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.ServiceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.FeatureStore;
 import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -313,8 +313,8 @@ public class WMSMockData {
 
     public SimpleFeature addFeature(final SimpleFeatureType featureType, final Object[] values)
             throws IOException, ParseException {
-        FeatureStore<SimpleFeatureType, SimpleFeature> fs;
-        fs = (FeatureStore<SimpleFeatureType, SimpleFeature>) dataStore
+        SimpleFeatureStore fs;
+        fs = (SimpleFeatureStore) dataStore
                 .getFeatureSource(featureType.getName());
 
         SimpleFeatureBuilder sfb = new SimpleFeatureBuilder(featureType);

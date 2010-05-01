@@ -10,13 +10,15 @@
  */
 package org.geoserver.filters;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.Set;
-import java.util.HashSet;
 import java.util.logging.Logger;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 public class GZIPResponseWrapper extends HttpServletResponseWrapper {
     protected HttpServletResponse origResponse = null;

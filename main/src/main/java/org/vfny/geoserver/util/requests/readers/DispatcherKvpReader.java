@@ -4,20 +4,15 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
-import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.servlets.Dispatcher;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.geoserver.platform.ServiceException;
+import org.vfny.geoserver.servlets.Dispatcher;
 
 
 /**

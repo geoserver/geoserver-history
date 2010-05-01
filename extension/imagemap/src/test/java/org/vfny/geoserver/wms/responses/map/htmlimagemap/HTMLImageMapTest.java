@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.wms.WMSExtensions;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -18,16 +17,15 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.property.PropertyDataStore;
 import org.geotools.data.shapefile.ShapefileDataStore;
 import org.geotools.factory.CommonFactoryFinder;
-
 import org.geotools.feature.SchemaException;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.geotools.test.*;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.test.TestData;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;

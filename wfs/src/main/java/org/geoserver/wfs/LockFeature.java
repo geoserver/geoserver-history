@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,7 +23,6 @@ import net.opengis.wfs.WfsFactory;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.config.GeoServer;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
@@ -36,10 +34,10 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureLocking;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
@@ -170,7 +168,7 @@ public class LockFeature {
                     features = source.getFeatures(filter);
 
                     if (source instanceof FeatureLocking) {
-                        ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source).setFeatureLock(fLock);
+                        ((FeatureLocking) source).setFeatureLock(fLock);
                     }
                 } catch (IOException e) {
                     throw new WFSException(e);
@@ -204,8 +202,7 @@ public class LockFeature {
                             Query query = new DefaultQuery(meta.getName(), (Filter) fidFilter,
                                     Query.DEFAULT_MAX, Query.ALL_NAMES, lock.getHandle());
 
-                            numberLocked = ((FeatureLocking<SimpleFeatureType, SimpleFeature>) source)
-                                    .lockFeatures(query);
+                            numberLocked = ((FeatureLocking) source).lockFeatures(query);
 
                             if (numberLocked == 1) {
                                 LOGGER.fine("Lock " + fid + " (authID:" + fLock.getAuthorization()

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.geoserver.wms.util.WMSRequests;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
@@ -22,7 +22,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -141,11 +140,11 @@ public class KMLRasterTransformer extends KMLMapTransformer {
             // if the kmplacemark format option is true, add placemarks to the output
             boolean kmplacemark = KMLUtils.getKmplacemark(mapContext.getRequest());
             if (kmplacemark) {
-                FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
+                SimpleFeatureCollection features = null;
                 try {
                     features = KMLUtils
                             .loadFeatureCollection(
-                                    (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer
+                                    (SimpleFeatureSource) mapLayer
                                             .getFeatureSource(), mapLayer,
                                     mapContext);
                 } catch (Exception ex) {

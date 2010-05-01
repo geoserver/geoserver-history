@@ -6,15 +6,15 @@ package org.geoserver.feature.retype;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.feature.RetypingFeatureCollection.RetypingFeatureReader;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.util.Converters;
 import org.opengis.feature.simple.SimpleFeature;
@@ -26,16 +26,15 @@ import org.opengis.filter.identity.FeatureId;
 /**
  * Renaming wrapper for a {@link FeatureStore} instance, to be used along with {@link RetypingDataStore} 
  */
-public class RetypingFeatureStore extends RetypingFeatureSource implements
-        FeatureStore<SimpleFeatureType, SimpleFeature> {
+public class RetypingFeatureStore extends RetypingFeatureSource implements SimpleFeatureStore {
 
     public RetypingFeatureStore(RetypingDataStore ds,
-            FeatureStore<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
+            SimpleFeatureStore wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
 
-    protected FeatureStore<SimpleFeatureType, SimpleFeature> featureStore() {
-        return (FeatureStore<SimpleFeatureType, SimpleFeature>) wrapped;
+    protected SimpleFeatureStore featureStore() {
+        return (SimpleFeatureStore) wrapped;
     }
 
     public Transaction getTransaction() {
@@ -85,7 +84,7 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements
 
     public List<FeatureId> addFeatures(FeatureCollection<SimpleFeatureType, SimpleFeature> collection) throws IOException {
         List<FeatureId> ids = featureStore().addFeatures(
-                new RetypingFeatureCollection(collection, typeMap.getOriginalFeatureType()));
+                new RetypingFeatureCollection(DataUtilities.simple(collection), typeMap.getOriginalFeatureType()));
         List<FeatureId> retyped = new ArrayList<FeatureId>();
         for (FeatureId id : ids) {
             retyped.add(RetypingFeatureCollection.reTypeId(id, typeMap.getOriginalFeatureType(), typeMap.getFeatureType()));

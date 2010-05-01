@@ -4,12 +4,14 @@
  */
 package org.geoserver.wfs.kvp;
 
-import net.opengis.ows10.AcceptFormatsType;
-import net.opengis.ows10.Ows10Factory;
-import org.geoserver.ows.KvpParser;
-import org.geoserver.ows.util.KvpUtils;
 import java.util.Iterator;
 import java.util.List;
+
+import net.opengis.ows10.AcceptFormatsType;
+import net.opengis.ows10.Ows10Factory;
+
+import org.geoserver.ows.KvpParser;
+import org.geoserver.ows.util.KvpUtils;
 
 
 /**

@@ -10,14 +10,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.wms.MapLayerInfo;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
@@ -155,9 +153,8 @@ public class KMLTransformer extends TransformerBase {
         @SuppressWarnings("unchecked")
         protected void encodeVectorLayer(WMSMapContext mapContext, MapLayer layer) {
             //get the data
-            FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
-            featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = null;
+            SimpleFeatureSource featureSource = (SimpleFeatureSource) layer.getFeatureSource();
+            SimpleFeatureCollection features = null;
 
             try {
                 features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext);

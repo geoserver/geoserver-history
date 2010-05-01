@@ -1,7 +1,5 @@
 package org.geoserver.logging;
 
-import java.io.File;
-
 import junit.framework.TestCase;
 
 import org.geoserver.config.GeoServer;

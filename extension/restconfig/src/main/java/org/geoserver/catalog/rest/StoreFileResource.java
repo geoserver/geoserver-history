@@ -5,16 +5,12 @@
 package org.geoserver.catalog.rest;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.StoreInfo;
-import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.util.RESTUtils;
 import org.geotools.util.logging.Logging;
@@ -22,7 +18,6 @@ import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
-import org.restlet.resource.OutputRepresentation;
 import org.restlet.resource.Resource;
 
 public abstract class StoreFileResource extends Resource {

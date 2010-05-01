@@ -4,11 +4,10 @@
  */
 package org.geoserver.web.util.converters;
 
-import java.util.ArrayList;
-
-import org.geotools.util.Converter;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.geotools.util.Converter;
+
 import com.vividsolutions.jts.geom.Envelope;
 
 public class StringBBoxConverter implements Converter {

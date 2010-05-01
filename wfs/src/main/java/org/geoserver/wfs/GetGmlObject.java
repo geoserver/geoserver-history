@@ -7,7 +7,6 @@ import net.opengis.wfs.GetGmlObjectType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
-import org.geoserver.config.GeoServer;
 import org.geotools.data.DataAccess;
 import org.geotools.data.GmlObjectStore;
 import org.geotools.factory.Hints;

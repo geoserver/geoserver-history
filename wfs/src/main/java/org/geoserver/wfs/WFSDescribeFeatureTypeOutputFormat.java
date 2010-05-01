@@ -4,14 +4,15 @@
  */
 package org.geoserver.wfs;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import java.io.IOException;
-import java.io.OutputStream;
 
 
 /**

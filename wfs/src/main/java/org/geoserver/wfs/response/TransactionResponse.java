@@ -4,9 +4,17 @@
  */
 package org.geoserver.wfs.response;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.Iterator;
+
 import net.opengis.wfs.ActionType;
-import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.InsertResultsType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
@@ -16,8 +24,6 @@ import net.opengis.wfs.TransactionType;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
-import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
@@ -27,14 +33,6 @@ import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.util.Version;
 import org.geotools.xml.Encoder;
 import org.opengis.filter.identity.FeatureId;
-import org.xml.sax.SAXException;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.util.Iterator;
 
 
 public class TransactionResponse extends Response {

@@ -1,6 +1,7 @@
 package org.geoserver.geosearch;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,16 +11,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.feature.FeatureCollection;
@@ -37,7 +34,6 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.StringRepresentation;
-import org.springframework.jdbc.support.incrementer.H2SequenceMaxValueIncrementer;
 
 import com.vividsolutions.jts.geom.Envelope;
 

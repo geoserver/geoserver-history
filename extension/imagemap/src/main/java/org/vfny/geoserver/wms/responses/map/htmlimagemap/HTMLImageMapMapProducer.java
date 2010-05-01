@@ -4,15 +4,16 @@
  */
 package org.vfny.geoserver.wms.responses.map.htmlimagemap;
 
-import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.geoserver.platform.ServiceException;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
 
 /**

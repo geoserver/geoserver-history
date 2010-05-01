@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.util.Map;
 
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wms.MapLayerInfo;
 import org.geotools.data.DefaultQuery;
