@@ -170,14 +170,11 @@
    <artifactId>gt-image</artifactId>
    <scope>test</scope>
   </dependency>
-  <!-- 
-  Commented out as it breaks the build solid
   <dependency>
    <groupId>org.geotools</groupId>
    <artifactId>gt-imagemosaic</artifactId>
    <scope>test</scope>
   </dependency>
-   -->
   
  </dependencies>
  

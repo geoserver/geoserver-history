@@ -43,13 +43,10 @@
    <groupId>org.geotools</groupId>
    <artifactId>gt-image</artifactId>
   </dependency>
-  <!--
-  Commented out as it breaks the build
   <dependency>
    <groupId>org.geotools</groupId>
    <artifactId>gt-imagemosaic</artifactId>
   </dependency>
-  -->
   <dependency>
    <groupId>org.geoserver</groupId>
    <artifactId>main</artifactId>
