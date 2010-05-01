@@ -16,6 +16,7 @@ import org.geotools.data.VersioningFeatureStore;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 
 /**
@@ -79,4 +80,15 @@ public class ReadOnlyVersioningFeatureStore extends ReadOnlyFeatureStore<SimpleF
     public SimpleFeatureCollection getFeatures(Query query) throws IOException {
         return ((VersioningFeatureSource) delegate).getFeatures(query);
     }
+
+    public void modifyFeatures(String name, Object attributeValue, Filter filter)
+            throws IOException {
+        throw unsupportedOperation();
+    }
+
+    public void modifyFeatures(String[] names, Object[] attributeValues, Filter filter)
+            throws IOException {
+        throw unsupportedOperation();
+    }
+
 }

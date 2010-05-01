@@ -153,11 +153,13 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
 
             AttributeDescriptor[] types = new AttributeDescriptor[update.getProperty().size()];
+            String[] names = new String[update.getProperty().size()];
             Object[] values = new Object[update.getProperty().size()];
 
             for (int j = 0; j < update.getProperty().size(); j++) {
                 PropertyType property = (PropertyType) update.getProperty().get(j);
                 types[j] = store.getSchema().getDescriptor(property.getName().getLocalPart());
+                names[j] = property.getName().getLocalPart();
                 values[j] = property.getValue();
                 
                 // if geometry, it may be necessary to reproject it to the native CRS before
@@ -233,13 +235,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
             }
 
             try {
-                if (types.length == 1) {
-                    store.modifyFeatures(types[0], values[0], filter);
-                } else {
-                    store.modifyFeatures(types, values, filter);
-                }
-            } 
-            catch( Exception e) {
+                store.modifyFeatures(names, values, filter);
+            } catch( Exception e) {
                 //JD: this is a bit hacky but some of the wfs cite tests require
                 // that the 'InvalidParameterValue' code be set on exceptions in 
                 // cases where a "bad" value is being suppliedin an update, so 

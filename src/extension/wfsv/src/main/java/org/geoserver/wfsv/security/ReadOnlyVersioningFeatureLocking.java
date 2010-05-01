@@ -78,4 +78,14 @@ public class ReadOnlyVersioningFeatureLocking extends
         return ((VersioningFeatureSource) delegate).getFeatures(query);
     }
 
+    public void modifyFeatures(String name, Object attributeValue, Filter filter)
+            throws IOException {
+        throw unsupportedOperation();
+    }
+
+    public void modifyFeatures(String[] names, Object[] attributeValues, Filter filter)
+            throws IOException {
+        throw unsupportedOperation();
+    }
+
 }
