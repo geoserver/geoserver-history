@@ -34,7 +34,6 @@ import javax.xml.namespace.QName;
 
 import org.acegisecurity.AcegiSecurityException;
 import org.eclipse.emf.ecore.EObject;
-import org.geoserver.ows.security.OperationInterceptor;
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;

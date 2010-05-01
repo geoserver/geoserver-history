@@ -10,8 +10,8 @@ import javax.xml.namespace.QName;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geotools.index.Data;
 import org.geotools.xml.InstanceComponent;
-import org.geotools.xml.impl.DatatypeConverterImpl;
 
 /**
  * Overrides the base class parsing code so that prefix can be resolved

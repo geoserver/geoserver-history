@@ -4,13 +4,14 @@
  */
 package org.geoserver.wfs.xml;
 
-import org.geotools.feature.NameImpl;
-import org.geotools.feature.type.ProfileImpl;
-import org.geotools.gml3.GMLSchema;
-import org.geotools.gml3.GML;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.geotools.feature.NameImpl;
+import org.geotools.feature.type.ProfileImpl;
+import org.geotools.gml3.GML;
+import org.geotools.gml3.GMLSchema;
 
 
 public class GML3Profile extends TypeMappingProfile {

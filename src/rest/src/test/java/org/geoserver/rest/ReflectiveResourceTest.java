@@ -4,8 +4,7 @@
  */
 package org.geoserver.rest;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 

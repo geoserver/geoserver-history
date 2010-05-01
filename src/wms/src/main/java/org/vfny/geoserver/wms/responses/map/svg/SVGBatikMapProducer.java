@@ -26,7 +26,6 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.GetMapProducer;

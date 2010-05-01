@@ -21,14 +21,14 @@ import java.util.WeakHashMap;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.Transaction;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.data.shapefile.ShapefileDataStoreFactory;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -89,7 +89,7 @@ class CRSAreaOfValidityMapBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    private FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(final URL shpfile)
+    private SimpleFeatureSource getFeatureSource(final URL shpfile)
             throws IOException {
         Map params = new HashMap<String, String>();
         params.put(ShapefileDataStoreFactory.CREATE_SPATIAL_INDEX.key, "false");
@@ -242,7 +242,7 @@ class CRSAreaOfValidityMapBuilder {
     }
 
     private MapLayer createCrsLayer(Geometry geom, CoordinateReferenceSystem crs) {
-        FeatureCollection<SimpleFeatureType, SimpleFeature> collection = FeatureCollections
+        SimpleFeatureCollection collection = FeatureCollections
                 .newCollection();
         collection.add(createCrsBoundsFeature(geom, crs));
 
@@ -259,7 +259,7 @@ class CRSAreaOfValidityMapBuilder {
 
         Style style;
         URL shpfile;
-        FeatureSource<SimpleFeatureType, SimpleFeature> source;
+        SimpleFeatureSource source;
 
         shpfile = getClass().getResource("TM_WORLD_BORDERS.shp");
         source = getFeatureSource(shpfile);
@@ -281,7 +281,7 @@ class CRSAreaOfValidityMapBuilder {
         return mapContext;
     }
 
-    private FeatureSource<SimpleFeatureType, SimpleFeature> getLatLonFeatureSource() {
+    private SimpleFeatureSource getLatLonFeatureSource() {
         try {
             DataStore ds = LATLON == null ? null : LATLON.get();
             if (ds == null) {

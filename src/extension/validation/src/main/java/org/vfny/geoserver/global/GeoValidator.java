@@ -6,6 +6,14 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.validation.FeatureValidation;
 import org.geotools.validation.IntegrityValidation;
@@ -18,14 +26,6 @@ import org.geotools.validation.dto.TestDTO;
 import org.geotools.validation.dto.TestSuiteDTO;
 import org.geotools.validation.xml.ValidationException;
 import org.geotools.validation.xml.XMLReader;
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**

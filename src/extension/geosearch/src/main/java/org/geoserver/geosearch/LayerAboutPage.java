@@ -1,43 +1,29 @@
 package org.geoserver.geosearch;
 
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.restlet.Restlet;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.data.Method;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.geosearch.GeoServerProxyAwareRestlet;
+import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.FreemarkerFormat;
 import org.geoserver.rest.util.RESTUtils;
-import org.geoserver.rest.RestletException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.NoSuchAuthorityCodeException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.restlet.data.MediaType;
+import org.restlet.data.Method;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.data.Status;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import freemarker.template.SimpleHash;
-import freemarker.template.TemplateModelException;
 
 public class LayerAboutPage extends GeoServerProxyAwareRestlet {
 	private static final Logger 

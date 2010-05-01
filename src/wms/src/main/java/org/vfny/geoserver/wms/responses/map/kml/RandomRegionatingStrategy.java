@@ -6,7 +6,6 @@ package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.sql.Connection;
 
-import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;

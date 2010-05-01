@@ -13,9 +13,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.geotools.data.shapefile.shp.JTSUtilities;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.graph.util.geom.GeometryUtil;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.RendererUtilities;

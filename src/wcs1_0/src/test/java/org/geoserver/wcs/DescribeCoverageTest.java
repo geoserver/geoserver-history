@@ -1,7 +1,9 @@
 package org.geoserver.wcs;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-import static org.geoserver.data.test.MockData.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.geoserver.data.test.MockData.ROTATED_CAD;
+import static org.geoserver.data.test.MockData.TASMANIA_BM;
+import static org.geoserver.data.test.MockData.TASMANIA_DEM;
 
 import java.util.ArrayList;
 import java.util.List;

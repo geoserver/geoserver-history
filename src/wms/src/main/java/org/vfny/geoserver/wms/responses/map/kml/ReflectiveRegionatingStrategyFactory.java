@@ -1,8 +1,8 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.lang.reflect.Constructor;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.config.GeoServer;
 import org.vfny.geoserver.wms.WmsException;

@@ -4,10 +4,11 @@
  */
 package org.geoserver.wfs.kvp;
 
+import java.util.Map;
+
 import net.opengis.ows10.AcceptVersionsType;
 import net.opengis.ows10.Ows10Factory;
 import net.opengis.wfs.GetCapabilitiesType;
-import java.util.Map;
 
 
 public class GetCapabilitiesKvpRequestReader extends WFSKvpRequestReader {

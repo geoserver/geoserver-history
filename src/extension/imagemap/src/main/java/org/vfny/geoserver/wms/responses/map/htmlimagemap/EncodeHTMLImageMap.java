@@ -4,33 +4,33 @@
  */
 package org.vfny.geoserver.wms.responses.map.htmlimagemap;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureTypes;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Encodes a set of MapLayers in HTMLImageMap format.
@@ -252,8 +252,8 @@ public class EncodeHTMLImageMap {
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
-            FeatureSource<SimpleFeatureType, SimpleFeature> fSource;
-            fSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
+            SimpleFeatureSource fSource;
+            fSource = (SimpleFeatureSource) layer.getFeatureSource();
             SimpleFeatureType schema = fSource.getSchema();
             /*FeatureSource fSource = layer.getFeatureSource();
             FeatureType schema = fSource.getSchema();*/
@@ -304,7 +304,7 @@ public class EncodeHTMLImageMap {
                 	//q = (DefaultQuery) DataUtilities.mixQueries(new DefaultQuery(schema.getTypeName(),ruleFilter), q, "HTMLImageMapEncoder");
 				}
                 //ensure reprojection occurs, do not trust query, use the wrapper  
-                FeatureCollection<SimpleFeatureType, SimpleFeature> fColl = null;//fSource.getFeatures(q);
+                SimpleFeatureCollection fColl = null;//fSource.getFeatures(q);
                 //FeatureCollection fColl=null;
                 if ( reproject ) {
                 	fColl=new ReprojectFeatureResults( fSource.getFeatures(q),mapContext.getCoordinateReferenceSystem() );

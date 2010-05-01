@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.ModificationProxy;
-import org.geoserver.catalog.impl.ProxyList;
 import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;

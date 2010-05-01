@@ -6,10 +6,9 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 import org.vfny.geoserver.wms.responses.featureinfo.dummy.Dummy;
 
@@ -25,8 +24,8 @@ public class FeatureTemplateTest extends WMSTestSupport {
 
     public void testWithDateAndBoolean() throws Exception {
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures();
+        SimpleFeatureSource source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
+        SimpleFeatureCollection fc = source.getFeatures();
         Iterator i = fc.iterator();
         try {
             SimpleFeature f = (SimpleFeature) i.next();
@@ -46,8 +45,8 @@ public class FeatureTemplateTest extends WMSTestSupport {
     }
      
     public void testRawValue() throws Exception {
-        FeatureSource<SimpleFeatureType, SimpleFeature> source = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures();
+        SimpleFeatureSource source = getFeatureSource(MockData.PRIMITIVEGEOFEATURE);
+        SimpleFeatureCollection fc = source.getFeatures();
         Iterator i = fc.iterator();
         try {
             SimpleFeature f = (SimpleFeature) i.next();
@@ -66,8 +65,8 @@ public class FeatureTemplateTest extends WMSTestSupport {
 
     public void testWithNull() throws Exception {
         
-        FeatureSource<SimpleFeatureType, SimpleFeature> source = getFeatureSource( MockData.BASIC_POLYGONS );
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures();
+        SimpleFeatureSource source = getFeatureSource( MockData.BASIC_POLYGONS );
+        SimpleFeatureCollection fc = source.getFeatures();
         Iterator i = fc.iterator();
         try {
             SimpleFeature f = (SimpleFeature) i.next();
@@ -94,8 +93,8 @@ public class FeatureTemplateTest extends WMSTestSupport {
     
     public void testAlternateLookup() throws Exception {
         
-        FeatureSource<SimpleFeatureType, SimpleFeature> source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
-        FeatureCollection<SimpleFeatureType, SimpleFeature> fc = source.getFeatures();
+        SimpleFeatureSource source = getFeatureSource( MockData.PRIMITIVEGEOFEATURE );
+        SimpleFeatureCollection fc = source.getFeatures();
         SimpleFeature f = fc.features().next();
         
         FeatureTemplate template = new FeatureTemplate();

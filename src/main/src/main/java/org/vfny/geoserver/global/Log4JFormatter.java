@@ -4,10 +4,6 @@
  */
 package org.vfny.geoserver.global;
 
-import org.geotools.io.LineWriter;
-import org.geotools.resources.Utilities;
-import org.geotools.util.logging.Logging;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -21,6 +17,9 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 import java.util.prefs.Preferences;
+
+import org.geotools.io.LineWriter;
+import org.geotools.util.logging.Logging;
 
 
 /**

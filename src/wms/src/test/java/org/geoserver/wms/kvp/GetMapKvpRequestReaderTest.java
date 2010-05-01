@@ -22,7 +22,6 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
-import org.geoserver.ows.kvp.TimeKvpParser;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.RemoteOWSTestSupport;

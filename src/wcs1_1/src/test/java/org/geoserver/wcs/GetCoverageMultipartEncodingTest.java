@@ -1,7 +1,7 @@
 package org.geoserver.wcs;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-import static org.geoserver.data.test.MockData.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.geoserver.data.test.MockData.TASMANIA_BM;
 
 import java.io.IOException;
 import java.io.InputStream;

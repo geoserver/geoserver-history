@@ -3,7 +3,6 @@ package org.geoserver.web.security.user;
 import org.acegisecurity.GrantedAuthority;
 import org.acegisecurity.GrantedAuthorityImpl;
 import org.acegisecurity.userdetails.User;
-import org.acegisecurity.userdetails.UsernameNotFoundException;
 import org.geoserver.security.GeoserverUserDao;
 import org.geoserver.web.GeoServerWicketTestSupport;
 

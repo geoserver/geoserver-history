@@ -4,14 +4,8 @@
  */
 package org.geoserver.catalog.util;
 
-import org.geoserver.ows.util.XmlCharsetDetector;
-import org.geotools.util.logging.Logging;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -21,6 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.geoserver.ows.util.XmlCharsetDetector;
+import org.geotools.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

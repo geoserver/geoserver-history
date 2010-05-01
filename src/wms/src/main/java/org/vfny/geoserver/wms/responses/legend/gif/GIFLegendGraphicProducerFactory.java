@@ -4,12 +4,13 @@
  */
 package org.vfny.geoserver.wms.responses.legend.gif;
 
-import org.vfny.geoserver.wms.GetLegendGraphicProducer;
-import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
-import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+
+import org.vfny.geoserver.wms.GetLegendGraphicProducer;
+import org.vfny.geoserver.wms.GetLegendGraphicProducerSpi;
+import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
 /**

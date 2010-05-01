@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import org.geoserver.wms.WMS;
 import org.geoserver.wms.responses.MapDecoration;
 import org.geotools.util.SoftValueHashMap;
 import org.vfny.geoserver.global.GeoserverDataDirectory;

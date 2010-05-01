@@ -6,14 +6,16 @@ package org.geoserver.wfsv.xml.v1_1_0;
 
 import java.math.BigInteger;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.ResultTypeType;
 import net.opengis.wfsv.DifferenceQueryType;
 import net.opengis.wfsv.GetLogType;
 import net.opengis.wfsv.WfsvFactory;
+
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
 
 
 /**

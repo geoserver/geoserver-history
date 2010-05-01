@@ -1,9 +1,9 @@
 package org.geoserver.web.wicket;
 
+import junit.framework.TestCase;
+
 import org.apache.wicket.model.Model;
 import org.geotools.referencing.CRS;
-
-import junit.framework.TestCase;
 
 public class SRSToCRSModelTest extends TestCase {
     

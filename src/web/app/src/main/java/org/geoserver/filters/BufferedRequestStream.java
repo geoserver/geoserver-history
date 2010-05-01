@@ -1,9 +1,10 @@
 package org.geoserver.filters;
 
-import javax.servlet.ServletInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
+
+import javax.servlet.ServletInputStream;
 
 /**
  * Wrap a String up as a ServletInputStream so we can read it multiple times.

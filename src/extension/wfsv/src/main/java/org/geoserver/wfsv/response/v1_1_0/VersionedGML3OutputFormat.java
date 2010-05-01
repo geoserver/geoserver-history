@@ -4,7 +4,9 @@
  */
 package org.geoserver.wfsv.response.v1_1_0;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,17 +31,15 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Response;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.xml.GML3OutputFormat;
 import org.geoserver.wfsv.xml.v1_1_0.WFSVConfiguration;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.xml.Encoder;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 /**
@@ -81,7 +81,7 @@ public class VersionedGML3OutputFormat extends Response {
         HashMap /* <String,Set> */ns2metas = new HashMap();
 
         for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) fc.next();
+            SimpleFeatureCollection features = (SimpleFeatureCollection) fc.next();
             SimpleFeatureType featureType = features.getSchema();
 
             // load the metadata for the feature type

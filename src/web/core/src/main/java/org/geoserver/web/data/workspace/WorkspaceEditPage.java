@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.data.workspace;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.wicket.PageParameters;
@@ -17,14 +16,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.Catalog;
-import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
-import org.geoserver.catalog.event.CatalogAddEvent;
-import org.geoserver.catalog.event.CatalogListener;
-import org.geoserver.catalog.event.CatalogModifyEvent;
-import org.geoserver.catalog.event.CatalogPostModifyEvent;
-import org.geoserver.catalog.event.CatalogRemoveEvent;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.namespace.NamespaceDetachableModel;
 import org.geoserver.web.wicket.ParamResourceModel;

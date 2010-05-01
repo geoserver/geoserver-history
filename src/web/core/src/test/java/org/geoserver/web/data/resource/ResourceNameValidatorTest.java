@@ -1,10 +1,10 @@
 package org.geoserver.web.data.resource;
 
 
+import junit.framework.TestCase;
+
 import org.geoserver.web.StringValidatable;
 import org.geoserver.web.data.resource.BasicResourceConfig.ResourceNameValidator;
-
-import junit.framework.TestCase;
 
 public class ResourceNameValidatorTest extends TestCase {
 

@@ -1,18 +1,16 @@
 package org.geoserver.filters;
 
-import java.io.IOException;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import java.util.logging.Logger;
 
 /**
  * Filter to log requests for debugging or statistics-gathering purposes.

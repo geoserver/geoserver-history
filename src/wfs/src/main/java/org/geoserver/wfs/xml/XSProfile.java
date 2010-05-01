@@ -4,22 +4,21 @@
  */
 package org.geoserver.wfs.xml;
 
-import org.geotools.feature.AttributeTypeBuilder;
-import org.geotools.feature.NameImpl;
-
-import org.geotools.feature.type.ProfileImpl;
-import org.geotools.feature.type.SchemaImpl;
-import org.geotools.xs.XS;
-import org.geotools.xs.XSSchema;
-
-import org.opengis.feature.type.Name;
-import org.opengis.feature.type.Schema;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.xml.namespace.QName;
+
+import org.geotools.feature.AttributeTypeBuilder;
+import org.geotools.feature.NameImpl;
+import org.geotools.feature.type.ProfileImpl;
+import org.geotools.feature.type.SchemaImpl;
+import org.geotools.xs.XS;
+import org.geotools.xs.XSSchema;
+import org.opengis.feature.type.Name;
+import org.opengis.feature.type.Schema;
 
 
 /**

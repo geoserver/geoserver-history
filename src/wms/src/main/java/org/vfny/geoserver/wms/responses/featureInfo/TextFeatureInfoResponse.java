@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.geoserver.platform.ServiceException;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -81,11 +81,11 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
                                                           // if not specified
                                                           // in the request
 
-        FeatureIterator<SimpleFeature> reader = null;
+        SimpleFeatureIterator reader = null;
 
         try {
             final int size = results.size();
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fr;
+            SimpleFeatureCollection fr;
             SimpleFeature f;
 
             SimpleFeatureType schema;
@@ -93,7 +93,7 @@ public class TextFeatureInfoResponse extends AbstractFeatureInfoResponse {
 
             for (int i = 0; i < size; i++) // for each layer queried
              {
-                fr = (FeatureCollection<SimpleFeatureType, SimpleFeature>) results.get(i);
+                fr = (SimpleFeatureCollection) results.get(i);
                 reader = fr.features();
 
                 if (reader.hasNext() && (featuresPrinted < maxfeatures)) // if this layer has a hit and we're going to print it

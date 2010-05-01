@@ -6,11 +6,12 @@
  */
 package org.vfny.geoserver.config.validation;
 
-import org.geotools.validation.dto.ArgumentDTO;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.List;
 import java.util.Locale;
+
+import org.geotools.validation.dto.ArgumentDTO;
 
 
 /**

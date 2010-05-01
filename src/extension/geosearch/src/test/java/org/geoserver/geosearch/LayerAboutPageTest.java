@@ -1,11 +1,10 @@
 package org.geoserver.geosearch;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.RestletException;
-import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.test.GeoServerTestSupport;
-import org.geoserver.data.test.MockData;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Status;

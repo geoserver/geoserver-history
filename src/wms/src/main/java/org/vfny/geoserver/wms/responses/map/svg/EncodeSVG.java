@@ -10,16 +10,15 @@ import java.util.logging.Logger;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.filter.Expression;
 import org.geotools.filter.FilterFactory;
 import org.geotools.filter.FilterFactoryFinder;
 import org.geotools.filter.FilterType;
 import org.geotools.filter.GeometryFilter;
 import org.geotools.map.MapLayer;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -186,9 +185,9 @@ public class EncodeSVG {
 
         for (int i = 0; i < nLayers; i++) {
             MapLayer layer = layers[i];
-            FeatureIterator<SimpleFeature> featureReader = null;
-            FeatureSource<SimpleFeatureType, SimpleFeature> fSource;
-            fSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) layer.getFeatureSource();
+            SimpleFeatureIterator featureReader = null;
+            SimpleFeatureSource fSource;
+            fSource = (SimpleFeatureSource) layer.getFeatureSource();
             SimpleFeatureType schema = fSource.getSchema();
 
             try {

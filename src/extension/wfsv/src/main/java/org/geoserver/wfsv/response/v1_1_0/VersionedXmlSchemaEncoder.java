@@ -11,8 +11,6 @@ import org.eclipse.xsd.util.XSDResourceImpl;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Response;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSInfo;

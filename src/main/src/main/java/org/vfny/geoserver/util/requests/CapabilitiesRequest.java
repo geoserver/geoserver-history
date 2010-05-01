@@ -6,7 +6,6 @@ package org.vfny.geoserver.util.requests;
 
 import org.geoserver.config.ServiceInfo;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.servlets.AbstractService;
 
 
 /**

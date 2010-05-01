@@ -10,11 +10,8 @@ import java.util.logging.Logger;
 
 import org.geotools.data.FeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

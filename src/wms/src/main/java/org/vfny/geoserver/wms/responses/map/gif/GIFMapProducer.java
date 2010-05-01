@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;

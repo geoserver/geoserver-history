@@ -1,11 +1,10 @@
 package org.geoserver.geosearch;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
-
-import java.io.InputStream;
-import javax.xml.namespace.QName;
 import org.w3c.dom.Document;
 
 public class SiteMapIndexRestletTest extends GeoServerTestSupport {

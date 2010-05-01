@@ -1,8 +1,9 @@
 package org.geoserver.test;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.IOException;
 
 /**
  * HttpServletResponse wrapper to help in making assertions about expected status codes.

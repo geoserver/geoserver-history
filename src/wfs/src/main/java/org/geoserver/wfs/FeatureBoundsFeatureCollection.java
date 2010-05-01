@@ -3,9 +3,9 @@ package org.geoserver.wfs;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.DecoratingFeature;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.collection.AbstractFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
-    FeatureCollection<SimpleFeatureType, SimpleFeature> wrapped;
+    SimpleFeatureCollection wrapped;
 
     /**
      * Builds a new BoundsFeatureCollection
@@ -32,7 +32,7 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      * @param targetSchema the target schema
      */
     public FeatureBoundsFeatureCollection(
-            final FeatureCollection<SimpleFeatureType, SimpleFeature> wrapped,
+            final SimpleFeatureCollection wrapped,
             final SimpleFeatureType targetSchema) {
         super(targetSchema);
         this.wrapped = wrapped;
@@ -44,10 +44,10 @@ class FeatureBoundsFeatureCollection extends AbstractFeatureCollection {
      *
      */
     private static class BoundsIterator implements Iterator<SimpleFeature> {
-        FeatureIterator<SimpleFeature> wrapped;
+        SimpleFeatureIterator wrapped;
         SimpleFeatureType targetSchema;
 
-        public BoundsIterator(FeatureIterator<SimpleFeature> wrapped, SimpleFeatureType targetSchema) {
+        public BoundsIterator(SimpleFeatureIterator wrapped, SimpleFeatureType targetSchema) {
             this.wrapped = wrapped;
             this.targetSchema = targetSchema;
         }

@@ -33,11 +33,11 @@ import org.geoserver.wms.WMS;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.crs.ForceCoordinateSystemFeatureReader;
 import org.geotools.data.memory.MemoryDataStore;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wfs.WFSDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureTypes;
@@ -693,7 +693,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 filter = Filter.INCLUDE;
 
             // connect the layer
-            FeatureSource<SimpleFeatureType, SimpleFeature> fs = remoteWFS.getFeatureSource(name);
+            SimpleFeatureSource fs = remoteWFS.getFeatureSource(name);
 
             // this is messy, why the spec allows for multiple constraints and multiple
             // styles is beyond me... we'll style each remote layer with all possible
@@ -1023,7 +1023,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
     // and kvp reader, ugh...
     private static MapLayerInfo initializeInlineFeatureLayer(GetMapRequest getMapRequest, UserLayer ul) throws Exception {
         
-        FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
+        SimpleFeatureSource featureSource;
 
         // what if they didn't put an "srsName" on their geometry in their
         // inlinefeature?
@@ -1081,7 +1081,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         for (String layerName : requestedLayerNames) {
             // search into the remote WFS if there is any
             if (remoteTypeNames.contains(layerName)) {
-                FeatureSource<SimpleFeatureType, SimpleFeature> remoteSource;
+                SimpleFeatureSource remoteSource;
                 remoteSource = remoteWFS.getFeatureSource(layerName);
                 if (remoteSource != null) {
                     layersOrGroups.add(new MapLayerInfo(remoteSource));

@@ -4,7 +4,6 @@
  */
 package org.geoserver.catalog;
 
-import java.io.Serializable;
 
 /**
  * A legend for a layer.

@@ -4,9 +4,10 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.platform.Operation;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.geoserver.platform.Operation;
 
 
 public class MessageResponse extends Response {

@@ -4,14 +4,15 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
-import net.opengis.wfs.WfsFactory;
-import org.geotools.xml.AbstractSimpleBinding;
-import org.geotools.xml.InstanceComponent;
-import org.geotools.xs.bindings.XSQNameBinding;
-import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.WfsFactory;
+
+import org.geotools.xml.AbstractSimpleBinding;
+import org.geotools.xml.InstanceComponent;
 
 
 /**

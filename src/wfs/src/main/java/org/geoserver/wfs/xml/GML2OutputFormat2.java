@@ -1,6 +1,8 @@
 package org.geoserver.wfs.xml;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
+import static org.geoserver.ows.util.ResponseUtils.buildURL;
+import static org.geoserver.ows.util.ResponseUtils.params;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,7 +15,6 @@ import java.util.Map;
 
 import net.opengis.wfs.BaseRequestType;
 import net.opengis.wfs.FeatureCollectionType;
-import net.opengis.wfs.GetFeatureType;
 
 import org.apache.commons.collections.MultiHashMap;
 import org.geoserver.catalog.Catalog;
@@ -21,18 +22,15 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geoserver.ows.util.RequestUtils;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 public class GML2OutputFormat2 extends WFSGetFeatureOutputFormat {
@@ -69,7 +67,7 @@ public class GML2OutputFormat2 extends WFSGetFeatureOutputFormat {
         MultiHashMap ns2metas = new MultiHashMap();
         
         for (Iterator fc = featureCollections.iterator(); fc.hasNext();) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) fc.next();
+            SimpleFeatureCollection features = (SimpleFeatureCollection) fc.next();
             SimpleFeatureType featureType = features.getSchema();
 
             //load the metadata for the feature type

@@ -4,8 +4,9 @@
  */
 package org.geoserver.ows.kvp;
 
-import org.geoserver.ows.KvpParser;
 import java.net.URL;
+
+import org.geoserver.ows.KvpParser;
 
 
 /**

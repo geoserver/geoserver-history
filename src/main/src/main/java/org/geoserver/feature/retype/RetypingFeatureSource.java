@@ -17,10 +17,10 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
@@ -29,9 +29,9 @@ import org.opengis.filter.Filter;
  * Renaming wrapper for a {@link FeatureSource} instance, to be used along with
  * {@link RetypingDataStore}
  */
-public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, SimpleFeature>{
+public class RetypingFeatureSource implements SimpleFeatureSource{
 
-    FeatureSource<SimpleFeatureType, SimpleFeature> wrapped;
+    SimpleFeatureSource wrapped;
 
     FeatureTypeMap typeMap;
 
@@ -40,7 +40,7 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
     Map listeners = new HashMap();
 
     RetypingFeatureSource(RetypingDataStore ds,
-            FeatureSource<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
+            SimpleFeatureSource wrapped, FeatureTypeMap typeMap) {
         this.store = ds;
         this.wrapped = wrapped;
         this.typeMap = typeMap;
@@ -92,11 +92,11 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
         return store;
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures() throws IOException {
+    public SimpleFeatureCollection getFeatures() throws IOException {
         return getFeatures(Query.ALL);
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Query query) throws IOException {
+    public SimpleFeatureCollection getFeatures(Query query) throws IOException {
         if (query.getTypeName() == null) {
             query = new DefaultQuery(query);
             ((DefaultQuery) query).setTypeName(typeMap.getName());
@@ -115,7 +115,7 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
                 target);
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Filter filter) throws IOException {
+    public SimpleFeatureCollection getFeatures(Filter filter) throws IOException {
         return getFeatures(new DefaultQuery(typeMap.getName(), filter));
     }
 

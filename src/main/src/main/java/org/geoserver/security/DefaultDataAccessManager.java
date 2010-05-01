@@ -5,16 +5,7 @@
 package org.geoserver.security;
 
 import static org.geoserver.security.DataAccessRule.ANY;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +14,7 @@ import org.acegisecurity.Authentication;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.security.DataAccessManager.CatalogMode;
 import org.geotools.util.logging.Logging;
 
 /**

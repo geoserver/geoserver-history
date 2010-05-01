@@ -4,11 +4,10 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
-import org.vfny.geoserver.wms.servlets.WMService;
 import java.util.Map;
+
+import org.geoserver.wms.WMS;
+import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 
 /**

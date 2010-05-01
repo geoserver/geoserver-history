@@ -4,9 +4,9 @@
  */
 package org.geoserver.platform.util;
 
-import org.geotools.util.Version;
-import java.beans.PropertyEditorManager;
 import java.beans.PropertyEditorSupport;
+
+import org.geotools.util.Version;
 
 
 /**

@@ -10,7 +10,6 @@ import net.opengis.wfsv.GetLogType;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
-
 import org.geoserver.wfs.xml.GML3OutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 

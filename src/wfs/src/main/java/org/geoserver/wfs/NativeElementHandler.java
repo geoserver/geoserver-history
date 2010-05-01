@@ -4,13 +4,16 @@
  */
 package org.geoserver.wfs;
 
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.NativeType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+
 import org.eclipse.emf.ecore.EObject;
-import java.util.Map;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**

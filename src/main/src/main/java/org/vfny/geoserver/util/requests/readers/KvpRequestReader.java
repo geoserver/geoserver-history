@@ -4,35 +4,10 @@
  */
 package org.vfny.geoserver.util.requests.readers;
 
-import com.vividsolutions.jts.geom.Envelope;
-
-import org.geoserver.config.ServiceInfo;
-import org.geoserver.ows.util.KvpUtils;
-import org.geoserver.platform.ServiceException;
-import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.filter.FidFilter;
-import org.geotools.filter.FilterFilter;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.gml.GMLFilterDocument;
-import org.geotools.gml.GMLFilterGeometry;
-import org.geotools.util.Converters;
-
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory;
-import org.opengis.filter.Id;
-import org.vfny.geoserver.Request;
-
-import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.util.requests.FilterHandlerImpl;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.ParserAdapter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,10 +17,32 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.geoserver.config.ServiceInfo;
+import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.ServiceException;
+import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.filter.FilterFilter;
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.gml.GMLFilterDocument;
+import org.geotools.gml.GMLFilterGeometry;
+import org.geotools.util.Converters;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.Id;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.requests.FilterHandlerImpl;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 
 /**

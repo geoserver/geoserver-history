@@ -4,9 +4,16 @@
  */
 package org.geoserver.wfs.xml;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.PropertyType;
+
 import org.eclipse.xsd.XSDElementDeclaration;
-import org.eclipse.xsd.XSDFacet;
 import org.eclipse.xsd.XSDFactory;
 import org.eclipse.xsd.XSDParticle;
 import org.eclipse.xsd.XSDTypeDefinition;
@@ -14,11 +21,6 @@ import org.geotools.xml.PropertyExtractor;
 import org.geotools.xml.SchemaIndex;
 import org.geotools.xml.Schemas;
 import org.opengis.feature.type.Name;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import javax.xml.namespace.QName;
 
 
 /**

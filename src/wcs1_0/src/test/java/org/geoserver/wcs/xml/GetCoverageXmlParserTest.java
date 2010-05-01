@@ -1,18 +1,13 @@
 package org.geoserver.wcs.xml;
 
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 
 import net.opengis.gml.GridType;
-import net.opengis.gml.impl.TimePositionTypeImpl;
 import net.opengis.wcs10.AxisSubsetType;
 import net.opengis.wcs10.GetCoverageType;
 import net.opengis.wcs10.IntervalType;
 import net.opengis.wcs10.RangeSubsetType;
-import net.opengis.wcs10.TimeSequenceType;
-import net.opengis.wcs10.impl.TypedLiteralTypeImpl;
 
-import org.geoserver.data.test.MockData;
 import org.geoserver.wcs.test.WCSTestSupport;
 import org.geoserver.wcs.xml.v1_0_0.WcsXmlReader;
 import org.geotools.geometry.GeneralEnvelope;

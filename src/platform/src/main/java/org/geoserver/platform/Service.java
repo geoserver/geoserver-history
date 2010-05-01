@@ -4,7 +4,6 @@
  */
 package org.geoserver.platform;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.geotools.util.Version;

@@ -4,8 +4,8 @@
  */
 package org.geoserver.web.wicket;
 
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.Component;
+import org.apache.wicket.model.IModel;
 
 public class DelegatingModel implements IModel {
     Component myComponent; 

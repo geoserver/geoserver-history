@@ -4,43 +4,42 @@
  */
 package org.geoserver.wfs;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.InsertedFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.WfsFactory;
+
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.config.GeoServer;
 import org.geoserver.feature.ReprojectingFeatureCollection;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureStore;
-
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
-import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -85,8 +84,8 @@ public class InsertElementHandler implements TransactionElementHandler {
             for (Iterator f = insert.getFeature().iterator(); f.hasNext();) {
                 SimpleFeature feature = (SimpleFeature) f.next();
                 SimpleFeatureType schema = feature.getFeatureType();
-                FeatureCollection<SimpleFeatureType, SimpleFeature> collection;
-                collection = (FeatureCollection) schema2features.get(schema);
+                SimpleFeatureCollection collection;
+                collection = (SimpleFeatureCollection) schema2features.get(schema);
 
                 if (collection == null) {
                     collection = new DefaultFeatureCollection(null, schema);
@@ -105,12 +104,12 @@ public class InsertElementHandler implements TransactionElementHandler {
             HashMap schema2fids = new HashMap();
 
             for (Iterator c = schema2features.values().iterator(); c.hasNext();) {
-                FeatureCollection<SimpleFeatureType, SimpleFeature> collection = (FeatureCollection) c.next();
+                SimpleFeatureCollection collection = (SimpleFeatureCollection) c.next();
                 SimpleFeatureType schema = collection.getSchema();
 
                 final QName elementName = new QName(schema.getName().getNamespaceURI(), schema.getTypeName());
-                FeatureStore<SimpleFeatureType, SimpleFeature> store;
-                store = (FeatureStore<SimpleFeatureType, SimpleFeature>) featureStores.get(elementName);
+                SimpleFeatureStore store;
+                store = DataUtilities.simple((FeatureStore) featureStores.get(elementName));
 
                 if (store == null) {
                     throw new WFSException("Could not locate FeatureStore for '" + elementName
@@ -214,10 +213,10 @@ public class InsertElementHandler implements TransactionElementHandler {
      * @param collection
      * @throws PointOutsideEnvelopeException
      */
-    void checkFeatureCoordinatesRange(FeatureCollection<SimpleFeatureType, SimpleFeature> collection)
+    void checkFeatureCoordinatesRange(SimpleFeatureCollection collection)
             throws PointOutsideEnvelopeException {
         List types = collection.getSchema().getAttributeDescriptors();
-        FeatureIterator<SimpleFeature> fi = collection.features();
+        SimpleFeatureIterator fi = collection.features();
         try {
             while(fi.hasNext()) {
                 SimpleFeature f = fi.next();

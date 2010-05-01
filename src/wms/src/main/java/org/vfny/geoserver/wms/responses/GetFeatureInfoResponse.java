@@ -4,6 +4,15 @@
  */
 package org.vfny.geoserver.wms.responses;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
@@ -16,14 +25,6 @@ import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;
 import org.vfny.geoserver.wms.responses.featureInfo.GmlFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.featureInfo.HTMLTableFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.featureInfo.TextFeatureInfoResponse;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**

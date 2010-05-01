@@ -4,8 +4,9 @@
  */
 package org.geoserver.wfs.kvp;
 
-import net.opengis.wfs.DescribeFeatureTypeType;
 import java.util.Map;
+
+import net.opengis.wfs.DescribeFeatureTypeType;
 
 
 public class DescribeFeatureTypeKvpRequestReader extends WFSKvpRequestReader {

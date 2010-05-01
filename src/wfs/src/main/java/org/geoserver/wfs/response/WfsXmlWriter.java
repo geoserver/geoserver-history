@@ -4,13 +4,6 @@
  */
 package org.geoserver.wfs.response;
 
-import org.geoserver.ows.util.ResponseUtils;
-import org.geoserver.ows.xml.v1_0.OWS;
-import org.geoserver.wfs.WFSInfo;
-import org.geotools.filter.v1_0.OGC;
-import org.geotools.gml2.GML;
-import org.geotools.xs.XS;
-import org.xml.sax.helpers.NamespaceSupport;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,6 +13,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.ows.xml.v1_0.OWS;
+import org.geoserver.wfs.WFSInfo;
+import org.geotools.filter.v1_0.OGC;
+import org.geotools.gml2.GML;
+import org.geotools.xs.XS;
+import org.xml.sax.helpers.NamespaceSupport;
 
 
 /**

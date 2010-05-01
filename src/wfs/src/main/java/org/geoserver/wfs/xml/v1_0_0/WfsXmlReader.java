@@ -4,6 +4,13 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import java.io.Reader;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.ows.XmlRequestReader;
@@ -11,13 +18,6 @@ import org.geoserver.wfs.WFSException;
 import org.geotools.util.Version;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
-
-import java.io.Reader;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
 
 /**
  * Xml reader for wfs 1.0.0 xml requests.

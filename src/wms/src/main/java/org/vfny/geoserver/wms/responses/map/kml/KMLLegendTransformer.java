@@ -4,14 +4,10 @@
  */
 package org.vfny.geoserver.wms.responses.map.kml;
 
-import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
-import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.helpers.AttributesImpl;
-import java.util.Map;
 
 
 /**

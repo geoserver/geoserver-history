@@ -4,6 +4,12 @@
  */
 package org.vfny.geoserver.servlets;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletResponse;
+
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.OutputStrategyFactory;
 import org.geoserver.ows.ServiceStrategy;
@@ -12,12 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 import org.vfny.geoserver.util.PartialBufferedOutputStream2;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletResponse;
 
 
 public class ServiceStrategyFactory implements OutputStrategyFactory, ApplicationContextAware {

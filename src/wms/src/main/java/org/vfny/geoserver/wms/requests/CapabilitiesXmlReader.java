@@ -4,22 +4,22 @@
  */
 package org.vfny.geoserver.wms.requests;
 
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.util.requests.CapabilitiesHandler;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.servlets.WMService;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.ParserAdapter;
 import java.io.IOException;
 import java.io.Reader;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.geoserver.wms.WMS;
+import org.vfny.geoserver.Request;
+import org.vfny.geoserver.util.requests.CapabilitiesHandler;
+import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
+import org.vfny.geoserver.wms.WmsException;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.ParserAdapter;
 
 
 /**

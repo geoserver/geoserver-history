@@ -4,6 +4,10 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import java.util.Iterator;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.DeleteElementType;
 import net.opengis.wfs.InsertElementType;
@@ -11,12 +15,10 @@ import net.opengis.wfs.NativeType;
 import net.opengis.wfs.TransactionType;
 import net.opengis.wfs.UpdateElementType;
 import net.opengis.wfs.WfsFactory;
-import org.geotools.xml.AbstractComplexBinding;
+
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import java.util.Iterator;
-import javax.xml.namespace.QName;
 
 
 /**

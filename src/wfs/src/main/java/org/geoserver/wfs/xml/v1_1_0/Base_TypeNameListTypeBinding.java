@@ -4,10 +4,12 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.WfsFactory;
+
 import org.geotools.xml.AbstractSimpleBinding;
 import org.geotools.xml.InstanceComponent;
-import javax.xml.namespace.QName;
 
 
 /**

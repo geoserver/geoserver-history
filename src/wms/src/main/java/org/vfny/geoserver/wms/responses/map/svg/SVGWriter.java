@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataSourceException;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -303,7 +303,7 @@ public class SVGWriter extends OutputStreamWriter {
         super.write('\n');
     }
 
-    public void writeFeatures(SimpleFeatureType featureType, FeatureIterator<SimpleFeature> reader, String style)
+    public void writeFeatures(SimpleFeatureType featureType, SimpleFeatureIterator reader, String style)
         throws IOException, AbortedException {
         SimpleFeature ft;
 

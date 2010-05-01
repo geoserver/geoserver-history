@@ -7,14 +7,14 @@ package org.vfny.geoserver.global;
 import java.io.IOException;
 
 import org.geotools.data.DataSourceException;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureLocking;
 import org.geotools.data.VersioningFeatureSource;
 import org.geotools.data.VersioningFeatureStore;
-import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -41,7 +41,7 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource imp
         return ((VersioningFeatureSource) source).getDifferences(fromVersion, toVersion, filter, users);
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getLog(String fromVersion,
+    public SimpleFeatureCollection getLog(String fromVersion,
             String toVersion, Filter filter, String[] users, int maxFeatures) throws IOException {
         return ((VersioningFeatureSource) source).getLog(fromVersion, toVersion, filter, users, maxFeatures);
     }
@@ -79,7 +79,7 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource imp
     
     
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures(Query query)
+    public SimpleFeatureCollection getVersionedFeatures(Query query)
             throws IOException {
         final VersioningFeatureSource versioningSource = ((VersioningFeatureSource) source);
         Query newQuery = adaptQuery(query, versioningSource.getVersionedFeatures().getSchema());
@@ -88,22 +88,38 @@ public class GeoServerVersioningFeatureSource extends GeoServerFeatureSource imp
         try {
             //this is the raw "unprojected" feature collection
             
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
+            SimpleFeatureCollection fc;
             fc = versioningSource.getVersionedFeatures(newQuery);
 
-            return applyProjectionPolicies(targetCRS, fc);
+            return DataUtilities.simple(applyProjectionPolicies(targetCRS, fc));
         } catch (Exception e) {
             throw new DataSourceException(e);
         }
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures(Filter filter)
+    public SimpleFeatureCollection getVersionedFeatures(Filter filter)
             throws IOException {
-        return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
+        return ((VersioningFeatureSource) source).getVersionedFeatures();
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> getVersionedFeatures()
+    public SimpleFeatureCollection getVersionedFeatures()
             throws IOException {
-        return getFeatures(Query.ALL);
+        return ((VersioningFeatureSource) source).getFeatures(Query.ALL);
+    }
+    
+    @Override
+    public SimpleFeatureCollection getFeatures() throws IOException {
+        return ((VersioningFeatureSource) source).getFeatures();
+    }
+    
+    @Override
+    public SimpleFeatureCollection getFeatures(Filter filter)
+            throws IOException {
+        return ((VersioningFeatureSource) source).getFeatures(filter);
+    }
+    
+    @Override
+    public SimpleFeatureCollection getFeatures(Query query) throws IOException {
+        return ((VersioningFeatureSource) source).getFeatures(query);
     }
 }

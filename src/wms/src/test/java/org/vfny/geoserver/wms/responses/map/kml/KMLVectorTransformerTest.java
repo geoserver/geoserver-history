@@ -24,13 +24,12 @@ import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
@@ -105,7 +104,7 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
      * @throws Exception
      */
     public void testSetStandAlone() throws Exception {
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = FeatureCollections
+        SimpleFeatureCollection features = FeatureCollections
                 .newCollection();
         Style style = mockData.getDefaultStyle().getStyle();
         MapLayer mapLayer = new DefaultMapLayer(features, style);
@@ -144,9 +143,9 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
         mockData.addFeature(featureType, new Object[] { "name3", "POINT(3 3)" });
         mockData.addFeature(featureType, new Object[] { "name4", "POINT(4 4)" });
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> fs = 
-            (FeatureSource<SimpleFeatureType, SimpleFeature>) typeInfo.getFeatureSource(null, null);
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = fs.getFeatures();
+        SimpleFeatureSource fs = 
+            (SimpleFeatureSource) typeInfo.getFeatureSource(null, null);
+        SimpleFeatureCollection features = fs.getFeatures();
 
         Style style = mockData.getDefaultStyle().getStyle();
         MapLayer mapLayer = new DefaultMapLayer(features, style);

@@ -4,17 +4,18 @@
  */
 package org.geoserver.wfs.xml;
 
-import org.geotools.feature.type.ProfileImpl;
-
-import org.opengis.feature.type.AttributeType;
-import org.opengis.feature.type.Name;
-import org.opengis.feature.type.Schema;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import org.geotools.feature.type.ProfileImpl;
+import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.AttributeType;
+import org.opengis.feature.type.Name;
+import org.opengis.feature.type.Schema;
 
 
 /**

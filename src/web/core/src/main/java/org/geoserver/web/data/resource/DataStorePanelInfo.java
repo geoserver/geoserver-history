@@ -4,7 +4,6 @@
  */
 package org.geoserver.web.data.resource;
 
-import org.apache.wicket.Component;
 import org.geoserver.web.ComponentInfo;
 import org.geoserver.web.data.store.StoreEditPanel;
 import org.geotools.data.DataAccessFactory;

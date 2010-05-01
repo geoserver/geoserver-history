@@ -4,15 +4,18 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.math.BigInteger;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.AllSomeType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.LockType;
 import net.opengis.wfs.WfsFactory;
+
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import java.math.BigInteger;
-import javax.xml.namespace.QName;
 
 
 /**

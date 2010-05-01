@@ -1,18 +1,11 @@
 package org.geoserver.geosearch;
 
-import com.mockrunner.mock.web.MockHttpServletResponse;
-
 import javax.xml.namespace.QName;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
+import com.mockrunner.mock.web.MockHttpServletResponse;
 
 public class FeatureRestletTest extends GeoServerTestSupport {
     public void testSingleFeature() throws Exception{

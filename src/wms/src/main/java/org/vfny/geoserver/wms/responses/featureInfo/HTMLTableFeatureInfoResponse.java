@@ -18,8 +18,8 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geoserver.wms.WMS;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
@@ -96,7 +96,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         Template header = null;
         Template footer = null;
         if(results.size() == 1) {
-            SimpleFeatureType templateFeatureType = ((FeatureCollection<SimpleFeatureType, SimpleFeature>) results.get(0)).getSchema();
+            SimpleFeatureType templateFeatureType = ((SimpleFeatureCollection) results.get(0)).getSchema();
             header = getTemplate(templateFeatureType, "header.ftl", charSet);
             footer = getTemplate(templateFeatureType, "footer.ftl", charSet);
         } else {
@@ -114,7 +114,7 @@ public class HTMLTableFeatureInfoResponse extends AbstractFeatureInfoResponse {
         
         //process content template for all feature collections found
         for (Iterator it = results.iterator(); it.hasNext();) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc = (FeatureCollection) it.next();
+            SimpleFeatureCollection fc = (SimpleFeatureCollection) it.next();
             if(fc.size() > 0) {
                 SimpleFeatureType ft = fc.getSchema();
                 Template content = getTemplate(ft, "content.ftl", charSet);

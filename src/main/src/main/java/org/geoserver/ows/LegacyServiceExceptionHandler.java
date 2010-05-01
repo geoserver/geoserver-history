@@ -4,7 +4,8 @@
  */
 package org.geoserver.ows;
 
-import static org.geoserver.ows.util.ResponseUtils.*;
+import static org.geoserver.ows.util.ResponseUtils.baseURL;
+import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,9 +16,7 @@ import java.util.logging.Level;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.config.GeoServer;
-import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Service;
 import org.geoserver.platform.ServiceException;

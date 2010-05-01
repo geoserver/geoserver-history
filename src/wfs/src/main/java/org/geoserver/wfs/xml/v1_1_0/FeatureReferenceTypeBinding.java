@@ -3,13 +3,16 @@ package org.geoserver.wfs.xml.v1_1_0;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.geotools.xlink.XLINK;
-import org.geotools.xml.*;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Encoder;
+import org.geotools.xml.Node;
 import org.opengis.feature.Association;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.Name;
-
-import javax.xml.namespace.QName;
 
 /**
  * Binding object for the type

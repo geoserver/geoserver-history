@@ -1,14 +1,13 @@
 package org.geoserver.geosearch;
 
-import org.restlet.resource.OutputRepresentation;
-import org.restlet.data.MediaType;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import org.jdom.Document;
-import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format;
-
-import java.io.OutputStream;
-import java.io.IOException;
+import org.jdom.output.XMLOutputter;
+import org.restlet.data.MediaType;
+import org.restlet.resource.OutputRepresentation;
 
 public class JDOMRepresentation extends OutputRepresentation {
     Document myDocument;

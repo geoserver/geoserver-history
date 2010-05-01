@@ -10,7 +10,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.ows.HttpServletRequestAware;
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;

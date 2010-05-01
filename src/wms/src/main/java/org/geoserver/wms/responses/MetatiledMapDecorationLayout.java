@@ -4,26 +4,10 @@
  */
 package org.geoserver.wms.responses;
 
-import org.geoserver.platform.GeoServerExtensions;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
-
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-
-import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-import java.util.logging.Level;
+
+import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
  * The MetatiledMapDecorationLayout class customizes the {MapDecorationLayout} to handle the special

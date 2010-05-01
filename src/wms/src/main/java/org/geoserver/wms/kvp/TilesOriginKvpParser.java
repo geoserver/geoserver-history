@@ -4,12 +4,12 @@
  */
 package org.geoserver.wms.kvp;
 
+import java.awt.geom.Point2D;
+import java.util.List;
+
 import org.geoserver.ows.KvpParser;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.ServiceException;
-
-import java.awt.geom.Point2D;
-import java.util.List;
 
 
 public class TilesOriginKvpParser extends KvpParser {

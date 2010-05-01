@@ -4,10 +4,11 @@
  */
 package org.geoserver.wfs.xml.v1_0_0;
 
+import java.math.BigInteger;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.geotools.xml.Node;
-import java.math.BigInteger;
 
 
 /**

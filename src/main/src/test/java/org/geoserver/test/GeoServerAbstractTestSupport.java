@@ -1,7 +1,5 @@
 package org.geoserver.test;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -56,13 +54,13 @@ import org.geoserver.logging.LoggingUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.geotools.util.logging.Log4JLoggerFactory;
 import org.geotools.util.logging.Logging;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -312,11 +310,11 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * @param typeName The qualified type name of the feature source.
      */
     @SuppressWarnings("unchecked")
-    protected FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(QName typeName)
+    protected SimpleFeatureSource getFeatureSource(QName typeName)
             throws IOException {
         // TODO: expand test support to DataAccess FeatureSource
         FeatureTypeInfo ft = getFeatureTypeInfo(typeName);
-        return (FeatureSource<SimpleFeatureType, SimpleFeature>) ft.getFeatureSource(null, null);
+        return DataUtilities.simple((FeatureSource) ft.getFeatureSource(null, null));
     }
 
     /**

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.wicket.model.IChainingModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 
 /**
  * A model which backs onto an underlying map.

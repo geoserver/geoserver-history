@@ -14,7 +14,6 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.wfs.xml.GML2OutputFormat;

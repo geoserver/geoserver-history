@@ -28,10 +28,10 @@ import net.opengis.wfs.XlinkPropertyNameType;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.config.GeoServer;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.SchemaException;
@@ -43,7 +43,6 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.EMFUtils;
 import org.opengis.feature.Feature;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
@@ -379,7 +378,7 @@ public class GetFeature {
                     residualProperties.removeAll(extraGeometries);
                     String[] residualNames = (String[]) residualProperties.toArray(new String[residualProperties.size()]);
                     SimpleFeatureType targetType = DataUtilities.createSubType((SimpleFeatureType) features.getSchema(), residualNames);
-                    features = new FeatureBoundsFeatureCollection((FeatureCollection<SimpleFeatureType, SimpleFeature>) features, targetType);
+                    features = new FeatureBoundsFeatureCollection((SimpleFeatureCollection) features, targetType);
                 }
 
                 //JD: TODO reoptimize

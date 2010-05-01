@@ -10,6 +10,7 @@ import org.geotools.data.DataSourceException;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.Query;
+import org.geotools.data.simple.SimpleFeatureLocking;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
@@ -34,8 +35,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class GeoServerFeatureLocking extends GeoServerFeatureStore implements
-        FeatureLocking<SimpleFeatureType, SimpleFeature> {
+public class GeoServerFeatureLocking extends GeoServerFeatureStore implements SimpleFeatureLocking {
     /**
      * Creates a new DEFQueryFeatureLocking object.
      *

@@ -7,7 +7,6 @@ package org.geoserver.catalog.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.MapInfo;

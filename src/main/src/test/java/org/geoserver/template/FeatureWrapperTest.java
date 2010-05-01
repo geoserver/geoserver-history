@@ -4,27 +4,25 @@
  */
 package org.geoserver.template;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import freemarker.template.Configuration;
-import freemarker.template.SimpleObjectWrapper;
-import freemarker.template.Template;
-import junit.framework.TestCase;
-import org.geotools.data.DataUtilities;
+import java.io.StringWriter;
 
+import junit.framework.TestCase;
+
+import org.geotools.data.DataUtilities;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.DefaultFeatureCollection;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
-import java.io.OutputStreamWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 
 public class FeatureWrapperTest extends TestCase {
-    FeatureCollection<SimpleFeatureType, SimpleFeature> features;
+    SimpleFeatureCollection features;
     Configuration cfg;
 
     protected void setUp() throws Exception {

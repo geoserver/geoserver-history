@@ -8,10 +8,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.collection.DecoratingFeatureCollection;
-import org.geotools.feature.collection.DelegateFeatureIterator;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
+import org.geotools.feature.collection.DecoratingSimpleFeatureCollection;
+import org.geotools.feature.collection.DelegateSimpleFeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.opengis.feature.simple.SimpleFeature;
@@ -24,11 +24,11 @@ import org.opengis.feature.type.GeometryDescriptor;
  * @author Mauro Bartolomeoli, mbarto@infosia.it
  * 
  */
-public class RemappingFeatureCollection extends DecoratingFeatureCollection<SimpleFeatureType, SimpleFeature> {
+public class RemappingFeatureCollection extends DecoratingSimpleFeatureCollection {
 
     Map<String,String> attributesMapping;
     
-    public RemappingFeatureCollection(FeatureCollection<SimpleFeatureType, SimpleFeature> delegate,Map<String,String> attributesMapping) {
+    public RemappingFeatureCollection(SimpleFeatureCollection delegate,Map<String,String> attributesMapping) {
         super(delegate);
         this.attributesMapping=attributesMapping;       
     }
@@ -78,12 +78,12 @@ public class RemappingFeatureCollection extends DecoratingFeatureCollection<Simp
         delegate.close(remapping.delegate);
     }
 
-    public FeatureIterator<SimpleFeature> features() {
-        return new DelegateFeatureIterator<SimpleFeature>(this, iterator());
+    public SimpleFeatureIterator features() {
+        return new DelegateSimpleFeatureIterator(this, iterator());
     }
 
-    public void close(FeatureIterator<SimpleFeature> iterator) {
-        DelegateFeatureIterator<SimpleFeature> delegate = (DelegateFeatureIterator<SimpleFeature>) iterator;
+    public void close(SimpleFeatureIterator iterator) {
+        DelegateSimpleFeatureIterator delegate = (DelegateSimpleFeatureIterator) iterator;
         delegate.close();
     }
 

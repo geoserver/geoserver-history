@@ -4,7 +4,12 @@
  */
 package org.geoserver.web.data.layer;
 
-import static org.geoserver.web.data.layer.LayerProvider.*;
+import static org.geoserver.web.data.layer.LayerProvider.ENABLED;
+import static org.geoserver.web.data.layer.LayerProvider.NAME;
+import static org.geoserver.web.data.layer.LayerProvider.SRS;
+import static org.geoserver.web.data.layer.LayerProvider.STORE;
+import static org.geoserver.web.data.layer.LayerProvider.TYPE;
+import static org.geoserver.web.data.layer.LayerProvider.WORKSPACE;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;

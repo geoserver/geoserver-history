@@ -4,10 +4,10 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.servlets.AbstractService;
-import org.vfny.geoserver.util.Requests;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**

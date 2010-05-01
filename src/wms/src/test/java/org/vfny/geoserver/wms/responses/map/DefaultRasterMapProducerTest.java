@@ -30,15 +30,14 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.filter.IllegalFilterException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -391,13 +390,13 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(STREAMS.getNamespaceURI(), STREAMS.getLocalPart());
 
-        final FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) ftInfo.getFeatureSource(null, null);
+        final SimpleFeatureSource featureSource = (SimpleFeatureSource) ftInfo.getFeatureSource(null, null);
         
-        DecoratingFeatureSource<SimpleFeatureType, SimpleFeature> source;
+        DecoratingFeatureSource source;
         // This source should make the renderer fail when asking for the features
-        source = new DecoratingFeatureSource<SimpleFeatureType, SimpleFeature>(featureSource) {
+        source = new DecoratingFeatureSource(featureSource) {
             @Override
-            public FeatureCollection<SimpleFeatureType, SimpleFeature> getFeatures(Query query)
+            public SimpleFeatureCollection getFeatures(Query query)
                     throws IOException {
                 throw new RuntimeException(renderExceptionToThrow);
                 // return delegate.getFeatures(query);

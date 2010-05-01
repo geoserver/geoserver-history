@@ -7,9 +7,9 @@ package org.geoserver.ows.kvp;
 import java.util.Arrays;
 import java.util.List;
 
-import org.geoserver.ows.util.KvpUtils;
-
 import junit.framework.TestCase;
+
+import org.geoserver.ows.util.KvpUtils;
 
 public class KvpUtilsTest extends TestCase {
     public void testEmptyString() {

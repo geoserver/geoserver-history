@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.util.XStreamPersisterFactory;
-import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.PageInfo;
 import org.geoserver.rest.ReflectiveResource;

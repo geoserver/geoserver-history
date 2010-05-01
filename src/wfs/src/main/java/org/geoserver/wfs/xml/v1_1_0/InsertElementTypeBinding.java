@@ -4,13 +4,17 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.net.URI;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.IdentifierGenerationOptionType;
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.wfs.WFSException;
-
 import org.geotools.data.DataUtilities;
+import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.gml3.GML;
@@ -18,12 +22,8 @@ import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
-
-import java.net.URI;
-import javax.xml.namespace.QName;
 
 
 /**
@@ -179,8 +179,7 @@ public class InsertElementTypeBinding extends AbstractComplexEMFBinding {
         //   &lt;/xsd:sequence&gt;
         //&lt;/xsd:choice&gt;
         if (node.hasChild(FeatureCollection.class)) {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> fc;
-            fc = (FeatureCollection) node.getChildValue(FeatureCollection.class);
+            SimpleFeatureCollection fc = (SimpleFeatureCollection) node.getChildValue(FeatureCollection.class);
             insertElement.getFeature().addAll(DataUtilities.list(fc));
         } else if (node.hasChild(SimpleFeature.class)) {
             insertElement.getFeature().addAll(node.getChildValues(SimpleFeature.class));

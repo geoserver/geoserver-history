@@ -5,13 +5,12 @@
 package org.geoserver.wfsv.xml.v1_1_0;
 
 
-import net.opengis.wfsv.VersionedFeatureCollectionType;
+import javax.xml.namespace.QName;
 
 import org.geotools.feature.FeatureCollection;
-import org.geotools.xml.*;
-
-
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the type http://www.opengis.net/wfsv:VersionedFeatureCollectionType.

@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.replay;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Properties;
 
 import junit.framework.TestCase;

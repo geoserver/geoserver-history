@@ -9,8 +9,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.geoserver.ows.kvp.TimeKvpParser;
-
 import junit.framework.TestCase;
 
         

@@ -1,7 +1,5 @@
 package org.geoserver.wfs;
 
-import junit.framework.Test;
-
 import org.custommonkey.xmlunit.XMLAssert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -4,12 +4,13 @@
  */
 package org.geoserver.wfs.xml.gml3;
 
+import javax.xml.namespace.QName;
+
 import org.geoserver.wfs.WFSException;
 import org.geotools.gml3.GML;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import javax.xml.namespace.QName;
 
 
 /**

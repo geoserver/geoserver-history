@@ -4,8 +4,6 @@
  */
 package org.geoserver.config;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 

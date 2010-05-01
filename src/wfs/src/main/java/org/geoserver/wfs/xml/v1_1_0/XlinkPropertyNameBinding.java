@@ -2,13 +2,14 @@ package org.geoserver.wfs.xml.v1_1_0;
 
 import java.math.BigInteger;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.WfsFactory;
 import net.opengis.wfs.XlinkPropertyNameType;
 
-import org.geotools.xml.*;
-
-
-import javax.xml.namespace.QName;
+import org.geotools.xml.AbstractComplexBinding;
+import org.geotools.xml.ElementInstance;
+import org.geotools.xml.Node;
 
 /**
  * Binding object for the element http://www.opengis.net/wfs:XlinkPropertyName.

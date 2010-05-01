@@ -6,7 +6,6 @@ package org.geoserver.rest;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
@@ -16,6 +15,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import junit.framework.TestCase;
 import net.sf.json.JSON;
 import net.sf.json.JSONSerializer;
 
@@ -27,8 +27,6 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.InputRepresentation;
 import org.w3c.dom.Document;
-
-import junit.framework.TestCase;
 
 public class RestletTestSupport extends TestCase {
 

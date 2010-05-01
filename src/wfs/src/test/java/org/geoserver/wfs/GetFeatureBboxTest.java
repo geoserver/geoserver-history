@@ -1,8 +1,7 @@
 package org.geoserver.wfs;
 
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import junit.framework.Test;
-
-import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;

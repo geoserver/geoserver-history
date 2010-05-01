@@ -24,17 +24,19 @@ import net.opengis.wfs.UpdateElementType;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureLocking;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.GeometryCoordinateSequenceTransformer;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.projection.PointOutsideEnvelopeException;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.GeometryDescriptor;
@@ -131,8 +133,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
         String handle = update.getHandle();
         long updated = response.getTransactionSummary().getTotalUpdated().longValue();
 
-        FeatureStore<SimpleFeatureType, SimpleFeature> store;
-        store = (FeatureStore<SimpleFeatureType, SimpleFeature>) featureStores.get(elementName);
+        SimpleFeatureStore store = DataUtilities.simple((FeatureStore) featureStores.get(elementName));
 
         if (store == null) {
             throw new WFSException("Could not locate FeatureStore for '" + elementName + "'");
@@ -212,7 +213,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
             Set fids = new HashSet();
             LOGGER.finer("Preprocess to remember modification as a set of fids");
             
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = store.getFeatures(filter);
+            SimpleFeatureCollection features = store.getFeatures(filter);
             TransactionEvent event = new TransactionEvent(TransactionEventType.PRE_UPDATE, elementName, features);
             event.setSource( update );
             
@@ -250,8 +251,8 @@ public class UpdateElementHandler implements TransactionElementHandler {
                 // make sure we unlock
                 if ((request.getLockId() != null) && store instanceof FeatureLocking
                         && (request.getReleaseAction() == AllSomeType.SOME_LITERAL)) {
-                    FeatureLocking<SimpleFeatureType, SimpleFeature> locking;
-                    locking = (FeatureLocking<SimpleFeatureType, SimpleFeature>) store;
+                    SimpleFeatureLocking locking;
+                    locking = (SimpleFeatureLocking) store;
                     locking.unLockFeatures(filter);
                 }
             }
@@ -269,7 +270,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
                 Id modified = ff.id(featureIds);
 
-                FeatureCollection<SimpleFeatureType, SimpleFeature> changed = store.getFeatures(modified);
+                SimpleFeatureCollection changed = store.getFeatures(modified);
                 listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE,
                         elementName, changed));
             }

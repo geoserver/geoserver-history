@@ -4,20 +4,18 @@
  */
 package org.geoserver.feature;
 
-import com.vividsolutions.jts.geom.Envelope;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.store.DataFeatureCollection;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.filter.identity.FeatureId;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.geotools.data.DataUtilities;
+import org.geotools.data.store.DataFeatureCollection;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.identity.FeatureId;
 
 
 /**

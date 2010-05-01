@@ -25,7 +25,9 @@ import org.custommonkey.xmlunit.XMLAssert;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.wms.WMSTestSupport;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -73,8 +75,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
         transformer.setIndentation(2);
 
-        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
-        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
+        SimpleFeatureSource featureSource = DataUtilities.simple((FeatureSource) mapLayer.getFeatureSource());
         int nfeatures = featureSource.getFeatures().size();
 
         Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
@@ -95,7 +96,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         transformer.setIndentation(2);
 
         FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
-        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
+        featureSource = (SimpleFeatureSource) mapLayer.getFeatureSource();
         int nfeatures = featureSource.getFeatures().size();
 
         Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
@@ -116,7 +117,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         transformer.setIndentation(2);
 
         FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
-        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
+        featureSource = (SimpleFeatureSource) mapLayer.getFeatureSource();
 
         Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
 

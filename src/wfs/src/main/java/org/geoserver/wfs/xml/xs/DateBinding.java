@@ -4,11 +4,12 @@
  */
 package org.geoserver.wfs.xml.xs;
 
-import org.geotools.xml.impl.DatatypeConverterImpl;
-import org.geotools.xs.bindings.XSDateBinding;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.geotools.xml.impl.DatatypeConverterImpl;
+import org.geotools.xs.bindings.XSDateBinding;
 
 /**
  * Override of binding for xs:date that forces date to be encoded in UTC

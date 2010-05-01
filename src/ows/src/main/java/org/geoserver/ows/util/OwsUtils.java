@@ -4,7 +4,6 @@
  */
 package org.geoserver.ows.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;

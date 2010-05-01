@@ -19,13 +19,11 @@ import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geotools.data.FeatureSource;
-import org.geotools.feature.FeatureCollection;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
@@ -100,8 +98,8 @@ public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
         GetMapRequest request = mockData.createRequest();
         request.setLayers(new MapLayerInfo[] { layer });
 
-        FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
-        featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) ((FeatureTypeInfo)layer.getFeature()).getFeatureSource(null, null);
+        SimpleFeatureSource featureSource;
+        featureSource = (SimpleFeatureSource) ((FeatureTypeInfo)layer.getFeature()).getFeatureSource(null, null);
         
         mapLayer = new DefaultMapLayer(featureSource, mockData.getDefaultStyle().getStyle());
 
@@ -127,7 +125,7 @@ public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
      * @throws Exception
      */
     public void testKMLLegendTransformer() throws Exception {
-        FeatureCollection<SimpleFeatureType, SimpleFeature> features = FeatureCollections
+        SimpleFeatureCollection features = FeatureCollections
                 .newCollection();
         XpathEngine xpath = XMLUnit.newXpathEngine();
 

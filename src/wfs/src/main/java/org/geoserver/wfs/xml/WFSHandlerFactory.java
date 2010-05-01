@@ -4,6 +4,13 @@
  */
 package org.geoserver.wfs.xml;
 
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
+
 import org.eclipse.xsd.XSDAttributeDeclaration;
 import org.eclipse.xsd.XSDElementDeclaration;
 import org.eclipse.xsd.XSDSchema;
@@ -16,11 +23,6 @@ import org.geotools.xml.impl.ElementHandlerImpl;
 import org.geotools.xml.impl.Handler;
 import org.geotools.xml.impl.HandlerFactory;
 import org.geotools.xml.impl.ParserHandler;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.xml.namespace.QName;
 
 
 /**

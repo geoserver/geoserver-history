@@ -5,15 +5,13 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.apache.batik.dom.util.HashTable;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Symbolizer;
@@ -82,7 +80,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
         }
 
         public void encode(Object o) throws IllegalArgumentException {
-            FeatureCollection<SimpleFeatureType, SimpleFeature> features = (FeatureCollection) o;
+            SimpleFeatureCollection features = (SimpleFeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
             Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
 
@@ -184,14 +182,14 @@ public class KMLVectorTransformer extends KMLMapTransformer {
          * Encodes the <Schema> element in kml 2.2
          * @param featureTypeStyles
          */
-        protected void encodeSchemas(FeatureCollection<SimpleFeatureType, SimpleFeature> featureTypeStyles) {
+        protected void encodeSchemas(SimpleFeatureCollection featureTypeStyles) {
             // the code is at the moment in KML3VectorTransformer
         }
 
-        protected void encode(FeatureCollection<SimpleFeatureType, SimpleFeature> features,
+        protected void encode(SimpleFeatureCollection features,
                 FeatureTypeStyle[] styles) {
            //grab a reader and process
-            FeatureIterator<SimpleFeature> reader = null;
+            SimpleFeatureIterator reader = null;
 
             try {
                 //grab a reader and process

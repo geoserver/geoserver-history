@@ -4,13 +4,9 @@
  */
 package org.geoserver.filters;
 
-import java.io.BufferedReader;
 import java.lang.reflect.Method;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-
-import junit.framework.Test;
 
 import org.geoserver.test.GeoServerTestSupport;
 

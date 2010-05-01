@@ -5,11 +5,9 @@
 package org.vfny.geoserver.wms.responses.map.kml;
 
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.GeoServer;
-import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.map.MapLayer;
-import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -40,7 +38,7 @@ public class BestGuessRegionatingStrategy implements RegionatingStrategy {
     
     public Filter getFilter(WMSMapContext context, MapLayer layer) {
         SimpleFeatureType type = 
-            ((FeatureSource<SimpleFeatureType, SimpleFeature>)layer.getFeatureSource()).getSchema();
+            ((SimpleFeatureSource)layer.getFeatureSource()).getSchema();
         Class geomtype = type.getGeometryDescriptor().getType().getBinding();
 
         if (Point.class.isAssignableFrom(geomtype))

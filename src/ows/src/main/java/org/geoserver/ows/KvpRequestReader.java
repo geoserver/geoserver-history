@@ -4,15 +4,14 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.ows.util.OwsUtils;
-import org.geotools.util.Converters;
-
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
+import org.geoserver.ows.util.OwsUtils;
+import org.geotools.util.Converters;
 
 
 /**

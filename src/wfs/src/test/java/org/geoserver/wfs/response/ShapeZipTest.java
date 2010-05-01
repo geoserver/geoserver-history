@@ -27,6 +27,8 @@ import org.geoserver.platform.Operation;
 import org.geoserver.wfs.WFSTestSupport;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -230,9 +232,9 @@ public class ShapeZipTest extends WFSTestSupport {
 		// create a datastore reading the uncompressed shapefile
 		File shapeFile = new File(shapeFileName);
 		ShapefileDataStore ds = new ShapefileDataStore(shapeFile.toURL());
-		FeatureSource<SimpleFeatureType, SimpleFeature> fs = ds
+		SimpleFeatureSource fs = ds
 				.getFeatureSource();
-		FeatureCollection<SimpleFeatureType, SimpleFeature> fc = fs
+		SimpleFeatureCollection fc = fs
 				.getFeatures();
 		SimpleFeatureType schema = fc.getSchema();
 		

@@ -1,7 +1,7 @@
 package org.geoserver.wfs.web;
 
-import org.geoserver.wfs.WFSInfo;
 import org.geoserver.web.GeoServerWicketTestSupport;
+import org.geoserver.wfs.WFSInfo;
 
 public class WFSAdminPageTest extends GeoServerWicketTestSupport {
     public void testValues() throws Exception {

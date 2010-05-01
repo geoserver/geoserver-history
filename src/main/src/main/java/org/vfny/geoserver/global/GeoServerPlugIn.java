@@ -4,11 +4,13 @@
  */
 package org.vfny.geoserver.global;
 
+import java.io.File;
+
+import javax.servlet.ServletException;
+
 import org.apache.struts.action.ActionServlet;
 import org.apache.struts.action.PlugIn;
 import org.apache.struts.config.ModuleConfig;
-import java.io.File;
-import javax.servlet.ServletException;
 
 
 /**

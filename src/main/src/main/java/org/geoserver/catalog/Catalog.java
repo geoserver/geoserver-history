@@ -4,13 +4,12 @@
  */
 package org.geoserver.catalog;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.opengis.feature.type.Name;
-
-import java.util.Collection;
 
 /**
  * The GeoServer catalog which provides access to meta information about the 

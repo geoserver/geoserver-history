@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.Hints;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.FeatureTypes;
 import org.geotools.feature.IllegalAttributeException;
 import org.geotools.feature.SchemaException;
@@ -78,7 +78,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
     Hints hints = new Hints(Hints.LENIENT_DATUM_SHIFT, Boolean.TRUE);
 
     public ReprojectingFeatureCollection(
-            FeatureCollection<SimpleFeatureType, SimpleFeature> delegate,
+            SimpleFeatureCollection delegate,
             CoordinateReferenceSystem target) throws SchemaException, OperationNotFoundException,
             FactoryRegistryException, FactoryException {
         super(delegate);
@@ -107,7 +107,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
     
    @Override
     public void accepts(FeatureVisitor visitor, ProgressListener progress) {
-        FeatureIterator<SimpleFeature> it = features();
+        SimpleFeatureIterator it = features();
         try {
             while (it.hasNext()) {
                 visitor.visit(it.next());
@@ -121,7 +121,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         this.defaultSource = defaultSource;
     }
 
-    public FeatureIterator<SimpleFeature> features() {
+    public SimpleFeatureIterator features() {
         return new ReprojectingFeatureIterator(delegate.features());
     }
 
@@ -129,7 +129,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         return new ReprojectingIterator(delegate.iterator());
     }
 
-    public void close(FeatureIterator<SimpleFeature> iterator) {
+    public void close(SimpleFeatureIterator iterator) {
         if (iterator instanceof ReprojectingFeatureIterator) {
             delegate.close(((ReprojectingFeatureIterator) iterator).getDelegate());
         }
@@ -151,8 +151,8 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         return schema;
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> subCollection(Filter filter) {
-        FeatureCollection<SimpleFeatureType, SimpleFeature> sub = delegate.subCollection(filter);
+    public SimpleFeatureCollection subCollection(Filter filter) {
+        SimpleFeatureCollection sub = delegate.subCollection(filter);
 
         if (sub != null) {
             try {
@@ -222,7 +222,7 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         }
     }
 
-    public FeatureCollection<SimpleFeatureType, SimpleFeature> collection() throws IOException {
+    public SimpleFeatureCollection collection() throws IOException {
         return this;
     }
 
@@ -291,14 +291,14 @@ public class ReprojectingFeatureCollection extends DecoratingFeatureCollection {
         }
     }
 
-    class ReprojectingFeatureIterator implements FeatureIterator<SimpleFeature> {
-        FeatureIterator<SimpleFeature> delegate;
+    class ReprojectingFeatureIterator implements SimpleFeatureIterator {
+        SimpleFeatureIterator delegate;
 
-        public ReprojectingFeatureIterator(FeatureIterator<SimpleFeature> delegate) {
+        public ReprojectingFeatureIterator(SimpleFeatureIterator delegate) {
             this.delegate = delegate;
         }
 
-        public FeatureIterator<SimpleFeature> getDelegate() {
+        public SimpleFeatureIterator getDelegate() {
             return delegate;
         }
 

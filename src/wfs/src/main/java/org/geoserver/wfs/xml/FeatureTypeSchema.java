@@ -4,13 +4,12 @@
  */
 package org.geoserver.wfs.xml;
 
+import java.io.IOException;
+
 import org.eclipse.xsd.XSDSchema;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.platform.GeoServerResourceLoader;
 import org.geoserver.wfs.WFSInfo;
-
-import java.io.IOException;
 
 
 /**

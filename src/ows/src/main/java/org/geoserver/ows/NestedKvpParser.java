@@ -4,9 +4,10 @@
  */
 package org.geoserver.ows;
 
-import org.geoserver.ows.util.KvpUtils;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.geoserver.ows.util.KvpUtils;
 
 
 /**

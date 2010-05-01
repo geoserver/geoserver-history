@@ -4,6 +4,12 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.net.URI;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.QueryType;
 import net.opengis.wfs.WfsFactory;
 
@@ -12,18 +18,11 @@ import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import org.opengis.feature.Property;
 import org.opengis.filter.Filter;
-import org.opengis.filter.expression.Literal;
 import org.opengis.filter.expression.PropertyName;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
-
-import java.net.URI;
-import java.util.Iterator;
-import java.util.List;
-import javax.xml.namespace.QName;
 
 
 /**

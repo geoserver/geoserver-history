@@ -20,7 +20,6 @@ import org.geoserver.wcs.xml.v1_1_1.WCSConfiguration;
 import org.geoserver.wcs.xml.v1_1_1.WcsXmlReader;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.referencing.CRS;
-import org.geotools.referencing.operation.transform.AffineTransform2D;
 import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.wcs.WcsException;
 import org.w3c.dom.Document;

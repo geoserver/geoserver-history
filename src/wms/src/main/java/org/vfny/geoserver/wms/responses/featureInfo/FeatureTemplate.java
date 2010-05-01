@@ -4,14 +4,6 @@
  */
 package org.vfny.geoserver.wms.responses.featureInfo;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import org.geoserver.template.FeatureWrapper;
-import org.geoserver.template.GeoServerTemplateLoader;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +14,15 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import org.geoserver.template.FeatureWrapper;
+import org.geoserver.template.GeoServerTemplateLoader;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 
 /**

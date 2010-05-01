@@ -4,9 +4,6 @@
  */
 package org.geoserver.data;
 
-import org.geoserver.util.ReaderUtils;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,6 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.geoserver.util.ReaderUtils;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 
 /**

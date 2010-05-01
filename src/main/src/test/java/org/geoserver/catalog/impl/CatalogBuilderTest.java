@@ -11,12 +11,10 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
-import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.Query;
 import org.geotools.feature.NameImpl;
 import org.geotools.referencing.CRS;
-import org.opengis.coverage.grid.Format;
 import org.opengis.feature.type.Name;
 
 import com.vividsolutions.jts.geom.Point;

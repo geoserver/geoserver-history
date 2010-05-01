@@ -4,27 +4,17 @@
  */
 package org.geoserver.wfs.xml.v1_1_0;
 
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.PropertyType;
 import net.opengis.wfs.WfsFactory;
-import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.wfs.xml.GML3Profile;
+
 import org.geoserver.wfs.xml.PropertyTypePropertyExtractor;
-import org.geoserver.wfs.xml.TypeMappingProfile;
-import org.geoserver.wfs.xml.XSProfile;
 import org.geotools.xml.AbstractComplexBinding;
-import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
-import org.geotools.xs.XS;
-import org.opengis.feature.type.Name;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.xml.namespace.QName;
 
 
 /**

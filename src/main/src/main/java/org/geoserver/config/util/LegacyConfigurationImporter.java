@@ -17,7 +17,6 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
-import org.geoserver.config.ServiceLoader;
 import org.geoserver.config.impl.JAIInfoImpl;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.util.logging.Logging;

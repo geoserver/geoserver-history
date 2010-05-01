@@ -12,8 +12,6 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-import org.geoserver.rest.format.MapJSONFormat;
-import org.geoserver.rest.format.MapXMLFormat;
 import org.geoserver.test.GeoServerTestSupport;
 
 /**

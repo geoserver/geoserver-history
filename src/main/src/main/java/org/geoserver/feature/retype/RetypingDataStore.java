@@ -16,16 +16,19 @@ import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureLocking;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -139,19 +142,17 @@ public class RetypingDataStore implements DataStore {
         return new RetypingFeatureCollection.RetypingFeatureReader(reader, map.getFeatureType());
     }
 
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(String typeName) throws IOException {
+    public SimpleFeatureSource getFeatureSource(String typeName) throws IOException {
         FeatureTypeMap map = getTypeMapBackwards(typeName, true);
         updateMap(map, false);
-        FeatureSource<SimpleFeatureType, SimpleFeature> source = wrapped.getFeatureSource(map.getOriginalName());
+        SimpleFeatureSource source = wrapped.getFeatureSource(map.getOriginalName());
         if (map.isUnchanged())
             return source;
         if (source instanceof FeatureLocking) {
-            FeatureLocking<SimpleFeatureType, SimpleFeature> locking;
-            locking = (FeatureLocking<SimpleFeatureType, SimpleFeature>) source;
+            SimpleFeatureLocking locking = DataUtilities.simple((FeatureLocking) source);
             return new RetypingFeatureLocking(this, locking, map);
         } else if (source instanceof FeatureStore) {
-            FeatureStore<SimpleFeatureType, SimpleFeature> store;
-            store = (FeatureStore<SimpleFeatureType, SimpleFeature>) source;
+            SimpleFeatureStore store = DataUtilities.simple((FeatureStore) source);
             return new RetypingFeatureStore(this, store, map);
         }
         return new RetypingFeatureSource(this, source, map);
@@ -161,11 +162,11 @@ public class RetypingDataStore implements DataStore {
         return wrapped.getLockingManager();
     }
 
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getView(Query query) throws IOException,
+    public SimpleFeatureSource getView(Query query) throws IOException,
             SchemaException {
         FeatureTypeMap map = getTypeMapBackwards(query.getTypeName(), true);
         updateMap(map, false);
-        FeatureSource<SimpleFeatureType, SimpleFeature> view = wrapped.getView(query);
+        SimpleFeatureSource view = wrapped.getView(query);
         return new RetypingFeatureSource(this, view, map);
     }
 
@@ -289,7 +290,7 @@ public class RetypingDataStore implements DataStore {
      * @since 2.5
      * @see DataAccess#getFeatureSource(Name)
      */
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(Name typeName)
+    public SimpleFeatureSource getFeatureSource(Name typeName)
             throws IOException {
         return getFeatureSource(typeName.getLocalPart());
     }

@@ -4,8 +4,9 @@
  */
 package org.geoserver.security;
 
-import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
 import javax.servlet.http.HttpServletRequest;
+
+import org.acegisecurity.ui.webapp.AuthenticationProcessingFilter;
 
 
 /**

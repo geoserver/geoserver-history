@@ -6,21 +6,20 @@ package org.geoserver.wfs.xml.v1_0_0;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.InsertElementType;
 import net.opengis.wfs.WfsFactory;
 
 import org.geoserver.wfs.WFSException;
 import org.geotools.gml2.bindings.GML2ParsingUtils;
 import org.geotools.gml3.GML;
-import org.geotools.xml.AbstractComplexBinding;
 import org.geotools.xml.AbstractComplexEMFBinding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.picocontainer.MutablePicoContainer;
-
-import javax.xml.namespace.QName;
 
 
 /**

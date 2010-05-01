@@ -4,11 +4,12 @@
  */
 package org.geoserver.wfs.kvp;
 
+import java.util.List;
+
 import org.geoserver.ows.KvpParser;
 import org.geoserver.platform.ServiceException;
 import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
-import java.util.List;
 
 
 /**

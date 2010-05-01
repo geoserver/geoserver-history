@@ -4,18 +4,18 @@
  */
 package org.geoserver.wfs;
 
-import net.opengis.wfs.DescribeFeatureTypeType;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
 import javax.xml.namespace.QName;
+
+import net.opengis.wfs.DescribeFeatureTypeType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
-import org.geoserver.config.GeoServer;
 
 
 /**

@@ -4,12 +4,14 @@
  */
 package org.vfny.geoserver.servlets;
 
-import org.geoserver.ows.DispatcherOutputStream;
-import org.geoserver.ows.ServiceStrategy;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
 import javax.servlet.http.HttpServletResponse;
+
+import org.geoserver.ows.DispatcherOutputStream;
+import org.geoserver.ows.ServiceStrategy;
 
 
 /**

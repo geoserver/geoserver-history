@@ -4,14 +4,14 @@
  */
 package org.vfny.geoserver.wms.servlets;
 
+import java.util.Map;
+
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import java.util.Map;
 
 
 /**

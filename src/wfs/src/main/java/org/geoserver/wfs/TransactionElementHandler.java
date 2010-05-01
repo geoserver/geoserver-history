@@ -4,12 +4,15 @@
  */
 package org.geoserver.wfs;
 
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+
 import org.eclipse.emf.ecore.EObject;
 import org.geotools.data.FeatureStore;
-import java.util.Map;
-import javax.xml.namespace.QName;
 
 
 /**

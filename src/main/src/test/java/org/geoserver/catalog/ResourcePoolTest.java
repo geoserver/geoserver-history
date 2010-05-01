@@ -8,7 +8,6 @@ package org.geoserver.catalog;
 
 import java.io.IOException;
 
-import org.geoserver.catalog.ResourcePool.DataStoreCache;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.data.DataAccess;

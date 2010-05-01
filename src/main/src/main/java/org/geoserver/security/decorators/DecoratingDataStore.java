@@ -10,12 +10,12 @@ import java.util.List;
 import org.geoserver.catalog.impl.AbstractDecorator;
 import org.geotools.data.DataStore;
 import org.geotools.data.FeatureReader;
-import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureWriter;
 import org.geotools.data.LockingManager;
 import org.geotools.data.Query;
 import org.geotools.data.ServiceInfo;
 import org.geotools.data.Transaction;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.SchemaException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
@@ -47,12 +47,12 @@ public abstract class DecoratingDataStore extends AbstractDecorator<DataStore> i
         return delegate.getFeatureReader(query, transaction);
     }
 
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(Name typeName)
+    public SimpleFeatureSource getFeatureSource(Name typeName)
             throws IOException {
         return delegate.getFeatureSource(typeName);
     }
 
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getFeatureSource(String typeName)
+    public SimpleFeatureSource getFeatureSource(String typeName)
             throws IOException {
         return delegate.getFeatureSource(typeName);
     }
@@ -96,7 +96,7 @@ public abstract class DecoratingDataStore extends AbstractDecorator<DataStore> i
         return delegate.getTypeNames();
     }
 
-    public FeatureSource<SimpleFeatureType, SimpleFeature> getView(Query query) throws IOException,
+    public SimpleFeatureSource getView(Query query) throws IOException,
             SchemaException {
         return delegate.getView(query);
     }

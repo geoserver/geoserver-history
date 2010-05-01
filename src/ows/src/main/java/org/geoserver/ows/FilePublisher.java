@@ -7,7 +7,6 @@ package org.geoserver.ows;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

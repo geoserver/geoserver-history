@@ -14,7 +14,6 @@ import net.opengis.wfsv.GetVersionedFeatureType;
 import net.opengis.wfsv.WfsvFactory;
 
 import org.geotools.xml.AbstractComplexBinding;
-import org.geotools.xml.Binding;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
