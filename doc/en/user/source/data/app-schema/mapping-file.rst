@@ -133,6 +133,7 @@ The ``typeMappings`` section is the heart of the app-schema module. It defines t
 
     <typeMappings>
         <FeatureTypeMapping>
+            <mappingName>mappedfeature1</mappingName>
             <sourceDataStore>datastore</sourceDataStore>
             <sourceType>mappedfeature</sourceType>
             <targetElement>gsml:MappedFeature</targetElement>
@@ -140,6 +141,7 @@ The ``typeMappings`` section is the heart of the app-schema module. It defines t
                 <AttributeMapping>
                     ...
 
+* ``mappingName`` is an optional tag, to identify the mapping in :ref:`app-schema.feature-chaining` when there are multiple FeatureTypeMapping instances for the same type. This is solely for feature chaining purposes, and would not work for identifying top level features.
 * ``sourceDataStore`` must be an identifier you provided when you defined a source data store the ``sourceDataStores`` section.
 * ``sourceType`` is the simple feature type name. For example:
 

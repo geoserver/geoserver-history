@@ -291,7 +291,7 @@ Configure nesting on the "containing" feature type
 When nesting another complex type, you need to specify in your source expression: 
 
    * *OCQL*: OGC's Common Query Language expression of the data store column
-   * *linkElement*: the nested element name
+   * *linkElement*: the nested element name, which is the targetElement or mappingName
    * *linkField*: the indexed XPath attribute on the nested element that OCQL corresponds to
 
 **Example:** Nesting composition part in geologic unit feature.
@@ -355,6 +355,27 @@ In Geologic Unit mapping file::
 Run the getFeature request to test this configuration. Check that the nested features returned in Step 2 are appropriately lined inside the containing features. 
 If they are not there, or exceptions are thrown, scroll down and read the "Trouble Shooting" section.
 
+Multiple mappings of the same type
+----------------------------------
+At times, you may find the need to have different FeatureTypeMapping instances for the same type. 
+You may have two different attributes of the same type that need to be nested.
+For example, in gsml:GeologicUnit, you have gsml:exposureColor and gsml:outcropCharacter that are both of gsml:CGI_TermValue type.
+
+This is when the optional mappingName tag mentioned in :ref:`app-schema.mapping-file` comes in. 
+Instead of passing in the nested feature type's targetElement in the containing type's linkElement, specify the corresponding mappingName. 
+
+.. note::
+    * The mappingName is namespace aware and case sensitive.
+    * Each mappingName must be unique against other mappingName and targetElement tags across the application. 
+    * The mappingName is only to be used to identify the chained type from the nesting type. It is not a solution for multiple FeatureTypeMapping instances where > 1 of them can be queried as top level features. 
+    * When queried as a top level feature, the normal targetElement is to be used. Filters involving the nested type should still use the targetElement in the PropertyName part of the query. 
+    * You can't have more than 1 FeatureTypeMapping of the same type in the same mapping file if one of them is a top level feature. This is because featuretype.xml would look for the targetElement and wouldn't know which one to get. 
+      
+The solution for the last point above is to break them up into separate files and locations with only 1 featuretype.xml in the intended top level feature location. 
+E.g.
+    * You can have 2 FeatureTypeMapping instances in the same file for gsml:CGI_TermValue type since it's not a feature type. 
+    * You can have 2 FeatureTypeMapping instances for gsml:MappedFeature, but they have to be broken up into separate files. The one that can be queried as top level feature type would have featuretype.xml in its location. 
+
 Nesting simple properties
 -------------------------
 You don't need to chain multi-valued simple properties and map them separately. 
@@ -381,8 +402,8 @@ You may want to use feature chaining to set multi-valued properties by reference
 This is particularly handy to avoid endless loop in circular relationships. 
 For example, you may have a circular relationship between gsml:MappedFeature and gsml:GeologicUnit.  
 E.g.   
-* gsml:MappedFeature has gsml:GeologicUnit as gsml:specification
-* gsml:GeologicUnit has gsml:MappedFeature as gsml:occurrence
+    * gsml:MappedFeature has gsml:GeologicUnit as gsml:specification
+    * gsml:GeologicUnit has gsml:MappedFeature as gsml:occurrence
 Obviously you can only encode one side of the relationship, or you'll end up with an endless loop.
 You would need to pick one side to "chain" and use xlink:href for the other side of the relationship. 
 
