@@ -174,7 +174,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 					}
                 }
                 // retrieves the right feature writer (based on the geometry type of the feature)
-                HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(geo.getClass());
+                HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(ft.getDefaultGeometry().getClass());
                 // encodes a single feature, using the supplied style and the current featureWriter
                 featureWriter.writeFeature(ft,style,ftsList);    
                 ft = null;
