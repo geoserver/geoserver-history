@@ -34,4 +34,5 @@ Configuring an Image Mosaic JDBC data store
    :align: center
 
    *Configuring an Image Mosaic JDBC data store*
-  
+ 
+For a detailed description, look at the :doc:`Tutorial</tutorials/imagemosaic-jdbc/imagemosaic-jdbc_tutorial>`  
