@@ -1050,8 +1050,8 @@ Operations
      - XML,JSON
      - 
    * - DELETE
-     -
-     - 405
+     - Delete layer ``l``
+     - 200
      -
      -
 

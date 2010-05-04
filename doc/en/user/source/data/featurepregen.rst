@@ -32,3 +32,5 @@ Configuring a Pregeneralized Features data store
    :align: center
 
    *Configuring a Pregeneralized Features data store*
+
+For a detailed description, look at the :doc:`Tutorial</tutorials/feature-pregeneralized/feature-pregeneralized_tutorial>`

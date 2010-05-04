@@ -139,7 +139,13 @@ it. This style can viewed with a WMS GetMap request (http://localhost:8080/geose
 
 In this example a new style will be created and assigned to the layer 
 created in the previous example. The following creates a new style named
-``roads_style`` by uploading the file ``roads.sld``::
+``roads_style``::
+
+  curl -u admin:geoserver -XPOST -H 'Content-type: text/xml' \
+    -d '<style><name>roads_style</name><filename>roads.sld</filename></style>' 
+    http://localhost:8080/geoserver/rest/styles
+
+Uploading the file ``roads.sld``::
 
   curl -u admin:geoserver -XPUT -H 'Content-type: application/vnd.ogc.sld+xml' \
     -d @roads.sld http://localhost:8080/geoserver/rest/styles/roads_style
