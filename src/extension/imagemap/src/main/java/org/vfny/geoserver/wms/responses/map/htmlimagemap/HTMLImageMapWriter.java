@@ -69,7 +69,8 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(HTMLImageMapWriter.class.getPackage().getName());
 
     GeometryFactory gFac=new GeometryFactory();
-
+    
+    
     /** map of geometry class to writer */
     private Map<Class<?>,HTMLImageMapFeatureWriter> writers;
     
@@ -94,12 +95,14 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      * @throws ClassCastException 
      * @throws UnsupportedEncodingException 
      */
-    public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) throws UnsupportedEncodingException, ClassCastException {    	
-    	super(out,mapContext.getRequest()!=null ? mapContext.getRequest().getHttpServletRequest().getCharacterEncoding() : "UTF-8");
-    	
+    public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) throws UnsupportedEncodingException, ClassCastException {
+    	super(out, mapContext.getRequest()!=null && mapContext.getRequest().getFormatOptions().containsKey("encoding") ?
+    			mapContext.getRequest().getFormatOptions().get("encoding").toString() :(mapContext.getRequest()!=null ? mapContext.getRequest().getHttpServletRequest().getCharacterEncoding() : "UTF-8"));
+    			    	
         this.mapContext=mapContext;        
         mapEnv = mapContext.getAreaOfInterest();
         clippingBox=envToGeometry(mapEnv);
+        
         mapArea=new Rectangle(mapContext.getMapWidth(),mapContext.getMapHeight());
         worldToScreen=RendererUtilities.worldToScreenTransform(mapEnv, mapArea);
         initWriters();
@@ -174,7 +177,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 					}
                 }
                 // retrieves the right feature writer (based on the geometry type of the feature)
-                HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(geo.getClass());
+                HTMLImageMapFeatureWriter featureWriter = (HTMLImageMapFeatureWriter) writers.get(ft.getDefaultGeometry().getClass());
                 // encodes a single feature, using the supplied style and the current featureWriter
                 featureWriter.writeFeature(ft,style,ftsList);    
                 ft = null;
