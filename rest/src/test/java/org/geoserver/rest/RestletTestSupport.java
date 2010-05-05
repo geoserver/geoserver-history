@@ -28,7 +28,7 @@ import org.restlet.data.Response;
 import org.restlet.resource.InputRepresentation;
 import org.w3c.dom.Document;
 
-public class RestletTestSupport extends TestCase {
+public abstract class RestletTestSupport extends TestCase {
 
     protected XpathEngine xp;
     

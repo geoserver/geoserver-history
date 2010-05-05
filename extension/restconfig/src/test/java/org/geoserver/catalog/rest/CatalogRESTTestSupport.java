@@ -13,7 +13,7 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.test.GeoServerTestSupport;
 
-public class CatalogRESTTestSupport extends GeoServerTestSupport {
+public abstract class CatalogRESTTestSupport extends GeoServerTestSupport {
 
     protected Catalog catalog;
     protected XpathEngine xp;

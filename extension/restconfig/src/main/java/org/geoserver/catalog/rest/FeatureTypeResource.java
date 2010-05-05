@@ -4,6 +4,11 @@
  */
 package org.geoserver.catalog.rest;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
@@ -12,6 +17,9 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
+import org.geotools.data.DataStore;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -19,6 +27,7 @@ import org.restlet.data.Status;
 
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.vividsolutions.jts.geom.Geometry;
 
 public class FeatureTypeResource extends AbstractCatalogResource {
 
@@ -89,12 +98,38 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         }
         featureType.setEnabled(true);
         
+        // now, does the feature type exist? If not, create it
+        DataStoreInfo ds = catalog.getDataStoreByName( workspace, dataStore );
+        String typeName = featureType.getName();
+        if(featureType.getNativeName() != null) {
+            typeName = featureType.getNativeName(); 
+        } 
+        boolean typeExists = false;
+        DataStore gtds = (DataStore) ds.getDataStore(null);
+        for(String name : gtds.getTypeNames()) {
+            if(name.equals(typeName)) {
+                typeExists = true;
+                break;
+            }
+        }
+        if(!typeExists) {
+            gtds.createSchema(buildFeatureType(featureType));
+            // the attributes created might not match up 1-1 with the actual spec due to
+            // limitations of the data store, have it re-compute them
+            featureType.getAttributes().clear();
+            List<String> typeNames = Arrays.asList(gtds.getTypeNames());
+            // handle Oracle oddities
+            // TODO: use the incoming store capabilites API to better handle the name transformation
+            if(!typeNames.contains(typeName) && typeNames.contains(typeName.toUpperCase())) {
+                featureType.setNativeName(featureType.getName().toLowerCase());
+            }
+        }
+        
         CatalogBuilder cb = new CatalogBuilder(catalog);
         cb.initFeatureType( featureType );
         
         if ( featureType.getStore() == null ) {
             //get from requests
-            DataStoreInfo ds = catalog.getDataStoreByName( workspace, dataStore );
             featureType.setStore( ds );
         }
         
@@ -120,6 +155,39 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         
         LOGGER.info( "POST feature type" + dataStore + "," + featureType.getName() );
         return featureType.getName();
+    }
+    
+    SimpleFeatureType buildFeatureType(FeatureTypeInfo fti) {
+        // basic checks
+        if(fti.getName() == null) {
+            throw new RestletException("Trying to create new feature type inside the store, " +
+            		"but no feature type name was specified", Status.CLIENT_ERROR_BAD_REQUEST);
+        } else if(fti.getAttributes() == null || fti.getAttributes() == null) {
+            throw new RestletException("Trying to create new feature type inside the store, " +
+            		"but no attributes were specified", Status.CLIENT_ERROR_BAD_REQUEST);
+        }
+        
+        SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+        if(fti.getNativeName() != null) {
+            builder.setName(fti.getNativeName());
+        } else {
+            builder.setName(fti.getName());
+        }
+        if(fti.getNativeCRS() != null) {
+            builder.setCRS(fti.getNativeCRS());
+        } else if(fti.getCRS() != null) {
+            builder.setCRS(fti.getCRS());
+        } else if(fti.getSRS() != null) {
+            builder.setSRS(fti.getSRS());
+        }
+        for (AttributeTypeInfo ati : fti.getAttributes()) {
+            if(ati.getLength() != null && ati.getLength() > 0) {
+                builder.length(ati.getLength());
+            }
+            builder.nillable(ati.isNillable());
+            builder.add(ati.getName(), ati.getBinding());
+        }
+        return builder.buildFeatureType();
     }
 
     @Override
@@ -163,6 +231,7 @@ public class FeatureTypeResource extends AbstractCatalogResource {
 
     @Override
     protected void configurePersister(XStreamPersister persister, DataFormat format) {
+        persister.setHideFeatureTypeAttributes();
         persister.setCallback( new XStreamPersister.Callback() {
             @Override
             protected void postEncodeReference(Object obj, String ref,
@@ -175,6 +244,18 @@ public class FeatureTypeResource extends AbstractCatalogResource {
                     DataStoreInfo ds = (DataStoreInfo) obj;
                     encodeLink( "/workspaces/" + ds.getWorkspace().getName() + "/datastores/" + 
                         ds.getName(), writer );
+                }
+            }
+            
+            @Override
+            protected void postEncodeFeatureType(FeatureTypeInfo ft,
+                    HierarchicalStreamWriter writer, MarshallingContext context) {
+                try {
+                    writer.startNode("attributes");
+                    context.convertAnother(ft.attributes());
+                    writer.endNode();
+                } catch (IOException e) {
+                    throw new RuntimeException("Could not get native attributes", e);
                 }
             }
         });

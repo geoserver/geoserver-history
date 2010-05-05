@@ -47,12 +47,7 @@ public class NamespaceResource extends AbstractCatalogResource {
         
         LOGGER.fine( "GET namespace" + ns);
         
-        if ( "default".equals( ns ) ) {
-            return catalog.getDefaultNamespace();
-        }
-        else {
-            return catalog.getNamespaceByPrefix( ns );
-        }
+        return catalog.getNamespaceByPrefix( ns );
     }
 
     @Override

@@ -73,13 +73,7 @@ public class WorkspaceResource extends AbstractCatalogResource {
        
         LOGGER.fine( "GET workspace " + ws);
         
-        //if no workspace specified, return all
-        if ( "default".equals( ws ) ) {
-            return catalog.getDefaultWorkspace();
-        }
-        else {
-            return catalog.getWorkspaceByName( ws );
-        }
+       return catalog.getWorkspaceByName( ws );
     }
     
     @Override
@@ -120,8 +114,7 @@ public class WorkspaceResource extends AbstractCatalogResource {
         
         if ( "default".equals( ws ) ) {
             catalog.setDefaultWorkspace( workspace );
-        }
-        else {
+        } else {
             WorkspaceInfo original = catalog.getWorkspaceByName( ws );
             
             //ensure this is not a name change

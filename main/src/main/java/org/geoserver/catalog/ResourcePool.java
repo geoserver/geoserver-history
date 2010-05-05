@@ -402,7 +402,11 @@ public class ResourcePool {
         //first check the feature type itself
         //      workaround for GEOS-3294, upgrading from 2.0 data directory,
         //      simply ignore any stored attributes
-        if (info.getAttributes() != null && !info.getAttributes().isEmpty()) {
+        //      Also check if the bindings has been set, if it's not set it means we're reloading
+        //      an old set of attributes, by forcing them to be reloaded the binding and length
+        //      will be added into the info classes
+        if (info.getAttributes() != null && !info.getAttributes().isEmpty() 
+                && info.getAttributes().get(0).getBinding() != null) {
             return info.getAttributes();
         }
         
@@ -444,6 +448,11 @@ public class ResourcePool {
             att.setMinOccurs(pd.getMinOccurs());
             att.setMaxOccurs(pd.getMaxOccurs());
             att.setNillable(pd.isNillable());
+            att.setBinding(pd.getType().getBinding());
+            int length = FeatureTypes.getFieldLength((AttributeDescriptor) pd);
+            if(length > 0) {
+                att.setLength(length);
+            }
             attributes.add(att);
         }
         

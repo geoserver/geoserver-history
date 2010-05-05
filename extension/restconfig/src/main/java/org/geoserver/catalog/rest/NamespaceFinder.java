@@ -28,7 +28,7 @@ public class NamespaceFinder extends AbstractCatalogFinder {
         
         if ( namespace != null ) {
             //ensure it exists
-            if ( !"default".equals( namespace ) && catalog.getNamespaceByPrefix( namespace ) == null ) {
+            if ( catalog.getNamespaceByPrefix( namespace ) == null ) {
                 throw new RestletException( "No such namespace: " + namespace, Status.CLIENT_ERROR_NOT_FOUND );
             }
         }

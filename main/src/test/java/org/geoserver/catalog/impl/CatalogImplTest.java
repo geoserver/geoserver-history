@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.geoserver.catalog.Catalog;
 import junit.framework.TestCase;
 
 import org.geoserver.catalog.CatalogException;
@@ -149,11 +150,21 @@ public class CatalogImplTest extends TestCase {
     
     public void testGetNamespaceByPrefix() {
         catalog.add( ns );
+
         NamespaceInfo ns2 = catalog.getNamespaceByPrefix(ns.getPrefix());
-        
         assertNotNull(ns2);
         assertFalse( ns == ns2 );
         assertEquals( ns, ns2 );
+        
+        NamespaceInfo ns3 = catalog.getNamespaceByPrefix(null);
+        assertNotNull(ns3);
+        assertFalse( ns == ns3 );
+        assertEquals( ns, ns3 );
+        
+        NamespaceInfo ns4 = catalog.getNamespaceByPrefix(Catalog.DEFAULT);
+        assertNotNull(ns4);
+        assertFalse( ns == ns4 );
+        assertEquals( ns, ns4 );
     }
     
     public void testGetNamespaceByURI() {
@@ -277,7 +288,7 @@ public class CatalogImplTest extends TestCase {
         assertEquals( 1, catalog.getWorkspaces().size() );
         assertEquals(ws, catalog.getDefaultWorkspace());
     }
-
+    
     public void testRemoveDefaultWorkspace() {
         catalog.add( ws );        
         catalog.remove( ws );
@@ -294,6 +305,20 @@ public class CatalogImplTest extends TestCase {
         catalog.add( ns );        
         catalog.remove( ns );
         assertNull(catalog.getDefaultNamespace());
+    }
+    
+    public void testAutoSetDefaultStore() {
+        catalog.add(ws);
+        catalog.add(ds);
+        assertEquals(1, catalog.getDataStores().size());
+        assertEquals(ds, catalog.getDefaultDataStore(ws));
+    }
+    
+    public void testRemoveDefaultStore() {
+        catalog.add(ws);
+        catalog.add(ds);
+        catalog.remove(ds);
+        assertNull(catalog.getDefaultDataStore(ws));
     }
 
     public void testGetWorkspaceById() {
@@ -312,6 +337,16 @@ public class CatalogImplTest extends TestCase {
         assertNotNull(ws2);
         assertFalse( ws == ws2 );
         assertEquals( ws, ws2 );
+        
+        WorkspaceInfo ws3 = catalog.getWorkspaceByName(null);
+        assertNotNull(ws3);
+        assertFalse( ws == ws3 );
+        assertEquals( ws, ws3 );
+        
+        WorkspaceInfo ws4 = catalog.getWorkspaceByName(Catalog.DEFAULT);
+        assertNotNull(ws4);
+        assertFalse( ws == ws4 );
+        assertEquals( ws, ws4 );
     }
     
     public void testModifyWorkspace() {
@@ -437,12 +472,28 @@ public class CatalogImplTest extends TestCase {
     }
     
     public void testGetDataStoreByName() {
+        catalog.add( ws );
         catalog.add( ds );
         
         DataStoreInfo ds2 = catalog.getDataStoreByName(ds.getName());
         assertNotNull(ds2);
         assertFalse( ds == ds2 );
         assertEquals( ds, ds2 );
+        
+        DataStoreInfo ds3 = catalog.getDataStoreByName(ws, null);
+        assertNotNull(ds3);
+        assertFalse( ds == ds3 );
+        assertEquals( ds, ds3 );
+        
+        DataStoreInfo ds4 = catalog.getDataStoreByName(ws, Catalog.DEFAULT);
+        assertNotNull(ds4);
+        assertFalse( ds == ds4 );
+        assertEquals( ds, ds4 );
+        
+        DataStoreInfo ds5 = catalog.getDataStoreByName(Catalog.DEFAULT, Catalog.DEFAULT);
+        assertNotNull(ds5);
+        assertFalse( ds == ds5 );
+        assertEquals( ds, ds5 );
     }
     
     public void testModifyDataStore() {
@@ -488,15 +539,17 @@ public class CatalogImplTest extends TestCase {
         catalog.add( ds );
         assertEquals( 1, l.added.size() );
         assertEquals( ds, l.added.get(0).getSource() );
+        assertEquals( 1, l.modified.size() );
+        assertEquals( catalog, l.modified.get(0).getSource() );
         
         DataStoreInfo ds2 = catalog.getDataStoreByName( ds.getName() );
         ds2.setDescription( "changed" );
         
-        assertEquals( 0, l.modified.size() );
-        catalog.save( ds2 );
         assertEquals( 1, l.modified.size() );
+        catalog.save( ds2 );
+        assertEquals( 2, l.modified.size() );
         
-        CatalogModifyEvent me = l.modified.get(0);
+        CatalogModifyEvent me = l.modified.get(1);
         assertEquals( ds2, me.getSource() );
         assertEquals( 1, me.getPropertyNames().size() );
         assertEquals( "description", me.getPropertyNames().get(0));

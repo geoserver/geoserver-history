@@ -29,7 +29,7 @@ public class WorkspaceFinder extends AbstractCatalogFinder {
         
         if ( workspace != null ) {
             //ensure it exists
-            if ( !"default".equals( workspace) && catalog.getWorkspaceByName( workspace ) == null ) {
+            if ( catalog.getWorkspaceByName( workspace ) == null ) {
                 throw new RestletException( "No such workspace: " + workspace, Status.CLIENT_ERROR_NOT_FOUND );
             }
         }

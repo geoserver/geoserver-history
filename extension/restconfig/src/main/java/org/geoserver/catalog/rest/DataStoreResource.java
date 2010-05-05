@@ -44,8 +44,10 @@ public class DataStoreResource extends AbstractCatalogResource {
         String ws = getAttribute( "workspace" );
         String ds = getAttribute( "datastore" );
         
+        WorkspaceInfo wsInfo = catalog.getWorkspaceByName(ws);
+        
         LOGGER.fine( "GET data store " + ws + "," + ds );
-        return catalog.getDataStoreByName( ws, ds );
+        return catalog.getDataStoreByName( wsInfo, ds );
     }
 
     @Override

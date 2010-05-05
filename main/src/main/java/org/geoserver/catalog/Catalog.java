@@ -125,6 +125,11 @@ import org.opengis.feature.type.Name;
  * @author Justin Deoliveira, The Open Planning project
  */
 public interface Catalog extends CatalogInfo {
+    
+    /**
+     * The reserved keyword used to identify the default workspace or the default store
+     */
+    public static String DEFAULT = "default";
 
     /**
      * The factory used to create catalog objects.
@@ -166,7 +171,7 @@ public interface Catalog extends CatalogInfo {
     <T extends StoreInfo> T getStore(String id, Class<T> clazz);
 
     /**
-     * Returns the store with the specified name.
+     * Returns the store with the specified name. 
      * <p>
      * <tt>clazz</td> is used to determine the implementation of StoreInfo 
      * which should be returned. An example which would return a data store.
@@ -176,7 +181,8 @@ public interface Catalog extends CatalogInfo {
      *   getStoreByName(null,name,clazz);
      * </pre>
      * </p>
-     * @param name The name of the store.
+     * @param name The name of the store. The name can be {@code null} or {@link #DEFAULT} to
+     * retrieve the default store in the default workspace.
      * @param clazz The class of the store to return.
      * 
      * @return The store matching name, or <code>null</code> if no such store exists.
@@ -184,7 +190,7 @@ public interface Catalog extends CatalogInfo {
     <T extends StoreInfo> T getStoreByName(String name, Class<T> clazz);
 
     /**
-     * Returns the store with the specified name in the specified workspace.
+     * Returns the store with the specified name in the specified workspace. 
      * <p>
      * <tt>clazz</td> is used to determine the implementation of StoreInfo 
      * which should be returned. An example which would return a data store.
@@ -196,8 +202,10 @@ public interface Catalog extends CatalogInfo {
      * </code>
      * </pre>
      * </p>
-     * @param workspaceName The name of the workspace containing the store.
-     * @param name The name of the store.
+     * @param workspaceName The name of the workspace containing the store. The name can be {@code null} 
+     * or {@link #DEFAULT} to identify the default workspace.
+     * @param name The name of the store. The name can be 
+     * {@code null} or {@link #DEFAULT} to retrieve the default store in the specified workspace.
      * @param clazz The class of store to return.
      * 
      * @return The store matching name, or <code>null</code> if no such store e xists.
@@ -219,7 +227,8 @@ public interface Catalog extends CatalogInfo {
      * </pre>
      * </p>
      * @param workspace The workspace containing the store.
-     * @param name The name of the store.
+     * @param name The name of the store. The name can be {@code null} or {@link #DEFAULT} to
+     * retrieve the default store in the default workspace.
      * @param clazz The class of store to return.
      * 
      * @return The store matching name, or <code>null</code> if no such store exists.
@@ -374,6 +383,20 @@ public interface Catalog extends CatalogInfo {
      * </p>
      */
     List<DataStoreInfo> getDataStores();
+    
+    /**
+     * The default datastore for the specified workspace
+     * 
+     */
+    DataStoreInfo getDefaultDataStore(WorkspaceInfo workspace);
+
+    /**
+     * Sets the default data store in the specified workspace
+     * 
+     * @param workspace
+     * @param defaultStore
+     */
+    void setDefaultDataStore(WorkspaceInfo workspace, DataStoreInfo defaultStore);
 
     /**
      * Returns a coverage store matching a particular id, or <code>null</code>
@@ -1168,9 +1191,11 @@ public interface Catalog extends CatalogInfo {
     NamespaceInfo getNamespace(String id);
 
     /**
-     * Looks up a namespace by its prefix.
+     * Looks up a namespace by its prefix. 
      * 
      * @see NamespaceInfo#getPrefix()
+     * @param prefix The namespace prefix, or {@code null} or {@link #DEFAULT} to get the default 
+     * namespace
      */
     NamespaceInfo getNamespaceByPrefix(String prefix);
 
@@ -1249,6 +1274,7 @@ public interface Catalog extends CatalogInfo {
     /**
      * Returns a workspace by name, or <code>null</code> if no such workspace
      * exists.
+     * @param The name of the store, or null or {@link #DEFAULT} to get the default workspace
      */
     WorkspaceInfo getWorkspaceByName( String name );
     
