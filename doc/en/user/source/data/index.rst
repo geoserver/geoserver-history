@@ -50,6 +50,7 @@ Other data sources require the use of GeoServer extensions, extra downloads that
    gdal/
    imagepyramid/
    imagemosaicjdbc/
+   oraclegeoraster/
    connection-pooling/
    app-schema/index
 
