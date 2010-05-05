@@ -30,7 +30,6 @@ import org.geotools.data.simple.SimpleFeatureLocking;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.NameImpl;
-import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
@@ -160,14 +159,6 @@ public class RetypingDataStore implements DataStore {
 
     public LockingManager getLockingManager() {
         return wrapped.getLockingManager();
-    }
-
-    public SimpleFeatureSource getView(Query query) throws IOException,
-            SchemaException {
-        FeatureTypeMap map = getTypeMapBackwards(query.getTypeName(), true);
-        updateMap(map, false);
-        SimpleFeatureSource view = wrapped.getView(query);
-        return new RetypingFeatureSource(this, view, map);
     }
 
     /**

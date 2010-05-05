@@ -96,11 +96,6 @@ public abstract class DecoratingDataStore extends AbstractDecorator<DataStore> i
         return delegate.getTypeNames();
     }
 
-    public SimpleFeatureSource getView(Query query) throws IOException,
-            SchemaException {
-        return delegate.getView(query);
-    }
-
     public void updateSchema(Name typeName, SimpleFeatureType featureType) throws IOException {
         delegate.updateSchema(typeName, featureType);
     }
