@@ -4,7 +4,7 @@
  */
 package org.geoserver.catalog.rest;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -19,9 +19,11 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
+import org.opengis.feature.type.FeatureType;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.vividsolutions.jts.geom.MultiPolygon;
 
 public class FeatureTypeTest extends CatalogRESTTestSupport {
 
@@ -287,5 +289,49 @@ public class FeatureTypeTest extends CatalogRESTTestSupport {
       assertEquals( 201, response.getStatusCode() );
       assertNotNull( response.getHeader( "Location") );
       assertTrue( response.getHeader("Location").endsWith( "/workspaces/gs/datastores/ngpds/featuretypes/ngpdsa" ) );
+    }
+    
+    public void testCreateFeatureType() throws Exception {
+        String xml = "<featureType>\n" + 
+        		"  <name>states</name>\n" + 
+        		"  <nativeName>states</nativeName>\n" + 
+        		"  <namespace>\n" + 
+        		"    <name>cite</name>\n" + 
+        		"  </namespace>\n" + 
+        		"  <title>USA Population</title>\n" + 
+        		"  <srs>EPSG:4326</srs>\n" + 
+        		"  <attributes>\n" + 
+        		"    <attribute>\n" + 
+        		"      <name>the_geom</name>\n" + 
+        		"      <binding>com.vividsolutions.jts.geom.MultiPolygon</binding>\n" + 
+        		"    </attribute>\n" + 
+        		"    <attribute>\n" + 
+        		"      <name>STATE_NAME</name>\n" + 
+        		"      <binding>java.lang.String</binding>\n" + 
+        		"      <length>25</length>\n" + 
+        		"    </attribute>\n" + 
+        		"    <attribute>\n" + 
+        		"      <name>LAND_KM</name>\n" + 
+        		"      <binding>java.lang.Double</binding>\n" + 
+        		"    </attribute>\n" + 
+        		"  </attributes>\n" + 
+        		"</featureType>";
+        
+        MockHttpServletResponse response = 
+            postAsServletResponse("/rest/workspaces/cite/datastores/default/featuretypes", xml, "text/xml");
+        assertEquals( 201, response.getStatusCode() );
+        assertNotNull( response.getHeader( "Location") );
+        assertTrue( response.getHeader("Location").endsWith( "/workspaces/cite/datastores/default/featuretypes/states" ) );
+        
+        FeatureTypeInfo ft = catalog.getFeatureTypeByName("cite", "states");
+        assertNotNull(ft);
+        FeatureType schema = ft.getFeatureType();
+        assertEquals("states", schema.getName().getLocalPart());
+        assertEquals(catalog.getNamespaceByPrefix("cite").getURI(), schema.getName().getNamespaceURI());
+        assertEquals(3, schema.getDescriptors().size());
+        assertNotNull(schema.getDescriptor("the_geom"));
+        assertEquals(MultiPolygon.class, schema.getDescriptor("the_geom").getType().getBinding());
+        assertNotNull(schema.getDescriptor("LAND_KM"));
+        assertEquals(Double.class, schema.getDescriptor("LAND_KM").getType().getBinding());
     }
 }

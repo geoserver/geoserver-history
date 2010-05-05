@@ -67,6 +67,8 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     
     AjaxButton hiddenSubmit;
     
+    boolean sortable = true;
+    
     /**
      * An array of the selected items in the current page. Gets wiped out each
      * time the current page, the sorting or the filtering changes.
@@ -130,7 +132,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                     @Override
                     protected void populateItem(ListItem item) {
                         Property<T> property = (Property<T>) item.getModelObject();
-
+                        
                         Component component = getComponentForProperty("component", itemModel,
                                 property);
                         
@@ -170,7 +172,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
 
                 // build a sortable link if the property is sortable, a label otherwise
                 IModel titleModel = getPropertyTitle(property);
-                if (property.getComparator() != null) {
+                if (sortable && property.getComparator() != null) {
                     Fragment f = new Fragment("header", "sortableHeader", item);
                     AjaxLink link = sortLink(dataProvider, item);
                     link.add(new Label("label", titleModel));
@@ -192,10 +194,18 @@ public abstract class GeoServerTablePanel<T> extends Panel {
     }
     
     /**
+     * Whether this table will have sortable headers, or not 
+     * @param sortable
+     */
+    public void setSortable(boolean sortable) {
+        this.sortable = sortable;
+    }
+    
+    /**
      * Returns pager above the table
      * @return
      */
-    public Pager getTopPager() {
+    public Component getTopPager() {
         return navigatorTop;
     }
     
@@ -203,7 +213,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
      * Returns the pager below the table
      * @return
      */
-    public Pager getBottomPager() {
+    public Component getBottomPager() {
         return navigatorBottom;
     }
     

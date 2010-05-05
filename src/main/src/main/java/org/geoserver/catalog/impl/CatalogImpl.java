@@ -72,9 +72,14 @@ public class CatalogImpl implements Catalog {
     private static final Logger LOGGER = Logging.getLogger(CatalogImpl.class);
 
     /**
-     * stores
+     * Contains the stores keyed by implementation class
      */
     protected MultiHashMap/* <Class> */stores = new MultiHashMap();
+    
+    /**
+     * The default store keyed by workspace id
+     */
+    protected Map<String, DataStoreInfo> defaultStores = new HashMap<String, DataStoreInfo>();
 
     /**
      * resources
@@ -143,7 +148,13 @@ public class CatalogImpl implements Catalog {
 
         validate(store, true);
         resolve(store);
-        stores.put(store.getClass(), store);
+        synchronized (stores) {
+            stores.put(store.getClass(), store);
+            // if there is no default store use this one as the default
+            if(getDefaultDataStore(store.getWorkspace()) == null && store instanceof DataStoreInfo) {
+                setDefaultDataStore(store.getWorkspace(), (DataStoreInfo) store);
+            }
+        }
         added(store);
     }
 
@@ -168,7 +179,23 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Unable to delete non-empty store.");
         }
         store = unwrap(store);
-        stores.remove(store.getClass(),store);
+        
+        synchronized(stores) {
+            stores.remove(store.getClass(),store);
+            
+            WorkspaceInfo workspace = store.getWorkspace();
+            DataStoreInfo defaultStore = getDefaultDataStore(workspace);
+            if (store.equals(defaultStore)) {
+                defaultStores.remove(workspace.getId());
+                
+                // default removed, choose another store to become default if possible
+                List dstores = getDataStoresByWorkspace(workspace);
+                if (!dstores.isEmpty()) {
+                    setDefaultDataStore(workspace, (DataStoreInfo) dstores.get(0));
+                }
+            }
+        }
+        
         removed(store);
     }
 
@@ -225,6 +252,10 @@ public class CatalogImpl implements Catalog {
         
         if ( workspace == null ) {
             workspace = getDefaultWorkspace();
+        }
+        
+        if(name == null || name.equals(DEFAULT)) {
+            return (T) getDefaultDataStore(workspace);
         }
         
         List l = lookup(clazz, stores);
@@ -309,6 +340,35 @@ public class CatalogImpl implements Catalog {
 
     public List getDataStores() {
         return getStores(DataStoreInfo.class);
+    }
+    
+    public DataStoreInfo getDefaultDataStore(WorkspaceInfo workspace) {
+        if(defaultStores.containsKey(workspace.getId())) {
+            DataStoreInfo defaultStore = defaultStores.get(workspace.getId());
+            return ModificationProxy.create(defaultStore, DataStoreInfo.class);
+        } else {
+            return null;
+        }
+    }
+    
+    public void setDefaultDataStore(WorkspaceInfo workspace, DataStoreInfo store) {
+        // basic sanity check
+        if (store.getWorkspace() == null) {
+            throw new IllegalArgumentException("The store has not been assigned a workspace");
+        }
+
+        if (!store.getWorkspace().equals(workspace)) {
+            throw new IllegalArgumentException("Trying to mark as default " + "for workspace "
+                    + workspace.getName() + " a store that " + "is contained in "
+                    + store.getWorkspace().getName());
+        }
+        
+        DataStoreInfo old = defaultStores.get(workspace.getId());
+        defaultStores.put(workspace.getId(), store);
+        
+        //fire change event
+        fireModified(this, 
+            Arrays.asList("defaultDataStore"), Arrays.asList(old), Arrays.asList(store));
     }
 
     public CoverageStoreInfo getCoverageStore(String id) {
@@ -931,7 +991,7 @@ public class CatalogImpl implements Catalog {
     public List getNamespaces() {
         ArrayList<NamespaceInfo> ns = new ArrayList<NamespaceInfo>();
         for ( Map.Entry<String,NamespaceInfo> e : namespaces.entrySet() ) {
-            if ( e.getKey() == null ) 
+            if ( e.getKey() == null || e.getKey().equals(DEFAULT)) 
                 continue;
             ns.add( e.getValue() );
         }
@@ -945,12 +1005,8 @@ public class CatalogImpl implements Catalog {
         
         synchronized (namespaces) {
             namespaces.put(namespace.getPrefix(),namespace);
-            if ( namespaces.get( null ) == null ) {
-                namespaces.put( null, namespace );
-                
-                //fire the event
-                fireModified(this, Arrays.asList("defaultNamespace"), 
-                    Collections.singletonList(null), Arrays.asList(namespace));
+            if ( getDefaultNamespace() == null ) {
+                setDefaultNamespace(namespace);
             }
         }
         
@@ -960,6 +1016,10 @@ public class CatalogImpl implements Catalog {
     void validate(NamespaceInfo namespace, boolean isNew) {
         if ( isNull(namespace.getPrefix()) ) {
             throw new NullPointerException( "Namespace prefix must not be null");
+        }
+        
+        if(namespace.getPrefix().equals(DEFAULT)) {
+            throw new IllegalArgumentException(DEFAULT + " is a reserved keyword, can't be used as the namespace prefix");
         }
         
         NamespaceInfo existing = getNamespaceByPrefix( namespace.getPrefix() );
@@ -992,6 +1052,7 @@ public class CatalogImpl implements Catalog {
         NamespaceInfo defaultNamespace = getDefaultNamespace();
         if (namespace.equals(defaultNamespace)) {
             namespaces.remove(null);
+            namespaces.remove(DEFAULT);
         }
         
         namespaces.remove(namespace.getPrefix());
@@ -1028,6 +1089,7 @@ public class CatalogImpl implements Catalog {
         
         NamespaceInfo old = namespaces.get(null);
         namespaces.put( null, ns );
+        namespaces.put( DEFAULT, ns );
         
         //fire change event
         fireModified(this, 
@@ -1048,11 +1110,7 @@ public class CatalogImpl implements Catalog {
             workspaces.put( workspace.getName(), workspace );
             // if there is no default workspace use this one as the default
             if ( workspaces.get( null ) == null ) {
-                workspaces.put( null, workspace );
-                
-                //fire the event
-                fireModified(this, Arrays.asList("defaultWorkspace"), 
-                    Collections.singletonList(null), Arrays.asList(workspace));
+                setDefaultWorkspace(workspace);
             }
         }
         
@@ -1062,6 +1120,10 @@ public class CatalogImpl implements Catalog {
     void validate(WorkspaceInfo workspace, boolean isNew) {
         if ( isNull(workspace.getName()) ) {
             throw new NullPointerException( "workspace name must not be null");
+        }
+        
+        if(workspace.getName().equals(DEFAULT)) {
+            throw new IllegalArgumentException(DEFAULT + " is a reserved keyword, can't be used as the workspace name");
         }
         
         WorkspaceInfo existing = getWorkspaceByName( workspace.getName() );
@@ -1086,6 +1148,7 @@ public class CatalogImpl implements Catalog {
         WorkspaceInfo defaultWorkspace = getDefaultWorkspace();
         if (workspace.equals(defaultWorkspace)) {
             workspaces.remove(null);
+            workspaces.remove(DEFAULT);
             
             //default removed, choose another workspace to become default
             if (!workspaces.isEmpty()) {
@@ -1122,6 +1185,7 @@ public class CatalogImpl implements Catalog {
     public void setDefaultWorkspace(WorkspaceInfo workspace) {
         WorkspaceInfo old = workspaces.get(null);
         workspaces.put( null, workspace );
+        workspaces.put( "default", workspace );
         
         //fire change event
         fireModified(this, 
@@ -1133,7 +1197,7 @@ public class CatalogImpl implements Catalog {
         
         //strip out default namespace
         for ( Map.Entry<String, WorkspaceInfo> e : workspaces.entrySet() ) {
-            if ( e.getKey() == null ) {
+            if ( e.getKey() == null || e.getKey().equals(DEFAULT) ) {
                 continue;
             }
             
@@ -1257,6 +1321,7 @@ public class CatalogImpl implements Catalog {
     }
     public void dispose() {
         if ( stores != null ) stores.clear();
+        if ( defaultStores != null ) defaultStores.clear();
         if ( resources != null ) resources.clear();
         if ( namespaces != null ) namespaces.clear();
         if ( workspaces != null ) workspaces.clear();
@@ -1628,6 +1693,7 @@ public class CatalogImpl implements Catalog {
     
     public void sync( CatalogImpl other ) {
         stores = other.stores;
+        defaultStores = other.defaultStores;
         resources = other.resources;
         namespaces = other.namespaces;
         workspaces = other.workspaces;

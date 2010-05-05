@@ -25,6 +25,7 @@ public class DataStoreListResource extends AbstractCatalogListResource {
     protected DataFormat createHTMLFormat(Request request, Response response) {
         return new DataStoreHTMLFormat( request, response, this, catalog );
     }
+    
     @Override
     protected List handleListGet() throws Exception {
         String ws = getAttribute( "workspace" );

@@ -1000,4 +1000,12 @@ public class SecureCatalogImpl extends AbstractDecorator<Catalog> implements Cat
         delegate.accept(visitor);
     }
 
+    public DataStoreInfo getDefaultDataStore(WorkspaceInfo workspace) {
+        return checkAccess(user(), delegate.getDefaultDataStore(workspace));
+    }
+
+    public void setDefaultDataStore(WorkspaceInfo workspace, DataStoreInfo defaultStore) {
+        delegate.setDefaultDataStore(workspace, defaultStore);
+    }
+
 }

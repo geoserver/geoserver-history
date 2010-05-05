@@ -69,6 +69,7 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridGeometry2D;
+import org.geotools.feature.type.FeatureTypeImpl;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -190,7 +191,7 @@ public class XStreamPersister {
         SortableFieldKeySorter sorter = new SortableFieldKeySorter();
         sorter.registerFieldOrder( CatalogImpl.class, new String[]{ "workspaces", "namespaces", "stores", "styles", 
             /* these we actually omit, but the sorter needs them specified */
-            "layerGroups", "resources", "maps", "listeners", "layers",  "resourcePool", "resourceLoader", "LOGGER" } ); 
+            "layerGroups", "resources", "maps", "defaultStores", "listeners", "layers",  "resourcePool", "resourceLoader", "LOGGER" } ); 
         
         ReflectionProvider reflectionProvider = new CustomReflectionProvider( new FieldDictionary( sorter ) ); 
             //new Sun14ReflectionProvider( new FieldDictionary( sorter  ) ); 
@@ -364,6 +365,10 @@ public class XStreamPersister {
         xs.omitField( LayerInfoImpl.class, "id");
         xs.omitField(LayerGroupInfoImpl.class, "id" );
         xs.omitField(AttributeTypeInfoImpl.class, "id");
+    }
+    
+    public void setHideFeatureTypeAttributes() {
+        xs.omitField(FeatureTypeInfoImpl.class, "attributes");
     }
     
     /**

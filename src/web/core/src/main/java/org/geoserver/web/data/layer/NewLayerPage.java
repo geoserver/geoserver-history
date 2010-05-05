@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.PageParameters;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -57,6 +59,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
     private WebMarkupContainer selectLayersContainer;
     private WebMarkupContainer selectLayers;
     private Label storeName;
+    private WebMarkupContainer createTypeContainer;
     
     public NewLayerPage() {
         this(null);
@@ -124,8 +127,25 @@ public class NewLayerPage extends GeoServerSecuredPage {
         layers.setFilterVisible(true);
         
         selectLayers.add(layers);
+        
+        createTypeContainer = new WebMarkupContainer("createTypeContainer");
+        createTypeContainer.setVisible(false);
+        createTypeContainer.add(newFeatureTypeLink());
+        selectLayersContainer.add(createTypeContainer);
     }
     
+    Component newFeatureTypeLink() {
+        return new AjaxLink("createFeatureType") {
+            
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                DataStoreInfo ds = getCatalog().getStore(storeId, DataStoreInfo.class);
+                PageParameters pp = new PageParameters("wsName=" + ds.getWorkspace().getName() + ",storeName=" + ds.getName());
+                setResponsePage(NewFeatureTypePage.class, pp);                
+            }
+        };
+    }
+
     private DropDownChoice storesDropDown() {
         final DropDownChoice stores = new DropDownChoice("storesDropDown", new Model(),
                 new StoreListModel(), new StoreListChoiceRenderer());
@@ -136,6 +156,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
             protected void onUpdate(AjaxRequestTarget target) {
                 if (stores.getModelObject() != null) {
                     StoreInfo store = (StoreInfo) stores.getModelObject();
+                    NewLayerPage.this.storeId = store.getId();
                     provider.setStoreId(store.getId());
                     storeName.setModelObject(store.getName());
                     selectLayers.setVisible(true);
@@ -151,9 +172,14 @@ public class NewLayerPage extends GeoServerSecuredPage {
                         selectLayers.setVisible(false);
                     }
                     
+                    // at the moment just assume every store can create types
+                    // TODO: actually use some new caps code to support selective enabling
+                    createTypeContainer.setVisible(store instanceof DataStoreInfo);
+                    
                     
                 } else {
                     selectLayers.setVisible(false);
+                    createTypeContainer.setVisible(false);
                 }
                 target.addComponent(selectLayersContainer);
                 target.addComponent(feedbackPanel);
