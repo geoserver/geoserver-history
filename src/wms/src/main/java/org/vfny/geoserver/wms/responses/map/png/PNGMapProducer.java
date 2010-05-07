@@ -74,7 +74,7 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
         if (format.equalsIgnoreCase("image/png8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
         }
-
+	    
         float quality = (100 - wms.getPngCompression()) / 100.0f;
         new ImageWorker(image).writePNG(outStream, "FILTERED", quality, PNGNativeAcc.booleanValue(),
             image.getColorModel() instanceof IndexColorModel);
