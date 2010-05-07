@@ -222,8 +222,10 @@ The presence of ``linkElement`` and ``linkField`` change the meaning of ``source
     </sourceExpression>
 
 The feature type ``gsml:MappedFeature`` might be defined in another mapping file. The ``linkField`` can be ``FEATURE_LINK`` if you wish to relate the features by a property not exposed in XML.
-
 See :ref:`app-schema.feature-chaining` for a comprehensive discussion.
+
+For special cases, ``linkElement`` could be an OCQL function, and ``linkField`` could be omitted. 
+See :ref:`app-schema.polymorphism` for further information.
 
 
 targetAttributeNode (optional)

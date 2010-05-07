@@ -290,9 +290,11 @@ Configure nesting on the "containing" feature type
 ``````````````````````````````````````````````````
 When nesting another complex type, you need to specify in your source expression: 
 
-   * *OCQL*: OGC's Common Query Language expression of the data store column
-   * *linkElement*: the nested element name, which is the targetElement or mappingName
-   * *linkField*: the indexed XPath attribute on the nested element that OCQL corresponds to
+   * **OCQL**: OGC's Common Query Language expression of the data store column
+   * **linkElement**: 
+       * the nested element name, which is normally the targetElement or mappingName of the corresponding type.
+       * on some cases, it has to be an OCQL function (see :ref:`app-schema.polymorphism`)
+   * **linkField**: the indexed XPath attribute on the nested element that OCQL corresponds to
 
 **Example:** Nesting composition part in geologic unit feature.
 
