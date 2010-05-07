@@ -1,4 +1,4 @@
-.. _app-schema.polymorphism:
+..  _app-schema.polymorphism:
 
 Polymorphism
 ============

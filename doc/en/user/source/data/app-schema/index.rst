@@ -30,5 +30,6 @@ Contents
    property-interpolation
    data-stores
    feature-chaining
+   polymorphism
    data-access-integration
    tutorial
