@@ -326,6 +326,7 @@ public abstract class DefaultRasterMapProducer extends
         if (mapContext.getLayerCount() == 1 && mapContext.getAngle() == 0.0) {
             try {
                 RenderedImage image = directRasterRender(mapContext, 0);
+
                 if(image != null) {
                     this.image = image;
                     return;
@@ -335,6 +336,8 @@ public abstract class DefaultRasterMapProducer extends
             }
         }
 
+        
+        
         // we use the alpha channel if the image is transparent or if the meta tiler
         // is enabled, since apparently the Crop operation inside the meta-tiler
         // generates striped images in that case (see GEOS-
@@ -721,8 +724,6 @@ public abstract class DefaultRasterMapProducer extends
         AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) feature.getProperty("grid").getValue();
         Object params = feature.getProperty("params").getValue();
         
-        RenderedImage image = null;
-        
         // if there is a output tile size hint, use it, otherwise use the output size itself 
         final int tileSizeX; 
         final int tileSizeY;
@@ -784,10 +785,12 @@ public abstract class DefaultRasterMapProducer extends
                             bands, new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout));
                 } else {
                     // create a solid color empty image
-                    final GridCoverageRenderer gcr = new GridCoverageRenderer(mapContext.getCoordinateReferenceSystem(), 
+                    final GridCoverageRenderer gcr = new GridCoverageRenderer(
+                    		mapContext.getCoordinateReferenceSystem(), 
                             mapContext.getAreaOfInterest(), 
                             rasterArea,
-                            worldToScreen, null);
+                            worldToScreen, 
+                            null);
                     image = gcr.renderImage(coverage, symbolizer, interpolation, mapContext.getBgColor(), tileSizeX, tileSizeY);
                 }
             } finally {
@@ -803,7 +806,6 @@ public abstract class DefaultRasterMapProducer extends
         // check if we managed to process the coverage into an image
         if(image == null)
             return null;
-        
         // We need to find the background color expressed in terms of image color components
         // (which depends on the color model nature, the input and output transparency)
         // TODO: there must be a more general way to turn a color into the
@@ -827,8 +829,12 @@ public abstract class DefaultRasterMapProducer extends
                     bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
                 }
                 
-                if(bgColorIndex != -1)
-                    alphaChannels = new PlanarImage[] {new ImageWorker(image).forceComponentColorModel().retainLastBand().getPlanarImage()};
+                if(bgColorIndex != -1){
+                	final ImageWorker worker=new ImageWorker(image);
+                	worker.forceComponentColorModel();
+                	final RenderedImage alpha=worker.retainLastBand().getRenderedImage();
+                    alphaChannels = new PlanarImage[] {PlanarImage.wrapRenderedImage(alpha)};
+                }
             } else {
                 bgColorIndex = ColorUtilities.findColorIndex(bgColor, icm);
             }
@@ -836,8 +842,7 @@ public abstract class DefaultRasterMapProducer extends
             if(bgColorIndex == -1) {
                 // we need to expand the image to RGB 
                 image = new ImageWorker(image).forceComponentColorModel().getRenderedImage();
-                bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),
-                        bgColor.getBlue(), transparent ? 0 : 255 };
+                bgValues = new double[] { bgColor.getRed(), bgColor.getGreen(),bgColor.getBlue(), transparent ? 0 : 255 };
                 cm = image.getColorModel();
             } else {
                 bgValues = new double[] {bgColorIndex};
@@ -923,14 +928,16 @@ public abstract class DefaultRasterMapProducer extends
                     .getDataType()) } };
 
             // apply the mosaic
-            image = MosaicDescriptor.create(new RenderedImage[] { image },
-                    alphaChannels != null ? MosaicDescriptor.MOSAIC_TYPE_BLEND
-                                          : MosaicDescriptor.MOSAIC_TYPE_OVERLAY, 
-                alphaChannels, 
-                rois, 
-                thresholds, 
-                bgValues,
-                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,layout));
+            image = MosaicDescriptor.create(
+            		new RenderedImage[] { image },
+            		MosaicDescriptor.MOSAIC_TYPE_OVERLAY,//alphaChannels != null ? MosaicDescriptor.MOSAIC_TYPE_BLEND: MosaicDescriptor.MOSAIC_TYPE_OVERLAY, 
+	                alphaChannels, 
+	                rois, 
+	                thresholds, 
+	                bgValues,
+	                new RenderingHints(JAI.KEY_IMAGE_LAYOUT,layout));
+            
+            
         } else if(imageBounds.getWidth() > rasterArea.getWidth() || 
                   imageBounds.getHeight() > rasterArea.getHeight()) {
             // reduce the image to the actually required size
@@ -1041,6 +1048,7 @@ public abstract class DefaultRasterMapProducer extends
         
         return visitor.getRasterSymbolizers(); 
     }
+
     
     
 
