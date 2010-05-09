@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,11 +46,11 @@ import org.opengis.filter.Filter;
 public class RetypingDataStore implements DataStore {
     static final Logger LOGGER = Logging.getLogger(RetypingDataStore.class);
     
-    DataStore wrapped;
+    private DataStore wrapped;
 
-    Map forwardMap = new HashMap();
+    private volatile Map<String, FeatureTypeMap> forwardMap = new ConcurrentHashMap<String, FeatureTypeMap>();
 
-    Map backwardsMap = new HashMap();
+    private volatile Map<String, FeatureTypeMap> backwardsMap = new ConcurrentHashMap<String, FeatureTypeMap>();
 
     public RetypingDataStore(DataStore wrapped) throws IOException {
         this.wrapped = wrapped;
@@ -113,20 +114,28 @@ public class RetypingDataStore implements DataStore {
         // don't contain stale elements
         String[] names = wrapped.getTypeNames();
         String[] transformedNames = new String[names.length];
-        Map backup = new HashMap(forwardMap);
-        forwardMap.clear();
-        backwardsMap.clear();
+        Map<String, FeatureTypeMap> backup = new HashMap<String, FeatureTypeMap>(forwardMap);
+        
+        // Populate local hashmaps with new values.
+        Map<String, FeatureTypeMap> forwardMapLocal = new ConcurrentHashMap<String, FeatureTypeMap>();
+        Map<String, FeatureTypeMap> backwardsMapLocal = new ConcurrentHashMap<String, FeatureTypeMap>();
+        
         for (int i = 0; i < names.length; i++) {
             String original = names[i];
             transformedNames[i] = transformFeatureTypeName(original);
 
-            FeatureTypeMap map = (FeatureTypeMap) backup.get(original);
+            FeatureTypeMap map = backup.get(original);
             if (map == null) {
                 map = new FeatureTypeMap(original, transformedNames[i]);
             }
-            forwardMap.put(map.getOriginalName(), map);
-            backwardsMap.put(map.getName(), map);
+            forwardMapLocal.put(map.getOriginalName(), map);
+            backwardsMapLocal.put(map.getName(), map);
         }
+        
+        // Replace the member variables.
+        forwardMap = forwardMapLocal;
+        backwardsMap = backwardsMapLocal;
+        
         return transformedNames;
     }
 
