@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.ows.HttpServletRequestAware;
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.ows.util.KvpUtils;
@@ -305,12 +306,21 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                             }
                         }
                     } else if(o instanceof LayerInfo){
-                        style = oldStyles.size() > 0? oldStyles.get(i) : null;
-                        if (style != null){
+                        style = oldStyles.size() > 0 ? oldStyles.get(i) : null;
+                        if (style != null) {
                             newStyles.add(style);
-                        }else{
-                            StyleInfo defaultStyle = ((LayerInfo)o).getDefaultStyle();
-                            newStyles.add(defaultStyle.getStyle());
+                        } else {
+                            LayerInfo layer = (LayerInfo) o;
+                            if(layer.getResource() instanceof WMSLayerInfo) {
+                                // NamedStyle is a subclass of Style -> we use it as a way to convey
+                                // cascaded WMS layer styles
+                                NamedStyle namedStyle = CommonFactoryFinder.getStyleFactory(null).createNamedStyle();
+                                namedStyle.setName(null);
+                                newStyles.add(namedStyle);
+                            } else {
+                                StyleInfo defaultStyle = ((LayerInfo)o).getDefaultStyle();
+                                newStyles.add(defaultStyle.getStyle());
+                            }
                         }
                         // add filter if needed
                         if(filters != null)
