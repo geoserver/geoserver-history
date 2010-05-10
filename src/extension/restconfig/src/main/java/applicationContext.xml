@@ -70,6 +70,10 @@
           <value>coverageStoreFinder</value>
         </entry>
         <entry>
+          <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}.{format}</value></key>
+          <value>wmsStoreFinder</value>
+        </entry>
+        <entry>
           <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}</value></key>
           <value>wmsStoreFinder</value>
         </entry>
@@ -238,6 +242,7 @@
   <bean id="namespaceFinder" class="org.geoserver.catalog.rest.NamespaceFinder" parent="abstractCatalogFinder"/>
   <bean id="dataStoreFinder" class="org.geoserver.catalog.rest.DataStoreFinder" parent="abstractCatalogFinder"/>
   <bean id="coverageStoreFinder" class="org.geoserver.catalog.rest.CoverageStoreFinder" parent="abstractCatalogFinder"/>
+  <bean id="wmsStoreFinder" class="org.geoserver.catalog.rest.WMSStoreFinder" parent="abstractCatalogFinder"/>
   <bean id="storeFileFinder" class="org.geoserver.catalog.rest.StoreFileFinder" parent="abstractCatalogFinder"/>
   <bean id="featureTypeFinder" class="org.geoserver.catalog.rest.FeatureTypeFinder" parent="abstractCatalogFinder"/>
   <bean id="coverageFinder" class="org.geoserver.catalog.rest.CoverageFinder" parent="abstractCatalogFinder"/>

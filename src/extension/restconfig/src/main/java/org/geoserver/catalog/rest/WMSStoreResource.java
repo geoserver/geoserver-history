@@ -131,7 +131,7 @@ public class WMSStoreResource extends AbstractCatalogResource {
         persister.setCallback( 
             new XStreamPersister.Callback() {
                 @Override
-                protected void postEncodeDataStore(DataStoreInfo ds,
+                protected void postEncodeWMSStore(WMSStoreInfo ds,
                         HierarchicalStreamWriter writer,
                         MarshallingContext context) {
                     //add a link to the wms layers
