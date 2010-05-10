@@ -22,6 +22,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.CatalogImpl;
@@ -283,7 +284,7 @@ public class XStreamPersisterTest extends TestCase {
         WorkspaceInfo ws = cFactory.createWorkspace();
         ws.setName( "foo" );
         
-        WMSStoreInfo wms1 = cFactory.createWebMapService();
+        WMSStoreInfo wms1 = cFactory.createWebMapServer();
         wms1.setName( "bar" );
         wms1.setWorkspace( ws );
         wms1.setCapabilitiesURL( "http://fake.host/wms?request=GetCapabilities&service=wms");
@@ -422,6 +423,52 @@ public class XStreamPersisterTest extends TestCase {
         assertEquals( ns, ft.getNamespace() );
         assertEquals( "EPSG:4326", ft.getSRS() );
         assertTrue( CRS.equalsIgnoreMetadata( CRS.decode( "EPSG:4326"), ft.getNativeCRS() ) ); 
+    }
+    
+    public void testWMSLayer() throws Exception {
+        Catalog catalog = new CatalogImpl();
+        CatalogFactory cFactory = catalog.getFactory();
+        
+        WorkspaceInfo ws = cFactory.createWorkspace();
+        ws.setName( "foo" );
+        catalog.add( ws );
+        
+        NamespaceInfo ns = cFactory.createNamespace();
+        ns.setPrefix( "acme" );
+        ns.setURI( "http://acme.org" );
+        catalog.add( ns );
+        
+        WMSStoreInfo wms = cFactory.createWebMapServer();
+        wms.setWorkspace( ws );
+        wms.setName( "foo" );
+        wms.setCapabilitiesURL( "http://fake.host/wms?request=getCapabilities");
+        catalog.add( wms );
+        
+        WMSLayerInfo wl = cFactory.createWMSLayer();
+        wl.setStore( wms );
+        wl.setNamespace( ns );
+        wl.setName( "wmsLayer" );
+        wl.setAbstract( "abstract");
+        wl.setSRS( "EPSG:4326");
+        wl.setNativeCRS( CRS.decode( "EPSG:4326") );
+        
+        ByteArrayOutputStream out = out();
+        persister.save( wl, out );
+        
+        // System.out.println( new String(out.toByteArray()) );
+        
+        persister.setCatalog( catalog );
+        wl = persister.load( in( out ), WMSLayerInfo.class );
+        assertNotNull( wl );
+        
+        assertEquals( "wmsLayer", wl.getName() );
+        assertEquals( wms, wl.getStore() );
+        assertEquals( ns, wl.getNamespace() );
+        assertEquals( "EPSG:4326", wl.getSRS() );
+        assertTrue( CRS.equalsIgnoreMetadata( CRS.decode( "EPSG:4326"), wl.getNativeCRS() ) );
+        
+        Document dom = dom( in( out ) );
+        assertEquals( "wmsLayer", dom.getDocumentElement().getNodeName() );
     }
     
     public void testLayer() throws Exception {

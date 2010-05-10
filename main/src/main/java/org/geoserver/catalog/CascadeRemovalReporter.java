@@ -157,6 +157,10 @@ public class CascadeRemovalReporter implements CatalogVisitor {
     public void visit(CoverageInfo coverage) {
         add(coverage, ModificationType.DELETE);
     }
+    
+    public void visit(WMSLayerInfo wmsLayer) {
+        add(wmsLayer, ModificationType.DELETE);
+    }
 
     public void visit(LayerInfo layer) {
         // mark layer and resource as removed

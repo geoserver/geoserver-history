@@ -56,4 +56,8 @@ public class CatalogVisitorAdapter implements CatalogVisitor {
     public void visit( StyleInfo style ) {
         
     }
+
+    public void visit(WMSLayerInfo wmsLayerInfoImpl) {
+                
+    }
 }

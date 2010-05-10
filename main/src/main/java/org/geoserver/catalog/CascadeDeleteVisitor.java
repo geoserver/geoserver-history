@@ -168,4 +168,9 @@ public class CascadeDeleteVisitor implements CatalogVisitor {
         catalog.remove(layerGroup);
     }
 
+    public void visit(WMSLayerInfo wmsLayer) {
+        catalog.remove(wmsLayer);
+        
+    }
+
 }

@@ -4,6 +4,8 @@
  */
 package org.geoserver.catalog;
 
+import org.geoserver.catalog.impl.WMSLayerInfoImpl;
+
 /**
  * Visitor for catalog objects.
  * 
@@ -38,7 +40,7 @@ public interface CatalogVisitor {
     void visit( CoverageStoreInfo coverageStore );
     
     /**
-     * Visits a data store.
+     * Visits a WMS data store.
      */
     void visit( WMSStoreInfo wmsStore ); 
 
@@ -66,4 +68,10 @@ public interface CatalogVisitor {
      * Visits a layer group..
      */
     void visit( LayerGroupInfo layerGroup );
+
+    /**
+     * Visits a WMS layer resource
+     * @param wmsLayerInfoImpl
+     */
+    void visit(WMSLayerInfo wmsLayer);
 }
