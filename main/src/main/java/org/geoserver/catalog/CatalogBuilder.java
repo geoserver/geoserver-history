@@ -856,6 +856,7 @@ public class CatalogBuilder {
             wli.setSRS("EPSG:4326");
             wli.setNativeCRS(DefaultGeographicCRS.WGS84);
         }
+        wli.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         
         // try to grab the envelope
         GeneralEnvelope envelope = layer.getEnvelope(wli.getNativeCRS());
