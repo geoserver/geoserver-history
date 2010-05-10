@@ -1,5 +1,5 @@
 <#include "head.ftl">
-Feature Type "${properties.name}"
+WMS Layer "${properties.name}"
 
 <ul>
   <li>Name: ${properties.name}</li>

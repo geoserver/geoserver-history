@@ -66,34 +66,36 @@ import com.vividsolutions.jts.geom.Polygon;
 /**
  * Builder class which provides convenience methods for interacting with the catalog.
  * <p>
- * Warning: this class is stateful, and is not meant to be accessed by multiple threads
- * and should not be an member variable of another class.
+ * Warning: this class is stateful, and is not meant to be accessed by multiple threads and should
+ * not be an member variable of another class.
  * </p>
+ * 
  * @author Justin Deoliveira, OpenGEO
- *
+ * 
  */
 public class CatalogBuilder {
-    
+
     static final Logger LOGGER = Logging.getLogger(CatalogBuilder.class);
 
     /**
      * the catalog
      */
     Catalog catalog;
-    
+
     /**
      * the current workspace
      */
     WorkspaceInfo workspace;
+
     /**
      * the current store
      */
     StoreInfo store;
-    
-    public CatalogBuilder( Catalog catalog ) {
+
+    public CatalogBuilder(Catalog catalog) {
         this.catalog = catalog;
     }
-    
+
     /**
      * Sets the workspace to be used when creating store objects.
      */
@@ -104,156 +106,186 @@ public class CatalogBuilder {
     /**
      * Sets the store to be used when creating resource objects.
      */
-    public void setStore( StoreInfo store ) {
+    public void setStore(StoreInfo store) {
         this.store = store;
     }
-    
+
     /**
      * Updates a workspace with the properties of another.
      * 
-     * @param original The workspace being updated.
-     * @param update The workspace containing the new values.
+     * @param original
+     *            The workspace being updated.
+     * @param update
+     *            The workspace containing the new values.
      */
-    public void updateWorkspace( WorkspaceInfo original, WorkspaceInfo update ) {
-        update(original,update,WorkspaceInfo.class);
+    public void updateWorkspace(WorkspaceInfo original, WorkspaceInfo update) {
+        update(original, update, WorkspaceInfo.class);
     }
-    
 
     /**
      * Updates a namespace with the properties of another.
      * 
-     * @param original The namespace being updated.
-     * @param update The namespace containing the new values.
+     * @param original
+     *            The namespace being updated.
+     * @param update
+     *            The namespace containing the new values.
      */
-    public void updateNamespace( NamespaceInfo original, NamespaceInfo update ) {
-        update(original,update,NamespaceInfo.class);
+    public void updateNamespace(NamespaceInfo original, NamespaceInfo update) {
+        update(original, update, NamespaceInfo.class);
     }
-    
+
     /**
      * Updates a datastore with the properties of another.
      * 
-     * @param original The datastore being updated.
-     * @param update The datastore containing the new values.
+     * @param original
+     *            The datastore being updated.
+     * @param update
+     *            The datastore containing the new values.
      */
-    public void updateDataStore( DataStoreInfo original, DataStoreInfo update ) {
-        update( original, update, DataStoreInfo.class );
+    public void updateDataStore(DataStoreInfo original, DataStoreInfo update) {
+        update(original, update, DataStoreInfo.class);
     }
-    
+
     /**
      * Updates a wms store with the properties of another.
      * 
-     * @param original The wms store being updated.
-     * @param update The wms store containing the new values.
+     * @param original
+     *            The wms store being updated.
+     * @param update
+     *            The wms store containing the new values.
      */
-    public void updateWMSStore( WMSStoreInfo original, WMSStoreInfo update ) {
-        update( original, update, WMSStoreInfo.class );
+    public void updateWMSStore(WMSStoreInfo original, WMSStoreInfo update) {
+        update(original, update, WMSStoreInfo.class);
     }
-    
+
     /**
      * Updates a coveragestore with the properties of another.
      * 
-     * @param original The coveragestore being updated.
-     * @param update The coveragestore containing the new values.
+     * @param original
+     *            The coveragestore being updated.
+     * @param update
+     *            The coveragestore containing the new values.
      */
-    public void updateCoverageStore( CoverageStoreInfo original, CoverageStoreInfo update ) {
-        update( original, update, CoverageStoreInfo.class );
+    public void updateCoverageStore(CoverageStoreInfo original, CoverageStoreInfo update) {
+        update(original, update, CoverageStoreInfo.class);
     }
-    
+
     /**
      * Updates a feature type with the properties of another.
      * 
-     * @param original The feature type being updated.
-     * @param update The feature type containing the new values.
+     * @param original
+     *            The feature type being updated.
+     * @param update
+     *            The feature type containing the new values.
      */
-    public void updateFeatureType( FeatureTypeInfo original, FeatureTypeInfo update ) {
-        update( original, update, FeatureTypeInfo.class );
+    public void updateFeatureType(FeatureTypeInfo original, FeatureTypeInfo update) {
+        update(original, update, FeatureTypeInfo.class);
     }
-    
+
     /**
      * Updates a coverage with the properties of another.
      * 
-     * @param original The coverage being updated.
-     * @param update The coverage containing the new values.
+     * @param original
+     *            The coverage being updated.
+     * @param update
+     *            The coverage containing the new values.
      */
-    public void updateCoverage( CoverageInfo original, CoverageInfo update ) {
-        update( original, update, CoverageInfo.class );
+    public void updateCoverage(CoverageInfo original, CoverageInfo update) {
+        update(original, update, CoverageInfo.class);
     }
-    
+
+    /**
+     * Updates a WMS layer with the properties of another.
+     * 
+     * @param original
+     *            The wms layer being updated.
+     * @param update
+     *            The wms layer containing the new values.
+     */
+    public void updateWMSLayer(WMSLayerInfo original, WMSLayerInfo update) {
+        update(original, update, WMSLayerInfo.class);
+    }
+
     /**
      * Updates a layer with the properties of another.
      * 
-     * @param original The layer being updated.
-     * @param update The layer containing the new values.
+     * @param original
+     *            The layer being updated.
+     * @param update
+     *            The layer containing the new values.
      */
-    public void updateLayer( LayerInfo original, LayerInfo update ) {
-        update( original, update, LayerInfo.class );
+    public void updateLayer(LayerInfo original, LayerInfo update) {
+        update(original, update, LayerInfo.class);
     }
-    
+
     /**
      * Updates a layer group with the properties of another.
      * 
-     * @param original The layer group being updated.
-     * @param update The layer group containing the new values.
+     * @param original
+     *            The layer group being updated.
+     * @param update
+     *            The layer group containing the new values.
      */
-    public void updateLayerGroup( LayerGroupInfo original, LayerGroupInfo update ) {
-        update( original, update, LayerGroupInfo.class );
+    public void updateLayerGroup(LayerGroupInfo original, LayerGroupInfo update) {
+        update(original, update, LayerGroupInfo.class);
     }
-    
+
     /**
      * Updates a style with the properties of another.
      * 
-     * @param original The style being updated.
-     * @param update The style containing the new values.
+     * @param original
+     *            The style being updated.
+     * @param update
+     *            The style containing the new values.
      */
-    public void updateStyle( StyleInfo original, StyleInfo update ) {
-        update( original, update, StyleInfo.class );
+    public void updateStyle(StyleInfo original, StyleInfo update) {
+        update(original, update, StyleInfo.class);
     }
-    
+
     /**
-     * Update method which uses reflection to grab property values from one 
-     * object and set them on another.
+     * Update method which uses reflection to grab property values from one object and set them on
+     * another.
      * <p>
      * Null values from the <tt>update</tt> object are ignored.
      * </p>
      */
-    <T> void update( T original, T update, Class<T> clazz ) {
-        ClassProperties properties = OwsUtils.getClassProperties( clazz );
-        for ( String p : properties.properties() ) {
-            Method getter = properties.getter( p, null );
-            if ( getter == null ) {
+    <T> void update(T original, T update, Class<T> clazz) {
+        ClassProperties properties = OwsUtils.getClassProperties(clazz);
+        for (String p : properties.properties()) {
+            Method getter = properties.getter(p, null);
+            if (getter == null) {
                 continue; // should not really happen
             }
-            
+
             Class type = getter.getReturnType();
-            Method setter = properties.setter( p, type );
-            
-            //do a check for read only before calling the getter to avoid an uneccesary call
-            if ( setter == null && 
-                    !(Collection.class.isAssignableFrom( type ) || Map.class.isAssignableFrom( type ))) {
-                //read only
+            Method setter = properties.setter(p, type);
+
+            // do a check for read only before calling the getter to avoid an uneccesary call
+            if (setter == null
+                    && !(Collection.class.isAssignableFrom(type) || Map.class
+                            .isAssignableFrom(type))) {
+                // read only
                 continue;
             }
-            
+
             try {
-                Object newValue = getter.invoke( update, null );
-                if( newValue == null ) {
+                Object newValue = getter.invoke(update, null);
+                if (newValue == null) {
                     continue;
-                    //TODO: make this a flag whether to overwrite with null values
+                    // TODO: make this a flag whether to overwrite with null values
                 }
-                if ( setter == null ){
-                    if ( Collection.class.isAssignableFrom( type ) ) {
-                        updateCollectionProperty( original, (Collection) newValue, getter );
-                    }
-                    else if ( Map.class.isAssignableFrom( type ) ) {
-                        updateMapProperty( original, (Map) newValue, getter );
+                if (setter == null) {
+                    if (Collection.class.isAssignableFrom(type)) {
+                        updateCollectionProperty(original, (Collection) newValue, getter);
+                    } else if (Map.class.isAssignableFrom(type)) {
+                        updateMapProperty(original, (Map) newValue, getter);
                     }
                     continue;
                 }
 
-                setter.invoke( original, newValue );
-            } 
-            catch( Exception e ) {
-                throw new RuntimeException( e );
+                setter.invoke(original, newValue);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
     }
@@ -261,129 +293,129 @@ public class CatalogBuilder {
     /**
      * Helper method for updating a collection based property.
      */
-    void updateCollectionProperty( Object object, Collection newValue, Method getter ) throws Exception {
-        Collection oldValue = (Collection) getter.invoke( object, null );
+    void updateCollectionProperty(Object object, Collection newValue, Method getter)
+            throws Exception {
+        Collection oldValue = (Collection) getter.invoke(object, null);
         oldValue.clear();
-        oldValue.addAll( newValue );
+        oldValue.addAll(newValue);
     }
 
     /**
      * Helper method for updating a map based property.
      */
 
-    void updateMapProperty( Object object, Map newValue, Method getter ) throws Exception {
+    void updateMapProperty(Object object, Map newValue, Method getter) throws Exception {
         Map oldValue = (Map) getter.invoke(object, null);
         oldValue.clear();
-        oldValue.putAll( newValue );
+        oldValue.putAll(newValue);
     }
 
     /**
      * Builds a new data store.
      */
-    public DataStoreInfo buildDataStore( String name ) {
+    public DataStoreInfo buildDataStore(String name) {
         DataStoreInfo info = catalog.getFactory().createDataStore();
-        buildStore(info,name);
-            
+        buildStore(info, name);
+
         return info;
     }
-    
+
     /**
      * Builds a new coverage store.
      */
-    public CoverageStoreInfo buildCoverageStore( String name ) {
+    public CoverageStoreInfo buildCoverageStore(String name) {
         CoverageStoreInfo info = catalog.getFactory().createCoverageStore();
-        buildStore(info,name);
-            
+        buildStore(info, name);
+
         return info;
     }
-    
+
     /**
      * Builds a new WMS store
      */
-    public WMSStoreInfo buildWMSStore( String name ) throws IOException {
+    public WMSStoreInfo buildWMSStore(String name) throws IOException {
         WMSStoreInfo info = catalog.getFactory().createWebMapServer();
-        buildStore(info,name);
+        buildStore(info, name);
         info.setType("WMS");
-            
+
         return info;
     }
-    
+
     /**
      * Builds a store.
      * <p>
-     * The workspace of the resulting store is {@link #workspace} if set, else the 
-     * default workspace from the catalog.
+     * The workspace of the resulting store is {@link #workspace} if set, else the default workspace
+     * from the catalog.
      * </p>
      */
-    void buildStore( StoreInfo info, String name ) {
+    void buildStore(StoreInfo info, String name) {
 
-        info.setName( name );
-        info.setEnabled( true );
-        
-        //set workspace, falling back on default if none specified
-        if ( workspace != null ) {
-            info.setWorkspace( workspace );
-        }
-        else {
-            info.setWorkspace( catalog.getDefaultWorkspace() );
+        info.setName(name);
+        info.setEnabled(true);
+
+        // set workspace, falling back on default if none specified
+        if (workspace != null) {
+            info.setWorkspace(workspace);
+        } else {
+            info.setWorkspace(catalog.getDefaultWorkspace());
         }
     }
-    
-    
+
     /**
      * Builds a {@link FeatureTypeInfo} from the current datastore and the specified type name
      * <p>
-     * The resulting object is not added to the catalog, it must be done by the calling code
-     * after the fact.
+     * The resulting object is not added to the catalog, it must be done by the calling code after
+     * the fact.
      * </p>
      */
-    public FeatureTypeInfo buildFeatureType( Name typeName ) throws Exception {
-        if ( store == null || !( store instanceof DataStoreInfo ) ) {
-            throw new IllegalStateException( "Data store not set.");
+    public FeatureTypeInfo buildFeatureType(Name typeName) throws Exception {
+        if (store == null || !(store instanceof DataStoreInfo)) {
+            throw new IllegalStateException("Data store not set.");
         }
-        
+
         DataStoreInfo dstore = (DataStoreInfo) store;
         return buildFeatureType(dstore.getDataStore(null).getFeatureSource(typeName));
     }
-    
+
     /**
      * Builds a feature type from a geotools feature source. The resulting {@link FeatureTypeInfo}
-     * will still miss the bounds and might miss the SRS. Use {@link #lookupSRS(FeatureTypeInfo, true)} and
-     * {@link #setupBounds(FeatureTypeInfo)} if you want to force them in (and spend time accordingly)
+     * will still miss the bounds and might miss the SRS. Use {@link #lookupSRS(FeatureTypeInfo,
+     * true)} and {@link #setupBounds(FeatureTypeInfo)} if you want to force them in (and spend time
+     * accordingly)
      * <p>
-     * The resulting object is not added to the catalog, it must be done by the calling code
-     * after the fact.
+     * The resulting object is not added to the catalog, it must be done by the calling code after
+     * the fact.
      * </p>
      */
-    public FeatureTypeInfo buildFeatureType( FeatureSource featureSource )  {
-        if ( store == null || !( store instanceof DataStoreInfo ) ) {
-            throw new IllegalStateException( "Data store not set.");
+    public FeatureTypeInfo buildFeatureType(FeatureSource featureSource) {
+        if (store == null || !(store instanceof DataStoreInfo)) {
+            throw new IllegalStateException("Data store not set.");
         }
-        
+
         FeatureType featureType = featureSource.getSchema();
-        
+
         FeatureTypeInfo ftinfo = catalog.getFactory().createFeatureType();
-        ftinfo.setStore( store );
+        ftinfo.setStore(store);
         ftinfo.setEnabled(true);
-        
-        //naming
-        ftinfo.setNativeName( featureType.getName().getLocalPart() );
-        ftinfo.setName( featureType.getName().getLocalPart() );
-        
+
+        // naming
+        ftinfo.setNativeName(featureType.getName().getLocalPart());
+        ftinfo.setName(featureType.getName().getLocalPart());
+
         WorkspaceInfo workspace = store.getWorkspace();
-        NamespaceInfo namespace = catalog.getNamespaceByPrefix( workspace.getName() );
-        if ( namespace == null ) {
+        NamespaceInfo namespace = catalog.getNamespaceByPrefix(workspace.getName());
+        if (namespace == null) {
             namespace = catalog.getDefaultNamespace();
         }
-        
-        ftinfo.setNamespace( namespace );
-        
+
+        ftinfo.setNamespace(namespace);
+
         CoordinateReferenceSystem crs = featureType.getCoordinateReferenceSystem();
         if (crs == null && featureType.getGeometryDescriptor() != null) {
             crs = featureType.getGeometryDescriptor().getCoordinateReferenceSystem();
         }
         ftinfo.setNativeCRS(crs);
-        
+
         // srs look and set (by default we just use fast lookup)
         try {
             lookupSRS(ftinfo, false);
@@ -391,73 +423,76 @@ public class CatalogBuilder {
             LOGGER.log(Level.WARNING, "SRS lookup failed", e);
         }
         setupProjectionPolicy(ftinfo);
-        
+
         // quick metadata
         ftinfo.setTitle(featureType.getName().getLocalPart());
-        
+
         return ftinfo;
     }
-    
+
     /**
      * Sets the projection policy for a resource based on the following rules:
      * <ul>
-     *   <li>If getSRS() returns a non null value it is set to {@Link ProjectionPolicy#FORCE_DECLARED}
-     *   <li>If getSRS() returns a null value it is set to {@link ProjectionPolicy#NONE}
+     * <li>If getSRS() returns a non null value it is set to {@Link
+     * ProjectionPolicy#FORCE_DECLARED}
+     * <li>If getSRS() returns a null value it is set to {@link ProjectionPolicy#NONE}
      * </ul>
      * 
-     * TODO: make this method smarter, and compare the native crs to figure out if prejection 
+     * TODO: make this method smarter, and compare the native crs to figure out if prejection
      * actually needs to be done, and sync it up with setting proj policy on coverage layers.
      */
     public void setupProjectionPolicy(ResourceInfo rinfo) {
-         if ( rinfo.getSRS() != null ) {
-             rinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-         }
-         else {
-             rinfo.setProjectionPolicy(ProjectionPolicy.NONE);
-         }
+        if (rinfo.getSRS() != null) {
+            rinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+        } else {
+            rinfo.setProjectionPolicy(ProjectionPolicy.NONE);
+        }
     }
 
-    
     /**
      * Given a {@link ResourceInfo} this method:
      * <ul>
-     *   <li>computes, if missing, the native bounds (warning, this might be very expensive, 
-     *       cases in which this case take minutes are not uncommon if the data set is made
-     *       of million of features)</li>
-     *   <li>updates, if possible, the geographic bounds accordingly by 
-     *       re-projecting the native bounds into WGS84</li>
+     * <li>computes, if missing, the native bounds (warning, this might be very expensive, cases in
+     * which this case take minutes are not uncommon if the data set is made of million of features)
+     * </li>
+     * <li>updates, if possible, the geographic bounds accordingly by re-projecting the native
+     * bounds into WGS84</li>
+     * 
      * @param ftinfo
-     * @throws IOException if computing the native bounds fails or if a transformation error occurs 
-     *         during the geographic bounds computation
+     * @throws IOException
+     *             if computing the native bounds fails or if a transformation error occurs during
+     *             the geographic bounds computation
      */
-    public void setupBounds(ResourceInfo rinfo) throws IOException  {
+    public void setupBounds(ResourceInfo rinfo) throws IOException {
         // setup the native bbox if needed
-        if(rinfo.getNativeBoundingBox() == null) {
+        if (rinfo.getNativeBoundingBox() == null) {
             ReferencedEnvelope bounds = getNativeBounds(rinfo);
             rinfo.setNativeBoundingBox(bounds);
         }
-        
+
         // setup the geographic bbox if missing and we have enough info
         rinfo.setLatLonBoundingBox(getLatLonBounds(rinfo.getNativeBoundingBox(), rinfo.getCRS()));
     }
 
     /**
-     * Computes the geographic bounds of a {@link ResourceInfo} by reprojecting the
-     * available native bounds
+     * Computes the geographic bounds of a {@link ResourceInfo} by reprojecting the available native
+     * bounds
+     * 
      * @param rinfo
-     * @return the geographic bounds, or null if the native bounds are not available 
+     * @return the geographic bounds, or null if the native bounds are not available
      * @throws IOException
      */
-    public ReferencedEnvelope getLatLonBounds(ReferencedEnvelope nativeBounds, CoordinateReferenceSystem declaredCRS) throws IOException {
-        if(nativeBounds != null && declaredCRS != null) {
+    public ReferencedEnvelope getLatLonBounds(ReferencedEnvelope nativeBounds,
+            CoordinateReferenceSystem declaredCRS) throws IOException {
+        if (nativeBounds != null && declaredCRS != null) {
             // make sure we use the declared CRS, not the native one, the may differ
-            if ( !CRS.equalsIgnoreMetadata( DefaultGeographicCRS.WGS84, declaredCRS) ) {
-                //transform
+            if (!CRS.equalsIgnoreMetadata(DefaultGeographicCRS.WGS84, declaredCRS)) {
+                // transform
                 try {
-                    ReferencedEnvelope bounds = new ReferencedEnvelope(nativeBounds, declaredCRS); 
-                    return bounds.transform( DefaultGeographicCRS.WGS84, true );
-                } catch( Exception e ) {
-                    throw (IOException) new IOException("transform error").initCause( e );
+                    ReferencedEnvelope bounds = new ReferencedEnvelope(nativeBounds, declaredCRS);
+                    return bounds.transform(DefaultGeographicCRS.WGS84, true);
+                } catch (Exception e) {
+                    throw (IOException) new IOException("transform error").initCause(e);
                 }
             } else {
                 return new ReferencedEnvelope(nativeBounds, DefaultGeographicCRS.WGS84);
@@ -467,290 +502,333 @@ public class CatalogBuilder {
     }
 
     /**
-     * Computes the native bounds of a {@link ResourceInfo} taking into account the nature
-     * of the data and the reprojection policy in act
+     * Computes the native bounds of a {@link ResourceInfo} taking into account the nature of the
+     * data and the reprojection policy in act
+     * 
      * @param rinfo
      * @return the native bounds, or null if the could not be computed
      * @throws IOException
      */
     public ReferencedEnvelope getNativeBounds(ResourceInfo rinfo) throws IOException {
         ReferencedEnvelope bounds = null;
-        if(rinfo instanceof FeatureTypeInfo) {
+        if (rinfo instanceof FeatureTypeInfo) {
             FeatureTypeInfo ftinfo = (FeatureTypeInfo) rinfo;
-            
+
             // bounds
             bounds = ftinfo.getFeatureSource(null, null).getBounds();
-            
+
             // fix the native bounds if necessary, some datastores do
             // not build a proper referenced envelope
             CoordinateReferenceSystem crs = ftinfo.getNativeCRS();
-            if(bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
+            if (bounds != null && bounds.getCoordinateReferenceSystem() == null && crs != null) {
                 bounds = new ReferencedEnvelope(bounds, crs);
             }
-            
-            if(bounds != null) {
-                // expansion factor if the bounds are empty or one dimensional 
+
+            if (bounds != null) {
+                // expansion factor if the bounds are empty or one dimensional
                 double expandBy = 1; // 1 meter
-                if(bounds.getCoordinateReferenceSystem() instanceof GeographicCRS) {
+                if (bounds.getCoordinateReferenceSystem() instanceof GeographicCRS) {
                     expandBy = 0.0001;
                 }
-                if(bounds.getWidth() == 0 || bounds.getHeight() == 0) {
+                if (bounds.getWidth() == 0 || bounds.getHeight() == 0) {
                     bounds.expandBy(expandBy);
                 }
             }
-            
-        } else if(rinfo instanceof CoverageInfo) {
+
+        } else if (rinfo instanceof CoverageInfo) {
             // the coverage bounds computation path is a bit more linear, the
             // readers always return the bounds and in the proper CRS (afaik)
             CoverageInfo cinfo = (CoverageInfo) rinfo;
-            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(null, null); 
+            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo
+                    .getGridCoverageReader(null, null);
             bounds = new ReferencedEnvelope(reader.getOriginalEnvelope());
         }
-        
-        // apply the bounds, taking into account the reprojection policy if need be 
+
+        // apply the bounds, taking into account the reprojection policy if need be
         if (rinfo.getProjectionPolicy() == ProjectionPolicy.REPROJECT_TO_DECLARED && bounds != null) {
             try {
                 bounds = bounds.transform(rinfo.getCRS(), true);
                 GridGeometry grid = ((CoverageInfo) rinfo).getGrid();
-                ((CoverageInfo) rinfo).setGrid(new GridGeometry2D(grid.getGridRange(),grid.getGridToCRS(), rinfo.getCRS()));
-            } catch(Exception e) {
+                ((CoverageInfo) rinfo).setGrid(new GridGeometry2D(grid.getGridRange(), grid
+                        .getGridToCRS(), rinfo.getCRS()));
+            } catch (Exception e) {
                 throw (IOException) new IOException("transform error").initCause(e);
             }
-        } 
-        
+        }
+
         return bounds;
     }
-    
-    
+
     /**
-     * Looks up and sets the SRS based on the feature type info native 
+     * Looks up and sets the SRS based on the feature type info native
      * {@link CoordinateReferenceSystem}
-     * @param ftinfo 
-     * @param extensive if true an extenstive lookup will be performed (more accurate, but 
-     *        might take various seconds)
+     * 
+     * @param ftinfo
+     * @param extensive
+     *            if true an extenstive lookup will be performed (more accurate, but might take
+     *            various seconds)
      * @throws IOException
      */
     public void lookupSRS(FeatureTypeInfo ftinfo, boolean extensive) throws IOException {
         CoordinateReferenceSystem crs = ftinfo.getNativeCRS();
-        if ( crs == null ) {
+        if (crs == null) {
             crs = ftinfo.getFeatureType().getCoordinateReferenceSystem();
         }
-        if ( crs != null ) {
+        if (crs != null) {
             try {
                 Integer code = CRS.lookupEpsgCode(crs, extensive);
-                if(code != null)
+                if (code != null)
                     ftinfo.setSRS("EPSG:" + code);
             } catch (FactoryException e) {
-                throw (IOException) new IOException().initCause( e );
+                throw (IOException) new IOException().initCause(e);
             }
-        } 
+        }
     }
-    
+
     /**
      * Initializes a feature type object setting any info that has not been set.
      */
     public void initFeatureType(FeatureTypeInfo featureType) throws Exception {
-        if ( featureType.getCatalog() == null ) {
-            featureType.setCatalog( catalog );
+        if (featureType.getCatalog() == null) {
+            featureType.setCatalog(catalog);
         }
-        if ( featureType.getNativeName() == null && featureType.getName() != null ) {
-            featureType.setNativeName( featureType.getName() );
+        if (featureType.getNativeName() == null && featureType.getName() != null) {
+            featureType.setNativeName(featureType.getName());
         }
-        if ( featureType.getNativeName() != null && featureType.getName() == null ) {
-            featureType.setName( featureType.getNativeName() );
+        if (featureType.getNativeName() != null && featureType.getName() == null) {
+            featureType.setName(featureType.getNativeName());
         }
         // setup the srs if missing
-        if ( featureType.getSRS() == null ) {
+        if (featureType.getSRS() == null) {
             lookupSRS(featureType, true);
         }
         if (featureType.getProjectionPolicy() == null) {
             setupProjectionPolicy(featureType);
         }
-        
+
         // deal with bounding boxes as possible
         CoordinateReferenceSystem crs = featureType.getCRS();
-        if(featureType.getLatLonBoundingBox() == null && featureType.getNativeBoundingBox() == null) {
+        if (featureType.getLatLonBoundingBox() == null
+                && featureType.getNativeBoundingBox() == null) {
             // both missing, we compute them
             setupBounds(featureType);
-        } else if(featureType.getLatLonBoundingBox() == null) {
+        } else if (featureType.getLatLonBoundingBox() == null) {
             // native available but geographic to be computed
             setupBounds(featureType);
-        } else if(featureType.getNativeBoundingBox() == null && crs != null) {
+        } else if (featureType.getNativeBoundingBox() == null && crs != null) {
             // we know the geographic and we can reproject back to native
             ReferencedEnvelope boundsLatLon = featureType.getLatLonBoundingBox();
             featureType.setNativeBoundingBox(boundsLatLon.transform(crs, true));
         }
     }
-    
+
     /**
-     * Builds the default coverage contained in the current store 
+     * Initializes a wms layer object setting any info that has not been set.
+     */
+    public void initWMSLayer(WMSLayerInfo wmsLayer) throws Exception {
+        wmsLayer.setCatalog(catalog);
+        
+        // set the name
+        if (wmsLayer.getNativeName() == null && wmsLayer.getName() != null) {
+            wmsLayer.setNativeName(wmsLayer.getName());
+        }
+        if (wmsLayer.getNativeName() != null && wmsLayer.getName() == null) {
+            wmsLayer.setName(wmsLayer.getNativeName());
+        }
+        
+        // get a fully initialized version we can copy from
+        WMSLayerInfo full = buildWMSLayer(wmsLayer.getNativeName());
+
+        // setup the srs if missing
+        if (wmsLayer.getSRS() == null) {
+            wmsLayer.setSRS(full.getSRS());
+        }
+        if (wmsLayer.getProjectionPolicy() == null) {
+            wmsLayer.setProjectionPolicy(full.getProjectionPolicy());
+        }
+
+        // deal with bounding boxes as possible
+        if (wmsLayer.getLatLonBoundingBox() == null
+                && wmsLayer.getNativeBoundingBox() == null) {
+            // both missing, we copy them
+            wmsLayer.setLatLonBoundingBox(full.getLatLonBoundingBox());
+            wmsLayer.setNativeBoundingBox(full.getNativeBoundingBox());
+        } else if (wmsLayer.getLatLonBoundingBox() == null) {
+            // native available but geographic to be computed
+            setupBounds(wmsLayer);
+        } else if (wmsLayer.getNativeBoundingBox() == null && wmsLayer.getNativeCRS() != null) {
+            // we know the geographic and we can reproject back to native
+            ReferencedEnvelope boundsLatLon = wmsLayer.getLatLonBoundingBox();
+            wmsLayer.setNativeBoundingBox(boundsLatLon.transform(wmsLayer.getNativeCRS(), true));
+        }
+        
+    }
+
+    /**
+     * Builds the default coverage contained in the current store
+     * 
      * @return
      * @throws Exception
      */
     public CoverageInfo buildCoverage() throws Exception {
-        if ( store == null || !( store instanceof CoverageStoreInfo ) ) {
-            throw new IllegalStateException( "Coverage store not set.");
+        if (store == null || !(store instanceof CoverageStoreInfo)) {
+            throw new IllegalStateException("Coverage store not set.");
         }
-        
+
         CoverageStoreInfo csinfo = (CoverageStoreInfo) store;
-        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
-        
-        if(reader == null)
-            throw new Exception ("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
-        
+        AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) catalog
+                .getResourcePool().getGridCoverageReader(csinfo, null);
+
+        if (reader == null)
+            throw new Exception("Unable to acquire a reader for this coverage with format: "
+                    + csinfo.getFormat().getName());
+
         return buildCoverage(reader);
     }
-    
+
     /**
      * Builds a coverage from a geotools grid coverage reader.
      */
-    public CoverageInfo buildCoverage( AbstractGridCoverage2DReader reader ) throws Exception {
-        if ( store == null || !( store instanceof CoverageStoreInfo ) ) {
-            throw new IllegalStateException( "Coverage store not set.");
+    public CoverageInfo buildCoverage(AbstractGridCoverage2DReader reader) throws Exception {
+        if (store == null || !(store instanceof CoverageStoreInfo)) {
+            throw new IllegalStateException("Coverage store not set.");
         }
-        
+
         CoverageStoreInfo csinfo = (CoverageStoreInfo) store;
         CoverageInfo cinfo = catalog.getFactory().createCoverage();
-        
-        cinfo.setStore( csinfo );
+
+        cinfo.setStore(csinfo);
         cinfo.setEnabled(true);
-        
+
         WorkspaceInfo workspace = store.getWorkspace();
-        NamespaceInfo namespace = catalog.getNamespaceByPrefix( workspace.getName() );
-        if ( namespace == null ) {
+        NamespaceInfo namespace = catalog.getNamespaceByPrefix(workspace.getName());
+        if (namespace == null) {
             namespace = catalog.getDefaultNamespace();
         }
         cinfo.setNamespace(namespace);
-        
+
         CoordinateReferenceSystem nativeCRS = reader.getCrs();
         cinfo.setNativeCRS(nativeCRS);
-        
+
         // mind the default projection policy, Coverages do not have a flexible
         // handling as feature types, they do reproject if the native srs is set,
         // force if missing
-        if ( nativeCRS != null && !nativeCRS.getIdentifiers().isEmpty()) {
-            cinfo.setSRS( nativeCRS.getIdentifiers().toArray()[0].toString() );
+        if (nativeCRS != null && !nativeCRS.getIdentifiers().isEmpty()) {
+            cinfo.setSRS(nativeCRS.getIdentifiers().toArray()[0].toString());
             cinfo.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
-        } 
-        if(nativeCRS == null) {
+        }
+        if (nativeCRS == null) {
             cinfo.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
         }
-        
-        
-        GeneralEnvelope envelope = reader.getOriginalEnvelope();
-        cinfo.setNativeBoundingBox( new ReferencedEnvelope( envelope ) );
-        cinfo.setLatLonBoundingBox( new ReferencedEnvelope(CoverageStoreUtils.getWGS84LonLatEnvelope(envelope)) );
-        
-        GridEnvelope originalRange=reader.getOriginalGridRange();
-        cinfo.setGrid(new GridGeometry2D(originalRange,reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER),nativeCRS));
 
-        ///////////////////////////////////////////////////////////////////////
+        GeneralEnvelope envelope = reader.getOriginalEnvelope();
+        cinfo.setNativeBoundingBox(new ReferencedEnvelope(envelope));
+        cinfo.setLatLonBoundingBox(new ReferencedEnvelope(CoverageStoreUtils
+                .getWGS84LonLatEnvelope(envelope)));
+
+        GridEnvelope originalRange = reader.getOriginalGridRange();
+        cinfo.setGrid(new GridGeometry2D(originalRange, reader
+                .getOriginalGridToWorld(PixelInCell.CELL_CENTER), nativeCRS));
+
+        // /////////////////////////////////////////////////////////////////////
         //
         // Now reading a fake small GridCoverage just to retrieve meta
-                // information about bands:
+        // information about bands:
         //
         // - calculating a new envelope which is 1/20 of the original one
         // - reading the GridCoverage subset
         //
-        ///////////////////////////////////////////////////////////////////////
+        // /////////////////////////////////////////////////////////////////////
         Format format = csinfo.getFormat();
         final GridCoverage2D gc;
 
-        
         final ParameterValueGroup readParams = format.getReadParameters();
         final Map parameters = CoverageUtils.getParametersKVP(readParams);
-        final int minX=originalRange.getLow(0);
-        final int minY=originalRange.getLow(1);
-        final int width=originalRange.getSpan(0);
-        final int height=originalRange.getSpan(1);
-        final int maxX=minX+(width<=5?width:5);
-        final int maxY=minY+(height<=5?height:5);
-        
-        //we have to be sure that we are working against a valid grid range.
-        final GridEnvelope2D testRange= new GridEnvelope2D(minX,minY,maxX,maxY);
-        
-        //build the corresponding envelope
-        final MathTransform gridToWorldCorner =  reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
-        final GeneralEnvelope testEnvelope =CRS.transform(gridToWorldCorner,new GeneralEnvelope(testRange.getBounds()));
+        final int minX = originalRange.getLow(0);
+        final int minY = originalRange.getLow(1);
+        final int width = originalRange.getSpan(0);
+        final int height = originalRange.getSpan(1);
+        final int maxX = minX + (width <= 5 ? width : 5);
+        final int maxY = minY + (height <= 5 ? height : 5);
+
+        // we have to be sure that we are working against a valid grid range.
+        final GridEnvelope2D testRange = new GridEnvelope2D(minX, minY, maxX, maxY);
+
+        // build the corresponding envelope
+        final MathTransform gridToWorldCorner = reader
+                .getOriginalGridToWorld(PixelInCell.CELL_CORNER);
+        final GeneralEnvelope testEnvelope = CRS.transform(gridToWorldCorner, new GeneralEnvelope(
+                testRange.getBounds()));
         testEnvelope.setCoordinateReferenceSystem(nativeCRS);
-        
+
         parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-            new GridGeometry2D(testRange, testEnvelope));
+                new GridGeometry2D(testRange, testEnvelope));
 
-        //try to read this coverage
-        gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters,
-                    true));
-        if(gc==null){
-            throw new Exception ("Unable to acquire test coverage for format:"+ format.getName());
+        // try to read this coverage
+        gc = (GridCoverage2D) reader
+                .read(CoverageUtils.getParameters(readParams, parameters, true));
+        if (gc == null) {
+            throw new Exception("Unable to acquire test coverage for format:" + format.getName());
         }
-        
-        cinfo.getDimensions().addAll( getCoverageDimensions(gc.getSampleDimensions()));
-            
-        //TODO: 
-        //dimentionNames = getDimensionNames(gc);
+
+        cinfo.getDimensions().addAll(getCoverageDimensions(gc.getSampleDimensions()));
+
+        // TODO:
+        // dimentionNames = getDimensionNames(gc);
         /*
-        StringBuilder cvName =null;
-        int count = 0;
-        while (true) {
-            final StringBuilder key = new StringBuilder(gc.getName().toString());
-            if (count > 0) {
-                key.append("_").append(count);
-            }
-
-            Map coverages = dataConfig.getCoverages();
-            Set cvKeySet = coverages.keySet();
-            boolean key_exists = false;
-
-            for (Iterator it = cvKeySet.iterator(); it.hasNext();) {
-                String cvKey = ((String) it.next()).toLowerCase();
-                if (cvKey.endsWith(key.toString().toLowerCase())) {
-                    key_exists = true;
-                }
-            }
-
-            if (!key_exists) {
-                cvName = key;
-                break;
-            } else {
-                count++;
-            }
-        }
-
-        String name = cvName.toString();
-        */
+         * StringBuilder cvName =null; int count = 0; while (true) { final StringBuilder key = new
+         * StringBuilder(gc.getName().toString()); if (count > 0) { key.append("_").append(count); }
+         * 
+         * Map coverages = dataConfig.getCoverages(); Set cvKeySet = coverages.keySet(); boolean
+         * key_exists = false;
+         * 
+         * for (Iterator it = cvKeySet.iterator(); it.hasNext();) { String cvKey = ((String)
+         * it.next()).toLowerCase(); if (cvKey.endsWith(key.toString().toLowerCase())) { key_exists
+         * = true; } }
+         * 
+         * if (!key_exists) { cvName = key; break; } else { count++; } }
+         * 
+         * String name = cvName.toString();
+         */
         String name = gc.getName().toString();
         cinfo.setName(name);
         cinfo.setTitle(name);
-        cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName()).toString() );
-        
-        //keywords
+        cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName())
+                .toString());
+
+        // keywords
         cinfo.getKeywords().add("WCS");
         cinfo.getKeywords().add(format.getName());
         cinfo.getKeywords().add(name);
-        
-        //native format name
+
+        // native format name
         cinfo.setNativeFormat(format.getName());
-        cinfo.getMetadata().put( "dirName", new StringBuffer(store.getName()).append("_").append(name).toString());
-        
-        //request SRS's
+        cinfo.getMetadata().put("dirName",
+                new StringBuffer(store.getName()).append("_").append(name).toString());
+
+        // request SRS's
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
                 && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
-            cinfo.getRequestSRS().add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
-                                            .toArray()[0]).toString());
+            cinfo.getRequestSRS()
+                    .add(
+                            ((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
+                                    .toArray()[0]).toString());
         }
-        
-        //response SRS's
+
+        // response SRS's
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
                 && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
-            cinfo.getResponseSRS().add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
-                                             .toArray()[0]).toString());
+            cinfo.getResponseSRS()
+                    .add(
+                            ((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
+                                    .toArray()[0]).toString());
         }
-        
-        //supported formats
+
+        // supported formats
         final List formats = CoverageStoreUtils.listDataFormats();
         for (Iterator i = formats.iterator(); i.hasNext();) {
             final Format fTmp = (Format) i.next();
-            final  String fName = fTmp.getName();
+            final String fName = fTmp.getName();
 
             if (fName.equalsIgnoreCase("WorldImage")) {
                 // TODO check if coverage can encode Format
@@ -767,23 +845,23 @@ public class CatalogBuilder {
             }
         }
 
-        //interpolation methods
+        // interpolation methods
         cinfo.setDefaultInterpolationMethod("nearest neighbor");
         cinfo.getInterpolationMethods().add("nearest neighbor");
         cinfo.getInterpolationMethods().add("bilinear");
         cinfo.getInterpolationMethods().add("bicubic");
-        
-        //read parameters
-        cinfo.getParameters().putAll( CoverageUtils.getParametersKVP(format.getReadParameters()) );
-        
+
+        // read parameters
+        cinfo.getParameters().putAll(CoverageUtils.getParametersKVP(format.getReadParameters()));
+
         return cinfo;
     }
 
     List<CoverageDimensionInfo> getCoverageDimensions(GridSampleDimension[] sampleDimensions) {
-    
+
         final int length = sampleDimensions.length;
         List<CoverageDimensionInfo> dims = new ArrayList<CoverageDimensionInfo>();
-        
+
         for (int i = 0; i < length; i++) {
             CoverageDimensionInfo dim = catalog.getFactory().createCoverageDimension();
             dim.setName(sampleDimensions[i].getDescription().toString(Locale.getDefault()));
@@ -802,54 +880,54 @@ public class CatalogBuilder {
             label.append(",".intern());
             label.append(sampleDimensions[i].getMaximumValue());
             label.append("]".intern());
-            
+
             dim.setDescription(label.toString());
             dim.setRange(sampleDimensions[i].getRange());
 
             final List<Category> categories = sampleDimensions[i].getCategories();
-            if(categories!=null) {
-                for (Category cat:categories) {
-    
+            if (categories != null) {
+                for (Category cat : categories) {
+
                     if ((cat != null) && cat.getName().toString().equalsIgnoreCase("no data")) {
                         double min = cat.getRange().getMinimum();
                         double max = cat.getRange().getMaximum();
-    
-                        dim.getNullValues().add( min );
-                        if ( min != max ) {
-                            dim.getNullValues().add( max );
+
+                        dim.getNullValues().add(min);
+                        if (min != max) {
+                            dim.getNullValues().add(max);
                         }
                     }
                 }
             }
-            
+
             dims.add(dim);
         }
 
         return dims;
     }
-    
+
     public WMSLayerInfo buildWMSLayer(String layerName) throws IOException {
-        if ( store == null || !( store instanceof WMSStoreInfo ) ) {
-            throw new IllegalStateException( "WMS store not set.");
+        if (store == null || !(store instanceof WMSStoreInfo)) {
+            throw new IllegalStateException("WMS store not set.");
         }
-        
+
         WMSStoreInfo wms = (WMSStoreInfo) store;
         WMSLayerInfo wli = catalog.getFactory().createWMSLayer();
         wli.setName(layerName);
         wli.setNativeName(layerName);
-        
-        wli.setStore( store );
+
+        wli.setStore(store);
         wli.setEnabled(true);
-        
+
         WorkspaceInfo workspace = store.getWorkspace();
-        NamespaceInfo namespace = catalog.getNamespaceByPrefix( workspace.getName() );
-        if ( namespace == null ) {
+        NamespaceInfo namespace = catalog.getNamespaceByPrefix(workspace.getName());
+        if (namespace == null) {
             namespace = catalog.getDefaultNamespace();
         }
         wli.setNamespace(namespace);
-        
+
         Layer layer = wli.getWMSLayer(null);
-        
+
         // try to get the native SRS -> we use the bounding boxes, GeoServer will publish all of the
         // supported SRS in the root, if we use getSRS() we'll get them all
         for (String srs : layer.getBoundingBoxes().keySet()) {
@@ -857,55 +935,57 @@ public class CatalogBuilder {
                 CoordinateReferenceSystem crs = CRS.decode(srs);
                 wli.setSRS(srs);
                 wli.setNativeCRS(crs);
-            } catch(Exception e) {
-                LOGGER.log(Level.INFO, "Skipping " + srs + " definition, it was not recognized by the referencing subsystem");
+            } catch (Exception e) {
+                LOGGER.log(Level.INFO, "Skipping " + srs
+                        + " definition, it was not recognized by the referencing subsystem");
             }
         }
         // fall back on WGS84 if necessary
-        if(wli.getSRS() == null) {
+        if (wli.getSRS() == null) {
             wli.setSRS("EPSG:4326");
             wli.setNativeCRS(DefaultGeographicCRS.WGS84);
         }
         wli.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-        
+
         // try to grab the envelope
         GeneralEnvelope envelope = layer.getEnvelope(wli.getNativeCRS());
-        if(envelope != null) {
+        if (envelope != null) {
             ReferencedEnvelope re = new ReferencedEnvelope(envelope.getMinimum(0), envelope
-                    .getMaximum(0), envelope.getMinimum(1), envelope.getMaximum(1), wli.getNativeCRS());
+                    .getMaximum(0), envelope.getMinimum(1), envelope.getMaximum(1), wli
+                    .getNativeCRS());
             wli.setNativeBoundingBox(re);
         }
         CRSEnvelope llbbox = layer.getLatLonBoundingBox();
-        if(llbbox != null) {
+        if (llbbox != null) {
             ReferencedEnvelope re = new ReferencedEnvelope(llbbox.getMinX(), llbbox.getMaxX(),
                     llbbox.getMinY(), llbbox.getMaxY(), DefaultGeographicCRS.WGS84);
             wli.setLatLonBoundingBox(re);
-        } else if(wli.getNativeBoundingBox() != null) {
+        } else if (wli.getNativeBoundingBox() != null) {
             try {
-                wli.setLatLonBoundingBox(wli.getNativeBoundingBox().transform(DefaultGeographicCRS.WGS84, true));
-            } catch(Exception e) {
+                wli.setLatLonBoundingBox(wli.getNativeBoundingBox().transform(
+                        DefaultGeographicCRS.WGS84, true));
+            } catch (Exception e) {
                 LOGGER.log(Level.INFO, "Could not transform native bbox into a lat/lon one", e);
             }
         }
-        
+
         // reflect all the metadata that we can grab
         wli.setAbstract(layer.get_abstract());
         wli.setDescription(layer.get_abstract());
         wli.setTitle(layer.getTitle());
-        if(layer.getKeywords() != null) {
+        if (layer.getKeywords() != null) {
             wli.getKeywords().addAll(Arrays.asList(layer.getKeywords()));
         }
-        
+
         // strip off the prefix if we're cascading from a server that does add them
         String published = wli.getName();
-        if(published.contains(":")) {
+        if (published.contains(":")) {
             wli.setName(published.substring(published.lastIndexOf(':') + 1));
         }
-        
-        
+
         return wli;
     }
-    
+
     void parseUOM(StringBuffer label, Unit uom) {
         String uomString = uom.toString();
         uomString = uomString.replaceAll("�", "^2");
@@ -914,179 +994,181 @@ public class CatalogBuilder {
         uomString = uomString.replaceAll("�", "");
         label.append(uomString);
     }
-    
+
     /**
      * Builds a layer for a feature type.
      * <p>
-     * The resulting object is not added to the catalog, it must be done by the calling code
-     * after the fact.
+     * The resulting object is not added to the catalog, it must be done by the calling code after
+     * the fact.
      * </p>
      */
-    public LayerInfo buildLayer( FeatureTypeInfo featureType ) throws IOException {
-        //also create a layer for the feautre type
-        LayerInfo layer = buildLayer( (ResourceInfo) featureType );
-        
+    public LayerInfo buildLayer(FeatureTypeInfo featureType) throws IOException {
+        // also create a layer for the feautre type
+        LayerInfo layer = buildLayer((ResourceInfo) featureType);
+
         StyleInfo style = getDefaultStyle(featureType);
         layer.setDefaultStyle(style);
-        
+
         return layer;
     }
-    
+
     /**
      * Builds a layer for a coverage.
      * <p>
-     * The resulting object is not added to the catalog, it must be done by the calling code
-     * after the fact.
+     * The resulting object is not added to the catalog, it must be done by the calling code after
+     * the fact.
      * </p>
      */
-    public LayerInfo buildLayer( CoverageInfo coverage ) throws IOException {
-        LayerInfo layer = buildLayer((ResourceInfo)coverage);
-        
+    public LayerInfo buildLayer(CoverageInfo coverage) throws IOException {
+        LayerInfo layer = buildLayer((ResourceInfo) coverage);
+
         layer.setDefaultStyle(getDefaultStyle(coverage));
-        
+
         return layer;
     }
-    
+
     /**
      * Builds a layer wrapping a WMS layer resource
      * <p>
-     * The resulting object is not added to the catalog, it must be done by the calling code
-     * after the fact.
+     * The resulting object is not added to the catalog, it must be done by the calling code after
+     * the fact.
      * </p>
      */
-    public LayerInfo buildLayer( WMSLayerInfo layer) throws IOException {
+    public LayerInfo buildLayer(WMSLayerInfo layer) throws IOException {
         return buildLayer((ResourceInfo) layer);
     }
-    
-    
+
     /**
-     * Returns the default style for the specified resource, or null if the layer is vector
-     * and geometryless
+     * Returns the default style for the specified resource, or null if the layer is vector and
+     * geometryless
+     * 
      * @param resource
      * @return
      * @throws IOException
      */
     public StyleInfo getDefaultStyle(ResourceInfo resource) throws IOException {
         // raster wise, only one style
-        if(resource instanceof CoverageInfo)
+        if (resource instanceof CoverageInfo)
             return catalog.getStyleByName(StyleInfo.DEFAULT_RASTER);
-     
+
         // for vectors we depend on the the nature of the default geometry
         String styleName;
         FeatureTypeInfo featureType = (FeatureTypeInfo) resource;
         GeometryDescriptor gd = featureType.getFeatureType().getGeometryDescriptor();
-        if(gd == null)
+        if (gd == null)
             return null;
-            
+
         Class gtype = gd.getType().getBinding();
-        if ( Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
+        if (Point.class.isAssignableFrom(gtype) || MultiPoint.class.isAssignableFrom(gtype)) {
             styleName = StyleInfo.DEFAULT_POINT;
-        }
-        else if ( LineString.class.isAssignableFrom(gtype) || MultiLineString.class.isAssignableFrom(gtype)) {
+        } else if (LineString.class.isAssignableFrom(gtype)
+                || MultiLineString.class.isAssignableFrom(gtype)) {
             styleName = StyleInfo.DEFAULT_LINE;
-        }
-        else if ( Polygon.class.isAssignableFrom(gtype) || MultiPolygon.class.isAssignableFrom(gtype)) {
+        } else if (Polygon.class.isAssignableFrom(gtype)
+                || MultiPolygon.class.isAssignableFrom(gtype)) {
             styleName = StyleInfo.DEFAULT_POLYGON;
         } else {
-            //fall back to point
+            // fall back to point
             styleName = StyleInfo.DEFAULT_POINT;
         }
-        
-        return catalog.getStyleByName( styleName );
+
+        return catalog.getStyleByName(styleName);
     }
-    
-    LayerInfo buildLayer( ResourceInfo resource ) {
+
+    LayerInfo buildLayer(ResourceInfo resource) {
         LayerInfo layer = catalog.getFactory().createLayer();
-        layer.setResource( resource );
-        layer.setName( resource.getName() );
+        layer.setResource(resource);
+        layer.setName(resource.getName());
         layer.setEnabled(true);
-        
+
         // setup the layer type
-        if ( layer.getResource() instanceof FeatureTypeInfo ) {
-            layer.setType( LayerInfo.Type.VECTOR );
-        } else if ( layer.getResource() instanceof CoverageInfo ) {
-            layer.setType( LayerInfo.Type.RASTER );
+        if (layer.getResource() instanceof FeatureTypeInfo) {
+            layer.setType(LayerInfo.Type.VECTOR);
+        } else if (layer.getResource() instanceof CoverageInfo) {
+            layer.setType(LayerInfo.Type.RASTER);
         }
-        
+
         return layer;
     }
-    
+
     /**
      * Calculates the bounds of a layer group specifying a particular crs.
      */
-    public void calculateLayerGroupBounds( LayerGroupInfo lg, CoordinateReferenceSystem crs )
-        throws Exception {
-        
-        if ( lg.getLayers().isEmpty() ) {
-            return; 
+    public void calculateLayerGroupBounds(LayerGroupInfo lg, CoordinateReferenceSystem crs)
+            throws Exception {
+
+        if (lg.getLayers().isEmpty()) {
+            return;
         }
-        
-        LayerInfo l = lg.getLayers().get( 0 );
-        ReferencedEnvelope bounds = transform( l.getResource().getLatLonBoundingBox(), crs );
-        
-        for ( int i = 1; i < lg.getLayers().size(); i++ ) {
-            l = lg.getLayers().get( i );
-            bounds.expandToInclude( transform( l.getResource().getLatLonBoundingBox(), crs ) );
+
+        LayerInfo l = lg.getLayers().get(0);
+        ReferencedEnvelope bounds = transform(l.getResource().getLatLonBoundingBox(), crs);
+
+        for (int i = 1; i < lg.getLayers().size(); i++) {
+            l = lg.getLayers().get(i);
+            bounds.expandToInclude(transform(l.getResource().getLatLonBoundingBox(), crs));
         }
-        lg.setBounds( bounds );
+        lg.setBounds(bounds);
     }
-    
+
     /**
-     * Calculates the bounds of a layer group by aggregating the bounds of each layer.
-     * TODO: move this method to a utility class, it should not be on a builder.
+     * Calculates the bounds of a layer group by aggregating the bounds of each layer. TODO: move
+     * this method to a utility class, it should not be on a builder.
      */
-    public void calculateLayerGroupBounds( LayerGroupInfo lg ) throws Exception {
-        if ( lg.getLayers().isEmpty() ) {
-            return; 
+    public void calculateLayerGroupBounds(LayerGroupInfo lg) throws Exception {
+        if (lg.getLayers().isEmpty()) {
+            return;
         }
-        
-        LayerInfo l = lg.getLayers().get( 0 );
+
+        LayerInfo l = lg.getLayers().get(0);
         ReferencedEnvelope bounds = l.getResource().boundingBox();
         boolean latlon = false;
-        if ( bounds == null ) {
+        if (bounds == null) {
             bounds = l.getResource().getLatLonBoundingBox();
             latlon = true;
         }
-        
-        if ( bounds == null ) {
-            throw new IllegalArgumentException( "Could not calculate bounds from layer with no bounds, " + l.getName());
+
+        if (bounds == null) {
+            throw new IllegalArgumentException(
+                    "Could not calculate bounds from layer with no bounds, " + l.getName());
         }
-        
-        for ( int i = 1; i < lg.getLayers().size(); i++ ) {
-            l = lg.getLayers().get( i );
-            
+
+        for (int i = 1; i < lg.getLayers().size(); i++) {
+            l = lg.getLayers().get(i);
+
             ReferencedEnvelope re;
-            if ( latlon ) {
+            if (latlon) {
                 re = l.getResource().getLatLonBoundingBox();
-            }
-            else {
+            } else {
                 re = l.getResource().boundingBox();
             }
-            
-            re = transform( re, bounds.getCoordinateReferenceSystem() );
-            if ( re == null ) {
-                throw new IllegalArgumentException( "Could not calculate bounds from layer with no bounds, " + l.getName());
+
+            re = transform(re, bounds.getCoordinateReferenceSystem());
+            if (re == null) {
+                throw new IllegalArgumentException(
+                        "Could not calculate bounds from layer with no bounds, " + l.getName());
             }
-            bounds.expandToInclude( re );
+            bounds.expandToInclude(re);
         }
-       
-        lg.setBounds( bounds );
+
+        lg.setBounds(bounds);
     }
-    
+
     /**
      * Helper method for transforming an envelope.
      */
-    ReferencedEnvelope transform( ReferencedEnvelope e, CoordinateReferenceSystem crs ) throws TransformException, FactoryException {
-        if ( !CRS.equalsIgnoreMetadata( crs, e.getCoordinateReferenceSystem() ) ) {
-            return e.transform( crs, true );
+    ReferencedEnvelope transform(ReferencedEnvelope e, CoordinateReferenceSystem crs)
+            throws TransformException, FactoryException {
+        if (!CRS.equalsIgnoreMetadata(crs, e.getCoordinateReferenceSystem())) {
+            return e.transform(crs, true);
         }
         return e;
     }
-    
+
     //
-    //remove methods
+    // remove methods
     //
-    
+
     /**
      * Removes a workspace from the catalog.
      * <p>
@@ -1094,14 +1176,14 @@ public class CatalogBuilder {
      * should also be deleted.
      * </p>
      */
-    public void removeWorkspace( WorkspaceInfo workspace, boolean recursive ) {
-        if ( recursive ) {
+    public void removeWorkspace(WorkspaceInfo workspace, boolean recursive) {
+        if (recursive) {
             workspace.accept(new CascadeDeleteVisitor(catalog));
         } else {
-            catalog.remove( workspace );
+            catalog.remove(workspace);
         }
     }
-    
+
     /**
      * Removes a store from the catalog.
      * <p>
@@ -1109,14 +1191,14 @@ public class CatalogBuilder {
      * should also be deleted.
      * </p>
      */
-    public void removeStore( StoreInfo store, boolean recursive ) {
-        if ( recursive ) {
+    public void removeStore(StoreInfo store, boolean recursive) {
+        if (recursive) {
             store.accept(new CascadeDeleteVisitor(catalog));
         } else {
-            catalog.remove( store );
+            catalog.remove(store);
         }
     }
-    
+
     /**
      * Removes a resource from the catalog.
      * <p>
@@ -1124,14 +1206,14 @@ public class CatalogBuilder {
      * should also be deleted.
      * </p>
      */
-    public void removeResource( ResourceInfo resource, boolean recursive ) {
-        if ( recursive ) {
+    public void removeResource(ResourceInfo resource, boolean recursive) {
+        if (recursive) {
             resource.accept(new CascadeDeleteVisitor(catalog));
         } else {
-            catalog.remove( resource );
+            catalog.remove(resource);
         }
     }
-    
+
     /**
      * Reattaches a serialized {@link StoreInfo} to the catalog
      */
@@ -1139,24 +1221,24 @@ public class CatalogBuilder {
         storeInfo = ModificationProxy.unwrap(storeInfo);
         ((StoreInfoImpl) storeInfo).setCatalog(catalog);
     }
-    
+
     /**
-     * Reattaches a serialized {@link ResourceInfo} to the catalog 
+     * Reattaches a serialized {@link ResourceInfo} to the catalog
      */
     public void attach(ResourceInfo resourceInfo) {
         resourceInfo = ModificationProxy.unwrap(resourceInfo);
         ((ResourceInfoImpl) resourceInfo).setCatalog(catalog);
     }
-    
+
     /**
      * Reattaches a serialized {@link LayerInfo} to the catalog
      */
     public void attach(LayerInfo layerInfo) {
         attach(layerInfo.getResource());
     }
-    
+
     /**
-     * Reattaches a serialized {@link MapInfo} to the catalog 
+     * Reattaches a serialized {@link MapInfo} to the catalog
      */
     public void attach(MapInfo mapInfo) {
         // hmmm... mapInfo has a list of layers inside? Not names?
@@ -1164,7 +1246,7 @@ public class CatalogBuilder {
             attach(layer);
         }
     }
-    
+
     /**
      * Reattaches a serialized {@link LayerGroupInfo} to the catalog
      */
@@ -1173,28 +1255,28 @@ public class CatalogBuilder {
             attach(layer);
         }
         for (StyleInfo style : groupInfo.getStyles()) {
-            if(style != null)
+            if (style != null)
                 attach(style);
         }
     }
-    
+
     /**
-     * Reattaches a serialized {@link StyleInfo} to the catalog 
+     * Reattaches a serialized {@link StyleInfo} to the catalog
      */
     public void attach(StyleInfo styleInfo) {
         styleInfo = ModificationProxy.unwrap(styleInfo);
         ((StyleInfoImpl) styleInfo).setCatalog(catalog);
     }
-    
+
     /**
      * Reattaches a serialized {@link NamespaceInfo} to the catalog
      */
     public void attach(NamespaceInfo nsInfo) {
         // nothing to do
     }
-    
+
     /**
-     * Reattaches a serialized {@link WorkspaceInfo} to the catalog 
+     * Reattaches a serialized {@link WorkspaceInfo} to the catalog
      */
     public void attach(WorkspaceInfo wsInfo) {
         // nothing to do
