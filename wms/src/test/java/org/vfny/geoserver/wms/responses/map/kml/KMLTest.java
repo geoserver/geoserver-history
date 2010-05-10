@@ -3,7 +3,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.wms.RemoteOWSTestSupport;
+import org.geoserver.test.RemoteOWSTestSupport;
 import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
@@ -55,7 +55,7 @@ public class KMLTest extends WMSTestSupport {
     }
     
     public void testVectorWithRemoteLayer() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
+        if(!RemoteOWSTestSupport.isRemoteWFSStatesAvailable(LOGGER))
             return;
         
         Document doc = getAsDOM(

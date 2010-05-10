@@ -22,9 +22,9 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
+import org.geoserver.test.RemoteOWSTestSupport;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.RemoteOWSTestSupport;
 import org.geoserver.wms.WMS;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.Style;
@@ -344,7 +344,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     }
     
     public void testRemoteWFS() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
+        if(!RemoteOWSTestSupport.isRemoteWFSStatesAvailable(LOGGER))
             return;
         
         HashMap raw = new HashMap();
@@ -369,7 +369,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     }
     
     public void testRemoteWFSNoStyle() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
+        if(!RemoteOWSTestSupport.isRemoteWFSStatesAvailable(LOGGER))
             return;
         
         HashMap raw = new HashMap();
@@ -392,7 +392,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
     }
     
     public void testRemoteWFSInvalidURL() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
+        if(!RemoteOWSTestSupport.isRemoteWFSStatesAvailable(LOGGER))
             return;
         
         HashMap raw = new HashMap();
