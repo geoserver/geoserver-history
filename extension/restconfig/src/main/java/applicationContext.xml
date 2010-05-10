@@ -69,8 +69,19 @@
           <key><value>/workspaces/{workspace}/coveragestores</value></key>
           <value>coverageStoreFinder</value>
         </entry>
-        
+        <entry>
+          <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}</value></key>
+          <value>wmsStoreFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/wmsstores.{format}</value></key>
+          <value>wmsStoreFinder</value>
+        </entry>
          <entry>
+          <key><value>/workspaces/{workspace}/wmsstores</value></key>
+          <value>wmsStoreFinder</value>
+        </entry>
+        <entry>
           <key><value>/workspaces/{workspace}/datastores/{datastore}/featuretypes/{featuretype}.{format}</value></key>
           <value>featureTypeFinder</value>
         </entry>
@@ -99,6 +110,7 @@
           <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/coverages.{format}</value></key>
           <value>coverageFinder</value>
         </entry>
+        
         <entry>
           <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/coverages</value></key>
           <value>coverageFinder</value>
