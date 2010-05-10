@@ -16,6 +16,8 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersisterFactory;
 import org.geoserver.test.GeoServerTestSupport;
@@ -265,6 +267,95 @@ public class GeoServerPersisterTest extends GeoServerTestSupport {
         
         assertFalse( d.exists() );
     }
+    
+    
+    public void testAddWMSStore() throws Exception {
+        testAddWorkspace();
+        
+        File dir = new File( testData.getDataDirectoryRoot(), "workspaces/acme/demowms");
+        assertFalse( dir.exists() );
+        
+        WMSStoreInfo wms = catalog.getFactory().createWebMapServer();
+        wms.setName( "demowms" );
+        wms.setWorkspace( catalog.getWorkspaceByName( "acme" ) );
+        catalog.add( wms );
+        
+        assertTrue( dir.exists() );
+        assertTrue( new File( dir, "wmsstore.xml").exists() );
+    }
+    
+    public void testModifyWMSStore() throws Exception {
+        testAddWMSStore();
+        
+        WMSStoreInfo wms = catalog.getStoreByName( "acme", "demowms", WMSStoreInfo.class );
+        assertNull( wms.getCapabilitiesURL() );
+        
+        String capsURL = "http://demo.opengeo.org:8080/geoserver/wms?request=GetCapabilites&service=WMS";
+        wms.setCapabilitiesURL(capsURL);
+        catalog.save( wms );
+        
+        File f = new File( testData.getDataDirectoryRoot(), "workspaces/acme/demowms/wmsstore.xml");
+        Document dom = dom( f );
+        assertXpathEvaluatesTo(capsURL, "/wmsStore/capabilitiesURL/text()", dom);
+    }
+    
+    public void testRemoveWMSStore() throws Exception {
+        testAddWMSStore();
+        
+        File f = new File( testData.getDataDirectoryRoot(), "workspaces/acme/demowms");
+        assertTrue( f.exists() );
+        
+        WMSStoreInfo wms = catalog.getStoreByName("acme", "demowms", WMSStoreInfo.class);
+        catalog.remove( wms );
+        assertFalse( f.exists() );
+    }
+    
+    public void testAddWMSLayer() throws Exception {
+        testAddWMSStore();
+        
+        File d = new File( testData.getDataDirectoryRoot(), "workspaces/acme/demowms/foo");
+        assertFalse( d.exists() );
+        
+        NamespaceInfo ns = catalog.getFactory().createNamespace();
+        ns.setPrefix( "bar" );
+        ns.setURI( "http://bar" );
+        catalog.add( ns );
+        
+        WMSLayerInfo wms = catalog.getFactory().createWMSLayer();
+        wms.setName( "foo" );
+        wms.setNamespace( ns );
+        wms.setStore(catalog.getStoreByName("acme", "demowms", WMSStoreInfo.class));
+        catalog.add( wms );
+        
+        assertTrue( d.exists() );
+        assertTrue( new File( d, "wmslayer.xml").exists() );
+    }
+    
+    public void testModifyWMSLayer() throws Exception {
+        testAddWMSLayer();
+        
+        WMSLayerInfo wli = catalog.getResourceByName( "bar", "foo", WMSLayerInfo.class );
+        wli.setTitle( "fooTitle" );
+        catalog.save( wli );
+        
+        File f = new File( testData.getDataDirectoryRoot(), "workspaces/acme/demowms/foo/wmslayer.xml");
+        Document dom = dom( f );
+        
+        assertXpathEvaluatesTo( "fooTitle", "/wmsLayer/title", dom );
+    }
+    
+    public void testRemoveWMSLayer() throws Exception {
+        testAddWMSLayer();
+        
+        File d = new File( testData.getDataDirectoryRoot(), "workspaces/acme/demowms/foo");
+        assertTrue( d.exists() );
+        
+        WMSLayerInfo wli = catalog.getResourceByName( "bar", "foo", WMSLayerInfo.class );
+        catalog.remove( wli );
+        
+        assertFalse( d.exists() );
+    }
+    
     
     public void testAddLayer() throws Exception {
         testAddFeatureType();
