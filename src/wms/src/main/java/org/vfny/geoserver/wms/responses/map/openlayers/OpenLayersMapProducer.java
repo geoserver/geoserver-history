@@ -28,6 +28,7 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
+import org.geotools.map.WMSMapLayer;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
@@ -167,7 +168,8 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
         for (MapLayer layer : mapContext.getLayers()) {
             FeatureType schema = layer.getFeatureSource().getSchema();
             boolean grid = schema.getName().getLocalPart().equals("GridCoverage")
-                    && schema.getDescriptor("geom") != null && schema.getDescriptor("grid") != null;
+                    && schema.getDescriptor("geom") != null && schema.getDescriptor("grid") != null &&
+                    !(layer instanceof WMSMapLayer);
             if(!grid)
                 return false;
         }
