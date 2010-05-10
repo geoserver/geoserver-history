@@ -22,6 +22,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.CatalogImpl;
 import org.geoserver.config.ContactInfo;
@@ -273,6 +274,32 @@ public class XStreamPersisterTest extends TestCase {
         
         Document dom = dom( in( out ) );
         assertEquals( "coverageStore", dom.getDocumentElement().getNodeName() );
+    }
+    
+    public void testWMSStore() throws Exception {
+        Catalog catalog = new CatalogImpl();
+        CatalogFactory cFactory = catalog.getFactory();
+        
+        WorkspaceInfo ws = cFactory.createWorkspace();
+        ws.setName( "foo" );
+        
+        WMSStoreInfo wms1 = cFactory.createWebMapService();
+        wms1.setName( "bar" );
+        wms1.setWorkspace( ws );
+        wms1.setCapabilitiesURL( "http://fake.host/wms?request=GetCapabilities&service=wms");
+        
+        ByteArrayOutputStream out = out();
+        persister.save( wms1, out );
+        
+        WMSStoreInfo wms2 = persister.load( in( out ), WMSStoreInfo.class );
+        assertEquals( "bar", wms2.getName() );
+        
+        //TODO: reenable when resolving proxy commited
+        assertNotNull( wms2.getWorkspace() );
+        assertEquals( "foo", wms2.getWorkspace().getId() );
+        
+        Document dom = dom( in( out ) );
+        assertEquals( "wmsStore", dom.getDocumentElement().getNodeName() );
     }
     
     public void testStyle() throws Exception {

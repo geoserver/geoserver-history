@@ -18,6 +18,11 @@ public interface CatalogFactory {
      * Creates a new data store.
      */
     DataStoreInfo createDataStore();
+    
+    /**
+     * Creates a new web map server connection
+     */
+    WMSStoreInfo createWebMapService();
 
     /**
      * Creats a new metadata link.

@@ -35,6 +35,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
 import org.geoserver.catalog.impl.AttributionInfoImpl;
@@ -52,6 +53,7 @@ import org.geoserver.catalog.impl.ResolvingProxy;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WMSStoreInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
@@ -142,6 +144,10 @@ public class XStreamPersister {
         
         protected void postEncodeReference( Object obj, String ref, HierarchicalStreamWriter writer, MarshallingContext context ) {
         }
+
+        public void postEncodeWMSStore(WMSStoreInfo store, HierarchicalStreamWriter writer,  MarshallingContext context) {
+            
+        }
     }
     
     /**
@@ -218,6 +224,7 @@ public class XStreamPersister {
         xs.alias("namespace", NamespaceInfo.class);
         xs.alias("workspace", WorkspaceInfo.class);
         xs.alias("dataStore", DataStoreInfo.class);
+        xs.alias("wmsStore", WMSStoreInfo.class);
         xs.alias("coverageStore", CoverageStoreInfo.class);
         xs.alias("style",StyleInfo.class);
         xs.alias( "featureType", FeatureTypeInfo.class);
@@ -456,6 +463,7 @@ public class XStreamPersister {
         xs.addDefaultImplementation(NamespaceInfoImpl.class, NamespaceInfo.class);
         xs.addDefaultImplementation(WorkspaceInfoImpl.class, WorkspaceInfo.class);
         xs.addDefaultImplementation(DataStoreInfoImpl.class, DataStoreInfo.class);
+        xs.addDefaultImplementation(WMSStoreInfoImpl.class, WMSStoreInfo.class);
         xs.addDefaultImplementation(CoverageStoreInfoImpl.class, CoverageStoreInfo.class);
         xs.addDefaultImplementation(StyleInfoImpl.class, StyleInfo.class);
         xs.addDefaultImplementation(FeatureTypeInfoImpl.class, FeatureTypeInfo.class );
@@ -1125,9 +1133,10 @@ public class XStreamPersister {
             StoreInfo store = (StoreInfo) result;
             if ( store instanceof DataStoreInfo ) {
                 callback.postEncodeDataStore( (DataStoreInfo) store, writer, context );
-            }
-            else {
+            } else if( store instanceof CoverageStoreInfo ){
                 callback.postEncodeCoverageStore( (CoverageStoreInfo) store, writer, context );
+            } else {
+                callback.postEncodeWMSStore( (WMSStoreInfo) store, writer, context );
             }
             
         }

@@ -132,6 +132,10 @@ public class CascadeRemovalReporter implements CatalogVisitor {
     public void visit(CoverageStoreInfo coverageStore) {
         visitStore(coverageStore);
     }
+    
+    public void visit(WMSStoreInfo store) {
+        visitStore(store);
+    }
 
     void visitStore(StoreInfo dataStore) {
         // drill down into layers (into resources since we cannot scan layers)

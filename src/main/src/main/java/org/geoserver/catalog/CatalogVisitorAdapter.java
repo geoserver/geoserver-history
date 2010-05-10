@@ -32,6 +32,10 @@ public class CatalogVisitorAdapter implements CatalogVisitor {
     public void visit( CoverageStoreInfo coverageStore ) {
         
     }
+    
+    public void visit( WMSStoreInfo wmsStore ) {
+        
+    }
    
     public void visit( FeatureTypeInfo featureType ) {
         

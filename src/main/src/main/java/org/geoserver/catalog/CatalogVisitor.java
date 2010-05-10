@@ -28,11 +28,6 @@ public interface CatalogVisitor {
     void visit( NamespaceInfo workspace );
     
     /**
-     * Visits a workspace.
-     */
-    //void visit( StoreInfo store );
-    
-    /**
      * Visits a data store.
      */
     void visit( DataStoreInfo dataStore ); 
@@ -43,10 +38,10 @@ public interface CatalogVisitor {
     void visit( CoverageStoreInfo coverageStore );
     
     /**
-     * Visits a resource.
+     * Visits a data store.
      */
-    //void visit( ResourceInfo resource );
-    
+    void visit( WMSStoreInfo wmsStore ); 
+
     /**
      * Visits a feature type.
      */

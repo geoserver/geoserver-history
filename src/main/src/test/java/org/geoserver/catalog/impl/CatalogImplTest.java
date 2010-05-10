@@ -19,6 +19,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
@@ -33,6 +34,7 @@ public class CatalogImplTest extends TestCase {
     NamespaceInfo ns;
     DataStoreInfo ds;
     CoverageStoreInfo cs;
+    WMSStoreInfo wms;
     FeatureTypeInfo ft;
     CoverageInfo cv;
     LayerInfo l;
@@ -71,6 +73,12 @@ public class CatalogImplTest extends TestCase {
         cv = factory.createCoverage();
         cv.setName("cvName");
         cv.setStore(cs);
+        
+        wms = factory.createWebMapService();
+        wms.setName("wmsName");
+        wms.setType("WMS");
+        wms.setCapabilitiesURL("http://fake.url");
+        wms.setWorkspace(ws);
         
         s = factory.createStyle();
         s.setName( "styleName" );
@@ -1122,6 +1130,21 @@ public class CatalogImplTest extends TestCase {
         catch( CatalogException ce ) {
             //good
         }
+    }
+    
+    public void testAddWMSStore() {
+        assertTrue( catalog.getStores(WMSStoreInfo.class).isEmpty() );
+        catalog.add( wms );
+        assertEquals( 1, catalog.getStores(WMSStoreInfo.class).size() );
+        
+        WMSStoreInfo retrieved = catalog.getStore(wms.getId(), WMSStoreInfo.class);
+        
+        WMSStoreInfo wms2 = catalog.getFactory().createWebMapService();
+        wms2.setName( "wms2Name" );
+        wms2.setWorkspace( ws );
+        
+        catalog.add( wms2 );
+        assertEquals( 2, catalog.getStores(WMSStoreInfo.class).size() );
     }
     
     
