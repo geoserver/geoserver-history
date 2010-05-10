@@ -29,7 +29,7 @@ public class WMSLayerInfoImpl extends ResourceInfoImpl implements WMSLayerInfo {
 
         WMSCapabilities caps = getStore().getWebMapServer(listener).getCapabilities();
         for (Layer layer : caps.getLayerList()) {
-            if (layer.getName().equals(name)) {
+            if (name.equals(layer.getName())) {
                 return layer;
             }
         }

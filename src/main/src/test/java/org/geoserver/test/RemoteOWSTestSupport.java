@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.test;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -15,14 +15,16 @@ import java.util.logging.Logger;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.ows.Layer;
 import org.geotools.data.wfs.WFSDataStoreFactory;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.filter.FilterFactory;
 
 
 /** 
- * Utility class used to check wheter REMOTE_OWS_XXX related tests can be run against Sigma
+ * Utility class used to check wheter REMOTE_OWS_XXX related tests can be run against the demo server or not
  * or not.
  * @author Andrea Aime - TOPP
  * @author Ben Caradoc-Davies, CSIRO Exploration and Mining
@@ -34,15 +36,19 @@ public class RemoteOWSTestSupport {
     
     public static final String WFS_SERVER_URL = "http://demo.opengeo.org/geoserver/wfs?";
     
-    static Boolean remoteStatesAvailable;
+    public static final String WMS_SERVER_URL = "http://demo.opengeo.org/geoserver/wms?";
+    
+    static Boolean remoteWMSStatesAvailable;
+    
+    static Boolean remoteWFSStatesAvailable;
         
-    public static boolean isRemoteStatesAvailable(Logger logger) {
-        if(remoteStatesAvailable == null) {
+    public static boolean isRemoteWFSStatesAvailable(Logger logger) {
+        if(remoteWFSStatesAvailable == null) {
             // let's see if the remote ows tests are enabled to start with
             String value = System.getProperty("remoteOwsTests");
             if(value == null || !"TRUE".equalsIgnoreCase(value)) {
-                logger.log(Level.WARNING, "Skipping remote OWS test because they were not enabled via -DremoteOwsTests=true");
-                remoteStatesAvailable = Boolean.FALSE;
+                logger.log(Level.WARNING, "Skipping remote WFS test because they were not enabled via -DremoteOwsTests=true");
+                remoteWFSStatesAvailable = Boolean.FALSE;
             } else {
                 // let's check if the remote WFS tests are runnable
                 try {
@@ -55,7 +61,7 @@ public class RemoteOWSTestSupport {
                     params.put(WFSDataStoreFactory.TIMEOUT.key, Integer.valueOf(5000));
                     DataStore remoteStore = factory.createDataStore(params);
                     FeatureSource fs = remoteStore.getFeatureSource(TOPP_STATES);
-                    remoteStatesAvailable = Boolean.TRUE;
+                    remoteWFSStatesAvailable = Boolean.TRUE;
                     // check a basic response can be answered correctly
                     DefaultQuery dq = new DefaultQuery(TOPP_STATES);
                     FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
@@ -64,18 +70,46 @@ public class RemoteOWSTestSupport {
                     if(fc.size() != 1) {
                         logger.log(Level.WARNING, "Remote database status invalid, there should be one and only one " +
                                 "feature with more than 20M persons in topp:states");
-                        remoteStatesAvailable = Boolean.FALSE;
+                        remoteWFSStatesAvailable = Boolean.FALSE;
                     }
                     
-                    logger.log(Level.WARNING, "Remote OWS tests are enabled, remote server appears to be up");
+                    logger.log(Level.WARNING, "Remote WFS tests are enabled, remote server appears to be up");
                 } catch(IOException e) {
-                    logger.log(Level.WARNING, "Skipping remote OWS test, either demo  " +
+                    logger.log(Level.WARNING, "Skipping remote wms test, either demo  " +
                             "is down or the topp:states layer is not there", e);
-                    remoteStatesAvailable = Boolean.FALSE;
+                    remoteWFSStatesAvailable = Boolean.FALSE;
                 }
             }
         }
-        return remoteStatesAvailable.booleanValue();
+        return remoteWFSStatesAvailable.booleanValue();
+    }
+    
+    public static boolean isRemoteWMSStatesAvailable(Logger logger) {
+        if(remoteWMSStatesAvailable == null) {
+            // let's see if the remote ows tests are enabled to start with
+            String value = System.getProperty("remoteOwsTests");
+            if(value == null || !"TRUE".equalsIgnoreCase(value)) {
+                logger.log(Level.WARNING, "Skipping remote OWS test because they were not enabled via -DremoteOwsTests=true");
+                remoteWMSStatesAvailable = Boolean.FALSE;
+            } else {
+                // let's check if the remote WFS tests are runnable
+                try {
+                    remoteWMSStatesAvailable = Boolean.FALSE;
+                    WebMapServer server = new WebMapServer(new URL(WMS_SERVER_URL + "service=WMS&request=GetCapabilities"), 5000);
+                    for(Layer l : server.getCapabilities().getLayerList()) {
+                        if("topp:states".equals(l.getName())) {
+                            remoteWMSStatesAvailable = Boolean.TRUE;
+                            break;
+                        }
+                    }
+                } catch(Exception e) {
+                    logger.log(Level.WARNING, "Skipping remote WMS test, either demo  " +
+                            "is down or the topp:states layer is not there", e);
+                    remoteWMSStatesAvailable = Boolean.FALSE;
+                }
+            }
+        }
+        return remoteWMSStatesAvailable.booleanValue();
     }
     
 }

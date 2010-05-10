@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.wms.RemoteOWSTestSupport;
+import org.geoserver.test.RemoteOWSTestSupport;
 import org.geoserver.wms.WMSTestSupport;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -118,7 +118,7 @@ public class GetMapTest extends WMSTestSupport {
     }
     
     public void testRemoteOWSGet() throws Exception {
-        if(!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER))
+        if(!RemoteOWSTestSupport.isRemoteWFSStatesAvailable(LOGGER))
             return;
         
         ServletResponse response = getAsServletResponse(
@@ -135,7 +135,7 @@ public class GetMapTest extends WMSTestSupport {
     }
     
     public void testRemoteOWSUserStyleGet() throws Exception {
-        if (!RemoteOWSTestSupport.isRemoteStatesAvailable(LOGGER)) {
+        if (!RemoteOWSTestSupport.isRemoteWFSStatesAvailable(LOGGER)) {
             return;
         }
 

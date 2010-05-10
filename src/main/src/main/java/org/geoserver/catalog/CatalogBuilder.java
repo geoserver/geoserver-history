@@ -7,6 +7,7 @@ package org.geoserver.catalog;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +34,9 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.ows.CRSEnvelope;
+import org.geotools.data.ows.Layer;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -279,6 +283,16 @@ public class CatalogBuilder {
      */
     public CoverageStoreInfo buildCoverageStore( String name ) {
         CoverageStoreInfo info = catalog.getFactory().createCoverageStore();
+        buildStore(info,name);
+            
+        return info;
+    }
+    
+    /**
+     * Builds a new WMS store
+     */
+    public WMSStoreInfo buildWMSStore( String name ) throws IOException {
+        WMSStoreInfo info = catalog.getFactory().createWebMapServer();
         buildStore(info,name);
             
         return info;
@@ -802,6 +816,83 @@ public class CatalogBuilder {
         }
 
         return dims;
+    }
+    
+    public WMSLayerInfo buildWMSLayer(String layerName) throws IOException {
+        if ( store == null || !( store instanceof WMSStoreInfo ) ) {
+            throw new IllegalStateException( "WMS store not set.");
+        }
+        
+        WMSStoreInfo wms = (WMSStoreInfo) store;
+        WMSLayerInfo wli = catalog.getFactory().createWMSLayer();
+        wli.setName(layerName);
+        wli.setNativeName(layerName);
+        
+        wli.setStore( store );
+        wli.setEnabled(true);
+        
+        WorkspaceInfo workspace = store.getWorkspace();
+        NamespaceInfo namespace = catalog.getNamespaceByPrefix( workspace.getName() );
+        if ( namespace == null ) {
+            namespace = catalog.getDefaultNamespace();
+        }
+        wli.setNamespace(namespace);
+        
+        Layer layer = wli.getWMSLayer(null);
+        
+        // try to get the native SRS -> we use the bounding boxes, GeoServer will publish all of the
+        // supported SRS in the root, if we use getSRS() we'll get them all
+        for (String srs : layer.getBoundingBoxes().keySet()) {
+            try {
+                CoordinateReferenceSystem crs = CRS.decode(srs);
+                wli.setSRS(srs);
+                wli.setNativeCRS(crs);
+            } catch(Exception e) {
+                LOGGER.log(Level.INFO, "Skipping " + srs + " definition, it was not recognized by the referencing subsystem");
+            }
+        }
+        // fall back on WGS84 if necessary
+        if(wli.getSRS() == null) {
+            wli.setSRS("EPSG:4326");
+            wli.setNativeCRS(DefaultGeographicCRS.WGS84);
+        }
+        
+        // try to grab the envelope
+        GeneralEnvelope envelope = layer.getEnvelope(wli.getNativeCRS());
+        if(envelope != null) {
+            ReferencedEnvelope re = new ReferencedEnvelope(envelope.getMinimum(0), envelope
+                    .getMaximum(0), envelope.getMinimum(1), envelope.getMaximum(1), wli.getNativeCRS());
+            wli.setNativeBoundingBox(re);
+        }
+        CRSEnvelope llbbox = layer.getLatLonBoundingBox();
+        if(llbbox != null) {
+            ReferencedEnvelope re = new ReferencedEnvelope(llbbox.getMinX(), llbbox.getMaxX(),
+                    llbbox.getMinY(), llbbox.getMaxY(), DefaultGeographicCRS.WGS84);
+            wli.setLatLonBoundingBox(re);
+        } else if(wli.getNativeBoundingBox() != null) {
+            try {
+                wli.setLatLonBoundingBox(wli.getNativeBoundingBox().transform(DefaultGeographicCRS.WGS84, true));
+            } catch(Exception e) {
+                LOGGER.log(Level.INFO, "Could not transform native bbox into a lat/lon one", e);
+            }
+        }
+        
+        // reflect all the metadata that we can grab
+        wli.setAbstract(layer.get_abstract());
+        wli.setDescription(layer.get_abstract());
+        wli.setTitle(layer.getTitle());
+        if(layer.getKeywords() != null) {
+            wli.getKeywords().addAll(Arrays.asList(layer.getKeywords()));
+        }
+        
+        // strip off the prefix if we're cascading from a server that does add them
+        String published = wli.getName();
+        if(published.contains(":")) {
+            wli.setName(published.substring(published.lastIndexOf(':') + 1));
+        }
+        
+        
+        return wli;
     }
     
     void parseUOM(StringBuffer label, Unit uom) {
