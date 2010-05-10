@@ -18,6 +18,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.web.data.resource.DataStorePanelInfo;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -46,6 +47,12 @@ public class CatalogIconFactory implements Serializable {
 
     public static final ResourceReference VECTOR_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/geosilk/vector.png");
+    
+    public static final ResourceReference MAP_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/geosilk/map.png");
+    
+    public static final ResourceReference MAP_STORE_ICON = new ResourceReference(
+            GeoServerBasePage.class, "img/icons/geosilk/server_map.png");
     
     public static final ResourceReference POINT_ICON = new ResourceReference(
             GeoServerBasePage.class, "img/icons/silk/bullet_blue.png");
@@ -114,6 +121,8 @@ public class CatalogIconFactory implements Serializable {
             } catch(Exception e) {
                 return GEOMETRY_ICON;
             }
+        } else if(info.getType() == Type.WMS) {
+            return MAP_ICON;
         } else {
             return UNKNOWN_ICON;
         }
@@ -167,25 +176,24 @@ public class CatalogIconFactory implements Serializable {
             }
             
             if(dataStoreFactory != null){
-                factoryClass = dataStoreFactory.getClass();
+                return getStoreIcon(dataStoreFactory.getClass());
             }
             
         } else if (storeInfo instanceof CoverageStoreInfo) {
             AbstractGridFormat format = resourcePool
                     .getGridCoverageFormat((CoverageStoreInfo) storeInfo);
             if(format != null){
-                factoryClass = format.getClass();
+                return getStoreIcon(format.getClass());
             }
+        } else if (storeInfo instanceof WMSStoreInfo) {
+            return MAP_STORE_ICON;
         } else {
             throw new IllegalStateException(storeInfo.getClass().getName());
         }
         
-        if (factoryClass == null) {
-            LOGGER.info("Could not determine factory class for StoreInfo " + storeInfo.getName()
-                    + ". Using 'unknown' icon.");
-            return UNKNOWN_ICON;
-        }
-        return getStoreIcon(factoryClass);
+        LOGGER.info("Could not determine icon for StoreInfo " + storeInfo.getName()
+                + ". Using 'unknown' icon.");
+        return UNKNOWN_ICON;
     }
 
     /**
