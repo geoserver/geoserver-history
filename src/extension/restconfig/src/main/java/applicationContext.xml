@@ -69,6 +69,7 @@
           <key><value>/workspaces/{workspace}/coveragestores</value></key>
           <value>coverageStoreFinder</value>
         </entry>
+        
         <entry>
           <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}.{format}</value></key>
           <value>wmsStoreFinder</value>
@@ -85,6 +86,7 @@
           <key><value>/workspaces/{workspace}/wmsstores</value></key>
           <value>wmsStoreFinder</value>
         </entry>
+        
         <entry>
           <key><value>/workspaces/{workspace}/datastores/{datastore}/featuretypes/{featuretype}.{format}</value></key>
           <value>featureTypeFinder</value>
@@ -102,7 +104,7 @@
           <value>featureTypeFinder</value>
         </entry>
         
-         <entry>
+        <entry>
           <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/coverages/{coverage}.{format}</value></key>
           <value>coverageFinder</value>
         </entry>
@@ -114,10 +116,26 @@
           <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/coverages.{format}</value></key>
           <value>coverageFinder</value>
         </entry>
-        
         <entry>
           <key><value>/workspaces/{workspace}/coveragestores/{coveragestore}/coverages</value></key>
           <value>coverageFinder</value>
+        </entry>
+        
+        <entry>
+          <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}/wmslayers/{wmslayer}.{format}</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+         <entry>
+          <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}/wmslayers/{wmslayer}</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}/wmslayers.{format}</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/wmsstores/{wmsstore}/wmslayers</value></key>
+          <value>wmsLayerFinder</value>
         </entry>
         
         <entry>
@@ -136,7 +154,8 @@
           <key><value>/workspaces/{workspace}/featuretypes</value></key>
           <value>featureTypeFinder</value>
         </entry>
-         <entry>
+        
+        <entry>
           <key><value>/workspaces/{workspace}/coverages/{coverage}.{format}</value></key>
           <value>coverageFinder</value>
         </entry>
@@ -152,6 +171,24 @@
           <key><value>/workspaces/{workspace}/coverages</value></key>
           <value>coverageFinder</value>
         </entry>
+        
+        <entry>
+          <key><value>/workspaces/{workspace}/wmslayers/{wmslayer}.{format}</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/wmslayers/{wmslayer}</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/wmslayers.{format}</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+        <entry>
+          <key><value>/workspaces/{workspace}/wmslayers</value></key>
+          <value>wmsLayerFinder</value>
+        </entry>
+        
         <entry>
           <key><value>/namespaces/{namespace}.{format}</value></key>
           <value>namespaceFinder</value>
@@ -246,6 +283,7 @@
   <bean id="storeFileFinder" class="org.geoserver.catalog.rest.StoreFileFinder" parent="abstractCatalogFinder"/>
   <bean id="featureTypeFinder" class="org.geoserver.catalog.rest.FeatureTypeFinder" parent="abstractCatalogFinder"/>
   <bean id="coverageFinder" class="org.geoserver.catalog.rest.CoverageFinder" parent="abstractCatalogFinder"/>
+  <bean id="wmsLayerFinder" class="org.geoserver.catalog.rest.WMSLayerFinder" parent="abstractCatalogFinder"/>
   <bean id="styleFinder2" class="org.geoserver.catalog.rest.StyleFinder" parent="abstractCatalogFinder"/>
   <bean id="layerFinder2" class="org.geoserver.catalog.rest.LayerFinder" parent="abstractCatalogFinder"/>
   <bean id="layerGroupFinder2" class="org.geoserver.catalog.rest.LayerGroupFinder" parent="abstractCatalogFinder"/>
