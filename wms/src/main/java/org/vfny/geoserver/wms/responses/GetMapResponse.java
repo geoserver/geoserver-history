@@ -31,6 +31,7 @@ import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
+import org.geotools.data.ows.Layer;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
@@ -439,9 +440,26 @@ public class GetMapResponse implements Response {
                 } else if(layerType == MapLayerInfo.TYPE_WMS) {
                     WMSLayerInfo wmsLayer = (WMSLayerInfo) layers[i].getResource();
                     WebMapServer wms = wmsLayer.getStore().getWebMapServer(null);
-                    WMSMapLayer mapLayer = new WMSMapLayer(wms, wmsLayer.getWMSLayer(null));
-                    mapLayer.setTitle(wmsLayer.getPrefixedName());
-                    mapContext.addLayer(mapLayer);
+                    Layer gt2Layer = wmsLayer.getWMSLayer(null);
+                    
+                    // see if we can merge this layer with the previous one
+                    boolean merged = false;
+                    if(mapContext.getLayerCount() > 0) {
+                        MapLayer lastLayer = mapContext.getLayer(mapContext.getLayerCount() - 1);
+                        if(lastLayer instanceof WMSMapLayer) {
+                            WMSMapLayer lastWMS = (WMSMapLayer) lastLayer;
+                            WebMapServer otherWMS = lastWMS.getWebMapServer();
+                            if(otherWMS.equals(wms)) {
+                                lastWMS.addLayer(gt2Layer);
+                                merged = true;
+                            }
+                        } 
+                    }
+                    if(!merged) {
+                        WMSMapLayer mapLayer = new WMSMapLayer(wms, gt2Layer);
+                        mapLayer.setTitle(wmsLayer.getPrefixedName());
+                        mapContext.addLayer(mapLayer);
+                    }
                 } else {
                     throw new IllegalArgumentException("Unkown layer type " + layerType);
                 }
