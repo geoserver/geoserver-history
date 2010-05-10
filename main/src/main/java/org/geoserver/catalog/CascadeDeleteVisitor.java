@@ -77,8 +77,12 @@ public class CascadeDeleteVisitor implements CatalogVisitor {
 
     public void visit(CoverageStoreInfo coverageStore) {
         visitStore(coverageStore);
-
     }
+    
+    public void visit(WMSStoreInfo wmsStore) {
+        visitStore(wmsStore);
+    }
+
 
     public void visit(FeatureTypeInfo featureType) {
         // when the resource/layer split is done, delete all layers linked to the resource

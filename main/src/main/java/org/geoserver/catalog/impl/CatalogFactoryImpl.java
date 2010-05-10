@@ -19,6 +19,7 @@ import org.geoserver.catalog.MapInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 
 public class CatalogFactoryImpl implements CatalogFactory {
@@ -43,6 +44,10 @@ public class CatalogFactoryImpl implements CatalogFactory {
 
     public DataStoreInfo createDataStore() {
         return new DataStoreInfoImpl(catalog);
+    }
+    
+    public WMSStoreInfo createWebMapService() {
+        return new WMSStoreInfoImpl(catalog);
     }
     
     public AttributeTypeInfo createAttribute() {
