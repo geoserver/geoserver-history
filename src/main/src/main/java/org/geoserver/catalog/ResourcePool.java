@@ -57,6 +57,7 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.Hints;
 import org.geotools.feature.AttributeTypeBuilder;
@@ -133,6 +134,7 @@ public class ResourcePool {
     DataStoreCache dataStoreCache;
     FeatureTypeCache featureTypeCache;
     FeatureTypeAttributeCache featureTypeAttributeCache;
+    WMSCache wmsCache;
     CoverageReaderCache coverageReaderCache;
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
@@ -143,9 +145,13 @@ public class ResourcePool {
         crsCache = new HashMap<String, CoordinateReferenceSystem>();
         dataStoreCache = new DataStoreCache();
         featureTypeCache = new FeatureTypeCache(FEATURETYPE_CACHE_SIZE_DEFAULT);
+        
         featureTypeAttributeCache = new FeatureTypeAttributeCache();
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
+        
+        wmsCache = new WMSCache();
+        
         styleCache = new HashMap<StyleInfo, Style>();
         listeners = new CopyOnWriteArrayList<Listener>();
         
@@ -1011,6 +1017,41 @@ public class ResourcePool {
     }
     
     /**
+     * Returns the {@link WebMapServer} for a {@link WMSStoreInfo}  object
+     * @param info The WMS configuration
+     * @throws IOException
+     */
+    public WebMapServer getWebMapServer(WMSStoreInfo info) throws IOException {
+        try {
+            String id = info.getId();
+            WebMapServer wms = (WebMapServer) wmsCache.get(id);
+            if (wms == null) {
+                synchronized (wmsCache) {
+                    wms = (WebMapServer) wmsCache.get(id);
+                    if (wms == null) {
+                        wms = new WebMapServer(new URL(info.getCapabilitiesURL()));
+
+                        wmsCache.put(id, wms);
+                    }
+                }
+            }
+
+            return wms;
+        } catch (IOException ioe) {
+            throw ioe;
+        } catch (Exception e) {
+            throw (IOException) new IOException().initCause(e);
+        }
+    }
+    
+    /**
+     * Clears the cached resource for a web map server
+     */
+    public void clear( WMSStoreInfo info ) {
+        wmsCache.remove( info.getId() );
+    }
+    
+    /**
      * Returns a style resource, caching the result.
      * <p>
      * The resource is loaded by parsing {@link StyleInfo#getFilename()} as an 
@@ -1171,6 +1212,7 @@ public class ResourcePool {
         featureTypeAttributeCache.clear();
         coverageReaderCache.clear();
         hintCoverageReaderCache.clear();
+        wmsCache.clear();
         styleCache.clear();
         listeners.clear();
     }
@@ -1268,6 +1310,10 @@ public class ResourcePool {
         
     }
     
+    static class WMSCache extends LRUMap {
+        
+    }
+    
     /**
      * Listens to catalog events clearing cache entires when resources are modified.
      */
@@ -1302,6 +1348,12 @@ public class ResourcePool {
         public void visit(FeatureTypeInfo featureType) {
             clear(featureType);
         }
+
+        @Override
+        public void visit(WMSStoreInfo wmsStore) {
+            clear(wmsStore);
+        }
+
         @Override
         public void visit(StyleInfo style) {
             clear(style);
