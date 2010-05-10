@@ -28,7 +28,7 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
- * DOCUMENT ME!
+ * A convenience class that hides some of the differences between the various types of layers
  * 
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
@@ -40,6 +40,8 @@ public final class MapLayerInfo {
     public static int TYPE_RASTER = LayerInfo.Type.RASTER.getCode();
 
     public static int TYPE_REMOTE_VECTOR = LayerInfo.Type.REMOTE.getCode();
+    
+    public static int TYPE_WMS = LayerInfo.Type.WMS.getCode();
 
     /**
      * The feature source for the remote WFS layer (see REMOVE_OWS_TYPE/URL in the SLD spec)
