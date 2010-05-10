@@ -41,6 +41,7 @@ import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogEvent;
@@ -712,11 +713,11 @@ public class CatalogImpl implements Catalog {
         if ( layer.getType() == null ) {
             if ( layer.getResource() instanceof FeatureTypeInfo ) {
                 layer.setType( LayerInfo.Type.VECTOR );
-            }
-            else if ( layer.getResource() instanceof CoverageInfo ) {
+            } else if ( layer.getResource() instanceof CoverageInfo ) {
                 layer.setType( LayerInfo.Type.RASTER );
-            }
-            else {
+            } else if ( layer.getResource() instanceof WMSLayerInfo ) {
+                layer.setType( LayerInfo.Type.WMS );
+            } else {
                 String msg = "Layer type not set and can't be derived from resource";
                 throw new IllegalArgumentException( msg );
             }

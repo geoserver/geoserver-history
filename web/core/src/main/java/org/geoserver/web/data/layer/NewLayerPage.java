@@ -35,6 +35,8 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
@@ -223,7 +225,10 @@ public class NewLayerPage extends GeoServerSecuredPage {
             } else if (store instanceof DataStoreInfo) {
                 FeatureTypeInfo fti = builder.buildFeatureType(resource.getName());
                 return builder.buildLayer(fti);
-            }
+            } else if (store instanceof WMSStoreInfo) {
+                WMSLayerInfo wli = builder.buildWMSLayer(resource.getLocalName());
+                return builder.buildLayer(wli);
+            } 
         } catch (Exception e) {
             throw new RuntimeException(
                     "Error occurred while building the resources for the configuration page",

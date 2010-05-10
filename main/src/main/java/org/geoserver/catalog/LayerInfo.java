@@ -33,7 +33,13 @@ public interface LayerInfo extends CatalogInfo {
                 return 2;
             }
             
+        },
+        WMS {
+            public Integer getCode() {
+                return 3;
+            }
         };
+        
         
         public abstract Integer getCode();
     }
