@@ -10,8 +10,10 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,7 +21,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import net.opengis.wfs.FeatureCollectionType;
+
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
@@ -35,8 +42,11 @@ import org.geotools.data.DataUtilities;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
+import org.geotools.data.ows.Layer;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.store.FilteringFeatureCollection;
+import org.geotools.data.wms.WebMapServer;
+import org.geotools.data.wms.response.GetFeatureInfoResponse;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
@@ -50,6 +60,7 @@ import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.TransformedDirectPosition;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.map.WMSMapLayer;
 import org.geotools.parameter.Parameter;
 import org.geotools.referencing.CRS;
 import org.geotools.renderer.lite.MetaBufferEstimator;
@@ -59,6 +70,8 @@ import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.util.NullProgressListener;
+import org.geotools.wfs.v1_0.WFSConfiguration;
+import org.geotools.xml.Parser;
 import org.opengis.coverage.CannotEvaluateException;
 import org.opengis.coverage.PointOutsideCoverageException;
 import org.opengis.coverage.grid.GridEnvelope;
@@ -85,6 +98,7 @@ import org.vfny.geoserver.Response;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
+import org.xml.sax.SAXException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -248,10 +262,19 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         
         try {
             for (int i = 0; i < layerCount; i++) {
+                MapLayerInfo layerInfo = requestedLayers[i];
+                
+                // check cascaded WMS first, it's a special case
+                if(layerInfo.getType() == MapLayerInfo.TYPE_WMS) {
+                    handleGetFeatureInfoCascade(x, y, request, layerInfo);
+                    continue;
+                }
+                
+                // ok, internally rendered layer then, we check the style to see what's active
                 List<Rule> rules = getActiveRules(styles[i], scaleDenominator);
                 if(rules.size() == 0)
                     continue;
-                MapLayerInfo layerInfo = requestedLayers[i];
+                
                 if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
                     CoordinateReferenceSystem dataCRS = layerInfo.getCoordinateReferenceSystem();
 
@@ -338,7 +361,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     metas.add(layerInfo);
 
                     //}
-                } else {
+                } else if(layerInfo.getType() == MapLayerInfo.TYPE_RASTER) {
                     final CoverageInfo cinfo = requestedLayers[i].getCoverage();
                     final AbstractGridCoverage2DReader reader=(AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(new NullProgressListener(),GeoTools.getDefaultHints());
                     final ParameterValueGroup params = reader.getFormat().getReadParameters();
@@ -502,11 +525,80 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     } catch(PointOutsideCoverageException e) {
                         // it's fine, users might legitimately query point outside, we just don't return anything
                     }
+                } else {
+                    LOGGER.log(Level.SEVERE, "Can't perform feature info " +
+                    		"requests on " + layerInfo.getName() + ", layer type not supported");
                 }
             }
         } catch (Exception e) {
             throw new WmsException(null, "Internal error occurred", e);
         } 
+    }
+
+    private void handleGetFeatureInfoCascade(int x, int y, GetFeatureInfoRequest request, MapLayerInfo layerInfo)
+            throws IOException, TransformException, FactoryException, SAXException,
+            ParserConfigurationException {
+        WMSLayerInfo info = (WMSLayerInfo) layerInfo.getResource();
+        WebMapServer wms = info.getStore().getWebMapServer(null);
+        Layer layer = info.getWMSLayer(null);
+        
+        ReferencedEnvelope bbox = new ReferencedEnvelope(request.getGetMapRequest().getBbox(), request.getGetMapRequest().getCrs());
+        int width = request.getGetMapRequest().getWidth();
+        int height = request.getGetMapRequest().getHeight();
+        
+        // we can cascade GetFeatureInfo on queryable layers and if the GML mime type is supported
+        if(layer.isQueryable()) {
+            List<String> infoFormats = wms.getCapabilities().getRequest().getGetFeatureInfo().getFormats();
+            if(infoFormats.contains("application/vnd.ogc.gml")) {
+                // the wms layer does request in a CRS that's compatible with the WMS server srs list,
+                // we may need to transform
+                WMSMapLayer ml = new WMSMapLayer(wms, layer);
+                CoordinateReferenceSystem crs = ml.getCoordinateReferenceSystem();
+                
+                ReferencedEnvelope getMapBox = bbox.transform(ml.getCoordinateReferenceSystem(), true);
+                
+                // prepare the request
+                org.geotools.data.wms.request.GetMapRequest mapRequest = wms.createGetMapRequest();
+                mapRequest.addLayer(layer);
+                mapRequest.setDimensions(width, height);
+                mapRequest.setFormat(format);
+                mapRequest.setSRS(CRS.lookupIdentifier(crs, false));
+                mapRequest.setBBox(getMapBox);
+                mapRequest.setTransparent(true);
+                
+                org.geotools.data.wms.request.GetFeatureInfoRequest fiRequest = wms.createGetFeatureInfoRequest(mapRequest);
+                fiRequest.setQueryLayers(Collections.singleton(layer));
+                fiRequest.setInfoFormat("application/vnd.ogc.gml");
+                fiRequest.setFeatureCount(request.getFeatureCount());
+                
+                if(CRS.equalsIgnoreMetadata(ml.getCoordinateReferenceSystem(), bbox.getCoordinateReferenceSystem())) {
+                    fiRequest.setQueryPoint(x, y);
+                } else {
+                    throw new UnsupportedOperationException("Cannot handle CRS mismatch");
+                }
+                
+                // execute the request and parse the results
+                InputStream is = null;
+                try {
+                    GetFeatureInfoResponse response = wms.issueRequest(fiRequest);
+                    is = response.getInputStream();
+                    Parser parser = new Parser(new WFSConfiguration());
+                    parser.setStrict(false);
+                    Object result = parser.parse(is);
+                    if(result instanceof FeatureCollectionType) {
+                        FeatureCollectionType fcList = (FeatureCollectionType) result;
+                        for (Object collection : fcList.getFeature()) {
+                            results.add((FeatureCollection) collection);
+                        }
+                    }
+                } catch(Throwable t) {
+                    LOGGER.log(Level.SEVERE, "Tried to parse GML2 response, but failed", t);
+                } finally {
+                    if(is != null)
+                        is.close();
+                }
+            }
+        }
     }
 
     private Filter buildRulesFilter(org.opengis.filter.FilterFactory ff, List<Rule> rules) {
