@@ -16,10 +16,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.web.wicket.GeoServerDataProvider;
+import org.geotools.data.ows.Layer;
+import org.geotools.feature.NameImpl;
 import org.opengis.feature.type.Name;
 
 /**
@@ -64,7 +69,7 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
                     resources.put(name.getLocalPart(), new Resource(name));
                 }
                 
-            } else {
+            } else if(store instanceof CoverageStoreInfo) {
                 // getting to the coverage name without reading the whole coverage seems to
                 // be hard stuff, let's have the catalog builder to the heavy lifting
                 CatalogBuilder builder = new CatalogBuilder(getCatalog());
@@ -72,6 +77,19 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
                 CoverageInfo ci = builder.buildCoverage();
                 Name name = ci.getQualifiedName();
                 resources.put(name.getLocalPart(), new Resource(name));
+            } else if(store instanceof WMSStoreInfo) {
+                WMSStoreInfo wmsInfo = (WMSStoreInfo) store;
+                
+                CatalogBuilder builder = new CatalogBuilder(getCatalog());
+                builder.setStore(store);
+                List<Layer> layers = wmsInfo.getWebMapServer(null).getCapabilities().getLayerList();
+                for(Layer l : layers) {
+                    if(l.getName() == null) {
+                        continue;
+                    }
+                    
+                    resources.put(l.getName(), new Resource(new NameImpl(l.getName())));
+                }
             }
             
             // lookup all configured layers, mark them as published in the resources

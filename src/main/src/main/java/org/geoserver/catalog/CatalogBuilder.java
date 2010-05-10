@@ -36,7 +36,6 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.ows.CRSEnvelope;
 import org.geotools.data.ows.Layer;
-import org.geotools.data.wms.WebMapServer;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -294,6 +293,7 @@ public class CatalogBuilder {
     public WMSStoreInfo buildWMSStore( String name ) throws IOException {
         WMSStoreInfo info = catalog.getFactory().createWebMapServer();
         buildStore(info,name);
+        info.setType("WMS");
             
         return info;
     }
@@ -935,6 +935,18 @@ public class CatalogBuilder {
         
         return layer;
     }
+    
+    /**
+     * Builds a layer wrapping a WMS layer resource
+     * <p>
+     * The resulting object is not added to the catalog, it must be done by the calling code
+     * after the fact.
+     * </p>
+     */
+    public LayerInfo buildLayer( WMSLayerInfo layer) throws IOException {
+        return buildLayer((ResourceInfo) layer);
+    }
+    
     
     /**
      * Returns the default style for the specified resource, or null if the layer is vector

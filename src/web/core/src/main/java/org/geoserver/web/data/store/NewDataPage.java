@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.store;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Page;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -21,7 +24,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.web.CatalogIconFactory;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerSecuredPage;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
@@ -36,6 +41,7 @@ import org.opengis.coverage.grid.Format;
  * 
  * @author Gabriel Roldan
  */
+@SuppressWarnings("serial")
 public class NewDataPage extends GeoServerSecuredPage {
 
     // do not access directly, it is transient and the instance can be the de-serialized version
@@ -55,9 +61,10 @@ public class NewDataPage extends GeoServerSecuredPage {
     public NewDataPage() {
 
         final boolean thereAreWorkspaces = !getCatalog().getWorkspaces().isEmpty();
-        
-        if(!thereAreWorkspaces){
-            super.error((String)new ResourceModel("NewDataPage.noWorkspacesErrorMessage").getObject());
+
+        if (!thereAreWorkspaces) {
+            super.error((String) new ResourceModel("NewDataPage.noWorkspacesErrorMessage")
+                    .getObject());
         }
 
         final Form storeForm = new Form("storeForm");
@@ -121,9 +128,34 @@ public class NewDataPage extends GeoServerSecuredPage {
                 item.add(icon);
             }
         };
+        
+        final List<OtherStoreDescription> otherStores = getOtherStores();
+        
+        final ListView otherStoresLinks = new ListView("otherStores", otherStores) {
+            @Override
+            protected void populateItem(ListItem item) {
+                final OtherStoreDescription store = (OtherStoreDescription) item.getModelObject();
+                SubmitLink link;
+                link = new SubmitLink("resourcelink") {
+                    @Override
+                    public void onSubmit() {
+                        setResponsePage(store.configurationPage);
+                    }
+                };
+                link.setEnabled(thereAreWorkspaces);
+                link.add(new Label("resourcelabel", new ParamResourceModel("other." + store.key, NewDataPage.this)));
+                item.add(link);
+                item.add(new Label("resourceDescription", new ParamResourceModel("other." + store.key + ".description", NewDataPage.this)));
+                Image icon = new Image("storeIcon", store.icon);
+                // TODO: icons could provide a description too to be used in alt=...
+                icon.add(new AttributeModifier("alt", true, new Model("")));
+                item.add(icon);
+            }
+        };
 
         storeForm.add(dataStoreLinks);
         storeForm.add(coverageLinks);
+        storeForm.add(otherStoresLinks);
     }
 
     /**
@@ -161,5 +193,30 @@ public class NewDataPage extends GeoServerSecuredPage {
         }
         return coverages;
     }
+    
+    private List<OtherStoreDescription> getOtherStores() {
+        List<OtherStoreDescription> stores = new ArrayList<OtherStoreDescription>();
+        ResourceReference wmsIcon = new ResourceReference(GeoServerApplication.class, "img/icons/geosilk/server_map.png");
+        stores.add(new OtherStoreDescription("wms", wmsIcon, WMSStoreNewPage.class));
+        
+        return stores;
+    }
 
+    /**
+     * Provides a description for a store that is not a vector nor a raster data source
+     */
+    static class OtherStoreDescription implements Serializable {
+        String key;
+
+        ResourceReference icon;
+
+        Class<? extends Page> configurationPage;
+
+        public OtherStoreDescription(String key, ResourceReference icon,  Class<? extends Page> configurationPage) {
+            super();
+            this.key = key;
+            this.icon = icon;
+            this.configurationPage = configurationPage;
+        }
+    }
 }
