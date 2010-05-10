@@ -32,6 +32,7 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.catalog.impl.WMSLayerInfoImpl;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.platform.GeoServerResourceLoader;
 import org.geotools.util.logging.Logging;
@@ -521,6 +522,9 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
         }
         else if ( l.getResource() instanceof CoverageInfo ) {
             return dir( (CoverageInfo) l.getResource() );
+        }
+        else if ( l.getResource() instanceof WMSLayerInfo ) {
+            return dir( (WMSLayerInfo) l.getResource() );
         }
         return null;
     }

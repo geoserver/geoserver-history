@@ -1562,6 +1562,9 @@ public class CatalogImpl implements Catalog {
         if(r instanceof CoverageInfo){
             resolve((CoverageInfo) resource);
         }
+        if(r instanceof WMSLayerInfo){
+            resolve((WMSLayerInfo) resource);
+        }
         r.setCatalog(this);
     }
 
@@ -1586,6 +1589,11 @@ public class CatalogImpl implements Catalog {
     private void resolve(FeatureTypeInfo featureType) {
         FeatureTypeInfoImpl ft = (FeatureTypeInfoImpl) featureType;
         resolveCollections(ft);
+    }
+    
+    private void resolve(WMSLayerInfo wmsLayer) {
+        WMSLayerInfoImpl impl = (WMSLayerInfoImpl) wmsLayer;
+        resolveCollections(impl);
     }
 
     protected void resolve(LayerInfo layer) {
