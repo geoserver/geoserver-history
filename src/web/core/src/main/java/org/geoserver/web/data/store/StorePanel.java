@@ -18,8 +18,10 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.workspace.WorkspaceEditPage;
@@ -105,10 +107,16 @@ public class StorePanel extends GeoServerTablePanel<StoreInfo> {
             return new SimpleBookmarkableLink(id, DataAccessEditPage.class, storeNameModel, 
                     DataAccessEditPage.STORE_NAME, storeName, 
                     DataAccessEditPage.WS_NAME, wsName);
-        } else {
+        } else if(store instanceof CoverageStoreInfo){
             return new SimpleBookmarkableLink(id, CoverageStoreEditPage.class, storeNameModel, 
                     DataAccessEditPage.STORE_NAME, storeName, 
                     DataAccessEditPage.WS_NAME, wsName);
+        } else if(store instanceof WMSStoreInfo){
+            return new SimpleBookmarkableLink(id, WMSStoreEditPage.class, storeNameModel, 
+                    DataAccessEditPage.STORE_NAME, storeName, 
+                    DataAccessEditPage.WS_NAME, wsName);
+        } else {
+            throw new RuntimeException("Don't know what to do with this store " + store);
         }
     }
 

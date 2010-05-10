@@ -5,15 +5,19 @@
 package org.geoserver.web.data.store;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Collections;
 import java.util.logging.Level;
 
 import javax.management.RuntimeErrorException;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.CatalogBuilder;
-import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.web.data.layer.NewLayerPage;
+import org.geotools.data.wms.WebMapServer;
 
 public class WMSStoreNewPage extends AbstractWMSStorePage {
 
@@ -23,6 +27,7 @@ public class WMSStoreNewPage extends AbstractWMSStorePage {
             WMSStoreInfo store = builder.buildWMSStore(null);
 
             initUI(store);
+            capabilitiesURL.getFormComponent().add(new WMSCapabilitiesURLValidator());
         } catch (IOException e) {
             throw new RuntimeException("Could not setup the WMS store: " + e.getMessage(), e);
         }
@@ -67,6 +72,22 @@ public class WMSStoreNewPage extends AbstractWMSStorePage {
         }
 
         setResponsePage(layerChooserPage);
+    }
+    
+    static final class WMSCapabilitiesURLValidator extends AbstractValidator {
+
+        @Override
+        protected void onValidate(IValidatable validatable) {
+            String url = (String) validatable.getValue();
+            try {
+                WebMapServer server = new WebMapServer(new URL(url));
+                server.getCapabilities();
+            } catch(Exception e) {
+                error(validatable, "WMSCapabilitiesValidator.connectionFailure", 
+                        Collections.singletonMap("error", e.getMessage()));
+            }
+        }
+        
     }
 
 }
