@@ -36,6 +36,8 @@ import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.Wrapper;
 import org.geoserver.catalog.event.CatalogListener;
@@ -617,8 +619,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                                 LOGGER.warning( "Ignoring feature type directory " + ftd.getAbsolutePath() );
                             }
                         }
-                    }
-                    else {
+                    } else {
                         //look for a coverage store
                         f = new File( sd, "coveragestore.xml" );
                         if ( f.exists() ) {
@@ -667,10 +668,57 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
                                     LOGGER.warning( "Ignoring coverage directory " + cd.getAbsolutePath() );
                                 }
                             }
-                        }
-                        else {
-                            LOGGER.warning( "Ignoring store directory '" + sd.getName() +  "'");
-                            continue;
+                        } else {
+                            f = new File( sd, "wmsstore.xml" );
+                            if(f.exists()) {
+                                WMSStoreInfo wms = null;
+                                try {
+                                    wms = depersist( xp, f, WMSStoreInfo.class );
+                                    catalog.add( wms );
+                                
+                                    LOGGER.info( "Loaded wmsstore '" + wms.getName() +"'");
+                                } catch( Exception e ) {
+                                    LOGGER.log( Level.WARNING, "Failed to load wms store '" + sd.getName() +"'", e);
+                                    continue;
+                                }
+                                
+                                //load wms layers
+                                for ( File cd : list(sd,DirectoryFileFilter.INSTANCE) ) {
+                                    f = new File( cd, "wmslayer.xml" );
+                                    if( f.exists() ) {
+                                        WMSLayerInfo wl = null;
+                                        try {
+                                            wl = depersist(xp,f,WMSLayerInfo.class);
+                                            catalog.add( wl );
+                                            
+                                            LOGGER.info( "Loaded wms layer'" + wl.getName() +"'");
+                                        }
+                                        catch( Exception e ) {
+                                            LOGGER.log( Level.WARNING, "Failed to load wms layer '" + cd.getName() +"'", e);
+                                            continue;
+                                        }
+                                        
+                                        f = new File( cd, "layer.xml" );
+                                        if ( f.exists() ) {
+                                            try {
+                                                LayerInfo l = depersist(xp, f, LayerInfo.class );
+                                                catalog.add( l );
+                                                
+                                                LOGGER.info( "Loaded layer '" + l.getName() + "'" );
+                                            }
+                                            catch( Exception e ) {
+                                                LOGGER.log( Level.WARNING, "Failed to load cascaded wms layer '" + wl.getName() +"'", e);
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        LOGGER.warning( "Ignoring coverage directory " + cd.getAbsolutePath() );
+                                    }
+                                }
+                            } else {
+                                LOGGER.warning( "Ignoring store directory '" + sd.getName() +  "'");
+                                continue;
+                            }
                         }
                     }
                 }

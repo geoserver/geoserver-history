@@ -24,6 +24,8 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
 import org.geoserver.catalog.event.CatalogListener;
@@ -61,6 +63,9 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
             else if ( source instanceof DataStoreInfo ) {
                 addDataStore( (DataStoreInfo) source );
             }
+            else if ( source instanceof WMSStoreInfo ) {
+                addWMSStore( (WMSStoreInfo) source );
+            }
             else if ( source instanceof FeatureTypeInfo ) {
                 addFeatureType( (FeatureTypeInfo) source );
             }
@@ -69,6 +74,9 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
             }
             else if ( source instanceof CoverageInfo ) {
                 addCoverage( (CoverageInfo) source );
+            }
+            else if ( source instanceof WMSLayerInfo ) {
+                addWMSLayer( (WMSLayerInfo) source );
             }
             else if ( source instanceof LayerInfo ) {
                 addLayer( (LayerInfo) source );
@@ -146,6 +154,9 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
             else if ( source instanceof DataStoreInfo ) {
                 modifyDataStore( (DataStoreInfo) source );
             }
+            else if ( source instanceof WMSStoreInfo ) {
+                modifyWMSStore( (WMSStoreInfo) source );
+            }
             else if ( source instanceof NamespaceInfo ) {
                 modifyNamespace( (NamespaceInfo) source );
             }
@@ -157,6 +168,9 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
             }
             else if ( source instanceof CoverageInfo ) {
                 modifyCoverage( (CoverageInfo) source );
+            }
+            else if ( source instanceof WMSLayerInfo ) {
+                modifyWMSLayer( (WMSLayerInfo) source );
             }
             else if ( source instanceof LayerInfo ) {
                 modifyLayer( (LayerInfo) source );
@@ -193,6 +207,12 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
             }
             else if ( source instanceof CoverageInfo ) {
                 removeCoverage( (CoverageInfo) source );
+            }
+            else if ( source instanceof WMSStoreInfo ) {
+                removeWMSStore( (WMSStoreInfo) source );
+            }
+            else if ( source instanceof WMSLayerInfo ) {
+                removeWMSLayer( (WMSLayerInfo) source );
             }
             else if ( source instanceof LayerInfo ) {
                 removeLayer( (LayerInfo) source );
@@ -428,6 +448,50 @@ public class GeoServerPersister implements CatalogListener, ConfigurationListene
     
     void removeCoverage( CoverageInfo c ) throws IOException {
         LOGGER.fine( "Removing coverage " + c.getName() );
+        File dir = dir( c );
+        FileUtils.deleteDirectory( dir );
+    }
+    
+    //wms stores
+    void addWMSStore( WMSStoreInfo wms ) throws IOException {
+        LOGGER.fine( "Persisting wms store " + wms.getName() );
+        File dir = dir( wms );
+        dir.mkdir();
+        
+        persist( wms, file( wms ) );
+    }
+    
+    void modifyWMSStore( WMSStoreInfo ds ) throws IOException {
+        LOGGER.fine( "Persisting wms store " + ds.getName() );
+        persist( ds, file( ds ) );
+    }
+    
+    void removeWMSStore( WMSStoreInfo ds ) throws IOException {
+        LOGGER.fine( "Removing datastore " + ds.getName() );
+        File dir = dir( ds );
+        FileUtils.deleteDirectory( dir );
+    }
+    
+    File file( WMSStoreInfo ds ) throws IOException {
+        return new File( dir( ds ), "wmsstore.xml" );
+    }
+    
+    //wms layers
+    void addWMSLayer( WMSLayerInfo wms ) throws IOException {
+        LOGGER.fine( "Persisting wms layer " + wms.getName() );
+        File dir = dir( wms );
+        dir.mkdir();
+        persist( wms, dir, "wmslayer.xml" );
+    }
+    
+    void modifyWMSLayer( WMSLayerInfo wms ) throws IOException {
+        LOGGER.fine( "Persisting wms layer" + wms.getName() );
+        File dir = dir( wms );
+        persist( wms, dir, "wmslayer.xml");
+    }
+    
+    void removeWMSLayer( WMSLayerInfo c ) throws IOException {
+        LOGGER.fine( "Removing wms layer " + c.getName() );
         File dir = dir( c );
         FileUtils.deleteDirectory( dir );
     }
