@@ -42,6 +42,7 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
+import org.geoserver.catalog.impl.WMSLayerInfoImpl;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
@@ -56,6 +57,8 @@ import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.data.ows.Layer;
+import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
@@ -1045,6 +1048,30 @@ public class ResourcePool {
     }
     
     /**
+     * Locates and returns a WMS {@link Layer} based on the configuration stored in WMSLayerInfo 
+     * @param info
+     * @return
+     */
+    public Layer getWMSLayer(WMSLayerInfo info) throws IOException {
+     // check which actual name we have to use
+        String name = info.getName();
+        if (info.getNativeName() != null) {
+            name = info.getNativeName();
+        }
+
+        WMSCapabilities caps = info.getStore().getWebMapServer(null).getCapabilities();
+        for (Layer layer : caps.getLayerList()) {
+            if (name.equals(layer.getName())) {
+                return layer;
+            }
+        }
+
+        throw new IOException("Could not find layer " + info.getName()
+                + " in the server capabilitiles document");
+        
+    }
+    
+    /**
      * Clears the cached resource for a web map server
      */
     public void clear( WMSStoreInfo info ) {
@@ -1419,5 +1446,7 @@ public class ResourcePool {
          */
         void disposed(FeatureTypeInfo featureType, FeatureType ft);
     }
+
+    
     
 }
