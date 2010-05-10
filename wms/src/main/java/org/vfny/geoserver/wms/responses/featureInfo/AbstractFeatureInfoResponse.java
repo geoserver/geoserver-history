@@ -535,66 +535,46 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         } 
     }
 
-    private void handleGetFeatureInfoCascade(int x, int y, GetFeatureInfoRequest request, MapLayerInfo layerInfo)
-            throws IOException, TransformException, FactoryException, SAXException,
-            ParserConfigurationException {
+    private void handleGetFeatureInfoCascade(int x, int y, GetFeatureInfoRequest request,
+            MapLayerInfo layerInfo) throws IOException, TransformException, FactoryException,
+            SAXException, ParserConfigurationException {
         WMSLayerInfo info = (WMSLayerInfo) layerInfo.getResource();
         WebMapServer wms = info.getStore().getWebMapServer(null);
         Layer layer = info.getWMSLayer(null);
-        
-        ReferencedEnvelope bbox = new ReferencedEnvelope(request.getGetMapRequest().getBbox(), request.getGetMapRequest().getCrs());
+
+        ReferencedEnvelope bbox = new ReferencedEnvelope(request.getGetMapRequest().getBbox(),
+                request.getGetMapRequest().getCrs());
         int width = request.getGetMapRequest().getWidth();
         int height = request.getGetMapRequest().getHeight();
-        
+
         // we can cascade GetFeatureInfo on queryable layers and if the GML mime type is supported
-        if(layer.isQueryable()) {
-            List<String> infoFormats = wms.getCapabilities().getRequest().getGetFeatureInfo().getFormats();
-            if(infoFormats.contains("application/vnd.ogc.gml")) {
-                // the wms layer does request in a CRS that's compatible with the WMS server srs list,
+        if (layer.isQueryable()) {
+            List<String> infoFormats = wms.getCapabilities().getRequest().getGetFeatureInfo()
+                    .getFormats();
+            if (infoFormats.contains("application/vnd.ogc.gml")) {
+                // the wms layer does request in a CRS that's compatible with the WMS server srs
+                // list,
                 // we may need to transform
                 WMSMapLayer ml = new WMSMapLayer(wms, layer);
-                CoordinateReferenceSystem crs = ml.getCoordinateReferenceSystem();
-                
-                ReferencedEnvelope getMapBox = bbox.transform(ml.getCoordinateReferenceSystem(), true);
-                
-                // prepare the request
-                org.geotools.data.wms.request.GetMapRequest mapRequest = wms.createGetMapRequest();
-                mapRequest.addLayer(layer);
-                mapRequest.setDimensions(width, height);
-                mapRequest.setFormat(format);
-                mapRequest.setSRS(CRS.lookupIdentifier(crs, false));
-                mapRequest.setBBox(getMapBox);
-                mapRequest.setTransparent(true);
-                
-                org.geotools.data.wms.request.GetFeatureInfoRequest fiRequest = wms.createGetFeatureInfoRequest(mapRequest);
-                fiRequest.setQueryLayers(Collections.singleton(layer));
-                fiRequest.setInfoFormat("application/vnd.ogc.gml");
-                fiRequest.setFeatureCount(request.getFeatureCount());
-                
-                if(CRS.equalsIgnoreMetadata(ml.getCoordinateReferenceSystem(), bbox.getCoordinateReferenceSystem())) {
-                    fiRequest.setQueryPoint(x, y);
-                } else {
-                    throw new UnsupportedOperationException("Cannot handle CRS mismatch");
-                }
-                
-                // execute the request and parse the results
                 InputStream is = null;
                 try {
-                    GetFeatureInfoResponse response = wms.issueRequest(fiRequest);
-                    is = response.getInputStream();
+                    // delegate to the web map layer as there's quite a bit of reprojection magic code
+                    // that we want to be consistently reproduced for GetFeatureInfo as well
+                    is = ml.getFeatureInfo(bbox, width, height, x, y, "application/vnd.ogc.gml",
+                            request.getFeatureCount());
                     Parser parser = new Parser(new WFSConfiguration());
                     parser.setStrict(false);
                     Object result = parser.parse(is);
-                    if(result instanceof FeatureCollectionType) {
+                    if (result instanceof FeatureCollectionType) {
                         FeatureCollectionType fcList = (FeatureCollectionType) result;
                         for (Object collection : fcList.getFeature()) {
                             results.add((FeatureCollection) collection);
                         }
                     }
-                } catch(Throwable t) {
+                } catch (Throwable t) {
                     LOGGER.log(Level.SEVERE, "Tried to parse GML2 response, but failed", t);
                 } finally {
-                    if(is != null)
+                    if (is != null)
                         is.close();
                 }
             }
