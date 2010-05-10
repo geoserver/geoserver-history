@@ -228,6 +228,9 @@ public class GetMapResponse implements Response {
 
                 final MapLayer layer;
                 if (layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                    // we just assume remote WFS is not cacheable since it's just used
+                    // in feature portrayal requests (which are noe off and don't have a way to
+                    // tell us how often the remote WFS changes)
                     cachingPossible = false;
 
                     final SimpleFeatureSource source = layers[i]
@@ -246,24 +249,6 @@ public class GetMapResponse implements Response {
                     layer.setQuery(definitionQuery);
                     mapContext.addLayer(layer);
                 } else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
-                    if (cachingPossible) {
-                        if (layers[i].isCachingEnabled()) {
-                            int nma = layers[i].getCacheMaxAge();
-
-                            // suppose the map contains multiple cachable
-                            // layers...we can only cache the combined map for
-                            // the
-                            // time specified by the shortest-cached layer.
-                            if (nma < maxAge) {
-                                maxAge = nma;
-                            }
-                        } else {
-                            // if one layer isn't cachable, then we can't cache
-                            // any of them. Disable caching.
-                            cachingPossible = false;
-                        }
-                    }
-
                     FeatureSource<? extends FeatureType, ? extends Feature> source;
                     // /////////////////////////////////////////////////////////
                     //
@@ -448,6 +433,25 @@ public class GetMapResponse implements Response {
                                 .append(layers[i].toString()).toString());
                     }
                 }
+                
+                // handle caching
+                if(layers[i].getType() != MapLayerInfo.TYPE_REMOTE_VECTOR && cachingPossible) {
+                    if (layers[i].isCachingEnabled()) {
+                        int nma = layers[i].getCacheMaxAge();
+
+                        // suppose the map contains multiple cachable
+                        // layers...we can only cache the combined map for
+                        // the
+                        // time specified by the shortest-cached layer.
+                        if (nma < maxAge) {
+                            maxAge = nma;
+                        }
+                    } else {
+                        // if one layer isn't cachable, then we can't cache
+                        // any of them. Disable caching.
+                        cachingPossible = false;
+                    }
+                }
             }
 
             // setup the SLD variable substitution environment
@@ -562,7 +566,7 @@ public class GetMapResponse implements Response {
             userRequestedFilter = requestFilters.get(i);
             if (layer.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                 combinedList[i] = userRequestedFilter;
-            } else if (layer.getType() != MapLayerInfo.TYPE_RASTER) {
+            } else if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
                 layerDefinitionFilter = layer.getFeature().getFilter();
 
                 // heck, how I wish we use the null objects more
