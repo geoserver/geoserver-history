@@ -35,9 +35,7 @@ public class WMSStoreFinder extends AbstractCatalogFinder {
         if ( wms == null && request.getMethod() == Method.GET ) {
             return new WMSStoreListResource(getContext(),request,response,catalog);
         }
-        System.out.println("Go fish!!!");
-        return null;
-        // return new WMSStoreResource( null, request, response, catalog );
+        return new WMSStoreResource( null, request, response, catalog );
     }
 
 }

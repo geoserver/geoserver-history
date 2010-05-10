@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.WMSStoreInfo;
-import org.geoserver.catalog.rest.DataStoreResource.DataStoreHTMLFormat;
+import org.geoserver.catalog.rest.WMSStoreResource.WMSStoreHTMLFormat;
 import org.geoserver.rest.format.DataFormat;
 import org.restlet.Context;
 import org.restlet.data.Request;
@@ -23,7 +23,7 @@ public class WMSStoreListResource extends AbstractCatalogListResource {
 
     @Override
     protected DataFormat createHTMLFormat(Request request, Response response) {
-        return new DataStoreHTMLFormat( request, response, this, catalog );
+        return new WMSStoreHTMLFormat( request, response, this, catalog );
     }
     
     @Override

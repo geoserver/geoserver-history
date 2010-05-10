@@ -13,6 +13,7 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.StoreInfo;
+import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.PageInfo;
@@ -57,6 +58,10 @@ public class WorkspaceResource extends AbstractCatalogResource {
                 
                 writer.startNode( "coverageStores");
                 encodeCollectionLink("coveragestores", writer);
+                writer.endNode();
+                
+                writer.startNode( "wmsStores");
+                encodeCollectionLink("wmsstores", writer);
                 writer.endNode();
             }
         });
@@ -177,6 +182,9 @@ public class WorkspaceResource extends AbstractCatalogResource {
                     
                     List<CoverageStoreInfo> coverageStores = catalog.getStoresByWorkspace(object, CoverageStoreInfo.class);
                     properties.put( "coverageStores", new CollectionModel( coverageStores, new ObjectToMapWrapper(CoverageStoreInfo.class) ) );
+                    
+                    List<WMSStoreInfo> wmsStores = catalog.getStoresByWorkspace(object, WMSStoreInfo.class);
+                    properties.put( "wmsStores", new CollectionModel( wmsStores, new ObjectToMapWrapper(WMSStoreInfo.class) ) );
                     
                     properties.put( "isDefault",  object.equals( catalog.getDefaultWorkspace() ) );
                 }
