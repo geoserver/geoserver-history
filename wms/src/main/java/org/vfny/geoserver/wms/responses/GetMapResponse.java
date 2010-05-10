@@ -19,6 +19,7 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
@@ -31,11 +32,13 @@ import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.map.MapLayer;
+import org.geotools.map.WMSMapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.FeatureTypeConstraint;
@@ -227,7 +230,8 @@ public class GetMapResponse implements Response {
                 final Filter layerFilter = filters[i];
 
                 final MapLayer layer;
-                if (layers[i].getType() == MapLayerInfo.TYPE_REMOTE_VECTOR) {
+                int layerType = layers[i].getType();
+                if (layerType == MapLayerInfo.TYPE_REMOTE_VECTOR) {
                     // we just assume remote WFS is not cacheable since it's just used
                     // in feature portrayal requests (which are noe off and don't have a way to
                     // tell us how often the remote WFS changes)
@@ -248,7 +252,7 @@ public class GetMapResponse implements Response {
 
                     layer.setQuery(definitionQuery);
                     mapContext.addLayer(layer);
-                } else if (layers[i].getType() == MapLayerInfo.TYPE_VECTOR) {
+                } else if (layerType == MapLayerInfo.TYPE_VECTOR) {
                     FeatureSource<? extends FeatureType, ? extends Feature> source;
                     // /////////////////////////////////////////////////////////
                     //
@@ -311,7 +315,7 @@ public class GetMapResponse implements Response {
 
                     layer.setQuery(definitionQuery);
                     mapContext.addLayer(layer);
-                } else if (layers[i].getType() == MapLayerInfo.TYPE_RASTER) {
+                } else if (layerType == MapLayerInfo.TYPE_RASTER) {
 
                     // /////////////////////////////////////////////////////////
                     //
@@ -432,10 +436,18 @@ public class GetMapResponse implements Response {
                                 "Internal error : unable to get reader for this coverage layer ")
                                 .append(layers[i].toString()).toString());
                     }
+                } else if(layerType == MapLayerInfo.TYPE_WMS) {
+                    WMSLayerInfo wmsLayer = (WMSLayerInfo) layers[i].getResource();
+                    WebMapServer wms = wmsLayer.getStore().getWebMapServer(null);
+                    WMSMapLayer mapLayer = new WMSMapLayer(wms, wmsLayer.getWMSLayer(null));
+                    mapLayer.setTitle(wmsLayer.getPrefixedName());
+                    mapContext.addLayer(mapLayer);
+                } else {
+                    throw new IllegalArgumentException("Unkown layer type " + layerType);
                 }
                 
                 // handle caching
-                if(layers[i].getType() != MapLayerInfo.TYPE_REMOTE_VECTOR && cachingPossible) {
+                if(layerType != MapLayerInfo.TYPE_REMOTE_VECTOR && cachingPossible) {
                     if (layers[i].isCachingEnabled()) {
                         int nma = layers[i].getCacheMaxAge();
 
