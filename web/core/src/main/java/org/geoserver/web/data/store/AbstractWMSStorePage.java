@@ -23,6 +23,7 @@ import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.panel.CheckBoxParamPanel;
 import org.geoserver.web.data.store.panel.TextParamPanel;
 import org.geoserver.web.data.store.panel.WorkspacePanel;
+import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.data.wms.WebMapServer;
 
@@ -38,9 +39,15 @@ abstract class AbstractWMSStorePage extends GeoServerSecuredPage {
     protected WorkspacePanel workspacePanel;
 
     private Form form;
+    
+    GeoServerDialog dialog;
+
+    TextParamPanel capabilitiesURL;
 
     void initUI(final WMSStoreInfo store) {
         IModel model = new Model(store);
+        
+        add(dialog = new GeoServerDialog("dialog"));
 
         // build the form
         form = new Form("form", model);
@@ -64,9 +71,9 @@ abstract class AbstractWMSStorePage extends GeoServerSecuredPage {
                 true);
         form.add(workspacePanel);
         
-        TextParamPanel url = new TextParamPanel("capabilitiesURL", new PropertyModel(form.getModelObject(), "capabilitiesURL"),
-                new ParamResourceModel("capabilitiesURL", AbstractWMSStorePage.this), true, new WMSCapabilitiesURLValidator());
-        form.add(url);
+        capabilitiesURL = new TextParamPanel("capabilitiesURL", new PropertyModel(form.getModelObject(), "capabilitiesURL"),
+                new ParamResourceModel("capabilitiesURL", AbstractWMSStorePage.this), true);
+        form.add(capabilitiesURL);
 
         // cancel/submit buttons
         form.add(new BookmarkablePageLink("cancel", StorePage.class));
@@ -126,19 +133,5 @@ abstract class AbstractWMSStorePage extends GeoServerSecuredPage {
     }
 
     
-    static final class WMSCapabilitiesURLValidator extends AbstractValidator {
-
-        @Override
-        protected void onValidate(IValidatable validatable) {
-            String url = (String) validatable.getValue();
-            try {
-                WebMapServer server = new WebMapServer(new URL(url));
-                server.getCapabilities();
-            } catch(Exception e) {
-                error(validatable, "WMSCapabilitiesValidator.connectionFailure", 
-                        Collections.singletonMap("error", e.getMessage()));
-            }
-        }
-        
-    }
+    
 }
