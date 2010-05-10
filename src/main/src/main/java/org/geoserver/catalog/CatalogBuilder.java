@@ -140,6 +140,16 @@ public class CatalogBuilder {
     }
     
     /**
+     * Updates a wms store with the properties of another.
+     * 
+     * @param original The wms store being updated.
+     * @param update The wms store containing the new values.
+     */
+    public void updateWMSStore( WMSStoreInfo original, WMSStoreInfo update ) {
+        update( original, update, WMSStoreInfo.class );
+    }
+    
+    /**
      * Updates a coveragestore with the properties of another.
      * 
      * @param original The coveragestore being updated.
