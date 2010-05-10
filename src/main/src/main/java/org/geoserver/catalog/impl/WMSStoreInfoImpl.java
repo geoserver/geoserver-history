@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2008 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.catalog.impl;
 
 import java.io.IOException;
@@ -9,6 +13,7 @@ import org.geotools.data.wms.WebMapServer;
 import org.geotools.ows.ServiceException;
 import org.opengis.util.ProgressListener;
 
+@SuppressWarnings("serial")
 public class WMSStoreInfoImpl extends StoreInfoImpl implements WMSStoreInfo {
 
     String capabilitiesURL;
@@ -30,7 +35,7 @@ public class WMSStoreInfoImpl extends StoreInfoImpl implements WMSStoreInfo {
     }
 
     public WebMapServer getWebMapServer(ProgressListener listener) throws IOException {
-        
+
         try {
             return new WebMapServer(new URL(capabilitiesURL));
         } catch (ServiceException e) {

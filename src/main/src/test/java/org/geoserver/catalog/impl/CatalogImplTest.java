@@ -19,6 +19,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.event.CatalogAddEvent;
@@ -37,6 +38,7 @@ public class CatalogImplTest extends TestCase {
     WMSStoreInfo wms;
     FeatureTypeInfo ft;
     CoverageInfo cv;
+    WMSLayerInfo wl;
     LayerInfo l;
     StyleInfo s;
     
@@ -74,11 +76,17 @@ public class CatalogImplTest extends TestCase {
         cv.setName("cvName");
         cv.setStore(cs);
         
-        wms = factory.createWebMapService();
+        wms = factory.createWebMapServer();
         wms.setName("wmsName");
         wms.setType("WMS");
         wms.setCapabilitiesURL("http://fake.url");
         wms.setWorkspace(ws);
+        
+        wl = factory.createWMSLayer();
+        wl.setEnabled(true);
+        wl.setName("wmsLayer");
+        wl.setStore(wms);
+        wl.setNamespace(ns);
         
         s = factory.createStyle();
         s.setName( "styleName" );
@@ -651,6 +659,16 @@ public class CatalogImplTest extends TestCase {
         }
         catch( Exception e ) {}
     }
+    
+    public void testAddWMSLayer() {
+        //set a default namespace
+        catalog.add( ns );
+        
+        assertTrue( catalog.getResources(WMSLayerInfo.class).isEmpty() );
+        
+        catalog.add( wl );
+        assertEquals( 1, catalog.getResources(WMSLayerInfo.class).size() );
+    }
 
     public void testRemoveFeatureType() {
         catalog.add( ft );
@@ -664,6 +682,14 @@ public class CatalogImplTest extends TestCase {
         
         catalog.remove( ft );
         assertTrue( catalog.getFeatureTypes().isEmpty() );
+    }
+    
+    public void testRemoveWMSLayer() {
+        catalog.add( wl );
+        assertFalse( catalog.getResources(WMSLayerInfo.class).isEmpty() );
+        
+        catalog.remove( wl );
+        assertTrue( catalog.getResources(WMSLayerInfo.class).isEmpty() );
     }
     
     public void testGetFeatureTypeById() {
@@ -1139,7 +1165,7 @@ public class CatalogImplTest extends TestCase {
         
         WMSStoreInfo retrieved = catalog.getStore(wms.getId(), WMSStoreInfo.class);
         
-        WMSStoreInfo wms2 = catalog.getFactory().createWebMapService();
+        WMSStoreInfo wms2 = catalog.getFactory().createWebMapServer();
         wms2.setName( "wms2Name" );
         wms2.setWorkspace( ws );
         

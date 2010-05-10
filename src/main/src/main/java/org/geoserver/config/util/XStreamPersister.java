@@ -35,6 +35,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
 import org.geoserver.catalog.WorkspaceInfo;
 import org.geoserver.catalog.impl.AttributeTypeInfoImpl;
@@ -53,6 +54,7 @@ import org.geoserver.catalog.impl.ResolvingProxy;
 import org.geoserver.catalog.impl.ResourceInfoImpl;
 import org.geoserver.catalog.impl.StoreInfoImpl;
 import org.geoserver.catalog.impl.StyleInfoImpl;
+import org.geoserver.catalog.impl.WMSLayerInfoImpl;
 import org.geoserver.catalog.impl.WMSStoreInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
@@ -131,6 +133,9 @@ public class XStreamPersister {
         }
         
         protected void postEncodeFeatureType( FeatureTypeInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
+        }
+        
+        protected void postEncodeWMSLayer( WMSLayerInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
         }
         
         protected void postEncodeCoverage( CoverageInfo ds, HierarchicalStreamWriter writer, MarshallingContext context ) {
@@ -229,6 +234,7 @@ public class XStreamPersister {
         xs.alias("style",StyleInfo.class);
         xs.alias( "featureType", FeatureTypeInfo.class);
         xs.alias( "coverage", CoverageInfo.class);
+        xs.alias( "wmsLayer", WMSLayerInfo.class);
         xs.alias( "coverageDimension", CoverageDimensionInfo.class);
         xs.alias( "metadataLink", MetadataLinkInfo.class);
         xs.alias( "attribute", AttributeTypeInfo.class );
@@ -468,6 +474,7 @@ public class XStreamPersister {
         xs.addDefaultImplementation(StyleInfoImpl.class, StyleInfo.class);
         xs.addDefaultImplementation(FeatureTypeInfoImpl.class, FeatureTypeInfo.class );
         xs.addDefaultImplementation(CoverageInfoImpl.class, CoverageInfo.class);
+        xs.addDefaultImplementation(WMSLayerInfoImpl.class, WMSLayerInfo.class);
         xs.addDefaultImplementation(CoverageDimensionImpl.class, CoverageDimensionInfo.class);
         xs.addDefaultImplementation(MetadataLinkInfoImpl.class, MetadataLinkInfo.class);
         xs.addDefaultImplementation(AttributeTypeInfoImpl.class, AttributeTypeInfo.class );

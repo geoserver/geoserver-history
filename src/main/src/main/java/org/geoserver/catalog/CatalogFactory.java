@@ -22,7 +22,7 @@ public interface CatalogFactory {
     /**
      * Creates a new web map server connection
      */
-    WMSStoreInfo createWebMapService();
+    WMSStoreInfo createWebMapServer();
 
     /**
      * Creats a new metadata link.
@@ -48,6 +48,12 @@ public interface CatalogFactory {
      * Creates a new coverage.
      */
     CoverageInfo createCoverage();
+    
+    /**
+     * Creates a new WMS layer
+     */
+    WMSLayerInfo createWMSLayer();
+
 
     /**
      * Creates a new coverage dimension.
