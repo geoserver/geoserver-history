@@ -857,9 +857,9 @@ public class WMSCapsTransformer extends TransformerBase {
                     handleLegendURL(layer.getName(), null, styleInfo);
                     end("Style");
                 }
-    
-                end("Layer");
             }
+            
+            end("Layer");
         }
         
 //        /**
