@@ -161,7 +161,8 @@ public class MapPreviewPage extends GeoServerBasePage {
         menu.add(wmsFormats);
         
         // the vector ones, it depends, we might have to hide them
-        boolean vector = layer.groupInfo == null && layer.layerInfo.getType() != LayerInfo.Type.RASTER;
+        boolean vector = layer.groupInfo == null && (layer.layerInfo.getType() == LayerInfo.Type.VECTOR 
+                || layer.layerInfo.getType() == LayerInfo.Type.REMOTE);
         WebMarkupContainer wfsFormatsGroup = new WebMarkupContainer("wfs");
         RepeatingView wfsFormats = new RepeatingView("wfsFormats");
         if(vector) {
