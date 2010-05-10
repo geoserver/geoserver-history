@@ -8,6 +8,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -15,7 +16,10 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.publish.LayerConfigurationPanel;
 import org.geoserver.web.wicket.LiveCollectionModel;
 
@@ -27,6 +31,12 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
 
     public WMSLayerConfig(String id, IModel layerModel) {
         super(id, layerModel);
+        
+        // styles block container
+        WebMarkupContainer styleContainer = new WebMarkupContainer("styles");
+        add(styleContainer);
+        ResourceInfo resource = ((LayerInfo) layerModel.getObject()).getResource();
+        styleContainer.setVisible(resource instanceof CoverageInfo || resource instanceof FeatureTypeInfo); 
 
         // default style chooser. A default style is required
         StylesModel styles = new StylesModel();
@@ -34,11 +44,11 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
         final DropDownChoice defaultStyle = new DropDownChoice("defaultStyle", defaultStyleModel,
                 styles, new StyleChoiceRenderer());
         defaultStyle.setRequired(true);
-        add(defaultStyle);
+        styleContainer.add(defaultStyle);
 
         final Image defStyleImg = new Image("defaultStyleLegendGraphic");
         defStyleImg.setOutputMarkupId(true);
-        add(defStyleImg);
+        styleContainer.add(defStyleImg);
 
         String wmsURL = getRequest().getRelativePathPrefixToContextRoot();
         wmsURL += wmsURL.endsWith("/")? "wms?" : "/wms?";
@@ -74,7 +84,8 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
                         "ExtraStylesPalette.availableHeader"));
             }
         };
-        add(extraStyles);
+        styleContainer.add(extraStyles);
+        
         add(new TextField("wmsPath", new PropertyModel(layerModel, "path")));
     }
 }
