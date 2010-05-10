@@ -40,6 +40,7 @@ import org.geoserver.catalog.LegendInfo;
 import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
+import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
@@ -47,6 +48,8 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.data.ows.Layer;
+import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -140,7 +143,7 @@ public class WMSCapsTransformer extends TransformerBase {
      * </p>
      *
      * @return a Transformer propoerly configured to produce DescribeLayer
-     *         responses.
+     *         responses.h
      *
      * @throws TransformerException
      *             if it is thrown by <code>super.createTransformer()</code>
@@ -647,7 +650,7 @@ public class WMSCapsTransformer extends TransformerBase {
             for (LayerInfo layer : data) {
                 //no sense in exposing a geometryless layer through wms...
                 boolean wmsExposable = false;
-                if (layer.getType() == Type.RASTER) {
+                if (layer.getType() == Type.RASTER || layer.getType() == Type.WMS) {
                     wmsExposable = true;
                 } else {
                     try {
@@ -691,11 +694,11 @@ public class WMSCapsTransformer extends TransformerBase {
          *
          * @task TODO: write wms specific elements.
          */
-        protected void handleLayer(final LayerInfo layer){
+        protected void handleLayer(final LayerInfo layer) {
             // HACK: by now all our layers are queryable, since they reference
             // only featuretypes managed by this server
             AttributesImpl qatts = new AttributesImpl();
-            qatts.addAttribute("", "queryable", "queryable", "", "1");
+            qatts.addAttribute("", "queryable", "queryable", "", isLayerQueryable(layer) ? "1" : "0");
             start("Layer", qatts);
             element("Name", layer.getResource().getNamespace().getPrefix() + ":" + layer.getName());
             //REVISIT: this is bad, layer should have title and anbstract by itself
@@ -815,43 +818,48 @@ public class WMSCapsTransformer extends TransformerBase {
 
             // handle metadata URLs
             handleMetadataList(layer.getResource().getMetadataLinks());
-
-            // add the layer style
-            start("Style");
-
-            StyleInfo defaultStyle = layer.getDefaultStyle();
-            if (defaultStyle == null) {
-                throw new NullPointerException("Layer " + layer.getName() + " has no default style");
-            }
-            Style ftStyle;
-            try {
-                ftStyle = defaultStyle.getStyle();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            element("Name", defaultStyle.getName());
-            element("Title", ftStyle.getTitle());
-            element("Abstract", ftStyle.getAbstract());
-            handleLegendURL(layer.getName(), layer.getLegend(), null);
-            end("Style");
-
-            Set<StyleInfo> styles = layer.getStyles();
-
-            for(StyleInfo styleInfo : styles) {
+            
+            if(layer.getResource() instanceof WMSLayerInfo) {
+                // do nothing for the moment, we may want to list the set of cascaded named styles
+                // in the future (when we add support for that)
+            } else {
+                // add the layer style
+                start("Style");
+    
+                StyleInfo defaultStyle = layer.getDefaultStyle();
+                if (defaultStyle == null) {
+                    throw new NullPointerException("Layer " + layer.getName() + " has no default style");
+                }
+                Style ftStyle;
                 try {
-                    ftStyle = styleInfo.getStyle();
+                    ftStyle = defaultStyle.getStyle();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                start("Style");
-                element("Name", styleInfo.getName());
+                element("Name", defaultStyle.getName());
                 element("Title", ftStyle.getTitle());
                 element("Abstract", ftStyle.getAbstract());
-                handleLegendURL(layer.getName(), null, styleInfo);
+                handleLegendURL(layer.getName(), layer.getLegend(), null);
                 end("Style");
+    
+                Set<StyleInfo> styles = layer.getStyles();
+    
+                for(StyleInfo styleInfo : styles) {
+                    try {
+                        ftStyle = styleInfo.getStyle();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    start("Style");
+                    element("Name", styleInfo.getName());
+                    element("Title", ftStyle.getTitle());
+                    element("Abstract", ftStyle.getAbstract());
+                    handleLegendURL(layer.getName(), null, styleInfo);
+                    end("Style");
+                }
+    
+                end("Layer");
             }
-
-            end("Layer");
         }
         
 //        /**
@@ -941,6 +949,30 @@ public class WMSCapsTransformer extends TransformerBase {
 //            
 //            return (String[]) finalArray.toArray(new String[1]);
 //        }
+
+        /**
+         * Returns true if the layer can be queried
+         */
+        boolean isLayerQueryable(LayerInfo layer) {
+            try {
+                if(layer.getResource() instanceof WMSLayerInfo) {
+                    WMSLayerInfo info = (WMSLayerInfo) layer.getResource();
+                    Layer wl = info.getWMSLayer(null);
+                    if(!wl.isQueryable()) {
+                        return false;
+                    }
+                    WMSCapabilities caps = info.getStore().getWebMapServer(null).getCapabilities();
+                    if(!caps.getRequest().getGetFeatureInfo().getFormats().contains("application/vnd.ogc.gml")) {
+                        return false;
+                    }
+                } 
+                // all other layers are queryable
+                return true;
+            } catch(IOException e) {
+                LOGGER.log(Level.SEVERE, "Failed to determin if the layer is queryable, assuming it's not", e);
+                return false;
+            }
+        }
 
         /**
          * DOCUMENT ME!
