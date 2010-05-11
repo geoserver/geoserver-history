@@ -699,6 +699,10 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
             for ( File lgf : list( layergroups, new SuffixFileFilter( ".xml" ) ) ) {
                 try {
                     LayerGroupInfo lg = depersist( xp, lgf, LayerGroupInfo.class );
+                    if(lg.getLayers() == null || lg.getLayers().size() == 0) {
+                        LOGGER.info("Skipping empty layer group '" + lg.getName() + "', it is invalid");
+                        continue;
+                    }
                     catalog.add( lg );
                     
                     LOGGER.info( "Loaded layer group '" + lg.getName() + "'" );    

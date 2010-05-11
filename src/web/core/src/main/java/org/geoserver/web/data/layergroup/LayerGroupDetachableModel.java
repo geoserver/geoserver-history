@@ -15,14 +15,23 @@ import org.geoserver.web.GeoServerApplication;
 public class LayerGroupDetachableModel extends LoadableDetachableModel {
 
     String id;
+    LayerGroupInfo layerGroup;
     
     public LayerGroupDetachableModel(LayerGroupInfo layerGroup) {
         this.id = layerGroup.getId();
+        if(id == null) {
+            this.layerGroup = layerGroup;
+        }
     }
     
     @Override
     protected Object load() {
-        return GeoServerApplication.get().getCatalog().getLayerGroup( id );
+        if(id != null) {
+            return GeoServerApplication.get().getCatalog().getLayerGroup( id );
+        } else {
+            return layerGroup;
+        }
+        
     }
 
 }
