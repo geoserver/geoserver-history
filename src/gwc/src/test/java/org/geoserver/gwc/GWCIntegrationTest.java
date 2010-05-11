@@ -8,6 +8,15 @@ import com.mockrunner.mock.web.MockHttpServletResponse;
 public class GWCIntegrationTest extends GeoServerTestSupport {
 
     public void testPngIntegration() throws Exception {
+        // Temporary patch to try to prevent intermittent failures on the build server,
+        // Permanent fix is to change locking in TileLayerDispatcher, so that the lock
+        // is acquired before the configuration parsing thread is launched.
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ie) {
+            // We dont really care
+        }
+       
         String layerId = getLayerId(MockData.BASIC_POLYGONS);
         MockHttpServletResponse sr = getAsServletResponse("gwc/service/wmts?request=GetTile&layer="
                 + layerId
