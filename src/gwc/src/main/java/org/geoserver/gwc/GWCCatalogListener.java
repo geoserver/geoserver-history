@@ -34,9 +34,12 @@ import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.Configuration;
 import org.geowebcache.config.meta.ServiceInformation;
 import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSet;
 import org.geowebcache.grid.GridSetBroker;
+import org.geowebcache.grid.GridSetFactory;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.grid.GridSubsetFactory;
+import org.geowebcache.grid.SRS;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.TileLayerDispatcher;
 import org.geowebcache.layer.wms.WMSGeoServerHelper;
@@ -310,8 +313,13 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     }
     
     private WMSLayer getLayer(LayerGroupInfo lgi) {
+        ReferencedEnvelope bounds = null;
         ReferencedEnvelope latLonBounds = null;
+        String nativeSRSName = null;
+        
         try {
+            bounds = lgi.getBounds();
+            nativeSRSName = "EPSG:" + CRS.lookupEpsgCode(bounds.getCoordinateReferenceSystem(), true);
             latLonBounds = lgi.getBounds().transform(CRS.decode("EPSG:4326"), true);
         } catch (Exception e) {
             log.warning(e.getMessage());
@@ -330,7 +338,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 null, // Styles 
                 lgi.getName(), 
                 mimeFormats, 
-                getGrids(latLonBounds), 
+                getGrids(lgi.getName(), latLonBounds, bounds, nativeSRSName),
                 metaFactors,
                 null,
                 true);
@@ -343,13 +351,20 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     }
     
     private WMSLayer getLayer(ResourceInfo fti) {
+        ReferencedEnvelope nativeEnv = null;
+        try {
+            nativeEnv = fti.boundingBox();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         WMSLayer retLayer = new WMSLayer(
                 fti.getPrefixedName(),
                 getWMSUrl(), 
                 null, // Styles 
                 fti.getPrefixedName(), 
                 mimeFormats, 
-                getGrids(fti.getLatLonBoundingBox()), 
+                getGrids(fti.getPrefixedName(), fti.getLatLonBoundingBox(), nativeEnv, fti.getSRS()), 
                 metaFactors,
                 null,
                 true);
@@ -384,11 +399,13 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         return strs;
     }
     
-    private Hashtable<String,GridSubset> getGrids(ReferencedEnvelope env) {
-        double minX = env.getMinX();
-        double minY = env.getMinY();
-        double maxX = env.getMaxX();
-        double maxY = env.getMaxY();
+    private Hashtable<String,GridSubset> getGrids(String layerName, ReferencedEnvelope latLonEnv, 
+            ReferencedEnvelope nativeEnv, String nativeSRSName) {        
+        // LatLon stuff
+        double minX = latLonEnv.getMinX();
+        double minY = latLonEnv.getMinY();
+        double maxX = latLonEnv.getMaxX();
+        double maxY = latLonEnv.getMaxY();
 
         BoundingBox bounds4326 = new BoundingBox(minX,minY,maxX,maxY);
  
@@ -398,7 +415,7 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 longToSphericalMercatorX(maxX),
                 latToSphericalMercatorY(maxY));
         
-        Hashtable<String,GridSubset> grids = new Hashtable<String,GridSubset>(2);
+        Hashtable<String,GridSubset> grids = new Hashtable<String,GridSubset>(3);
         
         GridSubset gridSubset4326 = GridSubsetFactory.createGridSubSet(
                 gridSetBroker.WORLD_EPSG4326, 
@@ -411,6 +428,41 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
                 bounds900913, 0, 25 );
         
         grids.put(gridSetBroker.WORLD_EPSG3857.getName(), gridSubset900913);
+        
+        // Native stuff
+        if(nativeSRSName != null && ! nativeSRSName.equalsIgnoreCase("EPSG:4326")) {
+            
+            minX = nativeEnv.getMinX();
+            minY = nativeEnv.getMinY();
+            maxX = nativeEnv.getMaxX();
+            maxY = nativeEnv.getMaxY();
+
+            BoundingBox nativeBounds = new BoundingBox(minX,minY,maxX,maxY);
+            
+            SRS srs = null;
+            try {
+                srs = SRS.getSRS(nativeSRSName);
+            } catch (GeoWebCacheException e) {
+                e.printStackTrace();
+            }
+            
+            String gridSetKey = nativeSRSName + "_" + layerName;
+            
+            GridSet gs = GridSetFactory.createGridSet(
+                    gridSetKey, srs, 
+                    nativeBounds, false,
+                    25, null, 
+                    0.00028, 
+                    256, 256);
+            
+            gridSetBroker.put(gs);
+            
+            GridSubset gsub = GridSubsetFactory.createGridSubSet(
+                   gs, nativeBounds, 0, 24 );
+            
+            grids.put(gridSetKey, gsub);
+            
+        }
                
         return grids;
     }
