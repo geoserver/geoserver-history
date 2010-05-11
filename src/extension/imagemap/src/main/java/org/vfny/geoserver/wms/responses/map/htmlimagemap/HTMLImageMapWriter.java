@@ -184,22 +184,14 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         } catch (NoSuchElementException ex) {
             throw new DataSourceException(ex.getMessage(), ex);
         } finally {
+			if(iter!=null)
             //make sure we always close
             fColl.close(iter);
         }
     }
 
    
-	/**
-     * Evaluates if the supplied scaleDenominator is congruent with a rule defined scale range.
-     * @param r current rule
-     * @param scaleDenominator current value to verify
-     * @return true if scaleDenominator is in the rule defined range
-     */
-    boolean isWithInScale(Rule r,double scaleDenominator) {
-		return ((r.getMinScaleDenominator() ) <= scaleDenominator)
-				&& ((r.getMaxScaleDenominator()) > scaleDenominator);
-	}
+	
     
     /**
      * Filters the rules of <code>featureTypeStyle</code> returnting only
@@ -246,7 +238,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
 				scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(),100);
 			
 	            //is this rule within scale?
-	            if ( !isWithInScale(rule,scaleDenominator)) {
+	            if ( !EncodeHTMLImageMap.isWithInScale(rule,scaleDenominator)) {
 	            	continue;
 	            }
             } catch (TransformException e) {
