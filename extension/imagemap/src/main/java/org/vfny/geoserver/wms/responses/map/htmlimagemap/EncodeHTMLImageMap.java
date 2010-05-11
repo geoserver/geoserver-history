@@ -22,6 +22,7 @@ import org.geotools.feature.FeatureTypes;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.CRS;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
@@ -29,7 +30,9 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.spatial.BBOX;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
@@ -53,6 +56,8 @@ public class EncodeHTMLImageMap {
 
     
     private boolean abortProcess;
+    
+    private final int maxFilterSize=15;
 
     /**
      * Creates a new EncodeHTMLImageMap object.
@@ -163,13 +168,14 @@ public class EncodeHTMLImageMap {
 			}
 			
 
-			Filter ruleFiltersCombined;
+			Filter ruleFiltersCombined=null;
 			Filter newFilter;
 			// We're GOLD -- OR together all the Rule's Filters
 			if (filtersToDS.size() == 1) // special case of 1 filter
 			{
 				ruleFiltersCombined = filtersToDS.get(0);
-			} else {
+			// OR all filters if they are under maxFilterSize in number, else, do not filter
+			} else if(filtersToDS.size()<maxFilterSize) {
 				// build it up
 				ruleFiltersCombined = filtersToDS.get(0);
 				final int size = filtersToDS.size();
@@ -221,11 +227,14 @@ public class EncodeHTMLImageMap {
         for (int i = 0; i < featureTypeStyles.length; i++) {
             FeatureTypeStyle featureTypeStyle = featureTypeStyles[i];
             String featureTypeName = featureTypeStyle.getFeatureTypeName();
-
+            Rule[] rules=featureTypeStyle.getRules();
+            if(rules!=null)
+            	rules=filterRules(rules);
             //does this style have any rules
-            if (featureTypeStyle.getRules() == null || featureTypeStyle.getRules().length == 0 ) {
+            if (rules == null || rules.length == 0 ) {
             	continue;
             }
+            featureTypeStyle.setRules(rules);            
             
             //does this style apply to the feature collection
             if (featureType.getTypeName().equalsIgnoreCase(featureTypeName)
@@ -238,6 +247,47 @@ public class EncodeHTMLImageMap {
     }
     
     /**
+     * Evaluates if the supplied scaleDenominator is congruent with a rule defined scale range.
+     * @param r current rule
+     * @param scaleDenominator current value to verify
+     * @return true if scaleDenominator is in the rule defined range
+     */
+    public static boolean isWithInScale(Rule r,double scaleDenominator) {
+		return ((r.getMinScaleDenominator() ) <= scaleDenominator)
+				&& ((r.getMaxScaleDenominator()) > scaleDenominator);
+	}
+    
+    /**
+     * Filter given rules, to consider only the rules compatible
+     * with the current scale.
+     * @param rules
+     * @return
+     */
+    private Rule[] filterRules(Rule[] rules) {
+    	List<Rule> result=new ArrayList<Rule>();
+    	for(int count=0;count<rules.length;count++) {
+    		Rule rule=rules[count];
+    		double scaleDenominator;
+			try {
+				scaleDenominator = RendererUtilities.calculateScale(mapContext.getAreaOfInterest(), mapContext.getMapWidth(), mapContext.getMapHeight(),100);
+			
+	            //is this rule within scale?
+	            if (EncodeHTMLImageMap.isWithInScale(rule,scaleDenominator)) {
+	            	result.add(rule);
+	            }
+            } catch (TransformException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FactoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+		// TODO Auto-generated method stub
+		return result.toArray(new Rule[result.size()]);
+	}
+
+	/**
      * Encodes the current set of layers.
      *
      * @throws IOException if an error occurs during encoding
