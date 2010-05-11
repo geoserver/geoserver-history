@@ -902,10 +902,8 @@ public class CatalogImpl implements Catalog {
             throw new IllegalArgumentException( "Layer group named '" + layerGroup.getName() + "' already exists." );
         }
         
-        if ( !isNew ) {
-            if ( layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty() ) {
-                throw new NullPointerException( "Layer group must not be empty");
-            }
+        if ( layerGroup.getLayers() == null || layerGroup.getLayers().isEmpty() ) {
+            throw new IllegalArgumentException( "Layer group must not be empty");
         }
        
         if ( layerGroup.getStyles() != null && !layerGroup.getStyles().isEmpty() && 

@@ -24,8 +24,8 @@ import org.apache.wicket.model.Model;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
-import org.geoserver.web.data.layergroup.LayerGroupEditPage.LayerListPanel;
-import org.geoserver.web.data.layergroup.LayerGroupEditPage.StyleListPanel;
+import org.geoserver.web.data.layergroup.AbstractLayerGroupPage.LayerListPanel;
+import org.geoserver.web.data.layergroup.AbstractLayerGroupPage.StyleListPanel;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ImageAjaxLink;
@@ -187,7 +187,7 @@ public class LayerGroupEntryPanel extends Panel {
                 target.addComponent( layerTable );
             }
         };
-        link.getImage().add(new AttributeModifier("alt", true, new ParamResourceModel("LayerGroupEditPage.th.remove", link)));
+        link.getImage().add(new AttributeModifier("alt", true, new ParamResourceModel("AbstractLayerGroupPage.th.remove", link)));
         return link;
     }
     

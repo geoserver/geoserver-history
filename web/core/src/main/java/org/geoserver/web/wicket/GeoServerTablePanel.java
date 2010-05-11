@@ -243,8 +243,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
      */
     IModel getPropertyTitle(Property<T> property) {
         String pageName = this.getPage().getClass().getSimpleName();
-        ResourceModel resMod = new ResourceModel(pageName + ".th." + property.getName(),
-                property.getName());
+        ResourceModel resMod = new ResourceModel("th." + property.getName(),  property.getName());
         return resMod;
     }
     

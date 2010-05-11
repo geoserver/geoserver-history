@@ -1,10 +1,12 @@
 package org.geoserver.web.data.layergroup;
 
+import org.apache.wicket.PageParameters;
+
 
 public class LayerGroupEditPageTest extends LayerGroupBaseTest {
     
     public void testComputeBounds() {
-        LayerGroupEditPage page = new LayerGroupEditPage(getCatalog().getLayerGroupByName("lakes"));
+        LayerGroupEditPage page = new LayerGroupEditPage(new PageParameters("group=lakes"));
         tester.startPage(page);
         // print(page, true, false);
         

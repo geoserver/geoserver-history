@@ -21,7 +21,7 @@ public class LayerGroupNewPageTest extends LayerGroupBaseTest {
         // should not work, no name provided, so we remain
         // in the same page
         tester.assertRenderedPage(LayerGroupNewPage.class);
-        tester.assertErrorMessages(new String[] {"Field 'Name' is required."});
+        tester.assertErrorMessages(new String[] {"Field 'Name' is required.", "Field 'Bounds' is required.", "Field 'crs' is required."});
     }
     
     public void testDuplicateName() {
@@ -37,7 +37,7 @@ public class LayerGroupNewPageTest extends LayerGroupBaseTest {
         // in the same page
         tester.assertRenderedPage(LayerGroupNewPage.class);
         // System.out.println(tester.getMessages(FeedbackMessage.ERROR));
-        tester.assertErrorMessages(new String[] {"A layer group named lakes already exists"});
+        tester.assertErrorMessages(new String[] {"A layer group named lakes already exists", "Field 'Bounds' is required.", "Field 'crs' is required."});
     }
     
     public void testNewName() {
@@ -50,7 +50,8 @@ public class LayerGroupNewPageTest extends LayerGroupBaseTest {
         form.submit("submit");
         
         // should work, we switch to the edit page
-        tester.assertRenderedPage(LayerGroupEditPage.class);
+        tester.assertRenderedPage(LayerGroupNewPage.class);
+        tester.assertErrorMessages(new String[] {"Field 'Bounds' is required.", "Field 'crs' is required."});
     }
     
     
