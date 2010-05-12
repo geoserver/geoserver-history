@@ -13,12 +13,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.geoserver.ows.util.EncodingInfo;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.springframework.web.context.support.ServletContextResource;
+import org.springframework.web.context.support.ServletContextResourceLoader;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -52,7 +55,12 @@ public class FilePublisher extends AbstractController {
      * Resource loader
      */
     protected GeoServerResourceLoader loader;
-
+    
+    /**
+     * Servlet resource loader
+     */
+    protected ServletContextResourceLoader scloader;
+    
     /**
      * Creates the new file publisher.
      *
@@ -62,6 +70,11 @@ public class FilePublisher extends AbstractController {
         this.loader = loader;
     }
 
+    @Override
+    protected void initServletContext(ServletContext servletContext) {
+        this.scloader = new ServletContextResourceLoader(servletContext);
+    }
+    
     protected ModelAndView handleRequestInternal(HttpServletRequest request,
         HttpServletResponse response) throws Exception {
         String ctxPath = request.getContextPath();
@@ -81,6 +94,14 @@ public class FilePublisher extends AbstractController {
         // load the file
         File file = loader.find(reqPath);
 
+        if (file == null && scloader != null) {
+            //try loading as a servlet resource
+            ServletContextResource resource = (ServletContextResource) scloader.getResource(reqPath);
+            if (resource != null && resource.exists()) {
+                file = resource.getFile();
+            }
+        }
+        
         if (file == null) {
             //return a 404
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
