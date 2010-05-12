@@ -60,6 +60,13 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // use the OGC standard for axis order
         Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, false);
     }
+    
+    @Override
+    public void oneTimeTearDown() throws Exception {
+        // reset system default
+        Hints.removeSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER);
+        super.oneTimeTearDown();
+    }
 
     /**
      * Test content of GetFeature response.
