@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
-import org.geotools.renderedimage.viewer.RenderedImageBrowser;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
