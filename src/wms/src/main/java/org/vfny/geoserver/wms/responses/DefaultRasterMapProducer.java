@@ -770,17 +770,16 @@ public abstract class DefaultRasterMapProducer extends
         final AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(mapContext.getAreaOfInterest(), rasterArea);
         try {
             final GridCoverage2D coverage = readBestCoverage(mapContext, reader, params, rasterArea, interpolation);
-            
+            Number[] bands;
+            if(transparent) {
+                bands = new Byte[] {(byte) bgColor.getRed(), (byte) bgColor.getGreen(), (byte) bgColor.getBlue(), (byte) bgColor.getAlpha()};
+            } else {
+                bands = new Byte[] {(byte) bgColor.getRed(), (byte) bgColor.getGreen(), (byte) bgColor.getBlue()};
+            }
             // render the coverage
             try {
                 if (coverage == null) {
                     // we're outside of the coverage definition area, return an empty space
-                    Number[] bands;
-                    if(transparent) {
-                        bands = new Byte[] {(byte) bgColor.getRed(), (byte) bgColor.getGreen(), (byte) bgColor.getBlue(), (byte) bgColor.getAlpha()};
-                    } else {
-                        bands = new Byte[] {(byte) bgColor.getRed(), (byte) bgColor.getGreen(), (byte) bgColor.getBlue()};
-                    }
                     image = ConstantDescriptor.create((float) mapContext.getMapWidth(), (float) mapContext.getMapHeight(), 
                             bands, new RenderingHints(JAI.KEY_IMAGE_LAYOUT, layout));
                 } else {
