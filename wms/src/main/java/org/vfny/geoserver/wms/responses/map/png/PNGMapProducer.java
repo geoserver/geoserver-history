@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
+import org.geotools.renderedimage.viewer.RenderedImageBrowser;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
@@ -69,10 +70,12 @@ public class PNGMapProducer extends DefaultRasterMapProducer {
             LOGGER.fine("Writing png image ...");
         }
 
+        RenderedImageBrowser.showChain(image);
         // get the one required by the GetMapRequest
         final String format = getOutputFormat();
         if (format.equalsIgnoreCase("image/png8") || (this.mapContext.getPaletteInverter() != null)) {
             image = forceIndexed8Bitmask(image);
+            RenderedImageBrowser.showChain(image);
         }
 	    
         float quality = (100 - wms.getPngCompression()) / 100.0f;

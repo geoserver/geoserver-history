@@ -34,6 +34,7 @@ import org.vfny.geoserver.wms.WmsException;
  * and legend producers.
  * 
  * @author Gabriel Roldan
+ * @author Simone Giannecchini, GeoSolutions S.A.S.
  * @version $Id$
  */
 public class ImageUtils {
@@ -129,8 +130,11 @@ public class ImageUtils {
      *         with the background painted with <code>bgColor</code>
      *         otherwise.
      */
-    public static Graphics2D prepareTransparency(final boolean transparent, final Color bgColor,
-            final RenderedImage preparedImage, final Map extraHints) {
+    public static Graphics2D prepareTransparency(
+    		final boolean transparent, 
+    		final Color bgColor,
+            final RenderedImage preparedImage, 
+            final Map<RenderingHints.Key, Object> extraHints) {
         final Graphics2D graphic;
 
         if (preparedImage instanceof BufferedImage) {
@@ -144,11 +148,11 @@ public class ImageUtils {
         }
 
         // fill the background with no antialiasing
-        Map hintsMap;
+        Map<RenderingHints.Key, Object> hintsMap;
         if (extraHints == null) {
-            hintsMap = new HashMap();
+            hintsMap = new HashMap<RenderingHints.Key, Object>();
         } else {
-            hintsMap = new HashMap(extraHints);
+            hintsMap = new HashMap<RenderingHints.Key, Object>(extraHints);
         }
         hintsMap.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         graphic.setRenderingHints(hintsMap);
@@ -175,7 +179,9 @@ public class ImageUtils {
     
     
     /**
+     * 
      * @param originalImage
+     * @param invColorMap
      * @return
      */
     public static RenderedImage forceIndexed8Bitmask(RenderedImage originalImage, final InverseColorMapOp invColorMap) {
@@ -230,12 +236,12 @@ public class ImageUtils {
             // We got an image that needs to be converted.
             //
             // /////////////////////////////////////////////////////////////////
-
+        	image = new ImageWorker(originalImage).rescaleToBytes().getRenderedImage();
             if (invColorMap != null) {
 
                 // make me parametric which means make me work with other image
                 // types
-                image = invColorMap.filterRenderedImage(originalImage);
+                image = invColorMap.filterRenderedImage(image);
             } else {
                 // //
                 //
@@ -244,7 +250,7 @@ public class ImageUtils {
                 //
                 // //
                 // make sure we start from a componentcolormodel.
-                image = new ImageWorker(originalImage).forceComponentColorModel().getRenderedImage();
+                image = new ImageWorker(image).forceComponentColorModel().getRenderedImage();
 
                 // //
                 //
