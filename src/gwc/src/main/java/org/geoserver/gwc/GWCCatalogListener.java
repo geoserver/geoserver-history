@@ -140,8 +140,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
            // First we collect all the layers that use this style
            Iterator<LayerInfo> liter = cat.getLayers().iterator();
            while(liter.hasNext()) {
-               LayerInfo li = liter.next();
-               if(li.getDefaultStyle().getName().equals(styleName)) {
+               final LayerInfo li = liter.next();
+               final StyleInfo defaultStyle=li.getDefaultStyle();
+               if(defaultStyle!=null&& defaultStyle.getName().equals(styleName)) {
                    String prefixedName = li.getResource().getPrefixedName();
                    layerNameList.add(prefixedName);
                    cleanser.deleteLayer(prefixedName);
