@@ -375,6 +375,7 @@ Instead of passing in the nested feature type's targetElement in the containing 
       
 The solution for the last point above is to break them up into separate files and locations with only 1 featuretype.xml in the intended top level feature location. 
 E.g.
+
     * You can have 2 FeatureTypeMapping instances in the same file for gsml:CGI_TermValue type since it's not a feature type. 
     * You can have 2 FeatureTypeMapping instances for gsml:MappedFeature, but they have to be broken up into separate files. The one that can be queried as top level feature type would have featuretype.xml in its location. 
 
@@ -403,9 +404,11 @@ Multi-valued properties by reference (*xlink:href*)
 You may want to use feature chaining to set multi-valued properties by reference.
 This is particularly handy to avoid endless loop in circular relationships. 
 For example, you may have a circular relationship between gsml:MappedFeature and gsml:GeologicUnit.  
-E.g.   
+E.g.
+   
     * gsml:MappedFeature has gsml:GeologicUnit as gsml:specification
     * gsml:GeologicUnit has gsml:MappedFeature as gsml:occurrence
+
 Obviously you can only encode one side of the relationship, or you'll end up with an endless loop.
 You would need to pick one side to "chain" and use xlink:href for the other side of the relationship. 
 
