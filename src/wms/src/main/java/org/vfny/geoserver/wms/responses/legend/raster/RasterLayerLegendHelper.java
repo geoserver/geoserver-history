@@ -25,7 +25,6 @@ import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
-import org.geotools.util.NumberRange;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.ImageUtils;
@@ -111,8 +110,8 @@ public class RasterLayerLegendHelper {
             throw new IllegalArgumentException(
                     "Unable to create a legend for this style, we need exactly 1 rule");
 
-        final NumberRange<Double> scaleRange = NumberRange.create(scaleDenominator,
-                scaleDenominator);
+//        final NumberRange<Double> scaleRange = NumberRange.create(scaleDenominator,
+//                scaleDenominator);
 
         // get width and height
         width = request.getWidth();

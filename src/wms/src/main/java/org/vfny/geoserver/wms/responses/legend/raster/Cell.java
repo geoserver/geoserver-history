@@ -428,7 +428,7 @@ class GradientColorManager extends SimpleColorManager {
         final Rectangle2D rectLegend = new Rectangle2D.Double(minx, miny + (leftEdge ? 0 : h / 2),
                 w, !leftEdge ? h / 2 : h);
         super.draw(graphics, rectLegend, completeBorder);
-        if (!completeBorder) {
+        if (completeBorder) {
             final Color oldColor = graphics.getColor();
             // make bkgColor customizable
             graphics.setColor(borderColor);
