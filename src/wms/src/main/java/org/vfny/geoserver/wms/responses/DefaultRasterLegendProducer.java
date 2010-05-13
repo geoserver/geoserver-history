@@ -211,7 +211,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             //BufferedImage image = prepareImage(w, h, request.isTransparent());
             final boolean transparent = request.isTransparent();
             final RenderedImage image = ImageUtils.createImage(w, h, (IndexColorModel)null, transparent);
-            final Map hintsMap = new HashMap();
+            final Map<RenderingHints.Key, Object> hintsMap = new HashMap<RenderingHints.Key, Object>();
             final Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor, image, hintsMap);
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -347,7 +347,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
 
             final boolean transparent = req.isTransparent();
             final Color backgroundColor = LegendUtils.getBackgroundColor(req);
-            final Map hintsMap = new HashMap();
+            final Map<RenderingHints.Key, Object> hintsMap = new HashMap<RenderingHints.Key, Object>();
             //create the final image
             finalLegend = ImageUtils.createImage(totalWidth, totalHeight, (IndexColorModel)null, transparent);
             Graphics2D finalGraphics = ImageUtils.prepareTransparency(transparent, backgroundColor, finalLegend, hintsMap);
