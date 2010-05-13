@@ -182,7 +182,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
             }
             sampleFeature = (SimpleFeature) temp;
         }
-        final FeatureTypeStyle[] ftStyles = gt2Style.getFeatureTypeStyles();
+        final FeatureTypeStyle[] ftStyles = gt2Style.featureTypeStyles().toArray( new FeatureTypeStyle[0] );
         final double scaleDenominator = request.getScale();
 
         final Rule[] applicableRules;
@@ -308,7 +308,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
     
                     //What's the label on this rule?  We prefer to use
                     //the 'title' if it's available, but fall-back to 'name'
-                    labels[i] = rule.getTitle();
+                    labels[i] = rule.getDescription().getTitle().toString();
                     if (labels[i] == null) labels[i] = rule.getName();
                     if (labels[i] == null) labels[i] = "";
                     
