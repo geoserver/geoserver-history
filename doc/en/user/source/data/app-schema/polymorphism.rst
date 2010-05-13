@@ -159,7 +159,7 @@ Returns a Boolean that is true if the expression evaluates to null.
 
 toXlinkHref
 ```````````
-Special function written for referential polymorphism, and not to be used anywhere else. 
+Special function written for referential polymorphism and feature chaining, not to be used outside of linkElement.
 It infers that the attribute should be encoded as xlink:href. 
 
 **Syntax**::
