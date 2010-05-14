@@ -85,6 +85,9 @@ pygments_style = 'sphinx'
 html_theme = 'geoserver'
 html_theme_path = ['../../themes']
 
+if os.environ.get('HTML_THEME_PATH'):
+  html_theme_path.append(os.environ.get('HTML_THEME_PATH'))
+
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
 # given in html_static_path.
