@@ -144,6 +144,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      */
     protected GetMapRequest createGetMapRequest(QName[] layerNames) {
         GetMapRequest request = new GetMapRequest(getWMS());
+        request.setBaseUrl("http://localhost:8080/geoserver");
         request.setHttpServletRequest(createRequest("wms"));
 
         MapLayerInfo[] layers = new MapLayerInfo[layerNames.length];
