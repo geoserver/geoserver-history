@@ -14,7 +14,7 @@ import javax.media.jai.Interpolation;
 
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.coverage.processing.DefaultProcessor;
+import org.geotools.coverage.processing.CoverageProcessor;
 import org.geotools.coverage.processing.operation.Interpolate;
 import org.geotools.coverage.processing.operation.Resample;
 import org.geotools.coverage.processing.operation.SelectSampleDimension;
@@ -58,7 +58,7 @@ public class WCSUtils {
         // Static Processors
         //
         // ///////////////////////////////////////////////////////////////////
-        final DefaultProcessor processor = new DefaultProcessor(LENIENT_HINT);
+        final CoverageProcessor processor = CoverageProcessor.getInstance((LENIENT_HINT));
         bandSelectParams = processor.getOperation("SelectSampleDimension").getParameters();
         interpolateParams = processor.getOperation("Interpolate").getParameters();
         resampleParams = processor.getOperation("Resample").getParameters();        
