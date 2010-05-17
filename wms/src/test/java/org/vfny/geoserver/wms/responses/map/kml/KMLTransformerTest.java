@@ -22,6 +22,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Test;
 
 import org.custommonkey.xmlunit.XMLAssert;
+import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
 import org.geoserver.wms.WMSTestSupport;
@@ -85,10 +87,14 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertEquals(nfeatures, element.getElementsByTagName("Style").getLength());
         assertEquals(nfeatures, element.getElementsByTagName("Placemark").getLength());
     }
-    
+
+    /**
+     * See http://jira.codehaus.org/browse/GEOS-1947
+     * @throws Exception
+     */
     @SuppressWarnings("unchecked")
     public void testExternalGraphicBackround() throws Exception {
-        // see http://jira.codehaus.org/browse/GEOS-1947
+
         MapLayer mapLayer = createMapLayer( MockData.POINTS,  "Bridge");
         WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
         mapContext.addLayer(mapLayer);
@@ -100,10 +106,45 @@ public class KMLTransformerTest extends WMSTestSupport {
         int nfeatures = featureSource.getFeatures().size();
 
         Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+        // print(document);
 
         // make sure we are generating icon styles, but that we're not sticking a color onto them
         XMLAssert.assertXpathEvaluatesTo("" + nfeatures, "count(//Style/IconStyle/Icon/href)", document);
         XMLAssert.assertXpathEvaluatesTo("0", "count(//Style/IconStyle/Icon/color)", document);
+    }
+    
+    /**
+     * See http://jira.codehaus.org/browse/GEOS-3965
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public void testProxyBaseURL() throws Exception {
+        GeoServer gs = getGeoServer();
+        try {
+            GeoServerInfo info = gs.getGlobal();
+            info.setProxyBaseUrl("http://myhost:9999/gs");
+            gs.save(info);
+            
+            MapLayer mapLayer = createMapLayer( MockData.POINTS,  "Bridge");
+            WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
+            mapContext.addLayer(mapLayer);
+            KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+            transformer.setIndentation(2);
+
+            FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
+            featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
+            int nfeatures = featureSource.getFeatures().size();
+
+            Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+            // print(document);
+
+            // make sure we are using the proxy base URL
+            XMLAssert.assertXpathEvaluatesTo("http://myhost:9999/gs/styles/bridge.png", "//Style/IconStyle/Icon/href", document);
+        } finally {
+            GeoServerInfo info = gs.getGlobal();
+            info.setProxyBaseUrl(null);
+            gs.save(info);
+        }
     }
     
     @SuppressWarnings("unchecked")

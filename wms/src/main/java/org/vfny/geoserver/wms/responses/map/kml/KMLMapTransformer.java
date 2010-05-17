@@ -29,6 +29,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.type.DateUtil;
 import org.geotools.map.MapLayer;
@@ -676,9 +677,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         // it is a local file, reference locally from "styles"
                         // directory
                         File file = new File(graphic.getLocation().getFile());
-                        iconHref = RequestUtils.baseURL(mapContext.getRequest()
-                                .getHttpServletRequest())
-                                + "styles/" + file.getName();
+                        
+                        iconHref = ResponseUtils.buildURL(mapContext.getRequest().getBaseUrl(), "styles/" + file.getName(), null, URLType.RESOURCE);
                     } else if ("http".equals(graphic.getLocation()
                             .getProtocol())) {
                         iconHref = graphic.getLocation().toString();
