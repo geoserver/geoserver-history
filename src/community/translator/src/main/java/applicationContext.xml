@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <!-- 
+   Menu categories
+   -->
+  <bean id="extrasCategory" class="org.geoserver.web.Category">
+     <property name="nameKey" value="category.extras"/>
+     <property name="order" value="250"/>
+  </bean>
+  
+  <!-- 
+   Extras menu items
+    -->
+  <bean id="extrasMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="extras.ui.translate"/>
+    <property name="titleKey" value="TranslationPage.shortTitle"/>
+    <property name="descriptionKey" value="TranslationPage.description"/>
+    <property name="componentClass" value="org.geoserver.web.translator.view.TranslationPage"/>
+    <property name="category" ref="extrasCategory"/>
+    <!--property name="icon" value="../img/icons/silk/server_chart.png"/-->
+    <property name="order" value="10"/>
+  </bean>
+  
+  <!-- 
+    Manages setting UI resource strings from the in progress translations
+   -->
+  <bean id="translationProgressResourceLoader" class="org.geoserver.web.translator.controller.TranslationStringResourceLoader"/>
+  
+  <!-- 
+    Manages the translations
+   -->
+  <bean id="translationController" class="org.geoserver.web.translator.controller.TranslationController">
+    <constructor-arg ref="webApplication"/>
+  </bean>
+  
+ </beans>

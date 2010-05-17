@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ 
+ <parent>
+  <groupId>org.geoserver</groupId>
+  <artifactId>geoserver</artifactId>
+  <version>2.0.2-SNAPSHOT</version>
+ </parent>
+ 
+ <groupId>org.geoserver</groupId>
+ <artifactId>gwc</artifactId>
+ <packaging>jar</packaging>
+ <name>GeoWebCache (GWC) Module</name>
+ 
+ <dependencies>
+   <dependency>
+     <groupId>org.geoserver</groupId>
+     <artifactId>main</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.geoserver</groupId>
+     <artifactId>wfs</artifactId>
+    </dependency>
+    <dependency>
+     <groupId>org.geoserver</groupId>
+     <artifactId>wms</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner</artifactId>
+      <scope>test</scope>
+    </dependency>
+  <dependency>
+   <groupId>org.geowebcache</groupId>
+   <artifactId>geowebcache</artifactId>
+   <version>1.2.2</version>
+   <exclusions>
+   <!-- GeoServer - This doesn't actually do anything, specified in
+        community/pom.xml -->
+    <exclusion>
+     <groupId>org.geoserver</groupId>
+     <artifactId>platform</artifactId>
+    </exclusion>
+    <!-- GeoTools - Also not very successful-->
+    <exclusion>
+     <groupId>org.geotools</groupId>
+     <artifactId>gt-wms</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>org.geotools</groupId>
+     <artifactId>gt-api</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>org.geotools</groupId>
+     <artifactId>gt-main</artifactId>
+    </exclusion>
+    <!-- JAI wrappers -->
+    <exclusion>
+     <groupId>javax.media</groupId>
+     <artifactId>jai_core</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>javax.media</groupId>
+     <artifactId>jai_codec</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>javax.media</groupId>
+     <artifactId>jai_imageio</artifactId>
+    </exclusion>
+    <!-- Spring -->
+    <exclusion>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-beans</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-core</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-context</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>org.springframework</groupId>
+     <artifactId>spring-webmvc</artifactId>
+    </exclusion>
+    <!-- Acegi -->
+    <exclusion>
+     <groupId>org.acegisecurity</groupId>
+     <artifactId>acegi-security</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>net.sf.json-lib</groupId>
+     <artifactId>json-lib</artifactId>
+    </exclusion>
+   </exclusions>
+  </dependency>
+ </dependencies>
+ 
+</project>

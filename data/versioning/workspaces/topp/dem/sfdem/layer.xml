@@ -1,0 +1,17 @@
+<layer>
+  <name>sfdem</name>
+  <id>LayerInfoImpl--7c9ab95c:1247612cd06:-7fdb</id>
+  <path>/</path>
+  <type>RASTER</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--7c9ab95c:1247612cd06:-7ffb</id>
+  </defaultStyle>
+  <resource class="coverage">
+    <id>CoverageInfoImpl--7c9ab95c:1247612cd06:-7fdc</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

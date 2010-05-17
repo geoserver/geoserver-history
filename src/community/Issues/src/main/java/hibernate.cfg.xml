@@ -1,0 +1,16 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+		<property name="connection.url">jdbc:oracle:thin:@localhost:1521:XE</property>
+		<property name="connection.username">system</property>
+		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="connection.password">hopshnot</property>
+	 	<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+	    <property name="current_session_context_class">thread</property>
+	    <property name="hibernate.show_sql">true</property>     
+        <mapping class="org.vfny.geoserver.issues.Issue"/>
+    </session-factory>
+</hibernate-configuration>

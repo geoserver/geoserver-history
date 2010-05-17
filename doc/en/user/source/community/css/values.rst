@@ -1,0 +1,136 @@
+.. highlight:: css
+
+CSS Value Types
+===============
+
+This page presents a brief overview of CSS types as used by this project.  Note
+that these can be repeated as described in :doc:`multivalues`.
+
+Numbers
+-------
+
+Numeric values consist of a number, or a number annotated with a measurement
+value.  In general, it is wise to use measurement annotations most of the time,
+to avoid ambiguity and protect against potential future changes to the default
+units. 
+
+Currently, the supported units include:
+
+* Length
+
+  * ``px`` pixels
+
+* Angle
+
+  * ``deg`` degrees
+    
+* Ratio
+
+  * ``%`` percentage 
+
+When using expressions in place of numeric values, the first unit listed for
+the type of measure is assumed.
+
+.. note:: 
+    Yes, yes, I know there aren't any options here.  When GeoTools supports
+    unit-of-measure in SLD/SE, the CSS module will add more units ASAP.
+
+Strings
+-------
+
+String values consist of a small snippet of text.  For example, a string could
+be a literal label to use for a subset of roads::
+
+	[lanes>20] {
+		label: "Serious Freaking Highway";
+	}
+
+Strings can be enclosed in either single or double quotes.  It's easiest to
+simply use whichever type of quotes are not in your string value, but you can
+escape quote characters by prefixing them with a backslash ``\``.  Backslash
+characters themselves must also be prefixed.  For example, ``'\\\''`` is a
+string value consisting of a single backslash followed by a single single quote
+character.
+
+Colors
+------
+
+Color values are relatively important to styling, so there are multiple ways to
+specify them.  
+
+.. list-table::
+    :widths: 20 80
+
+    - * **Format** 
+      * **Interpretation** 
+    - * ``#RRGGBB``
+      * A hexadecimal-encoded color value, with two digits each for red, green, and blue.
+    - * ``#RGB``
+      * A hexadecimal-encoded color value, with one digits each for red, green,
+        and blue. This is equivalent to the two-digit-per-channel encoding with
+        each digit duplicated.
+    - * ``rgb(r, g, b)``
+      * A three-part color value with each channel represented by a value in
+        the range 0 to 1, or in the range 0 to 255.  0 to 1 is used if any of
+        the values include a decimal point, otherwise it is 0 to 255.
+    - * *Simple name* 
+      * The simple English name of the color.  A full list of the supported
+        colors is available at
+        http://www.w3.org/TR/SVG/types.html#ColorKeywords
+
+External References
+-------------------
+
+When using external images to decorate map features, it is necessary to
+reference them by URL.  This is done by a call to the ``url`` function.  The
+URL value may be wrapped in single or double-quotes, or not at all.  The same
+escaping rules as for string values.  The ``url`` function is also a special
+case where the surrounding quote marks can usually be omitted. Some examples::
+
+    /* These properties are all equivalent. */
+
+    * {
+        stroke: url("http://example.com/");
+        stroke: url('http://example.com/');
+        stroke: url(http://example.com/);
+    }
+
+Well-Known Marks
+----------------
+
+As defined in the SLD standard, GeoServer's ``css`` module  also allows using a
+certain set of well-known mark types without having to provide graphic
+resources explicitly.  These include:
+
+* ``circle``
+* ``square``
+* ``cross``
+* ``star``
+* ``arrow``
+
+And others.  Additionally, vendors can provide an extended set of well-known
+marks, a facet of the standard that is exploited by some GeoTools plugins to
+provide dynamic map features such as using characters from TrueType fonts as
+map symbols, or dynamic charting.  In support of these extended mark names, the
+css module provides a ``symbol`` function similar to ``url``.  The syntax is
+the same, aside from the function name::
+
+    * {
+        mark: symbol(circle);
+        mark: symbol('ttf://Times+New+Roman&char=0x19b2');
+        mark: symbol("chart://type=pie&x&y&z");
+    }
+
+Paint
+-----
+
+There are actually several kinds of values that can be used for strokes and
+fills in SLD, including 
+
+* Solid color
+* External image
+* Combination of well-known marks, themselves parameterized with size, stroke,
+  and fill
+
+It's somewhat unclear what the best representation is, so there is a separate
+page for discussion of :doc:`specifying-paint`.

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- set parent pom to community pom -->
+  <parent>
+    <groupId>org.geoserver</groupId>
+    <artifactId>community</artifactId>
+    <version>2.0.2-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.geoserver</groupId>
+  <artifactId>OpenPlans-Auth</artifactId>
+  <packaging>jar</packaging>
+  <version>2.0.2-SNAPSHOT</version>
+  <name>OpenPlans.org Authentication Module</name>
+
+  <repositories>
+    <repository>
+       <id>codehaus</id>
+       <name>codehaus</name>
+       <url>http://repository.codehaus.org/</url>
+    </repository>
+    <repository>
+       <id>refractions</id>
+       <name>refractions</name>
+       <url>http://lists.refractions.net/m2</url>
+    </repository>
+  </repositories>
+
+  <!-- declare depenency on geoserver main -->
+  <dependencies>
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>2.0.2-SNAPSHOT</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.geoserver</groupId>
+      <artifactId>main</artifactId>
+      <version>2.0.2-SNAPSHOT</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.mockrunner</groupId>
+      <artifactId>mockrunner</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+  </dependencies>
+
+<!--  <testResources>
+    <testResource>
+      <directory>${basedir}/src/test/java</directory>
+      <includes>
+        <include>META-INF/services/**</include>
+        <include>**/test-data/**</include>
+        <include>**/*.html</include>
+        <include>**/*.xml</include>
+        <include>**/*.xsd</include>
+        <include>**/*.csv</include>
+        <include>**/*.sld</include>
+        <include>**/*.svg</include>
+        <include>**/*.gml</include>
+        <include>**/*.wkt</include>
+        <include>**/*.txt</include>
+        <include>**/*.sql</include>
+        <include>**/*.png</include>
+        <include>**/*.properties</include>
+        <include>**/*.serialized</include>
+        <include>**/*.ftl</include>
+      </includes>
+      <excludes>
+        <exclude>**/doc-files/**</exclude>
+      </excludes>
+    </testResource>
+  </testResources>-->
+  
+</project>

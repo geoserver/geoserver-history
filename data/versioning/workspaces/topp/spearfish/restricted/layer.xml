@@ -1,0 +1,17 @@
+<layer>
+  <name>restricted</name>
+  <id>LayerInfoImpl--7c9ab95c:1247612cd06:-7fe1</id>
+  <path>/</path>
+  <type>VECTOR</type>
+  <defaultStyle>
+    <id>StyleInfoImpl--7c9ab95c:1247612cd06:-7ffa</id>
+  </defaultStyle>
+  <resource class="featureType">
+    <id>FeatureTypeInfoImpl--7c9ab95c:1247612cd06:-7fe2</id>
+  </resource>
+  <enabled>true</enabled>
+  <attribution>
+    <logoWidth>0</logoWidth>
+    <logoHeight>0</logoHeight>
+  </attribution>
+</layer>

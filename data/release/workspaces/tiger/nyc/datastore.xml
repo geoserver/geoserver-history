@@ -1,0 +1,12 @@
+<dataStore>
+  <id>DataStoreInfoImpl-4e0b98bf:12475d46fdd:-7fda</id>
+  <name>nyc</name>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl-4e0b98bf:12475d46fdd:-7ff5</id>
+  </workspace>
+  <connectionParameters>
+    <entry key="namespace">http://www.census.gov</entry>
+    <entry key="url">file:data/nyc</entry>
+  </connectionParameters>
+</dataStore>

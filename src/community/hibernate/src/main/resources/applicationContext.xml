@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<!-- property file config -->
+	<!-- The order is to look for a properties  -->
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	    <property name="location" value="classpath:gs-db-config.properties"/> 
+	    <property name="ignoreResourceNotFound" value="True"/>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	    <property name="location" value="file:${user.dir}/gs-db-config.properties"/> 
+	    <property name="ignoreResourceNotFound" value="True"/>
+	</bean>
+	
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+	    <property name="location" value="file:${GeoServerDBConfigPropertiesFile}"/> 
+	    <property name="ignoreResourceNotFound" value="True"/>
+	</bean>	
+	
+   
+    <!--<aop:aspectj-autoproxy/>-->
+<!--
+    <context:load-time-weaver/>
+    <bean id="profiler" class="org.geoserver.hibernate.ProfilingAspect"/>
+-->
+
+	<!-- data source -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver"/>
+        <property name="url"             value="jdbc:h2:file:gscatalog"/>
+        <property name="username"        value="user"/>
+        <property name="password"        value=""/>
+    </bean>
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="database" value="H2" />
+                <property name="databasePlatform" value="org.geoserver.hibernate.H2Dialect" />
+                <property name="showSql" value="false" />
+                <property name="generateDdl" value="true" />
+            </bean>
+        </property>
+
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.hbm2ddl.auto" value="update" />
+                <entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
+                <entry key="hibernate.cache.provider_configuration_file_resource_path" value="/ehcache.xml"/>
+                
+                <!-- enable second level caching and query caching -->
+                <entry key="hibernate.cache.use_query_cache" value="true"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="true"/>
+                
+                <entry key="hibernate.generate_statistics" value="true"/>
+                <entry key="hibernate.session_factory_name" value="SessionFactory"/>
+                
+                <entry key="hibernate.bytecode.use_reflection_optimizer" value="true"/>
+                
+                <entry key="hibernate.show_sql" value="false"/>
+                <entry key="hibernate.use_sql_comments" value="true"/>
+                <entry key="hibernate.format_sql" value="true"/>
+                
+                <entry key="hibernate.ejb.interceptor" value="org.geoserver.catalog.hibernate.HibCatalogInterceptor"/>
+            </map>
+        </property>
+    </bean>
+
+
+    <!-- Transaction manager for a single JPA EntityManagerFactory (alternative to JTA) -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    <!-- Instruct Spring to perform declarative transaction management  -->
+    <!-- automatically on annotated classes.                            -->
+    <tx:annotation-driven/>
+
+    <!-- PostProcessors to perform resource injection according to the JPA -->
+    <!-- specification (@PersistenceContext, @PersistenceUnit).            -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <!-- PostProcessors to perform exception translation on @Repository     -->
+    <!-- classes (from native exceptions such as JPAPersistenceExceptions   -->
+    <!--to Spring's DataAccessException hierarchy).                         -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<context:annotation-config/>
+	
+
+    <!--                                                                -->
+    <!--                                                                -->
+    <!--  Our beans                                                     -->
+    <!--                                                                -->
+    <!--                                                                -->
+
+    <!-- Interceptors -->
+
+    <bean id="catalogInterceptor"
+		class="org.geoserver.catalog.hibernate.HibCatalogInterceptor">
+        <constructor-arg ref="catalogTarget" /> 
+    </bean>
+
+	<!-- DAOs -->
+
+    <bean id="serviceDAO" class="org.geoserver.hibernate.dao.ServiceDAOImpl"/>
+    <bean id="catalogDAO" class="org.geoserver.hibernate.dao.CatalogDAOImpl">
+        <property name="statsEnabled" value="true"/>
+    </bean>
+	<!-- catalog -->
+    <bean id="catalogTarget" class="org.geoserver.catalog.hibernate.HibCatalogImpl" lazy-init="false" primary="true">
+        <property name="catalogDAO" ref="catalogDAO"/>
+    </bean>
+
+    <alias name="catalogTarget" alias="rawCatalog" />
+    <bean id="configFactory" class="org.geoserver.config.hibernate.HibGeoServerFactoryImpl" />
+
+    <bean id="configTarget" class="org.geoserver.config.hibernate.HibGeoServerImpl" lazy-init="false" primary="true">
+        <property name="serviceDAO" ref="serviceDAO"/>
+
+        <property name="factory" ref="configFactory" />
+        <property name="catalog" ref="catalogTarget" />
+
+    </bean>
+
+    <bean id="configWrapper" class="org.geoserver.config.hibernate.HibGeoServerWrapper" 
+            lazy-init="false" primary="true" depends-on="transactionManager,hibGeoServerLoader">
+        <constructor-arg ref="configTarget"/>
+
+    </bean>
+
+
+    <alias name="configWrapper" alias="geoServer" />
+
+    <!-- original one makes one assumption too much about context :|  -->
+
+    <!-- This bean *was* a BeanPostProcessor. Its related counterpart in geoserver.main still is. -->
+    <bean id="hibGeoServerLoader" 
+            class="org.geoserver.config.hibernate.HibGeoServerLoader"
+            lazy-init="false" primary="true" depends-on="catalogInterceptor">
+        <constructor-arg ref="resourceLoader"/>
+        <constructor-arg ref="configTarget"/>
+        <constructor-arg ref="catalogTarget"/>
+    </bean>
+
+    <alias name="hibGeoServerLoader" alias="geoServerLoader" />
+
+
+	<bean id="xstreamPersisterFactoryHib" class="org.geoserver.hibernate.HibXStreamPersisterFactory"/>
+	<alias name="xstreamPersisterFactoryHib" alias="xstreamPersisterFactory" />
+
+    <!-- This class is the memory-stored configuration -->
+    <!--
+    <bean id="hibDataConfig"
+        class="org.geoserver.hibernate.HibDataConfig" lazy-init="false" primary="true">
+    </bean>
+    -->
+
+<!--
+    <jee:jndi-lookup id="server" jndi-name="java:comp/env/jmx/runtime" />
+    <jee:jndi-lookup id="hibernateSessionFactory" jndi-name="SessionFactory" />
+
+    <bean id="hibernateStatistics" class="org.hibernate.jmx.StatisticsService">
+       <property name="statisticsEnabled" value="true" />
+       <property name="sessionFactory" ref="hibernateSessionFactory"/>
+    </bean>
+
+    <bean class="org.springframework.jmx.export.MBeanExporter" lazy-init="false">
+       <property name="server" ref="server" />
+       <property name="beans">
+          <map>
+            <entry key="Hibernate:name=statistics" value-ref="hibernateStatistics"/>
+          </map>
+       </property>
+    </bean>
+-->
+
+</beans>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="gwcServicePage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="gwc"/>
+    <property name="titleKey" value="gwc.title"/>
+    <property name="descriptionKey" value="gwc.description"/>
+    <property name="componentClass" value="org.geoserver.gwc.web.GWCAdminPage"/> 
+    <property name="icon" value="geowebcache-16.png"/>
+    <property name="category" ref="servicesCategory"/>
+  </bean>
+  
+</beans>

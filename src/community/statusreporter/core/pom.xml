@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+	
+  <groupId>org.geoserver</groupId>
+  <artifactId>statusreporter_core</artifactId>
+  <packaging>jar</packaging>
+  <version>0.4</version>
+  <name>Status Reporter Core Service Module</name>
+  
+  <parent>
+    <groupId>org.geoserver</groupId>		
+    <artifactId>statusreporter</artifactId>
+    <version>0.4</version>
+  </parent>
+  
+ 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-remoting</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+		<dependency>
+                        <groupId>org.geoserver</groupId>
+                        <artifactId>wfs</artifactId>
+			<version>2.0.2-SNAPSHOT</version>
+                </dependency>
+		<dependency>
+                        <groupId>org.geoserver</groupId>
+                        <artifactId>wms</artifactId>
+			<version>2.0.2-SNAPSHOT</version>
+                </dependency>
+		<dependency>
+                        <groupId>org.geoserver</groupId>
+                        <artifactId>preference_core</artifactId>
+			<version>0.4</version>
+                </dependency>
+	</dependencies>
+
+	<build>
+		<extensions> 
+			<extension> 
+				<groupId>org.apache.maven.wagon</groupId> 
+				<artifactId>wagon-webdav</artifactId> 
+			</extension> 
+		</extensions> 
+	</build>
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>refractions</id>
+      <name>Refractions Research Repository</name>
+      <url>dav:http://lists.refractions.net/m2</url>
+    </repository>
+  </distributionManagement>
+</project>

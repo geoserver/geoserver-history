@@ -1,0 +1,20 @@
+<featureType datastore = "sfRoads" >
+  <name>roads</name>
+  <!--
+    native wich EPGS code for the FeatureTypeInfoDTO
+  -->
+  <SRS>26713</SRS>
+  <title>roads_Type</title>
+  <abstract>Generated from sfRoads</abstract>
+  <wmspath>/</wmspath>
+  <numDecimals value = "8" />
+  <keywords>sfRoads roads</keywords>
+  <latLonBoundingBox dynamic = "false" maxx = "-103.62231404880659" maxy = "44.50015918338962" minx = "-103.87741691493184" miny = "44.37087275281798" />
+  <nativeBBox dynamic = "false" maxx = "609527.2102150217" maxy = "4928063.398014731" minx = "589434.8564686741" miny = "4914006.337837095" />
+  <!--
+    the default style this FeatureTypeInfoDTO can be represented by.
+    at least must contain the "default" attribute
+  -->
+  <styles default = "simple_roads" />
+  <cacheinfo enabled = "true" maxage = "3600" />
+</featureType>

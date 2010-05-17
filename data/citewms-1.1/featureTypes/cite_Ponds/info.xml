@@ -1,0 +1,17 @@
+<featureType datastore = "Ponds" >
+<name>Ponds</name>
+<!--
+native wich EPGS code for the FeatureTypeInfoDTO
+-->
+<SRS>4326</SRS>
+<title>cite:Ponds</title>
+<abstract>Generated from cite</abstract>
+<numDecimals value = "8" />
+<keywords>Ponds cite</keywords>
+<latLonBoundingBox dynamic = "false" miny = "0.0016" maxy = "0.0020" maxx = "-0.0014" minx = "-0.0020"  />
+<!--
+the default style this FeatureTypeInfoDTO can be represented by.
+at least must contain the "default" attribute 
+-->
+<styles default = "cite_ponds"  />
+</featureType>

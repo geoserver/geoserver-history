@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="IssueService" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">
+		<property name="serviceUrl">
+			<value>http://localhost:8080/geoserver/remoting/issues</value>
+		</property>		
+		<property name="serviceInterface">
+			<value>org.vfny.geoserver.issues.IIssueService</value>
+		</property>
+	</bean>	
+</beans>

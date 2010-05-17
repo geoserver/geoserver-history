@@ -1,0 +1,106 @@
+<?config.xml version="1.0" encoding="UTF-8"?>
+<catalog>
+<datastores>
+<!--
+a datastore configuration element serves as a common data source connection
+parameters repository for all featuretypes it holds.
+-->
+<datastore namespace = "cite" enabled = "true" id = "Ponds" >
+<connectionParams>
+<parameter value = "file:data/cite_Ponds/Ponds.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "RoadSegments" >
+<connectionParams>
+<parameter value = "file:data/cite_RoadSegments/RoadSegments.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "NamedPlaces" >
+<connectionParams>
+<parameter value = "file:data/cite_NamedPlaces/NamedPlaces.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "Bridges" >
+<connectionParams>
+<parameter value = "file:data/cite_Bridges/Bridges.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "Forests" >
+<connectionParams>
+<parameter value = "file:data/cite_Forests/Forests.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "DividedRoutes" >
+<connectionParams>
+<parameter value = "file:data/cite_DividedRoutes/DividedRoutes.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "BasicPolygons" >
+<connectionParams>
+<parameter value = "file:data/cite_BasicPolygons/BasicPolygons.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "Buildings" >
+<connectionParams>
+<parameter value = "file:data/cite_Buildings/Buildings.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "Streams" >
+<connectionParams>
+<parameter value = "file:data/cite_Streams/Streams.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "MapNeatline" >
+<connectionParams>
+<parameter value = "file:data/cite_MapNeatline/MapNeatline.shp" name = "url"  />
+</connectionParams>
+</datastore>
+<datastore namespace = "cite" enabled = "true" id = "Lakes" >
+<connectionParams>
+<parameter value = "file:data/cite_Lakes/Lakes.shp" name = "url"  />
+</connectionParams>
+</datastore>
+</datastores>
+
+<formats>
+</formats>
+
+<!--
+Defines namespaces to be used by the datastores.
+-->
+<namespaces>
+<namespace uri = "http://www.openplans.org/topp" prefix = "topp" default = "true"  />
+<namespace uri = "http://geoserver.sf.net" prefix = "sde"  />
+<namespace uri = "http://www.refractions.net/lakes" prefix = "lake"  />
+<namespace uri = "http://www.opengeospatial.net/cite" prefix = "cite"  />
+<namespace uri = "http://www.geo-solutions.it" prefix = "it.geosolutions"  />
+</namespaces>
+<styles>
+<!--
+Defines the style ids to be used by the wms.  The files must be
+contained in geoserver/misc/wms/styles.  We're working on finding
+a better place for them, but for now that's where you must put them
+if you want them on the server.
+-->
+<style filename = "basicPolygon.sld" id = "basicpolygon"  />
+<style filename = "NamedPlaces.sld" id = "cite_named_places"  />
+<style filename = "capitals.sld" id = "capitals"  />
+<style filename = "MapNeatline.sld" id = "cite_map_neatline"  />
+<style filename = "Buildings.sld" id = "cite_buildings"  />
+<style filename = "funkypolyshp.sld" id = "dotty"  />
+<style filename = "Streams.sld" id = "cite_streams"  />
+<style filename = "green.sld" id = "green"  />
+<style filename = "usa_math.sld" id = "manualVsWorkers"  />
+<style filename = "simpleRoads.sld" id = "simple_roads"  />
+<style filename = "normal.sld" id = "normal"  />
+<style filename = "popshade.sld" id = "population"  />
+<style filename = "Ponds.sld" id = "cite_ponds"  />
+<style filename = "blue.sld" id = "blue"  />
+<style filename = "RoadSegments.sld" id = "cite_road_segments"  />
+<style filename = "Forests.sld" id = "cite_forests"  />
+<style filename = "Bridges.sld" id = "cite_bridges"  />
+<style filename = "DividedRoutes.sld" id = "cite_divided_routes"  />
+<style filename = "Lakes.sld" id = "cite_lakes"  />
+<style filename = "usa_ratio.sld" id = "maleVsFemale"  />
+</styles>
+</catalog>

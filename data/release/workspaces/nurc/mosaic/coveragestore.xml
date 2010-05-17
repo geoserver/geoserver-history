@@ -1,0 +1,10 @@
+<coverageStore>
+  <id>CoverageStoreInfoImpl-4e0b98bf:12475d46fdd:-7fd6</id>
+  <name>mosaic</name>
+  <type>ImageMosaic</type>
+  <enabled>true</enabled>
+  <workspace>
+    <id>WorkspaceInfoImpl-4e0b98bf:12475d46fdd:-7ff7</id>
+  </workspace>
+  <url>file:coverages/mosaic_sample/mosaic.shp</url>
+</coverageStore>

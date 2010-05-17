@@ -1,0 +1,64 @@
+Index: main/src/main/java/applicationSecurityContext.xml
+===================================================================
+--- main/src/main/java/applicationSecurityContext.xml	(revision 10082)
++++ main/src/main/java/applicationSecurityContext.xml	(working copy)
+@@ -33,17 +33,14 @@
+       <value>
+         CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+         PATTERN_TYPE_APACHE_ANT
+-        /wfs/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
+-        /ows/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
+-        /wfsv/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
+-        /wms/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
+-        /wcs/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
+-        /rest/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,restFilterInvocationInterceptor
++        /wfs/**=httpSessionContextIntegrationFilterWithASCFalse,openPlansProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
++        /wfsv/**=httpSessionContextIntegrationFilterWithASCFalse,openPlansProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
++        /wms/**=httpSessionContextIntegrationFilterWithASCFalse,openPlansProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
++        /ows/**=httpSessionContextIntegrationFilterWithASCFalse,openPlansProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
++        /wcs/**=httpSessionContextIntegrationFilterWithASCFalse,openPlansProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,filterInvocationInterceptor
++        /rest/**=httpSessionContextIntegrationFilterWithASCFalse,openPlansProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,restFilterInvocationInterceptor
+         /**=httpSessionContextIntegrationFilterWithASCTrue,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,consoleExceptionTranslationFilter,filterInvocationInterceptor
+       </value>
+-      <!-- 
+-        /api/**=httpSessionContextIntegrationFilterWithASCFalse,basicProcessingFilter,anonymousProcessingFilter,owsExceptionTranslationFilter,restFilterInvocationInterceptor
+-      -->
+     </property>
+   </bean>
+ 
+@@ -214,6 +211,16 @@
+     </property>
+   </bean>
+ 
++  <bean id="openPlansProcessingFilter"
++      class="org.openplans.security.OpenPlansProcessingFilter">
++      <property name="authenticationManager">
++          <ref local="openPlansAuthenticationManager"/>
++      </property>
++      <property name="authenticationEntryPoint">
++          <ref local="basicProcessingFilterEntryPoint"/>
++      </property>
++  </bean>
++
+   <!-- 
+     This entry point gets called when basic authentication is needed 
+     (or a previous attempt fail) to commence authentication 
+@@ -296,6 +303,18 @@
+     </property>
+   </bean>
+ 
++  <bean id="openPlansAuthenticationManager"
++      class="org.acegisecurity.providers.ProviderManager">
++      <property name="providers">
++         <list>
++            <bean class="org.openplans.security.OpenPlansAuthenticationProvider"/>
++            <bean class="org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
++                <property name="key" value="geoserver"/>
++            </bean>
++         </list>
++      </property>
++  </bean>
++
+   <!-- 
+     This one adds passoword checks, eventual password encryption and other services on 
+     on top of a user details service that is asked to provide user informations

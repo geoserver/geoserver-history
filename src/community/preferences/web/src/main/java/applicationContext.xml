@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+	<!-- Define the beans of OWS access (view) -->
+	<bean id="abstractService"  class="org.vfny.geoserver.services.AbstractPreferenceService" abstract="true">
+		<property name="controller" ref="controller" />
+	</bean>
+
+	<bean id="getPreference"  class="org.vfny.geoserver.services.GetPreference" parent="abstractService" />
+	<bean id="setPreference"  class="org.vfny.geoserver.services.SetPreference" parent="abstractService" />
+	<bean id="setDefault"  class="org.vfny.geoserver.services.SetDefault" parent="abstractService" />
+</beans>
