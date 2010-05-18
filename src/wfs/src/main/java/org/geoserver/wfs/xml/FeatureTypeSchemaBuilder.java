@@ -467,19 +467,6 @@ public abstract class FeatureTypeSchemaBuilder {
             throws IOException {
         if (!findTypeInSchema(featureTypeMeta, schema, factory)) {
             // build the type manually
-            XSDImport imprt = factory.createXSDImport();
-            imprt.setNamespace(gmlNamespace);
-
-            imprt.setSchemaLocation(ResponseUtils.buildSchemaURL(baseUrl, gmlSchemaLocation));
-
-            XSDSchema gmlSchema = gmlSchema();
-            imprt.setResolvedSchema(gmlSchema);
-
-            schema.getContents().add(imprt);
-
-            schema.getQNamePrefixToNamespaceMap().put(gmlPrefix, gmlNamespace);
-            schema.getQNamePrefixToNamespaceMap().put("gml", "http://www.opengis.net/gml");
-
             XSDComplexTypeDefinition xsdComplexType = buildComplexSchemaContent(featureTypeMeta
                     .getFeatureType(), schema, factory);
 
