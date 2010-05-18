@@ -3,8 +3,9 @@ if [ "$1" = "" ]; then
   exit -1
 fi
 
-if [ -e target/logs/$1 ]; then
-  sh engine/bin/viewlog.sh -logdir=target/logs -session=$1 $2
+logdir=users/geoserver
+if [ -e ${logdir}/$1 ]; then
+  sh engine/bin/viewlog.sh -logdir=${logdir} -session=$1 $2
 else
   echo "Error: profile '$1' does not exist."
   exit -1
