@@ -6,6 +6,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSTestSupport;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class DescribeFeatureTypeTest extends WFSTestSupport {
@@ -71,4 +72,31 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         assertEquals("xsd:schema", doc.getDocumentElement()
                 .getNodeName());
     }
+    
+    public void testMultipleTypesImport() throws Exception {
+        String xml = "<wfs:DescribeFeatureType " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:sf=\"" + MockData.PRIMITIVEGEOFEATURE.getNamespaceURI() + "\">" //
+                + "<wfs:TypeName>sf:" + MockData.PRIMITIVEGEOFEATURE.getLocalPart() //
+                + "</wfs:TypeName>" //
+                + "<wfs:TypeName>sf:" + MockData.GENERICENTITY.getLocalPart() //
+                + "</wfs:TypeName>" //
+                + "</wfs:DescribeFeatureType>";
+        Document doc = postAsDOM("wfs", xml);
+        print(doc);
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+        NodeList nodes = doc.getDocumentElement().getChildNodes();
+        boolean seenComplexType = false;
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node node = nodes.item(i);
+            if (node.getNodeName().equals("xsd:complexType")) {
+                seenComplexType = true;
+            } else if (seenComplexType && node.getNodeName().equals("xsd:import")) {
+                fail("All xsd:import must occur before all xsd:complexType");
+            }
+        }
+    }
+    
 }
