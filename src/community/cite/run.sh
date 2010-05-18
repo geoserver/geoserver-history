@@ -7,6 +7,7 @@ fi
 service=${1:0:3}
 version=${1:4:$#1}
 base=engine/scripts
+logdir=users/geoserver
 
 #find the control file
 ctl=""
@@ -34,19 +35,24 @@ ctl=$base/$service-$version/ctl/$ctl
 
 mode=test
 if [ "$2" != "" ]; then
-  if [ ! -e target/logs/$1 ]; then
+  if [ ! -e ${logdir}/$1 ]; then
     echo "Error: No logs found for profile '$1'."
     exit -1
   fi
   mode=retest
 else
-  if [ -e target/logs/$1 ]; then
+  if [ -e ${logdir}/$1 ]; then
     mode=resume
   fi
 fi
 
+export JAVA_OPTS="-Xmx512m -Dcite.headless=true -Djava.awt.headless=true"
 if [ "$mode" = "resume" ]; then
-  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=target/logs/ -session=$1
+  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1
+
 else 
-  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=target/logs/ -session=$1 $2
+  sh engine/bin/test.sh -mode=$mode -source=$ctl -workdir=target/work -logdir=${logdir} -session=$1 $2
 fi
+
+# copy session.xml file so it gets picked up by the web ui
+cp session.xml.$1 $logdir/$1/session.xml
