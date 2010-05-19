@@ -65,6 +65,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
     private static final int INDENT_SIZE = 2;
     public static final String formatName = "GML2";
     public static final String formatNameCompressed = "GML2-GZIP";
+    public static final String MIME_TYPE = "text/xml; subtype=gml/2.1.2";
 
     /**
      * This is a "magic" class provided by Geotools that writes out GML for an
@@ -106,11 +107,16 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
      * using it.
      */
     public GML2OutputFormat(GeoServer geoServer) {
-        super(new HashSet(Arrays.asList(new String[] { "GML2", "text/xml; subtype=gml/2.1.2", "GML2-GZIP" })));
+        super(new HashSet(Arrays.asList(new String[] { "GML2", MIME_TYPE, "GML2-GZIP" })));
 
         this.wfs = geoServer.getService(WFSInfo.class);
         this.geoServer = geoServer;
         this.catalog = geoServer.getCatalog();
+    }
+    
+    @Override
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
+        return MIME_TYPE;
     }
     
     public String getCapabilitiesElementName() {
