@@ -345,6 +345,10 @@ public abstract class FeatureTypeSchemaBuilder {
         }
 
         if (schemaFile != null) {
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine("Found customized schema.xsd: " + schemaFile.getAbsolutePath());    
+            }
+            
             //schema file found, parse it and lookup the complex type
             List resolvers = Schemas.findSchemaLocationResolvers(xmlConfiguration);
             List locators = new ArrayList(); 

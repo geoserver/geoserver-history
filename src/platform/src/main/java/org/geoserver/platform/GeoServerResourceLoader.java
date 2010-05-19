@@ -150,8 +150,14 @@ public class GeoServerResourceLoader extends DefaultResourceLoader {
      * @throws IOException In the event of an I/O error.
      */
     public File find(File parent, String location) throws IOException {
+        if (LOGGER.isLoggable(Level.FINEST)) {
+            LOGGER.finest("Looking up resource " + location + " with parent " 
+                + (parent != null ? parent.getPath() : "null"));
+        }
+        
         //first to an existance check
         File file = parent != null ? new File(parent,location) : new File(location);
+        
         if (file.exists()) {
             return file;
         }
