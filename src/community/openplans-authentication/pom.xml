@@ -8,13 +8,13 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>community</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
+    <version>2.0.3-SNAPSHOT</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
   <artifactId>OpenPlans-Auth</artifactId>
   <packaging>jar</packaging>
-  <version>2.0.2-SNAPSHOT</version>
+  <version>2.0.3-SNAPSHOT</version>
   <name>OpenPlans.org Authentication Module</name>
 
   <repositories>
@@ -35,13 +35,13 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0.2-SNAPSHOT</version>
+      <version>2.0.3-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.0.2-SNAPSHOT</version>
+      <version>2.0.3-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
