@@ -10,6 +10,8 @@ import org.geotools.styling.{
   FeatureTypeStyle
 }
 
+import org.geotools.filter.text.ecql.ECQL
+
 /**
  * The Translator object houses some facilities for converting token lists to
  * GeoTools Style objects.  The css2sld method does the actual conversion.
@@ -88,11 +90,20 @@ object Translator extends CssOps with SelectorOps {
     case _ => null
   }
 
-  def length(xs: List[Value]): OGCExpression = xs.first match {
-    case Literal(body) =>
-      filters.literal(body.replaceFirst("px$", ""))
-    case Expression(cql) =>
-      org.geotools.filter.text.ecql.ECQL.toExpression(cql)
+  def measure(xs: List[Value]): Option[(Value, Option[String])] = {
+    val NumberWithUnits = """([0-9]+(?:\.[0-9]+)?)([a-zA-Z]+)""".r
+    xs match {
+      case Nil => None
+      case List(Literal(NumberWithUnits(number, units))) => Some((Literal(number), Some(units)))
+      case List(expression) => Some((expression, None))
+      case expression :: Literal(units) :: _ => Some((expression, Some(units)))
+      case expression :: _ => Some(expression, None)
+    }
+  }
+
+  def length(xs: List[Value]): OGCExpression = measure(xs) match {
+    case Some((Literal(body), _)) => filters.literal(body)
+    case Some((Expression(cql), _)) => ECQL.toExpression(cql)
     case _ => null
   }
 
@@ -137,12 +148,13 @@ object Translator extends CssOps with SelectorOps {
     case _ => null
   }
 
-  def lengthArray(xs: List[Value]): Array[Float] = {
-    xs.flatMap(_ match {
-      case Literal(body) => Some(body.toFloat)
-      case _ => None
-    }).toArray
-  }
+  def lengthArray(xs: List[Value]): Array[Float] =
+    xs flatMap { x => 
+      measure(List(x)) match {
+        case Some((Literal(f), _)) => Some(f.toFloat)
+        case _ => None
+      }
+    } toArray
 
   implicit def stringToFilter(literal: String): org.opengis.filter.Filter = {
     val cql = literal.substring(1, literal.length - 1)
@@ -187,7 +199,8 @@ object Translator extends CssOps with SelectorOps {
         val linejoin = props.get("stroke-linejoin") map expression getOrElse null
         val miterLimit = props.get("stroke-miterlimit") getOrElse null
         val opacity = props.get("stroke-opacity") map scale getOrElse null
-        val width = props.get("stroke-width") map length
+        val widthMeasure = props.get("stroke-width").flatMap(measure)
+        val width = widthMeasure map { case (w, _) => length(List(w)) }
         val strokeRepeat = props.get("stroke-repeat") map keyword getOrElse "repeat"
         val rotation = props.get("stroke-rotation") map angle getOrElse filters.literal(0)
         val geom = 
@@ -233,6 +246,13 @@ object Translator extends CssOps with SelectorOps {
             ),
             null
           )
+
+        widthMeasure match {
+          case Some((_, uom)) => 
+            for (unit <- uom flatMap findUnit) sym.setUnitOfMeasure(unit)
+          case _ => ()
+        }
+
         sym.setGeometry(geom)
         (zIndex, sym)
       }
@@ -240,7 +260,8 @@ object Translator extends CssOps with SelectorOps {
     val polySyms: List[(Double, PolygonSymbolizer)] = 
       expand(properties, "fill") map { props =>
         val fillParams = fill(props("fill"))
-        val size = props.get("fill-size") map length
+        val sizeMeasure = props.get("fill-size") flatMap measure
+        val size = sizeMeasure map { case (m, _) => length(List(m)) }
         val rotation = props.get("fill-rotation") map angle
         val opacity = props.get("fill-opacity") map scale getOrElse null
         val geom =
@@ -285,8 +306,8 @@ object Translator extends CssOps with SelectorOps {
       expand(properties, "mark") map { props => 
         val fillParams = fill(props("mark"))
         val opacity = props.get("mark-opacity").map(scale).getOrElse(null)
-        val size =
-          props.get("mark-size").map(length).getOrElse(filters.literal(16))
+        val sizeMeasure = props.get("mark-size") flatMap measure
+        val size = sizeMeasure map { case (m, _) => length(List(m)) } getOrElse filters.literal("16")
         val rotation =
           props.get("mark-rotation").map(angle).getOrElse(filters.literal(0))
         val geom = (props.get("mark-geometry") orElse props.get("geometry"))
@@ -331,13 +352,13 @@ object Translator extends CssOps with SelectorOps {
             x => keyword("0", x).toDouble
           } getOrElse(0d)
 
+        val sizeMeasure = props.get("font-size") flatMap measure 
+        val fontSize = sizeMeasure map { case (m, _) => length(List(m)) } getOrElse filters.literal("10")
         val font = fontFamily.getOrElse(Nil).map { familyName => {
           val fontStyle =
             props.get("font-style").map(expression).getOrElse(filters.literal("normal"))
           val fontWeight =
             props.get("font-weight").map(expression).getOrElse(filters.literal("normal"))
-          val fontSize =
-            props.get("font-size").map(length).getOrElse(filters.literal("10"))
           styles.createFont(familyName, fontStyle, fontWeight, fontSize)
         }}.toArray
 
