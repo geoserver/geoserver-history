@@ -107,6 +107,18 @@
                   <!-- create "fake" tomcat directory -->
                   <mkdir dir="${basedir}/target/server/lib"/>
                   <mkdir dir="${basedir}/target/common/lib"/>
+
+                  <!-- create the session files for the webapp -->
+                  <tstamp>
+                    <format property="DATE" pattern="yyyy-MM-dd"/>
+                  </tstamp>
+                  <mkdir dir="${basedir}/target/sessions"/>
+                  <copy todir="${basedir}/target/sessions">
+                    <fileset dir="${basedir}" includes="session.xml.*"/>
+                    <filterset>
+                      <filter token="DATE" value="${DATE}"/>
+                    </filterset>
+                  </copy>
                </tasks> 
              </configuration>
              <goals>
