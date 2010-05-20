@@ -342,9 +342,13 @@ public class DescribeResponse implements Response {
 
 		// RectifiedGrid
 		tempResponse.append("\n    <gml:RectifiedGrid").append(
-				(gridToCRS != null) ? new StringBuffer(" dimension=\"").append(
-						gridDimension).append("\"").toString() : "")
-				.append(">");
+                   (gridToCRS != null) ? new StringBuffer(" dimension=\"").append(gridDimension).append("\"").toString() : "");
+		
+		if (userDefinedCrsIdentifier != null) {
+		    tempResponse.append(" srsName=\"").append(userDefinedCrsIdentifier).append("\"");
+		}
+
+		tempResponse.append(">");
 
 		String lowers = "";
 		String upers = "";
@@ -475,8 +479,9 @@ public class DescribeResponse implements Response {
 
                 for (int i = 0; i < CRSs.size(); i++)
                     tempResponse.append(CRSs.get(i) + " ");
-
-                tempResponse.append("\n    </requestResponseCRSs>");
+                
+                tempResponse.setLength(tempResponse.length()-1);
+                tempResponse.append("</requestResponseCRSs>");
             } else {
                 if ((cv.getRequestSRS() != null) && (cv.getRequestSRS().size() > 0)) {
                     for (int i = 0; i < cv.getRequestSRS().size(); i++)
