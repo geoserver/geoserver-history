@@ -55,4 +55,4 @@ else
 fi
 
 # copy session.xml file so it gets picked up by the web ui
-cp session.xml.$1 $logdir/$1/session.xml
+cp target/sessions/session.xml.$1 $logdir/$1/session.xml
