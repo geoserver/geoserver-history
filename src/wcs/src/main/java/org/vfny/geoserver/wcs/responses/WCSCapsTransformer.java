@@ -206,7 +206,7 @@ public class WCSCapsTransformer extends TransformerBase {
         private void handleService() {
             final WCSInfo wcs = (WCSInfo) request.getServiceConfig();
             AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+            //attributes.addAttribute("", "version", "version", "", CUR_VERSION);
             start("Service", attributes);
             if(wcs.getMetadataLink() != null)
                 handleMetadataLink(Collections.singletonList(wcs.getMetadataLink()));
@@ -536,7 +536,7 @@ public class WCSCapsTransformer extends TransformerBase {
 
         private void handleContentMetadata(WCSInfo config) {
             AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+            //attributes.addAttribute("", "version", "version", "", CUR_VERSION);
 
             start("ContentMetadata", attributes);
 
