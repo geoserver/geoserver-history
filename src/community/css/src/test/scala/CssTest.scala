@@ -5,7 +5,7 @@ import org.scalatest.junit.{JUnitSuite, MustMatchersForJUnit}
 import org.junit.Test
 
 /**
- * General-purpose, one-size-fits-all tests for MSS parsing operations
+ * General-purpose, one-size-fits-all tests for CSS parsing operations
  */
 class CssTest extends CssOps with JUnitSuite with MustMatchersForJUnit {
   private def testFiles = List(
@@ -16,7 +16,8 @@ class CssTest extends CssOps with JUnitSuite with MustMatchersForJUnit {
     ("/comprehensive.css", 1),
     ("/scales.css", 3),
     ("/marks.css", 2),
-    ("/gt-opts.css", 1)
+    ("/gt-opts.css", 1),
+    ("/uom.css", 1)
   ) map {
     case (file, count) => (file, getClass.getResourceAsStream(file), count)
   }

@@ -111,4 +111,16 @@ class RegressionTest extends JUnitSuite with MustMatchersForJUnit with TypeMatch
     mark.asInstanceOf[org.geotools.styling.Mark]
        .getWellKnownName.evaluate(null) must be ("hatch")
   }
+
+  @Test def uom = {
+    val styleSheet = CssParser.parse(in("/uom.css")).get
+    val style = Translator.css2sld(styleSheet)
+    style.featureTypeStyles must have (size (1))
+    val ft = style.featureTypeStyles.get(0)
+    ft.rules must have (size (1))
+    val r = ft.rules.get(0)
+    r.symbolizers must have (size(1))
+    val s = r.symbolizers.get(0).asInstanceOf[org.geotools.styling.LineSymbolizer]
+    s.getUnitOfMeasure() must not be (null)
+  }
 }

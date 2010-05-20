@@ -19,6 +19,8 @@ Currently, the supported units include:
 * Length
 
   * ``px`` pixels
+  * ``m`` meters
+  * ``ft`` feet
 
 * Angle
 
@@ -31,9 +33,20 @@ Currently, the supported units include:
 When using expressions in place of numeric values, the first unit listed for
 the type of measure is assumed.
 
-.. note:: 
-    Yes, yes, I know there aren't any options here.  When GeoTools supports
-    unit-of-measure in SLD/SE, the CSS module will add more units ASAP.
+Since the CSS module translates styles to SLD before any rendering occurs, its
+model of unit-of-measure is tied to that of SLD.  In practice, this means that
+for any particular symbolizer, there only one unit-of-measure applied for the
+style.  Therefore, the CSS module extracts that unit-of-measure from one
+special property for each symbolizer type.  Those types are listed below for
+reference:
+
+* ``fill-size`` determines the unit-of-measure for polygon symbolizers (but
+  that doesn't matter so much since it is the only measure associated with
+  fills)
+* ``stroke-width`` determines the unit-of-measure for line symbolizers
+* ``mark-size`` determines the unit-of-measure for point symbolizers
+* ``font-size`` determines the unit-of-measure for text symbolizers and the
+  associated halos
 
 Strings
 -------

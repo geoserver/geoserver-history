@@ -172,6 +172,21 @@ trait CssOps {
     "yellowgreen" -> "#9acd32"
   )
 
+  val units = Map(
+    "px" -> javax.measure.unit.NonSI.PIXEL,
+    "m"  -> javax.measure.unit.SI.METRE,
+    "ft" -> javax.measure.unit.NonSI.FOOT
+  )
+
+  def findUnit(name: String): Option[javax.measure.unit.Unit[javax.measure.quantity.Length]] =
+    if (units isDefinedAt name.toLowerCase) Some(units(name.toLowerCase))
+    else 
+      try {
+        Some(org.geotools.styling.UomOgcMapping.valueOf(name.toUpperCase()).getUnit())
+      } catch {
+        case _ => None
+      }
+
   /**
    * The Specificity class represents a CSS specificity ranking.  The 
    * specification states that specificity is determined by four scores (and 
