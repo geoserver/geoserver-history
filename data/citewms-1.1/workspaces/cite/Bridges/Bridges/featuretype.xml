@@ -13,9 +13,9 @@
   </keywords>
   <srs>EPSG:4326</srs>
   <latLonBoundingBox>
-    <minx>1.9E-5</minx>
+    <minx>1.9E-4</minx>
     <maxx>2.1E-4</maxx>
-    <miny>6.9E-5</miny>
+    <miny>6.9E-4</miny>
     <maxy>7.1E-4</maxy>
     <crs>EPSG:4326</crs>
   </latLonBoundingBox>
