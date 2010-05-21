@@ -431,4 +431,6 @@
           class="org.geoserver.wms.responses.decoration.ScaleLineDecoration"
           singleton="false"
     />
+    
+    <bean id="wmsLifecycleHandler" class="org.geoserver.wms.WMSLifecycleHandler"></bean>
 </beans>

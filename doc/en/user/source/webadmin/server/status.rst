@@ -26,21 +26,26 @@ The following describes current status indicators
      - The amount of memory current used by GeoServer. In the above example, 55.32 MB of memory is being used.  Clicking on the "Free Memory" button,  cleans up memory marked for deletion by running the garbage collector.
    * - JVM Version
      - Denotes which version of the JVM (Java Virtual Machine) is been used to power the server.  Here the JVM is Apple Inc.: 1.5.0_16.
-   * - JAI Available
-     - GeoServer uses `Java Advanced Imaging <http://java.sun.com/javase/technologies/desktop/media/jai/>`_ (JAI) framework for image rendering and coverage manipulation.  When properly installed (true), JAI makes WCS and WMS performance faster and more efficient.  
+   * - Native JAI
+     - GeoServer uses `Java Advanced Imaging <https://jai.dev.java.net>`_ (JAI) framework for image rendering and coverage manipulation.  When properly installed (true), JAI makes WCS and WMS performance faster and more efficient.
+   * - Native JAI ImageIO
+     - GeoServer uses `JAI Image IO <https://jai-imageio.dev.java.net>`_ (JAI) framework for raster data loading and image encoding.  When properly installed (true), JAI Image I/O makes WCS and WMS performance faster and more efficient.  
    * - JAI Maximum Memory
      - Expresses in bytes the amount of memory available for tile cache, in this case 33325056 bytes. The JAI Maximum Memory value must be between 0.0 and {0}
    * - JAI Memory Usage
      - Run-time amount of memory is used for the tile cache. Clicking on the "Free Memory" button, clears available JAI memory by running the tile cache flushing.
    * - JAI Memory Threshold
-     - Refers to the fractional amount, e.g. 0.75, of cache memory to retain during tile removal. JAI Memory Threshold value must be between 0.0 and 1.0.     
+     - Refers to the percentage, e.g. 75, of cache memory to retain during tile removal. JAI Memory Threshold value must be between 0.0 and 100.     
    * - Number of JAI Tile Threads
-     - The number of parallel threads used by to scheduler to handle tiles. The value of JAI Tile Threads must fall between 0 and 100    
+     - The number of parallel threads used by to scheduler to handle tiles.    
    * - JAI Tile Thread Priority
      - Schedules the global tile scheduler priority.  The priority value is defaults to 5, and must fall between 1 and 10.    
    * - Update Sequence
      - Refers to the number of times (60) the server configuration has been modified. 
-
+   * - Resource cache
+     - GeoServer does not cache data, but it does cache connection to stores, feature type definitions, external graphics, font definitions and CRS definitions as well. The "Clear" button forces those caches empty and makes GeoServer reopen the stores and re-read image and font information, as well as the custom CRS definitions stored in `${GEOSERVER_DATA_DIR}/user_projections/epsg.properties`.
+   * - Configuration and catalog
+     - GeoServer keeps in memory all of its configuration data. If for any reason that configuration information has become stale (e.g., an external utility has modified the configuration on disk) the "Reload" button will force GeoServer to reload all of its configuration from disk.
   
 
 Timestamps Field Descriptions
