@@ -437,7 +437,10 @@
     <bean id="wmsWorkspaceQualifier" class="org.geoserver.wms.WMSWorkspaceQualifier">
       <constructor-arg ref="catalog"/>
     </bean>
+    
     <bean id="wmsLocalWorkspaceURLManger" class="org.geoserver.ows.LocalWorkspaceURLMangler">
       <constructor-arg value="wms"/>
     </bean>
+    
+    <bean id="wmsLifecycleHandler" class="org.geoserver.wms.WMSLifecycleHandler"></bean>
 </beans>

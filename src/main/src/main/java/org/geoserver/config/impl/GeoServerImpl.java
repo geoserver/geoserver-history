@@ -8,6 +8,8 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.ModificationProxy;
@@ -15,10 +17,16 @@ import org.geoserver.config.ConfigurationListener;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerFactory;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.config.GeoServerLoader;
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.referencing.CRS;
+import org.geotools.util.logging.Logging;
 
 public class GeoServerImpl implements GeoServer {
+    
+    private static final Logger LOGGER = Logging.getLogger(GeoServerImpl.class);
 
     GeoServerFactory factory = new GeoServerFactoryImpl(this);
     GeoServerInfo global = factory.createGlobal();
@@ -248,9 +256,57 @@ public class GeoServerImpl implements GeoServer {
     }
     
     public void dispose() {
+        // look for pluggable handlers
+        for(GeoServerLifecycleHandler handler : GeoServerExtensions.extensions(GeoServerLifecycleHandler.class)) {
+            try {
+                handler.onDispose();
+            } catch(Throwable t) {
+                LOGGER.log(Level.SEVERE, "A GeoServer lifecycle handler threw an exception during dispose", t);
+            }
+        }
+
+        // internal cleanup
         if ( global != null ) global.dispose();
         if ( catalog != null ) catalog.dispose();
         if ( services != null ) services.clear();
         if ( listeners != null ) listeners.clear();
+    }
+
+    public void reload() throws Exception {
+        // flush caches
+        reset();
+        
+        // reload configuration
+        GeoServerLoader loader = GeoServerExtensions.bean(GeoServerLoader.class);
+        synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
+            getCatalog().getResourcePool().dispose();
+            loader.reload();
+        }
+        
+        // look for pluggable handlers
+        for(GeoServerLifecycleHandler handler : GeoServerExtensions.extensions(GeoServerLifecycleHandler.class)) {
+            try {
+                handler.onReload();
+            } catch(Throwable t) {
+                LOGGER.log(Level.SEVERE, "A GeoServer lifecycle handler threw an exception during reload", t);
+            }
+        }
+    }
+
+    public void reset() {
+        // drop all the catalog store/feature types/raster caches
+        catalog.getResourcePool().dispose();
+        
+        // reset the referencing subsystem
+        CRS.reset("all");
+        
+        // look for pluggable handlers
+        for(GeoServerLifecycleHandler handler : GeoServerExtensions.extensions(GeoServerLifecycleHandler.class)) {
+            try {
+                handler.onReset();
+            } catch(Throwable t) {
+                LOGGER.log(Level.SEVERE, "A GeoServer lifecycle handler threw an exception during reset", t);
+            }
+        }
     }
 }
