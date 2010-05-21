@@ -113,9 +113,8 @@ public class StatusPage extends ServerAdminPage {
         add(new AjaxLink("clear.resourceCache") {
             @Override
             public void onClick(AjaxRequestTarget target) {
-                Catalog cat = getCatalog();
                 try {
-                    cat.getResourcePool().dispose();
+                    getGeoServer().reset();
                     info(getLocalizer().getString("resourceCacheClearedSuccessfully", this));
                 }
                 catch( Exception e ) {
@@ -129,13 +128,8 @@ public class StatusPage extends ServerAdminPage {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 try {
-                    GeoServerLoader loader = GeoServerExtensions.bean(GeoServerLoader.class);
-                    synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
-                        getCatalog().getResourcePool().dispose();
-                        loader.reload();
-                        
-                        info(getLocalizer().getString("catalogConfigReloadedSuccessfully", StatusPage.this));
-                    }
+                    getGeoServer().reload();
+                    info(getLocalizer().getString("catalogConfigReloadedSuccessfully", StatusPage.this));
                 } catch(Exception e) {
                     LOGGER.log(Level.SEVERE, "An error occurred while reloading the catalog", e);
                     error(e.getMessage());

@@ -7,22 +7,25 @@ package org.geoserver.catalog.rest;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.RestletException;
 import org.geotools.util.logging.Logging;
+import org.restlet.Finder;
 import org.restlet.data.Method;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.Resource;
 
-public class CatalogReloader extends AbstractCatalogFinder {
+public class CatalogReloader extends Finder {
 
     static Logger LOGGER = Logging.getLogger("org.geoserver.catalog.rest");
+    GeoServer geoServer;
 
-    public CatalogReloader(Catalog catalog) {
-        super(catalog);
+    public CatalogReloader(GeoServer geoServer) {
+        this.geoServer = geoServer;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class CatalogReloader extends AbstractCatalogFinder {
             public boolean allowPost() {
                 return true;
             }
+            
             @Override
             public boolean allowPut() {
                 return true;
@@ -45,11 +49,11 @@ public class CatalogReloader extends AbstractCatalogFinder {
             public void handlePost() {
                 try {   
                     reloadCatalog();
-                } 
-                catch (Exception e) {
+                } catch (Exception e) {
                     throw new RestletException("Error reloading catalog", Status.SERVER_ERROR_INTERNAL, e);
                 }
             }
+            
             @Override
             public void handlePut() {
                 handlePost();
@@ -61,16 +65,6 @@ public class CatalogReloader extends AbstractCatalogFinder {
      * Method to reload the catalog
      */
     protected void reloadCatalog() throws Exception {
-        try {
-            GeoServerLoader loader = GeoServerExtensions.bean(GeoServerLoader.class);
-            if (loader != null) {
-                synchronized (org.geoserver.config.GeoServer.CONFIGURATION_LOCK) {
-                    loader.reload();
-                    LOGGER.info("Catalog reloaded.");
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        geoServer.reload();
     }
 }

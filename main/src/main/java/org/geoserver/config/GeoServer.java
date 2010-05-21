@@ -155,7 +155,20 @@ public interface GeoServer {
     Collection<ConfigurationListener> getListeners();
     
     /**
-     * Disposes the configuration.
+     * Disposes the configuration. 
      */
     void dispose();
+    
+    /**
+     * Clears up all of the caches inside GeoServer forcing reloading of all information
+     * besides the configuration itself
+     */
+    void reset();
+    
+    /**
+     * Clears up all of the caches as well as the configuration information
+     * @throws Exception 
+     */
+    void reload() throws Exception;
+    
 }
