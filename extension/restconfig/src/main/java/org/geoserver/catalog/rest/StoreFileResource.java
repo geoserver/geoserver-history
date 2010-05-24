@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.util.RESTUtils;
@@ -69,7 +70,7 @@ public abstract class StoreFileResource extends Resource {
         if (mediaType!=null && RESTUtils.isZipMediaType( mediaType ) ) {
             //rename to .zip if need be
             if ( !uploadedFile.getName().endsWith( ".zip") ) {
-                File newUploadedFile = new File( uploadedFile.getParentFile(), uploadedFile.getName() + ".zip" );
+                File newUploadedFile = new File( uploadedFile.getParentFile(), FilenameUtils.getBaseName(uploadedFile.getAbsolutePath()) + ".zip" );
                 uploadedFile.renameTo( newUploadedFile );
                 uploadedFile = newUploadedFile;
             }

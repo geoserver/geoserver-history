@@ -18,6 +18,7 @@ import java.util.zip.ZipFile;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.restlet.data.MediaType;
 import org.restlet.data.Reference;
 import org.restlet.data.Request;
@@ -101,6 +102,10 @@ public class RESTUtils {
         throws IOException {
         
         final File newFile = new File(directory, fileName);
+        if (newFile.exists()) {
+        	FileUtils.cleanDirectory(directory);
+        }
+        
         final ReadableByteChannel source =request.getEntity().getChannel();
         final FileChannel outputChannel = IOUtils.getOuputChannel(newFile);
         IOUtils.copyChannel(1024*1024, source,outputChannel );
@@ -196,6 +201,7 @@ public class RESTUtils {
     static {
         ZIP_MIME_TYPES.add( "application/zip" );
         ZIP_MIME_TYPES.add( "multipart/x-zip" );
+        ZIP_MIME_TYPES.add( "application/x-zip-compressed" );
     }
     /**
      * Determines if the specified media type represents a zip stream.
