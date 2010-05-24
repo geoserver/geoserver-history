@@ -103,7 +103,7 @@ public class DataStoreFileResource extends StoreFileResource {
         //TODO: add a method createDirectory(String...) so as not to specify the file seperator
         File directory;
         try {
-            directory = catalog.getResourceLoader().createDirectory( "data/" + datastore );
+            directory = catalog.getResourceLoader().findOrCreateDirectory("data/" + datastore );
         } 
         catch (IOException e) {
             throw new RestletException( e.getMessage(), Status.SERVER_ERROR_INTERNAL, e );
