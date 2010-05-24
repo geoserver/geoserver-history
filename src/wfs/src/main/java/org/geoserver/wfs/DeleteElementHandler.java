@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.geoserver.config.GeoServer;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureLockException;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureStore;
@@ -115,7 +115,7 @@ public class DeleteElementHandler implements TransactionElementHandler {
             listener.dataStoreChange( event );
 
             // compute damaged area
-            Envelope damaged = store.getBounds(new DefaultQuery(
+            Envelope damaged = store.getBounds(new Query(
                         delete.getTypeName().getLocalPart(), filter));
 
             if (damaged == null) {

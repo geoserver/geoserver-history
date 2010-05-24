@@ -18,7 +18,7 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
@@ -135,7 +135,7 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BUILDINGS));
         MapLayer layer = createMapLayer(MockData.BUILDINGS);
         Filter f = ff.equals(ff.property("ADDRESS"), ff.literal("215 Main Street"));
-        layer.setQuery(new DefaultQuery(MockData.BUILDINGS.getLocalPart(), f));
+        layer.setQuery(new Query(MockData.BUILDINGS.getLocalPart(), f));
         map.addLayer(layer);
         
         Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);

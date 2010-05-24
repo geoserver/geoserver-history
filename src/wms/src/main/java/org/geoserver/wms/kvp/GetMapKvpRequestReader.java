@@ -32,7 +32,7 @@ import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -1045,7 +1045,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     .warning("No CRS set on inline features default geometry.  Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
             SimpleFeatureType currFt = ul.getInlineFeatureType();
-            Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
+            Query q = new Query(currFt.getTypeName(), Filter.INCLUDE);
             FeatureReader<SimpleFeatureType, SimpleFeature> ilReader;
             DataStore inlineFeatureDatastore = ul.getInlineFeatureDatastore();
             ilReader = inlineFeatureDatastore.getFeatureReader(q, Transaction.AUTO_COMMIT);

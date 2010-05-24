@@ -16,7 +16,7 @@ import org.geoserver.feature.ReprojectingFilterVisitor;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
@@ -179,7 +179,7 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
             Filter filter = query.getFilter();
             filter = makeDefinitionFilter(filter);
 
-            DefaultQuery defQuery = new DefaultQuery(query);
+            Query defQuery = new Query(query);
             defQuery.setFilter(filter);
             defQuery.setPropertyNames(propNames);
 
@@ -382,7 +382,7 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
             ReprojectingFilterVisitor reprojectingVisitor = new ReprojectingFilterVisitor(ff, nativeFeatureType);
             Filter reprojectedFilter = (Filter) defaultedFilter.accept(reprojectingVisitor, null);
             
-            DefaultQuery reprojectedQuery = new DefaultQuery(query);
+            Query reprojectedQuery = new Query(query);
             reprojectedQuery.setFilter(reprojectedFilter);
             return reprojectedQuery;
         } catch(Exception e) {
@@ -464,11 +464,11 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
 //
 //        if (requireXferCRS) {
 //            //carry along the CRS
-//            if (!(newQuery instanceof DefaultQuery)) {
-//                newQuery = new DefaultQuery(newQuery);
+//            if (!(newQuery instanceof Query)) {
+//                newQuery = new Query(newQuery);
 //            }
 //
-//            ((DefaultQuery) newQuery).setCoordinateSystem(query.getCoordinateSystem());
+//            ((Query) newQuery).setCoordinateSystem(query.getCoordinateSystem());
 //        }
         
         //JD: this is a huge hack... but its the only way to ensure that we 
@@ -478,17 +478,17 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
         // AA: added force coordinate system reset as well, since we cannot
         // trust GT2 datastores there neither.
         if ( newQuery.getCoordinateSystemReproject() != null ) {
-            ((DefaultQuery)newQuery).setCoordinateSystemReproject(null);
+            ((Query)newQuery).setCoordinateSystemReproject(null);
         }
         if ( newQuery.getCoordinateSystem() != null ) {
-            ((DefaultQuery)newQuery).setCoordinateSystem(null);
+            ((Query)newQuery).setCoordinateSystem(null);
         }
         return newQuery;
     }
 
     public SimpleFeatureCollection getFeatures(Filter filter)
             throws IOException {
-        return getFeatures(new DefaultQuery(schema.getTypeName(), filter));
+        return getFeatures(new Query(schema.getTypeName(), filter));
     }
 
     public SimpleFeatureCollection getFeatures() throws IOException {
@@ -527,7 +527,7 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
         if (definitionQuery == Filter.INCLUDE) {
             return source.getBounds();
         } else {
-            Query query = new DefaultQuery(getSchema().getTypeName(), definitionQuery);
+            Query query = new Query(getSchema().getTypeName(), definitionQuery);
 
             return source.getBounds(query);
         }

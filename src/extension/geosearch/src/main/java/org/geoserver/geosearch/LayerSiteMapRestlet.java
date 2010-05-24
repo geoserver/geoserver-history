@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.URLMangler.URLType;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -182,7 +182,7 @@ public class LayerSiteMapRestlet extends GeoServerProxyAwareRestlet{
         d.setRootElement(urlSet);
 
         try { 
-            DefaultQuery q = new DefaultQuery();
+            Query q = new Query();
             if (fti.getFeatureSource(null, null).getQueryCapabilities().isOffsetSupported()){
                 // surely no one would use a shapefile for more than 50000 features, right?
                 q.setStartIndex(1 + 50000 * (page - 1));

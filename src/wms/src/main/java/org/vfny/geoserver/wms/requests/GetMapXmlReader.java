@@ -28,7 +28,7 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -478,7 +478,7 @@ public class GetMapXmlReader extends XmlRequestReader {
                     + "Assuming the requestor has their inlinefeatures in the boundingbox CRS.");
 
             SimpleFeatureType currFt = ul.getInlineFeatureType();
-            Query q = new DefaultQuery(currFt.getTypeName(), Filter.INCLUDE);
+            Query q = new Query(currFt.getTypeName(), Filter.INCLUDE);
             FeatureReader<SimpleFeatureType, SimpleFeature> ilReader;
             ilReader = inlineDatastore.getFeatureReader(q, Transaction.AUTO_COMMIT);
             ForceCoordinateSystemFeatureReader reader = new ForceCoordinateSystemFeatureReader(

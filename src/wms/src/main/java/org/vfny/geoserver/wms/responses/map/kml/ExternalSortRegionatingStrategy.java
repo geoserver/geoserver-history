@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wms.MapLayerInfo;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
 import org.geotools.feature.FeatureIterator;
@@ -186,7 +186,7 @@ public class ExternalSortRegionatingStrategy extends
                     .getGeometryDescriptor();
             CoordinateReferenceSystem nativeCrs = geom
                     .getCoordinateReferenceSystem();
-            DefaultQuery q = new DefaultQuery();
+            Query q = new Query();
             
             if (geom.getLocalName().equals(attribute)) {
                 q.setPropertyNames(new String[] { geom.getLocalName() });

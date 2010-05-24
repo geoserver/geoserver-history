@@ -18,7 +18,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
@@ -158,7 +158,7 @@ public class FullyRetypingDataStoreTest extends TestCase {
 
     public void testGetFeaturesReader() throws Exception {
         FeatureReader<SimpleFeatureType, SimpleFeature> fr;
-        fr = rts.getFeatureReader(new DefaultQuery(RENAMED), Transaction.AUTO_COMMIT);
+        fr = rts.getFeatureReader(new Query(RENAMED), Transaction.AUTO_COMMIT);
         SimpleFeature sf = fr.next();
         fr.close();
 
@@ -178,7 +178,7 @@ public class FullyRetypingDataStoreTest extends TestCase {
         final String fid = RENAMED + ".f001";
         Filter fidFilter = ff.id(Collections.singleton(ff.featureId(fid)));
 
-        SimpleFeatureCollection fc = fs.getFeatures(new DefaultQuery(RENAMED, fidFilter));
+        SimpleFeatureCollection fc = fs.getFeatures(new Query(RENAMED, fidFilter));
         assertEquals(RENAMED, fc.getSchema().getName().getLocalPart());
         assertEquals(1, fc.size());
         FeatureIterator <SimpleFeature> it = fc.features();
@@ -191,7 +191,7 @@ public class FullyRetypingDataStoreTest extends TestCase {
 
     public void testFeatureReaderFidFilter() throws Exception {
         FeatureReader<SimpleFeatureType, SimpleFeature> fr;
-        fr = rts.getFeatureReader(new DefaultQuery(RENAMED, fidFilter), Transaction.AUTO_COMMIT);
+        fr = rts.getFeatureReader(new Query(RENAMED, fidFilter), Transaction.AUTO_COMMIT);
         assertEquals(primitive, fr.getFeatureType());
         assertTrue(fr.hasNext());
         SimpleFeature sf = fr.next();
@@ -201,7 +201,7 @@ public class FullyRetypingDataStoreTest extends TestCase {
     }
 
     public void testDelete() throws Exception {
-        final DefaultQuery queryAll = new DefaultQuery(RENAMED);
+        final Query queryAll = new Query(RENAMED);
 
         SimpleFeatureStore store;
         store = (SimpleFeatureStore) rts.getFeatureSource(RENAMED);
@@ -212,7 +212,7 @@ public class FullyRetypingDataStoreTest extends TestCase {
     }
 
     public void testModify() throws Exception {
-        final DefaultQuery queryAll = new DefaultQuery(RENAMED);
+        final Query queryAll = new Query(RENAMED);
 
         SimpleFeatureStore store;
         store = (SimpleFeatureStore) rts.getFeatureSource(RENAMED);
@@ -313,7 +313,7 @@ public class FullyRetypingDataStoreTest extends TestCase {
         fl.setFeatureLock(lock);
         fl2.setTransaction(new DefaultTransaction());
 
-        Query q = new DefaultQuery(RENAMED, fidFilter);
+        Query q = new Query(RENAMED, fidFilter);
         assertEquals(1, fl.lockFeatures(q));
         assertEquals(0, fl2.lockFeatures(q));
 

@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.feature.ReprojectingFeatureCollection;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
@@ -221,7 +221,7 @@ public abstract class GeoRSSTransformerBase extends TransformerBase {
             List featureCollections = new ArrayList();
             for (int i = 0; i < map.getLayerCount(); i++) {
                 MapLayer layer = map.getLayer(i);
-                DefaultQuery query = new DefaultQuery(layer.getQuery());
+                Query query = new Query(layer.getQuery());
 
                 SimpleFeatureCollection features = null;
                 try {

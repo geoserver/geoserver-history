@@ -11,7 +11,7 @@ import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureListener;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -98,8 +98,8 @@ public class RetypingFeatureSource implements SimpleFeatureSource{
 
     public SimpleFeatureCollection getFeatures(Query query) throws IOException {
         if (query.getTypeName() == null) {
-            query = new DefaultQuery(query);
-            ((DefaultQuery) query).setTypeName(typeMap.getName());
+            query = new Query(query);
+            ((Query) query).setTypeName(typeMap.getName());
         } else if (!typeMap.getName().equals(query.getTypeName())) {
             throw new IOException("Cannot query this feature source with " + query.getTypeName()
                     + " since it serves only " + typeMap.getName());
@@ -116,7 +116,7 @@ public class RetypingFeatureSource implements SimpleFeatureSource{
     }
 
     public SimpleFeatureCollection getFeatures(Filter filter) throws IOException {
-        return getFeatures(new DefaultQuery(typeMap.getName(), filter));
+        return getFeatures(new Query(typeMap.getName(), filter));
     }
 
     public SimpleFeatureType getSchema() {

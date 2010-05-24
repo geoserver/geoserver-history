@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -197,9 +197,9 @@ public class EncodeSVG {
                         schema.getGeometryDescriptor().getName().getLocalPart()));
                 bboxFilter.addRightGeometry(bboxExpression);
 
-                Query bboxQuery = new DefaultQuery(schema.getTypeName(), bboxFilter);
+                Query bboxQuery = new Query(schema.getTypeName(), bboxFilter);
                 Query definitionQuery = layer.getQuery();
-                DefaultQuery finalQuery = new DefaultQuery(DataUtilities.mixQueries(definitionQuery, bboxQuery, "svgEncoder"));
+                Query finalQuery = new Query(DataUtilities.mixQueries(definitionQuery, bboxQuery, "svgEncoder"));
                 finalQuery.setHints(definitionQuery.getHints());
                 finalQuery.setSortBy(definitionQuery.getSortBy());
                 finalQuery.setStartIndex(definitionQuery.getStartIndex());

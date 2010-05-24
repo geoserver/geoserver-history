@@ -8,7 +8,7 @@ import java.io.IOException;
 
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureDiffReader;
 import org.geotools.data.Query;
 import org.geotools.data.VersioningFeatureLocking;

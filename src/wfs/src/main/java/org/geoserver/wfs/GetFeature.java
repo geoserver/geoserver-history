@@ -29,7 +29,7 @@ import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.Hints;
@@ -465,7 +465,7 @@ public class GetFeature {
      * Get this query as a geotools Query.
      *
      * <p>
-     * if maxFeatures is a not positive value DefaultQuery.DEFAULT_MAX will be
+     * if maxFeatures is a not positive value Query.DEFAULT_MAX will be
      * used.
      * </p>
      *
@@ -474,7 +474,7 @@ public class GetFeature {
      * conversion.
      * </p>
      *
-     * @param maxFeatures number of features, or 0 for DefaultQuery.DEFAULT_MAX
+     * @param maxFeatures number of features, or 0 for Query.DEFAULT_MAX
      *
      * @return A Query for use with the FeatureSource interface
      *
@@ -485,7 +485,7 @@ public class GetFeature {
         String wfsVersion = request.getVersion();
         
         if (maxFeatures <= 0) {
-            maxFeatures = DefaultQuery.DEFAULT_MAX;
+            maxFeatures = Query.DEFAULT_MAX;
         }
 
         String[] props = null;
@@ -519,7 +519,7 @@ public class GetFeature {
 
         //only handle non-joins for now
         QName typeName = (QName) query.getTypeName().get(0);
-        DefaultQuery dataQuery = new DefaultQuery(typeName.getLocalPart(), transformedFilter, maxFeatures,
+        Query dataQuery = new Query(typeName.getLocalPart(), transformedFilter, maxFeatures,
                 props, query.getHandle());
         
         //handle reprojection

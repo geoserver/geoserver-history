@@ -9,7 +9,7 @@ import org.geoserver.security.SecureObjectsTest;
 import org.geoserver.security.SecureCatalogImpl.WrapperPolicy;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.feature.FeatureCollection;
@@ -28,7 +28,7 @@ public class ReadOnlyFeatureSourceTest extends SecureObjectsTest {
         expect(fs.getDataStore()).andReturn(ds);
         expect(fs.getFeatures()).andReturn(fc);
         expect(fs.getFeatures(Filter.INCLUDE)).andReturn(fc);
-        expect(fs.getFeatures(new DefaultQuery())).andReturn(fc);
+        expect(fs.getFeatures(new Query())).andReturn(fc);
         replay(fs);
         
         ReadOnlyFeatureSource ro = new ReadOnlyFeatureSource(fs, WrapperPolicy.HIDE);
@@ -36,7 +36,7 @@ public class ReadOnlyFeatureSourceTest extends SecureObjectsTest {
         ReadOnlyFeatureCollection collection = (ReadOnlyFeatureCollection) ro.getFeatures();
         assertEquals(WrapperPolicy.HIDE, ro.policy);
         assertTrue(ro.getFeatures(Filter.INCLUDE) instanceof ReadOnlyFeatureCollection);
-        assertTrue(ro.getFeatures(new DefaultQuery()) instanceof ReadOnlyFeatureCollection);
+        assertTrue(ro.getFeatures(new Query()) instanceof ReadOnlyFeatureCollection);
     }
     
     public void testReadOnlyFeatureStore() throws Exception {

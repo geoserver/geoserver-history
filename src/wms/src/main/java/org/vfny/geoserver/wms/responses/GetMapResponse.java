@@ -27,7 +27,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSExtensions;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
@@ -243,7 +243,7 @@ public class GetMapResponse implements Response {
                     layer = new DefaultMapLayer(source, layerStyle);
                     layer.setTitle(layers[i].getRemoteFeatureSource().getSchema().getTypeName());
 
-                    final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema()
+                    final Query definitionQuery = new Query(source.getSchema()
                             .getTypeName());
                     definitionQuery.setFilter(layerFilter);
                     definitionQuery.setVersion(featureVersion);
@@ -289,7 +289,7 @@ public class GetMapResponse implements Response {
                     layer = new FeatureSourceMapLayer(source, layerStyle);
                     layer.setTitle(layers[i].getFeature().getPrefixedName());
 
-                    final DefaultQuery definitionQuery = new DefaultQuery(source.getSchema()
+                    final Query definitionQuery = new Query(source.getSchema()
                             .getName().getLocalPart());
                     definitionQuery.setVersion(featureVersion);
                     definitionQuery.setFilter(layerFilter);
