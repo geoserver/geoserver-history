@@ -10,7 +10,7 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
 import org.geoserver.rest.format.FreemarkerFormat;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureCollection;
 import org.opengis.feature.simple.SimpleFeature;
@@ -70,7 +70,7 @@ public abstract class AbstractFeatureDescription extends GeoServerProxyAwareRest
                 );
         }
 
-        DefaultQuery q = new DefaultQuery();
+        Query q = new Query();
         FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
 
         q.setFilter(ff.id(Collections.singleton(ff.featureId(feature))));

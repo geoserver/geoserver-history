@@ -18,7 +18,7 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.FeatureStore;
@@ -262,7 +262,7 @@ public class RetypingDataStore implements DataStore {
      * @throws IOException
      */
     Query retypeQuery(Query q, FeatureTypeMap typeMap) {
-        DefaultQuery modified = new DefaultQuery(q);
+        Query modified = new Query(q);
         modified.setTypeName(typeMap.getOriginalName());
         modified.setFilter(retypeFilter(q.getFilter(), typeMap));
         return modified;

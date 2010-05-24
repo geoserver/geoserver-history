@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -322,7 +322,7 @@ public class EncodeHTMLImageMap {
                 // 1) bbox filter
                 BBOX bboxFilter = filterFactory.bbox(schema.getGeometryDescriptor().getLocalName(), 
                         aoi.getMinX() , aoi.getMinY(), aoi.getMaxX(), aoi.getMaxY(), null);
-                DefaultQuery q = new DefaultQuery(schema.getTypeName(), bboxFilter);
+                Query q = new Query(schema.getTypeName(), bboxFilter);
                 
                 String mapId = null;               
 
@@ -335,9 +335,9 @@ public class EncodeHTMLImageMap {
                 LOGGER.info("Definition Query: "+definitionQuery.toString());
                 if (!definitionQuery.equals(Query.ALL)) {
                     if (q.equals(Query.ALL)) {
-                        q = (DefaultQuery) definitionQuery;
+                        q = (Query) definitionQuery;
                     } else {
-                        q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "HTMLImageMapEncoder");
+                        q = (Query) DataUtilities.mixQueries(definitionQuery, q, "HTMLImageMapEncoder");
                     }
                 }
                 
@@ -351,7 +351,7 @@ public class EncodeHTMLImageMap {
 
 					// set the actual filter
 					q.setFilter(ruleFilter);
-                	//q = (DefaultQuery) DataUtilities.mixQueries(new DefaultQuery(schema.getTypeName(),ruleFilter), q, "HTMLImageMapEncoder");
+                	//q = (Query) DataUtilities.mixQueries(new Query(schema.getTypeName(),ruleFilter), q, "HTMLImageMapEncoder");
 				}
                 //ensure reprojection occurs, do not trust query, use the wrapper  
                 SimpleFeatureCollection fColl = null;//fSource.getFeatures(q);

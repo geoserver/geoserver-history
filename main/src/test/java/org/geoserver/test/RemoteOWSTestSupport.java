@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.wfs.WFSDataStoreFactory;
@@ -63,7 +63,7 @@ public class RemoteOWSTestSupport {
                     FeatureSource fs = remoteStore.getFeatureSource(TOPP_STATES);
                     remoteWFSStatesAvailable = Boolean.TRUE;
                     // check a basic response can be answered correctly
-                    DefaultQuery dq = new DefaultQuery(TOPP_STATES);
+                    Query dq = new Query(TOPP_STATES);
                     FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
                     dq.setFilter(ff.greater(ff.property("PERSONS"), ff.literal(20000000)));
                     FeatureCollection fc = fs.getFeatures(dq);

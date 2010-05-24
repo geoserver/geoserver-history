@@ -16,7 +16,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -434,7 +434,7 @@ public class KMLUtils {
 
         // now build the query using only the attributes and the bounding
         // box needed
-        DefaultQuery q = new DefaultQuery(schema.getTypeName());
+        Query q = new Query(schema.getTypeName());
         q.setFilter(filter);
 
         // now, if a definition query has been established for this layer,
@@ -443,9 +443,9 @@ public class KMLUtils {
 
         if (definitionQuery != Query.ALL) {
             if (q == Query.ALL) {
-                q = (DefaultQuery) definitionQuery;
+                q = (Query) definitionQuery;
             } else {
-                q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q,
+                q = (Query) DataUtilities.mixQueries(definitionQuery, q,
                         "KMLEncoder");
             }
         }

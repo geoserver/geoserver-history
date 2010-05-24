@@ -343,7 +343,7 @@ public class HTMLImageMapTest extends TestCase {
 	
 	public void testMapRuleWithFilters() throws Exception {
 		/*Filter f=filterFactory.equals(filterFactory.property("NAME"),filterFactory.literal("Route 5"));
-		DefaultQuery q=new DefaultQuery("RoadSegments",f);*/
+		Query q=new Query("RoadSegments",f);*/
         final FeatureSource<SimpleFeatureType,SimpleFeature> fs = testDS.getFeatureSource("RoadSegments");
         final ReferencedEnvelope env = new ReferencedEnvelope(fs.getBounds(),WGS84);
 

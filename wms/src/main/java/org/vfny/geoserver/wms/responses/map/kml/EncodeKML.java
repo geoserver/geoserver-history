@@ -25,7 +25,7 @@ import java.util.zip.ZipOutputStream;
 import javax.media.jai.GraphicsJAI;
 
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -344,7 +344,7 @@ public class EncodeKML {
 
                 // now build the query using only the attributes and the bounding
                 // box needed
-                DefaultQuery q = new DefaultQuery(schema.getTypeName());
+                Query q = new Query(schema.getTypeName());
                 q.setFilter(filter);
                 q.setPropertyNames(attributes);
 
@@ -354,9 +354,9 @@ public class EncodeKML {
 
                 if (definitionQuery != Query.ALL) {
                     if (q == Query.ALL) {
-                        q = (DefaultQuery) definitionQuery;
+                        q = (Query) definitionQuery;
                     } else {
-                        q = (DefaultQuery) DataUtilities.mixQueries(definitionQuery, q, "KMLEncoder");
+                        q = (Query) DataUtilities.mixQueries(definitionQuery, q, "KMLEncoder");
                     }
                 }
 

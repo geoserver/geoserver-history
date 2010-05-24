@@ -25,7 +25,7 @@ import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.FeatureLock;
 import org.geotools.data.FeatureLockFactory;
@@ -199,7 +199,7 @@ public class LockFeature {
                             // HACK: Query.NO_NAMES isn't working in postgis
                             // right now,
                             // so we'll just use all.
-                            Query query = new DefaultQuery(meta.getName(), (Filter) fidFilter,
+                            Query query = new Query(meta.getName(), (Filter) fidFilter,
                                     Query.DEFAULT_MAX, Query.ALL_NAMES, lock.getHandle());
 
                             numberLocked = ((FeatureLocking) source).lockFeatures(query);

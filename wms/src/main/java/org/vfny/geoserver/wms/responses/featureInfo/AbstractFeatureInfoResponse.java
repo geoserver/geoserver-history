@@ -39,7 +39,7 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.ows.Layer;
@@ -345,7 +345,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     }
 
                     String typeName = schema.getName().getLocalPart();
-                    Query q = new DefaultQuery(typeName, null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
+                    Query q = new Query(typeName, null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
                     
                     FeatureCollection<? extends FeatureType, ? extends Feature> match;
                     match = featureSource.getFeatures(q);

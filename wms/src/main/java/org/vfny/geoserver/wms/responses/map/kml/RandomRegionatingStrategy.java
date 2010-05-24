@@ -7,7 +7,7 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.sql.Connection;
 
 import org.geoserver.config.GeoServer;
-import org.geotools.data.DefaultQuery;
+import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
@@ -46,7 +46,7 @@ public class RandomRegionatingStrategy extends
                 nativeEnv.getMinY(), nativeEnv.getMaxX(), nativeEnv.getMaxY(), null);
 
         // build an optimized query (only the necessary attributes
-        DefaultQuery q = new DefaultQuery();
+        Query q = new Query();
         q.setFilter(filter);
         // TODO: enable this when JTS learns how to compute centroids
         // without triggering the
