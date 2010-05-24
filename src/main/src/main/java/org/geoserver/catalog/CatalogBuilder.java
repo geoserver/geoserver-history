@@ -683,13 +683,14 @@ public class CatalogBuilder {
             throw new Exception("Unable to acquire a reader for this coverage with format: "
                     + csinfo.getFormat().getName());
 
-        return buildCoverage(reader);
+        return buildCoverage(reader, null);
     }
 
     /**
      * Builds a coverage from a geotools grid coverage reader.
+     * @param customParameters 
      */
-    public CoverageInfo buildCoverage(AbstractGridCoverage2DReader reader) throws Exception {
+    public CoverageInfo buildCoverage(AbstractGridCoverage2DReader reader, Map customParameters) throws Exception {
         if (store == null || !(store instanceof CoverageStoreInfo)) {
             throw new IllegalStateException("Coverage store not set.");
         }
@@ -723,12 +724,10 @@ public class CatalogBuilder {
 
         GeneralEnvelope envelope = reader.getOriginalEnvelope();
         cinfo.setNativeBoundingBox(new ReferencedEnvelope(envelope));
-        cinfo.setLatLonBoundingBox(new ReferencedEnvelope(CoverageStoreUtils
-                .getWGS84LonLatEnvelope(envelope)));
+        cinfo.setLatLonBoundingBox(new ReferencedEnvelope(CoverageStoreUtils.getWGS84LonLatEnvelope(envelope)));
 
         GridEnvelope originalRange = reader.getOriginalGridRange();
-        cinfo.setGrid(new GridGeometry2D(originalRange, reader
-                .getOriginalGridToWorld(PixelInCell.CELL_CENTER), nativeCRS));
+        cinfo.setGrid(new GridGeometry2D(originalRange, reader.getOriginalGridToWorld(PixelInCell.CELL_CENTER), nativeCRS));
 
         // /////////////////////////////////////////////////////////////////////
         //
@@ -755,18 +754,18 @@ public class CatalogBuilder {
         final GridEnvelope2D testRange = new GridEnvelope2D(minX, minY, maxX, maxY);
 
         // build the corresponding envelope
-        final MathTransform gridToWorldCorner = reader
-                .getOriginalGridToWorld(PixelInCell.CELL_CORNER);
-        final GeneralEnvelope testEnvelope = CRS.transform(gridToWorldCorner, new GeneralEnvelope(
-                testRange.getBounds()));
+        final MathTransform gridToWorldCorner = reader.getOriginalGridToWorld(PixelInCell.CELL_CORNER);
+        final GeneralEnvelope testEnvelope = CRS.transform(gridToWorldCorner, new GeneralEnvelope(testRange.getBounds()));
         testEnvelope.setCoordinateReferenceSystem(nativeCRS);
 
-        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(),
-                new GridGeometry2D(testRange, testEnvelope));
+        if (customParameters != null) {
+        	parameters.putAll(customParameters);
+        }
+        
+        parameters.put(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString(), new GridGeometry2D(testRange, testEnvelope));
 
         // try to read this coverage
-        gc = (GridCoverage2D) reader
-                .read(CoverageUtils.getParameters(readParams, parameters, true));
+        gc = (GridCoverage2D) reader.read(CoverageUtils.getParameters(readParams, parameters, true));
         if (gc == null) {
             throw new Exception("Unable to acquire test coverage for format:" + format.getName());
         }
@@ -793,8 +792,7 @@ public class CatalogBuilder {
         String name = gc.getName().toString();
         cinfo.setName(name);
         cinfo.setTitle(name);
-        cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName())
-                .toString());
+        cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName()).toString());
 
         // keywords
         cinfo.getKeywords().add("WCS");
@@ -803,25 +801,18 @@ public class CatalogBuilder {
 
         // native format name
         cinfo.setNativeFormat(format.getName());
-        cinfo.getMetadata().put("dirName",
-                new StringBuffer(store.getName()).append("_").append(name).toString());
+        cinfo.getMetadata().put("dirName", new StringBuffer(store.getName()).append("_").append(name).toString());
 
         // request SRS's
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
                 && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
-            cinfo.getRequestSRS()
-                    .add(
-                            ((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
-                                    .toArray()[0]).toString());
+            cinfo.getRequestSRS().add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
         }
 
         // response SRS's
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
                 && !gc.getCoordinateReferenceSystem2D().getIdentifiers().isEmpty()) {
-            cinfo.getResponseSRS()
-                    .add(
-                            ((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers()
-                                    .toArray()[0]).toString());
+            cinfo.getResponseSRS().add(((Identifier) gc.getCoordinateReferenceSystem2D().getIdentifiers().toArray()[0]).toString());
         }
 
         // supported formats
@@ -852,7 +843,7 @@ public class CatalogBuilder {
         cinfo.getInterpolationMethods().add("bicubic");
 
         // read parameters
-        cinfo.getParameters().putAll(CoverageUtils.getParametersKVP(format.getReadParameters()));
+        cinfo.getParameters().putAll(/*CoverageUtils.getParametersKVP(format.getReadParameters())*/ parameters);
 
         return cinfo;
     }

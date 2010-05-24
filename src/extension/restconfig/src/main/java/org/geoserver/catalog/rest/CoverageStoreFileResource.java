@@ -7,7 +7,9 @@ package org.geoserver.catalog.rest;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -129,7 +131,14 @@ public class CoverageStoreFileResource extends StoreFileResource {
                 throw new RestletException( "Could not aquire reader for coverage.", Status.SERVER_ERROR_INTERNAL );
             }
             
-            CoverageInfo cinfo = builder.buildCoverage( reader );
+            // coverage read params
+            final Map customParameters = new HashMap();
+            String useJAIImageReadParam = form.getFirstValue("USE_JAI_IMAGEREAD");
+            if (useJAIImageReadParam != null) {
+            	customParameters.put(AbstractGridFormat.USE_JAI_IMAGEREAD.getName().toString(), Boolean.valueOf(useJAIImageReadParam));
+            }
+            
+            CoverageInfo cinfo = builder.buildCoverage( reader, customParameters );
             
             //check if the name of the coverage was specified
             String coverageName = form.getFirstValue("coverageName");
@@ -211,8 +220,7 @@ public class CoverageStoreFileResource extends StoreFileResource {
             }
             
             //poach the coverage store data format
-            DataFormat df = new CoverageStoreResource(getContext(),request,response,catalog)
-                .createXMLFormat(request, response);
+            DataFormat df = new CoverageStoreResource(getContext(),request,response,catalog).createXMLFormat(request, response);
             response.setEntity(df.toRepresentation(info));
             response.setStatus(Status.SUCCESS_CREATED);
         }
