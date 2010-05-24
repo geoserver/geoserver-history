@@ -10,4 +10,5 @@ REST data configuration api. The examples are grouped by environment/language.
    :maxdepth: 1
 
    rest-config-examples-curl/
+   rest-config-examples-php/
 
