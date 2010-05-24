@@ -37,6 +37,13 @@ public abstract class StoreFileResource extends Resource {
         return true;
     }
  
+    /**
+     * 
+     * @param store
+     * @param format
+     * @param directory
+     * @return
+     */
     protected File handleFileUpload(String store, String format, File directory) {
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
 
@@ -97,9 +104,14 @@ public abstract class StoreFileResource extends Resource {
         }
         
         return uploadedFile;
-
     }
 
+    /**
+     * 
+     * @param directory
+     * @param format
+     * @return
+     */
     protected File findPrimaryFile(File directory, String format) {
         File[] files = directory.listFiles();
         

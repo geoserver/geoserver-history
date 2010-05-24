@@ -97,15 +97,12 @@ public class LayerResource extends AbstractCatalogResource {
                 }
                 if ( obj instanceof ResourceInfo ) {
                     ResourceInfo r = (ResourceInfo) obj;
-                    StringBuffer link = new StringBuffer( "/workspaces/" ).
-                        append( r.getStore().getWorkspace().getName() ).append( "/" );
+                    StringBuffer link = new StringBuffer( "/workspaces/" ).append( r.getStore().getWorkspace().getName() ).append( "/" );
                     if ( r instanceof FeatureTypeInfo ) {
-                        link.append( "datastores/").append( r.getStore().getName() )
-                            .append( "/featuretypes/");
+                        link.append( "datastores/").append( r.getStore().getName() ).append( "/featuretypes/");
                     }
                     else if ( r instanceof CoverageInfo ) {
-                        link.append( "coveragestores/").append( r.getStore().getName() )
-                        .append( "/coverages/");
+                        link.append( "coveragestores/").append( r.getStore().getName() ).append( "/coverages/");
                     }
                     else {
                         return;
