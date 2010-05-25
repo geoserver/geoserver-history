@@ -836,4 +836,23 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("mf1", "//gsml:MappedFeature/@gml:id", doc);
     }
 
+    /**
+     * Test that denormalized data reports the correct number of features
+     */
+    public void testDenormalisedFeaturesCount() {
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:GeologicUnit&maxFeatures=3");
+        LOGGER.info("WFS GetFeature&typename=gsml:GeologicUnit&maxFeatures=3 response:\n"
+                + prettyString(doc));
+        assertXpathCount(3, "//gsml:GeologicUnit", doc);
+
+        // check that we get features we're expecting
+        String id = "gu.25699";
+        assertXpathEvaluatesTo(id, "//gsml:GeologicUnit[1]/@gml:id", doc);
+
+        id = "gu.25678";
+        assertXpathEvaluatesTo(id, "//gsml:GeologicUnit[2]/@gml:id", doc);
+
+        id = "gu.25682";
+        assertXpathEvaluatesTo(id, "//gsml:GeologicUnit[3]/@gml:id", doc);
+    }
 }
