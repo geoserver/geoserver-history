@@ -26,6 +26,7 @@ import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.geotools.data.complex.DataAccessRegistry;
+import org.geotools.xml.AppSchemaCache;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -112,6 +113,8 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
         WFSInfo wfs = getGeoServer().getService(WFSInfo.class);
         wfs.setCanonicalSchemaLocation(true);
         getGeoServer().save(wfs);
+        // disable schema caching in tests, as schemas are expected to provided on the classpath
+        AppSchemaCache.disableGeoserverSupport();
     }
 
     /**
