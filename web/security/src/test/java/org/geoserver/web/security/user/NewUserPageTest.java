@@ -24,7 +24,7 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         tester.assertRenderedPage(NewUserPage.class);
     }
 
-    public void testFill() {
+    public void testFill() throws Exception {
         Locale.setDefault(Locale.ENGLISH);
         
         // make sure the recorder is where we think it is, it contains the palette selection
@@ -39,6 +39,9 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         
         tester.assertErrorMessages(new String[0]);
         tester.assertRenderedPage(UserPage.class);
+        
+        // avoid PropertyFileWatcher.isStale() race condition [GEOS-3982]
+        Thread.sleep(1000);
         
         dao.reload();
         UserDetails user = dao.loadUserByUsername("user");
