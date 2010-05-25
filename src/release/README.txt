@@ -1,4 +1,4 @@
-GeoServer 2.0.2 (May 20, 2010)
+GeoServer 2.0.2 (May 24, 2010)
 -----------------------------------
 
 The third release of the GeoServer 2.0 branch includes a wide array of bugs squashed, issues resolved and improvements over the 2.0.1 release.  With the increase in community testing, the fixes are spread far and wide throughout the code base.  For a complete list, refer to the issue tracker:
