@@ -13,6 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geotools.util.logging.Logging;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.thoughtworks.xstream.XStream;
@@ -23,7 +26,7 @@ import com.thoughtworks.xstream.XStream;
  * @author Administrator
  *
  */
-public class Ogr2OgrConfigurator {
+public class Ogr2OgrConfigurator implements ApplicationListener {
     private static final Logger LOGGER = Logging.getLogger(Ogr2OgrConfigurator.class);
 
     Ogr2OgrOutputFormat of;
@@ -105,6 +108,15 @@ public class Ogr2OgrConfigurator {
                 lastModified = newLastModified;
                 loadConfiguration();
             }
+        }
+    }
+
+    /**
+     * Kill all threads on web app context shutdown to avoid permgen leaks
+     */
+    public void onApplicationEvent(ApplicationEvent event) {
+        if(event instanceof ContextClosedEvent) {
+            timer.cancel();
         }
     }
 
