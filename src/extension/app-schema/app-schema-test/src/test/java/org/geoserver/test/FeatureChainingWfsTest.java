@@ -631,6 +631,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                     doc);
+            // lithology:1
+            assertXpathEvaluatesTo("1", "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+                    + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[1]"
+                    + "/gsml:ControlledConcept/@gml:id", doc);            
             assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[1]"
                     + "/gsml:ControlledConcept/gml:name", doc);
@@ -649,6 +653,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
             assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                     + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                     + "/gsml:CompositionPart/gsml:lithology[1]/FEATURE_LINK", doc);
+            // lithology:2
+            assertXpathEvaluatesTo("2", "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+                    + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[2]/"
+                    + "/gsml:ControlledConcept/@gml:id", doc);
             assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                     + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[2]"
                     + "/gsml:ControlledConcept/gml:name", doc);
