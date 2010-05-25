@@ -181,7 +181,7 @@
     <profile>
       <id>release</id>
       <modules>
-        <module>app-schema</module>
+        <!--<module>app-schema</module>-->
         <module>arcsde</module>
         <module>geosearch</module>
         <module>h2</module>
