@@ -26,6 +26,7 @@ Contents
    installation
    configuration
    mapping-file
+   app-schema-resolution
    vocab-functions
    property-interpolation
    data-stores
@@ -33,3 +34,4 @@ Contents
    polymorphism
    data-access-integration
    tutorial
+

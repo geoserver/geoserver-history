@@ -93,21 +93,12 @@ Every mapping file requires at least one data store to provide data for features
 If you have more than one ``DataStore`` in a mapping file, be sure to give them each a distinct ``id``.
 
 
-catalog
-```````
+catalog (optional)
+``````````````````
 
-An OASIS XML Catalog is a standard configuration file format that instructs an XML processing system how to process entity references:
-
-* http://en.wikipedia.org/wiki/XML_Catalog
-* http://www.oasis-open.org/committees/entity/spec-2001-08-06.html
-
-In the case of GeoServer app-schema, the catalog is a local filesystem cache of all the schemas used to define the output feature types. The ``catalog`` element provides the location of an OASIS XML catalog that contains all dependent schemas, given as a path relative to the mapping file, for example::
+The location of an OASIS XML Catalog configuration file, given as a path relative to the mapping file. See :ref:`app-schema.app-schema-resolution` for more information. For example::
 
     <catalog>../../../schemas/catalog.xml</catalog>
-
-In practice it is mandatory to provide an OASIS catalog because the implementation otherwise has difficulty resolving relative imports in schema files.
-
-GML 3.1.1 is distributed with GeoServer and does not need to be included in the catalog.
 
 
 targetTypes
