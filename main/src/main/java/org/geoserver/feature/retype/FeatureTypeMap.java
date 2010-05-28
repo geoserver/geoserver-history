@@ -25,6 +25,13 @@ class FeatureTypeMap {
         this.originalName = originalName;
         this.name = name;
     }
+    
+    public FeatureTypeMap(SimpleFeatureType originalFeatureType, SimpleFeatureType featureType) {
+        this.originalFeatureType = originalFeatureType;
+        this.featureType = featureType;
+        this.originalName = originalFeatureType.getTypeName();
+        this.name = featureType.getTypeName();
+    }
 
     public String getOriginalName() {
         return originalName;

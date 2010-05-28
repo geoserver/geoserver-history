@@ -26,7 +26,7 @@ import org.geoserver.data.test.MockData;
  * </p>
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
  */
-public class GeoServerTestSupport extends GeoServerAbstractTestSupport {
+public abstract class GeoServerTestSupport extends GeoServerAbstractTestSupport {
     
    
     @Override

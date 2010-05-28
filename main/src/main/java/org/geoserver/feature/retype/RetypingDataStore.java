@@ -110,10 +110,9 @@ public class RetypingDataStore implements DataStore {
 
     public String[] getTypeNames() throws IOException {
         // here we transform the names, and also refresh the type maps so that
-        // they
-        // don't contain stale elements
+        // they don't contain stale elements
         String[] names = wrapped.getTypeNames();
-        String[] transformedNames = new String[names.length];
+        List<String> transformedNames = new ArrayList<String>();
         Map<String, FeatureTypeMap> backup = new HashMap<String, FeatureTypeMap>(forwardMap);
         
         // Populate local hashmaps with new values.
@@ -122,21 +121,24 @@ public class RetypingDataStore implements DataStore {
         
         for (int i = 0; i < names.length; i++) {
             String original = names[i];
-            transformedNames[i] = transformFeatureTypeName(original);
-
-            FeatureTypeMap map = backup.get(original);
-            if (map == null) {
-                map = new FeatureTypeMap(original, transformedNames[i]);
+            String transformedName = transformFeatureTypeName(original);
+            if(transformedName != null) {
+                transformedNames.add(transformedName);
+                
+                FeatureTypeMap map = backup.get(original);
+                if (map == null) {
+                    map = new FeatureTypeMap(original, transformedName);
+                }
+                forwardMapLocal.put(map.getOriginalName(), map);
+                backwardsMapLocal.put(map.getName(), map);
             }
-            forwardMapLocal.put(map.getOriginalName(), map);
-            backwardsMapLocal.put(map.getName(), map);
         }
         
         // Replace the member variables.
         forwardMap = forwardMapLocal;
         backwardsMap = backwardsMapLocal;
         
-        return transformedNames;
+        return (String[]) transformedNames.toArray(new String[transformedNames.size()]);
     }
 
     public FeatureReader<SimpleFeatureType, SimpleFeature> getFeatureReader(Query query,
@@ -235,17 +237,13 @@ public class RetypingDataStore implements DataStore {
     }
 
     /**
-     * Just transform the feature type name
+     * Just transform the feature type name, or return null if the original type name is
+     * to be hidden
      * 
      * @param originalName
      * @return
      */
     protected String transformFeatureTypeName(String originalName) {
-//        if(originalName.indexOf(":") >= 0) {
-//            return originalName.substring(originalName.indexOf(":") + 1);
-//        } else {
-//            return originalName;
-//        }
          return originalName.replaceAll(":", "_");
     }
 
