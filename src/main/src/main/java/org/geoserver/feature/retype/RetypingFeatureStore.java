@@ -29,9 +29,13 @@ import org.opengis.filter.identity.FeatureId;
  */
 public class RetypingFeatureStore extends RetypingFeatureSource implements SimpleFeatureStore {
 
-    public RetypingFeatureStore(RetypingDataStore ds,
+    RetypingFeatureStore(RetypingDataStore ds,
             SimpleFeatureStore wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
+    }
+    
+    RetypingFeatureStore(SimpleFeatureStore wrapped, FeatureTypeMap typeMap) throws IOException {
+        super(wrapped, typeMap);
     }
 
     protected SimpleFeatureStore featureStore() {
