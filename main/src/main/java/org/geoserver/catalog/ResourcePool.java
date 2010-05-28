@@ -339,7 +339,12 @@ public class ResourcePool {
                             throw new NullPointerException("Could not acquire data access '" + info.getName() + "'");
                         }
                         
-                        dataStoreCache.put( id, dataStore );
+                        // cache only if the id is not null, no need to cache the stores
+                        // returned from un-saved DataStoreInfo objects (it would be actually
+                        // harmful, NPE when trying to dispose of them)
+                        if(id != null) {
+                            dataStoreCache.put( id, dataStore );
+                        }
                     }
                 } 
             }

@@ -116,9 +116,9 @@ public class StatusPage extends ServerAdminPage {
                 try {
                     getGeoServer().reset();
                     info(getLocalizer().getString("resourceCacheClearedSuccessfully", this));
-                }
-                catch( Exception e ) {
-                    error(e);
+                } catch(Throwable t) {
+                    LOGGER.log(Level.SEVERE, "Error resetting resource caches", t);
+                    error(t);
                 }
                 target.addComponent(feedbackPanel);
             }
@@ -130,9 +130,9 @@ public class StatusPage extends ServerAdminPage {
                 try {
                     getGeoServer().reload();
                     info(getLocalizer().getString("catalogConfigReloadedSuccessfully", StatusPage.this));
-                } catch(Exception e) {
-                    LOGGER.log(Level.SEVERE, "An error occurred while reloading the catalog", e);
-                    error(e.getMessage());
+                } catch(Throwable t) {
+                    LOGGER.log(Level.SEVERE, "An error occurred while reloading the catalog", t);
+                    error(t);
                 }
                 target.addComponent(feedbackPanel);
             }
