@@ -12,7 +12,9 @@ import java.util.Set;
 
 import org.geoserver.feature.RetypingFeatureCollection;
 import org.geoserver.feature.RetypingFeatureCollection.RetypingFeatureReader;
+import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureReader;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.FeatureStore;
 import org.geotools.data.Transaction;
 import org.geotools.feature.FeatureCollection;
@@ -29,9 +31,13 @@ import org.opengis.filter.identity.FeatureId;
 public class RetypingFeatureStore extends RetypingFeatureSource implements
         FeatureStore<SimpleFeatureType, SimpleFeature> {
 
-    public RetypingFeatureStore(RetypingDataStore ds,
+    RetypingFeatureStore(RetypingDataStore ds,
             FeatureStore<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
+    }
+    
+    RetypingFeatureStore(FeatureStore<SimpleFeatureType, SimpleFeature>  wrapped, FeatureTypeMap typeMap) throws IOException {
+        super(wrapped, typeMap);
     }
 
     protected FeatureStore<SimpleFeatureType, SimpleFeature> featureStore() {

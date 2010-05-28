@@ -13,7 +13,9 @@ import org.geoserver.feature.RetypingFeatureCollection;
 import org.geotools.data.DataStore;
 import org.geotools.data.DefaultQuery;
 import org.geotools.data.FeatureListener;
+import org.geotools.data.FeatureLocking;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.FeatureStore;
 import org.geotools.data.Query;
 import org.geotools.data.QueryCapabilities;
 import org.geotools.data.ResourceInfo;
@@ -38,6 +40,27 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
     RetypingDataStore store;
 
     Map listeners = new HashMap();
+    
+    /**
+     * Builds a retyping wrapper
+     * @param wrapped
+     * @param targetTypeName 
+     * @param targetSchema The target schema can have a different name and less attributes than the original one
+     * @return
+     */
+    public static FeatureSource<SimpleFeatureType, SimpleFeature> getRetypingSource(
+            FeatureSource<SimpleFeatureType, SimpleFeature>  wrapped, SimpleFeatureType targetSchema) throws IOException {
+        FeatureTypeMap map = new FeatureTypeMap(wrapped.getSchema(), targetSchema);
+        
+        if(wrapped instanceof FeatureLocking) {
+            return new RetypingFeatureLocking((FeatureLocking) wrapped, map);
+        } else if(wrapped instanceof FeatureStore) {
+            return new RetypingFeatureStore((FeatureStore) wrapped, map);
+        } else {
+            return new RetypingFeatureSource(wrapped, map);
+        }
+        
+    }
 
     RetypingFeatureSource(RetypingDataStore ds,
             FeatureSource<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
@@ -45,7 +68,36 @@ public class RetypingFeatureSource implements FeatureSource<SimpleFeatureType, S
         this.wrapped = wrapped;
         this.typeMap = typeMap;
     }
-
+    
+    RetypingFeatureSource(FeatureSource wrapped, final FeatureTypeMap typeMap) throws IOException {
+        this.wrapped = wrapped;
+        this.typeMap = typeMap;
+        this.store = new RetypingDataStore((DataStore) wrapped.getDataStore()) {
+            @Override
+            protected String transformFeatureTypeName(String originalName) {
+                if(typeMap.getOriginalName().equals(originalName)) {
+                    // rename
+                    return typeMap.getName();
+                } else if(typeMap.getName().equals(originalName)) {
+                    // hide
+                    return null;
+                } else {
+                    return originalName;
+                }
+            }
+            
+            @Override
+            protected SimpleFeatureType transformFeatureType(SimpleFeatureType original)
+                    throws IOException {
+                if(typeMap.getOriginalName().equals(original)) {
+                    return typeMap.featureType;
+                } else {
+                    return super.transformFeatureType(original);
+                }
+            }
+        };
+    }
+    
     /**
      * Returns the same name than the feature type (ie,
      * {@code getSchema().getName()} to honor the simple feature land common

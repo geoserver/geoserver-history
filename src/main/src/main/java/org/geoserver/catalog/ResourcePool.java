@@ -46,6 +46,7 @@ import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
+import org.geoserver.feature.retype.RetypingFeatureSource;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccess;
@@ -723,29 +724,9 @@ public class ResourcePool {
         final SimpleFeatureType nativeFeatureType = dataStore.getSchema( typeName );
         final SimpleFeatureType featureType = (SimpleFeatureType) getFeatureType( info );
         if ( !typeName.equals( alias ) || DataUtilities.compare(nativeFeatureType,featureType) != 0 ) {
-            
-            RetypingDataStore retyper = new RetypingDataStore(dataStore) {
-            
-                @Override
-                protected String transformFeatureTypeName(String originalName) {
-                    if(!typeName.equals(originalName))
-                        return originalName;
-                    return alias;
-                }
-                
-                @Override
-                protected SimpleFeatureType transformFeatureType(SimpleFeatureType original)
-                        throws IOException {
-                    if ( original.getTypeName().equals( typeName ) ) {
-                        return featureType;
-                    }
-                    return super.transformFeatureType(original);
-                }
-            
-            };
-            fs = retyper.getFeatureSource(alias);
-        }
-        else {
+            // rename and retype as necessary
+            return RetypingFeatureSource.getRetypingSource(dataStore.getFeatureSource(typeName), featureType);
+        } else {
             //normal case
             fs = dataStore.getFeatureSource(info.getQualifiedName());   
         }

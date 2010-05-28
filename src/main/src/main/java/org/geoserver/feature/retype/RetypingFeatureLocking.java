@@ -19,13 +19,17 @@ import org.opengis.filter.Filter;
 class RetypingFeatureLocking extends RetypingFeatureStore implements
         FeatureLocking<SimpleFeatureType, SimpleFeature> {
 
-    public RetypingFeatureLocking(RetypingDataStore ds,
+    RetypingFeatureLocking(RetypingDataStore ds,
             FeatureLocking<SimpleFeatureType, SimpleFeature> wrapped, FeatureTypeMap typeMap) {
         super(ds, wrapped, typeMap);
     }
     
+    RetypingFeatureLocking(FeatureLocking<SimpleFeatureType, SimpleFeature>  wrapped, FeatureTypeMap typeMap) throws IOException {
+        super(wrapped, typeMap);
+    }
+    
     FeatureLocking<SimpleFeatureType, SimpleFeature> featureLocking() {
-        return (FeatureLocking<SimpleFeatureType, SimpleFeature>) wrapped;
+        return (FeatureLocking<SimpleFeatureType, SimpleFeature> ) wrapped;
     }
 
     public int lockFeatures() throws IOException {
