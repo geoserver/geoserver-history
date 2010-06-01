@@ -536,5 +536,15 @@
         </dependency>
       </dependencies>
     </profile>
-  </profiles>
+    <profile>
+      <id>ftp</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>ftp</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+ </profiles>
 </project>
