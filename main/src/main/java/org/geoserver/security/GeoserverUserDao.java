@@ -32,7 +32,6 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.vfny.geoserver.global.ConfigurationException;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
@@ -50,8 +49,6 @@ public class GeoserverUserDao implements UserDetailsService {
     PropertyFileWatcher userDefinitionsFile;
     
     File securityDir;
-
-    GeoServer geoServer;
     
     /**
      * Returns the {@link GeoserverUserDao} instance registered in the GeoServer Spring context
@@ -83,6 +80,7 @@ public class GeoserverUserDao implements UserDetailsService {
         if ((userMap == null) || ((userDefinitionsFile != null) && userDefinitionsFile.isStale())) {
             try {
                 if (userDefinitionsFile == null) {
+                    securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
                     File propFile = new File(securityDir, "users.properties");
 
                     if (!propFile.exists()) {
@@ -90,8 +88,8 @@ public class GeoserverUserDao implements UserDetailsService {
                         // the file without
                         // changing the username and password if possible
                         Properties p = new Properties();
-                        GeoServerInfo global = geoServer.getGlobal();
-                        if ((geoServer != null) && (global.getAdminUsername() != null)
+                        GeoServerInfo global = GeoServerExtensions.bean(GeoServer.class).getGlobal();
+                        if ((global != null) && (global.getAdminUsername() != null)
                                 && !global.getAdminUsername().trim().equals("")) {
                             p.put(global.getAdminUsername(), global.getAdminPassword()
                                     + ",ROLE_ADMINISTRATOR");
@@ -226,20 +224,11 @@ public class GeoserverUserDao implements UserDetailsService {
         }
     }
 
-    public GeoServer getGeoServer() {
-        return geoServer;
-    }
-
-    public void setGeoServer(GeoServer geoServer) throws ConfigurationException {
-        this.geoServer = geoServer;
-        securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
-    }
-    
     /**
      * Force the dao to reload its definitions from the file
      */
     public void reload() {
-        userMap = null;
+        userDefinitionsFile = null;
     }
 
     /**
