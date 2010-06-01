@@ -30,7 +30,7 @@
     <bean id="rawCatalog" class="org.geoserver.catalog.impl.CatalogImpl">
          <property name="resourceLoader" ref="resourceLoader"/>  
     </bean>
-    <bean id="secureCatalog" class="org.geoserver.security.SecureCatalogImpl">
+    <bean id="secureCatalog" class="org.geoserver.security.SecureCatalogImpl" depends-on="accessRulesDao,extensions">
         <constructor-arg ref="rawCatalog" />
     </bean>
     <!-- Switch this when you want to enable the secure catalog by default -->
