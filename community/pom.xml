@@ -162,5 +162,11 @@
         <module>ftp</module>
       </modules>
     </profile>
+    <profile>
+      <id>translator</id>
+      <modules>
+        <module>translator</module>
+      </modules>
+    </profile>
   </profiles>
 </project>
