@@ -29,6 +29,7 @@
         <descriptors>
           <descriptor>release/ext-control-flow.xml</descriptor>
           <descriptor>release/ext-css.xml</descriptor>
+          <descriptor>release/ext-ftp.xml</descriptor>
           <descriptor>release/ext-printing.xml</descriptor>
         </descriptors>
       </configuration>
@@ -153,6 +154,12 @@
       <id>gss</id>
       <modules>
         <module>gss</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>ftp</id>
+      <modules>
+        <module>ftp</module>
       </modules>
     </profile>
   </profiles>
