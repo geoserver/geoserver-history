@@ -239,7 +239,7 @@ public class GeoserverUserDao implements UserDetailsService {
      * Force the dao to reload its definitions from the file
      */
     public void reload() {
-        userDefinitionsFile = null;
+        userMap = null;
     }
 
     /**
