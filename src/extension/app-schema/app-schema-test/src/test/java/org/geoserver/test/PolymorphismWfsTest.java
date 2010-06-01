@@ -15,9 +15,6 @@ import org.w3c.dom.Document;
  * @author Rini Angreani, CSIRO Earth Science and Resource Engineering
  */
 public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
-
-    private static Document doc;
-
     /**
      * Read-only test so can use one-time setup.
      * 
@@ -35,17 +32,17 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     }
 
     public void testPolymorphism() {
-        doc = getAsDOM("wfs?request=GetFeature&typename=ex:PolymorphicFeature");
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:PolymorphicFeature");
         LOGGER
                 .info("WFS GetFeature&typename=ex:PolymorphicFeature response:\n"
                         + prettyString(doc));
         assertXpathCount(6, "//ex:PolymorphicFeature", doc);
         // check contents per attribute (each attribute has a different use case)
-        checkPolymorphicFeatureChaining();
-        checkPolymorphismOnly();
-        checkFeatureChainingOnly();
-        checkXlinkHrefValues();
-        checkAnyType();
+        checkPolymorphicFeatureChaining(doc);
+        checkPolymorphismOnly(doc);
+        checkFeatureChainingOnly(doc);
+        checkXlinkHrefValues(doc);
+        checkAnyType(doc);
     }
 
     /**
@@ -289,7 +286,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * This is to test that polymorphism with feature chaining works.
      */
-    private void checkPolymorphicFeatureChaining() {
+    private void checkPolymorphicFeatureChaining(Document doc) {
         // f1: make sure only 1 gsml:CGI_NumericValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:firstValue", doc);
         assertXpathCount(1,
@@ -334,7 +331,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * This is to test that polymorphism with no feature chaining works.
      */
-    private void checkPolymorphismOnly() {
+    private void checkPolymorphismOnly(Document doc) {
 
         // f1: make sure only 1 gsml:CGI_NumericValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:secondValue", doc);
@@ -406,7 +403,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * This is to test that polymorphism can be achieved with feature chaining alone.
      */
-    private void checkFeatureChainingOnly() {
+    private void checkFeatureChainingOnly(Document doc) {
 
         // f1: make sure only 1 gsml:CGI_NumericValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:thirdValue", doc);
@@ -502,7 +499,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * This is to test referential polymorphism, mixed with sub-type polymorphism.
      */
-    private void checkXlinkHrefValues() {
+    private void checkXlinkHrefValues(Document doc) {
 
         // f1: make sure only null reference is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:fourthValue", doc);
@@ -568,7 +565,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
     /**
      * This is to test that conditional polymorphism works with xs:anyType.
      */
-    private void checkAnyType() {
+    private void checkAnyType(Document doc) {
 
         // f1: make sure only 1 ex:AnyValue is encoded
         assertXpathCount(1, "//ex:PolymorphicFeature[@gml:id='f1']/ex:anyValue", doc);
