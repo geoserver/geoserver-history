@@ -15,6 +15,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.geoserver.web.translator.controller.TranslationController;
+import org.geoserver.web.translator.model.TranslationSession;
 
 /**
  * Groups the base and target resource panels
@@ -27,18 +29,15 @@ public class TranslationResourcePanel extends Panel {
 
     private static final long serialVersionUID = 4361785407531888335L;
 
-    private final Form translateForm;
-
     ResourcePanel baseLanguagePanel;
 
     ResourcePanel translatingResourcePanel;
 
-    public TranslationResourcePanel(final String id, final IModel translateBeanModel) {
+    public TranslationResourcePanel(final String id, final Form translateForm) {
         super(id);
-        setModel(translateBeanModel);
         setOutputMarkupId(true);
 
-        add(translateForm = new Form("translateForm", translateBeanModel));
+        // add(translateForm = new Form("translateForm", translateForm2));
         final IModel languageNameBeanModel = new Model(new LocaleNameBean());
         // model for the translate-from Locale i18n string
         final IModel baseLanguageMessageModel = new StringResourceModel(
@@ -49,18 +48,29 @@ public class TranslationResourcePanel extends Panel {
         // The model to update and set the translated resource for the current key
         final IModel currentTranslatingResourceModel;
 
-        currentBaseResourceModel = new PropertyModel(translateBeanModel, "currentBaseResource");
-        currentTranslatingResourceModel = new PropertyModel(translateBeanModel, "currentResource");
+        IModel translateStateModel = translateForm.getModel();
+        setModel(translateStateModel);
+        PropertyModel keyModel = new PropertyModel(translateStateModel, "currentKey");
+        currentBaseResourceModel = new TranslationStringResourceModel(translateStateModel,
+                new PropertyModel(translateStateModel, "baseLocale"), keyModel, null, true);
+
+        currentTranslatingResourceModel = new TranslationStringResourceModel(translateStateModel,
+                new PropertyModel(translateStateModel, "targetLanguage"), keyModel,
+                new PropertyModel(translateStateModel, "currentResource"), false);
 
         baseLanguagePanel = new ResourcePanel.Base("baseLanguagePanel", currentBaseResourceModel,
                 baseLanguageMessageModel);
 
-        IModel targetLanguageModel = new PropertyModel(translateBeanModel, "targetLanguage");
+        IModel targetLanguageModel = new PropertyModel(translateStateModel, "targetLanguage");
         translatingResourcePanel = new ResourcePanel.Target("targetLanguagePanel",
                 currentTranslatingResourceModel, targetLanguageModel);
 
-        translateForm.add(baseLanguagePanel);
-        translateForm.add(translatingResourcePanel);
+        add(baseLanguagePanel);
+        add(translatingResourcePanel);
+    }
+
+    public String getTranslatedResource() {
+        return translatingResourcePanel.textArea.getValue();
     }
 
     class LocaleNameBean implements Serializable {
@@ -100,6 +110,16 @@ public class TranslationResourcePanel extends Panel {
     }
 
     public void refresh(final AjaxRequestTarget target) {
+        TranslationSession session = (TranslationSession) getModel().getObject();
+        TranslationController controller = TranslationController.get();
+        String currentKey = session.getCurrentKey();
+
+        String baseResource = controller.getResource(session.getBaseLocale(), currentKey, session);
+        String currentResource = controller.getResource(session.getTargetLanguage(), currentKey,
+                session);
+
+        baseLanguagePanel.textArea.setModelObject(baseResource);
+        translatingResourcePanel.textArea.setModelObject(currentResource);
         target.addComponent(baseLanguagePanel);
         target.addComponent(translatingResourcePanel);
     }

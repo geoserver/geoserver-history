@@ -16,7 +16,6 @@ import java.util.Set;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
 import org.apache.wicket.markup.html.form.TextField;
@@ -49,8 +48,8 @@ public class NewTranslationPage extends GeoServerBasePage {
 
         newLanguageChoice = newLanguageChoice();
         newTranslationForm.add(newLanguageChoice);
-        newTranslationForm.add(new CheckBox("showNativeLanguageNames"));
-        
+        // newTranslationForm.add(new CheckBox("showNativeLanguageNames"));
+
         newTranslationForm.add(createNewTranslationLink());
         newTranslationForm.add(cancelLink());
         localeInput = new LocaleInputField("localeInput");
@@ -114,7 +113,9 @@ public class NewTranslationPage extends GeoServerBasePage {
 
             @Override
             public void onSubmit() {
-                error("Not yet implemented");
+                Locale locale = (Locale) newLanguageChoice.getModelObject();
+                TranslationEditPage editPage = new TranslationEditPage(locale);
+                setResponsePage(editPage);
             }
         };
 

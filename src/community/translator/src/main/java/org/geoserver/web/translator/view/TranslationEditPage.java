@@ -4,18 +4,9 @@
  */
 package org.geoserver.web.translator.view;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.Component;
-import org.apache.wicket.MetaDataKey;
-import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -29,10 +20,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.translator.controller.TranslationController;
-import org.geoserver.web.translator.model.TranslateBean;
+import org.geoserver.web.translator.model.TranslationSession;
 
 /**
  * Page to edit a translation, split in two panels, one to select the resource key to translate and
@@ -42,14 +30,7 @@ import org.geoserver.web.translator.model.TranslateBean;
  * @version $Id$
  * @since 2.0
  */
-public class TranslationEditPage extends GeoServerBasePage {
-
-    /**
-     * The key to store the current translation progress in the user's {@link Session}
-     */
-    public static final MetaDataKey TRANSLATION_BEAN = new MetaDataKey(TranslateBean.class) {
-        private static final long serialVersionUID = 1L;
-    };
+public class TranslationEditPage extends TranslationBasePage {
 
     private Form toolbarForm;
 
@@ -76,21 +57,10 @@ public class TranslationEditPage extends GeoServerBasePage {
 
         final IModel translationModel;
         {
-            TranslateBean translateBean;
-            final GeoServerApplication application = getGeoServerApplication();
-            translateBean = (TranslateBean) application.getMetaData(TRANSLATION_BEAN);
-            if (translateBean == null) {
-                TranslationController controller = getController();
-                Map<Locale, Map<String, String>> translatedResources;
-                translatedResources = controller.getTranslatedResources();
-
-                // default locale is keyed by null
-                Locale baseLocale = null;
-                translateBean = new TranslateBean(baseLocale, translatedResources);
-                application.setMetaData(TRANSLATION_BEAN, translateBean);
+            TranslationSession translateBean = getTranslationSession();
+            if (targetLocale != null) {
+                translateBean.setTargetLanguage(targetLocale);
             }
-
-            translateBean.setTargetLanguage(targetLocale);
 
             // translationModel = new Model(translateBean);
             translationModel = new LoadableDetachableModel() {
@@ -98,9 +68,7 @@ public class TranslationEditPage extends GeoServerBasePage {
 
                 @Override
                 protected Object load() {
-                    final Application application = getApplication();
-                    TranslateBean translateState = (TranslateBean) application
-                            .getMetaData(TRANSLATION_BEAN);
+                    TranslationSession translateState = getTranslationSession();
                     return translateState;
                 }
             };
@@ -110,11 +78,11 @@ public class TranslationEditPage extends GeoServerBasePage {
         add(toolbar());
         add(filter());
 
-        add(translateForm = new Form("translateForm"));
+        add(translateForm = new Form("translateForm", translationModel));
         translateForm
                 .add(keyTreePanel = new ResourceKeyTreePanel("keyTreePanel", translationModel));
         translateForm.add(translationPanel = new TranslationResourcePanel("resourcePanel",
-                translationModel));
+                translateForm));
         add(changeUILocale());
 
         final IModel currentKeyModel = new PropertyModel(translationModel, "currentKey");
@@ -123,6 +91,16 @@ public class TranslationEditPage extends GeoServerBasePage {
 
             @Override
             protected void onSubmit(final AjaxRequestTarget target) {
+                String currentKey = (String) currentKeyModel.getObject();
+                if (currentKey != null) {
+                    String translatedResource = translationPanel.getTranslatedResource();
+                    TranslationSession translateBean = getTranslationSession();
+                    if (!currentKey.equals(translateBean.getCurrentKey())) {
+                        throw new IllegalStateException("Expected key " + currentKey + " but it's "
+                                + translateBean.getCurrentKey());
+                    }
+                    translateBean.setCurrentResource(translatedResource);
+                }
                 String selectedNodeKey = keyTreePanel.getSelectedNodeKey();
                 currentKeyModel.setObject(selectedNodeKey);
                 translationPanel.refresh(target);
@@ -276,52 +254,5 @@ public class TranslationEditPage extends GeoServerBasePage {
             }
         });
         return uiLanguageChoice;
-    }
-
-    private TranslationController getController() {
-        GeoServerApplication application = getGeoServerApplication();
-        TranslationController controller = application.getBeanOfType(TranslationController.class);
-        return controller;
-    }
-
-    /**
-     * A model for the list of available translations
-     */
-    public static class LocaleListDetachableModel extends LoadableDetachableModel {
-
-        private static final long serialVersionUID = 1L;
-
-        private boolean includeDefault;
-
-        private IModel uiLocaleModel;
-
-        public LocaleListDetachableModel(final boolean includeDefault, final IModel uiLocaleModel) {
-            this.includeDefault = includeDefault;
-            this.uiLocaleModel = uiLocaleModel;
-        }
-
-        @Override
-        protected Object load() {
-            Set<Locale> availableTranslations;
-            {
-                final GeoServerApplication geoServerApplication = GeoServerApplication.get();
-                final TranslateBean translateState = (TranslateBean) geoServerApplication
-                        .getMetaData(TRANSLATION_BEAN);
-                availableTranslations = translateState.getAvailableTranslations();
-            }
-            List<Locale> sorted = new ArrayList<Locale>(availableTranslations);
-            if (includeDefault) {
-                sorted.add(Locale.ENGLISH);
-            }
-            Collections.sort(sorted, new Comparator<Locale>() {
-                public int compare(Locale o1, Locale o2) {
-                    Locale uiLocale = (Locale) uiLocaleModel.getObject();
-                    String displayName1 = o1.getDisplayName(uiLocale);
-                    String displayName2 = o2.getDisplayName(uiLocale);
-                    return displayName1.compareTo(displayName2);
-                }
-            });
-            return sorted;
-        }
     }
 }
