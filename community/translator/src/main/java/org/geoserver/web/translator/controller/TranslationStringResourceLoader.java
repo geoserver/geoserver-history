@@ -8,10 +8,8 @@ import java.util.Locale;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.GeoServerStringResourceLoader;
-import org.geoserver.web.translator.model.TranslateBean;
-import org.geoserver.web.translator.view.TranslationEditPage;
+import org.geoserver.web.translator.model.TranslationSession;
 
 /**
  * An {@link IStringResourceLoader} that engages through application context and provides live
@@ -22,12 +20,13 @@ import org.geoserver.web.translator.view.TranslationEditPage;
  * @since 2.0
  */
 public final class TranslationStringResourceLoader extends GeoServerStringResourceLoader {
-    private TranslateBean translateLiveState;
+    private TranslationSession translateLiveState;
 
+    @Override
     @SuppressWarnings("unchecked")
     public String loadStringResource(final Class clazz, final String key, final Locale locale,
             final String style) {
-        final TranslateBean state = getState();
+        final TranslationSession state = getState();
         if (state == null) {
             return null;
         }
@@ -43,6 +42,7 @@ public final class TranslationStringResourceLoader extends GeoServerStringResour
         return resource;
     }
 
+    @Override
     public String loadStringResource(final Component component, final String key) {
         if (getState() == null) {
             return null;
@@ -50,11 +50,7 @@ public final class TranslationStringResourceLoader extends GeoServerStringResour
         return super.loadStringResource(component, key);
     }
 
-    private TranslateBean getState() {
-        if (translateLiveState == null) {
-            translateLiveState = (TranslateBean) GeoServerApplication.get().getMetaData(
-                    TranslationEditPage.TRANSLATION_BEAN);
-        }
-        return translateLiveState;
+    private TranslationSession getState() {
+        return TranslationController.getTranslationSession();
     }
 }

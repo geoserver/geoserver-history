@@ -31,7 +31,8 @@ import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.web.translator.model.TranslateBean;
+import org.geoserver.web.translator.controller.TranslationController;
+import org.geoserver.web.translator.model.TranslationSession;
 
 /**
  * A panel presenting the list of user interface string resource keys.
@@ -82,7 +83,7 @@ public class ResourceKeyTreePanel extends Panel {
      * components that need to as a result of the different filtering
      */
     private Set<String> updateFilter(final String flatKeywords, final Collection<String> keys,
-            final TranslateBean translationState) {
+            final TranslationSession translationState) {
 
         final List<Pattern> patterns;
         {
@@ -121,7 +122,7 @@ public class ResourceKeyTreePanel extends Panel {
     }
 
     private boolean matchesContent(final String resourceKey, final Pattern pattern,
-            final Locale locale, final TranslateBean translationState) {
+            final Locale locale, final TranslationSession translationState) {
         String resource = translationState.getResource(locale, resourceKey);
         if (resource == null) {
             return false;
@@ -170,30 +171,28 @@ public class ResourceKeyTreePanel extends Panel {
      * The following variables are considered to rebuild the tree:
      * <ul>
      * <li> {@link #flatView}
-     * <li> {@link TranslateBean#isShowMissingOnly()}
+     * <li> {@link TranslationSession#isShowMissingOnly()}
      * </ul>
      * </p>
      */
-    @SuppressWarnings("unchecked")
     public void refresh() {
         final IModel translateBeanModel = getModel();
         final Boolean missingOnly = (Boolean) new PropertyModel(translateBeanModel,
                 "showMissingOnly").getObject();
 
-        PropertyModel keysModel;
+        final TranslationSession session = (TranslationSession) translateBeanModel.getObject();
+        final TranslationController controller = TranslationController.get();
+        Collection<String> keys;
         if (missingOnly) {
-            keysModel = new PropertyModel(translateBeanModel, "missingKeys");
+            keys = controller.getTargetLocaleMissingKeys(session);
         } else {
-            keysModel = new PropertyModel(translateBeanModel, "resourceKeys");
+            keys = controller.getAllKeys();
         }
-
-        Collection<String> keys = (Collection<String>) keysModel.getObject();
 
         final String flatKeywords = (String) new PropertyModel(translateBeanModel, "filter")
                 .getObject();
         if (flatKeywords != null && flatKeywords.trim().length() > 0) {
-            final TranslateBean translationState = (TranslateBean) translateBeanModel.getObject();
-            this.keys = updateFilter(flatKeywords, keys, translationState);
+            this.keys = updateFilter(flatKeywords, keys, session);
         } else {
             this.keys = new TreeSet<String>(keys);
         }

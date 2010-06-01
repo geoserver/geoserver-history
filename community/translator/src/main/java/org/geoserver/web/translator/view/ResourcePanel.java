@@ -14,7 +14,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.geoserver.web.translator.view.TranslationEditPage.LocaleListDetachableModel;
 
 /**
  * A base panel with a text area whose model is the translated resource for the current key.
@@ -29,10 +28,12 @@ abstract class ResourcePanel extends Panel {
 
     private static final long serialVersionUID = 5645666151936813854L;
 
+    TextArea textArea;
+
     public ResourcePanel(final String id, final IModel resourceModel, final boolean enabled) {
         super(id);
         setOutputMarkupId(true);
-        TextArea textArea = new TextArea("textArea", resourceModel);
+        textArea = new TextArea("textArea", new Model());// resourceModel);
         textArea.setEnabled(enabled);
         add(textArea);
     }

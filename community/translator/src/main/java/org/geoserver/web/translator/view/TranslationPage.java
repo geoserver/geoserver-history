@@ -21,9 +21,8 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.geoserver.web.GeoServerApplication;
-import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.translator.controller.TranslationController;
+import org.geoserver.web.translator.model.TranslationSession;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
@@ -37,7 +36,7 @@ import org.geoserver.web.wicket.GeoServerDataProvider.Property;
  * @version $Id$
  * @since 2.0
  */
-public class TranslationPage extends GeoServerBasePage {
+public class TranslationPage extends TranslationBasePage {
 
     public TranslationPage() {
         super();
@@ -156,9 +155,9 @@ public class TranslationPage extends GeoServerBasePage {
 
         @Override
         protected List<TranslationInfo> getItems() {
-            GeoServerApplication app = GeoServerApplication.get();
-            TranslationController controller = app.getBeanOfType(TranslationController.class);
-            Set<Locale> translatedLanguages = controller.getTranslatedLanguages();
+            TranslationController controller = TranslationController.get();
+            TranslationSession session = TranslationController.getTranslationSession();
+            Set<Locale> translatedLanguages = controller.getInprogressLanguages(session);
             ArrayList<TranslationInfo> list = new ArrayList<TranslationInfo>(translatedLanguages
                     .size());
 

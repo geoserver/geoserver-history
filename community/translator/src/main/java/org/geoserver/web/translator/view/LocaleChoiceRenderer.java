@@ -38,7 +38,7 @@ class LocaleChoiceRenderer implements IChoiceRenderer {
         final Locale uiLocale = (Locale) userInterfaceLocaleModel.getObject();
         Locale locale = (Locale) l;
         String displayName = locale.getDisplayName(locale);
-        if (!locale.getLanguage().equals(uiLocale.getLanguage())) {
+        if (!uiLocale.getLanguage().equals(locale.getLanguage())) {
             displayName = displayName + " <" + locale.getDisplayName(uiLocale) + ">";
         }
         return displayName;
