@@ -77,7 +77,7 @@ public class GeoserverUserDao implements UserDetailsService {
     void checkUserMap() throws DataAccessResourceFailureException {
         InputStream is = null;
         OutputStream os = null;
-        if ((userMap == null) || ((userDefinitionsFile != null) && userDefinitionsFile.isStale())) {
+        if ((userMap == null) || userDefinitionsFile == null || userDefinitionsFile.isStale()) {
             try {
                 if (userDefinitionsFile == null) {
                     securityDir = GeoserverDataDirectory.findCreateConfigDir("security");
