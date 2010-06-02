@@ -30,39 +30,36 @@ public class NewUserPageTest extends GeoServerWicketTestSupport {
         // make sure the recorder is where we think it is, it contains the palette selection
         tester.assertComponent("userForm:roles:roles:recorder", Recorder.class);
         
+        // try to add a new user
         FormTester form = tester.newFormTester("userForm");
         form.setValue("username", "user");
         form.setValue("password", "pwd");
         form.setValue("confirmPassword", "pwd");
-        form.setValue("roles:roles:recorder", "ROLE_FOO1");
+        // note: use a known role, there is no way to add a new role using wickettester support
+        form.setValue("roles:roles:recorder", dao.getRoles().get(0));
         form.submit("save");
         
         tester.assertErrorMessages(new String[0]);
         tester.assertRenderedPage(UserPage.class);
         
-        // avoid PropertyFileWatcher.isStale() race condition [GEOS-3982]
-        Thread.sleep(1000);
-        
         dao.reload();
         UserDetails user = dao.loadUserByUsername("user");
         assertEquals("pwd", user.getPassword());
-        // no good way to test the authorities, the palette is not participating
-        // in the submit the same way other components are
-        // assertEquals(1, user.getAuthorities().length);
+        assertEquals(1, user.getAuthorities().length);
     }
     
-//    public void testPasswordsDontMatch() {
-//        Locale.setDefault(Locale.ENGLISH);
-//        
-//        FormTester form = tester.newFormTester("userForm");
-//        form.setValue("username", "user");
-//        form.setValue("password", "pwd1");
-//        form.setValue("confirmPassword", "pwd2");
-//        form.setValue("roles:recorder", "ROLE_FOO");
-//        form.submit("save");
-//        
-//        tester.assertErrorMessages(new String[] {"'pwd1' from Password and 'pwd2' from Confirm password must be equal."});
-//        tester.assertRenderedPage(NewUserPage.class);
-//    }
+    public void testPasswordsDontMatch() {
+        Locale.setDefault(Locale.ENGLISH);
+        
+        FormTester form = tester.newFormTester("userForm");
+        form.setValue("username", "user");
+        form.setValue("password", "pwd1");
+        form.setValue("confirmPassword", "pwd2");
+        form.setValue("roles:roles:recorder", dao.getRoles().get(0));
+        form.submit("save");
+        
+        tester.assertErrorMessages(new String[] {"'pwd1' from Password and 'pwd2' from Confirm password must be equal."});
+        tester.assertRenderedPage(NewUserPage.class);
+    }
 
 }
