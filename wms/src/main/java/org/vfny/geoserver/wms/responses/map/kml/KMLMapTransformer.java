@@ -27,9 +27,11 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.type.DateUtil;
 import org.geotools.map.MapLayer;
@@ -677,8 +679,24 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         // it is a local file, reference locally from "styles"
                         // directory
                         File file = new File(graphic.getLocation().getFile());
+                        if(file.isAbsolute()) {
+                            GeoServerDataDirectory dataDir = (GeoServerDataDirectory) GeoServerExtensions.bean("dataDirectory");
+                            // we grab the canonical path to make sure we can compare them, no relative parts in them and so on
+                            File styles = dataDir.findOrCreateStyleDir().getCanonicalFile();
+                            file = file.getCanonicalFile();
+                            if(file.getAbsolutePath().startsWith(styles.getAbsolutePath())) {
+                                // ok, part of the styles directory, extract only the relative path
+                                file = new File(file.getAbsolutePath().substring(styles.getAbsolutePath().length() + 1));
+                            } else {
+                                // we wont' transform this, other dirs are not published
+                                file = null;
+                            }
+                        }
                         
-                        iconHref = ResponseUtils.buildURL(mapContext.getRequest().getBaseUrl(), "styles/" + file.getName(), null, URLType.RESOURCE);
+                        if(file != null) {
+                            iconHref = ResponseUtils.buildURL(mapContext.getRequest().getBaseUrl(), 
+                                    "styles/" + file.getPath(), null, URLType.RESOURCE);
+                        }
                     } else if ("http".equals(graphic.getLocation()
                             .getProtocol())) {
                         iconHref = graphic.getLocation().toString();
