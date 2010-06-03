@@ -136,6 +136,7 @@
         <module>css</module>
         <module>printing</module>
         <module>release</module>
+        <module>ftp</module>
       </modules>
     </profile>
 
