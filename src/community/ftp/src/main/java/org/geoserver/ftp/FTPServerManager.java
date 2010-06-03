@@ -52,11 +52,15 @@ public class FTPServerManager implements ApplicationListener {
     }
 
     public void startServer() throws FtpException {
-        ftp.start();
+        if(ftp.isStopped() || ftp.isSuspended()) {
+            ftp.start();
+        }
     }
 
     public void stopServer() {
-        ftp.stop();
+        if(!ftp.isStopped()) {
+            ftp.stop();
+        }
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
