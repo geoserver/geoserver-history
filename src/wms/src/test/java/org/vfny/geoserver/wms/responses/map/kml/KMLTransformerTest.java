@@ -66,8 +66,11 @@ public class KMLTransformerTest extends WMSTestSupport {
         dataDirectory.addStyle("allsymbolizers", getClass().getResource("allsymbolizers.sld"));
         dataDirectory.addStyle("SingleFeature", getClass().getResource("singlefeature.sld"));
         dataDirectory.addStyle("Bridge", getClass().getResource("bridge.sld"));
+        dataDirectory.addStyle("BridgeSubdir", getClass().getResource("bridgesubdir.sld"));
         dataDirectory.addStyle("dynamicsymbolizer", getClass().getResource("dynamicsymbolizer.sld"));
         dataDirectory.copyTo(getClass().getResourceAsStream("bridge.png"), "styles/bridge.png");
+        new File(dataDirectory.getDataDirectoryRoot(), "styles/graphics").mkdir();
+        dataDirectory.copyTo(getClass().getResourceAsStream("bridge.png"), "styles/graphics/bridgesubdir.png");
     }
 
     @SuppressWarnings("unchecked")
@@ -111,6 +114,31 @@ public class KMLTransformerTest extends WMSTestSupport {
         XMLAssert.assertXpathEvaluatesTo("" + nfeatures, "count(//Style/IconStyle/Icon/href)", document);
         XMLAssert.assertXpathEvaluatesTo("0", "count(//Style/IconStyle/Icon/color)", document);
     }
+    
+    /**
+     * See http://jira.codehaus.org/browse/GEOS-3994
+     * @throws Exception
+     */
+    @SuppressWarnings("unchecked")
+    public void testExternalGraphicSubdir() throws Exception {
+
+        MapLayer mapLayer = createMapLayer( MockData.POINTS,  "BridgeSubdir");
+        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
+        mapContext.addLayer(mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        transformer.setIndentation(2);
+
+        FeatureSource <SimpleFeatureType, SimpleFeature> featureSource;
+        featureSource =  (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer.getFeatureSource();
+
+        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+        // print(document);
+
+        // make sure we are generating icon styles with the subdir path
+        XMLAssert.assertXpathEvaluatesTo("http://localhost:8080/geoserver/styles/graphics/bridgesubdir.png", 
+                "//Style/IconStyle/Icon/href", document);
+    }
+    
     
     /**
      * See http://jira.codehaus.org/browse/GEOS-3965
