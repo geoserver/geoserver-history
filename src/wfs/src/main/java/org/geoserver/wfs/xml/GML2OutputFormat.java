@@ -28,6 +28,7 @@ import net.opengis.wfs.QueryType;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.URLMangler.URLType;
@@ -150,7 +151,7 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             SimpleFeatureCollection features = (SimpleFeatureCollection) results.getFeature().get(i);
             SimpleFeatureType featureType = features.getSchema();
 
-            FeatureTypeInfo meta = catalog.getFeatureTypeByName(featureType.getName());
+            ResourceInfo meta = catalog.getResourceByName(featureType.getName(), ResourceInfo.class);
 
             String prefix = meta.getNamespace().getPrefix();
             String uri = meta.getNamespace().getURI();
@@ -161,8 +162,12 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
                 String location = (String) ftNamespaces.get(uri);
                 ftNamespaces.put(uri, location + "," + meta.getName());
             } else {
-                String location = typeSchemaLocation(geoServer.getGlobal(), meta, request.getBaseUrl());
-                ftNamespaces.put(uri, location);
+                // don't blindly assume it's a feature type, this class is used also by WMS FeatureInfo
+                // meaning it might be a coverage or a remote wms layer
+                if(meta instanceof FeatureTypeInfo) {
+                    String location = typeSchemaLocation(geoServer.getGlobal(), (FeatureTypeInfo) meta, request.getBaseUrl());
+                    ftNamespaces.put(uri, location);
+                }
             }
 
             //JD: wfs reprojection: should not set srs form metadata but from 
@@ -187,10 +192,12 @@ public class GML2OutputFormat extends WFSGetFeatureOutputFormat {
             }
             
             //track num decimals, in cases where the query has multiple types we choose the max
-            // of all the values
-            if (meta.getNumDecimals() > 0) {
-                numDecimals = numDecimals == -1 ? meta.getNumDecimals() 
-                    : Math.max(numDecimals,meta.getNumDecimals());
+            // of all the values (same deal as above, might not be a vector due to GetFeatureInfo reusing this)
+            if (meta instanceof FeatureTypeInfo) {
+                int ftiDecimals = ((FeatureTypeInfo) meta).getNumDecimals();
+                if(ftiDecimals > 0) {
+                    numDecimals = numDecimals == -1 ? ftiDecimals : Math.max(numDecimals, ftiDecimals);
+                }
             }
         }
 

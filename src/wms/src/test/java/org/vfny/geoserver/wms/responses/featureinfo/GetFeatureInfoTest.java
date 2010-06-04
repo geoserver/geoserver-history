@@ -209,6 +209,20 @@ public class GetFeatureInfoTest extends WMSTestSupport {
         assertXpathEvaluatesTo("1", "count(/html/body/table/tr/th[. = 'BLUE_BAND'])", dom);
     }
     
+    public void testCoverageGML() throws Exception {
+        // http://jira.codehaus.org/browse/GEOS-3996
+        String layer = getLayerId(TASMANIA_BM);
+        String request = "wms?service=wms&request=GetFeatureInfo&version=1.1.1" +
+                        "&layers=" + layer + "&styles=&bbox=146.5,-44.5,148,-43&width=600&height=600" + 
+                        "&info_format=application/vnd.ogc.gml&query_layers=" + layer + "&x=300&y=300&srs=EPSG:4326";
+        Document dom = getAsDOM(request);
+        print(dom);
+        
+        assertXpathEvaluatesTo("26.0", "//wfs:FeatureCollection/gml:featureMember/wcs:BlueMarble/wcs:RED_BAND", dom);
+        assertXpathEvaluatesTo("70.0", "//wfs:FeatureCollection/gml:featureMember/wcs:BlueMarble/wcs:GREEN_BAND", dom);
+        assertXpathEvaluatesTo("126.0", "//wfs:FeatureCollection/gml:featureMember/wcs:BlueMarble/wcs:BLUE_BAND", dom);
+    }
+    
     public void testCoverageScales() throws Exception {
         String layer = getLayerId(TASMANIA_BM);
         String request = "wms?service=wms&request=GetFeatureInfo&version=1.1.1" +
