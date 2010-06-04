@@ -65,6 +65,9 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         
         Map<String, String> namespaces = new HashMap<String, String>();
         namespaces.put("xlink", "http://www.w3.org/1999/xlink");
+        namespaces.put("wfs", "http://www.opengis.net/wfs");
+        namespaces.put("wcs", "http://www.opengis.net/wcs/1.1.1");
+        namespaces.put("gml", "http://www.opengis.net/gml");
         XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
     }
     
