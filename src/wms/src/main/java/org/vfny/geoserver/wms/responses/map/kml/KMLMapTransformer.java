@@ -32,6 +32,7 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geotools.data.DataUtilities;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.type.DateUtil;
 import org.geotools.map.MapLayer;
@@ -678,7 +679,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     if ("file".equals(graphic.getLocation().getProtocol())) {
                         // it is a local file, reference locally from "styles"
                         // directory
-                        File file = new File(graphic.getLocation().getFile());
+                        File file = DataUtilities.urlToFile(graphic.getLocation());
                         if(file.isAbsolute()) {
                             GeoServerDataDirectory dataDir = (GeoServerDataDirectory) GeoServerExtensions.bean("dataDirectory");
                             // we grab the canonical path to make sure we can compare them, no relative parts in them and so on
