@@ -680,11 +680,14 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                         // it is a local file, reference locally from "styles"
                         // directory
                         File file = DataUtilities.urlToFile(graphic.getLocation());
+                        File styles = null;
+                        File graphicFile = null;
                         if(file.isAbsolute()) {
                             GeoServerDataDirectory dataDir = (GeoServerDataDirectory) GeoServerExtensions.bean("dataDirectory");
                             // we grab the canonical path to make sure we can compare them, no relative parts in them and so on
-                            File styles = dataDir.findOrCreateStyleDir().getCanonicalFile();
-                            file = file.getCanonicalFile();
+                            styles = dataDir.findOrCreateStyleDir().getCanonicalFile();
+                            graphicFile = file.getCanonicalFile();
+                            file = graphicFile;
                             if(file.getAbsolutePath().startsWith(styles.getAbsolutePath())) {
                                 // ok, part of the styles directory, extract only the relative path
                                 file = new File(file.getAbsolutePath().substring(styles.getAbsolutePath().length() + 1));
@@ -694,9 +697,10 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                             }
                         }
                         
-                        if(file != null) {
-                            iconHref = ResponseUtils.buildURL(mapContext.getRequest().getBaseUrl(), 
-                                    "styles/" + file.getPath(), null, URLType.RESOURCE);
+                        if (file != null && styles != null) {
+                            iconHref = ResponseUtils.buildURL(mapContext.getRequest().getBaseUrl(),
+                                    "styles/" + styles.toURI().relativize(graphicFile.toURI()),
+                                    null, URLType.RESOURCE);
                         }
                     } else if ("http".equals(graphic.getLocation()
                             .getProtocol())) {
