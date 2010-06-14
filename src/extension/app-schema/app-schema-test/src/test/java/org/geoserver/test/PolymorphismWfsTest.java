@@ -141,7 +141,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(2, "//ex:PolymorphicFeature", doc);
         // f1
-        assertXpathEvaluatesTo("f1", "//ex:PolymorphicFeature[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("f1", "(//ex:PolymorphicFeature)[1]/@gml:id", doc);
         assertXpathEvaluatesTo(
                 "1.0",
                 "//ex:PolymorphicFeature[@gml:id='f1']/ex:secondValue/gsml:CGI_NumericValue/gsml:principalValue",
@@ -151,7 +151,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "//ex:PolymorphicFeature[@gml:id='f1']/ex:secondValue/gsml:CGI_NumericValue/gsml:principalValue/@uom",
                 doc);
         // f3
-        assertXpathEvaluatesTo("f3", "//ex:PolymorphicFeature[2]/@gml:id", doc);
+        assertXpathEvaluatesTo("f3", "(//ex:PolymorphicFeature)[2]/@gml:id", doc);
         assertXpathEvaluatesTo(
                 "0.0",
                 "//ex:PolymorphicFeature[@gml:id='f3']/ex:secondValue/gsml:CGI_NumericValue/gsml:principalValue",
@@ -203,12 +203,12 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(2, "//ex:PolymorphicFeature", doc);
         // f2
-        assertXpathEvaluatesTo("f2", "//ex:PolymorphicFeature[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("f2", "(//ex:PolymorphicFeature)[1]/@gml:id", doc);
         assertXpathEvaluatesTo("0",
                 "//ex:PolymorphicFeature[@gml:id='f2']/ex:anyValue/gsml:CGI_TermValue/gsml:value",
                 doc);
         // f5
-        assertXpathEvaluatesTo("f5", "//ex:PolymorphicFeature[2]/@gml:id", doc);
+        assertXpathEvaluatesTo("f5", "(//ex:PolymorphicFeature)[2]/@gml:id", doc);
         assertXpathEvaluatesTo("0",
                 "//ex:PolymorphicFeature[@gml:id='f5']/ex:anyValue/gsml:CGI_TermValue/gsml:value",
                 doc);
@@ -262,7 +262,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(2, "//ex:PolymorphicFeature", doc);
         // f1
-        assertXpathEvaluatesTo("f1", "//ex:PolymorphicFeature[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("f1", "(//ex:PolymorphicFeature)[1]/@gml:id", doc);
         assertXpathEvaluatesTo(
                 "1.0",
                 "//ex:PolymorphicFeature[@gml:id='f1']/ex:thirdValue/gsml:CGI_NumericValue/gsml:principalValue",
@@ -273,7 +273,7 @@ public class PolymorphismWfsTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
 
         // f4
-        assertXpathEvaluatesTo("f4", "//ex:PolymorphicFeature[2]/@gml:id", doc);
+        assertXpathEvaluatesTo("f4", "(//ex:PolymorphicFeature)[2]/@gml:id", doc);
         assertXpathEvaluatesTo(
                 "1.0",
                 "//ex:PolymorphicFeature[@gml:id='f4']/ex:thirdValue/gsml:CGI_NumericValue/gsml:principalValue",
