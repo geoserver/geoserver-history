@@ -153,6 +153,13 @@
       </modules>
     </profile>
 
+     <profile>
+      <id>control-flow</id>
+      <modules>
+        <module>control-flow</module>
+      </modules>
+    </profile>
+
     <!-- allExtensions profile, includes all modules -->
     <profile>
       <id>allExtensions</id>
@@ -174,6 +181,7 @@
         <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
+        <module>control-flow</module>
       </modules>
     </profile>
 
@@ -199,6 +207,7 @@
         <module>restconfig</module>
         <module>feature-pregeneralized</module>
         <module>imagemosaic-jdbc</module>
+        <module>control-flow</module>
       </modules>
     </profile>
 
