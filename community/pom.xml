@@ -27,7 +27,6 @@
       <version>2.1</version>
       <configuration>
         <descriptors>
-          <descriptor>release/ext-control-flow.xml</descriptor>
           <descriptor>release/ext-css.xml</descriptor>
           <descriptor>release/ext-ftp.xml</descriptor>
           <descriptor>release/ext-printing.xml</descriptor>
@@ -124,15 +123,8 @@
       </modules>
     </profile>
     <profile>
-      <id>control-flow</id>
-      <modules>
-        <module>control-flow</module>
-      </modules>
-    </profile>
-    <profile>
       <id>communityRelease</id>
       <modules>
-        <module>control-flow</module>
         <module>css</module>
         <module>printing</module>
         <module>release</module>
