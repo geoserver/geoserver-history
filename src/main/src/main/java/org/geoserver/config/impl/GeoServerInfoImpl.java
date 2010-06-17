@@ -195,7 +195,7 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     }
     
     public void setClientProperties(Map<Object, Object> properties) {
-        this.clientProperties = clientProperties;
+        this.clientProperties = properties;
     }
     
     public void dispose() {
