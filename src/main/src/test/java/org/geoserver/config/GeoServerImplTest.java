@@ -1,11 +1,14 @@
 package org.geoserver.config;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.geoserver.config.impl.GeoServerImpl;
+import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
 
 public class GeoServerImplTest extends TestCase {
@@ -131,5 +134,17 @@ public class GeoServerImplTest extends TestCase {
             sOldValues.addAll( oldValues );
             sNewValues.addAll( newValues );
         }
+    }
+    
+
+    public void testSetClientPropsHasEffect() throws Exception {
+        GeoServerInfoImpl gsii = new GeoServerInfoImpl(geoServer);
+        Map<Object, Object> before = gsii.getClientProperties();
+        
+        Map<Object, Object> newProps = new HashMap<Object, Object>();
+        newProps.put("123", "456");
+		gsii.setClientProperties(newProps);
+		
+		assertFalse(before.equals(newProps));
     }
 }
