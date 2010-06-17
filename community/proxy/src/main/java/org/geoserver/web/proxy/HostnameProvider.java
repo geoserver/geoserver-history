@@ -7,8 +7,7 @@ package org.geoserver.web.proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
+
 import org.geoserver.proxy.ProxyConfig;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 
@@ -40,8 +39,5 @@ public class HostnameProvider extends GeoServerDataProvider<String> {
         return PROPERTIES;
     }
 
-    public IModel model(Object object) {
-        return new Model((String) object );
-    }
 
 }
