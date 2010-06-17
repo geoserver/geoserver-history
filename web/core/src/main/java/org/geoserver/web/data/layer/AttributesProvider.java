@@ -49,10 +49,6 @@ class AttributesProvider extends GeoServerDataProvider<AttributeDescription> {
         return Arrays.asList(NAME, BINDING, NULLABLE, SIZE, CRS, UPDOWN);
     }
 
-    public IModel model(Object object) {
-        return new Model((AttributeDescription) object);
-    }
-    
     public void removeAll(List<AttributeDescription> removed) {
         this.attributes.removeAll(removed);
     }
