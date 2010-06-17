@@ -140,10 +140,6 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
         return PROPERTIES;
     }
 
-    public IModel model(Object object) {
-        return new Model((Serializable) object);
-    }
-
     public void setShowPublished(boolean showPublished) {
         this.showPublished = showPublished;
     }

@@ -94,7 +94,7 @@ public class LayerProvider extends GeoServerDataProvider<LayerInfo> {
         return PROPERTIES;
     }
 
-    public IModel model(Object object) {
+    public IModel newModel(Object object) {
         return new LayerDetachableModel((LayerInfo) object);
     }
 

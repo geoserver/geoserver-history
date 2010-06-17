@@ -163,7 +163,7 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
                     return Arrays.asList( NAME );
                 }
 
-                public IModel model(Object object) {
+                public IModel newModel(Object object) {
                     return new StyleDetachableModel( (StyleInfo) object );
                 }
             });
@@ -213,7 +213,7 @@ public abstract class AbstractLayerGroupPage extends GeoServerSecuredPage {
                     return Arrays.asList( NAME, STORE, WORKSPACE );
                 }
 
-                public IModel model(Object object) {
+                public IModel newModel(Object object) {
                     return new LayerDetachableModel((LayerInfo)object);
                 }
 

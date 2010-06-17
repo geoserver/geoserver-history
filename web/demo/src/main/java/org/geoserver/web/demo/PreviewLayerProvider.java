@@ -75,7 +75,7 @@ public class PreviewLayerProvider extends GeoServerDataProvider<PreviewLayer> {
         return PROPERTIES;
     }
 
-    public IModel model(Object object) {
+    public IModel newModel(Object object) {
         return new PreviewLayerModel((PreviewLayer) object);
     }
     
