@@ -35,8 +35,4 @@ public class DataAccessRuleProvider extends GeoServerDataProvider<DataAccessRule
         return Arrays.asList(RULEKEY, ROLES);
     }
 
-    public IModel model(Object object) {
-        return new Model((DataAccessRule) object);
-    }
-
 }

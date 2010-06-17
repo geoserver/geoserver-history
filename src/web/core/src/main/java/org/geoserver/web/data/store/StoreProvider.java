@@ -85,7 +85,7 @@ public class StoreProvider extends GeoServerDataProvider<StoreInfo> {
     }
     
 
-    public IModel model(Object object) {
+    public IModel newModel(Object object) {
         return new StoreInfoDetachableModel((StoreInfo) object);
     }
 

@@ -230,9 +230,6 @@ public class LayerGroupEntryPanel extends Panel {
             return PROPERTIES;
         }
 
-        public IModel model(Object object) {
-            return new Model( (LayerGroupEntry) object );//return ((LayerGroupEntry)object).toDetachableModel();
-        }
     }
 
     class PositionPanel extends Panel {

@@ -8,8 +8,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -26,7 +28,9 @@ import org.geotools.util.logging.Logging;
 
 /**
  * GeoServer specific data provider. In addition to the services provided by a SortableDataProvider
- * it can perform keyword based filtering, enum the model properties used for display and sorting
+ * it can perform keyword based filtering, enum the model properties used for display and sorting.
+ * 
+ * Implementors of providers for editable tables need to remember to raise the {@link #editable} flag. 
  * 
  * @param <T>
  */
@@ -43,6 +47,34 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
      * regular expression matchers, one per keyword
      */
     private transient Matcher[] matchers;
+
+    /**
+     * A cache used to avoid recreating models over and over, this make it possible
+     * to make {@link GeoServerTablePanel} editable
+     */
+    Map<T, IModel> modelCache = new IdentityHashMap<T, IModel>();
+    
+    /**
+     * Sets the data provider as editable, in that case the models should be preserved
+     */
+    boolean editable = false;
+    
+    
+    /**
+     * Returns true if this data provider is setup for editing (it will reuse models). Defaults to false
+     * @return
+     */
+    public boolean isEditable() {
+        return editable;
+    }
+
+    /**
+     * Sets the data provider as editable/non editable
+     * @param editable
+     */
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
 
     /**
      * Returns the current filtering keywords
@@ -268,6 +300,33 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
                 + sort.getProperty());
 
         return null;
+    }
+    
+    /**
+     * This implementation uses the {@link #modelCache} to avoid recreating over and over
+     * different models for the various items, this allows the grid panel to be editable
+     */
+    public final IModel model(Object object) {
+        if(editable) {
+            IModel result = modelCache.get((T) object);
+            if(result == null) {
+                result = newModel(object);
+                modelCache.put((T) object, result);
+            }
+            return result;
+        } else {
+            return newModel(object);
+        }
+    }
+    
+    /**
+     * Simply wraps the object into a Model assuming the Object is serializable. Subclasses
+     * can override this
+     * @param object
+     * @return
+     */
+    protected IModel newModel(Object object) {
+        return new Model((Serializable) object);
     }
 
     /**

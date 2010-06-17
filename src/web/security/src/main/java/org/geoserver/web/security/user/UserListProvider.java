@@ -96,8 +96,4 @@ public class UserListProvider extends GeoServerDataProvider<User> {
         return Arrays.asList(USERNAME, ROLES, ADMIN);
     }
 
-    public IModel model(Object object) {
-        return new Model((User) object);
-    }
-
 }

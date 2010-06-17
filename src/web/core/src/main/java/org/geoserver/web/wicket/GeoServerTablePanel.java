@@ -24,7 +24,10 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.IItemFactory;
+import org.apache.wicket.markup.repeater.IItemReuseStrategy;
 import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -127,7 +130,7 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                 item.add(cnt);
 
                 // create one component per viewable property
-                item.add(new ListView("itemProperties", dataProvider.getVisibleProperties()) {
+                ListView items = new ListView("itemProperties", dataProvider.getVisibleProperties()) {
 
                     @Override
                     protected void populateItem(ListItem item) {
@@ -151,10 +154,13 @@ public abstract class GeoServerTablePanel<T> extends Panel {
                         item.add(component);
                     }
 
-                });
+                };
+                items.setReuseItems(true);
+                item.add(items);
             }
 
         };
+        dataView.setItemReuseStrategy(ReuseIfModelsEqualStrategy.getInstance());
         listContainer.add(dataView);
 
         // add select all checkbox

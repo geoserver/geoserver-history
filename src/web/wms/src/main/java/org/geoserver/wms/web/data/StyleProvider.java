@@ -37,7 +37,7 @@ public class StyleProvider extends GeoServerDataProvider<StyleInfo> {
         return PROPERTIES;
     }
 
-    public IModel model(Object object) {
+    public IModel newModel(Object object) {
         return new StyleDetachableModel( (StyleInfo) object );
     }
 

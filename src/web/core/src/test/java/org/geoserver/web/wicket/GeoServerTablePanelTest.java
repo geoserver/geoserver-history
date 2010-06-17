@@ -143,10 +143,6 @@ public class GeoServerTablePanelTest extends TestCase {
         protected List<org.geoserver.web.wicket.GeoServerDataProvider.Property<Integer>> getProperties() {
             return Collections.singletonList(IDX);
         }
-
-        public IModel model(Object object) {
-            return new Model((Integer) object);
-        }
         
     }
 }

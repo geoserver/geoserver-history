@@ -7,8 +7,6 @@ package org.geoserver.web.security.service;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.geoserver.security.ServiceAccessRule;
 import org.geoserver.security.ServiceAccessRuleDAO;
 import org.geoserver.web.wicket.GeoServerDataProvider;
@@ -30,10 +28,6 @@ public class ServiceAccessRuleProvider extends GeoServerDataProvider<ServiceAcce
     @Override
     protected List<Property<ServiceAccessRule>> getProperties() {
         return Arrays.asList(RULEKEY, ROLES);
-    }
-
-    public IModel model(Object object) {
-        return new Model((ServiceAccessRule) object);
     }
 
 }

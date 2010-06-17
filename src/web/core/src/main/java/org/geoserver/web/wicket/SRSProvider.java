@@ -161,10 +161,6 @@ public class SRSProvider extends GeoServerDataProvider<SRSProvider.SRS> {
         return PROPERTIES;
     }
 
-    public IModel model(Object srs) {
-        return new Model((SRS) srs);
-    }
-
     static List<SRS> buildCodeList() {
         long t = System.currentTimeMillis();
         Set<String> codes = CRS.getSupportedCodes("EPSG");
