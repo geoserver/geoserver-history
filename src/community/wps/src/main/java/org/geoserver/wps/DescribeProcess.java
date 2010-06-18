@@ -2,7 +2,6 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-
 package org.geoserver.wps;
 
 import java.math.BigInteger;
@@ -123,7 +122,7 @@ public class DescribeProcess {
             }
            
             //handle the literal case
-            if ( ppios.size() == 1 && ppios.get( 0 ) instanceof LiteralPPIO ) {
+            if (ppios.get( 0 ) instanceof LiteralPPIO ) {
                 LiteralPPIO lppio = (LiteralPPIO) ppios.get( 0 );
                 
                 LiteralInputType literal = wpsf.createLiteralInputType();

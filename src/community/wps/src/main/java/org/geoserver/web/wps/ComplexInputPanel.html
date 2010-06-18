@@ -1,0 +1,24 @@
+<html xmlns:wicket="http://wicket.apache.org/">
+<body>
+   <wicket:panel>
+      <select wicket:id="type"/> <span wicket:id="editor"></span>
+   </wicket:panel>
+   
+   <wicket:fragment wicket:id="text">
+      <select wicket:id="mime"/>
+      <textarea style="height:200px;width:600px" wicket:id="textarea"></textarea>
+   </wicket:fragment>
+   
+   <wicket:fragment wicket:id="vectorLayer">
+      <select wicket:id="layer"></select>
+      <!-- 
+      <span wicket:id="attributes"></span>
+      <span>Filter</span><input type="text" wicket:id="filter"/>
+       -->
+   </wicket:fragment>
+   
+   <wicket:fragment wicket:id="rasterLayer">
+      <select wicket:id="layer"></select>
+   </wicket:fragment>
+</body>
+</html>

@@ -7,9 +7,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.geotools.gml3.GMLConfiguration;
+import org.geotools.referencing.operation.projection.Polyconic;
+import org.hsqldb.lib.StringInputStream;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class ExecuteTest extends WPSTestSupport {
 	
@@ -45,11 +50,12 @@ public class ExecuteTest extends WPSTestSupport {
            "<wps:ResponseForm>" +  
              "<wps:ResponseDocument storeExecuteResponse='false'>" + 
                "<wps:Output>" +
-                 "<ows:Identifier>geom-buffered</ows:Identifier>" +
+                 "<ows:Identifier>result</ows:Identifier>" +
                "</wps:Output>" + 
              "</wps:ResponseDocument>" +
            "</wps:ResponseForm>" + 
          "</wps:Execute>";
+        System.out.println(xml);
         
         Document d = postAsDOM( "wps", xml );
         checkValidationErrors(d);
@@ -90,7 +96,7 @@ public class ExecuteTest extends WPSTestSupport {
            "</wps:DataInputs>" +
            "<wps:ResponseForm>" + 
            "    <wps:RawDataOutput>" + 
-           "        <ows:Identifier>geom-buffered</ows:Identifier>" + 
+           "        <ows:Identifier>result</ows:Identifier>" + 
            "    </wps:RawDataOutput>" + 
            "  </wps:ResponseForm>" +
            "</wps:Execute>";
@@ -100,6 +106,44 @@ public class ExecuteTest extends WPSTestSupport {
         
         assertEquals( "gml:Polygon", d.getDocumentElement().getNodeName() );
     }
+    
+    public void testWKTInlineRawOutput() throws Exception { // Standard Test A.4.4.3
+        String xml =  
+          "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
+              "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+            "<ows:Identifier>gt:buffer</ows:Identifier>" + 
+             "<wps:DataInputs>" + 
+                "<wps:Input>" + 
+                    "<ows:Identifier>geom1</ows:Identifier>" + 
+                    "<wps:Data>" +
+                      "<wps:ComplexData mimeType=\"application/wkt\">" +
+                        "<![CDATA[POLYGON((1 1, 2 1, 2 2, 1 2, 1 1))]]>" +
+                      "</wps:ComplexData>" + 
+                    "</wps:Data>" +     
+                "</wps:Input>" + 
+                "<wps:Input>" + 
+                   "<ows:Identifier>buffer</ows:Identifier>" + 
+                   "<wps:Data>" + 
+                     "<wps:LiteralData>1</wps:LiteralData>" + 
+                   "</wps:Data>" + 
+                "</wps:Input>" + 
+           "</wps:DataInputs>" +
+           "<wps:ResponseForm>" + 
+           "    <wps:RawDataOutput mimeType=\"application/wkt\">" + 
+           "        <ows:Identifier>result</ows:Identifier>" + 
+           "    </wps:RawDataOutput>" + 
+           "  </wps:ResponseForm>" +
+           "</wps:Execute>";
+        
+        print(dom(new StringInputStream("<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n" + xml)));
+        
+        MockHttpServletResponse response = postAsServletResponse( "wps", xml );
+        System.out.println(response.getOutputStreamContent());
+        assertEquals("application/wkt", response.getContentType());
+        Geometry g = new WKTReader().read(response.getOutputStreamContent());
+        assertTrue(g instanceof Polygon);
+    }
+
 
     public void testFeatureCollectionInline() throws Exception { // Standard Test A.4.4.2, A.4.4.4
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
@@ -124,7 +168,7 @@ public class ExecuteTest extends WPSTestSupport {
                  "<wps:ResponseForm>" +  
                    "<wps:ResponseDocument storeExecuteResponse='false'>" + 
                      "<wps:Output>" +
-                       "<ows:Identifier>geom-buffered</ows:Identifier>" +
+                       "<ows:Identifier>result</ows:Identifier>" +
                      "</wps:Output>" + 
                    "</wps:ResponseDocument>" +
                  "</wps:ResponseForm>" + 

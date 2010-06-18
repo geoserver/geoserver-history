@@ -18,7 +18,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.tester.FormTester;
 import org.geoserver.web.GeoServerWicketTestSupport;
-import org.geoserver.web.demo.DemoRequestsPage.DemoRequest;
 import org.geotools.test.TestData;
 
 /**

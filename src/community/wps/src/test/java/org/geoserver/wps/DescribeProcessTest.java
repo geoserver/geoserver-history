@@ -57,6 +57,8 @@ public class DescribeProcessTest extends WPSTestSupport {
                 base + "/wps:Supported/wps:Format[1]/wps:MimeType/child::text()", d);
         assertXpathEvaluatesTo("text/xml; subtype=gml/2.1.2", 
                 base + "/wps:Supported/wps:Format[2]/wps:MimeType/child::text()", d);
+        assertXpathEvaluatesTo("application/wkt", 
+                base + "/wps:Supported/wps:Format[3]/wps:MimeType/child::text()", d);
     
         //output
         base = "/wps:ProcessDescriptions/wps:ProcessDescription/wps:ProcessOutputs";

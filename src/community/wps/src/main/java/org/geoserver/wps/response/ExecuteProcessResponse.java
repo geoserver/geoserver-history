@@ -20,10 +20,11 @@ import org.geoserver.ows.Response;
 import org.geoserver.ows.XmlObjectEncodingResponse;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wps.ComplexDataEncoderDelegate;
+import org.geoserver.wps.BinaryEncoderDelegate;
+import org.geoserver.wps.CDataEncoderDelegate;
 import org.geoserver.wps.Execute;
 import org.geoserver.wps.WPSException;
-import org.geotools.util.Converters;
+import org.geoserver.wps.XMLEncoderDelegate;
 
 /**
  * Encodes the Execute response either in the normal XML format or in the raw format
@@ -97,8 +98,8 @@ public class ExecuteProcessResponse extends Response {
     void writeComplex(OutputStream output, OutputDataType result)
             throws IOException {
         Object rawResult = result.getData().getComplexData().getData().get(0);
-        if (rawResult instanceof ComplexDataEncoderDelegate) {
-            ComplexDataEncoderDelegate delegate = (ComplexDataEncoderDelegate) rawResult;
+        if (rawResult instanceof XMLEncoderDelegate) {
+            XMLEncoderDelegate delegate = (XMLEncoderDelegate) rawResult;
             XMLSerializer xmls = new XMLSerializer(output, new OutputFormat());
             xmls.setNamespaces(true);
 
@@ -110,6 +111,21 @@ public class ExecuteProcessResponse extends Response {
                 throw new WPSException("An error occurred while encoding "
                         + "the results of the process", e);
             }
+        } else if(rawResult instanceof CDataEncoderDelegate) {
+        	try {
+        		String s = ((CDataEncoderDelegate) rawResult).encode();
+        		output.write(s.getBytes());
+        	} catch(Exception e) {
+        		throw new WPSException("An error occurred while encoding "
+                        + "the results of the process", e);
+        	}
+        } else if(rawResult instanceof BinaryEncoderDelegate) {
+        	try {
+        		((BinaryEncoderDelegate) rawResult).encode(output);
+        	} catch(Exception e) {
+        		throw new WPSException("An error occurred while encoding "
+                        + "the results of the process", e);
+        	}
         } else {
             throw new WPSException("Cannot encode an object of class "
                     + rawResult.getClass() + " in raw form");

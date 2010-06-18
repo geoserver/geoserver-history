@@ -8,11 +8,11 @@ package org.geoserver.wps;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import net.opengis.ows11.CodeType;
 import net.opengis.wfs.FeatureCollectionType;
@@ -27,6 +27,7 @@ import net.opengis.wps10.InputType;
 import net.opengis.wps10.LiteralDataType;
 import net.opengis.wps10.MethodType;
 import net.opengis.wps10.OutputDataType;
+import net.opengis.wps10.OutputDefinitionType;
 import net.opengis.wps10.OutputDefinitionsType;
 import net.opengis.wps10.OutputReferenceType;
 import net.opengis.wps10.ProcessBriefType;
@@ -37,7 +38,10 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.wcs.WebCoverageService111;
 import org.geoserver.wfs.WebFeatureService;
+import org.geoserver.wps.ppio.BinaryPPIO;
+import org.geoserver.wps.ppio.CDataPPIO;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
@@ -48,9 +52,7 @@ import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.util.Converters;
-import org.geotools.xml.Configuration;
 import org.geotools.xml.EMFUtils;
-import org.geotools.xml.Encoder;
 import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
@@ -95,14 +97,20 @@ public class Execute {
         for ( Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext(); ) {
             InputType input = (InputType) i.next();
             
-            //locate the parameter for this request
+            // locate the parameter for this request
             Parameter p = pf.getParameterInfo(processName).get( input.getIdentifier().getValue() );
             if ( p == null ) {
                 throw new WPSException( "No such parameter: " + input.getIdentifier().getValue() );
             }
             
-            //find the ppio
-            ProcessParameterIO ppio = ProcessParameterIO.find( p, context );
+            // find the ppio
+            String mime = null;
+            if(input.getData() != null && input.getData().getComplexData() != null) {
+            	mime = input.getData().getComplexData().getMimeType();
+            } else if(input.getReference() != null) {
+            	mime = input.getReference().getMimeType();
+            }
+            ProcessParameterIO ppio = ProcessParameterIO.find( p, context, mime);
             if ( ppio == null ) {
                 throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue() );
             }
@@ -123,29 +131,26 @@ public class Execute {
                 	WebFeatureService wfs = (WebFeatureService)context.getBean("wfsServiceTarget");
                 	FeatureCollectionType featureCollectionType = wfs.getFeature((GetFeatureType)ref.getBody());
                 	decoded = featureCollectionType.getFeature().get(0);
-                } else if ( meth == MethodType.POST_LITERAL ) {
-                    //TODO post
+                } else if(href.startsWith("http://geoserver/wcs")) {
+                	WebCoverageService111 wcs = (WebCoverageService111) context.getBean("wcs111ServiceTarget");
+                	decoded = wcs.getCoverage((net.opengis.wcs11.GetCoverageType)ref.getBody())[0];
+                } else {
+                	throw new UnsupportedOperationException("Sorry, real external references are still not supported");
                 }
-                else {
-                    //TODO get, parse kvp
-                }
-            }
-            else {
+            } else {
                 //actual data, figure out which type 
                 DataType data = input.getData();
                
                 if ( data.getLiteralData() != null ) {
                     LiteralDataType literal = data.getLiteralData();
                     decoded = ((LiteralPPIO)ppio).decode( literal.getValue() );
-                }
-                else if ( data.getComplexData() != null ) {
+                } else if ( data.getComplexData() != null ) {
                     ComplexDataType complex = data.getComplexData();
                     decoded = complex.getData().get( 0 );
                     try {
                         decoded = ((ComplexPPIO)ppio).decode( decoded );
-                    } 
-                    catch (Exception e) {
-                        throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue() );
+                    } catch (Exception e) {
+                        throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue(), e );
                     }
                 }
                 
@@ -157,15 +162,39 @@ public class Execute {
         
         //execute the process
         Map<String,Object> result = null;
+        // TODO: monitor processes, failures are reported via monitor as well
         try {
             Process p = pf.create(processName);
             result = p.execute( inputs, null );    
-        }
-        catch ( WPSException e) {
+        } catch ( WPSException e) {
             throw e;
-        }
-        catch( Throwable t ) {
+        } catch( Throwable t ) {
         	throw new WPSException("InternalError: " + t, t);
+        }
+        
+        // filter out the results we have not been asked about 
+        // and create a direct map between required outputs and 
+        // the gt process outputs
+        Map<String, OutputDefinitionType> outputMap = new HashMap<String, OutputDefinitionType>();
+        if(request.getResponseForm().getRawDataOutput() != null) {
+        	// only one output in raw form
+        	OutputDefinitionType od = request.getResponseForm().getRawDataOutput();
+        	String outputName = od.getIdentifier().getValue();
+			outputMap.put(outputName, od);
+        	Map<String, Object> newResults = new HashMap<String, Object>();
+        	newResults.put(outputName, result.get(outputName));
+        	result = newResults;
+        } else {
+        	for(Iterator it = request.getResponseForm().getResponseDocument().getOutput().iterator(); it.hasNext(); ) {
+        		OutputDefinitionType od = (OutputDefinitionType) it.next();
+        		String outputName = od.getIdentifier().getValue();
+    			outputMap.put(outputName, od);
+        	}
+        	for(String key : new HashSet<String>(result.keySet())) {
+        		if(!outputMap.containsKey(key)) {
+        			result.remove(key);
+        		}
+        	}
         }
         
         //build the response
@@ -208,7 +237,8 @@ public class Execute {
             }
             
             //find the ppio
-            ProcessParameterIO ppio = ProcessParameterIO.find( p, context );
+            String mime = outputMap.get(key).getMimeType();
+            ProcessParameterIO ppio = ProcessParameterIO.find( p, context, mime );
             if ( ppio == null ) {
                 throw new WPSException( "Unable to encode output: " + p.key );
             }
@@ -220,9 +250,14 @@ public class Execute {
             output.setIdentifier( Ows11Util.code( p.key ) );
             if ( ppio instanceof ComplexPPIO ) {
                 output.setMimeType( ((ComplexPPIO) ppio).getMimeType() );
+                if(ppio instanceof BinaryPPIO) {
+                	output.setEncoding("base64");
+                } else if(ppio instanceof XMLPPIO) {
+                	output.setEncoding("utf-8");
+                }
             }
             
-            //TODO: encoding + schema
+            //TODO: better encoding handling + schema
         }
         
         //process outputs
@@ -243,7 +278,7 @@ public class Execute {
                 OutputReferenceType ref = f.createOutputReferenceType();
                 output.setReference( ref );
                 
-                //TODO: mime type
+                ref.setMimeType(outputMap.get(key).getMimeType());
                 ref.setHref( ((ReferencePPIO) ppio).encode(o).toString() );
             }
             else {
@@ -267,11 +302,14 @@ public class Execute {
                     if ( cppio instanceof XMLPPIO ) {
                         //encode directly
                         complex.getData().add( 
-                            new ComplexDataEncoderDelegate( (XMLPPIO) cppio, o )
+                            new XMLEncoderDelegate( (XMLPPIO) cppio, o )
                         );
-                    }
-                    else {
-                       //TODO: handle other content types, perhaps as CDATA
+                    } else if(cppio instanceof CDataPPIO) {
+                    	complex.getData().add(new CDataEncoderDelegate((CDataPPIO) cppio, o));
+                    } else if(cppio instanceof BinaryPPIO) {
+                    	complex.getData().add(new BinaryEncoderDelegate((BinaryPPIO) cppio, o));
+                    }  else {
+                       throw new WPSException("Don't know how to encode an output whose PPIO is " + cppio);
                     }
                 }
             }

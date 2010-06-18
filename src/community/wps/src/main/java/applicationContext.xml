@@ -108,4 +108,13 @@
       </constructor-arg>
     </bean>
     
+    <!-- USER INTERFACE SECTION, TO BE MOVED INTO ITS OWN MODULE -->
+    <bean id="wpsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">
+      <property name="id" value="wpsRequestBuilder" />
+      <property name="titleKey" value="WPSRequestBuilder.title" />
+      <property name="descriptionKey" value="WPSRequestBuilder.shortDescription" />
+      <property name="componentClass" value="org.geoserver.web.wps.WPSRequestBuilder" />
+    </bean>
+    
+    
 </beans>

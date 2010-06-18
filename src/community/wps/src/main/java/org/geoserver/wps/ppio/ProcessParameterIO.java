@@ -4,7 +4,12 @@
  */
 package org.geoserver.wps.ppio;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.geoserver.platform.GeoServerExtensions;
@@ -30,29 +35,70 @@ public abstract class ProcessParameterIO {
     static List<ProcessParameterIO> defaults;
     static {
         defaults = new ArrayList<ProcessParameterIO>();
-        defaults.add( new LiteralPPIO( Double.class ) );
-        defaults.add( new LiteralPPIO( Integer.class ) );
-        defaults.add( new LiteralPPIO( String.class ) );
         
+        // primitives
+        defaults.add( new LiteralPPIO( BigInteger.class ) );
+        defaults.add( new LiteralPPIO( BigDecimal.class ) );
+        defaults.add( new LiteralPPIO( Byte.class ) );
+        defaults.add( new LiteralPPIO( Double.class ) );
+        defaults.add( new LiteralPPIO( Float.class ) );
+        defaults.add( new LiteralPPIO( Number.class ) );
+        defaults.add( new LiteralPPIO( Integer.class ) );
+        defaults.add( new LiteralPPIO( Long.class ) );
+        defaults.add( new LiteralPPIO( Integer.class ) );
+        defaults.add( new LiteralPPIO( Short.class ) );
+        defaults.add( new LiteralPPIO( Number.class ) );
+        
+        defaults.add( new LiteralPPIO( Boolean.class ) );
+        
+        defaults.add( new LiteralPPIO( String.class ) );
+        defaults.add( new LiteralPPIO( CharSequence.class ) );
+        
+        defaults.add( new LiteralPPIO( Date.class ) );
+        defaults.add( new LiteralPPIO( java.sql.Date.class ) );
+        defaults.add( new LiteralPPIO( Time.class ) );
+        defaults.add( new LiteralPPIO( Timestamp.class ) );
+        
+        // geometries
         defaults.add( new GMLPPIO.GML3.Geometry() );
         defaults.add( new GMLPPIO.GML2.Geometry());
+        defaults.add( new WKTPPIO());
+        
+        // features
         defaults.add( new WFSPPIO() );
+        
+        // grids
+        defaults.add( new GeoTiffPPIO() );
         
     }
     
-    public static ProcessParameterIO find(Parameter<?> p,ApplicationContext context) {
+    public static ProcessParameterIO find(Parameter<?> p, ApplicationContext context, String mime) {
         //TODO: come up with some way to flag one as "default"
         List<ProcessParameterIO> all = findAll( p, context );
         if ( all.isEmpty() ) {
             return null;
         }
         
+        if(mime != null) {
+        	for (ProcessParameterIO ppio : all) {
+				if(ppio instanceof ComplexPPIO && ((ComplexPPIO) ppio).getMimeType().equals(mime)) {
+					return ppio;
+				}
+			}
+        }
+        // fall back on the first found
         return all.get( 0 );
     }
     
     public static List<ProcessParameterIO> findAll(Parameter<?> p,ApplicationContext context) {
         //load all extensions
-        List<ProcessParameterIO> l = GeoServerExtensions.extensions( ProcessParameterIO.class, context );
+    	List<ProcessParameterIO> l;
+    	if(context != null) {
+    		l = GeoServerExtensions.extensions( ProcessParameterIO.class, context );
+    	} else {
+    		l = GeoServerExtensions.extensions( ProcessParameterIO.class );
+    	}
+    	
 
         //find parameters that match
         List<ProcessParameterIO> matches = new ArrayList<ProcessParameterIO>();

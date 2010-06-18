@@ -17,7 +17,7 @@ import org.geotools.xml.Parser;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXParseException;
 
-public class WPSTestSupport extends GeoServerTestSupport {
+public abstract class WPSTestSupport extends GeoServerTestSupport {
 
     static {
         // init xmlunit
