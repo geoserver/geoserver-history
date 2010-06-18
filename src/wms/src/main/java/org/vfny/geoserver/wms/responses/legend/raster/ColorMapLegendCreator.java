@@ -38,7 +38,6 @@ import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
  * 
  * @author Simone Giannecchini, GeoSolutions.
  */
-@SuppressWarnings("deprecation")
 class ColorMapLegendCreator {
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger(ColorMapLegendCreator.class);
@@ -148,6 +147,7 @@ class ColorMapLegendCreator {
         private boolean borderLabel = false;
 
         private boolean borderRule = false;
+		private boolean bandInformation=false;
 
         /**
          * Adds a {@link ColorMapEntry} element to this builder so that it can take it into account
@@ -321,7 +321,10 @@ class ColorMapLegendCreator {
                 columnMarginPercentage = Double.parseDouble((String) additionalOptions.get("dx"));
 
             }
-
+		        if (additionalOptions.get("bandInfo") instanceof String) {
+		        	bandInformation=Boolean.parseBoolean((String) additionalOptions.get("bandInfo"));
+		            
+		        }
             if (additionalOptions.get("dy") instanceof String) {
                 rowMarginPercentage = Double.parseDouble((String) additionalOptions.get("dy"));
 
@@ -380,36 +383,39 @@ class ColorMapLegendCreator {
                     }
 
                 }
+			}
 
-        }
-    }
-
-    /**
-     * 
-     * @author Simone Giannecchini, GeoSolutions SAS
-     * 
-     */
-    enum ColorMapType {
-        UNIQUE_VALUES, RAMP, CLASSES;
-        public static ColorMapType create(final String value) {
-            if (value.equalsIgnoreCase("intervals"))
-                return CLASSES;
-            else if (value.equalsIgnoreCase("ramp")) {
-                return RAMP;
-            } else if (value.equalsIgnoreCase("values")) {
-                return UNIQUE_VALUES;
-            } else
-                return ColorMapType.valueOf(value);
-        }
-
-        public static ColorMapType create(final int value) {
-            switch (value) {
-            case ColorMap.TYPE_INTERVALS:
-                return ColorMapType.CLASSES;
-            case ColorMap.TYPE_RAMP:
-                return ColorMapType.RAMP;
-            case ColorMap.TYPE_VALUES:
-                return ColorMapType.UNIQUE_VALUES;
+		public void setBandInformation(boolean bandInformation) {
+			this.bandInformation = bandInformation;
+		}
+	}
+	
+	/**
+	 * 
+	 * @author Simone Giannecchini, GeoSolutions SAS
+	 *
+	 */
+	enum ColorMapType {
+		UNIQUE_VALUES, RAMP, CLASSES;
+		public static ColorMapType create(final String value) {
+			if (value.equalsIgnoreCase("intervals"))
+				return CLASSES;
+			else if (value.equalsIgnoreCase("ramp")) {
+				return RAMP;
+			} else if (value.equalsIgnoreCase("values")) {
+				return UNIQUE_VALUES;
+			} else
+				return ColorMapType.valueOf(value);
+		}
+		public static ColorMapType create(final int value) {
+			switch (value) {
+			case ColorMap.TYPE_INTERVALS:
+				return ColorMapType.CLASSES;
+			case ColorMap.TYPE_RAMP:
+				return ColorMapType.RAMP;
+			case ColorMap.TYPE_VALUES:
+				return ColorMapType.UNIQUE_VALUES;
+				
 
             default:
                 throw new IllegalArgumentException("Unable to create ColorMapType for value "
@@ -479,6 +485,7 @@ class ColorMapLegendCreator {
     private double dx;
 
     private double dy;
+	private boolean bandInformation;
 
     public ColorMapLegendCreator(final Builder builder) {
         this.backgroundColor = builder.backgroundColor;
@@ -503,12 +510,13 @@ class ColorMapLegendCreator {
         this.vMarginPercentage = builder.vMarginPercentage;
         this.requestedDimension = (Dimension) builder.requestedDimension.clone();
         this.transparent = builder.transparent;
+		this.bandInformation=builder.bandInformation;
 
     }
 
     public synchronized BufferedImage getLegend() {
 
-        // do we laraedy have a legend
+        // do we already have a legend
         if (legend == null) {
 
             // init all the values
@@ -529,9 +537,11 @@ class ColorMapLegendCreator {
             //
             // footer
             //
-            final Queue<BufferedImage> footer = createFooter();
-            body.addAll(footer);
-
+			if(bandInformation){
+				final Queue<BufferedImage> footer= createFooter();
+				body.addAll(footer);
+			}
+			
             // now merge them
             legend = mergeRows(body);
         }
@@ -549,10 +559,10 @@ class ColorMapLegendCreator {
                 hintsMap);
 
         // elements used to compute maximum dimensions for rows and cells
-        rowH = Double.NEGATIVE_INFINITY;
-        colorW = Double.NEGATIVE_INFINITY;
-        ruleW = Double.NEGATIVE_INFINITY;
-        labelW = Double.NEGATIVE_INFINITY;
+        rowH = 0;
+        colorW = 0;
+        ruleW = 0;
+        labelW = 0;
 
         //
         // BODY
@@ -564,26 +574,27 @@ class ColorMapLegendCreator {
         // FOOTER
         //
         // set footer strings
-        final String bandNameString = "Band selection is " + this.grayChannelName;
-        footerRows.add(new TextManager(bandNameString, vAlign, hAlign, backgroundColor,
+        if(bandInformation){
+          final String bandNameString = "Band selection is " + this.grayChannelName;
+          footerRows.add(new TextManager(bandNameString, vAlign, hAlign, backgroundColor,
                 requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
-        // set footer strings
-        final String colorMapTypeString = "ColorMap type is " + this.colorMapType.toString();
-        footerRows.add(new TextManager(colorMapTypeString, vAlign, hAlign, backgroundColor,
+          // set footer strings
+          final String colorMapTypeString = "ColorMap type is " + this.colorMapType.toString();
+          footerRows.add(new TextManager(colorMapTypeString, vAlign, hAlign, backgroundColor,
                 requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
-        // extended colors or not
-        final String extendedCMapString = "ColorMap is " + (this.extended ? "" : "not")
+          // extended colors or not
+          final String extendedCMapString = "ColorMap is " + (this.extended ? "" : "not")
                 + " extended";
-        footerRows.add(new TextManager(extendedCMapString, vAlign, hAlign, backgroundColor,
+          footerRows.add(new TextManager(extendedCMapString, vAlign, hAlign, backgroundColor,
                 requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
-        cycleFooterRows(graphics);
-
+          cycleFooterRows(graphics);
+        }
         //
         // compute dimensions
         // this.
         // final dimension are different between ramp and others since ramp does not have margin for
         // rows
-        final double maxW = Math.max(Math.max(Math.max(colorW, ruleW), labelW), footerW);
+        final double maxW = Math.max(colorW+ruleW+labelW, footerW);
         dx = maxW * columnMarginPercentage;
         dy = colorMapType == ColorMapType.RAMP ? 0 : rowH * rowMarginPercentage;
 
