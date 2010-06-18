@@ -4,15 +4,29 @@
  */
 package org.geoserver.wps.sextante;
 
-import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.*;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.DEFAULT_BOOLEAN_VALUE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.DEFAULT_NUMERICAL_VALUE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.DEFAULT_STRING_VALUE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.FIXED_TABLE_FIXED_NUM_ROWS;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.FIXED_TABLE_NUM_COLS;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.FIXED_TABLE_NUM_ROWS;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.MAX_NUMERICAL_VALUE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.MIN_NUMERICAL_VALUE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.MULTIPLE_INPUT_TYPE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.NUMERICAL_VALUE_TYPE;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.PARAMETER_MANDATORY;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.PARENT_PARAMETER_NAME;
+import static org.geoserver.wps.sextante.SextanteProcessFactoryConstants.SHAPE_TYPE;
 
 import java.awt.RenderingHints.Key;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.Parameter;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -146,14 +160,27 @@ public class SextanteProcessFactory implements ProcessFactory {
         GeoAlgorithm algorithm = Sextante.getAlgorithmFromCommandLineName(name.getLocalPart());
 
         ParametersSet paramSet = algorithm.getParameters();
-        Map<String, Parameter<?>> paramInfo = new HashMap<String, Parameter<?>>();
+        Map<String, Parameter<?>> paramInfo = new LinkedHashMap<String, Parameter<?>>();
 
         for (int i = 0; i < paramSet.getNumberOfParameters(); i++) {
             es.unex.sextante.parameters.Parameter param = paramSet.getParameter(i);
+            String title = param.getParameterDescription();
+            String description = title;
+            try {
+            	String td = param.getParameterAdditionalInfo().getTextDescription();
+            	if(td != null) {
+            		description += " - " + td;
+            	}
+            	
+            	// TODO: for numeric data we can specify default value and 
+            	// range, that should be useful
+            } catch(NullParameterAdditionalInfoException e) {
+            	// fine
+            }
+            
             paramInfo.put(param.getParameterName(), new Parameter(param.getParameterName(),
-                    mapToGeoTools(param.getParameterClass()), Text.text(param
-                            .getParameterDescription()),
-                    Text.text(param.getParameterDescription()), getAdditionalInfoMap(param)));
+                    mapToGeoTools(param.getParameterClass()), Text.text(title),
+                    Text.text(description), getAdditionalInfoMap(param)));
         }
 
         return paramInfo;
@@ -170,7 +197,7 @@ public class SextanteProcessFactory implements ProcessFactory {
         if (IVectorLayer.class.isAssignableFrom(parameterClass)) {
             return FeatureCollection.class;
         } else if (IRasterLayer.class.isAssignableFrom(parameterClass)) {
-            return GridCoverage.class;
+            return GridCoverage2D.class;
         } else if (ITable.class.isAssignableFrom(parameterClass)) {
             return FeatureCollection.class;
         } else {

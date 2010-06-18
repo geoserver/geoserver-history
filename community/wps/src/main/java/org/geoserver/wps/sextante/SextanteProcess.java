@@ -9,6 +9,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.process.Process;
 import org.opengis.util.ProgressListener;
 
@@ -19,7 +23,6 @@ import es.unex.sextante.core.ParametersSet;
 import es.unex.sextante.dataObjects.IDataObject;
 import es.unex.sextante.exceptions.GeoAlgorithmExecutionException;
 import es.unex.sextante.exceptions.WrongParameterIDException;
-import es.unex.sextante.geotools.GTOutputFactory;
 import es.unex.sextante.outputs.Output;
 import es.unex.sextante.parameters.Parameter;
 import es.unex.sextante.rasterWrappers.GridExtent;
@@ -83,24 +86,33 @@ public class SextanteProcess implements Process{
 	 * @return a map with algorithm results
 	 */
 	private Map<String, Object> createReturnMapFromOutputObjects() {
-
-		Map<String, Object> results = new HashMap<String, Object>();
-
-		OutputObjectsSet outputs = m_Algorithm.getOutputObjects();
-		for (int i = 0; i < outputs.getOutputObjectsCount(); i++) {
-			Output output = outputs.getOutput(i);
-			Object outputObject = output.getOutputObject();
-			// if the output object is a layer or a table, we return
-			// the inner GeoTools object
-			if (outputObject instanceof IDataObject){
-				IDataObject dataObject = (IDataObject) outputObject;
-				results.put(output.getName(), dataObject.getBaseDataObject());
+		try {
+			Map<String, Object> results = new HashMap<String, Object>();
+	
+			OutputObjectsSet outputs = m_Algorithm.getOutputObjects();
+			for (int i = 0; i < outputs.getOutputObjectsCount(); i++) {
+				Output output = outputs.getOutput(i);
+				Object outputObject = output.getOutputObject();
+				// if the output object is a layer or a table, we return
+				// the inner GeoTools object
+				if (outputObject instanceof IDataObject){
+					IDataObject dataObject = (IDataObject) outputObject;
+					Object wrapped = dataObject.getBaseDataObject();
+					if(wrapped instanceof FeatureSource) {
+						results.put(output.getName(), ((FeatureSource) wrapped).getFeatures());
+					} else {
+						results.put(output.getName(), wrapped);
+					}
+					
+				}
+				else{
+					results.put(output.getName(), outputObject);
+				}
 			}
-			else{
-				results.put(output.getName(), outputObject);
-			}
+			return results;
+		} catch(Throwable t) {
+			throw new RuntimeException(t);
 		}
-		return results;
 
 	}
 
@@ -121,7 +133,11 @@ public class SextanteProcess implements Process{
 			if (!sKey.equals(GRID_EXTENT)){
 				Object paramValue = input.get(sKey);
 				Parameter param = paramSet.getParameter(sKey);
-				param.setParameterValue(paramValue);
+				if(paramValue instanceof FeatureCollection) {
+					param.setParameterValue(GTVectorLayer.createLayer(DataUtilities.source((FeatureCollection) paramValue), Query.ALL));
+				} else {
+					param.setParameterValue(paramValue);
+				}
 			}
 			GridExtent ge = (GridExtent) input.get(GRID_EXTENT);
 			m_Algorithm.setGridExtent(ge);

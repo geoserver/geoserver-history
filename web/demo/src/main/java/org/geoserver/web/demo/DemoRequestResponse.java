@@ -13,7 +13,6 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.demo.DemoRequestsPage.DemoRequest;
 import org.vfny.geoserver.wfs.servlets.TestWfsPost;
 
 /**

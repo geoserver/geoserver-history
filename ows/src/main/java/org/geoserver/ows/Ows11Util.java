@@ -73,12 +73,21 @@ public class Ows11Util {
         if(code.getCodeSpace() != null) {
             return new NameImpl(code.getCodeSpace(), code.getValue());
         } else {
-            String[] parsed = code.getValue().trim().split(":");
-            if(parsed.length == 1) {
-                return new NameImpl(parsed[0]);
-            } else {
-                return new NameImpl(parsed[0], parsed[1]);
-            }
+            return name(code.getValue());
+        }
+    }
+    
+    /**
+     * Turns a prefix:localName into a Name
+     * @param URI
+     * @return
+     */
+    public static Name name(String URI) {
+    	String[] parsed = URI.trim().split(":");
+        if(parsed.length == 1) {
+            return new NameImpl(parsed[0]);
+        } else {
+            return new NameImpl(parsed[0], parsed[1]);
         }
     }
     

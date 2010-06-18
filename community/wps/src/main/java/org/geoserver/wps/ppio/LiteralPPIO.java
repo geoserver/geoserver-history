@@ -32,7 +32,7 @@ public class LiteralPPIO extends ProcessParameterIO {
     }
     
     /**
-     * Encodes the internal object resprensentation of a parameter as a string.
+     * Encodes the internal object representation of a parameter as a string.
      */
     public String encode( Object value ) {
         return Converters.convert( value, String.class);
