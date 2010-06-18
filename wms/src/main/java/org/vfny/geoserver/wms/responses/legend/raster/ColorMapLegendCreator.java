@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org.  All rights reserved.
+ * This code is licensed under the GPL 2.0 license, availible at the root
+ * application directory.
+ */
 package org.vfny.geoserver.wms.responses.legend.raster;
 
 import java.awt.Color;
@@ -36,6 +40,7 @@ import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
  * 
  * @author  Simone Giannecchini, GeoSolutions.
  */
+@SuppressWarnings("deprecation")
 class ColorMapLegendCreator {
 	
 	private static final Logger LOGGER=org.geotools.util.logging.Logging.getLogger(ColorMapLegendCreator.class);
@@ -121,7 +126,7 @@ class ColorMapLegendCreator {
 		private boolean border = false;
 		private boolean borderLabel = false;
 		private boolean borderRule = false;
-		private boolean bandInformation=true;
+		private boolean bandInformation=false;
 
 		/**
 		 * Adds a {@link ColorMapEntry} element to this builder so that it can take it into account
@@ -545,12 +550,10 @@ class ColorMapLegendCreator {
         Graphics2D graphics = ImageUtils.prepareTransparency(transparent, backgroundColor, image, hintsMap);
         
         //elements used to compute maximum dimensions for rows and cells
-        rowH=Double.NEGATIVE_INFINITY;
-        colorW=Double.NEGATIVE_INFINITY;
-        ruleW=Double.NEGATIVE_INFINITY;
-        labelW=Double.NEGATIVE_INFINITY;
-       
-
+        rowH = 0;
+        colorW = 0;
+        ruleW = 0;
+        labelW = 0;
 
         //
         //BODY
@@ -562,22 +565,27 @@ class ColorMapLegendCreator {
 		//FOOTER
 		//
         //set footer strings
-		final String bandNameString = "Band selection is "+this.grayChannelName;
-		footerRows.add(new TextManager(bandNameString,vAlign,hAlign, backgroundColor, requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
-        //set footer strings
-		final String colorMapTypeString = "ColorMap type is "+this.colorMapType.toString();
-		footerRows.add(new TextManager(colorMapTypeString,vAlign,hAlign, backgroundColor, requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
-		// extended colors or not
-		final String extendedCMapString = "ColorMap is "+(this.extended?"":"not")+" extended";    
-		footerRows.add(new TextManager(extendedCMapString,vAlign,hAlign, backgroundColor, requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
-		cycleFooterRows(graphics);
-
+        if(bandInformation){
+          final String bandNameString = "Band selection is " + this.grayChannelName;
+          footerRows.add(new TextManager(bandNameString, vAlign, hAlign, backgroundColor,
+                requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
+          // set footer strings
+          final String colorMapTypeString = "ColorMap type is " + this.colorMapType.toString();
+          footerRows.add(new TextManager(colorMapTypeString, vAlign, hAlign, backgroundColor,
+                requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
+          // extended colors or not
+          final String extendedCMapString = "ColorMap is " + (this.extended ? "" : "not")
+                + " extended";
+          footerRows.add(new TextManager(extendedCMapString, vAlign, hAlign, backgroundColor,
+                requestedDimension, labelFont, labelFontColor, fontAntiAliasing, borderColor));
+          cycleFooterRows(graphics);
+        }
 		
         //
         // compute dimensions
         //this.
 		//final dimension are different between ramp and others since ramp does not have margin for rows
-		final double maxW=Math.max(Math.max(Math.max(colorW,ruleW),labelW),footerW);
+        final double maxW = Math.max(colorW+ruleW+labelW, footerW);
 		dx=maxW*columnMarginPercentage;
 		dy=colorMapType==ColorMapType.RAMP?0:rowH*rowMarginPercentage;
 		
