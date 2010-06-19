@@ -1,4 +1,10 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.orci;
+
+import static org.geoserver.wps.orci.ORCIProcessFactory.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,16 +48,8 @@ import com.vividsolutions.jts.operation.distance.DistanceOp;
 public class ORCISnapProcess implements Process, IORCIProcess {
 	private static final Logger LOGGER = Logging.getLogger(ORCISnapProcess.class);
 
-	private static Map<String, Object> MandatoryParameter = new HashMap<String, Object>();
-	private static Map<String, Object> OptionalParameter = new HashMap<String, Object>();
-
 	private GeometryFactory geometryFactory = new GeometryFactory();
-
-	{
-		MandatoryParameter.put("PARAMETER_MANDATORY", Boolean.TRUE);
-		OptionalParameter.put("PARAMETER_MANDATORY", Boolean.FALSE);
-	}
-
+	
 	public InternationalString getDescription() {
 		return Text.text("Snap to nearest feature");
 	}

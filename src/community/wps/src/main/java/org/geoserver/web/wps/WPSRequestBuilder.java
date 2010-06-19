@@ -37,6 +37,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.demo.DemoRequest;
 import org.geoserver.web.demo.DemoRequestResponse;
+import org.geoserver.web.wicket.EnvelopePanel;
 import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
@@ -78,10 +79,14 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 				Parameter p = pv.getParameter();
 				item.add(new Label("param", buildParamSpec(p) ));
 				item.add(new Label("paramDescription", p.title.toString(Locale.ENGLISH)));
-				if(!pv.isComplex()) {
+				if(!pv.isComplex() && !pv.isBoundingBox()) {
 					Fragment f = new Fragment("paramValue", "literal", WPSRequestBuilder.this);
 					f.add(new TextField("literalValue", new PropertyModel(pv, "values[0].value")).setRequired(p.minOccurs > 0));
 					item.add(f);
+				} else if(pv.isBoundingBox()) {
+				    EnvelopePanel envelope = new EnvelopePanel("paramValue", new PropertyModel(pv, "values[0].value"));
+				    envelope.setCRSFieldVisible(true);
+				    item.add(envelope);
 				} else {
 					ComplexInputPanel input = new ComplexInputPanel("paramValue", pv, 0);
 					item.add(input);

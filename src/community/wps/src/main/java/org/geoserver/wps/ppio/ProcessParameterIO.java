@@ -14,7 +14,10 @@ import java.util.List;
 
 import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.Parameter;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.springframework.context.ApplicationContext;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Represents the input / output of a parameter in a process.
@@ -69,6 +72,11 @@ public abstract class ProcessParameterIO {
         
         // grids
         defaults.add( new GeoTiffPPIO() );
+        
+        // envelopes
+        defaults.add( new BoundingBoxPPIO(Envelope.class));
+        defaults.add( new BoundingBoxPPIO(ReferencedEnvelope.class));
+        defaults.add( new BoundingBoxPPIO(org.opengis.geometry.Envelope.class));
         
     }
     

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import net.opengis.ows11.BoundingBoxType;
 import net.opengis.ows11.CodeType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
@@ -41,6 +42,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wcs.WebCoverageService111;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wps.ppio.BinaryPPIO;
+import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.CDataPPIO;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
@@ -141,17 +143,18 @@ public class Execute {
                 //actual data, figure out which type 
                 DataType data = input.getData();
                
-                if ( data.getLiteralData() != null ) {
-                    LiteralDataType literal = data.getLiteralData();
-                    decoded = ((LiteralPPIO)ppio).decode( literal.getValue() );
-                } else if ( data.getComplexData() != null ) {
-                    ComplexDataType complex = data.getComplexData();
-                    decoded = complex.getData().get( 0 );
-                    try {
-                        decoded = ((ComplexPPIO)ppio).decode( decoded );
-                    } catch (Exception e) {
-                        throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue(), e );
+                try {
+                    if ( data.getLiteralData() != null ) {
+                        LiteralDataType literal = data.getLiteralData();
+                        decoded = ((LiteralPPIO)ppio).decode( literal.getValue() );
+                    } else if ( data.getComplexData() != null ) {
+                        ComplexDataType complex = data.getComplexData();
+                        decoded = ((ComplexPPIO)ppio).decode(complex.getData().get( 0 ));
+                    } else if (data.getBoundingBoxData() != null) {
+                        decoded = ((BoundingBoxPPIO) ppio).decode(data.getBoundingBoxData());
                     }
+                } catch (Exception e) {
+                    throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue(), e );
                 }
                 
             }
@@ -280,8 +283,7 @@ public class Execute {
                 
                 ref.setMimeType(outputMap.get(key).getMimeType());
                 ref.setHref( ((ReferencePPIO) ppio).encode(o).toString() );
-            }
-            else {
+            } else {
                 //encode as data
                 DataType data = f.createDataType();
                 output.setData( data );
@@ -291,8 +293,10 @@ public class Execute {
                     data.setLiteralData( literal );
                     
                     literal.setValue( ((LiteralPPIO) ppio).encode( o ) );
-                }
-                else if ( ppio instanceof ComplexPPIO ) {
+                } else if( ppio instanceof BoundingBoxPPIO) {
+                    BoundingBoxType bbox = ((BoundingBoxPPIO) ppio).encode(o);
+                    data.setBoundingBoxData(bbox);
+                } else if ( ppio instanceof ComplexPPIO ) {
                     ComplexDataType complex = f.createComplexDataType();
                     data.setComplexData( complex );
                     

@@ -5,6 +5,7 @@
 package org.geoserver.web.wicket;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
@@ -25,6 +26,8 @@ public class EnvelopePanel extends FormComponentPanel {
 
     Double minX,minY,maxX,maxY;
     CoordinateReferenceSystem crs;
+    WebMarkupContainer crsContainer;
+    private CRSPanel crsPanel;
     
     public EnvelopePanel(String id ) {
         super(id);
@@ -42,6 +45,14 @@ public class EnvelopePanel extends FormComponentPanel {
         initComponents();
     }
     
+    public void setCRSFieldVisible(boolean visible) {
+        crsContainer.setVisible(visible);
+    }
+    
+    public boolean isCRSFieldVisible() {
+        return crsContainer.isVisible();
+    }
+    
     void initComponents() {
         updateFields();
         
@@ -49,6 +60,11 @@ public class EnvelopePanel extends FormComponentPanel {
         add( new TextField( "minY", new PropertyModel(this, "minY")) );
         add( new TextField( "maxX", new PropertyModel(this, "maxX") ) );
         add( new TextField( "maxY", new PropertyModel(this, "maxY")) );
+        crsContainer = new WebMarkupContainer("crsContainer");
+        crsContainer.setVisible(false);
+        crsPanel = new CRSPanel("crs", new PropertyModel(this, "crs"));
+        crsContainer.add(crsPanel);
+        add(crsContainer);
     }
     
     @Override
@@ -75,6 +91,8 @@ public class EnvelopePanel extends FormComponentPanel {
                 return null;
             }
         });
+        crsPanel.setReadOnly(readOnly);
+
         return this;
     }
     
@@ -87,6 +105,9 @@ public class EnvelopePanel extends FormComponentPanel {
                 return null;
             }
         });
+        if(isCRSFieldVisible()) {
+            crsPanel.processInput();
+        }
         
         // update the envelope model
         if(minX != null && maxX != null && minY != null && maxX != null)
