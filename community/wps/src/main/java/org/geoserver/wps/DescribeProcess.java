@@ -12,8 +12,10 @@ import java.util.Map;
 
 import net.opengis.ows11.CodeType;
 import net.opengis.ows11.Ows11Factory;
+import net.opengis.wps10.CRSsType;
 import net.opengis.wps10.ComplexDataDescriptionType;
 import net.opengis.wps10.DataInputsType;
+import net.opengis.wps10.DefaultType;
 import net.opengis.wps10.DescribeProcessType;
 import net.opengis.wps10.InputDescriptionType;
 import net.opengis.wps10.LiteralInputType;
@@ -22,12 +24,14 @@ import net.opengis.wps10.OutputDescriptionType;
 import net.opengis.wps10.ProcessDescriptionType;
 import net.opengis.wps10.ProcessDescriptionsType;
 import net.opengis.wps10.ProcessOutputsType;
+import net.opengis.wps10.SupportedCRSsType;
 import net.opengis.wps10.SupportedComplexDataInputType;
 import net.opengis.wps10.SupportedComplexDataType;
 import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.wfs.xml.XSProfile;
+import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.LiteralPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
@@ -35,6 +39,7 @@ import org.geotools.data.Parameter;
 import org.geotools.feature.NameImpl;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.geotools.referencing.CRS;
 import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
@@ -128,7 +133,7 @@ public class DescribeProcess {
                 LiteralInputType literal = wpsf.createLiteralInputType();
                 input.setLiteralData( literal );
                 
-                //map the java class to an xml type name
+                // map the java class to an xml type name
                 if ( !String.class.equals( lppio.getType() ) ) {
                     Name typeName = xsp.name( lppio.getType() ); 
                     if ( typeName != null ) {
@@ -138,8 +143,9 @@ public class DescribeProcess {
                 literal.setAnyValue( owsf.createAnyValueType() );
 
                 //TODO: output the default value
-            }
-            else {
+            } else if(ppios.get( 0 ) instanceof BoundingBoxPPIO) {
+                input.setBoundingBoxData(buildSupportedCRSType());
+            } else {
                 //handle the complex data case
                 SupportedComplexDataInputType complex = wpsf.createSupportedComplexDataInputType();
                 input.setComplexData( complex );
@@ -166,6 +172,18 @@ public class DescribeProcess {
             }
         }
     }
+
+    private SupportedCRSsType buildSupportedCRSType() {
+        SupportedCRSsType supportedCRS = wpsf.createSupportedCRSsType();
+        DefaultType def = wpsf.createDefaultType();
+        def.setCRS("EPSG:4326");
+        supportedCRS.setDefault(def);
+        // TODO: redo the bindings, supported crs should contain a list, not a single value
+        CRSsType crss = wpsf.createCRSsType();
+        crss.setCRS("EPSG:4326");
+        supportedCRS.setSupported(crss);
+        return supportedCRS;
+    }
     
     void processOutputs( ProcessOutputsType outputs, ProcessFactory pf, Name name) {
         Map<String,Parameter<?>> outs = pf.getResultInfo(name, null);
@@ -182,7 +200,7 @@ public class DescribeProcess {
             }
             
             //handle the literal case
-            if ( ppios.size() == 1 && ppios.get( 0 ) instanceof LiteralPPIO ) {
+            if ( ppios.get( 0 ) instanceof LiteralPPIO ) {
                 LiteralPPIO lppio = (LiteralPPIO) ppios.get( 0 );
                 
                 LiteralOutputType literal = wpsf.createLiteralOutputType();
@@ -195,8 +213,9 @@ public class DescribeProcess {
                         literal.setDataType( Ows11Util.type( typeName.getLocalPart() ) );        
                     }    
                 }
-            }
-            else {
+            } else if(ppios.get(0) instanceof BoundingBoxPPIO) {
+                output.setBoundingBoxOutput(buildSupportedCRSType());
+            } else {
                 //handle the complex data case
                 SupportedComplexDataType complex = wpsf.createSupportedComplexDataType();
                 output.setComplexOutput( complex );

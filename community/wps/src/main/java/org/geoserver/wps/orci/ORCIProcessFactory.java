@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.orci;
 
 import java.awt.RenderingHints.Key;
@@ -14,6 +18,14 @@ import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
 public class ORCIProcessFactory implements ProcessFactory {
+    static Map<String, Object> MandatoryParameter = new HashMap<String, Object>();
+    static Map<String, Object> OptionalParameter = new HashMap<String, Object>();
+
+    static {
+        MandatoryParameter.put("PARAMETER_MANDATORY", Boolean.TRUE);
+        OptionalParameter.put("PARAMETER_MANDATORY", Boolean.FALSE);
+    }
+    
     public static final String ORCI_NAMESPACE = "orci";
     
     private Map<Name, IORCIProcess> processes = new HashMap<Name, IORCIProcess>();
@@ -23,6 +35,7 @@ public class ORCIProcessFactory implements ProcessFactory {
     	// build list of processes
         processes.put(new NameImpl(ORCI_NAMESPACE, "Nearest"), new ORCINearestProcess());
         processes.put(new NameImpl(ORCI_NAMESPACE, "Snap"), new ORCISnapProcess());
+        processes.put(new NameImpl(ORCI_NAMESPACE, "Bounds"), new ORCIBoundsProcess());
     }
 
 	public Set<Name> getNames() {

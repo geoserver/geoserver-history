@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+import net.opengis.ows11.BoundingBoxType;
 import net.opengis.wps10.ExecuteResponseType;
 import net.opengis.wps10.ExecuteType;
 import net.opengis.wps10.LiteralDataType;
@@ -25,6 +26,9 @@ import org.geoserver.wps.CDataEncoderDelegate;
 import org.geoserver.wps.Execute;
 import org.geoserver.wps.WPSException;
 import org.geoserver.wps.XMLEncoderDelegate;
+import org.geotools.ows.v1_1.OWS;
+import org.geotools.ows.v1_1.OWSConfiguration;
+import org.geotools.xml.Encoder;
 
 /**
  * Encodes the Execute response either in the normal XML format or in the raw format
@@ -79,12 +83,20 @@ public class ExecuteProcessResponse extends Response {
             OutputDataType result = (OutputDataType) response
                     .getProcessOutputs().getOutput().get(0);
             LiteralDataType literal = result.getData().getLiteralData();
+            BoundingBoxType bbox = result.getData().getBoundingBoxData();
             if (literal != null) {
                 writeLiteral(output, literal);
+            } else if(bbox != null) {
+                writeBBox(output, bbox);
             } else {
                 writeComplex(output, result);
             }
         }
+    }
+
+    private void writeBBox(OutputStream os, BoundingBoxType bbox) throws IOException {
+        Encoder encoder = new Encoder(new OWSConfiguration());
+        encoder.encode(bbox, OWS.BoundingBox, os);
     }
 
     /**

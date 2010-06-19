@@ -1,13 +1,12 @@
 package org.geoserver.wps;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.geotools.gml3.GMLConfiguration;
-import org.geotools.referencing.operation.projection.Polyconic;
 import org.hsqldb.lib.StringInputStream;
 import org.w3c.dom.Document;
 
@@ -55,7 +54,7 @@ public class ExecuteTest extends WPSTestSupport {
              "</wps:ResponseDocument>" +
            "</wps:ResponseForm>" + 
          "</wps:Execute>";
-        System.out.println(xml);
+        // System.out.println(xml);
         
         Document d = postAsDOM( "wps", xml );
         checkValidationErrors(d);
@@ -135,10 +134,10 @@ public class ExecuteTest extends WPSTestSupport {
            "  </wps:ResponseForm>" +
            "</wps:Execute>";
         
-        print(dom(new StringInputStream("<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n" + xml)));
+        // print(dom(new StringInputStream("<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n" + xml)));
         
         MockHttpServletResponse response = postAsServletResponse( "wps", xml );
-        System.out.println(response.getOutputStreamContent());
+        // System.out.println(response.getOutputStreamContent());
         assertEquals("application/wkt", response.getContentType());
         Geometry g = new WKTReader().read(response.getOutputStreamContent());
         assertTrue(g instanceof Polygon);
@@ -175,7 +174,7 @@ public class ExecuteTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         // checkValidationErrors(d);
         
         assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
@@ -228,6 +227,39 @@ public class ExecuteTest extends WPSTestSupport {
          MockHttpServletResponse response = postAsServletResponse(root(), xml);
          assertEquals("text/plain", response.getContentType());
          assertEquals("14.0", response.getOutputStreamContent());
+    }
+    
+    /**
+     * Tests a process execution with a BoudingBox as the output
+     */
+    public void testBounds() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        		"<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
+        		"  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        		"  <wps:DataInputs>\n" + 
+        		"    <wps:Input>\n" + 
+        		"      <ows:Identifier>features</ows:Identifier>\n" + 
+        		"      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" xlink:href=\"http://geoserver/wfs\">\n" + 
+        		"        <wps:Body>\n" + 
+        		"          <wfs:GetFeature service=\"WFS\" version=\"1.0.0\">\n" + 
+        		"            <wfs:Query typeName=\"cite:Streams\"/>\n" + 
+        		"          </wfs:GetFeature>\n" + 
+        		"        </wps:Body>\n" + 
+        		"      </wps:Reference>\n" + 
+        		"    </wps:Input>\n" + 
+        		"  </wps:DataInputs>\n" + 
+        		"  <wps:ResponseForm>\n" + 
+        		"    <wps:RawDataOutput>\n" + 
+        		"      <ows:Identifier>bounds</ows:Identifier>\n" + 
+        		"    </wps:RawDataOutput>\n" + 
+        		"  </wps:ResponseForm>\n" + 
+        		"</wps:Execute>";
+        
+        Document dom = postAsDOM(root(), request);
+        // print(dom);
+        
+        assertXpathEvaluatesTo("-4.0E-4 -0.0024", "/ows:BoundingBox/ows:LowerCorner", dom);
+        assertXpathEvaluatesTo("0.0036 0.0024", "/ows:BoundingBox/ows:UpperCorner", dom);
     }
 	
 	/* TODO Updating of Response requests A.4.4.5 */

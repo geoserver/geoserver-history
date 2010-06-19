@@ -19,6 +19,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.geotools.gml3.GML;
 import org.geotools.ows.v1_1.OWS;
+import org.geotools.referencing.CRS;
 import org.geotools.util.Converters;
 import org.geotools.util.logging.Logging;
 import org.geotools.wps.WPS;
@@ -112,29 +113,49 @@ class WPSExecuteTransformer extends TransformerBase {
 
 					start("wps:Input");
 					element("ows:Identifier", pv.paramName);
-					if (!pv.isComplex()) {
-						start("wps:Data");
-						element("wps:LiteralData", Converters.convert(
-								value.value, String.class));
-						end("wps:Data");
+					if(pv.isBoundingBox()) {
+					    ReferencedEnvelope env = (ReferencedEnvelope) value.value;
+					    start("wps:Data");
+					    String crs = null;
+					    if(env.getCoordinateReferenceSystem() != null) {
+					        try {
+					            crs = "EPSG:" + CRS.lookupEpsgCode(env.getCoordinateReferenceSystem(), false);
+					        } catch(Exception e) {
+					            LOGGER.log(Level.WARNING, "Could not get EPSG code for " + crs);
+					        }
+					    } 
+					    if(crs == null) {
+					        start("wps:BoundingBoxData", attributes("dimensions", "2"));
+					    } else {
+					        start("wps:BoundingBoxData", attributes( "crs", crs, "dimensions", "2"));
+					    }
+					    element("ows:LowerCorner", env.getMinX() + " " + env.getMinY());
+					    element("ows:UpperCorner", env.getMaxX() + " " + env.getMaxY());
+					    end("wps:BoundingBoxData");
+					    end("wps:Data");
+					} else if (pv.isComplex()) {
+					    if (value.type == ParameterType.TEXT) {
+                            handleTextInput(value);
+                        } else if (value.type == ParameterType.VECTOR_LAYER) {
+                            handleVectorInput(value);
+                        } else if (value.type == ParameterType.RASTER_LAYER) {
+                            handleRasterLayerInput(value);
+                        } else {
+                            // write out a warning without blowing pu
+                            char[] comment = "Can't handle this data type yet"
+                                    .toCharArray();
+                            try {
+                                ((LexicalHandler) contentHandler).comment(
+                                        comment, 0, comment.length);
+                            } catch (SAXException se) {
+                                throw new RuntimeException(se);
+                            }
+                        }
 					} else {
-						if (value.type == ParameterType.TEXT) {
-							handleTextInput(value);
-						} else if (value.type == ParameterType.VECTOR_LAYER) {
-							handleVectorInput(value);
-						} else if (value.type == ParameterType.RASTER_LAYER) {
-							handleRasterLayerInput(value);
-						} else {
-							// write out a warning without blowing pu
-							char[] comment = "Can't handle this data type yet"
-									.toCharArray();
-							try {
-								((LexicalHandler) contentHandler).comment(
-										comment, 0, comment.length);
-							} catch (SAXException se) {
-								throw new RuntimeException(se);
-							}
-						}
+					    start("wps:Data");
+                        element("wps:LiteralData", Converters.convert(
+                                value.value, String.class));
+                        end("wps:Data");
 					}
 					end("wps:Input");
 				}
@@ -148,31 +169,33 @@ class WPSExecuteTransformer extends TransformerBase {
 					value.mime, "xlink:href",
 					"http://geoserver/wcs"));
 			start("wps:Body");
-			start("wcs:GetCoverage", attributes("service",
-					"WCS", "version", "1.1.1"));
-			element("ows:Identifier", raster.getLayerName());
-			start("wcs:DomainSubset");
-
-			ReferencedEnvelope bbox = raster.getSpatialDomain();
-			String srsUri = GML2EncodingUtils.toURI(bbox
-					.getCoordinateReferenceSystem());
-			start("gml:BoundingBox", attributes("crs", srsUri));
-			if (bbox.getCoordinateReferenceSystem() instanceof GeographicCRS) {
-				element("ows:LowerCorner", bbox.getMinY() + " "
-						+ bbox.getMinX());
-				element("ows:UpperCorner", bbox.getMaxY() + " "
-						+ bbox.getMaxX());
-			} else {
-				element("ows:LowerCorner", bbox.getMinX() + " "
-						+ bbox.getMinY());
-				element("ows:UpperCorner", bbox.getMaxX() + " "
-						+ bbox.getMaxY());
+			if(raster != null && raster.getLayerName() != null) {
+    			start("wcs:GetCoverage", attributes("service",
+    					"WCS", "version", "1.1.1"));
+    			element("ows:Identifier", raster.getLayerName());
+    			start("wcs:DomainSubset");
+    
+    			ReferencedEnvelope bbox = raster.getSpatialDomain();
+    			String srsUri = GML2EncodingUtils.toURI(bbox
+    					.getCoordinateReferenceSystem());
+    			start("gml:BoundingBox", attributes("crs", srsUri));
+//    			if (bbox.getCoordinateReferenceSystem() instanceof GeographicCRS) {
+//    				element("ows:LowerCorner", bbox.getMinx() + " "
+//    						+ bbox.getMinY());
+//    				element("ows:UpperCorner", bbox.getMaxY() + " "
+//    						+ bbox.getMaxX());
+//    			} else {
+    				element("ows:LowerCorner", bbox.getMinX() + " "
+    						+ bbox.getMinY());
+    				element("ows:UpperCorner", bbox.getMaxX() + " "
+    						+ bbox.getMaxY());
+//    			}
+    			end("gml:BoundingBox");
+    			end("wcs:DomainSubset");
+    			element("wcs:Output", null, attributes("format",
+    					"image/tiff"));
+    			end("wcs:GetCoverage");
 			}
-			end("gml:BoundingBox");
-			end("wcs:DomainSubset");
-			element("wcs:Output", null, attributes("format",
-					"image/tiff"));
-			end("wcs:GetCoverage");
 			end("wps:Body");
 			end("wps:Reference");
 		}

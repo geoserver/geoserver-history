@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geoserver.wps.ppio.ProcessParameterIO;
 import org.geotools.coverage.grid.GridCoverage2D;
@@ -37,7 +38,7 @@ class InputParameterValues implements Serializable {
 		this.processName = processName;
 		this.paramName = paramName;
 		Parameter<?> p = getParameter();
-		for (int i = 0; i < p.minOccurs; i++) {
+		for (int i = 0; i < Math.max(1, p.minOccurs); i++) {
 			values.add(new ParameterValue(guessBestType(), getDefaultMime(),
 					null));
 		}
@@ -75,6 +76,11 @@ class InputParameterValues implements Serializable {
 	public boolean isComplex() {
 		List<ProcessParameterIO> ppios = getProcessParameterIO();
 		return ppios.size() > 0 && ppios.get(0) instanceof ComplexPPIO;
+	}
+	
+	public boolean isBoundingBox() {
+	    List<ProcessParameterIO> ppios = getProcessParameterIO();
+        return ppios.size() > 0 && ppios.get(0) instanceof BoundingBoxPPIO; 
 	}
 
 	List<ProcessParameterIO> getProcessParameterIO() {

@@ -66,6 +66,30 @@ public class DescribeProcessTest extends WPSTestSupport {
         assertXpathExists( base + "/wps:Output/wps:ComplexOutput", d );
     }
     
+    /**
+     * Tests encoding of bounding box inputs
+     * @throws Exception
+     */
+    public void testRasterToVector() throws Exception {
+        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gt:RasterToVector");
+        // print(d);
+        checkValidationErrors(d);
+        assertXpathEvaluatesTo("EPSG:4326", "//wps:Input[ows:Identifier='bounds']/wps:BoundingBoxData/wps:Default/wps:CRS", d);
+        assertXpathEvaluatesTo("EPSG:4326", "//wps:Input[ows:Identifier='bounds']/wps:BoundingBoxData/wps:Supported/wps:CRS", d);
+    }
+    
+    /**
+     * Tests encoding of bounding box outputs
+     * @throws Exception
+     */
+    public void testBounds() throws Exception {
+        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=orci:Bounds");
+        // print(d);
+        checkValidationErrors(d);
+        assertXpathEvaluatesTo("EPSG:4326", "//wps:Output[ows:Identifier='bounds']/wps:BoundingBoxOutput/wps:Default/wps:CRS", d);
+        assertXpathEvaluatesTo("EPSG:4326", "//wps:Output[ows:Identifier='bounds']/wps:BoundingBoxOutput/wps:Supported/wps:CRS", d);
+    }
+    
     /* TODO Language Negotiation tests
     public void testGetLanguageGood() throws Exception { // Standard Test A.4.3.4
         Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gt:buffer&language=en-US" );
