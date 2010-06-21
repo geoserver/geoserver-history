@@ -8,9 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridSubset;
@@ -35,6 +38,8 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
      * 4) Removal of LayerInfo from catalog, test TileLayerDispatcher
      * 5) Introducing new LayerInfo, test TileLayerDispatcher
      * 
+     * TODO: this test case really needs to be splitted into more
+     * 
      * @throws Exception
      */
     public void testInit() throws Exception {
@@ -57,9 +62,9 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         assertTrue(tlIter.hasNext());
 
         // Disabling tests until I have working build
-        if (tlIter.hasNext()) {
-            return;
-        }
+//        if (tlIter.hasNext()) {
+//            return;
+//        }
 
         // 1) Check that cite:Lakes
         boolean foundLakes = false;
@@ -114,15 +119,28 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         assertTrue(caughtException);
         
         // 5) Introducing new LayerInfo
-        LayerInfo layerInfo = cat.getFactory().createLayer();
-        layerInfo.setName("hithere");
         ResourceInfo resInfo = li.getResource(); 
         resInfo.setName("hithere");
         resInfo.getNamespace().setPrefix("sf");
+        LayerInfo layerInfo = cat.getFactory().createLayer();
         layerInfo.setResource(resInfo);
+        layerInfo.setName(resInfo.getPrefixedName());
         
         cat.add(layerInfo);
-        TileLayer tl3 = tld.getTileLayer("sf:hithere");
-        assertEquals(tl3.getName(),"sf:hithere");
+        String newLayerName = layerInfo.getName();
+        TileLayer tl3 = tld.getTileLayer(newLayerName);
+        assertEquals(newLayerName, tl3.getName());
+        
+        //6) Add new LayerGroupInfo
+        LayerGroupInfo lgi = cat.getFactory().createLayerGroup();
+        lgi.setName("sf:aLayerGroup");
+        lgi.setBounds(new ReferencedEnvelope(-180, 180, -90, 90, CRS.decode("EPSG:4326")));
+        lgi.getLayers().add(cat.getLayerByName("hithere"));
+        
+        cat.add(lgi);
+        TileLayer tl4 = tld.getTileLayer("sf:aLayerGroup");
+        assertNotNull(tl4);
+        assertEquals(lgi.getName(), tl4.getName());
+        
     }
 }
