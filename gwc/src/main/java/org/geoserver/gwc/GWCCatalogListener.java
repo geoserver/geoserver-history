@@ -112,6 +112,9 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         if(obj instanceof LayerInfo) {
             LayerInfo layerInfo = (LayerInfo) obj;
             wmsLayer = getLayer(layerInfo);
+        }else if(obj instanceof LayerGroupInfo){
+            LayerGroupInfo lgi = (LayerGroupInfo) obj;
+            wmsLayer = getLayer(lgi);
         }
         
         if (wmsLayer != null && this.list != null) {
