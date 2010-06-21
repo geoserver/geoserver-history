@@ -418,6 +418,10 @@ public abstract class DefaultRasterMapProducer extends
         }
         // turn on advanced projection handling
         rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
+        // see if the user specified a dpi
+        if (mapContext.getRequest().getFormatOptions().get("dpi") != null) {
+            rendererParams.put(StreamingRenderer.DPI_KEY, ((Integer) mapContext.getRequest().getFormatOptions().get("dpi")));
+        }
 
         boolean kmplacemark = false;
         if (mapContext.getRequest().getFormatOptions().get("kmplacemark") != null)
