@@ -20,6 +20,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.operation.projection.ProjectionException;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
@@ -120,6 +121,11 @@ public class DefaultWebMapService implements WebMapService,
      * Activate advanced projection handling
      */
     private static Boolean ADVANCED_PROJECTION_HANDLING = null;
+    
+    /**
+     * Activates dpi/uom rescaling
+     */
+    private static Boolean RESCALE_SUPPORT_ENABLED = null;
 
 
     public DefaultWebMapService( WMS wms ) {
@@ -160,7 +166,7 @@ public class DefaultWebMapService implements WebMapService,
                 USE_STREAMING_RENDERER = Boolean.valueOf(enabled);
         }
         
-        // initialization of the renderer choice flag
+        // initialization of the max filters flag
         if (MAX_FILTER_RULES == null) {
             String rules = GeoServerExtensions.getProperty("MAX_FILTER_RULES", context);
             // default to true, but allow switching off
@@ -178,6 +184,15 @@ public class DefaultWebMapService implements WebMapService,
                 ADVANCED_PROJECTION_HANDLING = false;
             else
                 ADVANCED_PROJECTION_HANDLING = Boolean.valueOf(enabled);
+        }
+        
+        // first time initialization of dpi/uom rescaling
+        if (RESCALE_SUPPORT_ENABLED == null) {
+            String enabled = GeoServerExtensions.getProperty(StreamingRenderer.RESCALE_SUPPORT_ENABLED_KEY, context);
+            if(enabled == null)
+                RESCALE_SUPPORT_ENABLED = false;
+            else
+                RESCALE_SUPPORT_ENABLED = Boolean.valueOf(enabled);
         }
     }
     
@@ -214,6 +229,15 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static boolean isAdvancedProjectionHandlingEnabled() {
         return ADVANCED_PROJECTION_HANDLING;
+    }
+    
+    /**
+     * Returns true if the dpi/uom rescaling is active (will be removed in trunk,
+     * it's available on 2.0.x as an easter egg for the adventorous)
+     * @return
+     */
+    public static boolean isDpiUomRescalingActive() {
+        return RESCALE_SUPPORT_ENABLED;
     }
 
     /**

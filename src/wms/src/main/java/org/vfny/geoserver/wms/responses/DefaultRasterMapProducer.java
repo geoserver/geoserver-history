@@ -130,7 +130,6 @@ public abstract class DefaultRasterMapProducer extends
     /** true iff this image is metatiled */
     private boolean tiled = false;
 
-
     /**
      * 
      */
@@ -325,6 +324,12 @@ public abstract class DefaultRasterMapProducer extends
         }
         if(DefaultWebMapService.isAdvancedProjectionHandlingEnabled()) {
             rendererParams.put(StreamingRenderer.ADVANCED_PROJECTION_HANDLING_KEY, true);
+        }
+        // see if the user specified a dpi and the dpi rescaling is enabled
+        if (mapContext.getRequest().getFormatOptions().get("dpi") != null 
+                && DefaultWebMapService.isDpiUomRescalingActive()) {
+            rendererParams.put(StreamingRenderer.DPI_KEY, ((Integer) mapContext.getRequest()
+                    .getFormatOptions().get("dpi")));
         }
 
         boolean kmplacemark = false;

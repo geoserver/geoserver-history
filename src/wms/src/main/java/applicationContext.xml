@@ -138,6 +138,9 @@
 		<property name="request" value="GetStyles"/>
 		<property name="service" value="WMS"/>
  	</bean>
+    <bean id="dpiKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
+        <constructor-arg value="dpi"/>
+    </bean>
  	
  	
  	<!-- kvp request readers -->
