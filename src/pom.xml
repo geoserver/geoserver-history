@@ -971,8 +971,6 @@
       <include>**/*Test.java</include>
      </includes>
      <excludes>
-      <exclude>**/GWCCatalogListenerTest.java</exclude>
-      <exclude>**/GWCIntegrationTest.java</exclude>
      </excludes>
      <forkMode>once</forkMode>
      <argLine>-Xmx${test.maxHeapSize} -enableassertions -Djava.awt.headless=${java.awt.headless} -DremoteOwsTests=${remoteOwsTests}</argLine>
