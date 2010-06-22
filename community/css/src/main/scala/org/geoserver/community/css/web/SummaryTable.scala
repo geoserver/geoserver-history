@@ -78,7 +78,7 @@ extends GeoServerDataProvider[Summary] {
   def this(data: FeatureCollection[SimpleFeatureType, SimpleFeature])
     = this(Summary.summarize(data))
 
-  override def model(a: Any): IModel = new Model(a.asInstanceOf[Serializable])
+  override def newModel(a: Any): IModel = new Model(a.asInstanceOf[Serializable])
 
   override def getProperties(): java.util.List[Property[Summary]] = {
     val list = new java.util.ArrayList[Property[Summary]]
