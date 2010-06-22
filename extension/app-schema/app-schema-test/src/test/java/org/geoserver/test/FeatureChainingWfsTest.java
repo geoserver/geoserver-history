@@ -865,7 +865,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
                 + "        <ogc:Filter>" //
                 + "            <ogc:PropertyIsEqualTo>" //
-                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name[1]</ogc:PropertyName>" //
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" //
                 + "                <ogc:Literal>Yaugher Volcanic Group</ogc:Literal>" //
                 + "            </ogc:PropertyIsEqualTo>" //
                 + "        </ogc:Filter>" //
@@ -879,6 +879,79 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(1, "//gsml:MappedFeature", doc);
         assertXpathEvaluatesTo("mf1", "//gsml:MappedFeature/@gml:id", doc);
+    }
+    
+    /**
+     * Making sure multi-valued attributes in nested features can be queried from the top level. (GEOT-3156) 
+     */
+    public void testFilteringNestedMultiValuedAttribute() {
+        // PropertyIsEqual
+        String xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:PropertyIsEqualTo>" //
+                + "                <ogc:Literal>Yaugher Volcanic Group 2</ogc:Literal>" //
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" //
+                + "            </ogc:PropertyIsEqualTo>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        // there should be 2:
+        // - mf2/gu.25678
+        // - mf3/gu.25678
+        assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(2, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("mf2", "//gsml:MappedFeature[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("mf3", "//gsml:MappedFeature[2]/@gml:id", doc);
+
+        // PropertyIsLike
+        xml = //
+        "<wfs:GetFeature " //
+                + "service=\"WFS\" " //
+                + "version=\"1.1.0\" " //
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+                + "xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\" " //
+                + ">" //
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
+                + "        <ogc:Filter>" //
+                + "            <ogc:PropertyIsLike wildCard=\"*\" singleChar=\"#\" escapeChar=\"!\">>" //
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" //
+                + "                <ogc:Literal>Yaugher Volcanic Group*</ogc:Literal>" //
+                + "            </ogc:PropertyIsLike>" //
+                + "        </ogc:Filter>" //
+                + "    </wfs:Query> " //
+                + "</wfs:GetFeature>";
+        doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        // there should be 3:
+        // - mf1/gu.25699
+        // - mf2/gu.25678
+        // - mf3/gu.25678
+        assertXpathEvaluatesTo("3", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(3, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("mf1", "//gsml:MappedFeature[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("mf2", "//gsml:MappedFeature[2]/@gml:id", doc);
+        assertXpathEvaluatesTo("mf3", "//gsml:MappedFeature[3]/@gml:id", doc);
     }
 
     /**
