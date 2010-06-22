@@ -36,7 +36,7 @@
    <version>2.1-SNAPSHOT</version>
   </dependency>
   <dependency>
-   <groupId>org.h2database</groupId>
+   <groupId>com.h2database</groupId>
    <artifactId>h2</artifactId>
   </dependency>
   <dependency>
