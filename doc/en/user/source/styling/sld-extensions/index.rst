@@ -11,3 +11,4 @@ While not portable they allow to make map making more flexible and to generate b
 
    geometry-transformations
    substitution
+   uom

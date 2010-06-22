@@ -3,7 +3,7 @@
 WMS vendor parameters
 =====================
 
-WFS vendor parameters are options that are not defined in the official WFS specification, but are allowed by it.  GeoServer supports a range of custom WFS parameters.
+WFS vendor parameters are options that are not defined in the official WMS specification, but are allowed by it.  GeoServer supports a range of custom WMS parameters.
 
 angle
 -----
@@ -66,6 +66,19 @@ The ``filter`` parameter encodes a list of OGC filters (in XML).  The list is en
 An example of an OGC filter encoded as part of a GET request::
 
    filter=%3CFilter%20xmlns:gml=%22http://www.opengis.net/gml%22%3E%3CIntersects%3E%3CPropertyName%3Ethe_geom%3C/PropertyName%3E%3Cgml:Point%20srsName=%224326%22%3E%3Cgml:coordinates%3E-74.817265,40.5296504%3C/gml:coordinates%3E%3C/gml:Point%3E%3C/Intersects%3E%3C/Filter%3E
+   
+format_options
+--------------
+
+The ``format_options`` is a container for parameters that are format specific. The options in it are expressed as::
+  
+    param1:value1;param2:value2;...
+    
+The currently recognized format options are:
+
+* ``antialiasing`` (on, off, text): allows to control the use of antialiased rendering in raster outputs. 
+* ``dpi``: sets the rendering dpi in raster outputs. The OGC standard dpi is 90, but if you need to perform high resolution printouts it is advised to grab a larger image and set a higher dpi. For example, to print at 300dpi a 100x100 image it is advised to ask for a 333x333 image setting the dpi value at 300. In general the image size should be increased by a factor equal to ``targetDpi/90`` and the target dpi set in the format options.
+* ``layout``: chooses a named layout for decorations, a tool for visually annotating GeoServer's WMS output.  Layouts can be used to add information such as compasses and legends to the maps you retrieve from GeoServer.  :ref:`wms_decorations` are discussed further in the :ref:`advanced_config` section.
 
 kmattr
 ------
@@ -82,12 +95,6 @@ The ``kmscore`` parameter sets whether GeoServer should render KML data as vecto
    kmscore=<value>
 
 The possible values for this parameter are between ``0`` (force raster output) and ``100`` (force vector output).
-
-layout
-------
-
-The ``layout`` option chooses a named layout for decorations, a tool for visually annotating GeoServer's WMS output.  Layouts can be used to add information such as compasses and legends to the maps you retrieve from GeoServer.  :ref:`wms_decorations` are discussed further in the :ref:`advanced_config` section.
-
 
 maxFeatures and startIndex
 --------------------------
