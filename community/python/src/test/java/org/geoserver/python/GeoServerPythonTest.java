@@ -10,7 +10,11 @@ import junit.framework.Test;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.python.Python;
 import org.geoserver.test.GeoServerTestSupport;
+import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.referencing.CRS;
 import org.h2.tools.DeleteDbFiles;
+import org.opengis.referencing.operation.MathTransform;
+import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 
 public class GeoServerPythonTest extends GeoServerTestSupport {
@@ -68,6 +72,21 @@ public class GeoServerPythonTest extends GeoServerTestSupport {
     }
     
     public void testBasic() throws Exception {
+        ReferencedEnvelope re = new ReferencedEnvelope(-111, -110, 44.7,  44.9, CRS.decode("EPSG:4326"));
+        System.out.println(re.transform(CRS.decode("EPSG:26912"), true));
+        
+        double[] d = new double[]{-111,44.7};
+        MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:4326"), CRS.decode("EPSG:26912"), true );
+        tx.transform(d, 0, d, 0, 1);
+        System.out.println(d[0] + ", " + d[1]);
+        
+        d = new double[]{-110,44.9};
+        tx.transform(d, 0, d, 0, 1);
+        System.out.println(d[0] + ", " + d[1]);
+        
+        System.out.println(re.transform(CRS.decode("EPSG:26912"), true));
+        //ReferencedEnvelope[499999.425017753 : 579224.9506050996, 4949624.888594885 : 4972327.928836986]
+        //ReferencedEnvelope[499999.425017753 : 579224.9506050996, 4949624.888594885 : 4972327.928836986]
         String result = getAsString("/python/scripts/foo.py");
         assertEquals( "foo", result );
     }
@@ -124,7 +143,8 @@ public class GeoServerPythonTest extends GeoServerTestSupport {
     
     public void testAddDataStore() throws Exception {
         assertNull(getCatalog().getDataStoreByName("gs", "Foo"));
-        DeleteDbFiles.execute("target", "foo", false);
+        DeleteDbFiles.execute("target", "foo", true);
+        
         pi.exec("from geoserver import Catalog");
         pi.exec("from geoscript.workspace import H2");
         pi.exec("from geoscript.geom import Point");
@@ -135,8 +155,17 @@ public class GeoServerPythonTest extends GeoServerTestSupport {
         pi.exec("l.add([Point(20,20)])");
         pi.exec("cat.add(h2, 'Foo')");
         assertNotNull(getCatalog().getDataStoreByName("gs", "Foo"));
-        
+        pi.exec("h2.close()");
     }
+    
+//    public void testWorkspaceDataStoreAdadpter() throws Exception {
+//        pi.exec("from geoscript.workspace import H2");
+//        pi.exec("h2 = H2('foo','target')");
+//        
+//        PyObject workspace = pi.get("h2");
+//        WorkspaceDataStoreAdapter adapter = new WorkspaceDataStoreAdapter(workspace);
+//        adapter.getTypeNames();
+//    }
     
     void print() {
         System.out.println(new String(out.toByteArray()));
