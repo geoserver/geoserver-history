@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.python.adapter.DataStoreFactory;
 import org.geoserver.rest.util.IOUtils;
 import org.geoserver.rest.util.RESTUtils;
 import org.geotools.util.logging.Logging;
@@ -23,8 +25,15 @@ public class Python {
     
     boolean initialized = false;
     
+    List<DataStoreFactory> dataStoreFactories;
+    
     public Python(GeoServerResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
+        this.dataStoreFactories = new ArrayList();
+    }
+    
+    public List<DataStoreFactory> getDataStoreFactories() {
+        return dataStoreFactories;
     }
     
     public PythonInterpreter interpreter() {
@@ -60,8 +69,8 @@ public class Python {
         
         //add <GEOSERVER_DATA_DIR>/jython/lib to path
         try {
-            File lib = getLibRoot();
-            pythonPath.add(lib.getCanonicalPath());
+            pythonPath.add(getLibRoot().getCanonicalPath());
+            pythonPath.add(getDataStoreRoot().getCanonicalPath());
         } 
         catch (IOException e) {
             LOGGER.log(Level.WARNING, "Unable to access Jython lib directory", e);
@@ -81,31 +90,44 @@ public class Python {
     
     void initLibs() throws IOException {
         File libRoot = getLibRoot();
-        File gsPyRoot = resourceLoader.findOrCreateDirectory(libRoot, "geoserver");
+        //File gsPyRoot = resourceLoader.findOrCreateDirectory(libRoot, "geoserver");
         
         ClassLoader cl = getClass().getClassLoader(); 
-        IOUtils.copyStream(cl.getResourceAsStream("geoserver/__init__.py"), 
-            new FileOutputStream(new File(gsPyRoot, "__init__.py")), true, true);
-        IOUtils.copyStream(cl.getResourceAsStream("geoserver/catalog.py"), 
-                new FileOutputStream(new File(gsPyRoot, "catalog.py")), true, true);
-        IOUtils.copyStream(cl.getResourceAsStream("geoserver/layer.py"), 
-                new FileOutputStream(new File(gsPyRoot, "layer.py")), true, true);
+        //IOUtils.copyStream(cl.getResourceAsStream("geoserver/__init__.py"), 
+        //    new FileOutputStream(new File(gsPyRoot, "__init__.py")), true, true);
+        //IOUtils.copyStream(cl.getResourceAsStream("geoserver/catalog.py"), 
+        //        new FileOutputStream(new File(gsPyRoot, "catalog.py")), true, true);
+        //IOUtils.copyStream(cl.getResourceAsStream("geoserver/layer.py"), 
+        //        new FileOutputStream(new File(gsPyRoot, "layer.py")), true, true);
         
-        ZipFile f = new ZipFile(new File(cl.getResource("geoscript.zip").getFile()));
-        new File(libRoot, "geoscript").mkdir();
-        IOUtils.inflate(f, libRoot, null);
+        //ZipFile f = new ZipFile(new File(cl.getResource("geoscript.zip").getFile()));
+        //new File(libRoot, "geoscript").mkdir();
+        //IOUtils.inflate(f, libRoot, null);
         
+    }
+    
+    public File getRoot() throws IOException {
+        return resourceLoader.findOrCreateDirectory("python");
     }
     
     public File getScriptRoot() throws IOException {
         return resourceLoader.findOrCreateDirectory("python", "scripts");
     }
     
+    public File getAppRoot() throws IOException {
+        return resourceLoader.findOrCreateDirectory("python", "apps"); 
+    }
+    
     public String getLibPath() throws IOException {
         return "python" + File.separator + "lib";
     }
+    
     public File getLibRoot() throws IOException {
         return resourceLoader.findOrCreateDirectory(getLibPath());
+    }
+
+    public File getDataStoreRoot() throws IOException {
+        return resourceLoader.findOrCreateDirectory("python", "data_stores");
     }
     
 }

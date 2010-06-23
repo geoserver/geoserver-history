@@ -16,12 +16,24 @@
     <constructor-arg ref="resourceLoader"/>
   </bean>
 
+  <bean id="pythonInitializer" class="org.geoserver.python.PythonInitializer">
+     <constructor-arg ref="python"/>
+  </bean>
+  
+  <bean id="pythonDataStoreFactoryProducer" class="org.geoserver.python.PythonDataStoreFactoryProducer">
+     <constructor-arg ref="python"/>
+  </bean>
+  
   <bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
     <property name="routes">
       <map>
         <entry>
           <key><value>/scripts/{script}.py</value></key>
           <value>pythonFinder</value>
+        </entry>
+        <entry>
+          <key><value>/apps/{app}.py</value></key>
+          <value>pythonAppFinder</value>
         </entry>
       </map>
     </property>
@@ -31,12 +43,16 @@
     <constructor-arg ref="python"/>
     <constructor-arg ref="resourceLoader"/>
   </bean>
+  <bean id="pythonAppFinder" class="org.geoserver.python.PythonAppFinder">
+    <constructor-arg ref="python"/>
+    <constructor-arg ref="resourceLoader"/>
+  </bean>
   
    <bean id="pythonConsole" class="org.geoserver.web.DemoLinkInfo">
         <property name="id" value="pythonConsole"/>
         <property name="titleKey" value="PythonConsolePage.title"/>
         <property name="descriptionKey" value="PythonConsolePage.description"/>
         <property name="componentClass" value="org.geoserver.python.web.PythonConsolePage"/>
-    </bean>
+   </bean>
     
 </beans>
