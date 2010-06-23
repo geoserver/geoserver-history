@@ -15,10 +15,12 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.MapModel;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
@@ -33,6 +35,8 @@ public class StatusPage extends ServerAdminPage {
      * The map used as the model source so the label contents are updated
      */
     private final Map<String, String> values;
+    
+    private static final String KEY_DATA_DIR = "dataDir";
 
     private static final String KEY_LOCKS = "locks";
 
@@ -64,6 +68,7 @@ public class StatusPage extends ServerAdminPage {
 
         // TODO: if we just provide the values directly as the models they won't
         // be refreshed on a page reload (ugh).
+        add(new Label("dataDir", new MapModel(values, KEY_DATA_DIR)));
         add(new Label("locks", new MapModel(values, KEY_LOCKS)));
         add(new Label("connections", new MapModel(values, KEY_CONNECTIONS)));
         add(new Label("memory", new MapModel(values, KEY_MEMORY)));
@@ -144,6 +149,7 @@ public class StatusPage extends ServerAdminPage {
     }
 
     private void updateModel() {
+        values.put(KEY_DATA_DIR, getDataDirectory());
         values.put(KEY_LOCKS, Long.toString(getLockCount()));
         values.put(KEY_CONNECTIONS, Long.toString(getConnectionCount()));
         values.put(KEY_MEMORY, formatUsedMemory());
@@ -166,6 +172,15 @@ public class StatusPage extends ServerAdminPage {
                 .getPriority()));
 
         values.put(KEY_UPDATE_SEQUENCE, Long.toString(geoServerInfo.getUpdateSequence()));
+    }
+
+    /**
+     * Retrieves the GeoServer data directory
+     * @return
+     */
+    private String getDataDirectory() {
+        GeoServerDataDirectory dd = getGeoServerApplication().getBeanOfType(GeoServerDataDirectory.class);
+        return dd.root().getAbsolutePath();
     }
 
     boolean isNativeJAIAvailable() {
