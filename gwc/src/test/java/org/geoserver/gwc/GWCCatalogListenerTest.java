@@ -55,9 +55,11 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
             
         }
         
-        List<TileLayer> layerList = gwcListener.getTileLayers(true);
-        
-        Iterator<TileLayer> tlIter = layerList.iterator();
+        List<TileLayer> layerList;
+        Iterator<TileLayer> tlIter;
+
+        layerList = gwcListener.getTileLayers(true);
+        tlIter = layerList.iterator();
 
         assertTrue(tlIter.hasNext());
 
@@ -79,6 +81,8 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         assertTrue(foundLakes); 
 
         // 2) Check sf:GenerictEntity is present and initialized
+        layerList = gwcListener.getTileLayers(true);
+        tlIter = layerList.iterator();
         boolean foudAGF = false;
         while(tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
