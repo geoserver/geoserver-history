@@ -200,11 +200,11 @@
     <artifactId>gt-imagemosaic</artifactId>
     <version>${gt.version}</version>
     <exclusions>
-        <exclusion>
-          <groupId>org.geotools</groupId>
-          <artifactId>gt-jp2k</artifactId>
-        </exclusion>
-      </exclusions> 
+     <exclusion>
+      <groupId>org.geotools</groupId>
+       <artifactId>gt-jp2k</artifactId>
+     </exclusion>
+    </exclusions> 
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
@@ -438,9 +438,109 @@
    </dependency>
    <dependency>
     <groupId>org.geotools</groupId>
-  	<artifactId>gt-temporal</artifactId>
-   	<version>${gt.version}</version>
+    <artifactId>gt-temporal</artifactId>
+    <version>${gt.version}</version>
    </dependency>
+
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-core</artifactId>
+    <version>${gwc.version}</version>
+    <exclusions>
+     <exclusion>
+       <groupId>com.thoughtworks.xstream</groupId>
+       <artifactId>xstream</artifactId>
+     </exclusion>
+     <!-- Spring dependencies -->
+     <exclusion>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-beans</artifactId>
+     </exclusion>
+     <exclusion>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-core</artifactId>
+     </exclusion>
+     <exclusion>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-context</artifactId>
+     </exclusion>
+     <exclusion>
+       <groupId>org.springframework</groupId>
+       <artifactId>spring-webmvc</artifactId>
+     </exclusion>
+     <!-- Java Advanced Imaging (JAI) -->
+     <exclusion>
+       <groupId>javax.media</groupId>
+       <artifactId>jai_core</artifactId>
+     </exclusion>
+     <exclusion>
+       <groupId>javax.media</groupId>
+       <artifactId>jai_codec</artifactId>
+     </exclusion>
+     <exclusion>
+       <groupId>javax.media</groupId>
+       <artifactId>jai_imageio</artifactId>
+     </exclusion>
+    </exclusions>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-georss</artifactId>
+    <version>${gwc.version}</version>
+    <exclusions>
+     <exclusion>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-coverage</artifactId>
+     </exclusion>
+    </exclusions>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-gmaps</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-kml</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-rest</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-tms</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-ve</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-wfs</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-wms</artifactId>
+    <version>${gwc.version}</version>
+    <exclusions>
+     <exclusion>
+      <groupId>org.geotools</groupId>
+      <artifactId>gt-wms</artifactId>
+     </exclusion>
+    </exclusions>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-wmts</artifactId>
+    <version>${gwc.version}</version>
+   </dependency>
+
    <dependency>
     <groupId>org.wkb4j</groupId>
     <artifactId>wkb4j</artifactId>
@@ -1245,6 +1345,7 @@
  <properties>
   <gs.version>2.1-SNAPSHOT</gs.version>
   <gt.version>2.7-SNAPSHOT</gt.version>
+  <gwc.version>1.2-SNAPSHOT</gwc.version>
   <spring.version>2.5.5</spring.version>
   <wicket.version>1.3.7</wicket.version>
   <java.awt.headless>true</java.awt.headless>

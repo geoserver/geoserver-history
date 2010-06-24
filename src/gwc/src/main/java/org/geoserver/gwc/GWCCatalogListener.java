@@ -33,6 +33,7 @@ import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.config.Configuration;
 import org.geowebcache.config.meta.ServiceInformation;
+import org.geowebcache.filter.parameters.ParameterFilter;
 import org.geowebcache.grid.BoundingBox;
 import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.grid.GridSubset;
@@ -328,16 +329,17 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
             return null;
         }
         
-        WMSLayer retLayer = new WMSLayer(
-                lgi.getName(),
-                getWMSUrl(),
-                null, // Styles 
-                lgi.getName(), 
-                mimeFormats, 
-                getGrids(latLonBounds), 
-                metaFactors,
-                null,
-                true);
+        final String layerName = lgi.getName();
+        final String[] wmsURL = getWMSUrl();
+        final String wmsStyles = null;
+        final String wmsLayers = lgi.getName();
+        final Hashtable<String, GridSubset> subSets = getGrids(latLonBounds);
+        final List<ParameterFilter> parameterFilters = null;
+        final String vendorParams = null;
+        final boolean queryable = true;
+        
+        WMSLayer retLayer = new WMSLayer(layerName, wmsURL, wmsStyles, wmsLayers, mimeFormats,
+                subSets, parameterFilters, metaFactors, vendorParams, queryable);
         
         retLayer.setBackendTimeout(120);
         retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
@@ -347,16 +349,18 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     }
     
     private WMSLayer getLayer(ResourceInfo fti) {
-        WMSLayer retLayer = new WMSLayer(
-                fti.getPrefixedName(),
-                getWMSUrl(), 
-                null, // Styles 
-                fti.getPrefixedName(), 
-                mimeFormats, 
-                getGrids(fti.getLatLonBoundingBox()), 
-                metaFactors,
-                null,
-                true);
+        final String layerName = fti.getPrefixedName();
+        final String[] wmsURL = getWMSUrl();
+        final String wmsStyles = null;
+        final String wmsLayers = fti.getPrefixedName();
+        final Hashtable<String, GridSubset> subSets = getGrids(fti.getLatLonBoundingBox());
+        final List<ParameterFilter> parameterFilters = null;
+        final String vendorParams = null;
+        final boolean queryable = true;
+        
+        WMSLayer retLayer = new WMSLayer(layerName, wmsURL, wmsStyles, wmsLayers, mimeFormats,
+                subSets, parameterFilters, metaFactors, vendorParams, queryable);
+
         retLayer.setBackendTimeout(120);
         retLayer.setSourceHelper(new WMSGeoServerHelper(this.gsDispatcher));
         
@@ -435,6 +439,13 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
         y = (Math.PI/180.0)*y;
         double tmp = Math.PI/4.0 + y/2.0; 
         return 20037508.34 * Math.log(Math.tan(tmp)) / Math.PI;
+    }
+
+    /**
+     * @see org.geowebcache.config.Configuration#isRuntimeStatsEnabled()
+     */
+    public boolean isRuntimeStatsEnabled() {
+        return true;
     }
 
 }

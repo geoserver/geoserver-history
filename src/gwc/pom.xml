@@ -38,71 +38,47 @@
       <artifactId>mockrunner</artifactId>
       <scope>test</scope>
     </dependency>
-  <dependency>
-   <groupId>org.geowebcache</groupId>
-   <artifactId>geowebcache</artifactId>
-   <version>1.2.2</version>
-   <exclusions>
-   <!-- GeoServer - This doesn't actually do anything, specified in
-        community/pom.xml -->
-    <exclusion>
-     <groupId>org.geoserver</groupId>
-     <artifactId>platform</artifactId>
-    </exclusion>
-    <!-- GeoTools - Also not very successful-->
-    <exclusion>
-     <groupId>org.geotools</groupId>
-     <artifactId>gt-wms</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.geotools</groupId>
-     <artifactId>gt-api</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.geotools</groupId>
-     <artifactId>gt-main</artifactId>
-    </exclusion>
-    <!-- JAI wrappers -->
-    <exclusion>
-     <groupId>javax.media</groupId>
-     <artifactId>jai_core</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>javax.media</groupId>
-     <artifactId>jai_codec</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>javax.media</groupId>
-     <artifactId>jai_imageio</artifactId>
-    </exclusion>
-    <!-- Spring -->
-    <exclusion>
-     <groupId>org.springframework</groupId>
-     <artifactId>spring-beans</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.springframework</groupId>
-     <artifactId>spring-core</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.springframework</groupId>
-     <artifactId>spring-context</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>org.springframework</groupId>
-     <artifactId>spring-webmvc</artifactId>
-    </exclusion>
-    <!-- Acegi -->
-    <exclusion>
-     <groupId>org.acegisecurity</groupId>
-     <artifactId>acegi-security</artifactId>
-    </exclusion>
-    <exclusion>
-     <groupId>net.sf.json-lib</groupId>
-     <artifactId>json-lib</artifactId>
-    </exclusion>
-   </exclusions>
-  </dependency>
+
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-core</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-georss</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-gmaps</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-kml</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-rest</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-tms</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-ve</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-wfs</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-wms</artifactId>
+   </dependency>
+   <dependency>
+    <groupId>org.geowebcache</groupId>
+    <artifactId>gwc-wmts</artifactId>
+   </dependency>
  </dependencies>
  
 </project>
