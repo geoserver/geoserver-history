@@ -6,7 +6,6 @@ package org.geoserver.wps.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import net.opengis.ows11.BoundingBoxType;
@@ -126,9 +125,7 @@ public class ExecuteProcessResponse extends Response {
             }
         } else if(rawResult instanceof CDataEncoderDelegate) {
         	try {
-        		OutputStreamWriter osw = new OutputStreamWriter(output);
-                ((CDataEncoderDelegate) rawResult).encode(osw);
-                osw.flush();
+                ((CDataEncoderDelegate) rawResult).encode(output);
         	} catch(Exception e) {
         		throw new WPSException("An error occurred while encoding "
                         + "the results of the process", e);

@@ -6,11 +6,10 @@
 package org.geoserver.wps;
 
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Reader;
-import java.io.Writer;
 
 import org.geoserver.wps.ppio.CDataPPIO;
 import org.geotools.xml.EncoderDelegate;
@@ -24,32 +23,33 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class CDataEncoderDelegate implements EncoderDelegate {
 
-	CDataPPIO ppio;
-	Object object;
+    CDataPPIO ppio;
 
-	public CDataEncoderDelegate(CDataPPIO ppio, Object object) {
-		this.ppio = ppio;
-		this.object = object;
-	}
+    Object object;
 
-	public void encode(ContentHandler output) throws Exception {
-		((LexicalHandler) output).startCDATA();
-		PipedInputStream pins = new PipedInputStream();
-        Writer w = new OutputStreamWriter(new PipedOutputStream(pins));
-		ppio.encode(object, w);
-		Reader r = new InputStreamReader(pins);
-		char[] buffer = new char[1024];
-		int read;
-		while((read = r.read(buffer)) > 0) {
-		    output.characters(buffer, 0, read);
-		}
-		w.close();
-		r.close();
-		((LexicalHandler) output).endCDATA();
-	}
+    public CDataEncoderDelegate(CDataPPIO ppio, Object object) {
+        this.ppio = ppio;
+        this.object = object;
+    }
 
-	public void encode(Writer w) throws Exception {
-	    ppio.encode(object, w);
-	}
+    public void encode(ContentHandler output) throws Exception {
+        ((LexicalHandler) output).startCDATA();
+        PipedInputStream pins = new PipedInputStream();
+        PipedOutputStream pos = new PipedOutputStream(pins);
+        ppio.encode(object, pos);
+        Reader r = new InputStreamReader(pins);
+        char[] buffer = new char[1024];
+        int read;
+        while ((read = r.read(buffer)) > 0) {
+            output.characters(buffer, 0, read);
+        }
+        pos.close();
+        r.close();
+        ((LexicalHandler) output).endCDATA();
+    }
+
+    public void encode(OutputStream os) throws Exception {
+        ppio.encode(object, os);
+    }
 
 }
