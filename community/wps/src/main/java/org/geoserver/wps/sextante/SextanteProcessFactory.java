@@ -38,6 +38,8 @@ import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 import es.unex.sextante.additionalInfo.AdditionalInfo;
 import es.unex.sextante.additionalInfo.AdditionalInfoBoolean;
 import es.unex.sextante.additionalInfo.AdditionalInfoFixedTable;
@@ -79,6 +81,8 @@ import es.unex.sextante.parameters.ParameterVectorLayer;
  */
 public class SextanteProcessFactory implements ProcessFactory {
     public static final String SEXTANTE_NAMESPACE = "sxt";
+    public static final String SEXTANTE_GRID_ENVELOPE = "gridEnvelope";    
+    public static final String SEXTANTE_GRID_CELL_SIZE = "gridCellSize";
     
     private Set<Name> names = new HashSet<Name>();
 
@@ -162,6 +166,7 @@ public class SextanteProcessFactory implements ProcessFactory {
         ParametersSet paramSet = algorithm.getParameters();
         Map<String, Parameter<?>> paramInfo = new LinkedHashMap<String, Parameter<?>>();
 
+        boolean hasRasterInput = false;
         for (int i = 0; i < paramSet.getNumberOfParameters(); i++) {
             es.unex.sextante.parameters.Parameter param = paramSet.getParameter(i);
             String title = param.getParameterDescription();
@@ -178,13 +183,52 @@ public class SextanteProcessFactory implements ProcessFactory {
             	// fine
             }
             
+            hasRasterInput = hasRasterInput || IRasterLayer.class.isAssignableFrom(param.getParameterClass());
             paramInfo.put(param.getParameterName(), new Parameter(param.getParameterName(),
                     mapToGeoTools(param.getParameterClass()), Text.text(title),
                     Text.text(description), getAdditionalInfoMap(param)));
         }
+        
+        // check if there is any raster output
+        boolean hasRasterOutput = false;
+        OutputObjectsSet ooset = algorithm.getOutputObjects();
+        for (int i = 0; i < ooset.getOutputObjectsCount(); i++) {
+            Output output = ooset.getOutput(i);
+            if (output instanceof OutputRasterLayer) {
+                hasRasterOutput = true;
+                break;
+            }
+        }
+
+        // if there is any input or output raster we also need the user to specify
+        // the grid structure, though we can get it from the first raster if there
+        // are raster inputs, meaning in that case we'll grab it from 
+        if(hasRasterInput || hasRasterOutput) {
+            // create a grid envelope, required only if there is no raster input we can
+            // get the same info from
+            if(hasRasterInput) {
+                paramInfo.put(SEXTANTE_GRID_ENVELOPE, new Parameter(SEXTANTE_GRID_ENVELOPE, 
+                        Envelope.class, Text.text("Grid bounds (defaults to the bounds of the inputs)"), 
+                        Text.text("The real world coordinates bounding the grid"), 
+                        false, 0, 1, null, null));
+                paramInfo.put(SEXTANTE_GRID_CELL_SIZE, new Parameter(SEXTANTE_GRID_CELL_SIZE, 
+                        Double.class, Text.text("Cell size (defaults to the size of the first input)"), 
+                        Text.text("The cell size in real world units"), 
+                        false, 0, 1, null, null));
+            } else {
+                paramInfo.put(SEXTANTE_GRID_ENVELOPE, new Parameter(SEXTANTE_GRID_ENVELOPE, 
+                        Envelope.class, Text.text("Grid bounds"), 
+                        Text.text("The real world coordinates bounding the grid"), 
+                        true, 1, 1, null, null));
+                paramInfo.put(SEXTANTE_GRID_CELL_SIZE, new Parameter(SEXTANTE_GRID_CELL_SIZE, 
+                        Double.class, Text.text("Cell size"), 
+                        Text.text("The cell size in real world units"), 
+                        true, 1, 1, null, null));
+            }
+            
+        }
 
         return paramInfo;
-
     }
 
     /**
@@ -290,16 +334,13 @@ public class SextanteProcessFactory implements ProcessFactory {
             if (output instanceof OutputVectorLayer) {
                 outputClass = FeatureCollection.class;
             } else if (output instanceof OutputRasterLayer) {
-                outputClass = GridCoverage.class;
-            }
-            if (output instanceof OutputTable) {
+                outputClass = GridCoverage2D.class;
+            } else if (output instanceof OutputTable) {
                 outputClass = FeatureCollection.class;
-            }
-            if (output instanceof OutputChart) {
-                outputClass = ChartPanel.class;
-            }
-            if (output instanceof OutputText) {
+            } else if (output instanceof OutputText) {
                 outputClass = String.class;
+            } else {
+                throw new IllegalArgumentException("Don't know how to handle output of type" + output.getClass());
             }
 
             outputInfo.put(output.getName(), new Parameter(output.getName(), outputClass, Text

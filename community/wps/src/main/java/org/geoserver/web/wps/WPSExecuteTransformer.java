@@ -110,6 +110,9 @@ class WPSExecuteTransformer extends TransformerBase {
 			for (InputParameterValues pv : inputs) {
 				for (int i = 0; i < pv.values.size(); i++) {
 					ParameterValue value = pv.values.get(i);
+					if(value == null || value.value == null) {
+					    continue;
+					}
 
 					start("wps:Input");
 					element("ows:Identifier", pv.paramName);
