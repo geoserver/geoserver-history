@@ -4,17 +4,20 @@
  */
 package org.geoserver.wps.sextante;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import static org.geoserver.wps.sextante.SextanteProcessFactory.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.process.Process;
 import org.opengis.util.ProgressListener;
+
+import com.vividsolutions.jts.geom.Envelope;
 
 import es.unex.sextante.core.GeoAlgorithm;
 import es.unex.sextante.core.ITaskMonitor;
@@ -24,17 +27,11 @@ import es.unex.sextante.dataObjects.IDataObject;
 import es.unex.sextante.exceptions.GeoAlgorithmExecutionException;
 import es.unex.sextante.exceptions.WrongParameterIDException;
 import es.unex.sextante.outputs.Output;
+import es.unex.sextante.outputs.OutputRasterLayer;
 import es.unex.sextante.parameters.Parameter;
 import es.unex.sextante.rasterWrappers.GridExtent;
 
 public class SextanteProcess implements Process{
-
-	/**
-	 * A constant to use as a key to identify the output grid extent
-	 * as another input parameter of the process. In a SEXTANTE
-	 * algorithm this is not a parameter included in the parameters set.
-	 */
-	public static final Object GRID_EXTENT = "GRID_EXTENT";
 
 	private GeoAlgorithm m_Algorithm;
 
@@ -98,8 +95,10 @@ public class SextanteProcess implements Process{
 				if (outputObject instanceof IDataObject){
 					IDataObject dataObject = (IDataObject) outputObject;
 					Object wrapped = dataObject.getBaseDataObject();
-					if(wrapped instanceof FeatureSource) {
+					if(wrapped instanceof FeatureSource) { 
 						results.put(output.getName(), ((FeatureSource) wrapped).getFeatures());
+					} else if(wrapped instanceof GridCoverage2D) {
+					    results.put(output.getName(), wrapped);
 					} else {
 						results.put(output.getName(), wrapped);
 					}
@@ -123,26 +122,92 @@ public class SextanteProcess implements Process{
 	 * @throws WrongParameterIDException
 	 */
 	private void setAlgorithmInputs(Map<String, Object> input)
-						throws WrongParameterIDException {
+						throws GeoAlgorithmExecutionException {
 
+	    // set the normal parameters
 		ParametersSet paramSet = (ParametersSet) m_Algorithm.getParameters();
-		Set<String> keys = input.keySet();
-		Iterator<String> iter = keys.iterator();
-		while(iter.hasNext()){
-			String sKey = iter.next();
-			if (!sKey.equals(GRID_EXTENT)){
-				Object paramValue = input.get(sKey);
-				Parameter param = paramSet.getParameter(sKey);
-				if(paramValue instanceof FeatureCollection) {
-					param.setParameterValue(GTVectorLayer.createLayer(DataUtilities.source((FeatureCollection) paramValue), Query.ALL));
-				} else {
-					param.setParameterValue(paramValue);
-				}
+		boolean gridExtendRequired = false;
+		for(String sKey : input.keySet()) {
+			if(SEXTANTE_GRID_CELL_SIZE.equals(sKey) || SEXTANTE_GRID_ENVELOPE.equals(sKey)) {
+			    // these two parameters we made up to expose the GridExtent, we'll deal with them later
+			    continue;
 			}
-			GridExtent ge = (GridExtent) input.get(GRID_EXTENT);
-			m_Algorithm.setGridExtent(ge);
+			Object paramValue = input.get(sKey);
+			Parameter param = paramSet.getParameter(sKey);
+			if(paramValue instanceof FeatureCollection) {
+				param.setParameterValue(GTVectorLayer.createLayer(DataUtilities.source((FeatureCollection) paramValue), Query.ALL));
+			} else if(paramValue instanceof GridCoverage2D) {
+			    GTRasterLayer layer = new GTRasterLayer();
+			    gridExtendRequired = true;
+			    layer.create(paramValue);
+			    param.setParameterValue(layer);
+			} else {
+				param.setParameterValue(paramValue);
+			}
 		}
-
+		
+		// check the outputs as well for raster data
+		OutputObjectsSet outputs = m_Algorithm.getOutputObjects();
+        for (int i = 0; i < outputs.getOutputObjectsCount(); i++) {
+            Output output = outputs.getOutput(i);
+            if(output instanceof OutputRasterLayer) {
+                gridExtendRequired = true;
+            }
+        }
+		
+        // handle the grid extent if necessary
+		if(gridExtendRequired) {
+    		// get the cell size
+    		double cellSize = Double.NaN;
+    		if(input.get(SEXTANTE_GRID_CELL_SIZE) != null) {
+    		    cellSize = (Double) input.get(SEXTANTE_GRID_CELL_SIZE);
+    		} else {
+    		    for(String sKey : input.keySet()) {
+    		        Object value = paramSet.getParameter(sKey).getParameterValueAsObject();
+    		        if(value instanceof GTRasterLayer) {
+    		            cellSize = ((GTRasterLayer) value).getLayerCellSize();
+    		            return;
+    		        }
+    		    }
+    		}
+    		if(Double.isNaN(cellSize)) {
+    		    throw new GeoAlgorithmExecutionException(SEXTANTE_GRID_CELL_SIZE 
+    		            + " parameter could not be derived from inputs, and is not available among ");
+    		}
+    		
+    		// get the extents
+    		Envelope envelope = null;
+    		if(input.get(SEXTANTE_GRID_ENVELOPE) != null) {
+    		    envelope = (Envelope) input.get(SEXTANTE_GRID_ENVELOPE);
+    		} else {
+    		    for(String sKey : input.keySet()) {
+                    Object value = paramSet.getParameter(sKey).getParameterValueAsObject();
+                    if(value instanceof GTRasterLayer) {
+                        GridExtent ge = ((GTRasterLayer) value).getLayerGridExtent();
+                        Envelope genv = new Envelope(ge.getXMin(), ge.getXMax(), ge.getYMin(), ge.getYMax());
+                        if(envelope == null) {
+                            envelope = genv;
+                        } else {
+                            envelope.expandToInclude(genv);
+                        }
+                        return;
+                    }
+                }
+    		}
+    		if(envelope == null) {
+    		    if(Double.isNaN(cellSize)) {
+                    throw new GeoAlgorithmExecutionException(SEXTANTE_GRID_ENVELOPE
+                            + " parameter could not be derived from inputs, and is not available among ");
+                }
+    		}
+    		
+    		// build and set the grid extends
+    		GridExtent extent = new GridExtent();
+    		extent.setXRange(envelope.getMinX(), envelope.getMaxX());
+    		extent.setYRange(envelope.getMinY(), envelope.getMaxY());
+    		extent.setCellSize(cellSize);
+    		m_Algorithm.setGridExtent(extent);
+		}
 	}
 
 }

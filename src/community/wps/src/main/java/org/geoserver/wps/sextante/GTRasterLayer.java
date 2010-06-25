@@ -143,9 +143,13 @@ public class GTRasterLayer extends AbstractRasterLayer {
 	public double getCellValueInLayerCoords(int x, int y, int band) {
 
 		if (m_image != null){
-			return getTile(x, y).getSampleDouble(x, y, band);
-		}
-		else{
+			Raster tile = getTile(x, y);
+            if(tile != null) {
+			    return tile.getSampleDouble(x, y, band);
+			} else {
+			    return getNoDataValue();
+			}
+		} else {
 			return getNoDataValue();
 		}
 
