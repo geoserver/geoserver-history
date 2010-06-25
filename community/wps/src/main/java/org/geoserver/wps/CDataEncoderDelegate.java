@@ -5,6 +5,13 @@
 
 package org.geoserver.wps;
 
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.io.Reader;
+import java.io.Writer;
+
 import org.geoserver.wps.ppio.CDataPPIO;
 import org.geotools.xml.EncoderDelegate;
 import org.xml.sax.ContentHandler;
@@ -27,13 +34,22 @@ public class CDataEncoderDelegate implements EncoderDelegate {
 
 	public void encode(ContentHandler output) throws Exception {
 		((LexicalHandler) output).startCDATA();
-		char[] chars = ppio.encode(object).toCharArray();
-		output.characters(chars, 0, chars.length);
+		PipedInputStream pins = new PipedInputStream();
+        Writer w = new OutputStreamWriter(new PipedOutputStream(pins));
+		ppio.encode(object, w);
+		Reader r = new InputStreamReader(pins);
+		char[] buffer = new char[1024];
+		int read;
+		while((read = r.read(buffer)) > 0) {
+		    output.characters(buffer, 0, read);
+		}
+		w.close();
+		r.close();
 		((LexicalHandler) output).endCDATA();
 	}
 
-	public String encode() throws Exception {
-		return ppio.encode(object);
+	public void encode(Writer w) throws Exception {
+	    ppio.encode(object, w);
 	}
 
 }
