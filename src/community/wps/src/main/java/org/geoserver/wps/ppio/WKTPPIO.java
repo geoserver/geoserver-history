@@ -7,6 +7,8 @@ package org.geoserver.wps.ppio;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 
@@ -35,8 +37,13 @@ public class WKTPPIO extends CDataPPIO {
 	}
 
     @Override
-    public void encode(Object value, Writer writer) throws IOException {
-        new WKTWriter().write((Geometry) value, writer); 
+    public void encode(Object value, OutputStream os) throws IOException {
+        Writer w = new OutputStreamWriter(os);
+        try {
+            new WKTWriter().write((Geometry) value, w);
+        } finally {
+            w.flush();
+        }
     }
 
 	

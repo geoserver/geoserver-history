@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.management.RuntimeErrorException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -236,7 +237,13 @@ class WPSExecuteTransformer extends TransformerBase {
 				if (document != null) {
 					dumpAsXML(document);
 				} else {
-					chars(data);
+				    try {
+    				    ((LexicalHandler) contentHandler).startCDATA();
+    					chars(data);
+    					((LexicalHandler) contentHandler).endCDATA();
+				    } catch(SAXException e) {
+				        throw new RuntimeException(e);
+				    }
 				}
 			}
 			end("wps:ComplexData");

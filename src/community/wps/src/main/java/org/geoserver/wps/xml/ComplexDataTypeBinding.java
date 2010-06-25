@@ -11,8 +11,6 @@ import net.opengis.wps10.ComplexDataType;
 import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.wps.XMLEncoderDelegate;
-import org.geoserver.wps.WPSException;
-import org.geoserver.wps.ppio.ComplexPPIO;
 import org.geotools.xml.ElementInstance;
 import org.geotools.xml.Node;
 
@@ -44,7 +42,7 @@ public class ComplexDataTypeBinding extends org.geotools.wps.bindings.ComplexDat
     	
     	// handle non xml content as well
     	if(cd.getData().size() == 0) {
-    		cd.getData().add(value);
+    		cd.getData().add(instance.getText().toString());
     	}
     	
     	return cd;

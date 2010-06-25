@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.geotools.gml3.GMLConfiguration;
-import org.hsqldb.lib.StringInputStream;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -261,6 +260,9 @@ public class ExecuteTest extends WPSTestSupport {
         assertXpathEvaluatesTo("-4.0E-4 -0.0024", "/ows:BoundingBox/ows:LowerCorner", dom);
         assertXpathEvaluatesTo("0.0036 0.0024", "/ows:BoundingBox/ows:UpperCorner", dom);
     }
+    
+    
+    
 	
 	/* TODO Updating of Response requests A.4.4.5 */
 	

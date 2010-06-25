@@ -5,7 +5,7 @@
 package org.geoserver.wps.ppio;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 
 /**
  * Process parameter input / output for objects which are text based (no Base64 encoding needed)
@@ -21,6 +21,6 @@ public abstract class CDataPPIO extends ComplexPPIO {
 	/**
      * Encodes the internal object representation to the provided writer
      */
-    public abstract void encode( Object value,  Writer writer) throws IOException;
+    public abstract void encode( Object value, OutputStream os) throws IOException;
 
 }
