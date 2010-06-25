@@ -4,9 +4,11 @@
  */
 package org.geoserver.wps.ppio;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.Writer;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKTReader;
@@ -32,9 +34,11 @@ public class WKTPPIO extends CDataPPIO {
 		return new WKTReader().read(new StringReader((String) input));
 	}
 
-	@Override
-    public String encode( Object value ) {
-        return new WKTWriter().write((Geometry) value);
+    @Override
+    public void encode(Object value, Writer writer) throws IOException {
+        new WKTWriter().write((Geometry) value, writer); 
     }
+
+	
 	
 }
