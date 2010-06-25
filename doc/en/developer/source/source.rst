@@ -31,7 +31,7 @@ In order to commit to the repository the following steps must be taken:
 #. Register for commit access as described here.
 #. Switch the repository to the "https" protocol. Example::
 
-     [root of checkout]%  svn switch https://svn.codehaus.org/geoserver/trunk
+     [root of checkout]% svn switch --relocate http://svn.codehaus.org/geoserver/trunk https://svn.codehaus.org/geoserver/trunk .
 
 Repository structure
 --------------------

@@ -14,7 +14,8 @@ Running Maven
 -------------
 
 Maven provides a wide range of commands used to do everything from compiling a 
-module to generating test coverage reports. Most maven commands can be run from the root the source tree, or from a particular module.
+module to generating test coverage reports. Most maven commands can be run from
+the root the source tree, or from a particular module.
 
   .. note::
 
@@ -90,6 +91,23 @@ A special profile named ``allExtensions`` enables all extensions::
 Profiles
 --------
 
+Additional profiles are defined in the pom.xml files providing optional build steps. Profiles are directly enabled with the \-P flag, others are automatically activated based on platform used or a \-D property being defined.
+
+To build the release module as part of your build::
+
+   -Drelease
+   
+To include remote tests::
+
+   -PremoteOwsTests
+
+Profiles are also used manage optional extensions community plugins::
+
+   -Pproxy
+   -Poracle
+   -Pupload
+   -Pwps
+
 Eclipse
 -------
 
@@ -140,12 +158,12 @@ Running the web module with Jetty
 The maven jetty plugin can be used to run modules which are web based in an 
 embedded Jetty container::
 
-  cd geoserver_1.7.x/src/web
+  cd geoserver_2.0.x/src/web/app
   mvn jetty:run
 
 .. note::
 
-   This command must be run from the web module, it will fail if run from 
+   This command must be run from the web/app module, it will fail if run from 
    elsewhere.
 
 The above command will run GeoServer with the built in data directory. To 
