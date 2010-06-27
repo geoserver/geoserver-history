@@ -74,6 +74,15 @@
     <property name="icon" value="../img/icons/silk/server_chart.png"/>
     <property name="order" value="10"/>
   </bean>
+  <bean id="logsPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.admin.logs"/>
+    <property name="titleKey" value="LogPage.title"/>
+    <property name="descriptionKey" value="LogPage.description"/>
+    <property name="componentClass" value="org.geoserver.web.admin.LogPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="../img/icons/silk/page_white_text.png"/>
+    <property name="order" value="15"/>
+  </bean>
   <bean id="contactMenuPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="server.admin.contact"/>
     <property name="titleKey" value="ContactPage.title"/>
@@ -101,7 +110,7 @@
     <property name="icon" value="../img/icons/silk/cog_photo.png"/>
     <property name="order" value="40"/>
   </bean>
-  <bean id="abountMenuPage" class="org.geoserver.web.MenuPageInfo">
+  <bean id="aboutMenuPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="server.about"/>
     <property name="titleKey" value="AboutGeoServerPage.title"/>
     <property name="descriptionKey" value="AboutGeoServerPage.description"/>
