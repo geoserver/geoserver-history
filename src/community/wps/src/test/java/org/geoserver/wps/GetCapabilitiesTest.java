@@ -13,7 +13,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     
     public void testGetBasic() throws Exception { // Standard Test A.4.2.1
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities" );
-        print(d);
+        // print(d);
         basicCapabilitiesTest(d);
     }
 
@@ -28,13 +28,13 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     
     public void testBasicGetAcceptVersions() throws Exception { // Standard Test A.4.2.3
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities&AcceptVersions=1.0.0" );
-        print(d);
+        // print(d);
         basicCapabilitiesTest(d);
     }
     
     public void testBasicGetLanguage() throws Exception { // Standard Test A.4.2.3
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities&language=en-US" );
-        print(d);
+        // print(d);
         basicCapabilitiesTest(d);
     }
 
@@ -62,7 +62,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     }
     
     private void basicCapabilitiesTest(Document d) throws Exception {
-        print(d);
+        // print(d);
         checkValidationErrors(d);
         
         assertEquals( "wps:Capabilities", d.getDocumentElement().getNodeName() );
@@ -123,7 +123,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
                 + "  </ows:AcceptVersions>" // 
                 + "</wps:GetCapabilities>";
         Document dom = postAsDOM(root(), request);
-        print( dom );
+        // print( dom );
         assertEquals("wps:Capabilities", dom.getFirstChild().getNodeName());
     }
     
