@@ -1,5 +1,7 @@
 package org.geoserver.wps;
 
+import static org.custommonkey.xmlunit.XMLAssert.*;
+
 import junit.framework.Test;
 
 import org.w3c.dom.Document;
@@ -13,7 +15,7 @@ public class GetCapabilitiesTest extends WPSTestSupport {
     
     public void testGetBasic() throws Exception { // Standard Test A.4.2.1
         Document d = getAsDOM( "wps?service=wps&request=getcapabilities" );
-        // print(d);
+        print(d);
         basicCapabilitiesTest(d);
     }
 
@@ -68,6 +70,15 @@ public class GetCapabilitiesTest extends WPSTestSupport {
         assertEquals( "wps:Capabilities", d.getDocumentElement().getNodeName() );
         int np = d.getElementsByTagName( "wps:Process" ).getLength();
         assertTrue( np > 0 );
+        
+        // check the operation links
+        String[] operations = new String[] {"GetCapabilities", "DescribeProcess", "Execute"};
+        for (String operation : operations) {
+            String getPath = "//ows:Operation[@name='" + operation + "']/ows:DCP/ows:HTTP/ows:Get/@xlink:href";
+            assertXpathEvaluatesTo("http://localhost:8080/geoserver/wps", getPath, d); 
+            String postPath = "//ows:Operation[@name='" + operation + "']/ows:DCP/ows:HTTP/ows:Post/@xlink:href";
+            assertXpathEvaluatesTo("http://localhost:8080/geoserver/wps", postPath, d);
+        }
     }
 
     public void testUnsupportedVersionHighPost() throws Exception { // Standard Test A.4.2.5

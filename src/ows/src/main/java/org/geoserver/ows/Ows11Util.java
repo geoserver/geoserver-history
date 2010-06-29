@@ -6,6 +6,7 @@ package org.geoserver.ows;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,7 +21,9 @@ import net.opengis.ows11.Ows11Factory;
 import net.opengis.ows11.RequestMethodType;
 
 import org.eclipse.emf.ecore.EObject;
+import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
 import org.geotools.feature.NameImpl;
 import org.geotools.xml.EMFUtils;
@@ -138,15 +141,13 @@ public class Ows11Util {
         return report;
     }
     
-    public static DCPType dcp( String service, String operation, EObject request ) {
+    public static DCPType dcp( String service, EObject request ) {
         String baseUrl = (String) EMFUtils.get( request, "baseUrl" );
         if ( baseUrl == null ) {
             throw new IllegalArgumentException( "Request object" + request + " has no 'baseUrl' property.");
         }
+        String href = ResponseUtils.buildURL(baseUrl, service, new HashMap<String, String>(), URLType.SERVICE);
         
-        //TODO: version
-        String href = baseUrl + "?service=" + service + "&request=" + operation + "&";
-            
         DCPType dcp = f.createDCPType();
         dcp.setHTTP( f.createHTTPType() );
         
@@ -155,7 +156,7 @@ public class Ows11Util {
         dcp.getHTTP().getGet().add( get );
         
         RequestMethodType post = f.createRequestMethodType();
-        post.setHref( baseUrl );
+        post.setHref( href );
         dcp.getHTTP().getPost().add( post );
         
         return dcp;

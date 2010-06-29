@@ -109,17 +109,17 @@ public class GetCapabilities {
         
         OperationType gco = owsf.createOperationType();
         gco.setName("GetCapabilities");
-        gco.getDCP().add( Ows11Util.dcp( "wps", gco.getName(), request ) );
+        gco.getDCP().add( Ows11Util.dcp( "wps", request ) );
         om.getOperation().add( gco );
         
         OperationType dpo = owsf.createOperationType();
         dpo.setName( "DescribeProcess");
-        dpo.getDCP().add( Ows11Util.dcp( "wps", dpo.getName(), request ) );
+        dpo.getDCP().add( Ows11Util.dcp( "wps", request ) );
         om.getOperation().add( dpo );
         
         OperationType eo = owsf.createOperationType();
         eo.setName( "Execute" );
-        eo.getDCP().add( Ows11Util.dcp( "wps", eo.getName(), request ) );
+        eo.getDCP().add( Ows11Util.dcp( "wps", request ) );
         om.getOperation().add( eo );
         
         ProcessOfferingsType po = wpsf.createProcessOfferingsType();
