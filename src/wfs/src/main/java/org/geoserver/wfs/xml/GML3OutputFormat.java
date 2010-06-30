@@ -134,6 +134,16 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             configuration.getProperties().add( GMLConfiguration.NO_FEATURE_BOUNDS);
         }
         
+        /*
+         * Set property encoding featureMemeber as opposed to featureMembers
+         * 
+         */
+        if (wfs.isEncodeFeatureMember()) {
+            configuration.getProperties().add(GMLConfiguration.ENCODE_FEATURE_MEMBER);
+        } else {
+            configuration.getProperties().remove(GMLConfiguration.ENCODE_FEATURE_MEMBER);
+        }
+        
         Encoder encoder = new Encoder(configuration, configuration.schema());
         encoder.setEncoding(Charset.forName( global.getCharset() ));
 

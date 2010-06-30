@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import junit.framework.Test;
 
+import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.w3c.dom.Document;
 
@@ -900,5 +901,132 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         id = "gu.25682";
         assertXpathEvaluatesTo(id, "(//gsml:GeologicUnit)[3]/@gml:id", doc);
     }
+    /**
+     * Test FeatureCollection is encoded with multiple featureMember elements
+     * @throws Exception
+     */
+    public void testEncodeFeatureMember() throws Exception {
+        // change fixture settings (must restore this at end)
+        WFSInfo wfs = getGeoServer().getService(WFSInfo.class);
+        boolean encodeFeatureMember = wfs.isEncodeFeatureMember();
+        wfs.setEncodeFeatureMember(true);
+        getGeoServer().save(wfs);
+        
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature,gsml:GeologicUnit");
+        LOGGER.info("WFS GetFeature&typename=gsml:MappedFeature,gsml:GeologicUnit response:\n"
+                + prettyString(doc));
+        
+       checkSchemaLocation(doc);
 
+        assertXpathEvaluatesTo("7", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(4, "//gsml:MappedFeature", doc);        
+
+        assertEquals(7, doc.getElementsByTagName("gml:featureMember").getLength());
+        assertEquals(0, doc.getElementsByTagName("gml:featureMembers").getLength());
+
+        // mf1
+        {
+            String id = "mf1";
+            checkMf1Content(id, doc);
+        }
+
+        // mf2
+        {
+            String id = "mf2";
+            checkMf2Content(id, doc);
+        }
+
+        // mf3
+        {
+            String id = "mf3";
+            checkMf3Content(id, doc);
+        }
+
+        // mf4
+        {
+            String id = "mf4";
+            checkMf4Content(id, doc);
+        }
+
+        // check for duplicate gml:id
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25699']", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25678']", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25682']", doc);
+
+        // test for xlink:href is encoded within featureMember
+        assertXpathCount(1, "//gml:featureMember[@xlink:href='#gu.25699']", doc);
+        assertXpathCount(1, "//gml:featureMember[@xlink:href='#gu.25678']", doc);
+        assertXpathCount(1, "//gml:featureMember[@xlink:href='#gu.25682']", doc);
+
+        // restore fixture settings
+        wfs = getGeoServer().getService(WFSInfo.class);
+        wfs.setEncodeFeatureMember(encodeFeatureMember);
+        getGeoServer().save(wfs);
+    }
+
+    /**
+     * Test FeatureCollection is encoded with one featureMembers element
+     * @throws Exception
+     */
+    public void testEncodeFeatureMembers() throws Exception {
+        // change fixture settings (must restore this at end)
+        WFSInfo wfs = getGeoServer().getService(WFSInfo.class);
+        boolean encodeFeatureMember = wfs.isEncodeFeatureMember();
+        wfs.setEncodeFeatureMember(false);
+        getGeoServer().save(wfs);
+        
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:MappedFeature,gsml:GeologicUnit");
+        LOGGER.info("WFS GetFeature&typename=gsml:MappedFeature,gsml:GeologicUnit response:\n"
+                + prettyString(doc));
+        
+        checkSchemaLocation(doc);
+        
+        assertXpathEvaluatesTo("7", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(4, "//gsml:MappedFeature", doc);
+
+        assertEquals(1, doc.getElementsByTagName("gml:featureMembers").getLength());
+        assertEquals(0, doc.getElementsByTagName("gml:featureMember").getLength());
+
+        // mf1
+        {
+            String id = "mf1";
+            checkMf1Content(id, doc);
+        }
+
+        // mf2
+        {
+            String id = "mf2";
+            checkMf2Content(id, doc);
+        }
+
+        // mf3
+        {
+            String id = "mf3";
+            checkMf3Content(id, doc);
+        }
+
+        // mf4
+        {
+            String id = "mf4";
+            checkMf4Content(id, doc);
+        }
+
+        // check for duplicate gml:id
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25699']", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25678']", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='gu.25682']", doc);
+
+        // check for xlink:href if encoded within GeologicUnit itself
+        // note that this can never be schema-valid, but the best that the
+        // encoder can do when configured to use featureMembers.
+        assertXpathCount(1, "//gsml:GeologicUnit[@xlink:href='#gu.25699']", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@xlink:href='#gu.25678']", doc);
+        assertXpathCount(1, "//gsml:GeologicUnit[@xlink:href='#gu.25682']", doc);
+
+        // restore fixture settings
+        wfs = getGeoServer().getService(WFSInfo.class);
+        wfs.setEncodeFeatureMember(encodeFeatureMember);
+        getGeoServer().save(wfs);
+    }
+    
 }

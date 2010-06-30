@@ -12,6 +12,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     protected int maxFeatures = Integer.MAX_VALUE;
     protected boolean featureBounding = true;
     protected boolean canonicalSchemaLocation = false;
+    protected boolean encodeFeatureMember = false;    
     
     public WFSInfoImpl() {
         setId( "wfs" );
@@ -63,6 +64,20 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         this.canonicalSchemaLocation = canonicalSchemaLocation;
     }
 
+    /* 
+     * @see org.geoserver.wfs.WFSInfo#isEncodingFeatureMember()
+     */
+    public boolean isEncodeFeatureMember() {
+        return this.encodeFeatureMember;
+    }
+    
+    /* 
+     * @see org.geoserver.wfs.WFSInfo#setEncodeFeatureMember(java.lang.Boolean)
+     */
+    public void setEncodeFeatureMember(boolean encodeFeatureMember) {
+        this.encodeFeatureMember = encodeFeatureMember;        
+    }
+   
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -73,6 +88,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         result = prime * result + (canonicalSchemaLocation ? 53 : 67);
         result = prime * result
                 + ((serviceLevel == null) ? 0 : serviceLevel.hashCode());
+        result = prime * result + (encodeFeatureMember ? 83 : 87);
         return result;
     }
 
@@ -100,6 +116,8 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
             if (other.getServiceLevel() != null)
                 return false;
         } else if (!serviceLevel.equals(other.getServiceLevel()))
+            return false;
+        if (encodeFeatureMember != other.isEncodeFeatureMember())
             return false;
         return true;
     }

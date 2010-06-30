@@ -59,6 +59,12 @@ public class WFSAdminPage extends BaseServiceAdminPage<WFSInfo> {
         form.add(new GMLPanel("gml3", gml3Model));
 
         form.add( new CheckBox("canonicalSchemaLocation") );
+        
+        // Encode response with one featureMembers element or multiple featureMember elements
+        RadioGroup eo = new RadioGroup("encodeFeatureMember");
+        form.add(eo);
+        eo.add(new Radio("featureMembers", new Model(Boolean.FALSE)));
+        eo.add(new Radio("featureMember", new Model(Boolean.TRUE)));
     }
     
     static class GMLPanel extends Panel {
