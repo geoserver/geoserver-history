@@ -176,5 +176,19 @@ public interface WFSInfo extends ServiceInfo {
      * false if the WFS schemaLocation should refer to a copy served by GeoServer.
      */
     void setCanonicalSchemaLocation(boolean canonicalSchemaLocation);
+
+    /**
+     * Get the flag that determines encoding of featureMember or featureMembers 
+     * True if the featureMember should be encoded 
+     * False if the featureMembers should be encoded
+     * 
+     * @return encodingFeatureMember
+     */
+    boolean isEncodeFeatureMember();
+
+    /**
+     * set the response encoding option, featureMembers or featureMember
+     */
+    void setEncodeFeatureMember(boolean encodeFeatureMember);
     
 }

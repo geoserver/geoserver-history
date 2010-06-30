@@ -88,11 +88,17 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
     WfsFactory wfsfactory;
     Catalog catalog;
     boolean generateBounds;
+    /**
+     * Boolean property which controls whether the FeatureCollection should be encoded with multiple featureMember
+     * as opposed to a single featureMembers
+     */
+    boolean encodeFeatureMember;
 
     public FeatureCollectionTypeBinding(WfsFactory wfsfactory, Catalog catalog, Configuration configuration) {
         this.wfsfactory = wfsfactory;
         this.catalog = catalog;
         this.generateBounds = !configuration.getProperties().contains(GMLConfiguration.NO_FEATURE_BOUNDS);
+        this.encodeFeatureMember = configuration.getProperties().contains(GMLConfiguration.ENCODE_FEATURE_MEMBER);
     }
 
     public int getExecutionMode() {
@@ -129,20 +135,42 @@ public class FeatureCollectionTypeBinding extends AbstractComplexEMFBinding {
 
     public Object getProperty(Object object, QName name)
         throws Exception {
-        //check for feature collection memebers
+        //check for feature collection members
         if (GML.featureMembers.equals(name)) {
+            // check the WFS configuration, if encode featureMember is selected on WFS configuration
+            // page, return null;
+            if (encodeFeatureMember) {
+                return null;
+            }
             FeatureCollectionType featureCollection = (FeatureCollectionType) object;
 
             if (!featureCollection.getFeature().isEmpty()) {
                 if (featureCollection.getFeature().size() > 1) {
-                    //wrap in a single
+                    // wrap in a single
                     return new CompositeFeatureCollection(featureCollection.getFeature());
                 }
 
-                //just return the single
+                // just return the single
                 return featureCollection.getFeature().iterator().next();
             }
-        } else if(GML.boundedBy.equals(name) && generateBounds) {
+        } else if (GML.featureMember.equals(name)) {
+            // check the WFS configuration, if encode featureMembers is selected on WFS
+            // configuration page, return null;
+            if (!encodeFeatureMember) {
+                return null;
+            }
+            FeatureCollectionType featureCollection = (FeatureCollectionType) object;
+
+            if (!featureCollection.getFeature().isEmpty()) {
+                if (featureCollection.getFeature().size() > 1) {
+                    // wrap in a single
+                    return new CompositeFeatureCollection(featureCollection.getFeature());
+                }
+
+                // just return the single
+                return featureCollection.getFeature().iterator().next();
+            }
+        } else if (GML.boundedBy.equals(name) && generateBounds) {
             FeatureCollectionType featureCollection = (FeatureCollectionType) object;
 
             ReferencedEnvelope env = null;
