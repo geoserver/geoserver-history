@@ -620,7 +620,7 @@ This example alters the style of the points at different zoom levels.
 Code
 ~~~~
 
-:download:`View and download the full "Zoom-based point" SLD <artifacts/point_attribute.sld>`
+:download:`View and download the full "Zoom-based point" SLD <artifacts/point_zoom.sld>`
 
 .. code-block:: xml 
    :linenos:
