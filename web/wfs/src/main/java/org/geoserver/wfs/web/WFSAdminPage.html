@@ -60,6 +60,23 @@
       </ul>
     </fieldset>
   </li>
+  <li>
+    <fieldset>
+      <legend><span><wicket:message key="encodeFeatureMember">Encode response with </wicket:message></span></legend>
+      <div wicket:id="encodeFeatureMember">
+        <ul>
+          <li>
+            <input id="featureMembers" wicket:id="featureMembers" class="field radio" type="radio"></input>
+            <label for="featureMembers" class="choice"><wicket:message key="featureMembers">One "featureMembers" element</wicket:message></label>
+          </li>
+          <li>
+            <input id="featureMember" wicket:id="featureMember" class="field radio" type="radio"></input>
+            <label for="featureMember" class="choice"><wicket:message key="featureMember">Multiple "featureMember" elements</wicket:message></label>
+          </li>         
+        </ul>
+      </div>
+    </fieldset>
+  </li>
   </wicket:extend>
 </body>
 </html>
