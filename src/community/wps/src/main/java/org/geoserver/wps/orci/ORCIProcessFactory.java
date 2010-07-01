@@ -14,6 +14,7 @@ import org.geotools.data.Parameter;
 import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
+import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
@@ -38,6 +39,10 @@ public class ORCIProcessFactory implements ProcessFactory {
         processes.put(new NameImpl(ORCI_NAMESPACE, "Bounds"), new ORCIBoundsProcess());
     }
 
+    public InternationalString getTitle() {
+    	return new SimpleInternationalString("ORCI");
+    }
+    
 	public Set<Name> getNames() {
 		return Collections.unmodifiableSet(processes.keySet());
 	}
