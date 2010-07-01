@@ -33,6 +33,7 @@ import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
 import org.geotools.text.Text;
+import org.geotools.util.SimpleInternationalString;
 import org.jfree.chart.ChartPanel;
 import org.opengis.coverage.grid.GridCoverage;
 import org.opengis.feature.type.Name;
@@ -99,6 +100,10 @@ public class SextanteProcessFactory implements ProcessFactory {
         names = Collections.unmodifiableSet(result);
     }
 
+    public InternationalString getTitle() {
+    	return new SimpleInternationalString("Sextante");
+    }
+    
     public Set<Name> getNames() {
         return names; 
     }
