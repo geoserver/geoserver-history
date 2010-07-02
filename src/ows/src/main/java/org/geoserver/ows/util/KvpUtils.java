@@ -4,6 +4,8 @@
  */
 package org.geoserver.ows.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -286,67 +288,6 @@ public class KvpUtils {
     }
 
     /**
-     * creates a Map of key/value pairs from a HTTP style query String
-     *
-     * @param qString DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     * @deprecated not being used code wise
-     */
-    public static Map parseKvpSet(String qString) {
-        // uses the request cleaner to remove HTTP junk
-        String cleanRequest = clean(qString);
-        LOGGER.fine("clean request is " + cleanRequest);
-
-        Map kvps = new HashMap();
-
-        // parses initial request sream into KVPs
-        StringTokenizer requestKeywords = new StringTokenizer(cleanRequest.trim(), KEYWORD_DELIMITER.getRegExp());
-
-        // parses KVPs into values and keywords and puts them in a HashTable
-        while (requestKeywords.hasMoreTokens()) {
-            String kvpPair = requestKeywords.nextToken();
-            String key;
-            String value;
-
-            // a bit of a horrible hack for filters, which handles problems of
-            //  delimeters, which may appear in XML (such as '=' for
-            //  attributes.  unavoidable and illustrates the problems with
-            //  mixing nasty KVP Get syntax and pure XML syntax!
-            if (kvpPair.toUpperCase().startsWith("FILTER")) {
-                String filterVal = kvpPair.substring(7);
-
-                //int index = filterVal.lastIndexOf("</Filter>");
-                //String filt2 = kvpPair.subString
-                LOGGER.finest("putting filter value " + filterVal);
-                kvps.put("FILTER", filterVal);
-            } else {
-                // handles all other standard cases by looking for the correct
-                //  delimeter and then sticking the KVPs into the hash table
-                StringTokenizer requestValues = new StringTokenizer(kvpPair, VALUE_DELIMITER.getRegExp());
-
-                // make sure that there is a key token
-                if (requestValues.hasMoreTokens()) {
-                    // assign key as uppercase to eliminate case conflict
-                    key = requestValues.nextToken().toUpperCase();
-
-                    // make sure that there is a value token
-                    if (requestValues.hasMoreTokens()) {
-                        // assign value and store in hash with key
-                        value = requestValues.nextToken();
-                        LOGGER.finest("putting kvp pair: " + key + ": " + value);
-                        kvps.put(key, value);
-                    }
-                }
-            }
-        }
-
-        LOGGER.fine("returning parsed " + kvps);
-
-        return kvps;
-    }
-
-    /**
      * Cleans an HTTP string and returns pure ASCII as a string.
      *
      * @param raw The HTTP-encoded string.
@@ -501,5 +442,46 @@ public class KvpUtils {
         }
         
         return errors;
+    }
+    
+    /**
+     * Parses the parameters in the path query string. Normally this is done by the
+     * servlet container but in a few cases (testing for example) we need to emulate the container
+     * instead.
+     *  
+     * @param path a url in the form path?k1=v1&k2=v2&,,,
+     * @return
+     */
+    public static Map<String, String> parseQueryString(String path) {
+        int index = path.indexOf('?');
+
+        if (index == -1) {
+            return Collections.EMPTY_MAP;
+        }
+
+        String queryString = path.substring(index + 1);
+        StringTokenizer st = new StringTokenizer(queryString, "&");
+        Map<String, String> result = new HashMap<String, String>();
+        while (st.hasMoreTokens()) {
+            String token = st.nextToken();
+            String[] keyValuePair = token.split("=");
+            
+            //check for any special characters
+            if ( keyValuePair.length > 1 ) {
+                //replace any equals or & characters
+                try {
+                    // if this one does not work first check if the url encoded content is really
+                    // properly encoded. I had good success with this: http://meyerweb.com/eric/tools/dencoder/
+                    keyValuePair[1] = URLDecoder.decode(keyValuePair[1], "ISO-8859-1");
+                } catch(UnsupportedEncodingException e) {
+                    throw new RuntimeException("Totally unexpected... is your JVM busted?", e);
+                }
+                
+            }
+         
+            result.put(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1] : "");
+        }
+        
+        return result;
     }
 }

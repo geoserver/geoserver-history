@@ -51,6 +51,7 @@ import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerLoader;
 import org.geoserver.data.test.TestData;
 import org.geoserver.logging.LoggingUtils;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
@@ -1017,33 +1018,12 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
      * Helper method to create the kvp params from the query string.
      */
     private void kvp(MockHttpServletRequest request, String path) {
-        int index = path.indexOf('?');
-
-        if (index == -1) {
-            return;
+         Map<String, String> params = KvpUtils.parseQueryString(path);
+         for (String key : params.keySet()) {
+            String value = params.get(key);
+            request.setupAddParameter(key, value);
         }
-
-        String queryString = path.substring(index + 1);
-        StringTokenizer st = new StringTokenizer(queryString, "&");
-
-        while (st.hasMoreTokens()) {
-            String token = st.nextToken();
-            String[] keyValuePair = token.split("=");
-            
-            //check for any special characters
-            if ( keyValuePair.length > 1 ) {
-                //replace any equals or & characters
-            	try {
-            		// if this one does not work first check if the url encoded content is really
-            		// properly encoded. I had good success with this: http://meyerweb.com/eric/tools/dencoder/
-            		keyValuePair[1] = URLDecoder.decode(keyValuePair[1], "ISO-8859-1");
-            	} catch(UnsupportedEncodingException e) {
-            		throw new RuntimeException("Totally unexpected... is your JVM busted?", e);
-            	}
-                
-            }
-            request.setupAddParameter(keyValuePair[0], keyValuePair.length > 1 ?  keyValuePair[1]: "");
-        }
+         
     }
 
     private MockHttpServletResponse dispatch( HttpServletRequest request ) throws Exception {
