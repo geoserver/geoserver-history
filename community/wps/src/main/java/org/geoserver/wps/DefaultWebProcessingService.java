@@ -51,9 +51,8 @@ public class DefaultWebProcessingService implements WebProcessingService, Applic
      * @see org.geoserver.wps.WebProcessingService#getCapabilities
      */
     public WPSCapabilitiesType getCapabilities(GetCapabilitiesType request) throws WPSException {
-        return new GetCapabilities(this.wps).run(request);
+        return new GetCapabilities(this.wps, context).run(request);
     }
-    
     
     /**
      * @see org.geoserver.wps.WebProcessingService#describeProcess

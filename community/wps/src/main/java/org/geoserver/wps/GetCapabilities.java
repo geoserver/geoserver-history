@@ -5,8 +5,12 @@
 
 package org.geoserver.wps;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.opengis.ows11.KeywordsType;
 import net.opengis.ows11.OperationType;
@@ -15,30 +19,44 @@ import net.opengis.ows11.Ows11Factory;
 import net.opengis.ows11.ResponsiblePartySubsetType;
 import net.opengis.ows11.ServiceIdentificationType;
 import net.opengis.ows11.ServiceProviderType;
+import net.opengis.wps10.ComplexDataDescriptionType;
 import net.opengis.wps10.DefaultType2;
 import net.opengis.wps10.GetCapabilitiesType;
+import net.opengis.wps10.InputDescriptionType;
 import net.opengis.wps10.LanguagesType;
 import net.opengis.wps10.LanguagesType1;
+import net.opengis.wps10.LiteralInputType;
 import net.opengis.wps10.ProcessBriefType;
 import net.opengis.wps10.ProcessOfferingsType;
+import net.opengis.wps10.SupportedComplexDataInputType;
 import net.opengis.wps10.WPSCapabilitiesType;
 import net.opengis.wps10.Wps10Factory;
 
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.wps.ppio.BoundingBoxPPIO;
+import org.geoserver.wps.ppio.ComplexPPIO;
+import org.geoserver.wps.ppio.LiteralPPIO;
+import org.geoserver.wps.ppio.ProcessParameterIO;
+import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Lucas Reed, Refractions Research Inc
  */
 public class GetCapabilities {
     public WPSInfo wps;
+    ApplicationContext context;
+    static final Logger LOGGER = Logging.getLogger(GetCapabilities.class); 
 
-    public GetCapabilities(WPSInfo wps) {
+    public GetCapabilities(WPSInfo wps, ApplicationContext context) {
         this.wps = wps;
+        this.context = context;
     }
 
     public WPSCapabilitiesType run(GetCapabilitiesType request) throws WPSException {
@@ -127,13 +145,15 @@ public class GetCapabilities {
         
         for(ProcessFactory pf : Processors.getProcessFactories()) {
             for (Name name : pf.getNames()) {
-                ProcessBriefType p = wpsf.createProcessBriefType();
-                p.setProcessVersion(pf.getVersion(name));
-                po.getProcess().add( p );
-                
-                p.setIdentifier(Ows11Util.code(name));
-                p.setTitle(Ows11Util.languageString( pf.getTitle(name).toString()));
-                p.setAbstract(Ows11Util.languageString( pf.getDescription(name).toString()));
+                if(canBindProcess(pf, name)) {
+                    ProcessBriefType p = wpsf.createProcessBriefType();
+                    p.setProcessVersion(pf.getVersion(name));
+                    po.getProcess().add( p );
+                    
+                    p.setIdentifier(Ows11Util.code(name));
+                    p.setTitle(Ows11Util.languageString( pf.getTitle(name).toString()));
+                    p.setAbstract(Ows11Util.languageString( pf.getDescription(name).toString()));
+                }
             }
             
         }
@@ -153,6 +173,37 @@ public class GetCapabilities {
         // Version detection and alternative invocation if being implemented.
     }
     
+    /**
+     * Checks if our WPS can really handle this process inputs and outputs
+     * @param pf
+     * @param name
+     * @return
+     */
+    boolean canBindProcess(ProcessFactory pf, Name name) {
+        // check inputs
+        for(Parameter<?> p : pf.getParameterInfo(name).values()) {
+            List<ProcessParameterIO> ppios = ProcessParameterIO.findAll( p, context);
+            if ( ppios.isEmpty() ) {
+                LOGGER.log(Level.INFO, "Blacklisting process " + name.getURI() + " as the input " 
+                        + p.key + " of type " + p.type + " cannot be handled");
+                return false;
+            }
+        }
+        
+        // check outputs
+        for(Parameter<?> p : pf.getResultInfo(name, null).values()) {
+            List<ProcessParameterIO> ppios = ProcessParameterIO.findAll( p, context);
+            if ( ppios.isEmpty() ) {
+                LOGGER.log(Level.INFO, "Blacklisting process " + name.getURI() + " as the output " 
+                        + p.key + " of type " + p.type + " cannot be handled");
+                return false;
+            }
+        }
+        
+        
+        return true;
+    }
+
     ResponsiblePartySubsetType responsibleParty( GeoServerInfo global, Ows11Factory f ) {
         ResponsiblePartySubsetType rp = f.createResponsiblePartySubsetType();
         return rp;
