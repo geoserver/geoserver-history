@@ -13,7 +13,7 @@ public class DescribeProcessTest extends WPSTestSupport {
     
     public void testGetBuffer() throws Exception { // Standard Test A.4.3.1
         Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gt:buffer");
-        print(d);
+        // print(d);
         testBufferDescription(d);
     }
     
@@ -25,8 +25,9 @@ public class DescribeProcessTest extends WPSTestSupport {
         		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" + 
         		"    <ows:Identifier>gt:buffer</ows:Identifier>\r\n" + 
         		"</DescribeProcess>";
+        System.out.println(request);
         Document d = postAsDOM(root(), request);
-        print(d);
+        // print(d);
         testBufferDescription(d);
     }
 
