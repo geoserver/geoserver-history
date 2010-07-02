@@ -5,6 +5,7 @@
 package org.geoserver.web.wps;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,8 +19,10 @@ import javax.xml.transform.TransformerException;
 import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -38,6 +41,7 @@ import org.geoserver.web.GeoServerBasePage;
 import org.geoserver.web.demo.DemoRequest;
 import org.geoserver.web.demo.DemoRequestResponse;
 import org.geoserver.web.wicket.EnvelopePanel;
+import org.geoserver.web.wicket.GeoServerAjaxFormLink;
 import org.geotools.data.Parameter;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
@@ -62,15 +66,24 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 		form.setOutputMarkupId(true);
 		add(form);
 
-		DropDownChoice processChoice = new DropDownChoice("process",
+		final DropDownChoice processChoice = new DropDownChoice("process",
 				new PropertyModel(this, "process"), buildProcessList());
 		form.add(processChoice);
 
+		// contains the process description and the describe process link
+		final WebMarkupContainer descriptionContainer = new WebMarkupContainer("descriptionContainer");
+		descriptionContainer.setVisible(false);
+		form.add(descriptionContainer);
+		
+		// the process description
 		final Label descriptionLabel = new Label("processDescription", new PropertyModel(
 				this, "description"));
-		descriptionLabel.setOutputMarkupId(true);
-		form.add(descriptionLabel);
-		
+		descriptionContainer.add(descriptionLabel);
+
+		// the process inputs
+		final WebMarkupContainer inputContainer = new WebMarkupContainer("inputContainer");
+		inputContainer.setVisible(false);
+		form.add(inputContainer);
 		final ListView inputView = new ListView("inputs", new PropertyModel(this, "inputs")) {
 			
 			@Override
@@ -94,8 +107,12 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 			}
 		};
 		inputView.setReuseItems(true);
-		form.add(inputView);
+		inputContainer.add(inputView);
 		
+		// the process outputs
+		final WebMarkupContainer outputContainer = new WebMarkupContainer("outputContainer");
+		outputContainer.setVisible(false);
+        form.add(outputContainer);
 		final ListView outputView = new ListView("outputs", new PropertyModel(this, "outputs")) {
 			
 			@Override
@@ -114,48 +131,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 			}
 		};
 		outputView.setReuseItems(true);
-		form.add(outputView);
-
-//		TextArea xmlArea = new TextArea("xml", new PropertyModel(this, "xml"));
-//		form.add(xmlArea);
-		
-//		form.add(new AjaxSubmitLink("refresh") {
-//			
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form form) {
-//				xml = getRequestXML();
-//	        
-//		        target.addComponent(getFeedbackPanel());
-//		        target.addComponent(form);
-//			}
-//
-//			@Override
-//			protected void onError(AjaxRequestTarget target, Form form) {
-//				target.addComponent(getFeedbackPanel());
-//			}
-//		});
-		
-		processChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				Name name = Ows11Util.name(process);
-		        ProcessFactory pf = Processors.createProcessFactory(name);
-		        if ( pf == null ) {
-		            error("No such process: " + process );
-		        } else {
-		        	description = pf.getDescription(name).toString(Locale.ENGLISH);
-		        	inputs = buildInputParameters(pf, name);
-		        	outputs = buildOutputParameters(pf, name);
-		        	inputView.removeAll();
-		        	outputView.removeAll();
-		        }
-		        xml = "";
-		        target.addComponent(getFeedbackPanel());
-		        target.addComponent(form);
-			}
-		});
-		
+		outputContainer.add(outputView);
 		
 		// the output response window
         final ModalWindow responseWindow = new ModalWindow("responseWindow");
@@ -166,15 +142,58 @@ public class WPSRequestBuilder extends GeoServerBasePage {
         responseWindow.setPageCreator(new ModalWindow.PageCreator() {
 
             public Page createPage() {
-            	DemoRequest request = new DemoRequest(null);
-            	HttpServletRequest http = ((WebRequest) WPSRequestBuilder.this.getRequest()).getHttpServletRequest();
+                DemoRequest request = new DemoRequest(null);
+                HttpServletRequest http = ((WebRequest) WPSRequestBuilder.this.getRequest()).getHttpServletRequest();
                 String url = ResponseUtils.buildURL(ResponseUtils.baseURL(http), "ows", Collections.singletonMap("strict", "true"), URLType.SERVICE);
-            	request.setRequestUrl(url);
-            	request.setRequestBody((String) responseWindow.getModelObject());
+                request.setRequestUrl(url);
+                request.setRequestBody((String) responseWindow.getModelObject());
                 return new DemoRequestResponse(new Model(request));
             }
         });
         
+        // the describe process link
+        final GeoServerAjaxFormLink describeLink = new GeoServerAjaxFormLink("describeProcess") {
+            
+            @Override
+            protected void onClick(AjaxRequestTarget target, Form form) {
+                processChoice.processInput();
+                if(process != null) {
+                    responseWindow.setModel(new Model(getDescribeXML(process)));
+                    responseWindow.show(target);
+                }
+            }
+        };
+        descriptionContainer.add(describeLink);
+
+        // the process choice dropdown
+		processChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				Name name = Ows11Util.name(process);
+		        ProcessFactory pf = Processors.createProcessFactory(name);
+		        if ( pf == null ) {
+		            error("No such process: " + process );
+		            descriptionContainer.setVisible(false);
+		            inputContainer.setVisible(false);
+		            outputContainer.setVisible(false);
+		        } else {
+		        	description = pf.getDescription(name).toString(Locale.ENGLISH);
+		        	inputs = buildInputParameters(pf, name);
+		        	outputs = buildOutputParameters(pf, name);
+		        	inputView.removeAll();
+		        	outputView.removeAll();
+		        	descriptionContainer.setVisible(true);
+		        	inputContainer.setVisible(true);
+                    outputContainer.setVisible(true);
+		        }
+		        xml = "";
+		        target.addComponent(getFeedbackPanel());
+		        target.addComponent(form);
+			}
+		});
+		
+		
         // the xml popup window
         final ModalWindow xmlWindow = new ModalWindow("xmlWindow");
         add(xmlWindow);
@@ -214,7 +233,18 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 		});
 	}
 	
-	String buildParamSpec(Parameter p) {
+	protected String getDescribeXML(String processId) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        		"<DescribeProcess service=\"WPS\" version=\"1.0.0\" " +
+        		"xmlns=\"http://www.opengis.net/wps/1.0.0\" " +
+        		"xmlns:ows=\"http://www.opengis.net/ows/1.1\" " +
+        		"xmlns:xlink=\"http://www.w3.org/1999/xlink\" " +
+        		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" + 
+        		"    <ows:Identifier>" + processId + "</ows:Identifier>\n" + 
+        		"</DescribeProcess>";
+    }
+
+    String buildParamSpec(Parameter p) {
 		String spec = p.key;
 		if(p.minOccurs > 0) {
 			spec += "*";

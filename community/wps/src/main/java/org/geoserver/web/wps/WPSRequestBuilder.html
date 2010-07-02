@@ -9,13 +9,14 @@
           <ul>
             <li>
               <!--  <label for="name"><wicket:message key="name">process</wicket:message></label> -->
-              <select wicket:id="process"></select>
-              <p wicket:id="processDescription"></p>
+              <select wicket:id="process"></select> 
+              <p wicket:id="descriptionContainer"> <span wicket:id="processDescription"/> 
+              	(<a href="#" wicket:id="describeProcess"><wicket:message key="describe">describe</wicket:message></a>)</p>
             </li>
           </ul>
         </fieldset>
       </li>
-      <li>
+      <li wicket:id="inputContainer">
         <fieldset>
           <legend><span><wicket:message key="inputs">inputs</wicket:message></span></legend>
           <ul>
@@ -27,7 +28,7 @@
           </ul>
         </fieldset>
       </li>
-      <li>
+      <li wicket:id="outputContainer">
         <fieldset>
           <legend><span><wicket:message key="outputs">outputs</wicket:message></span></legend>
           <ul>
