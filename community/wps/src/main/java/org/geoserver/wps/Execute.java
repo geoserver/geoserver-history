@@ -5,12 +5,12 @@
 
 package org.geoserver.wps;
 
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -19,6 +19,7 @@ import net.opengis.ows11.BoundingBoxType;
 import net.opengis.ows11.CodeType;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
+import net.opengis.wfs.WfsFactory;
 import net.opengis.wps10.ComplexDataType;
 import net.opengis.wps10.DataType;
 import net.opengis.wps10.DocumentOutputDefinitionType;
@@ -39,7 +40,6 @@ import net.opengis.wps10.Wps10Factory;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -48,9 +48,12 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.ows.util.KvpMap;
+import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wcs.WebCoverageService111;
 import org.geoserver.wfs.WebFeatureService;
+import org.geoserver.wfs.kvp.GetFeatureKvpRequestReader;
 import org.geoserver.wps.ppio.BinaryPPIO;
 import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.CDataPPIO;
@@ -64,10 +67,7 @@ import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.util.Converters;
-import org.geotools.wps.WPSConfiguration;
 import org.geotools.xml.EMFUtils;
-import org.geotools.xml.Encoder;
-import org.hsqldb.lib.StringInputStream;
 import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
@@ -133,37 +133,29 @@ public class Execute {
             
             //read the data
             Object decoded = null;
-            if ( input.getReference() != null ) {
-                //this is a reference
-                InputReferenceType ref = input.getReference();
-                
-                //grab the location and method
-                String href = ref.getHref();
-                MethodType method = ref.getMethod() != null ? ref.getMethod() : MethodType.GET_LITERAL; 
-                
-                //handle get vs post
-                try {
+            try {
+                if ( input.getReference() != null ) {
+                    //this is a reference
+                    InputReferenceType ref = input.getReference();
+                    
+                    //grab the location and method
+                    String href = ref.getHref();
+                    MethodType method = ref.getMethod() != null ? ref.getMethod() : MethodType.GET_LITERAL; 
+                    
                     // TODO: handle in process GET requests by doing kvp parsing
-                    if (href.startsWith("http://geoserver/wfs") && method == MethodType.POST_LITERAL) {
-                    	// Process with local WFS
-                    	WebFeatureService wfs = (WebFeatureService)context.getBean("wfsServiceTarget");
-                    	FeatureCollectionType featureCollectionType = wfs.getFeature((GetFeatureType)ref.getBody());
-                    	// this will also deal with axis order issues
-                    	decoded = ((ComplexPPIO) ppio).decode(featureCollectionType);
+                    if (href.startsWith("http://geoserver/wfs")) {
+                        decoded = handleAsInternalWFS(ppio, ref);
                     } else if(href.startsWith("http://geoserver/wcs") && method == MethodType.POST_LITERAL) {
                     	WebCoverageService111 wcs = (WebCoverageService111) context.getBean("wcs111ServiceTarget");
                     	decoded = wcs.getCoverage((net.opengis.wcs11.GetCoverageType)ref.getBody())[0];
                     } else {
                       	decoded = executeRemoteRequest(ref, (ComplexPPIO) ppio, inputId);
                     }
-                } catch(Exception e) {
-                    throw new WPSException("Unable to decode input: " + inputId, e);
-                }
-            } else {
-                //actual data, figure out which type 
-                DataType data = input.getData();
-               
-                try {
+                    
+                } else {
+                    //actual data, figure out which type 
+                    DataType data = input.getData();
+                   
                     if ( data.getLiteralData() != null ) {
                         LiteralDataType literal = data.getLiteralData();
                         decoded = ((LiteralPPIO)ppio).decode( literal.getValue() );
@@ -173,10 +165,10 @@ public class Execute {
                     } else if (data.getBoundingBoxData() != null) {
                         decoded = ((BoundingBoxPPIO) ppio).decode(data.getBoundingBoxData());
                     }
-                } catch (Exception e) {
-                    throw new WPSException( "Unable to decode input: " + inputId, e );
+                    
                 }
-                
+            } catch(Exception e) {
+                throw new WPSException("Unable to decode input: " + inputId, e);
             }
             
             //decode the input
@@ -343,6 +335,39 @@ public class Execute {
     }
 
     /**
+     * Process the request as an internal one, without going through GML encoding/decoding
+     * @param ppio
+     * @param ref
+     * @param method
+     * @return
+     * @throws Exception
+     */
+    Object handleAsInternalWFS(ProcessParameterIO ppio, InputReferenceType ref) throws Exception {
+        WebFeatureService wfs = (WebFeatureService) context.getBean("wfsServiceTarget");
+        GetFeatureType gft = null;
+        if(ref.getMethod() == MethodType.POST_LITERAL) {
+            gft = (GetFeatureType) ref.getBody();
+        } else {
+             // simulate what the dispatcher is doing with the incoming kvp requests
+             Map original = KvpUtils.parseQueryString(ref.getHref());
+             KvpUtils.normalize(original);
+             Map parsed = new KvpMap(original);
+             List<Throwable> errors = KvpUtils.parse(parsed);
+             if(errors.size() > 0) {
+                 throw new WPSException("Failed to parse KVP request", errors.get(0));
+             }
+             
+             GetFeatureKvpRequestReader reader = (GetFeatureKvpRequestReader) context.getBean("getFeatureKvpReader");
+             gft = (GetFeatureType) reader.read(WfsFactory.eINSTANCE.createGetFeatureType(), parsed, original);
+        }
+        
+        FeatureCollectionType featureCollectionType = wfs.getFeature(gft);
+        // this will also deal with axis order issues
+        return ((ComplexPPIO) ppio).decode(featureCollectionType);
+    }
+    
+
+    /**
      * Executes 
      * @param ref
      * @return
@@ -386,9 +411,6 @@ public class Execute {
             int code = client.executeMethod(method);
             
             if(code == 200) {
-//                String response = method.getResponseBodyAsString();
-//                System.out.println(response);
-//                StringInputStream is = new StringInputStream(response);
                 return ppio.decode(method.getResponseBodyAsStream());
             } else {
                 throw new WPSException("Error getting remote resources from " + ref.getHref() 
