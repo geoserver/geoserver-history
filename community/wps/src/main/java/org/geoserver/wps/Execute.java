@@ -5,6 +5,7 @@
 
 package org.geoserver.wps;
 
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +36,15 @@ import net.opengis.wps10.ProcessBriefType;
 import net.opengis.wps10.ProcessOutputsType1;
 import net.opengis.wps10.Wps10Factory;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.SimpleHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.URLMangler.URLType;
@@ -54,7 +64,10 @@ import org.geotools.process.Process;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.util.Converters;
+import org.geotools.wps.WPSConfiguration;
 import org.geotools.xml.EMFUtils;
+import org.geotools.xml.Encoder;
+import org.hsqldb.lib.StringInputStream;
 import org.opengis.feature.type.Name;
 import org.springframework.context.ApplicationContext;
 
@@ -98,11 +111,12 @@ public class Execute {
         
         for ( Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext(); ) {
             InputType input = (InputType) i.next();
+            String inputId = input.getIdentifier().getValue();
             
             // locate the parameter for this request
-            Parameter p = pf.getParameterInfo(processName).get( input.getIdentifier().getValue() );
+            Parameter p = pf.getParameterInfo(processName).get( inputId );
             if ( p == null ) {
-                throw new WPSException( "No such parameter: " + input.getIdentifier().getValue() );
+                throw new WPSException( "No such parameter: " + inputId );
             }
             
             // find the ppio
@@ -114,7 +128,7 @@ public class Execute {
             }
             ProcessParameterIO ppio = ProcessParameterIO.find( p, context, mime);
             if ( ppio == null ) {
-                throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue() );
+                throw new WPSException( "Unable to decode input: " + inputId );
             }
             
             //read the data
@@ -125,19 +139,25 @@ public class Execute {
                 
                 //grab the location and method
                 String href = ref.getHref();
-                MethodType meth = ref.getMethod() != null ? ref.getMethod() : MethodType.GET_LITERAL; 
+                MethodType method = ref.getMethod() != null ? ref.getMethod() : MethodType.GET_LITERAL; 
                 
                 //handle get vs post
-                if (href.startsWith("http://geoserver/wfs")) {
-                	// Process with local WFS
-                	WebFeatureService wfs = (WebFeatureService)context.getBean("wfsServiceTarget");
-                	FeatureCollectionType featureCollectionType = wfs.getFeature((GetFeatureType)ref.getBody());
-                	decoded = featureCollectionType.getFeature().get(0);
-                } else if(href.startsWith("http://geoserver/wcs")) {
-                	WebCoverageService111 wcs = (WebCoverageService111) context.getBean("wcs111ServiceTarget");
-                	decoded = wcs.getCoverage((net.opengis.wcs11.GetCoverageType)ref.getBody())[0];
-                } else {
-                	throw new UnsupportedOperationException("Sorry, real external references are still not supported");
+                try {
+                    // TODO: handle in process GET requests by doing kvp parsing
+                    if (href.startsWith("http://geoserver/wfs") && method == MethodType.POST_LITERAL) {
+                    	// Process with local WFS
+                    	WebFeatureService wfs = (WebFeatureService)context.getBean("wfsServiceTarget");
+                    	FeatureCollectionType featureCollectionType = wfs.getFeature((GetFeatureType)ref.getBody());
+                    	// this will also deal with axis order issues
+                    	decoded = ((ComplexPPIO) ppio).decode(featureCollectionType);
+                    } else if(href.startsWith("http://geoserver/wcs") && method == MethodType.POST_LITERAL) {
+                    	WebCoverageService111 wcs = (WebCoverageService111) context.getBean("wcs111ServiceTarget");
+                    	decoded = wcs.getCoverage((net.opengis.wcs11.GetCoverageType)ref.getBody())[0];
+                    } else {
+                      	decoded = executeRemoteRequest(ref, (ComplexPPIO) ppio, inputId);
+                    }
+                } catch(Exception e) {
+                    throw new WPSException("Unable to decode input: " + inputId, e);
                 }
             } else {
                 //actual data, figure out which type 
@@ -154,7 +174,7 @@ public class Execute {
                         decoded = ((BoundingBoxPPIO) ppio).decode(data.getBoundingBoxData());
                     }
                 } catch (Exception e) {
-                    throw new WPSException( "Unable to decode input: " + input.getIdentifier().getValue(), e );
+                    throw new WPSException( "Unable to decode input: " + inputId, e );
                 }
                 
             }
@@ -322,99 +342,64 @@ public class Execute {
         return response;
     }
 
-//    @SuppressWarnings("unchecked")
-//    private void outputs(Map<String, Object> outputs) {
-//        ProcessFactory      pf             = this.executor.getProcessFactory();
-//        ProcessOutputsType1 processOutputs = WpsFactory.eINSTANCE.createProcessOutputsType1();
-//
-//        for(String outputName : outputs.keySet()) {
-//            Parameter<?> param = (pf.getResultInfo(null)).get(outputName);
-//
-//            OutputDataType output = WpsFactory.eINSTANCE.createOutputDataType();
-//
-//            CodeType identifier = Ows11Factory.eINSTANCE.createCodeType();
-//            identifier.setValue(param.key);
-//            output.setIdentifier(identifier);
-//
-//            LanguageStringType title = Ows11Factory.eINSTANCE.createLanguageStringType();
-//            title.setValue(param.title.toString(this.locale));
-//            output.setTitle(title);
-//
-//            DataType data = WpsFactory.eINSTANCE.createDataType();
-//
-//            // Determine the output type, Complex or Literal
-//            Object outputParam = outputs.get(outputName);
-//
-//            final Transmuter transmuter = this.dataTransformer.getDefaultTransmuter(outputParam.getClass());
-//
-//            // Create appropriate response document node for given type
-//            if (transmuter instanceof ComplexTransmuter) {
-//                data.setComplexData(this.complexData((ComplexTransmuter)transmuter, outputParam));
-//            } else {
-//                if (transmuter instanceof LiteralTransmuter) {
-//                    data.setLiteralData(this.literalData((LiteralTransmuter)transmuter, outputParam));
-//                } else {
-//                    throw new WPSException("NoApplicableCode", "Could not find transmuter for output " + outputName);
-//                }
-//            }
-//
-//            output.setData(data);
-//
-//            processOutputs.getOutput().add(output);
-//        }
-//
-//        this.response.setProcessOutputs(processOutputs);
-//    }
-//
-//    private LiteralDataType literalData(LiteralTransmuter transmuter, Object value) {
-//        LiteralDataType data = WpsFactory.eINSTANCE.createLiteralDataType();
-//
-//        data.setValue(   transmuter.encode(value));
-//        data.setDataType(transmuter.getEncodedType());
-//
-//        return data;
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    private ComplexDataType complexData(ComplexTransmuter transmuter, Object value) {
-//        ComplexDataType data = WpsFactory.eINSTANCE.createComplexDataType();
-//
-//        data.setSchema(  transmuter.getSchema(this.request.getBaseUrl()));
-//        data.setMimeType(transmuter.getMimeType());
-//        data.getData().add(value);
-//
-//        return data;
-//    }
-//
-//    private void processBrief() {
-//        ProcessFactory     pf    = this.executor.getProcessFactory();
-//        ProcessBriefType   brief = WpsFactory.eINSTANCE.createProcessBriefType();
-//        LanguageStringType title = Ows11Factory.eINSTANCE.createLanguageStringType();
-//
-//        brief.setProcessVersion(pf.getVersion());
-//        brief.setIdentifier(this.request.getIdentifier());
-//        title.setValue(pf.getTitle().toString(this.locale));
-//        brief.setTitle(title);
-//
-//        this.response.setProcess(brief);
-//    }
-//
-//    private void status() {
-//        StatusType status = WpsFactory.eINSTANCE.createStatusType();
-//
-//        status.setProcessSucceeded("Process completed successfully.");
-//
-//        XMLGregorianCalendar calendar;
-//
-//        try {
-//            calendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(
-//                new GregorianCalendar(TimeZone.getTimeZone("UTC")));
-//        } catch(Exception e) {
-//            throw new WPSException("NoApplicableCode", e.getMessage());
-//        }
-//
-//        status.setCreationTime(calendar);
-//
-//        this.response.setStatus(status);
-//    }
+    /**
+     * Executes 
+     * @param ref
+     * @return
+     */
+    Object executeRemoteRequest(InputReferenceType ref, ComplexPPIO ppio, String inputId) throws Exception {
+        // setup the client
+        HttpClient client = new HttpClient();
+        // setting timeouts (30 seconds, TODO: make this configurable)
+        HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+        params.setSoTimeout(30 * 1000);
+        params.setConnectionTimeout(30 * 1000);
+        HttpConnectionManager manager = new SimpleHttpConnectionManager();
+        manager.setParams(params);
+        client.setHttpConnectionManager(manager);
+        
+        // execute the request
+        HttpMethod method = null;
+        try {
+            if(ref.getMethod() == null || ref.getMethod() == MethodType.GET_LITERAL) {
+                GetMethod get = new GetMethod(ref.getHref());
+                method = get;
+            } else {
+                PostMethod post = new PostMethod();
+                Object body = ref.getBody();
+                if(body == null) {
+                    throw new WPSException("A POST request should contain a non empty body");
+                } else if(body instanceof String) {
+                    String encoding = ref.getEncoding();
+                    if(encoding == null) {
+                        encoding = "UTF-8";
+                    }
+                    post.setRequestEntity(new StringRequestEntity((String) body, ppio.getMimeType(), encoding));
+                } else {
+                    throw new WPSException("The request body should be contained in a CDATA section, " +
+                    		"otherwise it will get parsed as XML instead of being preserved as is");
+                    
+                }
+                method = post;
+            }
+            method.setFollowRedirects(true);
+            int code = client.executeMethod(method);
+            
+            if(code == 200) {
+//                String response = method.getResponseBodyAsString();
+//                System.out.println(response);
+//                StringInputStream is = new StringInputStream(response);
+                return ppio.decode(method.getResponseBodyAsStream());
+            } else {
+                throw new WPSException("Error getting remote resources from " + ref.getHref() 
+                        + ", http error " + code + ": " + method.getStatusText());
+            }
+            
+        } finally {
+            // make sure to close the connection no matter what
+            if(method != null) {
+                method.releaseConnection();
+            }
+        }
+    }
 }

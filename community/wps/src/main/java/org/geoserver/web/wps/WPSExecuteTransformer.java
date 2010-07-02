@@ -171,7 +171,7 @@ class WPSExecuteTransformer extends TransformerBase {
 			RasterLayerConfiguration raster = (RasterLayerConfiguration) value.value;
 			start("wps:Reference", attributes("mimeType",
 					value.mime, "xlink:href",
-					"http://geoserver/wcs"));
+					"http://geoserver/wcs", "method", "POST"));
 			start("wps:Body");
 			if(raster != null && raster.getLayerName() != null) {
     			start("wcs:GetCoverage", attributes("service",
@@ -183,17 +183,10 @@ class WPSExecuteTransformer extends TransformerBase {
     			String srsUri = GML2EncodingUtils.toURI(bbox
     					.getCoordinateReferenceSystem());
     			start("gml:BoundingBox", attributes("crs", srsUri));
-//    			if (bbox.getCoordinateReferenceSystem() instanceof GeographicCRS) {
-//    				element("ows:LowerCorner", bbox.getMinx() + " "
-//    						+ bbox.getMinY());
-//    				element("ows:UpperCorner", bbox.getMaxY() + " "
-//    						+ bbox.getMaxX());
-//    			} else {
-    				element("ows:LowerCorner", bbox.getMinX() + " "
-    						+ bbox.getMinY());
-    				element("ows:UpperCorner", bbox.getMaxX() + " "
-    						+ bbox.getMaxY());
-//    			}
+				element("ows:LowerCorner", bbox.getMinX() + " "
+						+ bbox.getMinY());
+				element("ows:UpperCorner", bbox.getMaxX() + " "
+						+ bbox.getMaxY());
     			end("gml:BoundingBox");
     			end("wcs:DomainSubset");
     			element("wcs:Output", null, attributes("format",
@@ -208,7 +201,7 @@ class WPSExecuteTransformer extends TransformerBase {
 			VectorLayerConfiguration vector = (VectorLayerConfiguration) value.value;
 			start("wps:Reference", attributes("mimeType",
 					value.mime, "xlink:href",
-					"http://geoserver/wfs"));
+					"http://geoserver/wfs", "method", "POST"));
 			start("wps:Body");
 			start("wfs:GetFeature", attributes("service",
 					"WFS", "version", "1.0.0", "outputFormat",

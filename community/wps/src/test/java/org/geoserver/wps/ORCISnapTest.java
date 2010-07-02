@@ -190,7 +190,7 @@ public class ORCISnapTest extends WPSTestSupport {
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                     "<ows:Identifier>features</ows:Identifier>" +
-                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\">" +
+                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\"  method=\"POST\">" +
                       "<wps:Body>" +
                         "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\" outputFormat=\"GML2\" " +
                         "xmlns:cite=\"http://www.opengis.net/cite\" " +
@@ -231,7 +231,7 @@ public class ORCISnapTest extends WPSTestSupport {
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                     "<ows:Identifier>features</ows:Identifier>" +
-                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\">" +
+                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\"  method=\"POST\">" +
                       "<wps:Body>" +
                         "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\" outputFormat=\"GML2\" " +
                         "xmlns:cite=\"http://www.opengis.net/cite\" " +
@@ -282,7 +282,7 @@ public class ORCISnapTest extends WPSTestSupport {
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                     "<ows:Identifier>features</ows:Identifier>" +
-                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\">" +
+                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\"  method=\"POST\">" +
                       "<wps:Body>" +
                         "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\" outputFormat=\"GML2\" " +
                         "xmlns:cite=\"http://www.opengis.net/cite\" " +

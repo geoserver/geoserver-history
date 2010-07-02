@@ -3,10 +3,18 @@ package org.geoserver.wps;
 import static org.custommonkey.xmlunit.XMLAssert.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import net.opengis.ows11.BoundingBoxType;
+
+import org.geoserver.test.RemoteOWSTestSupport;
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml3.GMLConfiguration;
+import org.geotools.ows.v1_1.OWSConfiguration;
+import org.geotools.referencing.CRS;
+import org.geotools.xml.Parser;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -238,7 +246,7 @@ public class ExecuteTest extends WPSTestSupport {
         		"  <wps:DataInputs>\n" + 
         		"    <wps:Input>\n" + 
         		"      <ows:Identifier>features</ows:Identifier>\n" + 
-        		"      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" xlink:href=\"http://geoserver/wfs\">\n" + 
+        		"      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" xlink:href=\"http://geoserver/wfs\" method=\"POST\">\n" + 
         		"        <wps:Body>\n" + 
         		"          <wfs:GetFeature service=\"WFS\" version=\"1.0.0\">\n" + 
         		"            <wfs:Query typeName=\"cite:Streams\"/>\n" + 
@@ -261,7 +269,173 @@ public class ExecuteTest extends WPSTestSupport {
         assertXpathEvaluatesTo("0.0036 0.0024", "/ows:BoundingBox/ows:UpperCorner", dom);
     }
     
+    /**
+     * Tests a process grabbing a remote layer 
+     */
+    public void testRemoteGetWFS10Layer() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
+        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <wps:DataInputs>\n" + 
+        "    <wps:Input>\n" + 
+        "      <ows:Identifier>features</ows:Identifier>\n" + 
+        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" " +
+        " xlink:href=\"http://demo.opengeo.org/geoserver/wfs?request=GetFeature&amp;service=wfs&amp;version=1.0.0&amp;typeName=topp:states&amp;featureid=states.1\" />\n" + 
+        "    </wps:Input>\n" + 
+        "  </wps:DataInputs>\n" + 
+        "  <wps:ResponseForm>\n" + 
+        "    <wps:RawDataOutput>\n" + 
+        "      <ows:Identifier>bounds</ows:Identifier>\n" + 
+        "    </wps:RawDataOutput>\n" + 
+        "  </wps:ResponseForm>\n" + 
+        "</wps:Execute>";
+        
+        executeState1BoundsTest(request, "GET WFS 1.0");
+    }
     
+    /**
+     * Tests a process grabbing a remote layer 
+     */
+    public void testRemotePostWFS10Layer() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
+        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <wps:DataInputs>\n" + 
+        "    <wps:Input>\n" + 
+        "      <ows:Identifier>features</ows:Identifier>\n" + 
+        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" " +
+        " xlink:href=\"http://demo.opengeo.org/geoserver/wfs\" method=\"POST\">\n" +
+        "         <wps:Body>\n" +
+        "<![CDATA[<wfs:GetFeature service=\"WFS\" version=\"1.0.0\"\n" + 
+        "  outputFormat=\"GML2\"\n" + 
+        "  xmlns:topp=\"http://www.openplans.org/topp\"\n" + 
+        "  xmlns:wfs=\"http://www.opengis.net/wfs\"\n" + 
+        "  xmlns:ogc=\"http://www.opengis.net/ogc\"\n" + 
+        "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+        "  xsi:schemaLocation=\"http://www.opengis.net/wfs\n" + 
+        "                      http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd\">\n" + 
+        "  <wfs:Query typeName=\"topp:states\">\n" + 
+        "    <ogc:Filter>\n" + 
+        "       <ogc:FeatureId fid=\"states.1\"/>\n" + 
+        "    </ogc:Filter>\n" + 
+        "    </wfs:Query>\n" + 
+        "</wfs:GetFeature>]]>" +
+        "         </wps:Body>\n" +
+        "      </wps:Reference>\n" +
+        "    </wps:Input>\n" + 
+        "  </wps:DataInputs>\n" + 
+        "  <wps:ResponseForm>\n" + 
+        "    <wps:RawDataOutput>\n" + 
+        "      <ows:Identifier>bounds</ows:Identifier>\n" + 
+        "    </wps:RawDataOutput>\n" + 
+        "  </wps:ResponseForm>\n" + 
+        "</wps:Execute>";
+        
+        executeState1BoundsTest(request, "POST WFS 1.0");
+    }
+    
+    /**
+     * Tests a process grabbing a remote layer 
+     */
+    public void testRemoteGetWFS11Layer() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
+        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <wps:DataInputs>\n" + 
+        "    <wps:Input>\n" + 
+        "      <ows:Identifier>features</ows:Identifier>\n" + 
+        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.1\" " +
+        " xlink:href=\"http://demo.opengeo.org/geoserver/wfs?request=GetFeature&amp;service=wfs&amp;version=1.1&amp;typeName=topp:states&amp;featureid=states.1\" />\n" + 
+        "    </wps:Input>\n" + 
+        "  </wps:DataInputs>\n" + 
+        "  <wps:ResponseForm>\n" + 
+        "    <wps:RawDataOutput>\n" + 
+        "      <ows:Identifier>bounds</ows:Identifier>\n" + 
+        "    </wps:RawDataOutput>\n" + 
+        "  </wps:ResponseForm>\n" + 
+        "</wps:Execute>";
+        // System.out.println(request);
+        
+        executeState1BoundsTest(request, "GET WFS 1.1");
+    }
+    
+    /**
+     * Tests a process grabbing a remote layer 
+     */
+    public void testRemotePostWFS11Layer() throws Exception {
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
+        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <wps:DataInputs>\n" + 
+        "    <wps:Input>\n" + 
+        "      <ows:Identifier>features</ows:Identifier>\n" + 
+        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" " +
+        " xlink:href=\"http://demo.opengeo.org/geoserver/wfs\" method=\"POST\">\n" +
+        "         <wps:Body>\n" +
+        "<![CDATA[<wfs:GetFeature service=\"WFS\" version=\"1.1.0\"\n" + 
+        "  xmlns:topp=\"http://www.openplans.org/topp\"\n" + 
+        "  xmlns:wfs=\"http://www.opengis.net/wfs\"\n" + 
+        "  xmlns:ogc=\"http://www.opengis.net/ogc\"\n" + 
+        "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" + 
+        "  xsi:schemaLocation=\"http://www.opengis.net/wfs\n" + 
+        "                      http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\">\n" + 
+        "  <wfs:Query typeName=\"topp:states\">\n" + 
+        "    <ogc:Filter>\n" + 
+        "       <ogc:FeatureId fid=\"states.3\"/>\n" + 
+        "    </ogc:Filter>\n" + 
+        "    </wfs:Query>\n" + 
+        "</wfs:GetFeature>]]>" +
+        "         </wps:Body>\n" +
+        "      </wps:Reference>\n" +
+        "    </wps:Input>\n" + 
+        "  </wps:DataInputs>\n" + 
+        "  <wps:ResponseForm>\n" + 
+        "    <wps:RawDataOutput>\n" + 
+        "      <ows:Identifier>bounds</ows:Identifier>\n" + 
+        "    </wps:RawDataOutput>\n" + 
+        "  </wps:ResponseForm>\n" + 
+        "</wps:Execute>";
+        
+        System.out.println(request);
+        executeState1BoundsTest(request, "POST WFS 1.1");
+    }
+    
+    
+    /**
+     * Checks the bounds process returned the expected envelope
+     * @param request
+     * @param id
+     * @throws Exception
+     */
+    void executeState1BoundsTest(String request, String id) throws Exception {
+        if (!RemoteOWSTestSupport.isRemoteWMSStatesAvailable(LOGGER)) {
+            LOGGER.warning("Remote OWS tests disabled, skipping test with " + id + " reference source");
+            return;
+        }
+        
+        MockHttpServletResponse resp = postAsServletResponse(root(), request);
+        ReferencedEnvelope re = toEnvelope(resp.getOutputStreamContent());
+        assertEquals(-91.516129, re.getMinX(), 0.001);
+        assertEquals(36.986771, re.getMinY(), 0.001);
+        assertEquals(-87.507889, re.getMaxX(), 0.001);
+        assertEquals(42.509361, re.getMaxY(), 0.001);
+    }
+    
+    ReferencedEnvelope toEnvelope(String xml) throws Exception {
+        Parser p = new Parser(new OWSConfiguration());
+        BoundingBoxType box = (BoundingBoxType) p.parse(new ByteArrayInputStream(xml.getBytes()));
+        
+        ReferencedEnvelope re;
+        if(box.getCrs() != null) {
+            re = new ReferencedEnvelope(CRS.decode(box.getCrs()));
+        } else {
+            re = new ReferencedEnvelope();
+        }
+        
+        re.expandToInclude((Double) box.getLowerCorner().get(0), (Double) box.getLowerCorner().get(1));
+        re.expandToInclude((Double) box.getUpperCorner().get(0), (Double) box.getUpperCorner().get(1));
+        return re;
+    }
     
 	
 	/* TODO Updating of Response requests A.4.4.5 */
