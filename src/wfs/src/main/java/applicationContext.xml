@@ -182,10 +182,23 @@
 	
 	
 	<!-- kvp parsers -->
-	<bean id="typeNameKvpParser" class="org.geoserver.wfs.kvp.QNameKvpParser">
-        <constructor-arg value="typeName"/>
-		<constructor-arg ref="catalog"/>
+	<bean id="typeNameKvpParser" class="org.geoserver.wfs.kvp.TypeNameKvpParser">
+    <constructor-arg value="typeName"/>
+    <constructor-arg ref="catalog"/>
 	</bean>
+  <bean id="getFeatureNamespaceKvpParser" class="org.geoserver.wfs.kvp.NamespaceKvpParser">
+    <constructor-arg value="namespace"/>
+    <property name="service"><value>WFS</value></property>
+    <property name="version"><value>1.1.0</value></property>
+    <property name="request"><value>GetFeature</value></property>
+  </bean>
+  <bean id="dftNamespaceKvpParser" class="org.geoserver.wfs.kvp.NamespaceKvpParser">
+    <constructor-arg value="namespace"/>
+    <property name="service"><value>WFS</value></property>
+    <property name="version"><value>1.1.0</value></property>
+    <property name="request"><value>DescribeFeatureType</value></property>
+  </bean>
+  
 	<bean id="featureIdKvpParser" class="org.geoserver.ows.FlatKvpParser">
 		<constructor-arg index="0" value="featureId"/>
 		<constructor-arg index="1" value="java.lang.String"/>
@@ -238,8 +251,9 @@
 	<bean id="wfsGetCapabilitiesKvpReader"  
 		class="org.geoserver.wfs.kvp.GetCapabilitiesKvpRequestReader"/>
 
-	<bean id="describeFeatureTypeKvpReader" 
-		class="org.geoserver.wfs.kvp.DescribeFeatureTypeKvpRequestReader"/>
+  <bean id="describeFeatureTypeKvpReader" class="org.geoserver.wfs.kvp.DescribeFeatureTypeKvpRequestReader">
+    <constructor-arg ref="catalog" />
+  </bean>
 
 	<bean id="getFeatureKvpReader" class="org.geoserver.wfs.kvp.GetFeatureKvpRequestReader">
 		<constructor-arg value="net.opengis.wfs.GetFeatureType"/>
