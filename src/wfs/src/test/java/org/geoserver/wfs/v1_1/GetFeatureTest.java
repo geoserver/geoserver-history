@@ -1,5 +1,6 @@
 package org.geoserver.wfs.v1_1;
 
+import java.net.URLEncoder;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
@@ -111,7 +112,8 @@ public class GetFeatureTest extends WFSTestSupport {
 
     public void testPostFormEncoded() throws Exception {
         String request = "wfs?service=WFS&version=1.1.0&request=GetFeature&typename=sf:PrimitiveGeoFeature"
-                + "&namespace=xmlns(sf=http://cite.opengeospatial.org/gmlsf)";
+                + "&namespace=xmlns("
+                + URLEncoder.encode("sf=http://cite.opengeospatial.org/gmlsf", "UTF-8") + ")";
 
         Document doc = postAsDOM(request);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()

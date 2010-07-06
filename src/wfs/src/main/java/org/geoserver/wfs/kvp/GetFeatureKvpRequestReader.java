@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.GetFeatureType;
@@ -20,6 +21,7 @@ import net.opengis.wfs.QueryType;
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.wfs.WFSException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
@@ -30,6 +32,7 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.identity.FeatureId;
 import org.opengis.filter.spatial.BBOX;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.xml.sax.helpers.NamespaceSupport;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -75,6 +78,17 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             }
         }
 
+        // did the user supply alternate namespace prefixes?
+        NamespaceSupport namespaces = null;
+        if (kvp.containsKey("namespace")) {
+            if (kvp.get("namespace") instanceof NamespaceSupport) {
+                namespaces = (NamespaceSupport) kvp.get("namespace");
+            } else {
+                LOGGER.warning("There's a namespace parameter but it seems it wasn't parsed to a "
+                        + NamespaceSupport.class.getName() + ": " + kvp.get("namespace"));
+            }
+        }
+        
         //typeName
         if (kvp.containsKey("typeName")) {
             //HACK, the kvp reader gives us a list of QName, need to wrap in 
@@ -84,13 +98,46 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
             for (Iterator itr = typeName.iterator(); itr.hasNext();) {
                 QName qName = (QName) itr.next();
-                
+
                 // check the type name is known, otherwise complain
-                if(catalog.getFeatureTypeByName(qName.getNamespaceURI(), qName.getLocalPart()) == null) {
-                    String name = qName.getPrefix() + ":" + qName.getLocalPart();
-                    throw new WFSException("Feature type " + name + " unknown", "InvalidParameterValue", "typeName");
+                String namespaceURI = qName.getNamespaceURI();
+                String localPart = qName.getLocalPart();
+                String prefix = qName.getPrefix();
+                if (namespaces != null) {
+                    if (XMLConstants.DEFAULT_NS_PREFIX.equals(prefix)) {
+                        // request did not specify a namespace prefix for the typeName,
+                        // let's see if it speficied a default namespace
+                        String uri = namespaces.getURI(XMLConstants.DEFAULT_NS_PREFIX);
+                        if (!XMLConstants.NULL_NS_URI.equals(uri)) {
+                            // alright, request came with xmlns(http:...) to idicat the typeName's
+                            // namespace
+                            namespaceURI = uri;
+                        }
+                    } else if (namespaces.getURI(prefix) != null) {
+                        // so request used a custom prefix and declared the prefix:uri mapping?
+                        namespaceURI = namespaces.getURI(qName.getPrefix());
+                    }
+                    NamespaceInfo ns = catalog.getNamespaceByURI(namespaceURI);
+                    if (ns == null) {
+                        throw new WFSException("Unknown namespace [" + qName.getPrefix() + "]",
+                                "InvalidParameterValue", "namespace");
+                    }
+                    prefix = ns.getPrefix();
+                    qName = new QName(namespaceURI, localPart, prefix);
                 }
-                
+
+                if (!XMLConstants.DEFAULT_NS_PREFIX.equals(qName.getPrefix())
+                        && catalog.getNamespaceByPrefix(qName.getPrefix()) == null) {
+                    throw new WFSException("Unknown namespace [" + qName.getPrefix() + "]",
+                            "InvalidParameterValue", "namespace");
+                }
+
+                if (catalog.getFeatureTypeByName(namespaceURI, localPart) == null) {
+                    String name = qName.getPrefix() + ":" + qName.getLocalPart();
+                    throw new WFSException("Feature type " + name + " unknown",
+                            "InvalidParameterValue", "typeName");
+                }
+
                 List l = new ArrayList();
                 l.add(qName);
                 list.add(l);
