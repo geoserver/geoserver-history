@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import net.opengis.wfs.DescribeFeatureTypeType;
@@ -71,7 +72,7 @@ public class DescribeFeatureType {
 
     public FeatureTypeInfo[] run(DescribeFeatureTypeType request)
         throws WFSException {
-        List names = new ArrayList(request.getTypeName());
+        List<QName> names = new ArrayList<QName>(request.getTypeName());
 
         final boolean citeConformance = getWFS().isCiteCompliant();
         if (!citeConformance) {
@@ -81,16 +82,16 @@ public class DescribeFeatureType {
             // namespace". Yet, the xml parser did its job and since TypeName is
             // of QName type, not having a ns prefix means it got parsed as a
             // QName in the default namespace. That is, in the wfs namespace.
-            List hackedNames = new ArrayList(names.size());
+            List<QName> hackedNames = new ArrayList<QName>(names.size());
             final NamespaceInfo defaultNameSpace = catalog.getDefaultNamespace();
             if (defaultNameSpace == null) {
                 throw new IllegalStateException("No default namespace configured in GeoServer");
             }
             final String defaultNsUri = defaultNameSpace.getURI();
-            for (Iterator it = names.iterator(); it.hasNext();) {
-                QName name = (QName) it.next();
+            for (QName name : names) {
                 String nsUri = name.getNamespaceURI();
-                if (org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE.equals(nsUri)) {
+                if (XMLConstants.NULL_NS_URI.equals(nsUri)
+                        || org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE.equals(nsUri)) {
                     // for this one we need to assign the default geoserver
                     // namespace
                     name = new QName(defaultNsUri, name.getLocalPart());
@@ -101,46 +102,39 @@ public class DescribeFeatureType {
         }
 
         //list of catalog handles
-        Collection infos = catalog.getFeatureTypes();
-        ArrayList requested = new ArrayList();
+        List<FeatureTypeInfo> requested = new ArrayList<FeatureTypeInfo>(names.size());
 
-        if (!names.isEmpty()) {
-O: 
-            for (Iterator t = names.iterator(); t.hasNext();) {
-                QName name = (QName) t.next();
-
-                for (Iterator h = infos.iterator(); h.hasNext();) {
-                    FeatureTypeInfo meta = (FeatureTypeInfo) h.next();
-                    if(!meta.enabled())
-                        continue;
-                    
-                    String namespace = meta.getNamespace().getURI();
-                    String local = meta.getName();
-
-                    if (namespace.equals(name.getNamespaceURI())
-                            && local.equals(name.getLocalPart())) {
-                        //found, continue on and keep this handle in list
-                        requested.add(meta);
-
-                        continue O;
-                    }
+        if (names.isEmpty()) {
+            // if there are no specific requested types then get all the ones that
+            // are enabled
+            for (FeatureTypeInfo ftInfo : new ArrayList<FeatureTypeInfo>(catalog.getFeatureTypes())) {
+                if (ftInfo.enabled()) {
+                    requested.add(ftInfo);
                 }
-
-                //not found
-                String msg = "Could not find type: " + name;
-                if (citeConformance) {
-                    msg += ". \nStrict WFS protocol conformance is being applied.\n"
-                            + "Make sure the type name is correctly qualified";
-                }
-                throw new WFSException(msg);
             }
         } else {
-            //if there are no specific requested types then get all the ones that
-            //are enabled
-            for (Iterator it = infos.iterator(); it.hasNext();) {
-                FeatureTypeInfo ftInfo = (FeatureTypeInfo) it.next();
-                if(ftInfo.enabled())
-                    requested.add(ftInfo);
+            for (QName name : names) {
+
+                String namespaceURI = name.getNamespaceURI();
+                String typeName = name.getLocalPart();
+                FeatureTypeInfo typeInfo;
+                if (!(XMLConstants.NULL_NS_URI.equals(namespaceURI) || citeConformance)) {
+                    typeInfo = catalog.getFeatureTypeByName(namespaceURI, typeName);
+                } else {
+                    typeInfo = null;
+                }
+
+                if (typeInfo != null && typeInfo.enabled()) {
+                    requested.add(typeInfo);
+                } else {
+                    // not found
+                    String msg = "Could not find type: " + name;
+                    if (citeConformance) {
+                        msg += ". \nStrict WFS protocol conformance is being applied.\n"
+                                + "Make sure the type name is correctly qualified";
+                    }
+                    throw new WFSException(msg);
+                }
             }
         }
 

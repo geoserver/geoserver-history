@@ -1,5 +1,6 @@
 package org.geoserver.wfs.v1_1;
 
+import java.net.URLEncoder;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
@@ -110,7 +111,8 @@ public class GetFeatureTest extends WFSTestSupport {
 
     public void testPostFormEncoded() throws Exception {
         String request = "wfs?service=WFS&version=1.1.0&request=GetFeature&typename=sf:PrimitiveGeoFeature"
-                + "&namespace=xmlns(sf=http://cite.opengeospatial.org/gmlsf)";
+                + "&namespace=xmlns("
+                + URLEncoder.encode("sf=http://cite.opengeospatial.org/gmlsf", "UTF-8") + ")";
 
         Document doc = postAsDOM(request);
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement()
@@ -401,6 +403,18 @@ public class GetFeatureTest extends WFSTestSupport {
         
         Document dom = getAsDOM("cdf/Seven/wfs?request=GetFeature&typename=cdf:Fifteen&version=1.1.0&service=wfs");
         XMLAssert.assertXpathEvaluatesTo("1", "count(//ows:ExceptionReport)", dom);
+    }
+    
+    public void testUserSuppliedNamespacePrefix() throws Exception {
+        testGetFifteenAll("wfs?request=GetFeature&typename=myPrefix:Fifteen&version=1.1.0&service=wfs&"
+                + "namespace=xmlns(myPrefix%3D" // the '=' sign shall be encoded, hence '%3D'
+                + URLEncoder.encode(MockData.FIFTEEN.getNamespaceURI(), "UTF-8") + ")");
+    }
+    
+    public void testUserSuppliedDefaultNamespace() throws Exception {
+        testGetFifteenAll("wfs?request=GetFeature&typename=Fifteen&version=1.1.0&service=wfs&"
+                + "namespace=xmlns("
+                + URLEncoder.encode(MockData.FIFTEEN.getNamespaceURI(), "UTF-8") + ")");
     }
     
     public static void main(String[] args) {
