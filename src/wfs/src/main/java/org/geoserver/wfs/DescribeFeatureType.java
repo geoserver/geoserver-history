@@ -5,8 +5,6 @@
 package org.geoserver.wfs;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -118,11 +116,15 @@ public class DescribeFeatureType {
                 String namespaceURI = name.getNamespaceURI();
                 String typeName = name.getLocalPart();
                 FeatureTypeInfo typeInfo;
-                if (!(XMLConstants.NULL_NS_URI.equals(namespaceURI) || citeConformance)) {
-                    typeInfo = catalog.getFeatureTypeByName(namespaceURI, typeName);
-                } else {
+                if (citeConformance && XMLConstants.NULL_NS_URI.equals(namespaceURI)) {
+                    // under cite conformance, the typeName shall be completely resolved. If there's
+                    // no namespace URI and we ask the catalog with only the localName, the catalog
+                    // will try to match against the default namespace
                     typeInfo = null;
+                } else {
+                    typeInfo = catalog.getFeatureTypeByName(namespaceURI, typeName);
                 }
+               
 
                 if (typeInfo != null && typeInfo.enabled()) {
                     requested.add(typeInfo);

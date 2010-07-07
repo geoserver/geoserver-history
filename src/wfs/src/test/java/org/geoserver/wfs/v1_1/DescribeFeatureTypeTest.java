@@ -4,8 +4,6 @@ import java.net.URLEncoder;
 
 import javax.xml.namespace.QName;
 
-import junit.framework.Test;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -19,13 +17,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class DescribeFeatureTypeTest extends WFSTestSupport {
-
-    /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
-    public static Test suite() {
-        return new OneTimeTestSetup(new DescribeFeatureTypeTest());
-    }
 
     @Override
     protected void setUpInternal()throws Exception{
@@ -140,12 +131,16 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
     }
 
     /**
-     * See http://jira.codehaus.org/browse/GEOS-3306
+     * Under cite compliance mode, even if the requested typeName is not qualified and it does exist
+     * in the GeoServer's default namespace, the lookup should fail, since the request does not
+     * addresses the typeName either by qualifying it as declared in the getcaps document, or
+     * providing an alternate prefix with its corresponding prefix to namespace mapping.
      * 
      * @throws Exception
      */
     public void testCiteCompliance() throws Exception {
         final QName typeName = MockData.STREAMS;
+        // make sure typeName _is_ in the default namespace
         Catalog catalog = getCatalog();
         catalog.setDefaultNamespace(catalog.getNamespaceByURI(typeName.getNamespaceURI()));
         FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(typeName.getNamespaceURI(), typeName.getLocalPart());
@@ -155,7 +150,7 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         store.setEnabled(true);
         catalog.save(store);
         
-        
+        // and request typeName without prefix
         String path = "ows?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
             + typeName.getLocalPart();
         Document doc;
@@ -176,4 +171,26 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         //print(doc);
         assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
     }
+    
+    
+    /**
+     * See http://jira.codehaus.org/browse/GEOS-3306
+     * 
+     * @throws Exception
+     */
+    public void testPrefixedGetStrictCite() throws Exception {
+        GeoServer geoServer = getGeoServer();
+        WFSInfo service = geoServer.getService(WFSInfo.class);
+        service.setCiteCompliant(true);
+        geoServer.save(service);
+        
+        final QName typeName = MockData.POLYGONS;
+        String path = "ows?service=WFS&version=1.1.0&request=DescribeFeatureType&typeName="
+                + getLayerId(typeName);
+        Document doc = getAsDOM(path);
+        //print(doc);
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+    }
+    
+    
 }
