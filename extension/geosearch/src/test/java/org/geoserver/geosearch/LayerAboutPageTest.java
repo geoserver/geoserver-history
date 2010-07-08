@@ -1,6 +1,7 @@
 package org.geoserver.geosearch;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.rest.RestletException;
@@ -43,7 +44,9 @@ public class LayerAboutPageTest extends GeoServerTestSupport  {
         assertEquals("the error code should be a 404", Status.CLIENT_ERROR_NOT_FOUND, re.getStatus());
 		
 
-        getFeatureTypeInfo(MockData.GENERICENTITY).getMetadata().put("indexingEnabled", true);
+        FeatureTypeInfo fti = getFeatureTypeInfo(MockData.GENERICENTITY);
+        fti.getMetadata().put("indexingEnabled", true);
+        getCatalog().save(fti);
 		context = lap.getContext("sf", "GenericEntity", request);		
 
 		assertEquals("Unexpected value for 'name' in context", ((SimpleScalar) context.get("name")).getAsString(), "sf:GenericEntity");

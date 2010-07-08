@@ -16,6 +16,7 @@ import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
+import org.geoserver.catalog.MetadataMap;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StyleInfo;
@@ -794,7 +795,6 @@ public class CatalogImplTest extends TestCase {
     
     
     public void testFeatureTypeEvents() {
-        
         //set default namespace
         catalog.add( ns );
         
@@ -826,6 +826,35 @@ public class CatalogImplTest extends TestCase {
         catalog.remove( ft );
         assertEquals( 1, l.removed.size() );
         assertEquals( ft, l.removed.get(0).getSource() );
+    }
+    
+    public void testModifyMetadata() {
+      //set default namespace
+        catalog.add( ns );
+        
+        TestListener l = new TestListener();
+        catalog.addListener( l );
+        
+        FeatureTypeInfo ft = catalog.getFactory().createFeatureType();
+        ft.setName( "ftName" );
+        ft.setDescription( "ftDescription" );
+        ft.setStore( ds );
+        
+        assertTrue( l.added.isEmpty() );
+        catalog.add(ft);
+        
+        assertEquals( 1, l.added.size() );
+        assertEquals( ft, l.added.get(0).getSource() );
+        
+        ft = catalog.getFeatureTypeByName("ftName");
+        ft.getMetadata().put("newValue", "abcd");
+        MetadataMap newMetadata  = new MetadataMap(ft.getMetadata());
+        catalog.save(ft);
+        assertEquals( 1, l.modified.size() );
+        assertEquals( ft, l.modified.get(0).getSource() );
+        assertTrue( l.modified.get(0).getPropertyNames().contains( "metadata"));
+        assertTrue( l.modified.get(0).getOldValues().contains( new MetadataMap() ));
+        assertTrue( l.modified.get(0).getNewValues().contains( newMetadata ));
     }
     
     public void testAddLayer() {

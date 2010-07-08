@@ -271,6 +271,7 @@ public class WMS {
     public void setSvgRenderer(String svgRendererHint) {
         WMSInfo serviceInfo = getServiceInfo();
         serviceInfo.getMetadata().put("svgRenderer", svgRendererHint);
+        getGeoServer().save(serviceInfo);
     }
 
     public String getSvgRenderer() {
