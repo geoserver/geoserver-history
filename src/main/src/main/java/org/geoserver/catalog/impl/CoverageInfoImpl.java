@@ -15,6 +15,8 @@ import org.geoserver.catalog.CatalogVisitor;
 import org.geoserver.catalog.CoverageDimensionInfo;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
+import org.geoserver.catalog.ProjectionPolicy;
+import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridCoverage;
@@ -122,16 +124,41 @@ public class CoverageInfoImpl extends ResourceInfoImpl implements CoverageInfo {
 
     public GridCoverage getGridCoverage(ProgressListener listener, Hints hints)
             throws IOException {
+        
+        // manage projection policy
+        if (this.projectionPolicy== ProjectionPolicy.FORCE_DECLARED){
+            final Hints crsHints= new Hints(Hints.DEFAULT_COORDINATE_REFERENCE_SYSTEM, this.getCRS());
+            if(hints!=null)
+                hints.putAll(crsHints);
+            else
+                hints=crsHints;
+        }        
         return catalog.getResourcePool().getGridCoverage(this, null, hints); 
     }
     
     public GridCoverage getGridCoverage(ProgressListener listener,
             ReferencedEnvelope envelope, Hints hints) throws IOException {
+        // manage projection policy
+        if (this.projectionPolicy== ProjectionPolicy.FORCE_DECLARED){
+            final Hints crsHints= new Hints(Hints.DEFAULT_COORDINATE_REFERENCE_SYSTEM, this.getCRS());
+            if(hints!=null)
+                hints.putAll(crsHints);
+            else
+                hints=crsHints;
+        }           
         return catalog.getResourcePool().getGridCoverage(this, envelope, hints);
     }
     
     public GridCoverageReader getGridCoverageReader(ProgressListener listener,
             Hints hints) throws IOException {
+        // manage projection policy
+        if (this.projectionPolicy== ProjectionPolicy.FORCE_DECLARED){
+            final Hints crsHints= new Hints(Hints.DEFAULT_COORDINATE_REFERENCE_SYSTEM, this.getCRS());
+            if(hints!=null)
+                hints.putAll(crsHints);
+            else
+                hints=crsHints;
+        }           
         return catalog.getResourcePool().getGridCoverageReader(getStore(), hints);
     }
     

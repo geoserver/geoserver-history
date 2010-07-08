@@ -24,7 +24,6 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.geoserver.catalog.CatalogBuilder;
-import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.web.GeoServerApplication;
@@ -94,12 +93,6 @@ public class BasicResourceConfig extends ResourceConfigurationPanel {
         if (((ResourceInfo) model.getObject()).getCRS() == null) {
             // no native, the only meaningful policy is to force
             ri.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
-        }
-        if (model.getObject() instanceof CoverageInfo) {
-            // coverages projection policy choice is not allowed, if there is a native a
-            // reprojection will occurr
-            CoverageInfo ci = (CoverageInfo) model.getObject();
-            ci.setProjectionPolicy(ProjectionPolicy.REPROJECT_TO_DECLARED);
         }
         refForm.add(projectionPolicy);
         

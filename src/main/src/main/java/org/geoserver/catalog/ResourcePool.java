@@ -829,6 +829,7 @@ public class ResourcePool {
      * 
      * @throws IOException Any errors that occur loading the reader.
      */
+    @SuppressWarnings("deprecation")
     public GridCoverageReader getGridCoverageReader( CoverageStoreInfo info, Hints hints ) 
         throws IOException {
         
@@ -888,6 +889,7 @@ public class ResourcePool {
      * 
      * @throws IOException Any errors that occur loading the coverage.
      */
+    @SuppressWarnings("deprecation")
     public GridCoverage getGridCoverage( CoverageInfo info, ReferencedEnvelope env, /*Rectangle dim,*/ Hints hints) 
         throws IOException {
         
@@ -993,6 +995,7 @@ public class ResourcePool {
      * 
      * @return The format, or null.
      */
+    @SuppressWarnings("deprecation")
     public AbstractGridFormat getGridCoverageFormat( CoverageStoreInfo info ) {
         final int length = CoverageStoreUtils.formats.length;
 

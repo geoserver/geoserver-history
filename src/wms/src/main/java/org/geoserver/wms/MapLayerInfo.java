@@ -17,6 +17,7 @@ import org.geoserver.catalog.ResourcePool;
 import org.geoserver.catalog.StyleInfo;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.styling.FeatureTypeConstraint;
@@ -322,8 +323,7 @@ public final class MapLayerInfo {
         }
 
         CoverageInfo resource = (CoverageInfo) layerInfo.getResource();
-        GridCoverageReader coverageReader = resource.getGridCoverageReader(null, null);
-        return coverageReader;
+        return resource.getGridCoverageReader(null, GeoTools.getDefaultHints());
     }
 
     public CoordinateReferenceSystem getCoordinateReferenceSystem() {
