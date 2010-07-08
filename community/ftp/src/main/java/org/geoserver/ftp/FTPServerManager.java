@@ -15,6 +15,7 @@ import org.apache.ftpserver.listener.ListenerFactory;
 import org.geotools.util.logging.Logging;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.ContextStoppedEvent;
 
@@ -70,7 +71,7 @@ public class FTPServerManager implements ApplicationListener {
             } catch (FtpException e) {
                 LOGGER.log(Level.SEVERE, "Could not start the embedded FTP server", e);
             }
-        } else if (event instanceof ContextStoppedEvent) {
+        } else if (event instanceof ContextStoppedEvent || event instanceof ContextClosedEvent) {
             stopServer();
         }
     }
