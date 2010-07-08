@@ -11,15 +11,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.complex.AppSchemaDataAccessTest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -187,7 +197,7 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
      *            mock data root directory
      */
     private void copyFileToFeatureTypeDir(String namespacePrefix, String typeName, String fileName) {
-        copyTo(FeatureChainingMockData.class.getResourceAsStream(TEST_DATA + fileName),
+        copy(AppSchemaDataAccessTest.class.getResourceAsStream(TEST_DATA + fileName),
                 "featureTypes" + "/" + getDataStoreName(namespacePrefix, typeName) + "/" + fileName);
     }
 
@@ -216,7 +226,7 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
      */
     public void setUp() {
         setUpCatalog();
-        copyTo(MockData.class.getResourceAsStream("services.xml"), "services.xml");
+        copy(MockData.class.getResourceAsStream("services.xml"), "services.xml");
     }
 
     /**
@@ -259,7 +269,7 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
      * @param location
      *            path relative to mock data directory
      */
-    private void copyTo(InputStream input, String location) {
+    private void copy(InputStream input, String location) {
         try {
             IOUtils.copy(input, new File(data, location));
         } catch (IOException e) {
@@ -267,6 +277,49 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
         }
     }
 
+    /**
+     * Recursively copy a folder in a jar file, expressed as a jar URL, into a destination folder.
+     * Empty source directories are not copied. All required destination directories are created.
+     * 
+     * @param url
+     *            jar URL specifying source jar file and folder
+     * @param destination
+     *            file to copy the folder
+     */
+    private void deepCopyJarPath(URL url, File destination) {
+        try {
+            String urlString = url.toString();
+            Pattern pattern = Pattern.compile("jar:(file:[^!]+)!/([^!]+)");
+            Matcher matcher = pattern.matcher(urlString);
+            if (!matcher.matches()) {
+                throw new RuntimeException("Unexpected jar URL format: " + urlString);
+            }
+            String sourcePath = URLDecoder.decode(matcher.group(2), "UTF-8");
+            if (!sourcePath.endsWith("/")) {
+                sourcePath += "/";
+            }
+            URL jarUrl = new URL(matcher.group(1));
+            ZipFile jarFile = new ZipFile(DataUtilities.urlToFile(jarUrl));
+            Enumeration<? extends ZipEntry> entries = jarFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = (ZipEntry) entries.nextElement();
+                if (!entry.isDirectory() && entry.getName().startsWith(sourcePath)) {
+                    File destinationFile = new File(destination, entry.getName().substring(
+                            sourcePath.length()));
+                    destinationFile.getParentFile().mkdirs();
+                    InputStream input = jarFile.getInputStream(entry);
+                    try {
+                        IOUtils.copy(input, destinationFile);
+                    } finally {
+                        input.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     /**
      * Write an info.xml file describing a feature type to the feature type directory.
      * 
@@ -388,8 +441,8 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
             writeInfoFile(namespacePrefix, typeName, featureTypeDir, dataStoreName);
             copyMappingAndSupportFiles(namespacePrefix, typeName, mappingFileName, supportFileNames);
             copyFileToFeatureTypeDir(namespacePrefix, typeName, oasisCatalogFileName);
-            IOUtils.deepCopy(new File(FeatureChainingMockData.class.getResource(
-                    TEST_DATA + schemasDirName).toURI()), new File(featureTypeDir, schemasDirName));
+            deepCopyJarPath(AppSchemaDataAccessTest.class.getResource(
+                    TEST_DATA + schemasDirName), new File(featureTypeDir, schemasDirName));
             addDataStore(dataStoreName, namespacePrefix, buildAppSchemaDatastoreParams(
                     namespacePrefix, typeName, mappingFileName, featureTypesBaseDir, dataStoreName));
         } catch (Exception e) {
