@@ -129,4 +129,8 @@ public class MetadataMap implements Map<String, Serializable>, Serializable {
         return map.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return map.toString();
+    }
 }

@@ -58,6 +58,13 @@ public class ModificationProxy implements InvocationHandler, Serializable {
      * "dirty" properties 
      */
     HashMap<String,Object> properties;
+    
+    /**
+     * The old values of the live collections (we have to clone them because once
+     * the proxy commits the original map will contain the same values as the new one,
+     * breaking getOldValues()
+     */
+    HashMap<String,Object> oldCollectionValues;
 
     public ModificationProxy(Object proxyObject) {
         this.proxyObject = proxyObject;
@@ -97,9 +104,28 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                     Collection wrap = real.getClass().newInstance();
                     wrap.addAll( real );
                     properties().put( property, wrap );
+                    // we also need to store a clone of the initial state as the collection
+                    // might be a live one
+                    Collection clone = real.getClass().newInstance();
+                    clone.addAll( real );
+                    oldCollectionValues().put(property, clone);
                     return wrap;
-                }
-                else {
+                } else if(Map.class.isAssignableFrom( method.getReturnType() )) {
+                    Map real = (Map) method.invoke( proxyObject, null );
+                    if(real == null) {
+                        // in this case there is nothing we can do
+                        return null;
+                    }
+                    Map wrap = real.getClass().newInstance();
+                    wrap.putAll( real );
+                    properties().put( property, wrap );
+                    // we also need to store a clone of the initial state as the collection
+                    // might be a live one
+                    Map clone = real.getClass().newInstance();
+                    clone.putAll( real );
+                    oldCollectionValues().put(property, clone);
+                    return wrap;
+                } else {
                   //proceed with the invocation    
                 }
                 
@@ -162,8 +188,11 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                         Collection c = (Collection) g.invoke(proxyObject,null);
                         c.clear();
                         c.addAll( (Collection) v );
-                    }
-                    else {
+                    } else if( Map.class.isAssignableFrom( g.getReturnType() )) {
+                        Map m = (Map) g.invoke(proxyObject, null);
+                        m.clear();
+                        m.putAll( (Map) v);
+                    } else {
                         Method s = setter(p,g.getReturnType());
                         
                         if ( Info.class.isAssignableFrom( g.getReturnType() ) ) {
@@ -231,6 +260,22 @@ public class ModificationProxy implements InvocationHandler, Serializable {
         }
         
         return properties;
+    }
+    
+    HashMap<String,Object> oldCollectionValues() {
+        if ( oldCollectionValues != null ) {
+            return oldCollectionValues;
+        }
+        
+        synchronized (this) {
+            if ( oldCollectionValues != null ) {
+                return oldCollectionValues;
+            }
+            
+            oldCollectionValues = new HashMap<String,Object>();
+        }
+        
+        return oldCollectionValues;
     }
     
     /**
@@ -303,16 +348,19 @@ public class ModificationProxy implements InvocationHandler, Serializable {
     public List<Object> getOldValues() {
         List<Object> oldValues = new ArrayList<Object>();
         for ( String propertyName : getDirtyProperties() ) {
-            try {
-                Method g = getter(propertyName);
-                if ( g == null ) {
-                    throw new IllegalArgumentException( "No such property: " + propertyName );
+            if(oldCollectionValues().containsKey(propertyName)) {
+                oldValues.add(oldCollectionValues.get(propertyName));
+            } else {
+                try {
+                    Method g = getter(propertyName);
+                    if ( g == null ) {
+                        throw new IllegalArgumentException( "No such property: " + propertyName );
+                    }
+                    
+                    oldValues.add( g.invoke( proxyObject, null ) );
+                } catch (Exception e) {
+                    throw new RuntimeException( e );
                 }
-                
-                oldValues.add( g.invoke( proxyObject, null ) );
-            }
-            catch (Exception e) {
-                throw new RuntimeException( e );
             }
         }
         
