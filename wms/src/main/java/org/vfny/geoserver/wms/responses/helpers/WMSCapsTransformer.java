@@ -50,6 +50,7 @@ import org.geoserver.wms.WMSInfo;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
+import org.geotools.factory.GeoTools;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -764,7 +765,7 @@ public class WMSCapsTransformer extends TransformerBase {
                 
                 AbstractGridCoverage2DReader reader = null;
                 try {
-                    reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, null);
+                    reader = (AbstractGridCoverage2DReader) catalog.getResourcePool().getGridCoverageReader(csinfo, GeoTools.getDefaultHints());
                 } catch (Throwable t) {
                     LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
                 }

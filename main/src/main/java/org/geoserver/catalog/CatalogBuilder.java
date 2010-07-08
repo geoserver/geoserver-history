@@ -36,6 +36,8 @@ import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.ows.CRSEnvelope;
 import org.geotools.data.ows.Layer;
+import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -538,19 +540,18 @@ public class CatalogBuilder {
         } else if (rinfo instanceof CoverageInfo) {
             // the coverage bounds computation path is a bit more linear, the
             // readers always return the bounds and in the proper CRS (afaik)
-            CoverageInfo cinfo = (CoverageInfo) rinfo;
-            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo
-                    .getGridCoverageReader(null, null);
+            CoverageInfo cinfo = (CoverageInfo) rinfo;            
+            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(null, GeoTools.getDefaultHints());   
+
+            // get  bounds
             bounds = new ReferencedEnvelope(reader.getOriginalEnvelope());
+           
         }
 
         // apply the bounds, taking into account the reprojection policy if need be
         if (rinfo.getProjectionPolicy() == ProjectionPolicy.REPROJECT_TO_DECLARED && bounds != null) {
             try {
                 bounds = bounds.transform(rinfo.getCRS(), true);
-                GridGeometry grid = ((CoverageInfo) rinfo).getGrid();
-                ((CoverageInfo) rinfo).setGrid(new GridGeometry2D(grid.getGridRange(), grid
-                        .getGridToCRS(), rinfo.getCRS()));
             } catch (Exception e) {
                 throw (IOException) new IOException("transform error").initCause(e);
             }
@@ -677,7 +678,7 @@ public class CatalogBuilder {
 
         CoverageStoreInfo csinfo = (CoverageStoreInfo) store;
         AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) catalog
-                .getResourcePool().getGridCoverageReader(csinfo, null);
+                .getResourcePool().getGridCoverageReader(csinfo, GeoTools.getDefaultHints());
 
         if (reader == null)
             throw new Exception("Unable to acquire a reader for this coverage with format: "
@@ -770,8 +771,10 @@ public class CatalogBuilder {
             throw new Exception("Unable to acquire test coverage for format:" + format.getName());
         }
 
-        cinfo.getDimensions().addAll(getCoverageDimensions(gc.getSampleDimensions()));
+        // remove read grid geometry since it is request specific
+        parameters.remove(AbstractGridFormat.READ_GRIDGEOMETRY2D.getName().toString());
 
+        cinfo.getDimensions().addAll(getCoverageDimensions(gc.getSampleDimensions()));
         // TODO:
         // dimentionNames = getDimensionNames(gc);
         /*
@@ -792,7 +795,7 @@ public class CatalogBuilder {
         String name = gc.getName().toString();
         cinfo.setName(name);
         cinfo.setTitle(name);
-        cinfo.setDescription(new StringBuffer("Generated from ").append(format.getName()).toString());
+        cinfo.setDescription(new StringBuilder("Generated from ").append(format.getName()).toString());
 
         // keywords
         cinfo.getKeywords().add("WCS");
@@ -801,7 +804,7 @@ public class CatalogBuilder {
 
         // native format name
         cinfo.setNativeFormat(format.getName());
-        cinfo.getMetadata().put("dirName", new StringBuffer(store.getName()).append("_").append(name).toString());
+        cinfo.getMetadata().put("dirName", new StringBuilder(store.getName()).append("_").append(name).toString());
 
         // request SRS's
         if ((gc.getCoordinateReferenceSystem2D().getIdentifiers() != null)
@@ -845,6 +848,9 @@ public class CatalogBuilder {
         // read parameters
         cinfo.getParameters().putAll(/*CoverageUtils.getParametersKVP(format.getReadParameters())*/ parameters);
 
+        /// dispose coverage 
+        gc.dispose(true);
+
         return cinfo;
     }
 
@@ -857,7 +863,7 @@ public class CatalogBuilder {
             CoverageDimensionInfo dim = catalog.getFactory().createCoverageDimension();
             dim.setName(sampleDimensions[i].getDescription().toString(Locale.getDefault()));
 
-            StringBuffer label = new StringBuffer("GridSampleDimension".intern());
+            StringBuilder label = new StringBuilder("GridSampleDimension".intern());
             final Unit uom = sampleDimensions[i].getUnits();
 
             if (uom != null) {
@@ -977,7 +983,7 @@ public class CatalogBuilder {
         return wli;
     }
 
-    void parseUOM(StringBuffer label, Unit uom) {
+    void parseUOM(StringBuilder label, Unit uom) {
         String uomString = uom.toString();
         uomString = uomString.replaceAll("�", "^2");
         uomString = uomString.replaceAll("�", "^3");

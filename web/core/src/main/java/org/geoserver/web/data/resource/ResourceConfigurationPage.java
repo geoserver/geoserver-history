@@ -43,6 +43,8 @@ import org.geoserver.web.publish.LayerConfigurationPanelInfo;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.factory.GeoTools;
+import org.geotools.factory.Hints;
 import org.geotools.feature.NameImpl;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.opengis.coverage.grid.GridGeometry;
@@ -211,23 +213,21 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                     Catalog catalog = getCatalog();
                     ResourceInfo resourceInfo = getResourceInfo();
                     if (isNew) {
-                    	ReferencedEnvelope bounds;
-						// updating grid if is a coverage
+			// updating grid if is a coverage
                     	if(resourceInfo instanceof CoverageInfo) {
                             // the coverage bounds computation path is a bit more linear, the
                             // readers always return the bounds and in the proper CRS (afaik)
-                            CoverageInfo cinfo = (CoverageInfo) resourceInfo;
-                            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(null, null); 
-                            bounds = new ReferencedEnvelope(reader.getOriginalEnvelope());
+                            CoverageInfo cinfo = (CoverageInfo) resourceInfo;     
+                            AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(null, GeoTools.getDefaultHints()); 
+
+                            // get  bounds
+                            final ReferencedEnvelope bounds = new ReferencedEnvelope(reader.getOriginalEnvelope());
                             // apply the bounds, taking into account the reprojection policy if need be 
-                            if (resourceInfo.getProjectionPolicy() == ProjectionPolicy.REPROJECT_TO_DECLARED && bounds != null) {
-                                try {
-                                    bounds = bounds.transform(resourceInfo.getCRS(), true);
-                                    GridGeometry grid = ((CoverageInfo) resourceInfo).getGrid();
-                                    ((CoverageInfo) resourceInfo).setGrid(new GridGeometry2D(grid.getGridRange(),grid.getGridToCRS(), resourceInfo.getCRS()));
-                                } catch(Exception e) {
-                                    throw (IOException) new IOException("transform error").initCause(e);
-                                }
+                            final ProjectionPolicy projectionPolicy=resourceInfo.getProjectionPolicy();
+                            if (projectionPolicy != ProjectionPolicy.NONE && bounds != null) {
+                                // we need to fix the registered grid for this coverage
+                                final GridGeometry grid = cinfo.getGrid();
+                                cinfo.setGrid(new GridGeometry2D(grid.getGridRange(),grid.getGridToCRS(), resourceInfo.getCRS()));
                             } 
                         }
                     	

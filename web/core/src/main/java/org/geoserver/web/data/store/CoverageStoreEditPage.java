@@ -19,6 +19,7 @@ import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
+import org.geotools.factory.GeoTools;
 import org.opengis.coverage.grid.GridCoverageReader;
 
 /**
@@ -110,7 +111,7 @@ public class CoverageStoreEditPage extends AbstractCoverageStorePage {
             }
             try {
                 // get the reader through ResourcePool so it resolves relative URL's for us
-                GridCoverageReader reader = resourcePool.getGridCoverageReader(info, null);
+                GridCoverageReader reader = resourcePool.getGridCoverageReader(info, GeoTools.getDefaultHints());
                 LOGGER.info("Connection to store " + info.getName() + " validated. Got a "
                         + reader.getClass().getName() + ". Saving store");
                 doSaveStore(info);

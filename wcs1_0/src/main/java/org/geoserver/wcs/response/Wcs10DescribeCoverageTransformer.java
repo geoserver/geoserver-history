@@ -29,6 +29,7 @@ import org.geoserver.catalog.MetadataLinkInfo;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.wcs.WCSInfo;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
+import org.geotools.factory.GeoTools;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
@@ -234,7 +235,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             
             AbstractGridCoverage2DReader reader = null;
             try {
-                reader = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, null);
+                reader = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, GeoTools.getDefaultHints());
             } catch (IOException e) {
                 LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
             }
@@ -305,7 +306,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             
             AbstractGridCoverage2DReader reader = null;
             try {
-                reader = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, null);
+                reader = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, GeoTools.getDefaultHints());
             } catch (IOException e) {
                 LOGGER.severe("Unable to acquire a reader for this coverage with format: " + csinfo.getFormat().getName());
             }
@@ -496,7 +497,7 @@ public class Wcs10DescribeCoverageTransformer extends TransformerBase {
             // now get possible elevation
             AbstractGridCoverage2DReader reader = null;
             try {
-                reader = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, null);
+                reader = (AbstractGridCoverage2DReader) ci.getGridCoverageReader(null, GeoTools.getDefaultHints());
             } catch (IOException e) {
                 LOGGER.severe("Unable to acquire a reader for this coverage with format: " + ci.getStore().getFormat().getName());
             }            
