@@ -398,7 +398,7 @@ public class ExecuteTest extends WPSTestSupport {
         "  <wps:DataInputs>\n" + 
         "    <wps:Input>\n" + 
         "      <ows:Identifier>features</ows:Identifier>\n" + 
-        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" " +
+        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.1\" " +
         " xlink:href=\"http://demo.opengeo.org/geoserver/wfs\" method=\"POST\">\n" +
         "         <wps:Body>\n" +
         "<![CDATA[<wfs:GetFeature service=\"WFS\" version=\"1.1.0\"\n" + 
@@ -410,7 +410,7 @@ public class ExecuteTest extends WPSTestSupport {
         "                      http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\">\n" + 
         "  <wfs:Query typeName=\"topp:states\">\n" + 
         "    <ogc:Filter>\n" + 
-        "       <ogc:FeatureId fid=\"states.3\"/>\n" + 
+        "       <ogc:FeatureId fid=\"states.1\"/>\n" + 
         "    </ogc:Filter>\n" + 
         "    </wfs:Query>\n" + 
         "</wfs:GetFeature>]]>" +

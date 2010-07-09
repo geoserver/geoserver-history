@@ -73,269 +73,291 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * Main class used to handle Execute requests
- *
+ * 
  * @author Lucas Reed, Refractions Research Inc
  */
 public class Execute {
-    WPSInfo             wps;
+    WPSInfo wps;
+
     GeoServerInfo gs;
-    ApplicationContext  context;
+
+    ApplicationContext context;
 
     public Execute(WPSInfo wps, GeoServerInfo gs, ApplicationContext context) {
-        this.wps      = wps;
+        this.wps = wps;
         this.gs = gs;
         this.context = context;
     }
 
     /**
      * Main method for performing decoding, execution, and response
-     *
+     * 
      * @param object
      * @param output
      * @throws IllegalArgumentException
      */
     public ExecuteResponseType run(ExecuteType request) {
-        //note the current time
+        // note the current time
         Date started = Calendar.getInstance().getTime();
-        
-        //load the process factory
+
+        // load the process factory
         CodeType ct = request.getIdentifier();
         Name processName = Ows11Util.name(ct);
         ProcessFactory pf = Processors.createProcessFactory(processName);
-        if ( pf == null ) {
-            throw new WPSException( "No such process: " + processName );
+        if (pf == null) {
+            throw new WPSException("No such process: " + processName);
         }
-        
-        //parse the inputs for the request
-        Map<String, Object> inputs = new HashMap();
-        
-        for ( Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext(); ) {
-            InputType input = (InputType) i.next();
-            String inputId = input.getIdentifier().getValue();
-            
-            // locate the parameter for this request
-            Parameter p = pf.getParameterInfo(processName).get( inputId );
-            if ( p == null ) {
-                throw new WPSException( "No such parameter: " + inputId );
-            }
-            
-            // find the ppio
-            String mime = null;
-            if(input.getData() != null && input.getData().getComplexData() != null) {
-            	mime = input.getData().getComplexData().getMimeType();
-            } else if(input.getReference() != null) {
-            	mime = input.getReference().getMimeType();
-            }
-            ProcessParameterIO ppio = ProcessParameterIO.find( p, context, mime);
-            if ( ppio == null ) {
-                throw new WPSException( "Unable to decode input: " + inputId );
-            }
-            
-            //read the data
-            Object decoded = null;
-            try {
-                if ( input.getReference() != null ) {
-                    //this is a reference
-                    InputReferenceType ref = input.getReference();
-                    
-                    //grab the location and method
-                    String href = ref.getHref();
-                    MethodType method = ref.getMethod() != null ? ref.getMethod() : MethodType.GET_LITERAL; 
-                    
-                    // TODO: handle in process GET requests by doing kvp parsing
-                    if (href.startsWith("http://geoserver/wfs")) {
-                        decoded = handleAsInternalWFS(ppio, ref);
-                    } else if(href.startsWith("http://geoserver/wcs") && method == MethodType.POST_LITERAL) {
-                    	WebCoverageService111 wcs = (WebCoverageService111) context.getBean("wcs111ServiceTarget");
-                    	decoded = wcs.getCoverage((net.opengis.wcs11.GetCoverageType)ref.getBody())[0];
-                    } else {
-                      	decoded = executeRemoteRequest(ref, (ComplexPPIO) ppio, inputId);
-                    }
-                    
-                } else {
-                    //actual data, figure out which type 
-                    DataType data = input.getData();
-                   
-                    if ( data.getLiteralData() != null ) {
-                        LiteralDataType literal = data.getLiteralData();
-                        decoded = ((LiteralPPIO)ppio).decode( literal.getValue() );
-                    } else if ( data.getComplexData() != null ) {
-                        ComplexDataType complex = data.getComplexData();
-                        decoded = ((ComplexPPIO)ppio).decode(complex.getData().get( 0 ));
-                    } else if (data.getBoundingBoxData() != null) {
-                        decoded = ((BoundingBoxPPIO) ppio).decode(data.getBoundingBoxData());
-                    }
-                    
-                }
-            } catch(Exception e) {
-                throw new WPSException("Unable to decode input: " + inputId, e);
-            }
-            
-            //decode the input
-            inputs.put( p.key, decoded );
-        }
-        
-        //execute the process
-        Map<String,Object> result = null;
+
+        Map<String, Object> inputs = parseProcessInputs(request, processName, pf);
+
+        // execute the process
+        Map<String, Object> result = null;
         // TODO: monitor processes, failures are reported via monitor as well
         try {
             Process p = pf.create(processName);
-            result = p.execute( inputs, null );    
-        } catch ( WPSException e) {
+            result = p.execute(inputs, null);
+        } catch (WPSException e) {
             throw e;
-        } catch( Throwable t ) {
-        	throw new WPSException("InternalError: " + t, t);
+        } catch (Throwable t) {
+            throw new WPSException("InternalError: " + t, t);
         }
-        
-        // filter out the results we have not been asked about 
-        // and create a direct map between required outputs and 
+
+        // filter out the results we have not been asked about
+        // and create a direct map between required outputs and
         // the gt process outputs
         Map<String, OutputDefinitionType> outputMap = new HashMap<String, OutputDefinitionType>();
-        if(request.getResponseForm().getRawDataOutput() != null) {
-        	// only one output in raw form
-        	OutputDefinitionType od = request.getResponseForm().getRawDataOutput();
-        	String outputName = od.getIdentifier().getValue();
-			outputMap.put(outputName, od);
-        	Map<String, Object> newResults = new HashMap<String, Object>();
-        	newResults.put(outputName, result.get(outputName));
-        	result = newResults;
+        if (request.getResponseForm().getRawDataOutput() != null) {
+            // only one output in raw form
+            OutputDefinitionType od = request.getResponseForm().getRawDataOutput();
+            String outputName = od.getIdentifier().getValue();
+            outputMap.put(outputName, od);
+            Map<String, Object> newResults = new HashMap<String, Object>();
+            newResults.put(outputName, result.get(outputName));
+            result = newResults;
         } else {
-        	for(Iterator it = request.getResponseForm().getResponseDocument().getOutput().iterator(); it.hasNext(); ) {
-        		OutputDefinitionType od = (OutputDefinitionType) it.next();
-        		String outputName = od.getIdentifier().getValue();
-    			outputMap.put(outputName, od);
-        	}
-        	for(String key : new HashSet<String>(result.keySet())) {
-        		if(!outputMap.containsKey(key)) {
-        			result.remove(key);
-        		}
-        	}
+            for (Iterator it = request.getResponseForm().getResponseDocument().getOutput()
+                    .iterator(); it.hasNext();) {
+                OutputDefinitionType od = (OutputDefinitionType) it.next();
+                String outputName = od.getIdentifier().getValue();
+                outputMap.put(outputName, od);
+            }
+            for (String key : new HashSet<String>(result.keySet())) {
+                if (!outputMap.containsKey(key)) {
+                    result.remove(key);
+                }
+            }
         }
-        
-        //build the response
+
+        // build the response
         Wps10Factory f = Wps10Factory.eINSTANCE;
         ExecuteResponseType response = f.createExecuteResponseType();
         response.setLang("en");
-        response.setServiceInstance(ResponseUtils.appendQueryString(ResponseUtils.buildURL(request.getBaseUrl(), "ows", null, URLType.SERVICE), ""));
-       
-        //process 
+        response.setServiceInstance(ResponseUtils.appendQueryString(ResponseUtils.buildURL(request
+                .getBaseUrl(), "ows", null, URLType.SERVICE), ""));
+
+        // process
         final ProcessBriefType process = f.createProcessBriefType();
-        response.setProcess( process );
+        response.setProcess(process);
         process.setIdentifier(ct);
         process.setProcessVersion(pf.getVersion(processName));
-        process.setTitle( Ows11Util.languageString( pf.getTitle(processName).toString() ) );
-        process.setAbstract( Ows11Util.languageString( pf.getDescription(processName).toString() ) );
-       
-        //status
-        response.setStatus( f.createStatusType() );
-        response.getStatus().setCreationTime( Converters.convert( started, XMLGregorianCalendar.class ));
-        response.getStatus().setProcessSucceeded( "Process succeeded.");
-      
-        //inputs
-        response.setDataInputs( f.createDataInputsType1() );
-        for ( Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext(); ) {
+        process.setTitle(Ows11Util.languageString(pf.getTitle(processName).toString()));
+        process.setAbstract(Ows11Util.languageString(pf.getDescription(processName).toString()));
+
+        // status
+        response.setStatus(f.createStatusType());
+        response.getStatus().setCreationTime(
+                Converters.convert(started, XMLGregorianCalendar.class));
+        response.getStatus().setProcessSucceeded("Process succeeded.");
+
+        // inputs
+        response.setDataInputs(f.createDataInputsType1());
+        for (Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext();) {
             InputType input = (InputType) i.next();
-            response.getDataInputs().getInput().add( EMFUtils.clone( input, f, true ) );
+            response.getDataInputs().getInput().add(EMFUtils.clone(input, f, true));
         }
-        
-        //output definitions
+
+        // output definitions
         OutputDefinitionsType outputs = f.createOutputDefinitionsType();
-        response.setOutputDefinitions( outputs );
-        
-        Map<String,Parameter<?>> outs = pf.getResultInfo(processName, null);
-        Map<String,ProcessParameterIO> ppios = new HashMap();
-        
-        for ( String key : result.keySet() ) {
-            Parameter p = pf.getResultInfo(processName, null).get( key );
-            if ( p == null ) {
-                throw new WPSException( "No such output: " + key );
+        response.setOutputDefinitions(outputs);
+
+        Map<String, Parameter<?>> outs = pf.getResultInfo(processName, null);
+        Map<String, ProcessParameterIO> ppios = new HashMap();
+
+        for (String key : result.keySet()) {
+            Parameter p = pf.getResultInfo(processName, null).get(key);
+            if (p == null) {
+                throw new WPSException("No such output: " + key);
             }
-            
-            //find the ppio
+
+            // find the ppio
             String mime = outputMap.get(key).getMimeType();
-            ProcessParameterIO ppio = ProcessParameterIO.find( p, context, mime );
-            if ( ppio == null ) {
-                throw new WPSException( "Unable to encode output: " + p.key );
+            ProcessParameterIO ppio = ProcessParameterIO.find(p, context, mime);
+            if (ppio == null) {
+                throw new WPSException("Unable to encode output: " + p.key);
             }
-            ppios.put( p.key, ppio );
-            
+            ppios.put(p.key, ppio);
+
             DocumentOutputDefinitionType output = f.createDocumentOutputDefinitionType();
-            outputs.getOutput().add( output );
-            
-            output.setIdentifier( Ows11Util.code( p.key ) );
-            if ( ppio instanceof ComplexPPIO ) {
-                output.setMimeType( ((ComplexPPIO) ppio).getMimeType() );
-                if(ppio instanceof BinaryPPIO) {
-                	output.setEncoding("base64");
-                } else if(ppio instanceof XMLPPIO) {
-                	output.setEncoding("utf-8");
+            outputs.getOutput().add(output);
+
+            output.setIdentifier(Ows11Util.code(p.key));
+            if (ppio instanceof ComplexPPIO) {
+                output.setMimeType(((ComplexPPIO) ppio).getMimeType());
+                if (ppio instanceof BinaryPPIO) {
+                    output.setEncoding("base64");
+                } else if (ppio instanceof XMLPPIO) {
+                    output.setEncoding("utf-8");
                 }
             }
-            
-            //TODO: better encoding handling + schema
+
+            // TODO: better encoding handling + schema
         }
-        
-        //process outputs
+
+        // process outputs
         ProcessOutputsType1 processOutputs = f.createProcessOutputsType1();
-        response.setProcessOutputs( processOutputs );
-        
-        for ( String key : result.keySet() ) {
+        response.setProcessOutputs(processOutputs);
+
+        for (String key : result.keySet()) {
             OutputDataType output = f.createOutputDataType();
             output.setIdentifier(Ows11Util.code(key));
-            output.setTitle(Ows11Util.languageString(pf.getResultInfo(processName, null).get( key ).description));
-            processOutputs.getOutput().add( output );
-            
-            final Object o = result.get( key );
-            ProcessParameterIO ppio = ppios.get( key );
-            
-            if ( ppio instanceof ReferencePPIO ) {
-                //encode as a reference
+            output.setTitle(Ows11Util
+                    .languageString(pf.getResultInfo(processName, null).get(key).description));
+            processOutputs.getOutput().add(output);
+
+            final Object o = result.get(key);
+            ProcessParameterIO ppio = ppios.get(key);
+
+            if (ppio instanceof ReferencePPIO) {
+                // encode as a reference
                 OutputReferenceType ref = f.createOutputReferenceType();
-                output.setReference( ref );
-                
+                output.setReference(ref);
+
                 ref.setMimeType(outputMap.get(key).getMimeType());
-                ref.setHref( ((ReferencePPIO) ppio).encode(o).toString() );
+                ref.setHref(((ReferencePPIO) ppio).encode(o).toString());
             } else {
-                //encode as data
+                // encode as data
                 DataType data = f.createDataType();
-                output.setData( data );
-           
-                if ( ppio instanceof LiteralPPIO ) {
+                output.setData(data);
+
+                if (ppio instanceof LiteralPPIO) {
                     LiteralDataType literal = f.createLiteralDataType();
-                    data.setLiteralData( literal );
-                    
-                    literal.setValue( ((LiteralPPIO) ppio).encode( o ) );
-                } else if( ppio instanceof BoundingBoxPPIO) {
+                    data.setLiteralData(literal);
+
+                    literal.setValue(((LiteralPPIO) ppio).encode(o));
+                } else if (ppio instanceof BoundingBoxPPIO) {
                     BoundingBoxType bbox = ((BoundingBoxPPIO) ppio).encode(o);
                     data.setBoundingBoxData(bbox);
-                } else if ( ppio instanceof ComplexPPIO ) {
+                } else if (ppio instanceof ComplexPPIO) {
                     ComplexDataType complex = f.createComplexDataType();
-                    data.setComplexData( complex );
-                    
+                    data.setComplexData(complex);
+
                     ComplexPPIO cppio = (ComplexPPIO) ppio;
-                    complex.setMimeType( cppio.getMimeType() );
-                    
-                    if ( cppio instanceof XMLPPIO ) {
-                        //encode directly
-                        complex.getData().add( 
-                            new XMLEncoderDelegate( (XMLPPIO) cppio, o )
-                        );
-                    } else if(cppio instanceof CDataPPIO) {
-                    	complex.getData().add(new CDataEncoderDelegate((CDataPPIO) cppio, o));
-                    } else if(cppio instanceof BinaryPPIO) {
-                    	complex.getData().add(new BinaryEncoderDelegate((BinaryPPIO) cppio, o));
-                    }  else {
-                       throw new WPSException("Don't know how to encode an output whose PPIO is " + cppio);
+                    complex.setMimeType(cppio.getMimeType());
+
+                    if (cppio instanceof XMLPPIO) {
+                        // encode directly
+                        complex.getData().add(new XMLEncoderDelegate((XMLPPIO) cppio, o));
+                    } else if (cppio instanceof CDataPPIO) {
+                        complex.getData().add(new CDataEncoderDelegate((CDataPPIO) cppio, o));
+                    } else if (cppio instanceof BinaryPPIO) {
+                        complex.getData().add(new BinaryEncoderDelegate((BinaryPPIO) cppio, o));
+                    } else {
+                        throw new WPSException("Don't know how to encode an output whose PPIO is "
+                                + cppio);
                     }
                 }
             }
         }
-        
+
         return response;
     }
 
     /**
+     * Parses the process inputs into a {@link Map} using the various {@link ProcessParameterIO}
+     * implementations
+     * 
+     * @param request
+     * @param processName
+     * @param pf
+     */
+    Map<String, Object> parseProcessInputs(ExecuteType request, Name processName, ProcessFactory pf) {
+        Map<String, Object> inputs = new HashMap<String, Object>();
+        for (Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext();) {
+            InputType input = (InputType) i.next();
+            String inputId = input.getIdentifier().getValue();
+
+            // locate the parameter for this request
+            Parameter p = pf.getParameterInfo(processName).get(inputId);
+            if (p == null) {
+                throw new WPSException("No such parameter: " + inputId);
+            }
+
+            // find the ppio
+            String mime = null;
+            if (input.getData() != null && input.getData().getComplexData() != null) {
+                mime = input.getData().getComplexData().getMimeType();
+            } else if (input.getReference() != null) {
+                mime = input.getReference().getMimeType();
+            }
+            ProcessParameterIO ppio = ProcessParameterIO.find(p, context, mime);
+            if (ppio == null) {
+                throw new WPSException("Unable to decode input: " + inputId);
+            }
+
+            // read the data
+            Object decoded = null;
+            try {
+                if (input.getReference() != null) {
+                    // this is a reference
+                    InputReferenceType ref = input.getReference();
+
+                    // grab the location and method
+                    String href = ref.getHref();
+                    MethodType method = ref.getMethod() != null ? ref.getMethod()
+                            : MethodType.GET_LITERAL;
+
+                    // TODO: handle in process GET requests by doing kvp parsing
+                    if (href.startsWith("http://geoserver/wfs")) {
+                        decoded = handleAsInternalWFS(ppio, ref);
+                    } else if (href.startsWith("http://geoserver/wcs")
+                            && method == MethodType.POST_LITERAL) {
+                        WebCoverageService111 wcs = (WebCoverageService111) context
+                                .getBean("wcs111ServiceTarget");
+                        decoded = wcs
+                                .getCoverage((net.opengis.wcs11.GetCoverageType) ref.getBody())[0];
+                    } else {
+                        decoded = executeRemoteRequest(ref, (ComplexPPIO) ppio, inputId);
+                    }
+
+                } else {
+                    // actual data, figure out which type
+                    DataType data = input.getData();
+
+                    if (data.getLiteralData() != null) {
+                        LiteralDataType literal = data.getLiteralData();
+                        decoded = ((LiteralPPIO) ppio).decode(literal.getValue());
+                    } else if (data.getComplexData() != null) {
+                        ComplexDataType complex = data.getComplexData();
+                        decoded = ((ComplexPPIO) ppio).decode(complex.getData().get(0));
+                    } else if (data.getBoundingBoxData() != null) {
+                        decoded = ((BoundingBoxPPIO) ppio).decode(data.getBoundingBoxData());
+                    }
+
+                }
+            } catch (Exception e) {
+                throw new WPSException("Unable to decode input: " + inputId, e);
+            }
+
+            // decode the input
+            inputs.put(p.key, decoded);
+        }
+        
+        return inputs;
+    }
+
+    /**
      * Process the request as an internal one, without going through GML encoding/decoding
+     * 
      * @param ppio
      * @param ref
      * @param method
@@ -345,34 +367,37 @@ public class Execute {
     Object handleAsInternalWFS(ProcessParameterIO ppio, InputReferenceType ref) throws Exception {
         WebFeatureService wfs = (WebFeatureService) context.getBean("wfsServiceTarget");
         GetFeatureType gft = null;
-        if(ref.getMethod() == MethodType.POST_LITERAL) {
+        if (ref.getMethod() == MethodType.POST_LITERAL) {
             gft = (GetFeatureType) ref.getBody();
         } else {
-             // simulate what the dispatcher is doing with the incoming kvp requests
-             Map original = KvpUtils.parseQueryString(ref.getHref());
-             KvpUtils.normalize(original);
-             Map parsed = new KvpMap(original);
-             List<Throwable> errors = KvpUtils.parse(parsed);
-             if(errors.size() > 0) {
-                 throw new WPSException("Failed to parse KVP request", errors.get(0));
-             }
-             
-             GetFeatureKvpRequestReader reader = (GetFeatureKvpRequestReader) context.getBean("getFeatureKvpReader");
-             gft = (GetFeatureType) reader.read(WfsFactory.eINSTANCE.createGetFeatureType(), parsed, original);
+            // simulate what the dispatcher is doing with the incoming kvp requests
+            Map original = KvpUtils.parseQueryString(ref.getHref());
+            KvpUtils.normalize(original);
+            Map parsed = new KvpMap(original);
+            List<Throwable> errors = KvpUtils.parse(parsed);
+            if (errors.size() > 0) {
+                throw new WPSException("Failed to parse KVP request", errors.get(0));
+            }
+
+            GetFeatureKvpRequestReader reader = (GetFeatureKvpRequestReader) context
+                    .getBean("getFeatureKvpReader");
+            gft = (GetFeatureType) reader.read(WfsFactory.eINSTANCE.createGetFeatureType(), parsed,
+                    original);
         }
-        
+
         FeatureCollectionType featureCollectionType = wfs.getFeature(gft);
         // this will also deal with axis order issues
         return ((ComplexPPIO) ppio).decode(featureCollectionType);
     }
-    
 
     /**
-     * Executes 
+     * Executes
+     * 
      * @param ref
      * @return
      */
-    Object executeRemoteRequest(InputReferenceType ref, ComplexPPIO ppio, String inputId) throws Exception {
+    Object executeRemoteRequest(InputReferenceType ref, ComplexPPIO ppio, String inputId)
+            throws Exception {
         // setup the client
         HttpClient client = new HttpClient();
         // setting timeouts (30 seconds, TODO: make this configurable)
@@ -382,44 +407,47 @@ public class Execute {
         HttpConnectionManager manager = new SimpleHttpConnectionManager();
         manager.setParams(params);
         client.setHttpConnectionManager(manager);
-        
+
         // execute the request
         HttpMethod method = null;
         try {
-            if(ref.getMethod() == null || ref.getMethod() == MethodType.GET_LITERAL) {
+            if (ref.getMethod() == null || ref.getMethod() == MethodType.GET_LITERAL) {
                 GetMethod get = new GetMethod(ref.getHref());
+                get.setFollowRedirects(true);
                 method = get;
             } else {
-                PostMethod post = new PostMethod();
+                PostMethod post = new PostMethod(ref.getHref());
                 Object body = ref.getBody();
-                if(body == null) {
+                if (body == null) {
                     throw new WPSException("A POST request should contain a non empty body");
-                } else if(body instanceof String) {
+                } else if (body instanceof String) {
                     String encoding = ref.getEncoding();
-                    if(encoding == null) {
+                    if (encoding == null) {
                         encoding = "UTF-8";
                     }
-                    post.setRequestEntity(new StringRequestEntity((String) body, ppio.getMimeType(), encoding));
+                    post.setRequestEntity(new StringRequestEntity((String) body,
+                            ppio.getMimeType(), encoding));
                 } else {
-                    throw new WPSException("The request body should be contained in a CDATA section, " +
-                    		"otherwise it will get parsed as XML instead of being preserved as is");
-                    
+                    throw new WPSException(
+                            "The request body should be contained in a CDATA section, "
+                                    + "otherwise it will get parsed as XML instead of being preserved as is");
+
                 }
                 method = post;
             }
-            method.setFollowRedirects(true);
             int code = client.executeMethod(method);
-            
-            if(code == 200) {
+
+            if (code == 200) {
+                
                 return ppio.decode(method.getResponseBodyAsStream());
             } else {
-                throw new WPSException("Error getting remote resources from " + ref.getHref() 
+                throw new WPSException("Error getting remote resources from " + ref.getHref()
                         + ", http error " + code + ": " + method.getStatusText());
             }
-            
+
         } finally {
             // make sure to close the connection no matter what
-            if(method != null) {
+            if (method != null) {
                 method.releaseConnection();
             }
         }
