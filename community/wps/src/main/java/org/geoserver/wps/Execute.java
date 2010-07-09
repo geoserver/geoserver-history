@@ -69,6 +69,8 @@ import org.geotools.process.Processors;
 import org.geotools.util.Converters;
 import org.geotools.xml.EMFUtils;
 import org.opengis.feature.type.Name;
+import org.opengis.util.InternationalString;
+import org.opengis.util.ProgressListener;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -108,18 +110,25 @@ public class Execute {
             throw new WPSException("No such process: " + processName);
         }
 
+        // parse the inputs into in memory representations the process can handle
         Map<String, Object> inputs = parseProcessInputs(request, processName, pf);
 
         // execute the process
         Map<String, Object> result = null;
-        // TODO: monitor processes, failures are reported via monitor as well
+        ProcessListener listener = new ProcessListener();
         try {
             Process p = pf.create(processName);
-            result = p.execute(inputs, null);
+            result = p.execute(inputs, listener);
         } catch (WPSException e) {
             throw e;
         } catch (Throwable t) {
-            throw new WPSException("InternalError: " + t, t);
+            throw new WPSException("InternalError: " + t.getMessage(), t);
+        }
+        
+        // check if failure occurred from the listener
+        Exception exception = listener.exception;
+        if(exception != null) {
+            throw new WPSException("InternalError:" + exception.getMessage(), exception);
         }
 
         // filter out the results we have not been asked about
@@ -183,7 +192,7 @@ public class Execute {
         Map<String, Parameter<?>> outs = pf.getResultInfo(processName, null);
         Map<String, ProcessParameterIO> ppios = new HashMap();
 
-        for (String key : result.keySet()) {
+        for (String key : outputMap.keySet()) {
             Parameter p = pf.getResultInfo(processName, null).get(key);
             if (p == null) {
                 throw new WPSException("No such output: " + key);
@@ -452,4 +461,80 @@ public class Execute {
             }
         }
     }
+    
+    /**
+     * A process listener. For the moment just used to check if the process execution failed
+     * @author Andrea Aime - OpenGeo
+     *
+     */
+    static class ProcessListener implements ProgressListener {
+        Exception exception; 
+
+        public void complete() {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void dispose() {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void exceptionOccurred(Throwable exception) {
+            this.exception = this.exception;
+            
+        }
+
+        public String getDescription() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public float getProgress() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        public InternationalString getTask() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public boolean isCanceled() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public void progress(float percent) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void setCanceled(boolean cancel) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void setDescription(String description) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void setTask(InternationalString task) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void started() {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void warningOccurred(String source, String location, String warning) {
+            // TODO Auto-generated method stub
+            
+        }
+        
+    }
+    
 }
