@@ -5,6 +5,9 @@
 
 package org.geoserver.wps;
 
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import net.opengis.wps10.DataType;
 import net.opengis.wps10.DocumentOutputDefinitionType;
 import net.opengis.wps10.ExecuteResponseType;
 import net.opengis.wps10.ExecuteType;
+import net.opengis.wps10.HeaderType;
 import net.opengis.wps10.InputReferenceType;
 import net.opengis.wps10.InputType;
 import net.opengis.wps10.LiteralDataType;
@@ -42,6 +46,7 @@ import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.SimpleHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
@@ -79,6 +84,8 @@ import org.springframework.context.ApplicationContext;
  * @author Lucas Reed, Refractions Research Inc
  */
 public class Execute {
+    private static final int CONNECTION_TIMEOUT = 30 * 1000;
+
     WPSInfo wps;
 
     GeoServerInfo gs;
@@ -407,57 +414,111 @@ public class Execute {
      */
     Object executeRemoteRequest(InputReferenceType ref, ComplexPPIO ppio, String inputId)
             throws Exception {
-        // setup the client
-        HttpClient client = new HttpClient();
-        // setting timeouts (30 seconds, TODO: make this configurable)
-        HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-        params.setSoTimeout(30 * 1000);
-        params.setConnectionTimeout(30 * 1000);
-        HttpConnectionManager manager = new SimpleHttpConnectionManager();
-        manager.setParams(params);
-        client.setHttpConnectionManager(manager);
-
-        // execute the request
+        URL destination = new URL(ref.getHref());
+        
         HttpMethod method = null;
+        GetMethod refMethod = null;
+        InputStream input = null;
+        InputStream refInput = null;
+        
+        // execute the request
         try {
-            if (ref.getMethod() == null || ref.getMethod() == MethodType.GET_LITERAL) {
-                GetMethod get = new GetMethod(ref.getHref());
-                get.setFollowRedirects(true);
-                method = get;
-            } else {
-                PostMethod post = new PostMethod(ref.getHref());
-                Object body = ref.getBody();
-                if (body == null) {
-                    throw new WPSException("A POST request should contain a non empty body");
-                } else if (body instanceof String) {
+            if("http".equalsIgnoreCase(destination.getProtocol())) {
+                // setup the client
+                HttpClient client = new HttpClient();
+                // setting timeouts (30 seconds, TODO: make this configurable)
+                HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+                params.setSoTimeout(CONNECTION_TIMEOUT);
+                params.setConnectionTimeout(CONNECTION_TIMEOUT);
+                // TODO: make the http client a well behaved http client, no more than x connections
+                // per server (x admin configurable maybe), persistent connections and so on
+                HttpConnectionManager manager = new SimpleHttpConnectionManager();
+                manager.setParams(params);
+                client.setHttpConnectionManager(manager);
+
+                // prepare either a GET or a POST request
+                if (ref.getMethod() == null || ref.getMethod() == MethodType.GET_LITERAL) {
+                    GetMethod get = new GetMethod(ref.getHref());
+                    get.setFollowRedirects(true);
+                    method = get;
+                } else {
                     String encoding = ref.getEncoding();
                     if (encoding == null) {
                         encoding = "UTF-8";
                     }
-                    post.setRequestEntity(new StringRequestEntity((String) body,
-                            ppio.getMimeType(), encoding));
-                } else {
-                    throw new WPSException(
-                            "The request body should be contained in a CDATA section, "
-                                    + "otherwise it will get parsed as XML instead of being preserved as is");
-
+                    
+                    PostMethod post = new PostMethod(ref.getHref());
+                    Object body = ref.getBody();
+                    if (body == null) {
+                        if(ref.getBodyReference() != null) {
+                            URL refDestination = new URL(ref.getBodyReference().getHref());
+                            if("http".equalsIgnoreCase(refDestination.getProtocol())) {
+                                // open with commons http client
+                                refMethod = new GetMethod(ref.getBodyReference().getHref());
+                                refMethod.setFollowRedirects(true);
+                                client.executeMethod(refMethod);
+                                refInput = refMethod.getResponseBodyAsStream();
+                            } else {
+                                // open with the built-in url management
+                                URLConnection conn = refDestination.openConnection();
+                                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                                conn.setReadTimeout(CONNECTION_TIMEOUT);
+                                refInput = conn.getInputStream();
+                            }
+                            post.setRequestEntity(new InputStreamRequestEntity(refInput, ppio.getMimeType()));
+                        } else {
+                            throw new WPSException("A POST request should contain a non empty body");
+                        }
+                    } else if (body instanceof String) {
+                        post.setRequestEntity(new StringRequestEntity((String) body,
+                                ppio.getMimeType(), encoding));
+                    } else {
+                        throw new WPSException(
+                                "The request body should be contained in a CDATA section, "
+                                        + "otherwise it will get parsed as XML instead of being preserved as is");
+    
+                    }
+                    method = post;
                 }
-                method = post;
-            }
-            int code = client.executeMethod(method);
-
-            if (code == 200) {
-                
-                return ppio.decode(method.getResponseBodyAsStream());
+                // add eventual extra headers
+                if(ref.getHeader() != null) {
+                    for (Iterator it = ref.getHeader().iterator(); it.hasNext();) {
+                        HeaderType header = (HeaderType) it.next();
+                        method.setRequestHeader(header.getKey(), header.getValue());
+                    }
+                }
+                int code = client.executeMethod(method);
+    
+                if (code == 200) {
+                    input = method.getResponseBodyAsStream();
+                } else {
+                    throw new WPSException("Error getting remote resources from " + ref.getHref()
+                            + ", http error " + code + ": " + method.getStatusText());
+                }
             } else {
-                throw new WPSException("Error getting remote resources from " + ref.getHref()
-                        + ", http error " + code + ": " + method.getStatusText());
+                // use the normal url connection methods then...
+                URLConnection conn = destination.openConnection();
+                conn.setConnectTimeout(CONNECTION_TIMEOUT);
+                conn.setReadTimeout(CONNECTION_TIMEOUT);
+                input = conn.getInputStream();
             }
-
+            
+            // actually parse teh data
+            if(input != null) {
+                return ppio.decode(input);
+            } else {
+                throw new WPSException("Could not find a mean to read input " + inputId);
+            }
         } finally {
-            // make sure to close the connection no matter what
+            // make sure to close the connection and streams no matter what
+            if(input != null) {
+                input.close();
+            }
             if (method != null) {
                 method.releaseConnection();
+            }
+            if(refMethod != null) {
+                refMethod.releaseConnection();
             }
         }
     }

@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import net.opengis.ows11.BoundingBoxType;
 
@@ -163,6 +164,44 @@ public class ExecuteTest extends WPSTestSupport {
                              readFileIntoString("states-FeatureCollection.xml") + 
                         "</wps:ComplexData>" + 
                       "</wps:Data>" +     
+                  "</wps:Input>" + 
+                  "<wps:Input>" + 
+                     "<ows:Identifier>buffer</ows:Identifier>" + 
+                     "<wps:Data>" + 
+                       "<wps:LiteralData>10</wps:LiteralData>" + 
+                     "</wps:Data>" + 
+                  "</wps:Input>" + 
+                 "</wps:DataInputs>" +
+                 "<wps:ResponseForm>" +  
+                   "<wps:ResponseDocument storeExecuteResponse='false'>" + 
+                     "<wps:Output>" +
+                       "<ows:Identifier>result</ows:Identifier>" +
+                     "</wps:Output>" + 
+                   "</wps:ResponseDocument>" +
+                 "</wps:ResponseForm>" + 
+               "</wps:Execute>";
+        
+        Document d = postAsDOM( "wps", xml );
+        // print(d);
+        // checkValidationErrors(d);
+        
+        assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
+        
+        assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
+        assertXpathExists( 
+            "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
+    }
+    
+    public void testFeatureCollectionFileReference() throws Exception { // Standard Test A.4.4.2, A.4.4.4
+        URL collectionURL = getClass().getResource("states-FeatureCollection.xml");
+        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' xmlns:xlink=\"http://www.w3.org/1999/xlink\" " + 
+              "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+              "<ows:Identifier>gt:BufferFeatureCollection</ows:Identifier>" + 
+               "<wps:DataInputs>" + 
+                  "<wps:Input>" + 
+                      "<ows:Identifier>features</ows:Identifier>" + 
+                      "  <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.1\" " +
+                      "xlink:href=\"" + collectionURL.toExternalForm() + "\"/>\n" + 
                   "</wps:Input>" + 
                   "<wps:Input>" + 
                      "<ows:Identifier>buffer</ows:Identifier>" + 
@@ -350,6 +389,33 @@ public class ExecuteTest extends WPSTestSupport {
         "    </wfs:Query>\n" + 
         "</wfs:GetFeature>]]>" +
         "         </wps:Body>\n" +
+        "      </wps:Reference>\n" +
+        "    </wps:Input>\n" + 
+        "  </wps:DataInputs>\n" + 
+        "  <wps:ResponseForm>\n" + 
+        "    <wps:RawDataOutput>\n" + 
+        "      <ows:Identifier>bounds</ows:Identifier>\n" + 
+        "    </wps:RawDataOutput>\n" + 
+        "  </wps:ResponseForm>\n" + 
+        "</wps:Execute>";
+        
+        executeState1BoundsTest(request, "POST WFS 1.0");
+    }
+    
+    /**
+     * Tests a process grabbing a remote layer 
+     */
+    public void testRemoteBodyReferencePostWFS10Layer() throws Exception {
+        URL getFeatureURL = getClass().getResource("getFeature.xml");
+        String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+        "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
+        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <wps:DataInputs>\n" + 
+        "    <wps:Input>\n" + 
+        "      <ows:Identifier>features</ows:Identifier>\n" + 
+        "      <wps:Reference mimeType=\"text/xml; subtype=wfs-collection/1.0\" " +
+        " xlink:href=\"http://demo.opengeo.org/geoserver/wfs\" method=\"POST\">\n" +
+        "         <wps:BodyReference xlink:href=\"" + getFeatureURL.toExternalForm() + "\"/>\n" +
         "      </wps:Reference>\n" +
         "    </wps:Input>\n" + 
         "  </wps:DataInputs>\n" + 
