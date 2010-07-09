@@ -25,7 +25,6 @@ public class DescribeProcessTest extends WPSTestSupport {
         		"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n" + 
         		"    <ows:Identifier>gt:buffer</ows:Identifier>\r\n" + 
         		"</DescribeProcess>";
-        System.out.println(request);
         Document d = postAsDOM(root(), request);
         // print(d);
         testBufferDescription(d);

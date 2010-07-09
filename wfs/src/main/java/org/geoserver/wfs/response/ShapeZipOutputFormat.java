@@ -12,9 +12,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -76,6 +78,7 @@ import com.vividsolutions.jts.geom.Polygon;
  */
 public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements ApplicationContextAware {
     private static final Logger LOGGER = Logging.getLogger(ShapeZipOutputFormat.class);
+    public static final String GS_SHAPEFILE_CHARSET = "GS-SHAPEFILE-CHARSET";
     private String outputFileName;
     private ApplicationContext applicationContext;
     
@@ -124,29 +127,31 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             { "Content-Disposition", "attachment; filename=" + outputFileName + ".zip" }
         };
     }
+    
+    protected void write(FeatureCollectionType featureCollection, OutputStream output,
+            Operation getFeature) throws IOException, ServiceException {
+        List<SimpleFeatureCollection> collections = new ArrayList<SimpleFeatureCollection>();
+        collections.addAll(featureCollection.getFeature());
+        Charset charset = getShapefileCharset(getFeature);
+        write(collections, charset, output);
+    }
 
     /**
      * @see WFSGetFeatureOutputFormat#write(Object, OutputStream, Operation)
      */
     @SuppressWarnings("unchecked")
-    protected void write(FeatureCollectionType featureCollection, OutputStream output,
-        Operation getFeature) throws IOException, ServiceException {
+    public void write(List<SimpleFeatureCollection> collections, Charset charset, OutputStream output) throws IOException, ServiceException {
         //We might get multiple featurecollections in our response (multiple queries?) so we need to
         //write out multiple shapefile sets, one for each query response.
-        File tempDir = IOUtils.createTempDirectory("wfsshptemp");
+        File tempDir = IOUtils.createTempDirectory("shpziptemp");
         
         // target charset
-        Charset charset = getShapefileCharset(getFeature);
+        
         try {
-            Iterator<SimpleFeatureCollection> outputFeatureCollections;
-            outputFeatureCollections = featureCollection.getFeature().iterator();
-            SimpleFeatureCollection curCollection;
-
-            // if an emtpy result out of feature type with unknown geometry is created, the
+           // if an empty result out of feature type with unknown geometry is created, the
             // zip file will be empty and the zip output stream will break
             boolean shapefileCreated = false;
-            while (outputFeatureCollections.hasNext()) {
-                curCollection = outputFeatureCollections.next();
+            for (SimpleFeatureCollection curCollection : collections) {
                 
                 if(curCollection.getSchema().getGeometryDescriptor() == null) {
                     throw new WFSException("Cannot write geometryless shapefiles, yet " 
@@ -167,9 +172,9 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
             // take care of the case the output is completely empty
             if(!shapefileCreated) {
                 SimpleFeatureCollection fc;
-                fc = (SimpleFeatureCollection) featureCollection.getFeature().iterator().next();
+                fc = (SimpleFeatureCollection) collections.get(0);
                 fc = remapCollectionSchema(fc, Point.class);
-                writeCollectionToShapefile(fc, tempDir, getShapefileCharset(getFeature));
+                writeCollectionToShapefile(fc, tempDir, charset);
                 createEmptyZipWarning(tempDir);
             }
             
@@ -486,7 +491,7 @@ public class ShapeZipOutputFormat extends WFSGetFeatureOutputFormat implements A
         if(gft.getFormatOptions() != null && gft.getFormatOptions().get("CHARSET") != null) {
            result = (Charset) gft.getFormatOptions().get("CHARSET");
         } else {
-            final String charsetName = GeoServerExtensions.getProperty("GS-SHAPEFILE-CHARSET", applicationContext);
+            final String charsetName = GeoServerExtensions.getProperty(GS_SHAPEFILE_CHARSET, applicationContext);
             if(charsetName != null)
                 result = Charset.forName(charsetName);
         }
