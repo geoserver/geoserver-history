@@ -108,6 +108,14 @@
       </constructor-arg>
     </bean>
     
+    <!-- Resource manager -->
+    <bean id="wpsResourceManager" class="org.geoserver.wps.resource.WPSResourceManager"/>
+    
+    <!-- The PPIO that need to be registered into SPI because of their dependencies -->
+    <bean id="shapeZipPPIO" class="org.geoserver.wps.ppio.ShapeZipPPIO">
+      <constructor-arg ref="wpsResourceManager"/>
+    </bean>
+    
     <!-- USER INTERFACE SECTION, TO BE MOVED INTO ITS OWN MODULE -->
     <bean id="wpsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">
       <property name="id" value="wpsRequestBuilder" />

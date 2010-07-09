@@ -2,20 +2,25 @@ package org.geoserver.wps.sextante;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.geoserver.data.util.IOUtils;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wps.resource.ShapefileResource;
+import org.geoserver.wps.resource.WPSResourceManager;
 import org.geotools.data.DataStore;
-import org.geotools.data.FileDataStoreFactorySpi;
+import org.geotools.data.DataUtilities;
 import org.geotools.data.shapefile.ShapefileDataStore;
-import org.geotools.data.shapefile.ShapefileDataStoreFactory;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import es.unex.sextante.dataObjects.IVectorLayer;
 
-public class ShpLayerFactory extends DatastoreVectorLayerFactory{
+public class ShpLayerFactory extends DatastoreVectorLayerFactory {
+    
+    static final Logger LOGGER = Logging.getLogger(ShpLayerFactory.class);
 
 	@Override
 	protected IVectorLayer createLayer(DataStore dataStore, String sName,
@@ -27,17 +32,24 @@ public class ShpLayerFactory extends DatastoreVectorLayerFactory{
 	}
 
 	public DataStore createDatastore(String m_sFilename, SimpleFeatureType m_FeatureType) throws IOException {
-		File file = new File(m_sFilename);
-		Map<String, Serializable> params = new HashMap<String, Serializable>();
-		params.put(ShapefileDataStoreFactory.URLP.key, file.toURI()
-				.toURL());
-		params.put(ShapefileDataStoreFactory.CREATE_SPATIAL_INDEX.key,
-				false);
+	    WPSResourceManager manager = GeoServerExtensions.bean(WPSResourceManager.class);
+	    
+		File directory = IOUtils.createTempDirectory("sxttmp");
+        File file = new File(directory, m_sFilename);
 
-		FileDataStoreFactorySpi factory = new ShapefileDataStoreFactory();
-		ShapefileDataStore dataStore = (ShapefileDataStore) factory.createNewDataStore(params);
-		dataStore.createSchema(m_FeatureType);
-		return dataStore;
+        try {
+            ShapefileDataStore dataStore = new ShapefileDataStore(DataUtilities.fileToURL(file));
+            dataStore.createSchema(m_FeatureType);
+            manager.addResource(new ShapefileResource(dataStore, directory));
+            
+            return dataStore;
+        } catch(Throwable t) {
+            LOGGER.log(Level.SEVERE, "Could not create shapefile output ", t);
+            IOUtils.delete(directory);
+            throw (IOException) new IOException(t.getMessage()).initCause(t);
+        }
+        
+		
 	}
 
 }

@@ -101,11 +101,11 @@ public abstract class ProcessParameterIO {
 
     public static List<ProcessParameterIO> findAll(Parameter<?> p, ApplicationContext context) {
         // load all extensions
-        List<ProcessParameterIO> l;
+        List<ProcessParameterIO> l = new ArrayList<ProcessParameterIO>(defaults);
         if (context != null) {
-            l = GeoServerExtensions.extensions(ProcessParameterIO.class, context);
+            l.addAll(GeoServerExtensions.extensions(ProcessParameterIO.class, context));
         } else {
-            l = GeoServerExtensions.extensions(ProcessParameterIO.class);
+            l.addAll(GeoServerExtensions.extensions(ProcessParameterIO.class));
         }
 
         // find parameters that match
@@ -121,9 +121,6 @@ public abstract class ProcessParameterIO {
 
         // if no matches, look for just those which match by type
         if (matches.isEmpty()) {
-            // add defaults to the mix
-            l.addAll(defaults);
-
             for (ProcessParameterIO ppio : l) {
                 if (ppio.getType().isAssignableFrom(p.type)) {
                     matches.add(ppio);
