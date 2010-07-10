@@ -387,8 +387,6 @@ public abstract class DefaultRasterMapProducer extends
                 hintsMap.put(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             }
         }
-        // line look better with this hint, they are less blurred
-        hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE);
 
         // make sure the hints are set before we start rendering the map
         graphic.setRenderingHints(hintsMap);
