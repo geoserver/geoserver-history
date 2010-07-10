@@ -1,5 +1,7 @@
 package org.geoserver.community.css
 
+import org.geoserver.community.css.filter.FilterOps
+
 import org.geotools.{styling => gt}
 import org.geotools.styling.{
   LineSymbolizer,
@@ -18,7 +20,10 @@ import org.geotools.filter.text.ecql.ECQL
  *
  * @author David Winslow <cdwinslow@gmail.com>
  */
-object Translator extends CssOps with SelectorOps {
+object Translator { //  extends CssOps with SelectorOps {
+  import SelectorOps.{ Exclude, negate, simplify }
+  import CssOps.{ Color, Specificity, Symbol, URL, colors, expand }
+  import FilterOps.{ filters }
   val styles = org.geotools.factory.CommonFactoryFinder.getStyleFactory(null)
   type OGCExpression = org.opengis.filter.expression.Expression
 
@@ -444,10 +449,7 @@ object Translator extends CssOps with SelectorOps {
       }
 
     def getFilter = 
-      AndSelector(selectors flatMap {
-        case (d: DataSelector) => Some(d)
-        case _ => None
-      }).asFilter
+      AndSelector(selectors filter { _.filterOpt.isDefined }).filterOpt.get
   }
 
   /**
@@ -657,25 +659,8 @@ object Translator extends CssOps with SelectorOps {
    * list has its selectors negated and its properties omitted.
    */
   private def compose(in: List[SimpleRule], out: List[SimpleRule]) = {
-    def not(xs: List[Selector]): List[Selector] = {
-      val negatedDataSelectors = 
-        OrSelector(xs flatMap {
-          case d: DataSelector => Some(negate(d).asInstanceOf[DataSelector])
-          case p: PseudoSelector => Some(AcceptSelector)
-          case _ => None
-        })
-      val negatedScales = 
-        xs flatMap {
-          case PseudoSelector(x, "<", d) => Some(PseudoSelector(x, ">", d))
-          case PseudoSelector(x, ">", d) => Some(PseudoSelector(x, "<", d))
-          case _ => None
-        }
-
-      (negatedDataSelectors :: negatedScales) match {
-        case Nil => List(Exclude)
-        case xs => xs
-      }
-    }
+    def not(xs: List[Selector]): Selector =
+      simplify(OrSelector(xs map SelectorOps.not))
 
     def specificity(xs: SimpleRule, ys: SimpleRule) = {
       Specificity(xs.selectors) > Specificity(ys.selectors)
@@ -683,7 +668,7 @@ object Translator extends CssOps with SelectorOps {
 
     val selectors =
       in.flatMap((x: SimpleRule) => x.selectors) ++
-      out.flatMap((x: SimpleRule) => not(x.selectors))
+      out.map((x: SimpleRule) => not(x.selectors))
 
     val sortedRules = in.sort(specificity)
 
