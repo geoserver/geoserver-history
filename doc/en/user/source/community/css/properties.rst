@@ -1,3 +1,5 @@
+.. highlight:: css
+
 Property Listing
 ================
 
@@ -59,8 +61,13 @@ Line Symbology
       * yes
     - * ``stroke-width``     
       * length           
-      * The width to use for stroking the line.  The image or shape will be
-        forced to this size as well.
+      * The width to use for stroking the line.
+      * yes
+    - * ``stroke-size``     
+      * length           
+      * An image or symbol used for the stroke pattern will be stretched or
+        squashed to this size before rendering.  If this value differs from the
+        stroke-width, the graphic will be repeated or clipped as needed.
       * yes
     - * ``stroke-rotation``  
       * angle            
@@ -284,4 +291,25 @@ Shared
       * An expression to use for the geometry when rendering features. This
         provides a geometry for all types of symbology, but can be overridden
         by the symbol-specific geometry properties. 
+      * yes
+
+Symbol Properties
+-----------------
+
+These properties are applied only when styling built-in symbols.  See
+:doc:`/community/css/styled-marks` for details.
+
+.. list-table::
+
+    - * **Property** 
+      * **Type**
+      * **Meaning**
+      * **Accepts Expression?**
+    - * ``size``
+      * length
+      * The size at which to render the symbol. 
+      * yes
+    - * ``rotation``
+      * angle
+      * An angle through which to rotate the symbol. 
       * yes
