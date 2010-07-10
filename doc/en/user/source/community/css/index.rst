@@ -20,4 +20,4 @@ Read on for information about:
    multivalues
    properties
    values
-   specifying-paint
+   styled-marks

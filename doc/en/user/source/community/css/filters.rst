@@ -130,6 +130,41 @@ The context details that are provided are as follows:
     pseudo-attributes cannot use complex expressions and MUST take the form of
     <PROPERTY><OPERATOR><LITERAL>.
 
+Filtering Symbols
+-----------------
+
+When using symbols to create graphics inline, you may want to apply some
+styling options to them.  You can specify style attributes for built-in symbols by using a few special selectors:
+
+.. list-table::
+    :widths: 20 80
+
+    * - **PseudoSelector**
+      - **Meaning**
+    * - ``:mark`` 
+      - specifies that a rule applies to symbols used as point markers
+    * - ``:stroke`` 
+      - specifies that a rule applies to symbols used as stroke patterns
+    * - ``:fill`` 
+      - specifies that a rule applies to symbols used as fill patterns
+    * - ``:symbol`` 
+      - specifies that a rule applies to any symbol, regardless of which
+        context it is used in
+    * - ``:nth-mark(n)`` 
+      - specifies that a rule applies to the symbol used for the nth stacked
+        point marker on a feature.
+    * - ``:nth-stroke(n)`` 
+      - specifies that a rule applies to the symbol used for the nth stacked
+        stroke pattern on a feature.
+    * - ``:nth-fill(n)`` 
+      - specifies that a rule applies to the symbol used for the nth stacked
+        fill pattern on a feature.
+    * - ``:nth-symbol(n)`` 
+      - specifies that a rule applies to the symbol used for the nth stacked
+        symbol on a feature, regardless of which context it is used in.
+
+For more discussion on using these selectors, see :doc:`/community/css/styled-marks`.
+
 Not Filtering at All
 --------------------
 

@@ -133,17 +133,3 @@ the same, aside from the function name::
         mark: symbol('ttf://Times+New+Roman&char=0x19b2');
         mark: symbol("chart://type=pie&x&y&z");
     }
-
-Paint
------
-
-There are actually several kinds of values that can be used for strokes and
-fills in SLD, including 
-
-* Solid color
-* External image
-* Combination of well-known marks, themselves parameterized with size, stroke,
-  and fill
-
-It's somewhat unclear what the best representation is, so there is a separate
-page for discussion of :doc:`specifying-paint`.
