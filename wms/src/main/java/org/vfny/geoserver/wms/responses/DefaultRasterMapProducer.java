@@ -373,6 +373,10 @@ public abstract class DefaultRasterMapProducer extends
                     RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
+        // these two hints improve text layout in diagonal labels and reduce artifacts
+        // in line rendering (without hampering performance)
+        hintsMap.put(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+        hintsMap.put(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
 
         // turn off/on interpolation rendering hint
         if(wms != null) {
@@ -406,10 +410,10 @@ public abstract class DefaultRasterMapProducer extends
                 ShapefileRenderer.SCALE_OGC);
         if(AA_NONE.equals(antialias)) {
             rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
-                    ShapefileRenderer.TEXT_RENDERING_STRING);
+                    StreamingRenderer.TEXT_RENDERING_STRING);
         } else {
             rendererParams.put(ShapefileRenderer.TEXT_RENDERING_KEY, 
-                    ShapefileRenderer.TEXT_RENDERING_OUTLINE);
+                    StreamingRenderer.TEXT_RENDERING_ADAPTIVE);
         }
         if(DefaultWebMapService.isLineWidthOptimizationEnabled()) {
             rendererParams.put(StreamingRenderer.LINE_WIDTH_OPTIMIZATION_KEY, true);
