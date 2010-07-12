@@ -35,6 +35,7 @@ import org.geotools.data.ows.Layer;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.Hints;
 import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
@@ -293,6 +294,9 @@ public class GetMapResponse implements Response {
                             .getName().getLocalPart());
                     definitionQuery.setVersion(featureVersion);
                     definitionQuery.setFilter(layerFilter);
+                    if(request.getViewParams() != null && request.getViewParams().size() > 0) {
+                        definitionQuery.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, request.getViewParams()));
+                    }
 
                     // check for startIndex + offset
                     final Integer startIndex = request.getStartIndex();

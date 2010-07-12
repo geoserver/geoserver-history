@@ -70,6 +70,8 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.GML;
+import org.geotools.jdbc.JDBCDataStore;
+import org.geotools.jdbc.VirtualTable;
 import org.geotools.referencing.CRS;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.SLDTransformer;
@@ -580,6 +582,17 @@ public class ResourcePool {
                     
                     //grab the underlying feature type
                     DataAccess<? extends FeatureType, ? extends Feature> dataAccess = getDataStore(info.getStore());
+                    
+                    // sql view handling
+                    if(dataAccess instanceof JDBCDataStore && info.getMetadata() != null &&
+                            info.getMetadata().containsKey(FeatureTypeInfo.JDBC_VIRTUAL_TABLE)) {
+                        VirtualTable vt = info.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
+                        if(vt != null) {
+                            JDBCDataStore jstore = (JDBCDataStore) dataAccess;
+                            jstore.addVirtualTable(vt);
+                        }
+                    }
+                    
                     ft = dataAccess.getSchema(info.getQualifiedNativeName());
                     
                     // TODO: support reprojection for non-simple FeatureType
@@ -732,6 +745,14 @@ public class ResourcePool {
         
         DataStore dataStore = (DataStore) dataAccess;
         SimpleFeatureSource fs;
+        
+        // sql view handling
+        if(dataStore instanceof JDBCDataStore && info.getMetadata() != null &&
+                info.getMetadata().containsKey(FeatureTypeInfo.JDBC_VIRTUAL_TABLE)) {
+            VirtualTable vt = (VirtualTable) info.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE);
+            JDBCDataStore jstore = (JDBCDataStore) dataStore;
+            jstore.addVirtualTable(vt);
+        }
                 
         //
         // aliasing and type mapping

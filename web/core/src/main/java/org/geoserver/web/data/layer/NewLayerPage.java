@@ -4,6 +4,7 @@
  */
 package org.geoserver.web.data.layer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +45,8 @@ import org.geoserver.web.wicket.GeoServerTablePanel;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geoserver.web.wicket.SimpleAjaxLink;
 import org.geoserver.web.wicket.GeoServerDataProvider.Property;
+import org.geotools.data.DataAccess;
+import org.geotools.jdbc.JDBCDataStore;
 
 /**
  * A page listing the resources contained in a store, and whose links will bring
@@ -62,6 +65,7 @@ public class NewLayerPage extends GeoServerSecuredPage {
     private WebMarkupContainer selectLayers;
     private Label storeName;
     private WebMarkupContainer createTypeContainer;
+    private WebMarkupContainer createSQLViewContainer;
     
     public NewLayerPage() {
         this(null);
@@ -134,6 +138,11 @@ public class NewLayerPage extends GeoServerSecuredPage {
         createTypeContainer.setVisible(false);
         createTypeContainer.add(newFeatureTypeLink());
         selectLayersContainer.add(createTypeContainer);
+        
+        createSQLViewContainer = new WebMarkupContainer("createSQLViewContainer");
+        createSQLViewContainer.setVisible(false);
+        createSQLViewContainer.add(newSQLViewLink());
+        selectLayersContainer.add(createSQLViewContainer);
     }
     
     Component newFeatureTypeLink() {
@@ -144,6 +153,18 @@ public class NewLayerPage extends GeoServerSecuredPage {
                 DataStoreInfo ds = getCatalog().getStore(storeId, DataStoreInfo.class);
                 PageParameters pp = new PageParameters("wsName=" + ds.getWorkspace().getName() + ",storeName=" + ds.getName());
                 setResponsePage(NewFeatureTypePage.class, pp);                
+            }
+        };
+    }
+    
+    Component newSQLViewLink() {
+        return new AjaxLink("createSQLView") {
+            
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                DataStoreInfo ds = getCatalog().getStore(storeId, DataStoreInfo.class);
+                PageParameters pp = new PageParameters("wsName=" + ds.getWorkspace().getName() + ",storeName=" + ds.getName());
+                setResponsePage(SQLViewNewPage.class, pp);                
             }
         };
     }
@@ -177,6 +198,14 @@ public class NewLayerPage extends GeoServerSecuredPage {
                     // at the moment just assume every store can create types
                     // TODO: actually use some new caps code to support selective enabling
                     createTypeContainer.setVisible(store instanceof DataStoreInfo);
+                    if(store instanceof DataStoreInfo) {
+                        try {
+                            DataAccess da = ((DataStoreInfo) store).getDataStore(null);
+                            createSQLViewContainer.setVisible(da instanceof JDBCDataStore);
+                        } catch(IOException e) {
+                            
+                        }
+                    }
                     
                     
                 } else {

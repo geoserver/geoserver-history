@@ -22,6 +22,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.web.GeoServerApplication;
 import org.geotools.util.logging.Logging;
@@ -391,6 +392,11 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
             return new PropertyComparator<T>(this);
         }
 
+        /**
+         * Returns a model based on the getPropertyValue(...) result. Mind, this is
+         * not suitable for editable tables, if you need to make one you'll have to
+         * roll your own getModel() implementation ( {@link BeanProperty} provides a good example)
+         */
         public IModel getModel(IModel itemModel) {
             Object value = getPropertyValue((T) itemModel.getObject());
             if(value instanceof IModel)
@@ -430,6 +436,15 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         public BeanProperty(String key, String propertyPath, boolean visible) {
             super(key, visible);
             this.propertyPath = propertyPath;
+        }
+        
+        /**
+         * Overrides the base class {@link #getModel(IModel)} to allow for editable
+         * tables: uses a property model against the bean so that writes will hit the
+         * bean instead of the possibly immutable values contained in it (think a String property)
+         */
+        public IModel getModel(IModel itemModel) {
+            return new PropertyModel(itemModel, propertyPath);
         }
 
         public Object getPropertyValue(T bean) {

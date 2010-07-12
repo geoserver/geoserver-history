@@ -15,6 +15,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
+import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.WFSException;
 import org.geotools.factory.CommonFactoryFinder;
 
@@ -136,5 +137,25 @@ public class GetFeatureKvpRequestReaderTest extends KvpRequestReaderTestSupport 
         List<QName> typeNames = query.getTypeName();
         assertEquals(1, typeNames.size());
         assertEquals(qName, typeNames.get(0));
+    }
+    
+    public void testViewParams() throws Exception {
+        Map<String, String> raw = new HashMap<String, String>();
+        raw.put("service", "WFS");
+        raw.put("version", "1.1.0");
+        raw.put("request", "GetFeature");
+        raw.put("typeName", getLayerId(MockData.STREAMS));
+        raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD");
+
+        Map<String, Object> parsed = parseKvp(raw);
+
+        GetFeatureType req = WfsFactory.eINSTANCE.createGetFeatureType();
+        Object read = reader.read(req, parsed, raw);
+        GetFeatureType parsedReq = (GetFeatureType) read;
+        assertEquals(1, parsedReq.getMetadata().size());
+        Map viewParams = (Map) parsedReq.getMetadata().get(GetFeature.SQL_VIEW_PARAMS);
+        assertEquals(2, viewParams.size());
+        assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
+        assertEquals("ABCD", viewParams.get("str"));
     }
 }

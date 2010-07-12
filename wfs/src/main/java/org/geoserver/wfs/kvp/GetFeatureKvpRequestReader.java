@@ -6,6 +6,7 @@ package org.geoserver.wfs.kvp;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.wfs.GetFeature;
 import org.geoserver.wfs.WFSException;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
@@ -247,6 +249,15 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         if(kvp.containsKey("format_options")) {
             GetFeatureType gft = (GetFeatureType) eObject;
             gft.getFormatOptions().putAll((Map) kvp.get("format_options"));
+        }
+        
+        // sql view params
+        if(kvp.containsKey("viewParams")) {
+            GetFeatureType gft = (GetFeatureType) eObject;
+            if(gft.getMetadata() == null) {
+                gft.setMetadata(new HashMap());
+            } 
+            gft.getMetadata().put(GetFeature.SQL_VIEW_PARAMS, kvp.get("viewParams"));
         }
 
         return request;

@@ -1,8 +1,11 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.web.data.layer;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 
 import org.apache.wicket.Component;
@@ -18,8 +21,6 @@ import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.CatalogBuilder;
-import org.geoserver.catalog.CoverageInfo;
-import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -39,6 +40,10 @@ import org.opengis.feature.simple.SimpleFeatureType;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+/**
+ * Builds a new feature type by having the user specify the attributes
+ * @author aaime
+ */
 @SuppressWarnings("serial")
 public class NewFeatureTypePage extends GeoServerSecuredPage {
 

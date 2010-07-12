@@ -31,6 +31,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.catalog.ProjectionPolicy;
@@ -400,5 +401,21 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
      */
     protected void onCancel() {
         setResponsePage(LayerPage.class);
+    }
+
+    /**
+     * Allows collaborating pages to update the resource info object
+     * @param info
+     */
+    public void updateResource(ResourceInfo info) {
+        myResourceModel.setObject(info);
+    }
+    
+    /**
+     * Allows collaborating pages to update the layer info object
+     * @param info
+     */
+    public void updateLayer(LayerInfo info) {
+        myLayerModel.setObject(info);
     }
 }
