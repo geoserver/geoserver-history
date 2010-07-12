@@ -83,7 +83,7 @@ Parameters and validation
 A SQL view parameter can be anything, the only rule to follow is that the set of attributes returned by the view and their types must never change.
 This in particular means it's possible to create views containing wide open parameters allowing to specify full SQL query portions.
 
-For example, ``select * from pgstates %where``, along with an empty validation regular experssion, would allow to specify the where clause of the query dynamically
+For example, ``select * from pgstates %where%``, along with an empty validation regular experssion, would allow to specify the where clause of the query dynamically.
 However, that opens a serious risk for `SQL injection attacks <http://en.wikipedia.org/wiki/SQL_injection>`_ unless access to the server is allowed only to trusted parties.
 
 In general it is advised to use SQL parameters with great care and cast a validation regular expression that only allows for the intended parameter values. The expression should be created to prevent attacks, but not necessarily to double check the value is the expected type.
