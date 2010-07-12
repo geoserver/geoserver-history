@@ -22,6 +22,8 @@ import org.opengis.util.ProgressListener;
  * @uml.dependency supplier="org.geoserver.catalog.FeatureResource"
  */
 public interface FeatureTypeInfo extends ResourceInfo {
+    
+    static final String JDBC_VIRTUAL_TABLE = "JDBC_VIRTUAL_TABLE";
 
     /**
      * The data store the feature type is a part of.

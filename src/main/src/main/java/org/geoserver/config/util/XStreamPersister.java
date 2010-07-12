@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,13 +75,18 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.security.SecureCatalogImpl;
 import org.geotools.coverage.grid.GeneralGridEnvelope;
 import org.geotools.coverage.grid.GridGeometry2D;
-import org.geotools.feature.type.FeatureTypeImpl;
 import org.geotools.geometry.GeneralEnvelope;
+import org.geotools.geometry.jts.Geometries;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.jdbc.RegexpValidator;
+import org.geotools.jdbc.VirtualTable;
+import org.geotools.jdbc.VirtualTableParameter;
+import org.geotools.jdbc.VirtualTableParameter.Validator;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.referencing.crs.DefaultProjectedCRS;
 import org.geotools.referencing.operation.transform.AffineTransform2D;
+import org.geotools.util.Converters;
 import org.geotools.util.NumberRange;
 import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridGeometry;
@@ -105,6 +112,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.ClassAliasingMapper;
 import com.thoughtworks.xstream.mapper.Mapper;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Utility class which loads and saves catalog and configuration objects to and
@@ -185,6 +193,12 @@ public class XStreamPersister {
      * Flag controlling how references to objects are encoded.
      */
     boolean referenceByName = false;
+    
+    /**
+     * The type map used in {@link BreifMapConverter} to handle complex objects
+     */
+    Map<String, Class<?>> forwardBreifMap = new HashMap<String, Class<?>>();
+    Map<Class<?>, String> backwardBreifMap = new HashMap<Class<?>, String>();
     
     /**
      * Constructs the persister and underlying xstream.
@@ -341,8 +355,25 @@ public class XStreamPersister {
         xs.registerConverter(new LayerGroupInfoConverter());
         xs.registerConverter(new GridGeometry2DConverter());
         xs.registerConverter(new ProxyCollectionConverter( xs.getMapper() ) );
+        xs.registerConverter(new VirtualTableConverter());
+        
+        // register VirtulaTable handling
+        registerBreifMapComplexType("virtualTable", VirtualTable.class);
         
         callback = new Callback();
+    }
+    
+    /**
+     * Use this method to register complex types that cannot be simply represented as a string
+     * in a {@link BreifMapConverter}. The {@code typeId} will be used as a type discriminator
+     * in the brief map, as well as the element root for the complex object to be converted.
+     * @param typeId
+     * @param clazz
+     */
+    public void registerBreifMapComplexType(String typeId, Class clazz) {
+        forwardBreifMap.put(typeId, clazz);
+        backwardBreifMap.put(clazz, typeId);
+        
     }
 
     public XStream getXStream() {
@@ -580,7 +611,19 @@ public class XStreamPersister {
                 writer.startNode("entry");
                 writer.addAttribute( "key", entry.getKey().toString());
                 if ( entry.getValue() != null ) {
-                    writer.setValue(entry.getValue().toString());
+                    Object value = entry.getValue();
+                    String complexTypeId = getComplexTypeId(value.getClass());
+                    if(complexTypeId == null) {
+                        String str = Converters.convert(value, String.class);
+                        if(str == null) {
+                            str = value.toString();
+                        }
+                        writer.setValue(str);
+                    } else {
+                        writer.startNode(complexTypeId);
+                        context.convertAnother(value);
+                        writer.endNode();
+                    }
                 }
                 
                 writer.endNode();
@@ -608,7 +651,15 @@ public class XStreamPersister {
                     if ( reader.getAttribute( "key") != null ) {
                         //this is case 3
                         key = reader.getAttribute( "key" );
-                        value = reader.getValue();
+                        // in this case we also support complex objects
+                        if(reader.hasMoreChildren()) {
+                            reader.moveDown();
+                            String typeId = reader.getNodeName();
+                            value = context.convertAnother(null, getComplexTypeClass(typeId));
+                            reader.moveUp();
+                        } else {
+                            value = reader.getValue();
+                        }
                     }
                     else if ( reader.hasMoreChildren() ){
                         //this is case 4
@@ -645,11 +696,63 @@ public class XStreamPersister {
                 reader.moveUp();
             }
         }
-
+        
         @Override
         protected Object readItem(HierarchicalStreamReader reader, UnmarshallingContext context,
                 Object current) {
             return reader.getValue();
+        }
+
+        private Class getComplexTypeClass(String typeId) {
+            return forwardBreifMap.get(typeId);
+        }
+        
+        private String getComplexTypeId(Class clazz) {
+             String typeId = backwardBreifMap.get(clazz);
+             if(typeId == null) {
+                 List<Class> matches = new ArrayList<Class>();
+                 collectSuperclasses(clazz, matches);
+                 for (Iterator it = matches.iterator(); it.hasNext();) {
+                    Class sper = (Class) it.next();
+                    if(backwardBreifMap.get(sper) == null) {
+                        it.remove();
+                    }
+                }
+                 
+                if(matches.size() > 1) {
+                    Comparator comparator = new Comparator<Class>() {
+                        public int compare(Class c1, Class c2) {
+                            if (c2.isAssignableFrom(c1)) {
+                                return -1;
+                            } else {
+                                return 1;
+                            }
+                        }
+                    };
+
+                    Collections.sort(matches, comparator);
+                }
+                
+                if(matches.size() > 0) {
+                    typeId = backwardBreifMap.get(matches.get(0));
+                }
+             }
+             
+             return typeId;
+        }
+
+        void collectSuperclasses(Class clazz, List<Class> matches) {
+            matches.add(clazz);
+            if(clazz.getSuperclass() == null && clazz.getInterfaces().length == 0) {
+                return;
+            }
+            
+            if(clazz.getSuperclass() != null) {
+                collectSuperclasses(clazz.getSuperclass(), matches);
+            }
+            for(Class iface : clazz.getInterfaces()) {
+                collectSuperclasses(iface, matches);
+            }
         }
     }
     
@@ -1318,6 +1421,9 @@ public class XStreamPersister {
             if ( featureType.getAttributes() == null ){
                 featureType.setAttributes(new ArrayList());
             }
+            if( featureType.getMetadata() == null) {
+                featureType.setMetadata(new MetadataMap());
+            }
             
             callback.postEncodeFeatureType(featureType, writer, context);
         }
@@ -1388,4 +1494,123 @@ public class XStreamPersister {
             callback.postEncodeLayerGroup((LayerGroupInfo)result, writer, context);
         }
     }
+    
+    class VirtualTableConverter implements Converter {
+
+        public void marshal(Object source, HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+            VirtualTable vt = (VirtualTable) source;
+            writer.startNode("name");
+            writer.setValue(vt.getName());
+            writer.endNode();
+            writer.startNode("sql");
+            writer.setValue(vt.getSql());
+            writer.endNode();
+            if(vt.getPrimaryKeyColumns() != null) {
+                for(String pk : vt.getPrimaryKeyColumns()) {
+                    writer.startNode("keyColumn");
+                    writer.setValue(pk);
+                    writer.endNode();
+                }
+            }
+            if(vt.getGeometries() != null) {
+                for (String geom : vt.getGeometries()) {
+                    writer.startNode("geometry");
+                    writer.startNode("name");
+                    writer.setValue(geom);
+                    writer.endNode();
+                    writer.startNode("type");
+                    writer.setValue(Geometries.getForBinding(vt.getGeometryType(geom)).getName());
+                    writer.endNode();
+                    writer.startNode("srid");
+                    writer.setValue(String.valueOf(vt.getNativeSrid(geom)));
+                    writer.endNode();
+                    writer.endNode();
+                }
+            }
+            if(vt.getParameterNames().size() > 0) {
+                for(String name : vt.getParameterNames()) {
+                    VirtualTableParameter param = vt.getParameter(name);
+                    writer.startNode("parameter");
+                    writer.startNode("name");
+                    writer.setValue(name);
+                    writer.endNode();
+                    if(param.getDefaultValue() != null) {
+                        writer.startNode("defaultValue");
+                        writer.setValue(param.getDefaultValue());
+                        writer.endNode();
+                    }
+                    if(param.getValidator() != null) {
+                        if(param.getValidator() instanceof RegexpValidator) {
+                            writer.startNode("regexpValidator");
+                            writer.setValue(((RegexpValidator) param.getValidator()).getPattern().pattern());
+                            writer.endNode();
+                        } else {
+                            throw new RuntimeException("Cannot handle this type of validator," +
+                            		" please extend the VirtualTableConverter " + param.getValidator().getClass());
+                        }
+                    }
+                    writer.endNode();
+                }
+            }
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            String name = readValue("name", String.class, reader);
+            String sql = readValue("sql", String.class, reader);
+            VirtualTable vt = new VirtualTable(name, sql);
+            List<String> primaryKeys = new ArrayList<String>();
+            while(reader.hasMoreChildren()) {
+                reader.moveDown();
+                if(reader.getNodeName().equals("keyColumn")) {
+                    primaryKeys.add(reader.getValue());
+                } else if(reader.getNodeName().equals("geometry")) {
+                    String geomName = readValue("name", String.class, reader);
+                    Geometries geomType = Geometries.getForName(readValue("type", String.class, reader));
+                    Class type = geomType == null ? Geometry.class : geomType.getBinding();
+                    int srid = readValue("srid", Integer.class, reader);
+                    vt.addGeometryMetadatata(geomName, type, srid);
+                } else if(reader.getNodeName().equals("parameter")) {
+                    String pname = readValue("name", String.class, reader);
+                    String defaultValue = null;
+                    Validator validator = null;
+                    while(reader.hasMoreChildren()) {
+                        reader.moveDown();
+                        if(reader.getNodeName().equals("defaultValue")) {
+                            defaultValue = reader.getValue();
+                        } else if(reader.getNodeName().equals("regexpValidator")) {
+                            validator = new RegexpValidator(reader.getValue());
+                        }
+                        reader.moveUp();
+                    }
+                    
+                    vt.addParameter(new VirtualTableParameter(pname, defaultValue, validator));
+                }
+                reader.moveUp();
+            }
+            vt.setPrimaryKeyColumns(primaryKeys);
+            
+            return vt;
+        }
+        
+        <T> T readValue(String name, Class<T> type, HierarchicalStreamReader reader) {
+           if(!reader.hasMoreChildren()) {
+               throw new IllegalArgumentException("Expected element " + name + " but could not find it");
+           }
+           reader.moveDown();
+           if(!name.equals(reader.getNodeName())) {
+               throw new IllegalArgumentException("Expected element " + name + " but found " + reader.getNodeName() + " instead");
+           }
+           String value = reader.getValue();
+           reader.moveUp();
+           return Converters.convert(value, type);
+        }
+
+        public boolean canConvert(Class type) {
+            return VirtualTable.class.isAssignableFrom(type);
+        }
+        
+    }
+    
+    
 }

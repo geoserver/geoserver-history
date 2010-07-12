@@ -14,14 +14,17 @@ import java.util.Map;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.CoverageStoreInfo;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.catalog.StoreInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.catalog.WMSStoreInfo;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wicket.GeoServerDataProvider;
 import org.geotools.data.ows.Layer;
 import org.geotools.feature.NameImpl;
@@ -66,7 +69,13 @@ public class NewLayerPageProvider extends GeoServerDataProvider<Resource> {
                 // namespace qualified NameImpl
                 List<Name> names = dstore.getDataStore(null).getNames();
                 for (Name name : names) {
-                    resources.put(name.getLocalPart(), new Resource(name));
+                    Catalog catalog = GeoServerApplication.get().getCatalog();
+                    FeatureTypeInfo fti = catalog.getFeatureTypeByDataStore(dstore, name.getLocalPart());
+                    // skip views, we cannot have two layers use the same feature type info, as the
+                    // underlying definition is attached to the feature type info itself
+                    if(fti == null || fti.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE) == null) {
+                        resources.put(name.getLocalPart(), new Resource(name));
+                    }
                 }
                 
             } else if(store instanceof CoverageStoreInfo) {

@@ -70,6 +70,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
  * @version $Id$
  */
 public class GetFeature {
+    public static final String SQL_VIEW_PARAMS = "GS_SQL_VIEW_PARAMS";
+    
     /** Standard logging instance for class */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
@@ -585,6 +587,12 @@ public class GetFeature {
         
         //tell the datastore to use a lite coordinate sequence factory, if possible
         hints.put(Hints.JTS_COORDINATE_SEQUENCE_FACTORY, new LiteCoordinateSequenceFactory());
+        
+        // check for sql view parameters
+        if(request.getMetadata() != null && request.getMetadata().containsKey(SQL_VIEW_PARAMS)) {
+            hints.put(Hints.VIRTUAL_TABLE_PARAMETERS, request.getMetadata().get(SQL_VIEW_PARAMS));
+        }
+        
 
         //finally, set the hints
         dataQuery.setHints(hints);

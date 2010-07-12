@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,14 +39,12 @@ import org.geotools.coverage.grid.GridGeometry2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.store.FilteringFeatureCollection;
 import org.geotools.data.wms.WebMapServer;
-import org.geotools.data.wms.response.GetFeatureInfoResponse;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
@@ -241,8 +239,8 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
     @SuppressWarnings("deprecation")
 	@Override
     //@SuppressWarnings("unchecked")
-    protected void execute(MapLayerInfo[] requestedLayers, Style[] styles, Filter[] filters, int x, int y, int buffer)
-        throws WmsException {
+    protected void execute(MapLayerInfo[] requestedLayers, Style[] styles, Filter[] filters, 
+            int x, int y, int buffer, Map<String, String> viewParams) throws WmsException {
         GetFeatureInfoRequest request = getRequest();
         this.format = request.getInfoFormat();
 
@@ -346,6 +344,11 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
 
                     String typeName = schema.getName().getLocalPart();
                     Query q = new Query(typeName, null, getFInfoFilter, request.getFeatureCount(), Query.ALL_NAMES, null);
+                    
+                    // handle sql view params
+                    if(viewParams != null && viewParams.size() > 0) {
+                        q.setHints(new Hints(Hints.VIRTUAL_TABLE_PARAMETERS, viewParams));
+                    }
                     
                     FeatureCollection<? extends FeatureType, ? extends Feature> match;
                     match = featureSource.getFeatures(q);

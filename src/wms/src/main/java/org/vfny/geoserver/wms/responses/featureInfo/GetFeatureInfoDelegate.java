@@ -5,6 +5,7 @@
 package org.vfny.geoserver.wms.responses.featureInfo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
@@ -140,7 +141,7 @@ public abstract class GetFeatureInfoDelegate implements Response {
         int x = request.getXPixel();
         int y = request.getYPixel();
         int buffer = request.getGetMapRequest().getBuffer();
-        execute(layers, styles, filters, x, y, buffer);
+        execute(layers, styles, filters, x, y, buffer, request.getGetMapRequest().getViewParams());
     }
 
     /**
@@ -156,11 +157,12 @@ public abstract class GetFeatureInfoDelegate implements Response {
      * @param y the Y coordinate in pixels where the identification must be
      *        done relative to the image dimensions
      * @param the user specified buffer
+     * @param the sql views params
      *
      * @throws WmsException For any problems executing.
      */
     protected abstract void execute(MapLayerInfo[] requestedLayers, Style[] styles, Filter[] filters, int x,
-        int y, int buffer) throws WmsException;
+        int y, int buffer, Map<String, String> viewParams) throws WmsException;
 
     
     /**

@@ -85,4 +85,9 @@ public class CaseInsensitiveMap implements Map {
 
         return key;
     }
+    
+    @Override
+    public String toString() {
+        return delegate.toString();
+    }
 }

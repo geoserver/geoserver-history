@@ -51,8 +51,11 @@ public class GetMapRequest extends WMSRequest {
     /** format options */
     private Map <String,Object> formatOptions = new CaseInsensitiveMap(new HashMap());
     
-    /** format options */
+    /** SLD replacement */
     private Map /*<String,Object>*/ env = new HashMap();
+    
+    /** sql view parameters */
+    private Map<String,String> viewParams = new HashMap<String, String>();
 
     /** raw kvp parameters non-parsed */
     private Map <String,String> rawKvp;
@@ -132,6 +135,14 @@ public class GetMapRequest extends WMSRequest {
      */
     public Map getEnv() {
         return env;
+    }
+    
+    /**
+     * Map of strings that contain the parameter values for SQL views 
+     * @return
+     */
+    public Map<String, String> getViewParams() {
+        return viewParams;
     }
 
     /**
@@ -434,6 +445,14 @@ public class GetMapRequest extends WMSRequest {
      */
     public void setEnv(Map enviroment) {
         this.env = enviroment;
+    }
+    
+    /**
+     * Sets the SQL views parameters
+     * @param viewParams
+     */
+    public void setViewParams(Map<String, String> viewParams) {
+        this.viewParams = viewParams;
     }
 
     /**

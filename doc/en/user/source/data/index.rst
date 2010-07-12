@@ -53,6 +53,7 @@ Other data sources require the use of GeoServer extensions, extra downloads that
    oraclegeoraster/
    customjdbcaccess/
    connection-pooling/
+   sqlview/
    app-schema/index
 
    

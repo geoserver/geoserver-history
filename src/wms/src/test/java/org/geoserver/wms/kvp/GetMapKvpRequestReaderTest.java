@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import junit.framework.Test;
@@ -24,6 +25,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.RemoteOWSTestSupport;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
+import org.geoserver.wfs.GetFeature;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geotools.factory.CommonFactoryFinder;
@@ -439,4 +441,25 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         assertEquals(expectedStyle, request.getStyles().get(0));
     }
 
+    public void testViewParams() throws Exception {
+        HashMap raw = new HashMap();
+        raw.put("layers", getLayerId(MockData.BASIC_POLYGONS));
+        raw.put("styles", "");
+        raw.put("format", "image/jpeg");
+        raw.put("srs", "epsg:3003");
+        raw.put("bbox", "-10,-10,10,10");
+        raw.put("height", "600");
+        raw.put("width", "800");
+        raw.put("request", "GetMap");
+        raw.put("service", "wms");
+        raw.put("viewParams", "where:WHERE PERSONS > 1000000;str:ABCD");
+
+        GetMapRequest request = (GetMapRequest) reader.createRequest();
+        request = (GetMapRequest) reader.read(request, parseKvp(raw), raw);
+
+        Map viewParams = request.getViewParams();
+        assertEquals(2, viewParams.size());
+        assertEquals("WHERE PERSONS > 1000000", viewParams.get("where"));
+        assertEquals("ABCD", viewParams.get("str"));
+    }
 }

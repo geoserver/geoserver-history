@@ -19,13 +19,12 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.IItemFactory;
-import org.apache.wicket.markup.repeater.IItemReuseStrategy;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.ReuseIfModelsEqualStrategy;
 import org.apache.wicket.markup.repeater.data.DataView;
@@ -418,6 +417,16 @@ public abstract class GeoServerTablePanel<T> extends Panel {
      */
     public void setFilterVisible(boolean filterVisible) {
         filterForm.setVisible(filterVisible);
+    }
+    
+    public void processInputs() {
+        this.visitChildren(FormComponent.class, new IVisitor() {
+            
+            public Object component(Component component) {
+                ((FormComponent) component).processInput();
+                return IVisitor.CONTINUE_TRAVERSAL_BUT_DONT_GO_DEEPER;
+            }
+        });
     }
 
     /**

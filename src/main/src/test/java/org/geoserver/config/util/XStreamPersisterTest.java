@@ -3,6 +3,7 @@ package org.geoserver.config.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -32,9 +33,14 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.ServiceInfoImpl;
+import org.geotools.jdbc.RegexpValidator;
+import org.geotools.jdbc.VirtualTable;
+import org.geotools.jdbc.VirtualTableParameter;
 import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.vividsolutions.jts.geom.LineString;
 
 public class XStreamPersisterTest extends TestCase {
 
@@ -521,6 +527,53 @@ public class XStreamPersisterTest extends TestCase {
         assertEquals( s, l.getDefaultStyle() );
         //assertNotNull( l.getStyles() );
         
+    }
+    
+    public void testVirtualTable() throws Exception {
+        Catalog catalog = new CatalogImpl();
+        CatalogFactory cFactory = catalog.getFactory();
+        
+        WorkspaceInfo ws = cFactory.createWorkspace();
+        ws.setName( "foo" );
+        catalog.add( ws );
+        
+        NamespaceInfo ns = cFactory.createNamespace();
+        ns.setPrefix( "acme" );
+        ns.setURI( "http://acme.org" );
+        catalog.add( ns );
+        
+        DataStoreInfo ds = cFactory.createDataStore();
+        ds.setWorkspace( ws );
+        ds.setName( "foo" );
+        catalog.add( ds );
+        
+        VirtualTable vt = new VirtualTable("riverReduced",
+                "select a, b, c * %mulparam% \n from table \n where x > 1 %andparam%");
+        vt.addGeometryMetadatata("geom", LineString.class, 4326);
+        vt.setPrimaryKeyColumns(Arrays.asList("a", "b"));
+        vt.addParameter(new VirtualTableParameter("mulparam", "1", new RegexpValidator("\\d+")));
+        vt.addParameter(new VirtualTableParameter("andparam", null));
+        
+        FeatureTypeInfo ft = cFactory.createFeatureType();
+        ft.setStore( ds );
+        ft.setNamespace( ns );
+        ft.setName( "ft" );
+        ft.setAbstract( "abstract");
+        ft.setSRS( "EPSG:4326");
+        ft.setNativeCRS( CRS.decode( "EPSG:4326") );
+        ft.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
+        catalog.add( ft );
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        persister.save(ft, out);
+        
+        // System.out.println(out.toString());
+        
+        persister.setCatalog( catalog );
+        ft = persister.load( in( out ) , FeatureTypeInfo.class );
+        VirtualTable vt2 = (VirtualTable) ft.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE);
+        assertNotNull(vt2);
+        assertEquals(vt, vt2);
     }
     
     ByteArrayOutputStream out() {
