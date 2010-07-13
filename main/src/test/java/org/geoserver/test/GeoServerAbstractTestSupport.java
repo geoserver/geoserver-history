@@ -22,8 +22,11 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.XMLConstants;
@@ -74,6 +77,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.mockrunner.mock.web.MockFilterChain;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -1026,7 +1030,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
          
     }
 
-    private MockHttpServletResponse dispatch( HttpServletRequest request ) throws Exception {
+    protected MockHttpServletResponse dispatch( HttpServletRequest request ) throws Exception {
         MockHttpServletResponse response = new MockHttpServletResponse() {
             public void setCharacterEncoding( String encoding ) {
                     
@@ -1037,7 +1041,7 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         return response;
     } 
  
-    private void dispatch(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    private void dispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //create an instance of the spring dispatcher
         ServletContext context = applicationContext.getServletContext();
         
@@ -1045,34 +1049,64 @@ public abstract class GeoServerAbstractTestSupport extends OneTimeSetupTest {
         config.setServletContext(context);
         config.setServletName("dispatcher");
         
-        DispatcherServlet dispatcher = new DispatcherServlet();
+        final DispatcherServlet dispatcher = new DispatcherServlet();
         
         dispatcher.setContextConfigLocation(GeoServerAbstractTestSupport.class.getResource("dispatcher-servlet.xml").toString());
         dispatcher.init(config);
         
-        
-        //look up the handler
-//        Dispatcher dispatcher = 
-//                (Dispatcher) applicationContext.getBean( "dispatcher" ); 
-        //dispatcher.setApplicationContext( getGeoServer().getApplicationContext() );
-        
-        //excute the pre handler step
-        Collection interceptors = 
-            GeoServerExtensions.extensions(HandlerInterceptor.class, applicationContext );
-        for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
-            HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
-            interceptor.preHandle( request, response, dispatcher );
+        // build a filter chain so that we can test with filters as well
+        MockFilterChain chain = new MockFilterChain();
+        List<Filter> filters = getFilters();
+        if(filters != null) {
+            for (Filter filter : filters) {
+                chain.addFilter(filter);
+            }
         }
+        chain.setServlet(new HttpServlet() {
+            @Override
+            protected void service(HttpServletRequest request, HttpServletResponse response)
+                    throws ServletException, IOException {
+                try {
+                    //excute the pre handler step
+                    Collection interceptors = 
+                        GeoServerExtensions.extensions(HandlerInterceptor.class, applicationContext );
+                    for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
+                        HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
+                        interceptor.preHandle( request, response, dispatcher );
+                    }
+                    
+                    //execute 
+                    //dispatcher.handleRequest( request, response );
+                    dispatcher.service(request, response);
+                    
+                    //execute the post handler step
+                    for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
+                        HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
+                        interceptor.postHandle( request, response, dispatcher, null );
+                    }
+                } catch(RuntimeException e) {
+                    throw e;
+                } catch(IOException e) {
+                    throw e;
+                } catch(ServletException e) {
+                    throw e;
+                } catch(Exception e) {
+                    throw (IOException) new IOException("Failed to handle the request").initCause(e);
+                }
+            }
+        });
         
-        //execute 
-        //dispatcher.handleRequest( request, response );
-        dispatcher.service(request, response);
+        chain.doFilter(request, response);
         
-        //execute the post handler step
-        for ( Iterator i = interceptors.iterator(); i.hasNext(); ) {
-            HandlerInterceptor interceptor = (HandlerInterceptor) i.next();
-            interceptor.postHandle( request, response, dispatcher, null );
-        }
+    }
+
+    /**
+     * Subclasses needed to do integration tests with servlet filters can override this method
+     * and return the list of filters to be used during mocked requests
+     * @return
+     */
+    protected List<Filter> getFilters() {
+        return null;
     }
 
     /**
