@@ -96,6 +96,10 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
     private GeoServerTablePanel<Parameter> parameters;
 
     private SQLViewParamProvider paramProvider;
+    
+    boolean guessGeometrySrid = false;
+
+    private CheckBox guessCheckbox;
 
     private static final List GEOMETRY_TYPES = Arrays.asList(Geometry.class,
             GeometryCollection.class, Point.class, MultiPoint.class, LineString.class,
@@ -118,9 +122,6 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         sqlEditor = new TextArea("sql");
         form.add(sqlEditor);
         
-        // the "refresh attributes" link
-        form.add(refreshLink());
-        
         // the parameters and attributes provider
         attProvider = new SQLViewAttributeProvider();
         paramProvider = new SQLViewParamProvider();
@@ -141,7 +142,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
 
             paramProvider.init(virtualTable);
             try {
-                SimpleFeatureType ft = testViewDefinition(virtualTable);
+                SimpleFeatureType ft = testViewDefinition(virtualTable, false);
                 attProvider.setFeatureType(ft, virtualTable);
             } catch(Exception e) {
                 LOGGER.log(Level.SEVERE, "Failed to build feature type for the sql view", e);
@@ -206,6 +207,10 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         parameters.getBottomPager().setVisible(false);
         parameters.setOutputMarkupId(true);
         form.add(parameters);
+        
+        // the "refresh attributes" link
+        form.add(refreshLink());
+        form.add(guessCheckbox = new CheckBox("guessGeometrySrid", new PropertyModel(this, "guessGeometrySrid")));
 
         // the editable attribute table
         attributes = new GeoServerTablePanel<SQLViewAttribute>("attributes", attProvider) {
@@ -264,13 +269,14 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             protected void onClick(AjaxRequestTarget target, Form form) {
                 sqlEditor.processInput();
                 parameters.processInputs();
+                guessCheckbox.processInput();
                 if (sql != null && !"".equals(sql.trim())) {
                     SimpleFeatureType newSchema = null;
                     try {
-                        newSchema = testViewDefinition();
+                        newSchema = testViewDefinition(guessGeometrySrid);
 
                         if (newSchema != null) {
-                            attProvider.setFeatureType(newSchema, buildVirtualTable());
+                            attProvider.setFeatureType(newSchema, null);
                             target.addComponent(attributes);
                         }
                     } catch (IOException e) {
@@ -290,7 +296,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
      * @return
      * @throws IOException
      */
-    protected SimpleFeatureType testViewDefinition() throws IOException {
+    protected SimpleFeatureType testViewDefinition(boolean guessGeometrySrid) throws IOException {
         // check out if the view can be used
         JDBCDataStore ds = (JDBCDataStore) getCatalog().getDataStore(storeId).getDataStore(null);
         String vtName = null;
@@ -304,7 +310,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             VirtualTable vt = new VirtualTable(vtName, sql);
             paramProvider.updateVirtualTable(vt);
             ds.addVirtualTable(vt);
-            return guessFeatureType(ds, vt.getName());
+            return guessFeatureType(ds, vt.getName(), guessGeometrySrid);
         } finally {
             if(vtName != null) {
                 ds.removeVirtualTable(vtName);
@@ -321,7 +327,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
      * @return
      * @throws IOException
      */
-    protected SimpleFeatureType testViewDefinition(VirtualTable virtualTable) throws IOException {
+    protected SimpleFeatureType testViewDefinition(VirtualTable virtualTable, boolean guessGeometrySrid) throws IOException {
         // check out if the view can be used
         JDBCDataStore ds = (JDBCDataStore) getCatalog().getDataStore(storeId).getDataStore(null);
         String vtName = null;
@@ -336,7 +342,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             // hide the primary key definitions or we'll loose some columns
             vt.setPrimaryKeyColumns(Collections.EMPTY_LIST);
             ds.addVirtualTable(vt);
-            return guessFeatureType(ds, vt.getName());
+            return guessFeatureType(ds, vt.getName(), guessGeometrySrid);
         } finally {
             if(vtName != null) {
                 ds.removeVirtualTable(name);
@@ -352,7 +358,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
      * @param schema
      * @return
      */
-    SimpleFeatureType guessFeatureType(JDBCDataStore store, String vtName) throws IOException {
+    SimpleFeatureType guessFeatureType(JDBCDataStore store, String vtName, boolean guessGeometrySrid) throws IOException {
         SimpleFeatureType base = store.getSchema(vtName);
         List<String> geometries = new ArrayList<String>();
         for (AttributeDescriptor ad : base.getAttributeDescriptors()) {
@@ -361,12 +367,13 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             }
         }
 
-        // no geometries?
-        if (geometries.size() == 0) {
+        // no geometries? Or, shall we not try to guess the geometries type and srid?
+        if (geometries.size() == 0 || !guessGeometrySrid) {
             return base;
         }
 
-        // build a query and run it
+        // build a query to fetch the first rwo, we'll inspect the resulting
+        // geometries 
         Query q = new Query(vtName);
         q.setPropertyNames(geometries);
         q.setMaxFeatures(1);

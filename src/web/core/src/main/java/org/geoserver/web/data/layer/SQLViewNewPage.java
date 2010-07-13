@@ -26,7 +26,7 @@ public class SQLViewNewPage extends SQLViewAbstractPage {
     @Override
     protected void onSave() {
         try {
-            testViewDefinition();
+            testViewDefinition(false);
             VirtualTable vt = buildVirtualTable();
             DataStoreInfo dsInfo = getCatalog().getStore(storeId, DataStoreInfo.class);
             JDBCDataStore ds = (JDBCDataStore) dsInfo.getDataStore(null);
@@ -48,6 +48,5 @@ public class SQLViewNewPage extends SQLViewAbstractPage {
     protected void onCancel() {
         setResponsePage(LayerPage.class);
     }
-
 
 }
