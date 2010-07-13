@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -332,6 +333,8 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
 
             // try adding the vt and see if that works
             VirtualTable vt = new VirtualTable(vtName, virtualTable);
+            // hide the primary key definitions or we'll loose some columns
+            vt.setPrimaryKeyColumns(Collections.EMPTY_LIST);
             ds.addVirtualTable(vt);
             return guessFeatureType(ds, vt.getName());
         } finally {
