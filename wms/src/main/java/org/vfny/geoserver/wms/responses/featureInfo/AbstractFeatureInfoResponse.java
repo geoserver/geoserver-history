@@ -355,7 +355,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     
                     // if we could not include the rules filter into the query, post process in memory
                     if(!Filter.INCLUDE.equals(postFilter))
-                        match = new FilteringFeatureCollection(match, postFilter);
+                        match = DataUtilities.simple(new FilteringFeatureCollection(match, postFilter));
 
                     //this was crashing Gml2FeatureResponseDelegate due to not setting
                     //the featureresults, thus not being able of querying the SRS
@@ -588,7 +588,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         // build up a or of all the rule filters
         List<Filter> filters = new ArrayList<Filter>();
         for (Rule rule : rules) {
-            if(rule.getFilter() == null)
+            if(rule.getFilter() == null || rule.isElseFilter())
                 return Filter.INCLUDE;
             filters.add(rule.getFilter());
         }
