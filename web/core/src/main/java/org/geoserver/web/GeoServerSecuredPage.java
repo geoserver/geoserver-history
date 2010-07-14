@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.acegisecurity.Authentication;
+import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
 import org.acegisecurity.ui.AbstractProcessingFilter;
 import org.acegisecurity.ui.ExceptionTranslationFilter;
 import org.acegisecurity.ui.savedrequest.SavedRequest;
@@ -27,7 +28,7 @@ public class GeoServerSecuredPage extends GeoServerBasePage {
     public GeoServerSecuredPage() {
         super();
         Authentication auth = getSession().getAuthentication();
-        if(auth == null || !auth.isAuthenticated()) {
+        if(auth == null || !auth.isAuthenticated() || auth instanceof AnonymousAuthenticationToken) {
             // emulate what acegi url control would do so that we get a proper redirect after login
             HttpServletRequest httpRequest = ((WebRequest) getRequest()).getHttpServletRequest();
             ExceptionTranslationFilter translator = (ExceptionTranslationFilter) getGeoServerApplication().getBean("consoleExceptionTranslationFilter");

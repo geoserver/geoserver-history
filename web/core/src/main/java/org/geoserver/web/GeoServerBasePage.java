@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.acegisecurity.Authentication;
+import org.acegisecurity.providers.anonymous.AnonymousAuthenticationToken;
 import org.apache.wicket.Application;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -107,11 +108,11 @@ public class GeoServerBasePage extends WebPage implements IAjaxIndicatorAware {
         WebMarkupContainer loginForm = new WebMarkupContainer("loginform");
         add(loginForm);
         final Authentication user = GeoServerSession.get().getAuthentication();
-        final boolean anonymous = user == null;
+        final boolean anonymous = user == null || user instanceof AnonymousAuthenticationToken;
         loginForm.setVisible(anonymous);
 
         WebMarkupContainer logoutForm = new WebMarkupContainer("logoutform");
-        logoutForm.setVisible(user != null);
+        logoutForm.setVisible(!anonymous);
 
         add(logoutForm);
         logoutForm.add(new Label("username", anonymous ? "Nobody" : user.getName()));
