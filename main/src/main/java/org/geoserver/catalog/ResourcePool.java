@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,11 +43,10 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
-import org.geoserver.catalog.impl.WMSLayerInfoImpl;
+import org.geoserver.catalog.impl.ModificationProxy;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.data.util.CoverageStoreUtils;
 import org.geoserver.data.util.CoverageUtils;
-import org.geoserver.feature.retype.RetypingDataStore;
 import org.geoserver.feature.retype.RetypingFeatureSource;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -574,11 +574,12 @@ public class ResourcePool {
      */
     public FeatureType getFeatureType( FeatureTypeInfo info ) throws IOException {
         
+        boolean cacheable = isCacheable(info);
         FeatureType ft = (FeatureType) featureTypeCache.get( info );
-        if ( ft == null ) {
+        if ( ft == null || !cacheable ) {
             synchronized ( featureTypeCache ) {
                 ft = (FeatureType) featureTypeCache.get( info );
-                if ( ft == null ) {
+                if ( ft == null || !cacheable) {
                     
                     //grab the underlying feature type
                     DataAccess<? extends FeatureType, ? extends Feature> dataAccess = getDataStore(info.getStore());
@@ -636,12 +637,39 @@ public class ResourcePool {
                         ft = tb.buildFeatureType();
                     } // end special case for SimpleFeatureType
                     
-                    featureTypeCache.put( info, ft ); 
+                    if(cacheable) {
+                        featureTypeCache.put( info, ft );
+                    }
                 }
             }
         }
         
         return ft;
+    }
+    
+    /**
+     * Returns true if this object is saved in the catalog and not a modified proxy. We don't want to
+     * cache the result of computations made against a dirty object, nor the ones made against an 
+     * object that still haven't been saved
+     * @param info
+     * @return
+     */
+    boolean isCacheable(CatalogInfo info) {
+        // saved?
+        if(info.getId() == null) {
+            return false;
+        }
+        
+        // dirty?
+        if(Proxy.isProxyClass(info.getClass())) {
+            Object invocationHandler = Proxy.getInvocationHandler(info);
+            if(invocationHandler instanceof ModificationProxy 
+                    && ((ModificationProxy) invocationHandler).isDirty()) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     /*
@@ -661,7 +689,16 @@ public class ResourcePool {
                 if ( old.getCoordinateReferenceSystem() == null ) {
                     //(JD) TODO: this is kind of wierd... we should at least
                     // log something here, and this is not thread safe!!
-                    info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+                    if(info.getProjectionPolicy() != ProjectionPolicy.FORCE_DECLARED) {
+                        // modify the actual type info if possible, not the modification
+                        // proxy around it
+                        if(Proxy.isProxyClass(info.getClass())) {
+                            FeatureTypeInfo inner = ModificationProxy.unwrap(info);
+                            inner.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+                        } else {
+                            info.setProjectionPolicy(ProjectionPolicy.FORCE_DECLARED);
+                        }
+                    }
                     rebuild = true;
                 }
                 else {
