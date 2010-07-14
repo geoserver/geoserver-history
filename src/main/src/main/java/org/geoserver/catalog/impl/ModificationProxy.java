@@ -291,6 +291,19 @@ public class ModificationProxy implements InvocationHandler, Serializable {
                 if ( h != null && !h.isDirty() ) {
                     continue;
                 }
+            } else {
+                try {
+                    Object orig = unwrap( getter((String) e.getKey()).invoke(proxyObject, null));
+                    if ( orig == null ) {
+                        if(e.getValue() == null) {
+                            continue;
+                        }
+                    } else if(e.getValue() != null && orig.equals(e.getValue())) {
+                        continue;
+                    }
+                } catch(Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             
             dirty = true;
