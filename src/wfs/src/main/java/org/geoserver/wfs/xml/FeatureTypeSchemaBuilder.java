@@ -48,6 +48,7 @@ import org.geotools.gml2.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Schemas;
 import org.geotools.xs.XS;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.ComplexType;
 import org.opengis.feature.type.FeatureType;
@@ -367,6 +368,13 @@ public abstract class FeatureTypeSchemaBuilder {
             XSDSchema ftSchema = null;
             try {
                 ftSchema = Schemas.parse(schemaFile.getAbsolutePath(), locators, resolvers);
+                
+                //this is a hack to get around a memory leak that occurs when importing schemas
+                // with emf, the imported scehma (in this case gml) will back refernece the schema
+                // it was imported from, see http://jira.codehaus.org/browse/GEOS-3534.
+                synchronized (gmlSchema()) {
+                    gmlSchema().getReferencingDirectives().clear();
+                }
             } catch (IOException e) {
                 logger.log(Level.WARNING,
                     "Unable to parse schema: " + schemaFile.getAbsolutePath(), e);
@@ -422,11 +430,7 @@ public abstract class FeatureTypeSchemaBuilder {
                 
                 if ( !hasElement ) {
                     //need to create an element declaration in the schema
-                    XSDElementDeclaration element = factory.createXSDElementDeclaration();
-                    element.setName( featureTypeMeta.getName() );
-                    element.setTargetNamespace( featureTypeMeta.getNamespace().getURI() );
-                    element.setSubstitutionGroupAffiliation(
-                        schema.resolveElementDeclaration(gmlNamespace, substitutionGroup));
+                    XSDElementDeclaration element = createFeatureElement(featureTypeMeta, schema, factory);
                     
                     //find the type of the element
                     List<XSDComplexTypeDefinition> candidates = new ArrayList<XSDComplexTypeDefinition>();
@@ -475,11 +479,7 @@ public abstract class FeatureTypeSchemaBuilder {
             XSDComplexTypeDefinition xsdComplexType = buildComplexSchemaContent(featureTypeMeta
                     .getFeatureType(), schema, factory);
 
-            XSDElementDeclaration element = factory.createXSDElementDeclaration();
-            element.setName(featureTypeMeta.getName());
-
-            element.setSubstitutionGroupAffiliation(schema.resolveElementDeclaration(gmlNamespace,
-                    substitutionGroup));
+            XSDElementDeclaration element = createFeatureElement(featureTypeMeta, schema, factory); 
             element.setTypeDefinition(xsdComplexType);
 
             schema.getContents().add(element);
@@ -488,6 +488,46 @@ public abstract class FeatureTypeSchemaBuilder {
         }
     }
 
+    /**
+     * Creates the feature element for a feature type, adding it to "_Feature" substitution group
+     */
+    private XSDElementDeclaration createFeatureElement(FeatureTypeInfo info, XSDSchema schema, 
+            XSDFactory factory) throws IOException {
+        XSDElementDeclaration element = factory.createXSDElementDeclaration();
+        element.setName(info.getName());
+        element.setTargetNamespace( info.getNamespace().getURI() );
+                    
+        //it is important that we be smart about how we attach to "_Feature" substitution group 
+        // because each time we do it causes a back reference which will leak memory 
+        // See http://jira.codehaus.org/browse/GEOS-3534
+        // so we check _Feature's substitution group and if it already contains an element 
+        // named the same as this feature type info, we link to the clone
+        XSDElementDeclaration featureElement = 
+            schema.resolveElementDeclaration(gmlNamespace, substitutionGroup);
+        synchronized (featureElement) {
+            boolean exists = false;
+            for (XSDElementDeclaration el : 
+                (List<XSDElementDeclaration>)featureElement.getSubstitutionGroup()) {
+                
+                if (element.getName().equals(el.getName()) && 
+                    element.getTargetNamespace().equals(el.getTargetNamespace())) {
+                    exists = true; 
+                    break; 
+                }
+                    
+            }
+            if (!exists) {
+                element.setSubstitutionGroupAffiliation(featureElement);
+            }
+            else {
+                element.setSubstitutionGroupAffiliation( 
+                    (XSDElementDeclaration)featureElement.cloneConcreteComponent(false, false));
+            }
+        }
+        
+        return element;
+    }
+    
     /**
      * Construct an XSD type definition for a ComplexType. 
      * 
