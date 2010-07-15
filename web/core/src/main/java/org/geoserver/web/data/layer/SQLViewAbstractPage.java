@@ -231,7 +231,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
                     f.add(new DropDownChoice("geometry", new PropertyModel(itemModel, "type"),
                             GEOMETRY_TYPES, new GeometryTypeRenderer()));
                     return f;
-                } else if(property == SQLViewAttributeProvider.SRID && isGeometry && !edit) {
+                } else if(property == SQLViewAttributeProvider.SRID && isGeometry) {
                     Fragment f = new Fragment(id, "text", SQLViewAbstractPage.this);
                     f.add(new TextField("text", new PropertyModel(itemModel, "srid")));
                     return f;
@@ -311,6 +311,27 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             paramProvider.updateVirtualTable(vt);
             ds.addVirtualTable(vt);
             return guessFeatureType(ds, vt.getName(), guessGeometrySrid);
+        } finally {
+            if(vtName != null) {
+                ds.removeVirtualTable(vtName);
+            }
+            
+        }
+    }
+    
+    protected SimpleFeatureType getFeatureType(VirtualTable vt) throws IOException {
+     // check out if the view can be used
+        JDBCDataStore ds = (JDBCDataStore) getCatalog().getDataStore(storeId).getDataStore(null);
+        String vtName = null;
+        try {
+            // use a highly random name
+            do {
+                vtName = UUID.randomUUID().toString();
+            } while (Arrays.asList(ds.getTypeNames()).contains(vtName));
+
+            // try adding the vt and see if that works
+            ds.addVirtualTable(new VirtualTable(vtName, vt));
+            return ds.getSchema(vtName);
         } finally {
             if(vtName != null) {
                 ds.removeVirtualTable(vtName);
