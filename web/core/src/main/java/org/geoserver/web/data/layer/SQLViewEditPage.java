@@ -9,6 +9,8 @@ import java.util.logging.Level;
 
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourcePool;
+import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.jdbc.VirtualTable;
@@ -37,23 +39,21 @@ public class SQLViewEditPage extends SQLViewAbstractPage {
         try {
             testViewDefinition(false);
             VirtualTable vt = buildVirtualTable();
-            DataStoreInfo dsInfo = getCatalog().getStore(storeId, DataStoreInfo.class);
             
+            ResourcePool pool = GeoServerApplication.get().getCatalog().getResourcePool();
             if(tinfo != null) {
                 tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
-                CoordinateReferenceSystem crs = tinfo.getFeatureSource(null, null).getSchema().getCoordinateReferenceSystem();
+                CoordinateReferenceSystem crs = pool.getFeatureType(tinfo).getCoordinateReferenceSystem();
                 if(crs != null) {
                     tinfo.setNativeCRS(crs);
                 }
             } else {
                 tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
-                CoordinateReferenceSystem crs = tinfo.getFeatureSource(null, null).getSchema().getCoordinateReferenceSystem();
+                CoordinateReferenceSystem crs = pool.getFeatureType(tinfo).getCoordinateReferenceSystem();
                 if(crs != null) {
                     tinfo.setNativeCRS(crs);
                 }
             }
-            getCatalog().getResourcePool().clear(tinfo);
-            getCatalog().getResourcePool().clear(dsInfo);
             
             previusPage.updateResource(tinfo);
             setResponsePage(previusPage);
