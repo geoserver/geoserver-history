@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -575,26 +576,43 @@ public class ResourcePool {
     public FeatureType getFeatureType( FeatureTypeInfo info ) throws IOException {
         
         boolean cacheable = isCacheable(info);
-        FeatureType ft = (FeatureType) featureTypeCache.get( info );
+        FeatureType ft = (FeatureType) featureTypeCache.get( info.getId() );
         if ( ft == null || !cacheable ) {
             synchronized ( featureTypeCache ) {
-                ft = (FeatureType) featureTypeCache.get( info );
+                ft = (FeatureType) featureTypeCache.get( info.getId() );
                 if ( ft == null || !cacheable) {
                     
                     //grab the underlying feature type
                     DataAccess<? extends FeatureType, ? extends Feature> dataAccess = getDataStore(info.getStore());
                     
                     // sql view handling
+                    VirtualTable vt = null;
                     if(dataAccess instanceof JDBCDataStore && info.getMetadata() != null &&
-                            info.getMetadata().containsKey(FeatureTypeInfo.JDBC_VIRTUAL_TABLE)) {
-                        VirtualTable vt = info.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
-                        if(vt != null) {
-                            JDBCDataStore jstore = (JDBCDataStore) dataAccess;
+                            (info.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE) instanceof VirtualTable)) {
+                        JDBCDataStore jstore = (JDBCDataStore) dataAccess;
+                        vt = info.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
+                        
+                        if(!cacheable) {
+                            // use a highly random name, we don't want to actually add the
+                            // virtual table to the store as this feature type is not cacheable,
+                            // it is "dirty" or un-saved. The renaming below will take care
+                            // of making the user see the actual name
+                            String vtName;
+                            final String[] typeNames = jstore.getTypeNames();
+                            do {
+                                vtName = UUID.randomUUID().toString();
+                            } while (Arrays.asList(typeNames).contains(vtName));
+    
+                            // try adding the vt and see if that works
+                            jstore.addVirtualTable(new VirtualTable(vtName, vt));
+                            ft = jstore.getSchema(vtName);
+                        } else {
                             jstore.addVirtualTable(vt);
+                            ft = jstore.getSchema(vt.getName());
                         }
+                    } else {
+                        ft = dataAccess.getSchema(info.getQualifiedNativeName());
                     }
-                    
-                    ft = dataAccess.getSchema(info.getQualifiedNativeName());
                     
                     // TODO: support reprojection for non-simple FeatureType
                     if (ft instanceof SimpleFeatureType) {
@@ -638,7 +656,10 @@ public class ResourcePool {
                     } // end special case for SimpleFeatureType
                     
                     if(cacheable) {
-                        featureTypeCache.put( info, ft );
+                        featureTypeCache.put( info.getId(), ft );
+                    } else if(vt != null) {
+                        JDBCDataStore jstore = (JDBCDataStore) dataAccess;
+                        jstore.removeVirtualTable(vt.getName());
                     }
                 }
             }
@@ -667,7 +688,7 @@ public class ResourcePool {
                     && ((ModificationProxy) invocationHandler).isDirty()) {
                 return false;
             }
-        }
+        } 
         
         return true;
     }
@@ -755,8 +776,8 @@ public class ResourcePool {
      * @param info The feature type metadata.
      */
     public void clear( FeatureTypeInfo info ) {
-        featureTypeCache.remove( info );
-        featureTypeAttributeCache.remove( info );
+        featureTypeCache.remove( info.getId() );
+        featureTypeAttributeCache.remove( info.getId() );
     }
     
     /**
