@@ -51,7 +51,7 @@ As an example, to define a title attribute (associating a tooltip to the geometr
    <Rule>
       <Name>title</Name>
       <TextSymbolizer>
-         <Label><PropertyName>MYPROPERTY</PropertyName></PropertyName></Label>
+         <Label><PropertyName>MYPROPERTY</PropertyName></Label>
       </TextSymbolizer>
    </Rule>
 
