@@ -100,7 +100,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
         }
 
         
-        setup(layer.getResource(), layer);
+        setup(getCatalog().getResource(layer.getResource().getId(), ResourceInfo.class) , layer);
         this.isNew = false;
         initComponents();
     }
@@ -243,7 +243,9 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
                         ResourceInfo oldState = catalog.getResource(resourceInfo.getId(), ResourceInfo.class);
                         catalog.save(resourceInfo);
                         try {
-                            catalog.save(getLayerInfo());
+                            LayerInfo layer = getLayerInfo();
+                            layer.setResource(resourceInfo);
+                            catalog.save(layer);
                         } catch (IllegalArgumentException e) {
                             catalog.save(oldState);
                             throw e;

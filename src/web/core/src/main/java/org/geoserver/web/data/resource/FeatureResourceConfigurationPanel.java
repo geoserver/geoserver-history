@@ -22,6 +22,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.geoserver.catalog.AttributeTypeInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
+import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.layer.SQLViewEditPage;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
@@ -39,17 +40,19 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
         attributePanel.setOutputMarkupId(true);
         add(attributePanel);
         
+        // We need to use the resourcePool directly because we're playing with an edited
+        // FeatureTypeInfo and the info.getFeatureType() and info.getAttributes() will hit
+        // the resource pool without the modified properties (since it passes "this" into calls
+        // to the ResourcePoool
+        
         // just use the direct attributes, this is not editable atm
         ListView attributes = new ListView("attributes", new Model() {
             @Override
             public Object getObject() {
                 FeatureTypeInfo typeInfo = (FeatureTypeInfo) model.getObject();
                 try {
-                    // we cannot call typyInfo.getAttributes() directly as the virtual table 
-                    // attached to the typeInfo might have been modified, and it's still only
-                    // visible if we pass the modification proxy around it (attributes() will use
-                    // this and bypass the modification proxy
-                    return GeoServerApplication.get().getCatalog().getResourcePool().getAttributes(typeInfo);
+                    final ResourcePool resourcePool = GeoServerApplication.get().getCatalog().getResourcePool();
+                    return resourcePool.getAttributes(typeInfo);
                 } catch (IOException e) {
                     throw new WicketRuntimeException(e);
                 }
@@ -70,7 +73,8 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
                 try {
                     // working around a serialization issue
                     FeatureTypeInfo typeInfo = (FeatureTypeInfo) model.getObject();
-                    org.opengis.feature.type.PropertyDescriptor pd = typeInfo.getFeatureType().getDescriptor(attribute.getName());
+                    final ResourcePool resourcePool = GeoServerApplication.get().getCatalog().getResourcePool();
+                    org.opengis.feature.type.PropertyDescriptor pd = resourcePool.getFeatureType(typeInfo).getDescriptor(attribute.getName());
                     String typeName = pd.getType().getBinding().getSimpleName();
                     item.add(new Label("type", typeName));
                     item.add(new Label("nillable", pd.isNillable() + ""));
