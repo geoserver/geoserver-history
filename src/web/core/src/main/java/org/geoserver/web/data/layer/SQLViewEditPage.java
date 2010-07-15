@@ -13,7 +13,9 @@ import org.geoserver.catalog.ResourcePool;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.ParamResourceModel;
+import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.VirtualTable;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
@@ -37,19 +39,19 @@ public class SQLViewEditPage extends SQLViewAbstractPage {
     @Override
     protected void onSave() {
         try {
-            testViewDefinition(false);
             VirtualTable vt = buildVirtualTable();
+            SimpleFeatureType rawFeatureType = getFeatureType(vt);
             
             ResourcePool pool = GeoServerApplication.get().getCatalog().getResourcePool();
             if(tinfo != null) {
                 tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
-                CoordinateReferenceSystem crs = pool.getFeatureType(tinfo).getCoordinateReferenceSystem();
+                CoordinateReferenceSystem crs = rawFeatureType.getCoordinateReferenceSystem();
                 if(crs != null) {
                     tinfo.setNativeCRS(crs);
                 }
             } else {
                 tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
-                CoordinateReferenceSystem crs = pool.getFeatureType(tinfo).getCoordinateReferenceSystem();
+                CoordinateReferenceSystem crs = rawFeatureType.getCoordinateReferenceSystem();
                 if(crs != null) {
                     tinfo.setNativeCRS(crs);
                 }
