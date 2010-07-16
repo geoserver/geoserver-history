@@ -38,7 +38,7 @@ The following table defines the ``Content-type`` values for each format:
    * - XML
      - application/xml
    * - JSON
-     - application/xml
+     - application/json
    * - HTML
      - application/html
    * - SLD
