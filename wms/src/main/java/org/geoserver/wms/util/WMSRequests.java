@@ -382,6 +382,11 @@ public class WMSRequests {
             params.put( "format_options", encodeFormatOptions(req.getFormatOptions()));
         }
         
+        // view params
+        if ( req.getViewParams() != null && !req.getViewParams().isEmpty()) {
+            params.put( "viewParams", encodeFormatOptions(req.getViewParams()));
+        }
+        
         //overrides / additions
         for (int i = 0; (kvp != null) && (i < kvp.length); i += 2) {
             params.put(kvp[i], kvp[i + 1]);

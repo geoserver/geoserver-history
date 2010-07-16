@@ -752,6 +752,11 @@ public class KMLUtils {
             return false;
         }
         
+        // no sql view params
+        if(request.getViewParams() != null && request.getViewParams().size() > 0) {
+            return false;
+        }
+    
         // ok, it seems everything is the same as GWC cached it
         return true;
     }
