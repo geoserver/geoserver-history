@@ -24,9 +24,9 @@ public class SQLViewEditPage extends SQLViewAbstractPage {
     FeatureTypeInfo tinfo;
 
     public SQLViewEditPage(FeatureTypeInfo type, ResourceConfigurationPage previousPage) throws IOException {
-        super(type.getStore().getWorkspace().getName(), type.getStore().getName(), 
+        super(type.getStore().getWorkspace().getName(), type.getStore().getName(), type.getName(),
                 type.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class));
-        VirtualTable vt = type.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
+        VirtualTable vt =  type.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
         tinfo = type;
         originalName = vt.getName();
         this.previusPage = previousPage;

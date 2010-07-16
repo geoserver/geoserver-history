@@ -68,7 +68,7 @@ import com.vividsolutions.jts.geom.Polygon;
 /**
  * Base page for SQL view creation/editing
  * 
- * @author aaime
+ * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
 public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
@@ -78,6 +78,8 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
     public static final String WORKSPACE = "wsName";
 
     String storeId;
+    
+    String typeInfoId;
 
     String sql;
 
@@ -104,11 +106,11 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             MultiLineString.class, Polygon.class, MultiPolygon.class);
 
     public SQLViewAbstractPage(PageParameters params) throws IOException {
-        this(params.getString(WORKSPACE), params.getString(DATASTORE), null);
+        this(params.getString(WORKSPACE), params.getString(DATASTORE), null, null);
     }
 
     @SuppressWarnings("deprecation")
-    public SQLViewAbstractPage(String workspaceName, String storeName, VirtualTable virtualTable)
+    public SQLViewAbstractPage(String workspaceName, String storeName, String typeName, VirtualTable virtualTable)
             throws IOException {
         storeId = getCatalog().getStoreByName(workspaceName, storeName, DataStoreInfo.class)
                 .getId();
@@ -116,7 +118,10 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         // build the form and the text area
         Form form = new Form("form", new CompoundPropertyModel(this));
         add(form);
-        form.add(new TextField("name"));
+        final TextField nameField = new TextField("name");
+        nameField.setRequired(true);
+        nameField.add(new ViewNameValidator());
+        form.add(nameField);
         sqlEditor = new TextArea("sql");
         form.add(sqlEditor);
         
@@ -125,10 +130,22 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         paramProvider = new SQLViewParamProvider();
 
         // setting up the providers
-        if (virtualTable != null) {
+        if (typeName != null) {
             newView = false;
 
-            DataAccess da = getCatalog().getStore(storeId, DataStoreInfo.class).getDataStore(null);
+            // grab the virtual table
+            DataStoreInfo store = getCatalog().getStore(storeId, DataStoreInfo.class);
+            FeatureTypeInfo fti = getCatalog().getResourceByStore(store, typeName, FeatureTypeInfo.class);
+            // the type can be still not saved
+            if(fti != null) {
+                typeInfoId = fti.getId();
+            }
+            if(virtualTable == null) {
+                throw new IllegalArgumentException("The specified feature type does not have a sql view attached to it");
+            }
+
+            // get the store
+            DataAccess da = store.getDataStore(null);
             if (!(da instanceof JDBCDataStore)) {
                 error("Cannot create a SQL view if the store is not database based");
                 setResponsePage(StorePage.class);
@@ -504,6 +521,9 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         
     }
     
+    /**
+     * Validaes the regular expression syntax
+     */
     static class RegexpValidator extends AbstractValidator {
 
         @Override
@@ -523,6 +543,31 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         
     }
 
-    
+    /**
+     * Checks the sql view name is unique
+     */
+    class ViewNameValidator extends AbstractValidator {
+        @Override
+        protected void onValidate(IValidatable validatable) {
+            String vtName = (String) validatable.getValue();
+            
+            final DataStoreInfo store = getCatalog().getStore(storeId, DataStoreInfo.class);
+            List<FeatureTypeInfo> ftis = getCatalog().getResourcesByStore(store, FeatureTypeInfo.class);
+            for (FeatureTypeInfo curr : ftis) {
+                VirtualTable currvt = curr.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
+                if(currvt != null) {
+                    if(typeInfoId == null || !typeInfoId.equals(curr.getId())) {
+                        if(currvt.getName().equals(vtName)) {
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("name", vtName);
+                            map.put("typeName", curr.getName());
+                            error(validatable, "duplicateSqlViewName", map);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
     
 }
