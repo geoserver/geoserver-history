@@ -587,6 +587,7 @@ public class ResourcePool {
                     
                     // sql view handling
                     VirtualTable vt = null;
+                    String vtName = null;
                     if(dataAccess instanceof JDBCDataStore && info.getMetadata() != null &&
                             (info.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE) instanceof VirtualTable)) {
                         JDBCDataStore jstore = (JDBCDataStore) dataAccess;
@@ -597,7 +598,6 @@ public class ResourcePool {
                             // virtual table to the store as this feature type is not cacheable,
                             // it is "dirty" or un-saved. The renaming below will take care
                             // of making the user see the actual name
-                            String vtName;
                             final String[] typeNames = jstore.getTypeNames();
                             do {
                                 vtName = UUID.randomUUID().toString();
@@ -607,6 +607,7 @@ public class ResourcePool {
                             jstore.addVirtualTable(new VirtualTable(vtName, vt));
                             ft = jstore.getSchema(vtName);
                         } else {
+                            vtName = vt.getName();
                             jstore.addVirtualTable(vt);
                             ft = jstore.getSchema(vt.getName());
                         }
@@ -657,9 +658,9 @@ public class ResourcePool {
                     
                     if(cacheable) {
                         featureTypeCache.put( info.getId(), ft );
-                    } else if(vt != null) {
+                    } else if(vtName != null) {
                         JDBCDataStore jstore = (JDBCDataStore) dataAccess;
-                        jstore.removeVirtualTable(vt.getName());
+                        jstore.removeVirtualTable(vtName);
                     }
                 }
             }
