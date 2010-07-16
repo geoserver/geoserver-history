@@ -134,7 +134,7 @@ public class FeatureResourceConfigurationPanel extends ResourceConfigurationPane
                     setResponsePage(new SQLViewEditPage(typeInfo, ((ResourceConfigurationPage) this.getPage())));
                 } catch(Exception e) {
                     LOGGER.log(Level.SEVERE, "Failure opening the sql view edit page", e);
-                    error(e.getMessage());
+                    error(e.toString());
                 }
             }
             
