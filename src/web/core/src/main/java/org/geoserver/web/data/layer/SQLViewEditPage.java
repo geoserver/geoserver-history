@@ -7,13 +7,9 @@ package org.geoserver.web.data.layer;
 import java.io.IOException;
 import java.util.logging.Level;
 
-import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.catalog.ResourcePool;
-import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.data.resource.ResourceConfigurationPage;
 import org.geoserver.web.wicket.ParamResourceModel;
-import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.VirtualTable;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -29,7 +25,7 @@ public class SQLViewEditPage extends SQLViewAbstractPage {
 
     public SQLViewEditPage(FeatureTypeInfo type, ResourceConfigurationPage previousPage) throws IOException {
         super(type.getStore().getWorkspace().getName(), type.getStore().getName(), 
-                type.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class), true);
+                type.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class));
         VirtualTable vt = type.getMetadata().get(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, VirtualTable.class);
         tinfo = type;
         originalName = vt.getName();
