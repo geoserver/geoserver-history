@@ -539,4 +539,23 @@ public abstract class GeoServerTablePanel<T> extends Panel {
         }
         
     }
+
+    /**
+     * Sets the table into pageable/non pageable mode. The default is pageable,
+     * in non pageable mode both pagers will be hidden and the number of items per page
+     * is set to the DataView default (Integer.MAX_VALUE) 
+     * @param pageable
+     */
+    public void setPageable(boolean pageable) {
+        if(!pageable) {
+            navigatorTop.setVisible(false);
+            navigatorBottom.setVisible(false);
+            dataView.setItemsPerPage(Integer.MAX_VALUE);
+        } else {
+            navigatorTop.setVisible(true);
+            navigatorBottom.setVisible(true);
+            dataView.setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
+        }
+    }
+    
 }

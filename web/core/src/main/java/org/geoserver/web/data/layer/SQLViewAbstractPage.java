@@ -36,6 +36,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geoserver.web.data.store.StorePage;
 import org.geoserver.web.wicket.GeoServerAjaxFormLink;
@@ -46,9 +47,7 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
-import org.geotools.feature.type.FeatureTypeFactoryImpl;
 import org.geotools.jdbc.JDBCDataStore;
 import org.geotools.jdbc.VirtualTable;
 import org.opengis.feature.simple.SimpleFeature;
@@ -59,7 +58,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.MultiPoint;
@@ -106,11 +104,11 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             MultiLineString.class, Polygon.class, MultiPolygon.class);
 
     public SQLViewAbstractPage(PageParameters params) throws IOException {
-        this(params.getString(WORKSPACE), params.getString(DATASTORE), null, false);
+        this(params.getString(WORKSPACE), params.getString(DATASTORE), null);
     }
 
     @SuppressWarnings("deprecation")
-    public SQLViewAbstractPage(String workspaceName, String storeName, VirtualTable virtualTable, final boolean edit)
+    public SQLViewAbstractPage(String workspaceName, String storeName, VirtualTable virtualTable)
             throws IOException {
         storeId = getCatalog().getStoreByName(workspaceName, storeName, DataStoreInfo.class)
                 .getId();
@@ -239,10 +237,10 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
                 return null;
             }
         };
+        // just a plain table, no filters, no paging, 
         attributes.setFilterVisible(false);
         attributes.setSortable(false);
-        attributes.getTopPager().setVisible(false);
-        attributes.getBottomPager().setVisible(false);
+        attributes.setPageable(false);
         attributes.setOutputMarkupId(true);
         form.add(attributes);
 
@@ -485,7 +483,7 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
             return t.getMessage();
         }
     }
-
+    
     protected abstract void onSave();
 
     protected abstract void onCancel();
@@ -525,4 +523,6 @@ public abstract class SQLViewAbstractPage extends GeoServerSecuredPage {
         
     }
 
+    
+    
 }
