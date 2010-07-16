@@ -20,6 +20,11 @@ Selecting the link will open a new page where the SQL statement can be specified
 .. figure:: images/createsql.png
    :align: center
    
+.. note::
+
+   The query can be any SQL statement that can be validly executed as part of a subquery in the FROM clauses, that is ``select * from (<the sql view>) [as] vtable``. This is true for most SQL statements, but specific syntax might be needed to call onto a stored procedure depending on the database.
+   Also, all the columns returned by the SQL statement must have a name, in some databases aliasing is required when calling function names
+   
 Once a valid SQL statement has been specified press the "refresh" link in the Attributes table to get a list of the feature type attributes:
 
 .. figure:: images/sqlview-attributes.png
