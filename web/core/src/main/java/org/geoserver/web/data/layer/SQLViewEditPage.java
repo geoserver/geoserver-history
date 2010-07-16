@@ -42,21 +42,15 @@ public class SQLViewEditPage extends SQLViewAbstractPage {
             VirtualTable vt = buildVirtualTable();
             SimpleFeatureType rawFeatureType = getFeatureType(vt);
             
-            ResourcePool pool = GeoServerApplication.get().getCatalog().getResourcePool();
-            if(tinfo != null) {
-                tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
-                CoordinateReferenceSystem crs = rawFeatureType.getCoordinateReferenceSystem();
-                if(crs != null) {
-                    tinfo.setNativeCRS(crs);
-                }
-            } else {
-                tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
-                CoordinateReferenceSystem crs = rawFeatureType.getCoordinateReferenceSystem();
-                if(crs != null) {
-                    tinfo.setNativeCRS(crs);
-                }
+            // update the feature type info
+            tinfo.getMetadata().put(FeatureTypeInfo.JDBC_VIRTUAL_TABLE, vt);
+            CoordinateReferenceSystem crs = rawFeatureType.getCoordinateReferenceSystem();
+            if(crs != null) {
+                tinfo.setNativeCRS(crs);
             }
+            tinfo.setNativeName(vt.getName());
             
+            // set it back in the main page and redirect to it
             previusPage.updateResource(tinfo);
             setResponsePage(previusPage);
         } catch (Exception e) {
