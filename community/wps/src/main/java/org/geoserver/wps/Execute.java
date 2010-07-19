@@ -20,6 +20,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.opengis.ows11.BoundingBoxType;
 import net.opengis.ows11.CodeType;
+import net.opengis.wcs10.Wcs10Factory;
+import net.opengis.wcs11.GetCoverageType;
+import net.opengis.wcs11.Wcs11Factory;
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.GetFeatureType;
 import net.opengis.wfs.WfsFactory;
@@ -51,11 +54,13 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.geoserver.config.GeoServerInfo;
+import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.ows.Ows11Util;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.wcs.WebCoverageService100;
 import org.geoserver.wcs.WebCoverageService111;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.kvp.GetFeatureKvpRequestReader;
@@ -329,18 +334,12 @@ public class Execute {
 
                     // grab the location and method
                     String href = ref.getHref();
-                    MethodType method = ref.getMethod() != null ? ref.getMethod()
-                            : MethodType.GET_LITERAL;
 
                     // TODO: handle in process GET requests by doing kvp parsing
                     if (href.startsWith("http://geoserver/wfs")) {
                         decoded = handleAsInternalWFS(ppio, ref);
-                    } else if (href.startsWith("http://geoserver/wcs")
-                            && method == MethodType.POST_LITERAL) {
-                        WebCoverageService111 wcs = (WebCoverageService111) context
-                                .getBean("wcs111ServiceTarget");
-                        decoded = wcs
-                                .getCoverage((net.opengis.wcs11.GetCoverageType) ref.getBody())[0];
+                    } else if (href.startsWith("http://geoserver/wcs")) {
+                        decoded = handleAsInternalWCS(ppio, ref);
                     } else {
                         decoded = executeRemoteRequest(ref, (ComplexPPIO) ppio, inputId);
                     }
@@ -404,6 +403,53 @@ public class Execute {
         FeatureCollectionType featureCollectionType = wfs.getFeature(gft);
         // this will also deal with axis order issues
         return ((ComplexPPIO) ppio).decode(featureCollectionType);
+    }
+    
+    /**
+     * Process the request as an internal one, without going through GML encoding/decoding
+     * 
+     * @param ppio
+     * @param ref
+     * @param method
+     * @return
+     * @throws Exception
+     */
+    Object handleAsInternalWCS(ProcessParameterIO ppio, InputReferenceType ref) throws Exception {
+        // first parse the request, it might be a WCS 1.0 or a WCS 1.1 one
+        Object getCoverage = null;
+        if (ref.getMethod() == MethodType.POST_LITERAL) {
+            getCoverage = ref.getBody();
+        } else {
+            // simulate what the dispatcher is doing with the incoming kvp requests
+            Map original = KvpUtils.parseQueryString(ref.getHref());
+            KvpUtils.normalize(original);
+            Map parsed = new KvpMap(original);
+            List<Throwable> errors = KvpUtils.parse(parsed);
+            if (errors.size() > 0) {
+                throw new WPSException("Failed to parse KVP request", errors.get(0));
+            }
+            
+            // what WCS version?
+            String version = (String) parsed.get("VERSION");
+            if(version.equals("1.0.0") || version.equals("1.0")) {
+                KvpRequestReader reader = (KvpRequestReader) context.getBean("wcs100GetCoverageRequestReader");
+                getCoverage = reader.read(Wcs10Factory.eINSTANCE.createGetCoverageType(), parsed, original);
+            } else {
+                KvpRequestReader reader = (KvpRequestReader) context.getBean("wcs111GetCoverageRequestReader");
+                getCoverage = reader.read(Wcs11Factory.eINSTANCE.createGetCoverageType(), parsed, original);
+            }
+        }
+        
+        // perform GetCoverage
+        if(getCoverage instanceof GetCoverageType) {
+            WebCoverageService111 wcs = (WebCoverageService111) context.getBean("wcs111ServiceTarget");
+            return wcs.getCoverage((net.opengis.wcs11.GetCoverageType) ref.getBody())[0];
+        } else if(getCoverage instanceof net.opengis.wcs10.GetCoverageType) {
+            WebCoverageService100 wcs = (WebCoverageService100) context.getBean("wcs100ServiceTarget");
+            return wcs.getCoverage((net.opengis.wcs10.GetCoverageType) ref.getBody())[0];
+        } else {
+            throw new WPSException("Unrecognized request type " + getCoverage);
+        }
     }
 
     /**
