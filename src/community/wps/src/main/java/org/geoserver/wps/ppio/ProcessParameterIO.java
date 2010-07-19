@@ -69,6 +69,7 @@ public abstract class ProcessParameterIO {
         // features
         defaults.add(new WFSPPIO.WFS10());  
         defaults.add(new WFSPPIO.WFS11());
+        defaults.add(new GeoJSONPPIO());
 
         // grids
         defaults.add(new GeoTiffPPIO());

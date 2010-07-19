@@ -33,8 +33,7 @@ public class ArcGridPPIO extends CDataPPIO {
     }
     
     @Override
-    public Object decode(Object input) throws Exception {
-        String arcgrid = (String) input;
+    public Object decode(String arcgrid) throws Exception {
         // if the user forgot to add the final newline let's just add it
         if(!arcgrid.endsWith("\n")) {
             arcgrid += "\n";
