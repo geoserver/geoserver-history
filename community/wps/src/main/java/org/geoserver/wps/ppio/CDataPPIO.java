@@ -22,5 +22,17 @@ public abstract class CDataPPIO extends ComplexPPIO {
      * Encodes the internal object representation to the provided writer
      */
     public abstract void encode( Object value, OutputStream os) throws IOException;
+    
+    @Override
+    public Object decode(Object input) throws Exception {
+    	return decode((String) input);
+    }
 
+    /**
+     * Decodes a String into the internal object (used for CDATA inputs) 
+     * @param input
+     * @return
+     * @throws Exception
+     */
+    public abstract Object decode(String input) throws Exception;
 }

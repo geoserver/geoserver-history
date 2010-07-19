@@ -1007,6 +1007,7 @@
      <include>**/*.gif</include>
      <include>**/*.sld</include>
      <include>**/*.ico</include>
+     <include>**/*.json</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>
@@ -1047,6 +1048,7 @@
      <include>**/*.ftl.disabled</include>
      <include>**/*.tiff</include>
      <include>**/*.zip</include>
+     <include>**/*.json</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>

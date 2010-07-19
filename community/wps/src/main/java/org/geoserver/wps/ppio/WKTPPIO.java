@@ -32,8 +32,8 @@ public class WKTPPIO extends CDataPPIO {
 	}
 	
 	@Override
-	public Object decode(Object input) throws Exception {
-		return new WKTReader().read(new StringReader((String) input));
+	public Object decode(String input) throws Exception {
+		return new WKTReader().read(new StringReader(input));
 	}
 
     @Override

@@ -1,6 +1,7 @@
 package org.geoserver.wps;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -11,11 +12,16 @@ import java.net.URL;
 import net.opengis.ows11.BoundingBoxType;
 
 import org.geoserver.test.RemoteOWSTestSupport;
+import org.geotools.data.DataUtilities;
+import org.geotools.data.Query;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.ows.v1_1.OWSConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.Parser;
+import org.opengis.filter.Filter;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -228,6 +234,41 @@ public class ExecuteTest extends WPSTestSupport {
         assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
         assertXpathExists( 
             "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
+    }
+    
+    public void testInlineGeoJSON() throws Exception {
+        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
+        "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
+        "<ows:Identifier>gt:BufferFeatureCollection</ows:Identifier>" + 
+         "<wps:DataInputs>" + 
+            "<wps:Input>" + 
+                "<ows:Identifier>features</ows:Identifier>" + 
+                "<wps:Data>" +
+                  "<wps:ComplexData mimeType=\"application/json\"><![CDATA[" + 
+                       readFileIntoString("states-FeatureCollection.json") + 
+                  "]]></wps:ComplexData>" + 
+                "</wps:Data>" +     
+            "</wps:Input>" + 
+            "<wps:Input>" + 
+               "<ows:Identifier>buffer</ows:Identifier>" + 
+               "<wps:Data>" + 
+                 "<wps:LiteralData>10</wps:LiteralData>" + 
+               "</wps:Data>" + 
+            "</wps:Input>" + 
+           "</wps:DataInputs>" +
+           "<wps:ResponseForm>" +  
+             "<wps:RawDataOutput mimeType=\"application/json\">" + 
+                 "<ows:Identifier>result</ows:Identifier>" +
+             "</wps:RawDataOutput>" +
+           "</wps:ResponseForm>" + 
+         "</wps:Execute>";
+  
+		MockHttpServletResponse r = postAsServletResponse("wps", xml);
+		assertEquals("application/json", r.getContentType());
+		System.out.println(r.getOutputStreamContent());
+		FeatureCollection fc = new FeatureJSON().readFeatureCollection(r.getOutputStreamContent());
+		assertEquals(2, fc.size());
+		
     }
     
     String readFileIntoString( String filename ) throws IOException {
@@ -534,5 +575,4 @@ public class ExecuteTest extends WPSTestSupport {
 	/* TODO Updating of Response requests A.4.4.5 */
 	
 	/* TODO Language selection requests A.4.4.6 */
-    
 }
