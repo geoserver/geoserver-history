@@ -18,9 +18,9 @@ package org.geoserver.wps.jts;
 
 import java.awt.RenderingHints.Key;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -31,6 +31,7 @@ import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessException;
 import org.geotools.process.ProcessFactory;
+import org.geotools.util.Converters;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
@@ -49,7 +50,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 	Class<T> targetClass;
 	String namespace;
 	InternationalString title;
-	
+
 	public StaticMethodsProcessFactory(Class<T> targetClass,
 			InternationalString title, String namespace) {
 		this.targetClass = targetClass;
@@ -76,6 +77,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 
 	/**
 	 * Finds the DescribeProcess description for the specified name
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -173,7 +175,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 
 	public InternationalString getTitle(Name name) {
 		DescribeProcess info = getProcessDescription(name);
-		if(info != null) {
+		if (info != null) {
 			return new SimpleInternationalString(info.description());
 		} else {
 			return null;
@@ -182,7 +184,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 
 	public String getVersion(Name name) {
 		DescribeProcess info = getProcessDescription(name);
-		if(info != null) {
+		if (info != null) {
 			return info.version();
 		} else {
 			return null;
@@ -227,6 +229,15 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 				min = 0;
 				max = Integer.MAX_VALUE;
 			}
+		} else if (type.isArray()) {
+			if (info != null) {
+				min = info.min() > -1 ? info.min() : 0;
+				max = info.max() > -1 ? info.max() : Integer.MAX_VALUE;
+			} else {
+				min = 0;
+				max = Integer.MAX_VALUE;
+			}
+			type = type.getComponentType();
 		} else {
 			if (info != null) {
 				if (info.min() > 1) {
@@ -283,7 +294,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 
 			// build the array of arguments we'll use to invoke the method
 			Class<?>[] paramTypes = method.getParameterTypes();
-			Annotation[][] paramAnnotations = method.getParameterAnnotations();
+			Annotation[][] annotations = method.getParameterAnnotations();
 			Object args[] = new Object[paramTypes.length];
 			for (int i = 0; i < args.length; i++) {
 				if (ProgressMonitor.class.equals(paramTypes[i])) {
@@ -292,11 +303,37 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 				} else {
 					// find the corresponding argument in the input
 					// map and set it
-					Parameter p = paramInfo(i, paramTypes[i],
-							paramAnnotations[i]);
-
+					Parameter p = paramInfo(i, paramTypes[i], annotations[i]);
 					Object value = input.get(p.key);
-					args[i] = value;
+					
+					// this takes care of array/collection conversions among
+					// others
+					args[i] = Converters.convert(value, paramTypes[i]);
+					// check the conversion was successful
+					if(args[i] == null && value != null) {
+						throw new ProcessException("Could not convert " + value 
+								+ " to target type " + paramTypes[i].getName());
+					}
+					
+					// check multiplicity is respected
+					if(p.minOccurs > 0 && value == null) {
+						throw new ProcessException("Parameter " + p.key + " is missing but has min multiplicity > 0");
+					} else if(p.maxOccurs > 1) {
+						int size = -1;
+						if(paramTypes[i].isArray()) {
+							size = Array.getLength(args[i]);
+						} else {
+							size = ((Collection) args[i]).size();
+						}
+						if(size < p.minOccurs) {
+							throw new ProcessException("Parameter " + p.key + " has " + size 
+									+ " elements but min occurrences is " + p.minOccurs);
+						}
+						if(size > p.maxOccurs) {
+							throw new ProcessException("Parameter " + p.key + " has " + size 
+									+ " elements but max occurrences is " + p.maxOccurs);
+						}
+					}
 				}
 			}
 
