@@ -35,7 +35,11 @@ public class Ows11Util {
     static Ows11Factory f = Ows11Factory.eINSTANCE;
 
     public static LanguageStringType languageString( InternationalString value ) {
-        return languageString( value.toString( Locale.getDefault() ) );
+    	if(value != null) {
+    		return languageString( value.toString( Locale.getDefault() ) );
+    	} else {
+    		return null;
+    	}
     }
     
     public static LanguageStringType languageString( String value ) {

@@ -41,17 +41,22 @@ public abstract class ProcessParameterIO {
         // primitives
         defaults.add(new LiteralPPIO(BigInteger.class));
         defaults.add(new LiteralPPIO(BigDecimal.class));
-        defaults.add(new LiteralPPIO(Byte.class));
         defaults.add(new LiteralPPIO(Double.class));
+        defaults.add(new LiteralPPIO(double.class));
         defaults.add(new LiteralPPIO(Float.class));
+        defaults.add(new LiteralPPIO(float.class));
         defaults.add(new LiteralPPIO(Number.class));
         defaults.add(new LiteralPPIO(Integer.class));
+        defaults.add(new LiteralPPIO(int.class));
         defaults.add(new LiteralPPIO(Long.class));
-        defaults.add(new LiteralPPIO(Integer.class));
+        defaults.add(new LiteralPPIO(long.class));
         defaults.add(new LiteralPPIO(Short.class));
-        defaults.add(new LiteralPPIO(Number.class));
+        defaults.add(new LiteralPPIO(short.class));
+        defaults.add(new LiteralPPIO(Byte.class));
+        defaults.add(new LiteralPPIO(byte.class));
 
         defaults.add(new LiteralPPIO(Boolean.class));
+        defaults.add(new LiteralPPIO(boolean.class));
 
         defaults.add(new LiteralPPIO(String.class));
         defaults.add(new LiteralPPIO(CharSequence.class));
