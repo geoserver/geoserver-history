@@ -5,13 +5,17 @@
 package org.geoserver.wps;
 
 import java.math.BigInteger;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import net.opengis.ows11.AllowedValuesType;
 import net.opengis.ows11.CodeType;
 import net.opengis.ows11.Ows11Factory;
+import net.opengis.ows11.ValueType;
 import net.opengis.wps10.CRSsType;
 import net.opengis.wps10.ComplexDataDescriptionType;
 import net.opengis.wps10.DataInputsType;
@@ -57,6 +61,24 @@ public class DescribeProcess {
     
     Wps10Factory wpsf = Wps10Factory.eINSTANCE;
     Ows11Factory owsf = Ows11Factory.eINSTANCE; 
+    
+	/**
+	 * Maps the primitive types that can still be used in process input/output descriptions 
+	 * to object wrappers that we can use in process descriptions
+	 */
+	static final Map<Class, Class> PRIMITIVE_TO_WRAPPER;
+	
+	static {
+		PRIMITIVE_TO_WRAPPER = new HashMap<Class, Class>();
+		PRIMITIVE_TO_WRAPPER.put(byte.class, Byte.class);
+		PRIMITIVE_TO_WRAPPER.put(short.class, Short.class);
+		PRIMITIVE_TO_WRAPPER.put(int.class, Integer.class);
+		PRIMITIVE_TO_WRAPPER.put(long.class, Long.class);
+		PRIMITIVE_TO_WRAPPER.put(float.class, Float.class);
+		PRIMITIVE_TO_WRAPPER.put(double.class, Double.class);
+		PRIMITIVE_TO_WRAPPER.put(boolean.class, Boolean.class);
+	}
+
     
     public DescribeProcess(WPSInfo wps, ApplicationContext context) {
         this.wps = wps;
@@ -134,15 +156,30 @@ public class DescribeProcess {
                 input.setLiteralData( literal );
                 
                 // map the java class to an xml type name
-                if ( !String.class.equals( lppio.getType() ) ) {
-                    Name typeName = xsp.name( lppio.getType() ); 
+                if ( !String.class.equals(lppio.getType()) ) {
+                	Class type = lppio.getType();
+                	if(PRIMITIVE_TO_WRAPPER.containsKey(type)) {
+                		type = PRIMITIVE_TO_WRAPPER.get(type);
+                	}
+                    Name typeName = xsp.name(type); 
                     if ( typeName != null ) {
-                        literal.setDataType( Ows11Util.type( typeName.getLocalPart() ) );        
+                        literal.setDataType(Ows11Util.type("xs:" + typeName.getLocalPart()));        
                     }    
                 }
-                literal.setAnyValue( owsf.createAnyValueType() );
+                if(lppio.getType().isEnum()) {
+                	Object[] enumValues = lppio.getType().getEnumConstants();
+                	AllowedValuesType allowed = owsf.createAllowedValuesType();
+                	for (Object value : enumValues) {
+                		ValueType vt = owsf.createValueType();
+                		vt.setValue(value.toString());
+						allowed.getValue().add(vt);
+					}
+                	literal.setAllowedValues(allowed);
+                } else {
+                	literal.setAnyValue( owsf.createAnyValueType() );
+                }
 
-                //TODO: output the default value
+                //TODO: output the default value and see if we can output a valid range as well
             } else if(ppios.get( 0 ) instanceof BoundingBoxPPIO) {
                 input.setBoundingBoxData(buildSupportedCRSType());
             } else {
@@ -208,7 +245,11 @@ public class DescribeProcess {
                 
                 //map the java class to an xml type name
                 if ( !String.class.equals( lppio.getType() ) ) {
-                    Name typeName = xsp.name( lppio.getType() ); 
+                	Class type = lppio.getType();
+                	if(PRIMITIVE_TO_WRAPPER.containsKey(type)) {
+                		type = PRIMITIVE_TO_WRAPPER.get(type);
+                	}
+                    Name typeName = xsp.name(type); 
                     if ( typeName != null ) {
                         literal.setDataType( Ows11Util.type( typeName.getLocalPart() ) );        
                     }    

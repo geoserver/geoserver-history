@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,6 @@ public abstract class ProcessParameterIO {
         defaults.add(new LiteralPPIO(double.class));
         defaults.add(new LiteralPPIO(Float.class));
         defaults.add(new LiteralPPIO(float.class));
-        defaults.add(new LiteralPPIO(Number.class));
         defaults.add(new LiteralPPIO(Integer.class));
         defaults.add(new LiteralPPIO(int.class));
         defaults.add(new LiteralPPIO(Long.class));
@@ -54,6 +54,7 @@ public abstract class ProcessParameterIO {
         defaults.add(new LiteralPPIO(short.class));
         defaults.add(new LiteralPPIO(Byte.class));
         defaults.add(new LiteralPPIO(byte.class));
+        defaults.add(new LiteralPPIO(Number.class));
 
         defaults.add(new LiteralPPIO(Boolean.class));
         defaults.add(new LiteralPPIO(boolean.class));
@@ -88,6 +89,11 @@ public abstract class ProcessParameterIO {
     }
 
     public static ProcessParameterIO find(Parameter<?> p, ApplicationContext context, String mime) {
+    	// enum special treatment
+    	if(p.type.isEnum()) {
+    		return new LiteralPPIO(p.type);
+    	}
+    	
         // TODO: come up with some way to flag one as "default"
         List<ProcessParameterIO> all = findAll(p, context);
         if (all.isEmpty()) {
@@ -106,6 +112,13 @@ public abstract class ProcessParameterIO {
     }
 
     public static List<ProcessParameterIO> findAll(Parameter<?> p, ApplicationContext context) {
+    	// enum special treatment
+    	if(p.type.isEnum()) {
+    		List<ProcessParameterIO> result = new ArrayList<ProcessParameterIO>();
+    		result.add(new LiteralPPIO(p.type));
+    		return result;
+    	}
+    	
         // load all extensions
         List<ProcessParameterIO> l = new ArrayList<ProcessParameterIO>(defaults);
         if (context != null) {

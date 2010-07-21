@@ -147,8 +147,8 @@ public class GetCapabilities {
                     po.getProcess().add(p);
 
                     p.setIdentifier(Ows11Util.code(name));
-                    p.setTitle(Ows11Util.languageString(pf.getTitle(name).toString()));
-                    p.setAbstract(Ows11Util.languageString(pf.getDescription(name).toString()));
+                    p.setTitle(Ows11Util.languageString(pf.getTitle(name)));
+                    p.setAbstract(Ows11Util.languageString(pf.getDescription(name)));
                 }
             }
 

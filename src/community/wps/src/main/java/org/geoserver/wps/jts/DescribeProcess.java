@@ -30,5 +30,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface DescribeProcess {
+	String title();
     String description() default "[undescribed]";
+    String version() default "1.0.0";
 }

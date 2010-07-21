@@ -20,6 +20,7 @@ import java.awt.RenderingHints.Key;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 	Class<T> targetClass;
 	String namespace;
 	InternationalString title;
-
+	
 	public StaticMethodsProcessFactory(Class<T> targetClass,
 			InternationalString title, String namespace) {
 		this.targetClass = targetClass;
@@ -65,16 +66,26 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 	}
 
 	public InternationalString getDescription(Name name) {
-		Method method = method(name.getLocalPart());
-		if (method == null) {
-			return null;
-		}
-		DescribeProcess info = method.getAnnotation(DescribeProcess.class);
+		DescribeProcess info = getProcessDescription(name);
 		if (info != null) {
 			return new SimpleInternationalString(info.description());
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Finds the DescribeProcess description for the specified name
+	 * @param name
+	 * @return
+	 */
+	DescribeProcess getProcessDescription(Name name) {
+		Method method = method(name.getLocalPart());
+		if (method == null) {
+			return null;
+		}
+		DescribeProcess info = method.getAnnotation(DescribeProcess.class);
+		return info;
 	}
 
 	public Method method(String name) {
@@ -161,11 +172,21 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 	}
 
 	public InternationalString getTitle(Name name) {
-		return null;
+		DescribeProcess info = getProcessDescription(name);
+		if(info != null) {
+			return new SimpleInternationalString(info.description());
+		} else {
+			return null;
+		}
 	}
 
 	public String getVersion(Name name) {
-		return null;
+		DescribeProcess info = getProcessDescription(name);
+		if(info != null) {
+			return info.version();
+		} else {
+			return null;
+		}
 	}
 
 	public boolean supportsProgress(Name name) {

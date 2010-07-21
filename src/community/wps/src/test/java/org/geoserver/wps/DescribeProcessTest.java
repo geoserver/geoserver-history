@@ -43,7 +43,7 @@ public class DescribeProcessTest extends WPSTestSupport {
         assertXpathEvaluatesTo("buffer", base + "/wps:Input[1]/ows:Identifier/child::text()", d );
         assertXpathExists( base + "/wps:Input[1]/wps:LiteralData", d );
 
-        assertXpathEvaluatesTo("double", base + "/wps:Input[1]/wps:LiteralData/ows:DataType/child::text()", d );
+        assertXpathEvaluatesTo("xs:double", base + "/wps:Input[1]/wps:LiteralData/ows:DataType/child::text()", d );
         
         //second parameter
         base += "/wps:Input[2]";
