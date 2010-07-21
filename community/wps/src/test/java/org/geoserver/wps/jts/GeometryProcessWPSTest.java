@@ -38,7 +38,7 @@ public class GeometryProcessWPSTest extends WPSTestSupport {
              "</wps:Execute>";
           
           MockHttpServletResponse response = postAsServletResponse( "wps", xml );
-          System.out.println(response.getOutputStreamContent());
+          // System.out.println(response.getOutputStreamContent());
           assertEquals("application/wkt", response.getContentType());
           Geometry g = new WKTReader().read(response.getOutputStreamContent());
           assertTrue(g instanceof Polygon);
