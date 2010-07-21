@@ -187,7 +187,7 @@ public class GeometryFunctions {
 		return _this.relate(arg1).toString();
 	}
 
-	@DescribeProcess(title="Geometry buffer", description = "Buffers a geometry using a certain distance")
+	@DescribeProcess(title = "Geometry buffer", description = "Buffers a geometry using a certain distance")
 	@DescribeResult(description = "The buffered geometry")
 	static public Geometry buffer(
 			@DescribeParameter(name = "geom", description = "The geometry to be buffered") Geometry geom,
@@ -213,10 +213,19 @@ public class GeometryFunctions {
 		return _this.intersection(arg1);
 	}
 
-	static public Geometry union(Geometry arg0, Geometry arg1) {
-		Geometry _this = arg0;
-
-		return _this.union(arg1);
+	@DescribeProcess(title = "Geometry union", description = "Performs the geometric union of two or more geometries")
+	@DescribeResult(description = "The union of all input geometries")
+	static public Geometry union(
+			@DescribeParameter(name = "geom", description = "The geometries to be united", min = 2) Geometry... geoms) {
+		Geometry result = null;
+		for (Geometry g : geoms) {
+			if (result == null) {
+				result = g;
+			} else {
+				result = result.union(g);
+			}
+		}
+		return result;
 	}
 
 	static public Geometry difference(Geometry arg0, Geometry arg1) {

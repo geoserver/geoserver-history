@@ -1,6 +1,8 @@
 package org.geoserver.wps.jts;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,8 +32,9 @@ public class GeometryProcessFactoryTest extends TestCase {
 	public void testNames() {
 		Set<Name> names = factory.getNames();
 		assertTrue(names.size() > 0);
-		System.out.println(names);
+		// System.out.println(names);
 		assertTrue(names.contains(new NameImpl("JTS", "buffer")));
+		assertTrue(names.contains(new NameImpl("JTS", "union")));
 	}
 	
 	public void testDescribeBuffer() {
@@ -105,5 +108,55 @@ public class GeometryProcessFactoryTest extends TestCase {
 		
 		org.geotools.process.Process buffer = Processors.createProcess(bufferName);
 		assertNotNull(buffer);
+	}
+	
+	public void testDescribeUnion() {
+		NameImpl unionName = new NameImpl("JTS", "union");
+		InternationalString desc = factory.getDescription(unionName);
+		assertNotNull(desc);
+		
+		Map<String, Parameter<?>> params = factory.getParameterInfo(unionName);
+		assertEquals(1, params.size());
+		
+		Parameter<?> geom = params.get("geom");
+		assertEquals(Geometry.class, geom.type);
+		assertTrue(geom.required);
+		assertEquals(2, geom.minOccurs);
+		assertEquals(Integer.MAX_VALUE, geom.maxOccurs);
+	}
+
+	public void testExecuteUnion() throws Exception {
+		org.geotools.process.Process union = factory.create(new NameImpl("JTS", "union"));
+		
+		// try less than the required params
+		Map<String, Object> inputs = new HashMap<String, Object>();
+		try {
+			union.execute(inputs, null);
+			fail("What!!! Should have failed big time!");
+		} catch(ProcessException e) {
+			// fine
+		}
+		
+		// try again with less
+		Geometry geom1 = new WKTReader().read("POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))");
+		Geometry geom2 = new WKTReader().read("POLYGON((0 1, 0 2, 1 2, 1 1, 0 1))");
+		List<Geometry> geometries = new ArrayList<Geometry>();
+		geometries.add(geom1);
+		inputs.put("geom", geometries);
+		try {
+			union.execute(inputs, null);
+			fail("What!!! Should have failed big time!");
+		} catch(ProcessException e) {
+			// fine
+		}
+		
+		// now with just enough
+		geometries.add(geom2);
+		Map<String, Object> result = union.execute(inputs, null);
+		
+		assertEquals(1, result.size());
+		Geometry united = (Geometry) result.get("result");
+		assertNotNull(united);
+		assertTrue(united.equals(geom1.union(geom2)));
 	}
 }
