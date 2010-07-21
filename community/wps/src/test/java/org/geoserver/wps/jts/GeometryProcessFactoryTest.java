@@ -159,4 +159,20 @@ public class GeometryProcessFactoryTest extends TestCase {
 		assertNotNull(united);
 		assertTrue(united.equals(geom1.union(geom2)));
 	}
+	
+	public void testExecuteHull() throws Exception {
+		NameImpl hullName = new NameImpl("JTS", "convexHull");
+		org.geotools.process.Process hull = factory.create(hullName);
+		
+		Map<String, Object> inputs = new HashMap<String, Object>();
+		Geometry geom = new WKTReader().read("LINESTRING(0 0, 0 1, 1 1)");
+		inputs.put("geom", geom);
+		Map<String, Object> output = hull.execute(inputs, null);
+		
+		assertEquals(1, output.size());
+		// there is no output annotation, check there is consistency between what is declared
+		// and what is returned
+		Geometry result = (Geometry) output.get(factory.getResultInfo(hullName, null).keySet().iterator().next());
+		assertTrue(result.equals(geom.convexHull()));
+	}
 }

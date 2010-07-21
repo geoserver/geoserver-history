@@ -164,7 +164,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 		// the method return type
 		if (result.isEmpty()) {
 			if (!Void.class.equals(method.getReturnType())) {
-				Parameter<?> VALUE = new Parameter("return", method
+				Parameter<?> VALUE = new Parameter("result", method
 						.getReturnType(), "Process result",
 						"No description is available");
 				result.put(VALUE.key, VALUE);
@@ -362,13 +362,13 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 					Object obj = values[i];
 
 					if (annotation instanceof DescribeResult) {
-						DescribeResult RESULT = (DescribeResult) annotation;
-						if (RESULT.type().isInstance(obj)) {
-							result.put(RESULT.name(), obj);
+						DescribeResult info = (DescribeResult) annotation;
+						if (info.type().isInstance(obj)) {
+							result.put(info.name(), obj);
 						} else {
 							throw new IllegalArgumentException(method.getName()
 									+ " unable to encode result " + obj
-									+ " as " + RESULT.type());
+									+ " as " + info.type());
 						}
 					}
 				}
@@ -383,7 +383,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 				if (dr != null) {
 					result.put(dr.name(), value);
 				} else {
-					result.put("value", value);
+					result.put("result", value);
 				}
 				return result;
 			}
