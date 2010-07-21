@@ -55,7 +55,13 @@ public class GeometryProcessWPSTest extends WPSTestSupport {
                      "<wps:Data>" + 
                        "<wps:LiteralData>1</wps:LiteralData>" + 
                      "</wps:Data>" + 
-                  "</wps:Input>" + 
+                  "</wps:Input>" +
+                  "<wps:Input>" + 
+                    "<ows:Identifier>capStyle</ows:Identifier>" + 
+                    "<wps:Data>" + 
+                      "<wps:LiteralData>Round</wps:LiteralData>" + 
+                    "</wps:Data>" + 
+                 "</wps:Input>" +
              "</wps:DataInputs>" +
              "<wps:ResponseForm>" + 
              "    <wps:RawDataOutput mimeType=\"application/wkt\">" + 
