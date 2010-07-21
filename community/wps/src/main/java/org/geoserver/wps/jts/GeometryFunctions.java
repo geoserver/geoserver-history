@@ -25,9 +25,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
 /**
- * @author Andrea Aime - OpenGeo
- * 
- * @source $URL$
+ * A set of static functions powering the {@link GeometryProcessFactory}
  */
 public class GeometryFunctions {
 
@@ -189,7 +187,7 @@ public class GeometryFunctions {
 		return _this.relate(arg1).toString();
 	}
 
-	@DescribeProcess(description = "Buffers a geometry using a certain distance")
+	@DescribeProcess(title="Geometry buffer", description = "Buffers a geometry using a certain distance")
 	@DescribeResult(description = "The buffered geometry")
 	static public Geometry buffer(
 			@DescribeParameter(name = "geom", description = "The geometry to be buffered") Geometry geom,

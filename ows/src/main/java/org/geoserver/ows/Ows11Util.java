@@ -108,7 +108,7 @@ public class Ows11Util {
         
         return type;
     }
-
+    
     public static ExceptionReportType exceptionReport(
             ServiceException exception, boolean verboseExceptions) {
         
@@ -166,4 +166,6 @@ public class Ows11Util {
         return dcp;
        
     }
+
+	
 }
