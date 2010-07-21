@@ -12,8 +12,6 @@ import java.net.URL;
 import net.opengis.ows11.BoundingBoxType;
 
 import org.geoserver.test.RemoteOWSTestSupport;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.Query;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.geojson.feature.FeatureJSON;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -21,7 +19,6 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.ows.v1_1.OWSConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.xml.Parser;
-import org.opengis.filter.Filter;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;

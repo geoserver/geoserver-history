@@ -181,8 +181,8 @@ public class Execute {
         response.setProcess(process);
         process.setIdentifier(ct);
         process.setProcessVersion(pf.getVersion(processName));
-        process.setTitle(Ows11Util.languageString(pf.getTitle(processName).toString()));
-        process.setAbstract(Ows11Util.languageString(pf.getDescription(processName).toString()));
+        process.setTitle(Ows11Util.languageString(pf.getTitle(processName)));
+        process.setAbstract(Ows11Util.languageString(pf.getDescription(processName)));
 
         // status
         response.setStatus(f.createStatusType());
