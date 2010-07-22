@@ -27,14 +27,14 @@ public class LiteralPPIO extends ProcessParameterIO {
     /**
      * Decodes the parameter (as a string) to its internal object implementation. 
      */
-    public Object decode( String value ) {
+    public Object decode( String value ) throws Exception {
         return Converters.convert(value, getType());
     }
     
     /**
      * Encodes the internal object representation of a parameter as a string.
      */
-    public String encode( Object value ) {
+    public String encode( Object value ) throws Exception {
         return Converters.convert( value, String.class);
     }
 

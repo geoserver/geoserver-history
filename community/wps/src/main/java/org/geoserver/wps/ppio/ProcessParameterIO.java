@@ -9,7 +9,6 @@ import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -76,6 +75,9 @@ public abstract class ProcessParameterIO {
         defaults.add(new WFSPPIO.WFS10());  
         defaults.add(new WFSPPIO.WFS11());
         defaults.add(new GeoJSONPPIO());
+        
+        // CRS
+        defaults.add(new CoordinateReferenceSystemPPIO());
 
         // grids
         defaults.add(new GeoTiffPPIO());

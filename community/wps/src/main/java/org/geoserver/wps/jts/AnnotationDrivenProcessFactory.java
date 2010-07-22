@@ -1,19 +1,3 @@
-/*
- *    GeoTools - The Open Source Java GIS Toolkit
- *    http://geotools.org
- *
- *    (C) 2008, Open Source Geospatial Foundation (OSGeo)
- *
- *    This library is free software; you can redistribute it and/or
- *    modify it under the terms of the GNU Lesser General Public
- *    License as published by the Free Software Foundation;
- *    version 2.1 of the License.
- *
- *    This library is distributed in the hope that it will be useful,
- *    but WITHOUT ANY WARRANTY; without even the implied warranty of
- *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *    Lesser General Public License for more details.
- */
 package org.geoserver.wps.jts;
 
 import java.awt.RenderingHints.Key;
@@ -22,12 +6,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.geotools.data.Parameter;
-import org.geotools.feature.NameImpl;
 import org.geotools.process.Process;
 import org.geotools.process.ProcessException;
 import org.geotools.process.ProcessFactory;
@@ -39,26 +20,13 @@ import org.opengis.util.ProgressListener;
 
 import es.unex.sextante.gui.core.ProgressMonitor;
 
-/**
- * Grabbed from Geotools and generalized a bit, should go back into GeoTools
- * once improved enough. ProcessFactory for classes exposing simple processes as
- * static methods
- * 
- * @since 2.7
- */
-public class StaticMethodsProcessFactory<T> implements ProcessFactory {
-	Class<T> targetClass;
+public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 	String namespace;
 	InternationalString title;
 
-	public StaticMethodsProcessFactory(InternationalString title, String namespace, Class<T> targetClass) {
-		this.targetClass = targetClass;
+	public AnnotationDrivenProcessFactory(InternationalString title, String namespace) {
 		this.namespace = namespace;
 		this.title = title;
-	}
-
-	public Process create(Name name) {
-		return new ProcessInvocation(name.getLocalPart());
 	}
 
 	public InternationalString getTitle() {
@@ -74,55 +42,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 		}
 	}
 
-	/**
-	 * Finds the DescribeProcess description for the specified name
-	 * 
-	 * @param name
-	 * @return
-	 */
-	DescribeProcess getProcessDescription(Name name) {
-		Method method = method(name.getLocalPart());
-		if (method == null) {
-			return null;
-		}
-		DescribeProcess info = method.getAnnotation(DescribeProcess.class);
-		return info;
-	}
-
-	public Method method(String name) {
-		for (Method method : targetClass.getMethods()) {
-			if (name.equalsIgnoreCase(method.getName())) {
-				DescribeProcess dp = method
-						.getAnnotation(DescribeProcess.class);
-				if (dp != null) {
-					return method;
-				}
-			}
-		}
-		return null;
-	}
-
-	public Set<Name> getNames() {
-		// look for the methods that have the DescribeProcess annotation. use
-		// a linkedHashSet to make sure we don't report duplicate names
-		Set<Name> names = new LinkedHashSet<Name>();
-		for (Method method : targetClass.getMethods()) {
-			DescribeProcess dp = method.getAnnotation(DescribeProcess.class);
-			if (dp != null) {
-				Name name = new NameImpl(namespace, method.getName());
-				if (names.contains(name)) {
-					throw new IllegalStateException(
-							targetClass.getName()
-									+ " has two methods named "
-									+ method.getName()
-									+ ", both annotated with DescribeProcess, this is an ambiguity. "
-									+ "Please a different name");
-				}
-				names.add(name);
-			}
-		}
-		return names;
-	}
+	protected abstract DescribeProcess getProcessDescription(Name name);
 
 	public Map<String, Parameter<?>> getParameterInfo(Name name) {
 		// build the parameter descriptions by using the DescribeParameter
@@ -137,6 +57,8 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 		}
 		return input;
 	}
+
+	protected abstract Method method(String localPart);
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Parameter<?>> getResultInfo(Name name,
@@ -278,13 +200,11 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 	class ProcessInvocation implements Process {
 
 		Method method;
+		Object targetObject;
 
-		public ProcessInvocation(String name) {
-			method = method(name);
-			if (method == null) {
-				throw new IllegalArgumentException("Could not find method "
-						+ name + " in class " + targetClass);
-			}
+		public ProcessInvocation(Method method, Object targetObject) {
+			this.method = method;
+			this.targetObject = targetObject;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -339,7 +259,7 @@ public class StaticMethodsProcessFactory<T> implements ProcessFactory {
 			// invoke and grab result
 			Object value = null;
 			try {
-				value = method.invoke(null, args);
+				value = method.invoke(targetObject, args);
 			} catch (Throwable t) {
 				// report the exception and exit
 				if (monitor != null) {

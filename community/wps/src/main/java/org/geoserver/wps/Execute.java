@@ -260,32 +260,36 @@ public class Execute {
                 DataType data = f.createDataType();
                 output.setData(data);
 
-                if (ppio instanceof LiteralPPIO) {
-                    LiteralDataType literal = f.createLiteralDataType();
-                    data.setLiteralData(literal);
-
-                    literal.setValue(((LiteralPPIO) ppio).encode(o));
-                } else if (ppio instanceof BoundingBoxPPIO) {
-                    BoundingBoxType bbox = ((BoundingBoxPPIO) ppio).encode(o);
-                    data.setBoundingBoxData(bbox);
-                } else if (ppio instanceof ComplexPPIO) {
-                    ComplexDataType complex = f.createComplexDataType();
-                    data.setComplexData(complex);
-
-                    ComplexPPIO cppio = (ComplexPPIO) ppio;
-                    complex.setMimeType(cppio.getMimeType());
-
-                    if (cppio instanceof XMLPPIO) {
-                        // encode directly
-                        complex.getData().add(new XMLEncoderDelegate((XMLPPIO) cppio, o));
-                    } else if (cppio instanceof CDataPPIO) {
-                        complex.getData().add(new CDataEncoderDelegate((CDataPPIO) cppio, o));
-                    } else if (cppio instanceof BinaryPPIO) {
-                        complex.getData().add(new BinaryEncoderDelegate((BinaryPPIO) cppio, o));
-                    } else {
-                        throw new WPSException("Don't know how to encode an output whose PPIO is "
-                                + cppio);
-                    }
+                try {
+	                if (ppio instanceof LiteralPPIO) {
+	                    LiteralDataType literal = f.createLiteralDataType();
+	                    data.setLiteralData(literal);
+	
+	                    literal.setValue(((LiteralPPIO) ppio).encode(o));
+	                } else if (ppio instanceof BoundingBoxPPIO) {
+	                    BoundingBoxType bbox = ((BoundingBoxPPIO) ppio).encode(o);
+	                    data.setBoundingBoxData(bbox);
+	                } else if (ppio instanceof ComplexPPIO) {
+	                    ComplexDataType complex = f.createComplexDataType();
+	                    data.setComplexData(complex);
+	
+	                    ComplexPPIO cppio = (ComplexPPIO) ppio;
+	                    complex.setMimeType(cppio.getMimeType());
+	
+	                    if (cppio instanceof XMLPPIO) {
+	                        // encode directly
+	                        complex.getData().add(new XMLEncoderDelegate((XMLPPIO) cppio, o));
+	                    } else if (cppio instanceof CDataPPIO) {
+	                        complex.getData().add(new CDataEncoderDelegate((CDataPPIO) cppio, o));
+	                    } else if (cppio instanceof BinaryPPIO) {
+	                        complex.getData().add(new BinaryEncoderDelegate((BinaryPPIO) cppio, o));
+	                    } else {
+	                        throw new WPSException("Don't know how to encode an output whose PPIO is "
+	                                + cppio);
+	                    }
+	                }
+                } catch(Exception e) {
+                	throw new WPSException("Failed to encode the " + key + " output", e);
                 }
             }
         }

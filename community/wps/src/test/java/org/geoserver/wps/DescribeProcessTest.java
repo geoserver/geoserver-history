@@ -83,7 +83,7 @@ public class DescribeProcessTest extends WPSTestSupport {
      * @throws Exception
      */
     public void testBounds() throws Exception {
-        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=orci:Bounds");
+        Document d = getAsDOM( root() + "service=wps&request=describeprocess&identifier=gs:Bounds");
         // print(d);
         checkValidationErrors(d);
         assertXpathEvaluatesTo("EPSG:4326", "//wps:Output[ows:Identifier='bounds']/wps:BoundingBoxOutput/wps:Default/wps:CRS", d);

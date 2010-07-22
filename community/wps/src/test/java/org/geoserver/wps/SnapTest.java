@@ -1,6 +1,6 @@
 package org.geoserver.wps;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.wfs.WFSInfo;
 import org.w3c.dom.Document;
 
-public class ORCINearestTest extends WPSTestSupport {
+public class SnapTest extends WPSTestSupport {
 	
     public static QName STREAMS = new QName(MockData.CITE_URI, "Streams", MockData.CITE_PREFIX);
     
@@ -34,7 +34,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionInline4326Raw() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -47,7 +47,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>-76.248,36.777</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(-76.248 36.777)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -59,7 +61,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         //checkValidationErrors(d);
         
         assertEquals("wfs:FeatureCollection", d.getDocumentElement().getNodeName());
@@ -69,7 +71,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionInline4326Doc() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -82,7 +84,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>-76.248,36.777</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(-76.248 36.777)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -96,7 +100,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         //checkValidationErrors(d);
         
         assertEquals("wps:ExecuteResponse", d.getDocumentElement().getNodeName());
@@ -106,7 +110,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionInline3338Raw() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -123,7 +127,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>445492.82,1369133.56</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(445492.82 1369133.56)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -135,7 +141,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         //checkValidationErrors(d);
         
         assertEquals("wfs:FeatureCollection", d.getDocumentElement().getNodeName());
@@ -145,7 +151,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionInline3338Doc() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -162,7 +168,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>445492.82,1369133.56</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(445492.82 1369133.56)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -176,7 +184,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         //checkValidationErrors(d);
         
         assertEquals("wps:ExecuteResponse", d.getDocumentElement().getNodeName());
@@ -186,11 +194,11 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionInternalWFSRaw() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1' xmlns:xlink=\"http://www.w3.org/1999/xlink\" >" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                     "<ows:Identifier>features</ows:Identifier>" +
-                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\" method=\"POST\">" +
+                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\"  method=\"POST\">" +
                       "<wps:Body>" +
                         "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\" outputFormat=\"GML2\" " +
                         "xmlns:cite=\"http://www.opengis.net/cite\" " +
@@ -205,7 +213,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>-4.2E-4,0.003</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(-4.2E-4 0.003)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -217,7 +227,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
 
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         //checkValidationErrors(d);
         
         assertEquals("wfs:FeatureCollection", d.getDocumentElement().getNodeName());
@@ -227,7 +237,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionWFSFilter1Raw() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1' xmlns:xlink=\"http://www.w3.org/1999/xlink\" >" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                     "<ows:Identifier>features</ows:Identifier>" +
@@ -256,7 +266,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>-4.2E-4,0.003</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(-4.2E-4 0.003)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -268,7 +280,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
 
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         //checkValidationErrors(d);
         
         assertEquals("wfs:FeatureCollection", d.getDocumentElement().getNodeName());
@@ -278,11 +290,11 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testFeatureCollectionWFSFilter2Raw() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1' xmlns:xlink=\"http://www.w3.org/1999/xlink\" >" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                     "<ows:Identifier>features</ows:Identifier>" +
-                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\" method=\"POST\">" +
+                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://geoserver/wfs\"  method=\"POST\">" +
                       "<wps:Body>" +
                         "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\" outputFormat=\"GML2\" " +
                         "xmlns:cite=\"http://www.opengis.net/cite\" " +
@@ -309,7 +321,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>-4.2E-4,0.003</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(-4.2E-4 0.003)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -321,7 +335,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
 
         Document d = postAsDOM( "wps", xml );
-        print(d);
+//        print(d);
         //checkValidationErrors(d);
         
         assertEquals("wfs:FeatureCollection", d.getDocumentElement().getNodeName());
@@ -331,7 +345,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testMissingFeatures() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" +
                     "<ows:Identifier>crs</ows:Identifier>" +
@@ -340,7 +354,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>445492.82,1369133.56</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(445492.82 1369133.56)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -352,7 +368,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+//        print(d);
         
         assertEquals("ows:ExceptionReport", d.getDocumentElement().getNodeName());
     }
@@ -360,7 +376,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testMissingPoint() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -379,7 +395,7 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+//        print(d);
         
         assertEquals("ows:ExceptionReport", d.getDocumentElement().getNodeName());
     }
@@ -387,7 +403,7 @@ public class ORCINearestTest extends WPSTestSupport {
     public void testWrongCRS() throws Exception {
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
               "xmlns:ows='http://www.opengis.net/ows/1.1'>" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
+              "<ows:Identifier>gs:Snap</ows:Identifier>" + 
                "<wps:DataInputs>" + 
                   "<wps:Input>" + 
                       "<ows:Identifier>features</ows:Identifier>" + 
@@ -404,7 +420,9 @@ public class ORCINearestTest extends WPSTestSupport {
                   "<wps:Input>" + 
                      "<ows:Identifier>point</ows:Identifier>" + 
                      "<wps:Data>" + 
-                       "<wps:LiteralData>-76.248,36.777</wps:LiteralData>" + 
+                       "<wps:ComplexData mimeType=\"application/wkt\">" +
+                         "<![CDATA[POINT(-76.248 36.777)]]>" +
+                       "</wps:ComplexData>" +
                      "</wps:Data>" + 
                   "</wps:Input>" + 
                  "</wps:DataInputs>" +
@@ -416,53 +434,10 @@ public class ORCINearestTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
-        print(d);
+        // print(d);
         
         assertEquals("ows:ExceptionReport", d.getDocumentElement().getNodeName());
     }
-
-    /*
-    public void testFeatureCollectionExternalWFSRaw() throws Exception {
-        String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' " + 
-              "xmlns:ows='http://www.opengis.net/ows/1.1' xmlns:xlink=\"http://www.w3.org/1999/xlink\" >" + 
-              "<ows:Identifier>orci:Nearest</ows:Identifier>" + 
-               "<wps:DataInputs>" + 
-                  "<wps:Input>" + 
-                    "<ows:Identifier>features</ows:Identifier>" +
-                    "<wps:Reference schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\" xlink:href=\"http://192.168.117.78:8080/geoserver/wfs\">" +
-                      "<wps:Body>" +
-                        "<wfs:GetFeature service=\"WFS\" version=\"1.0.0\" outputFormat=\"GML2\" " +
-                        "xmlns:cite=\"http://www.opengis.net/cite\" " +
-                        "xmlns:wfs=\"http://www.opengis.net/wfs\" " +
-                        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-                        "xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd http://www.opengis.net/gml http://schemas.opengis.net/gml/2.1.2/base/gml.xsd\">" +
-                        "<wfs:Query typeName=\"cite:Streams\" />" +
-                      "</wfs:GetFeature>" +
-                    "</wps:Body>" +
-                  "</wps:Reference>" +
-                  "</wps:Input>" + 
-                  "<wps:Input>" + 
-                     "<ows:Identifier>point</ows:Identifier>" + 
-                     "<wps:Data>" + 
-                       "<wps:LiteralData>-4.2E-4,0.003</wps:LiteralData>" + 
-                     "</wps:Data>" + 
-                  "</wps:Input>" + 
-                 "</wps:DataInputs>" +
-                 "<wps:ResponseForm>" +  
-                   "<wps:RawDataOutput mimeType=\"text/XML\" schema=\"http://schemas.opengis.net/gml/2.1.2/feature.xsd\">" +
-                     "<ows:Identifier>result</ows:Identifier>" +
-                   "</wps:RawDataOutput>" +
-                 "</wps:ResponseForm>" + 
-               "</wps:Execute>";
-
-        Document d = postAsDOM( "wps", xml );
-        print(d);
-        //checkValidationErrors(d);
-        
-        assertEquals("wfs:FeatureCollection", d.getDocumentElement().getNodeName());
-        assertXpathExists("/wfs:FeatureCollection/gml:featureMember", d);
-    }
-    */
 
     String readFileIntoString( String filename ) throws IOException {
         BufferedReader in = new BufferedReader( new InputStreamReader(getClass().getResourceAsStream( filename ) ) );
