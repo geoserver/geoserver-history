@@ -1,3 +1,20 @@
+/*
+ *    GeoTools - The Open Source Java GIS Toolkit
+ *    http://geotools.org
+ *
+ *    (C) 2009, Open Source Geospatial Foundation (OSGeo)
+ *
+ *    This library is free software; you can redistribute it and/or
+ *    modify it under the terms of the GNU Lesser General Public
+ *    License as published by the Free Software Foundation;
+ *    version 2.1 of the License.
+ *
+ *    This library is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *    Lesser General Public License for more details.
+ */
+
 package org.geoserver.wps.jts;
 
 import java.awt.RenderingHints.Key;
@@ -28,7 +45,11 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 		this.namespace = namespace;
 		this.title = title;
 	}
+	
+	protected abstract DescribeProcess getProcessDescription(Name name);
 
+	protected abstract Method method(String localPart);
+	
 	public InternationalString getTitle() {
 		return title;
 	}
@@ -41,8 +62,6 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 			return null;
 		}
 	}
-
-	protected abstract DescribeProcess getProcessDescription(Name name);
 
 	public Map<String, Parameter<?>> getParameterInfo(Name name) {
 		// build the parameter descriptions by using the DescribeParameter
@@ -58,7 +77,6 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 		return input;
 	}
 
-	protected abstract Method method(String localPart);
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Parameter<?>> getResultInfo(Name name,
