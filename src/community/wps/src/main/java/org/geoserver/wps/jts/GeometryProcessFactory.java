@@ -13,8 +13,9 @@ public class GeometryProcessFactory extends
 		StaticMethodsProcessFactory<GeometryFunctions> {
 
 	public GeometryProcessFactory() {
-		super(GeometryFunctions.class, new SimpleInternationalString(
-				"Simple JTS based spatial analysis methods"), "JTS");
+		super(new SimpleInternationalString(
+				"Simple JTS based spatial analysis methods"), "JTS",
+				GeometryFunctions.class);
 	}
 
 }

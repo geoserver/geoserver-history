@@ -24,11 +24,11 @@ import java.lang.annotation.Target;
 /**
  * DescribeProcess information for publication by DEMProcessFactory.
  * <p>
- * Annotation is used to mark a method for publication via DEMProcessFactory
+ * Annotation is used to mark a method for publication via {@link StaticMethodsProcessFactory}
  * @author Jody
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface DescribeProcess {
 	String title();
     String description() default "[undescribed]";
