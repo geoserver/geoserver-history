@@ -37,19 +37,20 @@ import org.opengis.util.ProgressListener;
 
 import es.unex.sextante.gui.core.ProgressMonitor;
 
-public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
+public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
 	String namespace;
 	InternationalString title;
 
-	public AnnotationDrivenProcessFactory(InternationalString title, String namespace) {
+	public AnnotationDrivenProcessFactory(InternationalString title,
+			String namespace) {
 		this.namespace = namespace;
 		this.title = title;
 	}
-	
+
 	protected abstract DescribeProcess getProcessDescription(Name name);
 
 	protected abstract Method method(String localPart);
-	
+
 	public InternationalString getTitle() {
 		return title;
 	}
@@ -76,7 +77,6 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 		}
 		return input;
 	}
-
 
 	@SuppressWarnings("unchecked")
 	public Map<String, Parameter<?>> getResultInfo(Name name,
@@ -212,6 +212,20 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 		}
 	}
 
+	public Process create(Name name) {
+		return new ProcessInvocation(method(name.getLocalPart()),
+				createProcessBean(name));
+	}
+
+	/**
+	 * Creates the bean upon which the process execution method will be invoked.
+	 * Can be null in case the method is a static one
+	 * 
+	 * @param name
+	 * @return
+	 */
+	protected abstract Object createProcessBean(Name name);
+
 	/**
 	 * Executes the method as a process
 	 */
@@ -242,33 +256,38 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory{
 					// map and set it
 					Parameter p = paramInfo(i, paramTypes[i], annotations[i]);
 					Object value = input.get(p.key);
-					
+
 					// this takes care of array/collection conversions among
 					// others
 					args[i] = Converters.convert(value, paramTypes[i]);
 					// check the conversion was successful
-					if(args[i] == null && value != null) {
-						throw new ProcessException("Could not convert " + value 
+					if (args[i] == null && value != null) {
+						throw new ProcessException("Could not convert " + value
 								+ " to target type " + paramTypes[i].getName());
 					}
-					
+
 					// check multiplicity is respected
-					if(p.minOccurs > 0 && value == null) {
-						throw new ProcessException("Parameter " + p.key + " is missing but has min multiplicity > 0");
-					} else if(p.maxOccurs > 1) {
+					if (p.minOccurs > 0 && value == null) {
+						throw new ProcessException("Parameter " + p.key
+								+ " is missing but has min multiplicity > 0");
+					} else if (p.maxOccurs > 1) {
 						int size = -1;
-						if(paramTypes[i].isArray()) {
+						if (paramTypes[i].isArray()) {
 							size = Array.getLength(args[i]);
 						} else {
 							size = ((Collection) args[i]).size();
 						}
-						if(size < p.minOccurs) {
-							throw new ProcessException("Parameter " + p.key + " has " + size 
-									+ " elements but min occurrences is " + p.minOccurs);
+						if (size < p.minOccurs) {
+							throw new ProcessException("Parameter " + p.key
+									+ " has " + size
+									+ " elements but min occurrences is "
+									+ p.minOccurs);
 						}
-						if(size > p.maxOccurs) {
-							throw new ProcessException("Parameter " + p.key + " has " + size 
-									+ " elements but max occurrences is " + p.maxOccurs);
+						if (size > p.maxOccurs) {
+							throw new ProcessException("Parameter " + p.key
+									+ " has " + size
+									+ " elements but max occurrences is "
+									+ p.maxOccurs);
 						}
 					}
 				}

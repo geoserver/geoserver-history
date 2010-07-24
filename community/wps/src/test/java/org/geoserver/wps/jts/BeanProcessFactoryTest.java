@@ -1,13 +1,20 @@
-package org.geoserver.wps.gs;
+package org.geoserver.wps.jts;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.geoserver.wps.gs.BoundsProcess;
+import org.geoserver.wps.gs.NearestProcess;
+import org.geoserver.wps.gs.SnapProcess;
 import org.geotools.data.Parameter;
 import org.geotools.data.collection.ListFeatureCollection;
+import org.geotools.factory.FactoryIteratorProvider;
+import org.geotools.factory.GeoTools;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -15,27 +22,60 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.process.ProcessException;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
+import org.geotools.util.SimpleInternationalString;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
-public class GeoServerProcessFactoryTest extends TestCase {
+/**
+ * Tests some processes that do not require integration with the application
+ * context
+ * 
+ * @author Andrea Aime - OpenGeo
+ * 
+ */
+public class BeanProcessFactoryTest extends TestCase {
 
-	GeoServerProcessFactory factory;
+	public class BeanProcessFactory extends AnnotatedBeanProcessFactory {
+
+		public BeanProcessFactory() {
+			super(new SimpleInternationalString(
+					"Some bean based processes custom processes"), "bean",
+					BoundsProcess.class, NearestProcess.class,
+					SnapProcess.class);
+		}
+
+	}
+
+	BeanProcessFactory factory;
 
 	@Override
 	protected void setUp() throws Exception {
-		factory = new GeoServerProcessFactory();
+		factory = new BeanProcessFactory();
+
+		// check SPI will see the factory if we register it using an iterator
+		// provider
+		GeoTools.addFactoryIteratorProvider(new FactoryIteratorProvider() {
+
+			public <T> Iterator<T> iterator(Class<T> category) {
+				if (ProcessFactory.class.isAssignableFrom(category)) {
+					return (Iterator<T>) Collections.singletonList(factory)
+							.iterator();
+				} else {
+					return null;
+				}
+			}
+		});
 	}
 
 	public void testNames() {
 		Set<Name> names = factory.getNames();
 		assertTrue(names.size() > 0);
 		// System.out.println(names);
-		assertTrue(names.contains(new NameImpl("gs", "Bounds")));
+		assertTrue(names.contains(new NameImpl("bean", "Bounds")));
 	}
 
 	public void testDescribeBounds() {
-		NameImpl boundsName = new NameImpl("gs", "Bounds");
+		NameImpl boundsName = new NameImpl("bean", "Bounds");
 		InternationalString desc = factory.getDescription(boundsName);
 		assertNotNull(desc);
 
@@ -66,7 +106,7 @@ public class GeoServerProcessFactoryTest extends TestCase {
 			}
 		};
 
-		org.geotools.process.Process p = factory.create(new NameImpl("gs",
+		org.geotools.process.Process p = factory.create(new NameImpl("bean",
 				"Bounds"));
 		Map<String, Object> inputs = new HashMap<String, Object>();
 		inputs.put("features", fc);
@@ -78,10 +118,10 @@ public class GeoServerProcessFactoryTest extends TestCase {
 	}
 
 	public void testSPI() throws Exception {
-		NameImpl boundsName = new NameImpl("gs", "Bounds");
+		NameImpl boundsName = new NameImpl("bean", "Bounds");
 		ProcessFactory factory = Processors.createProcessFactory(boundsName);
 		assertNotNull(factory);
-		assertTrue(factory instanceof GeoServerProcessFactory);
+		assertTrue(factory instanceof BeanProcessFactory);
 
 		org.geotools.process.Process buffer = Processors
 				.createProcess(boundsName);

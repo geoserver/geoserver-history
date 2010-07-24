@@ -69,22 +69,6 @@ public class AnnotatedBeanProcessFactory extends AnnotationDrivenProcessFactory 
 		return null;
 	}
 
-	public Process create(Name name) {
-		try {
-			Class c = classMap.get(name.getLocalPart());
-			if (c == null) {
-				return null;
-			} else {
-				return new ProcessInvocation(method(name.getLocalPart()), c
-						.newInstance());
-			}
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	public Set<Name> getNames() {
 		Set<Name> result = new LinkedHashSet<Name>();
 		List<String> names = new ArrayList<String>(classMap.keySet());
@@ -93,6 +77,16 @@ public class AnnotatedBeanProcessFactory extends AnnotationDrivenProcessFactory 
 			result.add(new NameImpl(namespace, name));
 		}
 		return result;
+	}
+
+	protected Object createProcessBean(Name name) {
+		try {
+			return classMap.get(name.getLocalPart()).newInstance();
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

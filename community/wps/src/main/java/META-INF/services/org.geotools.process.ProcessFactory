@@ -1,3 +1,2 @@
 org.geoserver.wps.sextante.SextanteProcessFactory
-org.geoserver.wps.gs.GeoServerProcessFactory
 org.geoserver.wps.jts.GeometryProcessFactory
