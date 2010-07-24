@@ -21,7 +21,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.geotools.feature.NameImpl;
-import org.geotools.process.Process;
 import org.opengis.feature.type.Name;
 import org.opengis.util.InternationalString;
 
@@ -40,10 +39,6 @@ public class StaticMethodsProcessFactory<T> extends
 			String namespace, Class<T> targetClass) {
 		super(title, namespace);
 		this.targetClass = targetClass;
-	}
-
-	public Process create(Name name) {
-		return new ProcessInvocation(method(name.getLocalPart()), null);
 	}
 
 	/**
@@ -73,7 +68,7 @@ public class StaticMethodsProcessFactory<T> extends
 		}
 		return null;
 	}
-	
+
 	public Set<Name> getNames() {
 		// look for the methods that have the DescribeProcess annotation. use
 		// a linkedHashSet to make sure we don't report duplicate names
@@ -94,6 +89,12 @@ public class StaticMethodsProcessFactory<T> extends
 			}
 		}
 		return names;
+	}
+
+	@Override
+	protected Object createProcessBean(Name name) {
+		// they are all static methods
+		return null;
 	}
 
 }

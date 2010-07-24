@@ -369,7 +369,7 @@ public class ExecuteTest extends WPSTestSupport {
                 "</wps:Execute>";
         
         Document dom = postAsDOM(root(), request);
-        // print(dom);
+        print(dom);
         
         assertXpathEvaluatesTo("-4.0E-4 -0.0024", "/ows:BoundingBox/ows:LowerCorner", dom);
         assertXpathEvaluatesTo("0.0036 0.0024", "/ows:BoundingBox/ows:UpperCorner", dom);

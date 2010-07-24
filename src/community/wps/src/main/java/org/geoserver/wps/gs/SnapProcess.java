@@ -45,7 +45,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
 @DescribeProcess(title = "Snap", description = "Snap to the nearest feature")
-public class SnapProcess {
+public class SnapProcess implements GeoServerProcess {
 	private static final Logger LOGGER = Logging.getLogger(SnapProcess.class);
 
 	private GeometryFactory geometryFactory = new GeometryFactory();

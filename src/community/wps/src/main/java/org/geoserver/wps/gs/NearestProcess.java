@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.operation.distance.DistanceOp;
 
 @DescribeProcess(title = "Nearest", description = "Get nearest feature")
-public class NearestProcess {
+public class NearestProcess implements GeoServerProcess {
 	private static final Logger LOGGER = Logging
 			.getLogger(NearestProcess.class);
 

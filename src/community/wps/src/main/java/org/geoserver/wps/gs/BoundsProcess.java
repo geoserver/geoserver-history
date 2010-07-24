@@ -16,7 +16,7 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
  * @author Andrea Aime
  */
 @DescribeProcess(title = "bounds", description = "Computes the overlall bounds of the input features")
-public class BoundsProcess {
+public class BoundsProcess implements GeoServerProcess {
 
 	@DescribeResult(name = "bounds", description = "The feature collection bounds")
 	public ReferencedEnvelope execute(
