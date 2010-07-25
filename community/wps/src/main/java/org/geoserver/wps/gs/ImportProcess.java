@@ -41,6 +41,12 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+/**
+ * Imports a feature collection into the GeoServer catalog
+ * 
+ * @author Andrea Aime - OpenGeo
+ * 
+ */
 @DescribeProcess(title = "Catalog import", description = "Imports the provided feature collection into the catalog")
 public class ImportProcess implements GeoServerProcess {
 
@@ -180,6 +186,8 @@ public class ImportProcess implements GeoServerProcess {
 			if (srsHandling != null) {
 				typeInfo.setProjectionPolicy(srsHandling);
 			}
+			// compute the bounds
+			cb.setupBounds(typeInfo);
 
 			// build the layer and set a style
 			LayerInfo layerInfo = cb.buildLayer(typeInfo);
