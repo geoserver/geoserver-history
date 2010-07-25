@@ -102,7 +102,22 @@ public class ImportProcess implements GeoServerProcess {
 								+ ws.getName());
 			}
 		}
-
+		
+		// check if the target layer and the target feature type are not
+		// already there (this is a half-assed attempt as we don't have
+		// an API telling us how the feature type name will be changed
+		// by DataStore.createSchema(...), but better than fully importing
+		// the data into the target store to find out we cannot create the layer...)
+		String tentativeTargetName = null;
+		if(name != null) {
+			tentativeTargetName = ws.getName() + ":" + name;
+		} else {
+			tentativeTargetName = ws.getName() + ":" + features.getSchema().getTypeName();
+		}
+		if(catalog.getLayer(tentativeTargetName) != null) {
+			throw new ProcessException("Target layer " + tentativeTargetName + " already exists");
+		}
+		
 		// check the target style if any
 		StyleInfo targetStyle = null;
 		if (styleName != null) {
@@ -208,7 +223,7 @@ public class ImportProcess implements GeoServerProcess {
 
 	private SimpleFeatureType importDataIntoStore(
 			SimpleFeatureCollection features, String name,
-			DataStoreInfo storeInfo) throws IOException {
+			DataStoreInfo storeInfo) throws IOException, ProcessException {
 		SimpleFeatureType targetType;
 		// grab the data store
 		DataStore ds = (DataStore) storeInfo.getDataStore(null);
@@ -232,6 +247,20 @@ public class ImportProcess implements GeoServerProcess {
 			// ouch, the name was changed... we can only guess now...
 			// try with the typical Oracle mangling
 			targetType = ds.getSchema(sourceType.getTypeName().toUpperCase());
+		}
+		
+		if(targetType == null) {
+			throw new WPSException("The target schema was created, but with a name " +
+					"that we cannot relate to the one we provided the data store. Cannot proceeed further");
+		} else {
+			// check the layer is not already there
+			String newLayerName = storeInfo.getWorkspace().getName() + ":" + targetType.getTypeName();
+			LayerInfo layer = catalog.getLayerByName(newLayerName);
+			// todo: we should not really reach here and know beforehand what the targetType
+			// name is, but if we do we should at least get a way to drop it
+			if(layer != null) {
+				throw new ProcessException("Target layer " + newLayerName + " already exists in the catalog");
+			}
 		}
 
 		// try to establish a mapping with old and new attributes. This is again
