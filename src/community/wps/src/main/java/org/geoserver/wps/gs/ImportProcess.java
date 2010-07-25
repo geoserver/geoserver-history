@@ -38,6 +38,7 @@ import org.geotools.util.logging.Logging;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
+import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 @DescribeProcess(title = "Catalog import", description = "Imports the provided feature collection into the catalog")
@@ -95,69 +96,111 @@ public class ImportProcess implements GeoServerProcess {
 								+ ws.getName());
 			}
 		}
-		
+
 		// check the target style if any
 		StyleInfo targetStyle = null;
-		if(styleName != null) {
+		if (styleName != null) {
 			targetStyle = catalog.getStyleByName(styleName);
-			if(targetStyle == null) {
+			if (targetStyle == null) {
 				throw new ProcessException("Could not find style " + styleName);
 			}
 		}
-		
+
 		// check the target crs
 		String targetSRSCode = null;
-		if(srs != null) {
+		if (srs != null) {
 			try {
 				Integer code = CRS.lookupEpsgCode(srs, true);
-				if(code == null) {
-					throw new WPSException("Could not find a EPSG code for " + srs);
+				if (code == null) {
+					throw new WPSException("Could not find a EPSG code for "
+							+ srs);
 				}
 				targetSRSCode = "EPSG" + code;
-			} catch(Exception e) {
-				throw new ProcessException("Could not lookup the EPSG code for the provided srs", e);
+			} catch (Exception e) {
+				throw new ProcessException(
+						"Could not lookup the EPSG code for the provided srs",
+						e);
+			}
+		} else {
+			// check we can extract a code from the original data
+			GeometryDescriptor gd = features.getSchema()
+					.getGeometryDescriptor();
+			if (gd == null) {
+				// data is geometryless, we need a fake SRS
+				targetSRSCode = "EPSG:4326";
+				srsHandling = ProjectionPolicy.FORCE_DECLARED;
+			} else {
+				CoordinateReferenceSystem nativeCrs = gd
+						.getCoordinateReferenceSystem();
+				if (nativeCrs == null) {
+					throw new ProcessException(
+							"The original data has no native CRS, "
+									+ "you need to specify the srs parameter");
+				} else {
+					try {
+						Integer code = CRS.lookupEpsgCode(nativeCrs, true);
+						if (code == null) {
+							throw new ProcessException(
+									"Could not find an EPSG code for data "
+											+ "native spatial reference system: "
+											+ nativeCrs);
+						} else {
+							targetSRSCode = "EPSG:" + code;
+						}
+					} catch (Exception e) {
+						throw new ProcessException(
+								"Failed to loookup an official EPSG code for "
+										+ "the source data native "
+										+ "spatial reference system", e);
+					}
+				}
 			}
 		}
-		
+
 		// import the data into the target store
 		SimpleFeatureType targetType;
 		try {
 			targetType = importDataIntoStore(features, name, storeInfo);
-		} catch(IOException e) {
-			throw new ProcessException("Failed to import data into the target store", e);
+		} catch (IOException e) {
+			throw new ProcessException(
+					"Failed to import data into the target store", e);
 		}
-		
+
 		// now import the newly created layer into GeoServer
 		try {
 			CatalogBuilder cb = new CatalogBuilder(catalog);
 			cb.setStore(storeInfo);
-			
+
 			// build the typeInfo and set CRS if necessary
-			FeatureTypeInfo typeInfo = cb.buildFeatureType(targetType.getName());
-			if(targetSRSCode != null) {
+			FeatureTypeInfo typeInfo = cb
+					.buildFeatureType(targetType.getName());
+			if (targetSRSCode != null) {
 				typeInfo.setSRS(targetSRSCode);
 			}
-			if(srsHandling != null) {
+			if (srsHandling != null) {
 				typeInfo.setProjectionPolicy(srsHandling);
 			}
-			
+
 			// build the layer and set a style
 			LayerInfo layerInfo = cb.buildLayer(typeInfo);
-			if(targetStyle != null) {
+			if (targetStyle != null) {
 				layerInfo.setDefaultStyle(targetStyle);
 			}
-			
+
 			catalog.add(typeInfo);
 			catalog.add(layerInfo);
-		
+
 			return typeInfo.getPrefixedName();
-		} catch(Exception e) {
-			throw new ProcessException("Failed to complete the import inside the GeoServer catalog", e);
+		} catch (Exception e) {
+			throw new ProcessException(
+					"Failed to complete the import inside the GeoServer catalog",
+					e);
 		}
 	}
 
-	private SimpleFeatureType importDataIntoStore(SimpleFeatureCollection features,
-			String name, DataStoreInfo storeInfo) throws IOException {
+	private SimpleFeatureType importDataIntoStore(
+			SimpleFeatureCollection features, String name,
+			DataStoreInfo storeInfo) throws IOException {
 		SimpleFeatureType targetType;
 		// grab the data store
 		DataStore ds = (DataStore) storeInfo.getDataStore(null);
@@ -202,18 +245,19 @@ public class ImportProcess implements GeoServerProcess {
 			for (String sname : mapping.keySet()) {
 				fb.set(mapping.get(sname), source.getAttribute(sname));
 			}
-			SimpleFeature target = fb.buildFeature(source.getID());
+			SimpleFeature target = fb.buildFeature(null);
 			fstore.addFeatures(DataUtilities.collection(target));
 		}
 		t.commit();
 		t.close();
-		
+
 		return targetType;
 	}
 
 	/**
-	 * Applies a set of heuristics to find which target attribute corresponds
-	 * to a certain input attribute
+	 * Applies a set of heuristics to find which target attribute corresponds to
+	 * a certain input attribute
+	 * 
 	 * @param sourceType
 	 * @param targetType
 	 * @return
@@ -221,8 +265,7 @@ public class ImportProcess implements GeoServerProcess {
 	Map<String, String> buildAttributeMapping(SimpleFeatureType sourceType,
 			SimpleFeatureType targetType) {
 		// look for the typical manglings. For example, if the target is a
-		// shapefile store
-		// it will move the geometry and name it the_geom
+		// shapefile store it will move the geometry and name it the_geom
 
 		// collect the source names
 		Set<String> sourceNames = new HashSet<String>();
