@@ -1,3 +1,7 @@
+/* Copyright (c) 2001 - 2007 TOPP - www.openplans.org. All rights reserved.
+ * This code is licensed under the GPL 2.0 license, available at the root
+ * application directory.
+ */
 package org.geoserver.wps.jts;
 
 import java.lang.reflect.Method;
@@ -11,7 +15,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.geotools.factory.FactoryIteratorProvider;
-import org.geotools.factory.GeoTools;
 import org.geotools.feature.NameImpl;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
@@ -25,6 +28,14 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 
+/**
+ * A {@link ProcessFactory} meant to be declared in a Spring context. It will
+ * look in the application context for beans implementing the specified marker
+ * interface and annotated with {@link DescribeProcess},
+ * {@link DescribeParameter} and {@link DescribeResult}. Each bean will have a
+ * "execute" method taking the process parameters as arguments and returning the
+ * results
+ */
 public class SpringBeanProcessFactory extends AnnotationDrivenProcessFactory
 		implements ApplicationContextAware, ApplicationListener {
 
@@ -38,7 +49,7 @@ public class SpringBeanProcessFactory extends AnnotationDrivenProcessFactory
 			Class markerInterface) {
 		super(new SimpleInternationalString(title), namespace);
 		this.markerInterface = markerInterface;
-		
+
 		// create an iterator that will register this factory into SPI
 		iterator = new FactoryIteratorProvider() {
 
@@ -58,9 +69,10 @@ public class SpringBeanProcessFactory extends AnnotationDrivenProcessFactory
 			throws BeansException {
 		this.applicationContext = applicationContext;
 
-		// loads all of the beans
+		// loads all of the beans implementing the marker interface
 		String[] beanNames = applicationContext.getBeanNamesForType(
 				markerInterface, true, true);
+		// build a name to class and name to bean name maps
 		classMap = new HashMap<String, Class>();
 		beanMap = new HashMap<String, String>();
 		for (String beanName : beanNames) {
@@ -118,13 +130,11 @@ public class SpringBeanProcessFactory extends AnnotationDrivenProcessFactory
 	}
 
 	public void onApplicationEvent(ApplicationEvent event) {
-		if(event instanceof ContextRefreshedEvent) {
+		// add and remove the process factory as necessary
+		if (event instanceof ContextRefreshedEvent) {
 			Processors.addProcessFactory(this);
-			System.out.println("Startup");
-		} else if(event instanceof ContextClosedEvent) {
+		} else if (event instanceof ContextClosedEvent) {
 			Processors.removeProcessFactory(this);
-			System.out.println("Shutdown");
 		}
-		
 	}
 }
