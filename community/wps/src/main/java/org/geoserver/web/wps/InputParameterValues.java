@@ -27,7 +27,7 @@ import org.opengis.feature.type.Name;
 @SuppressWarnings("serial")
 class InputParameterValues implements Serializable {
 	public enum ParameterType {
-		LITERAL, TEXT, VECTOR_LAYER, RASTER_LAYER;
+		LITERAL, TEXT, VECTOR_LAYER, RASTER_LAYER, REFERENCE;
 	};
 
 	Name processName;

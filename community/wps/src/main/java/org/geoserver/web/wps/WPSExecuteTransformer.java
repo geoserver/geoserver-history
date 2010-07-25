@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.RuntimeErrorException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -28,7 +27,6 @@ import org.geotools.xlink.XLINK;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
 import org.hsqldb.lib.StringInputStream;
-import org.opengis.referencing.crs.GeographicCRS;
 import org.w3c.dom.Document;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -144,6 +142,8 @@ class WPSExecuteTransformer extends TransformerBase {
                             handleVectorInput(value);
                         } else if (value.type == ParameterType.RASTER_LAYER) {
                             handleRasterLayerInput(value);
+                        } else if (value.type == ParameterType.REFERENCE) {
+                        	handleReferenceInput(value);
                         } else {
                             // write out a warning without blowing pu
                             char[] comment = "Can't handle this data type yet"
@@ -216,6 +216,25 @@ class WPSExecuteTransformer extends TransformerBase {
 			end("wfs:Query");
 			end("wfs:GetFeature");
 			end("wps:Body");
+			end("wps:Reference");
+		}
+		
+		public void handleReferenceInput(ParameterValue value) {
+			ReferenceConfiguration reference = (ReferenceConfiguration) value.value;
+			if(reference .mime != null) {
+				start("wps:Reference", attributes("mimeType",
+						reference.mime, "xlink:href",
+						reference.url, "method", reference.method.toString()));
+			} else {
+				start("wps:Reference", attributes("xlink:href",
+						reference.url, "method", reference.method.toString()));
+			}
+			if(reference.method == ReferenceConfiguration.Method.POST) {
+				start("wps:Body");
+				cdata(reference.body);
+				end("wps:Body");
+			}
+			
 			end("wps:Reference");
 		}
 
@@ -303,5 +322,6 @@ class WPSExecuteTransformer extends TransformerBase {
 			end("wps:ResponseForm");
 		}
 	}
+
 
 }

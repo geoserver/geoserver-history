@@ -89,7 +89,7 @@ public class WPSRequestBuilder extends GeoServerBasePage {
 				InputParameterValues pv = (InputParameterValues) item.getModelObject();
 				Parameter p = pv.getParameter();
 				item.add(new Label("param", buildParamSpec(p) ));
-				item.add(new Label("paramDescription", p.title.toString(Locale.ENGLISH)));
+				item.add(new Label("paramDescription", p.description.toString(Locale.ENGLISH)));
 				if(!pv.isComplex() && !pv.isBoundingBox()) {
 					Fragment f = new Fragment("paramValue", "literal", WPSRequestBuilder.this);
 					f.add(new TextField("literalValue", new PropertyModel(pv, "values[0].value")).setRequired(p.minOccurs > 0));
