@@ -10,8 +10,10 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
@@ -24,8 +26,9 @@ import org.geoserver.web.wps.InputParameterValues.ParameterType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 
 /**
- * Allows the user to edit a complex input parameter providing a variety
- * of different editors depending on the parameter type
+ * Allows the user to edit a complex input parameter providing a variety of
+ * different editors depending on the parameter type
+ * 
  * @author Andrea Aime - OpenGeo
  */
 @SuppressWarnings("serial")
@@ -41,10 +44,12 @@ public class ComplexInputPanel extends Panel {
 		setModel(new PropertyModel(pv, "values[" + valueIndex + "]"));
 		valueModel = new PropertyModel(getModel(), "value");
 		mimeTypes = pv.getSupportedMime();
-		
-		typeChoice = new DropDownChoice("type", new PropertyModel(
-				getModelObject(), "type"), Arrays
+
+		List<ParameterType> ptypes = new ArrayList<ParameterType>(Arrays
 				.asList(ParameterType.values()));
+		ptypes.remove(ParameterType.LITERAL);
+		typeChoice = new DropDownChoice("type", new PropertyModel(
+				getModelObject(), "type"), ptypes);
 		add(typeChoice);
 
 		updateEditor();
@@ -88,10 +93,10 @@ public class ComplexInputPanel extends Panel {
 					getVectorLayerNames());
 			f.add(layer);
 			add(f);
-		} else if(pt == ParameterType.RASTER_LAYER) {
+		} else if (pt == ParameterType.RASTER_LAYER) {
 			// an internal raster layer
 			valueModel.setObject(new RasterLayerConfiguration());
-			
+
 			Fragment f = new Fragment("editor", "rasterLayer", this);
 			final DropDownChoice layer = new DropDownChoice("layer",
 					new PropertyModel(valueModel, "layerName"),
@@ -102,15 +107,58 @@ public class ComplexInputPanel extends Panel {
 			// we need to update the raster own bounding box as wcs requests
 			// mandate a spatial extent (why oh why???)
 			layer.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-				
+
 				@Override
 				protected void onUpdate(AjaxRequestTarget target) {
 					String name = layer.getModelObjectAsString();
-					LayerInfo li = GeoServerApplication.get().getCatalog().getLayerByName(name);
-					ReferencedEnvelope spatialDomain = li.getResource().getNativeBoundingBox();
-					((RasterLayerConfiguration) valueModel.getObject()).setSpatialDomain(spatialDomain);
+					LayerInfo li = GeoServerApplication.get().getCatalog()
+							.getLayerByName(name);
+					ReferencedEnvelope spatialDomain = li.getResource()
+							.getNativeBoundingBox();
+					((RasterLayerConfiguration) valueModel.getObject())
+							.setSpatialDomain(spatialDomain);
 				}
 			});
+		} else if (pt == ParameterType.REFERENCE) {
+			// an external reference
+			valueModel.setObject(new ReferenceConfiguration());
+
+			Fragment f = new Fragment("editor", "reference", this);
+			final DropDownChoice method = new DropDownChoice("method",
+					new PropertyModel(valueModel, "method"), Arrays.asList(
+							ReferenceConfiguration.Method.GET,
+							ReferenceConfiguration.Method.POST));
+			f.add(method);
+
+			DropDownChoice mimeChoice = new DropDownChoice("mime",
+					new PropertyModel(valueModel, "mime"), mimeTypes);
+			f.add(mimeChoice);
+
+			f.add(new TextField("url", new PropertyModel(valueModel, "url"))
+					.setRequired(true));
+			final TextArea body = new TextArea("body", new PropertyModel(
+					valueModel, "body"));
+			add(body);
+
+			final WebMarkupContainer bodyContainer = new WebMarkupContainer(
+					"bodyContainer");
+			f.add(bodyContainer);
+			bodyContainer.setOutputMarkupId(true);
+			bodyContainer.add(body);
+			bodyContainer.setVisible(false);
+
+			method.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+
+				@Override
+				protected void onUpdate(AjaxRequestTarget target) {
+					boolean post = method.getModelObject() == ReferenceConfiguration.Method.POST;
+					bodyContainer.setVisible(post);
+					body.setRequired(post);
+					target.addComponent(ComplexInputPanel.this);
+				}
+			});
+
+			add(f);
 		} else {
 			error("Unsupported parameter type");
 		}
@@ -127,7 +175,7 @@ public class ComplexInputPanel extends Panel {
 		}
 		return result;
 	}
-	
+
 	List<String> getRasterLayerNames() {
 		Catalog catalog = GeoServerApplication.get().getCatalog();
 

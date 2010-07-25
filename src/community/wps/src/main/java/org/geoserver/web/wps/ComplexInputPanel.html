@@ -20,5 +20,13 @@
    <wicket:fragment wicket:id="rasterLayer">
       <select wicket:id="layer"></select>
    </wicket:fragment>
+   
+   <wicket:fragment wicket:id="reference">
+      <br/>Method <select wicket:id="method"/><br/>
+      Mime type <select wicket:id="mime"/><br/>
+      URL <input type="text" style="width:550px" wicket:id="url"/><br/>
+      <div wicket:id="bodyContainer">
+      Body <textarea style="height:200px;width:600px" wicket:id="body"></textarea></div>
+   </wicket:fragment>
 </body>
 </html>
