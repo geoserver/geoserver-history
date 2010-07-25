@@ -20,6 +20,7 @@ package org.geoserver.wps.jts;
 import java.awt.RenderingHints.Key;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -297,12 +298,23 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
 			Object value = null;
 			try {
 				value = method.invoke(targetObject, args);
-			} catch (Throwable t) {
+			} catch (IllegalAccessException e) {
+				// report the exception and exit
+				if (monitor != null) {
+					monitor.exceptionOccurred(e);
+				}
+				throw new ProcessException(e);
+			} catch (InvocationTargetException e) {
+				Throwable t = e.getTargetException();
 				// report the exception and exit
 				if (monitor != null) {
 					monitor.exceptionOccurred(t);
 				}
-				throw new ProcessException(t);
+				if(t instanceof ProcessException) {
+					throw ((ProcessException) t);
+				} else {
+					throw new ProcessException(t);
+				}
 			}
 
 			// build up the result

@@ -74,6 +74,7 @@ import org.geoserver.wps.ppio.ReferencePPIO;
 import org.geoserver.wps.ppio.XMLPPIO;
 import org.geotools.data.Parameter;
 import org.geotools.process.Process;
+import org.geotools.process.ProcessException;
 import org.geotools.process.ProcessFactory;
 import org.geotools.process.Processors;
 import org.geotools.util.Converters;
@@ -87,6 +88,7 @@ import org.springframework.context.ApplicationContext;
  * Main class used to handle Execute requests
  * 
  * @author Lucas Reed, Refractions Research Inc
+ * @author Andrea Aime, OpenGeo
  */
 public class Execute {
     private static final int CONNECTION_TIMEOUT = 30 * 1000;
@@ -128,19 +130,27 @@ public class Execute {
         // execute the process
         Map<String, Object> result = null;
         ProcessListener listener = new ProcessListener();
+        Throwable exception = null;
         try {
             Process p = pf.create(processName);
             result = p.execute(inputs, listener);
-        } catch (WPSException e) {
-            throw e;
-        } catch (Throwable t) {
-            throw new WPSException("InternalError: " + t.getMessage(), t);
+        } catch (Exception e) {
+            exception = e;
         }
         
-        // check if failure occurred from the listener
-        Exception exception = listener.exception;
+        // if no direct exception, check if failure occurred from the listener
+        if(exception == null) {
+        	exception = listener.exception;
+        }
+        // if we got any exception report back with a service exception
         if(exception != null) {
-            throw new WPSException("InternalError:" + exception.getMessage(), exception);
+        	if(exception instanceof WPSException) {
+        		throw (WPSException) exception;
+        	} else if(exception instanceof ProcessException) {
+            	throw new WPSException("Process returned with an exception", exception);
+            } else {
+            	throw new WPSException("InternalError: " + exception.getMessage(), exception);
+            }
         }
 
         // filter out the results we have not been asked about
