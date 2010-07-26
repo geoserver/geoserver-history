@@ -1,0 +1,18 @@
+<assembly>
+  <id>wps-plugin</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>release/target/dependency</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>*sextante*</include>
+        <include>wps*</include>
+        <include>gt-process*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
