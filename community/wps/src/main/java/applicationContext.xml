@@ -128,6 +128,7 @@
     <bean id="importProcess" class="org.geoserver.wps.gs.ImportProcess">
       <constructor-arg index="0" ref="catalog"/>
     </bean>
+    <bean id="reprojectProcess" class="org.geoserver.wps.gs.ReprojectProcess"/>
     
     <!-- USER INTERFACE SECTION, TO BE MOVED INTO ITS OWN MODULE -->
     <bean id="wpsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">

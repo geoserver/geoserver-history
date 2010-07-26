@@ -349,7 +349,6 @@ public class Execute {
                     // grab the location and method
                     String href = ref.getHref();
 
-                    // TODO: handle in process GET requests by doing kvp parsing
                     if (href.startsWith("http://geoserver/wfs")) {
                         decoded = handleAsInternalWFS(ppio, ref);
                     } else if (href.startsWith("http://geoserver/wcs")) {
