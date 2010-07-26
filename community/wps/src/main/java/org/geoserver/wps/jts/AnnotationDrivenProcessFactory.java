@@ -73,8 +73,10 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
 		Annotation[][] params = method.getParameterAnnotations();
 		Class<?>[] paramTypes = method.getParameterTypes();
 		for (int i = 0; i < paramTypes.length; i++) {
-			Parameter<?> param = paramInfo(i, paramTypes[i], params[i]);
-			input.put(param.key, param);
+			if(!(ProgressListener.class.isAssignableFrom(paramTypes[i]))) {
+				Parameter<?> param = paramInfo(i, paramTypes[i], params[i]);
+				input.put(param.key, param);
+			}
 		}
 		return input;
 	}
@@ -249,7 +251,7 @@ public abstract class AnnotationDrivenProcessFactory implements ProcessFactory {
 			Annotation[][] annotations = method.getParameterAnnotations();
 			Object args[] = new Object[paramTypes.length];
 			for (int i = 0; i < args.length; i++) {
-				if (ProgressMonitor.class.equals(paramTypes[i])) {
+				if (ProgressListener.class.equals(paramTypes[i])) {
 					// pass in the monitor
 					args[i] = monitor;
 				} else {

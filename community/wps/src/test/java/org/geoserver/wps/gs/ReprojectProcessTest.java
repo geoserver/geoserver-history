@@ -1,12 +1,7 @@
 package org.geoserver.wps.gs;
 
-import java.util.Arrays;
-
 import org.geoserver.data.test.MockData;
 import org.geoserver.wps.WPSTestSupport;
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
 import org.w3c.dom.Document;
 
 public class ReprojectProcessTest extends WPSTestSupport {
