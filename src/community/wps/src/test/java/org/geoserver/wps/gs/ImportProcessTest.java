@@ -30,11 +30,9 @@ public class ImportProcessTest extends GeoServerTestSupport {
 				.getFeatureSource(null, null).getFeatures();
 		ForceCoordinateSystemFeatureResults forced = new ForceCoordinateSystemFeatureResults(
 				rawSource, CRS.decode("EPSG:4326"));
-		ReprojectingFeatureCollection reprojected = new ReprojectingFeatureCollection(
-				forced, CRS.decode("EPSG:900913"));
 
 		ImportProcess importer = new ImportProcess(getCatalog());
-		String result = importer.execute(reprojected, MockData.CITE_PREFIX,
+		String result = importer.execute(forced, MockData.CITE_PREFIX,
 				MockData.CITE_PREFIX, "Buildings2", null, null, null);
 
 		assertEquals(MockData.CITE_PREFIX + ":" + "Buildings2", result);
@@ -46,7 +44,7 @@ public class ImportProcessTest extends GeoServerTestSupport {
 
 		// check the feature type info
 		FeatureTypeInfo fti = (FeatureTypeInfo) layer.getResource();
-		assertEquals("EPSG:900913", fti.getSRS());
+		assertEquals("EPSG:4326", fti.getSRS());
 		SimpleFeatureSource fs = (SimpleFeatureSource) fti.getFeatureSource(
 				null, null);
 		assertEquals(2, fs.getCount(Query.ALL));
@@ -65,10 +63,6 @@ public class ImportProcessTest extends GeoServerTestSupport {
 		fi.close();
 		assertEquals("113", f.getAttribute("FID"));
 		assertEquals("123 Main Street", f.getAttribute("ADDRESS"));
-		// very rough check for reprojection, 4326 -> 900913 inflates the
-		// numbers by a few orders of magnitude
-		assertTrue(((Geometry) f.getDefaultGeometry()).getEnvelopeInternal()
-				.getWidth() > 1);
 
 		fi = fs.getFeatures(ff.equals(ff.property("FID"), ff.literal("114")))
 				.features();
@@ -76,7 +70,5 @@ public class ImportProcessTest extends GeoServerTestSupport {
 		fi.close();
 		assertEquals("114", f.getAttribute("FID"));
 		assertEquals("215 Main Street", f.getAttribute("ADDRESS"));
-		assertTrue(((Geometry) f.getDefaultGeometry()).getEnvelopeInternal()
-				.getWidth() > 1);
 	}
 }
