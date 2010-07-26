@@ -130,6 +130,7 @@
     </bean>
     <bean id="reprojectProcess" class="org.geoserver.wps.gs.ReprojectProcess"/>
     <bean id="aggregateProcess" class="org.geoserver.wps.gs.AggregateProcess"/>
+    <bean id="countProcess" class="org.geoserver.wps.gs.CountProcess"/>
     
     <!-- USER INTERFACE SECTION, TO BE MOVED INTO ITS OWN MODULE -->
     <bean id="wpsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">
