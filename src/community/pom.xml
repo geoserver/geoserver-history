@@ -30,6 +30,7 @@
           <descriptor>release/ext-css.xml</descriptor>
           <descriptor>release/ext-ftp.xml</descriptor>
           <descriptor>release/ext-printing.xml</descriptor>
+          <descriptor>release/ext-wps.xml</descriptor>
         </descriptors>
       </configuration>
      </plugin>
@@ -129,6 +130,7 @@
         <module>printing</module>
         <module>release</module>
         <module>ftp</module>
+        <module>wps</module>
       </modules>
     </profile>
     <profile>
