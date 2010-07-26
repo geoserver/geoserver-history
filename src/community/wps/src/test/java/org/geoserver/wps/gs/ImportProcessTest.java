@@ -9,13 +9,10 @@ import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.data.store.ReprojectingFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 public class ImportProcessTest extends GeoServerTestSupport {
 

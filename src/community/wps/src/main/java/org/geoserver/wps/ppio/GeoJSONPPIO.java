@@ -26,7 +26,11 @@ public class GeoJSONPPIO extends CDataPPIO {
 
 	@Override
 	public void encode(Object value, OutputStream os) throws IOException {
-		new FeatureJSON().writeFeatureCollection((FeatureCollection) value, os);
+		FeatureJSON json = new FeatureJSON();
+		// commented out due to GEOT-3209
+		// json.setEncodeFeatureCRS(true);
+		// json.setEncodeFeatureCollectionCRS(true);
+		json.writeFeatureCollection((FeatureCollection) value, os);
 	}
 
 	@Override
