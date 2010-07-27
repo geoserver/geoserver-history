@@ -4,18 +4,27 @@
  */
 package org.geoserver.web.wps;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Fragment;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CoverageInfo;
@@ -24,6 +33,7 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.GeoServerApplication;
 import org.geoserver.web.wps.InputParameterValues.ParameterType;
 import org.geotools.geometry.jts.ReferencedEnvelope;
+import org.geotools.util.logging.Logging;
 
 /**
  * Allows the user to edit a complex input parameter providing a variety of
@@ -33,10 +43,12 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
  */
 @SuppressWarnings("serial")
 public class ComplexInputPanel extends Panel {
+	static final Logger LOGGER = Logging.getLogger(RequestBuilderPanel.class);
 
 	private DropDownChoice typeChoice;
 	PropertyModel valueModel;
 	List<String> mimeTypes;
+	ModalWindow subprocesswindow;
 
 	public ComplexInputPanel(String id, InputParameterValues pv, int valueIndex) {
 		super(id);
@@ -51,6 +63,18 @@ public class ComplexInputPanel extends Panel {
 		typeChoice = new DropDownChoice("type", new PropertyModel(
 				getModelObject(), "type"), ptypes);
 		add(typeChoice);
+
+		subprocesswindow = new ModalWindow("subprocessPopupWindow");
+		subprocesswindow.setInitialWidth(700);
+		subprocesswindow.setInitialHeight(500);
+		add(subprocesswindow);
+		subprocesswindow.setPageCreator(new ModalWindow.PageCreator() {
+
+			public Page createPage() {
+				return new SubProcessBuilder((ExecuteRequest) subprocesswindow
+						.getModelObject(), subprocesswindow);
+			}
+		});
 
 		updateEditor();
 
@@ -71,11 +95,13 @@ public class ComplexInputPanel extends Panel {
 			remove("editor");
 		}
 
-		// reset the previous value
-		valueModel.setObject(null);
-
 		ParameterType pt = (ParameterType) typeChoice.getModelObject();
 		if (pt == ParameterType.TEXT) {
+			// an internal vector layer
+			if (!(valueModel.getObject() instanceof String)) {
+				valueModel.setObject("");
+			}
+
 			// data as plain text
 			Fragment f = new Fragment("editor", "text", this);
 			DropDownChoice mimeChoice = new DropDownChoice("mime",
@@ -86,7 +112,9 @@ public class ComplexInputPanel extends Panel {
 			add(f);
 		} else if (pt == ParameterType.VECTOR_LAYER) {
 			// an internal vector layer
-			valueModel.setObject(new VectorLayerConfiguration());
+			if (!(valueModel.getObject() instanceof VectorLayerConfiguration)) {
+				valueModel.setObject(new VectorLayerConfiguration());
+			}
 			Fragment f = new Fragment("editor", "vectorLayer", this);
 			DropDownChoice layer = new DropDownChoice("layer",
 					new PropertyModel(valueModel, "layerName"),
@@ -95,7 +123,9 @@ public class ComplexInputPanel extends Panel {
 			add(f);
 		} else if (pt == ParameterType.RASTER_LAYER) {
 			// an internal raster layer
-			valueModel.setObject(new RasterLayerConfiguration());
+			if (!(valueModel.getObject() instanceof RasterLayerConfiguration)) {
+				valueModel.setObject(new RasterLayerConfiguration());
+			}
 
 			Fragment f = new Fragment("editor", "rasterLayer", this);
 			final DropDownChoice layer = new DropDownChoice("layer",
@@ -121,7 +151,9 @@ public class ComplexInputPanel extends Panel {
 			});
 		} else if (pt == ParameterType.REFERENCE) {
 			// an external reference
-			valueModel.setObject(new ReferenceConfiguration());
+			if (!(valueModel.getObject() instanceof ReferenceConfiguration)) {
+				valueModel.setObject(new ReferenceConfiguration());
+			}
 
 			Fragment f = new Fragment("editor", "reference", this);
 			final DropDownChoice method = new DropDownChoice("method",
@@ -159,10 +191,67 @@ public class ComplexInputPanel extends Panel {
 			});
 
 			add(f);
+		} else if (pt == ParameterType.SUBPROCESS) {
+			if (!(valueModel.getObject() instanceof ExecuteRequest)) {
+				valueModel.setObject(new ExecuteRequest());
+			}
+
+			Fragment f = new Fragment("editor", "subprocess", this);
+			f.add(new AjaxLink("edit") {
+
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					subprocesswindow.setModel(valueModel);
+					subprocesswindow.show(target);
+				}
+			});
+
+			final TextArea xml = new TextArea("xml");
+			if (((ExecuteRequest) valueModel.getObject()).processName != null) {
+				try {
+					xml.setModelObject(getExecuteXML());
+				} catch(Throwable t) {
+					xml.setModel(new Model(""));
+				}
+			} else {
+				xml.setModel(new Model(""));
+			}
+			xml.setOutputMarkupId(true);
+			f.add(xml);
+
+			subprocesswindow
+					.setWindowClosedCallback(new ModalWindow.WindowClosedCallback() {
+
+						public void onClose(AjaxRequestTarget target) {
+							// turn the GUI request into an actual WPS request
+							xml.setModelObject(getExecuteXML());
+
+							target.addComponent(xml);
+						}
+
+					});
+
+			add(f);
 		} else {
 			error("Unsupported parameter type");
 		}
 	}
+	
+	String getExecuteXML() {
+		WPSExecuteTransformer tx = new WPSExecuteTransformer();
+		tx.setIndentation(2);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		try {
+			tx.transform(valueModel.getObject(), out);
+		} catch (TransformerException e) {
+			LOGGER.log(Level.SEVERE, "Error generating xml request", e);
+			error(e);
+		}
+		String executeXml = out.toString();
+		return executeXml;
+	}
+
 
 	List<String> getVectorLayerNames() {
 		Catalog catalog = GeoServerApplication.get().getCatalog();

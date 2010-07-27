@@ -66,7 +66,10 @@ class WPSExecuteTransformer extends TransformerBase {
 
 		public void encode(Object o) throws IllegalArgumentException {
 			ExecuteRequest request = (ExecuteRequest) o;
+			encode(request, true);
+		}
 
+		private void encode(ExecuteRequest request, boolean mainProcess) {
 			// add all the usual suspects (we know that we encode the
 			// wfs requests as wfs 1.0 and the wcs requests as 1.1, but
 			// we really need to move those namespace declaration down to
@@ -79,7 +82,11 @@ class WPSExecuteTransformer extends TransformerBase {
 					XLINK.NAMESPACE, "xsi:schemaLocation", WPS.NAMESPACE + " "
 							+ "http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd");
 
-			start("wps:Execute", attributes);
+			if(mainProcess) {
+				start("wps:Execute", attributes);
+			} else {
+				start("wps:Execute");
+			}
 			element("ows:Identifier", request.processName);
 			handleInputs(request.inputs);
 			handleOutputs(request.outputs);
@@ -144,6 +151,8 @@ class WPSExecuteTransformer extends TransformerBase {
                             handleRasterLayerInput(value);
                         } else if (value.type == ParameterType.REFERENCE) {
                         	handleReferenceInput(value);
+                        } else if (value.type == ParameterType.SUBPROCESS) {
+                        	handleSubprocessInput(value);
                         } else {
                             // write out a warning without blowing pu
                             char[] comment = "Can't handle this data type yet"
@@ -235,6 +244,16 @@ class WPSExecuteTransformer extends TransformerBase {
 				end("wps:Body");
 			}
 			
+			end("wps:Reference");
+		}
+		
+		private void handleSubprocessInput(ParameterValue value) {
+			ExecuteRequest request = (ExecuteRequest) value.value;
+
+			start("wps:Reference", attributes("mimeType",
+					value.mime, "xlink:href",
+					"http://geoserver/wps", "method", "POST"));
+			encode(request, false);
 			end("wps:Reference");
 		}
 

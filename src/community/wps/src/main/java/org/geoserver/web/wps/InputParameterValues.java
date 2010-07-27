@@ -27,7 +27,7 @@ import org.opengis.feature.type.Name;
 @SuppressWarnings("serial")
 class InputParameterValues implements Serializable {
 	public enum ParameterType {
-		LITERAL, TEXT, VECTOR_LAYER, RASTER_LAYER, REFERENCE;
+		LITERAL, TEXT, VECTOR_LAYER, RASTER_LAYER, REFERENCE, SUBPROCESS;
 	};
 
 	Name processName;
@@ -107,6 +107,30 @@ class InputParameterValues implements Serializable {
 				Serializable value) {
 			this.type = type;
 			this.mime = mime;
+			this.value = value;
+		}
+
+		public ParameterType getType() {
+			return type;
+		}
+
+		public void setType(ParameterType type) {
+			this.type = type;
+		}
+
+		public String getMime() {
+			return mime;
+		}
+
+		public void setMime(String mime) {
+			this.mime = mime;
+		}
+
+		public Serializable getValue() {
+			return value;
+		}
+
+		public void setValue(Serializable value) {
 			this.value = value;
 		}
 

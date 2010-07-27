@@ -2,6 +2,7 @@
 <body>
    <wicket:panel>
       <select wicket:id="type"/> <span wicket:id="editor"></span>
+      <div wicket:id="subprocessPopupWindow"></div>   
    </wicket:panel>
    
    <wicket:fragment wicket:id="text">
@@ -28,5 +29,11 @@
       <div wicket:id="bodyContainer">
       Body <textarea style="height:200px;width:600px" wicket:id="body"></textarea></div>
    </wicket:fragment>
-</body>
+   
+   <wicket:fragment wicket:id="subprocess">
+      <a href="#" wicket:id="edit">Define/Edit</a>
+      <textarea style="height:200px;width:600px" readonly="readonly" wicket:id="xml"></textarea>
+   </wicket:fragment>
+   
+ </body>
 </html>
