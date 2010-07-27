@@ -11,7 +11,6 @@ import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,6 @@ import java.util.Map;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.opengis.ows11.BoundingBoxType;
-import net.opengis.ows11.CodeType;
 import net.opengis.wcs10.Wcs10Factory;
 import net.opengis.wcs11.GetCoverageType;
 import net.opengis.wcs11.Wcs11Factory;
@@ -116,80 +114,24 @@ public class Execute {
         // note the current time
         Date started = Calendar.getInstance().getTime();
 
-        // load the process factory
-        CodeType ct = request.getIdentifier();
-        Name processName = Ows11Util.name(ct);
-        ProcessFactory pf = Processors.createProcessFactory(processName);
-        if (pf == null) {
-            throw new WPSException("No such process: " + processName);
-        }
-
-        // parse the inputs into in memory representations the process can handle
-        Map<String, Object> inputs = parseProcessInputs(request, processName, pf);
-
-        // execute the process
-        Map<String, Object> result = null;
-        ProcessListener listener = new ProcessListener();
-        Throwable exception = null;
-        try {
-            Process p = pf.create(processName);
-            result = p.execute(inputs, listener);
-        } catch (Exception e) {
-            exception = e;
-        }
+        // perform the execution and grab the results
+        Map<String, ProcessOutput> outputMap = executeInternal(request);
         
-        // if no direct exception, check if failure occurred from the listener
-        if(exception == null) {
-        	exception = listener.exception;
-        }
-        // if we got any exception report back with a service exception
-        if(exception != null) {
-        	if(exception instanceof WPSException) {
-        		throw (WPSException) exception;
-        	} else if(exception instanceof ProcessException) {
-            	throw new WPSException("Process returned with an exception", exception);
-            } else {
-            	throw new WPSException("InternalError: " + exception.getMessage(), exception);
-            }
-        }
-
-        // filter out the results we have not been asked about
-        // and create a direct map between required outputs and
-        // the gt process outputs
-        Map<String, OutputDefinitionType> outputMap = new HashMap<String, OutputDefinitionType>();
-        if (request.getResponseForm().getRawDataOutput() != null) {
-            // only one output in raw form
-            OutputDefinitionType od = request.getResponseForm().getRawDataOutput();
-            String outputName = od.getIdentifier().getValue();
-            outputMap.put(outputName, od);
-            Map<String, Object> newResults = new HashMap<String, Object>();
-            newResults.put(outputName, result.get(outputName));
-            result = newResults;
-        } else {
-            for (Iterator it = request.getResponseForm().getResponseDocument().getOutput()
-                    .iterator(); it.hasNext();) {
-                OutputDefinitionType od = (OutputDefinitionType) it.next();
-                String outputName = od.getIdentifier().getValue();
-                outputMap.put(outputName, od);
-            }
-            for (String key : new HashSet<String>(result.keySet())) {
-                if (!outputMap.containsKey(key)) {
-                    result.remove(key);
-                }
-            }
-        }
-
         // build the response
         Wps10Factory f = Wps10Factory.eINSTANCE;
         ExecuteResponseType response = f.createExecuteResponseType();
         response.setLang("en");
-        response.setServiceInstance(ResponseUtils.appendQueryString(ResponseUtils.buildURL(request
+        if(request.getBaseUrl() != null) {
+        	response.setServiceInstance(ResponseUtils.appendQueryString(ResponseUtils.buildURL(request
                 .getBaseUrl(), "ows", null, URLType.SERVICE), ""));
+        }
 
         // process
+        Name processName = Ows11Util.name(request.getIdentifier());
+        ProcessFactory pf = Processors.createProcessFactory(processName);
         final ProcessBriefType process = f.createProcessBriefType();
         response.setProcess(process);
-        process.setIdentifier(ct);
+        process.setIdentifier(request.getIdentifier());
         process.setProcessVersion(pf.getVersion(processName));
         process.setTitle(Ows11Util.languageString(pf.getTitle(processName)));
         process.setAbstract(Ows11Util.languageString(pf.getDescription(processName)));
@@ -221,7 +163,7 @@ public class Execute {
             }
 
             // find the ppio
-            String mime = outputMap.get(key).getMimeType();
+            String mime = outputMap.get(key).definition.getMimeType();
             ProcessParameterIO ppio = ProcessParameterIO.find(p, context, mime);
             if (ppio == null) {
                 throw new WPSException("Unable to encode output: " + p.key);
@@ -248,14 +190,14 @@ public class Execute {
         ProcessOutputsType1 processOutputs = f.createProcessOutputsType1();
         response.setProcessOutputs(processOutputs);
 
-        for (String key : result.keySet()) {
+        for (String key : outputMap.keySet()) {
             OutputDataType output = f.createOutputDataType();
             output.setIdentifier(Ows11Util.code(key));
             output.setTitle(Ows11Util
                     .languageString(pf.getResultInfo(processName, null).get(key).description));
             processOutputs.getOutput().add(output);
 
-            final Object o = result.get(key);
+            final Object o = outputMap.get(key).object;
             ProcessParameterIO ppio = ppios.get(key);
 
             if (ppio instanceof ReferencePPIO) {
@@ -263,7 +205,7 @@ public class Execute {
                 OutputReferenceType ref = f.createOutputReferenceType();
                 output.setReference(ref);
 
-                ref.setMimeType(outputMap.get(key).getMimeType());
+                ref.setMimeType(outputMap.get(key).definition.getMimeType());
                 ref.setHref(((ReferencePPIO) ppio).encode(o).toString());
             } else {
                 // encode as data
@@ -305,6 +247,64 @@ public class Execute {
         }
 
         return response;
+    }
+    
+    Map<String, ProcessOutput> executeInternal(ExecuteType request) {
+    	// load the process factory
+        Name processName = Ows11Util.name(request.getIdentifier());
+        ProcessFactory pf = Processors.createProcessFactory(processName);
+        if (pf == null) {
+            throw new WPSException("No such process: " + processName);
+        }
+
+        // parse the inputs into in memory representations the process can handle
+        Map<String, Object> inputs = parseProcessInputs(request, processName, pf);
+
+        // execute the process
+        Map<String, Object> result = null;
+        ProcessListener listener = new ProcessListener();
+        Throwable exception = null;
+        try {
+            Process p = pf.create(processName);
+            result = p.execute(inputs, listener);
+        } catch (Exception e) {
+            exception = e;
+        }
+        
+        // if no direct exception, check if failure occurred from the listener
+        if(exception == null) {
+        	exception = listener.exception;
+        }
+        // if we got any exception report back with a service exception
+        if(exception != null) {
+        	if(exception instanceof WPSException) {
+        		throw (WPSException) exception;
+        	} else if(exception instanceof ProcessException) {
+            	throw new WPSException("Process returned with an exception", exception);
+            } else {
+            	throw new WPSException("InternalError: " + exception.getMessage(), exception);
+            }
+        }
+
+        // filter out the results we have not been asked about
+        // and create a direct map between required outputs and
+        // the gt process outputs
+        Map<String, ProcessOutput> outputMap = new HashMap<String, ProcessOutput>();
+        if (request.getResponseForm().getRawDataOutput() != null) {
+            // only one output in raw form
+            OutputDefinitionType od = request.getResponseForm().getRawDataOutput();
+            String outputName = od.getIdentifier().getValue();
+            outputMap.put(outputName, new ProcessOutput(od, result.get(outputName)));
+        } else {
+            for (Iterator it = request.getResponseForm().getResponseDocument().getOutput()
+                    .iterator(); it.hasNext();) {
+                OutputDefinitionType od = (OutputDefinitionType) it.next();
+                String outputName = od.getIdentifier().getValue();
+                outputMap.put(outputName, new ProcessOutput(od, result.get(outputName)));
+            }
+        }
+
+        return outputMap;
     }
 
     /**
@@ -353,6 +353,8 @@ public class Execute {
                         decoded = handleAsInternalWFS(ppio, ref);
                     } else if (href.startsWith("http://geoserver/wcs")) {
                         decoded = handleAsInternalWCS(ppio, ref);
+                    } else if (href.startsWith("http://geoserver/wps")) {
+                        decoded = handleAsInternalWPS(ppio, ref);
                     } else {
                         decoded = executeRemoteRequest(ref, (ComplexPPIO) ppio, inputId);
                     }
@@ -417,6 +419,35 @@ public class Execute {
         // this will also deal with axis order issues
         return ((ComplexPPIO) ppio).decode(featureCollectionType);
     }
+    
+    /**
+     * Process the request as an internal one, without going through GML encoding/decoding
+     * 
+     * @param ppio
+     * @param ref
+     * @param method
+     * @return
+     * @throws Exception
+     */
+    Object handleAsInternalWPS(ProcessParameterIO ppio, InputReferenceType ref) throws Exception {
+        ExecuteType request = null;
+        if (ref.getMethod() == MethodType.POST_LITERAL) {
+        	request = (ExecuteType) ref.getBody();
+        } else {
+        	throw new WPSException("Cannot handle WPS KVP requests at the moment");
+        }
+        
+        Map<String, ProcessOutput> results = executeInternal(request);
+        Object obj = results.values().iterator().next().object;
+        if(obj != null && !ppio.getType().isInstance(obj)) {
+			throw new WPSException(
+					"The process output is incompatible with the input target type, was expecting "
+							+ ppio.getType().getName() + " and got "
+							+ obj.getClass().getName());
+        }
+        return obj;
+    }
+
     
     /**
      * Process the request as an internal one, without going through GML encoding/decoding
@@ -580,6 +611,17 @@ public class Execute {
                 refMethod.releaseConnection();
             }
         }
+    }
+    
+    static class ProcessOutput {
+    	OutputDefinitionType definition;
+    	Object object;
+		
+    	public ProcessOutput(OutputDefinitionType definition, Object object) {
+			super();
+			this.definition = definition;
+			this.object = object;
+		}
     }
     
     /**
