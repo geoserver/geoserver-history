@@ -78,10 +78,10 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // 1st feature
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[1]/@gml:id", doc);
         // check srs properties
-        assertXpathEvaluatesTo(EPSG_4283, "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsName", doc);
-// TODO: Uncomment these lines when GEOT-2639 is fixed
-//        assertXpathEvaluatesTo(DIMENSION,
-//                "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsDimension", doc);
+        assertXpathEvaluatesTo(EPSG_4283, "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsName",
+                doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsDimension", doc);
         // test geometry values
         assertXpathEvaluatesTo(
                 "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
@@ -90,14 +90,14 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // test nested geometry
         assertXpathEvaluatesTo("nested.2",
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
-        assertXpathEvaluatesTo(EPSG_4283,
+        assertXpathEvaluatesTo(
+                EPSG_4283,
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsName",
                 doc);
-// TODO: Uncomment these lines when GEOT-2639 is fixed
-//        assertXpathEvaluatesTo(
-//                DIMENSION,
-//                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
-//                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
+                doc);
         assertXpathEvaluatesTo("42.58 31.29",
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
                 doc);
@@ -107,9 +107,8 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[2]/@gml:id", doc);
         // check srs properties
         assertXpathEvaluatesTo(EPSG_4283, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsName", doc);
-// TODO: Uncomment these lines when GEOT-2639 is fixed
-//        assertXpathEvaluatesTo(DIMENSION, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsDimension",
-//                doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsDimension", doc);
         // test geometry values
         assertXpathEvaluatesTo("42.58 31.29", "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos",
                 doc);
@@ -120,11 +119,10 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
                 EPSG_4283,
                 "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
                 doc);
-// TODO: Uncomment these lines when GEOT-2639 is fixed
-//        assertXpathEvaluatesTo(
-//                DIMENSION,
-//                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
-//                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
+                doc);
         assertXpathEvaluatesTo(
                 "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
@@ -175,10 +173,9 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         String id = "1";
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[1]/@gml:id", doc);
         // check srs properties
-//        assertXpathEvaluatesTo(EPSG_4326, "//ex:geomContainer[1]/ex:geom/gml:Polygon/@srsName", doc);
-// TODO: Uncomment these lines when GEOT-2707 is fixed
-//        assertXpathEvaluatesTo(DIMENSION,
-//                "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsDimension", doc);
+        assertXpathEvaluatesTo(EPSG_4326, "//ex:geomContainer[1]/ex:geom/gml:Polygon/@srsName", doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsDimension", doc);
         // test values
         assertXpathEvaluatesTo(
                 targetPolygonCoords,
@@ -187,14 +184,14 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // test nested geometry
         assertXpathEvaluatesTo("nested.2",
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
-//        assertXpathEvaluatesTo(EPSG_4326,
-//                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsName",
-//                doc);
-// TODO: Uncomment these lines when GEOT-2707 is fixed
-//        assertXpathEvaluatesTo(
-//                DIMENSION,
-//                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
-//                doc);
+        assertXpathEvaluatesTo(
+                EPSG_4326,
+                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsName",
+                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
+                doc);
         assertXpathEvaluatesTo(targetPointCoord,
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
                 doc);
@@ -203,25 +200,23 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         id = "2";
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[2]/@gml:id", doc);
         // check srs properties
-//        assertXpathEvaluatesTo(EPSG_4326, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsName", doc);
-// TODO: Uncomment these lines when GEOT-2707 is fixed
-//        assertXpathEvaluatesTo(DIMENSION, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsDimension",
-//                doc);
+        assertXpathEvaluatesTo(EPSG_4326, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsName", doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsDimension", doc);
         // test values
-        assertXpathEvaluatesTo(targetPointCoord, "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos",
-                doc);
+        assertXpathEvaluatesTo(targetPointCoord,
+                "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos", doc);
         // test nested geometry
         assertXpathEvaluatesTo("nested.1",
                 "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
-//        assertXpathEvaluatesTo(
-//                EPSG_4326,
-//                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
-//                doc);
-// TODO: Uncomment these lines when GEOT-2707 is fixed
-//        assertXpathEvaluatesTo(
-//                DIMENSION,
-//                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
-//                doc);
+        assertXpathEvaluatesTo(
+                EPSG_4326,
+                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
+                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
+                doc);
         assertXpathEvaluatesTo(
                 targetPolygonCoords,
                 "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
