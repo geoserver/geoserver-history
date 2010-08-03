@@ -65,6 +65,7 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
      */
     public void testGetFeatureContent() {
         Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:GeologicUnit");
+        LOGGER.info("WFS GetFeature response:\n" + prettyString(doc));
         assertXpathCount(3, "//gsml:GeologicUnit", doc);
 
         // GU:25699
@@ -73,30 +74,26 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
         assertXpathEvaluatesTo("er.25699", "//gsml:GeologicUnit[@gml:id='25699']/gml:name[2]", doc);
         assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='25699']/FEATURE_LINK", doc);
         assertXpathCount(1,
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature", doc);
+                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurrence/gsml:MappedFeature", doc);
         // mf1
         assertXpathEvaluatesTo("mf1",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature/@gml:id",
+                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurrence/gsml:MappedFeature/@gml:id",
                 doc);
         assertXpathEvaluatesTo("GUNTHORPE FORMATION",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature/gml:name",
+                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurrence/gsml:MappedFeature/gml:name",
                 doc);
         assertXpathEvaluatesTo(
                 "mf1",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature/gml:name[2]",
+                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurrence/gsml:MappedFeature/gml:name[2]",
                 doc);
         assertXpathEvaluatesTo(
                 "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurence/gsml:MappedFeature/gsml:shape//gml:posList",
+                "//gsml:GeologicUnit[@gml:id='25699']/gsml:occurrence/gsml:MappedFeature/gsml:shape//gml:posList",
                 doc);
 
         assertXpathEvaluatesTo(
                 "strataform",
                 "//gsml:GeologicUnit[@gml:id='25699']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
-                doc);
-        assertXpathEvaluatesTo(
-                "urn:cgi:classifierScheme:GSV:GeologicalUnitType",
-                "//gsml:GeologicUnit[@gml:id='25699']/gsml:classifier/gsml:ControlledConcept/gml:name",
                 doc);
         assertXpathCount(3, "//gsml:GeologicUnit[@gml:id='25699']/gsml:composition", doc);
         // cp.167775491936278844
@@ -150,42 +147,38 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "vein",
                 "//gsml:GeologicUnit[@gml:id='25678']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
                 doc);
-        assertXpathEvaluatesTo(
-                "urn:cgi:classifierScheme:GSV:GeologicalUnitType",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:classifier/gsml:ControlledConcept/gml:name",
-                doc);
         assertXpathCount(2,
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence/gsml:MappedFeature", doc);
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence/gsml:MappedFeature", doc);
         // mf2
-        assertXpathEvaluatesTo("mf2", "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence"
+        assertXpathEvaluatesTo("mf2", "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence"
                 + "/gsml:MappedFeature/@gml:id", doc);
         assertXpathEvaluatesTo("MERCIA MUDSTONE GROUP",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence/gsml:MappedFeature/gml:name",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence/gsml:MappedFeature/gml:name",
                 doc);
         assertXpathEvaluatesTo(
                 "mf2",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence/gsml:MappedFeature/gml:name[2]",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence/gsml:MappedFeature/gml:name[2]",
                 doc);
         assertXpathEvaluatesTo(
                 "-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence/gsml:MappedFeature/gsml:shape//gml:posList",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence/gsml:MappedFeature/gsml:shape//gml:posList",
                 doc);
         // mf3
         assertXpathEvaluatesTo(
                 "mf3",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence[2]/gsml:MappedFeature/@gml:id",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence[2]/gsml:MappedFeature/@gml:id",
                 doc);
         assertXpathEvaluatesTo(
                 "CLIFTON FORMATION",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence[2]/gsml:MappedFeature/gml:name",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence[2]/gsml:MappedFeature/gml:name",
                 doc);
         assertXpathEvaluatesTo(
                 "mf3",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence[2]/gsml:MappedFeature/gml:name[2]",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence[2]/gsml:MappedFeature/gml:name[2]",
                 doc);
         assertXpathEvaluatesTo(
                 "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
-                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurence[2]/gsml:MappedFeature/gsml:shape//gml:posList",
+                "//gsml:GeologicUnit[@gml:id='25678']/gsml:occurrence[2]/gsml:MappedFeature/gsml:shape//gml:posList",
                 doc);
 
         assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='25678']" + "/gsml:composition", doc);
@@ -208,26 +201,22 @@ public class DataAccessIntegrationWfsTest extends AbstractAppSchemaWfsTestSuppor
                 "cross-cutting",
                 "//gsml:GeologicUnit[@gml:id='25682']/gsml:bodyMorphology/gsml:CGI_TermValue/gsml:value",
                 doc);
-        assertXpathEvaluatesTo(
-                "urn:cgi:classifierScheme:GSV:GeologicalUnitType",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:classifier/gsml:ControlledConcept/gml:name",
-                doc);
         assertXpathCount(1,
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurence/gsml:MappedFeature", doc);
+                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurrence/gsml:MappedFeature", doc);
         // mf4
         assertXpathEvaluatesTo("mf4",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurence/gsml:MappedFeature/@gml:id",
+                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurrence/gsml:MappedFeature/@gml:id",
                 doc);
         assertXpathEvaluatesTo("MURRADUC BASALT",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurence/gsml:MappedFeature/gml:name",
+                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurrence/gsml:MappedFeature/gml:name",
                 doc);
         assertXpathEvaluatesTo(
                 "mf4",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurence/gsml:MappedFeature/gml:name[2]",
+                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurrence/gsml:MappedFeature/gml:name[2]",
                 doc);
         assertXpathEvaluatesTo(
                 "-1.3 52.5 -1.3 52.6 -1.2 52.6 -1.2 52.5 -1.3 52.5",
-                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurence/gsml:MappedFeature/gsml:shape//gml:posList",
+                "//gsml:GeologicUnit[@gml:id='25682']/gsml:occurrence/gsml:MappedFeature/gsml:shape//gml:posList",
                 doc);
 
         assertXpathCount(1, "//gsml:GeologicUnit[@gml:id='25682']" + "/gsml:composition", doc);

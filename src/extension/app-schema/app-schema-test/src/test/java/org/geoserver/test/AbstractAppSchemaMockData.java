@@ -11,24 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.geoserver.data.CatalogWriter;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
-import org.geotools.data.DataUtilities;
 import org.geotools.data.complex.AppSchemaDataAccessTest;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -53,23 +44,13 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
     /**
      * URI for gsml namespace.
      */
-    public static final String GSML_URI = "http://www.cgi-iugs.org/xml/GeoSciML/2";
+    public static final String GSML_URI = "urn:cgi:xmlns:CGI:GeoSciML:2.0";
 
     /**
      * Schema location URL for the the top-level gsml XSD.
      */
-    public static final String GSML_SCHEMA_LOCATION_URL = "http://schemas.opengis.net/GeoSciML/geosciml.xsd";
+    public static final String GSML_SCHEMA_LOCATION_URL = "http://www.geosciml.org/geosciml/2.0/xsd/geosciml.xsd";
     
-    /**
-     * The OASIS catalog file.
-     */
-    public static final String OASIS_CATALOG = "mappedPolygons.oasis.xml";
-
-    /**
-     * Subdirectory where the schemas named in the OASIS catalog are stored.
-     */
-    public static final String SCHEMAS_DIR = "commonSchemas_new";
-
     /**
      * Map of namespace prefix to namespace URI.
      */
@@ -132,10 +113,6 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
 
     private final Map<String, String> namespaces;
 
-    private final String schemasDirName;
-
-    private final String oasisCatalogFileName;
-
     private File data;
 
     /** the 'featureTypes' directory, under 'data' */
@@ -145,14 +122,11 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
      * Constructor with the default namespaces, schema directory, and catalog file.
      */
     public AbstractAppSchemaMockData() {
-        this(NAMESPACES, SCHEMAS_DIR, OASIS_CATALOG);
+        this(NAMESPACES);
     }
 
-    public AbstractAppSchemaMockData(Map<String, String> namespaces, String schemasDirName,
-            String oasisCatalogFileName) {
+    public AbstractAppSchemaMockData(Map<String, String> namespaces) {
         this.namespaces = new LinkedHashMap<String, String>(namespaces);
-        this.schemasDirName = schemasDirName;
-        this.oasisCatalogFileName = oasisCatalogFileName;
         // create the mock data directory
         try {
             data = IOUtils.createRandomDirectory("target", "app-schema-mock", "data");
@@ -278,49 +252,6 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
     }
 
     /**
-     * Recursively copy a folder in a jar file, expressed as a jar URL, into a destination folder.
-     * Empty source directories are not copied. All required destination directories are created.
-     * 
-     * @param url
-     *            jar URL specifying source jar file and folder
-     * @param destination
-     *            file to copy the folder
-     */
-    private void deepCopyJarPath(URL url, File destination) {
-        try {
-            String urlString = url.toString();
-            Pattern pattern = Pattern.compile("jar:(file:[^!]+)!/([^!]+)");
-            Matcher matcher = pattern.matcher(urlString);
-            if (!matcher.matches()) {
-                throw new RuntimeException("Unexpected jar URL format: " + urlString);
-            }
-            String sourcePath = URLDecoder.decode(matcher.group(2), "UTF-8");
-            if (!sourcePath.endsWith("/")) {
-                sourcePath += "/";
-            }
-            URL jarUrl = new URL(matcher.group(1));
-            ZipFile jarFile = new ZipFile(DataUtilities.urlToFile(jarUrl));
-            Enumeration<? extends ZipEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                ZipEntry entry = (ZipEntry) entries.nextElement();
-                if (!entry.isDirectory() && entry.getName().startsWith(sourcePath)) {
-                    File destinationFile = new File(destination, entry.getName().substring(
-                            sourcePath.length()));
-                    destinationFile.getParentFile().mkdirs();
-                    InputStream input = jarFile.getInputStream(entry);
-                    try {
-                        IOUtils.copy(input, destinationFile);
-                    } finally {
-                        input.close();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    
-    /**
      * Write an info.xml file describing a feature type to the feature type directory.
      * 
      * <p>
@@ -440,9 +371,6 @@ public abstract class AbstractAppSchemaMockData implements NamespaceTestData {
         try {
             writeInfoFile(namespacePrefix, typeName, featureTypeDir, dataStoreName);
             copyMappingAndSupportFiles(namespacePrefix, typeName, mappingFileName, supportFileNames);
-            copyFileToFeatureTypeDir(namespacePrefix, typeName, oasisCatalogFileName);
-            deepCopyJarPath(AppSchemaDataAccessTest.class.getResource(
-                    TEST_DATA + schemasDirName), new File(featureTypeDir, schemasDirName));
             addDataStore(dataStoreName, namespacePrefix, buildAppSchemaDatastoreParams(
                     namespacePrefix, typeName, mappingFileName, featureTypesBaseDir, dataStoreName));
         } catch (Exception e) {
