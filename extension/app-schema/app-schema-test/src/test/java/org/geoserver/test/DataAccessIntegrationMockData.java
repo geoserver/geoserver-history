@@ -24,21 +24,21 @@ import org.geotools.data.DataUtilities;
 public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
 
     /**
-     * Mineral Occurrence prefix
+     * Earth Resource namespace prefix
      */
-    private static final String MO_PREFIX = "mo";
+    private static final String ER_PREFIX = "er";
 
     /**
-     * Mineral Occurrence URI
+     * Earth Resource namespace URI
      */
-    private static final String MO_URI = "urn:cgi:xmlns:GGIC:MineralOccurrence:1.0";
+    private static final String ER_URI = "urn:cgi:xmlns:GGIC:EarthResource:1.1";
 
     /**
      * @see org.geoserver.test.AbstractAppSchemaMockData#addContent()
      */
     @Override
     protected void addContent() {
-        putNamespace(MO_PREFIX, MO_URI);
+        putNamespace(ER_PREFIX, ER_URI);
         addFeatureType(GSML_PREFIX, "MappedFeature", "MappedFeatureAsOccurrence.xml",
                 "MappedFeaturePropertyfile.properties");
         // GeologicUnit is the output type with a mock MO:EarthResource data access as an
@@ -48,10 +48,10 @@ public class DataAccessIntegrationMockData extends AbstractAppSchemaMockData {
                 "exposureColor.properties", "CompositionPart.xml", "CompositionPart.properties", 
                 "ControlledConcept.xml", "ControlledConcept.properties");
 
-        // create mock minOcc data access which is a non app-schema type
+        // create mock Earth Resource data access which is a non app-schema type
         // this comes from GeoTools - DataAccessIntegrationTest class
         Map<String, Serializable> params = new HashMap<String, Serializable>();
-        params.put("dbtype", "mo-data-access");
+        params.put("dbtype", "er-data-access");
         try {
             params.put("directory", DataUtilities.fileToURL(new File(getFeatureTypesBaseDir(),
                     getDataStoreName(GSML_PREFIX, "GeologicUnit"))));
