@@ -394,14 +394,14 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // feature link shouldn't appear as it's not in the schema
         assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                 + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
-        // occurence [sic]
+        // occurrence
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                + "/gsml:GeologicUnit/gsml:occurence", doc);
+                + "/gsml:GeologicUnit/gsml:occurrence", doc);
         assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='" + id
-                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurence[1]", doc);
+                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurrence[1]", doc);
         assertXpathEvaluatesTo("urn:cgi:feature:MappedFeature:mf1",
                 "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:occurence/@xlink:href", doc);
+                        + "/gsml:GeologicUnit/gsml:occurrence/@xlink:href", doc);
         // exposureColor
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:exposureColor", doc);
@@ -487,19 +487,19 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "']/gsml:specification/gsml:GeologicUnit/gml:name[3]", doc);
         assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                 + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
-        // occurence [sic]
+        // occurrence
         assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                + "/gsml:GeologicUnit/gsml:occurence", doc);
+                + "/gsml:GeologicUnit/gsml:occurrence", doc);
         assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='" + id
-                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurence[1]", doc);
+                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurrence[1]", doc);
         assertXpathEvaluatesTo("urn:cgi:feature:MappedFeature:mf2",
                 "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:occurence[1]/@xlink:href", doc);
+                        + "/gsml:GeologicUnit/gsml:occurrence[1]/@xlink:href", doc);
         assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='" + id
-                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurence[2]", doc);
+                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurrence[2]", doc);
         assertXpathEvaluatesTo("urn:cgi:feature:MappedFeature:mf3",
                 "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:occurence[2]/@xlink:href", doc);
+                        + "/gsml:GeologicUnit/gsml:occurrence[2]/@xlink:href", doc);
         // description
         assertXpathEvaluatesTo("Olivine basalt, tuff, microgabbro, minor sedimentary rocks",
                 "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
@@ -634,14 +634,14 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "']/gsml:specification/gsml:GeologicUnit/gml:name[2]", doc);
         assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
                 + "']/gsml:specification/gsml:GeologicUnit/FEATURE_LINK", doc);
-        // occurence [sic]
+        // occurrence
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                + "/gsml:GeologicUnit/gsml:occurence", doc);
+                + "/gsml:GeologicUnit/gsml:occurrence", doc);
         assertXpathEvaluatesTo("", "//gsml:MappedFeature[@gml:id='" + id
-                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurence[1]", doc);
+                + "']/gsml:specification" + "/gsml:GeologicUnit/gsml:occurrence[1]", doc);
         assertXpathEvaluatesTo("urn:cgi:feature:MappedFeature:mf4",
                 "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
-                        + "/gsml:GeologicUnit/gsml:occurence/@xlink:href", doc);
+                        + "/gsml:GeologicUnit/gsml:occurrence/@xlink:href", doc);
         // exposureColor
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:exposureColor", doc);

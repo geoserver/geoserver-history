@@ -7,7 +7,7 @@
 package org.geoserver.test;
 
 import junit.framework.Test;
-import org.custommonkey.xmlunit.XpathEngine;
+
 import org.w3c.dom.Document;
 
 /**
@@ -17,7 +17,6 @@ import org.w3c.dom.Document;
  * 
  */
 public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
-    private XpathEngine xpathEngine;
 
     /**
      * Read-only test so can use one-time setup.
@@ -124,7 +123,6 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
                 doc);
         assertXpathEvaluatesTo("3", "//er:Commodity[@gml:id='er.commodity.gu.3']/er:commodityRank",
                 doc);
-
     }
 
     public void testAttributeMinOccur1() {
@@ -144,7 +142,6 @@ public class ValidationTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathCount(0, "//gsml:GeologicUnit[@gml:id='gsml.geologicunit.gu.3']/gml:name", doc);
         String exceptionRpt = evaluate("//ows:ExceptionText", doc);
         assertTrue(exceptionRpt.contains("observationMethod requires a non null value"));
-
     }
 
 }
