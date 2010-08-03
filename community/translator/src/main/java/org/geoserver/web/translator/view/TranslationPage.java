@@ -179,7 +179,8 @@ public class TranslationPage extends TranslationBasePage {
             return Arrays.asList(LOCALE, COMPLETE, UNCOMMITTED);
         }
 
-        public IModel model(Object translationInfo) {
+        @Override
+        protected IModel newModel(Object translationInfo) {
             return new Model((TranslationInfo) translationInfo);
         }
 
