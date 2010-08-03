@@ -449,5 +449,7 @@
       <constructor-arg value="wms"/>
     </bean>
     
-    <bean id="wmsLifecycleHandler" class="org.geoserver.wms.WMSLifecycleHandler"></bean>
+    <bean id="wmsLifecycleHandler" class="org.geoserver.wms.WMSLifecycleHandler">
+      <constructor-arg index="0" ref="dataDirectory"/>
+    </bean>
 </beans>
