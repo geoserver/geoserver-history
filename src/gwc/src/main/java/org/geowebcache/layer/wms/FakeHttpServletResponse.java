@@ -9,7 +9,9 @@ package org.geowebcache.layer.wms;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -23,16 +25,22 @@ public class FakeHttpServletResponse implements HttpServletResponse {
     
     private static Logger log = Logging.getLogger(HttpServletResponse.class.toString());
     
-    FakeServletOutputStream fos = new FakeServletOutputStream();
+    private FakeServletOutputStream fos = new FakeServletOutputStream();
     
-    String contentType;
+    private String contentType;
     
-    HashMap<String,String> headers = new HashMap<String,String>();
+    private HashMap<String,String> headers = new HashMap<String,String>();
     
-    int responseCode = 200;
+    private List<Cookie> cookies;
+    
+    private int responseCode = 200;
     
     public byte[] getBytes() {
         return fos.getBytes();
+    }
+    
+    public Cookie[] getCachedCookies() {
+        return cookies == null ? new Cookie[0] : cookies.toArray(new Cookie[cookies.size()]);
     }
     
     /**
@@ -44,10 +52,13 @@ public class FakeHttpServletResponse implements HttpServletResponse {
     }
     
     /**
-     * Standard interface
+     * @see javax.servlet.http.HttpServletResponse#addCookie(javax.servlet.http.Cookie)
      */
-    public void addCookie(Cookie arg0) {
-        throw new ServletDebugException();
+    public void addCookie(Cookie cookie) {
+        if(cookies == null){
+            cookies = new ArrayList<Cookie>(2);
+        }
+        cookies.add(cookie);
     }
 
     public void addDateHeader(String arg0, long arg1) {

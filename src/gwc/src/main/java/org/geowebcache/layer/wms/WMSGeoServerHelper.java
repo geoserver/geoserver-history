@@ -9,9 +9,14 @@ package org.geowebcache.layer.wms;
 
 import java.util.logging.Logger;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.geoserver.ows.Dispatcher;
 import org.geotools.util.logging.Logging;
 import org.geowebcache.GeoWebCacheException;
+import org.geowebcache.conveyor.Conveyor;
 import org.geowebcache.conveyor.ConveyorTile;
 import org.geowebcache.layer.TileResponseReceiver;
 import org.geowebcache.mime.XMLMime;
@@ -41,8 +46,19 @@ public class WMSGeoServerHelper extends WMSSourceHelper {
             wmsParams = wmsParams.replaceAll("&format_options=.*$", "");
             wmsParams += "&format_options=" + ServletUtils.URLEncode("regionateBy:auto"); 
         }
+              
+        HttpServletRequest actualRequest = null;
+        HttpServletResponse actualResponse = null;
+        Cookie[] cookies = null;
+
+        if (tileRespRecv instanceof Conveyor) {
+            actualRequest = ((Conveyor) tileRespRecv).servletReq;
+            actualResponse = ((Conveyor) tileRespRecv).servletResp;
+            cookies = actualRequest.getCookies();
+        }
         
-        FakeHttpServletRequest req = new FakeHttpServletRequest(wmsParams);
+        
+        FakeHttpServletRequest req = new FakeHttpServletRequest(wmsParams, cookies);
         FakeHttpServletResponse resp = new FakeHttpServletResponse();
         
         try {
@@ -51,6 +67,13 @@ public class WMSGeoServerHelper extends WMSSourceHelper {
             log.fine(e.getMessage());
             
             throw new GeoWebCacheException("Problem communicating with GeoServer" + e.getMessage());
+        }
+
+        if (actualResponse != null) {
+            cookies = resp.getCachedCookies();
+            for (Cookie c : cookies) {
+                actualResponse.addCookie(c);
+            }
         }
         
         if(super.mimeStringCheck(expectedMimeType, resp.getContentType())) {
