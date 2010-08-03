@@ -30,14 +30,17 @@ import org.geowebcache.util.ServletUtils;
 public class FakeHttpServletRequest implements HttpServletRequest {
     private static Logger log = Logging.getLogger(HttpServletRequest.class.toString());
     
-    String wmsParams;
+    private String wmsParams;
     
-    HashMap<String,String> parameterMap = new HashMap<String,String>(10);
+    private HashMap<String,String> parameterMap = new HashMap<String,String>(10);
+
+    private Cookie[] cookies;
     
-    public FakeHttpServletRequest(String wmsParams) {
+    public FakeHttpServletRequest(String wmsParams, Cookie[] cookies) {
         log.finer("Constructing from " + wmsParams);
         
         this.wmsParams = wmsParams;
+        this.cookies = cookies;
         
         // This is a bit stupid... refactor parameters in GWC, again?
         String[] pairs = this.wmsParams.split("&");
@@ -66,7 +69,7 @@ public class FakeHttpServletRequest implements HttpServletRequest {
     }
 
     public Cookie[] getCookies() {
-        throw new ServletDebugException();
+        return cookies;
     }
 
     public long getDateHeader(String arg0) {
