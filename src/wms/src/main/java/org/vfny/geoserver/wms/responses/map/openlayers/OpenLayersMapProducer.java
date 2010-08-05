@@ -72,6 +72,9 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 		ignoredParameters.add("SERVICE");
 		ignoredParameters.add("VERSION");
 		ignoredParameters.add("FORMAT");
+		ignoredParameters.add("WIDTH");
+		ignoredParameters.add("HEIGHT");
+		ignoredParameters.add("SRS");
 	}
 
 	/**
