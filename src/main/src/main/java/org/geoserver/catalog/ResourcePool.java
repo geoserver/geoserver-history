@@ -554,6 +554,10 @@ public class ResourcePool {
      * @throws IOException Any errors that occure while loading the resource.
      */
     public FeatureType getFeatureType( FeatureTypeInfo info ) throws IOException {
+        return getFeatureType(info, true);
+    }
+    
+    FeatureType getFeatureType( FeatureTypeInfo info, boolean handleProjectionPolicy) throws IOException {
         
         FeatureType ft = (FeatureType) featureTypeCache.get( info );
         if ( ft == null ) {
@@ -581,7 +585,9 @@ public class ResourcePool {
                                 }
                                 
                                 AttributeDescriptor ad = (AttributeDescriptor) pd;
-                                ad = handleDescriptor(ad, info);
+                                if(handleProjectionPolicy) {
+                                    ad = handleDescriptor(ad, info);
+                                }
                                 tb.add( ad );
                             }
                         }
@@ -722,10 +728,10 @@ public class ResourcePool {
         final String typeName = info.getNativeName();
         final String alias = info.getName();
         final SimpleFeatureType nativeFeatureType = dataStore.getSchema( typeName );
-        final SimpleFeatureType featureType = (SimpleFeatureType) getFeatureType( info );
-        if ( !typeName.equals( alias ) || DataUtilities.compare(nativeFeatureType,featureType) != 0 ) {
+        final SimpleFeatureType renamedFeatureType = (SimpleFeatureType) getFeatureType( info, false );
+        if ( !typeName.equals( alias ) || DataUtilities.compare(nativeFeatureType,renamedFeatureType) != 0 ) {
             // rename and retype as necessary
-            return RetypingFeatureSource.getRetypingSource(dataStore.getFeatureSource(typeName), featureType);
+            fs = RetypingFeatureSource.getRetypingSource(dataStore.getFeatureSource(typeName), renamedFeatureType);
         } else {
             //normal case
             fs = dataStore.getFeatureSource(info.getQualifiedName());   
