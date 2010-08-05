@@ -275,8 +275,11 @@ public class KMLTransformerTest extends WMSTestSupport {
         assertTrue(href.getFirstChild().getNodeValue().startsWith("http://localhost"));
     }
     
-    public void testRasterPlacemark() throws Exception {
+    public void testRasterPlacemarkTrue() throws Exception {
         doTestRasterPlacemark(true);
+    }
+    
+    public void testRasterPlacemarkFalse() throws Exception {
         doTestRasterPlacemark(false);
     }
 
