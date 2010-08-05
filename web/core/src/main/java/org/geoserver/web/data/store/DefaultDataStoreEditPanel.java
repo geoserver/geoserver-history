@@ -157,7 +157,14 @@ public class DefaultDataStoreEditPanel extends StoreEditPanel {
         final Class<?> binding = paramMetadata.getBinding();
 
         Panel parameterPanel;
-        if ("namespace".equals(paramName)) {
+        if("dbtype".equals(paramName) || "filetype".equals(paramName)) {
+            // skip the two well known discriminators
+            IModel model = new MapModel(paramsModel, paramName);
+            TextParamPanel tp = new TextParamPanel(componentId,
+                    model, new ResourceModel(paramLabel, paramLabel), required);
+            tp.setVisible(false);
+            parameterPanel = tp;
+        } else  if ("namespace".equals(paramName)) {
             IModel namespaceModel = new NamespaceParamModel(paramsModel, paramName);
             IModel paramLabelModel = new ResourceModel(paramLabel, paramLabel);
             parameterPanel = new NamespacePanel(componentId, namespaceModel, paramLabelModel, true);

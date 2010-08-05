@@ -148,7 +148,7 @@ public class DefaultWebMapService implements WebMapService,
         // initialization of the renderer choice flag
         if (USE_STREAMING_RENDERER == null) {
             String enabled = GeoServerExtensions.getProperty("USE_STREAMING_RENDERER", context);
-            // default to true, but allow switching off
+            // default to false, but allow switching off
             if(enabled == null)
                 USE_STREAMING_RENDERER = false;
             else

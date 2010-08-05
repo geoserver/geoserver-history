@@ -396,7 +396,10 @@ public abstract class DefaultRasterMapProducer extends
         graphic.setRenderingHints(hintsMap);
 
         RenderingHints hints = new RenderingHints(hintsMap);
-        renderer = new StreamingRenderer();
+        if(DefaultWebMapService.useStreamingRenderer())
+            renderer = new StreamingRenderer();
+        else
+            renderer = new ShapefileRenderer();
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);
 
