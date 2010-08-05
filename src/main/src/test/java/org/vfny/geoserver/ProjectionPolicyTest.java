@@ -12,8 +12,13 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.Feature;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKTReader;
+
 public class ProjectionPolicyTest extends GeoServerTestSupport {
 
+    static WKTReader WKT = new WKTReader();
+    
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         Map props = new HashMap();
@@ -22,12 +27,17 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
         dataDirectory.addWellKnownType(MockData.BASIC_POLYGONS, props);
         
         props.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.REPROJECT_TO_DECLARED);
-        props.put(MockData.KEY_SRS_NUMBER, 3003);
-        dataDirectory.addWellKnownType(MockData.LAKES, props);
+        props.put(MockData.KEY_SRS_NUMBER, 4326);
+        dataDirectory.addWellKnownType(MockData.POLYGONS, props);
         
         props.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.NONE);
         props.put(MockData.KEY_SRS_NUMBER, 3004);
         dataDirectory.addWellKnownType(MockData.LINES, props);
+        
+        props.put(MockData.KEY_SRS_HANDLINGS, ProjectionPolicy.REPROJECT_TO_DECLARED);
+        props.put(MockData.KEY_SRS_NUMBER, 4326);
+        props.put(MockData.KEY_ALIAS, "MyPoints");
+        dataDirectory.addWellKnownType(MockData.POINTS, props);
     }
     
     public void testForce() throws Exception {
@@ -43,15 +53,20 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
     }
     
     public void testReproject() throws Exception {
-        FeatureTypeInfo fti = getCatalog().getFeatureTypeByName(MockData.LAKES.getLocalPart());
-        assertEquals("EPSG:3003", fti.getSRS());
+        FeatureTypeInfo fti = getCatalog().getFeatureTypeByName(MockData.POLYGONS.getLocalPart());
+        assertEquals("EPSG:4326", fti.getSRS());
         assertEquals(ProjectionPolicy.REPROJECT_TO_DECLARED, fti.getProjectionPolicy());
         FeatureCollection fc = fti.getFeatureSource(null, null).getFeatures();
-        assertEquals(CRS.decode("EPSG:3003"), fc.getSchema().getCoordinateReferenceSystem());
+        assertEquals(CRS.decode("EPSG:4326"), fc.getSchema().getCoordinateReferenceSystem());
         FeatureIterator fi = fc.features();
         Feature f = fi.next();
+        
+        //test that geometry was actually reprojected
+        Geometry g = (Geometry) f.getDefaultGeometryProperty().getValue();
+        assertFalse(g.equalsExact(WKT.read(
+                "POLYGON((500225 500025,500225 500075,500275 500050,500275 500025,500225 500025))")));
         fi.close();
-        assertEquals(CRS.decode("EPSG:3003"), f.getType().getCoordinateReferenceSystem());
+        assertEquals(CRS.decode("EPSG:4326"), f.getType().getCoordinateReferenceSystem());
     }
     
     public void testLeaveNative() throws Exception {
@@ -62,7 +77,28 @@ public class ProjectionPolicyTest extends GeoServerTestSupport {
         assertEquals(CRS.decode("EPSG:32615"), fc.getSchema().getCoordinateReferenceSystem());
         FeatureIterator fi = fc.features();
         Feature f = fi.next();
+        
+        //test that the geometry was left in tact
+        Geometry g = (Geometry) f.getDefaultGeometryProperty().getValue();
+        assertTrue(g.equalsExact(WKT.read("LINESTRING(500125 500025,500175 500075)")));
+        
         fi.close();
         assertEquals(CRS.decode("EPSG:32615"), f.getType().getCoordinateReferenceSystem());
+    }
+    
+    public void testWithRename() throws Exception {
+        FeatureTypeInfo fti = getCatalog().getFeatureTypeByName("MyPoints");
+        assertEquals("EPSG:4326", fti.getSRS());
+        assertEquals(ProjectionPolicy.REPROJECT_TO_DECLARED, fti.getProjectionPolicy());
+        FeatureCollection fc = fti.getFeatureSource(null, null).getFeatures();
+        assertEquals(CRS.decode("EPSG:4326"), fc.getSchema().getCoordinateReferenceSystem());
+        FeatureIterator fi = fc.features();
+        Feature f = fi.next();
+        
+        //test that geometry was reprojected
+        Geometry g = (Geometry) f.getDefaultGeometryProperty().getValue();
+        assertFalse(g.equalsExact(WKT.read("POINT(500050 500050)")));
+        fi.close();
+        assertEquals(CRS.decode("EPSG:4326"), f.getType().getCoordinateReferenceSystem());
     }
 }
