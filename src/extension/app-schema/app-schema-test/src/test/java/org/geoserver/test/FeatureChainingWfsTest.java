@@ -15,6 +15,7 @@ import junit.framework.Test;
 import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * WFS GetFeature to test integration of {@link AppSchemaDataAccess} with GeoServer.
@@ -814,37 +815,70 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "</wfs:GetFeature>";
         checkGetMf4Only(xml);
     }
-
+    
     /**
-     * Test anyType as complex attributes. Previously the anyType attribute wouldn't be encoded at
-     * all.
+     * Test anyType as complex attributes, and placeholder type (e.g AnyOrReference) which contains
+     * <any/> element.
      */
-    public void testAnyType() {
+    public void testAnyTypeAndAnyElement() {
         final String OBSERVATION_ID_PREFIX = "observation:";
         Document doc = getAsDOM("wfs?request=GetFeature&typename=om:Observation");
         LOGGER.info("WFS GetFeature&typename=om:Observation response:\n" + prettyString(doc));
-        // om:result in om:Observation is of anyType, and in this case I put in a mapped feature in
-        // it
-        // Because I'm lazy, I used the same properties file for observation where mf1 as
-        // observation
-        // contains mf1 as MappedFeature in result attribute
+
         assertXpathEvaluatesTo("4", "/wfs:FeatureCollection/@numberOfFeatures", doc);
         assertXpathCount(4, "//om:Observation", doc);
+
         String id = "mf1";
         assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "(//om:Observation)[1]/@gml:id", doc);
-        assertXpathEvaluatesTo(id, "(//om:Observation)[1]/om:result/gsml:MappedFeature/@gml:id", doc);
+        // om:metadata
+        assertXpathEvaluatesTo("651.0",
+                "(//om:Observation)[1]/om:metadata/gsml:CGI_NumericValue/gsml:principalValue", doc);
+        // om:resultQuality
+        Node resultQuality = doc.getElementsByTagName("om:resultQuality").item(0);
+        Node geologicUnit = resultQuality.getFirstChild();
+        assertEquals("gu.25699", geologicUnit.getAttributes().getNamedItem("gml:id").getNodeValue());
+        // om:result
+        assertXpathEvaluatesTo(id, "(//om:Observation)[1]/om:result/gsml:MappedFeature/@gml:id",
+                doc);
 
         id = "mf2";
         assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "(//om:Observation)[2]/@gml:id", doc);
-        assertXpathEvaluatesTo(id, "(//om:Observation)[2]/om:result/gsml:MappedFeature/@gml:id", doc);
+        // om:metadata
+        assertXpathEvaluatesTo("269.0",
+                "(//om:Observation)[2]/om:metadata/gsml:CGI_NumericValue/gsml:principalValue", doc);
+        // om:resultQuality
+        resultQuality = doc.getElementsByTagName("om:resultQuality").item(1);
+        geologicUnit = resultQuality.getFirstChild();
+        assertEquals("gu.25678", geologicUnit.getAttributes().getNamedItem("gml:id").getNodeValue());
+        // om:result
+        assertXpathEvaluatesTo(id, "(//om:Observation)[2]/om:result/gsml:MappedFeature/@gml:id",
+                doc);
 
         id = "mf3";
         assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "(//om:Observation)[3]/@gml:id", doc);
-        assertXpathEvaluatesTo(id, "(//om:Observation)[3]/om:result/gsml:MappedFeature/@gml:id", doc);
+        // om:metadata
+        assertXpathEvaluatesTo("123.0",
+                "(//om:Observation)[3]/om:metadata/gsml:CGI_NumericValue/gsml:principalValue", doc);
+        // om:resultQuality
+        resultQuality = doc.getElementsByTagName("om:resultQuality").item(2);
+        assertEquals("#gu.25678", resultQuality.getAttributes().getNamedItem("xlink:href")
+                .getNodeValue());
+        // om:result
+        assertXpathEvaluatesTo(id, "(//om:Observation)[3]/om:result/gsml:MappedFeature/@gml:id",
+                doc);
 
         id = "mf4";
         assertXpathEvaluatesTo(OBSERVATION_ID_PREFIX + id, "(//om:Observation)[4]/@gml:id", doc);
-        assertXpathEvaluatesTo(id, "(//om:Observation)[4]/om:result/gsml:MappedFeature/@gml:id", doc);
+        // om:metadata
+        assertXpathEvaluatesTo("456.0",
+                "(//om:Observation)[4]/om:metadata/gsml:CGI_NumericValue/gsml:principalValue", doc);
+        // om:resultQuality
+        resultQuality = doc.getElementsByTagName("om:resultQuality").item(3);
+        geologicUnit = resultQuality.getFirstChild();
+        assertEquals("gu.25682", geologicUnit.getAttributes().getNamedItem("gml:id").getNodeValue());
+        // om:result
+        assertXpathEvaluatesTo(id, "(//om:Observation)[4]/om:result/gsml:MappedFeature/@gml:id",
+                doc);
     }
 
     /**
