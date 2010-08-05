@@ -79,7 +79,7 @@ public class RetypingFeatureStore extends RetypingFeatureSource implements Simpl
             throws IOException {
 
         SimpleFeatureType schema = getSchema();
-        SimpleFeatureType original = store.getTypeMapBackwards(schema.getTypeName(), true).originalFeatureType;
+        SimpleFeatureType original = typeMap.getOriginalFeatureType();
 
         // map back attribute types and values to the original values
         AttributeDescriptor[] originalTypes = new AttributeDescriptor[type.length];
