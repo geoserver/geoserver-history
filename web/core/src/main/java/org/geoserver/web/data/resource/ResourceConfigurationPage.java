@@ -118,6 +118,7 @@ public class ResourceConfigurationPage extends GeoServerSecuredPage {
     }
 
     private void setup(ResourceInfo resource, LayerInfo layer) {
+        layer.setResource(resource);
         myResourceModel = new CompoundPropertyModel(new ResourceModel(resource));
         myLayerModel = new CompoundPropertyModel(new LayerModel(layer));
     }
