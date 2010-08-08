@@ -5,6 +5,7 @@
 package org.geoserver.wps.ppio;
 
 import java.io.InputStream;
+import java.io.StringReader;
 
 import javax.xml.namespace.QName;
 
@@ -33,7 +34,7 @@ import com.vividsolutions.jts.geom.Geometry;
 /**
  * Allows reading and writing a WFS feature collection
  */
-public abstract class WFSPPIO extends XMLPPIO {
+public class WFSPPIO extends XMLPPIO {
 
     Configuration configuration;
 
@@ -51,9 +52,17 @@ public abstract class WFSPPIO extends XMLPPIO {
     
     @Override
     public Object decode(Object input) throws Exception {
+        // xml parsing will most likely return it as parsed already, but if CDATA is used or if
+        // it's a KVP parse it will be a string instead
+        if(input instanceof String) {
+            Parser p = new Parser(configuration);
+            input = p.parse(new StringReader((String) input));
+        }
+        
+        // cast and handle the axis flipping
         FeatureCollectionType fct = (FeatureCollectionType) input;
         SimpleFeatureCollection fc = (SimpleFeatureCollection) fct.getFeature().get( 0 );
-        /** Axis flipping issue, we should determine if the collection needs flipping */
+        // Axis flipping issue, we should determine if the collection needs flipping 
         if(fc.getSchema().getGeometryDescriptor() != null) {
             CoordinateReferenceSystem crs = getCollectionCRS(fc);
             if(crs != null) {
@@ -149,10 +158,34 @@ public abstract class WFSPPIO extends XMLPPIO {
         
     }
     
+    /**
+     * A WFS 1.0 PPIO using alternate MIME type without a ";" that creates troubles in KVP parsing
+     */
+    public static class WFS10Alternate extends WFSPPIO {
+        
+        public WFS10Alternate() {
+            super(new WFSConfiguration(), "application/wfs-collection-1.0", 
+                    org.geoserver.wfs.xml.v1_0_0.WFS.FEATURECOLLECTION);
+        }
+        
+    }
+    
     public static class WFS11 extends WFSPPIO {
         
         public WFS11() {
             super(new org.geotools.wfs.v1_1.WFSConfiguration(), "text/xml; subtype=wfs-collection/1.1", 
+                    org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION);
+        }
+        
+    }
+    
+    /**
+     * A WFS 1.1 PPIO using alternate MIME type without a ";" that creates troubles in KVP parsing
+     */
+    public static class WFS11Alternate extends WFSPPIO {
+        
+        public WFS11Alternate() {
+            super(new org.geotools.wfs.v1_1.WFSConfiguration(), "application/wfs-collection-1.1", 
                     org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION);
         }
         
