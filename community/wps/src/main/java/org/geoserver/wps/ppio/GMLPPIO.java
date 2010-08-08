@@ -85,6 +85,17 @@ public class GMLPPIO extends XMLPPIO {
             }
             
         }
+        
+        /**
+         * PPIO with alternate mime type suitable for usage in Execute KVP
+         */
+        public static class GeometryAlternate extends Geometry {
+
+            public GeometryAlternate() {
+                super();
+                mimeType = "application/gml-2.1.2";
+            }
+        }
     }
     
     public static class GML3 extends GMLPPIO {
@@ -130,5 +141,17 @@ public class GMLPPIO extends XMLPPIO {
             }
             
         }
+        
+        /**
+         * PPIO with alternate mime type suitable for usage in Execute KVP
+         */
+        public static class GeometryAlternate extends Geometry {
+
+            public GeometryAlternate() {
+                super();
+                mimeType = "application/gml-3.1.1";
+            }
+        }
+
     }
 }

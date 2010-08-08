@@ -20,11 +20,12 @@ import org.geoserver.ows.util.KvpUtils;
  *
  * @author Lucas Reed, Refractions Research Inc
  */
-public class IdentifierKvpParser extends KvpParser {
-    public IdentifierKvpParser() {
+public class DescribeIdentifierKvpParser extends KvpParser {
+    public DescribeIdentifierKvpParser() {
         super("identifier", CodeType.class);
 
         this.setService("wps");
+        this.setRequest("DescribeProcess");
     }
 
     @SuppressWarnings("unchecked")

@@ -31,13 +31,18 @@
     </bean>
 
     <!-- KVP Parsers -->
+    <bean id="wpsDescribeIdentifierKvpParser"
+        class="org.geoserver.wps.kvp.DescribeIdentifierKvpParser" />
+    <bean id="wpsExecuteIdentifierKvpParser"
+        class="org.geoserver.wps.kvp.ExecuteIdentifierKvpParser" />
+    
     <!-- KVP Request Readers -->
     <bean id="wpsGetCapabilitiesKvpReader"
         class="org.geoserver.wps.kvp.GetCapabilitiesKvpRequestReader" />
     <bean id="wpsDescribeProcessKvpReader"
         class="org.geoserver.wps.kvp.DescribeProcessKvpRequestReader" />
-    <bean id="wpsIdentifierKvpParser"
-        class="org.geoserver.wps.kvp.IdentifierKvpParser" />
+    <bean id="executeKvpRequestReader" class="org.geoserver.wps.kvp.ExecuteKvpRequestReader"/>
+    
 
     <!-- XML Configuration -->
     <bean id="wpsXmlConfiguration-1.0.0"

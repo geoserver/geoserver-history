@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import net.opengis.ows11.BoundingBoxType;
 
@@ -148,6 +149,17 @@ public class ExecuteTest extends WPSTestSupport {
         // print(dom(new StringInputStream("<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n" + xml)));
         
         MockHttpServletResponse response = postAsServletResponse( "wps", xml );
+        System.out.println(response.getOutputStreamContent());
+        assertEquals("application/wkt", response.getContentType());
+        Geometry g = new WKTReader().read(response.getOutputStreamContent());
+        assertTrue(g instanceof Polygon);
+    }
+    
+    public void testWKTInlineKVPRawOutput() throws Exception {
+        String request = "wps?service=WPS&version=1.0.0&request=Execute&Identifier=gt:buffer" +
+        		"&DataInputs=" + urlEncode("geom1=POLYGON((1 1, 2 1, 2 2, 1 2, 1 1))@mimetype=application/wkt;buffer=1") +
+        		"&RawDataOutput=" + urlEncode("result=@mimetype=application/wkt");
+        MockHttpServletResponse response = getAsServletResponse(request);
         // System.out.println(response.getOutputStreamContent());
         assertEquals("application/wkt", response.getContentType());
         Geometry g = new WKTReader().read(response.getOutputStreamContent());
@@ -195,6 +207,22 @@ public class ExecuteTest extends WPSTestSupport {
             "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
     }
     
+    public void testFeatureCollectionInlineKVP() throws Exception { 
+        String request = "wps?service=WPS&version=1.0.0&request=Execute&Identifier=gt:BufferFeatureCollection" +
+            "&DataInputs=" + urlEncode("features=" + readFileIntoString("states-FeatureCollection.xml") + "@mimetype=application/wfs-collection-1.1;buffer=10") +
+            "&ResponseDocument=" + urlEncode("result");
+        
+        Document d = getAsDOM(request);
+        // print(d);
+        // checkValidationErrors(d);
+        
+        assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
+        
+        assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
+        assertXpathExists( 
+            "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
+    }
+    
     public void testFeatureCollectionFileReference() throws Exception { // Standard Test A.4.4.2, A.4.4.4
         URL collectionURL = getClass().getResource("states-FeatureCollection.xml");
         String xml = "<wps:Execute service='WPS' version='1.0.0' xmlns:wps='http://www.opengis.net/wps/1.0.0' xmlns:xlink=\"http://www.w3.org/1999/xlink\" " + 
@@ -223,6 +251,23 @@ public class ExecuteTest extends WPSTestSupport {
                "</wps:Execute>";
         
         Document d = postAsDOM( "wps", xml );
+        // print(d);
+        // checkValidationErrors(d);
+        
+        assertEquals( "wps:ExecuteResponse", d.getDocumentElement().getNodeName() );
+        
+        assertXpathExists( "/wps:ExecuteResponse/wps:Status/wps:ProcessSucceeded", d);
+        assertXpathExists( 
+            "/wps:ExecuteResponse/wps:ProcessOutputs/wps:Output/wps:Data/wps:ComplexData/wfs:FeatureCollection", d);
+    }
+    
+    public void testFeatureCollectionFileReferenceKVP() throws Exception { 
+        URL collectionURL = getClass().getResource("states-FeatureCollection.xml");
+        String request = "wps?service=WPS&version=1.0.0&request=Execute&Identifier=gt:BufferFeatureCollection" +
+            "&DataInputs=" + urlEncode("features=@mimetype=application/wfs-collection-1.1@xlink:href=" 
+                    + collectionURL.toExternalForm() + ";buffer=10") + "&ResponseDocument=" + urlEncode("result");
+        
+        Document d = getAsDOM(request);
         // print(d);
         // checkValidationErrors(d);
         
@@ -313,6 +358,15 @@ public class ExecuteTest extends WPSTestSupport {
          assertEquals("14.0", response.getOutputStreamContent());
     }
     
+    public void testPlainAdditionKVP() throws Exception { // Standard Test A.4.4.3
+        String request = "wps?service=WPS&version=1.0.0&request=Execute&Identifier=gt:DoubleAddition" +
+        "&DataInputs=" + urlEncode("input_a=7;input_b=7") + "&RawDataOutput=result";
+        
+         MockHttpServletResponse response = getAsServletResponse(request);
+         assertEquals("text/plain", response.getContentType());
+         assertEquals("14.0", response.getOutputStreamContent());
+    }
+    
     /**
      * Tests a process execution with a BoudingBox as the output and check internal layer
      * request handling as well
@@ -381,7 +435,7 @@ public class ExecuteTest extends WPSTestSupport {
     public void testRemoteGetWFS10Layer() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
         "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
-        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <ows:Identifier>gs:Bounds</ows:Identifier>\n" + 
         "  <wps:DataInputs>\n" + 
         "    <wps:Input>\n" + 
         "      <ows:Identifier>features</ows:Identifier>\n" + 
@@ -405,7 +459,7 @@ public class ExecuteTest extends WPSTestSupport {
     public void testRemotePostWFS10Layer() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
         "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
-        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <ows:Identifier>gs:Bounds</ows:Identifier>\n" + 
         "  <wps:DataInputs>\n" + 
         "    <wps:Input>\n" + 
         "      <ows:Identifier>features</ows:Identifier>\n" + 
@@ -447,7 +501,7 @@ public class ExecuteTest extends WPSTestSupport {
         URL getFeatureURL = getClass().getResource("getFeature.xml");
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
         "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
-        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <ows:Identifier>gs:Bounds</ows:Identifier>\n" + 
         "  <wps:DataInputs>\n" + 
         "    <wps:Input>\n" + 
         "      <ows:Identifier>features</ows:Identifier>\n" + 
@@ -473,7 +527,7 @@ public class ExecuteTest extends WPSTestSupport {
     public void testRemoteGetWFS11Layer() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
         "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
-        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <ows:Identifier>gs:Bounds</ows:Identifier>\n" + 
         "  <wps:DataInputs>\n" + 
         "    <wps:Input>\n" + 
         "      <ows:Identifier>features</ows:Identifier>\n" + 
@@ -498,7 +552,7 @@ public class ExecuteTest extends WPSTestSupport {
     public void testRemotePostWFS11Layer() throws Exception {
         String request = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
         "<wps:Execute version=\"1.0.0\" service=\"WPS\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.opengis.net/wps/1.0.0\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:wps=\"http://www.opengis.net/wps/1.0.0\" xmlns:ows=\"http://www.opengis.net/ows/1.1\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wcs=\"http://www.opengis.net/wcs/1.1.1\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xsi:schemaLocation=\"http://www.opengis.net/wps/1.0.0 http://schemas.opengis.net/wps/1.0.0/wpsAll.xsd\">\n" + 
-        "  <ows:Identifier>orci:Bounds</ows:Identifier>\n" + 
+        "  <ows:Identifier>gs:Bounds</ows:Identifier>\n" + 
         "  <wps:DataInputs>\n" + 
         "    <wps:Input>\n" + 
         "      <ows:Identifier>features</ows:Identifier>\n" + 
@@ -579,6 +633,18 @@ public class ExecuteTest extends WPSTestSupport {
     	assertTrue(resp.getOutputStreamContent().matches("312\\..*"));
     }
     
+    public void testProcessChainingKVP() throws Exception {
+        String nested = "http://geoserver/wps?service=WPS&version=1.0.0&request=Execute&Identifier=JTS:buffer" +
+        "&DataInputs=" + urlEncode("geom=POINT(0 0)@mimetype=application/wkt;distance=10") + "&RawDataOutput=result";
+        String request = "wps?service=WPS&version=1.0.0&request=Execute&Identifier=JTS:area" +
+        "&DataInputs=" + urlEncode("geom=@href=" + nested) + "&RawDataOutput=result";
+        
+        MockHttpServletResponse resp = getAsServletResponse(request);
+        assertEquals("text/plain", resp.getContentType());
+        // the result is inaccurate since the buffer is just a poor approximation of a circle
+        assertTrue(resp.getOutputStreamContent().matches("312\\..*"));
+    }
+    
     /**
      * Checks the bounds process returned the expected envelope
      * @param request
@@ -601,7 +667,9 @@ public class ExecuteTest extends WPSTestSupport {
     
     ReferencedEnvelope toEnvelope(String xml) throws Exception {
         Parser p = new Parser(new OWSConfiguration());
-        BoundingBoxType box = (BoundingBoxType) p.parse(new ByteArrayInputStream(xml.getBytes()));
+        Object parsed = p.parse(new ByteArrayInputStream(xml.getBytes()));
+        assertTrue(parsed instanceof BoundingBoxType);
+        BoundingBoxType box = (BoundingBoxType) parsed;
         
         ReferencedEnvelope re;
         if(box.getCrs() != null) {
@@ -615,6 +683,9 @@ public class ExecuteTest extends WPSTestSupport {
         return re;
     }
     
+    String urlEncode(String string) throws Exception {
+        return URLEncoder.encode(string, "ASCII");
+    }
 	
 	/* TODO Updating of Response requests A.4.4.5 */
 	

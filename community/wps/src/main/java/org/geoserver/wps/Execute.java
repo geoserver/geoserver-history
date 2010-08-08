@@ -5,6 +5,7 @@
 
 package org.geoserver.wps;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -62,6 +63,7 @@ import org.geoserver.wcs.WebCoverageService100;
 import org.geoserver.wcs.WebCoverageService111;
 import org.geoserver.wfs.WebFeatureService;
 import org.geoserver.wfs.kvp.GetFeatureKvpRequestReader;
+import org.geoserver.wps.kvp.ExecuteKvpRequestReader;
 import org.geoserver.wps.ppio.BinaryPPIO;
 import org.geoserver.wps.ppio.BoundingBoxPPIO;
 import org.geoserver.wps.ppio.CDataPPIO;
@@ -317,12 +319,13 @@ public class Execute {
      */
     Map<String, Object> parseProcessInputs(ExecuteType request, Name processName, ProcessFactory pf) {
         Map<String, Object> inputs = new HashMap<String, Object>();
+        final Map<String, Parameter<?>> parameters = pf.getParameterInfo(processName);
         for (Iterator i = request.getDataInputs().getInput().iterator(); i.hasNext();) {
             InputType input = (InputType) i.next();
             String inputId = input.getIdentifier().getValue();
 
             // locate the parameter for this request
-            Parameter p = pf.getParameterInfo(processName).get(inputId);
+            Parameter p = parameters.get(inputId);
             if (p == null) {
                 throw new WPSException("No such parameter: " + inputId);
             }
@@ -377,8 +380,8 @@ public class Execute {
             } catch (Exception e) {
                 throw new WPSException("Unable to decode input: " + inputId, e);
             }
-
-            // decode the input
+            
+            // store the input
             inputs.put(p.key, decoded);
         }
         
@@ -400,19 +403,9 @@ public class Execute {
         if (ref.getMethod() == MethodType.POST_LITERAL) {
             gft = (GetFeatureType) ref.getBody();
         } else {
-            // simulate what the dispatcher is doing with the incoming kvp requests
-            Map original = KvpUtils.parseQueryString(ref.getHref());
-            KvpUtils.normalize(original);
-            Map parsed = new KvpMap(original);
-            List<Throwable> errors = KvpUtils.parse(parsed);
-            if (errors.size() > 0) {
-                throw new WPSException("Failed to parse KVP request", errors.get(0));
-            }
-
             GetFeatureKvpRequestReader reader = (GetFeatureKvpRequestReader) context
                     .getBean("getFeatureKvpReader");
-            gft = (GetFeatureType) reader.read(WfsFactory.eINSTANCE.createGetFeatureType(), parsed,
-                    original);
+            gft = (GetFeatureType) kvpParse(ref.getHref(), reader);
         }
 
         FeatureCollectionType featureCollectionType = wfs.getFeature(gft);
@@ -434,7 +427,8 @@ public class Execute {
         if (ref.getMethod() == MethodType.POST_LITERAL) {
         	request = (ExecuteType) ref.getBody();
         } else {
-        	throw new WPSException("Cannot handle WPS KVP requests at the moment");
+            ExecuteKvpRequestReader reader = (ExecuteKvpRequestReader) context.getBean("executeKvpRequestReader");
+            request = (ExecuteType) kvpParse(ref.getHref(), reader);
         }
         
         Map<String, ProcessOutput> results = executeInternal(request);
@@ -448,7 +442,7 @@ public class Execute {
         return obj;
     }
 
-    
+
     /**
      * Process the request as an internal one, without going through GML encoding/decoding
      * 
@@ -464,24 +458,17 @@ public class Execute {
         if (ref.getMethod() == MethodType.POST_LITERAL) {
             getCoverage = ref.getBody();
         } else {
-            // simulate what the dispatcher is doing with the incoming kvp requests
-            Map original = KvpUtils.parseQueryString(ref.getHref());
-            KvpUtils.normalize(original);
-            Map parsed = new KvpMap(original);
-            List<Throwable> errors = KvpUtils.parse(parsed);
-            if (errors.size() > 0) {
-                throw new WPSException("Failed to parse KVP request", errors.get(0));
+            // what WCS version?
+            String version = getVersion(ref.getHref());
+            KvpRequestReader reader;
+            if(version.equals("1.0.0") || version.equals("1.0")) {
+                reader = (KvpRequestReader) context.getBean("wcs100GetCoverageRequestReader");
+            } else {
+                reader = (KvpRequestReader) context.getBean("wcs111GetCoverageRequestReader");
             }
             
-            // what WCS version?
-            String version = (String) parsed.get("VERSION");
-            if(version.equals("1.0.0") || version.equals("1.0")) {
-                KvpRequestReader reader = (KvpRequestReader) context.getBean("wcs100GetCoverageRequestReader");
-                getCoverage = reader.read(Wcs10Factory.eINSTANCE.createGetCoverageType(), parsed, original);
-            } else {
-                KvpRequestReader reader = (KvpRequestReader) context.getBean("wcs111GetCoverageRequestReader");
-                getCoverage = reader.read(Wcs11Factory.eINSTANCE.createGetCoverageType(), parsed, original);
-            }
+            
+            getCoverage =  kvpParse(ref.getHref(), reader);
         }
         
         // perform GetCoverage
@@ -613,6 +600,34 @@ public class Execute {
         }
     }
     
+    /**
+     * Simulates what the Dispatcher is doing when parsing a KVP request
+     * @param href
+     * @param reader
+     * @return
+     */
+    Object kvpParse(String href, KvpRequestReader reader) throws Exception {
+        Map original = new KvpMap(KvpUtils.parseQueryString(href));
+        KvpUtils.normalize(original);
+        Map parsed = new KvpMap(original);
+        List<Throwable> errors = KvpUtils.parse(parsed);
+        if (errors.size() > 0) {
+            throw new WPSException("Failed to parse KVP request", errors.get(0));
+        }
+
+        return reader.read(reader.createRequest(), parsed, original);
+    }
+    
+    /**
+     * Returns the version from the kvp request
+     * @param href
+     * @return
+     */
+    String getVersion(String href) {
+        return (String) new KvpMap(KvpUtils.parseQueryString(href)).get("VERSION");
+    }
+
+    
     static class ProcessOutput {
     	OutputDefinitionType definition;
     	Object object;
@@ -630,7 +645,7 @@ public class Execute {
      *
      */
     static class ProcessListener implements ProgressListener {
-        Exception exception; 
+        Throwable exception; 
 
         public void complete() {
             // TODO Auto-generated method stub
@@ -643,7 +658,7 @@ public class Execute {
         }
 
         public void exceptionOccurred(Throwable exception) {
-            this.exception = this.exception;
+            this.exception = exception;
             
         }
 
