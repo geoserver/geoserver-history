@@ -13,6 +13,11 @@ import java.util.Set;
  * @author Justin Deoliveira, The Open Planning Project
  */
 public interface LayerInfo extends CatalogInfo {
+    
+    /**
+     * The rendering buffer
+     */
+    public static final String BUFFER = "buffer";
 
     /**
      * Enumeration for type of layer.
