@@ -378,7 +378,7 @@ public abstract class DefaultRasterMapProducer extends
         timeout.start();
         try {
             // finally render the image;
-            renderer.paint(graphic, paintArea, getRenderingArea(), getRenderingTransform());
+            renderer.paint(graphic, paintArea, mapContext.getRenderingArea(), mapContext.getRenderingTransform());
 
             // apply watermarking
             try {

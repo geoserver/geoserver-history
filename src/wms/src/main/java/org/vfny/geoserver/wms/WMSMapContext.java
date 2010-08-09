@@ -5,10 +5,15 @@
 package org.vfny.geoserver.wms;
 
 import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
+import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.GraphicEnhancedMapContext;
 import org.geotools.map.MapLayer;
+import org.geotools.renderer.lite.RendererUtilities;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 /**
@@ -192,5 +197,46 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
 		this.angle = rotation;
 	}
 	
+	/**
+     * Returns the transformation going from the map area space to the screen space taking into
+     * account map rotation
+     * @return
+     */
+    public AffineTransform getRenderingTransform() {
+        Rectangle paintArea = new Rectangle(0, 0, getMapWidth(), getMapHeight());
+        ReferencedEnvelope dataArea = getAreaOfInterest();
+        AffineTransform tx;
+        if (getAngle() != 0.0) {
+            tx = new AffineTransform();
+            tx.translate(paintArea.width / 2, paintArea.height / 2);
+            tx.rotate(Math.toRadians(getAngle()));
+            tx.translate(-paintArea.width / 2, -paintArea.height / 2);
+            tx.concatenate(RendererUtilities.worldToScreenTransform(dataArea, paintArea));
+        } else {
+            tx = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
+        }
+        return tx;
+    }
+    
+    /**
+     * Returns the actual area that should be drawn taking into account the map rotation
+     * account map rotation
+     * @return
+     */
+    public ReferencedEnvelope getRenderingArea() {
+        if(getAngle() == 0)
+            return getAreaOfInterest();
+        
+        ReferencedEnvelope dataArea = getAreaOfInterest();
+        AffineTransform tx = new AffineTransform();
+        double offsetX = dataArea.getMinX() + dataArea.getWidth() / 2;
+        double offsetY = dataArea.getMinY() + dataArea.getHeight() / 2;
+        tx.translate(offsetX, offsetY);
+        tx.rotate(Math.toRadians(getAngle()));
+        tx.translate(-offsetX, -offsetY);
+        Rectangle2D dataAreaShape = new Rectangle2D.Double(dataArea.getMinX(), dataArea.getMinY(), dataArea.getWidth(), dataArea.getHeight());
+        Rectangle2D transformedBounds = tx.createTransformedShape(dataAreaShape).getBounds2D();
+        return new ReferencedEnvelope(transformedBounds, getAreaOfInterest().getCoordinateReferenceSystem());
+    }
 	
 }

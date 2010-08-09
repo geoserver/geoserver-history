@@ -191,47 +191,6 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
         return outputFormatNames;
     }
     
-    /**
-     * Returns the transformation going from the map area space to the screen space taking into
-     * account map rotation
-     * @return
-     */
-    protected AffineTransform getRenderingTransform() {
-        Rectangle paintArea = new Rectangle(0, 0, mapContext.getMapWidth(), mapContext
-                .getMapHeight());
-        ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-        AffineTransform tx;
-        if (mapContext.getAngle() != 0.0) {
-            tx = new AffineTransform();
-            tx.translate(paintArea.width / 2, paintArea.height / 2);
-            tx.rotate(Math.toRadians(mapContext.getAngle()));
-            tx.translate(-paintArea.width / 2, -paintArea.height / 2);
-            tx.concatenate(RendererUtilities.worldToScreenTransform(dataArea, paintArea));
-        } else {
-            tx = RendererUtilities.worldToScreenTransform(dataArea, paintArea);
-        }
-        return tx;
-    }
     
-    /**
-     * Returns the actual area that should be drawn taking into account the map rotation
-     * account map rotation
-     * @return
-     */
-    protected ReferencedEnvelope getRenderingArea() {
-        if(mapContext.getAngle() == 0)
-            return mapContext.getAreaOfInterest();
-        
-        ReferencedEnvelope dataArea = mapContext.getAreaOfInterest();
-        AffineTransform tx = new AffineTransform();
-        double offsetX = dataArea.getMinX() + dataArea.getWidth() / 2;
-        double offsetY = dataArea.getMinY() + dataArea.getHeight() / 2;
-        tx.translate(offsetX, offsetY);
-        tx.rotate(Math.toRadians(mapContext.getAngle()));
-        tx.translate(-offsetX, -offsetY);
-        Rectangle2D dataAreaShape = new Rectangle2D.Double(dataArea.getMinX(), dataArea.getMinY(), dataArea.getWidth(), dataArea.getHeight());
-        Rectangle2D transformedBounds = tx.createTransformedShape(dataAreaShape).getBounds2D();
-        return new ReferencedEnvelope(transformedBounds, mapContext.getAreaOfInterest().getCoordinateReferenceSystem());
-    }
 
 }

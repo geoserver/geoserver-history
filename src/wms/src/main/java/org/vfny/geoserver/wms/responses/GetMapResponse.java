@@ -15,10 +15,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.data.util.CoverageUtils;
@@ -36,8 +38,13 @@ import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.renderer.lite.MetaBufferEstimator;
+import org.geotools.renderer.lite.RendererUtilities;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.FeatureTypeConstraint;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
@@ -417,6 +424,10 @@ public class GetMapResponse implements Response {
             
             // setup the SLD variable substitution environment
             EnvFunction.setLocalValues(request.getEnv());
+            
+            // set the buffer value if the admin has set a specific value for some layers
+            // in this map
+            setupRenderingBuffer(map, layers);
 
             // /////////////////////////////////////////////////////////
             //
@@ -450,6 +461,90 @@ public class GetMapResponse implements Response {
         }
     }
     
+    /**
+     * Computes the rendering buffer in case the user did not specify one in the request, and the
+     * admin setup some rendering buffer hints in the layer configurations
+     * @param map
+     * @param layers
+     */
+    public static void setupRenderingBuffer(WMSMapContext map, MapLayerInfo[] layers) {
+        // easy case, the buffer is already set in the call
+        if(map.getBuffer() > 0) {
+            return;
+        }
+        
+        // let's collect the layers that do have a buffer set, we can
+        // skip the computation if there is none set
+        int[] layerBuffers = new int[layers.length];
+        boolean computeBuffer = false;
+        for (int i = 0; i < layers.length; i++) {
+            final LayerInfo layerInfo = layers[i].getLayerInfo();
+            if(layerInfo != null) { // it is a local layer
+                Integer layerBuffer = layerInfo.getMetadata().get(LayerInfo.BUFFER, Integer.class);
+                if(layerBuffer != null && layerBuffer > 0) {
+                    computeBuffer = true;
+                    layerBuffers[i] = layerBuffer;
+                }
+            }
+        }
+        
+        if(computeBuffer) {
+            final double scaleDenominator = getRequestScale(map);
+            int buffer = 0;
+            
+            // either use the preset buffer, or if missing, compute one on the fly based
+            // on an analysis of the active rules at the current scale
+            for (int i = 0; i < layers.length; i++) {
+                int layerBuffer = layerBuffers[i];
+                if(layerBuffer == 0) {
+                    layerBuffer = computeLayerBuffer(map.getLayer(i).getStyle(), scaleDenominator);
+                }
+                if(layerBuffer > buffer) {
+                    buffer = layerBuffer;
+                }
+            }
+            
+            map.setBuffer(buffer);
+        }
+    }
+
+    /**
+     * Computes the rendering buffer for this layer
+     * @param style
+     * @param scaleDenominator
+     * @return
+     */
+    static int computeLayerBuffer(Style style, double scaleDenominator) {
+        final double TOLERANCE = 1e-6;
+        MetaBufferEstimator estimator = new MetaBufferEstimator();
+        for (FeatureTypeStyle fts : style.featureTypeStyles()) {
+            for (Rule rule : fts.rules()) {
+                if(((rule.getMinScaleDenominator() - TOLERANCE) <= scaleDenominator) && 
+                    ((rule.getMaxScaleDenominator() + TOLERANCE) > scaleDenominator)) {
+                    estimator.visit(rule);
+                }
+            }
+        }
+        
+        // we get any estimate, it's better than nothing...
+        return estimator.getBuffer();
+    }
+
+    /**
+     * Returns the rendering scale taking into account rotation and dpi
+     * @param map
+     * @return
+     */
+    static double getRequestScale(WMSMapContext map) {
+        Map hints = new HashMap();
+        if (map.getRequest().getFormatOptions().get("dpi") != null) {
+            hints.put(StreamingRenderer.DPI_KEY, ((Integer) map.getRequest().getFormatOptions().get("dpi")));
+        }
+        return RendererUtilities.calculateOGCScaleAffine(map.getCoordinateReferenceSystem(), map.getRenderingTransform(), hints);
+    }
+
+    
+
     /**
      * Asserts the mandatory GetMap parameters have been provided.
      * <p>

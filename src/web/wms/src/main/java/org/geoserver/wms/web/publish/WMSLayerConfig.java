@@ -15,8 +15,12 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.web.publish.LayerConfigurationPanel;
+import org.geoserver.web.util.MapModel;
 import org.geoserver.web.wicket.LiveCollectionModel;
 
 /**
@@ -75,6 +79,13 @@ public class WMSLayerConfig extends LayerConfigurationPanel {
             }
         };
         add(extraStyles);
+        
+        TextField renderingBuffer = new TextField("renderingBuffer", new MapModel(new PropertyModel(layerModel, "metadata"), LayerInfo.BUFFER), Integer.class);
+        renderingBuffer.add(NumberValidator.minimum(0));
+        add(renderingBuffer);
+        
         add(new TextField("wmsPath", new PropertyModel(layerModel, "path")));
+        
+        
     }
 }

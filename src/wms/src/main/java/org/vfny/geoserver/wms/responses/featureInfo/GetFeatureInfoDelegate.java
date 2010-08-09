@@ -14,6 +14,7 @@ import org.vfny.geoserver.Request;
 import org.vfny.geoserver.Response;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
+import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 
 /**
