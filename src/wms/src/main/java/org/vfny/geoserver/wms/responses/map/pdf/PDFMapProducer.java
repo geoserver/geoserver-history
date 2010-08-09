@@ -185,7 +185,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             PDFMaxSizeEnforcer memoryChecker = new PDFMaxSizeEnforcer(renderer, graphic, maxMemory);
             
             // render the map
-            renderer.paint(graphic, paintArea, getRenderingArea(), getRenderingTransform());
+            renderer.paint(graphic, paintArea, mapContext.getRenderingArea(), mapContext.getRenderingTransform());
             
             // render the watermark
             MapDecorationLayout.Block watermark = 

@@ -26,6 +26,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.catalog.CoverageInfo;
+import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.ServiceInfo;
@@ -260,11 +261,11 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
         
         try {
             for (int i = 0; i < layerCount; i++) {
-                MapLayerInfo layerInfo = requestedLayers[i];
+                MapLayerInfo layer = requestedLayers[i];
                 
                 // check cascaded WMS first, it's a special case
-                if(layerInfo.getType() == MapLayerInfo.TYPE_WMS) {
-                    handleGetFeatureInfoCascade(x, y, request, layerInfo);
+                if(layer.getType() == MapLayerInfo.TYPE_WMS) {
+                    handleGetFeatureInfoCascade(x, y, request, layer);
                     continue;
                 }
                 
@@ -273,22 +274,31 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                 if(rules.size() == 0)
                     continue;
                 
-                if (layerInfo.getType() == MapLayerInfo.TYPE_VECTOR) {
-                    CoordinateReferenceSystem dataCRS = layerInfo.getCoordinateReferenceSystem();
+                if (layer.getType() == MapLayerInfo.TYPE_VECTOR) {
+                    CoordinateReferenceSystem dataCRS = layer.getCoordinateReferenceSystem();
 
                     // compute the request radius
                     double radius;
                     if(buffer <= 0) {
-                        // estimate the radius given the currently active rules
-                        MetaBufferEstimator estimator = new MetaBufferEstimator();
-                        for (Rule rule : rules) {
-                            rule.accept(estimator);
+                        Integer layerBuffer = null;
+                        final LayerInfo layerInfo = layer.getLayerInfo();
+                        if(layerInfo != null) { // it is a local layer
+                            layerBuffer = layerInfo.getMetadata().get(LayerInfo.BUFFER, Integer.class);
                         }
-                        
-                        if(estimator.getBuffer() < 6.0 || !estimator.isEstimateAccurate()) {
-                            radius = 3.0;
+                        if(layerBuffer != null && layerBuffer > 0) {
+                            radius = layerBuffer / 2.0;
                         } else {
-                            radius =  estimator.getBuffer() / 2.0;
+                            // estimate the radius given the currently active rules
+                            MetaBufferEstimator estimator = new MetaBufferEstimator();
+                            for (Rule rule : rules) {
+                                rule.accept(estimator);
+                            }
+                            
+                            if(estimator.getBuffer() < 6.0 || !estimator.isEstimateAccurate()) {
+                                radius = 3.0;
+                            } else {
+                                radius =  estimator.getBuffer() / 2.0;
+                            }
                         }
                     } else {
                         radius = buffer;
@@ -314,7 +324,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     }
 
                     final FeatureSource<? extends FeatureType, ? extends Feature> featureSource;
-                    featureSource = layerInfo.getFeatureSource(false);
+                    featureSource = layer.getFeatureSource(false);
                     FeatureType schema = featureSource.getSchema();
                     
                     Filter getFInfoFilter = null;
@@ -361,10 +371,10 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     //the featureresults, thus not being able of querying the SRS
                     //if (match.getCount() > 0) {
                     results.add(match);
-                    metas.add(layerInfo);
+                    metas.add(layer);
 
                     //}
-                } else if(layerInfo.getType() == MapLayerInfo.TYPE_RASTER) {
+                } else if(layer.getType() == MapLayerInfo.TYPE_RASTER) {
                     final CoverageInfo cinfo = requestedLayers[i].getCoverage();
                     final AbstractGridCoverage2DReader reader=(AbstractGridCoverage2DReader) cinfo.getGridCoverageReader(new NullProgressListener(),GeoTools.getDefaultHints());
                     final ParameterValueGroup params = reader.getFormat().getReadParameters();
@@ -530,7 +540,7 @@ public abstract class AbstractFeatureInfoResponse extends GetFeatureInfoDelegate
                     }
                 } else {
                     LOGGER.log(Level.SEVERE, "Can't perform feature info " +
-                    		"requests on " + layerInfo.getName() + ", layer type not supported");
+                    		"requests on " + layer.getName() + ", layer type not supported");
                 }
             }
         } catch (Exception e) {
