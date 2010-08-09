@@ -120,7 +120,7 @@ The publishing tab allows for configuration of HTTP and WCS settings.
 
 * *Defalt style*: The style that will be used when the client does not specify a named style in GetMap requests
 * *Additional styles*: Other styles that can be associated to this layers. Some clients (and the GeoServer own preview) will present those as styling alternatives for that layer to the end user
-* *Default rendering buffer*: the default value of the ``buffer`` GetMap/GetFeatureInfo vendor parameter. See the :ref`wms_vendor_parameters <vendor parameter page>` for more details (this option is available since GeoServer 2.0.3)
+* *Default rendering buffer* (available since version 2.0.3): the default value of the ``buffer`` GetMap/GetFeatureInfo vendor parameter. See the :ref:`wms_vendor_parameters` for more details 
 * *Default WMS path*: the location of the layer in the WMS capabilities layer tree. Useful to build non opaque layer groups
 
 **WMS Attribution:** Sets publishing information about data providers.  
