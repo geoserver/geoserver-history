@@ -131,11 +131,13 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
 
     /**
      * Paint the provided text onto the graphics wrapping words at the specified
-     * lineWidth
+     * lineWidth.
      * 
-     * @param lineWidth
-     * @param g
-     * @param text
+     * @param g the Graphics2D which will be used to draw the text
+     * @param text the text to render
+     * @param lineWidth the width of the area where words should be rendered
+     * @param startX an offset from the left edge of the image to where text should start
+     * @param startY an offset from the top edge of the image to where text should start
      */
     void paintLines(Graphics2D g, String text, int lineWidth, int startX, int startY) {
         // split the text into lines, LineBreakMeasurer only lays out the single
@@ -163,7 +165,7 @@ public class WmsExceptionHandler extends LegacyServiceExceptionHandler {
 
                 while (measurer.getPosition() < line.length()) {
 
-                    TextLayout layout = measurer.nextLayout(lineWidth);
+                    TextLayout layout = measurer.nextLayout(lineWidth - startX);
 
                     cursor.y += (layout.getAscent());
                     float dx = layout.isLeftToRight() ? 0 : (lineWidth - layout.getAdvance());
