@@ -104,6 +104,8 @@ public class DataStoreResource extends AbstractCatalogResource {
         
         catalog.save( original );
         
+        clear(original);
+        
         LOGGER.info( "PUT data store " + workspace + "," + datastore );
     }
     
@@ -122,8 +124,13 @@ public class DataStoreResource extends AbstractCatalogResource {
             throw new RestletException( "datastore not empty", Status.CLIENT_ERROR_FORBIDDEN);
         }
         catalog.remove( ds );
-         
+        clear(ds);
+        
         LOGGER.info( "DELETE data store " + workspace + "," + datastore );
+    }
+    
+    void clear(DataStoreInfo info) {
+        catalog.getResourcePool().clear(info);
     }
     
     @Override
