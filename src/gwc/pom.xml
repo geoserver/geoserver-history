@@ -41,7 +41,7 @@
   <dependency>
    <groupId>org.geowebcache</groupId>
    <artifactId>geowebcache</artifactId>
-   <version>1.2.2a</version>
+   <version>1.2.2b</version>
    <exclusions>
    <!-- GeoServer - This doesn't actually do anything, specified in
         community/pom.xml -->
@@ -100,6 +100,10 @@
     <exclusion>
      <groupId>net.sf.json-lib</groupId>
      <artifactId>json-lib</artifactId>
+    </exclusion>
+    <exclusion>
+     <groupId>com.h2database</groupId>
+     <artifactId>h2</artifactId>
     </exclusion>
    </exclusions>
   </dependency>

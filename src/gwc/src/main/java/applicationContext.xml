@@ -45,8 +45,9 @@
     </constructor-arg>
   </bean>
   
-  <bean id="gwcDefaultStorageFinder" class="org.geowebcache.storage.DefaultStorageFinder">
+  <bean id="gwcDefaultStorageFinder" class="org.geoserver.gwc.GeoServerDataDirLocator">
   	<constructor-arg ref="gwcAppCtx" />
+  	<constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
   </bean>
   
   <bean id="gwcMetaStore" class="org.geowebcache.storage.metastore.jdbc.JDBCMetaBackend" destroy-method="destroy">
