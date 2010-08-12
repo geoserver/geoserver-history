@@ -20,6 +20,8 @@ import org.geoserver.catalog.LayerInfo;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
 

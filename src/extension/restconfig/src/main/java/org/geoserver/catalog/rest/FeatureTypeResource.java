@@ -9,6 +9,7 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
+import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.config.util.XStreamPersister;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.format.DataFormat;
@@ -140,6 +141,8 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         new CatalogBuilder(catalog).updateFeatureType(original,ft);
         catalog.save( original );
         
+        clear(original);
+        
         LOGGER.info( "PUT feature type" + datastore + "," + featuretype );
     }
     
@@ -157,8 +160,14 @@ public class FeatureTypeResource extends AbstractCatalogResource {
         DataStoreInfo ds = catalog.getDataStoreByName(workspace, datastore);
         FeatureTypeInfo ft = catalog.getFeatureTypeByDataStore( ds,  featuretype );
         catalog.remove( ft );
+        clear(ft);
         
         LOGGER.info( "DELETE feature type" + datastore + "," + featuretype );
+    }
+    
+    void clear(FeatureTypeInfo info) {
+        catalog.getResourcePool().clear(info);
+        catalog.getResourcePool().clear(info.getStore());
     }
 
     @Override
