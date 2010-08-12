@@ -114,6 +114,8 @@ public class CoverageResource extends AbstractCatalogResource {
         new CatalogBuilder(catalog).updateCoverage(original,c);
         catalog.save( original );
         
+        clear(original);
+        
         LOGGER.info( "PUT coverage " + coveragestore + "," + coverage );
     }
     
@@ -131,8 +133,13 @@ public class CoverageResource extends AbstractCatalogResource {
         CoverageStoreInfo ds = catalog.getCoverageStoreByName(workspace, coveragestore);
         CoverageInfo c = catalog.getCoverageByCoverageStore( ds,  coverage );
         catalog.remove( c );
-
+        clear(c);
+        
         LOGGER.info( "DELETE coverage " + coveragestore + "," + coverage );
+    }
+    
+    void clear(CoverageInfo info) {
+        catalog.getResourcePool().clear(info.getStore());
     }
     
     @Override

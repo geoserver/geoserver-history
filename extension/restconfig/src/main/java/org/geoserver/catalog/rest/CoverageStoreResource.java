@@ -83,6 +83,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
         new CatalogBuilder( catalog ).updateCoverageStore( original, cs );
         
         catalog.save( original );
+        clear(original);
         
         LOGGER.info( "PUT coverage store " + workspace + "," + coveragestore );
     }
@@ -102,6 +103,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
             throw new RestletException( "coveragestore not empty", Status.CLIENT_ERROR_UNAUTHORIZED);
         }
         catalog.remove( cs );
+        clear(cs);
         
         LOGGER.info( "DELETE coverage store " + workspace + "," + coveragestore );
     }
@@ -129,6 +131,10 @@ public class CoverageStoreResource extends AbstractCatalogResource {
                 }
             }
         );
+    }
+    
+    void clear(CoverageStoreInfo info) {
+        catalog.getResourcePool().clear(info);
     }
     
     static class CoverageStoreHTMLFormat extends CatalogFreemarkerHTMLFormat {
