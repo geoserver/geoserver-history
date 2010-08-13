@@ -44,6 +44,7 @@ public class WCSXStreamLoader extends XStreamServiceLoader<WCSInfo> {
     
     @Override
     protected WCSInfo initialize(WCSInfo service) {
+        super.initialize(service);
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.0.0") );
             service.getVersions().add( new Version( "1.1.1" ) );
