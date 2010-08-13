@@ -47,6 +47,7 @@ public class WFSXStreamLoader extends XStreamServiceLoader<WFSInfo> {
     
     @Override
     protected WFSInfo initialize(WFSInfo service) {
+        super.initialize(service);
         if ( service.getVersions().isEmpty() ) {
             service.getVersions().add( new Version( "1.0.0" ) );
             service.getVersions().add( new Version( "1.1.0" ) );
