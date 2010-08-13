@@ -159,7 +159,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         }
         
         //initialize styles
-        initializeStyles(catalog);
+        initializeStyles(catalog, xp);
         
         if ( !legacy ) {
             //add the listener which will persist changes
@@ -314,7 +314,12 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
      * Does some post processing on the catalog to ensure that the "well-known" styles
      * are always around.
      */
-    void initializeStyles( Catalog catalog ) throws IOException {
+    void initializeStyles( Catalog catalog, XStreamPersister xp) throws IOException {
+        
+        //add a persister temporarily in case the styles don't exist on disk
+        GeoServerPersister p = new GeoServerPersister(resourceLoader, xp);
+        catalog.addListener(p);
+        
         if ( catalog.getStyleByName( StyleInfo.DEFAULT_POINT ) == null ) {
             initializeStyle( catalog, StyleInfo.DEFAULT_POINT, "default_point.sld" );
         }
@@ -327,6 +332,8 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         if ( catalog.getStyleByName( StyleInfo.DEFAULT_RASTER ) == null ) {
             initializeStyle( catalog, StyleInfo.DEFAULT_RASTER, "default_raster.sld" );
         }
+        
+        catalog.removeListener(p);
     }
     
     /**
@@ -337,7 +344,7 @@ public class GeoServerLoader implements BeanPostProcessor, DisposableBean,
         //copy the file out to the data directory if necessary
         if ( resourceLoader.find( "styles", sld ) == null ) {
             FileUtils.copyURLToFile(getClass().getResource(sld), 
-                new File( resourceLoader.find( "styles" ), sld) );
+                new File( resourceLoader.findOrCreateDirectory("styles" ), sld) );
         }
         
         //create a style for it
