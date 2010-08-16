@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.geoserver.catalog.MetadataMap;
 import org.geoserver.config.ContactInfo;
+import org.geoserver.config.CoverageAccessInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
@@ -20,6 +21,8 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     protected ContactInfo contact = new ContactInfoImpl();
 
     protected JAIInfo jai = new JAIInfoImpl();
+    
+    protected CoverageAccessInfo coverageAccess = new CoverageAccessInfoImpl();
     
     // Charset charSet = Charset.forName("UTF-8");
     protected String charset = "UTF-8";
@@ -86,6 +89,15 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     
     public void setJAI(JAIInfo jai) {
         this.jai = jai;
+    }
+    
+    public CoverageAccessInfo getCoverageAccess() {
+        return coverageAccess;
+    }
+
+    public void setCoverageAccess(CoverageAccessInfo coverageAccess) {
+        this.coverageAccess = coverageAccess;
+        
     }
     
     public void setTitle(String title) {
@@ -209,6 +221,9 @@ public class GeoServerInfoImpl implements GeoServerInfo {
     }
     
     public void dispose() {
+        if (coverageAccess != null){
+            coverageAccess.dispose();
+        }
     }
 
     public int hashCode() {
@@ -325,5 +340,5 @@ public class GeoServerInfoImpl implements GeoServerInfo {
         }
         return this;
     }
-    
+
 }
