@@ -169,29 +169,26 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             Set metas = (Set) entry.getValue();
 
             StringBuffer typeNames = new StringBuffer();
-
-            String userSchemaLocation = null;
             for (Iterator m = metas.iterator(); m.hasNext();) {
                 FeatureTypeInfo meta = (FeatureTypeInfo) m.next();
-                if (userSchemaLocation == null) {
-                    FeatureType featureType = meta.getFeatureType();
-                    Object schemaUri = featureType.getUserData().get("schemaURI");
-                    if (schemaUri != null) {
-                        userSchemaLocation = schemaUri.toString();
+                FeatureType featureType = meta.getFeatureType();
+                Object userSchemaLocation = featureType.getUserData().get("schemaURI");
+                if (userSchemaLocation != null && userSchemaLocation instanceof Map) {
+                    Map<String, String> schemaURIs = (Map<String, String>) userSchemaLocation;
+                    for (String namespace : schemaURIs.keySet()) {
+                        encoder.setSchemaLocation(namespace, schemaURIs.get(namespace));
+                    }
+                } else {
+                    typeNames.append(meta.getPrefixedName());
+                    if (m.hasNext()) {
+                        typeNames.append(",");
                     }
                 }
-                typeNames.append(meta.getPrefixedName());
-                
-                if (m.hasNext()) {
-                    typeNames.append(",");
-                }
             }
-            params.put("typeName", typeNames.toString());
 
-            //set the schema location if the user provides it, otherwise give a default one
-            if (userSchemaLocation != null) {
-                encoder.setSchemaLocation(namespaceURI, userSchemaLocation);
-            } else {
+            if (typeNames.length() > 0) {
+                params.put("typeName", typeNames.toString());
+                // set the made up schema location for types not provided by the user
                 String schemaLocation = buildURL(gft.getBaseUrl(), "wfs", params, URLType.SERVICE);
                 LOGGER.finer("Unable to find user-defined schema location for: " + namespaceURI
                         + ". Using a built schema location by default: " + schemaLocation);
