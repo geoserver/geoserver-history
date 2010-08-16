@@ -147,17 +147,28 @@ public abstract class FeatureTypeSchemaBuilder {
                             nameSpaceinfo.getURI());
                 }
             }
-            // would result in 1 xsd:include if schema location is specified
+            // would result in some xsd:include or xsd:import if schema location is specified
             try {
                 FeatureType featureType = featureTypeInfos[0].getFeatureType();
                 Object schemaUri = featureType.getUserData().get("schemaURI");
-                if (schemaUri != null) {
-                    // should always be a string.. set in AppSchemaDataAccessConfigurator
-                    assert schemaUri instanceof String;
+                if (schemaUri != null && schemaUri instanceof Map) {
+                    // should always be a Map.. set in AppSchemaDataAccessConfigurator
+                    Map<String, String> schemaURIs = (Map<String, String>) schemaUri;
                     // schema is supplied by the user.. just include the top level schema instead of
                     // building the type
                     if (!findTypeInSchema(featureTypeInfos[0], schema, factory)) {
-                        addInclude(schema, factory, targetNamespace, (String) schemaUri);
+                        ArrayList<String> importedNamespaces = new ArrayList<String>(
+                                ns2featureTypeInfos.size() + 1);
+                        for (String namespace : schemaURIs.keySet()) {
+                            if (targetNamespace.equals(namespace)) {
+                                addInclude(schema, factory, schemaURIs.get(namespace));
+                            } else {
+                                addImport(schema, factory, namespace, schemaURIs.get(namespace),
+                                        importedNamespaces);
+                                // ensure there's only 1 import per namespace
+                                importedNamespaces.add(namespace);
+                            }
+                        }
                     }
                     return schema;
                 }
@@ -199,25 +210,20 @@ public abstract class FeatureTypeSchemaBuilder {
                 List types = (List) entry.getValue();
 
                 StringBuffer typeNames = new StringBuffer();
-                String namespaceURI;
                 for (Iterator t = types.iterator(); t.hasNext();) {
                     FeatureTypeInfo info = (FeatureTypeInfo) t.next();
                     FeatureType featureType = info.getFeatureType();
                     Object schemaUri = featureType.getUserData().get("schemaURI");
-                    if (schemaUri != null) {
-                        // should always be a string.. set in AppSchemaDataAccessConfigurator
-                        assert schemaUri instanceof String;
-                        // schema is supplied by the user.. just import the top level schema instead of
-                        // building
-                        // the type
-                        namespaceURI = featureType.getName().getNamespaceURI();
-
-                        addImport(schema, factory, namespaceURI,
-                                (String) schemaUri, importedNamespaces);
-
-                        // ensure there's only 1 import per namespace
-                        importedNamespaces.add(namespaceURI);
-
+                    if (schemaUri != null && schemaUri instanceof Map) {
+                        // should always be a Map.. set in AppSchemaDataAccessConfigurator
+                        Map<String, String> schemaURIs = (Map<String, String>) schemaUri;
+                        // schema is supplied by the user.. just import the specified location
+                        for (String namespace : schemaURIs.keySet()) {
+                            addImport(schema, factory, namespace, schemaURIs.get(namespace),
+                                    importedNamespaces);
+                            // ensure there's only 1 import per namespace
+                            importedNamespaces.add(namespace);
+                        }
                     } else {
                         typeNames.append(info.getPrefixedName()).append(",");
                     }
@@ -251,12 +257,10 @@ public abstract class FeatureTypeSchemaBuilder {
      *            Output schema
      * @param factory
      *            XSD factory used to produce schema
-     * @param nsURI
-     *            Name space URI
      * @param schemaLocation
      *            The schema location to be included
      */
-    private void addInclude(XSDSchema schema, XSDFactory factory, String nsURI, String schemaLocation) {
+    private void addInclude(XSDSchema schema, XSDFactory factory, String schemaLocation) {
         XSDInclude xsdInclude = factory.createXSDInclude();
         xsdInclude.setSchemaLocation(schemaLocation);
         schema.getContents().add(xsdInclude);        

@@ -142,6 +142,27 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathCount(0, "//xsd:element", doc);
 
         /**
+         * om:Observation has 2 schemaURIs specified in the mapping file. Both must appear.
+         */
+        doc = getAsDOM("wfs?request=DescribeFeatureType&typename=om:Observation");
+        LOGGER.info("WFS DescribeFeatureType, typename=om:Observation response:\n"
+                + prettyString(doc));
+        assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
+        assertXpathEvaluatesTo(FeatureChainingMockData.OM_URI, "//@targetNamespace", doc);
+        assertXpathCount(1, "//xsd:include", doc);
+        assertXpathCount(1, "//xsd:import", doc);
+        // GSML schemaLocation as xsd:import because the namespace is different
+        assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_URI, "//xsd:import/@namespace", doc);
+        assertXpathEvaluatesTo(AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL,
+                "//xsd:import/@schemaLocation", doc);
+        // OM schemaLocation as xsd:include
+        assertXpathEvaluatesTo(FeatureChainingMockData.OM_SCHEMA_LOCATION_URL,
+                "//xsd:include/@schemaLocation", doc);
+        // nothing else
+        assertXpathCount(0, "//xsd:complexType", doc);
+        assertXpathCount(0, "//xsd:element", doc);
+        
+        /**
          * Mixed name spaces
          */
         doc = getAsDOM("wfs?request=DescribeFeatureType&typeName=gsml:MappedFeature,ex:FirstParentFeature");
