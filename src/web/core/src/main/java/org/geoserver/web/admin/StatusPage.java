@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
+import org.geoserver.config.CoverageAccessInfo;
 import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.GeoServerLoader;
@@ -59,7 +60,13 @@ public class StatusPage extends ServerAdminPage {
     private static final String KEY_JAI_TILE_THREADS = "jai_tile_threads";
 
     private static final String KEY_JAI_TILE_THREAD_PRIORITY = "jai_tile_thread_priority";
-
+    
+    private static final String KEY_COVERAGEACCESS_CORE_POOL_SIZE = "coverage_thread_corepoolsize";
+    
+    private static final String KEY_COVERAGEACCESS_MAX_POOL_SIZE = "coverage_thread_maxpoolsize";
+    
+    private static final String KEY_COVERAGEACCESS_KEEP_ALIVE_TIME = "coverage_thread_keepalivetime";
+    
     private static final String KEY_UPDATE_SEQUENCE = "update_sequence";
 
     public StatusPage() {
@@ -80,6 +87,9 @@ public class StatusPage extends ServerAdminPage {
         add(new Label("jai.memory.threshold", new MapModel(values, KEY_JAI_MEM_THRESHOLD)));
         add(new Label("jai.tile.threads", new MapModel(values, KEY_JAI_TILE_THREADS)));
         add(new Label("jai.tile.priority", new MapModel(values, KEY_JAI_TILE_THREAD_PRIORITY)));
+        add(new Label("coverage.corepoolsize", new MapModel(values, KEY_COVERAGEACCESS_CORE_POOL_SIZE)));
+        add(new Label("coverage.maxpoolsize", new MapModel(values, KEY_COVERAGEACCESS_MAX_POOL_SIZE)));
+        add(new Label("coverage.keepalivetime", new MapModel(values, KEY_COVERAGEACCESS_KEEP_ALIVE_TIME)));
         add(new Label("updateSequence", new MapModel(values, KEY_UPDATE_SEQUENCE)));
 
         add(new Link("free.locks") {
@@ -162,6 +172,7 @@ public class StatusPage extends ServerAdminPage {
         GeoServerInfo geoServerInfo = getGeoServer().getGlobal();
         JAIInfo jaiInfo = geoServerInfo.getJAI();
         JAI jai =  jaiInfo.getJAI();
+        CoverageAccessInfo coverageAccess = geoServerInfo.getCoverageAccess();
         SunTileCache jaiCache = jaiInfo.getTileCache();
 
         values.put(KEY_JAI_MAX_MEM, formatMemory(jaiCache.getMemoryCapacity()));
@@ -170,6 +181,10 @@ public class StatusPage extends ServerAdminPage {
         values.put(KEY_JAI_TILE_THREADS, Integer.toString(jai.getTileScheduler().getParallelism()));
         values.put(KEY_JAI_TILE_THREAD_PRIORITY, Integer.toString(jai.getTileScheduler()
                 .getPriority()));
+        
+        values.put(KEY_COVERAGEACCESS_CORE_POOL_SIZE, Integer.toString(coverageAccess.getCorePoolSize()));
+        values.put(KEY_COVERAGEACCESS_MAX_POOL_SIZE, Integer.toString(coverageAccess.getMaxPoolSize()));
+        values.put(KEY_COVERAGEACCESS_KEEP_ALIVE_TIME, Integer.toString(coverageAccess.getKeepAliveTime()));
 
         values.put(KEY_UPDATE_SEQUENCE, Long.toString(geoServerInfo.getUpdateSequence()));
     }

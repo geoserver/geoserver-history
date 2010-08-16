@@ -46,6 +46,15 @@ public abstract class ServerAdminPage extends GeoServerSecuredPage {
             }
         };
     }
+    
+    public IModel getCoverageAccessModel(){
+        return new LoadableDetachableModel(){
+            public Object load() {
+                return getGeoServerApplication()
+                    .getGeoServer().getGlobal().getCoverageAccess();
+            }
+        };
+    }
 
     public IModel getContactInfoModel(){
         return new LoadableDetachableModel(){

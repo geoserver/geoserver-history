@@ -60,12 +60,14 @@ import org.geoserver.catalog.impl.WMSLayerInfoImpl;
 import org.geoserver.catalog.impl.WMSStoreInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.ContactInfo;
+import org.geoserver.config.CoverageAccessInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.config.LoggingInfo;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
+import org.geoserver.config.impl.CoverageAccessInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.config.impl.JAIInfoImpl;
@@ -239,6 +241,7 @@ public class XStreamPersister {
         xs.alias("global", GeoServerInfo.class);
         xs.alias("logging", LoggingInfo.class);
         xs.alias("jai", JAIInfo.class);
+        xs.alias("coverageAccess", CoverageAccessInfo.class);
         xs.alias("catalog", Catalog.class);
         xs.alias("namespace", NamespaceInfo.class);
         xs.alias("workspace", WorkspaceInfo.class);
@@ -492,6 +495,7 @@ public class XStreamPersister {
         xs.addDefaultImplementation(GeoServerInfoImpl.class, GeoServerInfo.class);
         xs.addDefaultImplementation(LoggingInfoImpl.class, LoggingInfo.class);
         xs.addDefaultImplementation(JAIInfoImpl.class, JAIInfo.class);
+        xs.addDefaultImplementation(CoverageAccessInfoImpl.class, CoverageAccessInfo.class);
         xs.addDefaultImplementation(ContactInfoImpl.class, ContactInfo.class);
         xs.addDefaultImplementation(AttributionInfoImpl.class, AttributionInfo.class);
         

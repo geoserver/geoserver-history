@@ -20,6 +20,12 @@
     <jpegAcceleration>true</jpegAcceleration>
     <allowNativeMosaic>false</allowNativeMosaic>
   </jai>
+  <coverageAccess>
+    <maxPoolSize>10</maxPoolSize>
+    <corePoolSize>5</corePoolSize>
+    <keepAliveTime>30000</keepAliveTime>
+    <queueType>UNBOUNDED</queueType>
+  </coverageAccess>
   <charset>UTF-8</charset>
   <numDecimals>8</numDecimals>
   <onlineResource>http://geoserver.org</onlineResource>

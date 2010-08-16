@@ -4,6 +4,7 @@
  */
 package org.geoserver.catalog;
 
+import java.awt.RenderingHints;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,12 +55,12 @@ import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataAccessFactory;
+import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
-import org.geotools.data.DataAccessFactory.Param;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -135,6 +137,9 @@ public class ResourcePool {
      * Default number of hard references
      */
     static int FEATURETYPE_CACHE_SIZE_DEFAULT = 100;
+    
+    private static final String IMAGE_PYRAMID = "ImagePyramid";
+    private static final String IMAGE_MOSAIC = "ImageMosaic";
 
     Catalog catalog;
     HashMap<String, CoordinateReferenceSystem> crsCache;
@@ -146,6 +151,7 @@ public class ResourcePool {
     CoverageReaderCache hintCoverageReaderCache;
     HashMap<StyleInfo,Style> styleCache;
     List<Listener> listeners;
+    ThreadPoolExecutor coverageExecutor;
     
     public ResourcePool(Catalog catalog) {
         this.catalog = catalog;
@@ -175,6 +181,18 @@ public class ResourcePool {
         synchronized (this) {
             featureTypeCache.clear();
             featureTypeCache = new FeatureTypeCache(featureTypeCacheSize);
+        }
+    }
+    
+    /**
+     * Sets the size of the feature type cache.
+     * <p>
+     * A warning that calling this method will blow away the existing cache.
+     * </p>
+     */
+    public void setCoverageExecutor(ThreadPoolExecutor coverageExecutor) {
+        synchronized (this) {
+            this.coverageExecutor = coverageExecutor;
         }
     }
     
@@ -946,7 +964,18 @@ public class ResourcePool {
                 final File obj = GeoserverDataDirectory.findDataFile(info.getURL());
     
                 // XXX CACHING READERS HERE
-                reader = (info.getFormat()).getReader(obj,hints);
+                final AbstractGridFormat gridFormat = info.getFormat();
+                final String formatName = gridFormat.getName();
+                if (formatName.equalsIgnoreCase(IMAGE_MOSAIC) || formatName.equalsIgnoreCase(IMAGE_PYRAMID)){
+                    if (coverageExecutor != null){
+                        if (hints != null){
+                            hints.add(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
+                        } else {
+                            hints = new Hints(new RenderingHints(Hints.EXECUTOR_SERVICE, coverageExecutor));
+                        }
+                    }
+                }
+                reader = gridFormat.getReader(obj,hints);
                 (hints != null ? hintCoverageReaderCache : coverageReaderCache ).put(info, reader);
             }
         }

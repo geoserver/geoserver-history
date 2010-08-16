@@ -118,6 +118,15 @@
     <property name="icon" value="../img/icons/silk/cog_photo.png"/>
     <property name="order" value="40"/>
   </bean>
+  <bean id="coverageAccessMenuPage" class="org.geoserver.web.MenuPageInfo">
+    <property name="id" value="server.admin.coverageAccess"/>
+    <property name="titleKey" value="CoverageAccessPage.title"/>
+    <property name="descriptionKey" value="CoverageAccessPage.description"/>
+    <property name="componentClass" value="org.geoserver.web.admin.CoverageAccessPage"/>
+    <property name="category" ref="serverCategory"/>
+    <property name="icon" value="../img/icons/silk/cog_photo.png"/>
+    <property name="order" value="45"/>
+  </bean>
   <bean id="aboutMenuPage" class="org.geoserver.web.MenuPageInfo">
     <property name="id" value="server.about"/>
     <property name="titleKey" value="AboutGeoServerPage.title"/>
