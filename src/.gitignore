@@ -381,6 +381,7 @@
 /web/app/.settings
 /web/app/logs
 /web/app/trace.db
+/web/app/minimal
  
 # /web/app/src/main/webapp/
 /web/app/src/main/webapp/data
