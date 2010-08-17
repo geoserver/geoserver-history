@@ -102,6 +102,9 @@
  
 # /community/translator/
 /community/translator/target
+/community/translator/.project
+/community/translator/.classpath
+/community/translator/.settings
  
 # /community/upload/
 /community/upload/.classpath
