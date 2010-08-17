@@ -1,5 +1,9 @@
 # /
 /target
+**/*/.classpath
+**/*/.project
+**/*/.settings
+
  
 # /community/
 /community/target
