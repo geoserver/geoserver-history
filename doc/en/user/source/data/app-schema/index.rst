@@ -27,6 +27,7 @@ Contents
    configuration
    mapping-file
    app-schema-resolution
+   secondary-namespaces
    vocab-functions
    property-interpolation
    data-stores
