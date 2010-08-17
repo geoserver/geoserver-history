@@ -14,6 +14,7 @@ import static org.geotools.arcsde.session.ArcSDEConnectionConfig.SERVER_NAME_PAR
 import static org.geotools.arcsde.session.ArcSDEConnectionConfig.USER_NAME_PARAM_NAME;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -204,7 +205,7 @@ public class RasterTableSelectionPanel extends Panel {
         final ISessionPool pool;
         {
             final ArcSDEConnectionConfig connectionConfig;
-            Map<String, String> params = new HashMap<String, String>();
+            Map<String, Serializable> params = new HashMap<String, Serializable>();
             params.put(SERVER_NAME_PARAM_NAME, server);
             params.put(PORT_NUMBER_PARAM_NAME, port);
             params.put(INSTANCE_NAME_PARAM_NAME, instance);
