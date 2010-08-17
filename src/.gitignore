@@ -1,0 +1,442 @@
+# /
+/target
+ 
+# /community/
+/community/target
+/community/catalog
+ 
+# /community/Issues/
+/community/Issues/.classpath
+/community/Issues/.project
+/community/Issues/target
+ 
+# /community/cite/
+/community/cite/.classpath
+/community/cite/.project
+/community/cite/.settings
+/community/cite/target
+/community/cite/engine
+/community/cite/tests
+/community/cite/cite1
+ 
+# /community/geosync/
+/community/geosync/.classpath
+/community/geosync/.project
+/community/geosync/.settings
+/community/geosync/target
+ 
+# /community/geoxacml/
+/community/geoxacml/target
+ 
+# /community/hello/
+/community/hello/.settings
+/community/hello/.classpath
+/community/hello/.project
+/community/hello/target
+ 
+# /community/hello_web/
+/community/hello_web/target
+/community/hello_web/.classpath
+/community/hello_web/.project
+/community/hello_web/.settings
+ 
+# /community/hibernate/
+/community/hibernate/nb-configuration.xml
+/community/hibernate/target
+/community/hibernate/nbactions.xml
+ 
+# /community/importer/
+/community/importer/target
+/community/importer/.project
+/community/importer/.classpath
+ 
+# /community/istyler/
+/community/istyler/.project
+/community/istyler/.classpath
+/community/istyler/.settings
+/community/istyler/target
+ 
+# /community/kml-ows5/
+/community/kml-ows5/target
+/community/kml-ows5/cobertura.ser
+/community/kml-ows5/.classpath
+/community/kml-ows5/.project
+/community/kml-ows5/.settings
+ 
+# /community/preferences/
+/community/preferences/target
+/community/preferences/cobertura.ser
+/community/preferences/.classpath
+/community/preferences/.project
+/community/preferences/.settings
+ 
+# /community/preferences/core/
+/community/preferences/core/.settings
+/community/preferences/core/.classpath
+/community/preferences/core/.project
+/community/preferences/core/target
+ 
+# /community/preferences/web/
+/community/preferences/web/.settings
+/community/preferences/web/.classpath
+/community/preferences/web/.project
+/community/preferences/web/target
+ 
+# /community/proxy/
+/community/proxy/.classpath
+/community/proxy/.project
+/community/proxy/.settings
+/community/proxy/target
+ 
+# /community/rest/
+/community/rest/target
+/community/rest/.classpath
+/community/rest/.project
+/community/rest/.settings
+ 
+# /community/scriptlet/
+/community/scriptlet/target
+/community/scriptlet/.classpath
+/community/scriptlet/.project
+/community/scriptlet/.settings
+ 
+# /community/translator/
+/community/translator/target
+ 
+# /community/upload/
+/community/upload/.classpath
+/community/upload/.project
+/community/upload/.settings
+/community/upload/target
+ 
+# /community/wps/
+/community/wps/target
+/community/wps/.classpath
+/community/wps/.project
+/community/wps/.settings
+ 
+# /extension/
+/extension/target
+ 
+# /extension/app-schema/
+/extension/app-schema/target
+ 
+# /extension/app-schema/app-schema-test/
+/extension/app-schema/app-schema-test/target
+/extension/app-schema/app-schema-test/.project
+/extension/app-schema/app-schema-test/.classpath
+/extension/app-schema/app-schema-test/.settings
+/extension/app-schema/app-schema-test/*.sld
+ 
+# /extension/app-schema/app-schema-test/src/test/resources/
+ 
+# /extension/app-schema/sample-data-access-test/
+/extension/app-schema/sample-data-access-test/target
+/extension/app-schema/sample-data-access-test/.project
+/extension/app-schema/sample-data-access-test/.classpath
+/extension/app-schema/sample-data-access-test/.settings
+/extension/app-schema/sample-data-access-test/*.sld
+ 
+# /extension/arcsde/
+/extension/arcsde/.classpath
+/extension/arcsde/.project
+/extension/arcsde/.settings
+/extension/arcsde/target
+ 
+# /extension/charts/
+/extension/charts/target
+/extension/charts/.classpath
+/extension/charts/.project
+/extension/charts/.settings
+ 
+# /extension/db2/
+/extension/db2/target
+/extension/db2/.classpath
+/extension/db2/.project
+/extension/db2/.settings
+ 
+# /extension/excel/
+/extension/excel/target
+/extension/excel/bin
+/extension/excel/.settings
+/extension/excel/.classpath
+/extension/excel/.project
+ 
+# /extension/feature-pregeneralized/
+/extension/feature-pregeneralized/target
+/extension/feature-pregeneralized/.classpath
+/extension/feature-pregeneralized/.project
+/extension/feature-pregeneralized/.settings
+ 
+# /extension/geosearch/
+/extension/geosearch/target
+/extension/geosearch/.settings
+/extension/geosearch/.project
+/extension/geosearch/.classpath
+ 
+# /extension/h2/
+/extension/h2/target
+/extension/h2/.classpath
+/extension/h2/.project
+/extension/h2/.settings
+ 
+# /extension/imagemap/
+/extension/imagemap/.settings
+/extension/imagemap/target
+/extension/imagemap/.classpath
+/extension/imagemap/.project
+ 
+# /extension/imagemosaic-jdbc/
+/extension/imagemosaic-jdbc/target
+/extension/imagemosaic-jdbc/.project
+/extension/imagemosaic-jdbc/.classpath
+/extension/imagemosaic-jdbc/.settings
+ 
+# /extension/mysql/
+/extension/mysql/.settings
+/extension/mysql/.classpath
+/extension/mysql/.project
+/extension/mysql/target
+ 
+# /extension/ogr/
+/extension/ogr/target
+/extension/ogr/.classpath
+/extension/ogr/.project
+/extension/ogr/.settings
+ 
+# /extension/oracle/
+/extension/oracle/target
+/extension/oracle/.settings
+/extension/oracle/.classpath
+/extension/oracle/.project
+ 
+# /extension/restconfig/
+/extension/restconfig/target
+/extension/restconfig/.classpath
+/extension/restconfig/.project
+/extension/restconfig/.settings
+ 
+# /extension/sqlserver/
+/extension/sqlserver/target
+/extension/sqlserver/.classpath
+/extension/sqlserver/.project
+/extension/sqlserver/.settings
+ 
+# /extension/validation/
+/extension/validation/target
+/extension/validation/cobertura.ser
+/extension/validation/.classpath
+/extension/validation/.project
+/extension/validation/.settings
+ 
+# /extension/wfsv/
+/extension/wfsv/target
+/extension/wfsv/.classpath
+/extension/wfsv/.project
+/extension/wfsv/.settings
+ 
+# /gwc/
+/gwc/.classpath
+/gwc/.project
+/gwc/.settings
+/gwc/target
+ 
+# /legacy/
+/legacy/.classpath
+/legacy/.project
+/legacy/.settings
+/legacy/target
+ 
+# /legacy/main/
+/legacy/main/.classpath
+/legacy/main/.project
+/legacy/main/.settings
+/legacy/main/target
+ 
+# /legacy/wcs/
+/legacy/wcs/.classpath
+/legacy/wcs/.project
+/legacy/wcs/.settings
+/legacy/wcs/target
+ 
+# /legacy/web/
+/legacy/web/target
+/legacy/web/cobertura.ser
+/legacy/web/.classpath
+/legacy/web/.project
+/legacy/web/.settings
+ 
+# /legacy/web/src/main/webapp/
+/legacy/web/src/main/webapp/data
+/legacy/web/src/main/webapp/preview
+ 
+# /legacy/web/src/main/webapp/WEB-INF/
+/legacy/web/src/main/webapp/WEB-INF/catalog.xml
+/legacy/web/src/main/webapp/WEB-INF/services.xml
+ 
+# /legacy/wfs/
+/legacy/wfs/.classpath
+/legacy/wfs/.project
+/legacy/wfs/.settings
+/legacy/wfs/target
+ 
+# /legacy/wms/
+/legacy/wms/.classpath
+/legacy/wms/.project
+/legacy/wms/.settings
+/legacy/wms/target
+ 
+# /main/
+/main/build
+/main/server
+/main/conf
+/main/target
+/main/.classpath
+/main/.project
+/main/.settings
+/main/surefire-system.properties
+/main/cobertura.ser
+ 
+# /maven/
+/maven/target
+ 
+# /maven/archetype/
+/maven/archetype/target
+ 
+# /maven/archetype/webPlugin/
+/maven/archetype/webPlugin/.classpath
+/maven/archetype/webPlugin/.project
+/maven/archetype/webPlugin/.settings
+/maven/archetype/webPlugin/target
+ 
+# /maven/archetype/wfsOutputFormat/
+/maven/archetype/wfsOutputFormat/.classpath
+/maven/archetype/wfsOutputFormat/.project
+/maven/archetype/wfsOutputFormat/.settings
+/maven/archetype/wfsOutputFormat/target
+ 
+# /maven/config/
+/maven/config/target
+/maven/config/.classpath
+/maven/config/.project
+/maven/config/.settings
+ 
+# /ows/
+/ows/.settings
+/ows/.classpath
+/ows/.project
+/ows/target
+/ows/.springBeans
+ 
+# /platform/
+/platform/target
+/platform/cobertura.ser
+/platform/.classpath
+/platform/.project
+/platform/.settings
+ 
+# /release/
+/release/GEOSDOC
+/release/target
+/release/.settings
+/release/.classpath
+/release/.project
+ 
+# /rest/
+/rest/target
+/rest/.classpath
+/rest/.project
+/rest/.settings
+ 
+# /wcs/
+/wcs/target
+/wcs/cobertura.ser
+/wcs/.classpath
+/wcs/.project
+/wcs/.settings
+ 
+# /wcs1_0/
+/wcs1_0/.classpath
+/wcs1_0/.project
+/wcs1_0/.springBeans
+/wcs1_0/.settings
+/wcs1_0/target
+ 
+# /wcs1_1/
+/wcs1_1/.project
+/wcs1_1/.classpath
+/wcs1_1/.settings
+/wcs1_1/target
+ 
+# /web/
+/web/target
+ 
+# /web/app/
+/web/app/target
+/web/app/.classpath
+/web/app/.project
+/web/app/.settings
+/web/app/logs
+/web/app/trace.db
+ 
+# /web/app/src/main/webapp/
+/web/app/src/main/webapp/data
+ 
+# /web/app/src/test/java/org/geoserver/wicket/test/
+ 
+# /web/core/
+/web/core/target
+/web/core/.classpath
+/web/core/.project
+/web/core/.settings
+ 
+# /web/demo/
+/web/demo/target
+/web/demo/.classpath
+/web/demo/.project
+/web/demo/.settings
+ 
+# /web/gwc/
+/web/gwc/.classpath
+/web/gwc/.project
+/web/gwc/.settings
+/web/gwc/target
+ 
+# /web/security/
+/web/security/*.ser
+/web/security/.classpath
+/web/security/.project
+/web/security/.settings
+/web/security/target
+ 
+# /web/wcs/
+/web/wcs/.classpath
+/web/wcs/.project
+/web/wcs/.settings
+/web/wcs/target
+ 
+# /web/wfs/
+/web/wfs/.classpath
+/web/wfs/.project
+/web/wfs/.settings
+/web/wfs/target
+ 
+# /web/wms/
+/web/wms/target
+/web/wms/.classpath
+/web/wms/.project
+/web/wms/.settings
+ 
+# /wfs/
+/wfs/target
+/wfs/cobertura.ser
+/wfs/.classpath
+/wfs/.project
+/wfs/.settings
+ 
+# /wms/
+/wms/target
+/wms/cobertura.ser
+/wms/.classpath
+/wms/.project
+/wms/.settings
