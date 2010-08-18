@@ -159,7 +159,7 @@ public class ResourcePool {
         dataStoreCache = new DataStoreCache();
         featureTypeCache = new FeatureTypeCache(FEATURETYPE_CACHE_SIZE_DEFAULT);
         
-        featureTypeAttributeCache = new FeatureTypeAttributeCache();
+        featureTypeAttributeCache = new FeatureTypeAttributeCache(FEATURETYPE_CACHE_SIZE_DEFAULT);
         coverageReaderCache = new CoverageReaderCache();
         hintCoverageReaderCache = new CoverageReaderCache();
         
@@ -181,6 +181,8 @@ public class ResourcePool {
         synchronized (this) {
             featureTypeCache.clear();
             featureTypeCache = new FeatureTypeCache(featureTypeCacheSize);
+            featureTypeAttributeCache.clear();
+            featureTypeAttributeCache = new FeatureTypeAttributeCache(featureTypeCacheSize);
         }
     }
     
@@ -465,7 +467,7 @@ public class ResourcePool {
                     }
                     
                     //TODO: cache attributes
-                    //featureTypeAttributeCache.put(info, atts);
+                    featureTypeAttributeCache.put(info, atts);
                 }
             }
         }
@@ -1437,7 +1439,9 @@ public class ResourcePool {
     }
     
     static class FeatureTypeAttributeCache extends LRUMap {
-        
+        FeatureTypeAttributeCache(int size) {
+            super(size);
+        }
     }
     
     static class WMSCache extends LRUMap {
