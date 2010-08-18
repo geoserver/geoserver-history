@@ -87,6 +87,13 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
                 doc);
+        // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo(EPSG_4283,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsName", doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsDimension", doc);
+        assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/gml:posList", doc);
         // test nested geometry
         assertXpathEvaluatesTo("nested.2",
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
@@ -112,6 +119,13 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // test geometry values
         assertXpathEvaluatesTo("42.58 31.29", "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos",
                 doc);
+        // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo(EPSG_4283,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsName", doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsDimension", doc);
+        assertXpathEvaluatesTo("42.58 31.29 42.58 31.29",
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/gml:posList", doc);
         // test nested geometry
         assertXpathEvaluatesTo("nested.1",
                 "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
@@ -181,6 +195,13 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
                 targetPolygonCoords,
                 "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
                 doc);
+        // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo(EPSG_4326,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsName", doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsDimension", doc);
+        assertXpathEvaluatesTo(targetPolygonCoords,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/gml:posList", doc);
         // test nested geometry
         assertXpathEvaluatesTo("nested.2",
                 "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
@@ -206,6 +227,13 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // test values
         assertXpathEvaluatesTo(targetPointCoord,
                 "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos", doc);
+        // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo(EPSG_4326,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsName", doc);
+        assertXpathEvaluatesTo(DIMENSION,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsDimension", doc);
+        assertXpathEvaluatesTo(targetPointCoord + " " + targetPointCoord,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/gml:posList", doc);
         // test nested geometry
         assertXpathEvaluatesTo("nested.1",
                 "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
