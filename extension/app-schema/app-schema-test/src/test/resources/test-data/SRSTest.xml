@@ -6,6 +6,10 @@
             <prefix>ex</prefix>
             <uri>http://example.com</uri>
         </Namespace>
+        <Namespace>
+			<prefix>gml</prefix>
+			<uri>http://www.opengis.net/gml</uri>
+		</Namespace>
     </namespaces>
     <sourceDataStores>
         <DataStore>
@@ -49,6 +53,14 @@
                         <linkElement>ex:nestedGeom</linkElement>
                         <linkField>FEATURE_LINK</linkField>
                     </sourceExpression>
+                </AttributeMapping>
+                <!-- Test 2nd geometry -->
+                <AttributeMapping>
+                    <targetAttribute>ex:shape</targetAttribute>      
+                    <sourceExpression>
+                        <OCQL>GEOM</OCQL>
+                    </sourceExpression>                                  
+                    <targetAttributeNode>gml:LineStringPropertyType</targetAttributeNode>
                 </AttributeMapping>
             </attributeMappings>
         </FeatureTypeMapping>
