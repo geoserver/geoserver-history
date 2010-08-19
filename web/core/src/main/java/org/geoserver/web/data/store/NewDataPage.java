@@ -172,7 +172,9 @@ public class NewDataPage extends GeoServerSecuredPage {
 
             while (availableDataStores.hasNext()) {
                 DataAccessFactory factory = availableDataStores.next();
-                storeNames.put(factory.getDisplayName(), factory);
+                if(factory.getDisplayName() != null) {
+                    storeNames.put(factory.getDisplayName(), factory);
+                }
             }
             dataStores = storeNames;
         }

@@ -167,15 +167,18 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataAccessFactory aquireFactory(String displayName) {
+        if(displayName == null) {
+            return null;
+        }
         for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
             DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory( factory );
             
-            if (factory.getDisplayName().equals(displayName)) {
+            if (displayName.equals(factory.getDisplayName())) {
                 return factory;
             }
 
-            if (factory.getClass().toString().equals(displayName)) {
+            if (displayName.equals(factory.getClass().toString())) {
                 return factory;
             }
         }
