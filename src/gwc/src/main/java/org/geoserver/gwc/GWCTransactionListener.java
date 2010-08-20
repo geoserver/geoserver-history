@@ -20,53 +20,53 @@ import org.geotools.util.logging.Logging;
 
 public class GWCTransactionListener implements TransactionListener {
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCTransactionListener");
-    
+
     final private Catalog cat;
-    
+
     final private GWCCleanser cleanser;
-    
+
     public GWCTransactionListener(Catalog cat, GWCCleanser cleanser) {
         this.cat = cat;
         this.cleanser = cleanser;
     }
-    
- // TODO limit to subset
+
+    // TODO limit to subset
     public void dataStoreChange(TransactionEvent event) throws WFSException {
         String prefix = null;
         String layerName = null;
-        
+
         try {
             prefix = cat.getNamespaceByURI(event.getLayerName().getNamespaceURI()).getPrefix();
-            layerName = prefix +":"+ event.getLayerName().getLocalPart();
-        } catch(NullPointerException npe) {
+            layerName = prefix + ":" + event.getLayerName().getLocalPart();
+        } catch (NullPointerException npe) {
             log.fine("Null pointer while trying to determine feature prefix. Cache not truncated.");
             return;
         }
-        
+
         // The layer itself
         cleanser.deleteLayer(layerName);
-        
+
         // Now we check for layer groups that are affected
         Iterator<LayerGroupInfo> lgiter = cat.getLayerGroups().iterator();
-        while(lgiter.hasNext()) {
+        while (lgiter.hasNext()) {
             boolean truncate = false;
             LayerGroupInfo lgi = lgiter.next();
-            //System.out.println(lgi.getName());
-            
+            // System.out.println(lgi.getName());
+
             // First we check for referenced to affected layers
             Iterator<LayerInfo> liter = lgi.getLayers().iterator();
-            while(! truncate && liter.hasNext()) {
+            while (!truncate && liter.hasNext()) {
                 LayerInfo li = liter.next();
-                //System.out.println("   " + li.getResource().getPrefixedName());
-                if(li.getResource().getPrefixedName().equals(layerName)) {
+                // System.out.println("   " + li.getResource().getPrefixedName());
+                if (li.getResource().getPrefixedName().equals(layerName)) {
                     truncate = true;
                 }
             }
-            
-            if(truncate) {
+
+            if (truncate) {
                 cleanser.deleteLayer(lgi.getName());
             }
             // Next layer group
-        }        
+        }
     }
 }
