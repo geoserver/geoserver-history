@@ -43,13 +43,18 @@ public class TransactionListenerTest extends WFSTestSupport {
                 + "</wfs:Delete> " + "</wfs:Transaction>";
 
         postAsDOM("wfs", delete);
-        assertEquals(1, listener.events.size());
+        assertEquals(2, listener.events.size());
         TransactionEvent event = (TransactionEvent) listener.events.get(0);
         assertEquals(TransactionEventType.PRE_DELETE, event.getType());
         assertEquals(MockData.POINTS, event.getLayerName());
-        assertEquals(1, listener.features.size());
-        Feature deleted = (Feature) listener.features.get(0);
+        assertEquals(1, listener.features.get(0).size());
+        Feature deleted = (Feature) listener.features.get(0).get(0);
         assertEquals("t0000", deleted.getProperty("id").getValue());
+        
+        event = (TransactionEvent) listener.events.get(1);
+        assertEquals(TransactionEventType.POST_DELETE, event.getType());
+        assertEquals(MockData.POINTS, event.getLayerName());
+        assertEquals(0, listener.features.get(1).size());
     }
 
     public void testInsert() throws Exception {
@@ -70,11 +75,16 @@ public class TransactionListenerTest extends WFSTestSupport {
                 + "</cgf:Lines>" + "</wfs:Insert>" + "</wfs:Transaction>";
 
         postAsDOM("wfs", insert);
-        assertEquals(1, listener.events.size());
+        assertEquals(2, listener.events.size());
         TransactionEvent firstEvent = (TransactionEvent) listener.events.get(0);
         assertEquals(TransactionEventType.PRE_INSERT, firstEvent.getType());
         assertEquals(MockData.LINES, firstEvent.getLayerName());
-        assertEquals(1, listener.features.size());
+        assertEquals(1, listener.features.get(0).size());
+        
+        TransactionEvent secondEvent = (TransactionEvent) listener.events.get(1);
+        assertEquals(TransactionEventType.POST_INSERT, secondEvent.getType());
+        assertEquals(MockData.LINES, secondEvent.getLayerName());
+        assertEquals(1, listener.features.get(1).size());
     }
 
     public void testUpdate() throws Exception {
@@ -98,13 +108,13 @@ public class TransactionListenerTest extends WFSTestSupport {
         TransactionEvent firstEvent = (TransactionEvent) listener.events.get(0);
         assertEquals(TransactionEventType.PRE_UPDATE, firstEvent.getType());
         assertEquals(MockData.POLYGONS, firstEvent.getLayerName());
-        Feature updatedBefore = (Feature) listener.features.get(0);
+        Feature updatedBefore = (Feature) listener.features.get(0).get(0);
         assertEquals("t0002", updatedBefore.getProperty("id").getValue());
         
         TransactionEvent secondEvent = (TransactionEvent) listener.events.get(1);
         assertEquals(TransactionEventType.POST_UPDATE, secondEvent.getType());
         assertEquals(MockData.POLYGONS, secondEvent.getLayerName());
-        Feature updatedAfter = (Feature) listener.features.get(1);
+        Feature updatedAfter = (Feature) listener.features.get(1).get(0);
         assertEquals("t0003", updatedAfter.getProperty("id").getValue());
         
         assertEquals(2, listener.features.size());
