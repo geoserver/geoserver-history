@@ -167,27 +167,13 @@ public class InsertElementHandler implements TransactionElementHandler {
                     TransactionEvent event = new TransactionEvent(TransactionEventType.PRE_INSERT,
                             elementName, collection);
                     event.setSource( insert );
-                    listener.dataStoreChange( event );
                     
-                    try {
-                        fids.addAll(store.addFeatures(collection));
-
-                        // fire post insert event
-                        event = new TransactionEvent(TransactionEventType.POST_INSERT, elementName,
-                                collection, insert);
-                        listener.dataStoreChange(event);
-                    } catch (Exception e) {
-                        // notify listeners
-                        event = new TransactionEvent(TransactionEventType.POST_INSERT, elementName,
-                                collection, insert);
-                        event.setReasonOfFailure(e);
-                        try {
-                            listener.dataStoreChange(event);
-                        } catch (Exception ignore) {
-                            //
-                        }
-                        throw e;
-                    }
+                    listener.dataStoreChange( event );
+                    fids.addAll(store.addFeatures(collection));
+                    
+                    //fire post insert event
+                    //event = new TransactionEvent(TransactionEventType.POST_INSERT, elementName, collection, insert );
+                    //listener.dataStoreChange( event );
                 }
             }
 
