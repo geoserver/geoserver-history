@@ -7,6 +7,8 @@
  */
 package org.geoserver.gwc;
 
+import static org.geoserver.wfs.TransactionEventType.POST_DELETE;
+import static org.geoserver.wfs.TransactionEventType.POST_INSERT;
 import static org.geoserver.wfs.TransactionEventType.POST_UPDATE;
 import static org.geoserver.wfs.TransactionEventType.PRE_DELETE;
 import static org.geoserver.wfs.TransactionEventType.PRE_INSERT;
@@ -20,9 +22,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import net.opengis.wfs.UpdateElementType;
-
-import org.apache.commons.collections.map.LRUMap;
+import org.apache.commons.collections.map.StaticBucketMap;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
@@ -30,11 +30,11 @@ import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionEventType;
 import org.geoserver.wfs.TransactionListener;
-import org.geoserver.wfs.UpdateElementHandler;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
+import org.springframework.util.Assert;
 
 /**
  * Listens to transactions (so far only issued by WFS) and truncates the cache for the affected area
@@ -54,15 +54,18 @@ public class GWCTransactionListener implements TransactionListener {
     final private GWCCleanser cleanser;
 
     /**
-     * Keeps track of the {@link TransactionEventType#PRE_UPDATE} affected bounds on a per
-     * {@link UpdateElementType} request basis, so that the {@code POST_UPDATE} bounds are
-     * aggregated to these ones before issuing a cache truncation.
+     * Keeps track of the pre-transaction affected bounds on a per
+     * {@link TransactionEvent#getSource() transaction request} basis, so that the
+     * {@code POST_UPDATE|INSERT|DELETE} bounds are aggregated to these ones before issuing a cache
+     * truncation.
      */
-    private LRUMap updateBounds = new LRUMap();
+    private final Map<Object, ReferencedEnvelope> preBoundsMap;
 
+    @SuppressWarnings("unchecked")
     public GWCTransactionListener(final Catalog cat, final GWCCleanser cleanser) {
         this.cat = cat;
         this.cleanser = cleanser;
+        this.preBoundsMap = new StaticBucketMap(200);
     }
 
     /**
@@ -84,19 +87,33 @@ public class GWCTransactionListener implements TransactionListener {
 
         final TransactionEventType type = event.getType();
 
+        final Object originatingTransactionRequest = event.getSource();
+        Assert.notNull(originatingTransactionRequest);
+
         final SimpleFeatureCollection affectedFeatures = event.getAffectedFeatures();
 
         if (PRE_INSERT == type || PRE_UPDATE == type || PRE_DELETE == type) {
-            ReferencedEnvelope preBounds = affectedFeatures.getBounds();
-        } else if (POST_UPDATE == type) {
-            ReferencedEnvelope postBounds = affectedFeatures.getBounds();
-        } else {
-            // there exist no POST_DELETE, and POST_INSERT is never used
-            throw new IllegalArgumentException("Unrecognized transaction event type: " + type);
-        }
 
-        for (String layerName : affectedLayers) {
-            cleanser.deleteLayer(layerName);
+            ReferencedEnvelope preBounds = affectedFeatures.getBounds();
+            this.preBoundsMap.put(originatingTransactionRequest, preBounds);
+
+        } else if (POST_INSERT == type || POST_UPDATE == type || POST_DELETE == type) {
+
+            final ReferencedEnvelope preBounds = preBoundsMap.remove(originatingTransactionRequest);
+
+            if (event.getReasonOfFailure() == null) {
+                // only truncate if the request didn't fail
+                ReferencedEnvelope postBounds = affectedFeatures.getBounds();
+
+                postBounds.expandToInclude(preBounds);
+
+                for (String layerName : affectedLayers) {
+                    cleanser.truncate(layerName, postBounds);
+                }
+            }
+
+        } else {
+            throw new IllegalArgumentException("Unrecognized transaction event type: " + type);
         }
 
     }
