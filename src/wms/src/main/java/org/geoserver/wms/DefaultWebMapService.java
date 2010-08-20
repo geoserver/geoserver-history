@@ -109,7 +109,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * Temporary field that handles the choice of renderer to be used
      */
-    private static Boolean USE_STREAMING_RENDERER = null;
+    private static Boolean USE_SHAPEFILE_RENDERER = null;
     
     /**
      * Max number of rule filters to be used against the data source
@@ -146,13 +146,13 @@ public class DefaultWebMapService implements WebMapService,
         }
         
         // initialization of the renderer choice flag
-        if (USE_STREAMING_RENDERER == null) {
-            String enabled = GeoServerExtensions.getProperty("USE_STREAMING_RENDERER", context);
+        if (USE_SHAPEFILE_RENDERER == null) {
+            String enabled = GeoServerExtensions.getProperty("USE_SHAPEFILE_RENDERER", context);
             // default to true, but allow switching on
             if(enabled == null)
-                USE_STREAMING_RENDERER = true;
+                USE_SHAPEFILE_RENDERER = false;
             else
-                USE_STREAMING_RENDERER = Boolean.valueOf(enabled);
+                USE_SHAPEFILE_RENDERER = Boolean.valueOf(enabled);
         }
         
         // initialization of the renderer choice flag
@@ -176,12 +176,12 @@ public class DefaultWebMapService implements WebMapService,
     }
     
     /**
-     * Checks wheter the line streaming renderer is enabled, or not (defaults to false
+     * Checks wheter the shapefile renderer is enabled, or not (defaults to false
      * unless the user sets the USE_STREAMING_RENDERER property to true)
      * @return
      */
-    public static boolean useStreamingRenderer() {
-        return USE_STREAMING_RENDERER;
+    public static boolean useShapefileRenderer() {
+        return USE_SHAPEFILE_RENDERER;
     }
     
     /**
