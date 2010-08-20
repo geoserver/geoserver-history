@@ -25,7 +25,6 @@ import org.geoserver.catalog.event.CatalogListener;
 import org.geoserver.catalog.event.CatalogModifyEvent;
 import org.geoserver.catalog.event.CatalogPostModifyEvent;
 import org.geoserver.catalog.event.CatalogRemoveEvent;
-import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.ows.Dispatcher;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -128,10 +127,10 @@ public class GWCCatalogListener implements CatalogListener, Configuration {
     public void handlePostModifyEvent(CatalogPostModifyEvent event) throws CatalogException {
         Object obj = event.getSource();
 
-        if (obj instanceof StyleInfoImpl) {
+        if (obj instanceof StyleInfo) {
             // TODO First pass only considers default styles,
             // which is all GWC will accept anyway
-            StyleInfoImpl si = (StyleInfoImpl) obj;
+            StyleInfo si = (StyleInfo) obj;
             String styleName = si.getName();
 
             LinkedList<String> layerNameList = new LinkedList<String>();
