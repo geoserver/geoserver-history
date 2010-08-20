@@ -947,26 +947,26 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      */
     public void testFilteringNestedMultiValuedAttribute() {
         // PropertyIsEqual
-        String xml = //
-        "<wfs:GetFeature " //
-                + "service=\"WFS\" " //
-                + "version=\"1.1.0\" " //
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+        String xml = 
+        "<wfs:GetFeature " 
+                + "service=\"WFS\" " 
+                + "version=\"1.1.0\" " 
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " 
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " 
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " 
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " 
                 + "xmlns:gsml=\""
                 + AbstractAppSchemaMockData.GSML_URI
-                + "\" " //
-                + ">" //
-                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
-                + "        <ogc:Filter>" //
-                + "            <ogc:PropertyIsEqualTo>" //
-                + "                <ogc:Literal>Yaugher Volcanic Group 2</ogc:Literal>" //
-                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" //
-                + "            </ogc:PropertyIsEqualTo>" //
-                + "        </ogc:Filter>" //
-                + "    </wfs:Query> " //
+                + "\" " 
+                + ">" 
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" 
+                + "        <ogc:Filter>" 
+                + "            <ogc:PropertyIsEqualTo>" 
+                + "                <ogc:Literal>Yaugher Volcanic Group 2</ogc:Literal>" 
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" 
+                + "            </ogc:PropertyIsEqualTo>" 
+                + "        </ogc:Filter>" 
+                + "    </wfs:Query> " 
                 + "</wfs:GetFeature>";
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
@@ -981,25 +981,25 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
 
         // PropertyIsLike
         xml = //
-        "<wfs:GetFeature " //
-                + "service=\"WFS\" " //
-                + "version=\"1.1.0\" " //
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+        "<wfs:GetFeature " 
+                + "service=\"WFS\" " 
+                + "version=\"1.1.0\" " 
+                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " 
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " 
+                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " 
+                + "xmlns:gml=\"http://www.opengis.net/gml\" " 
                 + "xmlns:gsml=\""
                 + AbstractAppSchemaMockData.GSML_URI
-                + "\" " //
-                + ">" //
-                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
-                + "        <ogc:Filter>" //
-                + "            <ogc:PropertyIsLike wildCard=\"*\" singleChar=\"#\" escapeChar=\"!\">>" //
-                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" //
-                + "                <ogc:Literal>Yaugher Volcanic Group*</ogc:Literal>" //
-                + "            </ogc:PropertyIsLike>" //
-                + "        </ogc:Filter>" //
-                + "    </wfs:Query> " //
+                + "\" " 
+                + ">" 
+                + "    <wfs:Query typeName=\"gsml:MappedFeature\">" 
+                + "        <ogc:Filter>" 
+                + "            <ogc:PropertyIsLike wildCard=\"*\" singleChar=\"#\" escapeChar=\"!\">>" 
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" 
+                + "                <ogc:Literal>Yaugher Volcanic Group*</ogc:Literal>" 
+                + "            </ogc:PropertyIsLike>" 
+                + "        </ogc:Filter>" 
+                + "    </wfs:Query> " 
                 + "</wfs:GetFeature>";
         doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
@@ -1015,6 +1015,44 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("mf3", "(//gsml:MappedFeature)[3]/@gml:id", doc);
     }
 
+    /**
+     * Similar to above test case but using AND as a wrapper for 2 filters involving nested
+     * attributes.
+     */
+    public void testFilterAnd() {
+        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
+                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
+                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
+                + AbstractAppSchemaMockData.GSML_URI
+                + "\">"
+                + "<wfs:Query typeName=\"gsml:MappedFeature\">"
+                + "    <ogc:Filter>"
+                + "        <ogc:And>"
+                + "            <ogc:PropertyIsEqualTo>"
+                + "                <ogc:Literal>significant</ogc:Literal>"
+                + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value</ogc:PropertyName>"
+                + "            </ogc:PropertyIsEqualTo>"
+                + "                <ogc:Not>"
+                + "                    <ogc:PropertyIsEqualTo>"
+                + "                        <ogc:Literal>Yaugher Volcanic Group 1</ogc:Literal>"
+                + "                        <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>"
+                + "                    </ogc:PropertyIsEqualTo>"
+                + "                </ogc:Not>"
+                + "            </ogc:And>"
+                + "        </ogc:Filter>"
+                + "</wfs:Query> "
+                + "</wfs:GetFeature>";
+        Document doc = postAsDOM("wfs", xml);
+        LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
+        assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
+        // there should be 2:
+        // - mf1/gu.25699
+        // - mf4/gu.25682
+        assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(2, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("mf1", "(//gsml:MappedFeature)[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("mf4", "(//gsml:MappedFeature)[2]/@gml:id", doc);
+    }
     /**
      * Test that denormalized data reports the correct number of features
      */
