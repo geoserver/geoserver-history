@@ -22,7 +22,8 @@ public class PropertyEncodingOrderTest extends AbstractAppSchemaWfsTestSupport {
      * @throws Exception
      */
     public void testPropertyEncodingOrder_PlanarOrientation() throws Exception {
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=er:MineralOccurrence");
+        String path = "wfs?request=GetFeature&typename=er:MineralOccurrence";
+        Document doc = getAsDOM(path);
         LOGGER.info("WFS GetFeature&er:MineralOccurrence:\n" + prettyString(doc));
         assertXpathCount(1, "//er:MineralOccurrence[@gml:id='er.mineraloccurrence.S0032895']", doc);
 
@@ -77,6 +78,9 @@ public class PropertyEncodingOrderTest extends AbstractAppSchemaWfsTestSupport {
                 "not applicable",
                 "//er:MineralOccurrence[@gml:id='er.mineraloccurrence.S0032895']/er:planarOrientation/gsml:CGI_PlanarOrientation/gsml:polarity",
                 doc);
+
+        // FIXME: this feature type is not yet complete
+        // validateGet(path);
     }
 
     /**
@@ -90,7 +94,8 @@ public class PropertyEncodingOrderTest extends AbstractAppSchemaWfsTestSupport {
         WFSInfo wfs = getGeoServer().getService(WFSInfo.class);
         wfs.setEncodeFeatureMember(true);
         getGeoServer().save(wfs);
-        Document doc = getAsDOM("wfs?request=GetFeature&typename=gsml:GeologicUnit&featureid=gu.25699");
+        String path = "wfs?request=GetFeature&typename=gsml:GeologicUnit&featureid=gu.25699";
+        Document doc = getAsDOM(path);
         LOGGER.info("WFS GetFeature&typename=gsml:GeologicUnit&featureid=gu.25699:\n"
                 + prettyString(doc));
 
@@ -118,16 +123,40 @@ public class PropertyEncodingOrderTest extends AbstractAppSchemaWfsTestSupport {
         assertEquals("gml:name", name2.getNodeName());
         assertXpathEvaluatesTo("-Py", "//gsml:GeologicUnit[@gml:id='gu.25699']/gml:name[2]", doc);
 
+        // observationMethod
+        Node observationMethod = name2.getNextSibling();
+        assertEquals("gsml:observationMethod", observationMethod.getNodeName());
+        assertXpathEvaluatesTo(
+                "urn:ogc:def:nil:OGC::missing",
+                "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value",
+                doc);
+        assertXpathEvaluatesTo(
+                "http://urn.opengis.net",
+                "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:observationMethod/gsml:CGI_TermValue/gsml:value/@codeSpace",
+                doc);
+
+        // purpose
+        Node purpose = observationMethod.getNextSibling();
+        assertEquals("gsml:purpose", purpose.getNodeName());
+        assertXpathEvaluatesTo("instance", "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:purpose",
+                doc);
+
         // occurrence
-        Node occurrence = name2.getNextSibling();
+        Node occurrence = purpose.getNextSibling();
         assertEquals("gsml:occurrence", occurrence.getNodeName());
         assertXpathCount(
                 1,
                 "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:occurrence[@xlink:href='urn:cgi:feature:MappedFeature:mf1']",
                 doc);
 
+        // geologicUnitType
+        Node geologicUnitType = occurrence.getNextSibling();
+        assertEquals("gsml:geologicUnitType", geologicUnitType.getNodeName());
+        assertXpathEvaluatesTo("urn:ogc:def:nil:OGC::unknown",
+                "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:geologicUnitType/@xlink:href", doc);
+
         // exposureColor
-        Node exposureColor = occurrence.getNextSibling();
+        Node exposureColor = geologicUnitType.getNextSibling();
         assertEquals("gsml:exposureColor", exposureColor.getNodeName());
         assertXpathEvaluatesTo(
                 "Blue",
@@ -152,17 +181,26 @@ public class PropertyEncodingOrderTest extends AbstractAppSchemaWfsTestSupport {
         // role
         Node role = compositionPart.getFirstChild();
         assertEquals("gsml:role", role.getNodeName());
-        assertXpathEvaluatesTo("significant",
-                "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:composition/gsml:CompositionPart/gsml:proportion"
-                        + "/gsml:CGI_TermValue/gsml:value", doc);
-
-        // proportion
-        Node proportion = role.getNextSibling();
-        assertEquals("gsml:proportion", proportion.getNodeName());
         assertXpathEvaluatesTo(
-                "interbedded component",
+                "fictitious component",
                 "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:composition/gsml:CompositionPart/gsml:role",
                 doc);
 
+        // lithology
+        Node lithology = role.getNextSibling();
+        assertEquals("gsml:lithology", lithology.getNodeName());
+        assertXpathEvaluatesTo("urn:ogc:def:nil:OGC::missing",
+                "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:composition/gsml:CompositionPart/gsml:lithology"
+                        + "/gsml:ControlledConcept/gsml:vocabulary/@xlink:href", doc);
+
+        // proportion
+        Node proportion = lithology.getNextSibling();
+        assertEquals("gsml:proportion", proportion.getNodeName());
+        assertXpathEvaluatesTo("nonexistent",
+                "//gsml:GeologicUnit[@gml:id='gu.25699']/gsml:composition/gsml:CompositionPart/gsml:proportion"
+                        + "/gsml:CGI_TermValue/gsml:value", doc);
+
+        validateGet(path);
     }
+
 }

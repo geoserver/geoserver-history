@@ -9,6 +9,7 @@ package org.geoserver.test;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,6 +28,8 @@ import org.geoserver.wfs.WFSInfo;
 import org.geotools.data.complex.AppSchemaDataAccess;
 import org.geotools.data.complex.DataAccessRegistry;
 import org.geotools.xml.AppSchemaCache;
+import org.geotools.xml.AppSchemaResolver;
+import org.geotools.xml.AppSchemaValidator;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -67,7 +70,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
      * The XpathEngine to be used for this namespace context.
      */
     private XpathEngine xpathEngine;
-    
+
     /**
      * Subclasses override this to construct the test data.
      * 
@@ -92,8 +95,8 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
     @Override
     public NamespaceTestData getTestData() {
         return (NamespaceTestData) super.getTestData();
-    }  
-    
+    }
+
     /**
      * Configure WFS to encode canonical schema location and use featureMember.
      * 
@@ -136,12 +139,49 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
      * 
      * Override to remove checked exception.
      * 
+     * @see org.geoserver.test.GeoServerAbstractTestSupport#get(java.lang.String)
+     */
+    @Override
+    protected InputStream get(String path) {
+        try {
+            return super.get(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Return the response for a GET request for a path (starts with "wfs?").
+     * 
+     * <p>
+     * 
+     * Override to remove checked exception.
+     * 
      * @see org.geoserver.test.GeoServerAbstractTestSupport#getAsDOM(java.lang.String)
      */
     @Override
     protected Document getAsDOM(String path) {
         try {
             return super.getAsDOM(path);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Return the response for a POST request to a path (typically "wfs"). The request XML is a
+     * String.
+     * 
+     * <p>
+     * 
+     * Override to remove checked exception.
+     * 
+     * @see org.geoserver.test.GeoServerAbstractTestSupport#post(java.lang.String, java.lang.String)
+     */
+    @Override
+    protected InputStream post(String path, String xml) {
+        try {
+            return super.post(path, xml);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -317,7 +357,7 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Find the first file matching the supplied path, starting from the supplied root. This doesn't
      * support multiple matching files.
@@ -345,4 +385,57 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
         }
         return target;
     }
+
+    /**
+     * Schema-validate the response for a GET request for a path (starts with "wfs?"). Validation is
+     * against schemas found on the classpath. See
+     * {@link AppSchemaResolver#getSimpleHttpResourcePath(java.net.URI)} for URL-to-classpath
+     * convention.
+     * 
+     * <p>
+     * 
+     * If validation fails, a {@link RuntimeException} is thrown with detail containing the failure
+     * messages. The failure messages are also logged.
+     * 
+     * @param path
+     *            GET request (starts with "wfs?")
+     * @throws RuntimeException
+     *             if validation fails
+     */
+    protected void validateGet(String path) {
+        try {
+            AppSchemaValidator.validate(get(path));
+        } catch (RuntimeException e) {
+            LOGGER.severe(e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * Schema-validate the response for a POST request to a path (typically "wfs"). Validation is
+     * against schemas found on the classpath. See
+     * {@link AppSchemaResolver#getSimpleHttpResourcePath(java.net.URI)} for URL-to-classpath
+     * convention.
+     * 
+     * <p>
+     * 
+     * If validation fails, a {@link RuntimeException} is thrown with detail containing the failure
+     * messages. The failure messages are also logged.
+     * 
+     * @param path
+     *            request path (typically "wfs")
+     * @param xml
+     *            the request XML document
+     * @throws RuntimeException
+     *             if validation fails
+     */
+    protected void validatePost(String path, String xml) {
+        try {
+            AppSchemaValidator.validate(post(path, xml));
+        } catch (RuntimeException e) {
+            LOGGER.severe(e.getMessage());
+            throw e;
+        }
+    }
+
 }
