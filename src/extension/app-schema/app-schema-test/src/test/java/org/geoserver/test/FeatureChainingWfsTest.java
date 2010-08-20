@@ -255,6 +255,14 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
     }
 
+    public void testGetFeatureValid() {
+        String path = "wfs?request=GetFeature&typename=gsml:MappedFeature";
+        String newline = System.getProperty("line.separator");
+        Document doc = getAsDOM(path);
+        LOGGER.info("Response for " + path + " :" + newline + prettyString(doc));
+        validateGet(path);
+    }
+    
     /**
      * GeologicUnit mapping has mappingName specified, to override targetElementName when feature
      * chained to MappedFeature. This is to test that querying GeologicUnit as top level feature
@@ -278,45 +286,45 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         LOGGER
                 .info("WFS GetFeature&typename=ex:FirstParentFeature response:\n"
                         + prettyString(doc));
-        assertXpathCount(2, "//ex:FirstParentFeature", doc);
+        assertXpathCount(5, "//ex:FirstParentFeature", doc);
 
-        // 1
-        assertXpathCount(2, "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature", doc);
+        // cc.1
+        assertXpathCount(2, "//ex:FirstParentFeature[@gml:id='cc.1']/ex:nestedFeature", doc);
         assertXpathEvaluatesTo(
                 "string_one",
-                "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
+                "//ex:FirstParentFeature[@gml:id='cc.1']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
                 doc);
         assertXpathEvaluatesTo(
                 "string_two",
-                "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
+                "//ex:FirstParentFeature[@gml:id='cc.1']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
                 doc);
         assertXpathCount(
                 0,
-                "//ex:FirstParentFeature[@gml:id='1']/ex:nestedFeature[2]/ex:SimpleContent/FEATURE_LINK",
+                "//ex:FirstParentFeature[@gml:id='cc.1']/ex:nestedFeature[2]/ex:SimpleContent/FEATURE_LINK",
                 doc);
-        // 2
-        assertXpathCount(0, "//ex:FirstParentFeature[@gml:id='2']/ex:nestedFeature", doc);
+        // cc.2
+        assertXpathCount(0, "//ex:FirstParentFeature[@gml:id='cc.2']/ex:nestedFeature", doc);
 
         doc = getAsDOM("wfs?request=GetFeature&typename=ex:SecondParentFeature");
         LOGGER.info("WFS GetFeature&typename=ex:SecondParentFeature response:\n"
                 + prettyString(doc));
-        assertXpathCount(2, "//ex:SecondParentFeature", doc);
+        assertXpathCount(5, "//ex:SecondParentFeature", doc);
 
-        // 1
-        assertXpathCount(0, "//ex:SecondParentFeature[@gml:id='1']/ex:nestedFeature", doc);
-        // 2
-        assertXpathCount(3, "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature", doc);
+        // cc.1
+        assertXpathCount(0, "//ex:SecondParentFeature[@gml:id='cc.1']/ex:nestedFeature", doc);
+        // cc.2
+        assertXpathCount(3, "//ex:SecondParentFeature[@gml:id='cc.2']/ex:nestedFeature", doc);
         assertXpathEvaluatesTo(
                 "string_one",
-                "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
+                "//ex:SecondParentFeature[@gml:id='cc.2']/ex:nestedFeature[1]/ex:SimpleContent/ex:someAttribute",
                 doc);
         assertXpathEvaluatesTo(
                 "string_two",
-                "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
+                "//ex:SecondParentFeature[@gml:id='cc.2']/ex:nestedFeature[2]/ex:SimpleContent/ex:someAttribute",
                 doc);
         assertXpathEvaluatesTo(
                 "string_three",
-                "//ex:SecondParentFeature[@gml:id='2']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute",
+                "//ex:SecondParentFeature[@gml:id='cc.2']/ex:nestedFeature[3]/ex:SimpleContent/ex:someAttribute",
                 doc);
     }
 
@@ -458,10 +466,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // composition
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition", doc);
-        assertXpathEvaluatesTo("significant", "//gsml:MappedFeature[@gml:id='" + id
+        assertXpathEvaluatesTo("nonexistent", "//gsml:MappedFeature[@gml:id='" + id
                 + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                 + "/gsml:CompositionPart/gsml:proportion/gsml:CGI_TermValue/gsml:value", doc);
-        assertXpathEvaluatesTo("interbedded component", "//gsml:MappedFeature[@gml:id='" + id
+        assertXpathEvaluatesTo("fictitious component", "//gsml:MappedFeature[@gml:id='" + id
                 + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                 + "/gsml:CompositionPart/gsml:role", doc);
         // feature link shouldn't appear as it's not in the schema
@@ -469,7 +477,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                 + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
         // lithology
-        assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+        assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                 doc);
         // feature link shouldn't appear as it's not in the schema
@@ -591,7 +599,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "/gsml:CompositionPart/gsml:role/FEATURE_LINK", doc);
     
         // lithology
-        assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+        assertXpathCount(2, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                 doc);
         assertXpathCount(0, "//gsml:MappedFeature[@gml:id='" + id
@@ -710,7 +718,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology",
                 doc);
         // lithology:1
-        assertXpathEvaluatesTo("1", "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+        assertXpathEvaluatesTo("cc.1", "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[1]"
                 + "/gsml:ControlledConcept/@gml:id", doc);            
         assertXpathCount(3, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
@@ -732,7 +740,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "']/gsml:specification/gsml:GeologicUnit/gsml:composition"
                 + "/gsml:CompositionPart/gsml:lithology[1]/FEATURE_LINK", doc);
         // lithology:2
-        assertXpathEvaluatesTo("2", "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
+        assertXpathEvaluatesTo("cc.2", "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
                 + "/gsml:GeologicUnit/gsml:composition/gsml:CompositionPart/gsml:lithology[2]/"
                 + "/gsml:ControlledConcept/@gml:id", doc);
         assertXpathCount(1, "//gsml:MappedFeature[@gml:id='" + id + "']/gsml:specification"
@@ -1045,14 +1053,10 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
-        // there should be 2:
-        // - mf1/gu.25699
-        // - mf4/gu.25682
-        assertXpathEvaluatesTo("2", "/wfs:FeatureCollection/@numberOfFeatures", doc);
-        assertXpathCount(2, "//gsml:MappedFeature", doc);
-        assertXpathEvaluatesTo("mf1", "(//gsml:MappedFeature)[1]/@gml:id", doc);
-        assertXpathEvaluatesTo("mf4", "(//gsml:MappedFeature)[2]/@gml:id", doc);
-    }
+        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+        assertXpathCount(1, "//gsml:MappedFeature", doc);
+        assertXpathEvaluatesTo("mf4", "//gsml:MappedFeature/@gml:id", doc);    }
+
     /**
      * Test that denormalized data reports the correct number of features
      */
