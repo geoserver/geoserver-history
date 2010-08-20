@@ -45,17 +45,10 @@ public class TransactionEventType extends SimpleEnumerationType<TransactionEvent
             "Feature values after update");
 
     /**
-     * Notification of deleted features, before deletion occurs (collection contains features that
-     * will be deleted)
+     * Notification of deleted features, before deletion occurs (collection
+     * contains features that will be deleted)
      */
     public static final TransactionEventType PRE_DELETE = new TransactionEventType("PostDelete",
-            "Features about to be deleted");
-
-    /**
-     * Notification of deleted features, after deletion occurs (collection should contain no
-     * features)
-     */
-    public static final TransactionEventType POST_DELETE = new TransactionEventType("PostDelete",
             "Features just deleted");
 
     protected TransactionEventType(String name, String description) {
