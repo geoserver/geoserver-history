@@ -23,6 +23,7 @@ public class TransactionEvent {
     private SimpleFeatureCollection affectedFeatures;
     private QName layerName;
     private Object source;
+    private Throwable reasonOfFailure;
 
     public TransactionEvent(TransactionEventType type, QName layerName,
             SimpleFeatureCollection affectedFeatures) {
@@ -80,5 +81,13 @@ public class TransactionEvent {
      */
     public Object getSource() {
         return source;
+    }
+    
+    public void setReasonOfFailure(Throwable ex) {
+        this.reasonOfFailure = ex;
+    }
+
+    public Throwable getReasonOfFailure() {
+        return reasonOfFailure;
     }
 }

@@ -181,7 +181,25 @@ public class DeleteElementHandler implements TransactionElementHandler {
             		deleted += deletedCount;
                 store.removeFeatures(filter);
             }
+            
+            // notify listeners
+            event = new TransactionEvent(TransactionEventType.POST_DELETE, elementName,
+                    store.getFeatures(filter));
+            event.setSource(delete);
+            listener.dataStoreChange(event);
         } catch (IOException e) {
+
+            // notify listeners
+            TransactionEvent event = new TransactionEvent(TransactionEventType.POST_DELETE,
+                    elementName, null);
+            event.setSource(delete);
+            event.setReasonOfFailure(e);
+            try {
+                listener.dataStoreChange(event);
+            } catch (Exception ignore) {
+                //
+            }
+            
             String msg = e.getMessage();
             String eHandle = (String) EMFUtils.get(element, "handle");
             String code = null;
