@@ -269,18 +269,24 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
                 SimpleFeatureCollection changed = store.getFeatures(modified);
                 listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE,
-                        elementName, changed));
+                        elementName, changed, update));
             }
 
             // update the update counter
             updated += fids.size();
-        } catch (IOException ioException) {
-            // JD: changing from throwing service exception to
-            // adding action that failed
-            throw new WFSTransactionException(ioException, null, handle);
-        } catch(PointOutsideEnvelopeException poe) {
-            throw new WFSTransactionException(poe, null, handle);
-        }
+        } catch (Exception e) {
+            TransactionEvent event = new TransactionEvent(TransactionEventType.PRE_UPDATE,
+                    elementName, null);
+            event.setSource(update);
+            event.setReasonOfFailure(e);
+            try {
+                listener.dataStoreChange(event);
+            } catch (Exception ignore) {
+                //
+            }
+            
+            throw new WFSTransactionException(e, null, handle);
+        } 
 
         // update transaction summary
         response.getTransactionSummary().setTotalUpdated(BigInteger.valueOf(updated));
