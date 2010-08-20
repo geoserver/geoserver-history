@@ -34,11 +34,16 @@ import org.geoserver.wfs.WFSException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.util.logging.Logging;
+import org.geowebcache.GeoWebCacheException;
 import org.springframework.util.Assert;
 
 /**
  * Listens to transactions (so far only issued by WFS) and truncates the cache for the affected area
  * of the layers involved in the transaction.
+ * <p>
+ * A Spring bean singleton of this class needs to be declared in order for GeoServer transactions to
+ * pick it up automatically and forward transaction events to it.
+ * </p>
  * 
  * @author Arne Kepp
  * @author Gabriel Roldan
@@ -49,9 +54,9 @@ public class GWCTransactionListener implements TransactionListener {
 
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCTransactionListener");
 
-    final private Catalog cat;
+    final private Catalog catalog;
 
-    final private GWCCleanser cleanser;
+    final private GWC gwc;
 
     /**
      * Keeps track of the pre-transaction affected bounds on a per
@@ -62,35 +67,43 @@ public class GWCTransactionListener implements TransactionListener {
     private final Map<Object, ReferencedEnvelope> preBoundsMap;
 
     @SuppressWarnings("unchecked")
-    public GWCTransactionListener(final Catalog cat, final GWCCleanser cleanser) {
-        this.cat = cat;
-        this.cleanser = cleanser;
+    public GWCTransactionListener(final Catalog cat, final GWC gwc) {
+        this.catalog = cat;
+        this.gwc = gwc;
         this.preBoundsMap = new StaticBucketMap(200);
     }
 
     /**
+     * Truncates layer based on transaction affected bounding box upon being notified of a
+     * successful transaction.
      * <p>
-     * Handles the following situations:
-     * <ul>
-     * </ul>
+     * To gather the actual affected area by a transaction, event bounding boxes for pre-transaction
+     * events are kept in an instance variable cache until its corresponding post-transaction event
+     * is received, then if the transaction was successful the pre and post bounds are aggregated in
+     * order to truncate the layer cache accodingly.
      * </p>
      * 
      * @see org.geoserver.wfs.TransactionListener#dataStoreChange(org.geoserver.wfs.TransactionEvent)
      */
     public void dataStoreChange(final TransactionEvent event) throws WFSException {
 
+        final Object originatingTransactionRequest = event.getSource();
+        Assert.notNull(originatingTransactionRequest);
+
+        final TransactionEventType type = event.getType();
+        final SimpleFeatureCollection affectedFeatures = event.getAffectedFeatures();
+
+        if (isIgnorablePostEvent(originatingTransactionRequest, type)) {
+            // if its a post event and there's no corresponding pre event bbox no need to
+            // proceed(Saves some cpu cycles and a catalog lookup for findAffectedCachedLayers).
+            return;
+        }
+
         final Set<String> affectedLayers = findAffectedCachedLayers(event);
         if (affectedLayers.isEmpty()) {
             // event didn't touch a cached layer
             return;
         }
-
-        final TransactionEventType type = event.getType();
-
-        final Object originatingTransactionRequest = event.getSource();
-        Assert.notNull(originatingTransactionRequest);
-
-        final SimpleFeatureCollection affectedFeatures = event.getAffectedFeatures();
 
         if (PRE_INSERT == type || PRE_UPDATE == type || PRE_DELETE == type) {
 
@@ -104,11 +117,16 @@ public class GWCTransactionListener implements TransactionListener {
             if (event.getReasonOfFailure() == null) {
                 // only truncate if the request didn't fail
                 ReferencedEnvelope postBounds = affectedFeatures.getBounds();
-
+                Assert.isTrue(preBounds.getCoordinateReferenceSystem().equals(
+                        postBounds.getCoordinateReferenceSystem()));
                 postBounds.expandToInclude(preBounds);
 
                 for (String layerName : affectedLayers) {
-                    cleanser.truncate(layerName, postBounds);
+                    try {
+                        gwc.truncate(layerName, postBounds);
+                    } catch (GeoWebCacheException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -116,6 +134,17 @@ public class GWCTransactionListener implements TransactionListener {
             throw new IllegalArgumentException("Unrecognized transaction event type: " + type);
         }
 
+    }
+
+    private boolean isIgnorablePostEvent(final Object originatingTransactionRequest,
+            final TransactionEventType type) {
+
+        if (POST_INSERT == type || POST_UPDATE == type || POST_DELETE == type) {
+            if (!preBoundsMap.containsKey(originatingTransactionRequest)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -142,7 +171,7 @@ public class GWCTransactionListener implements TransactionListener {
     private Set<String> findLayerGroupsOf(String layerName) {
         Set<String> affectedLayerGroups = new HashSet<String>();
 
-        for (LayerGroupInfo lgi : cat.getLayerGroups()) {
+        for (LayerGroupInfo lgi : catalog.getLayerGroups()) {
             for (LayerInfo li : lgi.getLayers()) {
                 if (li.getResource().getPrefixedName().equals(layerName)) {
                     affectedLayerGroups.add(lgi.getName());
@@ -159,7 +188,7 @@ public class GWCTransactionListener implements TransactionListener {
 
         QName name = event.getLayerName();
         String namespaceURI = name.getNamespaceURI();
-        NamespaceInfo namespaceInfo = cat.getNamespaceByURI(namespaceURI);
+        NamespaceInfo namespaceInfo = catalog.getNamespaceByURI(namespaceURI);
         if (namespaceInfo == null) {
             log.info("Can't find namespace info for layer " + name + ". Cache not truncated");
             throw new NoSuchElementException("Layer not found: " + name);

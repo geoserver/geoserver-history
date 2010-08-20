@@ -16,45 +16,47 @@ import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geowebcache.GeoWebCacheException;
 import org.geowebcache.grid.BoundingBox;
+import org.geowebcache.grid.GridSetBroker;
 import org.geowebcache.grid.GridSubset;
 import org.geowebcache.layer.TileLayer;
 import org.geowebcache.layer.TileLayerDispatcher;
-
 
 /**
  * Test class for the GWCCatalogListener
  * 
  * @author Arne Kepp / OpenGeo 2009
  */
-public class GWCCatalogListenerTest extends GeoServerTestSupport {
+public class CatalogConfigurationTest extends GeoServerTestSupport {
 
     /**
      * Runs through the Spring based initialization sequence against the mock catalog
      * 
-     * Then
-     * 1) Check that cite:Lakes is present, from GWCCatalogListener
-     * 2) Check sf:GenerictEntity is present and initialized, from GWCCatalogListener 
-     * 3) Basic get from TileLayerDispatcher
-     * 4) Removal of LayerInfo from catalog, test TileLayerDispatcher
-     * 5) Introducing new LayerInfo, test TileLayerDispatcher
+     * Then 1) Check that cite:Lakes is present, from GWCCatalogListener 2) Check sf:GenerictEntity
+     * is present and initialized, from GWCCatalogListener 3) Basic get from TileLayerDispatcher 4)
+     * Removal of LayerInfo from catalog, test TileLayerDispatcher 5) Introducing new LayerInfo,
+     * test TileLayerDispatcher
      * 
      * TODO: this test case really needs to be splitted into more
      * 
      * @throws Exception
      */
     public void testInit() throws Exception {
-        GWCCatalogListener gwcListener = (GWCCatalogListener) applicationContext.getBean("gwcCatalogListener");
+        CatalogConfiguration gwcListener = (CatalogConfiguration) applicationContext
+                .getBean("gwcCatalogConfiguration");
+
+        Catalog cat = (Catalog) applicationContext.getBean("rawCatalog");
+
+        TileLayerDispatcher tld = (TileLayerDispatcher) applicationContext
+                .getBean("gwcTLDispatcher");
         
-        Catalog cat = gwcListener.cat;
-        
-        TileLayerDispatcher tld = gwcListener.layerDispatcher;
-        
+        GridSetBroker gridSetBroker = (GridSetBroker) applicationContext.getBean("gwcGridSetBroker");
+
         try {
             tld.getTileLayer("");
         } catch (GeoWebCacheException gwce) {
-            
+
         }
-        
+
         List<TileLayer> layerList;
         Iterator<TileLayer> tlIter;
 
@@ -64,56 +66,57 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
         assertTrue(tlIter.hasNext());
 
         // Disabling tests until I have working build
-//        if (tlIter.hasNext()) {
-//            return;
-//        }
+        // if (tlIter.hasNext()) {
+        // return;
+        // }
 
         // 1) Check that cite:Lakes
         boolean foundLakes = false;
-        while(tlIter.hasNext()) {
+        while (tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
-            if(tl.getName().equals("cite:Lakes")) {
-                //tl.isInitialized();
+            if (tl.getName().equals("cite:Lakes")) {
+                // tl.isInitialized();
                 foundLakes = true;
                 break;
             }
-        }                    
-        assertTrue(foundLakes); 
+        }
+        assertTrue(foundLakes);
 
         // 2) Check sf:GenerictEntity is present and initialized
         layerList = gwcListener.getTileLayers(true);
         tlIter = layerList.iterator();
         boolean foudAGF = false;
-        while(tlIter.hasNext()) {
+        while (tlIter.hasNext()) {
             TileLayer tl = tlIter.next();
             System.out.println(tl.getName());
-            if(tl.getName().equals("sf:AggregateGeoFeature")) {
-                //tl.isInitialized();
+            if (tl.getName().equals("sf:AggregateGeoFeature")) {
+                // tl.isInitialized();
                 foudAGF = true;
-                GridSubset epsg4326 = tl.getGridSubset(gwcListener.gridSetBroker.WORLD_EPSG4326.getName());
-                assertTrue(epsg4326.getGridSetBounds().equals( new BoundingBox(-180.0,-90.0,180.0,90.0)));
+                GridSubset epsg4326 = tl.getGridSubset(gridSetBroker.WORLD_EPSG4326
+                        .getName());
+                assertTrue(epsg4326.getGridSetBounds().equals(
+                        new BoundingBox(-180.0, -90.0, 180.0, 90.0)));
                 String mime = tl.getMimeTypes().get(1).getMimeType();
-                assertTrue(mime.startsWith("image/") || mime.startsWith("application/vnd.google-earth.kml+xml"));
+                assertTrue(mime.startsWith("image/")
+                        || mime.startsWith("application/vnd.google-earth.kml+xml"));
             }
         }
-        
+
         assertTrue(foudAGF);
-        
-        
+
         // 3) Basic get
         LayerInfo li = cat.getLayers().get(1);
         String layerName = li.getResource().getPrefixedName();
-        
+
         TileLayer tl = tld.getTileLayer(layerName);
-        
+
         assertEquals(layerName, tl.getName());
-        
-        
+
         // 4) Removal of LayerInfo from catalog
         cat.remove(li);
-        
+
         assertTrue(cat.getLayerByName(tl.getName()) == null);
-        
+
         boolean caughtException = false;
         try {
             TileLayer tl2 = tld.getTileLayer(layerName);
@@ -121,30 +124,30 @@ public class GWCCatalogListenerTest extends GeoServerTestSupport {
             caughtException = true;
         }
         assertTrue(caughtException);
-        
+
         // 5) Introducing new LayerInfo
-        ResourceInfo resInfo = li.getResource(); 
+        ResourceInfo resInfo = li.getResource();
         resInfo.setName("hithere");
         resInfo.getNamespace().setPrefix("sf");
         LayerInfo layerInfo = cat.getFactory().createLayer();
         layerInfo.setResource(resInfo);
         layerInfo.setName(resInfo.getPrefixedName());
-        
+
         cat.add(layerInfo);
         String newLayerName = layerInfo.getName();
         TileLayer tl3 = tld.getTileLayer(newLayerName);
         assertEquals(newLayerName, tl3.getName());
-        
-        //6) Add new LayerGroupInfo
+
+        // 6) Add new LayerGroupInfo
         LayerGroupInfo lgi = cat.getFactory().createLayerGroup();
         lgi.setName("sf:aLayerGroup");
         lgi.setBounds(new ReferencedEnvelope(-180, 180, -90, 90, CRS.decode("EPSG:4326")));
         lgi.getLayers().add(cat.getLayerByName("hithere"));
-        
+
         cat.add(lgi);
         TileLayer tl4 = tld.getTileLayer("sf:aLayerGroup");
         assertNotNull(tl4);
         assertEquals(lgi.getName(), tl4.getName());
-        
+
     }
 }

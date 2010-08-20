@@ -2,31 +2,35 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 
-  <bean id="gwcCleanser" class="org.geoserver.gwc.GWCCleanser">
-    <constructor-arg ref="gwcStorageBroker" /> <!-- GeoServer -->
+  <bean id="gwcCatalogConfiguration" class="org.geoserver.gwc.CatalogConfiguration">
+    <constructor-arg ref="gwcGridSetBroker" />
+    <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
+    <constructor-arg ref="dispatcher" /> <!-- GeoServer -->
   </bean>
-  
+
+  <bean id="gwcFacade" class="org.geoserver.gwc.GWC">
+    <constructor-arg ref="gwcStorageBroker" />
+    <constructor-arg ref="gwcTLDispatcher" />
+    <constructor-arg ref="gwcTileBreeder" />
+    <constructor-arg ref="gwcCatalogConfiguration" />
+  </bean>
+
   <bean id="gwcTransactionListener" class="org.geoserver.gwc.GWCTransactionListener">
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
-    <constructor-arg ref="gwcCleanser" />
+    <constructor-arg ref="gwcFacade" />
   </bean>
-  
+
   <bean id="gwcCatalogListener" class="org.geoserver.gwc.GWCCatalogListener">
     <constructor-arg ref="rawCatalog" /> <!-- GeoServer -->
-    <constructor-arg ref="dispatcher"/> <!-- GeoServer -->
-    <constructor-arg ref="gwcGridSetBroker"/>
-    <constructor-arg ref="gwcAppCtx" />
-    <constructor-arg ref="gwcCleanser" />
-    <property name="tileLayerDispatcher" ref="gwcTLDispatcher"/>
+    <constructor-arg ref="gwcFacade" />
   </bean>
-  
-  
+
   <!-- For each configuration bean above, add them below to activate -->
   <bean id="gwcTLDispatcher" class="org.geowebcache.layer.TileLayerDispatcher">
-    <constructor-arg ref="gwcGridSetBroker"/>
+    <constructor-arg ref="gwcGridSetBroker" />
     <constructor-arg>
       <list>
-        <ref bean="gwcCatalogListener" />
+        <ref bean="gwcCatalogConfiguration" />
         <ref bean="gwcXmlConfig" />
       </list>
     </constructor-arg>
