@@ -114,7 +114,7 @@ public class LayerGroupEntryPanel extends Panel {
     
     Component layerLink(String id, IModel itemModel) {
         LayerGroupEntry entry = (LayerGroupEntry) itemModel.getObject();
-        return new Label( id, entry.getLayer().getName() );
+        return new Label( id, entry.getLayer().getResource().getPrefixedName() );
     }
     
     Component defaultStyleCheckbox(String id, IModel itemModel) {
@@ -212,7 +212,7 @@ public class LayerGroupEntryPanel extends Panel {
         public static Property<LayerGroupEntry> POSITION = 
             new PropertyPlaceholder<LayerGroupEntry>( "position" );
 
-        static List PROPERTIES = Arrays.asList( LAYER, DEFAULT_STYLE, STYLE, REMOVE, POSITION );
+        static List PROPERTIES = Arrays.asList( POSITION, LAYER, DEFAULT_STYLE, STYLE, REMOVE );
         
         List<LayerGroupEntry> items;
         
