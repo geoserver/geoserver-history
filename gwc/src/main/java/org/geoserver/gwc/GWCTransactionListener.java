@@ -7,29 +7,35 @@
  */
 package org.geoserver.gwc;
 
-import static org.geoserver.wfs.TransactionEventType.POST_DELETE;
-import static org.geoserver.wfs.TransactionEventType.POST_INSERT;
 import static org.geoserver.wfs.TransactionEventType.POST_UPDATE;
 import static org.geoserver.wfs.TransactionEventType.PRE_DELETE;
 import static org.geoserver.wfs.TransactionEventType.PRE_INSERT;
 import static org.geoserver.wfs.TransactionEventType.PRE_UPDATE;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
-import org.apache.commons.collections.map.StaticBucketMap;
+import net.opengis.wfs.DeleteElementType;
+import net.opengis.wfs.InsertElementType;
+import net.opengis.wfs.TransactionType;
+import net.opengis.wfs.UpdateElementType;
+
+import org.eclipse.emf.ecore.EObject;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionEventType;
-import org.geoserver.wfs.TransactionListener;
+import org.geoserver.wfs.TransactionPlugin;
 import org.geoserver.wfs.WFSException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -50,7 +56,7 @@ import org.springframework.util.Assert;
  * @version $Id$
  * 
  */
-public class GWCTransactionListener implements TransactionListener {
+public class GWCTransactionListener implements TransactionPlugin {
 
     private static Logger log = Logging.getLogger("org.geoserver.gwc.GWCTransactionListener");
 
@@ -64,30 +70,104 @@ public class GWCTransactionListener implements TransactionListener {
      * {@code POST_UPDATE|INSERT|DELETE} bounds are aggregated to these ones before issuing a cache
      * truncation.
      */
-    private final Map<Object, ReferencedEnvelope> preBoundsMap;
+    private final Map<EObject, ReferencedEnvelope> affectedBounds;
 
-    @SuppressWarnings("unchecked")
+    private final Map<EObject, Set<String>> affectedLayers;
+
     public GWCTransactionListener(final Catalog cat, final GWC gwc) {
         this.catalog = cat;
         this.gwc = gwc;
-        this.preBoundsMap = new StaticBucketMap(200);
+        this.affectedBounds = new ConcurrentHashMap<EObject, ReferencedEnvelope>();
+        this.affectedLayers = new ConcurrentHashMap<EObject, Set<String>>();
     }
 
     /**
-     * Truncates layer based on transaction affected bounding box upon being notified of a
-     * successful transaction.
-     * <p>
-     * To gather the actual affected area by a transaction, event bounding boxes for pre-transaction
-     * events are kept in an instance variable cache until its corresponding post-transaction event
-     * is received, then if the transaction was successful the pre and post bounds are aggregated in
-     * order to truncate the layer cache accodingly.
-     * </p>
+     * Not used, we're interested in the {@link #dataStoreChange} and {@link #afterTransaction}
+     * hooks
+     * 
+     * @see org.geoserver.wfs.TransactionPlugin#beforeTransaction(net.opengis.wfs.TransactionType)
+     */
+    public TransactionType beforeTransaction(TransactionType request) throws WFSException {
+        // nothing to do
+        return request;
+    }
+
+    /**
+     * Not used, we're interested in the {@link #dataStoreChange} and {@link #afterTransaction}
+     * hooks
+     * 
+     * @see org.geoserver.wfs.TransactionPlugin#beforeCommit(net.opengis.wfs.TransactionType)
+     */
+    public void beforeCommit(TransactionType request) throws WFSException {
+        // nothing to do
+    }
+
+    /**
+     * If transaction's succeeded then truncate the affected layers at the transaction affected
+     * bounds
+     * 
+     * @see org.geoserver.wfs.TransactionPlugin#afterTransaction(net.opengis.wfs.TransactionType,
+     *      boolean)
+     */
+    public void afterTransaction(final TransactionType request, boolean committed) {
+
+        final List<EObject> transactionElements = getTransactionElements(request);
+
+        ReferencedEnvelope affectedBounds;
+        Set<String> affectedLayers;
+
+        for (EObject transactionElement : transactionElements) {
+            affectedBounds = this.affectedBounds.remove(transactionElement);
+            affectedLayers = this.affectedLayers.remove(transactionElement);
+
+            if (committed && affectedBounds != null) {
+                Assert.notNull(affectedLayers);
+                if (affectedBounds.isEmpty()) {
+                    continue;
+                }
+                for (String layerName : affectedLayers) {
+                    try {
+                        gwc.truncate(layerName, affectedBounds);
+                    } catch (GeoWebCacheException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<EObject> getTransactionElements(TransactionType request) {
+        List<InsertElementType> insert = request.getInsert();
+        List<UpdateElementType> update = request.getUpdate();
+        List<DeleteElementType> delete = request.getDelete();
+        List<EObject> allTransactionElements = new ArrayList<EObject>();
+        allTransactionElements.addAll(insert);
+        allTransactionElements.addAll(update);
+        allTransactionElements.addAll(delete);
+        return allTransactionElements;
+    }
+
+    /**
+     * @return {@code 0}, we don't need any special treatment
+     * @see org.geoserver.wfs.TransactionPlugin#getPriority()
+     */
+    public int getPriority() {
+        return 0;
+    }
+
+    /**
      * 
      * @see org.geoserver.wfs.TransactionListener#dataStoreChange(org.geoserver.wfs.TransactionEvent)
      */
     public void dataStoreChange(final TransactionEvent event) throws WFSException {
 
-        final Object originatingTransactionRequest = event.getSource();
+        final Object source = event.getSource();
+        Assert.isTrue(source instanceof InsertElementType || source instanceof UpdateElementType
+                || source instanceof DeleteElementType);
+
+        final EObject originatingTransactionRequest = (EObject) source;
+
         Assert.notNull(originatingTransactionRequest);
 
         final TransactionEventType type = event.getType();
@@ -106,29 +186,20 @@ public class GWCTransactionListener implements TransactionListener {
         }
 
         if (PRE_INSERT == type || PRE_UPDATE == type || PRE_DELETE == type) {
-
             ReferencedEnvelope preBounds = affectedFeatures.getBounds();
-            this.preBoundsMap.put(originatingTransactionRequest, preBounds);
 
-        } else if (POST_INSERT == type || POST_UPDATE == type || POST_DELETE == type) {
+            this.affectedLayers.put(originatingTransactionRequest, affectedLayers);
+            this.affectedBounds.put(originatingTransactionRequest, preBounds);
 
-            final ReferencedEnvelope preBounds = preBoundsMap.remove(originatingTransactionRequest);
+        } else if (POST_UPDATE == type && affectedFeatures != null) {
 
-            if (event.getReasonOfFailure() == null) {
-                // only truncate if the request didn't fail
-                ReferencedEnvelope postBounds = affectedFeatures.getBounds();
-                Assert.isTrue(preBounds.getCoordinateReferenceSystem().equals(
-                        postBounds.getCoordinateReferenceSystem()));
-                postBounds.expandToInclude(preBounds);
+            final ReferencedEnvelope bounds = affectedBounds.get(originatingTransactionRequest);
 
-                for (String layerName : affectedLayers) {
-                    try {
-                        gwc.truncate(layerName, postBounds);
-                    } catch (GeoWebCacheException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            // only truncate if the request didn't fail
+            ReferencedEnvelope postBounds = affectedFeatures.getBounds();
+            Assert.isTrue(bounds.getCoordinateReferenceSystem().equals(
+                    postBounds.getCoordinateReferenceSystem()));
+            bounds.expandToInclude(postBounds);
 
         } else {
             throw new IllegalArgumentException("Unrecognized transaction event type: " + type);
@@ -139,8 +210,8 @@ public class GWCTransactionListener implements TransactionListener {
     private boolean isIgnorablePostEvent(final Object originatingTransactionRequest,
             final TransactionEventType type) {
 
-        if (POST_INSERT == type || POST_UPDATE == type || POST_DELETE == type) {
-            if (!preBoundsMap.containsKey(originatingTransactionRequest)) {
+        if (POST_UPDATE == type) {
+            if (!affectedBounds.containsKey(originatingTransactionRequest)) {
                 return true;
             }
         }
