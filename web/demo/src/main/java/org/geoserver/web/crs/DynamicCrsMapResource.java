@@ -1,55 +1,120 @@
-/* Copyright (c) 2001 - 2010 TOPP - www.openplans.org. All rights reserved.
- * This code is licensed under the GPL 2.0 license, available at the root
- * application directory.
- */
 package org.geoserver.web.crs;
 
-import java.awt.Graphics2D;
-import java.util.logging.Logger;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 
-import org.apache.wicket.markup.html.image.resource.RenderedDynamicImageResource;
-import org.geotools.util.logging.Logging;
+import javax.imageio.ImageIO;
+
+import org.apache.wicket.markup.html.WebResource;
+import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
+import org.apache.wicket.util.value.ValueMap;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 /**
- * A wicket resource that points back to a dynamically generated image that represents the area of
- * validity of a given {@link CoordinateReferenceSystem CRS}.
+ * A wicket resource that acts as a mini WMS to generate a map for a
+ * {@link CoordinateReferenceSystem CRS}'s area of validity.
+ * <p>
+ * This resource expects the following parameters in order to generate the area of validity map:
+ * <ul>
+ * <li>WIDTH
+ * <li>HEIGHT
+ * <li>BBOX
+ * </ul>
+ * </p>
  * 
  * @author Gabriel Roldan
- * @version $Id$
- * @see CRSAreaOfValidityMapBuilder
  */
-public class DynamicCrsMapResource extends RenderedDynamicImageResource {
+public class DynamicCrsMapResource extends WebResource {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logging.getLogger("org.geoserver.web.crs");
+    private final CoordinateReferenceSystem crs;
 
-    private final String crsCode;
-
-    public DynamicCrsMapResource(final String crsCode, final int width, final int height) {
-        super(width, height);
-        this.crsCode = crsCode;
+    public DynamicCrsMapResource(CoordinateReferenceSystem crs) {
+        this.crs = crs;
     }
 
     @Override
-    protected boolean render(Graphics2D graphics) {
-//        CoordinateReferenceSystem crs;
-//        try {
-//            crs = CRS.decode(crsCode);
-//        } catch (Exception e) {
-//            LOGGER.log(Level.INFO, "Error getting CRS " + crsCode, e);
-//            throw new RuntimeException(e);
-//        }
-//        final int width = super.getWidth();
-//        final int height = super.getHeight();
-//        CRSAreaOfValidityMapBuilder mapBuilder = new CRSAreaOfValidityMapBuilder(width, height);
-//        try {
-//            mapBuilder.createMapFor(crs, graphics);
-//        } catch (IOException e) {
-//            LOGGER.log(Level.INFO, "Error creating map for " + crsCode, e);
-//            throw new RuntimeException(e);
-//        }
-        return true;
+    public IResourceStream getResourceStream() {
+
+        ValueMap parameters = getParameters();
+        int width = parameters.getInt("WIDTH", 400);
+        int height = parameters.getInt("HEIGHT", 200);
+        String bboxStr = parameters.getString("BBOX");
+
+        ByteArrayOutputStream output = null;
+        if (bboxStr != null) {
+
+            try {
+                CRSAreaOfValidityMapBuilder builder = new CRSAreaOfValidityMapBuilder(width, height);
+                Envelope envelope = parseEnvelope(bboxStr);
+                RenderedImage image = builder.createMapFor(crs, envelope);
+                output = new ByteArrayOutputStream();
+                ImageIO.write(image, "PNG", output);
+            } catch (Exception e) {
+                output = null;
+                e.printStackTrace();
+            }
+        }
+
+        final byte[] byteArray = output == null ? null : output.toByteArray();
+
+        return new ByteArrayResourceStream(byteArray);
+    }
+
+    private Envelope parseEnvelope(String bboxStr) {
+        String[] split = bboxStr.split(",");
+        double minx = Double.valueOf(split[0]);
+        double miny = Double.valueOf(split[1]);
+        double maxx = Double.valueOf(split[2]);
+        double maxy = Double.valueOf(split[3]);
+        return new Envelope(minx, maxx, miny, maxy);
+    }
+
+    private static class ByteArrayResourceStream implements IResourceStream {
+
+        private static final long serialVersionUID = 1L;
+
+        private final byte[] content;
+
+        public ByteArrayResourceStream(final byte[] content) {
+            this.content = content;
+        }
+
+        public void setLocale(Locale arg0) {
+        }
+
+        public long length() {
+            return 0;
+        }
+
+        public Locale getLocale() {
+            return null;
+        }
+
+        public InputStream getInputStream() throws ResourceStreamNotFoundException {
+            if (content == null) {
+                throw new ResourceStreamNotFoundException();
+            }
+            return new ByteArrayInputStream(content);
+        }
+
+        public String getContentType() {
+            return "image/png";
+        }
+
+        public void close() throws IOException {
+        }
+
+        public org.apache.wicket.util.time.Time lastModifiedTime() {
+            return null;
+        }
     }
 }
