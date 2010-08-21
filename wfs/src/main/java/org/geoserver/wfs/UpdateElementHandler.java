@@ -269,7 +269,7 @@ public class UpdateElementHandler implements TransactionElementHandler {
 
                 SimpleFeatureCollection changed = store.getFeatures(modified);
                 listener.dataStoreChange(new TransactionEvent(TransactionEventType.POST_UPDATE,
-                        elementName, changed));
+                        elementName, changed, update));
             }
 
             // update the update counter
