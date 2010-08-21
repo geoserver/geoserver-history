@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.Image;
 import org.geoserver.web.GeoServerBasePage;
-import org.geoserver.web.crs.TestResource;
+import org.geoserver.web.crs.DynamicCrsMapResource;
 import org.geotools.referencing.CRS;
 import org.opengis.metadata.extent.Extent;
 import org.opengis.metadata.extent.GeographicBoundingBox;
@@ -73,7 +73,7 @@ public class SRSDescriptionPage extends GeoServerBasePage implements IHeaderCont
             // coordinateSystem.getName();
             // coordinateSystem.getRemarks();
             // coordinateSystem.getDimension();
-            //            
+            //
             // if(crs instanceof SingleCRS){
             // Datum datum = ((SingleCRS)crs).getDatum();
             // datum.getName();
@@ -154,7 +154,7 @@ public class SRSDescriptionPage extends GeoServerBasePage implements IHeaderCont
         add(new Label("aovCoords", aovCoords));
         add(new Label("aovDescription", areaOfValidity));
 
-        Image aovMap = new Image("aovMap", new TestResource(crs));
+        Image aovMap = new Image("aovMap", new DynamicCrsMapResource(crs));
         add(aovMap);
     }
 
