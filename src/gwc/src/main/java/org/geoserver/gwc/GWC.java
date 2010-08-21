@@ -78,7 +78,7 @@ public class GWC implements DisposableBean {
             final GridSet gridSet = layerGrid.getGridSet();
             final String gridSetId = gridSet.getName();
             final SRS srs = gridSet.getSRS();
-            CoordinateReferenceSystem gridSetCrs;
+            final CoordinateReferenceSystem gridSetCrs;
             try {
                 gridSetCrs = CRS.decode("EPSG:" + srs.getNumber());
             } catch (Exception e) {
@@ -86,22 +86,33 @@ public class GWC implements DisposableBean {
                         + srs.getNumber());
             }
 
-            ReferencedEnvelope truncateBounds;
+            ReferencedEnvelope truncateBoundsInGridsetCrs;
 
             try {
-                truncateBounds = bounds.transform(gridSetCrs, true);
+                truncateBoundsInGridsetCrs = bounds.transform(gridSetCrs, true);
             } catch (Exception e) {
-                throw new RuntimeException("Can't transform requested bounds to layer gridset "
-                        + gridSetId);
+                log.info("Can't truncate layer " + layerName
+                        + ": error transforming requested bounds to layer gridset " + gridSetId
+                        + ": " + e.getMessage());
+                continue;
             }
 
-            // TODO: make sure bounds is in the same CRS than the layer
-            final double minx = truncateBounds.getMinX();
-            final double miny = truncateBounds.getMinY();
-            final double maxx = truncateBounds.getMaxX();
-            final double maxy = truncateBounds.getMaxY();
+            final double minx = truncateBoundsInGridsetCrs.getMinX();
+            final double miny = truncateBoundsInGridsetCrs.getMinY();
+            final double maxx = truncateBoundsInGridsetCrs.getMaxX();
+            final double maxy = truncateBoundsInGridsetCrs.getMaxY();
             final BoundingBox reqBounds = new BoundingBox(minx, miny, maxx, maxy);
-            final long[][] coverageIntersections = layerGrid.getCoverageIntersections(reqBounds);
+            /*
+             * layerGrid.getCoverageIntersections is not too robust, so we better check the
+             * requested bounds intersect the layer bounds
+             */
+            final BoundingBox layerBounds = layerGrid.getCoverageBestFitBounds();
+            if (!layerBounds.intersects(reqBounds)) {
+                log.fine("Requested truncation bounds do not intersect cached layer bounds, ignoring truncate request");
+                continue;
+            }
+            final BoundingBox intersection = BoundingBox.intersection(layerBounds, reqBounds);
+            final long[][] coverageIntersections = layerGrid.getCoverageIntersections(intersection);
             final int zoomStart = layerGrid.getZoomStart();
             final int zoomStop = layerGrid.getZoomStop();
             final String parameters = null;// how do I get these?
