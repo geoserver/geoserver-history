@@ -430,7 +430,7 @@ Designed to use used in conjuection with **followLine**, the **maxAngleDelta** o
 .. _labeling_autowrap:
 
 autoWrap
-````````
+`````````
 
 The **autoWrap** option wraps labels when they exceed the given value, given in pixels. Make sure to give a dimension wide enough to accommodate the longest word other wise this option will split words over multiple lines.
 
@@ -454,7 +454,7 @@ The following setting disables label flipping, making the label always follow th
 .. _labeling_conflict_resolution:
 
 conflictResolution
-``````````````````
+````````````````````
 
 By default labels are subjected to conflict resolution, meaning the renderer will not allow any label to overlap with a label that has been drawn already. Setting this parameter to false pull the label out of the conflict resolution game, meaning the label will be drawn even if it overlaps with other labels, and other labels drawn after it won't mind overlapping with it.
 
@@ -465,11 +465,9 @@ By default labels are subjected to conflict resolution, meaning the renderer wil
 .. _labeling_goodness_of_fit:
 
 Goodness of Fit
----------------
+````````````````
 
 Geoserver will remove labels if they are a particularly bad fit for the geometry they are labeling.
-
-Currently, the only way change this value is to modify the source code (MIN_GOODNESS_FIT = 0.7).
 
 .. list-table::
    :widths: 30 70 
@@ -482,3 +480,9 @@ Currently, the only way change this value is to modify the source code (MIN_GOOD
      - Always returns 1.0 since the label is always placed on the line.
    * - Polygon
      - The label is sampled approximately at every letter. The distance from these points to the polygon is determined and each sample votes based on how close it is to the polygon. (see LabelCacheDefault#goodnessOfFit())
+
+The default value is 0.5, but it can be modified using:
+
+.. code-block:: xml
+
+  <VendorOption name="goodnessOfFit">0.3</VendorOption>
