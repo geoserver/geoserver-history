@@ -1,10 +1,7 @@
 package org.geoserver.wps;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
+import static org.custommonkey.xmlunit.XMLAssert.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collections;
 
 import javax.xml.namespace.QName;
@@ -439,14 +436,4 @@ public class SnapTest extends WPSTestSupport {
         assertEquals("ows:ExceptionReport", d.getDocumentElement().getNodeName());
     }
 
-    String readFileIntoString( String filename ) throws IOException {
-        BufferedReader in = new BufferedReader( new InputStreamReader(getClass().getResourceAsStream( filename ) ) );
-        StringBuffer sb = new StringBuffer();
-        String line = null;
-        while( (line = in.readLine() ) != null ) {
-            sb.append( line );
-        }
-        in.close();
-        return sb.toString();
-    }
 }

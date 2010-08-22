@@ -3,10 +3,7 @@ package org.geoserver.wps;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -311,18 +308,6 @@ public class ExecuteTest extends WPSTestSupport {
 		FeatureCollection fc = new FeatureJSON().readFeatureCollection(r.getOutputStreamContent());
 		assertEquals(2, fc.size());
 		
-    }
-    
-    String readFileIntoString( String filename ) throws IOException {
-        BufferedReader in = 
-            new BufferedReader( new InputStreamReader(getClass().getResourceAsStream( filename ) ) );
-        StringBuffer sb = new StringBuffer();
-        String line = null;
-        while( (line = in.readLine() ) != null ) {
-            sb.append( line );
-        }
-        in.close();
-        return sb.toString();
     }
     
     public void testPlainAddition() throws Exception { // Standard Test A.4.4.3
