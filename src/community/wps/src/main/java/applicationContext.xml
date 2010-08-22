@@ -138,6 +138,7 @@
     <bean id="countProcess" class="org.geoserver.wps.gs.CountProcess"/>
     <bean id="uniqueProcess" class="org.geoserver.wps.gs.UniqueProcess"/>
     <bean id="simplifyProcess" class="org.geoserver.wps.gs.SimplifyProcess"/>
+    <bean id="rclipProcess" class="org.geoserver.wps.gs.RectangularClipProcess"/>
     
     <!-- USER INTERFACE SECTION, TO BE MOVED INTO ITS OWN MODULE -->
     <bean id="wpsRequestBuilder" class="org.geoserver.web.DemoLinkInfo">
