@@ -53,8 +53,14 @@ public class DataAccessEditPage extends AbstractDataAccessPage implements Serial
             setResponsePage(StorePage.class);
             return;
         }
-        
-        initUI(dsi);
+
+        try {
+            initUI(dsi);
+        } catch (IllegalArgumentException e) {
+            error(e.getMessage());
+            setResponsePage(StorePage.class);
+            return;
+        }
     }
     
     /**
