@@ -12,7 +12,6 @@ import org.geoserver.wps.jts.DescribeProcess;
 import org.geoserver.wps.jts.DescribeResult;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.collection.DecoratingSimpleFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.process.ProcessException;
@@ -33,7 +32,7 @@ import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
 @DescribeProcess(title = "simplify", description = "Simplifies the geometry")
 public class SimplifyProcess implements GeoServerProcess {
 
-    @DescribeResult(name = "result", description = "The feature collection bounds")
+    @DescribeResult(name = "result", description = "The simplified feature collection")
     public SimpleFeatureCollection execute(
             @DescribeParameter(name = "features", description = "The feature collection to be simplified") SimpleFeatureCollection features,
             @DescribeParameter(name = "distance", description = "The simplification distance (should be positive)") double distance,
@@ -77,31 +76,6 @@ public class SimplifyProcess implements GeoServerProcess {
         }
     }
     
-    static class WrappingIterator implements Iterator<SimpleFeature> {
-        SimpleFeatureIterator delegate;
-        
-        public WrappingIterator(SimpleFeatureIterator delegate) {
-            super();
-            this.delegate = delegate;
-        }
-
-        public boolean hasNext() {
-            return delegate.hasNext();
-        }
-
-        public SimpleFeature next() {
-            return delegate.next();
-        }
-
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-        
-        public void close() {
-            delegate.close();
-        }
-    }
-
     static class SimplifyingFeatureIterator implements SimpleFeatureIterator {
         SimpleFeatureIterator delegate;
 
