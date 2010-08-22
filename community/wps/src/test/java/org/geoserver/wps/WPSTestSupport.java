@@ -1,5 +1,8 @@
 package org.geoserver.wps;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -61,5 +64,17 @@ public abstract class WPSTestSupport extends GeoServerTestSupport {
             }
             fail( "Document did not validate.");
         }
+    }
+
+    protected String readFileIntoString(String filename) throws IOException {
+        BufferedReader in = 
+            new BufferedReader( new InputStreamReader(getClass().getResourceAsStream( filename ) ) );
+        StringBuffer sb = new StringBuffer();
+        String line = null;
+        while( (line = in.readLine() ) != null ) {
+            sb.append( line );
+        }
+        in.close();
+        return sb.toString();
     }
 }

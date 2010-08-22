@@ -438,15 +438,4 @@ public class NearestTest extends WPSTestSupport {
         
         assertEquals("ows:ExceptionReport", d.getDocumentElement().getNodeName());
     }
-
-    String readFileIntoString( String filename ) throws IOException {
-        BufferedReader in = new BufferedReader( new InputStreamReader(getClass().getResourceAsStream( filename ) ) );
-        StringBuffer sb = new StringBuffer();
-        String line = null;
-        while( (line = in.readLine() ) != null ) {
-            sb.append( line );
-        }
-        in.close();
-        return sb.toString();
-    }
 }
