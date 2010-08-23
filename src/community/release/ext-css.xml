@@ -17,6 +17,7 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>css-*.jar</include>
+        <include>geocss_*.jar</include>
         <include>scala-lib*.jar</include>
       </includes>
     </fileSet>
