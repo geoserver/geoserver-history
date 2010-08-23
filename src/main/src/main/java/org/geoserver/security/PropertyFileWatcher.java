@@ -5,10 +5,11 @@
 package org.geoserver.security;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.geoserver.platform.FileWatcher;
 
 
 /**
@@ -18,44 +19,24 @@ import java.util.Properties;
  * @author Andrea Aime
  *
  */
-public class PropertyFileWatcher {
-    File file;
-    private long lastModified = Long.MIN_VALUE;
-    private long lastCheck;
-    private boolean stale;
-
+public class PropertyFileWatcher extends FileWatcher<Properties> {
+    
     public PropertyFileWatcher(File file) {
-        this.file = file;
+        super(file);
     }
 
     public Properties getProperties() throws IOException {
-        Properties p = new Properties();
-
-        if (file.exists()) {
-            InputStream is = null;
-
-            try {
-                is = new FileInputStream(file);
-                p.load(is);
-                lastModified = file.lastModified();
-                lastCheck = System.currentTimeMillis();
-                stale = false;
-            } finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
-        }
-
-        return p;
+        return read();
     }
 
+    @Override
+    protected Properties parseFileContents(InputStream in) throws IOException {
+        Properties p = new Properties();
+        p.load(in);
+        return p;
+    }
+    
     public boolean isStale() {
-        long now = System.currentTimeMillis();
-        if((now - lastCheck) > 1000) {
-            lastCheck = now;
-            stale = file.exists() && (file.lastModified() > lastModified);
-        }
-        return stale;
+        return isModified();
     }
 }
