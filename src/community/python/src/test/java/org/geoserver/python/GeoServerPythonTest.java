@@ -8,13 +8,11 @@ import java.io.IOException;
 import junit.framework.Test;
 
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.python.Python;
 import org.geoserver.test.GeoServerTestSupport;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.h2.tools.DeleteDbFiles;
 import org.opengis.referencing.operation.MathTransform;
-import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
 
 public class GeoServerPythonTest extends GeoServerTestSupport {
@@ -72,21 +70,6 @@ public class GeoServerPythonTest extends GeoServerTestSupport {
     }
     
     public void testBasic() throws Exception {
-        ReferencedEnvelope re = new ReferencedEnvelope(-111, -110, 44.7,  44.9, CRS.decode("EPSG:4326"));
-        System.out.println(re.transform(CRS.decode("EPSG:26912"), true));
-        
-        double[] d = new double[]{-111,44.7};
-        MathTransform tx = CRS.findMathTransform(CRS.decode("EPSG:4326"), CRS.decode("EPSG:26912"), true );
-        tx.transform(d, 0, d, 0, 1);
-        System.out.println(d[0] + ", " + d[1]);
-        
-        d = new double[]{-110,44.9};
-        tx.transform(d, 0, d, 0, 1);
-        System.out.println(d[0] + ", " + d[1]);
-        
-        System.out.println(re.transform(CRS.decode("EPSG:26912"), true));
-        //ReferencedEnvelope[499999.425017753 : 579224.9506050996, 4949624.888594885 : 4972327.928836986]
-        //ReferencedEnvelope[499999.425017753 : 579224.9506050996, 4949624.888594885 : 4972327.928836986]
         String result = getAsString("/python/scripts/foo.py");
         assertEquals( "foo", result );
     }

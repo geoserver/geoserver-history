@@ -1,42 +1,91 @@
 package org.geoserver.python;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipFile;
 
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.python.adapter.DataStoreFactory;
-import org.geoserver.rest.util.IOUtils;
-import org.geoserver.rest.util.RESTUtils;
+import org.geoserver.python.datastore.PythonDataStoreFactory;
 import org.geotools.util.logging.Logging;
+import org.python.core.Py;
+import org.python.core.PyBoolean;
+import org.python.core.PyException;
+import org.python.core.PyFile;
+import org.python.core.PyFloat;
+import org.python.core.PyInteger;
+import org.python.core.PyLong;
+import org.python.core.PyObject;
+import org.python.core.PyString;
+import org.python.core.PyType;
 import org.python.util.PythonInterpreter;
 
 public class Python {
 
-    static Logger LOGGER = Logging.getLogger("org.geoserver.jython");
+    public static Logger LOGGER = Logging.getLogger("org.geoserver.jython");
+    
+    static HashMap<Class<? extends PyObject>, Class> pyToJava = new HashMap();
+    static {
+        pyToJava.put(PyString.class, String.class);
+        pyToJava.put(PyInteger.class, Integer.class);
+        pyToJava.put(PyLong.class, Long.class);
+        pyToJava.put(PyFloat.class, Double.class);
+        pyToJava.put(PyBoolean.class, Boolean.class);
+        //pyToJava.put(PyFile.class, File.class);
+    }
+    
+    public static Class toJavaClass(PyType type) {
+        Class clazz = null;
+        try {
+            Object o = Py.tojava(type, Object.class);
+            if (o != null && o instanceof Class) {
+                clazz = (Class) o;
+            }
+        }
+        catch(PyException e) {}
+        
+        if (clazz != null && PyObject.class.isAssignableFrom(clazz)) {
+            try {
+                PyObject pyobj = (PyObject) clazz.newInstance();
+                Object obj = pyobj.__tojava__(Object.class);
+                if (obj != null) {
+                    clazz = obj.getClass();
+                }
+            }
+            catch(Exception e) {}
+        }
+        
+        if (clazz != null && PyObject.class.isAssignableFrom(clazz)) {
+            Class jclass = pyToJava.get(clazz);
+            if (jclass != null) {
+                clazz = jclass;
+            }
+        }
+        
+        if (clazz != null && clazz.getName().startsWith("org.python.proxies")) {
+            //get base type
+            PyType base = (PyType) type.getBase();
+            Class c = toJavaClass(base);
+            if (c != null) {
+                clazz = c;
+            }
+        }
+         return clazz;
+    }
     
     GeoServerResourceLoader resourceLoader;
     
     boolean initialized = false;
     
-    List<DataStoreFactory> dataStoreFactories;
-    
     public Python(GeoServerResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-        this.dataStoreFactories = new ArrayList();
     }
     
-    public List<DataStoreFactory> getDataStoreFactories() {
-        return dataStoreFactories;
-    }
-    
-    public PythonInterpreter interpreter() {
+     public PythonInterpreter interpreter() {
         if (!initialized) {
             synchronized (this) {
                 if (!initialized) {
@@ -111,11 +160,11 @@ public class Python {
     }
     
     public File getScriptRoot() throws IOException {
-        return resourceLoader.findOrCreateDirectory("python", "scripts");
+        return resourceLoader.findOrCreateDirectory("python", "script");
     }
     
     public File getAppRoot() throws IOException {
-        return resourceLoader.findOrCreateDirectory("python", "apps"); 
+        return resourceLoader.findOrCreateDirectory("python", "app"); 
     }
     
     public String getLibPath() throws IOException {
@@ -127,7 +176,11 @@ public class Python {
     }
 
     public File getDataStoreRoot() throws IOException {
-        return resourceLoader.findOrCreateDirectory("python", "data_stores");
+        return resourceLoader.findOrCreateDirectory("python", "datastore");
+    }
+    
+    public File getProcessRoot() throws IOException {
+        return resourceLoader.findOrCreateDirectory("python", "process");
     }
     
 }

@@ -1,4 +1,4 @@
-package org.geoserver.python.adapter;
+package org.geoserver.python.datastore;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -11,13 +11,13 @@ import org.python.core.PyGenerator;
 import org.python.core.PyMethod;
 import org.python.core.PyObject;
 
-public class FeatureReaderAdapter implements SimpleFeatureReader {
+public class PythonFeatureReader implements SimpleFeatureReader {
 
     SimpleFeatureType featureType;
     PyGenerator features;
     Iterator it;
     
-    public FeatureReaderAdapter(SimpleFeatureType featureType, PyObject layer) {
+    public PythonFeatureReader(SimpleFeatureType featureType, PyObject layer) {
         this.featureType = featureType;
         
         PyMethod features = (PyMethod) layer.__findattr__("features");

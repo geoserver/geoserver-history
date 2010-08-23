@@ -1,4 +1,4 @@
-package org.geoserver.python.adapter;
+package org.geoserver.python.datastore;
 
 import java.io.IOException;
 
@@ -24,16 +24,21 @@ import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PyType;
 
-public class FeatureStoreAdapter extends ContentFeatureSource implements SimpleFeatureSource {
+public class PythonFeatureStore extends ContentFeatureSource implements SimpleFeatureSource {
 
     PyObject layer;
     PyObject schema;
-    public FeatureStoreAdapter(ContentEntry entry, Query query) {
+    
+    public PythonFeatureStore(ContentEntry entry, Query query) {
         super(entry, query);
         
-        DataStoreAdapter dataStore = (DataStoreAdapter) entry.getDataStore();
+        PythonDataStore dataStore = (PythonDataStore) entry.getDataStore();
+        PyObject workspace = dataStore.getWorkspace();
         
-        PyMethod get = (PyMethod) dataStore.workspace.__findattr__("__getitem__");
+        PyMethod get = (PyMethod) workspace.__findattr__("get");
+        if (get == null) {
+            get = (PyMethod) workspace.__findattr__("__getitem__");
+        }
         this.layer = get.__call__(new PyObject[]{new PyString(entry.getName().getLocalPart())});
         this.schema = layer.__findattr__("schema");
     
@@ -88,7 +93,7 @@ public class FeatureStoreAdapter extends ContentFeatureSource implements SimpleF
     @Override
     protected FeatureReader<SimpleFeatureType, SimpleFeature> getReaderInternal(Query query)
             throws IOException {
-        return new FeatureReaderAdapter(getSchema(), layer);
+        return new PythonFeatureReader(getSchema(), layer);
     }
     
     PyObject convertFilter(Filter f) {

@@ -1,8 +1,9 @@
-package org.geoserver.python.adapter;
+package org.geoserver.python.datastore;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.geotools.data.Query;
 import org.geotools.data.store.ContentDataStore;
@@ -19,22 +20,29 @@ import org.python.core.PyObject;
  * @author Justin Deoliveira, OpenGeo
  *
  */
-public class DataStoreAdapter extends ContentDataStore {
+public class PythonDataStore extends ContentDataStore {
 
-    PyObject workspace;
+    Map<String,Object> parameters;
+    PythonDataStoreAdapter adapter;
     
-    public DataStoreAdapter(PyObject workspace) {
-        this.workspace = workspace;
+    public PythonDataStore(Map<String,Object> parameters, PythonDataStoreAdapter adapter) {
+        this.parameters = parameters;
+        this.adapter = adapter;
     }
     
     @Override
-    protected FeatureStoreAdapter createFeatureSource(ContentEntry entry) throws IOException {
-        return new FeatureStoreAdapter(entry, Query.ALL);
+    protected PythonFeatureStore createFeatureSource(ContentEntry entry) throws IOException {
+        return new PythonFeatureStore(entry, Query.ALL);
     }
 
     @Override
     protected List<Name> createTypeNames() throws IOException {
-        PyMethod layers = (PyMethod) workspace.__findattr__("keys");
+        PyObject workspace = getWorkspace();
+        
+        PyMethod layers = (PyMethod) workspace.__findattr__("layers");
+        if (layers == null) {
+            layers = (PyMethod) workspace.__findattr__("keys");
+        }
         PyList result = (PyList) layers.__call__();
         
         List<Name> typeNames = new ArrayList<Name>();
@@ -44,4 +52,7 @@ public class DataStoreAdapter extends ContentDataStore {
         return typeNames;
     }
 
+    PyObject getWorkspace() {
+        return adapter.getWorkspace(parameters);
+    }
 }

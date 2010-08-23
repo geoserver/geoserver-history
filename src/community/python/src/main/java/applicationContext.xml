@@ -16,11 +16,8 @@
     <constructor-arg ref="resourceLoader"/>
   </bean>
 
-  <bean id="pythonInitializer" class="org.geoserver.python.PythonInitializer">
-     <constructor-arg ref="python"/>
-  </bean>
-  
-  <bean id="pythonDataStoreFactoryProducer" class="org.geoserver.python.PythonDataStoreFactoryProducer">
+  <bean id="pythonDataStoreFactoryProducer" 
+        class="org.geoserver.python.datastore.PythonDataStoreFactoryProducer">
      <constructor-arg ref="python"/>
   </bean>
   
