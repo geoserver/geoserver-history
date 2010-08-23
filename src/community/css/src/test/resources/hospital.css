@@ -1,3 +1,0 @@
-* { mark: symbol(circle), symbol(cross); }
-:nth-mark(1) { fill: white; }
-:nth-mark(2) { fill: red; size: 10px; }
