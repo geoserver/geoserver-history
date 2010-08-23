@@ -1,4 +1,4 @@
-package org.geoserver.python;
+package org.geoserver.python.datastore;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -8,7 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.python.adapter.DataStoreAdapter;
+import org.geoserver.python.Python;
+import org.geoserver.python.datastore.PythonDataStore;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -28,9 +29,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-public class DataStoreAdapterTest {
+public class PythonDataStoreTest {
 
-    static DataStoreAdapter adapter;
+    static PythonDataStore dataStore;
     
     @BeforeClass
     public static void setUpData() throws Exception {
@@ -45,13 +46,17 @@ public class DataStoreAdapterTest {
         pi.exec("l.add([Point(10,10), 'ten'])");
         pi.exec("l.add([Point(20,20), 'twenty'])");
         
-        PyObject workspace = pi.get("h2");
-        adapter = new DataStoreAdapter(workspace);
+        final PyObject workspace = pi.get("h2");
+        dataStore = new PythonDataStore(null, null) {
+            PyObject getWorkspace() {
+                return workspace;
+            }
+        };
     }
     
     @Test
     public void testGetTypeNames() throws Exception {
-        String[] typeNames = adapter.getTypeNames();
+        String[] typeNames = dataStore.getTypeNames();
         
         assertEquals(1, typeNames.length);
         assertEquals("bar", typeNames[0]);
@@ -59,7 +64,7 @@ public class DataStoreAdapterTest {
     
     @Test
     public void testGetFeatureSource() throws Exception {
-        SimpleFeatureSource source = adapter.getFeatureSource("bar");
+        SimpleFeatureSource source = dataStore.getFeatureSource("bar");
         assertNotNull(source);
         
         SimpleFeatureType schema = source.getSchema();
@@ -86,7 +91,7 @@ public class DataStoreAdapterTest {
         assertFalse(box.contains(new Coordinate(20,20)));
         
         SimpleFeatureReader r = (SimpleFeatureReader) 
-            adapter.getFeatureReader(new Query("bar"), Transaction.AUTO_COMMIT);
+            dataStore.getFeatureReader(new Query("bar"), Transaction.AUTO_COMMIT);
         
         assertNotNull(r);
         assertTrue(r.hasNext());
@@ -107,7 +112,7 @@ public class DataStoreAdapterTest {
     }
     
     public void testGetFeatureReader() throws Exception {
-        FeatureReader r = adapter.getFeatureReader(new Query("bar"), Transaction.AUTO_COMMIT);
+        FeatureReader r = dataStore.getFeatureReader(new Query("bar"), Transaction.AUTO_COMMIT);
         assertNotNull(r);
         
         assertTrue(r.hasNext());
