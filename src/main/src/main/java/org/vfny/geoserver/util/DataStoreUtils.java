@@ -7,16 +7,19 @@ package org.vfny.geoserver.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.data.DataStoreFactoryInitializer;
+import org.geoserver.data.DataAccessFactoryProducer;
 import org.geoserver.feature.FeatureSourceUtils;
 import org.geoserver.feature.retype.RetypingDataStore;
 import org.geoserver.platform.GeoServerExtensions;
@@ -24,8 +27,11 @@ import org.geotools.data.DataAccess;
 import org.geotools.data.DataAccessFactory;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.DataAccessFactory.Param;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
@@ -41,6 +47,11 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id$
  */
 public abstract class DataStoreUtils {
+    
+    /**
+     * logger
+     */
+    static Logger LOGGER = Logging.getLogger("org.geoserver.data");
     
     /**
      * Uses the standard datastore factory mechanism, but first manipulates the
@@ -132,7 +143,7 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataAccessFactory aquireFactory(Map params) {
-        for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
+        for (Iterator i = getAvailableDataStoreFactories().iterator(); i.hasNext();) {
             DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory( factory );
             
@@ -167,7 +178,7 @@ public abstract class DataStoreUtils {
      * @return
      */
     public static DataAccessFactory aquireFactory(String displayName) {
-        for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
+        for (Iterator i = getAvailableDataStoreFactories().iterator(); i.hasNext();) {
             DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory( factory );
             
@@ -237,7 +248,7 @@ public abstract class DataStoreUtils {
     public static List listDataStoresDescriptions() {
         List list = new ArrayList();
 
-        for (Iterator i = DataAccessFinder.getAvailableDataStores(); i.hasNext();) {
+        for (Iterator i = getAvailableDataStoreFactories().iterator(); i.hasNext();) {
             DataAccessFactory factory = (DataAccessFactory) i.next();
             initializeDataStoreFactory(factory);
             
@@ -321,5 +332,25 @@ public abstract class DataStoreUtils {
     public static Envelope getBoundingBoxEnvelope(FeatureSource<? extends FeatureType, ? extends Feature> fs)
         throws IOException {
         return FeatureSourceUtils.getBoundingBoxEnvelope(fs);
+    }
+    
+    public static Collection<DataAccessFactory> getAvailableDataStoreFactories() {
+        List<DataAccessFactory> factories = new ArrayList();
+        Iterator<DataStoreFactorySpi> it = DataStoreFinder.getAvailableDataStores();
+        while(it.hasNext()) {
+            factories.add(it.next());
+        }
+        
+        for (DataAccessFactoryProducer producer : GeoServerExtensions.extensions(DataAccessFactoryProducer.class)) {
+            try {
+                factories.addAll(producer.getDataStoreFactories());
+            }
+            catch(Throwable t) {
+                LOGGER.log(Level.WARNING, "Error occured loading data access factories. " +
+                    "Ignoring producer", t);
+            }
+        }
+    
+        return factories;
     }
 }

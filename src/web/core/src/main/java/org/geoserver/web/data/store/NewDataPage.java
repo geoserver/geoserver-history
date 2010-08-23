@@ -24,8 +24,8 @@ import org.geoserver.web.CatalogIconFactory;
 import org.geoserver.web.GeoServerSecuredPage;
 import org.geotools.coverage.grid.io.GridFormatFinder;
 import org.geotools.data.DataAccessFactory;
-import org.geotools.data.DataAccessFinder;
 import org.opengis.coverage.grid.Format;
+import org.vfny.geoserver.util.DataStoreUtils;
 
 /**
  * Page that presents a list of vector and raster store types available in the classpath in order to
@@ -134,7 +134,7 @@ public class NewDataPage extends GeoServerSecuredPage {
         // it
         if (dataStores == null) {
             final Iterator<DataAccessFactory> availableDataStores;
-            availableDataStores = DataAccessFinder.getAvailableDataStores();
+            availableDataStores = DataStoreUtils.getAvailableDataStoreFactories().iterator();
 
             Map<String, DataAccessFactory> storeNames = new HashMap<String, DataAccessFactory>();
 
