@@ -41,8 +41,9 @@ import org.apache.wicket.model.PropertyModel
 import org.apache.wicket.validation.{IValidator, IValidatable, ValidationError}
 import org.apache.wicket.util.time.Duration
 
-import org.geoserver.community.css.CssParser._
-import org.geoserver.community.css.Translator._
+import org.geoscript.geocss._
+import org.geoscript.geocss.CssParser._
+import org.geoscript.geocss.Translator._
 
 trait CssDemoConstants {
   val styleName = "cssdemo"
@@ -52,7 +53,7 @@ trait CssDemoConstants {
   mark: symbol(square);
 }"""
 
-  private def styleSheetXML(stylesheet: List[Rule]): String = {
+  private def styleSheetXML(stylesheet: Seq[Rule]): String = {
     val style = css2sld(stylesheet)
     val sldBytes = new java.io.ByteArrayOutputStream
     val xform = new org.geotools.styling.SLDTransformer
@@ -114,18 +115,14 @@ with CssDemoConstants {
   def sldText = {
     val filename = styleInfo.getFilename()
     val file = Some(GeoserverDataDirectory.findStyleFile(filename)) filter (null !=)
-    file map { file => 
-      Source.fromFile(file).getLines.reduceLeft {
-        (x: String, y: String) => x + y
-      }
-    }
+    file map { file => Source.fromFile(file).mkString }
   }
 
   class StylePanel(id: String, model: IModel, map: OpenLayersMapPanel) extends Panel(id, model) {
     var styleBody = {
       val file = GeoserverDataDirectory.findStyleFile(cssSource)
       if (file != null && file.exists) {
-        Source.fromFile(file).getLines.mkString
+        Source.fromFile(file).mkString
       } else {
         """
 No CSS file was found for this style.  Please

@@ -1,5 +1,0 @@
-/* Sample style with multiple symbolizers for the same geometry property */
-
-* {
-  stroke: red, green, blue;
-}

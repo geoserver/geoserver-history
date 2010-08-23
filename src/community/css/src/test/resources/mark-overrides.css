@@ -1,6 +1,0 @@
-* { mark: symbol(circle); }
-[class='special'] { mark: symbol(x); }
-
-[class='special'] :symbol { fill: blue; }
-
-:mark { fill: red; }
