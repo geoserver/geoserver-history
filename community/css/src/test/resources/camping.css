@@ -1,7 +1,0 @@
-* {
-  fill: symbol("shape://slash");
-  mark: symbol(x);
-}
-
-:fill { stroke: green; }
-:mark { fill: orange; }
