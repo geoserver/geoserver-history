@@ -177,4 +177,20 @@ public class SRSReprojectionTest extends AbstractAppSchemaWfsTestSupport {
                 "//ex:geomContainer[@gml:id='2']/ex:nestedFeature[2]/ex:nestedGeom[@gml:id='secondNested.1']/ex:nestedFeature/ex:nestedGeom[@gml:id='thirdNested.2']/ex:geom/gml:Point/gml:pos",
                 doc);
     }
+
+    /**
+     * Tests that Xlink href works fine in nested feature chaining with features that contains
+     * geometry
+     * 
+     */
+    public void testChainingXlink() {
+        Document doc = getAsDOM("wfs?request=GetFeature&typename=ex:geomContainer");
+        LOGGER.info("WFS GetFeature&typename=ex:geomContainer response:\n" + prettyString(doc));
+        assertXpathEvaluatesTo("http://example.com/UrnResolver/?uri=1",
+                "//ex:geomContainer[@gml:id='1']/ex:nestedFeature[3]/@xlink:href", doc);
+        assertXpathEvaluatesTo("http://example.com/UrnResolver/?uri=2",
+                "//ex:geomContainer[@gml:id='2']/ex:nestedFeature[3]/@xlink:href", doc);
+
+    }
+
 }
