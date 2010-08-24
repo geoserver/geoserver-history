@@ -6,6 +6,10 @@
             <prefix>ex</prefix>
             <uri>http://example.com</uri>
         </Namespace>
+		<Namespace>
+			<prefix>xlink</prefix>
+			<uri>http://www.w3.org/1999/xlink</uri>
+		</Namespace>
     </namespaces>
     <sourceDataStores>
         <DataStore>
@@ -57,6 +61,18 @@
                         <linkElement>noGeometry</linkElement>
                         <linkField>FEATURE_LINK</linkField>
                     </sourceExpression>
+                </AttributeMapping>
+				<AttributeMapping>
+                    <targetAttribute>ex:nestedFeature[3]</targetAttribute>
+                    <sourceExpression>
+                        <OCQL>NESTED_GEOM_ID</OCQL>
+                        <linkElement>noGeometry</linkElement>
+                        <linkField>FEATURE_LINK</linkField>
+                    </sourceExpression>					
+					<ClientProperty>
+						<name>xlink:href</name>
+						<value>strConCat('http://example.com/UrnResolver/?uri=', NESTED_GEOM_ID)</value>
+					</ClientProperty>
                 </AttributeMapping>
             </attributeMappings>
         </FeatureTypeMapping>
