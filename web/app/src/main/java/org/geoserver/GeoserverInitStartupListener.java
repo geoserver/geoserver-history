@@ -35,6 +35,7 @@ import org.geoserver.platform.GeoServerExtensions;
 import org.geotools.data.DataAccessFinder;
 import org.geotools.data.DataStoreFinder;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.ReferencingFactoryFinder;
@@ -109,6 +110,11 @@ public class GeoserverInitStartupListener implements ServletContextListener {
             // let's disable it (the native png writer is on the other side faster)...
             ImageUtilities.allowNativeCodec("png", ImageReaderSpi.class, false);
         }
+        
+        // initialize geotools factories so that we don't make a spi lookup every time a factory is needed
+        Hints.putSystemDefault(Hints.FILTER_FACTORY, CommonFactoryFinder.getFilterFactory2(null));
+        Hints.putSystemDefault(Hints.STYLE_FACTORY, CommonFactoryFinder.getStyleFactory(null));
+        Hints.putSystemDefault(Hints.FEATURE_FACTORY, CommonFactoryFinder.getFeatureFactory(null));
     }
     
     /**
