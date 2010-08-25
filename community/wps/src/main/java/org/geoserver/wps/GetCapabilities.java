@@ -183,30 +183,41 @@ public class GetCapabilities {
                 Set<Name> blacklist = new HashSet<Name>();
 
                 for (ProcessFactory pf : Processors.getProcessFactories()) {
+                    int count = 0;
                     for (Name name : pf.getNames()) {
-                        // check inputs
-                        for (Parameter<?> p : pf.getParameterInfo(name).values()) {
-                            List<ProcessParameterIO> ppios = ProcessParameterIO.findAll(p, context);
-                            if (ppios.isEmpty()) {
-                                LOGGER.log(Level.INFO, "Blacklisting process " + name.getURI()
-                                        + " as the input " + p.key + " of type " + p.type
-                                        + " cannot be handled");
-                                blacklist.add(name);
+                        try {
+                            // check inputs
+                            for (Parameter<?> p : pf.getParameterInfo(name).values()) {
+                                List<ProcessParameterIO> ppios = ProcessParameterIO.findAll(p, context);
+                                if (ppios.isEmpty()) {
+                                    LOGGER.log(Level.INFO, "Blacklisting process " + name.getURI()
+                                            + " as the input " + p.key + " of type " + p.type
+                                            + " cannot be handled");
+                                    blacklist.add(name);
+                                }
                             }
+    
+                            // check outputs
+                            for (Parameter<?> p : pf.getResultInfo(name, null).values()) {
+                                List<ProcessParameterIO> ppios = ProcessParameterIO.findAll(p, context);
+                                if (ppios.isEmpty()) {
+                                    LOGGER.log(Level.INFO, "Blacklisting process " + name.getURI()
+                                            + " as the output " + p.key + " of type " + p.type
+                                            + " cannot be handled");
+                                    blacklist.add(name);
+                                }
+                            }
+                        } catch(Throwable t) {
+                            blacklist.add(name);
                         }
-
-                        // check outputs
-                        for (Parameter<?> p : pf.getResultInfo(name, null).values()) {
-                            List<ProcessParameterIO> ppios = ProcessParameterIO.findAll(p, context);
-                            if (ppios.isEmpty()) {
-                                LOGGER.log(Level.INFO, "Blacklisting process " + name.getURI()
-                                        + " as the output " + p.key + " of type " + p.type
-                                        + " cannot be handled");
-                                blacklist.add(name);
-                            }
+                        
+                        if(!blacklist.contains(name)) {
+                            count++;
                         }
                     }
+                    LOGGER.info("Found " + count + " bindable processes in " + pf.getTitle());
                 }
+                
 
                 PROCESS_BLACKLIST = blacklist;
             }
