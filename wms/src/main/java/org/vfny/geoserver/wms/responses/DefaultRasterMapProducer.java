@@ -401,7 +401,7 @@ public abstract class DefaultRasterMapProducer extends
             renderer = new ShapefileRenderer();
         } else {
             StreamingRenderer sr = new StreamingRenderer();
-//            sr.setThreadPool(DefaultWebMapService.getRenderingPool());
+            sr.setThreadPool(DefaultWebMapService.getRenderingPool());
             renderer = sr;
         }
         renderer.setContext(mapContext);
