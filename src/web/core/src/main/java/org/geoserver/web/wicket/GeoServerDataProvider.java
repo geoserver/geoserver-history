@@ -127,13 +127,19 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
     }
 
     /**
+     * Returns the application singleton.
+     */
+    protected GeoServerApplication getApplication() {
+        return GeoServerApplication.get();
+    }
+    /**
      * Provides catalog access for the provider (cannot be stored as a field, this class is going to
      * be serialized)
      * 
      * @return
      */
     protected Catalog getCatalog() {
-        return GeoServerApplication.get().getCatalog();
+        return getApplication().getCatalog();
     }
 
     public Iterator<T> iterator(int first, int count) {
