@@ -7,6 +7,8 @@ package org.vfny.geoserver.wms.responses;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
@@ -83,7 +85,8 @@ public class ImageUtils {
         if (transparent) {
             return new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
         }
-        // don't use alpha channel if the image is not transparent
+        // don't use alpha channel if the image is not transparent (load testing shows this
+        // image setup is the fastest to draw and encode on
         return new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
     }
