@@ -70,6 +70,12 @@
       </modules>
     </profile>
     <profile>
+      <id>sldService</id>
+      <modules> 
+        <module>sldService</module>
+      </modules>
+    </profile>
+    <profile>
       <id>kml-ows5</id>
       <modules> 
         <module>kml-ows5</module>
