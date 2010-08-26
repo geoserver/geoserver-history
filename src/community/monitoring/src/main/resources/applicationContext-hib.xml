@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd" 
+    default-autowire="byName">
+    
+    <bean id="hibPropertyConfigurer" class="org.geoserver.config.GeoServerPropertyConfigurer"
+        depends-on="geoServerLoader">
+      <constructor-arg ref="dataDirectory"/>
+      <property name="location" value="file:monitoring/hibernate.properties"/>
+      <property name="properties">
+        <props>
+          <prop key="database">H2</prop>
+          <prop key="databasePlatform">org.geoserver.monitor.hib.H2Dialect</prop>
+          <prop key="showSql">false</prop>
+          <prop key="generateDdl">true</prop>
+          
+          <prop key="hibernate.hbm2ddl.auto">update</prop>
+          <prop key="hibernate.generate_statistics">true</prop>
+          <prop key="hibernate.session_factory_name">SessionFactory</prop>
+          <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+          <prop key="hibernate.show_sql">false</prop>
+          <prop key="hibernate.use_sql_comments">true</prop>
+          <prop key="hibernate.format_sql">true</prop>
+          <!--prop key="hibernate.jdbc.use_streams_for_binary">true</prop-->
+        </props>
+      </property>
+    </bean>
+    
+    <!-- The local entity manager -->
+    <bean id="entityManagerFactory"
+      class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+      <property name="dataSource" ref="monitorDataSource" />
+      <property name="jpaVendorAdapter">
+        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+          <property name="database" value="${database}" />
+          <property name="databasePlatform"
+             value="${databasePlatform}" />
+          <property name="showSql" value="${showSql}" />
+          <property name="generateDdl" value="${generateDdl}" />
+        </bean>
+      </property>
+
+      <property name="jpaPropertyMap">
+        <map>
+          <entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
+          <entry key="hibernate.generate_statistics" value="${hibernate.generate_statistics}" />
+          <entry key="hibernate.session_factory_name" value="${hibernate.session_factory_name}" />
+          <entry key="hibernate.bytecode.use_reflection_optimizer" value="${hibernate.bytecode.use_reflection_optimizer}" />
+          <entry key="hibernate.show_sql" value="${hibernate.show_sql}" />
+          <entry key="hibernate.use_sql_comments" value="${hibernate.use_sql_comments}" />
+          <entry key="hibernate.format_sql" value="${hibernate.format_sql}" />
+          <!--entry key="hibernate.jdbc.use_streams_for_binary" value="${hibernate.jdbc.use_streams_for_binary}" /-->
+          
+        </map>
+      </property>
+    </bean>
+    
+    <!-- post processor for entityManagerFactory to allow users to tweak configuration -->
+    <bean id="entityManagerFactoryPostProcessor" 
+        class="org.geoserver.monitor.hib.EntityManagerFactoryPostProcessor">
+        <constructor-arg ref="dataDirectory"/>
+    </bean>
+
+    <!-- Transaction manager for a single JPA EntityManagerFactory -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+      <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <!-- Have Spring look for annotated classes -->
+    <tx:annotation-driven />
+
+    <!--
+      PostProcessors to perform resource injection according to the JPA
+      specification (@PersistenceContext, @PersistenceUnit).
+    -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <!--
+      PostProcessors to perform exception translation on @Repository
+      classes (from native exceptions such as JPAPersistenceExceptions to
+      Spring's DataAccessException hierarchy).
+    -->
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+    
+    <bean id="hibMonitorDAO" class="org.geoserver.monitor.hib.HibernateMonitorDAO" />
+ </beans>
