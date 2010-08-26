@@ -96,7 +96,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicPro
      * Singleton shape painter to serve all legend requests. We can use a
      * single shape painter instance as long as it remains thread safe.
      */
-    private static final StyledShapePainter shapePainter = new StyledShapePainter(null);
+    private static final StyledShapePainter shapePainter = new StyledShapePainter();
 
     /**
      * used to create sample point shapes with LiteShape (not lines nor

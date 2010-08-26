@@ -89,7 +89,7 @@ public class LegendDecoration implements MapDecoration {
      */
     private LiteShape2 samplePoint;
 
-    private static final StyledShapePainter shapePainter = new StyledShapePainter(null);
+    private static final StyledShapePainter shapePainter = new StyledShapePainter();
 
     public void loadOptions(Map<String, String> options){
         Color tmp = parseColor(options.get("bgcolor"));
