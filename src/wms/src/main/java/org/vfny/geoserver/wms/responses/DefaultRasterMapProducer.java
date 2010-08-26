@@ -76,6 +76,7 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
+import org.springframework.beans.factory.DisposableBean;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
@@ -399,7 +400,9 @@ public abstract class DefaultRasterMapProducer extends
         if(DefaultWebMapService.useShapefileRenderer()) {
             renderer = new ShapefileRenderer();
         } else {
-            renderer = new StreamingRenderer();
+            StreamingRenderer sr = new StreamingRenderer();
+//            sr.setThreadPool(DefaultWebMapService.getRenderingPool());
+            renderer = sr;
         }
         renderer.setContext(mapContext);
         renderer.setJava2DHints(hints);

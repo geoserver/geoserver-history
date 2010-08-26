@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,6 +34,8 @@ import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.wms.WmsException;
@@ -54,7 +59,7 @@ import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 import com.vividsolutions.jts.geom.Envelope;
 
 public class DefaultWebMapService implements WebMapService,
-        ApplicationContextAware {
+        ApplicationContextAware, InitializingBean, DisposableBean {
     /**
      * default for 'format' parameter.
      */
@@ -84,6 +89,11 @@ public class DefaultWebMapService implements WebMapService,
      * default for 'transparent' parameter.
      */
     public static Boolean TRANSPARENT = Boolean.TRUE;
+    
+    /**
+     * default for 'transparent' parameter.
+     */
+    public static ExecutorService RENDERING_POOL;
     
     /**
      * default for 'bbox' paramter
@@ -601,5 +611,24 @@ public class DefaultWebMapService implements WebMapService,
             return bbox.intersection(maxEnv);
         }
         return bbox;
+    }
+    
+    /**
+     * Returns a app wide cached rendering pool that can be used for parallelized rendering
+     * @return
+     */
+    public static ExecutorService getRenderingPool() {
+        return RENDERING_POOL;
+    }
+
+    public void destroy() throws Exception {
+        if(RENDERING_POOL != null) {
+            RENDERING_POOL.shutdown();
+            RENDERING_POOL.awaitTermination(10, TimeUnit.SECONDS);
+        }
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        RENDERING_POOL = Executors.newCachedThreadPool();
     }
 }
