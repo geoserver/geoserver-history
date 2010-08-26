@@ -263,7 +263,12 @@ public class ReflectiveHTMLFormat extends DataFormat {
         public TemplateModel wrap(Object object) throws TemplateModelException {
             if ( object instanceof Collection ) {
                 Collection c = (Collection) object;
-                if (!c.isEmpty() ) {
+                if (c.isEmpty()) {
+                    SimpleHash hash = new SimpleHash();
+                    hash.put( "values", new CollectionModel( c, this ) );
+                    return hash;
+                }
+                else {
                     Object o = c.iterator().next();
                     if ( clazz.isAssignableFrom( o.getClass() ) ) {
                         SimpleHash hash = new SimpleHash();

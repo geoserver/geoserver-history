@@ -39,7 +39,7 @@ public class PageInfo {
      */
     String extension;
     
-    PageInfo() {
+    public PageInfo() {
     }
 
 
