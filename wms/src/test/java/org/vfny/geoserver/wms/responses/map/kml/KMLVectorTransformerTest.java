@@ -46,7 +46,7 @@ import com.vividsolutions.jts.geom.Point;
  *       time being, its a workaround for the build to keep going until we find out why these tests
  *       produce other ones to fail
  */
-public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
+public class KMLVectorTransformerTest extends WMSTestSupport {
 
     private WMSMockData mockData;
 
@@ -55,25 +55,6 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new KMLVectorTransformerTest());
-    }
-
-    @Override
-    protected TestData buildTestData() throws Exception {
-        return new TestData() {
-            public File getDataDirectoryRoot() {
-                return null;
-            }
-
-            public boolean isTestDataAvailable() {
-                return false;
-            }
-
-            public void setUp() throws Exception {
-            }
-
-            public void tearDown() throws Exception {
-            }
-        };
     }
 
     /**
@@ -160,6 +141,7 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
         request.setFormatOptions(Collections.singletonMap("relLinks", "true"));
         MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();
         httpreq.setRequestURL("baseurl");
+        request.setBaseUrl("baseurl");
         mapContext.setRequest(request);
 
         KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
@@ -176,18 +158,18 @@ public class KMLVectorTransformerTest extends GeoServerAbstractTestSupport {
         // we're at startIndex=2 and maxFeatures=2, so expect previous link to be 0, and next to be
         // 4
         String expectedLink;
-        expectedLink = "baseurl/rest/geosearch/geos/TestPoints.kml?startindex=0&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=0&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/atom:link[1]/@href", dom);
-        expectedLink = "baseurl/rest/geosearch/geos/TestPoints.kml?startindex=4&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=4&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/atom:link[2]/@href", dom);
 
         assertXpathEvaluatesTo("prev", "//Document/NetworkLink[1]/@id", dom);
         assertXpathEvaluatesTo("next", "//Document/NetworkLink[2]/@id", dom);
 
-        expectedLink = "baseurl/rest/geosearch/geos/TestPoints.kml?startindex=0&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=0&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/NetworkLink[1]/Link/href", dom);
 
-        expectedLink = "baseurl/rest/geosearch/geos/TestPoints.kml?startindex=4&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=4&maxfeatures=2";
         assertXpathEvaluatesTo("next", "//Document/NetworkLink[2]/@id", dom);
     }
 }

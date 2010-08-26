@@ -40,7 +40,7 @@ import com.vividsolutions.jts.geom.Point;
  *       time being, its a workaround for the build to keep going until we find out why these tests
  *       produce other ones to fail
  */
-public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
+public class KMLLegendTransformerTest extends WMSTestSupport {
 
     private WMSMockData mockData;
 
@@ -60,25 +60,6 @@ public class KMLLegendTransformerTest extends GeoServerAbstractTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new KMLLegendTransformerTest());
-    }
-
-    @Override
-    protected TestData buildTestData() throws Exception {
-        return new TestData() {
-            public File getDataDirectoryRoot() {
-                return null;
-            }
-
-            public boolean isTestDataAvailable() {
-                return false;
-            }
-
-            public void setUp() throws Exception {
-            }
-
-            public void tearDown() throws Exception {
-            }
-        };
     }
 
     /**
