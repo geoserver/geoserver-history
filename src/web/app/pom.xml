@@ -500,7 +500,7 @@
       <id>control-flow</id>
       <dependencies>
         <dependency>
-          <groupId>org.geoserver.community</groupId>
+          <groupId>org.geoserver.extension</groupId>
           <artifactId>control-flow</artifactId>
           <version>${project.version}</version>
         </dependency>
