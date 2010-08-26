@@ -478,6 +478,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>sldService</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>sldService</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>proxy</id>
       <dependencies>
         <dependency>
