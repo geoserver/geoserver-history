@@ -31,13 +31,8 @@ import com.vividsolutions.jts.geom.Point;
 
 /**
  * Unit test suite for {@link KMLNetworkLinkTransformer}
- * 
- * @author Gabriel Roldan
- * @todo this test does not need to extend GeoServerAbstractTestSupport but just TestCase. For the
- *       time being, its a workaround for the build to keep going until we find out why these tests
- *       produce other ones to fail
  */
-public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport {
+public class KMLNetworkLinkTransformerTest extends WMSTestSupport {
 
     private WMSMockData mockData;
 
@@ -51,25 +46,6 @@ public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport 
      */
     public static Test suite() {
         return new OneTimeTestSetup(new KMLNetworkLinkTransformerTest());
-    }
-
-    @Override
-    protected TestData buildTestData() throws Exception {
-        return new TestData() {
-            public File getDataDirectoryRoot() {
-                return null;
-            }
-
-            public boolean isTestDataAvailable() {
-                return false;
-            }
-
-            public void setUp() throws Exception {
-            }
-
-            public void tearDown() throws Exception {
-            }
-        };
     }
 
     /**
@@ -121,6 +97,7 @@ public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport 
         request.setBbox(new Envelope(-1, 1, -10, 10));
 
         Document dom = WMSTestSupport.transform(request, transformer);
+        print(dom);
         assertXpathEvaluatesTo("1", "count(//kml/Folder)", dom);
         assertXpathEvaluatesTo("1", "count(//kml/Folder/NetworkLink)", dom);
         assertXpathEvaluatesTo("1", "count(//kml/Folder/LookAt)", dom);
@@ -134,14 +111,15 @@ public class KMLNetworkLinkTransformerTest extends GeoServerAbstractTestSupport 
         assertXpathEvaluatesTo("1.0", "//kml/Folder/NetworkLink/Region/LatLonAltBox/east", dom);
         assertXpathEvaluatesTo("-1.0", "//kml/Folder/NetworkLink/Region/LatLonAltBox/west", dom);
 
-        assertXpathEvaluatesTo("256", "//kml/Folder/NetworkLink/Region/Lod/minLodPixels", dom);
+        assertXpathEvaluatesTo("128", "//kml/Folder/NetworkLink/Region/Lod/minLodPixels", dom);
         assertXpathEvaluatesTo("-1", "//kml/Folder/NetworkLink/Region/Lod/maxLodPixels", dom);
 
         final Map<String, String> expectedKvp = KMLReflectorTest.toKvp("http://geoserver.org:8181/geoserver/wms?format_options=relLinks%3Atrue%3B&service=wms&srs=EPSG%3A4326&width=512&styles=Default+Style&height=256&transparent=false&bbox=-1.0%2C-10.0%2C1.0%2C10.0&request=GetMap&layers=geos%3ATestPoints&format=image%2Fdummy&version=1.1.1");
         final Map<String, String> actualKvp = KMLReflectorTest.toKvp(xpath.evaluate(
         "//kml/Folder/NetworkLink/Link/href", dom));
         KMLReflectorTest.assertMapsEqual(expectedKvp, actualKvp);
-        assertXpathEvaluatesTo("onRegion", "//kml/Folder/NetworkLink/Link/viewRefreshMode", dom);
+        //GR: commenting out the bellow assertion, adding the viewRefreshMode element is commented out in KMLNetworkListTransformer
+        //assertXpathEvaluatesTo("onRegion", "//kml/Folder/NetworkLink/Link/viewRefreshMode", dom);
 
         // feature type bounds?
         assertXpathEvaluatesTo("180.0", "//kml/Folder/LookAt/longitude", dom);
