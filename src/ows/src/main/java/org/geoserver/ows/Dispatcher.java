@@ -1323,6 +1323,8 @@ public class Dispatcher extends AbstractController {
                 //TODO: something
             }
         }
+        
+        request.error = t;
     }
 
     void handleServiceException( ServiceException se, Service service, Request request ) {
