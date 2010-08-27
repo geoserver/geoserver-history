@@ -19,10 +19,10 @@
     <!-- monitor daos -->
     <import resource="applicationContext-hib2.xml"/>
     <bean id="memMonitorDAO" class="org.geoserver.monitor.MemoryMonitorDAO"/>
-    <bean id="jdbcMonitorDAO" class="org.geoserver.monitor.JDBCMonitorDAO">
+    <!--bean id="jdbcMonitorDAO" class="org.geoserver.monitor.JDBCMonitorDAO">
       <constructor-arg ref="monitorDataSource"/>
       <property name="asynchronous" value="true"/>
-    </bean>
+    </bean-->
     
     <alias name="hibMonitorDAO" alias="monitorDAO"/>
     

@@ -64,6 +64,10 @@ public class MonitorCallback implements DispatcherCallback {
     
     public Operation operationDispatched(Request request, Operation operation) {
         RequestData data = monitor.current();
+        if (data == null) {
+            //will happen in cases where the filter is not active
+            return operation;
+        }
         
         data.setOwsService(operation.getService().getId());
         data.setOwsOperation(operation.getId());
@@ -92,6 +96,11 @@ public class MonitorCallback implements DispatcherCallback {
     public void finished(Request request) {
         if (request.getError() != null) {
             RequestData data = monitor.current();
+            if (data == null) {
+                //will happen in cases where the filter is not active
+                return;
+            }
+            
             data.setStatus(Status.FAILED);
             data.setErrorMessage(request.getError().getLocalizedMessage());
             data.setError(request.getError());

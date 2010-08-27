@@ -42,8 +42,9 @@ public class ControlFlowCallbackProxy implements InvocationHandler, BeanPostProc
     }
     
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if ("operationDispatched".equals(method.getName())) {
+        if ("operationDispatched".equals(method.getName()) && monitor.current() != null) {
             RequestData data = monitor.current();
+            
             data.setStatus(Status.WAITING);
             monitor.update();
             
