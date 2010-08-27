@@ -16,3 +16,4 @@ This section is devoted to GeoServer community modules. Community modules are co
    controlflow/index
    css/index
    printing/index
+   monitoring/index
