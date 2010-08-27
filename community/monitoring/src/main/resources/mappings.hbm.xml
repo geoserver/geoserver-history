@@ -9,19 +9,19 @@
   </typedef>
 
   <!-- TODO specify which attributes are not null -->
-  <class name="org.geoserver.monitor.RequestData" table="REQUESTS">
+  <class name="org.geoserver.monitor.RequestData" table="REQUEST">
     <id column="ID" name="id">
       <generator class="native"/>
     </id>
-    <property column="STATUS" name="status" type="Status"/>
+    <property column="STATUS" name="status" type="Status" index="REQ_STATUS_IDX"/>
     <property column="PATH" name="path"/>
     <property column="BODY" name="body" length="1024"/>
     <property column="QUERY_STRING" name="queryString" length="1024"/>
     <property column="SERVER_HOST" name="host"/>
     <property column="HTTP_METHOD" name="httpMethod"/>
-    <property column="START_TIME" name="startTime" index="REQ_STRT_TIME_IDX"/>
+    <property column="START_TIME" name="startTime" index="REQ_START_TIME_IDX"/>
     <property column="END_TIME" name="endTime" index="REQ_END_TIME_IDX"/>
-    <property column="TOTAL_TIME" name="totalTime"/>
+    <property column="TOTAL_TIME" name="totalTime" index="REQ_TOTAL_TIME_IDX"/>
     
     <property column="REMOTE_ADDRESS" name="remoteAddr" />
     <property column="REMOTE_HOST" name="remoteHost"/>
@@ -31,9 +31,9 @@
     <property column="REMOTE_LAT" name="remoteLat"/>
     <property column="REMOTE_LON" name="remoteLon"/>
     
-    <property column="OWS_SERVICE" name="owsService"/>
+    <property column="OWS_SERVICE" name="owsService" index="REQ_OWS_SERVICE_IDX"/>
     <property column="OWS_VERSION" name="owsVersion"/>
-    <property column="OWS_OPERATION" name="owsOperation"/>
+    <property column="OWS_OPERATION" name="owsOperation" index="REQ_OWS_OPERATION_IDX"/>
     
     <property column="CONTENT_TYPE" name="responseContentType"/>
     <property column="RESPONSE_LENGTH" name="responseLength"/>
@@ -48,4 +48,5 @@
     </list>
     
   </class>
+  
 </hibernate-mapping>
