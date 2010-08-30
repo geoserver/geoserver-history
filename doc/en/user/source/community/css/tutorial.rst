@@ -13,7 +13,7 @@ Installation
 ------------
 
 The CSS module is built nightly and published to the `nightly build server
-<http://gridlock.openplans.org/geoserver/2.0.x/community-latest/>`_.  The
+<http://gridlock.opengeo.org/geoserver/2.0.x/community-latest/>`_.  The
 installation process is similar to other GeoServer plugins:
 
 * Download the file named like ``geoserver-2.0.2-SNAPSHOT-css-plugin.zip``
