@@ -71,7 +71,7 @@ public class GeoServerFeatureSource implements SimpleFeatureSource {
     protected SimpleFeatureSource source;
     
     /** The single filter factory for this source (grabbing it has a high sync penalty */
-    FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
+    static FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(null);
 
     /**
      * GeoTools2 Schema information
