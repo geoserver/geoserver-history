@@ -27,8 +27,13 @@ public class Wcs10GetCapabilitiesRequestReader extends EMFKvpRequestReader {
 
         // set the version attribute on the request
         if (kvp.containsKey("version")) {
+            String ver = (String) kvp.get("version");
+            if (ver != null && "".equals(ver)) {
+                ver = null;
+            }
+            
             GetCapabilitiesType getCapabilities = (GetCapabilitiesType) request;
-            getCapabilities.setVersion((String) kvp.get("version"));
+            getCapabilities.setVersion(ver);
         }
 
         return request;
