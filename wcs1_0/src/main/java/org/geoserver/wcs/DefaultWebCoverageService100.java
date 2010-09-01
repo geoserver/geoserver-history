@@ -185,8 +185,11 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             if(output==null)
             	throw new IllegalArgumentException("Output type was null");
             final CodeType outputCRS = output.getCrs();
-            if (outputCRS == null)
-                throw new IllegalArgumentException("Invalid output CRS"); 
+            if (outputCRS == null) {
+                //JD: crs is optional 
+                //throw new IllegalArgumentException("Invalid output CRS");
+            }
+                 
             final int dimension = grid.getDimension().intValue();
             // WE SUPPORT 3D DIMENSION ONLY VIA A BAND
             if (dimension == 3) 
@@ -208,7 +211,10 @@ public class DefaultWebCoverageService100 implements WebCoverageService100 {
             final CoordinateReferenceSystem nativeCRS = nativeEnvelope.getCoordinateReferenceSystem();    
 
             // get requested crs
-            String requestedCRS = outputCRS.getValue();
+            String requestedCRS = null;
+            if (outputCRS != null) {
+                requestedCRS = outputCRS.getValue();
+            }
 
             // Compute the target crs, the crs that the final coverage will be served into
             final CoordinateReferenceSystem targetCRS;
