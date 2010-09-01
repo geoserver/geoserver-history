@@ -138,6 +138,24 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
                 result.add(bean);
         }
         
+        // load from secondary extension providers
+        if (!ExtensionProvider.class.isAssignableFrom(extensionPoint) && 
+            !ExtensionFilter.class.isAssignableFrom(extensionPoint)) {
+            
+            List secondary = new ArrayList();
+            for (ExtensionProvider xp : extensions(ExtensionProvider.class, context)) {
+                try {
+                    if (extensionPoint.isAssignableFrom(xp.getExtensionPoint())) {
+                        secondary.addAll(xp.getExtensions(extensionPoint));
+                    }
+                }
+                catch(Exception e) {
+                    LOGGER.log(Level.WARNING, "Extension provider threw exception", e);
+                }
+            }
+            filter(secondary, filters, result);
+        }
+        
         // load from factory spi
         List<Object> spiExtensions = spiCache.get(extensionPoint);
         if(spiExtensions == null) {
@@ -151,10 +169,7 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
         // filter the beans coming from SPI (we don't cache the results
         // of the filtering, an extension filter can change its mind 
         // from call to call
-        for (Object bean : spiExtensions) {
-            if(!excludeBean(null, bean, filters))
-                result.add(spiExtensions);
-        }
+        filter(spiExtensions, filters, result);
         
         //sort the results based on ExtensionPriority
         Collections.sort( result, new Comparator() {
@@ -177,6 +192,13 @@ public class GeoServerExtensions implements ApplicationContextAware, Application
         return result;
     }
 
+    private static void filter(List objects, List<ExtensionFilter> filters, List result) {
+        for (Object bean : objects) {
+            if(!excludeBean(null, bean, filters))
+                result.add(bean);
+        }
+    }
+    
     /**
      * Returns true if any of the {@link ExtensionFilter} asks to exclude the bean
      */

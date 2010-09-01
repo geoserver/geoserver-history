@@ -10,6 +10,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -60,6 +61,7 @@ public class GeoServerExtensionsTest extends TestCase {
         expect(appContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(appContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(
                 new String[] { "testKey", "fakeKey" });
+        expect(appContext.getBeanNamesForType(ExtensionProvider.class)).andReturn(new String[0]);
         expect(appContext.getBean("testKey")).andReturn(this);
         // note I'm testing null is a valid value. If that's not the case, it
         // should be reflected in the code, but I'm writing the test after the
@@ -73,7 +75,7 @@ public class GeoServerExtensionsTest extends TestCase {
         assertTrue(extensions.contains(this));
         assertTrue(extensions.contains(null));
 
-        assertEquals(2, gse.extensionsCache.size());
+        assertEquals(3, gse.extensionsCache.size());
         assertTrue(gse.extensionsCache.containsKey(GeoServerExtensionsTest.class));
         assertNotNull(gse.extensionsCache.get(GeoServerExtensionsTest.class));
         assertEquals(2, gse.extensionsCache.get(GeoServerExtensionsTest.class).length);
@@ -99,6 +101,8 @@ public class GeoServerExtensionsTest extends TestCase {
         expect(customAppContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(customAppContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(
                 new String[] { "itDoesntMatterForThePurpose" });
+        expect(customAppContext.getBeanNamesForType(ExtensionProvider.class)).andReturn(new String[0]);
+        expect(customAppContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(customAppContext.getBean("itDoesntMatterForThePurpose")).andReturn(this);
         replay(customAppContext);
         replay(appContext);
@@ -192,6 +196,29 @@ public class GeoServerExtensionsTest extends TestCase {
         verify(appContext);
     }
 
+    public void testExtensionProvider() {
+        ApplicationContext appContext = createMock(ApplicationContext.class);
+        GeoServerExtensions gse = new GeoServerExtensions();
+        gse.setApplicationContext(appContext);
+        
+        expect(appContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
+        expect(appContext.getBeanNamesForType(GeoServerExtensionsTest.class)).andReturn(new String[0]);
+        expect(appContext.getBeanNamesForType(ExtensionProvider.class))
+            .andReturn(new String[]{"testKey"});
+        
+        ExtensionProvider xp = createMock(ExtensionProvider.class);
+        expect(xp.getExtensionPoint()).andReturn(GeoServerExtensionsTest.class);
+        expect(xp.getExtensions(GeoServerExtensionsTest.class)).andReturn(Arrays.asList(this));
+        expect(appContext.getBean("testKey")).andReturn(xp);
+        
+        replay(xp);
+        replay(appContext);
+        assertEquals(1, GeoServerExtensions.extensions(GeoServerExtensionsTest.class).size());
+        
+        verify(xp);
+        verify(appContext);
+    }
+    
     public void _testBeanClassOfT() {
         fail("Not yet implemented");
     }
