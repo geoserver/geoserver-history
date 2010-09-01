@@ -108,5 +108,4 @@ public class MonitorCallback implements DispatcherCallback {
             monitor.update();
         }
     }
-
 }
