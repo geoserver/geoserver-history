@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.easymock.EasyMock;
 import org.geoserver.platform.ExtensionFilter;
+import org.geoserver.platform.ExtensionProvider;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.wms.GetMapProducer;
 
@@ -46,6 +47,8 @@ public class WMSExtensionsTest extends TestCase {
         expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(
                 new String[] { "producer1", "producer2" });
+        expect(mockContext.getBeanNamesForType(ExtensionProvider.class)).andReturn(new String[0]);
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBean("producer1")).andReturn(mockProducer1);
         expect(mockContext.getBean("producer2")).andReturn(mockProducer2);
         // end of unpleasant block
@@ -65,6 +68,8 @@ public class WMSExtensionsTest extends TestCase {
         // the internals of GeoServerExtensions work
         expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(new String[] {});
+        expect(mockContext.getBeanNamesForType(ExtensionProvider.class)).andReturn(new String[0]);
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         // end of unpleasant block
 
         replay(mockContext);
@@ -83,11 +88,15 @@ public class WMSExtensionsTest extends TestCase {
         expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(
                 new String[] { "producer1" }); // call#1
+        expect(mockContext.getBeanNamesForType(ExtensionProvider.class)).andReturn(new String[0]);
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBean("producer1")).andReturn(mockProducer); // call#1
 
         expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBeanNamesForType(GetMapProducer.class)).andReturn(
                 new String[] { "producer1" }); // call#2
+        expect(mockContext.getBeanNamesForType(ExtensionProvider.class)).andReturn(new String[0]);
+        expect(mockContext.getBeanNamesForType(ExtensionFilter.class)).andReturn(new String[0]);
         expect(mockContext.getBean("producer1")).andReturn(mockProducer); // call#2
 
         // end of unpleasant block
