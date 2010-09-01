@@ -44,7 +44,11 @@ public class ControlFlowCallbackProxy implements InvocationHandler, BeanPostProc
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if ("operationDispatched".equals(method.getName()) && monitor.current() != null) {
             RequestData data = monitor.current();
-            
+            if (data == null) {
+                // means monitor is configured but inactive
+                return method.invoke(target, args); 
+            }
+
             data.setStatus(Status.WAITING);
             monitor.update();
             
