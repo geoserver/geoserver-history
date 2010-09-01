@@ -21,6 +21,21 @@
      <constructor-arg ref="python"/>
   </bean>
   
+  <bean id="pythonGetFeatureOutputFormatProvider"
+      class="org.geoserver.python.format.PythonGetFeatureOutputFormatProvider">
+     <constructor-arg ref="python"/>
+  </bean>
+  
+  <bean id="pythonGetMapOutputFormatProvider"
+      class="org.geoserver.python.format.PythonGetMapOutputFormatProvider">
+     <constructor-arg ref="python"/>
+  </bean>
+  
+  <bean id="pythonGetFeatureInfoOutputFormatProvider"
+      class="org.geoserver.python.format.PythonGetFeatureInfoOutputFormatProvider">
+     <constructor-arg ref="python"/>
+  </bean>
+
   <bean id="restConfigMapping" class="org.geoserver.rest.RESTMapping">
     <property name="routes">
       <map>
