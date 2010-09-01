@@ -98,6 +98,7 @@ public class MonitorServletRequest extends HttpServletRequestWrapper {
         }
         
         void fill(byte[] b, int off, int len) {
+            if (len < 0) return;
             if (!bufferIsFull()) {
                 int m = Math.min(len, buffer.capacity()-buffer.position());
                 buffer.put(b, off, m);
