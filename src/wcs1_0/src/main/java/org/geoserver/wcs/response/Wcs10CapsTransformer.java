@@ -204,18 +204,18 @@ public class Wcs10CapsTransformer extends TransformerBase {
             if (requestedUpdateSequence < updateSequence) {
                 if (allSections
                         || section.equals(CapabilitiesSectionType.WCS_CAPABILITIES_SERVICE_LITERAL)) {
-                    handleService();
+                    handleService(allSections);
                 }
 
                 if (allSections
                         || section
                                 .equals(CapabilitiesSectionType.WCS_CAPABILITIES_CAPABILITY_LITERAL))
-                    handleCapabilities();
+                    handleCapabilities(allSections);
 
                 if (allSections
                         || section
                                 .equals(CapabilitiesSectionType.WCS_CAPABILITIES_CONTENT_METADATA_LITERAL))
-                    handleContentMetadata();
+                    handleContentMetadata(allSections);
             }
 
             end("wcs:WCS_Capabilities");
@@ -230,9 +230,11 @@ public class Wcs10CapsTransformer extends TransformerBase {
          * @throws SAXException
          *             For any errors.
          */
-        private void handleService() {
+        private void handleService(boolean allSections) {
             AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+            if (!allSections) {
+                attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+            }
             start("wcs:Service", attributes);
             handleMetadataLink(wcs.getMetadataLink());
             element("wcs:description", wcs.getAbstract());
@@ -331,23 +333,19 @@ public class Wcs10CapsTransformer extends TransformerBase {
                 start("wcs:responsibleParty");
 
                 tmp = gs.getGlobal().getContact().getContactPerson();
-
                 if ((tmp != null) && (tmp != "")) {
                     element("wcs:individualName", tmp);
-
-                    tmp = gs.getGlobal().getContact().getContactOrganization();
-
-                    if ((tmp != null) && (tmp != "")) {
-                        element("wcs:organisationName", tmp);
-                    }
-                } else {
-                    tmp = gs.getGlobal().getContact().getContactOrganization();
-
-                    if ((tmp != null) && (tmp != "")) {
-                        element("wcs:organisationName", tmp);
-                    }
                 }
-
+                else {
+                    //not optional
+                    element("wcs:individualName", "");
+                }
+                
+                tmp = gs.getGlobal().getContact().getContactOrganization();
+                if ((tmp != null) && (tmp != "")) {
+                    element("wcs:organisationName", tmp);
+                }
+                
                 tmp = gs.getGlobal().getContact().getContactPosition();
 
                 if ((tmp != null) && (tmp != "")) {
@@ -445,7 +443,7 @@ public class Wcs10CapsTransformer extends TransformerBase {
          * @throws SAXException
          *             DOCUMENT ME!
          */
-        private void handleCapabilities() {
+        private void handleCapabilities(boolean allSections) {
             start("wcs:Capability");
             handleRequest();
             handleExceptions();
@@ -682,9 +680,11 @@ public class Wcs10CapsTransformer extends TransformerBase {
         /**
          * 
          */
-        private void handleContentMetadata() {
+        private void handleContentMetadata(boolean allSections) {
             AttributesImpl attributes = new AttributesImpl();
-            attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+            if (!allSections) {
+                attributes.addAttribute("", "version", "version", "", CUR_VERSION);
+            }
 
             start("wcs:ContentMetadata", attributes);
 
