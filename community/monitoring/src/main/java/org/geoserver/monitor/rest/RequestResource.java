@@ -66,9 +66,9 @@ public class RequestResource extends ReflectiveResource {
             List<String> props = 
                 OwsUtils.getClassProperties(RequestData.class).properties();
             
-            props.remove("class");
-            props.remove("body");
-            props.remove("error");
+            props.remove("Class");
+            props.remove("Body");
+            props.remove("Error");
             
             return new CSVFormat(props.toArray(new String[props.size()]));
         }
@@ -226,7 +226,7 @@ public class RequestResource extends ReflectiveResource {
                 for (String fld : fields) {
                     Object val = OwsUtils.get(r, fld);
                     if (val != null) {
-                        val = val.toString().replaceAll(",", " ");
+                        val = val.toString().replaceAll(",", " ").replaceAll("\n", " ");
                     }
                     sb.append(val).append(",");
                 }
