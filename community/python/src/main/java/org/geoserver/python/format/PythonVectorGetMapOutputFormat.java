@@ -10,12 +10,12 @@ import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
-public class PythonGetMapOutputFormat implements GetMapProducer {
+public class PythonVectorGetMapOutputFormat implements GetMapProducer {
 
     PythonVectorFormatAdapter adapter;
     WMSMapContext context;
     
-    public PythonGetMapOutputFormat(PythonVectorFormatAdapter adapter) {
+    public PythonVectorGetMapOutputFormat(PythonVectorFormatAdapter adapter) {
         this.adapter = adapter;
     }
     

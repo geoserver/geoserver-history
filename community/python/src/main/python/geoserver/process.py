@@ -1,6 +1,6 @@
 def process(title, description, version='1.0.0', args=[], result=[]):
   """
-  Dectorator for a process function.
+  Decorator for a process function.
   """
   def wrap(func):
      def wrapper(*args, **kwargs): return func(*args, **kwargs)

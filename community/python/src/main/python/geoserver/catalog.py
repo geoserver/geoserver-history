@@ -64,7 +64,7 @@ class Catalog(object):
 
      ws = self._catalog.getWorkspaceByName(self.workspace)
      store.setWorkspace(ws)
-     store.setConnectionParameters(data.params)
+     store.getConnectionParameters().putAll(data.params)
      for name, valu in attrs.iteritems():
        if hasattr(store, name):
          setattr(store, name, valu)

@@ -33,8 +33,8 @@ public class PythonVectorFormatAdapterTest {
         GeoServerResourceLoader loader = new GeoServerResourceLoader(new File("target"));
         py = new Python(loader);
         
-        File f = new File("target", "foo_outputformat.py");
-        FileUtils.copyURLToFile(PythonVectorFormatAdapterTest.class.getResource("foo_outputformat.py"), f);
+        File f = new File("target", "foo_vectorformat.py");
+        FileUtils.copyURLToFile(PythonVectorFormatAdapterTest.class.getResource("foo_vectorformat.py"), f);
         adapter = new PythonVectorFormatAdapter(f, py);
     }
     
@@ -71,7 +71,7 @@ public class PythonVectorFormatAdapterTest {
         fc.getFeature().add(features);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        adapter.write(fc, out);
+        adapter.write(fc, out); 
         
         assertEquals("fid.0;fid.1;", new String(out.toByteArray()));
         
