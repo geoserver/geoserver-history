@@ -1,3 +1,23 @@
+GeoServer 2.1-beta1 (September 02, 2010)
+----------------------------------------
+
+The first release of GeoServer 2.1. A number of notable features have made it
+into the 2.1 stream. These include:
+
+ * wms cascading
+ * virtual services
+ * sql layers
+ * wps 
+ * uom support
+ * dpi scaling
+
+The entire change log is available here:
+
+  http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=10311&version=15082
+
+This release is based on the GeoTools 2.7-M3 release.
+ 
+
 GeoServer 2.0-RC1 (August 14, 2009)
 -----------------------------------
 The first release candidate version for 2.0. The focus for this release has been
