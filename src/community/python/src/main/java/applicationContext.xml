@@ -26,8 +26,13 @@
      <constructor-arg ref="python"/>
   </bean>
   
-  <bean id="pythonGetMapOutputFormatProvider"
-      class="org.geoserver.python.format.PythonGetMapOutputFormatProvider">
+  <bean id="pythonVectorGetMapOutputFormatProvider"
+      class="org.geoserver.python.format.PythonVectorGetMapOutputFormatProvider">
+     <constructor-arg ref="python"/>
+  </bean>
+  
+  <bean id="pythonMapGetMapOutputFormatProvider"
+      class="org.geoserver.python.format.PythonMapGetMapOutputFormatProvider">
      <constructor-arg ref="python"/>
   </bean>
   

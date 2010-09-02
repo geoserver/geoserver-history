@@ -11,11 +11,11 @@ import java.util.logging.Level;
 import org.geoserver.platform.ExtensionProvider;
 import org.geoserver.python.Python;
 
-public abstract class PythonVectorOutputFormatProvider<T> implements ExtensionProvider<T> {
+public abstract class PythonOutputFormatProvider<T> implements ExtensionProvider<T> {
 
     Python py;
     
-    protected PythonVectorOutputFormatProvider(Python py) {
+    protected PythonOutputFormatProvider(Python py) {
         this.py = py;
     }
     
@@ -45,5 +45,5 @@ public abstract class PythonVectorOutputFormatProvider<T> implements ExtensionPr
         return formats;
     }
 
-    protected abstract T createOutputFormat(PythonVectorFormatAdapter adapter);
+    protected abstract T createOutputFormat(PythonFormatAdapter adapter);
 }

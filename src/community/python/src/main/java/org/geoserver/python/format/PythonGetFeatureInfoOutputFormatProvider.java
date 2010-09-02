@@ -4,7 +4,7 @@ import org.geoserver.python.Python;
 import org.vfny.geoserver.wms.responses.featureInfo.GetFeatureInfoDelegate;
 
 public class PythonGetFeatureInfoOutputFormatProvider 
-    extends PythonVectorOutputFormatProvider<GetFeatureInfoDelegate> {
+    extends PythonOutputFormatProvider<GetFeatureInfoDelegate> {
 
     public PythonGetFeatureInfoOutputFormatProvider(Python py) {
         super(py);
@@ -15,8 +15,8 @@ public class PythonGetFeatureInfoOutputFormatProvider
     }
     
     @Override
-    protected GetFeatureInfoDelegate createOutputFormat(PythonVectorFormatAdapter adapter) {
-        return new PythonGetFeatureInfoOutputFormat(adapter);
+    protected GetFeatureInfoDelegate createOutputFormat(PythonFormatAdapter adapter) {
+        return new PythonGetFeatureInfoOutputFormat((PythonVectorFormatAdapter) adapter);
     }
 
 }

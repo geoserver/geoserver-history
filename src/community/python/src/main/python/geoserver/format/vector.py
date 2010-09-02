@@ -2,7 +2,7 @@ from geoscript.feature import Feature, Schema
 
 def vector_format(name, mime):
   """
-  Dectorator for a vector format.
+  Decorator for a vector format.
   """
   def wrap(func):
      def wrapper(features, output):
@@ -58,4 +58,3 @@ class _FeatureIterator(object):
        
     self.it.close()
     raise StopIteration
-      

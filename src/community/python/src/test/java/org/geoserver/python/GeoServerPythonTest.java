@@ -1,87 +1,53 @@
 package org.geoserver.python;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 
-import junit.framework.Test;
-
+import org.geoserver.catalog.Catalog;
+import org.geoserver.catalog.CatalogFactory;
+import org.geoserver.catalog.DataStoreInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.test.GeoServerTestSupport;
-import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.geotools.referencing.CRS;
+import org.geoserver.catalog.WorkspaceInfo;
+import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.data.DataAccess;
+import org.geotools.data.DataStore;
+import org.geotools.data.FeatureSource;
+import org.geotools.data.simple.SimpleFeatureSource;
 import org.h2.tools.DeleteDbFiles;
-import org.opengis.referencing.operation.MathTransform;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.python.util.PythonInterpreter;
+import org.springframework.context.ApplicationContext;
 
-public class GeoServerPythonTest extends GeoServerTestSupport {
+public class GeoServerPythonTest {
 
-    /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
-    public static Test suite() {
-        return new OneTimeTestSetup(new GeoServerPythonTest());
-    }
-    
     static Python python;
     PythonInterpreter pi;
     ByteArrayOutputStream out;
     
-    @Override
-    protected void oneTimeSetUp() throws Exception {
-        super.oneTimeSetUp();
-        
-        python = (Python) applicationContext.getBean("python");
-        
-        File f = new File( python.getLibRoot(), "bar.py");
-        FileWriter w = new FileWriter(f);
-        w.write("class Bar:\n  pass\n\n");
-        w.close();
-        
-        f = new File( python.getScriptRoot(), "foo.py");
-        w = new FileWriter(f);
-        w.write("print 'foo'");
-        w.close();
-        
-        f = new File( python.getScriptRoot(), "foo_import.py");
-        w = new FileWriter(f);
-        w.write("import bar;b = bar.Bar();print b.__class__.__name__");
-        w.close();
-        
-        f = new File( python.getScriptRoot(), "foo_args.py");
-        w = new FileWriter(f);
-        w.write("print thearg");
-        w.close();
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+        python = new Python(new GeoServerResourceLoader(new File("target")));
     }
+
     
-    void copy(File gsPyLib, String pymod) throws IOException {
-        getTestData().copyTo(getClass().getClassLoader().getResourceAsStream("geoserver/" + pymod),
-                new File(gsPyLib, pymod).getPath());
-    }
-    
-    @Override
-    protected void setUpInternal() throws Exception {
-        super.setUpInternal();
+    @Before
+    public void setUp() throws Exception {
         
         out = new ByteArrayOutputStream();
         pi = python.interpreter();
         pi.setOut(out);
-    }
-    
-    public void testBasic() throws Exception {
-        String result = getAsString("/python/scripts/foo.py");
-        assertEquals( "foo", result );
-    }
-    
-    public void testImport() throws Exception {
-        String result = getAsString("/python/scripts/foo_import.py");
-        assertEquals( "Bar", result );
-    }
-    
-    public void testWithArguments() throws Exception {
-        String result = getAsString("/python/scripts/foo_args.py?thearg=theval");
-        assertEquals("theval", result);
     }
     
     public void testGeoServerPy() throws Exception {
@@ -109,23 +75,90 @@ public class GeoServerPythonTest extends GeoServerTestSupport {
         clear();
     }
     
+    @Test
     public void testGeoServerPySave() throws Exception {
-        FeatureTypeInfo pg = 
-            getCatalog().getFeatureTypeByName("sf", "PrimitiveGeoFeature");
-        assertEquals("PrimitiveGeoFeature", pg.getTitle());
+        ApplicationContext context = createMock(ApplicationContext.class);
+        Catalog catalog = createMock(Catalog.class);
+        expect(context.getBean("catalog")).andReturn(catalog);
+        
+        DataStoreInfo store = createMock(DataStoreInfo.class);
+        expect(catalog.getDataStoreByName("sf", "sf")).andReturn(store);
+        
+        DataStore ds = createMock(DataStore.class);
+        SimpleFeatureSource fs = createMock(SimpleFeatureSource.class);
+        SimpleFeatureType ft = createMock(SimpleFeatureType.class);
+        
+        expect(store.getDataStore(null)).andReturn((DataAccess) ds);
+        expect(ds.getFeatureSource("PrimitiveGeoFeature")).andReturn(fs);
+        expect(fs.getSchema()).andReturn(ft).anyTimes();
+        
+        FeatureTypeInfo featureType = createMock(FeatureTypeInfo.class);
+        expect(featureType.getName()).andReturn("PrimitiveGeoFeature");
+        expect(featureType.getFeatureSource(null,null)).andReturn((FeatureSource)fs);
+        expect(catalog.getFeatureTypesByStore(store)).andReturn(Arrays.asList(featureType));
+        expect(catalog.getFeatureTypeByStore(store, "PrimitiveGeoFeature")).andReturn(featureType);
+        
+        featureType.setTitle("changed");
+        expectLastCall();
+        
+        catalog.save(featureType);
+        expectLastCall();
+        
+        new GeoServerExtensions().setApplicationContext(context);
+        
+        replay(context);
+        replay(catalog);
+        replay(store);
+        replay(featureType);
+        replay(ds);
+        replay(fs);
+        replay(ft);
+
         pi.exec("from geoserver import Catalog");
         pi.exec("cat = Catalog('sf')");
         pi.exec("sf = cat.get('sf')");
         pi.exec("pg = sf.get('PrimitiveGeoFeature')");
         pi.exec("pg.meta.title = 'changed'");
         pi.exec("pg.save()");
-        
-        pg = getCatalog().getFeatureTypeByName("sf", "PrimitiveGeoFeature");
-        assertEquals("changed", pg.getTitle());
     }
     
+    @Test
     public void testAddDataStore() throws Exception {
-        assertNull(getCatalog().getDataStoreByName("gs", "Foo"));
+        ApplicationContext context = createMock(ApplicationContext.class);
+        
+        Catalog catalog = createMock(Catalog.class);
+        expect(context.getBean("catalog")).andReturn(catalog);
+        
+        WorkspaceInfo ws = createMock(WorkspaceInfo.class);
+        expect(ws.getName()).andReturn("gs").anyTimes();
+        expect(catalog.getDefaultWorkspace()).andReturn(ws).anyTimes();
+        expect(catalog.getWorkspaceByName("gs")).andReturn(ws).anyTimes();
+        expect(catalog.getWorkspaceByName(null)).andReturn(ws).anyTimes();
+        
+        CatalogFactory fac = createMock(CatalogFactory.class);
+        expect(catalog.getFactory()).andReturn(fac).anyTimes();
+        
+        DataStoreInfo info = createMock(DataStoreInfo.class);
+        expect(fac.createDataStore()).andReturn(info);
+        
+        info.setName("Foo");
+        expectLastCall();
+        
+        info.setWorkspace(ws);
+        expectLastCall();
+        
+        expect(info.getConnectionParameters()).andReturn(new HashMap());
+        
+        catalog.add(info);
+        expectLastCall();
+        
+        replay(context);
+        replay(catalog);
+        replay(fac);
+        replay(info);
+            
+        new GeoServerExtensions().setApplicationContext(context);
+        
         DeleteDbFiles.execute("target", "foo", true);
         
         pi.exec("from geoserver import Catalog");
@@ -137,19 +170,10 @@ public class GeoServerPythonTest extends GeoServerTestSupport {
         pi.exec("l.add([Point(10,10)])");
         pi.exec("l.add([Point(20,20)])");
         pi.exec("cat.add(h2, 'Foo')");
-        assertNotNull(getCatalog().getDataStoreByName("gs", "Foo"));
+
         pi.exec("h2.close()");
     }
-    
-//    public void testWorkspaceDataStoreAdadpter() throws Exception {
-//        pi.exec("from geoscript.workspace import H2");
-//        pi.exec("h2 = H2('foo','target')");
-//        
-//        PyObject workspace = pi.get("h2");
-//        WorkspaceDataStoreAdapter adapter = new WorkspaceDataStoreAdapter(workspace);
-//        adapter.getTypeNames();
-//    }
-    
+
     void print() {
         System.out.println(new String(out.toByteArray()));
     }
