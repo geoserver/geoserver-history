@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.geoserver</groupId>
     <artifactId>geoserver</artifactId>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.1-beta1</version>
   </parent>
 
   <groupId>org.geoserver</groupId>
@@ -33,17 +33,17 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>platform</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main-legacy</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs-legacy</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
 	<dependency>
       <groupId>org.geoserver</groupId>
@@ -53,27 +53,27 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wcs1_1</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wfs-legacy</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>wms-legacy</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver.extension</groupId>
       <artifactId>validation</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>gwc</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
@@ -203,7 +203,7 @@
     <dependency>
       <groupId>org.geoserver</groupId>
       <artifactId>main</artifactId>
-      <version>2.1-SNAPSHOT</version>
+      <version>2.1-beta1</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -377,7 +377,7 @@
          <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>OpenPlans-Auth</artifactId>
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -397,7 +397,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>rest</artifactId>
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -407,7 +407,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>geosearch</artifactId>
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -427,7 +427,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>upload</artifactId>
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -437,7 +437,7 @@
         <dependency>
           <groupId>org.geoserver</groupId>
           <artifactId>wps</artifactId>
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -447,7 +447,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>h2</artifactId> 
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -457,7 +457,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>oracle</artifactId> 
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -467,7 +467,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>arcsde</artifactId> 
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
@@ -497,7 +497,7 @@
         <dependency>
           <groupId>org.geoserver.extension</groupId>
           <artifactId>imagemap</artifactId>
-          <version>2.1-SNAPSHOT</version>
+          <version>2.1-beta1</version>
         </dependency>
       </dependencies>
     </profile>
