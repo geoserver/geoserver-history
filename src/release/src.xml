@@ -23,7 +23,7 @@
     <include>org.geoserver:extension</include>
    </includes>
    <sources>
-    <outputDirectory>geoserver-2.0-SNAPSHOT/${artifactId}/</outputDirectory>
+    <outputDirectory>geoserver-2.1-SNAPSHOT/${artifactId}/</outputDirectory>
     <excludes>
       <exclude>target</exclude>
       <exclude>**/target</exclude>
@@ -34,7 +34,7 @@
  <fileSets>
   <fileSet>
    <directory>.</directory>
-   <outputDirectory>geoserver-2.0-SNAPSHOT/</outputDirectory>
+   <outputDirectory>geoserver-2.1-SNAPSHOT/</outputDirectory>
    <includes>
     <include>pom.xml</include>
    </includes>
