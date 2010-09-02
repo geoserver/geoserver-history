@@ -1,4 +1,4 @@
-GEOSERVER 1.5+ DATA STORE EXTRAS README
+GEOSERVER 2.1+ DATA STORE EXTRAS README
 
 This package contains an Oracle DataStore implementation that is 
 distributed as a separate plug-in.  It is released just after GeoServer
