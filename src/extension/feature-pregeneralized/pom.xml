@@ -30,7 +30,7 @@
     <dependency>
       <groupId>org.geotools</groupId>
       <artifactId>gt-feature-pregeneralized</artifactId>
-      <version>2.7-SNAPSHOT</version>
+      <version>${gt.version}</version>
     </dependency>
   </dependencies>
 
