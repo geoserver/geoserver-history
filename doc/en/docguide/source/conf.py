@@ -42,9 +42,9 @@ copyright = u'2009, GeoServer'
 # other places throughout the built documents.
 #
 # The short X.Y version.
-version = '2.1.x'
+version = '2.1'
 # The full version, including alpha/beta/rc tags.
-release = '2.1.x'
+release = '2.1-beta1'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
