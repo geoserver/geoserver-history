@@ -42,6 +42,10 @@
                 </AttributeMapping>
                 <AttributeMapping>
                     <targetAttribute>ex:geom</targetAttribute>
+                    <!-- Test gml:id for geometries -->                
+                    <idExpression>
+                        <OCQL>strConcat('geom_', getId())</OCQL>
+                    </idExpression>     
                     <sourceExpression>
                         <OCQL>GEOM</OCQL>
                     </sourceExpression>
@@ -56,11 +60,44 @@
                 </AttributeMapping>
                 <!-- Test 2nd geometry -->
                 <AttributeMapping>
-                    <targetAttribute>ex:shape</targetAttribute>      
+                    <targetAttribute>ex:shape</targetAttribute>    
+                    <!-- Test gml:id for geometries -->                
+                    <idExpression>
+                        <OCQL>strConcat('shape_', getId())</OCQL>
+                    </idExpression>                      
                     <sourceExpression>
                         <OCQL>GEOM</OCQL>
-                    </sourceExpression>                                  
+                    </sourceExpression>                    
                     <targetAttributeNode>gml:LineStringPropertyType</targetAttributeNode>
+                </AttributeMapping>
+                <!-- This failed previously because of the targetAttributeNode above this -->
+                <AttributeMapping>
+                    <targetAttribute>ex:length</targetAttribute>
+                    <sourceExpression>
+                        <OCQL>'1'</OCQL>
+                    </sourceExpression>
+	                <ClientProperty>
+		                <name>uom</name>
+		                <value>'m'</value>
+	                </ClientProperty>    
+                </AttributeMapping>
+                <!--  Test inline nested geometry -->
+                <AttributeMapping>
+                    <targetAttribute>ex:nestedFeature[2]/ex:nestedGeom</targetAttribute> 
+                    <!-- Test gml:id for geometries -->                        
+                    <idExpression>
+                        <OCQL>strConcat('nested_two_', getId())</OCQL>
+                    </idExpression>      
+                </AttributeMapping>
+                <AttributeMapping>
+                    <targetAttribute>ex:nestedFeature[2]/ex:nestedGeom/ex:geom</targetAttribute>    
+                    <!-- Test gml:id for geometries -->                     
+                    <idExpression>
+                        <OCQL>strConcat('nested_two_geom_', getId())</OCQL>
+                    </idExpression>                
+                    <sourceExpression>
+                        <OCQL>GEOM</OCQL>
+                    </sourceExpression>      
                 </AttributeMapping>
             </attributeMappings>
         </FeatureTypeMapping>
@@ -76,11 +113,15 @@
 						ex:nestedGeom
 					</targetAttribute>
                     <idExpression>
-                        <OCQL>strConcat('nested.', getId())</OCQL>
+                        <OCQL>strConcat('nested_one_', getId())</OCQL>
                     </idExpression>
                 </AttributeMapping>
                 <AttributeMapping>
-                    <targetAttribute>ex:geom</targetAttribute>
+                    <targetAttribute>ex:geom</targetAttribute>   
+                    <!-- Test gml:id for geometries -->                    
+                    <idExpression>
+                        <OCQL>strConcat('nested_one_geom_', getId())</OCQL>
+                    </idExpression>  
                     <sourceExpression>
                         <OCQL>GEOM</OCQL>
                     </sourceExpression>
