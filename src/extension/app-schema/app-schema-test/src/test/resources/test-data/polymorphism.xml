@@ -108,6 +108,7 @@
             <attributeMappings>
                 <AttributeMapping>
                     <targetAttribute>gsml:CGI_TermValue</targetAttribute>
+                    <idExpression><OCQL>strConcat('termvalue_', getID())</OCQL></idExpression>
                 </AttributeMapping>
                 <AttributeMapping>
                     <targetAttribute>gsml:value</targetAttribute>
@@ -123,6 +124,10 @@
             <sourceType>PolymorphicFeature</sourceType>
             <targetElement>gsml:CGI_NumericValue</targetElement>
             <attributeMappings>
+                 <AttributeMapping>
+                    <targetAttribute>gsml:CGI_NumericValue</targetAttribute>
+                    <idExpression><OCQL>strConcat('numericvalue_', getID())</OCQL></idExpression>
+                </AttributeMapping>
                 <AttributeMapping>
                     <targetAttribute>gsml:principalValue</targetAttribute>
                     <sourceExpression>
