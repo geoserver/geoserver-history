@@ -56,7 +56,7 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // use the OGC standard for axis order
         Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, false);
     }
-    
+
     @Override
     public void oneTimeTearDown() throws Exception {
         // reset system default
@@ -77,6 +77,11 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
 
         // 1st feature
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("1.0", "(//ex:geomContainer)[1]/ex:length", doc);
+        assertXpathEvaluatesTo("m", "(//ex:geomContainer)[1]/ex:length/@uom", doc);
+        // check gml:id for geometries
+        assertXpathEvaluatesTo("geom_" + id, "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@gml:id",
+                doc);
         // check srs properties
         assertXpathEvaluatesTo(EPSG_4283, "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@srsName",
                 doc);
@@ -88,30 +93,61 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
                 doc);
         // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo("shape_" + id,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@gml:id", doc);
         assertXpathEvaluatesTo(EPSG_4283,
                 "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
                 "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsDimension", doc);
         assertXpathEvaluatesTo("-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
                 "(//ex:geomContainer)[1]/ex:shape/gml:LineString/gml:posList", doc);
-        // test nested geometry
-        assertXpathEvaluatesTo("nested.2",
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
+        // test nested geometry via feature chaining
+        assertXpathEvaluatesTo("nested_one_2",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_one_geom_2",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/@gml:id",
+                doc);
         assertXpathEvaluatesTo(
                 EPSG_4283,
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsName",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/@srsName",
                 doc);
         assertXpathEvaluatesTo(
                 DIMENSION,
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
                 doc);
-        assertXpathEvaluatesTo("42.58 31.29",
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
+        assertXpathEvaluatesTo(
+                "42.58 31.29",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
+                doc);
+        // test nested inline geometry
+        assertXpathEvaluatesTo("nested_two_" + id,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_two_geom_" + id,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/@gml:id",
+                doc);
+        assertXpathEvaluatesTo(
+                EPSG_4283,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
+                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
+                doc);
+        assertXpathEvaluatesTo(
+                "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
                 doc);
 
         // second feature
         id = "2";
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[2]/@gml:id", doc);
+        assertXpathEvaluatesTo("1.0", "(//ex:geomContainer)[2]/ex:length", doc);
+        assertXpathEvaluatesTo("m", "(//ex:geomContainer)[2]/ex:length/@uom", doc);
+        // check gml:id for geometries
+        assertXpathEvaluatesTo("geom_" + id, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@gml:id",
+                doc);
         // check srs properties
         assertXpathEvaluatesTo(EPSG_4283, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
@@ -120,26 +156,51 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo("42.58 31.29", "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos",
                 doc);
         // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo("shape_" + id,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@gml:id", doc);
         assertXpathEvaluatesTo(EPSG_4283,
                 "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
                 "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsDimension", doc);
         assertXpathEvaluatesTo("42.58 31.29 42.58 31.29",
                 "(//ex:geomContainer)[2]/ex:shape/gml:LineString/gml:posList", doc);
-        // test nested geometry
-        assertXpathEvaluatesTo("nested.1",
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
+        // test nested geometry via feature chaining
+        assertXpathEvaluatesTo("nested_one_1",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_one_geom_1",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/@gml:id",
+                doc);
         assertXpathEvaluatesTo(
                 EPSG_4283,
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
                 doc);
         assertXpathEvaluatesTo(
                 DIMENSION,
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
                 doc);
         assertXpathEvaluatesTo(
                 "-1.2 52.5 -1.2 52.6 -1.1 52.6 -1.1 52.5 -1.2 52.5",
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
+                doc);
+        // test nested inline geometry
+        assertXpathEvaluatesTo("nested_two_" + id,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_two_geom_" + id,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/@gml:id",
+                doc);
+        assertXpathEvaluatesTo(
+                EPSG_4283,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/@srsName",
+                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
+                doc);
+        assertXpathEvaluatesTo(
+                "42.58 31.29",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
                 doc);
     }
 
@@ -186,6 +247,11 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         // 1st feature
         String id = "1";
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[1]/@gml:id", doc);
+        assertXpathEvaluatesTo("1.0", "(//ex:geomContainer)[1]/ex:length", doc);
+        assertXpathEvaluatesTo("m", "(//ex:geomContainer)[1]/ex:length/@uom", doc);
+        // test gml:id for geometries
+        assertXpathEvaluatesTo("geom_" + id, "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/@gml:id",
+                doc);
         // check srs properties
         assertXpathEvaluatesTo(EPSG_4326, "//ex:geomContainer[1]/ex:geom/gml:Polygon/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
@@ -196,30 +262,61 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
                 "(//ex:geomContainer)[1]/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
                 doc);
         // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo("shape_" + id,
+                "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@gml:id", doc);
         assertXpathEvaluatesTo(EPSG_4326,
                 "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
                 "(//ex:geomContainer)[1]/ex:shape/gml:LineString/@srsDimension", doc);
         assertXpathEvaluatesTo(targetPolygonCoords,
                 "(//ex:geomContainer)[1]/ex:shape/gml:LineString/gml:posList", doc);
-        // test nested geometry
-        assertXpathEvaluatesTo("nested.2",
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
+        // test nested geometry via feature chaining
+        assertXpathEvaluatesTo("nested_one_2",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_one_geom_2",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/@gml:id",
+                doc);
         assertXpathEvaluatesTo(
                 EPSG_4326,
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsName",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/@srsName",
                 doc);
         assertXpathEvaluatesTo(
                 DIMENSION,
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
                 doc);
-        assertXpathEvaluatesTo(targetPointCoord,
-                "(//ex:geomContainer)[1]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
+        assertXpathEvaluatesTo(
+                targetPointCoord,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
+                doc);
+        // test nested inline geometry
+        assertXpathEvaluatesTo("nested_two_" + id,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_two_geom_" + id,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/@gml:id",
+                doc);
+        assertXpathEvaluatesTo(
+                EPSG_4326,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
+                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
+                doc);
+        assertXpathEvaluatesTo(
+                targetPolygonCoords,
+                "(//ex:geomContainer)[1]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
                 doc);
 
         // second feature
         id = "2";
         assertXpathEvaluatesTo(id, "(//ex:geomContainer)[2]/@gml:id", doc);
+        assertXpathEvaluatesTo("1.0", "(//ex:geomContainer)[2]/ex:length", doc);
+        assertXpathEvaluatesTo("m", "(//ex:geomContainer)[2]/ex:length/@uom", doc);
+        // test gml:id for geometries
+        assertXpathEvaluatesTo("geom_" + id, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@gml:id",
+                doc);
         // check srs properties
         assertXpathEvaluatesTo(EPSG_4326, "(//ex:geomContainer)[2]/ex:geom/gml:Point/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
@@ -228,26 +325,51 @@ public class SRSWfsTest extends AbstractAppSchemaWfsTestSupport {
         assertXpathEvaluatesTo(targetPointCoord,
                 "(//ex:geomContainer)[2]/ex:geom/gml:Point/gml:pos", doc);
         // test second geometry (multi geometry feature) is encoded correctly, with srs info
+        assertXpathEvaluatesTo("shape_" + id,
+                "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@gml:id", doc);
         assertXpathEvaluatesTo(EPSG_4326,
                 "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsName", doc);
         assertXpathEvaluatesTo(DIMENSION,
                 "(//ex:geomContainer)[2]/ex:shape/gml:LineString/@srsDimension", doc);
         assertXpathEvaluatesTo(targetPointCoord + " " + targetPointCoord,
                 "(//ex:geomContainer)[2]/ex:shape/gml:LineString/gml:posList", doc);
-        // test nested geometry
-        assertXpathEvaluatesTo("nested.1",
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/@gml:id", doc);
+        // test nested geometry via feature chaining
+        assertXpathEvaluatesTo("nested_one_1",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_one_geom_1",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/@gml:id",
+                doc);
         assertXpathEvaluatesTo(
                 EPSG_4326,
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/@srsName",
                 doc);
         assertXpathEvaluatesTo(
                 DIMENSION,
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/@srsDimension",
                 doc);
         assertXpathEvaluatesTo(
                 targetPolygonCoords,
-                "(//ex:geomContainer)[2]/ex:nestedFeature/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
+                "(//ex:geomContainer)[2]/ex:nestedFeature[1]/ex:nestedGeom/ex:geom/gml:Polygon/gml:exterior/gml:LinearRing/gml:posList",
+                doc);
+        // test nested inline geometry
+        assertXpathEvaluatesTo("nested_two_" + id,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/@gml:id", doc);
+        assertXpathEvaluatesTo(
+                "nested_two_geom_" + id,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/@gml:id",
+                doc);
+        assertXpathEvaluatesTo(
+                EPSG_4326,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/@srsName",
+                doc);
+        assertXpathEvaluatesTo(
+                DIMENSION,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/@srsDimension",
+                doc);
+        assertXpathEvaluatesTo(
+                targetPointCoord,
+                "(//ex:geomContainer)[2]/ex:nestedFeature[2]/ex:nestedGeom/ex:geom/gml:Point/gml:pos",
                 doc);
     }
 
