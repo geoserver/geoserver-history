@@ -33,5 +33,3 @@ Each data store folder contains a file ``datastore.xml`` that contains the confi
 
 * ``dbtype`` must be ``app-schema`` to trigger the creation of an app-schema feature type.
 
-
-
