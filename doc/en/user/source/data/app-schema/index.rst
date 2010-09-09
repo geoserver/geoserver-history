@@ -24,6 +24,7 @@ Contents
 
    complex-features
    installation
+   wfs-service-settings
    configuration
    mapping-file
    app-schema-resolution
