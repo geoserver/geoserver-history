@@ -1,9 +1,10 @@
-package org.geoserver.python;
+package org.geoserver.python.app;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.python.Python;
 import org.geoserver.rest.RestletException;
 import org.restlet.Finder;
 import org.restlet.data.Request;

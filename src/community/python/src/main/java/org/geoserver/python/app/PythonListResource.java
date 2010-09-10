@@ -1,7 +1,6 @@
-package org.geoserver.python;
+package org.geoserver.python.app;
 
-import java.io.File;
-
+import org.geoserver.python.Python;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Resource;

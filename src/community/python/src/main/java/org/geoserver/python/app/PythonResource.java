@@ -1,4 +1,4 @@
-package org.geoserver.python;
+package org.geoserver.python.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.python.Python;
 import org.geoserver.rest.RestletException;
 import org.python.util.PythonInterpreter;
 import org.restlet.data.Form;
