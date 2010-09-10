@@ -132,10 +132,16 @@ public class PythonProcessAdapter {
         
         for (PyObject obj : (List<PyObject>) list) {
             String arg = obj.__getitem__(0).toString();
-            String desc = obj.__getitem__(1).toString();
+           
             Object type = null;
             try {
-                type = obj.__getitem__(2);   
+                type = obj.__getitem__(1);
+            }
+            catch(PyException e) {}
+            
+            Object desc = null;
+            try {
+                desc = obj.__getitem__(2);
             }
             catch(PyException e) {}
              
@@ -146,8 +152,15 @@ public class PythonProcessAdapter {
             if (clazz == null) {
                 clazz = Object.class;
             }
-                            
-            inputs.put(arg, new Parameter(arg, clazz, arg, desc));
+
+            if (desc != null) {
+                desc = desc.toString();
+            }
+            else {
+                desc = arg;
+            }
+            
+            inputs.put(arg, new Parameter(arg, clazz, arg, desc.toString()));
         }
         return inputs;
     }
