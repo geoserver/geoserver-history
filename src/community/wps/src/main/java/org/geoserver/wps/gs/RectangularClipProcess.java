@@ -103,6 +103,7 @@ public class RectangularClipProcess implements GeoServerProcess {
                 if(!clippedOut) {
                     next = fb.buildFeature(f.getID());
                 }
+                fb.reset();
             }
             
             return next != null;
