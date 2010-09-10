@@ -1,4 +1,6 @@
-package org.geoserver.python.wfs;
+package org.geoserver.python.format;
+
+import static org.geoserver.python.Python.LOGGER;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,29 +10,21 @@ import java.util.logging.Level;
 
 import org.geoserver.platform.ExtensionProvider;
 import org.geoserver.python.Python;
-import org.geoserver.wfs.WFSGetFeatureOutputFormat;
-import static org.geoserver.python.Python.LOGGER;
 
-public class PythonFeatureOutputFormatProvider implements ExtensionProvider<WFSGetFeatureOutputFormat> {
+public abstract class PythonVectorOutputFormatProvider<T> implements ExtensionProvider<T> {
 
     Python py;
     
-    public PythonFeatureOutputFormatProvider(Python py) {
+    protected PythonVectorOutputFormatProvider(Python py) {
         this.py = py;
     }
     
-    public Class<WFSGetFeatureOutputFormat> getExtensionPoint() {
-        return WFSGetFeatureOutputFormat.class;
-    }
-    
-    public List<WFSGetFeatureOutputFormat> getExtensions(
-            Class<WFSGetFeatureOutputFormat> extensionPoint) {
-        
-        List<WFSGetFeatureOutputFormat> formats = new ArrayList();
+    public List<T> getExtensions(Class<T> extensionPoint) {
+        List<T> formats = new ArrayList();
         
         File dir;
         try {
-            dir = py.getWfsRoot();
+            dir = py.getFormatRoot();
         } 
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -38,7 +32,7 @@ public class PythonFeatureOutputFormatProvider implements ExtensionProvider<WFSG
         
         for (File f : dir.listFiles()) {
             try {
-                formats.add(new PythonFeatureOutputFormat(new PythonFeatureOutputFormatAdapter(f, py)));
+                formats.add(createOutputFormat(new PythonVectorFormatAdapter(f, py)));
             }
             catch(Exception e) {
                 LOGGER.warning(e.getLocalizedMessage());
@@ -49,10 +43,7 @@ public class PythonFeatureOutputFormatProvider implements ExtensionProvider<WFSG
         }
         
         return formats;
-        
-        
     }
 
-    
-
+    protected abstract T createOutputFormat(PythonVectorFormatAdapter adapter);
 }
