@@ -57,5 +57,5 @@ public class PythonVectorFormatAdapter extends PythonFormatAdapter {
         
         output.flush();
     }
-    
+
 }
