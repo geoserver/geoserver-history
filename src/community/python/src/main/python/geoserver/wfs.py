@@ -1,0 +1,33 @@
+from geoscript.feature import Feature
+
+def outputformat(name, mime):
+  """
+  Dectorator for a wfs getfeature output format.
+  """
+  def wrap(func):
+     def wrapper(features, output): 
+        return func(_FeatureIterator(features), output)
+     
+     wrapper.__wfs_outputformat__ = None
+     wrapper.name = name
+     wrapper.mime = mime
+     return wrapper
+     
+  return wrap
+  
+
+class _FeatureIterator(object):
+
+  def __init__(self, features):
+    self.it = features.features()
+    
+  def __iter__(self):
+     return self
+     
+  def next(self):
+    if it.next():
+       return Feature(f=it.next())
+       
+    it.close()
+    raise StopIteration
+      
