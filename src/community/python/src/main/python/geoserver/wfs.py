@@ -25,9 +25,9 @@ class _FeatureIterator(object):
      return self
      
   def next(self):
-    if it.next():
-       return Feature(f=it.next())
+    if self.it.hasNext():
+       return Feature(f=self.it.next())
        
-    it.close()
+    self.it.close()
     raise StopIteration
       

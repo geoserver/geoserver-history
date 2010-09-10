@@ -9,11 +9,11 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 
-public class PythonWFSGetFeatureOutputFormat extends WFSGetFeatureOutputFormat {
+public class PythonFeatureOutputFormat extends WFSGetFeatureOutputFormat {
 
     PythonFeatureOutputFormatAdapter adapter;
     
-    public PythonWFSGetFeatureOutputFormat(PythonFeatureOutputFormatAdapter adapter) {
+    public PythonFeatureOutputFormat(PythonFeatureOutputFormatAdapter adapter) {
         super(adapter.getName());
         this.adapter = adapter;
         
