@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.python.app.PythonResource;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.restlet.data.Reference;

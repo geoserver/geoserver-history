@@ -45,22 +45,18 @@
     <property name="routes">
       <map>
         <entry>
-          <key><value>/scripts/{script}.py</value></key>
-          <value>pythonFinder</value>
-        </entry>
-        <entry>
-          <key><value>/apps/{app}.py</value></key>
+          <key><value>/app/{app}.py</value></key>
           <value>pythonAppFinder</value>
         </entry>
       </map>
     </property>
   </bean>
 
-  <bean id="pythonFinder" class="org.geoserver.python.PythonFinder">
+  <bean id="pythonFinder" class="org.geoserver.python.app.PythonFinder">
     <constructor-arg ref="python"/>
     <constructor-arg ref="resourceLoader"/>
   </bean>
-  <bean id="pythonAppFinder" class="org.geoserver.python.PythonAppFinder">
+  <bean id="pythonAppFinder" class="org.geoserver.python.app.PythonAppFinder">
     <constructor-arg ref="python"/>
     <constructor-arg ref="resourceLoader"/>
   </bean>

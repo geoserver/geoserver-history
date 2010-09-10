@@ -1,4 +1,4 @@
-package org.geoserver.python;
+package org.geoserver.python.app;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import org.geoserver.python.Python;
 import org.geoserver.rest.RestletException;
 import org.geotools.util.logging.Logging;
 import org.python.core.Py;
