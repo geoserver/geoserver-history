@@ -408,4 +408,11 @@ public class GeoserverDataDirectory {
     public static org.geoserver.config.GeoServerDataDirectory accessor() {
         return new org.geoserver.config.GeoServerDataDirectory(loader);
     }
+    
+    /**
+     * Sets the resource loader. This method is only used for testing.
+     */
+    public static void setResourceLoader(GeoServerResourceLoader loader) {
+        GeoserverDataDirectory.loader = loader;
+    }
 }
