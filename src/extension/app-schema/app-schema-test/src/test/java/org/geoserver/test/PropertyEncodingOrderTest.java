@@ -1,5 +1,8 @@
 package org.geoserver.test;
 
+import junit.framework.Test;
+
+import org.geoserver.test.OneTimeSetupTest.OneTimeTestSetup;
 import org.geoserver.wfs.WFSInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -10,9 +13,104 @@ import org.w3c.dom.Node;
  */
 public class PropertyEncodingOrderTest extends AbstractAppSchemaWfsTestSupport {
 
+    /**
+     * Read-only test so can use one-time setup.
+     * 
+     * @return
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new PropertyEncodingOrderTest());
+    }
+    
     @Override
     protected NamespaceTestData buildTestData() {
         return new PropertyEncodingOrderMockData();
+    }
+    
+    /**
+     * Test the gmsl:Borehole is encoded in the right order, in particular this test is created for
+     * an encoding order issue with gsml:indexData according to the schema
+     * http://www.geosciml.org/geosciml/2.0/xsd/borehole.xsd
+     * 
+     * @throws Exception
+     */
+    public void testPropertyEncodingOrder_Borehole() throws Exception {
+        String path = "wfs?request=GetFeature&typename=gsml:Borehole";
+        Document doc = getAsDOM(path);
+        LOGGER.info("WFS GetFeature&gsml:Borehole:\n" + prettyString(doc));
+        assertXpathEvaluatesTo("1", "/wfs:FeatureCollection/@numberOfFeatures", doc);
+
+        assertXpathCount(1, "//gsml:Borehole[@gml:id='BOREHOLE.WTB5']", doc);
+        Node borehole = doc.getElementsByTagName("gsml:Borehole").item(0);
+        assertEquals("gsml:Borehole", borehole.getNodeName());
+
+        // check for gml:id
+        assertEquals("BOREHOLE.WTB5", borehole.getAttributes().getNamedItem("gml:id")
+                .getNodeValue());
+
+        // gml:name
+        Node name = borehole.getFirstChild();
+        assertEquals("gml:name", name.getNodeName());
+        assertEquals("WTB5 TEST", name.getFirstChild().getNodeValue());
+
+        // sa:sampledFeature
+        Node sampledFeature = name.getNextSibling();
+        assertEquals("sa:sampledFeature", sampledFeature.getNodeName());
+
+        // sa:shape
+        Node shape = sampledFeature.getNextSibling();
+        assertEquals("sa:shape", shape.getNodeName());
+
+        Node posList = shape.getFirstChild().getFirstChild();
+        assertEquals("gml:posList", posList.getNodeName());
+        assertEquals("-28.4139 121.142 -28.4139 121.142", posList.getFirstChild().getNodeValue());
+
+        // gsml:collarLocation
+        Node collarLocation = shape.getNextSibling();
+        assertEquals("gsml:collarLocation", collarLocation.getNodeName());
+
+        Node boreholeCollar = collarLocation.getFirstChild();
+        assertEquals("gsml:BoreholeCollar", boreholeCollar.getNodeName());
+        assertEquals("BOREHOLE.COLLAR.WTB5", boreholeCollar.getAttributes().getNamedItem("gml:id")
+                .getNodeValue());
+        assertEquals("-28.4139 121.142", boreholeCollar.getFirstChild().getFirstChild()
+                .getFirstChild().getFirstChild().getNodeValue());
+        assertEquals("1.0", boreholeCollar.getFirstChild().getNextSibling().getFirstChild()
+                .getNodeValue());
+
+        // gsml:indexData
+        Node indexData = collarLocation.getNextSibling();
+        assertEquals("gsml:indexData", indexData.getNodeName());
+
+        Node boreholeDetails = indexData.getFirstChild();
+        assertEquals("gsml:BoreholeDetails", boreholeDetails.getNodeName());
+
+        Node operator = boreholeDetails.getFirstChild();
+        assertEquals("GSWA", operator.getAttributes().getNamedItem("xlink:title").getNodeValue());
+
+        Node dateOfDrilling = operator.getNextSibling();
+        assertEquals("2004-09-17", dateOfDrilling.getFirstChild().getNodeValue());
+
+        Node drillingMethod = dateOfDrilling.getNextSibling();
+        assertEquals("diamond core", drillingMethod.getFirstChild().getNodeValue());
+
+        Node startPoint = drillingMethod.getNextSibling();
+        assertEquals("natural ground surface", startPoint.getFirstChild().getNodeValue());
+
+        Node inclinationType = startPoint.getNextSibling();
+        assertEquals("vertical", inclinationType.getFirstChild().getNodeValue());
+
+        Node coreInterval = inclinationType.getNextSibling();
+        assertEquals("106.0", coreInterval.getFirstChild().getFirstChild().getFirstChild()
+                .getNodeValue());
+        assertEquals("249.0", coreInterval.getFirstChild().getFirstChild().getNextSibling()
+                .getFirstChild().getNodeValue());
+
+        Node coreCustodian = coreInterval.getNextSibling();
+        assertEquals("CSIRONR", coreCustodian.getAttributes().getNamedItem("xlink:title")
+                .getNodeValue());
+
+        validateGet(path);
     }
 
     /**
