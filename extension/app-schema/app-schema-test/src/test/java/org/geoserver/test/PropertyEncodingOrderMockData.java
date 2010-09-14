@@ -27,5 +27,6 @@ public class PropertyEncodingOrderMockData extends AbstractAppSchemaMockData {
                 "CGI_PlanarOrientation.properties");
         addFeatureType(GSML_PREFIX, "CGI_PlanarOrientation", "CGI_PlanarOrientation.xml",
                 "CGI_PlanarOrientation.properties");
+        addFeatureType(GSML_PREFIX, "Borehole", "Borehole.xml", "Borehole.properties");
     }
 }
