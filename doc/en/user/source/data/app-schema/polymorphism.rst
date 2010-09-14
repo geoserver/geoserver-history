@@ -37,7 +37,7 @@ In the above example, ex:someAttribute would be encoded with the configuration i
 Both instances would be encoded if the foreign key matches the candidate keys in both linked configurations. 
 Therefore this would only work for 0 to many relationships.
 
-Functions are useful for single attribute instances. Specify the function in the linkElement, and it would map it to the first matching FeatureTypeMapping.
+Functions can be used for single attribute instances. See `useful functions`_ for a list of commonly used functions. Specify the function in the linkElement, and it would map it to the first matching FeatureTypeMapping.
 For example::
 
   <AttributeMapping>
@@ -89,6 +89,49 @@ In this case, we can omit linkField in the polymorphic attribute mapping::
       </sourceExpression>					
       <isMultiple>true</isMultiple>
   </AttributeMapping>
+
+
+Referential polymorphism
+------------------------
+This is when an attribute is set to be encoded as an xlink:href reference on the top level.
+When the scenario only has reference cases in it, setting a function in Client Property will do the job. E.g.::
+
+    <AttributeMapping>
+	  <targetAttribute>ex:someAttribute</targetAttribute>
+	  <ClientProperty>
+		<name>xlink:href</name>
+		<value>if_then_else(isNull(NUMERIC_VALUE), 'urn:ogc:def:nil:OGC:1.0:missing', strConcat('#', NUMERIC_VALUE))</value>
+        </ClientProperty>
+    </AttributeMapping>
+
+The above example means, if NUMERIC_VALUE is null, the attribute should be encoded as::
+   
+   <ex:someAttribute xlink:href="urn:ogc:def:nil:OGC:1.0:missing">
+
+Otherwise, it would be encoded as::
+
+   <ex:someAttribute xlink:href="#123">
+       where NUMERIC_VALUE = '123'
+
+However, this is not possible when we have cases where a fully structured attribute is also a possibility.
+The `toxlinkhref`_ function can be used for this scenario. E.g.::
+
+    <AttributeMapping>
+        <targetAttribute>ex:someAttribute</targetAttribute>	
+        <sourceExpression>
+ 	      <linkElement>
+	        if_then_else(isNull(NUMERIC_VALUE), toXlinkHref('urn:ogc:def:nil:OGC:1.0:missing'), 
+                  if_then_else(lessEqualThan(NUMERIC_VALUE, 1000), 'numeric_value', toXlinkHref('urn:ogc:def:nil:OGC:1.0:missing'))) 
+            </linkElement>
+        </sourceExpression>	
+    </AttributeMapping>
+
+The above example means, if NUMERIC_VALUE is null, the output would be encoded as::
+
+    <ex:someAttribute xlink:href="urn:ogc:def:nil:OGC:1.0:missing">
+
+Otherwise, if NUMERIC_VALUE is less or equal than 1000, it would be encoded with attributes from FeatureTypeMapping with 'numeric_value' mappingName.
+If NUMERIC_VALUE is greater than 1000, it would be encoded as the first scenario.
 
 
 Useful functions
@@ -175,7 +218,7 @@ It infers that the attribute should be encoded as xlink:href.
 
 Other functions
 ```````````````
-Please refer to `Static Geometry API <http://geotools.org/javadocs/org/geotools/filter/function/StaticGeometry.html>`_ in Geotools. 
+Please refer to :ref:`filter_function_reference`. 
 
 Combinations
 ````````````
@@ -188,56 +231,13 @@ E.g.::
 
 .. note:: 
     * When specifying a mappingName or targetElement as a value in functions, make sure they're enclosed in single quotes. 
-    * Some functions have no null checking (until `GEOT-2489 <http://jira.codehaus.org/browse/GEOT-2489>`_ is fixed), and will fail when they encounter null. 
+    * Some functions have no null checking, and will fail when they encounter null. 
     * The workaround for this is to wrap the expression with isNull() function if null is known to exist in the data set.
-
-
-Referential polymorphism
-------------------------
-This is when an attribute is set to be encoded as an xlink:href reference on the top level.
-When the scenario only has reference cases in it, setting a function in Client Property will do the job. E.g.::
-
-    <AttributeMapping>
-	  <targetAttribute>ex:someAttribute</targetAttribute>
-	  <ClientProperty>
-		<name>xlink:href</name>
-		<value>if_then_else(isNull(NUMERIC_VALUE), 'urn:ogc:def:nil:OGC:1.0:missing', strConcat('#', NUMERIC_VALUE))</value>
-        </ClientProperty>
-    </AttributeMapping>
-
-The above example means, if NUMERIC_VALUE is null, the attribute should be encoded as::
-   
-   <ex:someAttribute xlink:href="urn:ogc:def:nil:OGC:1.0:missing">
-
-Otherwise, it would be encoded as::
-
-   <ex:someAttribute xlink:href="#123">
-       where NUMERIC_VALUE = '123'
-
-However, this is not possible when we have cases where a fully structured attribute is also a possibility.
-The toXlinkHref mentioned in **Useful functions** section above can be used for this scenario. E.g.::
-
-    <AttributeMapping>
-        <targetAttribute>ex:someAttribute</targetAttribute>	
-        <sourceExpression>
- 	      <linkElement>
-	        if_then_else(isNull(NUMERIC_VALUE), toXlinkHref('urn:ogc:def:nil:OGC:1.0:missing'), 
-                  if_then_else(lessEqualThan(NUMERIC_VALUE, 1000), 'numeric_value', toXlinkHref('urn:ogc:def:nil:OGC:1.0:missing'))) 
-            </linkElement>
-        </sourceExpression>	
-    </AttributeMapping>
-
-The above example means, if NUMERIC_VALUE is null, the output would be encoded as::
-
-    <ex:someAttribute xlink:href="urn:ogc:def:nil:OGC:1.0:missing">
-
-Otherwise, if NUMERIC_VALUE is less or equal than 1000, it would be encoded with attributes from FeatureTypeMapping with 'numeric_value' mappingName.
-If NUMERIC_VALUE is greater than 1000, it would be encoded as the first scenario.
 
 
 Null or missing value 
 ---------------------
-To skip the attribute for a specific case, you can use Expression.NIL as a value in if_then_else or not include the key in Recode function.
+To skip the attribute for a specific case, you can use Expression.NIL as a value in if_then_else or not include the key in `Recode function`_ .
 E.g.::
     
     if_then_else(isNull(VALUE), Expression.NIL, 'gsml:CGI_TermValue')
@@ -246,7 +246,7 @@ E.g.::
     Recode(VALUE, 'term_value', 'gsml:CGI_TermValue')
         means the attribute would not be encoded if VALUE is anything but 'term_value'. 
 
-To encode an attribute as xlink:href that represents missing value on the top level, see **Referential polymorphism** section above.
+To encode an attribute as xlink:href that represents missing value on the top level, see `Referential Polymorphism`_.
 
 
 Any type 
