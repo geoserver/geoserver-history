@@ -39,6 +39,21 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         return new FeatureChainingMockData();
     }
 
+    public static final String GETFEATURE_ATTRIBUTES = "service=\"WFS\" " //
+            + "version=\"1.1.0\" " //
+            + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
+            + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
+            + "xmlns:gml=\"http://www.opengis.net/gml\" " //
+            + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI
+            + "\" " //
+            + "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " //
+            + "xsi:schemaLocation=\"" //
+            + "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd " //
+            + AbstractAppSchemaMockData.GSML_URI
+            + " "
+            + AbstractAppSchemaMockData.GSML_SCHEMA_LOCATION_URL //
+            + "\""; // end of schemaLocation
+    
     /**
      * Test whether GetCapabilities returns wfs:WFS_Capabilities.
      */
@@ -784,13 +799,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     public void testGetFeaturePropertyFilter() {
         String xml = //
         "<wfs:GetFeature " //
-                + "service=\"WFS\" " //
-                + "version=\"1.1.0\" " //
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
-                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + GETFEATURE_ATTRIBUTES //
                 + ">" //
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
                 + "        <ogc:Filter>" //
@@ -801,6 +810,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>" //
                 + "    </wfs:Query> " //
                 + "</wfs:GetFeature>";
+        validate(xml);
         checkGetMf4Only(xml);
     }
 
@@ -810,13 +820,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     public void testGetFeatureWithFeatureIdFilter() {
         String xml = //
         "<wfs:GetFeature " //
-                + "service=\"WFS\" " //
-                + "version=\"1.1.0\" " //
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
-                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + GETFEATURE_ATTRIBUTES //
                 + ">" //
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
                 + "        <ogc:Filter>" //
@@ -824,6 +828,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>" //
                 + "    </wfs:Query> " //
                 + "</wfs:GetFeature>";
+        validate(xml);
         checkGetMf4Only(xml);
     }
 
@@ -833,13 +838,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     public void testGetFeatureWithGmlObjectIdFilter() {
         String xml = //
         "<wfs:GetFeature " //
-                + "service=\"WFS\" " //
-                + "version=\"1.1.0\" " //
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
-                + "xmlns:gsml=\"" + AbstractAppSchemaMockData.GSML_URI + "\" " //
+                + GETFEATURE_ATTRIBUTES //
                 + ">" //
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
                 + "        <ogc:Filter>" //
@@ -847,6 +846,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>" //
                 + "    </wfs:Query> " //
                 + "</wfs:GetFeature>";
+        validate(xml);
         checkGetMf4Only(xml);
     }
     
@@ -921,15 +921,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
     public void testFilteringXlinkHref() {
         String xml = //
         "<wfs:GetFeature " //
-                + "service=\"WFS\" " //
-                + "version=\"1.1.0\" " //
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " //
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " //
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " //
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " //
-                + "xmlns:gsml=\""
-                + AbstractAppSchemaMockData.GSML_URI
-                + "\" " //
+                + GETFEATURE_ATTRIBUTES //
                 + ">" //
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" //
                 + "        <ogc:Filter>" //
@@ -940,6 +932,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>" //
                 + "    </wfs:Query> " //
                 + "</wfs:GetFeature>";
+        validate(xml);
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -957,15 +950,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // PropertyIsEqual
         String xml = 
         "<wfs:GetFeature " 
-                + "service=\"WFS\" " 
-                + "version=\"1.1.0\" " 
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " 
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " 
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " 
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " 
-                + "xmlns:gsml=\""
-                + AbstractAppSchemaMockData.GSML_URI
-                + "\" " 
+                + GETFEATURE_ATTRIBUTES 
                 + ">" 
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" 
                 + "        <ogc:Filter>" 
@@ -976,6 +961,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>" 
                 + "    </wfs:Query> " 
                 + "</wfs:GetFeature>";
+        validate(xml);
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -990,25 +976,18 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
         // PropertyIsLike
         xml = //
         "<wfs:GetFeature " 
-                + "service=\"WFS\" " 
-                + "version=\"1.1.0\" " 
-                + "xmlns:cdf=\"http://www.opengis.net/cite/data\" " 
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" " 
-                + "xmlns:wfs=\"http://www.opengis.net/wfs\" " 
-                + "xmlns:gml=\"http://www.opengis.net/gml\" " 
-                + "xmlns:gsml=\""
-                + AbstractAppSchemaMockData.GSML_URI
-                + "\" " 
+                + GETFEATURE_ATTRIBUTES 
                 + ">" 
                 + "    <wfs:Query typeName=\"gsml:MappedFeature\">" 
                 + "        <ogc:Filter>" 
-                + "            <ogc:PropertyIsLike wildCard=\"*\" singleChar=\"#\" escapeChar=\"!\">>" 
+                + "            <ogc:PropertyIsLike wildCard=\"*\" singleChar=\"#\" escapeChar=\"!\">" 
                 + "                <ogc:PropertyName>gsml:specification/gsml:GeologicUnit/gml:name</ogc:PropertyName>" 
                 + "                <ogc:Literal>Yaugher Volcanic Group*</ogc:Literal>" 
                 + "            </ogc:PropertyIsLike>" 
                 + "        </ogc:Filter>" 
                 + "    </wfs:Query> " 
                 + "</wfs:GetFeature>";
+        validate(xml);
         doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
@@ -1028,11 +1007,9 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
      * attributes.
      */
     public void testFilterAnd() {
-        String xml = "<wfs:GetFeature service=\"WFS\" version=\"1.1.0\" xmlns:cdf=\"http://www.opengis.net/cite/data\" "
-                + "xmlns:ogc=\"http://www.opengis.net/ogc\" xmlns:wfs=\"http://www.opengis.net/wfs\" "
-                + "xmlns:gml=\"http://www.opengis.net/gml\" xmlns:gsml=\""
-                + AbstractAppSchemaMockData.GSML_URI
-                + "\">"
+        String xml = "<wfs:GetFeature "
+                + GETFEATURE_ATTRIBUTES
+                + ">"
                 + "<wfs:Query typeName=\"gsml:MappedFeature\">"
                 + "    <ogc:Filter>"
                 + "        <ogc:And>"
@@ -1050,6 +1027,7 @@ public class FeatureChainingWfsTest extends AbstractAppSchemaWfsTestSupport {
                 + "        </ogc:Filter>"
                 + "</wfs:Query> "
                 + "</wfs:GetFeature>";
+        validate(xml);
         Document doc = postAsDOM("wfs", xml);
         LOGGER.info("WFS filter GetFeature response:\n" + prettyString(doc));
         assertEquals("wfs:FeatureCollection", doc.getDocumentElement().getNodeName());
