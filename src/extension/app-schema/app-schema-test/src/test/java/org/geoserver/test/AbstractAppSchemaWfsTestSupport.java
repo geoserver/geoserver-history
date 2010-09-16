@@ -438,4 +438,30 @@ public abstract class AbstractAppSchemaWfsTestSupport extends GeoServerAbstractT
         }
     }
 
+    /**
+     * Schema-validate an XML instance document in a string. Validation is against schemas found on
+     * the classpath. See {@link AppSchemaResolver#getSimpleHttpResourcePath(java.net.URI)} for
+     * URL-to-classpath convention.
+     * 
+     * <p>
+     * 
+     * If validation fails, a {@link RuntimeException} is thrown with detail containing the failure
+     * messages. The failure messages are also logged.
+     * 
+     * @param path
+     *            request path (typically "wfs")
+     * @param xml
+     *            the XML instance document
+     * @throws RuntimeException
+     *             if validation fails
+     */
+    protected void validate(String xml) {
+        try {
+            AppSchemaValidator.validate(xml);
+        } catch (RuntimeException e) {
+            LOGGER.severe(e.getMessage());
+            throw e;
+        }
+    }
+
 }
