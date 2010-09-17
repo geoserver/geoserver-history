@@ -1,5 +1,7 @@
 package org.geoserver.web.admin;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import javax.media.jai.JAI;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.DataStoreInfo;
@@ -23,6 +26,7 @@ import org.geoserver.config.JAIInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.web.util.DataDirectoryConverterLocator;
 import org.geoserver.web.util.MapModel;
+import org.geoserver.web.wicket.ParamResourceModel;
 import org.geotools.data.DataAccess;
 import org.geotools.data.DataStore;
 import org.geotools.data.LockingManager;
@@ -124,6 +128,10 @@ public class StatusPage extends ServerAdminPage {
                 updateModel();
             }
         });
+        
+        int fontCount =  GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts().length;
+        add(new Label("fontCount", new ParamResourceModel("StatusPage.fontCount", this, fontCount)));
+        add(new BookmarkablePageLink("show.fonts", JVMFontsPage.class));
 
         add(new AjaxLink("clear.resourceCache") {
             @Override

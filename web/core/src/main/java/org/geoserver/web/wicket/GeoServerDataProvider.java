@@ -235,14 +235,16 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
             ITEM:
             // find any match of any pattern over any property
             for (Property<T> property : properties) {
-                Object value = property.getPropertyValue(item);
-                if (value != null) {
-                    // brute force check for keywords
-                    for (Matcher matcher : matchers) {
-                        matcher.reset(String.valueOf(value));
-                        if (matcher.matches()) {
-                            result.add(item);
-                            break ITEM;
+                if(property.isSearchable()) {
+                    Object value = property.getPropertyValue(item);
+                    if (value != null) {
+                        // brute force check for keywords
+                        for (Matcher matcher : matchers) {
+                            matcher.reset(String.valueOf(value));
+                            if (matcher.matches()) {
+                                result.add(item);
+                                break ITEM;
+                            }
                         }
                     }
                 }
@@ -375,6 +377,13 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
          * If false the property will be used for searches, but not shown in the table
          */
         public boolean isVisible();
+        
+
+        /**
+         * Returns true if it makes sense to search over this property
+         * @return
+         */
+        public boolean isSearchable();
     }
     
     /**
@@ -422,6 +431,10 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
         @Override
         public String toString() {
             return "Property[" + name + "]";
+        }
+        
+        public boolean isSearchable() {
+            return true;
         }
     }
 
@@ -515,6 +528,9 @@ public abstract class GeoServerDataProvider<T> extends SortableDataProvider {
             return "PropertyPlacehoder[" + name + "]";
         }
 
+        public boolean isSearchable() {
+            return false;
+        }
     }
 
     /**

@@ -54,6 +54,10 @@ public class UserListProvider extends GeoServerDataProvider<User> {
             return true;
         }
         
+        public boolean isSearchable() {
+            return true;
+        };
+        
     };
     public static final Property<User> ADMIN = new Property<User>() {
 
@@ -78,6 +82,10 @@ public class UserListProvider extends GeoServerDataProvider<User> {
         }
 
         public boolean isVisible() {
+            return true;
+        }
+        
+        public boolean isSearchable() {
             return true;
         }
         
