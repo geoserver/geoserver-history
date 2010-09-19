@@ -42,6 +42,7 @@ import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
 import org.geotools.gml3.GMLConfiguration;
+import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
@@ -54,12 +55,17 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     WFSConfiguration configuration;
 
     public GML3OutputFormat(GeoServer geoServer, WFSConfiguration configuration) {
-        super(new HashSet(Arrays.asList(new Object[] {"gml3", "text/xml; subtype=gml/3.1.1"})));
+        this(new HashSet(Arrays.asList(new Object[] {"gml3", "text/xml; subtype=gml/3.1.1"})), 
+            geoServer, configuration);
+}
+    
+    public GML3OutputFormat(Set<String> outputFormats, GeoServer geoServer, WFSConfiguration configuration) {
+        super(outputFormats);
 
         this.wfs = geoServer.getService( WFSInfo.class );
         this.catalog = geoServer.getCatalog();
         this.global = geoServer.getGlobal();
-      
+        
         this.configuration = configuration;
     }
 
@@ -146,12 +152,12 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             configuration.getProperties().remove(GMLConfiguration.ENCODE_FEATURE_MEMBER);
         }
         
-        Encoder encoder = new Encoder(configuration, configuration.schema());
-        encoder.setEncoding(Charset.forName( global.getCharset() ));
-
         //declare wfs schema location
         BaseRequestType gft = (BaseRequestType)getFeature.getParameters()[0];
         
+        Encoder encoder = createEncoder(configuration, ns2metas, gft);
+        encoder.setEncoding(Charset.forName( global.getCharset() ));
+
         if (wfs.isCanonicalSchemaLocation()) {
             encoder.setSchemaLocation(org.geoserver.wfs.xml.v1_1_0.WFS.NAMESPACE,
                     WFS.CANONICAL_SCHEMA_LOCATION);
@@ -196,6 +202,16 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             }
         }
 
+        encode(results, output, encoder);
+    }
+
+    protected Encoder createEncoder(Configuration configuration, 
+        Map<String, Set<FeatureTypeInfo>> featureTypes, BaseRequestType request ) {
+        return new Encoder(configuration, configuration.schema());
+    }
+    
+    protected void encode(FeatureCollectionType results, OutputStream output, Encoder encoder)
+        throws IOException {
         encoder.encode(results, org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
     }
 }

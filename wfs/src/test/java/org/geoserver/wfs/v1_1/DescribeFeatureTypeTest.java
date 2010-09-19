@@ -172,7 +172,6 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         assertEquals("ows:ExceptionReport", doc.getDocumentElement().getNodeName());
     }
     
-    
     /**
      * See http://jira.codehaus.org/browse/GEOS-3306
      * 
@@ -192,5 +191,9 @@ public class DescribeFeatureTypeTest extends WFSTestSupport {
         assertEquals("xsd:schema", doc.getDocumentElement().getNodeName());
     }
     
-    
+    public void testGML32OutputFormat() throws Exception {
+        Document dom = getAsDOM("ows?service=WFS&version=1.1.0&request=DescribeFeatureType" +
+            "&outputFormat=text/xml;+subtype%3Dgml/3.2&typename=" + getLayerId(MockData.POLYGONS));
+        print(dom);
+    }
 }
