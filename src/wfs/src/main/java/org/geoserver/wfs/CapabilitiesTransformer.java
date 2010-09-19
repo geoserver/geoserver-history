@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -33,13 +34,17 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.factory.FactoryRegistry;
 import org.geotools.filter.FunctionExpression;
+import org.geotools.filter.FunctionFactory;
 import org.geotools.filter.v1_0.OGC;
 import org.geotools.gml3.GML;
 import org.geotools.xlink.XLINK;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
+import org.opengis.filter.FilterFactory;
+import org.opengis.filter.capability.FunctionName;
 import org.opengis.filter.expression.Function;
 import org.vfny.geoserver.global.FeatureTypeInfoTitleComparator;
 import org.xml.sax.ContentHandler;
@@ -123,7 +128,27 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
     		throw new ServiceException("WFS capabilities document is current (updateSequence = " + geoUS + ")","CurrentUpdateSequence");
     	}
     }
+    
+    Set<FunctionName> getAvailableFunctionNames() {
+        //Sort them up for easier visual inspection
+        SortedSet sortedFunctions = new TreeSet(new Comparator() {
+            public int compare(Object o1, Object o2) {
+                String n1 = ((FunctionName) o1)
+                    .getName();
+                String n2 = ((FunctionName) o2).getName();
 
+                return n1.toLowerCase().compareTo(n2.toLowerCase());
+            }
+        });
+
+        Set<FunctionFactory> factories = CommonFactoryFinder.getFunctionFactories(null);
+        for (FunctionFactory factory : factories) {
+            sortedFunctions.addAll(factory.getFunctionNames());
+        }
+
+        return sortedFunctions;
+    }
+    
     /**
      * Transformer for wfs 1.0 capabilities document.
      *
@@ -708,45 +733,21 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
              *
              */
             private void handleFunctions(String prefix) {
+                FilterFactory ff = CommonFactoryFinder.getFilterFactory(null);
+                
                 start(prefix + "Functions");
                 start(prefix + "Function_Names");
 
-                Iterator it = FactoryRegistry.lookupProviders(Function.class);
-
-                //Sort them up for easier visual inspection
-                SortedSet sortedFunctions = new TreeSet(new Comparator() {
-                            public int compare(Object o1, Object o2) {
-                                String n1 = ((Function) o1)
-                                    .getName();
-                                String n2 = ((Function) o2).getName();
-
-                                return n1.toLowerCase().compareTo(n2.toLowerCase());
-                            }
-                        });
+              
+                Set<FunctionName> functions = getAvailableFunctionNames(); 
+                Iterator it = functions.iterator();
 
                 while (it.hasNext()) {
-                    sortedFunctions.add(it.next());
-                }
+                    FunctionName fname = (FunctionName) it.next();
+                    AttributesImpl atts = new AttributesImpl();
+                    atts.addAttribute("", "nArgs", "nArgs", "", fname.getArgumentCount() + "");
 
-                //write them now that functions are sorted by name
-                it = sortedFunctions.iterator();
-
-                while (it.hasNext()) {
-                    Function fe = (Function) it.next();
-
-                    //TODO: as of now the geoapi Function interface 
-                    // does not allow use to report back properly the number of 
-                    // parameters, so we check for instances of FunctionExpression 
-                    // for now
-                    if (fe instanceof FunctionExpression) {
-                        String funName = fe.getName();
-                        int funNArgs = ((FunctionExpression) fe).getArgCount();
-
-                        AttributesImpl atts = new AttributesImpl();
-                        atts.addAttribute("", "nArgs", "nArgs", "", funNArgs + "");
-
-                        element(prefix + "Function_Name", funName, atts);
-                    }
+                    element(prefix + "Function_Name", fname.getName(), atts);
                 }
 
                 end(prefix + "Function_Names");
@@ -1443,36 +1444,13 @@ public abstract class CapabilitiesTransformer extends TransformerBase {
             void functions() {
                 start("ogc:Functions");
 
-                Iterator itr = FactoryRegistry.lookupProviders(Function.class);
-
-                if (itr.hasNext()) {
+                Set<FunctionName> functions = getAvailableFunctionNames();
+                if (!functions.isEmpty()) {
                     start("ogc:FunctionNames");
 
-                    SortedSet sortedFunctions = new TreeSet(new Comparator() {
-                                public int compare(Object o1, Object o2) {
-                                    String n1 = ((Function) o1).getName();
-                                    String n2 = ((Function) o2).getName();
-
-                                    return n1.toLowerCase().compareTo(n2.toLowerCase());
-                                }
-                            });
-
-                    while (itr.hasNext()) {
-                        sortedFunctions.add(itr.next());
-                    }
-
-                    //write them now that functions are sorted by name
-                    itr = sortedFunctions.iterator();
-
-                    while (itr.hasNext()) {
-                        Function fe = (Function) itr.next();
-                        String name = fe.getName();
-                        int nargs = 0;
-                        if(fe instanceof FunctionExpression)
-                            nargs = ((FunctionExpression) fe).getArgCount();
-
-                        element("ogc:FunctionName", name,
-                            attributes(new String[] { "nArgs", "" + nargs }));
+                    for (FunctionName fe : functions) {
+                        element("ogc:FunctionName", fe.getName(),
+                            attributes(new String[] { "nArgs", "" + fe.getArgumentCount() }));
                     }
 
                     end("ogc:FunctionNames");
