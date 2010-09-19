@@ -417,6 +417,11 @@ public class GetFeatureTest extends WFSTestSupport {
                 + URLEncoder.encode(MockData.FIFTEEN.getNamespaceURI(), "UTF-8") + ")");
     }
     
+    public void testGML32OutputFormat() throws Exception {
+        testGetFifteenAll(
+            "wfs?request=getfeature&typename=cdf:Fifteen&version=1.1.0&service=wfs&outputFormat=gml32");
+    }
+    
     public static void main(String[] args) {
         TestRunner runner = new TestRunner();
         runner.run(GetFeatureTest.class);

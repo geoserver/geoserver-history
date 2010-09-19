@@ -65,6 +65,14 @@ public class XmlSchemaEncoder extends WFSDescribeFeatureTypeOutputFormat {
         XSDResourceImpl.serialize(output, schema.getElement(), encoding);
     }
     
+    public static class V20 extends XmlSchemaEncoder {
+
+        public V20(GeoServer gs) {
+            super("text/xml; subtype=gml/3.2", gs, new FeatureTypeSchemaBuilder.GML32(gs));
+        }
+        
+    }
+    
     public static class V11 extends XmlSchemaEncoder {
 
         public V11(GeoServer gs) {

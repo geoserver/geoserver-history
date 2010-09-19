@@ -344,6 +344,10 @@
 		class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder$V11">
 		<constructor-arg ref="geoServer"/>
 	</bean>
+	<bean id="gml32FeatureTypeEncoder" 
+        class="org.geoserver.wfs.xml.v1_1_0.XmlSchemaEncoder$V20">
+        <constructor-arg ref="geoServer"/>
+    </bean>
 	<!-- default get feature producers -->
 	<bean id="gml2OutputFormat" 
 		class="org.geoserver.wfs.xml.GML2OutputFormat" singleton="false">
@@ -358,6 +362,11 @@
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
+	<bean id="gml32OutputFormat" class="org.geoserver.wfs.xml.GML32OutputFormat"> 
+        <constructor-arg ref="geoServer"/>
+        <constructor-arg ref="xmlConfiguration-1.1"/>
+    </bean>
+    
 	<bean id="hitsOutputFormat" class="org.geoserver.wfs.response.HitsOutputFormat">
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
