@@ -17,3 +17,4 @@ This section is devoted to GeoServer community modules. Community modules are co
    css/index
    printing/index
    monitoring/index
+   python/index
