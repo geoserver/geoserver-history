@@ -187,5 +187,8 @@ public class Python {
         return resourceLoader.findOrCreateDirectory("python", "format");
     }
     
+    public File getFilterRoot() throws IOException {
+        return resourceLoader.findOrCreateDirectory("python", "filter");
+    }
     
 }
