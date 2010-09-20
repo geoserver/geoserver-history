@@ -36,7 +36,9 @@ In :download:`GeologicUnit_MappingFile.xml`::
       <Include>CompositionPart_MappingFile.xml</Include>
   </includedTypes>
 
-Feature types that can be individually accessed don't need to be explicitly included in the mapping file, as they would be configured for Geoserver to find. 
+Feature types that can be individually accessed don't need to be explicitly included in the mapping file, as they would be configured for GeoServer to find. 
+Such types would have their mapping file associated with a corresponding datastore.xml file, which means that it can be found from the data store registry. 
+In other words, if the type is associated with a datastore.xml file, it doesn't need to be explicitly included if referred from another mapping file. 
 
 **Example**:
 
