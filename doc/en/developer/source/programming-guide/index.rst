@@ -12,3 +12,4 @@ Programming Guide
    wicket-pages/index.rst
    extension-points/index.rst
    wps/index.rst
+   versioning/index.rst
