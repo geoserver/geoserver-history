@@ -17,7 +17,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.util.WMSRequests;
+import org.geoserver.wms.WMSRequests;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;

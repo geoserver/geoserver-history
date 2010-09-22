@@ -13,8 +13,8 @@ import java.util.TimeZone;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WMSRequests;
 import org.geoserver.wms.featureinfo.FeatureTemplate;
-import org.geoserver.wms.util.WMSRequests;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
 

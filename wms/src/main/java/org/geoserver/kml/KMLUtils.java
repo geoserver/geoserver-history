@@ -19,7 +19,7 @@ import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.util.WMSRequests;
+import org.geoserver.wms.WMSRequests;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
