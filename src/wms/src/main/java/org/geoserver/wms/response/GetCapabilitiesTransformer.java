@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.wms.response;
 
 import static org.geoserver.ows.util.ResponseUtils.appendQueryString;
 import static org.geoserver.ows.util.ResponseUtils.buildSchemaURL;
@@ -45,8 +45,11 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.wms.GetCapabilities;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
-import org.geoserver.wms.response.DescribeLayerResponse;
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
@@ -63,10 +66,8 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import org.vfny.geoserver.wms.responses.StylesResponse;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -81,7 +82,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @see GetCapabilitiesResponse#write(Object, java.io.OutputStream,
  *      org.geoserver.platform.Operation)
  */
-class GetCapabilitiesTransformer extends TransformerBase {
+public class GetCapabilitiesTransformer extends TransformerBase {
     /** fixed MIME type for the returned capabilities document */
     public static final String WMS_CAPS_MIME = "application/vnd.ogc.wms_xml";
 
@@ -415,7 +416,7 @@ class GetCapabilitiesTransformer extends TransformerBase {
             end("GetLegendGraphic");
 
             start("GetStyles");
-            element("Format", StylesResponse.SLD_MIME_TYPE);
+            element("Format", GetStylesResponse.SLD_MIME_TYPE);
             handleDcpType(serviceUrl, null);
             end("GetStyles");
 

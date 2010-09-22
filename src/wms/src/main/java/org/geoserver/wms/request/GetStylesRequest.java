@@ -1,17 +1,14 @@
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.request;
 
 import java.util.List;
-
-import org.geoserver.wms.WMS;
 
 public class GetStylesRequest extends WMSRequest {
 
     List<String> layers;
 
     String sldVer;
-    
-    public GetStylesRequest(WMS wms) {
-        super("GetStyles", wms);
+
+    public GetStylesRequest() {
     }
 
     public String getSldVer() {

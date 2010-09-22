@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.request;
 
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
@@ -18,7 +18,7 @@ import org.geoserver.wms.request.WMSRequest;
  * the map over the GetFeatureInfo request is performed.
  * </p>
  *
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @version $Id$
  */
 public class GetFeatureInfoRequest extends WMSRequest {
@@ -64,25 +64,6 @@ public class GetFeatureInfoRequest extends WMSRequest {
      * defaults to <code>"application/vnd.ogc.se_xml"</code>
      */
     private String exeptionFormat = DEFAULT_EXCEPTION_FORMAT;
-
-    /**
-     * Creates a new GetMapRequest object.
-     * @param service The service that will handle the request
-     * 
-     * @deprecated use {@link #GetFeatureInfoRequest(WMS)}
-     */
-//    public GetFeatureInfoRequest(WMService service) {
-//        this(service.getWMS());
-//        //super("GetFeatureInfo", service);
-//    }
-
-    /**
-     * Creates a new GetFeatureInfoRequest object.
-     * @param wms The WMS configuration object.
-     */
-    public GetFeatureInfoRequest(WMS wms) {
-        super(wms);
-    }
     
     /**
      * @return Returns the exeptionFormat.

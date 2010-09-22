@@ -23,7 +23,7 @@ import org.geoserver.wms.WMS;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id$
  */
-public abstract class WMSRequest extends Request {
+abstract class WMSRequest extends Request {
 
     public static final String WMS_SERVICE_TYPE = "WMS";
 
@@ -57,6 +57,7 @@ public abstract class WMSRequest extends Request {
     public WMS getWMS() {
         return wms;
     }
+
     /**
      * Set by {@link Dispatcher}
      * 
