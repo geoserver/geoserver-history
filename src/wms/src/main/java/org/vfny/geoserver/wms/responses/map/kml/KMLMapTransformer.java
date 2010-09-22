@@ -32,6 +32,7 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.featureinfo.FeatureHeightTemplate;
 import org.geoserver.wms.response.featureinfo.FeatureTemplate;
@@ -62,7 +63,6 @@ import org.geotools.xs.bindings.XSDateTimeBinding;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.expression.Expression;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Coordinate;

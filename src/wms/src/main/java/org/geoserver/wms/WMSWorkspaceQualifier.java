@@ -17,46 +17,46 @@ public class WMSWorkspaceQualifier extends WorkspaceQualifyingCallback {
     public WMSWorkspaceQualifier(Catalog catalog) {
         super(catalog);
     }
-    
+
     @Override
     protected void qualifyRequest(WorkspaceInfo ws, LayerInfo l, Service service, Request request) {
         if (WebMapService.class.isInstance(service.getService())) {
             String layers = (String) request.getRawKvp().get("LAYERS");
             if (layers != null) {
-                request.getRawKvp().put("LAYERS", qualifyLayerNamesKVP(layers, ws)); 
+                request.getRawKvp().put("LAYERS", qualifyLayerNamesKVP(layers, ws));
             }
-            
+
             layers = (String) request.getRawKvp().get("QUERY_LAYERS");
             if (layers != null) {
                 request.getRawKvp().put("QUERY_LAYERS", qualifyLayerNamesKVP(layers, ws));
             }
-            
+
             String layer = (String) request.getRawKvp().get("LAYER");
             if (layer != null) {
                 request.getRawKvp().put("LAYER", qualifyName(layer, ws));
             }
         }
     }
-    
-    
-    protected void qualifyRequest(WorkspaceInfo ws, LayerInfo l, Operation operation, Request request) {
+
+    protected void qualifyRequest(WorkspaceInfo ws, LayerInfo l, Operation operation,
+            Request request) {
         GetCapabilitiesRequest gc = parameter(operation, GetCapabilitiesRequest.class);
         if (gc != null) {
             gc.setNamespace(ws.getName());
             return;
         }
     };
-    
+
     String qualifyLayerNamesKVP(String layers, WorkspaceInfo ws) {
         List<String> list = KvpUtils.readFlat(layers);
         qualifyNames(list, ws);
-        
+
         StringBuffer sb = new StringBuffer();
         for (String s : list) {
             sb.append(s).append(",");
         }
-        sb.setLength(sb.length()-1);
+        sb.setLength(sb.length() - 1);
         return sb.toString();
     }
-    
+
 }

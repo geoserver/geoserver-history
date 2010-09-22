@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 

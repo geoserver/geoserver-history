@@ -15,25 +15,25 @@ import java.util.TreeSet;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
-public class AtomGeoRSSMapProducer implements GetMapProducer {
+public class AtomGeoRSSMapProducer implements GetMapOutputFormat {
     /** mime type */
     public static String MIME_TYPE = "application/atom+xml";
 
     /** format names/aliases */
     public static final Set<String> FORMAT_NAMES;
-    static{
+    static {
         String[] FORMATS = { MIME_TYPE, "atom", "application/atom xml" };
         Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
         names.addAll(Arrays.asList(FORMATS));
         FORMAT_NAMES = Collections.unmodifiableSet(names);
     }
-    
+
     /**
      * current map context
      */
@@ -106,16 +106,16 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
     }
 
     public void setOutputFormat(String format) {
-        if ( FORMAT_NAMES.contains(format) ){
+        if (FORMAT_NAMES.contains(format)) {
             this.outputFormat = format;
         } else {
-            throw new IllegalArgumentException(format + " is not supported by " + 
-                    getClass().getSimpleName());
+            throw new IllegalArgumentException(format + " is not supported by "
+                    + getClass().getSimpleName());
         }
     }
 
     /**
-     * @see GetMapProducer#getOutputFormatNames()
+     * @see GetMapOutputFormat#getOutputFormatNames()
      */
     public Set<String> getOutputFormatNames() {
         return FORMAT_NAMES;

@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.data.jdbc.JDBCUtils;
@@ -31,7 +32,6 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Coordinate;

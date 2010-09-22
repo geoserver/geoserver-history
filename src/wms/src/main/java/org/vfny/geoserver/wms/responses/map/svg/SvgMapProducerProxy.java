@@ -9,50 +9,44 @@ import java.io.OutputStream;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
 /**
- * Intermediate SVG map producer that instantiates and completely delegates to
- * the appropriate one depending on the {@link WMS#getSvgRenderer()} setting.
+ * Intermediate SVG map producer that instantiates and completely delegates to the appropriate one
+ * depending on the {@link WMS#getSvgRenderer()} setting.
  * 
  * @author Gabriel Roldan (TOPP)
  * @version $Id$
  * @see SVGBatikMapProducer
  * @see SVGMapProducer
  */
-public class SvgMapProducerProxy implements GetMapProducer {
+public class SvgMapProducerProxy implements GetMapOutputFormat {
 
     public static final String MIME_TYPE = "image/svg+xml";
-    
-    public static final String[] OUTPUT_FORMATS = {
-            MIME_TYPE,
-            "image/svg xml",
-            "image/svg"
-         };
+
+    public static final String[] OUTPUT_FORMATS = { MIME_TYPE, "image/svg xml", "image/svg" };
 
     /**
-     * The actual SVG map producer to use depending on the
-     * {@link WMS#getSvgRenderer()} setting
+     * The actual SVG map producer to use depending on the {@link WMS#getSvgRenderer()} setting
      */
-    private final GetMapProducer svgProducer;
+    private final GetMapOutputFormat svgProducer;
 
     /**
      * @param formatName
-     *            the format name as advertised in the capabilities, allows for
-     *            easy
+     *            the format name as advertised in the capabilities, allows for easy
      * 
      */
-    public SvgMapProducerProxy( WMS wms ) {
+    public SvgMapProducerProxy(WMS wms) {
         final String svgRendererTypeSetting = wms.getSvgRenderer();
         if (WMS.SVG_SIMPLE.equals(svgRendererTypeSetting)) {
             svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
         } else if (WMS.SVG_BATIK.equals(svgRendererTypeSetting)) {
             svgProducer = new SVGBatikMapProducer(MIME_TYPE, OUTPUT_FORMATS, wms);
         } else {
-            //no setting, do the default
+            // no setting, do the default
             svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
         }
     }

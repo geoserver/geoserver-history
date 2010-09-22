@@ -17,15 +17,15 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.TestData;
 import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollections;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapLayer;
-import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -101,7 +101,7 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
 
     /**
      * Test method for
-     * {@link KMLLegendTransformer#KMLLegendTransformer(org.vfny.geoserver.wms.WMSMapContext)}.
+     * {@link KMLLegendTransformer#KMLLegendTransformer(org.geoserver.wms.WMSMapContext)}.
      * 
      * @throws Exception
      */

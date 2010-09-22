@@ -13,9 +13,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.Query;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

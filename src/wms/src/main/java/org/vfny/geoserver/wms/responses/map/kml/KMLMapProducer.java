@@ -16,9 +16,9 @@ import javax.xml.transform.TransformerException;
 
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.request.GetMapRequest;
-import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
@@ -27,110 +27,106 @@ import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
  * 
  * @author James Macgill
  */
-public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProducer {
-	/** standard logger */
-	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.kml");
+public class KMLMapProducer extends AbstractGetMapProducer implements GetMapOutputFormat {
+    /** standard logger */
+    protected static final Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger("org.vfny.geoserver.responses.wms.kml");
 
-    /** 
+    /**
      * Official KML mime type
      */
     public static final String MIME_TYPE = "application/vnd.google-earth.kml+xml";
-    
-    public static final List<String> OUTPUT_FORMATS = Arrays.asList(
-                MIME_TYPE,
-            "application/vnd.google-earth.kml",
-            "kml",
-            "application/vnd.google-earth.kml xml"
-        );
+
+    public static final List<String> OUTPUT_FORMATS = Arrays.asList(MIME_TYPE,
+            "application/vnd.google-earth.kml", "kml", "application/vnd.google-earth.kml xml");
 
     /** kml transformer which turns the map context into kml */
-	protected KMLTransformer transformer;
+    protected KMLTransformer transformer;
 
-	private List<String> aliases = new ArrayList<String>();
+    private List<String> aliases = new ArrayList<String>();
 
     private WMS wms;
-	
-	public KMLMapProducer(WMS wms) {
-		super(MIME_TYPE, OUTPUT_FORMATS);
-            this.wms = wms;
-	}
 
-	/**
-	 * Request that encoding be halted if possible.
-	 * 
-	 * @param gs
-	 *            The orriginating Service
-	 */
-	public void abort(ServiceInfo gs) {
-		if (transformer != null) {
-			// transformer.abort();
-		}
-	}
+    public KMLMapProducer(WMS wms) {
+        super(MIME_TYPE, OUTPUT_FORMATS);
+        this.wms = wms;
+    }
 
-	/**
-	 * aborts the encoding.
-	 */
-	public void abort() {
-		LOGGER.fine("aborting KML map response");
+    /**
+     * Request that encoding be halted if possible.
+     * 
+     * @param gs
+     *            The orriginating Service
+     */
+    public void abort(ServiceInfo gs) {
+        if (transformer != null) {
+            // transformer.abort();
+        }
+    }
 
-		// if (this.kmlEncoder != null) {
-		// LOGGER.info("aborting KML encoder");
-		// this.kmlEncoder.abort();
-		// }
-		if (transformer != null) {
-			LOGGER.info("aborting KML encoder");
+    /**
+     * aborts the encoding.
+     */
+    public void abort() {
+        LOGGER.fine("aborting KML map response");
 
-			// transformer.abort();
-		}
-	}
+        // if (this.kmlEncoder != null) {
+        // LOGGER.info("aborting KML encoder");
+        // this.kmlEncoder.abort();
+        // }
+        if (transformer != null) {
+            LOGGER.info("aborting KML encoder");
 
-	/**
-	 * Produce the actual map ready for outputing.
-	 * 
-	 * @param map
-	 *            WMSMapContext describing what layers, styles, area of interest
-	 *            etc are to be used when producing the map.
-	 * 
-	 * @throws WmsException
-	 *             thrown if anything goes wrong during the production.
-	 */
-	public void produceMap() throws WmsException {
-		transformer = new KMLTransformer();
+            // transformer.abort();
+        }
+    }
 
-		// TODO: use GeoServer.isVerbose() to determine if we should indent?
-		transformer.setIndentation(3);
-		GetMapRequest request = mapContext.getRequest();
-		Charset encoding = wms.getCharSet();
-		transformer.setEncoding(encoding);
-	}
+    /**
+     * Produce the actual map ready for outputing.
+     * 
+     * @param map
+     *            WMSMapContext describing what layers, styles, area of interest etc are to be used
+     *            when producing the map.
+     * 
+     * @throws WmsException
+     *             thrown if anything goes wrong during the production.
+     */
+    public void produceMap() throws WmsException {
+        transformer = new KMLTransformer();
 
-	/**
-	 * Pumps the map to the provided output stream. Note by this point that
-	 * produceMap should already have been called so little work should be done
-	 * within this method.
-	 * 
-	 * @param out
-	 *            OutputStream to stream the map to.
-	 * 
-	 * @throws ServiceException
-	 * @throws IOException
-	 * 
-	 * @TODO replace stream copy with nio code.
-	 */
-	public void writeTo(OutputStream out) throws ServiceException, IOException {
-		try {
-			transformer.transform(mapContext, out);
-		} catch (TransformerException e) {
-		    //LOGGER.severe(e.getMessage());
-		    throw (IOException) new IOException().initCause(e);
-		}
-	}
+        // TODO: use GeoServer.isVerbose() to determine if we should indent?
+        transformer.setIndentation(3);
+        GetMapRequest request = mapContext.getRequest();
+        Charset encoding = wms.getCharSet();
+        transformer.setEncoding(encoding);
+    }
 
-	/**
-	 * @return a sensible .kml file name attachment header
-	 * @see GetMapProducer#getContentDisposition()
-	 */
-	public String getContentDisposition() {
-		return super.getContentDisposition(".kml");
-	}
+    /**
+     * Pumps the map to the provided output stream. Note by this point that produceMap should
+     * already have been called so little work should be done within this method.
+     * 
+     * @param out
+     *            OutputStream to stream the map to.
+     * 
+     * @throws ServiceException
+     * @throws IOException
+     * 
+     * @TODO replace stream copy with nio code.
+     */
+    public void writeTo(OutputStream out) throws ServiceException, IOException {
+        try {
+            transformer.transform(mapContext, out);
+        } catch (TransformerException e) {
+            // LOGGER.severe(e.getMessage());
+            throw (IOException) new IOException().initCause(e);
+        }
+    }
+
+    /**
+     * @return a sensible .kml file name attachment header
+     * @see GetMapOutputFormat#getContentDisposition()
+     */
+    public String getContentDisposition() {
+        return super.getContentDisposition(".kml");
+    }
 }

@@ -40,9 +40,7 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
@@ -79,7 +77,7 @@ public class WMSMockData {
 
     private StyleInfoImpl defaultStyle;
 
-    private GetMapProducer mockMapProducer;
+    private GetMapOutputFormat mockMapProducer;
 
     private GeoServer mockGeoServer;
 
@@ -140,7 +138,7 @@ public class WMSMockData {
 
         mockGeoServer = new GeoServerImpl();
         mockGeoServer.setCatalog(catalog);
-        
+
         GeoServerInfoImpl geoserverInfo = new GeoServerInfoImpl(mockGeoServer);
         geoserverInfo.setId("geoserver");
         mockGeoServer.setGlobal(geoserverInfo);
@@ -263,7 +261,7 @@ public class WMSMockData {
         return createResponse(Collections.singletonList(mockMapProducer));
     }
 
-    public GetMapResponse createResponse(List<GetMapProducer> availableProducers) {
+    public GetMapResponse createResponse(List<GetMapOutputFormat> availableProducers) {
         GetMapResponse getMap;
         getMap = new GetMapResponse(availableProducers);
         return getMap;
@@ -314,8 +312,7 @@ public class WMSMockData {
     public SimpleFeature addFeature(final SimpleFeatureType featureType, final Object[] values)
             throws IOException, ParseException {
         SimpleFeatureStore fs;
-        fs = (SimpleFeatureStore) dataStore
-                .getFeatureSource(featureType.getName());
+        fs = (SimpleFeatureStore) dataStore.getFeatureSource(featureType.getName());
 
         SimpleFeatureBuilder sfb = new SimpleFeatureBuilder(featureType);
         sfb.addAll(values);

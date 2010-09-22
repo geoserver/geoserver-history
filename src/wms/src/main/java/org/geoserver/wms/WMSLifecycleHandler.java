@@ -75,8 +75,9 @@ public class WMSLifecycleHandler implements GeoServerLifecycleHandler, Applicati
                 try {
                     final Font font = Font.createFont(Font.TRUETYPE_FONT, file);
                     result.add(font);
-                    LOGGER.log(Level.INFO, "Loaded font file " + file + ", loaded font '"
-                            + font.getName() + "' in family '" + font.getFamily() + "'");
+                    LOGGER.log(Level.INFO,
+                            "Loaded font file " + file + ", loaded font '" + font.getName()
+                                    + "' in family '" + font.getFamily() + "'");
                 } catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Failed to load font file " + file, e);
                 }
@@ -89,7 +90,7 @@ public class WMSLifecycleHandler implements GeoServerLifecycleHandler, Applicati
     }
 
     public void onApplicationEvent(ApplicationEvent event) {
-        if(event instanceof ContextRefreshedEvent) {
+        if (event instanceof ContextRefreshedEvent) {
             reloadFontCache();
         }
     }

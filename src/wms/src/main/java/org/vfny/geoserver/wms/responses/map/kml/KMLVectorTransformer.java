@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.map.MapLayer;
@@ -18,7 +19,6 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 

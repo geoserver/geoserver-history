@@ -2,14 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms;
+package org.geoserver.wms;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.Map;
 import org.geotools.map.MapContext;
 
@@ -34,15 +33,16 @@ import org.geotools.map.MapContext;
  * (which is produceMap -> getContentType -> writeTo)
  * </p>
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @author Simone Giannecchini, GeoSolutions
  * @version $Id$
  */
-public interface GetMapProducer {
+public interface GetMapOutputFormat {
     /**
      * Asks this map producer to create a map image for the passed {@linkPlain WMSMapContext}, which
      * contains enough information for doing such a process.
-     * @param mapContext 
+     * 
+     * @param mapContext
      * 
      * 
      * @throws ServiceException
@@ -133,7 +133,6 @@ public interface GetMapProducer {
      *             if format is not supported by this GetMapProducer
      */
     public void setOutputFormat(String format);
-
 
     void write(org.geoserver.wms.response.Map map, OutputStream output);
 }

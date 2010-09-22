@@ -25,6 +25,7 @@ import java.util.zip.ZipOutputStream;
 import javax.media.jai.GraphicsJAI;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -45,7 +46,6 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 

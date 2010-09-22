@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -21,7 +22,6 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
 

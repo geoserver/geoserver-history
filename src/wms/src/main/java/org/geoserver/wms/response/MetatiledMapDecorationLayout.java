@@ -7,7 +7,7 @@ package org.geoserver.wms.response;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import org.vfny.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WMSMapContext;
 
 /**
  * The MetatiledMapDecorationLayout class customizes the {MapDecorationLayout} to handle the special

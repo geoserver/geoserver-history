@@ -17,6 +17,7 @@ import javax.xml.transform.TransformerException;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
@@ -24,7 +25,6 @@ import org.geotools.factory.GeoTools;
 import org.geotools.map.MapLayer;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.georss.GeoRSSTransformerBase.GeometryEncoding;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

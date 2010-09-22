@@ -24,11 +24,11 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.util.Requests;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 

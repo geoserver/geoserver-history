@@ -10,6 +10,7 @@ import java.util.Map;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
@@ -23,7 +24,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 import org.opengis.filter.spatial.BBOX;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
 
 /**

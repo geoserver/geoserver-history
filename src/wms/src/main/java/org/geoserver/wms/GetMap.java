@@ -57,9 +57,7 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.RasterMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -88,7 +86,8 @@ public class GetMap {
 
     /**
      * Implements the map production logic for a WMS GetMap request, delegating the encoding to the
-     * appropriate output format to a {@link GetMapProducer} appropriate for the required format.
+     * appropriate output format to a {@link GetMapOutputFormat} appropriate for the required
+     * format.
      * 
      * <p>
      * Preconditions:
@@ -113,7 +112,7 @@ public class GetMap {
 
         final String outputFormat = request.getFormat();
 
-        GetMapProducer delegate = getDelegate(outputFormat);
+        GetMapOutputFormat delegate = getDelegate(outputFormat);
         // JD:make instance variable in order to release resources later
         // final WMSMapContext map = new WMSMapContext();
         WMSMapContext mapContext = new WMSMapContext(request);
@@ -685,7 +684,7 @@ public class GetMap {
     }
 
     /**
-     * Finds out a {@link GetMapProducer} specialized in generating the requested map format,
+     * Finds out a {@link GetMapOutputFormat} specialized in generating the requested map format,
      * registered in the spring context.
      * 
      * @param outputFormat
@@ -699,9 +698,9 @@ public class GetMap {
      *             if no specialization is configured for the output format specified in
      *             <code>request</code> or if it can't be instantiated
      */
-    private GetMapProducer getDelegate(final String outputFormat) throws ServiceException {
+    private GetMapOutputFormat getDelegate(final String outputFormat) throws ServiceException {
 
-        final GetMapProducer producer = wms.getMapOutputFormat(outputFormat);
+        final GetMapOutputFormat producer = wms.getMapOutputFormat(outputFormat);
         if (producer == null) {
             ServiceException e = new ServiceException("There is no support for creating maps in "
                     + outputFormat + " format", "InvalidFormat");

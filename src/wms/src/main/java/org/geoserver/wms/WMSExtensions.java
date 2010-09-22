@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.springframework.context.ApplicationContext;
-import org.vfny.geoserver.wms.GetMapProducer;
 
 /**
  * Utility class uses to process GeoServer WMS extension points.
@@ -23,14 +22,14 @@ import org.vfny.geoserver.wms.GetMapProducer;
 public class WMSExtensions {
 
     /**
-     * Finds out the registered GetMapProducers in the application context.
+     * Finds out the registered GetMapOutputFormats in the application context.
      */
-    public static List<GetMapProducer> findMapProducers(final ApplicationContext context) {
-        return GeoServerExtensions.extensions(GetMapProducer.class, context);
+    public static List<GetMapOutputFormat> findMapProducers(final ApplicationContext context) {
+        return GeoServerExtensions.extensions(GetMapOutputFormat.class, context);
     }
 
     /**
-     * Finds out a {@link GetMapProducer} specialized in generating the requested map format,
+     * Finds out a {@link GetMapOutputFormat} specialized in generating the requested map format,
      * registered in the spring context.
      * 
      * @param outputFormat
@@ -40,23 +39,23 @@ public class WMSExtensions {
      * @return A specialization of <code>GetMapDelegate</code> wich can produce the requested output
      *         map format, or {@code null} if none is found
      */
-    public static GetMapProducer findMapProducer(final String outputFormat,
+    public static GetMapOutputFormat findMapProducer(final String outputFormat,
             final ApplicationContext applicationContext) {
 
-        final Collection<GetMapProducer> producers;
+        final Collection<GetMapOutputFormat> producers;
         producers = WMSExtensions.findMapProducers(applicationContext);
 
         return findMapProducer(outputFormat, producers);
     }
 
     /**
-     * @return {@link GetMapProducer} for the requested outputFormat, or {@code null}
+     * @return {@link GetMapOutputFormat} for the requested outputFormat, or {@code null}
      */
-    public static GetMapProducer findMapProducer(String outputFormat,
-            Collection<GetMapProducer> producers) {
+    public static GetMapOutputFormat findMapProducer(String outputFormat,
+            Collection<GetMapOutputFormat> producers) {
 
         Set<String> producerFormats;
-        for (GetMapProducer producer : producers) {
+        for (GetMapOutputFormat producer : producers) {
             producerFormats = producer.getOutputFormatNames();
             Set<String> caseInsensitiveFormats = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
             caseInsensitiveFormats.addAll(producerFormats);
