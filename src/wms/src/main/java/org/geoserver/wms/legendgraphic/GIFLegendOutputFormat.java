@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.GetLegendGraphicRequest;
-import org.geoserver.wms.LegendGraphic;
 
 /**
  * Producer of legend graphics in image/gif format.
@@ -22,14 +21,15 @@ public class GIFLegendOutputFormat implements GetLegendGraphicOutputFormat {
     static final String MIME_TYPE = "image/gif";
 
     /**
+     * @return a {@link BufferedImageLegendGraphic}
      * @see GetLegendGraphicOutputFormat#produceLegendGraphic(GetLegendGraphicRequest)
      * @see BufferedImageLegendGraphicBuilder
      */
-    public LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
+    public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
             throws ServiceException {
         BufferedImageLegendGraphicBuilder builder = new BufferedImageLegendGraphicBuilder();
         BufferedImage legendGraphic = builder.buildLegendGraphic(request);
-        BufferedImageLegendGraphic legend = new BufferedImageLegendGraphic(MIME_TYPE, legendGraphic);
+        BufferedImageLegendGraphic legend = new BufferedImageLegendGraphic(legendGraphic);
         return legend;
     }
 

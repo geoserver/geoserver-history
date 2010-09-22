@@ -2,15 +2,12 @@ package org.geoserver.wms.legendgraphic;
 
 import java.awt.image.BufferedImage;
 
-import org.geoserver.wms.LegendGraphic;
-
-public class BufferedImageLegendGraphic extends LegendGraphic {
+public class BufferedImageLegendGraphic {
 
     private BufferedImage legendGraphic;
 
-    public BufferedImageLegendGraphic(final String mimeType, final BufferedImage legendGraphic) {
+    public BufferedImageLegendGraphic(final BufferedImage legendGraphic) {
         this.legendGraphic = legendGraphic;
-        setMimeType(mimeType);
     }
 
     public BufferedImage getLegend() {

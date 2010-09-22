@@ -236,7 +236,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#getLegendGraphic(GetLegendGraphicRequest)
      */
-    public LegendGraphic getLegendGraphic(GetLegendGraphicRequest request) {
+    public Object getLegendGraphic(GetLegendGraphicRequest request) {
         GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context
                 .getBean("wmsGetLegendGraphic");
 
