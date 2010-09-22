@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -34,15 +36,13 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.springframework.web.context.support.GenericWebApplicationContext;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 import com.vividsolutions.jts.geom.Envelope;
 
 
 
 /**
- * Test suite for HTMLImageMapMapProducer GetMapProducer
+ * Test suite for HTMLImageMapMapProducer GetMapOutputFormat
  * 
  * @author Mauro Bartolomeoli
  */
@@ -52,8 +52,8 @@ public class HTMLImageMapTest extends TestCase {
 	
 	private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger(HTMLImageMapTest.class.getPackage().getName());
 	
-	//GetMapProducerFactorySpi mapFactory=null;
-	GetMapProducer mapProducer=null;
+	//GetMapOutputFormatFactorySpi mapFactory=null;
+	GetMapOutputFormat mapProducer=null;
 	
 	CoordinateReferenceSystem WGS84=null;
 		
@@ -79,7 +79,7 @@ public class HTMLImageMapTest extends TestCase {
         
         testDS=getTestDataStore();
         
-        // initializes GetMapProducer factory and actual producer
+        // initializes GetMapOutputFormat factory and actual producer
         //this.mapFactory = getProducerFactory();
         this.mapProducer=getProducerInstance();
         super.setUp();
@@ -91,22 +91,22 @@ public class HTMLImageMapTest extends TestCase {
         super.tearDown();
     }
 	
-	/*protected GetMapProducerFactorySpi getProducerFactory() {
+	/*protected GetMapOutputFormatFactorySpi getProducerFactory() {
 	    return new HTMLImageMapMapProducerFactory();
 	}*/
 	
-	protected GetMapProducer getProducerInstance() {
+	protected GetMapOutputFormat getProducerInstance() {
 		/*if(mapFactory!=null)
 			return mapFactory.createMapProducer("text/html", null);*/
 		return new HTMLImageMapMapProducer();
 		
 	}
 	
-	/*public void testGetMapProducerFactory() throws Exception {		
+	/*public void testGetMapOutputFormatFactory() throws Exception {		
 		assertNotNull(mapFactory);		
 	}*/
 	
-	public void testGetMapProducer() throws Exception {
+	public void testGetMapOutputFormat() throws Exception {
 		assertNotNull(mapProducer);				
 	}
 	
@@ -144,7 +144,7 @@ public class HTMLImageMapTest extends TestCase {
         return s;
     }
 	
-	protected void assertTestResult(String testName, GetMapProducer producer) {
+	protected void assertTestResult(String testName, GetMapOutputFormat producer) {
 		
 		ByteArrayOutputStream out =null;
 		StringBuffer testText=new StringBuffer();
@@ -175,7 +175,7 @@ public class HTMLImageMapTest extends TestCase {
         assertEquals(testText.toString(), s);
     }
 	
-	protected void assertNotBlank(String testName, GetMapProducer producer) {
+	protected void assertNotBlank(String testName, GetMapOutputFormat producer) {
 		
 		ByteArrayOutputStream out =null;
 

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 
 import org.apache.xerces.parsers.SAXParser;
+import org.geoserver.ows.util.ResponseUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -40,27 +41,14 @@ public class SLDValidator {
      * patch
      *
      * @param xml
-     * @param servContext servlet context
+     * @param baseUrl GeoServer base URL
      *
      * @return
      */
-    public List validateSLD(InputStream xml, ServletContext servContext) {
+    public List validateSLD(InputStream xml, String baseUrl) {
         // a riminder not to use the data directory for the schemas
         //String url = GeoserverDataDirectory.getGeoserverDataDirectory(servContext).toString();
-        return validateSLD(new InputSource(xml), servContext);
-
-        /*try {
-                     URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
-                     LOGGER.info("Validating SLD with " + schemaFile.toString());
-
-            return validateSLD(xml, schemaFile.toString());
-        } catch (Exception e) {
-                LOGGER.severe(e.getLocalizedMessage());
-                ArrayList al = new ArrayList();
-            al.add(new SAXException(e));
-
-            return al;
-        }*/
+        return validateSLD(new InputSource(xml), baseUrl);
     }
 
     public static String getErrorMessage(InputStream xml, List errors) {
@@ -196,17 +184,19 @@ public class SLDValidator {
      * validate a .sld against the schema
      *
      * @param xml input stream representing the .sld file
+     * @param baseURL 
      * @param SchemaUrl location of the schemas. Normally use
      *        ".../schemas/sld/StyleLayerDescriptor.xsd"
      *
      * @return list of SAXExceptions (0 if the file's okay)
      */
-    public List validateSLD(InputSource xml, ServletContext servContext) {
+    public List validateSLD(InputSource xml, String baseURL) {
         SAXParser parser = new SAXParser();
 
         try {
+            String schemaLoction = ResponseUtils.buildSchemaURL(baseURL, "sld/StyledLayerDescriptor.xsd");
             // this takes care of spaces in the path to the file
-            URL schemaFile = servContext.getResource("/schemas/sld/StyledLayerDescriptor.xsd");
+            URL schemaFile = new URL(schemaLoction);
 
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info(new StringBuffer("Validating SLD with ").append(schemaFile.toString())

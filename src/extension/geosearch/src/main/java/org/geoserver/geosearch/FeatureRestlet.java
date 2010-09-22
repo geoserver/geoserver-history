@@ -19,6 +19,8 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.GetMapResponse;
 import org.geotools.util.logging.Logging;
 import org.restlet.Restlet;
 import org.restlet.data.ClientInfo;
@@ -29,8 +31,6 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.OutputRepresentation;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 public class FeatureRestlet extends Restlet {
     private static Logger LOGGER = Logging.getLogger("org.geoserver.geosearch");
