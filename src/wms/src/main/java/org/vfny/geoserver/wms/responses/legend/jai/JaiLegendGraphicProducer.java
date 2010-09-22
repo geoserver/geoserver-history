@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.helpers.JAISupport;
 
 
@@ -20,7 +20,7 @@ import org.vfny.geoserver.wms.responses.helpers.JAISupport;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
+class JaiLegendGraphicProducer extends AbstractLegendGraphicOutputFormat {
     /** holds the desired output format MIME type */
     private String outputFormat;
 
@@ -39,7 +39,7 @@ class JaiLegendGraphicProducer extends DefaultRasterLegendProducer {
      * Overrides to force request.isTransparent() to false when the output
      * format is <code>image/jpeg</code>.
      * 
-     * @see DefaultRasterLegendProducer#produceLegendGraphic(GetLegendGraphicRequest)
+     * @see AbstractLegendGraphicOutputFormat#produceLegendGraphic(GetLegendGraphicRequest)
      */
     public void produceLegendGraphic(GetLegendGraphicRequest request)
     throws WmsException {

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -21,7 +21,6 @@ import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
 import org.geoserver.wms.response.LegendUtils;
-import org.geoserver.wms.response.legendgraphic.BufferedImageLegendGraphic;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -45,6 +44,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.wms.WmsException;
+import org.vfny.geoserver.wms.responses.ImageUtils;
 import org.vfny.geoserver.wms.responses.legend.raster.RasterLayerLegendHelper;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -81,7 +81,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Simone Giannecchini, GeoSolutions SAS
  * @version $Id$
  */
-public abstract class DefaultRasterLegendProducer implements GetLegendGraphicOutputFormat {
+public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGraphicOutputFormat {
    
     /** Factory that will resolve symbolizers into rendered styles */
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();
@@ -125,7 +125,7 @@ public abstract class DefaultRasterLegendProducer implements GetLegendGraphicOut
      * Default constructor. Subclasses may provide its own with a String parameter to establish its
      * desired output format, if they support more than one (e.g. a JAI based one)
      */
-    public DefaultRasterLegendProducer() {
+    public AbstractLegendGraphicOutputFormat() {
         super();
     }
 

@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
 import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 
 
@@ -21,7 +21,7 @@ import org.vfny.geoserver.wms.responses.ImageUtils;
  * @author Gabriel Roldan, Axios Engineering
  * @version $Id$
  */
-public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
+public class GifLegendGraphicProducer extends AbstractLegendGraphicOutputFormat {
     /** DOCUMENT ME! */
     static final String MIME_TYPE = "image/gif";
 
@@ -34,7 +34,7 @@ public class GifLegendGraphicProducer extends DefaultRasterLegendProducer {
 
     /**
      * Encodes on the fly the image generated on {@linkPlain
-     * DefaultRasterLegendProducer#produceLegendGraphic(GetLegendGraphicRequest)}
+     * AbstractLegendGraphicOutputFormat#produceLegendGraphic(GetLegendGraphicRequest)}
      * to <code>out</code> in "image/gif" format.
      *
      * @see org.GetLegendGraphicOutputFormat.geoserver.wms.GetLegendGraphicProducer#writeTo(java.io.OutputStream)

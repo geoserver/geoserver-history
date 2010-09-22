@@ -18,8 +18,8 @@ import javax.imageio.stream.MemoryCacheImageOutputStream;
 import javax.media.jai.PlanarImage;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
 import org.geotools.image.ImageWorker;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 
 
 /**
@@ -29,7 +29,7 @@ import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
  * @version $Id: PNGLegendGraphicProducer.java 4776 2006-07-24 14:43:05Z
  *          afabiani $
  */
-class PNGLegendGraphicProducer extends DefaultRasterLegendProducer {
+class PNGLegendGraphicProducer extends AbstractLegendGraphicOutputFormat {
     /**
      * Creates a new JAI based legend producer for creating
      * <code>outputFormat</code> type images.
