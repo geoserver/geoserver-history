@@ -132,7 +132,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
      */
     protected final boolean vectorNameDescription;
 
-    private WMS wms;
+    protected WMS wms;
 
     /**
      * list of formats which correspond to the default formats in which
@@ -193,7 +193,7 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
         this.mapContext = mapContext;
         this.mapLayer = mapLayer;
         
-        this.vectorNameDescription = KMLUtils.getKMAttr(mapContext.getRequest());
+        this.vectorNameDescription = KMLUtils.getKMAttr(mapContext.getRequest(), wms);
     }
 
     public abstract class KMLMapTranslatorSupport extends KMLTranslatorSupport {
@@ -996,9 +996,9 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
             String featureTypeName = mapLayer.getFeatureSource().getSchema()
                     .getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
-            String baseUrl = request.getBaseUrl();
-            return buildURL(baseUrl, 
-                    appendPath("rest", ns.getPrefix(), featureTypeName), null, URLType.SERVICE);
+            String baseURL = request.getBaseUrl();
+            return buildURL(baseURL, appendPath("rest", ns.getPrefix(), featureTypeName), null,
+                    URLType.SERVICE);
         }
 
         /**

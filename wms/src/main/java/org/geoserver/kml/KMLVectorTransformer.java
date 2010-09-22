@@ -10,6 +10,7 @@ import java.util.logging.Level;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -36,8 +37,9 @@ import org.xml.sax.SAXException;
  *
  */
 public class KMLVectorTransformer extends KMLMapTransformer {
-    public KMLVectorTransformer(WMSMapContext mapContext, MapLayer mapLayer) {
-        super(mapContext, mapLayer);
+    
+    public KMLVectorTransformer(WMS wms, WMSMapContext mapContext, MapLayer mapLayer) {
+        super(wms, mapContext, mapLayer);
 
         setNamespaceDeclarationEnabled(false);
     }
@@ -67,7 +69,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
             geometryTransformer.setOmitXMLDeclaration(true);
             geometryTransformer.setNamespaceDeclarationEnabled(true);
 
-            GeoServer config = mapContext.getRequest().getWMS().getGeoServer();
+            GeoServer config = wms.getGeoServer();
             geometryTransformer.setNumDecimals(config.getGlobal().getNumDecimals());
 
             geometryTranslator = 
@@ -82,8 +84,7 @@ public class KMLVectorTransformer extends KMLMapTransformer {
         public void encode(Object o) throws IllegalArgumentException {
             SimpleFeatureCollection features = (SimpleFeatureCollection) o;
             SimpleFeatureType featureType = features.getSchema();
-            Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
-
+            
             if (isStandAlone()) {
                 start( "kml" );
             }

@@ -1,43 +1,50 @@
-/* Copyright (c) 2010 TOPP - www.openplans.org.  All rights reserved.
- * This code is licensed under the GPL 2.0 license, available at the root
- * application directory.
- */
 package org.geoserver.wms.map;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.xml.transform.TransformerException;
+
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.response.Map;
+import org.geotools.xml.transform.TransformerBase;
 import org.springframework.util.Assert;
 
-/**
- * A {@link Response} to handle a {@link RawMap}
- * 
- * @author Gabriel Roldan
- */
-public class RawMapResponse extends Response {
+public class XMLTransformerMapResponse extends Response {
 
-    public RawMapResponse() {
-        super(RawMap.class);
+    public XMLTransformerMapResponse() {
+        super(XMLTransformerMap.class);
+
     }
 
+    /**
+     * @param value
+     *            a {@link XMLTransformerMap}
+     * @param operation
+     *            the operation descriptor
+     * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
+     *      org.geoserver.platform.Operation)
+     */
     @Override
     public String getMimeType(Object value, Operation operation) throws ServiceException {
-        Assert.isInstanceOf(RawMap.class, value);
-        return ((Map) value).getMimeType();
+        return ((XMLTransformerMap) value).getMimeType();
     }
 
     @Override
     public void write(Object value, OutputStream output, Operation operation) throws IOException,
             ServiceException {
-        Assert.isInstanceOf(RawMap.class, value);
-        RawMap map = (RawMap) value;
-        byte[] mapContents = map.getMapContents();
-        output.write(mapContents);
-        output.flush();
+        Assert.isInstanceOf(XMLTransformerMap.class, value);
+
+        XMLTransformerMap map = (XMLTransformerMap) value;
+        TransformerBase transformer = map.getTransformer();
+        Object transformerSubject = map.getTransformerSubject();
+        try {
+            transformer.transform(transformerSubject, output);
+        } catch (TransformerException e) {
+            throw new ServiceException(operation.getId() + " operation failed.", e);
+        }
     }
 
     /**

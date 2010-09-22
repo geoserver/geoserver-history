@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.styling.Style;
@@ -40,7 +41,13 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
      * flag controlling whether the network link should be a direct GWC one when possible
      */
     boolean cachedMode = false;
+
+    private WMS wms;
  
+    public KMLNetworkLinkTransformer(WMS wms){
+        this.wms = wms;
+    }
+    
     public void setCachedMode(boolean cachedMode) {
         this.cachedMode = cachedMode;
     }
@@ -83,8 +90,8 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             List<MapLayerInfo> layers = request.getLayers();
             List<Style> styles = request.getStyles();
             for ( int i = 0; i < layers.size(); i++ ) {
-                if("cached".equals(KMLUtils.getSuperoverlayMode(request)) &&
-                        KMLUtils.isRequestGWCCompatible(request, i)) {
+                if("cached".equals(KMLUtils.getSuperoverlayMode(request, wms)) &&
+                        KMLUtils.isRequestGWCCompatible(request, i, wms)) {
                     encodeGWCLink(request, layers.get(i));
                 } else {
                     encodeLayerSuperOverlay(request, layers, styles, i);

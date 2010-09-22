@@ -6,6 +6,9 @@ package org.geoserver.wms.response;
 
 import java.util.HashMap;
 
+import org.geoserver.wms.WMSMapContext;
+import org.geotools.map.MapLayer;
+
 public abstract class Map {
 
     private String mimeType;
@@ -16,11 +19,11 @@ public abstract class Map {
         return mimeType;
     }
 
-    public void setMimeType(String mimeType) {
+    public void setMimeType(final String mimeType) {
         this.mimeType = mimeType;
     }
 
-    public void setResponseHeader(String name, String value) {
+    public void setResponseHeader(final String name, final String value) {
         if (responseHeaders == null) {
             responseHeaders = new HashMap<String, String>();
         }
@@ -28,7 +31,7 @@ public abstract class Map {
     }
 
     public String[][] getResponseHeaders() {
-        if (responseHeaders == null || responseHeaders.size() > 0) {
+        if (responseHeaders == null || responseHeaders.size() == 0) {
             return null;
         }
         String[][] headers = new String[responseHeaders.size()][2];
@@ -39,5 +42,35 @@ public abstract class Map {
             index++;
         }
         return headers;
+    }
+
+    /**
+     * Utility method to build a standard content disposition header.
+     * <p>
+     * It will concatenate the titles of the various layers in the map context, or generate
+     * "geoserver" instead (in the event no layer title is set).
+     * </p>
+     * <p>
+     * The file name will be followed by the extension provided, for example, to generate layer.pdf
+     * extension will be ".pdf"
+     * </p>
+     */
+    public void setContentDispositionHeader(final WMSMapContext mapContext, final String extension) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < mapContext.getLayerCount(); i++) {
+            MapLayer layer = mapContext.getLayer(i);
+            String title = layer.getTitle();
+            if (title != null && !title.equals("")) {
+                sb.append(title).append("_");
+            }
+        }
+        String value;
+        if (sb.length() > 0) {
+            sb.setLength(sb.length() - 1);
+            value = "attachment; filename=" + sb.toString() + extension;
+        } else {
+            value = "attachment; filename=geoserver" + extension;
+        }
+        setResponseHeader("Content-Disposition", value);
     }
 }

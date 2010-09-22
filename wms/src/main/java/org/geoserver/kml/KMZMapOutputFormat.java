@@ -7,21 +7,23 @@ package org.geoserver.kml;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.xml.transform.TransformerException;
 
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.AbstractMapOutputFormat;
+import org.geoserver.wms.map.BufferedImageMap;
 import org.geoserver.wms.map.PNGMapOutputFormat;
-import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.map.XMLTransformerMap;
 import org.geotools.map.MapLayer;
-import org.vfny.geoserver.wms.WmsException;
+import org.geotools.xml.transform.TransformerBase;
+import org.springframework.util.Assert;
 
 /**
  * Handles a GetMap request that spects a map in KMZ format.
@@ -37,10 +39,6 @@ import org.vfny.geoserver.wms.WmsException;
  * 
  */
 public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
-    /** standard logger */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.responses.wms.kmz");
-
     /**
      * Official KMZ mime type
      */
@@ -49,34 +47,17 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
     public static final String[] OUTPUT_FORMATS = { MIME_TYPE, "application/vnd.google-earth.kmz",
             "kmz", "application/vnd.google-earth.kmz xml" };
 
-    /**
-     * delegating producer for rendering.
-     */
-    PNGMapOutputFormat mapProducer;
+    private WMS wms;
 
-    /**
-     * transformer for creating kml
-     */
-    KMLTransformer transformer;
-
+    public static class KMZMap extends XMLTransformerMap{
+        public KMZMap(TransformerBase transformer, Object subject, String mimeType) {
+            super(transformer, subject, mimeType);
+        }
+    }
+    
     public KMZMapOutputFormat(WMS wms) {
-        super(MIME_TYPE, OUTPUT_FORMATS);
-        mapProducer = new PNGMapOutputFormat(wms);
-    }
-
-    public void abort() {
-        LOGGER.fine("aborting KMZ map response");
-        mapContext = null;
-        mapProducer = null;
-        transformer = null;
-    }
-
-    public String getContentDisposition() {
-        return super.getContentDisposition(".kmz");
-    }
-
-    public String getContentType() throws IllegalStateException {
-        return MIME_TYPE;
+        super(KMZMap.class, MIME_TYPE, OUTPUT_FORMATS);
+        this.wms = wms;
     }
 
     /**
@@ -84,22 +65,23 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
      * writeTo(). This way the output can be streamed directly to the output response and not
      * written to disk first, then loaded in and then sent to the response.
      * 
-     * @param map
+     * @param mapContext
      *            WMSMapContext describing what layers, styles, area of interest etc are to be used
      *            when producing the map.
-     * 
-     * @throws WmsException
-     *             thrown if anything goes wrong during the production.
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public void produceMap() throws WmsException {
-        transformer = new KMLTransformer();
+    public KMZMap produceMap(WMSMapContext mapContext) throws ServiceException,
+            IOException {
+        KMLTransformer transformer = new KMLTransformer(wms);
         transformer.setKmz(true);
-        GetMapRequest request = mapContext.getRequest();
-        WMS wms = request.getWMS();
         Charset encoding = wms.getCharSet();
         transformer.setEncoding(encoding);
         // TODO: use GeoServer.isVerbose() to determine if we should indent?
         transformer.setIndentation(3);
+
+        KMZMap map = new KMZMap(transformer, mapContext, MIME_TYPE);
+        map.setContentDispositionHeader(mapContext, ".kmz");
+        return map;
     }
 
     /**
@@ -107,18 +89,26 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
      * create the map in this case. We produce the map here so we can stream directly to the
      * response output stream, and not have to write to disk, then send it to the stream.
      * 
-     * @Note: Do not close the output stream in this method, it gets closed later on.
-     * 
+     * @param value
+     *            a {@link XMLTransformerMap} as produced by this class'
+     *            {@link #produceMap(WMSMapContext)}
      * @param out
      *            OutputStream to stream the map to.
      * 
-     * @throws ServiceException
-     * @throws IOException
-     * 
+     * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
+     *      org.geoserver.platform.Operation)
      */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
+    @Override
+    public void write(Object value, OutputStream output, Operation operation) throws IOException,
+            ServiceException {
+        Assert.isInstanceOf(XMLTransformerMap.class, value);
+
+        final XMLTransformerMap map = (XMLTransformerMap) value;
+        final KMLTransformer transformer = (KMLTransformer) map.getTransformer();
+        final WMSMapContext mapContext = (WMSMapContext) map.getTransformerSubject();
+
         // wrap the output stream in a zipped one
-        ZipOutputStream zip = new ZipOutputStream(out);
+        ZipOutputStream zip = new ZipOutputStream(output);
 
         // first create an entry for the kml
         ZipEntry entry = new ZipEntry("wms.kml");
@@ -131,36 +121,37 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
             throw (IOException) new IOException().initCause(e);
         }
 
+        final PNGMapOutputFormat mapProducer = new PNGMapOutputFormat(wms);
         // write the images
         for (int i = 0; i < mapContext.getLayerCount(); i++) {
             MapLayer mapLayer = mapContext.getLayer(i);
 
             // create a context for this single layer
-            WMSMapContext mapContext = new WMSMapContext();
-            mapContext.addLayer(mapLayer);
-            mapContext.setRequest(this.mapContext.getRequest());
-            mapContext.setMapHeight(this.mapContext.getMapHeight());
-            mapContext.setMapWidth(this.mapContext.getMapWidth());
-            mapContext.setAreaOfInterest(this.mapContext.getAreaOfInterest());
-            mapContext.setBgColor(this.mapContext.getBgColor());
-            mapContext.setBuffer(this.mapContext.getBuffer());
-            mapContext.setContactInformation(this.mapContext.getContactInformation());
-            mapContext.setKeywords(this.mapContext.getKeywords());
-            mapContext.setAbstract(this.mapContext.getAbstract());
-            mapContext.setTransparent(true);
+            WMSMapContext subContext = new WMSMapContext();
+            subContext.addLayer(mapLayer);
+            subContext.setRequest(mapContext.getRequest());
+            subContext.setMapHeight(mapContext.getMapHeight());
+            subContext.setMapWidth(mapContext.getMapWidth());
+            subContext.setAreaOfInterest(mapContext.getAreaOfInterest());
+            subContext.setBgColor(mapContext.getBgColor());
+            subContext.setBuffer(mapContext.getBuffer());
+            subContext.setContactInformation(mapContext.getContactInformation());
+            subContext.setKeywords(mapContext.getKeywords());
+            subContext.setAbstract(mapContext.getAbstract());
+            subContext.setTransparent(true);
 
             // render the map
-            mapProducer.setMapContext(mapContext);
-            mapProducer.produceMap();
+            BufferedImageMap imageMap = mapProducer.produceMap(subContext);
 
             // write it to the zip stream
             entry = new ZipEntry("layer_" + i + ".png");
             zip.putNextEntry(entry);
-            mapProducer.writeTo(zip);
+            mapProducer.write(imageMap, zip, operation);
             zip.closeEntry();
         }
 
         zip.finish();
         zip.flush();
     }
+
 }

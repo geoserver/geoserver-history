@@ -121,7 +121,7 @@ public class EncodeKML {
      * @throws IOException Thrown if anything goes wrong whilst writing
      */
     public void encodeKML(final OutputStream out) throws IOException {
-        this.writer = new KMLWriter(out, mapContext);
+        this.writer = new KMLWriter(out, mapContext, wms);
         //once KML supports bbox queries against WMS this can be used to 
         //decimate the geometries based on zoom level.
         //writer.setMinCoordDistance(env.getWidth() / 1000);
@@ -160,7 +160,7 @@ public class EncodeKML {
      * @throws IOException
      */
     public void encodeKMZ(final ZipOutputStream out) throws IOException {
-        this.writer = new KMLWriter(out, mapContext);
+        this.writer = new KMLWriter(out, mapContext, wms);
 
         abortProcess = false;
 

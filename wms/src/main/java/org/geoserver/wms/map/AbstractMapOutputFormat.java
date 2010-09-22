@@ -125,7 +125,8 @@ public abstract class AbstractMapOutputFormat extends Response implements GetMap
      * @param operation
      *            The operation being performed.
      * 
-     * @return 2xn string array containing string-pairs of HTTP headers/values
+     * @return {@link Map#getResponseHeaders()}: 2xn string array containing string-pairs of HTTP
+     *         headers/values
      * @see Response#getHeaders(Object, Operation)
      * @see Map#getResponseHeaders()
      */
@@ -135,31 +136,6 @@ public abstract class AbstractMapOutputFormat extends Response implements GetMap
         Map map = (Map) value;
         String[][] responseHeaders = map.getResponseHeaders();
         return responseHeaders;
-    }
-
-    /**
-     * Utility method to build a standard content disposition header. It will concatenate the titles
-     * of the various layers in the map context, or generate "geoserver" instead (in the event no
-     * layer title is set). The file name will be followed by the extension provided, for example,
-     * to generate layer.pdf extension will be ".pdf"
-     * 
-     * @param extension
-     * @return
-     */
-    protected String getContentDisposition(WMSMapContext mapContext, String extension) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < mapContext.getLayerCount(); i++) {
-            MapLayer layer = mapContext.getLayer(i);
-            String title = layer.getTitle();
-            if (title != null && !title.equals("")) {
-                sb.append(title).append("_");
-            }
-        }
-        if (sb.length() > 0) {
-            sb.setLength(sb.length() - 1);
-            return "attachment; filename=" + sb.toString() + extension;
-        }
-        return "attachment; filename=geoserver" + extension;
     }
 
 }
