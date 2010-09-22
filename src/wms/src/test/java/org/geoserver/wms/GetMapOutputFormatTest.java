@@ -35,7 +35,7 @@ public class GetMapOutputFormatTest extends WMSTestSupport {
     public void testGetOutputFormat() {
         List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
         for (GetMapOutputFormat producer : producers) {
-            assertNotNull(producer.getOutputFormat());
+            assertNotNull(producer.getMimeType());
         }
     }
 

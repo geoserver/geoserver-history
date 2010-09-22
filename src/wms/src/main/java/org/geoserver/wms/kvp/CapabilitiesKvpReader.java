@@ -23,11 +23,12 @@ public class CapabilitiesKvpReader extends KvpRequestReader {
         super(GetCapabilitiesRequest.class);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public GetCapabilitiesRequest read(Object req, Map kvp, Map rawKvp) throws Exception {
         GetCapabilitiesRequest request = (GetCapabilitiesRequest) super.read(req, kvp, rawKvp);
-
+        request.setRawKvp(rawKvp);
+        
         if (null == request.getVersion() || request.getVersion().length() == 0) {
             String version = (String) rawKvp.get("WMTVER");
             request.setVersion(version);

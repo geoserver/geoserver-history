@@ -4,13 +4,13 @@
  */
 package org.geoserver.wms.map;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.ows.LocalLayer;
 import org.geoserver.ows.LocalWorkspace;
@@ -42,7 +40,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
+public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map.openlayers");
@@ -55,7 +53,8 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
     /**
      * The formats accepted in a GetMap request for this producer and stated in getcaps
      */
-    private static final String[] OUTPUT_FORMATS = { "application/openlayers", "openlayers" };
+    private static final Set<String> OUTPUT_FORMATS = new HashSet<String>(Arrays.asList(
+            "application/openlayers", "openlayers"));
 
     /**
      * Set of parameters that we can ignore, since they are not part of the OpenLayers WMS request
@@ -78,7 +77,7 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
     /**
      * static freemaker configuration
      */
-    static Configuration cfg;
+    private static Configuration cfg;
 
     static {
         cfg = new Configuration();
@@ -91,29 +90,35 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
     /**
      * wms configuration
      */
-    WMS wms;
-
-    /**
-     * The current template
-     */
-    Template template;
+    private WMS wms;
 
     public OpenLayersMapOutputFormat(WMS wms) {
-        super(MIME_TYPE, OUTPUT_FORMATS);
         this.wms = wms;
     }
 
-    @Override
-    public String getOutputFormat() {
-        return requestedOutputFormat == null ? OUTPUT_FORMATS[0] : requestedOutputFormat;
+    /**
+     * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
+     */
+    public Set<String> getOutputFormatNames() {
+        return OUTPUT_FORMATS;
     }
 
-    @SuppressWarnings("unchecked")
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
+    /**
+     * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
+     */
+    public String getMimeType() {
+        return MIME_TYPE;
+    }
+
+    /**
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+     */
+    public org.geoserver.wms.response.Map produceMap(WMSMapContext mapContext)
+            throws ServiceException, IOException {
         try {
             // create the template
             Template template = cfg.getTemplate("OpenLayersMapTemplate.ftl");
-            HashMap map = new HashMap();
+            HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("context", mapContext);
             map.put("pureCoverage", hasOnlyCoverages(mapContext));
             map.put("styles", styleNames(mapContext));
@@ -134,7 +139,7 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
             }
             map.put("servicePath", servicePath);
 
-            map.put("parameters", getLayerParameter(mapContext.getRequest().getHttpRequest()));
+            map.put("parameters", getLayerParameter(mapContext.getRequest().getRawKvp()));
             map.put("units", getOLUnits(mapContext.getRequest()));
 
             if (mapContext.getLayerCount() == 1) {
@@ -144,13 +149,15 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
             }
 
             template.setOutputEncoding("UTF-8");
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
             template.process(map, new OutputStreamWriter(out, Charset.forName("UTF-8")));
+            byte[] mapContents = out.toByteArray();
+
+            RawMap result = new RawMap(mapContext, mapContents, MIME_TYPE);
+            return result;
         } catch (TemplateException e) {
             throw new WmsException(e);
         }
-
-        mapContext = null;
-        template = null;
     }
 
     /**
@@ -223,15 +230,14 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
      * 
      * 
      * 
-     * @param request
+     * @param rawKvp
      * @return
      */
-    private List getLayerParameter(HttpServletRequest request) {
-        List result = new ArrayList();
-        Enumeration en = request.getParameterNames();
+    private List<Map<String, String>> getLayerParameter(Map<String, String> rawKvp) {
+        List<Map<String, String>> result = new ArrayList<Map<String, String>>(rawKvp.size());
 
-        while (en.hasMoreElements()) {
-            String paramName = (String) en.nextElement();
+        for (Map.Entry<String, String> en : rawKvp.entrySet()) {
+            String paramName = en.getKey();
 
             if (ignoredParameters.contains(paramName.toUpperCase())) {
                 continue;
@@ -239,9 +245,9 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
 
             // this won't work for multi-valued parameters, but we have none so
             // far (they are common just in HTML forms...)
-            Map map = new HashMap();
+            Map<String, String> map = new HashMap<String, String>();
             map.put("name", paramName);
-            map.put("value", request.getParameter(paramName));
+            map.put("value", en.getValue());
             result.add(map);
         }
 
@@ -268,9 +274,6 @@ public class OpenLayersMapOutputFormat extends AbstractMapOutputFormat implement
         double h = areaOfInterest.getHeight();
 
         return ((w > h) ? w : h) / 256;
-    }
-
-    public void produceMap() throws WmsException {
     }
 
 }

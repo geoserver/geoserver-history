@@ -9,7 +9,10 @@ import java.awt.geom.Point2D;
 import java.awt.image.RenderedImage;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -61,13 +64,15 @@ public class QuickTileCache implements TransactionListener {
                     List<Object> oldValues, List<Object> newValues) {
                 tileCache.clear();
             }
+
             public void handleServiceChange(ServiceInfo service, List<String> propertyNames,
                     List<Object> oldValues, List<Object> newValues) {
                 tileCache.clear();
             }
+
             public void reloaded() {
                 tileCache.clear();
-            }        
+            }
         });
     }
 
@@ -86,7 +91,7 @@ public class QuickTileCache implements TransactionListener {
      * @return
      */
     public MetaTileKey getMetaTileKey(GetMapRequest request) {
-        String mapDefinition = buildMapDefinition(request.getHttpRequest());
+        String mapDefinition = buildMapDefinition(request.getRawKvp());
         Envelope bbox = request.getBbox();
         Point2D origin = request.getTilesOrigin();
         MapKey mapKey = new MapKey(mapDefinition, normalize(bbox.getWidth() / request.getWidth()),
@@ -102,9 +107,10 @@ public class QuickTileCache implements TransactionListener {
         return (MetaTileKey) metaTileKeys.unique(key);
     }
 
-    private Envelope getMetaTileEnvelope(GetMapRequest request, Point tileCoords, Point metaTileCoords) {
+    private Envelope getMetaTileEnvelope(GetMapRequest request, Point tileCoords,
+            Point metaTileCoords) {
         Envelope bbox = request.getBbox();
-        double minx = bbox.getMinX() + (metaTileCoords.x - tileCoords.x) * bbox.getWidth(); 
+        double minx = bbox.getMinX() + (metaTileCoords.x - tileCoords.x) * bbox.getWidth();
         double miny = bbox.getMinY() + (metaTileCoords.y - tileCoords.y) * bbox.getHeight();
         double maxx = minx + bbox.getWidth() * 3;
         double maxy = miny + bbox.getHeight() * 3;
@@ -170,15 +176,17 @@ public class QuickTileCache implements TransactionListener {
     /**
      * Turns the request back into a sort of GET request (not url-encoded) for fast comparison
      * 
-     * @param request
+     * @param map
      * @return
      */
-    private String buildMapDefinition(HttpServletRequest request) {
+    private String buildMapDefinition(Map<String, String> map) {
         StringBuffer sb = new StringBuffer();
-        Enumeration en = request.getParameterNames();
 
-        while (en.hasMoreElements()) {
-            String paramName = (String) en.nextElement();
+        Entry<String, String> en;
+        String paramName;
+        for (Iterator<Map.Entry<String, String>> it = map.entrySet().iterator(); it.hasNext();) {
+            en = it.next();
+            paramName = en.getKey();
 
             if (ignoredParameters.contains(paramName.toUpperCase())) {
                 continue;
@@ -186,9 +194,9 @@ public class QuickTileCache implements TransactionListener {
 
             // we don't have multi-valued parameters afaik, otherwise we would
             // have to use getParameterValues and deal with the returned array
-            sb.append(paramName).append('=').append(request.getParameter(paramName));
+            sb.append(paramName).append('=').append(en.getValue());
 
-            if (en.hasMoreElements()) {
+            if (it.hasNext()) {
                 sb.append('&');
             }
         }
@@ -225,8 +233,8 @@ public class QuickTileCache implements TransactionListener {
 
             MapKey other = (MapKey) obj;
 
-            return new EqualsBuilder().append(mapDefinition, other.mapDefinition).append(
-                    resolution, other.resolution).append(origin, other.origin).isEquals();
+            return new EqualsBuilder().append(mapDefinition, other.mapDefinition)
+                    .append(resolution, other.resolution).append(origin, other.origin).isEquals();
         }
 
         public String toString() {
@@ -242,7 +250,7 @@ public class QuickTileCache implements TransactionListener {
         MapKey mapKey;
 
         Point metaTileCoords;
-        
+
         Envelope metaTileEnvelope;
 
         public MetaTileKey(MapKey mapKey, Point metaTileCoords, Envelope metaTileEnvelope) {
@@ -253,14 +261,14 @@ public class QuickTileCache implements TransactionListener {
         }
 
         public Envelope getMetaTileEnvelope() {
-//            This old code proved to be too much unstable, numerically wise, to be used
-//            when very much zoomed in, so we moved to a local meta tile envelope computation
-//            based on the requested tile bounds instead
-//            double minx = mapKey.origin.getX() + (mapKey.resolution * 256 * metaTileCoords.x);
-//            double miny = mapKey.origin.getY() + (mapKey.resolution * 256 * metaTileCoords.y);
-//
-//            return new Envelope(minx, minx + (mapKey.resolution * 256 * 3), miny, miny
-//                    + (mapKey.resolution * 256 * 3));
+            // This old code proved to be too much unstable, numerically wise, to be used
+            // when very much zoomed in, so we moved to a local meta tile envelope computation
+            // based on the requested tile bounds instead
+            // double minx = mapKey.origin.getX() + (mapKey.resolution * 256 * metaTileCoords.x);
+            // double miny = mapKey.origin.getY() + (mapKey.resolution * 256 * metaTileCoords.y);
+            //
+            // return new Envelope(minx, minx + (mapKey.resolution * 256 * 3), miny, miny
+            // + (mapKey.resolution * 256 * 3));
             return metaTileEnvelope;
         }
 
@@ -275,8 +283,8 @@ public class QuickTileCache implements TransactionListener {
 
             MetaTileKey other = (MetaTileKey) obj;
 
-            return new EqualsBuilder().append(mapKey, other.mapKey).append(metaTileCoords,
-                    other.metaTileCoords).isEquals();
+            return new EqualsBuilder().append(mapKey, other.mapKey)
+                    .append(metaTileCoords, other.metaTileCoords).isEquals();
         }
 
         public int getMetaFactor() {

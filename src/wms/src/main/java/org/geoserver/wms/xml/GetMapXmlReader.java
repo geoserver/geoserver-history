@@ -261,26 +261,14 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
     private void handlePostGet(Node rootNode, SLDParser sldParser, GetMapRequest getMapRequest)
             throws Exception {
         // get the GET parmeters
-        HttpServletRequest request = getMapRequest.getHttpRequest();
-
-        String qString = request.getQueryString();
 
         if (LOGGER.isLoggable(Level.FINE)) {
-            LOGGER.fine(new StringBuffer("reading request: ").append(qString).toString());
+            LOGGER.fine(new StringBuffer("reading request: ").append(getMapRequest).toString());
         }
 
-        // Map requestParams = KvpRequestReader.parseKvpSet(qString);
-        Map requestParams = new HashMap();
-        String paramName;
-        String paramValue;
+        // Map<String, String> requestParams = getMapRequest.getRawKvp();
 
-        for (Enumeration pnames = request.getParameterNames(); pnames.hasMoreElements();) {
-            paramName = (String) pnames.nextElement();
-            paramValue = request.getParameter(paramName);
-            requestParams.put(paramName.toUpperCase(), paramValue);
-        }
-
-        GetMapKvpRequestReader kvpReader = new GetMapKvpRequestReader(getWMS());
+        // GetMapKvpRequestReader kvpReader = new GetMapKvpRequestReader(getWMS());
 
         // String version = kvpReader.getRequestVersion();
         // getMapRequest.setVersion(version);
@@ -376,8 +364,9 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * @param styles
      * @throws IOException
      */
-    public static void addStyles(WMS wms, GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer,
-            List<MapLayerInfo> layers, List<Style> styles) throws WmsException, IOException {
+    public static void addStyles(WMS wms, GetMapRequest request, MapLayerInfo currLayer,
+            StyledLayer layer, List<MapLayerInfo> layers, List<Style> styles) throws WmsException,
+            IOException {
         if (currLayer == null) {
             return; // protection
         }
@@ -728,8 +717,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
 
             try {
                 in = new FileInputStream(f);
-                errors = validator.validateSLD(in, getMapRequest.getHttpRequest().getSession()
-                        .getServletContext());
+                errors = validator.validateSLD(in, getMapRequest.getBaseUrl());
             } finally {
                 if (in != null) {
                     in.close();
@@ -771,8 +759,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
 
             try {
                 in = new FileInputStream(f);
-                errors = validator.validateGETMAP(in, getMapRequest.getHttpRequest().getSession()
-                        .getServletContext());
+                errors = validator.validateGETMAP(in);
             } finally {
                 if (in != null) {
                     in.close();

@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.MapDecorationLayout;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -41,7 +42,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id$
  */
-public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements RasterMapOutputFormat{
+public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
+        RasterMapOutputFormat {
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map.pdf");
@@ -265,8 +267,8 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
      * 
      * @see RasterMapProducer#formatImageOutputStream(RenderedImage, OutputStream)
      */
-    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-            throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
+            WMSMapContext mapContext) throws WmsException, IOException {
         // do nothing
     }
 }

@@ -36,11 +36,12 @@ public class DescribeLayerKvpRequestReader extends KvpRequestReader {
      *             on this server instance, or the version parameter was not provided.
      * @see org.geoserver.ows.KvpRequestReader#read(java.lang.Object, java.util.Map, java.util.Map)
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Object read(Object req, Map kvp, Map rawKvp) throws Exception {
 
         DescribeLayerRequest request = (DescribeLayerRequest) super.read(req, kvp, rawKvp);
+        request.setRawKvp(rawKvp);
 
         final String version = request.getVersion();
         if (null == version) {

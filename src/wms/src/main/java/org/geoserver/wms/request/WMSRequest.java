@@ -4,28 +4,13 @@
  */
 package org.geoserver.wms.request;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 import org.geoserver.ows.Dispatcher;
-import org.geoserver.ows.HttpServletRequestAware;
-import org.geoserver.ows.Request;
-import org.geoserver.ows.util.ResponseUtils;
 
 /**
  * Defines a general Request type and provides accessor methods for universal request information.
- * <p>
- * Also provides access to the HttpRequest that spawned this GeoServer Request. This HttpRequest is
- * most often used to lookup information stored in the Web Container (such as the GeoServer Global
- * information).
- * </p>
- * <p>
- * <strong>NOTE</strong>: this class implements the deprecated {@link HttpServletRequestAware}
- * interface because I (gabriel) don't know what's the non deprecated way of obtaining the request
- * baseUrl, that some operation responses need to write the correct schema/DTD location on
- * responses. The request base URL is obtained in these cases through
- * {@link ResponseUtils#baseURL(javax.servlet.http.HttpServletRequest)}, hence the need for a
- * reference to the {@link HttpServletRequest}.
- * </p>
+ * 
  * 
  * @author Rob Hranac, TOPP
  * @author Chris Holmes, TOPP
@@ -34,11 +19,27 @@ import org.geoserver.ows.util.ResponseUtils;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id$
  */
-public class WMSRequest extends Request  {
+public abstract class WMSRequest {
 
     public static final String WMS_SERVICE_TYPE = "WMS";
 
     private String baseUrl;
+
+    private Map<String, String> rawKvp;
+
+    /**
+     * flag indicating if the request is get
+     */
+    protected boolean get;
+
+    /**
+     * The ows service,request,version
+     */
+    protected String service;
+
+    protected String request;
+
+    protected String version;
 
     /**
      * Creates the new request, supplying the request name and the sevlet handling the request.
@@ -53,6 +54,42 @@ public class WMSRequest extends Request  {
         setRequest(request);
     }
 
+    public boolean isGet() {
+        return get;
+    }
+
+    public void setGet(boolean get) {
+        this.get = get;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setRawKvp(Map<String, String> rawKvp) {
+        this.rawKvp = rawKvp;
+    }
+
     /**
      * Set by {@link Dispatcher}
      * 
@@ -64,6 +101,13 @@ public class WMSRequest extends Request  {
 
     public String getBaseUrl() {
         return this.baseUrl;
+    }
+
+    /**
+     * Gets the raw kvp parameters which were used to create the request.
+     */
+    public Map<String, String> getRawKvp() {
+        return rawKvp;
     }
 
     /**

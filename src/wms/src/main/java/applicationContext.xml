@@ -241,10 +241,10 @@
 	<bean id="describeLayerResponse"
 		class="org.geoserver.wms.response.DescribeLayerResponse">
 	</bean>
-	<bean id="getMapResponse"
+	<!--bean id="getMapResponse"
 		class="org.geoserver.wms.response.GetMapResponse">
 		<constructor-arg ref="wms"/>
-	</bean>
+	</bean-->
 	<bean id="getFeatureInfoResponse"
 		class="org.geoserver.wms.response.GetFeatureInfoResponse">
 		<constructor-arg ref="wms"/>
@@ -294,8 +294,13 @@
 	</bean>
 	
 	<!--  
-		Map producers
+		Map producers and responses
 	 -->
+    <bean id="wmsRawMapResponse"
+      singleton="true"
+      class="org.geoserver.wms.map.RawMapResponse">
+    </bean>
+  
 	<bean id="PNGMapProducer"
 		singleton="false"
 		class="org.geoserver.wms.map.PNGMapOutputFormat">
@@ -325,7 +330,7 @@
 		class="org.geoserver.wms.map.JPEGMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-	
+<!--	
 	<bean id="PDFMapProducer"
 		singleton="false"
 		class="org.geoserver.wms.map.PDFMapOutputFormat">
@@ -343,13 +348,13 @@
 		class="org.geoserver.kml.KMZMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-	
+-->	
 	<bean id="OpenLayersMapProducer"
 		singleton="false"
 		class="org.geoserver.wms.map.OpenLayersMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-
+<!-- 
 	<bean id="AtomGeoRSSMapProducer"
 		singleton="false"
 		class="org.geoserver.wms.map.georss.AtomGeoRSSMapOutputFormat">
@@ -367,7 +372,7 @@
 		class="org.geoserver.wms.svg.SVGMapOutputFormatProxy">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-	
+-->	
  	
 	<!-- http url mapping -->
 	<bean id="kmlURLMapping" 

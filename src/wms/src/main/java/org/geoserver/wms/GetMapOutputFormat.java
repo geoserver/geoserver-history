@@ -5,26 +5,28 @@
 package org.geoserver.wms;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Set;
 
+import org.geoserver.ows.Response;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.response.Map;
-import org.geotools.map.MapContext;
 
 /**
- * Provides the skeleton for producers of map image, as required by the GetMap WMS request.
- * 
+ * Produces and maps for an specific output format.
  * <p>
- * A GetMapProducer implementation is meant to produce one and only one type of content, whose
+ * A GetMapOutputFormat implementation is meant to produce one and only one type of content, whose
  * normative MIME-Type is advertised through the {@link #getContentType()} method. Yet, the
- * {@link #getOutputFormat()} method is meant to advertise the map format in the capabilities
- * document and may or may not match the mime type.
+ * {@link #getOutputFormatNames()} method is meant to advertise the map format in the capabilities
+ * document and may or may not match the MIME-Type.
  * </p>
  * <p>
  * To incorporate a new producer specialized in a given output format, there must be a
- * {@linkplain org.vfny.geoserver.wms.responses.GetMapProducer} registered in the spring context
- * that can provide instances of that concrete implementation.
+ * {@code GetMapOutputFormat} registered in the Spring context that can provide instances of that
+ * concrete implementation, as well as a {@link Response} Spring bean that can encode the produced
+ * {@link Map}. Hence, it's counterpart {@code Response} implementation
+ * {@link Response#canHandle(org.geoserver.platform.Operation) canHandle(Operation)} method must be
+ * implemented in a consistent way with the output format's {@link #getMimeType()} and
+ * {@link #getOutputFormatNames()}.
  * </p>
  * 
  * <p>
@@ -48,67 +50,7 @@ public interface GetMapOutputFormat {
      * @throws ServiceException
      *             something goes wrong
      */
-    Map produceMap(WMSMapContext mapContext) throws ServiceException;
-
-    /**
-     * Writes the map created in produceMap to the destination stream, though it could be used to
-     * encode the map to the proper output format, provided that there are almost no risk that the
-     * encoding fails.
-     * 
-     * @param out
-     *            an open stream where to send the produced legend graphic to.
-     * 
-     * @throws ServiceException
-     *             if something else goes wrong.
-     * @throws IOException
-     *             if something goes wrong in the actual process of writing content to
-     *             <code>out</code>.
-     */
-    void writeTo(OutputStream out) throws ServiceException, IOException;
-
-    /**
-     * asks the legend graphic producer to stop processing since it will be no longer needed (for
-     * example, because the request was interrupted by the user)
-     */
-    void abort();
-
-    /**
-     * Gets the {@link MapContext} for this MapProducer.
-     * 
-     * @return the {@link WMSMapContext} for this map producer.
-     */
-    public WMSMapContext getMapContext();
-
-    /**
-     * Returns the MIME type of the content to be written at <code>writeTo(OutputStream)</code>.
-     * <p>
-     * The value of this method is meant to be required after the map has been {@link #produceMap()
-     * produced} in order to set the content type HTTP response header, yet this value is not going
-     * to be exposed in the capabilities document. If the output format MIME type coincides with one
-     * of the desired output format names for the GetCapabilities document, an implementation must
-     * ensure its returned in the list of format names at {@link #getOutputFormatNames()}.
-     * </p>
-     * <p>
-     * This is so to give implementations more freedom over what the actual MIME type for the
-     * response is, since it may be the case this MIME Type may vary depending on certain conditions
-     * only the GeMapProducer implementation may know.
-     * </p>
-     * 
-     * @return the output format
-     */
-    public String getContentType() throws java.lang.IllegalStateException;
-
-    /**
-     * Gets the name of the output format the GetMap request was provided with.
-     * <p>
-     * If not explicitly set through {@link #setOutputFormat(String)}, defaults to
-     * {@link #getContentType()}.
-     * </p>
-     * 
-     * @return the name of the outputformat parameter issued by the GetMap request.
-     * @see #getOutputFormatNames()
-     */
-    public String getOutputFormat();
+    public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException;
 
     /**
      * Returns the list of content type aliases for this output format, that are the ones to be used
@@ -124,15 +66,9 @@ public interface GetMapOutputFormat {
     public Set<String> getOutputFormatNames();
 
     /**
-     * Sets the MIME type of the output image.
+     * Returns
      * 
-     * @param format
-     *            the desired output map format, one of {@link #getContentType()} or
-     *            {@link #getOutputFormatNames()}.
-     * @throws IllegalArgumentException
-     *             if format is not supported by this GetMapProducer
+     * @return
      */
-    public void setOutputFormat(String format);
-
-    void write(org.geoserver.wms.response.Map map, OutputStream output);
+    public String getMimeType();
 }

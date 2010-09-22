@@ -44,8 +44,10 @@ import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
 import javax.media.jai.operator.MosaicDescriptor;
 
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
@@ -67,6 +69,7 @@ import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.MapLayer;
 import org.geotools.parameter.Parameter;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.renderer.GTRenderer;
 import org.geotools.renderer.lite.RendererUtilities;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.renderer.lite.gridcoverage2d.GridCoverageRenderer;
@@ -79,6 +82,7 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.util.Assert;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.WmsException;
 
@@ -88,8 +92,7 @@ import org.vfny.geoserver.wms.WmsException;
  * 
  * <p>
  * This class does the job of producing a BufferedImage using geotools LiteRenderer, so it should be
- * enough for a subclass to implement {@linkPlain #formatImageOutputStream(String, BufferedImage,
- * OutputStream)}
+ * enough for a subclass to implement {@linkPlain #formatImageOutputStrea}
  * </p>
  * 
  * <p>
@@ -107,7 +110,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Simone Giannecchini, GeoSolutions
  * @version $Id$
  */
-public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutputFormat implements
+public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputFormat implements
         RasterMapOutputFormat {
     private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
 
@@ -143,9 +146,6 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         return arr;
     }
 
-    /** WMS Service configuration * */
-    protected final WMS wms;
-
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map");
@@ -153,13 +153,11 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
 
-    /** The MapDecorationLayout instance **/
-    private MapDecorationLayout layout;
+    /** WMS Service configuration * */
+    protected final WMS wms;
 
     /** true iff this image is metatiled */
     private boolean tiled = false;
-
-    private List<GridCoverage2D> renderedCoverages = new ArrayList<GridCoverage2D>();
 
     /**
      * 
@@ -174,30 +172,35 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
      *            generated
      */
     public DefaultRasterMapOutputFormat(String mime, WMS wms) {
-        super(mime);
+        super(BufferedImageMap.class, mime);
         this.wms = wms;
     }
 
     public DefaultRasterMapOutputFormat(String mime, String[] outputFormats, WMS wms) {
-        super(mime, outputFormats);
+        super(BufferedImageMap.class, mime, outputFormats);
         this.wms = wms;
     }
 
     /**
-     * Writes the image to the client.
+     * Writes the image to the given destination.
      * 
-     * @param out
-     *            The output stream to write to.
-     * 
-     * @throws org.vfny.geoserver.ServiceException
-     *             DOCUMENT ME!
-     * @throws java.io.IOException
-     *             DOCUMENT ME!
+     * @param value
+     *            must be a {@link BufferedImageMap}
+     * @see GetMapOutputFormat#write(org.geoserver.wms.response.Map, OutputStream)
      */
-    public void writeTo(OutputStream out) throws ServiceException, java.io.IOException {
+    @Override
+    public void write(final Object value, final OutputStream output, final Operation operation)
+            throws IOException, ServiceException {
+
+        Assert.isInstanceOf(BufferedImageMap.class, value);
+
+        final BufferedImageMap imageMap = (BufferedImageMap) value;
+        final RenderedImage image = imageMap.getImage();
+        final List<GridCoverage2D> renderedCoverages = imageMap.getRenderedCoverages();
+        final WMSMapContext mapContext = imageMap.getMapContext();
         try {
-            formatImageOutputStream(this.image, out);
-            out.flush();
+            formatImageOutputStream(image, output, mapContext);
+            output.flush();
         } finally {
             // let go of the coverages created for rendering
             for (GridCoverage2D coverage : renderedCoverages) {
@@ -213,7 +216,6 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         }
     }
 
-    @SuppressWarnings("unchecked")
     static void disposePlanarImageChain(PlanarImage pi, HashSet<PlanarImage> visited) {
         Vector sinks = pi.getSinks();
         if (sinks != null) {
@@ -245,15 +247,13 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
      * @param map
      *            The information on the types requested.
      * 
-     * @throws WmsException
+     * @throws ServiceException
      *             For any problems.
+     * @see GetMapOutputFormat#produceMap(WMSMapContext)
      */
-    public void produceMap() throws WmsException {
-        try {
-            findDecorationLayout(mapContext);
-        } catch (Exception e) {
-            throw new WmsException(e);
-        }
+    public BufferedImageMap produceMap(WMSMapContext mapContext) throws ServiceException {
+
+        final MapDecorationLayout layout = findDecorationLayout(mapContext);
 
         Rectangle paintArea = new Rectangle(0, 0, mapContext.getMapWidth(),
                 mapContext.getMapHeight());
@@ -312,17 +312,20 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         // TODO: handle meta-tiling
         // TODO: how to handle timeout here? I guess we need to move it into the dispatcher?
 
+        RenderedImage image = null;
         // fast path for pure coverage rendering
         if (mapContext.getLayerCount() == 1 && mapContext.getAngle() == 0.0) {
+            List<GridCoverage2D> renderedCoverages = new ArrayList<GridCoverage2D>(2);
             try {
-                RenderedImage image = directRasterRender(mapContext, 0);
-
-                if (image != null) {
-                    this.image = image;
-                    return;
-                }
+                image = directRasterRender(mapContext, 0, renderedCoverages);
             } catch (Exception e) {
                 throw new WmsException("Error rendering coverage on the fast path", null, e);
+            }
+
+            if (image != null) {
+                BufferedImageMap result = new BufferedImageMap(mapContext, image, getMimeType());
+                result.setRenderedCoverages(renderedCoverages);
+                return result;
             }
         }
 
@@ -384,6 +387,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         graphic.setRenderingHints(hintsMap);
 
         RenderingHints hints = new RenderingHints(hintsMap);
+        GTRenderer renderer;
         if (DefaultWebMapService.useShapefileRenderer()) {
             renderer = new ShapefileRenderer();
         } else {
@@ -443,10 +447,10 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         renderer.setRendererHints(rendererParams);
 
         // if abort already requested bail out
-        if (this.abortRequested) {
-            graphic.dispose();
-            return;
-        }
+        // if (this.abortRequested) {
+        // graphic.dispose();
+        // return null;
+        // }
 
         // enforce no more than x rendering errors
         int maxErrors = wms.getMaxRenderingErrors();
@@ -469,11 +473,12 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
                     mapContext.getRenderingTransform());
 
             // apply watermarking
-            try {
-                if (layout != null)
-                    this.layout.paint(graphic, paintArea, mapContext);
-            } catch (Exception e) {
-                throw new WmsException("Problem occurred while trying to watermark data", "", e);
+            if (layout != null) {
+                try {
+                    layout.paint(graphic, paintArea, mapContext);
+                } catch (Exception e) {
+                    throw new WmsException("Problem occurred while trying to watermark data", "", e);
+                }
             }
         } finally {
             timeout.stop();
@@ -500,30 +505,24 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
                     errorChecker.getLastException());
         }
 
-        if (!this.abortRequested) {
-            if (palette != null && palette.getMapSize() < 256)
-                this.image = optimizeSampleModel(preparedImage);
-            else
-                this.image = preparedImage;
-        }
+        // if (!this.abortRequested) {
+        if (palette != null && palette.getMapSize() < 256)
+            image = optimizeSampleModel(preparedImage);
+        else
+            image = preparedImage;
+        // }
+
+        BufferedImageMap map = new BufferedImageMap(mapContext, image, getMimeType());
+        return map;
     }
 
-    /**
-     * Set the Watermark Painter.
-     * 
-     * @param wmPainter
-     *            the wmPainter to set
-     */
-    public void setDecorationLayout(MapDecorationLayout layout) {
-        this.layout = layout;
-    }
-
-    public void findDecorationLayout(WMSMapContext mapContext) throws Exception {
+    public MapDecorationLayout findDecorationLayout(WMSMapContext mapContext) {
         String layoutName = null;
         if (mapContext.getRequest().getFormatOptions() != null) {
             layoutName = (String) mapContext.getRequest().getFormatOptions().get("layout");
         }
 
+        MapDecorationLayout layout = null;
         if (layoutName != null) {
             try {
                 File layoutDir = GeoserverDataDirectory.findConfigDir(
@@ -533,7 +532,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
                     File layoutConfig = new File(layoutDir, layoutName + ".xml");
 
                     if (layoutConfig.exists() && layoutConfig.canRead()) {
-                        this.layout = MapDecorationLayout.fromFile(layoutConfig, tiled);
+                        layout = MapDecorationLayout.fromFile(layoutConfig, tiled);
                     } else {
                         LOGGER.log(Level.WARNING, "Unknown layout requested: " + layoutName);
                     }
@@ -553,6 +552,8 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         if (watermark != null) {
             layout.addBlock(watermark);
         }
+
+        return layout;
     }
 
     public static MapDecorationLayout.Block getWatermark(WMSInfo wms) {
@@ -672,8 +673,9 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
      * @param originalImage
      * @return
      */
-    protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage) {
-        return ImageUtils.forceIndexed8Bitmask(originalImage, mapContext.getPaletteInverter());
+    protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage,
+            InverseColorMapOp paletteInverter) {
+        return ImageUtils.forceIndexed8Bitmask(originalImage, paletteInverter);
     }
 
     /**
@@ -707,13 +709,16 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
      * 
      * @param mapContext
      *            The map definition (used for map size and transparency/color management)
-     * @param the
-     *            layer that is supposed to contain a coverage
+     * @param layerIndex
+     *            the layer that is supposed to contain a coverage
+     * @param renderedCoverages
+     *            placeholder where to deposit rendered coverages, if any, so that they can be
+     *            disposed later
      * @return the result of rendering the coverage, or null if there was no coverage, or the
      *         coverage could not be renderer for some reason
      */
-    private RenderedImage directRasterRender(WMSMapContext mapContext, int layerIndex)
-            throws IOException {
+    private RenderedImage directRasterRender(WMSMapContext mapContext, int layerIndex,
+            List<GridCoverage2D> renderedCoverages) throws IOException {
         // extract the raster symbolizers and see if we can use the fast path
         List<RasterSymbolizer> symbolizers = getRasterSymbolizers(mapContext, 0);
         if (symbolizers.size() != 1)
@@ -772,6 +777,8 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
                 mapContext.getMapHeight());
         final AffineTransform worldToScreen = RendererUtilities.worldToScreenTransform(
                 mapContext.getAreaOfInterest(), rasterArea);
+
+        RenderedImage image = null;
         try {
             final GridCoverage2D coverage = readBestCoverage(mapContext, reader, params,
                     rasterArea, interpolation);
@@ -809,8 +816,9 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractRasterMapOutp
         }
 
         // check if we managed to process the coverage into an image
-        if (image == null)
+        if (image == null) {
             return null;
+        }
         // We need to find the background color expressed in terms of image color components
         // (which depends on the color model nature, the input and output transparency)
         // TODO: there must be a more general way to turn a color into the

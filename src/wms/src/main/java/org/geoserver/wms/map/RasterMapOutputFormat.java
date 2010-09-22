@@ -8,6 +8,7 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
@@ -21,13 +22,6 @@ import org.vfny.geoserver.wms.WmsException;
  * 
  */
 public interface RasterMapOutputFormat extends GetMapOutputFormat {
-    /**
-     * Returns the raw image generated in the {@link GetMapOutputFormat#produceMap(WMSMapContext)}
-     * step
-     * 
-     * @return
-     */
-    public RenderedImage getImage();
 
     /**
      * Transforms a rendered image into the appropriate format, streaming to the output stream.
@@ -40,6 +34,13 @@ public interface RasterMapOutputFormat extends GetMapOutputFormat {
      * @throws WmsException
      * @throws IOException
      */
-    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-            throws WmsException, IOException;
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
+            WMSMapContext mapContext) throws WmsException, IOException;
+
+    /**
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+     */
+    public abstract BufferedImageMap produceMap(WMSMapContext mapContext) throws ServiceException,
+            IOException;
+
 }

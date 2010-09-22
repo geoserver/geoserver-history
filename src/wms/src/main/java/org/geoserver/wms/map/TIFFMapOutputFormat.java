@@ -16,6 +16,9 @@ import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.request.GetMapRequest;
+import org.geotools.image.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.WmsException;
 
 /**
@@ -26,6 +29,7 @@ import org.vfny.geoserver.wms.WmsException;
  * 
  */
 public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
+
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map");
@@ -33,16 +37,18 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
     private final static ImageWriterSpi writerSPI = new it.geosolutions.imageioimpl.plugins.tiff.TIFFImageWriterSpi();
 
     /** the only MIME type this map producer supports */
-    static final String MIME_TYPE = "image/tiff";
+    private static final String MIME_TYPE = "image/tiff";
 
-    private static final String[] OUTPUT_FORMATS = { MIME_TYPE, "image/tiff8" };
+    private static final String IMAGE_TIFF8 = "image/tiff8";
+
+    private static final String[] OUTPUT_FORMATS = { MIME_TYPE, IMAGE_TIFF8 };
 
     /**
      * Creates a {@link GetMapProducer} to encode the {@link RenderedImage} generated in
      * <code>outputFormat</code> format.
      * 
-     * @param outputFormat
-     *            the output format.
+     * @param wms
+     *            service facade
      */
     public TIFFMapOutputFormat(WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS, wms);
@@ -63,8 +69,8 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
      * @throws IOException
      *             if the image writing fails.
      */
-    public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-            throws WmsException, IOException {
+    public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
+            WMSMapContext mapContext) throws WmsException, IOException {
         // getting a writer
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Getting a writer for tiff");
@@ -84,12 +90,13 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
         }
 
         // get the one required by the GetMapRequest
-        final String format = getOutputFormat();
+        GetMapRequest request = mapContext.getRequest();
+        final String format = request.getFormat();
 
         // do we want it to be 8 bits?
-        if (format.equalsIgnoreCase("image/tiff8")
-                || (this.mapContext.getPaletteInverter() != null)) {
-            image = forceIndexed8Bitmask(image);
+        if (format.equalsIgnoreCase(IMAGE_TIFF8) || (mapContext.getPaletteInverter() != null)) {
+            InverseColorMapOp paletteInverter = mapContext.getPaletteInverter();
+            image = forceIndexed8Bitmask(image, paletteInverter);
         }
 
         // write it out
