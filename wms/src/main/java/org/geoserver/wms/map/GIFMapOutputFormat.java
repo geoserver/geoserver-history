@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map.gif;
+package org.geoserver.wms.map;
 
 import java.awt.image.RenderedImage;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import org.geoserver.wms.WMS;
 import org.geotools.image.ImageWorker;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
 
 
 /**
@@ -21,12 +20,12 @@ import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id
  */
-public final class GIFMapProducer extends DefaultRasterMapProducer {
+public final class GIFMapOutputFormat extends DefaultRasterMapOutputFormat {
    
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/gif";
 
-    public GIFMapProducer(WMS wms) {
+    public GIFMapOutputFormat(WMS wms) {
         super(MIME_TYPE, wms);
     }
 

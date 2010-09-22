@@ -1,9 +1,6 @@
-package org.vfny.geoserver.wms.responses.map.gif;
+package org.geoserver.wms.map;
 
 import junit.framework.Test;
-
-import org.vfny.geoserver.wms.responses.DefaultRasterMapProducer;
-import org.vfny.geoserver.wms.responses.map.DefaultRasterMapProducerTest;
 
 public class GifMapProducerTest extends DefaultRasterMapProducerTest {
     
@@ -14,8 +11,8 @@ public class GifMapProducerTest extends DefaultRasterMapProducerTest {
         return new OneTimeTestSetup(new GifMapProducerTest());
     }
     
-    protected DefaultRasterMapProducer getProducerInstance() {
-        return new GIFMapProducer(getWMS()); 
+    protected DefaultRasterMapOutputFormat getProducerInstance() {
+        return new GIFMapOutputFormat(getWMS()); 
     }
 
 }

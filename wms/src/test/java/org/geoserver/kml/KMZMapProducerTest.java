@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.map.kml;
+package org.geoserver.kml;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,67 +18,67 @@ import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.request.GetMapRequest;
 
 public class KMZMapProducerTest extends WMSTestSupport {
-	KMZMapProducer mapProducer;
-	
-	/**
+    KMZMapOutputFormat mapProducer;
+
+    /**
      * This is a READ ONLY TEST so we can use one time setup
      */
     public static Test suite() {
         return new OneTimeTestSetup(new KMZMapProducerTest());
     }
 
-	protected void setUpInternal() throws Exception {
-		super.setUpInternal();
+    protected void setUpInternal() throws Exception {
+        super.setUpInternal();
 
-		// create a map context
-		WMSMapContext mapContext = new WMSMapContext();
-		mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
-		mapContext.addLayer(createMapLayer(MockData.BUILDINGS));
-		mapContext.setMapHeight(256);
-		mapContext.setMapWidth(256);
+        // create a map context
+        WMSMapContext mapContext = new WMSMapContext();
+        mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
+        mapContext.addLayer(createMapLayer(MockData.BUILDINGS));
+        mapContext.setMapHeight(256);
+        mapContext.setMapWidth(256);
 
-		GetMapRequest getMapRequest = createGetMapRequest(new QName[] {
-				MockData.BASIC_POLYGONS, MockData.BUILDINGS });
-		mapContext.setRequest(getMapRequest);
+        GetMapRequest getMapRequest = createGetMapRequest(new QName[] { MockData.BASIC_POLYGONS,
+                MockData.BUILDINGS });
+        mapContext.setRequest(getMapRequest);
 
-		// create hte map producer
-		mapProducer = new KMZMapProducer(getWMS());
-		mapProducer.setMapContext(mapContext);
-		mapProducer.produceMap();
-	}
+        // create hte map producer
+        mapProducer = new KMZMapOutputFormat(getWMS());
+        mapProducer.setMapContext(mapContext);
+        mapProducer.produceMap();
+    }
 
-	public void test() throws Exception {
-		// create the kmz
-		File temp = File.createTempFile("test", "kmz");
-		temp.delete();
-		temp.mkdir();
-		temp.deleteOnExit();
+    public void test() throws Exception {
+        // create the kmz
+        File temp = File.createTempFile("test", "kmz");
+        temp.delete();
+        temp.mkdir();
+        temp.deleteOnExit();
 
-		File zip = new File(temp, "kmz.zip");
-		zip.deleteOnExit();
+        File zip = new File(temp, "kmz.zip");
+        zip.deleteOnExit();
 
-		FileOutputStream output = new FileOutputStream(zip);
-		mapProducer.writeTo(output);
+        FileOutputStream output = new FileOutputStream(zip);
+        mapProducer.writeTo(output);
 
-		output.flush();
-		output.close();
+        output.flush();
+        output.close();
 
-		assertTrue(zip.exists());
+        assertTrue(zip.exists());
 
-		// unzip and test it
-		ZipFile zipFile = new ZipFile(zip);
+        // unzip and test it
+        ZipFile zipFile = new ZipFile(zip);
 
-		assertNotNull(zipFile.getEntry("wms.kml"));
-		assertNotNull(zipFile.getEntry("layer_0.png"));
-		assertNotNull(zipFile.getEntry("layer_1.png"));
+        assertNotNull(zipFile.getEntry("wms.kml"));
+        assertNotNull(zipFile.getEntry("layer_0.png"));
+        assertNotNull(zipFile.getEntry("layer_1.png"));
 
-		zipFile.close();
-	}
+        zipFile.close();
+    }
 
     public void testAbort() throws Exception {
         mapProducer.abort();
         FileOutputStream output = null;
-        try{
+        try {
             File temp = File.createTempFile("test", "kmz");
             temp.delete();
             temp.mkdir();
@@ -88,11 +88,12 @@ public class KMZMapProducerTest extends WMSTestSupport {
 
             output = new FileOutputStream(zip);
             mapProducer.writeTo(output);
-        } catch (NullPointerException we){
+        } catch (NullPointerException we) {
             // TODO: Should be a WmsException, right?
             return;
         } finally {
-            if (output != null) output.close();
+            if (output != null)
+                output.close();
         }
 
         fail();

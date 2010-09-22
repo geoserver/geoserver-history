@@ -41,7 +41,7 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id$
  */
-class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProducer {
+public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements RasterMapOutputFormat{
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map.pdf");
@@ -56,7 +56,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProdu
 
     WMS wms;
 
-    public PDFMapProducer(WMS wms) {
+    public PDFMapOutputFormat(WMS wms) {
         super(MIME_TYPE);
         this.wms = wms;
     }
@@ -180,7 +180,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements RasterMapProdu
                     mapContext.getRenderingTransform());
 
             // render the watermark
-            MapDecorationLayout.Block watermark = DefaultRasterMapProducer.getWatermark(wms
+            MapDecorationLayout.Block watermark = DefaultRasterMapOutputFormat.getWatermark(wms
                     .getServiceInfo());
 
             if (watermark != null) {

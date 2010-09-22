@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.kml;
+package org.geoserver.kml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

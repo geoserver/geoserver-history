@@ -25,7 +25,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @since 1.4.x
  * 
  */
-public final class TiffMapProducer extends DefaultRasterMapProducer {
+public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map");
@@ -44,7 +44,7 @@ public final class TiffMapProducer extends DefaultRasterMapProducer {
      * @param outputFormat
      *            the output format.
      */
-    public TiffMapProducer(WMS wms) {
+    public TIFFMapOutputFormat(WMS wms) {
         super(MIME_TYPE, OUTPUT_FORMATS, wms);
     }
 

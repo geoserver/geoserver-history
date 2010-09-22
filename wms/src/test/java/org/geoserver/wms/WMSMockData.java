@@ -25,7 +25,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.map.RasterMapProducer;
+import org.geoserver.wms.map.RasterMapOutputFormat;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.GetMapResponse;
 import org.geotools.data.DataStore;
@@ -159,7 +159,7 @@ public class WMSMockData {
      * @author Gabriel Roldan
      * @version $Id$
      */
-    public static class DummyRasterMapProducer implements RasterMapProducer {
+    public static class DummyRasterMapProducer implements RasterMapOutputFormat {
 
         public static final String MIME_TYPE = "image/dummy";
 

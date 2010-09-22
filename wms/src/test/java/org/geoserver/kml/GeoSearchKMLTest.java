@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.map.kml;
+package org.geoserver.kml;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
@@ -10,7 +10,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testOutput() throws Exception {
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,0,90&srs=EPSG:4326" +  
@@ -26,7 +26,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testDataRegionator() throws Exception{
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
@@ -47,7 +47,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
      public void testGeometryRegionator() throws Exception{
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
@@ -65,7 +65,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
      public void testRandomRegionator() throws Exception{
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
@@ -84,7 +84,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testBogusRegionator() throws Exception {
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + MockData.DIVIDED_ROUTES.getPrefix() + ":" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&styles=" + MockData.DIVIDED_ROUTES.getLocalPart() + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
@@ -100,7 +100,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testBigGeometries() throws Exception {
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + CENTERED_POLY.getPrefix() + ":" + CENTERED_POLY.getLocalPart() + 
             "&styles=" + 
             "&height=1024&width=1024&srs=EPSG:4326" +  
@@ -121,7 +121,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testStrategyChangesStuff() throws Exception {
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + TILE_TESTS.getPrefix() + ":" + TILE_TESTS.getLocalPart() + 
             "&bbox=-180,-90,0,90&styles=" + 
             "&height=1024&width=1024&srs=EPSG:4326";
@@ -158,7 +158,7 @@ public class GeoSearchKMLTest extends RegionatingTestSupport {
     public void testDuplicateAttribute() throws Exception {
         final String path = 
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + KMLMapProducer.MIME_TYPE + 
+            "&format=" + KMLMapOutputFormat.MIME_TYPE + 
             "&layers=" + TILE_TESTS.getPrefix() + ":" + TILE_TESTS.getLocalPart() + 
             "&bbox=-180,-90,0,90&styles=" + 
             "&height=1024&width=1024&srs=EPSG:4326";

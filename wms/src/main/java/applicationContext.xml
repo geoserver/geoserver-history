@@ -298,73 +298,73 @@
 	 -->
 	<bean id="PNGMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.png.PNGMapProducer">
+		class="org.geoserver.wms.map.PNGMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="GeoTiffMapProducer" 
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.geotiff.GeoTiffMapProducer">
+		class="org.geoserver.wms.map.GeoTIFFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
    	<bean id="TiffMapProducer" 
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.tiff.TiffMapProducer">
+		class="org.geoserver.wms.map.TIFFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
  	</bean>
 
 	<bean id="GIFMapProducer" 
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.gif.GIFMapProducer">
+		class="org.geoserver.wms.map.GIFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="JPEGMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.jpeg.JPEGMapProducer">
+		class="org.geoserver.wms.map.JPEGMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 	
-	<bean id="PDFMapProducerFactory"
+	<bean id="PDFMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.pdf.PDFMapProducer">
+		class="org.geoserver.wms.map.PDFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 	
 	<bean id="KMLMapProducer" 
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.kml.KMLMapProducer">
+		class="org.geoserver.kml.KMLMapOutputFormat">
       <constructor-arg index="0" ref="wms"/>
 	</bean>
 	
 	<bean id="KMZMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.kml.KMZMapProducer">
+		class="org.geoserver.kml.KMZMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 	
 	<bean id="OpenLayersMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.openlayers.OpenLayersMapProducer">
+		class="org.geoserver.wms.map.OpenLayersMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="AtomGeoRSSMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.georss.AtomGeoRSSMapProducer">
+		class="org.geoserver.wms.map.georss.AtomGeoRSSMapOutputFormat">
         <constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="RSSGeoRSSMapProducer"
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.georss.RSSGeoRSSMapProducer">
+		class="org.geoserver.wms.map.georss.RSSGeoRSSMapOutputFormat">
         <constructor-arg index="0" ref="wms"/>
 	</bean>
 
 	<bean id="SVGMapProducer" 
 		singleton="false"
-		class="org.vfny.geoserver.wms.responses.map.svg.SvgMapProducerProxy">
+		class="org.geoserver.wms.svg.SVGMapOutputFormatProxy">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
 	
@@ -400,38 +400,38 @@
  	</bean>
   
     <!-- the meta tile cache, registered here because it's also a WFS transaction listener -->
-    <bean id="metaTileCache" class="org.vfny.geoserver.wms.responses.map.metatile.QuickTileCache">
+    <bean id="metaTileCache" class="org.geoserver.wms.map.QuickTileCache">
       <constructor-arg ref="geoServer"/>
     </bean>
 
     <bean id="nativeSortingRegionator"
-        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
+        class="org.geoserver.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="native-sorting"/>
-      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.NativeSortRegionatingStrategy"/>
+      <constructor-arg value="org.geoserver.kml.NativeSortRegionatingStrategy"/>
       <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="externalSortingRegionator"
-        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
+        class="org.geoserver.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="external-sorting"/>
-      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.ExternalSortRegionatingStrategy"/>
+      <constructor-arg value="org.geoserver.kml.ExternalSortRegionatingStrategy"/>
       <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="geometryRegionator"
-        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
+        class="org.geoserver.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="geometry"/>
-      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.GeometryRegionatingStrategy"/>
+      <constructor-arg value="org.geoserver.kml.GeometryRegionatingStrategy"/>
       <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="randomRegionator"
-        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
+        class="org.geoserver.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="random"/>
-      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.RandomRegionatingStrategy"/>
+      <constructor-arg value="org.geoserver.kml.RandomRegionatingStrategy"/>
       <constructor-arg ref="geoServer"/>
     </bean>
     <bean id="bestGuessRegionator"
-        class="org.vfny.geoserver.wms.responses.map.kml.ReflectiveRegionatingStrategyFactory">
+        class="org.geoserver.kml.ReflectiveRegionatingStrategyFactory">
       <constructor-arg value="best_guess"/>
-      <constructor-arg value="org.vfny.geoserver.wms.responses.map.kml.BestGuessRegionatingStrategy"/>
+      <constructor-arg value="org.geoserver.kml.BestGuessRegionatingStrategy"/>
       <constructor-arg ref="geoServer"/>
     </bean>
 

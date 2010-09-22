@@ -23,7 +23,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @see SVGBatikMapProducer
  * @see SVGMapProducer
  */
-public class SvgMapProducerProxy implements GetMapOutputFormat {
+public class SVGMapOutputFormatProxy implements GetMapOutputFormat {
 
     public static final String MIME_TYPE = "image/svg+xml";
 
@@ -39,15 +39,15 @@ public class SvgMapProducerProxy implements GetMapOutputFormat {
      *            the format name as advertised in the capabilities, allows for easy
      * 
      */
-    public SvgMapProducerProxy(WMS wms) {
+    public SVGMapOutputFormatProxy(WMS wms) {
         final String svgRendererTypeSetting = wms.getSvgRenderer();
         if (WMS.SVG_SIMPLE.equals(svgRendererTypeSetting)) {
-            svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
+            svgProducer = new SVGStreamingMapOutputFormat(MIME_TYPE, OUTPUT_FORMATS);
         } else if (WMS.SVG_BATIK.equals(svgRendererTypeSetting)) {
-            svgProducer = new SVGBatikMapProducer(MIME_TYPE, OUTPUT_FORMATS, wms);
+            svgProducer = new SVGBatikMapOutputFormat(MIME_TYPE, OUTPUT_FORMATS, wms);
         } else {
             // no setting, do the default
-            svgProducer = new SVGMapProducer(MIME_TYPE, OUTPUT_FORMATS);
+            svgProducer = new SVGStreamingMapOutputFormat(MIME_TYPE, OUTPUT_FORMATS);
         }
     }
 

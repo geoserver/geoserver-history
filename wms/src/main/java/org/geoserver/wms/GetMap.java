@@ -21,8 +21,8 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.map.MetatileMapProducer;
-import org.geoserver.wms.map.RasterMapProducer;
+import org.geoserver.wms.map.MetatileMapOutputFormat;
+import org.geoserver.wms.map.RasterMapOutputFormat;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.Map;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -120,12 +120,12 @@ public class GetMap {
         final Envelope env = request.getBbox();
 
         // enable on the fly meta tiling if request looks like a tiled one
-        if (MetatileMapProducer.isRequestTiled(request, delegate)) {
+        if (MetatileMapOutputFormat.isRequestTiled(request, delegate)) {
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer("Tiled request detected, activating on the fly meta tiler");
             }
 
-            delegate = new MetatileMapProducer(request, (RasterMapProducer) delegate);
+            delegate = new MetatileMapOutputFormat(request, (RasterMapOutputFormat) delegate);
         }
 
         final List<MapLayerInfo> layers = request.getLayers();

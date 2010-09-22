@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
-import org.geoserver.wms.map.AbstractGetMapProducer;
+import org.geoserver.wms.map.AbstractMapOutputFormat;
 import org.vfny.geoserver.wms.WmsException;
 
 /**
@@ -19,7 +19,7 @@ import org.vfny.geoserver.wms.WmsException;
  * @author Gabriel Roldan
  * @version $Id$
  */
-class SVGMapProducer extends AbstractGetMapProducer implements GetMapOutputFormat {
+class SVGStreamingMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
     /** DOCUMENT ME! */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map");
@@ -27,7 +27,7 @@ class SVGMapProducer extends AbstractGetMapProducer implements GetMapOutputForma
     /** DOCUMENT ME! */
     private EncodeSVG svgEncoder;
 
-    public SVGMapProducer(String mimeType, String[] outputFormats) {
+    public SVGStreamingMapOutputFormat(String mimeType, String[] outputFormats) {
         super(mimeType, outputFormats);
     }
 

@@ -28,7 +28,6 @@ import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-
 public class KMLSuperOverlayTransformer extends KMLTransformerBase {
     /**
      * logger
@@ -57,31 +56,32 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         public void encode(Object o) throws IllegalArgumentException {
             MapLayer mapLayer = (MapLayer) o;
 
-            //calculate closest resolution
+            // calculate closest resolution
             ReferencedEnvelope extent = mapContext.getAreaOfInterest();
-            
-            //zoom out until the entire bounds requested is covered by a 
-            //single tile
+
+            // zoom out until the entire bounds requested is covered by a
+            // single tile
             Envelope top = KMLUtils.expandToTile(extent);
             int zoomLevel = KMLUtils.findZoomLevel(extent);
-
 
             LOGGER.fine("request = " + extent);
             LOGGER.fine("top level = " + top);
 
-            //start document
+            // start document
             if (isStandAlone()) {
-                start( "kml" );
+                start("kml");
             }
-            
+
             start("Document");
 
-            if("cached".equals(KMLUtils.getSuperoverlayMode(mapContext.getRequest()))) {
-                if(KMLUtils.isRequestGWCCompatible(mapContext, mapLayer)) {
+            if ("cached".equals(KMLUtils.getSuperoverlayMode(mapContext.getRequest()))) {
+                if (KMLUtils.isRequestGWCCompatible(mapContext, mapLayer)) {
                     encodeGWCLink(mapLayer);
                 } else {
-                    LOGGER.log(Level.INFO, "Could not use cached mode for this request as the KML " +
-                    		"parameters do not match the server defaults. Falling back to 'auto' mode");
+                    LOGGER.log(
+                            Level.INFO,
+                            "Could not use cached mode for this request as the KML "
+                                    + "parameters do not match the server defaults. Falling back to 'auto' mode");
                     mapContext.getRequest().getFormatOptions().put("overlayMode", "auto");
                     encodeNetworkLinks(mapLayer, top, zoomLevel);
                 }
@@ -89,81 +89,85 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 encodeNetworkLinks(mapLayer, top, zoomLevel);
             }
 
-            //end document
+            // end document
             end("Document");
-            
+
             if (isStandAlone()) {
-                end( "kml" );
+                end("kml");
             }
         }
-        
+
         /**
          * Encode the network links for the specified envelope and zoom level
+         * 
          * @param mapLayer
          * @param top
          * @param zoomLevel
          */
         void encodeNetworkLinks(MapLayer mapLayer, Envelope top, int zoomLevel) {
-            //encode top level region
+            // encode top level region
             encodeRegion(top, 256, -1);
-   
-            //encode the network links
+
+            // encode the network links
             if (top != KMLUtils.WORLD_BOUNDS_WGS84) {
-                //top left
+                // top left
                 Envelope e00 = new Envelope(top.getMinX(), top.getMinX() + (top.getWidth() / 2d),
                         top.getMaxY() - (top.getHeight() / 2d), top.getMaxY());
-   
-                //top right
+
+                // top right
                 Envelope e01 = new Envelope(e00.getMaxX(), top.getMaxX(), e00.getMinY(),
                         e00.getMaxY());
-   
-                //bottom left
+
+                // bottom left
                 Envelope e10 = new Envelope(e00.getMinX(), e00.getMaxX(), top.getMinY(),
                         e00.getMinY());
-   
-                //bottom right
+
+                // bottom right
                 Envelope e11 = new Envelope(e01.getMinX(), e01.getMaxX(), e10.getMinY(),
                         e10.getMaxY());
-   
+
                 encodeNetworkLink(e00, "00", mapLayer);
                 encodeNetworkLink(e01, "01", mapLayer);
                 encodeNetworkLink(e10, "10", mapLayer);
                 encodeNetworkLink(e11, "11", mapLayer);
             } else {
-                //divide up horizontally by two
+                // divide up horizontally by two
                 Envelope e0 = new Envelope(top.getMinX(), top.getMinX() + (top.getWidth() / 2d),
                         top.getMinY(), top.getMaxY());
-                Envelope e1 = new Envelope(e0.getMaxX(), top.getMaxX(), top.getMinY(), top.getMaxY());
-   
+                Envelope e1 = new Envelope(e0.getMaxX(), top.getMaxX(), top.getMinY(),
+                        top.getMaxY());
+
                 encodeNetworkLink(e0, "0", mapLayer);
                 encodeNetworkLink(e1, "1", mapLayer);
             }
-   
-            //encode the ground overlay(s)
+
+            // encode the ground overlay(s)
             if (top == KMLUtils.WORLD_BOUNDS_WGS84) {
-                //special case for top since it does not line up as a proper
-                //tile -> split it in two
+                // special case for top since it does not line up as a proper
+                // tile -> split it in two
                 encodeTileForViewing(mapLayer, zoomLevel, new Envelope(-180, 0, -90, 90));
                 encodeTileForViewing(mapLayer, zoomLevel, new Envelope(0, 180, -90, 90));
             } else {
-                //encode straight up
+                // encode straight up
                 encodeTileForViewing(mapLayer, zoomLevel, top);
             }
         }
-        
+
         public void encodeGWCLink(MapLayer mapLayer) {
             start("NetworkLink");
             element("name", "GWC-" + mapLayer.getTitle());
-            
+
             start("Link");
 
             String baseURL = ResponseUtils.baseURL(mapContext.getRequest().getHttpRequest());
             SimpleFeatureType ft = (SimpleFeatureType) mapLayer.getFeatureSource().getSchema();
             String type = "kml";
-            if(FeatureUtilities.isWrappedCoverage(ft) || FeatureUtilities.isWrappedCoverageReader(ft)) {
+            if (FeatureUtilities.isWrappedCoverage(ft)
+                    || FeatureUtilities.isWrappedCoverageReader(ft)) {
                 type = "png";
             }
-            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" + mapLayer.getTitle() + "." + type + ".kml");
+            String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" + mapLayer.getTitle()
+                    + "." + type + ".kml");
             element("href", url);
             element("viewRefreshMode", "never");
 
@@ -172,169 +176,156 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             end("NetworkLink");
         }
 
-        void encodeTileForViewing(MapLayer mapLayer, int drawOrder, Envelope box){
+        void encodeTileForViewing(MapLayer mapLayer, int drawOrder, Envelope box) {
             if (shouldDrawVectorLayer(mapLayer, box))
                 encodeKMLLink(mapLayer, drawOrder, box);
             if (shouldDrawWMSOverlay(mapLayer, box))
                 encodeGroundOverlay(mapLayer, drawOrder, box);
         }
 
-        private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box){
+        private boolean shouldDrawVectorLayer(MapLayer layer, Envelope box) {
             // should draw as vector if the layer is a vector layer, and based on mode
             // full: yes, if any regionated vectors are present at this zoom level
             // hybrid: yes, if any regionated vectors are present at this zoom level
             // overview: is the non-regionated feature count for this tile below the cutoff?
             // raster: no
-            if (!isVectorLayer(layer)) return false;
+            if (!isVectorLayer(layer))
+                return false;
 
             String overlayMode = KMLUtils.getSuperoverlayMode(mapContext.getRequest());
 
-            if ("raster".equals(overlayMode)) return false;
+            if ("raster".equals(overlayMode))
+                return false;
 
             if ("overview".equals(overlayMode)) {
-                // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated levels above the bottom of the hierarchy
-                return featuresInTile(layer, box, false) <= getRegionateFeatureLimit(getFeatureTypeInfo(layer)); 
+                // the sixteen here is mostly arbitrary, designed to indicate a couple of regionated
+                // levels above the bottom of the hierarchy
+                return featuresInTile(layer, box, false) <= getRegionateFeatureLimit(getFeatureTypeInfo(layer));
             }
 
             return featuresInTile(layer, box, true) > 0;
         }
 
-        
-        
-        private int getRegionateFeatureLimit( FeatureTypeInfo ft ) {
-            Integer regionateFeatureLimit = ft.getMetadata().get("kml.regionateFeatureLimit",Integer.class); 
+        private int getRegionateFeatureLimit(FeatureTypeInfo ft) {
+            Integer regionateFeatureLimit = ft.getMetadata().get("kml.regionateFeatureLimit",
+                    Integer.class);
             return regionateFeatureLimit != null ? regionateFeatureLimit : -1;
         }
 
-        private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box){
+        private boolean shouldDrawWMSOverlay(MapLayer layer, Envelope box) {
             // should draw based on the mode:
             // full: no
             // hybrid: yes
             // overview: is the non-regionated feature count for this tile above the cutoff?
-            if (!isVectorLayer(layer)) return true;
+            if (!isVectorLayer(layer))
+                return true;
 
             String overlayMode = KMLUtils.getSuperoverlayMode(mapContext.getRequest());
-            if ("hybrid".equals(overlayMode) || "raster".equals(overlayMode)) return true;
+            if ("hybrid".equals(overlayMode) || "raster".equals(overlayMode))
+                return true;
             if ("overview".equals(overlayMode))
                 return featuresInTile(layer, box, false) > getRegionateFeatureLimit(getFeatureTypeInfo(layer));
 
             return false;
         }
 
-        void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box){
-            //copy the format options
+        void encodeKMLLink(MapLayer mapLayer, int drawOrder, Envelope box) {
+            // copy the format options
             CaseInsensitiveMap fo = new CaseInsensitiveMap(new HashMap());
-            fo.putAll( mapContext.getRequest().getFormatOptions() );
-                
-            //we want to pass through format options except for superoverlay, we need to 
-            // turn it off so we get actual placemarks back, and not more links 
-            fo.remove( "superoverlay");
-            
-            //get the regionate mode
+            fo.putAll(mapContext.getRequest().getFormatOptions());
+
+            // we want to pass through format options except for superoverlay, we need to
+            // turn it off so we get actual placemarks back, and not more links
+            fo.remove("superoverlay");
+
+            // get the regionate mode
             String overlayMode = (String) fo.get("overlayMode");
-            
-            if ("overview".equalsIgnoreCase(overlayMode)){ 
-                //overview mode, turn off regionation
-                fo.remove( "regionateBy" );
-            }
-            else {
-                //specify regionateBy=auto if not specified
-                if ( !fo.containsKey( "regionateBy") ) {
-                    fo.put( "regionateBy", "auto");    
+
+            if ("overview".equalsIgnoreCase(overlayMode)) {
+                // overview mode, turn off regionation
+                fo.remove("regionateBy");
+            } else {
+                // specify regionateBy=auto if not specified
+                if (!fo.containsKey("regionateBy")) {
+                    fo.put("regionateBy", "auto");
                 }
-                
+
             }
-            
+
             String foEncoded = WMSRequests.encodeFormatOptions(fo);
-            
-            //encode the link
+
+            // encode the link
             start("NetworkLink");
             element("visibility", "1");
             start("Link");
 
-            element("href", KMLUtils.getMapUrl(
-                    mapContext,
-                    mapLayer,
-                    0,
-                    box,
-                    new String[] { 
-                    "width", "256",
-                    "height", "256",
-                    "format_options", foEncoded,
-                    "superoverlay", "false"
-                    },
-                    true
-                    )
-               );
-        
+            element("href", KMLUtils.getMapUrl(mapContext, mapLayer, 0, box, new String[] {
+                    "width", "256", "height", "256", "format_options", foEncoded, "superoverlay",
+                    "false" }, true));
+
             end("Link");
             encodeRegion(box, 128, -1);
             end("NetworkLink");
         }
 
-        boolean isVectorLayer(MapLayer layer){
+        boolean isVectorLayer(MapLayer layer) {
             int index = Arrays.asList(mapContext.getLayers()).indexOf(layer);
             MapLayerInfo info = mapContext.getRequest().getLayers()[index];
-            return (info.getType() == MapLayerInfo.TYPE_VECTOR 
-                    || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR);
+            return (info.getType() == MapLayerInfo.TYPE_VECTOR || info.getType() == MapLayerInfo.TYPE_REMOTE_VECTOR);
         }
 
-        private FeatureTypeInfo getFeatureTypeInfo(MapLayer layer){
-            for (MapLayerInfo info : mapContext.getRequest().getLayers()) 
+        private FeatureTypeInfo getFeatureTypeInfo(MapLayer layer) {
+            for (MapLayerInfo info : mapContext.getRequest().getLayers())
                 if (info.getName().equals(layer.getTitle()))
                     return info.getFeature();
             return null;
         }
 
-        private int featuresInTile(MapLayer mapLayer, Envelope bounds, boolean regionate){
-            if (!isVectorLayer(mapLayer)) return 1; // for coverages, we want raster tiles everywhere
+        private int featuresInTile(MapLayer mapLayer, Envelope bounds, boolean regionate) {
+            if (!isVectorLayer(mapLayer))
+                return 1; // for coverages, we want raster tiles everywhere
             Envelope originalBounds = mapContext.getRequest().getBbox();
             mapContext.getRequest().setBbox(bounds);
-            mapContext.setAreaOfInterest(new ReferencedEnvelope(bounds, DefaultGeographicCRS.WGS84));
+            mapContext
+                    .setAreaOfInterest(new ReferencedEnvelope(bounds, DefaultGeographicCRS.WGS84));
 
             String originalRegionateBy = null;
-            if (regionate){
-                originalRegionateBy = 
-                    (String)mapContext.getRequest().getFormatOptions().get("regionateby");
+            if (regionate) {
+                originalRegionateBy = (String) mapContext.getRequest().getFormatOptions()
+                        .get("regionateby");
                 if (originalRegionateBy == null)
-                    mapContext.getRequest().getFormatOptions().put("regionateby","auto");
+                    mapContext.getRequest().getFormatOptions().put("regionateby", "auto");
             }
 
             int numFeatures = 0;
 
-            try{
-                numFeatures = 
-                    (KMLUtils.loadFeatureCollection(
-                        (SimpleFeatureSource) mapLayer.getFeatureSource(),
-                        mapLayer,
-                        mapContext
-                        ).size()/* == 0*/);
+            try {
+                numFeatures = (KMLUtils.loadFeatureCollection(
+                        (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer, mapContext)
+                        .size()/* == 0 */);
             } catch (WmsException e) {
                 LOGGER.severe("Caught the WmsException!");
                 numFeatures = -1;
             } catch (HttpErrorCodeException e) {
-                if (e.getErrorCode() == 204){
+                if (e.getErrorCode() == 204) {
                     throw e;
                 } else {
-                    LOGGER.log(
-                            Level.WARNING,
-                            "Failure while checking whether a regionated child tile " +
-                            "contained features!",
-                            e
-                      );
+                    LOGGER.log(Level.WARNING,
+                            "Failure while checking whether a regionated child tile "
+                                    + "contained features!", e);
                 }
-            } catch (Exception e){
+            } catch (Exception e) {
                 // Probably just trying to regionate a raster layer...
                 LOGGER.log(
                         Level.WARNING,
                         "Failure while checking whether a regionated child tile contained features!",
-                        e
-                  );
+                        e);
             }
 
             mapContext.getRequest().setBbox(originalBounds);
-            mapContext.setAreaOfInterest(new ReferencedEnvelope(originalBounds, DefaultGeographicCRS.WGS84));
-            if (regionate && originalRegionateBy == null){
+            mapContext.setAreaOfInterest(new ReferencedEnvelope(originalBounds,
+                    DefaultGeographicCRS.WGS84));
+            if (regionate && originalRegionateBy == null) {
                 mapContext.getRequest().getFormatOptions().remove("regionateby");
             }
 
@@ -347,40 +338,34 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             start("Icon");
 
-            String href = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box,
-                    new String[] { 
-                        "width", "256", 
-                        "height", "256", 
-                        "format", "image/png",
-                        "transparent", "true"
-                    },
-                    true
-                    );
+            String href = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box, new String[] { "width",
+                    "256", "height", "256", "format", "image/png", "transparent", "true" }, true);
             element("href", href);
             LOGGER.fine(href);
             end("Icon");
-            
-            
-            // make it so that for coverages the lower zoom levels remain active as one zooms in for a longer
+
+            // make it so that for coverages the lower zoom levels remain active as one zooms in for
+            // a longer
             // amount of time
-            SimpleFeatureType layerFeatureType = (SimpleFeatureType) mapLayer.getFeatureSource().getSchema();
-            if(FeatureUtilities.isWrappedCoverage(layerFeatureType) || FeatureUtilities.isWrappedCoverageReader(layerFeatureType))
+            SimpleFeatureType layerFeatureType = (SimpleFeatureType) mapLayer.getFeatureSource()
+                    .getSchema();
+            if (FeatureUtilities.isWrappedCoverage(layerFeatureType)
+                    || FeatureUtilities.isWrappedCoverageReader(layerFeatureType))
                 encodeRegion(box, 128, 2048);
             else
                 encodeRegion(box, 128, 512);
-            
 
             encodeLatLonBox(box);
             end("GroundOverlay");
         }
 
         void encodeRegion(Envelope box, int minLodPixels, int maxLodPixels) {
-            //top level region
+            // top level region
             start("Region");
 
             start("Lod");
-            element("minLodPixels", "" + minLodPixels );
-            element("maxLodPixels", "" + maxLodPixels );
+            element("minLodPixels", "" + minLodPixels);
+            element("maxLodPixels", "" + maxLodPixels);
             end("Lod");
 
             encodeLatLonAltBox(box);
@@ -396,11 +381,9 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
 
             start("Link");
 
-            String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box,
-                    new String[] {
-                        "format", KMLMapProducer.MIME_TYPE, "width", "256", "height", "256",
-                        "superoverlay", "true"
-                    }, false);
+            String getMap = KMLUtils.getMapUrl(mapContext, mapLayer, 0, box, new String[] {
+                    "format", KMLMapOutputFormat.MIME_TYPE, "width", "256", "height", "256",
+                    "superoverlay", "true" }, false);
 
             element("href", getMap);
             LOGGER.fine("Network link " + name + ":" + getMap);
@@ -432,5 +415,4 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
         }
     }
 
-    
 }
