@@ -11,9 +11,9 @@ import java.util.Map;
 import junit.framework.Test;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.styling.Style;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;

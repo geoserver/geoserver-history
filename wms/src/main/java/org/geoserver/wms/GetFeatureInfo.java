@@ -24,8 +24,6 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.GetFeatureInfoRequest;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.coverage.GridSampleDimension;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.GridEnvelope2D;

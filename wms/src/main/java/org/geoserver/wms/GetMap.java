@@ -23,8 +23,6 @@ import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.map.MetatileMapOutputFormat;
 import org.geoserver.wms.map.RasterMapOutputFormat;
-import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.Map;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;

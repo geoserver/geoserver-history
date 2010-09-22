@@ -21,9 +21,9 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LayerInfo.Type;
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.factory.CommonFactoryFinder;
@@ -44,13 +44,13 @@ import org.vfny.geoserver.wms.WmsException;
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling <code>getRequest</code>
  * produces a {@linkPlain org.vfny.geoserver.requests.wms.GetLegendGraphicRequest}
  * <p>
- * See {@linkplain org.vfny.geoserver.wms.requests.GetLegendGraphicRequest} for a complete list of
+ * See {@linkplain org.org.geoserver.wms.GetLegendGraphicRequest} for a complete list of
  * expected request parameters.
  * </p>
  * 
  * @author Gabriel Roldan
  * @version $Id$
- * @see org.vfny.geoserver.wms.requests.GetLegendGraphicRequest
+ * @see org.org.geoserver.wms.GetLegendGraphicRequest
  */
 public class GetLegendGraphicKvpReader extends KvpRequestReader {
 

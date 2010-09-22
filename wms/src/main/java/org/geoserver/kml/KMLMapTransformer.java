@@ -5,7 +5,6 @@
 package org.geoserver.kml;
 
 import static org.geoserver.ows.util.ResponseUtils.appendPath;
-import static org.geoserver.ows.util.ResponseUtils.baseURL;
 import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
 import java.awt.Color;
@@ -31,9 +30,9 @@ import org.geoserver.config.GeoServerDataDirectory;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.featureinfo.FeatureHeightTemplate;
 import org.geoserver.wms.response.featureinfo.FeatureTemplate;
 import org.geoserver.wms.response.featureinfo.FeatureTimeTemplate;

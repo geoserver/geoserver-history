@@ -2,11 +2,10 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.request;
+package org.geoserver.wms;
 
 import java.util.List;
 
-import org.geoserver.wms.MapLayerInfo;
 
 /**
  * Represents a WMS 1.1.1 GetFeatureInfo request.

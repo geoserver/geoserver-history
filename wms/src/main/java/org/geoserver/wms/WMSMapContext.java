@@ -9,7 +9,6 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.map.GraphicEnhancedMapContext;

@@ -12,8 +12,8 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphic;
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.springframework.util.Assert;
 
 /**

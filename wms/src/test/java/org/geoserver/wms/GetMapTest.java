@@ -12,8 +12,6 @@ import junit.framework.TestCase;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSMockData.DummyRasterMapProducer;
-import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.Map;
 import org.geotools.data.wms.response.GetMapResponse;
 import org.geotools.factory.CommonFactoryFinder;
 import org.opengis.filter.FilterFactory;

@@ -8,8 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.wms.Map;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.response.Map;
 
 /**
  * An already encoded {@link Map} that holds the raw response content in a byte array.

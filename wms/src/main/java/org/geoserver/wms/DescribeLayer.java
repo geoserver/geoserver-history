@@ -7,7 +7,6 @@ package org.geoserver.wms;
 import java.nio.charset.Charset;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.DescribeLayerRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 
 /**
@@ -24,7 +23,7 @@ public class DescribeLayer {
     }
 
     /**
-     * @see org.geoserver.wms.DescribeLayer#run(org.geoserver.wms.request.DescribeLayerRequest)
+     * @see org.geoserver.wms.DescribeLayer#run(org.geoserver.wms.DescribeLayerRequest)
      */
     public DescribeLayerTransformer run(DescribeLayerRequest request) throws ServiceException {
         String baseURL = request.getBaseUrl();

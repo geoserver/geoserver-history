@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;

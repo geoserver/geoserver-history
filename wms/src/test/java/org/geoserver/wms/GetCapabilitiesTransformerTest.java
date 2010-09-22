@@ -25,7 +25,6 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
-import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;
 import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;

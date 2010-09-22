@@ -29,7 +29,6 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.MaxErrorEnforcer;
-import org.geoserver.wms.map.RawMap;
 import org.geoserver.wms.map.RenderExceptionStrategy;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -49,7 +48,7 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
 
     private final WMS wms;
 
-    public static class BatikSVGMap extends org.geoserver.wms.response.Map {
+    public static class BatikSVGMap extends org.geoserver.wms.Map {
         private SVGGraphics2D graphics;
 
         BatikSVGMap(SVGGraphics2D graphics) {

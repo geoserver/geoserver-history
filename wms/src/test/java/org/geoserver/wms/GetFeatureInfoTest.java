@@ -7,8 +7,6 @@ import javax.xml.namespace.QName;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
 public class GetFeatureInfoTest extends WMSTestSupport {

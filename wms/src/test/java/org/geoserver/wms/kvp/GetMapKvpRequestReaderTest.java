@@ -25,15 +25,14 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.test.RemoteOWSTestSupport;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.Style;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
-import org.vfny.geoserver.config.PaletteManager;
 import org.vfny.geoserver.wms.WmsException;
 
 @SuppressWarnings("unchecked")

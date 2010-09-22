@@ -14,8 +14,8 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetFeatureInfo;
+import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetFeatureInfoRequest;
 import org.springframework.util.Assert;
 
 /**

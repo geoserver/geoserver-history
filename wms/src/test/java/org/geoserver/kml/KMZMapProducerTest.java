@@ -14,9 +14,9 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.kml.KMZMapOutputFormat.KMZMap;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
-import org.geoserver.wms.request.GetMapRequest;
 
 public class KMZMapProducerTest extends WMSTestSupport {
     KMZMapOutputFormat mapProducer;

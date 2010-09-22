@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.GetFeatureInfoRequest;
+import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geotools.util.logging.Logging;
 
 /**

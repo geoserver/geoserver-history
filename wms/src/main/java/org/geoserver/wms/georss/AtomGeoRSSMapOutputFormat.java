@@ -13,10 +13,10 @@ import java.util.TreeSet;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.XMLTransformerMap;
-import org.geoserver.wms.request.GetMapRequest;
 
 public class AtomGeoRSSMapOutputFormat implements GetMapOutputFormat {
     /** mime type */

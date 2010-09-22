@@ -24,8 +24,6 @@ import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.Map;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;

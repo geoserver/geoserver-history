@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import junit.framework.TestCase;
 
-import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.GetCapabilitiesRequest;
 
 @SuppressWarnings("rawtypes")
 public class CapabilitiesKvpReaderTest extends TestCase {

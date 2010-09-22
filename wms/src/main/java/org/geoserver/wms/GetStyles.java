@@ -12,7 +12,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.GetStylesRequest;
+import org.geoserver.sld.GetStylesRequest;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.NamedLayer;
 import org.geotools.styling.Style;

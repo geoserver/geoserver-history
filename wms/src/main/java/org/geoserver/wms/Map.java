@@ -2,11 +2,10 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.wms.response;
+package org.geoserver.wms;
 
 import java.util.HashMap;
 
-import org.geoserver.wms.WMSMapContext;
 import org.geotools.map.MapLayer;
 
 public abstract class Map {

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.sld.servlets;
+package org.geoserver.sld;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -32,9 +32,6 @@ import org.geoserver.catalog.impl.StyleInfoImpl;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.ows.util.XmlCharsetDetector;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.sld.SldException;
-import org.geoserver.sld.requests.PutStylesKvpReader;
-import org.geoserver.sld.requests.PutStylesRequest;
 import org.geoserver.wms.WMS;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.StyleFactoryFinder;

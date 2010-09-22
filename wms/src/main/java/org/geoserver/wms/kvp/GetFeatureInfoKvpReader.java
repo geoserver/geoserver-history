@@ -10,10 +10,10 @@ import java.util.Map;
 
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetFeatureInfoRequest;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetFeatureInfoRequest;
-import org.geoserver.wms.request.GetMapRequest;
 
 /**
  * Builds a GetFeatureInfo request object given by a set of CGI parameters supplied in the

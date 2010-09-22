@@ -15,8 +15,8 @@ import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
-import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.Map;
+import org.geoserver.wms.GetMapRequest;
+import org.geoserver.wms.Map;
 import org.springframework.util.Assert;
 
 /**

@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.Map;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.response.Map;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;

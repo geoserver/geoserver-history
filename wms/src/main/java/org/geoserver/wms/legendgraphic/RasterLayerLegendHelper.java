@@ -17,9 +17,9 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.legendgraphic.ColorMapLegendCreator.Builder;
 import org.geoserver.wms.map.ImageUtils;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.styling.ChannelSelection;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;

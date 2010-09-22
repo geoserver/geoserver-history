@@ -8,7 +8,7 @@ import javax.xml.transform.TransformerException;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.response.Map;
+import org.geoserver.wms.Map;
 import org.geotools.xml.transform.TransformerBase;
 import org.springframework.util.Assert;
 

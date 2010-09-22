@@ -15,9 +15,9 @@ import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.vfny.geoserver.wms.WmsException;
 

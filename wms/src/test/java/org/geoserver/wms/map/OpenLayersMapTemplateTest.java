@@ -18,9 +18,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
-import org.geoserver.wms.request.GetMapRequest;
 import org.w3c.dom.Document;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;

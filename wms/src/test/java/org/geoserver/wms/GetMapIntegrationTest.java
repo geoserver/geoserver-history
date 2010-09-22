@@ -11,7 +11,6 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.RemoteOWSTestSupport;
-import org.geoserver.wms.WMSTestSupport;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;

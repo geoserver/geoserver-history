@@ -9,9 +9,9 @@ import java.util.Map;
 
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DescribeLayerRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.DescribeLayerRequest;
 
 /**
  * Parses a DescribeLayer request, wich consists only of a list of layer names, given by the

@@ -48,12 +48,12 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WatermarkInfo;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.MapDecoration;
 import org.geoserver.wms.response.MapDecorationLayout;
 import org.geoserver.wms.response.MetatiledMapDecorationLayout;
@@ -81,7 +81,6 @@ import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.util.Assert;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.WmsException;
@@ -186,7 +185,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      * 
      * @param value
      *            must be a {@link BufferedImageMap}
-     * @see GetMapOutputFormat#write(org.geoserver.wms.response.Map, OutputStream)
+     * @see GetMapOutputFormat#write(org.geoserver.wms.Map, OutputStream)
      */
     @Override
     public void write(final Object value, final OutputStream output, final Operation operation)
