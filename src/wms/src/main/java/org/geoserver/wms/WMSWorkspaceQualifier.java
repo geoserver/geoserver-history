@@ -10,7 +10,7 @@ import org.geoserver.ows.WorkspaceQualifyingCallback;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 
 public class WMSWorkspaceQualifier extends WorkspaceQualifyingCallback {
 
@@ -40,7 +40,7 @@ public class WMSWorkspaceQualifier extends WorkspaceQualifyingCallback {
     
     
     protected void qualifyRequest(WorkspaceInfo ws, LayerInfo l, Operation operation, Request request) {
-        WMSCapabilitiesRequest gc = parameter(operation, WMSCapabilitiesRequest.class);
+        GetCapabilitiesRequest gc = parameter(operation, GetCapabilitiesRequest.class);
         if (gc != null) {
             gc.setNamespace(ws.getName());
             return;

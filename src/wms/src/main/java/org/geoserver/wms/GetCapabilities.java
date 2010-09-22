@@ -1,7 +1,7 @@
 package org.geoserver.wms;
 
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 
 /**
  * WMS GetCapabilities operation.
@@ -11,5 +11,5 @@ import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
  */
 public interface GetCapabilities {
 
-    public GetCapabilitiesTransformer run(final WMSCapabilitiesRequest request) throws ServiceException;
+    public GetCapabilitiesTransformer run(final GetCapabilitiesRequest request) throws ServiceException;
 }

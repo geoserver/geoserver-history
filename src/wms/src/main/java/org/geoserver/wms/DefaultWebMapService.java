@@ -18,6 +18,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -44,7 +45,6 @@ import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.requests.GetStylesRequest;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
@@ -203,18 +203,18 @@ public class DefaultWebMapService implements WebMapService,
     }
 
     /**
-     * @see WebMapService#getCapabilities(WMSCapabilitiesRequest)
+     * @see WebMapService#getCapabilities(GetCapabilitiesRequest)
      */
-    public GetCapabilitiesTransformer getCapabilities(WMSCapabilitiesRequest request) {
+    public GetCapabilitiesTransformer getCapabilities(GetCapabilitiesRequest request) {
         GetCapabilities capabilities = (GetCapabilities) context.getBean("wmsGetCapabilities");
 
         return capabilities.run(request);
     }
 
     /**
-     * @see WebMapService#capabilities(WMSCapabilitiesRequest)
+     * @see WebMapService#capabilities(GetCapabilitiesRequest)
      */
-    public GetCapabilitiesTransformer capabilities(WMSCapabilitiesRequest request) {
+    public GetCapabilitiesTransformer capabilities(GetCapabilitiesRequest request) {
         return getCapabilities(request);
     }
 

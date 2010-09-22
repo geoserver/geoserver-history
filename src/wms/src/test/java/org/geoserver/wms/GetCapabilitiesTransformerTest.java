@@ -25,8 +25,8 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.geotools.referencing.CRS;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -74,7 +74,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
      */
     private CatalogImpl catalog;
 
-    private WMSCapabilitiesRequest req;
+    private GetCapabilitiesRequest req;
 
     /**
      * Sets up the configuration objects with default values. Since they're live, specific tests can
@@ -93,7 +93,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         catalog = new CatalogImpl();
         geosConfig.setCatalog(catalog);
 
-        req = new WMSCapabilitiesRequest(new WMS(geosConfig));
+        req = new GetCapabilitiesRequest(new WMS(geosConfig));
         req.setBaseUrl(baseUrl);
 
         Map<String, String> namespaces = new HashMap<String, String>();

@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.xml;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,21 +13,20 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.util.requests.CapabilitiesHandler;
 import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
 
-
 /**
  * reads a WMS GetCapabilities request from an XML stream
- *
- * @author Gabriel Rold?n
+ * 
+ * @author Gabriel Roldan
  * @version $Id$
- *
+ * 
  * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
@@ -36,8 +35,9 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
 
     /**
      * Creates the new reader.
-     *
-     * @param wms The WMS service config.
+     * 
+     * @param wms
+     *            The WMS service config.
      */
     public CapabilitiesXmlReader(WMS wms) {
         super(wms.getServiceInfo());
@@ -46,19 +46,20 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
 
     /**
      * Reads the Capabilities XML request into a CapabilitiesRequest object.
-     *
-     * @param reader The plain POST text from the client.
-     *
+     * 
+     * @param reader
+     *            The plain POST text from the client.
+     * 
      * @return The read CapabilitiesRequest object.
-     *
-     * @throws WmsException For any problems reading the request
+     * 
+     * @throws WmsException
+     *             For any problems reading the request
      */
-    public Request read(Reader reader, HttpServletRequest req)
-        throws WmsException {
+    public Request read(Reader reader, HttpServletRequest req) throws WmsException {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        WMSCapabilitiesRequest request = new WMSCapabilitiesRequest(wmsConfig);
+        GetCapabilitiesRequest request = new GetCapabilitiesRequest(wmsConfig);
         CapabilitiesHandler currentRequest = new CapabilitiesHandler(request);
 
         // read in XML file and parse to content handler
@@ -70,7 +71,8 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             adapter.parse(requestSource);
             LOGGER.fine("just parsed: " + requestSource);
         } catch (SAXException e) {
-            throw new WmsException(e, "XML capabilities request parsing error", getClass().getName());
+            throw new WmsException(e, "XML capabilities request parsing error", getClass()
+                    .getName());
         } catch (IOException e) {
             throw new WmsException(e, "XML capabilities request input error", getClass().getName());
         } catch (ParserConfigurationException e) {
