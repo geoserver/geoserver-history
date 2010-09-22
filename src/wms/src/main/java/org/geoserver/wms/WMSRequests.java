@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.util;
+package org.geoserver.wms;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
@@ -19,10 +19,6 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.GetMapRequest;
-import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.WMSRequest;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.util.Requests;

@@ -8,7 +8,7 @@ import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.util.WMSRequests;
+import org.geoserver.wms.WMSRequests;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
