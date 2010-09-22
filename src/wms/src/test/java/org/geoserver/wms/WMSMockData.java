@@ -180,14 +180,6 @@ public class WMSMockData {
         }
 
         /**
-         * @return {@code true}
-         * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-         */
-        public boolean enabled() {
-            return true;
-        }
-
-        /**
          * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
          */
         public Set<String> getOutputFormatNames() {
@@ -262,14 +254,14 @@ public class WMSMockData {
      */
     public MapLayerInfo addFeatureTypeLayer(final String name,
             Class<? extends Geometry> geometryType) throws IOException {
-        
+
         final DataStore dataStore = this.dataStore;
-        FeatureTypeInfoImpl featureTypeInfo = new FeatureTypeInfoImpl(catalog){
+        FeatureTypeInfoImpl featureTypeInfo = new FeatureTypeInfoImpl(catalog) {
             /**
              * Override to avoid going down to the catalog and geoserver resource loader etc
              */
             @Override
-            public FeatureSource getFeatureSource(ProgressListener listener, Hints hints){
+            public FeatureSource getFeatureSource(ProgressListener listener, Hints hints) {
                 try {
                     return dataStore.getFeatureSource(getQualifiedName());
                 } catch (IOException e) {

@@ -39,14 +39,6 @@ public class RSSGeoRSSMapOutputFormat implements GetMapOutputFormat {
     }
 
     /**
-     * @return {@code true}
-     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-     */
-    public boolean enabled() {
-        return true;
-    }
-    
-    /**
      * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
      */
     public String getMimeType() {

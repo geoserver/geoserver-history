@@ -59,7 +59,7 @@ public class WMSExtensions {
             producerFormats = producer.getOutputFormatNames();
             Set<String> caseInsensitiveFormats = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
             caseInsensitiveFormats.addAll(producerFormats);
-            if (producer.enabled() && caseInsensitiveFormats.contains(outputFormat)) {
+            if (caseInsensitiveFormats.contains(outputFormat)) {
                 return producer;
             }
         }
