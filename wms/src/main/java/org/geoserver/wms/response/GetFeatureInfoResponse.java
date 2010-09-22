@@ -47,7 +47,7 @@ public class GetFeatureInfoResponse extends Response {
      */
     @Override
     public boolean canHandle(Operation operation) {
-        return "GetFeatureInfo".equals(operation.getId());
+        return "GetFeatureInfo".equalsIgnoreCase(operation.getId());
     }
 
     /**
