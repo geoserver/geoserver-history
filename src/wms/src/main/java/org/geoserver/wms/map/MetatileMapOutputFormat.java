@@ -65,6 +65,14 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
     }
 
     /**
+     * @return {@code true}
+     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
+     */
+    public boolean enabled() {
+        return true;
+    }
+    
+    /**
      * 
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */

@@ -44,6 +44,14 @@ public class KMLMapOutputFormat implements GetMapOutputFormat {
     }
 
     /**
+     * @return {@code true}
+     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
+     */
+    public boolean enabled() {
+        return true;
+    }
+    
+    /**
      * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
      */
     public Set<String> getOutputFormatNames() {

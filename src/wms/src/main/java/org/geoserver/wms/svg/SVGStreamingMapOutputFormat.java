@@ -6,73 +6,93 @@ package org.geoserver.wms.svg;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.logging.Logger;
+import java.util.Set;
 
+import org.geoserver.ows.Response;
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
-import org.geoserver.wms.map.AbstractMapOutputFormat;
-import org.vfny.geoserver.wms.WmsException;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSMapContext;
 
 /**
- * Handles a GetMap request that spects a map in SVG format.
+ * Handles a GetMap request that expects a map in SVG format.
  * 
  * @author Gabriel Roldan
  * @version $Id$
  */
-class SVGStreamingMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.responses.wms.map");
+public final class SVGStreamingMapOutputFormat extends Response implements GetMapOutputFormat {
 
-    /** DOCUMENT ME! */
-    private EncodeSVG svgEncoder;
+    private WMS wms;
 
-    public SVGStreamingMapOutputFormat(String mimeType, String[] outputFormats) {
-        super(mimeType, outputFormats);
+    public SVGStreamingMapOutputFormat(WMS wms) {
+        super(EncodeSVG.class, SVG.OUTPUT_FORMATS);
+        this.wms = wms;
     }
 
     /**
-     * aborts the encoding.
+     * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
+     *      org.geoserver.platform.Operation)
      */
     @Override
-    public void abort() {
-        LOGGER.fine("aborting SVG map response");
-
-        if (this.svgEncoder != null) {
-            LOGGER.info("aborting SVG encoder");
-            this.svgEncoder.abort();
-        }
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
+        return getMimeType();
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * @param map
-     *            DOCUMENT ME!
-     * 
-     * @throws WmsException
-     *             DOCUMENT ME!
+     * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
+     *      org.geoserver.platform.Operation)
      */
-    public void produceMap() throws WmsException {
-        if (mapContext == null) {
-            throw new WmsException("The map context is not set");
-        }
-
-        this.svgEncoder = new EncodeSVG(mapContext);
+    @Override
+    public void write(Object value, OutputStream output, Operation operation) throws IOException,
+            ServiceException {
+        EncodeSVG map = (EncodeSVG) value;
+        map.encode(output);
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * @param out
-     *            DOCUMENT ME!
-     * 
-     * @throws ServiceException
-     *             DOCUMENT ME!
-     * @throws IOException
-     *             DOCUMENT ME!
+     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_SIMPLE streaming} svg
+     *         strategy
+     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
      */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        this.svgEncoder.encode(out);
+    public boolean enabled() {
+        boolean enabled = SVG.canHandle(wms, WMS.SVG_SIMPLE);
+        return enabled;
     }
+    
+    /**
+     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_SIMPLE streaming} svg
+     *         strategy
+     * @see org.geoserver.ows.Response#canHandle(org.geoserver.platform.Operation)
+     */
+    public boolean canHandle(Operation operation) {
+        return enabled();
+    }
+
+    /**
+     * @return {@code ["image/svg+xml", "image/svg xml", "image/svg"]}
+     * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
+     */
+    public Set<String> getOutputFormatNames() {
+        return SVG.OUTPUT_FORMATS;
+    }
+
+    /**
+     * @return {@code "image/svg+xml"}
+     * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
+     */
+    public String getMimeType() {
+        return SVG.MIME_TYPE;
+    }
+
+    /**
+     * 
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+     */
+    public EncodeSVG produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
+        EncodeSVG svg = new EncodeSVG(mapContext);
+        svg.setMimeType(getMimeType());
+        return svg;
+    }
+
 }

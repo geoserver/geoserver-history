@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.logging.Logger;
 
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.response.Map;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -26,110 +27,70 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
-
 /**
- * DOCUMENT ME!
- *
- * @author Gabriel Rold?n
+ * Streaming SVG encoder (does not support styling)
+ * 
+ * @author Gabriel Roldan
  * @version $Id$
  */
-public class EncodeSVG {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
+public class EncodeSVG extends Map {
+
+    private static final Logger LOGGER = org.geotools.util.logging.Logging
+            .getLogger("org.vfny.geoserver.responses.wms.map");
+
     private static final String DOCTYPE = "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n";
 
     /** the XML and SVG header */
     private static final String SVG_HEADER = "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
-        + "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.1%\"\n\tstroke-linecap=\"round\"\n\tstroke-linejoin=\"round\"\n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
+            + "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n\tstroke=\"green\" \n\tfill=\"none\" \n\tstroke-width=\"0.1%\"\n\tstroke-linecap=\"round\"\n\tstroke-linejoin=\"round\"\n\twidth=\"_width_\" \n\theight=\"_height_\" \n\tviewBox=\"_viewBox_\" \n\tpreserveAspectRatio=\"xMidYMid meet\">\n";
 
     /** the SVG closing element */
     private static final String SVG_FOOTER = "</svg>\n";
 
-    /** DOCUMENT ME! */
     private WMSMapContext mapContext;
 
-    /** DOCUMENT ME! */
     private SVGWriter writer;
-
-    /** DOCUMENT ME! */
-    private boolean abortProcess;
 
     /**
      * Creates a new EncodeSVG object.
-     *
-     * @param mapContext DOCUMENT ME!
+     * 
+     * @param mapContext
+     * 
      */
     public EncodeSVG(WMSMapContext mapContext) {
         this.mapContext = mapContext;
     }
 
-    /**
-     * DOCUMENT ME!
-     */
-    public void abort() {
-        abortProcess = true;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param out DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     public void encode(final OutputStream out) throws IOException {
         Envelope env = this.mapContext.getAreaOfInterest();
-        this.writer = new SVGWriter(out, mapContext);
+        this.writer = new SVGWriter(out, mapContext.getAreaOfInterest());
         writer.setMinCoordDistance(env.getWidth() / 1000);
-
-        abortProcess = false;
 
         long t = System.currentTimeMillis();
 
-        try {
-            writeHeader();
+        writeHeader();
 
-            writeLayers();
+        writeLayers();
 
-            writer.write(SVG_FOOTER);
+        writer.write(SVG_FOOTER);
 
-            this.writer.flush();
-            t = System.currentTimeMillis() - t;
-            LOGGER.info("SVG generated in " + t + " ms");
-        } catch (IOException ioe) {
-            if (abortProcess) {
-                LOGGER.fine("SVG encoding aborted");
+        this.writer.flush();
+        t = System.currentTimeMillis() - t;
+        LOGGER.info("SVG generated in " + t + " ms");
 
-                return;
-            } else {
-                throw ioe;
-            }
-        } catch (AbortedException ex) {
-            return;
-        }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @return DOCUMENT ME!
-     */
     public String createViewBox() {
         Envelope referenceSpace = mapContext.getAreaOfInterest();
         String viewBox = writer.getX(referenceSpace.getMinX()) + " "
-            + (writer.getY(referenceSpace.getMinY()) - referenceSpace.getHeight()) + " "
-            + referenceSpace.getWidth() + " " + referenceSpace.getHeight();
+                + (writer.getY(referenceSpace.getMinY()) - referenceSpace.getHeight()) + " "
+                + referenceSpace.getWidth() + " " + referenceSpace.getHeight();
 
         return viewBox;
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     private void writeHeader() throws IOException {
-        //TODO: this does not write out the doctype definition, there should be 
+        // TODO: this does not write out the doctype definition, there should be
         // a configuration option wether to include it or not.
         String viewBox = createViewBox();
         String header = SVG_HEADER.replaceAll("_viewBox_", viewBox);
@@ -138,13 +99,6 @@ public class EncodeSVG {
         writer.write(header);
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @param layer DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     private void writeDefs(SimpleFeatureType layer) throws IOException {
         GeometryDescriptor gtype = layer.getGeometryDescriptor();
         Class geometryClass = gtype.getType().getBinding();
@@ -154,26 +108,16 @@ public class EncodeSVG {
         }
     }
 
-    /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     */
     private void writePointDefs() throws IOException {
-        writer.write(
-            "<defs>\n\t<circle id='point' cx='0' cy='0' r='0.25%' fill='blue'/>\n</defs>\n");
+        writer.write("<defs>\n\t<circle id='point' cx='0' cy='0' r='0.25%' fill='blue'/>\n</defs>\n");
     }
 
     /**
-     * DOCUMENT ME!
-     *
-     * @throws IOException DOCUMENT ME!
-     * @throws AbortedException DOCUMENT ME!
-     *
+     * 
+     * 
      * @task TODO: respect layer filtering given by their Styles
      */
-    @SuppressWarnings("unchecked")
-    private void writeLayers() throws IOException, AbortedException {
+    private void writeLayers() throws IOException {
         MapLayer[] layers = mapContext.getLayers();
         int nLayers = layers.length;
 
@@ -190,15 +134,18 @@ public class EncodeSVG {
             SimpleFeatureType schema = fSource.getSchema();
 
             try {
-                Expression bboxExpression = fFac.createBBoxExpression(mapContext.getAreaOfInterest());
-                GeometryFilter bboxFilter = fFac.createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
-                bboxFilter.addLeftGeometry(fFac.createAttributeExpression(schema,
-                        schema.getGeometryDescriptor().getName().getLocalPart()));
+                Expression bboxExpression = fFac.createBBoxExpression(mapContext
+                        .getAreaOfInterest());
+                GeometryFilter bboxFilter = fFac
+                        .createGeometryFilter(FilterType.GEOMETRY_INTERSECTS);
+                bboxFilter.addLeftGeometry(fFac.createAttributeExpression(schema, schema
+                        .getGeometryDescriptor().getName().getLocalPart()));
                 bboxFilter.addRightGeometry(bboxExpression);
 
                 Query bboxQuery = new Query(schema.getTypeName(), bboxFilter);
                 Query definitionQuery = layer.getQuery();
-                Query finalQuery = new Query(DataUtilities.mixQueries(definitionQuery, bboxQuery, "svgEncoder"));
+                Query finalQuery = new Query(DataUtilities.mixQueries(definitionQuery, bboxQuery,
+                        "svgEncoder"));
                 finalQuery.setHints(definitionQuery.getHints());
                 finalQuery.setSortBy(definitionQuery.getSortBy());
                 finalQuery.setStartIndex(definitionQuery.getStartIndex());
@@ -228,9 +175,6 @@ public class EncodeSVG {
                 writer.write("</g>\n");
             } catch (IOException ex) {
                 throw ex;
-            } catch (AbortedException ae) {
-                LOGGER.info("process aborted: " + ae.getMessage());
-                throw ae;
             } catch (Throwable t) {
                 LOGGER.warning("UNCAUGHT exception: " + t.getMessage());
 

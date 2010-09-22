@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,16 +21,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.geoserver.config.GeoServer;
+import org.geoserver.ows.Response;
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.map.AbstractMapOutputFormat;
 import org.geoserver.wms.map.MaxErrorEnforcer;
+import org.geoserver.wms.map.RawMap;
 import org.geoserver.wms.map.RenderExceptionStrategy;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.StreamingRenderer;
@@ -45,28 +45,115 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapOutputFormat {
-    StreamingRenderer renderer;
+public final class SVGBatikMapOutputFormat extends Response implements GetMapOutputFormat {
 
-    private WMS wmsConfig;
+    private final WMS wms;
 
-    public SVGBatikMapOutputFormat(String mimeType, String[] outputFormats, WMS wms) {
-        super(mimeType, outputFormats);
-        this.wmsConfig = wms;
-    }
+    public static class BatikSVGMap extends org.geoserver.wms.response.Map {
+        private SVGGraphics2D graphics;
 
-    public void abort(GeoServer gs) {
-        if (renderer != null) {
-            renderer.stopRendering();
+        BatikSVGMap(SVGGraphics2D graphics) {
+            this.graphics = graphics;
+            setMimeType(SVG.MIME_TYPE);
+        }
+
+        public SVGGraphics2D getGraphics() {
+            return graphics;
         }
     }
 
-    public void produceMap() throws WmsException {
+    public SVGBatikMapOutputFormat(WMS wms) {
+        super(BatikSVGMap.class, SVG.OUTPUT_FORMATS);
+        this.wms = wms;
+    }
+    
+    /**
+     * @return same as {@link #getMimeType()}
+     * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
+     *      org.geoserver.platform.Operation)
+     */
+    @Override
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
+        return getMimeType();
+    }
+    
+    /**
+     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_BATIK Batik} svg
+     *         strategy
+     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
+     */
+    public boolean enabled() {
+        boolean enabled = SVG.canHandle(wms, WMS.SVG_BATIK);
+        return enabled;
+    }
+
+    /**
+     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_BATIK Batik} svg
+     *         strategy
+     * @see org.geoserver.ows.Response#canHandle(org.geoserver.platform.Operation)
+     */
+    @Override
+    public boolean canHandle(Operation operation) {
+       return enabled();
+    }
+
+    /**
+     * @return {@code ["image/svg+xml", "image/svg xml", "image/svg"]}
+     * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
+     */
+    public Set<String> getOutputFormatNames() {
+        return SVG.OUTPUT_FORMATS;
+    }
+
+    /**
+     * @return {@code "image/svg+xml"}
+     * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
+     */
+    public String getMimeType() {
+        return SVG.MIME_TYPE;
+    }
+
+    /**
+     * 
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+     */
+    public BatikSVGMap produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
+
+        StreamingRenderer renderer = setUpRenderer(mapContext);
+        SVGGraphics2D g = createSVGMap(renderer, mapContext);
+        renderer = null;
+
+        // This method of output does not output the DOCTYPE definiition
+        // TODO: make a config option that toggles wether doctype is
+        // written out.
+        // OutputFormat format = new OutputFormat();
+        // XMLSerializer serializer = new XMLSerializer(new OutputStreamWriter(out, "UTF-8"),
+        // format);
+
+        return new BatikSVGMap(g);
+    }
+
+    /**
+     * 
+     * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
+     *      org.geoserver.platform.Operation)
+     */
+    @Override
+    public void write(Object value, OutputStream output, Operation operation) throws IOException,
+            ServiceException {
+
+        BatikSVGMap map = (BatikSVGMap) value;
+        SVGGraphics2D graphics = map.getGraphics();
+        graphics.stream(new OutputStreamWriter(output, "UTF-8"));
+    }
+
+    private StreamingRenderer setUpRenderer(WMSMapContext mapContext) {
+        StreamingRenderer renderer;
         renderer = new StreamingRenderer();
 
         // optimized data loading was not here, but yet it seems sensible to
         // have it...
-        Map rendererParams = new HashMap();
+        Map<String, Object> rendererParams = new HashMap<String, Object>();
         rendererParams.put("optimizedDataLoadingEnabled", Boolean.TRUE);
         // we need the renderer to draw everything on the batik provided graphics object
         rendererParams.put(StreamingRenderer.OPTIMIZE_FTS_RENDERING_KEY, Boolean.FALSE);
@@ -78,9 +165,11 @@ class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapO
         }
         renderer.setRendererHints(rendererParams);
         renderer.setContext(mapContext);
+        return renderer;
     }
 
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
+    public SVGGraphics2D createSVGMap(final StreamingRenderer renderer,
+            final WMSMapContext mapContext) throws ServiceException, IOException {
         try {
             MapContext map = renderer.getContext();
             double width = -1;
@@ -115,7 +204,7 @@ class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapO
             g.setSVGCanvasSize(new Dimension((int) width, (int) height));
 
             // turn off/on anti aliasing
-            if (wmsConfig.isSvgAntiAlias()) {
+            if (wms.isSvgAntiAlias()) {
                 g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
             } else {
@@ -124,7 +213,7 @@ class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapO
             }
 
             // enforce no more than x rendering errors
-            int maxErrors = wmsConfig.getMaxRenderingErrors();
+            int maxErrors = wms.getMaxRenderingErrors();
             MaxErrorEnforcer errorChecker = new MaxErrorEnforcer(renderer, maxErrors);
 
             // Add a render listener that ignores well known rendering exceptions and reports back
@@ -150,20 +239,9 @@ class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapO
                 throw new WmsException("Rendering process failed", "internalError", renderError);
             }
 
-            // This method of output does not output the DOCTYPE definiition
-            // TODO: make a config option that toggles wether doctype is
-            // written out.
-            OutputFormat format = new OutputFormat();
-            XMLSerializer serializer = new XMLSerializer(new OutputStreamWriter(out, "UTF-8"),
-                    format);
-
-            // this method does output the DOCTYPE def
-            g.stream(new OutputStreamWriter(out, "UTF-8"));
+            return g;
         } catch (ParserConfigurationException e) {
             throw new WmsException("Unexpected exception", "internalError", e);
-        } finally {
-            // free up memory
-            renderer = null;
         }
     }
 
@@ -182,4 +260,5 @@ class SVGBatikMapOutputFormat extends AbstractMapOutputFormat implements GetMapO
         // Set up the context
         return SVGGeneratorContext.createDefault(document);
     }
+
 }
