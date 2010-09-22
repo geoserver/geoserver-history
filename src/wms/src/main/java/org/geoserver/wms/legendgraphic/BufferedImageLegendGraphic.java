@@ -2,7 +2,7 @@ package org.geoserver.wms.legendgraphic;
 
 import java.awt.image.BufferedImage;
 
-import org.geoserver.wms.response.LegendGraphic;
+import org.geoserver.wms.LegendGraphic;
 
 public class BufferedImageLegendGraphic extends LegendGraphic {
 

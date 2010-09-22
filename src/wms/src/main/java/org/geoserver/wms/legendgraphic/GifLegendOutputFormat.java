@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.LegendGraphic;
 import org.geoserver.wms.map.ImageUtils;
-import org.geoserver.wms.response.LegendGraphic;
 import org.geotools.image.ImageWorker;
 import org.springframework.util.Assert;
 

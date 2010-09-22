@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.response.LegendGraphic;
 
 /**
  * Provides the skeleton for producers of a legend image, as required by the GetLegendGraphic WMS

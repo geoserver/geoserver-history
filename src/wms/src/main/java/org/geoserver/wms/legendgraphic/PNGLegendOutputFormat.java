@@ -19,7 +19,7 @@ import javax.media.jai.PlanarImage;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphic;
-import org.geoserver.wms.response.LegendGraphic;
+import org.geoserver.wms.LegendGraphic;
 import org.geotools.image.ImageWorker;
 import org.springframework.util.Assert;
 
