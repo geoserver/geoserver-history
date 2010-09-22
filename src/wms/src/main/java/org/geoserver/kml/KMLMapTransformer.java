@@ -997,7 +997,8 @@ public abstract class KMLMapTransformer extends KMLTransformerBase {
                     .getName().getLocalPart();
             GetMapRequest request = mapContext.getRequest();
             String baseURL = request.getBaseUrl();
-            return buildURL(baseURL, appendPath("rest", ns.getPrefix(), featureTypeName), null,
+            String prefix = ns.getPrefix();
+            return buildURL(baseURL, appendPath("rest", prefix, featureTypeName), null,
                     URLType.SERVICE);
         }
 

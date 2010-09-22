@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Test;
+import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -37,22 +37,15 @@ import com.vividsolutions.jts.geom.Point;
 /**
  * Unit test suite for {@link KMLVectorTransformer}
  */
-public class KMLVectorTransformerTest extends WMSTestSupport {
+public class KMLVectorTransformerTest extends TestCase {
 
     private WMSMockData mockData;
-
-    /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
-    public static Test suite() {
-        return new OneTimeTestSetup(new KMLVectorTransformerTest());
-    }
-
+    
     /**
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-    protected void setUpInternal() throws Exception {
+    protected void setUp() throws Exception {
         mockData = new WMSMockData();
         mockData.setUp();
 
@@ -65,10 +58,10 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
      * @see junit.framework.TestCase#tearDown()
      */
     @Override
-    protected void tearDownInternal() throws Exception {
+    protected void tearDown() throws Exception {
         new GeoServerExtensions().setApplicationContext(null);
     }
-
+    
     /**
      * If {@link KMLVectorTransformer#isStandAlone()} then the root element is Document, otherwise
      * its kml
@@ -85,7 +78,7 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         GetMapRequest request = mockData.createRequest();
         mapContext.setRequest(request);
 
-        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(mockData.getWMS(), mapContext, mapLayer);
 
         Document document;
 
@@ -133,7 +126,7 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         WMSMapContext mapContext = new WMSMapContext();
         mapContext.setRequest(request);
 
-        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(mockData.getWMS(), mapContext, mapLayer);
         transformer.setStandAlone(false);
         transformer.setIndentation(2);
 
@@ -147,9 +140,9 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         // we're at startIndex=2 and maxFeatures=2, so expect previous link to be 0, and next to be
         // 4
         String expectedLink;
-        expectedLink = "baseurl/rest/geosearch/gs/TestPoints.kml?startindex=0&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=0&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/atom:link[1]/@href", dom);
-        expectedLink = "baseurl/rest/geosearch/gs/TestPoints.kml?startindex=4&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=4&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/atom:link[2]/@href", dom);
 
         assertXpathEvaluatesTo("prev", "//Document/NetworkLink[1]/@id", dom);
@@ -158,7 +151,7 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=0&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/NetworkLink[1]/Link/href", dom);
 
-        expectedLink = "baseurl/rest/geosearch/gs/TestPoints.kml?startindex=4&maxfeatures=2";
+        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=4&maxfeatures=2";
         assertXpathEvaluatesTo("next", "//Document/NetworkLink[2]/@id", dom);
     }
 }

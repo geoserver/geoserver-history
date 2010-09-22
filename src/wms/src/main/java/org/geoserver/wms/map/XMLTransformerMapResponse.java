@@ -43,7 +43,14 @@ public class XMLTransformerMapResponse extends Response {
         try {
             transformer.transform(transformerSubject, output);
         } catch (TransformerException e) {
-            throw new ServiceException(operation.getId() + " operation failed.", e);
+            // TransformerException do not respect the Exception.getCause() contract
+            Throwable cause = e.getCause() != null ? e.getCause() : e.getException();
+            // we need to propagate the RuntimeException
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException)cause;
+            }
+            throw new ServiceException(operation.getId() + " operation failed.",
+                    cause != null ? cause : e);
         }
     }
 

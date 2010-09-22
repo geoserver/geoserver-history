@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
@@ -39,11 +40,8 @@ import com.vividsolutions.jts.geom.Point;
  * 
  * @author Gabriel Roldan (OpenGeo)
  * @version $Id$
- * @todo this test does not need to extend GeoServerAbstractTestSupport but just TestCase. For the
- *       time being, its a workaround for the build to keep going until we find out why these tests
- *       produce other ones to fail
  */
-public class KMLLegendTransformerTest extends WMSTestSupport {
+public class KMLLegendTransformerTest extends TestCase {
 
     private WMSMockData mockData;
 
@@ -61,17 +59,10 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
     private MockHttpServletRequest httpreq;
 
     /**
-     * This is a READ ONLY TEST so we can use one time setup
-     */
-    public static Test suite() {
-        return new OneTimeTestSetup(new KMLLegendTransformerTest());
-    }
-
-    /**
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-    protected void setUpInternal() throws Exception {
+    protected void setUp() throws Exception {
         mockData = new WMSMockData();
         mockData.setUp();
 
@@ -106,7 +97,7 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
      * @see junit.framework.TestCase#tearDown()
      */
     @Override
-    protected void tearDownInternal() throws Exception {
+    protected void tearDown() throws Exception {
     }
 
     /**

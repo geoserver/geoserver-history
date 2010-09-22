@@ -164,6 +164,8 @@ public class KMLTransformer extends TransformerBase {
                 features = KMLUtils.loadFeatureCollection(featureSource, layer, mapContext, wms);
                 if(features == null)
                 	return;
+            } catch (RuntimeException e) {
+                throw e;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
