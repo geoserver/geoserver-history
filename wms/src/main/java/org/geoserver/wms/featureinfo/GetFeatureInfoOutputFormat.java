@@ -56,7 +56,7 @@ import org.geotools.util.logging.Logging;
  * </ul>
  * </p>
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @author Chris Holmes
  * @version $Id$
  */

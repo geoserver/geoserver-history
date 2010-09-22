@@ -700,7 +700,6 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * 
      * @throws Exception
      * @throws ServiceException
-     *             DOCUMENT ME!
      */
     public void validateSchemaSLD(File f, GetMapRequest getMapRequest) throws Exception {
         SLDValidator validator = new SLDValidator();
@@ -742,7 +741,6 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * 
      * @throws Exception
      * @throws ServiceException
-     *             DOCUMENT ME!
      */
     public void validateSchemaGETMAP(File f, GetMapRequest getMapRequest) throws Exception {
         GETMAPValidator validator = new GETMAPValidator();

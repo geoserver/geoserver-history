@@ -305,14 +305,6 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
         showImage(testName, image);
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param frameName
-     *            DOCUMENT ME!
-     * @param image
-     *            DOCUMENT ME!
-     */
     protected void showImage(String frameName, final BufferedImage image) {
         showImage(frameName, SHOW_TIMEOUT, image);
     }

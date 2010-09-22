@@ -963,7 +963,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      *            The source requested.
      * 
      * @throws ServiceException
-     *             DOCUMENT ME!
      */
     private static void checkStyle(Style style, MapLayerInfo mapLayerInfo) throws ServiceException {
         if (mapLayerInfo.getType() == mapLayerInfo.TYPE_RASTER) {

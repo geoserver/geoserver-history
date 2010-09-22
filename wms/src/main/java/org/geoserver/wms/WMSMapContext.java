@@ -30,7 +30,7 @@ import org.geotools.renderer.lite.RendererUtilities;
  * </ul>
  * </p>
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @author Simone Giannecchini - GeoSolutions SAS
  * @version $Id$
  */
@@ -85,87 +85,39 @@ public class WMSMapContext extends GraphicEnhancedMapContext {
         request = req;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param layers
-     */
+
     public WMSMapContext(MapLayer[] layers) {
         super(layers);
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public Color getBgColor() {
         return this.bgColor;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param bgColor
-     *            DOCUMENT ME!
-     */
     public void setBgColor(Color bgColor) {
         this.bgColor = bgColor;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public int getMapHeight() {
         return this.mapHeight;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param mapHeight
-     *            DOCUMENT ME!
-     */
     public void setMapHeight(int mapHeight) {
         this.mapHeight = mapHeight;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public int getMapWidth() {
         return this.mapWidth;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param mapWidth
-     *            DOCUMENT ME!
-     */
     public void setMapWidth(int mapWidth) {
         this.mapWidth = mapWidth;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public boolean isTransparent() {
         return this.transparent;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param transparent
-     *            DOCUMENT ME!
-     */
     public void setTransparent(boolean transparent) {
         this.transparent = transparent;
     }
