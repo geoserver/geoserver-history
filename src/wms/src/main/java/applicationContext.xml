@@ -46,7 +46,6 @@
 	<bean id="wmsGetFeatureInfo"
 		class="org.geoserver.wms.GetFeatureInfo">
       <constructor-arg ref="wms"/>
-      <constructor-arg ref="wmsGetFeatureInfoPlainText"/> <!-- default output format -->
 	</bean>
 		
 	<bean id="wmsGetLegendGraphic"
@@ -196,27 +195,17 @@
       	<constructor-arg ref="wms" />
 	</bean>
 	
-	<!-- bean id="getMapKvpReader"
-		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
-		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetMapRequest" />
-      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetMapKvpReader" />
-      	<constructor-arg index="2" ref="wms" />
-	</bean-->
 	<bean id="getMapKvpReader"
 		class="org.geoserver.wms.kvp.GetMapKvpRequestReader">
         <constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getFeatureInfoKvpReader"
-			class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
-		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetFeatureInfoRequest" />
-      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetFeatureInfoKvpReader" />
-      	<constructor-arg index="2" ref="wms" />
+			class="org.geoserver.wms.kvp.GetFeatureInfoKvpReader">
+      	<constructor-arg ref="wms" />
 	</bean>
 	<bean id="getLegendGraphicKvpReader"
-			class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
-		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.GetLegendGraphicRequest" />
-      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.GetLegendGraphicKvpReader" />
-      	<constructor-arg index="2" ref="wms" />
+			class="org.geoserver.wms.kvp.GetLegendGraphicKvpReader">
+      	<constructor-arg ref="wms" />
 	</bean>
   <!-- 
 	<bean id="putStylesKvpReader"
@@ -228,7 +217,7 @@
    -->
 	
 	<bean id="getStylesKvpReader" class="org.geoserver.wms.kvp.GetStylesKvpRequestReader">
-		<constructor-arg index="0" ref="wms"/> 
+		<constructor-arg ref="wms"/> 
 	</bean>
 		
 	<!-- xml request readers -->
@@ -253,18 +242,17 @@
 		class="org.geoserver.wms.response.DescribeLayerResponse">
 	</bean>
 	<bean id="getMapResponse"
-		class="org.geoserver.ows.adapters.ResponseAdapter">
-		<constructor-arg value="org.vfny.geoserver.wms.responses.GetMapResponse"/>
-		<constructor-arg ref="geoServer"/>
+		class="org.geoserver.wms.response.GetMapResponse">
+		<constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getFeatureInfoResponse"
 		class="org.geoserver.wms.response.GetFeatureInfoResponse">
 		<constructor-arg ref="wms"/>
+        <constructor-arg ref="wmsGetFeatureInfoPlainText"/> <!-- default output format -->
 	</bean>
 	<bean id="getLegendGraphicResponse"
-		class="org.geoserver.ows.adapters.ResponseAdapter">
-		<constructor-arg value="org.vfny.geoserver.wms.responses.GetLegendGraphicResponse"/>
-		<constructor-arg ref="geoServer"/>
+		class="org.geoserver.wms.response.GetLegendGraphicResponse">
+		<constructor-arg ref="wms"/>
 	</bean>
 	<bean id="stylesResponse" class="org.geoserver.wms.response.GetStylesResponse"/>
 	
@@ -293,16 +281,16 @@
 		</property>
 	</bean>
 	<!--  
-		Legend producer factories
+		GetLegendGraphic output formats
 	 -->
-	<bean id="GIFLegendProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.legend.gif.GIFLegendGraphicProducerFactory">
+	<bean id="wmsGIFLegendOutputFormat" 
+		class="org.geoserver.wms.legendgraphic.GifLegendOutputFormat">
 	</bean>
-	<bean id="JaiLegendProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.legend.jai.JaiLegendGraphicProducerFactory">
+	<bean id="wmsJPEGLegendGraphicOutputFormat" class="org.geoserver.wms.legendgraphic.JAILegendOutputFormat">
+      <constructor-arg value="image/jpeg"></constructor-arg>
 	</bean>
-	<bean id="PNGLegendProducerFactory" 
-		class="org.vfny.geoserver.wms.responses.legend.png.PNGLegendGraphicProducerFactory">
+	<bean id="wmsPNGLegendOutputFormat" 
+		class="org.geoserver.wms.legendgraphic.PNGLegendOutputFormat">
 	</bean>
 	
 	<!--  

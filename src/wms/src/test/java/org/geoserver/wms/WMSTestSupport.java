@@ -58,20 +58,20 @@ import com.vividsolutions.jts.geom.Envelope;
  */
 public abstract class WMSTestSupport extends GeoServerTestSupport {
 
-    /** DOCUMENT ME! */
     protected static final int SHOW_TIMEOUT = 2000;
 
-    /** DOCUMENT ME! */
     protected static final boolean INTERACTIVE = false;
 
-    /** DOCUMENT ME! */
     protected static final Color BG_COLOR = Color.white;
 
     /**
      * @return The global wms singleton from the application context.
      */
     protected WMS getWMS() {
-        return new WMS(getGeoServer());
+        WMS wms = (WMS)applicationContext.getBean("wms");
+        //WMS wms = new WMS(getGeoServer());
+        //wms.setApplicationContext(applicationContext);
+        return wms;
     }
 
     @Override

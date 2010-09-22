@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.response.LegendUtils;
+import org.geoserver.wms.legendgraphic.LegendUtils;
 import org.geoserver.wms.response.MapDecoration;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.feature.simple.SimpleFeatureBuilder;

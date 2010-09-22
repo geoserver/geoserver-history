@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.legend.raster;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,11 +16,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.geoserver.wms.legendgraphic.LegendUtils.HAlign;
+import org.geoserver.wms.legendgraphic.LegendUtils.VAlign;
 import org.geotools.styling.ColorMapEntry;
 import org.opengis.style.ColorMap;
-import org.vfny.geoserver.wms.responses.LegendUtils;
-import org.vfny.geoserver.wms.responses.LegendUtils.HAlign;
-import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
 
 /**
  * This class mimics a simple cell for the final {@link ColorMap} legend reprensentation.
