@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.Map;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataUtilities;
-import org.geotools.data.Query;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -33,18 +34,15 @@ import org.opengis.filter.spatial.BBOX;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.wms.WMSMapContext;
 
 /**
  * Encodes a set of MapLayers in HTMLImageMap format.
  *
  * @author Mauro Bartolomeoli 
  */
-public class EncodeHTMLImageMap {
+public class EncodeHTMLImageMap extends Map{
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
     
-    private WMSMapContext mapContext;
-
     /** Filter factory for creating filters */
 	private final static FilterFactory filterFactory = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
     
@@ -54,9 +52,7 @@ public class EncodeHTMLImageMap {
      */
     private HTMLImageMapWriter writer;
 
-    
-    private boolean abortProcess;
-    
+        
     private final int maxFilterSize=15;
 
     /**
@@ -65,15 +61,9 @@ public class EncodeHTMLImageMap {
      * @param mapContext current wms context
      */
     public EncodeHTMLImageMap(WMSMapContext mapContext) {
-        this.mapContext = mapContext;
+        super(mapContext);
     }
 
-    /**
-     * Aborts encoding.
-     */
-    public void abort() {
-        abortProcess = true;
-    }
 
     /**
      * Encodes the current set of layers.
@@ -86,8 +76,6 @@ public class EncodeHTMLImageMap {
         // initializes the writer
         this.writer = new HTMLImageMapWriter(out, mapContext);
         
-        abortProcess = false;
-
         long t = System.currentTimeMillis();
 
         try {
@@ -97,14 +85,6 @@ public class EncodeHTMLImageMap {
             this.writer.flush();
             t = System.currentTimeMillis() - t;
             LOGGER.info("HTML ImageMap generated in " + t + " ms");
-        } catch (IOException ioe) {
-            if (abortProcess) {
-                LOGGER.fine("HTML ImageMap encoding aborted");
-
-                return;
-            } else {
-                throw ioe;
-            }
         } catch (AbortedException ex) {
             return;
         }

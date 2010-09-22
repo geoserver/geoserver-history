@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -44,7 +45,6 @@ import org.opengis.filter.expression.Expression;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.responses.map.htmlimagemap.holes.HolesRemover;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -95,7 +95,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      * @throws UnsupportedEncodingException 
      */
     public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) throws UnsupportedEncodingException, ClassCastException {    	
-    	super(out,mapContext.getRequest()!=null ? mapContext.getRequest().getHttpServletRequest().getCharacterEncoding() : "UTF-8");
+    	super(out, mapContext.getRequest().getRequestCharset() == null? "UTF-8" : mapContext.getRequest().getRequestCharset());
     	
         this.mapContext=mapContext;        
         mapEnv = mapContext.getAreaOfInterest();
