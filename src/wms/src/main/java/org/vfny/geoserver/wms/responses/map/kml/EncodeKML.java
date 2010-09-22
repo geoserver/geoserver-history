@@ -26,7 +26,6 @@ import javax.media.jai.GraphicsJAI;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
-import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.factory.CommonFactoryFinder;

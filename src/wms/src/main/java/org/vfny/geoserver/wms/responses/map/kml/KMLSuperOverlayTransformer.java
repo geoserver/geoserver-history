@@ -157,7 +157,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
             
             start("Link");
 
-            String baseURL = ResponseUtils.baseURL(mapContext.getRequest().getHttpServletRequest());
+            String baseURL = ResponseUtils.baseURL(mapContext.getRequest().getHttpRequest());
             SimpleFeatureType ft = (SimpleFeatureType) mapLayer.getFeatureSource().getSchema();
             String type = "kml";
             if(FeatureUtilities.isWrappedCoverage(ft) || FeatureUtilities.isWrappedCoverageReader(ft)) {

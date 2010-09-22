@@ -7,8 +7,8 @@ package org.vfny.geoserver.wms.responses.map.kml;
 import java.sql.Connection;
 
 import org.geoserver.config.GeoServer;
-import org.geotools.data.Query;
 import org.geotools.data.FeatureSource;
+import org.geotools.data.Query;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.ReferencedEnvelope;

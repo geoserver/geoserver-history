@@ -27,11 +27,13 @@
 	-->
 	<bean id="wmsGetCapabilities" 
 		class="org.geoserver.wms.GetCapabilitiesImpl" >
+      <description>WMS GetCapabilities operation</description>
       <constructor-arg ref="wms"/>
 	</bean>
 
 	<bean id="wmsDescribeLayer"
-		class="org.vfny.geoserver.wms.servlets.DescribeLayer">
+		class="org.geoserver.wms.DescribeLayerImpl">
+       <description>WMS DescribeLayer operation</description>
       <constructor-arg ref="wms"/>
 	</bean>
 		
@@ -90,6 +92,14 @@
 	</bean>
  	
  	<!-- kvp parsers -->
+    <bean id="wmsLayersKvpParser" class="org.geoserver.wms.kvp.MapLayerInfoKvpParser">
+    <description>
+      Parses a comma separated list of layer names into a
+      java.util.List of MapLayerInfo objects
+      </description>
+      <constructor-arg value="LAYERS" />
+      <constructor-arg ref="wms" />
+    </bean>
  	<bean id="widthKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="width"/>
  	</bean>
@@ -214,9 +224,7 @@
 		class="org.geoserver.wms.GetCapabilitiesResponse">
 	</bean>
 	<bean id="describeLayerResponse"
-		class="org.geoserver.ows.adapters.ResponseAdapter">
-		<constructor-arg value="org.vfny.geoserver.wms.responses.DescribeLayerResponse"/>
-		<constructor-arg ref="geoServer"/>
+		class="org.geoserver.wms.response.DescribeLayerResponse">
 	</bean>
 	<bean id="getMapResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">

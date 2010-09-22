@@ -100,7 +100,7 @@ public class LegendDecoration implements MapDecoration {
     }
 
     Catalog findCatalog(WMSMapContext mapContext){
-        return mapContext.getRequest().getServiceConfig().getGeoServer().getCatalog();
+        return mapContext.getRequest().getWMS().getGeoServer().getCatalog();
     }
     
     public Dimension findOptimalSize(Graphics2D g2d, WMSMapContext mapContext){
@@ -140,7 +140,7 @@ public class LegendDecoration implements MapDecoration {
 
     public void paint(Graphics2D g2d, Rectangle paintArea, WMSMapContext mapContext) 
     throws Exception {
-    	Catalog catalog = mapContext.getRequest().getServiceConfig().getGeoServer().getCatalog();
+    	Catalog catalog = mapContext.getRequest().getWMS().getGeoServer().getCatalog();
         Dimension d = findOptimalSize(g2d, mapContext);
         Rectangle bgRect = new Rectangle(0, 0, d.width, d.height);
         double scaleDenominator = RendererUtilities.calculateOGCScale(

@@ -110,7 +110,7 @@ public class KMLReflector {
 
         // setup the default mode
         String mode = caseInsensitiveParam(
-                request.getHttpServletRequest().getParameterMap(), 
+                request.getHttpRequest().getParameterMap(), 
                 "mode", wmsConfiguration.getKmlReflectorMode());
 
         if (!MODES.containsKey(mode)){
@@ -122,7 +122,7 @@ public class KMLReflector {
 
         if ("superoverlay".equals(mode)){
             String submode = caseInsensitiveParam(
-                request.getHttpServletRequest().getParameterMap(), 
+                request.getHttpRequest().getParameterMap(), 
                 "superoverlay_mode",
                 wmsConfiguration.getKmlSuperoverlayMode()
                 );

@@ -24,7 +24,6 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.xml.GML2OutputFormat;
 import org.geoserver.wms.WMS;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.gml2.bindings.GML2EncodingUtils;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 

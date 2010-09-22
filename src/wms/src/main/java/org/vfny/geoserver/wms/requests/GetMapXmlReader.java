@@ -28,7 +28,6 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geotools.data.DataStore;
-import org.geotools.data.Query;
 import org.geotools.data.FeatureReader;
 import org.geotools.data.Query;
 import org.geotools.data.Transaction;
@@ -269,7 +268,7 @@ public class GetMapXmlReader extends XmlRequestReader {
     private void handlePostGet(Node rootNode, SLDParser sldParser, GetMapRequest getMapRequest)
         throws Exception {
         //get the GET parmeters
-        HttpServletRequest request = getMapRequest.getHttpServletRequest();
+        HttpServletRequest request = getMapRequest.getHttpRequest();
 
         String qString = request.getQueryString();
 
@@ -754,7 +753,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             try {
                 in = new FileInputStream(f);
                 errors = validator.validateSLD(in,
-                        getMapRequest.getHttpServletRequest().getSession().getServletContext());
+                        getMapRequest.getHttpRequest().getSession().getServletContext());
             } finally {
                 if (in != null) {
                     in.close();
@@ -798,7 +797,7 @@ public class GetMapXmlReader extends XmlRequestReader {
             try {
                 in = new FileInputStream(f);
                 errors = validator.validateGETMAP(in,
-                        getMapRequest.getHttpServletRequest().getSession().getServletContext());
+                        getMapRequest.getHttpRequest().getSession().getServletContext());
             } finally {
                 if (in != null) {
                     in.close();

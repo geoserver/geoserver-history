@@ -4,8 +4,6 @@
  */
 package org.geoserver.wms.request;
 
-import org.vfny.geoserver.Request;
-
 /**
  * This class enforces a standard interface for GetCapabilities requests.
  * 
@@ -13,25 +11,13 @@ import org.vfny.geoserver.Request;
  * @author Chris Holmes, TOPP
  * @version $Id$
  */
-public class GetCapabilitiesRequest extends Request {
+public class GetCapabilitiesRequest extends WMSRequest {
 
     private String updateSequence;
 
     private String namespace;
 
     public GetCapabilitiesRequest() {
-        this(null);
-    }
-
-    /**
-     * Creates a new capabilities request object.
-     * 
-     * @param updateSequence
-     *            The updateSequence number from the GetCapabilities request
-     */
-    public GetCapabilitiesRequest(String updateSequence) {
-        super("WMS", "GetCapabilities", null);
-        this.updateSequence = updateSequence;
     }
 
     /**

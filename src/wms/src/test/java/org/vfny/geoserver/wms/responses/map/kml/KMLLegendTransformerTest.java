@@ -84,7 +84,7 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
         
         mapLayer = new DefaultMapLayer(featureSource, mockData.getDefaultStyle().getStyle());
 
-        MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();
+        MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpRequest();
         httpreq.setScheme("http");
         httpreq.setServerName("geoserver.org");
         httpreq.setServerPort(8181);

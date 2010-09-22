@@ -14,6 +14,7 @@ import org.geoserver.platform.ServiceException;
  *
  * @author Gabriel Rold?n
  * @version $Id$
+ * @deprecated use {@link ServiceException}
  */
 public class WmsException extends ServiceException {
     /**

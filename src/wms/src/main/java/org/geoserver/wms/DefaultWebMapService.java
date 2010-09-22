@@ -18,7 +18,9 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.request.DescribeLayerRequest;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
@@ -40,17 +42,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
 import org.vfny.geoserver.wms.requests.GetFeatureInfoRequest;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.requests.GetStylesRequest;
-import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLReflector;
-import org.vfny.geoserver.wms.servlets.DescribeLayer;
 import org.vfny.geoserver.wms.servlets.GetFeatureInfo;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
@@ -221,10 +220,10 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#describeLayer(DescribeLayerRequest)
      */
-    public DescribeLayerResponse describeLayer(DescribeLayerRequest request) {
+    public DescribeLayerTransformer describeLayer(DescribeLayerRequest request) {
         DescribeLayer describeLayer = (DescribeLayer) context.getBean("wmsDescribeLayer");
 
-        return (DescribeLayerResponse) describeLayer.getResponse();
+        return describeLayer.run(request);
     }
 
     /**
