@@ -8,16 +8,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.geoserver.ows.Response;
 import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
-import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.Map;
-import org.geotools.map.MapLayer;
 import org.springframework.util.Assert;
 
 /**
@@ -43,11 +42,18 @@ public abstract class AbstractMapOutputFormat extends Response implements GetMap
     protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding,
             final String mime, Set<String> outputFormats) {
         // Call Response superclass constructor with the kind of request we can handle
-        super(responseBinding, outputFormats);
+        // Make sure the output format comparison in canHandle is canse insensitive
+        super(responseBinding, caseInsensitiveOutputFormats(outputFormats));
         this.mime = mime;
         if (outputFormats == null) {
             outputFormats = Collections.emptySet();
         }
+    }
+
+    private static Set<String> caseInsensitiveOutputFormats(Set<String> outputFormats) {
+        Set<String> caseInsensitiveFormats = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        caseInsensitiveFormats.addAll(outputFormats);
+        return caseInsensitiveFormats;
     }
 
     protected AbstractMapOutputFormat() {
