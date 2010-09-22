@@ -33,7 +33,6 @@ import org.geotools.map.WMSMapLayer;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
-import org.vfny.geoserver.wms.WmsException;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
@@ -162,7 +161,7 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
             RawMap result = new RawMap(mapContext, buff, MIME_TYPE);
             return result;
         } catch (TemplateException e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
     }
 

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
@@ -23,7 +24,6 @@ import org.geotools.gce.geotiff.GeoTiffWriter;
 import org.geotools.geometry.GeneralEnvelope;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Map producer for GeoTiff output format. It basically relies on the GeoTiff module of geotools.
@@ -58,7 +58,7 @@ public class GeoTIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
     }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-            WMSMapContext mapContext) throws WmsException, IOException {
+            WMSMapContext mapContext) throws ServiceException, IOException {
         // crating a grid coverage
         final GridCoverage2D gc = factory.create("geotiff", image,
                 new GeneralEnvelope(mapContext.getAreaOfInterest()));
@@ -80,7 +80,7 @@ public class GeoTIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
         // writing it out
         final ImageOutputStream imageOutStream = ImageIO.createImageOutputStream(outStream);
         if (imageOutStream == null) {
-            throw new WmsException("Unable to create ImageOutputStream.");
+            throw new ServiceException("Unable to create ImageOutputStream.");
         }
 
         GeoTiffWriter writer = null;

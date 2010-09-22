@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.FeatureSource;
@@ -24,7 +25,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.filter.sort.SortBy;
 import org.opengis.filter.sort.SortOrder;
 import org.opengis.filter.spatial.BBOX;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * An attribute based regionating strategy assuming it's possible (and fast) to
@@ -59,18 +59,18 @@ public class NativeSortRegionatingStrategy extends
         if (attribute == null)
             attribute = MapLayerInfo.getRegionateAttribute( featureType );
         if (attribute == null)
-            throw new WmsException("Regionating attribute has not been specified");
+            throw new ServiceException("Regionating attribute has not been specified");
 
         // Make sure the attribute is actually there
         AttributeType attributeType = type.getType(attribute);
         if (attributeType == null) {
-            throw new WmsException("Could not find regionating attribute "
+            throw new ServiceException("Could not find regionating attribute "
                     + attribute + " in layer " + featureType.getName());
         }
         
         // check we can actually sort on that attribute
         if(!fs.getQueryCapabilities().supportsSorting(new SortBy[] {ff.sort(attribute, SortOrder.DESCENDING)}))
-            throw new WmsException("Native sorting on the " + attribute 
+            throw new ServiceException("Native sorting on the " + attribute 
                     + " is not possible for layer " + featureType.getName());
             
 

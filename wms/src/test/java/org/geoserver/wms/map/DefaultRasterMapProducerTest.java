@@ -20,6 +20,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.StyleInfo;
 import org.geoserver.data.test.MockData;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.security.decorators.DecoratingFeatureSource;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
@@ -37,7 +38,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
-import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -222,21 +222,21 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         try {
             forceRenderingError(new RuntimeException("fake runtime exception"));
             fail("Expected WMSException");
-        } catch (WmsException e) {
+        } catch (ServiceException e) {
             assertTrue(true);
         }
 
         try {
             forceRenderingError(new IOException("fake IO exception"));
             fail("Expected WMSException");
-        } catch (WmsException e) {
+        } catch (ServiceException e) {
             assertTrue(true);
         }
 
         try {
             forceRenderingError(new IllegalArgumentException("fake IAE exception"));
             fail("Expected WMSException");
-        } catch (WmsException e) {
+        } catch (ServiceException e) {
             assertTrue(true);
         }
     }
@@ -303,7 +303,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         }
 
         public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-                WMSMapContext mapContext) throws WmsException, IOException {
+                WMSMapContext mapContext) throws ServiceException, IOException {
             /*
              * Intentionally left blank, since this class is used just to ensure the abstract raster
              * producer correctly generates a BufferedImage.

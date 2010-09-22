@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.map.ImageUtils;
@@ -42,7 +43,6 @@ import org.opengis.feature.IllegalAttributeException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -136,12 +136,12 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
      *            like.
      * @return
      * 
-     * @throws WmsException
+     * @throws ServiceException
      *             if there are problems creating a "sample" feature instance for the FeatureType
      *             <code>request</code> returns as the required layer (which should not occur).
      */
     public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
-            throws WmsException {
+            throws ServiceException {
 
         final Style gt2Style = request.getStyle();
         if (gt2Style == null) {
@@ -506,9 +506,9 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
      * 
      * @return
      * 
-     * @throws WmsException
+     * @throws ServiceException
      */
-    private Feature createSampleFeature(FeatureType schema) throws WmsException {
+    private Feature createSampleFeature(FeatureType schema) throws ServiceException {
         SimpleFeature sampleFeature;
         try {
             if (schema instanceof SimpleFeatureType) {
@@ -519,7 +519,7 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
                         "Sample non-simple feature not yet supported.");
             }
         } catch (IllegalAttributeException e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
         return sampleFeature;
     }

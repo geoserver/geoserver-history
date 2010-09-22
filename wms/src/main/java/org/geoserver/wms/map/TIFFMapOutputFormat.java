@@ -15,11 +15,11 @@ import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.image.palette.InverseColorMapOp;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Map producer for producing Tiff images out of a map.
@@ -64,13 +64,13 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
      * @param outStream
      *            The stream to write to.
      * 
-     * @throws WmsException
+     * @throws ServiceException
      *             not really.
      * @throws IOException
      *             if the image writing fails.
      */
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-            WMSMapContext mapContext) throws WmsException, IOException {
+            WMSMapContext mapContext) throws ServiceException, IOException {
         // getting a writer
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Getting a writer for tiff");
@@ -82,7 +82,7 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
         // getting a stream caching in memory
         final ImageOutputStream ioutstream = ImageIO.createImageOutputStream(outStream);
         if (ioutstream == null)
-            throw new WmsException("Unable to create ImageOutputStream.");
+            throw new ServiceException("Unable to create ImageOutputStream.");
 
         // tiff
         if (LOGGER.isLoggable(Level.FINE)) {

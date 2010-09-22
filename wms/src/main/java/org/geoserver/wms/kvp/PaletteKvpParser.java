@@ -7,8 +7,8 @@ package org.geoserver.wms.kvp;
 import java.awt.image.IndexColorModel;
 
 import org.geoserver.ows.KvpParser;
+import org.geoserver.platform.ServiceException;
 import org.geotools.image.palette.InverseColorMapOp;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * 
@@ -25,15 +25,15 @@ public class PaletteKvpParser extends KvpParser {
 		try {
 			final InverseColorMapOp model = PaletteManager.getPalette(value);
 			if (model == null) {
-				throw new WmsException("Palette " + value
+				throw new ServiceException("Palette " + value
 						+ " could not be found "
 						+ "in $GEOSERVER_DATA_DIR/palettes directory");
 			}
 
 			return model;
 		} catch (Exception e) {
-			throw new WmsException(e, "Palette " + value
-					+ " could not be loaded", null);
+			throw new ServiceException(e, "Palette " + value
+					+ " could not be loaded");
 		}
 	}
 }

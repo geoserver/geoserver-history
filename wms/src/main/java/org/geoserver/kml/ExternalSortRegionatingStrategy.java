@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.FeatureSource;
@@ -32,7 +33,6 @@ import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
-import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -109,20 +109,20 @@ public class ExternalSortRegionatingStrategy extends
         if (attribute == null)
             attribute = checkAttribute(featureType);
         if (attribute == null)
-            throw new WmsException(
+            throw new ServiceException(
                     "Regionating attribute has not been specified");
 
         // Make sure the attribute is actually there
         AttributeDescriptor ad = ft.getDescriptor(attribute);
         if (ad == null) {
-            throw new WmsException("Could not find regionating attribute "
+            throw new ServiceException("Could not find regionating attribute "
                     + attribute + " in layer " + featureType.getName());
         }
 
         // Make sure we know how to turn that attribute into a H2 type
         h2Type = getH2DataType(ad);
         if (h2Type == null)
-            throw new WmsException("Attribute type " + ad.getType()
+            throw new ServiceException("Attribute type " + ad.getType()
                     + " is not " + "supported for external sorting on "
                     + featureType.getName() + "#" + attribute);
     }

@@ -23,6 +23,7 @@ import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.ows.Dispatcher;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.test.RemoteOWSTestSupport;
 import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.GetMapRequest;
@@ -33,7 +34,6 @@ import org.geotools.styling.Style;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.Id;
 import org.opengis.filter.PropertyIsEqualTo;
-import org.vfny.geoserver.wms.WmsException;
 
 @SuppressWarnings("unchecked")
 public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
@@ -281,7 +281,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
             reader.setLaxStyleMatchAllowed(false);
             request = (GetMapRequest) reader.read(request, parseKvp(kvp), caseInsensitiveKvp(kvp));
             fail("The style looked up, 'ThisStyleDoesNotExists', should not have been found");
-        } catch (WmsException e) {
+        } catch (ServiceException e) {
             // System.out.println(e);
         }
     }
@@ -397,7 +397,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         try {
             request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
             fail("This should have thrown an exception because of the missing style");
-        } catch (WmsException e) {
+        } catch (ServiceException e) {
             assertEquals("NoDefaultStyle", e.getCode());
         }
     }
@@ -420,7 +420,7 @@ public class GetMapKvpRequestReaderTest extends KvpRequestReaderTestSupport {
         try {
             request = (GetMapRequest) reader.read(request, parseKvp(raw), caseInsensitiveKvp(raw));
             fail("This should have thrown an exception because of the non existent layer");
-        } catch (WmsException e) {
+        } catch (ServiceException e) {
             e.printStackTrace();
             assertEquals("RemoteOWSFailure", e.getCode());
         }

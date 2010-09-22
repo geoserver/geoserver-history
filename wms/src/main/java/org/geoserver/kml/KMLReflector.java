@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.map.XMLTransformerMap;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * KML reflecting service.
@@ -114,7 +114,7 @@ public class KMLReflector {
                 wmsConfiguration.getKmlReflectorMode());
 
         if (!MODES.containsKey(mode)) {
-            throw new WmsException("Unknown KML mode: " + mode);
+            throw new ServiceException("Unknown KML mode: " + mode);
         }
 
         Map modeOptions = new HashMap(MODES.get(mode));
@@ -134,7 +134,7 @@ public class KMLReflector {
             } else if ("cached".equalsIgnoreCase(submode)) {
                 modeOptions.put("overlaymode", "cached");
             } else {
-                throw new WmsException("Unknown overlay mode: " + submode);
+                throw new ServiceException("Unknown overlay mode: " + submode);
             }
         }
 

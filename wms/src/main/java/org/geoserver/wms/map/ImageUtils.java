@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import javax.media.jai.TiledImage;
 
+import org.geoserver.platform.ServiceException;
 import org.geotools.image.ImageWorker;
 import org.geotools.image.palette.CustomPaletteBuilder;
 import org.geotools.image.palette.InverseColorMapOp;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Provides utility methods for the shared handling of images by the raster map
@@ -145,7 +145,7 @@ public class ImageUtils {
         } else if (preparedImage instanceof VolatileImage) {
             graphic = ((VolatileImage) preparedImage).createGraphics();
         } else {
-            throw new WmsException("Unrecognized back-end image type");
+            throw new ServiceException("Unrecognized back-end image type");
         }
 
         // fill the background with no antialiasing
