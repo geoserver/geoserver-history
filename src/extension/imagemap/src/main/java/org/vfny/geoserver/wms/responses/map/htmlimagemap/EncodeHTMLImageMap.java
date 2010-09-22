@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.geoserver.wms.Map;
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WebMap;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.crs.ReprojectFeatureResults;
@@ -40,7 +40,7 @@ import org.opengis.referencing.operation.TransformException;
  *
  * @author Mauro Bartolomeoli 
  */
-public class EncodeHTMLImageMap extends Map{
+public class EncodeHTMLImageMap extends WebMap{
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
     
     /** Filter factory for creating filters */
