@@ -84,14 +84,13 @@ public abstract class AbstractCatalogListResource extends CatalogResourceBase {
                     writer.setValue(ref);
                     writer.endNode();
                     
-                    encodeLink(ref, writer);
+                    encodeLink(encode(ref), writer);
                 }
 
                 public Object unmarshal(HierarchicalStreamReader reader,
                         UnmarshallingContext context) {
                     return null;
                 }
-
             }
         );
     }

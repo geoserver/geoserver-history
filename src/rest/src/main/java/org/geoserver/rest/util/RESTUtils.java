@@ -26,6 +26,8 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 import com.noelios.restlet.ext.servlet.ServletCall;
 import com.noelios.restlet.http.HttpRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * Utility class for Restlets.
@@ -66,13 +68,11 @@ public class RESTUtils {
         if ( servletRequest != null ) {
             String baseURL = ref.getIdentifier();
             return baseURL.substring(0, baseURL.length()-servletRequest.getPathInfo().length());
-        }
-        else {
+        } else {
             return ref.getParentRef().getIdentifier();
         }
     }
     
-
     /**
      * This function gets the stream of the request to copy it into a file.
      * @deprecated use {@link #handleBinUpload(String, File, Request)}.
@@ -186,8 +186,9 @@ public class RESTUtils {
         final URL fileURL=new URL(stringURL);
 
         final File inputFile= IOUtils.URLToFile(fileURL);
-        if(inputFile!=null && inputFile.exists() && inputFile.canRead())
+        if(inputFile!=null && inputFile.exists() && inputFile.canRead()) {
             return inputFile;
+        }
 
         return null;
     }
@@ -241,5 +242,28 @@ public class RESTUtils {
         File outputDirectory = new File(GeoserverDataDirectory.findCreateConfigDir("data"), storeName);
         unzipFile(zipFile, outputDirectory);
         return outputDirectory;
+    }
+
+    /**
+     * Fetch a request attribute as a String, accounting for URL-encoding.
+     *
+     * @param request the Restlet Request object that might contain the attribute
+     * @param name the name of the attribute to retrieve
+     *
+     * @return the attribute, URL-decoded, if it exists and is a valid URL-encoded string, or null
+     *     otherwise
+     */
+    public static String getAttribute(Request request, String name) {
+        Object o = request.getAttributes().get(name);
+
+        if (o == null) {
+            return null;
+        }
+
+        try {
+            return URLDecoder.decode(o.toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 }

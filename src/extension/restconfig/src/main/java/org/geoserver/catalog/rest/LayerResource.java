@@ -95,25 +95,26 @@ public class LayerResource extends AbstractCatalogResource {
             protected void postEncodeReference(Object obj, String ref,
                     HierarchicalStreamWriter writer, MarshallingContext context) {
                 if ( obj instanceof StyleInfo ) {
-                    encodeLink( "/styles/" + ((StyleInfo)obj).getName(), writer);    
+                    encodeLink( "/styles/" + encode(((StyleInfo)obj).getName()), writer);
                 }
                 if ( obj instanceof ResourceInfo ) {
                     ResourceInfo r = (ResourceInfo) obj;
                     StringBuffer link = new StringBuffer( "/workspaces/" ).
-                        append( r.getStore().getWorkspace().getName() ).append( "/" );
+                        append( encode(r.getStore().getWorkspace().getName()) ).append( "/" );
+                    
                     if ( r instanceof FeatureTypeInfo ) {
-                        link.append( "datastores/").append( r.getStore().getName() )
+                        link.append( "datastores/").append( encode(r.getStore().getName()) )
                             .append( "/featuretypes/");
                     }
                     else if ( r instanceof CoverageInfo ) {
-                        link.append( "coveragestores/").append( r.getStore().getName() )
-                        .append( "/coverages/");
+                        link.append( "coveragestores/").append( encode(r.getStore().getName()) )
+                            .append( "/coverages/");
                     }
                     else {
                         return;
                     }
                     
-                    link.append( r.getName() );
+                    link.append( encode(r.getName()) );
                     encodeLink(link.toString(), writer);
                 }
             }

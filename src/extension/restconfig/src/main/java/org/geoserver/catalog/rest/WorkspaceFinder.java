@@ -21,7 +21,7 @@ public class WorkspaceFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String workspace = (String) request.getAttributes().get( "workspace" );
+        String workspace = getAttribute(request, "workspace");
         
         if ( workspace == null && request.getMethod() == Method.GET ) {
             return new WorkspaceListResource( null, request, response, catalog );

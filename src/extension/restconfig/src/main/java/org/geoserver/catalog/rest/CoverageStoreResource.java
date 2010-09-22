@@ -127,7 +127,7 @@ public class CoverageStoreResource extends AbstractCatalogResource {
                 protected void postEncodeReference(Object obj, String ref,
                         HierarchicalStreamWriter writer, MarshallingContext context) {
                     if ( obj instanceof WorkspaceInfo ) {
-                        encodeLink( "/workspaces/" + ref, writer, format );
+                        encodeLink( "/workspaces/" + encode(ref), writer, format );
                     }
                 }
             }

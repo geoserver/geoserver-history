@@ -4,10 +4,13 @@
  */
 package org.geoserver.rest;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.rest.format.DataFormat;
@@ -21,6 +24,7 @@ import org.restlet.data.Response;
 import org.restlet.data.Status;
 
 import com.thoughtworks.xstream.XStream;
+import org.geoserver.rest.util.RESTUtils;
 
 /**
  * Base class for resources which work reflectively from underlying target objects.
@@ -46,6 +50,11 @@ import com.thoughtworks.xstream.XStream;
  * @author Justin Deoliveira, OpenGeo
  */
 public abstract class ReflectiveResource extends AbstractResource {
+
+    /**
+     * logger
+     */
+    static Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.rest");
 
     /**
      * Creates a new reflective resource.
@@ -299,22 +308,26 @@ public abstract class ReflectiveResource extends AbstractResource {
         
     }
 
+    protected String encode(String component) {
+        try {
+            return URLEncoder.encode(component, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            LOG.warning("Unable to URL-encode component: " + component);
+            return component; 
+        }
+    }
+
     /**
-     * Convenience method for subclasses to look up the value of an attribute from the request, 
-     * ie {@link Request#getAttributes()}.
+     * Convenience method for subclasses to look up the (URL-decoded)value of
+     * an attribute from the request, ie {@link Request#getAttributes()}.
      * 
      * @param attribute THe name of the attribute to lookup.
      * 
-     * @return The value as a string, or null if the attribute does not exist.
+     * @return The value as a string, or null if the attribute does not exist
+     *     or cannot be url-decoded.
      */
     protected String getAttribute(String attribute) {
-        Object o = getRequest().getAttributes().get( attribute );
-        
-        if ( o == null ) {
-            return null;
-        }
-        
-        return o.toString();
+        return RESTUtils.getAttribute(getRequest(), attribute);
     }
     
     /**

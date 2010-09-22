@@ -20,8 +20,8 @@ public class StyleFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String style = (String) request.getAttributes().get( "style" );
-        String layer = (String) request.getAttributes().get( "layer" );
+        String style = getAttribute(request, "style");
+        String layer = getAttribute(request, "layer");
 
         //check style exists if specified
         if ( style != null && catalog.getStyleByName( style ) == null ) {
