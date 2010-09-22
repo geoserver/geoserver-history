@@ -8,15 +8,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.geoserver.wms.Map;
+import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WMSMapContext;
 
 /**
- * An already encoded {@link Map} that holds the raw response content in a byte array.
+ * An already encoded {@link WebMap} that holds the raw response content in a byte array.
  * 
  * @author Gabriel Roldan
  */
-public class RawMap extends Map {
+public class RawMap extends WebMap {
 
     private byte[] mapContents;
 

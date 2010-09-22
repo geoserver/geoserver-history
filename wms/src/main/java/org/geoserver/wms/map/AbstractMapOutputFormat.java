@@ -16,7 +16,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.GetMapRequest;
-import org.geoserver.wms.Map;
+import org.geoserver.wms.WebMap;
 import org.springframework.util.Assert;
 
 /**
@@ -28,18 +28,18 @@ public abstract class AbstractMapOutputFormat extends Response implements GetMap
 
     private final String mime;
 
-    protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding, final String mime) {
+    protected AbstractMapOutputFormat(final Class<? extends WebMap> responseBinding, final String mime) {
         this(responseBinding, mime, new String[] { mime });
     }
 
     @SuppressWarnings("unchecked")
-    protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding,
+    protected AbstractMapOutputFormat(final Class<? extends WebMap> responseBinding,
             final String mime, final String[] outputFormats) {
         this(responseBinding, mime, outputFormats == null ? Collections.EMPTY_SET
                 : new HashSet<String>(Arrays.asList(outputFormats)));
     }
 
-    protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding,
+    protected AbstractMapOutputFormat(final Class<? extends WebMap> responseBinding,
             final String mime, Set<String> outputFormats) {
         // Call Response superclass constructor with the kind of request we can handle
         // Make sure the output format comparison in canHandle is canse insensitive
@@ -135,19 +135,19 @@ public abstract class AbstractMapOutputFormat extends Response implements GetMap
      * Response. Can return null if there are no headers to be set on the response.
      * 
      * @param value
-     *            must be a {@link Map}
+     *            must be a {@link WebMap}
      * @param operation
      *            The operation being performed.
      * 
-     * @return {@link Map#getResponseHeaders()}: 2xn string array containing string-pairs of HTTP
+     * @return {@link WebMap#getResponseHeaders()}: 2xn string array containing string-pairs of HTTP
      *         headers/values
      * @see Response#getHeaders(Object, Operation)
-     * @see Map#getResponseHeaders()
+     * @see WebMap#getResponseHeaders()
      */
     @Override
     public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
-        Assert.isInstanceOf(Map.class, value);
-        Map map = (Map) value;
+        Assert.isInstanceOf(WebMap.class, value);
+        WebMap map = (WebMap) value;
         String[][] responseHeaders = map.getResponseHeaders();
         return responseHeaders;
     }

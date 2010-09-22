@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.Map;
+import org.geoserver.wms.WebMap;
 import org.springframework.util.Assert;
 
 /**
@@ -27,7 +27,7 @@ public class RawMapResponse extends Response {
     @Override
     public String getMimeType(Object value, Operation operation) throws ServiceException {
         Assert.isInstanceOf(RawMap.class, value);
-        return ((Map) value).getMimeType();
+        return ((WebMap) value).getMimeType();
     }
 
     @Override
@@ -48,19 +48,19 @@ public class RawMapResponse extends Response {
      * Response. Can return null if there are no headers to be set on the response.
      * 
      * @param value
-     *            must be a {@link Map}
+     *            must be a {@link WebMap}
      * @param operation
      *            The operation being performed.
      * 
-     * @return {@link Map#getResponseHeaders()}: 2xn string array containing string-pairs of HTTP
+     * @return {@link WebMap#getResponseHeaders()}: 2xn string array containing string-pairs of HTTP
      *         headers/values
      * @see Response#getHeaders(Object, Operation)
-     * @see Map#getResponseHeaders()
+     * @see WebMap#getResponseHeaders()
      */
     @Override
     public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
-        Assert.isInstanceOf(Map.class, value);
-        Map map = (Map) value;
+        Assert.isInstanceOf(WebMap.class, value);
+        WebMap map = (WebMap) value;
         String[][] responseHeaders = map.getResponseHeaders();
         return responseHeaders;
     }

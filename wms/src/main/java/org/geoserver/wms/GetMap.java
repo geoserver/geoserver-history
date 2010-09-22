@@ -101,7 +101,7 @@ public class GetMap {
      * @throws ServiceException
      *             if an error occurs creating the map from the provided request
      */
-    public Map run(final GetMapRequest request) throws ServiceException {
+    public WebMap run(final GetMapRequest request) throws ServiceException {
         // JD/GR:hold a reference in order to release resources later. mapcontext can leak memory --
         // we make sure we done (see
         // finally block)
@@ -125,7 +125,7 @@ public class GetMap {
      * which names one can infer what's going on... but get a decent test coverage on it first as
      * to avoid regressions as much as possible
      */
-    public Map run(final GetMapRequest request, WMSMapContext mapContext) throws ServiceException,
+    public WebMap run(final GetMapRequest request, WMSMapContext mapContext) throws ServiceException,
             IOException {
        assertMandatory(request);
 
@@ -471,7 +471,7 @@ public class GetMap {
             // Producing the map in the requested format.
             //
             // /////////////////////////////////////////////////////////
-            Map map = delegate.produceMap(mapContext);
+            WebMap map = delegate.produceMap(mapContext);
 
             if (cachingPossible) {
                 map.setResponseHeader("Cache-Control", "max-age=" + maxAge + ", must-revalidate");

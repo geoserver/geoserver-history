@@ -4,11 +4,11 @@ import java.awt.image.RenderedImage;
 import java.util.Collections;
 import java.util.List;
 
-import org.geoserver.wms.Map;
+import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.coverage.grid.GridCoverage2D;
 
-public class RenderedImageMap extends Map {
+public class RenderedImageMap extends WebMap {
 
     private RenderedImage image;
 

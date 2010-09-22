@@ -47,7 +47,7 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
 
     private final WMS wms;
 
-    public static class BatikSVGMap extends org.geoserver.wms.Map {
+    public static class BatikSVGMap extends org.geoserver.wms.WebMap {
         private SVGGraphics2D graphics;
 
         BatikSVGMap(WMSMapContext context, SVGGraphics2D graphics) {

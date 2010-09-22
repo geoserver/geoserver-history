@@ -131,7 +131,7 @@ public class GetMapTest extends TestCase {
 
         final DummyRasterMapProducer producer = new DummyRasterMapProducer() {
             @Override
-            public Map produceMap(WMSMapContext ctx) throws ServiceException, IOException {
+            public WebMap produceMap(WMSMapContext ctx) throws ServiceException, IOException {
                 assertEquals(23, ff.function("env", ff.literal("myParam")).evaluate(null));
                 assertEquals(10, ff.function("env", ff.literal("otherParam"), ff.literal(10))
                         .evaluate(null));
@@ -150,7 +150,7 @@ public class GetMapTest extends TestCase {
         };
         
         getMapOp = new GetMap(wms);
-        Map map = getMapOp.run(request);
+        WebMap map = getMapOp.run(request);
         assertTrue(producer.produceMapCalled);
         // only defaults
         assertNull(ff.function("env", ff.literal("myParam")).evaluate(null));

@@ -120,7 +120,7 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public org.geoserver.wms.Map produceMap(WMSMapContext mapContext)
+    public org.geoserver.wms.WebMap produceMap(WMSMapContext mapContext)
             throws ServiceException, IOException {
         try {
             // create the template

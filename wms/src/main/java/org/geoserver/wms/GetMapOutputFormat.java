@@ -22,7 +22,7 @@ import org.geoserver.platform.ServiceException;
  * To incorporate a new producer specialized in a given output format, there must be a
  * {@code GetMapOutputFormat} registered in the Spring context that can provide instances of that
  * concrete implementation, as well as a {@link Response} Spring bean that can encode the produced
- * {@link Map}. Hence, it's counterpart {@code Response} implementation
+ * {@link WebMap}. Hence, it's counterpart {@code Response} implementation
  * {@link Response#canHandle(org.geoserver.platform.Operation) canHandle(Operation)} method must be
  * implemented in a consistent way with the output format's {@link #getMimeType()} and
  * {@link #getOutputFormatNames()}.
@@ -49,7 +49,7 @@ public interface GetMapOutputFormat {
      * @throws ServiceException
      *             something goes wrong
      */
-    public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException;
+    public WebMap produceMap(WMSMapContext mapContext) throws ServiceException, IOException;
 
     /**
      * Returns the list of content type aliases for this output format, that are the ones to be used

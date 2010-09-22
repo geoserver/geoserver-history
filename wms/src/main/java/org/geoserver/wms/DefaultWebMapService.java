@@ -211,7 +211,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#getMap(GetMapRequest)
      */
-    public Map getMap(GetMapRequest request) {
+    public WebMap getMap(GetMapRequest request) {
         GetMap getMap = (GetMap) context.getBean("wmsGetMap");
 
         return getMap.run(request);
@@ -220,7 +220,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#map(GetMapRequest)
      */
-    public Map map(GetMapRequest request) {
+    public WebMap map(GetMapRequest request) {
         return getMap(request);
     }
 
@@ -243,7 +243,7 @@ public class DefaultWebMapService implements WebMapService,
         return getLegendGraphic.run(request);
     }
 
-    public Map kml(GetMapRequest getMap) {
+    public WebMap kml(GetMapRequest getMap) {
         try {
             return KMLReflector.doWms(getMap, this, wms);
             // return response;
@@ -255,7 +255,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#reflect(GetMapRequest)
      */
-    public Map reflect(GetMapRequest request) {
+    public WebMap reflect(GetMapRequest request) {
         return getMapReflect(request);
     }
 
@@ -275,7 +275,7 @@ public class DefaultWebMapService implements WebMapService,
      * 
      * @see WebMapService#getMapReflect(GetMapRequest)
      */
-    public Map getMapReflect(GetMapRequest request) {
+    public WebMap getMapReflect(GetMapRequest request) {
 
         GetMapRequest getMap = autoSetMissingProperties(request);
 
