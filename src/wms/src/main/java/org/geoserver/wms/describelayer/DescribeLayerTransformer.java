@@ -91,9 +91,6 @@ public class DescribeLayerTransformer extends TransformerBase {
     private class DescribeLayerTranslator extends TranslatorSupport {
         /**
          * Creates a new DescribeLayerTranslator object.
-         * 
-         * @param handler
-         *            DOCUMENT ME!
          */
         public DescribeLayerTranslator(ContentHandler handler) {
             super(handler, null, null);

@@ -392,16 +392,6 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
         return styles;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param sldStyle
-     * @param rule
-     * 
-     * @return DOCUMENT ME!
-     * 
-     * @throws ServiceException
-     */
     private Rule extractRule(Style sldStyle, String rule) throws ServiceException {
         Rule sldRule = null;
 

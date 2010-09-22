@@ -55,20 +55,10 @@ public class GetMapRequest extends WMSRequest {
         super("GetMap");
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public Envelope getBbox() {
         return this.mandatoryParams.bbox;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public java.awt.Color getBgColor() {
         return this.optionalParams.bgColor;
     }
@@ -89,20 +79,10 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.srs;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public String getExceptions() {
         return this.optionalParams.exceptions;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public String getFormat() {
         return this.mandatoryParams.format;
     }
@@ -132,11 +112,6 @@ public class GetMapRequest extends WMSRequest {
         return viewParams;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public int getHeight() {
         return this.mandatoryParams.height;
     }
@@ -219,12 +194,6 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.featureIds;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     * 
-     */
     public boolean isTransparent() {
         return this.optionalParams.transparent;
     }
@@ -250,11 +219,6 @@ public class GetMapRequest extends WMSRequest {
         return this.optionalParams.paletteInverter;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public int getWidth() {
         return this.mandatoryParams.width;
     }
@@ -356,52 +320,22 @@ public class GetMapRequest extends WMSRequest {
         return optionalParams.remoteOwsURL;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param bbox
-     *            DOCUMENT ME!
-     */
     public void setBbox(Envelope bbox) {
         this.mandatoryParams.bbox = bbox;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param bgColor
-     *            DOCUMENT ME!
-     */
     public void setBgColor(java.awt.Color bgColor) {
         this.optionalParams.bgColor = bgColor;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param crs
-     *            DOCUMENT ME!
-     */
     public void setCrs(CoordinateReferenceSystem crs) {
         this.optionalParams.crs = crs;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param crs
-     *            DOCUMENT ME!
-     */
     public void setSRS(String srs) {
         this.optionalParams.srs = srs;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param exceptions
-     *            DOCUMENT ME!
-     */
     public void setExceptions(String exceptions) {
         this.optionalParams.exceptions = exceptions;
     }
@@ -409,9 +343,6 @@ public class GetMapRequest extends WMSRequest {
     /**
      * Sets the GetMap request value for the FORMAT parameter, which is the MIME type for the kind
      * of image required.
-     * 
-     * @param format
-     *            DOCUMENT ME!
      */
     public void setFormat(String format) {
         this.mandatoryParams.format = format;
@@ -446,12 +377,6 @@ public class GetMapRequest extends WMSRequest {
         this.viewParams = viewParams;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param height
-     *            DOCUMENT ME!
-     */
     public void setHeight(int height) {
         this.mandatoryParams.height = height;
     }
@@ -531,12 +456,6 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.featureIds = featureIds;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param transparent
-     *            DOCUMENT ME!
-     */
     public void setTransparent(boolean transparent) {
         this.optionalParams.transparent = transparent;
     }
@@ -570,12 +489,6 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.tilesOrigin = origin;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param width
-     *            DOCUMENT ME!
-     */
     public void setWidth(int width) {
         this.mandatoryParams.width = width;
     }
@@ -701,12 +614,6 @@ public class GetMapRequest extends WMSRequest {
         this.optionalParams.angle = rotation;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id$
-     */
     private class MandatoryParameters {
         /** ordered list of requested layers */
         List<MapLayerInfo> layers = Collections.emptyList();
@@ -717,25 +624,15 @@ public class GetMapRequest extends WMSRequest {
          */
         List<Style> styles = Collections.emptyList();
 
-        /** DOCUMENT ME! */
         Envelope bbox;
 
-        /** DOCUMENT ME! */
         int width;
 
-        /** DOCUMENT ME! */
         int height;
 
-        /** DOCUMENT ME! */
         String format;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id$
-     */
     private class OptionalParameters {
         /**
          * the map's background color requested, or the default (white) if not specified
@@ -757,10 +654,8 @@ public class GetMapRequest extends WMSRequest {
         /** feature id filters */
         List featureIds;
 
-        /** DOCUMENT ME! */
         String exceptions = SE_XML;
 
-        /** DOCUMENT ME! */
         boolean transparent = false;
 
         /**

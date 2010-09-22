@@ -251,8 +251,6 @@ public class EncodeKML {
 
     /**
      * writes out standard KML footer
-     *
-     * @throws IOException DOCUMENT ME!
      */
     private void writeFooter() throws IOException {
         writer.write(KML_FOOTER);

@@ -680,7 +680,6 @@ public class GetFeatureInfo {
      * @return The correspondent real world coordinate
      * 
      * @throws RuntimeException
-     *             DOCUMENT ME!
      */
     private Coordinate pixelToWorld(double x, double y, Envelope map, double width, double height) {
         // set up the affine transform and calculate scale values
@@ -708,7 +707,6 @@ public class GetFeatureInfo {
      * @param width
      *            the screen size
      * @param height
-     *            DOCUMENT ME!
      * 
      * @return a transform that maps from real world coordinates to the screen
      */

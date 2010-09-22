@@ -57,7 +57,7 @@ import org.opengis.feature.type.FeatureType;
  * @version $Id$
  */
 public class GetLegendGraphicRequest extends WMSRequest {
-    /** DOCUMENT ME! */
+
     public static final String SLD_VERSION = "1.0.0";
 
     /**
@@ -146,173 +146,74 @@ public class GetLegendGraphicRequest extends WMSRequest {
         super("GetLegendGraphic");
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public String getExceptions() {
         return exceptionsFormat;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param exceptionsFormat
-     *            DOCUMENT ME!
-     */
     public void setExceptions(String exceptionsFormat) {
         this.exceptionsFormat = exceptionsFormat;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public String getFeatureType() {
         return featureType;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param featureType
-     *            DOCUMENT ME!
-     */
     public void setFeatureType(String featureType) {
         this.featureType = featureType;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public String getFormat() {
         return format;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param format
-     *            DOCUMENT ME!
-     */
     public void setFormat(String format) {
         this.format = format;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public int getHeight() {
         return height;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param height
-     *            DOCUMENT ME!
-     */
     public void setHeight(int height) {
         this.height = height;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public FeatureType getLayer() {
         return layer;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param layer
-     *            DOCUMENT ME!
-     */
     public void setLayer(FeatureType layer) {
         this.layer = layer;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public Rule getRule() {
         return rule;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param rule
-     *            DOCUMENT ME!
-     */
     public void setRule(Rule rule) {
         this.rule = rule;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public double getScale() {
         return scale;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param scale
-     *            DOCUMENT ME!
-     */
     public void setScale(double scale) {
         this.scale = scale;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public Style getStyle() {
         return style;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param style
-     *            DOCUMENT ME!
-     */
     public void setStyle(Style style) {
         this.style = style;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     */
     public int getWidth() {
         return width;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param width
-     *            DOCUMENT ME!
-     */
     public void setWidth(int width) {
         this.width = width;
     }

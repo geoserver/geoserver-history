@@ -33,9 +33,6 @@ import org.springframework.util.Assert;
 public class PNGLegendOutputFormat extends AbstractLegendGraphicOutputFormat {
     /**
      * Creates a new JAI based legend producer for creating <code>outputFormat</code> type images.
-     * 
-     * @param outputFormat
-     *            DOCUMENT ME!
      */
     PNGLegendOutputFormat() {
         super();

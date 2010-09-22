@@ -165,9 +165,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
     }
 
     /**
-     * DOCUMENT ME!
-     * 
-     * @author Gabriel Roldan, Axios Engineering
+     * @author Gabriel Roldan
      * @version $Id
      */
     private static class CapabilitiesTranslator extends TranslatorSupport {
@@ -213,8 +211,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
         }
 
         /**
-         * DOCUMENT ME!
-         * 
          * @param o
          *            the {@link GetCapabilitiesRequest}
          * @throws IllegalArgumentException
@@ -358,9 +354,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             end("Capability");
         }
 
-        /**
-         * DOCUMENT ME!
-         */
         private void handleRequest() {
             start("Request");
 
@@ -456,9 +449,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             end("DCPType");
         }
 
-        /**
-         * DOCUMENT ME!
-         */
         private void handleException() {
             start("Exception");
 
@@ -469,9 +459,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             end("Exception");
         }
 
-        /**
-         * DOCUMENT ME!
-         */
         private void handleSLD() {
             AttributesImpl sldAtts = new AttributesImpl();
 
@@ -991,14 +978,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
                 return false;
             }
         }
-
-        /**
-         * DOCUMENT ME!
-         * 
-         * @param layerGroups
-         * @throws FactoryException
-         * @throws TransformException
-         */
+        
         protected void handleLayerGroups(List<LayerGroupInfo> layerGroups) throws FactoryException,
                 TransformException {
             if (layerGroups == null || layerGroups.size() == 0) {
