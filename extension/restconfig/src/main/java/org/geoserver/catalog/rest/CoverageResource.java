@@ -150,12 +150,12 @@ public class CoverageResource extends AbstractCatalogResource {
                     HierarchicalStreamWriter writer, MarshallingContext context) {
                 if ( obj instanceof NamespaceInfo ) {
                     NamespaceInfo ns = (NamespaceInfo) obj;
-                    encodeLink( "/namespaces/" + ns.getPrefix(), writer);
+                    encodeLink("/namespaces/" + encode(ns.getPrefix()), writer);
                 }
                 if ( obj instanceof CoverageStoreInfo ) {
                     CoverageStoreInfo cs = (CoverageStoreInfo) obj;
-                    encodeLink( "/workspaces/" + cs.getWorkspace().getName() + "/coveragestores/" + 
-                            cs.getName(), writer );
+                    encodeLink("/workspaces/" + encode(cs.getWorkspace().getName()) +
+                        "/coveragestores/" + encode(cs.getName()), writer );
                     
                 }
             }

@@ -39,9 +39,9 @@ public class StoreFileFinder extends AbstractCatalogFinder {
     public Resource findTarget(Request request, Response response) {
         
         //figure out what kind of store this maps to
-        String format = (String) request.getAttributes().get( "format" );
-        String datastore = (String) request.getAttributes().get( "datastore" );
-        String coveragestore = (String) request.getAttributes().get( "coveragestore" );
+        String format = getAttribute(request, "format");
+        String datastore = getAttribute(request, "datastore");
+        String coveragestore = getAttribute(request, "coveragestore");
         
         if ( datastore != null ) {
             String factoryClassName = formatToDataStoreFactory.get( format );

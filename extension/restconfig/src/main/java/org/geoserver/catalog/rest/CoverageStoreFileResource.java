@@ -41,9 +41,9 @@ public class CoverageStoreFileResource extends StoreFileResource {
         Request request = getRequest();
         Response response = getResponse();
         
-        String workspace = (String)request.getAttributes().get("workspace");
-        String coveragestore = (String)request.getAttributes().get("coveragestore");
-        String format = (String)request.getAttributes().get("format");
+        String workspace = getAttribute("workspace");
+        String coveragestore = getAttribute("coveragestore");
+        String format = getAttribute("format");
         String method = ((String) request.getResourceRef().getLastSegment()).toLowerCase();
         
         File directory = null;

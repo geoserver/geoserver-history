@@ -46,9 +46,9 @@ public class DataStoreFileResource extends StoreFileResource {
     
     @Override
     public void handleGet() {
-        String workspace = (String)getRequest().getAttributes().get("workspace");
-        String datastore = (String)getRequest().getAttributes().get("datastore");
-        String format = (String)getRequest().getAttributes().get("format");
+        String workspace = getAttribute("workspace");
+        String datastore = getAttribute("datastore");
+        String format = getAttribute("format");
 
         //find the directory containig the files
         File directory;
@@ -92,9 +92,9 @@ public class DataStoreFileResource extends StoreFileResource {
     
     @Override
     public void handlePut() {
-        String workspace = (String)getRequest().getAttributes().get("workspace");
-        String datastore = (String)getRequest().getAttributes().get("datastore");
-        String format = (String)getRequest().getAttributes().get("format");
+        String workspace = getAttribute("workspace");
+        String datastore = getAttribute("datastore");
+        String format = getAttribute("format");
 
         getResponse().setStatus(Status.SUCCESS_ACCEPTED);
         Form form = getRequest().getResourceRef().getQueryAsForm();

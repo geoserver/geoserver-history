@@ -102,10 +102,10 @@ public class LayerGroupResource extends AbstractCatalogResource {
                 HierarchicalStreamWriter writer, MarshallingContext context) {
             
                if ( obj instanceof StyleInfo ) {
-                   encodeLink("/styles/" + ref, writer);
+                   encodeLink("/styles/" + encode(ref), writer);
                }
                if ( obj instanceof LayerInfo ) {
-                   encodeLink("/layers/" + ref, writer);
+                   encodeLink("/layers/" + encode(ref), writer);
                }
            } 
         });

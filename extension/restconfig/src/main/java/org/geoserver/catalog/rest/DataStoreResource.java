@@ -150,7 +150,7 @@ public class DataStoreResource extends AbstractCatalogResource {
                 protected void postEncodeReference(Object obj, String ref,
                         HierarchicalStreamWriter writer, MarshallingContext context) {
                     if ( obj instanceof WorkspaceInfo ) {
-                        encodeLink("/workspaces/" + ref, writer );
+                        encodeLink("/workspaces/" + encode(ref), writer );
                     }
                 }
             }

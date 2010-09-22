@@ -20,7 +20,7 @@ public class LayerGroupFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String lg = (String) request.getAttributes().get( "layergroup" );
+        String lg = getAttribute(request, "layergroup");
         if ( lg != null && catalog.getLayerGroupByName( lg ) == null ) {
             throw new RestletException( "No such layer group " + lg, Status.CLIENT_ERROR_NOT_FOUND );
         }

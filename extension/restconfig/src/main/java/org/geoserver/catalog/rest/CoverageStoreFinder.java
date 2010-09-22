@@ -20,8 +20,8 @@ public class CoverageStoreFinder extends AbstractCatalogFinder {
     
     @Override
     public Resource findTarget(Request request, Response response) {
-        String ws = (String) request.getAttributes().get( "workspace" );
-        String cs = (String) request.getAttributes().get( "coveragestore" );
+        String ws = getAttribute(request, "workspace");
+        String cs = getAttribute(request, "coveragestore");
         
         //ensure referenced resources exist
         if ( ws != null && catalog.getWorkspaceByName( ws ) == null ) {
