@@ -261,7 +261,7 @@
 		class="org.geoserver.wms.response.GetLegendGraphicResponse">
 		<constructor-arg ref="wms"/>
 	</bean>
-	<bean id="stylesResponse" class="org.geoserver.wms.response.GetStylesResponse"/>
+	<bean id="stylesResponse" class="org.geoserver.sld.GetStylesResponse"/>
 	
 	<!-- Wrapping the PutStyles servlet in a controller while we wait to rewrite it for good -->
     <!-- GR: commenting out, putStyles is not being used nor maintained? -->
