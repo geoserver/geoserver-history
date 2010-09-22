@@ -2,16 +2,16 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.sld.requests;
+package org.geoserver.sld.requests;
 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.sld.SldException;
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;
-import org.vfny.geoserver.sld.SldException;
 import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 
