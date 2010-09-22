@@ -18,6 +18,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.GeoServerResourceLoader;
+import org.geotools.data.DataUtilities;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
@@ -214,6 +215,15 @@ public class GeoserverDataDirectory {
      */
     public static File findDataFile(String path) {
         File baseDir = GeoserverDataDirectory.getGeoserverDataDirectory();
+        
+        // if path looks like an absolute file: URL, try standard conversion
+        if (path.startsWith("file:/")) {
+            try {
+                return DataUtilities.urlToFile(new URL(path));
+            } catch (Exception e) {
+                // failure, so fall through
+            }
+        }
 
         // do we ever have something that is not a file system reference?
         if (path.startsWith("file:")) {

@@ -18,7 +18,6 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -404,23 +403,19 @@ public class ResourcePool {
             String key = (String) entry.getKey();
             Object value = entry.getValue();
 
-            try {
-                //TODO: this code is a pretty big hack, using the name to 
-                // determine if the key is a url, could be named something else
-                // and still be a url
-                if ((key != null) && key.matches(".* *url") && value instanceof String) {
-                    String path = (String) value;
-                    
-                    if (path.startsWith("file:")) {
-                        File fixedPath = GeoserverDataDirectory.findDataFile(path);
-                        entry.setValue(fixedPath.toURL().toExternalForm());
-                    }
-                } else if (value instanceof URL && ((URL) value).getProtocol().equals("file")) {
-                    File fixedPath = GeoserverDataDirectory.findDataFile(((URL) value).toString());
-                    entry.setValue(fixedPath.toURL());
+            //TODO: this code is a pretty big hack, using the name to 
+            // determine if the key is a url, could be named something else
+            // and still be a url
+            if ((key != null) && key.matches(".* *url") && value instanceof String) {
+                String path = (String) value;
+
+                if (path.startsWith("file:")) {
+                    File fixedPath = GeoserverDataDirectory.findDataFile(path);
+                    entry.setValue(DataUtilities.fileToURL(fixedPath).toExternalForm());
                 }
-            } catch (MalformedURLException ignore) {
-                // ignore attempt to fix relative paths
+            } else if (value instanceof URL && ((URL) value).getProtocol().equals("file")) {
+                File fixedPath = GeoserverDataDirectory.findDataFile(((URL) value).toString());
+                entry.setValue(DataUtilities.fileToURL(fixedPath));
             }
         }
 
