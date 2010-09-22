@@ -4,7 +4,6 @@
  */
 package org.geoserver.wms.request;
 
-import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;
 
 /**
@@ -20,29 +19,19 @@ public class GetCapabilitiesRequest extends Request {
 
     private String namespace;
 
-    private WMS config;
-
-    public GetCapabilitiesRequest(WMS wms) {
-        this(wms, null);
+    public GetCapabilitiesRequest() {
+        this(null);
     }
 
     /**
      * Creates a new capabilities request object.
      * 
-     * @param wms
-     *            the WMS config.
-     * 
      * @param updateSequence
      *            The updateSequence number from the GetCapabilities request
      */
-    public GetCapabilitiesRequest(WMS wms, String updateSequence) {
-        super("WMS", "GetCapabilities", wms.getServiceInfo());
-        this.config = wms;
+    public GetCapabilitiesRequest(String updateSequence) {
+        super("WMS", "GetCapabilities", null);
         this.updateSequence = updateSequence;
-    }
-
-    public WMS getWMS() {
-        return config;
     }
 
     /**

@@ -59,7 +59,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
         InputSource requestSource = new InputSource(reader);
 
         // instantiante parsers and content handlers
-        GetCapabilitiesRequest request = new GetCapabilitiesRequest(wmsConfig);
+        GetCapabilitiesRequest request = new GetCapabilitiesRequest();
         CapabilitiesHandler currentRequest = new CapabilitiesHandler(request);
 
         // read in XML file and parse to content handler

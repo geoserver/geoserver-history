@@ -6,13 +6,8 @@ package org.geoserver.wms.kvp;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.WMS;
+import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an appropriate internal
@@ -24,51 +19,20 @@ import org.vfny.geoserver.util.requests.readers.KvpRequestReader;
  */
 public class CapabilitiesKvpReader extends KvpRequestReader {
 
-    private WMS wms;
-
-    /**
-     * Creates a Capabilities Kvp Reader.
-     * 
-     * @param kvPairs
-     *            the kvp set.
-     * @param wms
-     *            The wms service config facade.
-     */
-    public CapabilitiesKvpReader(Map kvPairs, WMS wms) {
-        super(kvPairs, wms.getServiceInfo());
-        this.wms = wms;
+    public CapabilitiesKvpReader() {
+        super(GetCapabilitiesRequest.class);
     }
 
-    /**
-     * Get Capabilities request.
-     * 
-     * @return Capabilities request.
-     * 
-     * @throws ServiceException
-     *             DOCUMENT ME!
-     */
-    public Request getRequest(HttpServletRequest request) throws ServiceException {
-        GetCapabilitiesRequest currentRequest = new GetCapabilitiesRequest(wms);
-        currentRequest.setHttpServletRequest(request);
+    @SuppressWarnings("rawtypes")
+    @Override
+    public GetCapabilitiesRequest read(Object req, Map kvp, Map rawKvp) throws Exception {
+        GetCapabilitiesRequest request = (GetCapabilitiesRequest) super.read(req, kvp, rawKvp);
 
-        String reqVersion = wms.getVersion();
-
-        if (keyExists("VERSION")) {
-            reqVersion = getValue("VERSION");
-        } else if (keyExists("WMTVER")) {
-            reqVersion = getValue("WMTVER");
+        if (null == request.getVersion() || request.getVersion().length() == 0) {
+            String version = (String) rawKvp.get("WMTVER");
+            request.setVersion(version);
         }
-
-        currentRequest.setVersion(reqVersion);
-
-        if (keyExists("UPDATESEQUENCE")) {
-            currentRequest.setUpdateSequence(getValue("UPDATESEQUENCE"));
-        }
-
-        if (keyExists("NAMESPACE")) {
-            currentRequest.setNamespace(getValue("NAMESPACE"));
-        }
-
-        return currentRequest;
+        return request;
     }
+
 }

@@ -55,7 +55,7 @@ public class GetCapabilitiesImpl implements GetCapabilities {
         Set<String> mapFormats = wms.getAvailableMapFormats();
         GetCapabilitiesTransformer transformer;
         String baseUrl = request.getBaseUrl();
-        transformer = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        transformer = new GetCapabilitiesTransformer(wms, baseUrl, mapFormats, legendFormats);
 
         // if (request.getWFS().getGeoServer().isVerbose()) {
         transformer.setIndentation(2);

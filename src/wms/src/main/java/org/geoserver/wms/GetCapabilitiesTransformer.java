@@ -60,6 +60,7 @@ import org.opengis.feature.type.Name;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.util.Assert;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
@@ -97,8 +98,12 @@ public class GetCapabilitiesTransformer extends TransformerBase {
     /** The list of output formats to state as supported for the GetLegendGraphic request */
     private Set<String> getLegendGraphicFormats;
 
+    private WMS wmsConfig;
+
     /**
      * Creates a new WMSCapsTransformer object.
+     * 
+     * @param wms
      * 
      * @param schemaBaseUrl
      *            the base URL of the current request (usually "http://host:port/geoserver")
@@ -110,19 +115,15 @@ public class GetCapabilitiesTransformer extends TransformerBase {
      * @throws NullPointerException
      *             if <code>schemaBaseUrl</code> is null;
      */
-    public GetCapabilitiesTransformer(String baseURL, Set<String> getMapFormats,
+    public GetCapabilitiesTransformer(WMS wms, String baseURL, Set<String> getMapFormats,
             Set<String> getLegendGraphicFormats) {
         super();
-        if (baseURL == null) {
-            throw new NullPointerException("baseURL");
-        }
-        if (getMapFormats == null) {
-            throw new NullPointerException("getMapFormats");
-        }
-        if (getLegendGraphicFormats == null) {
-            throw new NullPointerException("getLegendGraphicFormats");
-        }
+        Assert.notNull(wms);
+        Assert.notNull(baseURL, "baseURL");
+        Assert.notNull(getMapFormats, "getMapFormats");
+        Assert.notNull(getLegendGraphicFormats, "getLegendGraphicFormats");
 
+        this.wmsConfig = wms;
         this.getMapFormats = getMapFormats;
         this.getLegendGraphicFormats = getLegendGraphicFormats;
         this.baseURL = baseURL;
@@ -131,7 +132,8 @@ public class GetCapabilitiesTransformer extends TransformerBase {
 
     @Override
     public Translator createTranslator(ContentHandler handler) {
-        return new CapabilitiesTranslator(handler, getMapFormats, getLegendGraphicFormats);
+        return new CapabilitiesTranslator(handler, wmsConfig, getMapFormats,
+                getLegendGraphicFormats);
     }
 
     /**
@@ -196,10 +198,12 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          * 
          * @param handler
          *            content handler to send sax events to.
+         * @param wmsConfig2
          */
-        public CapabilitiesTranslator(ContentHandler handler, Set<String> getMapFormats,
-                Set<String> getLegendGraphicFormats) {
+        public CapabilitiesTranslator(ContentHandler handler, WMS wmsConfig,
+                Set<String> getMapFormats, Set<String> getLegendGraphicFormats) {
             super(handler, null, null);
+            this.wmsConfig = wmsConfig;
             this.getMapFormats = getMapFormats;
             this.getLegendGraphicFormats = getLegendGraphicFormats;
         }
@@ -218,7 +222,6 @@ public class GetCapabilitiesTransformer extends TransformerBase {
             }
 
             this.request = (GetCapabilitiesRequest) o;
-            this.wmsConfig = this.request.getWMS();
 
             if (LOGGER.isLoggable(Level.FINE)) {
                 LOGGER.fine(new StringBuffer("producing a capabilities document for ").append(

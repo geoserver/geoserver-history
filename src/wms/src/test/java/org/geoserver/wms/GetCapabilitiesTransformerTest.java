@@ -76,6 +76,8 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     private GetCapabilitiesRequest req;
 
+    private WMS wmsConfig;
+
     /**
      * Sets up the configuration objects with default values. Since they're live, specific tests can
      * modify their state before running the assertions
@@ -93,7 +95,9 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         catalog = new CatalogImpl();
         geosConfig.setCatalog(catalog);
 
-        req = new GetCapabilitiesRequest(new WMS(geosConfig));
+        wmsConfig = new WMS(geosConfig);
+
+        req = new GetCapabilitiesRequest();
         req.setBaseUrl(baseUrl);
 
         Map<String, String> namespaces = new HashMap<String, String>();
@@ -108,7 +112,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     public void testHeader() throws Exception {
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
         StringWriter writer = new StringWriter();
         tr.transform(req, writer);
         String content = writer.getBuffer().toString();
@@ -121,7 +125,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     public void testRootElement() throws Exception {
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
 
         Document dom = WMSTestSupport.transform(req, tr);
         Element root = dom.getDocumentElement();
@@ -130,7 +134,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         assertEquals("0", root.getAttribute("updateSequence"));
 
         geosInfo.setUpdateSequence(10);
-        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
         dom = WMSTestSupport.transform(req, tr);
         root = dom.getDocumentElement();
         assertEquals("10", root.getAttribute("updateSequence"));
@@ -165,7 +169,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         wmsInfo.setAccessConstraints("accessConstraints");
 
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
 
@@ -208,7 +212,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
 
     public void testCRSList() throws Exception {
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
@@ -223,7 +227,7 @@ public class GetCapabilitiesTransformerTest extends TestCase {
         wmsInfo.getSRS().add("EPSG:23030");
 
         GetCapabilitiesTransformer tr;
-        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(wmsConfig, baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         NodeList limitedCrsCodes = XPATH.getMatchingNodes(
