@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses;
+package org.geoserver.wms.response;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,13 +10,12 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geotools.styling.SLDTransformer;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.wms.WmsException;
 
-public class StylesResponse extends Response {
+public class GetStylesResponse extends Response {
 
     public static final String SLD_MIME_TYPE = "application/vnd.ogc.sld+xml";
 
-    public StylesResponse() {
+    public GetStylesResponse() {
         super(StyledLayerDescriptor.class);
     }
 
@@ -35,7 +34,7 @@ public class StylesResponse extends Response {
             tx.setIndentation(4);
             tx.transform(sld, output);
         } catch (TransformerException e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
     }
 

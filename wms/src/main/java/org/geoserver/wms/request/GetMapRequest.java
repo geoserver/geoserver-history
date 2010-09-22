@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.request;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -31,7 +31,7 @@ import com.vividsolutions.jts.geom.Envelope;
 /**
  * Represents a WMS GetMap request. as a extension to the WMS spec 1.1.
  *
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @author Simone Giannecchini
  * @version $Id$
  */
@@ -60,15 +60,6 @@ public class GetMapRequest extends WMSRequest {
 
     /** raw kvp parameters non-parsed */
     private Map <String,String> rawKvp;
-    
-    /**
-     * Creates a GetMapRequest object.
-     * 
-     * @param wms The WMS service config.
-     */
-    public GetMapRequest(WMS wms) {
-        super(wms);
-    }
 
     /**
      * DOCUMENT ME!

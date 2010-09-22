@@ -2,12 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.request;
 
 import java.util.Collections;
 import java.util.Map;
 
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.WMSRequest;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.feature.type.FeatureType;
@@ -54,7 +55,7 @@ import org.opengis.feature.type.FeatureType;
  * GetLegendGraphic is presently defined.
  * </p>
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @version $Id$
  */
 public class GetLegendGraphicRequest extends WMSRequest {
@@ -144,11 +145,12 @@ public class GetLegendGraphicRequest extends WMSRequest {
 
     /**
      * Creates a new GetLegendGraphicRequest object.
-     * @param wms The WMS configuration object.
+     * 
+     * @param wms
+     *            The WMS configuration object.
      */
-   
     public GetLegendGraphicRequest(WMS wms) {
-        super("GetLegendGraphic", wms);
+        super(wms);
     }
     
     /**
