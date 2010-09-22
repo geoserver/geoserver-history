@@ -85,6 +85,7 @@ import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
  * @author Chris Holmes
  * @author Jody Garnett, Refractions Research
  * @version $Id$
+ * @deprecated
  */
 public abstract class AbstractService extends HttpServlet implements ApplicationContextAware {
     /** Class logger */

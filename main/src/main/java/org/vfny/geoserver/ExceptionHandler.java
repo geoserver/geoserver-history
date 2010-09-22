@@ -4,12 +4,15 @@
  */
 package org.vfny.geoserver;
 
+import org.geoserver.ows.ServiceExceptionHandler;
+
 
 /**
  * DOCUMENT ME!
  *
  * @author Gabriel Rold�n
  * @version $revision$
+ * @deprecated implement {@link ServiceExceptionHandler} instead
  */
 public interface ExceptionHandler {
     /**

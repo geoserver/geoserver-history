@@ -94,6 +94,7 @@ import org.geoserver.platform.ServiceException;
  *
  * @author Gabriel Rold?n
  * @version $Id$
+ * @deprecated implement {@link org.geoserver.ows.Response} instead
  */
 public interface Response {
     /**

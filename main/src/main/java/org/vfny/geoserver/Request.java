@@ -25,6 +25,7 @@ import org.vfny.geoserver.util.Requests;
  * @author $Author: Alessio Fabiani (alessio.fabiani@gmail.com) $ (last modification)
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id$
+ * @deprecated implement {@link org.geoserver.ows.Request} instead
  */
 abstract public class Request {
     /**
