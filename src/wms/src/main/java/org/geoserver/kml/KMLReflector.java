@@ -114,7 +114,8 @@ public class KMLReflector {
         }
 
         // setup the default mode
-        String mode = caseInsensitiveParam(request.getRawKvp(), "mode",
+        Map<String, String> rawKvp = request.getRawKvp();
+        String mode = caseInsensitiveParam(rawKvp, "mode",
                 wmsConfiguration.getKmlReflectorMode());
 
         if (!MODES.containsKey(mode)) {
@@ -223,7 +224,7 @@ public class KMLReflector {
             if (entry.getKey() instanceof String) {
                 if (paramname.equalsIgnoreCase((String) entry.getKey())) {
                     Object obj = entry.getValue();
-                    value = (obj instanceof String[]) ? ((String[]) obj)[0].toLowerCase() : value;
+                    value = obj instanceof String? (String)obj: (obj instanceof String[]) ? ((String[]) obj)[0].toLowerCase() : value;
                 }
             }
         }
