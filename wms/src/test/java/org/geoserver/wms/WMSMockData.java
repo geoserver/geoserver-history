@@ -25,6 +25,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.map.RasterMapProducer;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.GetMapResponse;
 import org.geotools.data.DataStore;
@@ -40,7 +41,6 @@ import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;

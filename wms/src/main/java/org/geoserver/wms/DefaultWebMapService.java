@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.opengis.wfs.FeatureCollectionType;
 
+import org.geoserver.kml.KMLReflector;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.request.DescribeLayerRequest;
@@ -41,7 +42,6 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.wms.responses.map.kml.KMLReflector;
 
 import com.vividsolutions.jts.geom.Envelope;
 

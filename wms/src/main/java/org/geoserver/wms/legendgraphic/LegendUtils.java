@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
+import org.geoserver.wms.map.ImageUtils;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -36,7 +36,6 @@ import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
 import org.opengis.style.ChannelSelection;
-import org.vfny.geoserver.wms.responses.ImageUtils;
 
 /**
  * Utility class for building legends, it exposes many methods that could be reused anywhere.

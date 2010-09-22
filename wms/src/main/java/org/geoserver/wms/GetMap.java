@@ -21,6 +21,8 @@ import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.map.MetatileMapProducer;
+import org.geoserver.wms.map.RasterMapProducer;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.Map;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -57,8 +59,6 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.RasterMapProducer;
-import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
 import com.vividsolutions.jts.geom.Envelope;
 
