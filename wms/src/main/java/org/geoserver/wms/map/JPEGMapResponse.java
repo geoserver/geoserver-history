@@ -17,27 +17,28 @@ import org.geotools.image.ImageWorker;
 import com.sun.media.imageioimpl.common.PackageUtil;
 
 /**
- * Map producer for JPEG image format.
+ * Map response handler for JPEG image format.
  * 
  * @author Simone Giannecchini
  * @since 1.4.x
  * 
  */
-public final class JPEGMapOutputFormat extends DefaultRasterMapOutputFormat {
+public final class JPEGMapResponse extends RenderedImageMapResponse {
 
     /** Logger. */
     private final static Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(JPEGMapOutputFormat.class.toString());
+            .getLogger(JPEGMapResponse.class.toString());
 
     private static final boolean CODEC_LIB_AVAILABLE = PackageUtil.isCodecLibAvailable();
 
     /** the only MIME type this map producer supports */
     private static final String MIME_TYPE = "image/jpeg";
 
-    public JPEGMapOutputFormat(WMS wms) {
+    public JPEGMapResponse(WMS wms) {
         super(MIME_TYPE, wms);
     }
 
+    @Override
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
             WMSMapContext mapContext) throws IOException {
         if (LOGGER.isLoggable(Level.FINE)) {
@@ -52,23 +53,5 @@ public final class JPEGMapOutputFormat extends DefaultRasterMapOutputFormat {
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine("Writing a JPEG done!!!");
         }
-    }
-
-    /**
-     * @return {@code false}
-     * @see org.geoserver.wms.map.DefaultRasterMapOutputFormat#isTransparencySupported()
-     */
-    @Override
-    protected boolean isTransparencySupported() {
-        return false;
-    }
-
-    /**
-     * @return {@code false}
-     * @see org.geoserver.wms.map.DefaultRasterMapOutputFormat#isPaletteSupported()
-     */
-    @Override
-    protected boolean isPaletteSupported() {
-        return false;
     }
 }

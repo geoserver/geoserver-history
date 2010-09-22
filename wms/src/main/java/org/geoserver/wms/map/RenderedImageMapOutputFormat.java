@@ -17,14 +17,11 @@ import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,7 +41,6 @@ import javax.media.jai.operator.CropDescriptor;
 import javax.media.jai.operator.LookupDescriptor;
 import javax.media.jai.operator.MosaicDescriptor;
 
-import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetMapOutputFormat;
@@ -77,39 +73,45 @@ import org.geotools.renderer.shape.ShapefileRenderer;
 import org.geotools.resources.image.ColorUtilities;
 import org.geotools.styling.RasterSymbolizer;
 import org.geotools.styling.Style;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
-import org.springframework.util.Assert;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 
 /**
- * Abstract base class for GetMapProducers that relies in LiteRenderer for creating the raster map
- * and then outputs it in the format they specializes in.
- * 
+ * A {@link GetMapOutputFormat} that produces {@link RenderedImageMap} instances to be encoded in
+ * the constructor supplied MIME-Type.
  * <p>
- * This class does the job of producing a BufferedImage using geotools LiteRenderer, so it should be
- * enough for a subclass to implement {@linkplain #formatImageOutputStream}
+ * Instances of this class are expected to be declared in the application context supplying the
+ * prescribed MIME-Type to create maps for, and the list of output format names to be declared in
+ * the GetCapabilities document. Note that the prescribed MIME-Type (the MIME Type the produced
+ * images are to be encoded as and that is to be set in the response HTTP Content-Type header) may
+ * differ from what's declared in the capabilities document, hence the separation of concerns and
+ * the two different arguments in the constructor (for example, a declared output format of
+ * {@code image/geotiff8} may indicate to create an indexed geotiff image with 8-bit pixel depth,
+ * but the resulting MIME-Type be {@code image/tiff}.
  * </p>
- * 
  * <p>
- * Generates a map using the geotools jai rendering classes. Uses the Lite renderer, loading the
- * data on the fly, which is quite nice. Thanks Andrea and Gabriel. The word is that we should
- * eventually switch over to StyledMapRenderer and do some fancy stuff with caching layers, but I
- * think we are a ways off with its maturity to try that yet. So Lite treats us quite well, as it is
- * stateless and therefore loads up nice and fast.
- * </p>
- * 
- * <p>
+ * Whether or not the output format instance permits images with transparency and/or indexed 8-bit
+ * color model is described by the {@link #isTransparencySupported() transparencySupported} and
+ * {@link #isPaletteSupported() paletteSupported} properties respectively.
  * </p>
  * 
  * @author Chris Holmes, TOPP
  * @author Simone Giannecchini, GeoSolutions
+ * @author Andrea Aime
+ * @author Gabriel Roldan
  * @version $Id$
+ * @see RenderedImageMapOutputFormat
+ * @see PNGMapResponse
+ * @see GIFMapResponse
+ * @see TIFFMapResponse
+ * @see GeoTIFFMapResponse
+ * @see JPEGMapResponse
  */
-public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputFormat implements
-        RasterMapOutputFormat {
+public class RenderedImageMapOutputFormat extends AbstractMapOutputFormat {
     private final static Interpolation NN_INTERPOLATION = new InterpolationNearest();
 
     private final static Interpolation BIL_INTERPOLATION = new InterpolationBilinear();
@@ -145,8 +147,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     }
 
     /** A logger for this class. */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logging.getLogger(RenderedImageMapOutputFormat.class);
 
     /** Which format to encode the image in if one is not supplied */
     private static final String DEFAULT_MAP_FORMAT = "image/png";
@@ -154,10 +155,14 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     /** WMS Service configuration * */
     protected final WMS wms;
 
+    private boolean palleteSupported = true;
+
+    private boolean transparencySupported = true;
+
     /**
      * 
      */
-    public DefaultRasterMapOutputFormat(WMS wms) {
+    public RenderedImageMapOutputFormat(WMS wms) {
         this(DEFAULT_MAP_FORMAT, wms);
     }
 
@@ -166,79 +171,24 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      *            mime type to be written down as an HTTP header when a map of this format is
      *            generated
      */
-    public DefaultRasterMapOutputFormat(String mime, WMS wms) {
-        super(RenderedImageMap.class, mime);
-        this.wms = wms;
-    }
-
-    public DefaultRasterMapOutputFormat(String mime, String[] outputFormats, WMS wms) {
-        super(RenderedImageMap.class, mime, outputFormats);
+    public RenderedImageMapOutputFormat(String mime, WMS wms) {
+        super(mime);
         this.wms = wms;
     }
 
     /**
-     * Writes the image to the given destination.
      * 
-     * @param value
-     *            must be a {@link RenderedImageMap}
-     * @see GetMapOutputFormat#write(org.geoserver.wms.WebMap, OutputStream)
-     * @see #formatImageOutputStream(RenderedImage, OutputStream, WMSMapContext)
+     * @param mime
+     *            the actual MIME Type resulting for the image created using this output format
+     * @param outputFormats
+     *            the list of output format names to declare in the GetCapabilities document, does
+     *            not need to match {@code mime} (e.g., an output format of {@code image/geotiff8}
+     *            may result in a map returned with MIME Type {@code image/tiff})
+     * @param wms
      */
-    @Override
-    public final void write(final Object value, final OutputStream output, final Operation operation)
-            throws IOException, ServiceException {
-
-        Assert.isInstanceOf(RenderedImageMap.class, value);
-
-        final RenderedImageMap imageMap = (RenderedImageMap) value;
-        try {
-            final RenderedImage image = imageMap.getImage();
-            final List<GridCoverage2D> renderedCoverages = imageMap.getRenderedCoverages();
-            final WMSMapContext mapContext = imageMap.getMapContext();
-            try {
-                formatImageOutputStream(image, output, mapContext);
-                output.flush();
-            } finally {
-                // let go of the coverages created for rendering
-                for (GridCoverage2D coverage : renderedCoverages) {
-                    coverage.dispose(true);
-                }
-
-                // let go of the image chain as quick as possible to free memory
-                if (image instanceof PlanarImage) {
-                    disposePlanarImageChain((PlanarImage) image, new HashSet<PlanarImage>());
-                } else if (image instanceof BufferedImage) {
-                    ((BufferedImage) image).flush();
-                }
-            }
-        } finally {
-            imageMap.dispose();
-        }
-    }
-
-    static void disposePlanarImageChain(PlanarImage pi, HashSet<PlanarImage> visited) {
-        Vector sinks = pi.getSinks();
-        if (sinks != null) {
-            for (Object sink : sinks) {
-                if (sink instanceof PlanarImage && !visited.contains(sink))
-                    disposePlanarImageChain((PlanarImage) sink, visited);
-                else if (sink instanceof BufferedImage) {
-                    ((BufferedImage) sink).flush();
-                }
-            }
-        }
-        pi.dispose();
-        visited.add(pi);
-        Vector sources = pi.getSources();
-        if (sources != null) {
-            for (Object child : sources) {
-                if (child instanceof PlanarImage && !visited.contains(child))
-                    disposePlanarImageChain((PlanarImage) child, visited);
-                else if (child instanceof BufferedImage) {
-                    ((BufferedImage) child).flush();
-                }
-            }
-        }
+    public RenderedImageMapOutputFormat(String mime, String[] outputFormats, WMS wms) {
+        super(mime, outputFormats);
+        this.wms = wms;
     }
 
     /**
@@ -247,9 +197,10 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     public final RenderedImageMap produceMap(WMSMapContext mapContext) throws ServiceException {
         return produceMap(mapContext, false);
     }
-    
+
     /**
      * Actually produces the map image, careing about meta tiling if {@code tiled == true}.
+     * 
      * @param mapContext
      * @param tiled
      *            Indicates whether metatiling is activated for this map producer.
@@ -633,21 +584,31 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
     }
 
     /**
-     * Returns true if the format supports image transparency, false otherwise
+     * Returns true if the format supports image transparency, false otherwise (defaults to
+     * {@code true})
      * 
      * @return true if the format supports image transparency, false otherwise
      */
-    protected boolean isTransparencySupported() {
-        return true;
+    public boolean isTransparencySupported() {
+        return transparencySupported;
+    }
+
+    public void setTransparencySupported(boolean supportsTransparency) {
+        this.transparencySupported = supportsTransparency;
     }
 
     /**
-     * Returns true if the format supports palette encoding, false otherwise
+     * Returns true if the format supports palette encoding, false otherwise (defaults to
+     * {@code true}).
      * 
      * @return true if the format supports palette encoding, false otherwise
      */
-    protected boolean isPaletteSupported() {
-        return true;
+    public boolean isPaletteSupported() {
+        return palleteSupported;
+    }
+
+    public void setPaletteSupported(boolean supportsPalette) {
+        this.palleteSupported = supportsPalette;
     }
 
     /**
@@ -664,15 +625,6 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
             boolean transparent) {
         return ImageUtils.getDrawingSurfaceMemoryUse(width, height, isPaletteSupported() ? palette
                 : null, transparent && isTransparencySupported());
-    }
-
-    /**
-     * @param originalImage
-     * @return
-     */
-    protected RenderedImage forceIndexed8Bitmask(RenderedImage originalImage,
-            InverseColorMapOp paletteInverter) {
-        return ImageUtils.forceIndexed8Bitmask(originalImage, paletteInverter);
     }
 
     /**

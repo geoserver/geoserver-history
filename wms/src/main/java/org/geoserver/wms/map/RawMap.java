@@ -15,6 +15,7 @@ import org.geoserver.wms.WebMap;
  * An already encoded {@link WebMap} that holds the raw response content in a byte array.
  * 
  * @author Gabriel Roldan
+ * @see RawMapResponse
  */
 public class RawMap extends WebMap {
 

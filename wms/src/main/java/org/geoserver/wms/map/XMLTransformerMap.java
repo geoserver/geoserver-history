@@ -12,6 +12,7 @@ import org.geotools.xml.transform.TransformerBase;
  * A {@link WebMap} that's represented by a geotools {@link TransformerBase}, got xml output formats
  * 
  * @author Gabriel Roldan
+ * @see XMLTransformerMapResponse
  */
 public class XMLTransformerMap extends WebMap {
 

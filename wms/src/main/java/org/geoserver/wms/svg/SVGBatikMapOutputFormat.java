@@ -8,8 +8,6 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,8 +19,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.batik.svggen.SVGGeneratorContext;
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.geoserver.ows.Response;
-import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.GetMapOutputFormat;
@@ -43,42 +39,12 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Justin Deoliveira, The Open Planning Project
  * 
  */
-public final class SVGBatikMapOutputFormat extends Response implements GetMapOutputFormat {
+public final class SVGBatikMapOutputFormat implements GetMapOutputFormat {
 
     private final WMS wms;
 
-    public static class BatikSVGMap extends org.geoserver.wms.WebMap {
-        private SVGGraphics2D graphics;
-
-        BatikSVGMap(WMSMapContext context, SVGGraphics2D graphics) {
-            super(context);
-            this.graphics = graphics;
-            setMimeType(SVG.MIME_TYPE);
-        }
-
-        public SVGGraphics2D getGraphics() {
-            return graphics;
-        }
-
-        @Override
-        public void disposeInternal() {
-            graphics.dispose();
-        }
-    }
-
     public SVGBatikMapOutputFormat(WMS wms) {
-        super(BatikSVGMap.class, SVG.OUTPUT_FORMATS);
         this.wms = wms;
-    }
-
-    /**
-     * @return same as {@link #getMimeType()}
-     * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
-     *      org.geoserver.platform.Operation)
-     */
-    @Override
-    public String getMimeType(Object value, Operation operation) throws ServiceException {
-        return getMimeType();
     }
 
     /**
@@ -115,24 +81,6 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
         // format);
 
         return new BatikSVGMap(mapContext, g);
-    }
-
-    /**
-     * 
-     * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
-     *      org.geoserver.platform.Operation)
-     */
-    @Override
-    public void write(Object value, OutputStream output, Operation operation) throws IOException,
-            ServiceException {
-
-        BatikSVGMap map = (BatikSVGMap) value;
-        try {
-            SVGGraphics2D graphics = map.getGraphics();
-            graphics.stream(new OutputStreamWriter(output, "UTF-8"));
-        } finally {
-            map.dispose();
-        }
     }
 
     private StreamingRenderer setUpRenderer(WMSMapContext mapContext) {

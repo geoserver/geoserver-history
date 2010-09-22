@@ -26,37 +26,33 @@ import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.util.logging.Logging;
 
 /**
- * Map producer for GeoTiff output format. It basically relies on the GeoTiff module of geotools.
+ * Map response handler for GeoTiff output format. It basically relies on the GeoTiff module of
+ * geotools.
  * 
  * 
  * @author Simone Giannecchini, GeoSolutions
  * 
  */
-public class GeoTIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
+public class GeoTIFFMapResponse extends RenderedImageMapResponse {
 
     /** A logger for this class. */
-    private static final Logger LOGGER = Logging.getLogger(GeoTIFFMapOutputFormat.class);
+    private static final Logger LOGGER = Logging.getLogger(GeoTIFFMapResponse.class);
 
     private static final String IMAGE_GEOTIFF = "image/geotiff";
 
     private static final String IMAGE_GEOTIFF8 = "image/geotiff8";
 
+    private static final String[] OUTPUT_FORMATS = { IMAGE_GEOTIFF, IMAGE_GEOTIFF8 };
+
     /** GridCoverageFactory. */
     private final static GridCoverageFactory factory = CoverageFactoryFinder
             .getGridCoverageFactory(null);
 
-    private static final String[] OUTPUT_FORMATS = { IMAGE_GEOTIFF, IMAGE_GEOTIFF8 };
-
-    /**
-     * Constructo for a {@link GeoTIFFMapOutputFormat}.
-     * 
-     * @param wms
-     *            that is asking us to encode the image.
-     */
-    public GeoTIFFMapOutputFormat(WMS wms) {
-        super("image/tiff", OUTPUT_FORMATS, wms);
+    public GeoTIFFMapResponse(final WMS wms) {
+        super(OUTPUT_FORMATS, wms);
     }
 
+    @Override
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
             WMSMapContext mapContext) throws ServiceException, IOException {
         // crating a grid coverage

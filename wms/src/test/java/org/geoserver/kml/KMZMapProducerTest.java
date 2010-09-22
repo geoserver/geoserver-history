@@ -20,6 +20,7 @@ import org.geoserver.wms.WMSTestSupport;
 
 public class KMZMapProducerTest extends WMSTestSupport {
     KMZMapOutputFormat mapProducer;
+    KMZMapResponse mapEncoder;
     KMZMap producedMap;
 
     /**
@@ -45,6 +46,7 @@ public class KMZMapProducerTest extends WMSTestSupport {
 
         // create hte map producer
         mapProducer = new KMZMapOutputFormat(getWMS());
+        mapEncoder = new KMZMapResponse(getWMS());
         producedMap = mapProducer.produceMap(mapContext);
     }
 
@@ -59,7 +61,7 @@ public class KMZMapProducerTest extends WMSTestSupport {
         zip.deleteOnExit();
 
         FileOutputStream output = new FileOutputStream(zip);
-        mapProducer.write(producedMap, output, null);
+        mapEncoder.write(producedMap, output, null);
 
         output.flush();
         output.close();

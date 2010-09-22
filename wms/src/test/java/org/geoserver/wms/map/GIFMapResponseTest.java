@@ -6,17 +6,17 @@ package org.geoserver.wms.map;
 
 import junit.framework.Test;
 
-public class GifMapProducerTest extends DefaultRasterMapProducerTest {
-    
+public class GIFMapResponseTest extends RenderedImageMapOutputFormatTest {
+
     /**
      * This is a READ ONLY TEST so we can use one time setup
      */
     public static Test suite() {
-        return new OneTimeTestSetup(new GifMapProducerTest());
+        return new OneTimeTestSetup(new GIFMapResponseTest());
     }
-    
-    protected DefaultRasterMapOutputFormat getProducerInstance() {
-        return new GIFMapOutputFormat(getWMS()); 
+
+    protected RenderedImageMapOutputFormat getProducerInstance() {
+        return new RenderedImageMapOutputFormat("image/gif", getWMS());
     }
 
 }

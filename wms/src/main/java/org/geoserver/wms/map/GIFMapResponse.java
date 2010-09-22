@@ -21,12 +21,12 @@ import org.geotools.image.palette.InverseColorMapOp;
  * @author Simone Giannecchini - GeoSolutions
  * @version $Id
  */
-public final class GIFMapOutputFormat extends DefaultRasterMapOutputFormat {
+public final class GIFMapResponse extends RenderedImageMapResponse {
 
     /** the only MIME type this map producer supports */
     static final String MIME_TYPE = "image/gif";
 
-    public GIFMapOutputFormat(WMS wms) {
+    public GIFMapResponse(WMS wms) {
         super(MIME_TYPE, wms);
     }
 
@@ -55,5 +55,4 @@ public final class GIFMapOutputFormat extends DefaultRasterMapOutputFormat {
         ImageWorker imageWorker = new ImageWorker(renderedImage);
         imageWorker.writeGIF(outStream, "LZW", 0.75f);
     }
-
 }

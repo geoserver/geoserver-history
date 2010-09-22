@@ -5,11 +5,8 @@
 package org.geoserver.wms.svg;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Set;
 
-import org.geoserver.ows.Response;
-import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSMapContext;
@@ -19,35 +16,13 @@ import org.geoserver.wms.WMSMapContext;
  * 
  * @author Gabriel Roldan
  * @version $Id$
+ * @see StreamingSVGMap
+ * @see SVGStreamingMapResponse
  */
-public final class SVGStreamingMapOutputFormat extends Response implements GetMapOutputFormat {
+public final class SVGStreamingMapOutputFormat implements GetMapOutputFormat {
 
     public SVGStreamingMapOutputFormat() {
-        super(EncodeSVG.class, SVG.OUTPUT_FORMATS);
-    }
-
-    /**
-     * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
-     *      org.geoserver.platform.Operation)
-     */
-    @Override
-    public String getMimeType(Object value, Operation operation) throws ServiceException {
-        return getMimeType();
-    }
-
-    /**
-     * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
-     *      org.geoserver.platform.Operation)
-     */
-    @Override
-    public void write(Object value, OutputStream output, Operation operation) throws IOException,
-            ServiceException {
-        EncodeSVG map = (EncodeSVG) value;
-        try {
-            map.encode(output);
-        } finally {
-            map.dispose();
-        }
+        //
     }
 
     /**
@@ -70,8 +45,9 @@ public final class SVGStreamingMapOutputFormat extends Response implements GetMa
      * 
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public EncodeSVG produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
-        EncodeSVG svg = new EncodeSVG(mapContext);
+    public StreamingSVGMap produceMap(WMSMapContext mapContext) throws ServiceException,
+            IOException {
+        StreamingSVGMap svg = new StreamingSVGMap(mapContext);
         svg.setMimeType(getMimeType());
         return svg;
     }

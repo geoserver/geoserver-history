@@ -332,6 +332,7 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         // create the map producer
         KMZMapOutputFormat mapProducer = new KMZMapOutputFormat(getWMS());
+        KMZMapResponse mapEncoder = new KMZMapResponse(getWMS());
         KMZMap kmzMap = mapProducer.produceMap(mapContext);
         try {
             // create the kmz
@@ -342,7 +343,7 @@ public class KMLTransformerTest extends WMSTestSupport {
             zip.deleteOnExit();
 
             FileOutputStream output = new FileOutputStream(zip);
-            mapProducer.write(kmzMap, output, null);
+            mapEncoder.write(kmzMap, output, null);
 
             output.flush();
             output.close();
