@@ -81,7 +81,7 @@ public final class AtomUtils {
         String nsPrefix = context.getRequest().getWMS().getNameSpacePrefix(nsUri);
 
         return Requests.getBaseUrl(
-                context.getRequest().getHttpServletRequest(),
+                context.getRequest().getHttpRequest(),
                 context.getRequest().getWMS().getGeoServer()
                 )
             + "wms/reflect?format=application/atom+xml&layers=" 

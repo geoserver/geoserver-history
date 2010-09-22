@@ -3,13 +3,7 @@ package org.vfny.geoserver.wms.responses.map;
 import static org.geoserver.data.test.MockData.STREAMS;
 
 import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Panel;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.geom.NoninvertibleTransformException;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;

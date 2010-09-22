@@ -1002,7 +1002,7 @@ public class KMLWriter extends OutputStreamWriter {
 
         // TODO add read parameters feature.getAttribute("params")
         final HttpServletRequest request = this.mapContext.getRequest()
-                .getHttpServletRequest();
+                .getHttpRequest();
         final String baseURL = org.vfny.geoserver.util.Requests.getBaseUrl(
                 request, null);
 

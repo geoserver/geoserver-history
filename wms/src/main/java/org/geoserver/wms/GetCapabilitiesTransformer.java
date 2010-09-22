@@ -46,6 +46,7 @@ import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.response.DescribeLayerResponse;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
@@ -63,7 +64,6 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.util.Assert;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.StylesResponse;
@@ -78,7 +78,8 @@ import com.vividsolutions.jts.geom.Envelope;
  * @author Gabriel Roldan
  * @version $Id
  * @see GetCapabilities#run(GetCapabilitiesRequest)
- * @see GetCapabilitiesResponse#write(Object, java.io.OutputStream, org.geoserver.platform.Operation)
+ * @see GetCapabilitiesResponse#write(Object, java.io.OutputStream,
+ *      org.geoserver.platform.Operation)
  */
 class GetCapabilitiesTransformer extends TransformerBase {
     /** fixed MIME type for the returned capabilities document */

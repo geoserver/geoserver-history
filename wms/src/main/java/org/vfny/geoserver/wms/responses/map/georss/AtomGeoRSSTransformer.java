@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;

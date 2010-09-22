@@ -141,7 +141,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 			map.put("servicePath", servicePath);
 			
 			map.put("parameters", getLayerParameter(mapContext.getRequest()
-					.getHttpServletRequest()));
+					.getHttpRequest()));
 			map.put("units", getOLUnits(mapContext.getRequest()));
 
 			if (mapContext.getLayerCount() == 1) {

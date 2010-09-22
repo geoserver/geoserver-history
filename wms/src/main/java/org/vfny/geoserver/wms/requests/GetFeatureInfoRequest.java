@@ -6,6 +6,7 @@ package org.vfny.geoserver.wms.requests;
 
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.WMSRequest;
 
 
 /**
@@ -80,7 +81,7 @@ public class GetFeatureInfoRequest extends WMSRequest {
      * @param wms The WMS configuration object.
      */
     public GetFeatureInfoRequest(WMS wms) {
-        super("GetFeatureInfo", wms);
+        super(wms);
     }
     
     /**

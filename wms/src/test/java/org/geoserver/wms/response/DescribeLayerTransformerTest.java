@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.helpers;
+package org.geoserver.wms.response;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
@@ -28,7 +28,7 @@ import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfoImpl;
 import org.geoserver.wms.WMSTestSupport;
-import org.vfny.geoserver.wms.requests.DescribeLayerRequest;
+import org.geoserver.wms.request.DescribeLayerRequest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -127,7 +127,7 @@ public class DescribeLayerTransformerTest extends TestCase {
 
         geoServerImpl.add(new WMSInfoImpl());
         WMS wms = new WMS(geoServerImpl);
-        request = new DescribeLayerRequest(wms);
+        request = new DescribeLayerRequest();
         request.setBaseUrl("http://localhost:8080/geoserver");
         request.setVersion("1.1.1");
     }

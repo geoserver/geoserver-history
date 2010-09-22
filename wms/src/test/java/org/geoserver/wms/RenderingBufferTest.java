@@ -1,6 +1,6 @@
 package org.geoserver.wms;
 
-import static org.custommonkey.xmlunit.XMLAssert.*;
+import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import java.awt.image.BufferedImage;
 import java.util.Collections;

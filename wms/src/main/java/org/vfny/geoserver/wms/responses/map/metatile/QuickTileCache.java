@@ -86,7 +86,7 @@ public class QuickTileCache implements TransactionListener {
      * @return
      */
     public MetaTileKey getMetaTileKey(GetMapRequest request) {
-        String mapDefinition = buildMapDefinition(request.getHttpServletRequest());
+        String mapDefinition = buildMapDefinition(request.getHttpRequest());
         Envelope bbox = request.getBbox();
         Point2D origin = request.getTilesOrigin();
         MapKey mapKey = new MapKey(mapDefinition, normalize(bbox.getWidth() / request.getWidth()),

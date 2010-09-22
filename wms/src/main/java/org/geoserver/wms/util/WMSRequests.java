@@ -19,15 +19,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.WMSRequest;
 import org.geotools.map.MapLayer;
 import org.geotools.styling.Style;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.requests.GetMapRequest;
-import org.vfny.geoserver.wms.requests.WMSRequest;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -47,10 +48,10 @@ public class WMSRequests {
      *
      * @return The base for wms requests.
      */
-    public static String getBaseUrl( HttpServletRequest request, WMS config ) {
-        String baseUrl = Requests.getBaseUrl( request, config.getGeoServer() );
-        baseUrl = Requests.appendContextPath(baseUrl, "wms" );
-        
+    public static String getBaseUrl(HttpServletRequest request, WMS config) {
+        String baseUrl = ResponseUtils.baseURL(request);
+        baseUrl = ResponseUtils.appendPath(baseUrl, "wms");
+
         return baseUrl;
     }
 
@@ -63,7 +64,7 @@ public class WMSRequests {
      * @return The base for wms requests.
      */
     public static String getBaseUrl( WMSRequest request ) {
-        return getBaseUrl( request.getHttpServletRequest(), request.getWMS() );  
+        return getBaseUrl( request.getHttpRequest(), null );  
     }
     
     /**
@@ -104,7 +105,7 @@ public class WMSRequests {
      * @return The full url for a getMap request.
      */
     public static String getTiledGetMapUrl(GetMapRequest req, MapLayer layer, int layerIndex, Envelope bbox, String[] kvp) {
-        String baseUrl = getTileCacheBaseUrl(req.getHttpServletRequest(),
+        String baseUrl = getTileCacheBaseUrl(req.getHttpRequest(),
                     req.getWMS().getGeoServer());
         
         if ( baseUrl == null ) {

@@ -1,5 +1,7 @@
 package org.geoserver.wms;
 
+import static org.geoserver.ows.util.ResponseUtils.baseURL;
+
 import java.nio.charset.Charset;
 import java.util.Set;
 
@@ -54,7 +56,7 @@ public class GetCapabilitiesImpl implements GetCapabilities {
         Set<String> legendFormats = wms.getAvailableLegendGraphicsFormats();
         Set<String> mapFormats = wms.getAvailableMapFormats();
         GetCapabilitiesTransformer transformer;
-        String baseUrl = request.getBaseUrl();
+        String baseUrl = baseURL(request.getHttpRequest());
         transformer = new GetCapabilitiesTransformer(wms, baseUrl, mapFormats, legendFormats);
 
         // if (request.getWFS().getGeoServer().isVerbose()) {

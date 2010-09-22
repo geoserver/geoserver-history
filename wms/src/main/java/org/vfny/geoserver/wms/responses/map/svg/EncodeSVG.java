@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
-import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.filter.Expression;
