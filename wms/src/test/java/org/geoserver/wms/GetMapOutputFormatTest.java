@@ -40,46 +40,14 @@ public class GetMapOutputFormatTest extends WMSTestSupport {
     }
 
     public void testSetOutputFormat() {
-        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
-        for (GetMapOutputFormat producer : producers) {
-            Set<String> outputFormats = producer.getOutputFormatNames();
-            for (String outputFormat : outputFormats) {
-                producer.setOutputFormat(outputFormat);
-                String producerFormat = producer.getOutputFormat();
-                String msg = producer.getClass().getName() + " output format not set";
-                assertEquals(msg, outputFormat, producerFormat);
-            }
 
-            try {
-                producer.setOutputFormat("not-a-valid-output-format");
-                fail(producer.getClass().getName() + " didn't throw an IAE when an invalid "
-                        + "output format was set");
-            } catch (IllegalArgumentException e) {
-                assertTrue(true);
-            }
+        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
+
+        for (GetMapOutputFormat producer : producers) {
+            assertNotNull(producer.getMimeType());
+            assertNotNull(producer.getOutputFormatNames());
+            assertTrue(producer.getOutputFormatNames().size() > 0);
         }
     }
 
-    public void testSetOutputFormatIsCaseInsensitive() {
-        List<GetMapOutputFormat> producers = WMSExtensions.findMapProducers(applicationContext);
-        for (GetMapOutputFormat producer : producers) {
-            Set<String> outputFormats = producer.getOutputFormatNames();
-            for (String outputFormat : outputFormats) {
-
-                char caseChangedChar = outputFormat.charAt(0);
-                if (Character.isUpperCase(caseChangedChar)) {
-                    caseChangedChar = Character.toLowerCase(caseChangedChar);
-                } else {
-                    caseChangedChar = Character.toUpperCase(caseChangedChar);
-                }
-                String caseChangedFormatName;
-                caseChangedFormatName = caseChangedChar + outputFormat.substring(1);
-
-                producer.setOutputFormat(caseChangedFormatName);
-                String producerFormat = producer.getOutputFormat();
-                String msg = producer.getClass().getName() + " output format not set";
-                assertTrue(msg, outputFormat.equalsIgnoreCase(producerFormat));
-            }
-        }
-    }
 }

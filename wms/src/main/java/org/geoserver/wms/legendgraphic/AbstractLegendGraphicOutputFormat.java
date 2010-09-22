@@ -20,7 +20,6 @@ import java.util.Map;
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.map.ImageUtils;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
-import org.geoserver.wms.response.LegendGraphic;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
@@ -80,7 +79,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @version $Id$
  */
 public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGraphicOutputFormat {
-   
+
     /** Factory that will resolve symbolizers into rendered styles */
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();
 
@@ -141,7 +140,8 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
      *             if there are problems creating a "sample" feature instance for the FeatureType
      *             <code>request</code> returns as the required layer (which should not occur).
      */
-    public LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request) throws WmsException {
+    public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
+            throws WmsException {
 
         final Style gt2Style = request.getStyle();
         if (gt2Style == null) {
@@ -231,7 +231,8 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
         // this.legendGraphic = scaleImage(mergeLegends(legendsStack), request);
         BufferedImage image = mergeLegends(legendsStack, applicableRules, request);
         String contentType = getContentType();
-        LegendGraphic legendGraphic = new BufferedImageLegendGraphic(contentType, image);
+        BufferedImageLegendGraphic legendGraphic = new BufferedImageLegendGraphic(contentType,
+                image);
         return legendGraphic;
     }
 

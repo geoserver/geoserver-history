@@ -31,11 +31,11 @@ public interface RasterMapOutputFormat extends GetMapOutputFormat {
      * @param outStream
      *            The stream to write to.
      * 
-     * @throws WmsException
+     * @throws ServiceException
      * @throws IOException
      */
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-            WMSMapContext mapContext) throws WmsException, IOException;
+            WMSMapContext mapContext) throws ServiceException, IOException;
 
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
