@@ -26,7 +26,7 @@
 		operation beans for handling incoming requests 
 	-->
 	<bean id="wmsGetCapabilities" 
-		class="org.vfny.geoserver.wms.servlets.Capabilities" >
+		class="org.geoserver.wms.GetCapabilitiesImpl" >
       <constructor-arg ref="wms"/>
 	</bean>
 
@@ -217,9 +217,7 @@
    		
 	<!--  responses -->
 	<bean id="wmsGetCapabilitiesResponse"
-		class="org.geoserver.ows.adapters.ResponseAdapter">
-		<constructor-arg value="org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse"/>
-		<constructor-arg ref="geoServer"/>
+		class="org.geoserver.wms.GetCapabilitiesResponse">
 	</bean>
 	<bean id="describeLayerResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">
