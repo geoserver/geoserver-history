@@ -27,8 +27,7 @@ public class CapabilitiesKvpReaderTest extends TestCase {
         kvp.put("request", "getcapabilities");
         GetCapabilitiesRequest read = reader.read(reader.createRequest(), kvp, rawKvp);
         assertNotNull(read);
-        assertEquals("WMS", read.getService());
-        assertEquals("getcapabilities", read.getRequest());
+        assertEquals("getcapabilities", read.getRequest().toLowerCase());
         assertNull(read.getBaseUrl());
         assertNull(read.getNamespace());
     }

@@ -21,8 +21,6 @@ import org.geoserver.ows.Dispatcher;
  */
 public abstract class WMSRequest {
 
-    public static final String WMS_SERVICE_TYPE = "WMS";
-
     private String baseUrl;
 
     private Map<String, String> rawKvp;
@@ -31,11 +29,6 @@ public abstract class WMSRequest {
      * flag indicating if the request is get
      */
     protected boolean get;
-
-    /**
-     * The ows service,request,version
-     */
-    protected String service;
 
     protected String request;
 
@@ -60,14 +53,6 @@ public abstract class WMSRequest {
 
     public void setGet(boolean get) {
         this.get = get;
-    }
-
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
     }
 
     public String getRequest() {

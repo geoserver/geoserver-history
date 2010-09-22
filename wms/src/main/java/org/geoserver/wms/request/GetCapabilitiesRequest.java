@@ -27,7 +27,7 @@ public class GetCapabilitiesRequest extends WMSRequest {
      * @return a string of with the service and version.
      */
     public String toString() {
-        return "GetCapabilities [service: " + service + ", version: " + version + "]";
+        return "GetCapabilities [service: WMS, version: " + version + "]";
     }
 
     /**
