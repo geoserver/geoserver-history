@@ -11,16 +11,21 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.NamespaceInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.ows.util.KvpUtils;
+import org.geoserver.platform.Operation;
 import org.geoserver.rest.RestletException;
 import org.geoserver.rest.util.RESTUtils;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WebMapService;
-import org.geoserver.wms.kvp.GetMapKvpRequestReader;
-import org.geoserver.wms.response.GetMapResponse;
+import org.geoserver.wms.map.GetMapKvpRequestReader;
+import org.geoserver.wms.map.XMLTransformerMap;
+import org.geoserver.wms.map.XMLTransformerMapResponse;
+import org.geotools.data.wms.response.GetMapResponse;
 import org.geotools.util.logging.Logging;
 import org.restlet.Restlet;
 import org.restlet.data.ClientInfo;
@@ -31,6 +36,7 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.data.Status;
 import org.restlet.resource.OutputRepresentation;
+import org.springframework.util.Assert;
 
 public class FeatureRestlet extends Restlet {
     private static Logger LOGGER = Logging.getLogger("org.geoserver.geosearch");
@@ -186,16 +192,17 @@ public class FeatureRestlet extends Restlet {
             getMapRequest.setBaseUrl(RESTUtils.getBaseURL(request));
 
             // delegate to wms reflector
-            final GetMapResponse getMapResponse = webMapService
-                    .reflect(getMapRequest);
-
+            final WebMap webMap = webMapService.reflect(getMapRequest);
+            //as per KMLMapOutputFormat.produceMap
+            Assert.isInstanceOf(XMLTransformerMap.class, webMap);
+            final XMLTransformerMapResponse respEncoder = new XMLTransformerMapResponse();
+            
             // wrap response in a reslet output rep
             OutputRepresentation output = new OutputRepresentation(
                     new MediaType("application/vnd.google-earth.kml+xml")) {
                 public void write(OutputStream outputStream) throws IOException {
                     try {
-                        getMapResponse.execute(getMapRequest);
-                        getMapResponse.writeTo(outputStream);
+                        respEncoder.write(webMap, outputStream);
                     } catch (IOException ioe) {
                         throw ioe;
                     } catch (Exception e) {
