@@ -8,13 +8,13 @@ import org.geoserver.wms.Map;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.coverage.grid.GridCoverage2D;
 
-public class BufferedImageMap extends Map {
+public class RenderedImageMap extends Map {
 
     private RenderedImage image;
 
     private List<GridCoverage2D> renderedCoverages;
 
-    public BufferedImageMap(final WMSMapContext mapContext, final RenderedImage image,
+    public RenderedImageMap(final WMSMapContext mapContext, final RenderedImage image,
             final String mimeType) {
         super(mapContext);
         this.image = image;

@@ -110,7 +110,7 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
                 mapContext.setMapHeight(key.getTileSize() * key.getMetaFactor());
                 mapContext.setTileSize(key.getTileSize());
 
-                BufferedImageMap metaTileMap;
+                RenderedImageMap metaTileMap;
                 if (this.delegate instanceof DefaultRasterMapOutputFormat) {
                     DefaultRasterMapOutputFormat drmof = (DefaultRasterMapOutputFormat) this.delegate;
                     metaTileMap = drmof.produceMap(mapContext, true);
@@ -124,7 +124,7 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
                 tile = tileCache.getTile(key, request, tiles);
                 renderedCoverages = metaTileMap.getRenderedCoverages();
             }
-            BufferedImageMap tileMap = new BufferedImageMap(mapContext, tile, getMimeType());
+            RenderedImageMap tileMap = new RenderedImageMap(mapContext, tile, getMimeType());
             tileMap.setRenderedCoverages(renderedCoverages);
             return tileMap;
         }

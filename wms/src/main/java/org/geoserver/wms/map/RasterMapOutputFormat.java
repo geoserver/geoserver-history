@@ -39,7 +39,7 @@ public interface RasterMapOutputFormat extends GetMapOutputFormat {
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public abstract BufferedImageMap produceMap(WMSMapContext mapContext) throws ServiceException,
+    public abstract RenderedImageMap produceMap(WMSMapContext mapContext) throws ServiceException,
             IOException;
 
 }

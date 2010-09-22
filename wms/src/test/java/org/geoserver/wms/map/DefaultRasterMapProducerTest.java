@@ -102,7 +102,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.addLayer(fs, basicStyle);
 
         request.setFormat(getMapFormat());
-        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        RenderedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
         imageMap.dispose();
         assertNotBlank("testSimpleGetMapQuery", image);
@@ -152,7 +152,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
 
         request.setFormat(getMapFormat());
-        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        RenderedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
         imageMap.dispose();
         assertNotBlank("testBlueLake", image);
@@ -201,7 +201,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         // this.rasterMapProducer.produceMap();
         request.setFormat(getMapFormat());
 
-        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        RenderedImageMap imageMap = this.rasterMapProducer.produceMap(map);
 
         RenderedImage image = imageMap.getImage();
         imageMap.dispose();
@@ -288,7 +288,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         StyleInfo someStyle = getCatalog().getStyles().get(0);
         map.addLayer(source, someStyle.getStyle());
         request.setFormat(getMapFormat());
-        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        RenderedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
         imageMap.dispose();
         
