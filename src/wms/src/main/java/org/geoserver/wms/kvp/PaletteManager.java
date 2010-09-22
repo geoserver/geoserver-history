@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.config;
+package org.geoserver.wms.kvp;
 
 import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @author Simone Giannecchini - GeoSolutions
  * 
  */
-public class PaletteManager {
+class PaletteManager {
     private static final Logger LOG = org.geotools.util.logging.Logging.getLogger("PaletteManager");
 
     /**

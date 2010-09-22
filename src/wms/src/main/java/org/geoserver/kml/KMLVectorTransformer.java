@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;

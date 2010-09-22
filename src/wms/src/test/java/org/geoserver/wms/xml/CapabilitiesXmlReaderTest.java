@@ -9,7 +9,7 @@ import java.io.StringReader;
 
 import junit.framework.TestCase;
 
-import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.GetCapabilitiesRequest;
 
 /**
  * 

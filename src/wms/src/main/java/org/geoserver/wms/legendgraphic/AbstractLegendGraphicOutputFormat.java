@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.map.ImageUtils;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.data.DataUtilities;
 import org.geotools.feature.SchemaException;
 import org.geotools.feature.simple.SimpleFeatureBuilder;

@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
 
 import org.geoserver.template.FeatureWrapper;

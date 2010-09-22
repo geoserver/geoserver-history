@@ -10,18 +10,17 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 import java.util.Collections;
 import java.util.Map;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geoserver.wms.request.GetMapRequest;
 import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Envelope;

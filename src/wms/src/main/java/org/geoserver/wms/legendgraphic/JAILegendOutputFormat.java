@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphic;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
+import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
 import org.springframework.util.Assert;
 

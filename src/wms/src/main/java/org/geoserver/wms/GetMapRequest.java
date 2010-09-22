@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.request;
+package org.geoserver.wms;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.ows.util.CaseInsensitiveMap;
-import org.geoserver.wms.MapLayerInfo;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;

@@ -1,6 +1,8 @@
-package org.geoserver.wms.request;
+package org.geoserver.sld;
 
 import java.util.List;
+
+import org.geoserver.wms.WMSRequest;
 
 public class GetStylesRequest extends WMSRequest {
 

@@ -4,23 +4,18 @@
  */
 package org.geoserver.kml;
 
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.geoserver.ows.Response;
 import org.geoserver.wms.DefaultWebMapService;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSExtensions;
 import org.geoserver.wms.WebMapService;
 import org.geoserver.wms.map.XMLTransformerMap;
-import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.WmsException;
 
 /**
@@ -81,7 +76,7 @@ public class KMLReflector {
 //        doWms(request, response, wms, wmsConfiguration);
 //    }
 
-    public static org.geoserver.wms.response.Map doWms(GetMapRequest request,
+    public static org.geoserver.wms.Map doWms(GetMapRequest request,
             WebMapService wms, WMS wmsConfiguration) throws Exception {
         // set the content disposition
         StringBuffer filename = new StringBuffer();
@@ -193,7 +188,7 @@ public class KMLReflector {
 
         //response.setContentType(request.getFormat());
 
-        org.geoserver.wms.response.Map wmsResponse;
+        org.geoserver.wms.Map wmsResponse;
         if ("download".equals(mode)) {
             wmsResponse = wms.getMap(request);
         } else {

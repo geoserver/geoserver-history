@@ -20,10 +20,10 @@ import org.geoserver.catalog.impl.NamespaceInfoImpl;
 import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.DescribeLayerRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfoImpl;
-import org.geoserver.wms.request.DescribeLayerRequest;
 
 /**
  * Unit test suite for {@link DescribeLayerKvpRequestReader}

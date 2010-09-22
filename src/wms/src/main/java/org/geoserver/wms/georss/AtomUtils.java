@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.geoserver.ows.util.RequestUtils;
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
@@ -18,7 +17,6 @@ import org.geoserver.wms.response.featureinfo.FeatureTemplate;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
-import org.vfny.geoserver.util.Requests;
 
 /**
  * The AtomUtils class provides some static methods useful in producing atom metadata related to 

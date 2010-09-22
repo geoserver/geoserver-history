@@ -6,23 +6,19 @@ package org.geoserver.kml;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.Map;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.data.test.TestData;
-import org.geoserver.test.GeoServerAbstractTestSupport;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSMockData;
 import org.geoserver.wms.WMSTestSupport;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.feature.FeatureCollections;

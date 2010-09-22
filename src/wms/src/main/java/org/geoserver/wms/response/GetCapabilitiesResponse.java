@@ -8,7 +8,7 @@ import javax.xml.transform.TransformerException;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.GetCapabilitiesRequest;
 
 /**
  * OWS {@link Response} bean to handle WMS {@link GetCapabilities} results

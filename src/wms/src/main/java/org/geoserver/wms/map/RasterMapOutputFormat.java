@@ -11,7 +11,6 @@ import java.io.OutputStream;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Extends GetMapOutputFormat to allow users (for example, the meta tiler) to peek inside th map

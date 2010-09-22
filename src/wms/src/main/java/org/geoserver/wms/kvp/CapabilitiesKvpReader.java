@@ -7,7 +7,7 @@ package org.geoserver.wms.kvp;
 import java.util.Map;
 
 import org.geoserver.ows.KvpRequestReader;
-import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.GetCapabilitiesRequest;
 
 /**
  * This utility reads in a GetCapabilities KVP request and turns it into an appropriate internal

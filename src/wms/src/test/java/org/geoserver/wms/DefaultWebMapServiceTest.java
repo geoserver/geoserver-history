@@ -10,7 +10,6 @@ import java.util.List;
 import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 

@@ -8,7 +8,6 @@ import java.awt.image.IndexColorModel;
 
 import org.geoserver.ows.KvpParser;
 import org.geotools.image.palette.InverseColorMapOp;
-import org.vfny.geoserver.config.PaletteManager;
 import org.vfny.geoserver.wms.WmsException;
 
 /**

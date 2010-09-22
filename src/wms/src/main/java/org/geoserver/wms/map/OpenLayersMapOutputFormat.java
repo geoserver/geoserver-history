@@ -23,10 +23,10 @@ import org.geoserver.ows.LocalLayer;
 import org.geoserver.ows.LocalWorkspace;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.map.WMSMapLayer;
@@ -121,7 +121,7 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public org.geoserver.wms.response.Map produceMap(WMSMapContext mapContext)
+    public org.geoserver.wms.Map produceMap(WMSMapContext mapContext)
             throws ServiceException, IOException {
         try {
             // create the template

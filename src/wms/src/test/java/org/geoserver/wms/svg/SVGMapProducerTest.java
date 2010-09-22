@@ -7,7 +7,6 @@ package org.geoserver.wms.svg;
 import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.StringBufferInputStream;
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;

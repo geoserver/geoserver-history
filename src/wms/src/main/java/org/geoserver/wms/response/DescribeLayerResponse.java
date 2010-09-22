@@ -14,7 +14,7 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DescribeLayer;
-import org.geoserver.wms.request.DescribeLayerRequest;
+import org.geoserver.wms.DescribeLayerRequest;
 import org.springframework.util.Assert;
 
 /**

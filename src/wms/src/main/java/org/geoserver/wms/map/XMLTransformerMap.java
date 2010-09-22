@@ -1,6 +1,6 @@
 package org.geoserver.wms.map;
 
-import org.geoserver.wms.response.Map;
+import org.geoserver.wms.Map;
 import org.geotools.xml.transform.TransformerBase;
 
 public class XMLTransformerMap extends Map {

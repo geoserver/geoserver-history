@@ -9,10 +9,10 @@ import java.awt.geom.AffineTransform;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.map.MapLayer;

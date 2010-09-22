@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.sld.requests;
+package org.geoserver.sld;
 
 import org.geoserver.wms.WMS;
 import org.vfny.geoserver.Request;

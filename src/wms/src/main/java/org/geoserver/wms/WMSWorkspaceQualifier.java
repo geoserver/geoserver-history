@@ -10,7 +10,6 @@ import org.geoserver.ows.WorkspaceQualifyingCallback;
 import org.geoserver.ows.util.KvpUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.Service;
-import org.geoserver.wms.request.GetCapabilitiesRequest;
 
 public class WMSWorkspaceQualifier extends WorkspaceQualifyingCallback {
 

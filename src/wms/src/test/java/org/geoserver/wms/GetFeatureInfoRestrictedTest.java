@@ -16,7 +16,6 @@ import org.geoserver.data.test.MockData;
 import org.geoserver.security.AccessMode;
 import org.geoserver.security.DataAccessManager;
 import org.geoserver.security.SecureCatalogImpl;
-import org.geoserver.wms.WMSTestSupport;
 
 /**
  * Similar to the GetFeatureInfoTest this class runs tests the GetFeatureInfo request for WMS layers.

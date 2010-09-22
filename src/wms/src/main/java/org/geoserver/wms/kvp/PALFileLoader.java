@@ -1,4 +1,4 @@
-package org.vfny.geoserver.config;
+package org.geoserver.wms.kvp;
 
 import java.awt.Color;
 import java.awt.image.IndexColorModel;
@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  * @author Simone Giannecchini
  * 
  */
-public class PALFileLoader {
+class PALFileLoader {
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("it.geosolutions.inversecolormap.PALFileLoader");
 
 	/** Size of the color map we'll use. */

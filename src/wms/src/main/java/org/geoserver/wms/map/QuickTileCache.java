@@ -7,7 +7,6 @@ package org.geoserver.wms.map;
 import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.awt.image.RenderedImage;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -27,7 +24,7 @@ import org.geoserver.config.ServiceInfo;
 import org.geoserver.wfs.TransactionEvent;
 import org.geoserver.wfs.TransactionListener;
 import org.geoserver.wfs.WFSException;
-import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.GetMapRequest;
 import org.geotools.util.CanonicalSet;
 
 import com.vividsolutions.jts.geom.Envelope;

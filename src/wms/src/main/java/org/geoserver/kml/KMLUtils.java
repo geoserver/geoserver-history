@@ -14,10 +14,10 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
@@ -126,7 +126,7 @@ public class KMLUtils {
             boolean tile, GeoServer geoserver) {
        
         if ( tile ) {
-            org.geoserver.wms.request.GetMapRequest request = mapContext.getRequest();
+            org.geoserver.wms.GetMapRequest request = mapContext.getRequest();
             return WMSRequests.getTiledGetMapUrl(geoserver, request, mapLayer, layerIndex, bbox, kvp );
         }
         

@@ -15,8 +15,8 @@ import java.util.logging.Level;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.platform.ServiceException;
+import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetFeatureInfoRequest;
 import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;

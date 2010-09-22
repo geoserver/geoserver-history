@@ -223,7 +223,7 @@
 	</bean>
    -->
 	
-	<bean id="getStylesKvpReader" class="org.geoserver.wms.kvp.GetStylesKvpRequestReader">
+	<bean id="getStylesKvpReader" class="org.geoserver.sld.GetStylesKvpRequestReader">
 		<constructor-arg ref="wms"/> 
 	</bean>
 		

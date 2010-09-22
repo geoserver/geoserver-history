@@ -2,11 +2,10 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.sld;
 
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.GetStylesRequest;
 
 public class GetStylesKvpRequestReader extends KvpRequestReader {
 

@@ -55,7 +55,7 @@ public class PDFMapOutputFormat extends AbstractMapOutputFormat {
     /** the only MIME type this map producer supports */
     private static final String MIME_TYPE = "application/pdf";
 
-    public static class PDFMap extends org.geoserver.wms.response.Map {
+    public static class PDFMap extends org.geoserver.wms.Map {
 
         private WMSMapContext context;
 

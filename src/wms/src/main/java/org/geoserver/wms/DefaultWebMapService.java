@@ -11,23 +11,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpServletResponse;
-
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.kml.KMLReflector;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.request.DescribeLayerRequest;
-import org.geoserver.wms.request.GetCapabilitiesRequest;
-import org.geoserver.wms.request.GetFeatureInfoRequest;
-import org.geoserver.wms.request.GetLegendGraphicRequest;
-import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.request.GetStylesRequest;
+import org.geoserver.sld.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;
 import org.geoserver.wms.response.LegendGraphic;
-import org.geoserver.wms.response.Map;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -268,7 +260,7 @@ public class DefaultWebMapService implements WebMapService,
     }
 
     /**
-     * @see org.geoserver.wms.WebMapService#getStyles(org.geoserver.wms.request.GetStylesRequest)
+     * @see org.geoserver.wms.WebMapService#getStyles(org.geoserver.sld.GetStylesRequest)
      */
     public StyledLayerDescriptor getStyles(GetStylesRequest request) {
 

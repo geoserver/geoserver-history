@@ -15,7 +15,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.ows.xml.v1_0.OWS;
-import org.geoserver.wms.request.GetCapabilitiesRequest;
+import org.geoserver.wms.GetCapabilitiesRequest;
 import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
