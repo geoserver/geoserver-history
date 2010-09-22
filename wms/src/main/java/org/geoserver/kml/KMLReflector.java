@@ -200,8 +200,7 @@ public class KMLReflector {
             transformer.setCachedMode("cached".equals(KMLUtils.getSuperoverlayMode(request, wmsConfiguration)));
 
             String mimeType = request.getFormat();
-            wmsResponse = new XMLTransformerMap(transformer, request, mimeType);
-            //transformer.transform(request, response.getOutputStream());
+            wmsResponse = new XMLTransformerMap(null, transformer, request, mimeType);
         }
         
         filename.setLength(filename.length() - 1);

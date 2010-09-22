@@ -14,17 +14,20 @@ public class BufferedImageMap extends Map {
 
     private List<GridCoverage2D> renderedCoverages;
 
-    private WMSMapContext mapContext;
-
     public BufferedImageMap(final WMSMapContext mapContext, final RenderedImage image,
             final String mimeType) {
-        this.mapContext = mapContext;
+        super(mapContext);
         this.image = image;
         setMimeType(mimeType);
     }
 
     public RenderedImage getImage() {
         return image;
+    }
+    
+    @Override
+    protected void disposeInternal(){
+        image = null;
     }
 
     @SuppressWarnings("unchecked")

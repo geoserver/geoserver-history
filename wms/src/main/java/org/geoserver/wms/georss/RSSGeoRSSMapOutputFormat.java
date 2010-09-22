@@ -80,7 +80,7 @@ public class RSSGeoRSSMapOutputFormat implements GetMapOutputFormat {
         Charset encoding = wms.getCharSet();
         tx.setEncoding(encoding);
 
-        XMLTransformerMap result = new XMLTransformerMap(tx, map, getMimeType());
+        XMLTransformerMap result = new XMLTransformerMap(map, tx, map, getMimeType());
 
         // REVISIT: is was setting "inline; filename=geoserver.xml", now it's gonna be the requested
         // layer names, is it ok?

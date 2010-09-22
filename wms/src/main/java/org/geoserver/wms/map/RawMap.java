@@ -18,21 +18,19 @@ import org.geoserver.wms.WMSMapContext;
  */
 public class RawMap extends Map {
 
-    private WMSMapContext mapContext;
-
     private byte[] mapContents;
 
     private ByteArrayOutputStream buffer;
 
     public RawMap(final WMSMapContext mapContext, final byte[] mapContents, final String mimeType) {
-        this.mapContext = mapContext;
+        super(mapContext);
         this.mapContents = mapContents;
         setMimeType(mimeType);
     }
 
     public RawMap(final WMSMapContext mapContext, final ByteArrayOutputStream buff,
             final String mimeType) {
-        this.mapContext = mapContext;
+        super(mapContext);
         this.buffer = buff;
         setMimeType(mimeType);
     }
@@ -45,10 +43,6 @@ public class RawMap extends Map {
         } else {
             throw new IllegalStateException();
         }
-    }
-
-    public WMSMapContext getMapContext() {
-        return mapContext;
     }
 
 }

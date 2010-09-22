@@ -50,13 +50,19 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
     public static class BatikSVGMap extends org.geoserver.wms.Map {
         private SVGGraphics2D graphics;
 
-        BatikSVGMap(SVGGraphics2D graphics) {
+        BatikSVGMap(WMSMapContext context, SVGGraphics2D graphics) {
+            super(context);
             this.graphics = graphics;
             setMimeType(SVG.MIME_TYPE);
         }
 
         public SVGGraphics2D getGraphics() {
             return graphics;
+        }
+
+        @Override
+        public void disposeInternal() {
+            graphics.dispose();
         }
     }
 
@@ -128,7 +134,7 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
         // XMLSerializer serializer = new XMLSerializer(new OutputStreamWriter(out, "UTF-8"),
         // format);
 
-        return new BatikSVGMap(g);
+        return new BatikSVGMap(mapContext, g);
     }
 
     /**
@@ -141,8 +147,12 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
             ServiceException {
 
         BatikSVGMap map = (BatikSVGMap) value;
-        SVGGraphics2D graphics = map.getGraphics();
-        graphics.stream(new OutputStreamWriter(output, "UTF-8"));
+        try{
+            SVGGraphics2D graphics = map.getGraphics();
+            graphics.stream(new OutputStreamWriter(output, "UTF-8"));
+        }finally{
+            map.dispose();
+        }
     }
 
     private StreamingRenderer setUpRenderer(WMSMapContext mapContext) {
