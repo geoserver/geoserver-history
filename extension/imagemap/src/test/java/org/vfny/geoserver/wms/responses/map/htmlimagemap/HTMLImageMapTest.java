@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import junit.framework.TestCase;
 
 import org.geoserver.platform.GeoServerResourceLoader;
-import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.DataStore;
@@ -52,15 +51,17 @@ public class HTMLImageMapTest extends TestCase {
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger(HTMLImageMapTest.class.getPackage().getName());
 
-    HTMLImageMapMapProducer mapProducer = null;
+    private HTMLImageMapMapProducer mapProducer;
 
-    CoordinateReferenceSystem WGS84 = null;
+    private HTMLImageMapResponse response;
 
-    DataStore testDS = null;
+    private CoordinateReferenceSystem WGS84;
 
-    int mapWidth = 600;
+    private DataStore testDS = null;
 
-    int mapHeight = 600;
+    private int mapWidth = 600;
+
+    private int mapHeight = 600;
 
     public void setUp() throws Exception {
         // initializes GeoServer Resource Loading (is needed by some tests to not produce
@@ -81,35 +82,13 @@ public class HTMLImageMapTest extends TestCase {
 
         // initializes GetMapOutputFormat factory and actual producer
         // this.mapFactory = getProducerFactory();
-        this.mapProducer = getProducerInstance();
-        super.setUp();
+        this.mapProducer = new HTMLImageMapMapProducer();
+        this.response = new HTMLImageMapResponse(); 
     }
 
     public void tearDown() throws Exception {
-        // this.mapFactory = null;
         this.mapProducer = null;
-        super.tearDown();
-    }
-
-    /*
-     * protected GetMapOutputFormatFactorySpi getProducerFactory() { return new
-     * HTMLImageMapMapProducerFactory(); }
-     */
-
-    protected HTMLImageMapMapProducer getProducerInstance() {
-        /*
-         * if(mapFactory!=null) return mapFactory.createMapProducer("text/html", null);
-         */
-        return new HTMLImageMapMapProducer();
-
-    }
-
-    /*
-     * public void testGetMapOutputFormatFactory() throws Exception { assertNotNull(mapFactory); }
-     */
-
-    public void testGetMapOutputFormat() throws Exception {
-        assertNotNull(mapProducer);
+        this.response = null;
     }
 
     public DataStore getTestDataStore() throws IOException {
@@ -146,14 +125,14 @@ public class HTMLImageMapTest extends TestCase {
         return s;
     }
 
-    protected void assertTestResult(String testName, EncodeHTMLImageMap imageMap) {
+    protected void assertTestResult(String testName, EncodeHTMLImageMap imageMap) throws Exception{
 
         ByteArrayOutputStream out = null;
         StringBuffer testText = new StringBuffer();
         try {
 
             out = new ByteArrayOutputStream();
-            imageMap.encode(out);
+            this.response.write(imageMap, out, null);
             out.flush();
             out.close();
             File testFile = TestData.file(this, "results/" + testName + ".txt");
@@ -165,9 +144,6 @@ public class HTMLImageMapTest extends TestCase {
 
             reader.close();
 
-        } catch (Exception e) {
-
-            fail(e.getMessage());
         } finally {
             imageMap.dispose();
         }
@@ -176,25 +152,6 @@ public class HTMLImageMapTest extends TestCase {
         String s = new String(out.toByteArray());
 
         assertEquals(testText.toString(), s);
-    }
-
-    protected void assertNotBlank(String testName, GetMapOutputFormat producer) {
-
-        ByteArrayOutputStream out = null;
-
-        try {
-            out = new ByteArrayOutputStream();
-            producer.writeTo(out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-        assertNotNull(out);
-        assertTrue(out.size() > 0);
-        String s = new String(out.toByteArray());
-        System.out.println(s);
     }
 
     public void testStates() throws Exception {
@@ -235,10 +192,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("default.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("BasicPolygons", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("BasicPolygons", result);
 
     }
 
@@ -259,10 +214,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("default.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("PolygonWithHoles", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("PolygonWithHoles", result);
     }
 
     public void testMapProducePolygonsWithSkippedHoles() throws Exception {
@@ -282,10 +235,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("default.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("PolygonWithSkippedHoles", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("PolygonWithSkippedHoles", result);
     }
 
     public void testMapProduceReproject() throws Exception {
@@ -317,10 +268,8 @@ public class HTMLImageMapTest extends TestCase {
 
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("ProjectedPolygon", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("ProjectedPolygon", result);
     }
 
     public void testMapProduceLines() throws Exception {
@@ -341,10 +290,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("RoadSegments.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("RoadSegments", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("RoadSegments", result);
 
     }
 
@@ -371,10 +318,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("RoadSegmentsFiltered.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("RoadSegmentsFiltered", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("RoadSegmentsFiltered", result);
 
     }
 
@@ -396,10 +341,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("BuildingCenters.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("BuildingCenters", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("BuildingCenters", result);
 
     }
 
@@ -421,10 +364,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("BuildingCenters.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("BuildingCentersMultiPoint", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("BuildingCentersMultiPoint", result);
 
     }
 
@@ -446,10 +387,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("CollectionSample.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("CollectionSample", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("CollectionSample", result);
 
     }
 
@@ -470,10 +409,8 @@ public class HTMLImageMapTest extends TestCase {
         Style basicStyle = getTestStyle("NamedPlaces.sld");
         map.addLayer(fs, basicStyle);
 
-        this.mapProducer.setOutputFormat("text/html");
-        this.mapProducer.setMapContext(map);
-        this.mapProducer.produceMap();
-        assertTestResult("NoCoords", this.mapProducer);
+        EncodeHTMLImageMap result = mapProducer.produceMap(map);
+        assertTestResult("NoCoords", result);
     }
 
     public static void main(String[] args) {
@@ -486,9 +423,6 @@ public class HTMLImageMapTest extends TestCase {
 
         /**
          * Creates a new MyPropertyDataStore object.
-         * 
-         * @param dir
-         *            DOCUMENT ME!
          */
         public MyPropertyDataStore(File dir) {
             super(dir);
@@ -505,19 +439,6 @@ public class HTMLImageMapTest extends TestCase {
             this.myCRS = coordinateSystem;
         }
 
-        /**
-         * DOCUMENT ME!
-         * 
-         * @param typeName
-         *            DOCUMENT ME!
-         * 
-         * @return DOCUMENT ME!
-         * 
-         * @throws IOException
-         *             DOCUMENT ME!
-         * @throws DataSourceException
-         *             DOCUMENT ME!
-         */
         public SimpleFeatureType getSchema(String typeName) throws IOException {
             SimpleFeatureType schema = super.getSchema(typeName);
 

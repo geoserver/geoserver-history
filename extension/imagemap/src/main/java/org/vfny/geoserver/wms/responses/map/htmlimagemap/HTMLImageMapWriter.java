@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.DataSourceException;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -95,7 +96,7 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
      * @throws UnsupportedEncodingException 
      */
     public HTMLImageMapWriter(OutputStream out, WMSMapContext mapContext) throws UnsupportedEncodingException, ClassCastException {    	
-    	super(out, mapContext.getRequest().getRequestCharset() == null? "UTF-8" : mapContext.getRequest().getRequestCharset());
+    	super(out, guessCharset(mapContext));
     	
         this.mapContext=mapContext;        
         mapEnv = mapContext.getAreaOfInterest();
@@ -103,6 +104,15 @@ public class HTMLImageMapWriter extends OutputStreamWriter {
         mapArea=new Rectangle(mapContext.getMapWidth(),mapContext.getMapHeight());
         worldToScreen=RendererUtilities.worldToScreenTransform(mapEnv, mapArea);
         initWriters();
+    }
+
+    private static String guessCharset(WMSMapContext mapContext) {
+        GetMapRequest request = mapContext.getRequest();
+        if (request != null && request.getRequestCharset() != null) {
+            String requestCharset = request.getRequestCharset();
+            return requestCharset;
+        }
+        return "UTF-8";
     }
 
     private Polygon envToGeometry(ReferencedEnvelope env) {
