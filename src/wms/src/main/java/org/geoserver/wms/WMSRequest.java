@@ -6,7 +6,10 @@ package org.geoserver.wms;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.geoserver.ows.Dispatcher;
+import org.geoserver.ows.HttpServletRequestAware;
 
 /**
  * Defines a general Request type and provides accessor methods for universal request information.
@@ -19,7 +22,7 @@ import org.geoserver.ows.Dispatcher;
  * @author $Author: Simone Giannecchini (simboss1@gmail.com) $ (last modification)
  * @version $Id$
  */
-public abstract class WMSRequest {
+public abstract class WMSRequest implements HttpServletRequestAware {
 
     private String baseUrl;
 
@@ -34,6 +37,8 @@ public abstract class WMSRequest {
 
     protected String version;
 
+    private String requestCharset;
+
     /**
      * Creates the new request, supplying the request name and the sevlet handling the request.
      * 
@@ -47,6 +52,14 @@ public abstract class WMSRequest {
         setRequest(request);
     }
 
+    /**
+     * Tells whether the originating request used HTTP GET method or not; may be useful, for
+     * example, to determine if client can do HTTP caching and then set the corresponding response
+     * headers.
+     * 
+     * @return {@code true} if the originating HTTP request used HTTP GET method, {@code false}
+     *         otherwise
+     */
     public boolean isGet() {
         return get;
     }
@@ -101,5 +114,24 @@ public abstract class WMSRequest {
      */
     public void setWmtVer(String version) {
         setVersion(version);
+    }
+
+    /**
+     * @return the HTTP request charset, may be {@code null}
+     */
+    public String getRequestCharset() {
+        return requestCharset;
+    }
+
+    /**
+     * Implements {@link HttpServletRequestAware#setHttpRequest(HttpServletRequest)} to gather
+     * request information for some properties like {@link #isGet()} and
+     * {@link #getRequestCharset()}.
+     * 
+     * @see org.geoserver.ows.HttpServletRequestAware#setHttpRequest(javax.servlet.http.HttpServletRequest)
+     */
+    public void setHttpRequest(HttpServletRequest request) {
+        this.requestCharset = request.getCharacterEncoding();
+        this.get = "GET".equals(request.getMethod());
     }
 }
