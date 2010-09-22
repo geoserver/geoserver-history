@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.apache.wicket.AttributeModifier;
@@ -48,6 +49,9 @@ public class MapPreviewPage extends GeoServerBasePage {
     PreviewLayerProvider provider = new PreviewLayerProvider();
 
     GeoServerTablePanel<PreviewLayer> table;
+    
+    private transient List<String> availableWMSFormats;
+    private transient List<String> availableWFSFormats;
 
     public MapPreviewPage() {
         // output formats for the drop downs
@@ -101,17 +105,48 @@ public class MapPreviewPage extends GeoServerBasePage {
         add(table);
     }
 
+    /**
+     * Finds out the list of available WMS output formats supported bye the enable
+     * {@link GetMapOutputFormat} implementations in the application context.
+     * <p>
+     * For format, either its {@link GetMapOutputFormat#getMimeType() MIME-Type} or one of its
+     * {@link GetMapOutputFormat#getOutputFormatNames() alias} will be added to the resulting list.
+     * If one of them is found to have a translation, that'll be used, otherwise the MIME-Type will
+     * be used as default.
+     * </p>
+     * 
+     * @return the list of available WMS GetMap output formats, giving precedence to the ones for
+     *         which there is a translation.
+     */
     private List<String> getAvailableWMSFormats() {
-        List<String> formats = new ArrayList<String>();
+        List<String> formats = this.availableWMSFormats;
+        if (formats != null) {
+            return formats;
+        }
+        formats = new ArrayList<String>();
 
         final GeoServerApplication application = getGeoServerApplication();
-        for (GetMapOutputFormat producer : application
-                .getBeansOfType(GetMapOutputFormat.class)) {
-            formats.add(producer.getMimeType());
+        final List<GetMapOutputFormat> outputFormats;
+        outputFormats = application.getBeansOfType(GetMapOutputFormat.class);
+        for (GetMapOutputFormat producer : outputFormats) {
+            if (!producer.enabled()) {
+                continue;
+            }
+            Set<String> producerFormats = new HashSet<String>(producer.getOutputFormatNames());
+            producerFormats.add(producer.getMimeType());
+            String knownFormat = producer.getMimeType();
+            for (String formatName : producerFormats) {
+                String translatedFormatName = translateFormat("format.wms.", formatName);
+                if (!formatName.equals(translatedFormatName)) {
+                    knownFormat = formatName;
+                    break;
+                }
+            }
+            formats.add(knownFormat);
         }
         formats = new ArrayList<String>(new HashSet<String>(formats));
         prepareFormatList(formats, new FormatComparator("format.wms."));
-
+        this.availableWMSFormats = formats;
         return formats;
     }
 
