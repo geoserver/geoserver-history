@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.helpers;
+package org.geoserver.wms;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
@@ -25,10 +25,6 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.WMSInfo;
-import org.geoserver.wms.WMSInfoImpl;
-import org.geoserver.wms.WMSTestSupport;
 import org.geotools.referencing.CRS;
 import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.w3c.dom.Document;
@@ -40,17 +36,17 @@ import org.w3c.dom.NodeList;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class WMSCapsTransformerTest extends TestCase {
+public class GetCapabilitiesTransformerTest extends TestCase {
 
     private XpathEngine XPATH;
 
-    /** default base url to feed a WMSCapsTransformer with for it to append the DTD location */
+    /** default base url to feed a GetCapabilitiesTransformer with for it to append the DTD location */
     private static final String baseUrl = "http://localhost/geoserver";
 
-    /** test map formats to feed a WMSCapsTransformer with */
+    /** test map formats to feed a GetCapabilitiesTransformer with */
     private static final Set<String> mapFormats = Collections.singleton("image/png");
 
-    /** test legend formats to feed a WMSCapsTransformer with */
+    /** test legend formats to feed a GetCapabilitiesTransformer with */
     private static final Set<String> legendFormats = Collections.singleton("image/png");
 
     /**
@@ -111,7 +107,8 @@ public class WMSCapsTransformerTest extends TestCase {
     }
 
     public void testHeader() throws Exception {
-        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
+        GetCapabilitiesTransformer tr;
+        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
         StringWriter writer = new StringWriter();
         tr.transform(req, writer);
         String content = writer.getBuffer().toString();
@@ -123,7 +120,8 @@ public class WMSCapsTransformerTest extends TestCase {
     }
 
     public void testRootElement() throws Exception {
-        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
+        GetCapabilitiesTransformer tr;
+        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
 
         Document dom = WMSTestSupport.transform(req, tr);
         Element root = dom.getDocumentElement();
@@ -132,12 +130,13 @@ public class WMSCapsTransformerTest extends TestCase {
         assertEquals("0", root.getAttribute("updateSequence"));
 
         geosInfo.setUpdateSequence(10);
-        tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
+        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
         dom = WMSTestSupport.transform(req, tr);
         root = dom.getDocumentElement();
         assertEquals("10", root.getAttribute("updateSequence"));
     }
 
+    @SuppressWarnings("unchecked")
     public void testServiceSection() throws Exception {
         wmsInfo.setTitle("title");
         wmsInfo.setAbstract("abstract");
@@ -165,7 +164,8 @@ public class WMSCapsTransformerTest extends TestCase {
         wmsInfo.setFees("fees");
         wmsInfo.setAccessConstraints("accessConstraints");
 
-        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
+        GetCapabilitiesTransformer tr;
+        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
 
@@ -207,7 +207,8 @@ public class WMSCapsTransformerTest extends TestCase {
     }
 
     public void testCRSList() throws Exception {
-        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
+        GetCapabilitiesTransformer tr;
+        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
         final Set<String> supportedCodes = CRS.getSupportedCodes("EPSG");
@@ -221,11 +222,12 @@ public class WMSCapsTransformerTest extends TestCase {
         wmsInfo.getSRS().add("EPSG:3246");
         wmsInfo.getSRS().add("EPSG:23030");
 
-        WMSCapsTransformer tr = new WMSCapsTransformer(baseUrl, mapFormats, legendFormats);
+        GetCapabilitiesTransformer tr;
+        tr = new GetCapabilitiesTransformer(baseUrl, mapFormats, legendFormats);
         tr.setIndentation(2);
         Document dom = WMSTestSupport.transform(req, tr);
-        NodeList limitedCrsCodes = XPATH.getMatchingNodes("/WMT_MS_Capabilities/Capability/Layer/SRS",
-                dom);
-        assertEquals(2, limitedCrsCodes.getLength());    
+        NodeList limitedCrsCodes = XPATH.getMatchingNodes(
+                "/WMT_MS_Capabilities/Capability/Layer/SRS", dom);
+        assertEquals(2, limitedCrsCodes.getLength());
     }
 }

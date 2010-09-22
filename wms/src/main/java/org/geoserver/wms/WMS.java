@@ -6,7 +6,10 @@ package org.geoserver.wms;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
@@ -27,21 +30,25 @@ import org.geotools.util.Converters;
 import org.geotools.util.Version;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.Name;
-
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.vfny.geoserver.wms.GetMapProducer;
+import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 
 /**
  * A facade providing access to the WMS configuration details
- *  
+ * 
  * @author Gabriel Roldan
  */
-public class WMS {
-    
+public class WMS implements ApplicationContextAware {
+
     public static final String JPEG_COMPRESSION = "jpegCompression";
-    
+
     public static final int JPEG_COMPRESSION_DEFAULT = 25;
 
     public static final String PNG_COMPRESSION = "pngCompression";
-    
+
     public static final int PNG_COMPRESSION_DEFAULT = 25;
 
     static final Logger LOGGER = Logging.getLogger(WMS.class);
@@ -54,41 +61,55 @@ public class WMS {
     public static final String SVG_SIMPLE = "Simple";
 
     public static final String SVG_BATIK = "Batik";
-    
+
     /**
      * KML reflector mode
      */
     public static String KML_REFLECTOR_MODE = "kmlReflectorMode";
-    
+
     /**
      * KML reflector mode values
      */
     public static final String KML_REFLECTOR_MODE_REFRESH = "refresh";
+
     public static final String KML_REFLECTOR_MODE_SUPEROVERLAY = "superoverlay";
+
     public static final String KML_REFLECTOR_MODE_DOWNLOAD = "download";
+
     public static final String KML_REFLECTOR_MODE_DEFAULT = KML_REFLECTOR_MODE_REFRESH;
 
     /**
      * KML superoverlay sub-mode
      */
     public static final String KML_SUPEROVERLAY_MODE = "kmlSuperoverlayMode";
+
     public static final String KML_SUPEROVERLAY_MODE_AUTO = "auto";
+
     public static final String KML_SUPEROVERLAY_MODE_RASTER = "raster";
+
     public static final String KML_SUPEROVERLAY_MODE_OVERVIEW = "overview";
+
     public static final String KML_SUPEROVERLAY_MODE_HYBRID = "hybrid";
+
     public static final String KML_SUPEROVERLAY_MODE_CACHED = "cached";
+
     public static final String KML_SUPEROVERLAY_MODE_DEFAULT = KML_SUPEROVERLAY_MODE_AUTO;
-    
+
     public static final String KML_KMLATTR = "kmlAttr";
+
     public static final boolean KML_KMLATTR_DEFAULT = true;
+
     public static final String KML_KMLPLACEMARK = "kmlPlacemark";
+
     public static final boolean KML_KMLPLACEMARK_DEFAULT = false;
 
     public static final String KML_KMSCORE = "kmlKmscore";
+
     public static final int KML_KMSCORE_DEFAULT = 40;
-    
 
     private final GeoServer geoserver;
+
+    private ApplicationContext applicationContext;
 
     public WMS(GeoServer geoserver) {
         this.geoserver = geoserver;
@@ -282,30 +303,34 @@ public class WMS {
 
     public boolean isSvgAntiAlias() {
         WMSInfo serviceInfo = getServiceInfo();
-        Boolean svgAntiAlias = Converters.convert(serviceInfo.getMetadata().get("svgAntiAlias"), Boolean.class);
+        Boolean svgAntiAlias = Converters.convert(serviceInfo.getMetadata().get("svgAntiAlias"),
+                Boolean.class);
         return svgAntiAlias == null ? true : svgAntiAlias.booleanValue();
     }
-    
+
     public int getPngCompression() {
         WMSInfo serviceInfo = getServiceInfo();
-        return getMetadataPercentage(serviceInfo.getMetadata(), PNG_COMPRESSION, PNG_COMPRESSION_DEFAULT);
+        return getMetadataPercentage(serviceInfo.getMetadata(), PNG_COMPRESSION,
+                PNG_COMPRESSION_DEFAULT);
     }
-    
+
     public int getJpegCompression() {
         WMSInfo serviceInfo = getServiceInfo();
-        return getMetadataPercentage(serviceInfo.getMetadata(), JPEG_COMPRESSION, JPEG_COMPRESSION_DEFAULT);
+        return getMetadataPercentage(serviceInfo.getMetadata(), JPEG_COMPRESSION,
+                JPEG_COMPRESSION_DEFAULT);
     }
-    
+
     int getMetadataPercentage(MetadataMap metadata, String key, int defaultValue) {
         Integer parsedValue = Converters.convert(metadata.get(key), Integer.class);
-        if(parsedValue == null)
+        if (parsedValue == null)
             return defaultValue;
         int value = parsedValue.intValue();
-        if(value < 0 || value > 100) {
-            LOGGER.warning("Invalid percertage value for '" + key + "', it should be between 0 and 100");
+        if (value < 0 || value > 100) {
+            LOGGER.warning("Invalid percertage value for '" + key
+                    + "', it should be between 0 and 100");
             return defaultValue;
         }
-        
+
         return value;
     }
 
@@ -319,44 +344,83 @@ public class WMS {
         NamespaceInfo ns = catalog.getNamespaceByURI(nsUri);
         return ns == null ? null : ns.getPrefix();
     }
-    
+
     public int getMaxBuffer() {
         return getServiceInfo().getMaxBuffer();
     }
-    
+
     public int getMaxRequestMemory() {
         return getServiceInfo().getMaxRequestMemory();
     }
-    
+
     public int getMaxRenderingTime() {
         return getServiceInfo().getMaxRenderingTime();
     }
-    
+
     public int getMaxRenderingErrors() {
         return getServiceInfo().getMaxRenderingErrors();
     }
-    
+
     public String getKmlReflectorMode() {
         String value = (String) getServiceInfo().getMetadata().get(KML_REFLECTOR_MODE);
         return value != null ? value : KML_REFLECTOR_MODE_DEFAULT;
     }
-    
+
     public String getKmlSuperoverlayMode() {
         String value = (String) getServiceInfo().getMetadata().get(KML_SUPEROVERLAY_MODE);
         return value != null ? value : KML_SUPEROVERLAY_MODE_DEFAULT;
     }
-    
+
     public boolean getKmlKmAttr() {
-        Boolean kmAttr = Converters.convert(getServiceInfo().getMetadata().get(KML_KMLATTR), Boolean.class);
-        return kmAttr == null ? KML_KMLATTR_DEFAULT: kmAttr.booleanValue();
+        Boolean kmAttr = Converters.convert(getServiceInfo().getMetadata().get(KML_KMLATTR),
+                Boolean.class);
+        return kmAttr == null ? KML_KMLATTR_DEFAULT : kmAttr.booleanValue();
     }
-    
+
     public boolean getKmlPlacemark() {
-        Boolean kmAttr = Converters.convert(getServiceInfo().getMetadata().get(KML_KMLPLACEMARK), Boolean.class);
-        return kmAttr == null ? KML_KMLPLACEMARK_DEFAULT: kmAttr.booleanValue();
+        Boolean kmAttr = Converters.convert(getServiceInfo().getMetadata().get(KML_KMLPLACEMARK),
+                Boolean.class);
+        return kmAttr == null ? KML_KMLPLACEMARK_DEFAULT : kmAttr.booleanValue();
     }
-    
+
     public int getKmScore() {
-        return getMetadataPercentage(getServiceInfo().getMetadata(), KML_KMSCORE, KML_KMSCORE_DEFAULT);
+        return getMetadataPercentage(getServiceInfo().getMetadata(), KML_KMSCORE,
+                KML_KMSCORE_DEFAULT);
+    }
+
+    /**
+     * Grabs the list of available MIME-Types for the GetMap operation from the set of
+     * {@link GetMapProducer}s registered in the application context.
+     * 
+     * @param applicationContext
+     *            The application context where to grab the GetMapProducers from.
+     * @see GetMapProducer#getContentType()
+     */
+    public Set<String> getAvailableMapFormats() {
+
+        final Collection<GetMapProducer> producers;
+        producers = WMSExtensions.findMapProducers(applicationContext);
+        final Set<String> formats = new HashSet<String>();
+
+        for (GetMapProducer producer : producers) {
+            formats.addAll(producer.getOutputFormatNames());
+        }
+
+        return formats;
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<String> getAvailableLegendGraphicsFormats() {
+        // TODO: move logic here
+        return GetLegendGraphicResponse.getFormats();
+    }
+
+    /**
+     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+     */
+    public void setApplicationContext(final ApplicationContext applicationContext)
+            throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

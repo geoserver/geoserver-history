@@ -15,7 +15,6 @@ import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
-import org.vfny.geoserver.wms.responses.WMSCapabilitiesResponse;
 
 
 /**
@@ -38,9 +37,9 @@ public interface WebMapService {
     /**
      * GetCapabilities operation.
      */
-    WMSCapabilitiesResponse getCapabilities(WMSCapabilitiesRequest request);
+    GetCapabilitiesTransformer getCapabilities(WMSCapabilitiesRequest request);
 
-    WMSCapabilitiesResponse capabilities(WMSCapabilitiesRequest request);
+    GetCapabilitiesTransformer capabilities(WMSCapabilitiesRequest request);
 
     /**
      * GetMap operation.
