@@ -15,8 +15,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.ows.xml.v1_0.OWS;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetCapabilitiesRequest;
-import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -61,12 +61,12 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             adapter.setContentHandler(currentRequest);
             adapter.parse(new InputSource(reader));
         } catch (SAXException e) {
-            throw new WmsException(e, "XML capabilities request parsing error", getClass()
+            throw new ServiceException(e, "XML capabilities request parsing error", getClass()
                     .getName());
         } catch (IOException e) {
-            throw new WmsException(e, "XML capabilities request input error", getClass().getName());
+            throw new ServiceException(e, "XML capabilities request input error", getClass().getName());
         } catch (ParserConfigurationException e) {
-            throw new WmsException(e, "Some sort of issue creating parser", getClass().getName());
+            throw new ServiceException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
         return req;

@@ -55,7 +55,6 @@ import org.opengis.filter.Filter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.util.GETMAPValidator;
 import org.vfny.geoserver.util.SLDValidator;
-import org.vfny.geoserver.wms.WmsException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -287,7 +286,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
         final int slCount = styledLayers.length;
 
         if (slCount == 0) {
-            throw new WmsException("SLD document contains no layers");
+            throw new ServiceException("SLD document contains no layers");
         }
 
         final List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>();
@@ -302,7 +301,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
             String layerName = sl.getName();
 
             if (null == layerName) {
-                throw new WmsException("A UserLayer without layer name was passed");
+                throw new ServiceException("A UserLayer without layer name was passed");
             }
 
             // TODO: add support for remote WFS here
@@ -328,7 +327,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 } else {
                     LayerInfo layerInfo = getWMS().getLayerByName(layerName);
                     if (layerInfo == null) {
-                        throw new WmsException("Layer not found: " + layerName);
+                        throw new ServiceException("Layer not found: " + layerName);
                     }
                     currLayer = new MapLayerInfo(layerInfo);
                     addStyles(wms, getMapRequest, currLayer, styledLayers[i], layers, styles);
@@ -360,7 +359,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * @throws IOException
      */
     public static void addStyles(WMS wms, GetMapRequest request, MapLayerInfo currLayer,
-            StyledLayer layer, List<MapLayerInfo> layers, List<Style> styles) throws WmsException,
+            StyledLayer layer, List<MapLayerInfo> layers, List<Style> styles) throws ServiceException,
             IOException {
         if (currLayer == null) {
             return; // protection
@@ -424,7 +423,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 s = wms.getStyleByName(styleName);
 
                 if (s == null) {
-                    throw new WmsException("couldnt find style named '" + styleName + "'");
+                    throw new ServiceException("couldnt find style named '" + styleName + "'");
                 }
 
                 styles.add(s);
@@ -507,7 +506,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 getMapRequest.setSRS(epsgCode);
             } catch (Exception e) {
                 // couldnt make it - we send off a service exception with the correct info
-                throw new WmsException(e.getLocalizedMessage(), "InvalidSRS");
+                throw new ServiceException(e.getLocalizedMessage(), "InvalidSRS");
             }
         }
     }
@@ -700,7 +699,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * @param getMapRequest
      * 
      * @throws Exception
-     * @throws WmsException
+     * @throws ServiceException
      *             DOCUMENT ME!
      */
     public void validateSchemaSLD(File f, GetMapRequest getMapRequest) throws Exception {
@@ -721,7 +720,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
 
             if (errors.size() != 0) {
                 in = new FileInputStream(f);
-                throw new WmsException(SLDValidator.getErrorMessage(in, errors));
+                throw new ServiceException(SLDValidator.getErrorMessage(in, errors));
             }
         } catch (IOException e) {
             String msg = new StringBuffer("Creating remote SLD url: ").append(e.getMessage())
@@ -731,7 +730,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 LOGGER.log(Level.WARNING, msg, e);
             }
 
-            throw new WmsException(e, msg, "parseSldParam");
+            throw new ServiceException(e, msg, "parseSldParam");
         }
     }
 
@@ -742,7 +741,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * @param getMapRequest
      * 
      * @throws Exception
-     * @throws WmsException
+     * @throws ServiceException
      *             DOCUMENT ME!
      */
     public void validateSchemaGETMAP(File f, GetMapRequest getMapRequest) throws Exception {
@@ -763,7 +762,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
 
             if (errors.size() != 0) {
                 in = new FileInputStream(f);
-                throw new WmsException(GETMAPValidator.getErrorMessage(in, errors));
+                throw new ServiceException(GETMAPValidator.getErrorMessage(in, errors));
             }
         } catch (IOException e) {
             String msg = new StringBuffer("Creating remote GETMAP url: ").append(e.getMessage())
@@ -773,7 +772,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 LOGGER.log(Level.WARNING, msg, e);
             }
 
-            throw new WmsException(e, msg, "GETMAP validator");
+            throw new ServiceException(e, msg, "GETMAP validator");
         }
     }
 

@@ -83,7 +83,6 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.parameter.GeneralParameterValue;
 import org.springframework.util.Assert;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Abstract base class for GetMapProducers that relies in LiteRenderer for creating the raster map
@@ -300,7 +299,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
         if (maxMemory > 0 && memory > maxMemory) {
             long kbUsed = memory / KB;
             long kbMax = maxMemory / KB;
-            throw new WmsException("Rendering request would use " + kbUsed + "KB, whilst the "
+            throw new ServiceException("Rendering request would use " + kbUsed + "KB, whilst the "
                     + "maximum memory allowed is " + kbMax + "KB");
         }
 
@@ -318,7 +317,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
             try {
                 image = directRasterRender(mapContext, 0, renderedCoverages);
             } catch (Exception e) {
-                throw new WmsException("Error rendering coverage on the fast path", null, e);
+                throw new ServiceException("Error rendering coverage on the fast path", e);
             }
 
             if (image != null) {
@@ -476,7 +475,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
                 try {
                     layout.paint(graphic, paintArea, mapContext);
                 } catch (Exception e) {
-                    throw new WmsException("Problem occurred while trying to watermark data", "", e);
+                    throw new ServiceException("Problem occurred while trying to watermark data", e);
                 }
             }
         } finally {
@@ -486,7 +485,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
 
         // check if the request did timeout
         if (timeout.isTimedOut()) {
-            throw new WmsException(
+            throw new ServiceException(
                     "This requested used more time than allowed and has been forcefully stopped. "
                             + "Max rendering time is " + (maxRenderingTime / 1000.0) + "s");
         }
@@ -494,14 +493,14 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
         // check if a non ignorable error occurred
         if (nonIgnorableExceptionListener.exceptionOccurred()) {
             Exception renderError = nonIgnorableExceptionListener.getException();
-            throw new WmsException("Rendering process failed", "internalError", renderError);
+            throw new ServiceException("Rendering process failed", renderError, "internalError");
         }
 
         // check if too many errors occurred
         if (errorChecker.exceedsMaxErrors()) {
-            throw new WmsException("More than " + maxErrors
-                    + " rendering errors occurred, bailing out.", "internalError",
-                    errorChecker.getLastException());
+            throw new ServiceException("More than " + maxErrors
+                    + " rendering errors occurred, bailing out.", errorChecker.getLastException(),
+                    "internalError");
         }
 
         // if (!this.abortRequested) {
@@ -567,7 +566,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
                 d.loadOptions(options);
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Couldn't construct watermark from configuration", e);
-                throw new WmsException(e);
+                throw new ServiceException(e);
             }
 
             MapDecorationLayout.Block.Position p = null;
@@ -601,7 +600,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
                 p = MapDecorationLayout.Block.Position.LR;
                 break;
             default:
-                throw new WmsException(
+                throw new ServiceException(
                         "Unknown WatermarkInfo.Position value.  Something is seriously wrong.");
             }
 
@@ -811,7 +810,7 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
                     renderedCoverages.add(coverage);
             }
         } catch (Throwable e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
 
         // check if we managed to process the coverage into an image

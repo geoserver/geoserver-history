@@ -4,14 +4,14 @@
  */
 package org.geoserver.wms.svg;
 
-import org.vfny.geoserver.wms.WmsException;
+import org.geoserver.platform.ServiceException;
 
 
 /**
  * @author Gabriel Rold?n
  * @version $Id$
  */
-public class EncoderConfigurationException extends WmsException {
+public class EncoderConfigurationException extends ServiceException {
     public EncoderConfigurationException(String message) {
         super(message);
     }

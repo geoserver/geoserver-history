@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.ResourceInfo;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.legendgraphic.LegendUtils;
@@ -49,7 +50,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
-import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -227,7 +227,7 @@ public class LegendDecoration implements MapDecoration {
         final Style style,
         final double scaleDenominator,
         Graphics2D g2d
-    ) throws WmsException {
+    ) throws ServiceException {
 
 		final SimpleFeature sampleFeature = createSampleFeature(layer);
         final FeatureTypeStyle[] ftStyles = style.getFeatureTypeStyles();
@@ -274,7 +274,7 @@ public class LegendDecoration implements MapDecoration {
             final SimpleFeatureType layer,
             final Style style,
             final double scaleDenominator,
-            Graphics2D g2d) throws WmsException {
+            Graphics2D g2d) throws ServiceException {
 
 		final SimpleFeature sampleFeature = createSampleFeature(layer);
         final FeatureTypeStyle[] ftStyles = style.getFeatureTypeStyles();
@@ -346,16 +346,16 @@ public class LegendDecoration implements MapDecoration {
      *
      * @param schema the schema for which to create a sample Feature instance
      *
-     * @throws WmsException
+     * @throws ServiceException
      */
     private static SimpleFeature createSampleFeature(SimpleFeatureType schema)
-        throws WmsException {
+        throws ServiceException {
         SimpleFeature sampleFeature;
 
         try {
             sampleFeature = SimpleFeatureBuilder.template(schema, null); 
         } catch (IllegalAttributeException e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
 
         return sampleFeature;

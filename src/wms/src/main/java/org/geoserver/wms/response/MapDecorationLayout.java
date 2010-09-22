@@ -18,11 +18,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSMapContext;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * The MapDecorationLayout class describes a set of overlays to be used to enhance a WMS response.
@@ -88,7 +88,7 @@ public class MapDecorationLayout {
                 Point o) {
 
             if (p == null || container == null || dim == null || o == null) {
-                throw new WmsException("Bad params for decoration sizing.");
+                throw new ServiceException("Bad params for decoration sizing.");
             }
 
             int x = 0, y = 0;

@@ -11,12 +11,12 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.image.ImageWorker;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.util.logging.Logging;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Handles a GetMap request that spects a map in GIF format.
@@ -48,7 +48,7 @@ public class PNGMapOutputFormat extends DefaultRasterMapOutputFormat {
      * @see RasterMapOutputFormat#formatImageOutputStream(RenderedImage, OutputStream)
      */
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-            WMSMapContext mapContext) throws WmsException, IOException {
+            WMSMapContext mapContext) throws ServiceException, IOException {
         // /////////////////////////////////////////////////////////////////
         //
         // Reformatting this image for png

@@ -21,6 +21,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.HttpErrorCodeException;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.jdbc.JDBCUtils;
@@ -42,7 +43,6 @@ import org.opengis.geometry.BoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.WmsException;
 
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -150,7 +150,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
 
             // sanity check, the layer is not geometryless
             if (featureType.getFeatureType().getGeometryDescriptor() == null)
-                throw new WmsException(featureType.getName()
+                throw new ServiceException(featureType.getName()
                         + " is geometryless, cannot generate KML!");
 
             // make sure the request is within the data bounds, allowing for a
@@ -166,7 +166,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             Tile tile = new Tile(requestedEnvelope);
             ReferencedEnvelope tileEnvelope = tile.getEnvelope();
             if (!envelopeMatch(tileEnvelope, requestedEnvelope))
-                throw new WmsException(
+                throw new ServiceException(
                         "Invalid bounding box request, it does not fit "
                                 + "the nearest regionating tile. Requested area: "
                                 + requestedEnvelope + ", " + "nearest tile: "
@@ -179,7 +179,7 @@ public abstract class CachedHierarchyRegionatingStrategy implements
             LOGGER.log(Level.SEVERE,
                     "Error occurred while pre-processing regionated features",
                     t);
-            throw new WmsException("Failure while pre-processing regionated features");
+            throw new ServiceException("Failure while pre-processing regionated features");
         }
 
         // This okay, just means the tile is empty

@@ -32,7 +32,6 @@ import org.geoserver.wms.map.MaxErrorEnforcer;
 import org.geoserver.wms.map.RenderExceptionStrategy;
 import org.geotools.map.MapContext;
 import org.geotools.renderer.lite.StreamingRenderer;
-import org.vfny.geoserver.wms.WmsException;
 import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -227,20 +226,20 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
 
             // check if too many errors occurred
             if (errorChecker.exceedsMaxErrors()) {
-                throw new WmsException("More than " + maxErrors
-                        + " rendering errors occurred, bailing out.", "internalError",
-                        errorChecker.getLastException());
+                throw new ServiceException("More than " + maxErrors
+                        + " rendering errors occurred, bailing out.",
+                        errorChecker.getLastException(), "internalError");
             }
 
             // check if a non ignorable error occurred
             if (nonIgnorableExceptionListener.exceptionOccurred()) {
                 Exception renderError = nonIgnorableExceptionListener.getException();
-                throw new WmsException("Rendering process failed", "internalError", renderError);
+                throw new ServiceException("Rendering process failed", renderError, "internalError");
             }
 
             return g;
         } catch (ParserConfigurationException e) {
-            throw new WmsException("Unexpected exception", "internalError", e);
+            throw new ServiceException("Unexpected exception", e, "internalError");
         }
     }
 

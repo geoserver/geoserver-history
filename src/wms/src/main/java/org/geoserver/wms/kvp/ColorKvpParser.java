@@ -7,7 +7,7 @@ package org.geoserver.wms.kvp;
 import java.awt.Color;
 
 import org.geoserver.ows.KvpParser;
-import org.vfny.geoserver.wms.WmsException;
+import org.geoserver.platform.ServiceException;
 
 
 /**
@@ -25,7 +25,7 @@ public class ColorKvpParser extends KvpParser {
         try {
             return Color.decode(value);
         } catch (NumberFormatException nfe) {
-            throw new WmsException("BGCOLOR " + value
+            throw new ServiceException("BGCOLOR " + value
                 + " incorrectly specified (0xRRGGBB format expected)");
         }
     }

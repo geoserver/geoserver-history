@@ -13,6 +13,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.ows.HttpErrorCodeException;
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.ows.util.ResponseUtils;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
@@ -24,7 +25,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -307,7 +307,7 @@ public class KMLSuperOverlayTransformer extends KMLTransformerBase {
                 numFeatures = (KMLUtils.loadFeatureCollection(
                         (SimpleFeatureSource) mapLayer.getFeatureSource(), mapLayer, mapContext, wms)
                         .size()/* == 0 */);
-            } catch (WmsException e) {
+            } catch (ServiceException e) {
                 LOGGER.severe("Caught the WmsException!");
                 numFeatures = -1;
             } catch (HttpErrorCodeException e) {

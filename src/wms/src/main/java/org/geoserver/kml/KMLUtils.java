@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
@@ -42,7 +43,6 @@ import org.opengis.feature.type.Name;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -481,7 +481,7 @@ public class KMLUtils {
             // if a strategy was specified but we did not find it, let the user
             // know
             if (regionatingStrategy == null)
-                throw new WmsException("Unknown regionating strategy " + stratname);
+                throw new ServiceException("Unknown regionating strategy " + stratname);
         }
 
         // try to load less features by leveraging regionating strategy and the

@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.config.GeoServer;
-import org.vfny.geoserver.wms.WmsException;
+import org.geoserver.platform.ServiceException;
 
 public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategyFactory {
     private static final Logger LOGGER = 
@@ -47,7 +47,7 @@ public class ReflectiveRegionatingStrategyFactory implements RegionatingStrategy
             
             return (RegionatingStrategy)clazz.newInstance();
         } catch (Exception e){
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
     }
 

@@ -8,11 +8,11 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.image.ImageWorker;
 import org.geotools.image.palette.InverseColorMapOp;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Handles a GetMap request that spects a map in GIF format.
@@ -38,13 +38,13 @@ public final class GIFMapOutputFormat extends DefaultRasterMapOutputFormat {
      * @param outStream
      *            The stream to write to.
      * 
-     * @throws WmsException
+     * @throws ServiceException
      *             not really.
      * @throws IOException
      *             if encoding to <code>outStream</code> fails.
      */
     public void formatImageOutputStream(RenderedImage originalImage, OutputStream outStream,
-            WMSMapContext mapContext) throws WmsException, IOException {
+            WMSMapContext mapContext) throws ServiceException, IOException {
         // /////////////////////////////////////////////////////////////////
         //
         // Now the magic

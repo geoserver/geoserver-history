@@ -22,7 +22,6 @@ import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.response.MapDecorationLayout;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.springframework.util.Assert;
-import org.vfny.geoserver.wms.WmsException;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -218,20 +217,20 @@ public class PDFMapOutputFormat extends AbstractMapOutputFormat {
             // check if a non ignorable error occurred
             if (nonIgnorableExceptionListener.exceptionOccurred()) {
                 Exception renderError = nonIgnorableExceptionListener.getException();
-                throw new WmsException("Rendering process failed", "internalError", renderError);
+                throw new ServiceException("Rendering process failed", renderError, "internalError");
             }
 
             // check if too many errors occurred
             if (errorChecker.exceedsMaxErrors()) {
-                throw new WmsException("More than " + maxErrors
-                        + " rendering errors occurred, bailing out", "internalError",
-                        errorChecker.getLastException());
+                throw new ServiceException("More than " + maxErrors
+                        + " rendering errors occurred, bailing out",
+                        errorChecker.getLastException(), "internalError");
             }
 
             // check we did not use too much memory
             if (memoryChecker.exceedsMaxSize()) {
                 long kbMax = maxMemory / KB;
-                throw new WmsException(
+                throw new ServiceException(
                         "Rendering request used more memory than the maximum allowed:" + kbMax
                                 + "KB");
             }
@@ -244,7 +243,7 @@ public class PDFMapOutputFormat extends AbstractMapOutputFormat {
             writer.flush();
             writer.close();
         } catch (DocumentException t) {
-            throw new WmsException("Error setting up the PDF", "internalError", t);
+            throw new ServiceException("Error setting up the PDF", t, "internalError");
         }
 
     }

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.util.WMSRequests;
@@ -22,7 +23,6 @@ import org.geotools.styling.Symbolizer;
 import org.geotools.xml.transform.Translator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WmsException;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -125,8 +125,9 @@ public class KMLRasterTransformer extends KMLMapTransformer {
             if (reprojectBBox) {
                 try {
                     box = box.transform(DefaultGeographicCRS.WGS84, true);
-                } catch(Exception e) {
-                    throw new WmsException("Could not transform bbox to WGS84", "ReprojectionError", e);
+                } catch (Exception e) {
+                    throw new ServiceException("Could not transform bbox to WGS84", e,
+                            "ReprojectionError", "");
                 }
             }
             start("LatLonBox");

@@ -38,7 +38,6 @@ import org.geotools.util.NullProgressListener;
 import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.util.Requests;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling <code>getRequest</code>
@@ -332,17 +331,17 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
      *             if <code>sldUrl</code> is not a valid URL, a stream can't be opened or a parsing
      *             error occurs
      */
-    private Style[] loadRemoteStyle(String sldUrl) throws WmsException {
+    private Style[] loadRemoteStyle(String sldUrl) throws ServiceException {
         InputStream in;
 
         try {
             URL url = new URL(sldUrl);
             in = url.openStream();
         } catch (MalformedURLException e) {
-            throw new WmsException(e, "Not a valid URL to an SLD document " + sldUrl,
+            throw new ServiceException(e, "Not a valid URL to an SLD document " + sldUrl,
                     "loadRemoteStyle");
         } catch (IOException e) {
-            throw new WmsException(e, "Can't open the SLD URL " + sldUrl, "loadRemoteStyle");
+            throw new ServiceException(e, "Can't open the SLD URL " + sldUrl, "loadRemoteStyle");
         }
 
         return parseSld(new InputStreamReader(in));
@@ -359,7 +358,7 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
      * @throws WmsException
      *             if a parsing error occurs.
      */
-    private Style[] parseSldBody(String sldBody) throws WmsException {
+    private Style[] parseSldBody(String sldBody) throws ServiceException {
         // return parseSld(new StringBufferInputStream(sldBody));
         return parseSld(new StringReader(sldBody));
     }
@@ -376,18 +375,18 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
      * @throws WmsException
      *             if a parsing error occurs
      */
-    private Style[] parseSld(Reader xmlIn) throws WmsException {
+    private Style[] parseSld(Reader xmlIn) throws ServiceException {
         SLDParser parser = new SLDParser(styleFactory, xmlIn);
         Style[] styles = null;
 
         try {
             styles = parser.readXML();
         } catch (RuntimeException e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
 
         if ((styles == null) || (styles.length == 0)) {
-            throw new WmsException("Document contains no styles");
+            throw new ServiceException("Document contains no styles");
         }
 
         return styles;
@@ -401,9 +400,9 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
      * 
      * @return DOCUMENT ME!
      * 
-     * @throws WmsException
+     * @throws ServiceException
      */
-    private Rule extractRule(Style sldStyle, String rule) throws WmsException {
+    private Rule extractRule(Style sldStyle, String rule) throws ServiceException {
         Rule sldRule = null;
 
         if ((rule != null) && !"".equals(rule)) {
@@ -427,7 +426,7 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
             }
 
             if (sldRule == null) {
-                throw new WmsException("Style " + sldStyle.getName()
+                throw new ServiceException("Style " + sldStyle.getName()
                         + " does not contains a rule named " + rule);
             }
         }
