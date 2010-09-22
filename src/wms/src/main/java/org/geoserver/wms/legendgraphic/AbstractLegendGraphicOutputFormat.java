@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
+import org.geoserver.wms.map.ImageUtils;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
 import org.geotools.data.DataUtilities;
@@ -43,7 +44,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.ImageUtils;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;

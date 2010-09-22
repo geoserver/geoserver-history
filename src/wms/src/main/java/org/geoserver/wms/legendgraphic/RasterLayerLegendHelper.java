@@ -18,6 +18,7 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 import org.geoserver.wms.legendgraphic.ColorMapLegendCreator.Builder;
+import org.geoserver.wms.map.ImageUtils;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.styling.ChannelSelection;
 import org.geotools.styling.ColorMap;
@@ -28,7 +29,6 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
-import org.vfny.geoserver.wms.responses.ImageUtils;
 
 /**
  * Helper class to create legends for raster styles by parsing the rastersymbolizer element.

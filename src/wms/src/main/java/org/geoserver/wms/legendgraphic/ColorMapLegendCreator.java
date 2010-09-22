@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import org.geoserver.wms.legendgraphic.LegendUtils.HAlign;
 import org.geoserver.wms.legendgraphic.LegendUtils.VAlign;
+import org.geoserver.wms.map.ImageUtils;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.SelectedChannelType;
-import org.vfny.geoserver.wms.responses.ImageUtils;
 
 
 
