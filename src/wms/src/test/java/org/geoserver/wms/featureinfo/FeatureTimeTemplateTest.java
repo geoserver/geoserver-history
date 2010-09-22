@@ -1,4 +1,4 @@
-package org.geoserver.wms.response.featureinfo;
+package org.geoserver.wms.featureinfo;
 
 import junit.framework.Test;
 

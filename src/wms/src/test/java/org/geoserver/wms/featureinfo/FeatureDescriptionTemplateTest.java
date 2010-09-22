@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.response.featureinfo;
+package org.geoserver.wms.featureinfo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
