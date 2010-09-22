@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WebMapService;
+import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 
@@ -84,8 +84,8 @@ public class KMLReflector {
         StringBuffer filename = new StringBuffer();
         boolean containsRasterData = false;
         boolean isRegionatingFriendly = true;
-        for ( int i = 0; i < request.getLayers().length; i++ ) {
-            MapLayerInfo layer = request.getLayers()[i];
+        for ( int i = 0; i < request.getLayers().size(); i++ ) {
+            MapLayerInfo layer = request.getLayers().get(i);
             String name = layer.getName();
  
             containsRasterData = containsRasterData || (layer.getType() == MapLayerInfo.TYPE_RASTER);

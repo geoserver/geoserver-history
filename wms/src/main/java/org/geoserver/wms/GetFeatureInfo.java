@@ -142,7 +142,7 @@ public class GetFeatureInfo {
             throws ServiceException {
 
         // use the layer of the QUERY_LAYERS parameter, not the LAYERS one
-        MapLayerInfo[] layers = request.getQueryLayers();
+        List<MapLayerInfo> layers = request.getQueryLayers();
 
         // grab the list of filters from the GetMap request, we don't want
         // to return what the user explicitly excluded
@@ -152,22 +152,22 @@ public class GetFeatureInfo {
         if (filterList != null && filterList.size() > 0) {
             filters = (Filter[]) filterList.toArray(new Filter[filterList.size()]);
         } else {
-            filters = new Filter[layers.length];
+            filters = new Filter[layers.size()];
         }
 
         // grab the list of styles for each query layer, we'll use them to
         // auto-evaluate the GetFeatureInfo radius if the user did not specify one
         List<Style> getMapStyles = request.getGetMapRequest().getStyles();
-        Style[] styles = new Style[layers.length];
+        Style[] styles = new Style[layers.size()];
         for (int i = 0; i < styles.length; i++) {
-            MapLayerInfo[] getMapLayers = request.getGetMapRequest().getLayers();
-            final String targetLayer = layers[i].getName();
-            for (int j = 0; j < getMapLayers.length; j++) {
-                if (getMapLayers[j].getName().equals(targetLayer)) {
+            List<MapLayerInfo> getMapLayers = request.getGetMapRequest().getLayers();
+            final String targetLayer = layers.get(i).getName();
+            for (int j = 0; j < getMapLayers.size(); j++) {
+                if (getMapLayers.get(j).getName().equals(targetLayer)) {
                     if (getMapStyles != null && getMapStyles.size() > 0)
                         styles[i] = (Style) getMapStyles.get(j);
                     if (styles[i] == null)
-                        styles[i] = getMapLayers[j].getDefaultStyle();
+                        styles[i] = getMapLayers.get(j).getDefaultStyle();
                     break;
                 }
             }
@@ -186,7 +186,7 @@ public class GetFeatureInfo {
     private List<FeatureCollection> execute(GetFeatureInfoRequest request, Style[] styles,
             Filter[] filters) throws Exception {
 
-        final MapLayerInfo[] requestedLayers = request.getQueryLayers();
+        final List<MapLayerInfo> requestedLayers = request.getQueryLayers();
         // delegate to subclasses the hard work
         final int x = request.getXPixel();
         final int y = request.getYPixel();
@@ -203,10 +203,10 @@ public class GetFeatureInfo {
         final double scaleDenominator = RendererUtilities.calculateOGCScale(bbox, width, null);
         final FilterFactory2 ff = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints());
 
-        List<FeatureCollection> results = new ArrayList<FeatureCollection>(requestedLayers.length);
+        List<FeatureCollection> results = new ArrayList<FeatureCollection>(requestedLayers.size());
 
-        for (int i = 0; i < requestedLayers.length; i++) {
-            final MapLayerInfo layer = requestedLayers[i];
+        for (int i = 0; i < requestedLayers.size(); i++) {
+            final MapLayerInfo layer = requestedLayers.get(i);
 
             // check cascaded WMS first, it's a special case
             if (layer.getType() == MapLayerInfo.TYPE_WMS) {
@@ -230,13 +230,13 @@ public class GetFeatureInfo {
                         requestedCRS, width, height, bbox, ff, results, i, layer, rules);
 
             } else if (layer.getType() == MapLayerInfo.TYPE_RASTER) {
-                final CoverageInfo cinfo = requestedLayers[i].getCoverage();
+                final CoverageInfo cinfo = requestedLayers.get(i).getCoverage();
                 final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) cinfo
                         .getGridCoverageReader(new NullProgressListener(),
                                 GeoTools.getDefaultHints());
                 final ParameterValueGroup params = reader.getFormat().getReadParameters();
                 GeneralParameterValue[] parameters = CoverageUtils.getParameters(params,
-                        requestedLayers[i].getCoverage().getParameters(), true);
+                        requestedLayers.get(i).getCoverage().getParameters(), true);
                 // get the original grid geometry
                 final GridGeometry2D coverageGeometry = (GridGeometry2D) cinfo.getGrid();
                 // set the requested position in model space for this request

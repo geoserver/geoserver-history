@@ -6,7 +6,7 @@ package org.geoserver.wms.kvp;
 
 import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.wms.WMS;
-import org.vfny.geoserver.wms.requests.GetStylesRequest;
+import org.geoserver.wms.request.GetStylesRequest;
 
 public class GetStylesKvpRequestReader extends KvpRequestReader {
 
@@ -20,6 +20,6 @@ public class GetStylesKvpRequestReader extends KvpRequestReader {
     
     @Override
     public Object createRequest() throws Exception {
-        return new GetStylesRequest(wms);
+        return new GetStylesRequest();
     }
 }

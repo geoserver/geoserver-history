@@ -247,7 +247,7 @@ public class DefaultWebMapService implements WebMapService,
         GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context
                 .getBean("wmsGetLegendGraphic");
 
-        return getLegendGraphic.getResponse();
+        return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
     }
 
     public void kml(GetMapRequest getMap, HttpServletResponse response) {
@@ -295,11 +295,11 @@ public class DefaultWebMapService implements WebMapService,
             // TODO: should this be part of core WMS logic? is so lets throw
             // this
             // into the GetMapKvpRequestReader
-            if ((getMap.getLayers() != null) && (getMap.getLayers().length > 0)) {
-                ArrayList styles = new ArrayList(getMap.getLayers().length);
+            if ((getMap.getLayers() != null) && (getMap.getLayers().size() > 0)) {
+                ArrayList styles = new ArrayList(getMap.getLayers().size());
 
-                for (int i = 0; i < getMap.getLayers().length; i++) {
-                    styles.add(getMap.getLayers()[i].getDefaultStyle());
+                for (int i = 0; i < getMap.getLayers().size(); i++) {
+                    styles.add(getMap.getLayers().get(i).getDefaultStyle());
                 }
 
                 getMap.setStyles(styles);
@@ -334,7 +334,7 @@ public class DefaultWebMapService implements WebMapService,
      */
     public static void autoSetBoundsAndSize(GetMapRequest getMap) {
         // Get the layers
-        MapLayerInfo[] layers = getMap.getLayers();
+        List<MapLayerInfo> layers = getMap.getLayers();
 
         /** 1) Check what SRS has been requested */
         String reqSRS = getMap.getSRS();
@@ -348,11 +348,11 @@ public class DefaultWebMapService implements WebMapService,
         }
 
         /** 2) Compare requested SRS */
-        for (int i = 0; useNativeBounds && i < layers.length; i++) {
-            if (layers[i] != null) {
-                String layerSRS = layers[i].getSRS();
+        for (int i = 0; useNativeBounds && i < layers.size(); i++) {
+            if (layers.get(i) != null) {
+                String layerSRS = layers.get(i).getSRS();
                 useNativeBounds = reqSRS.equalsIgnoreCase(layerSRS)
-                        && layers[i].getResource().getNativeBoundingBox() != null;
+                        && layers.get(i).getResource().getNativeBoundingBox() != null;
             } else {
                 useNativeBounds = false;
             }
@@ -374,8 +374,8 @@ public class DefaultWebMapService implements WebMapService,
             specifiedBbox = false;
 
             // Get the bounding box from the layers
-            for (int i = 0; i < layers.length; i++) {
-                MapLayerInfo layerInfo = layers[i];
+            for (int i = 0; i < layers.size(); i++) {
+                MapLayerInfo layerInfo = layers.get(i);
                 ReferencedEnvelope curbbox;
                 try {
                     curbbox = layerInfo.getLatLongBoundingBox();
@@ -498,7 +498,7 @@ public class DefaultWebMapService implements WebMapService,
         }
     }
 
-    private static String guessCommonSRS(MapLayerInfo[] layers) {
+    private static String guessCommonSRS(List<MapLayerInfo> layers) {
         String SRS = null;
         for (MapLayerInfo layer : layers) {
             String layerSRS = layer.getSRS();
