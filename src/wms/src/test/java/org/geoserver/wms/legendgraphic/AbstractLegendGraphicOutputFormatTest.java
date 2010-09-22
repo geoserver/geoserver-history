@@ -19,11 +19,13 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphic;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
+import org.geoserver.wms.response.LegendGraphic;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.resources.coverage.FeatureUtilities;
 import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
+import org.geotools.util.logging.Logging;
 import org.opengis.coverage.grid.GridCoverage;
 
 /**
@@ -35,8 +37,8 @@ import org.opengis.coverage.grid.GridCoverage;
  */
 public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
 
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(AbstractLegendGraphicOutputFormatTest.class.getPackage().getName());
+    private static final Logger LOGGER = Logging
+            .getLogger(AbstractLegendGraphicOutputFormatTest.class);
 
     private AbstractLegendGraphicOutputFormat legendProducer;
 
@@ -58,13 +60,16 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
     public void setUpInternal() throws Exception {
         super.setUpInternal();
         this.legendProducer = new AbstractLegendGraphicOutputFormat() {
-            public void writeTo(OutputStream out) throws ServiceException, IOException {
+
+            public void write(LegendGraphic legend, OutputStream output) throws IOException,
+                    ServiceException {
                 throw new UnsupportedOperationException();
             }
 
-            public String getContentType() throws java.lang.IllegalStateException {
-                throw new UnsupportedOperationException();
+            public String getContentType() {
+                return "image/png";
             }
+
         };
 
         service = new GetLegendGraphic(getWMS());
@@ -90,7 +95,7 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         LOGGER.info("testing single rule " + rule.getName() + " from style "
                 + multipleRulesStyle.getName());
 
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
         FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(
                 MockData.ROAD_SEGMENTS.getNamespaceURI(), MockData.ROAD_SEGMENTS.getLocalPart());
         req.setLayer(ftInfo.getFeatureType());
@@ -104,15 +109,16 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         // use default values for the rest of parameters
         this.legendProducer.produceLegendGraphic(req);
 
-        BufferedImage legend = this.legendProducer.getLegendGraphic();
+        BufferedImageLegendGraphic legend = this.legendProducer.produceLegendGraphic(req);
 
         // was the legend painted?
-        assertNotBlank("testUserSpecifiedRule", legend, LegendUtils.DEFAULT_BG_COLOR);
+        BufferedImage image = legend.getLegend();
+        assertNotBlank("testUserSpecifiedRule", image, LegendUtils.DEFAULT_BG_COLOR);
 
         // was created only one rule?
         String errMsg = "expected just one legend of height " + HEIGHT_HINT + ", for the rule "
                 + rule.getName();
-        int resultLegendCount = legend.getHeight() / HEIGHT_HINT;
+        int resultLegendCount = image.getHeight() / HEIGHT_HINT;
         assertEquals(errMsg, 1, resultLegendCount);
     }
 
@@ -127,7 +133,7 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
 
         assertNotNull(multipleRulesStyle);
 
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
         CoverageInfo cInfo = getCatalog().getCoverageByName("world");
         assertNotNull(cInfo);
 
@@ -144,13 +150,14 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         // use default values for the rest of parameters
         this.legendProducer.produceLegendGraphic(req);
 
-        BufferedImage legend = this.legendProducer.getLegendGraphic();
+        BufferedImageLegendGraphic legend = this.legendProducer.produceLegendGraphic(req);
 
         // was the legend painted?
-        assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+        BufferedImage image = legend.getLegend();
+        assertNotBlank("testRainfall", image, LegendUtils.DEFAULT_BG_COLOR);
 
         // was the legend painted?
-        assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+        assertNotBlank("testRainfall", image, LegendUtils.DEFAULT_BG_COLOR);
 
     }
 
@@ -162,7 +169,7 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         Style style = getCatalog().getStyleByName("rainfall").getStyle();
         assertNotNull(style);
 
-        GetLegendGraphicRequest req = new GetLegendGraphicRequest(getWMS());
+        GetLegendGraphicRequest req = new GetLegendGraphicRequest();
         req.setStrict(false);
         req.setLayer(null);
         req.setStyle(style);
@@ -173,13 +180,14 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         // use default values for the rest of parameters
         this.legendProducer.produceLegendGraphic(req);
 
-        BufferedImage legend = this.legendProducer.getLegendGraphic();
+        BufferedImageLegendGraphic legend = this.legendProducer.produceLegendGraphic(req);
 
         // was the legend painted?
-        assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+        BufferedImage image = legend.getLegend();
+        assertNotBlank("testRainfall", image, LegendUtils.DEFAULT_BG_COLOR);
 
         // was the legend painted?
-        assertNotBlank("testRainfall", legend, LegendUtils.DEFAULT_BG_COLOR);
+        assertNotBlank("testRainfall", image, LegendUtils.DEFAULT_BG_COLOR);
 
     }
 }

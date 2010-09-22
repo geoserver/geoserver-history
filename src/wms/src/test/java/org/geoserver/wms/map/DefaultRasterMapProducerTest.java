@@ -4,6 +4,7 @@ import static org.geoserver.data.test.MockData.STREAMS;
 
 import java.awt.Color;
 import java.awt.geom.NoninvertibleTransformException;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -84,23 +85,23 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
 
+        GetMapRequest request = new GetMapRequest();
         final WMSMapContext map = new WMSMapContext();
         map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
         map.setMapWidth(300);
         map.setMapHeight(300);
         map.setBgColor(Color.red);
         map.setTransparent(false);
-        map.setRequest(new GetMapRequest(getWMS()));
+        map.setRequest(request);
 
         StyleInfo styleByName = catalog.getStyleByName("Default");
         Style basicStyle = styleByName.getStyle();
         map.addLayer(fs, basicStyle);
 
-        this.rasterMapProducer.setOutputFormat(getMapFormat());
-        this.rasterMapProducer.setMapContext(map);
-        this.rasterMapProducer.produceMap();
-
-        assertNotBlank("testSimpleGetMapQuery", this.rasterMapProducer);
+        request.setFormat(getMapFormat());
+        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        BufferedImage image = (BufferedImage) imageMap.getImage();
+        assertNotBlank("testSimpleGetMapQuery", image);
     }
 
     public void testDefaultStyle() throws Exception {
@@ -123,6 +124,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
                 env.getMaxY() + shift);
 
+        GetMapRequest request = new GetMapRequest();
         final WMSMapContext map = new WMSMapContext();
         int w = 400;
         int h = (int) Math.round((env.getHeight() * w) / env.getWidth());
@@ -130,7 +132,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         map.setMapHeight(h);
         map.setBgColor(BG_COLOR);
         map.setTransparent(true);
-        map.setRequest(new GetMapRequest(getWMS()));
+        map.setRequest(request);
 
         addToMap(map, MockData.FORESTS);
         addToMap(map, MockData.LAKES);
@@ -145,11 +147,10 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         map.setAreaOfInterest(new ReferencedEnvelope(env, DefaultGeographicCRS.WGS84));
 
-        this.rasterMapProducer.setOutputFormat(getMapFormat());
-        this.rasterMapProducer.setMapContext(map);
-        this.rasterMapProducer.produceMap();
-
-        assertNotBlank("testBlueLake", this.rasterMapProducer);
+        request.setFormat(getMapFormat());
+        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        BufferedImage image = (BufferedImage) imageMap.getImage();
+        assertNotBlank("testBlueLake", image);
     }
 
     private void addToMap(final WMSMapContext map, final QName typeName) throws IOException {
@@ -194,13 +195,13 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         // this.rasterMapProducer.setMapContext(map);
         // this.rasterMapProducer.produceMap();
         request.setFormat(getMapFormat());
-        
+
         BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
 
         RenderedImage image = imageMap.getImage();
         assertNotNull(image);
         String typeName = fSource.getSchema().getName().getLocalPart();
-        assertNotBlank("testDefaultStyle " + typeName, this.rasterMapProducer);
+        assertNotBlank("testDefaultStyle " + typeName, (BufferedImage) image);
     }
 
     /**
@@ -280,11 +281,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         StyleInfo someStyle = getCatalog().getStyles().get(0);
         map.addLayer(source, someStyle.getStyle());
-        this.rasterMapProducer.setOutputFormat(getMapFormat());
-        this.rasterMapProducer.setMapContext(map);
-        this.rasterMapProducer.produceMap();
+        request.setFormat(getMapFormat());
+        BufferedImageMap imageMap = this.rasterMapProducer.produceMap(map);
+        BufferedImage image = (BufferedImage) imageMap.getImage();
 
-        return this.rasterMapProducer.getImage();
+        return image;
     }
 
     /**

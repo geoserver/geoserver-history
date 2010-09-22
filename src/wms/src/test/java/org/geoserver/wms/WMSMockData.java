@@ -1,12 +1,9 @@
 package org.geoserver.wms;
 
-import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 import org.geoserver.catalog.DataStoreInfo;
@@ -24,28 +21,30 @@ import org.geoserver.catalog.impl.WorkspaceInfoImpl;
 import org.geoserver.config.GeoServer;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
+import org.geoserver.ows.Response;
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.map.RasterMapOutputFormat;
 import org.geoserver.wms.request.GetMapRequest;
-import org.geoserver.wms.response.GetMapResponse;
+import org.geoserver.wms.response.Map;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.memory.MemoryDataStore;
 import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.Hints;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-import org.vfny.geoserver.wms.WmsException;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.util.ProgressListener;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
-import com.mockrunner.mock.web.MockHttpSession;
-import com.mockrunner.mock.web.MockServletContext;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
@@ -152,6 +151,10 @@ public class WMSMockData {
         mockWMS = new WMS(mockGeoServer);
     }
 
+    public WMS getWMS() {
+        return mockWMS;
+    }
+
     /**
      * This dummy producer adds no functionality to DefaultRasterMapProducer, just implements a void
      * formatImageOutputStream
@@ -159,13 +162,9 @@ public class WMSMockData {
      * @author Gabriel Roldan
      * @version $Id$
      */
-    public static class DummyRasterMapProducer implements RasterMapOutputFormat {
+    public static class DummyRasterMapProducer extends Response implements GetMapOutputFormat {
 
         public static final String MIME_TYPE = "image/dummy";
-
-        public WMSMapContext mapContext;
-
-        public boolean abortCalled;
 
         public boolean produceMapCalled;
 
@@ -173,56 +172,52 @@ public class WMSMockData {
 
         public boolean writeToCalled;
 
-        public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-                WMSMapContext mapContext) throws WmsException, IOException {
-            // do nothing
+        public DummyRasterMapProducer() {
+            super(Map.class);
+
         }
 
-        public RenderedImage getImage() {
-            // do nothing
-            return null;
-        }
-
-        public void abort() {
-            this.abortCalled = true;
-        }
-
-        public String getContentDisposition() {
-            // do nothing
-            return null;
-        }
-
-        public String getContentType() throws IllegalStateException {
-            return MIME_TYPE;
-        }
-
-        public String getOutputFormat() {
-            return MIME_TYPE;
-        }
-
-        public void setMapContext(WMSMapContext mapContext) {
-            this.mapContext = mapContext;
-        }
-
-        public WMSMapContext getMapContext() {
-            return mapContext;
-        }
-
+        /**
+         * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
+         */
         public Set<String> getOutputFormatNames() {
             return Collections.singleton(MIME_TYPE);
         }
 
-        public void produceMap() throws WmsException {
-            this.produceMapCalled = true;
+        /**
+         * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
+         */
+        public String getMimeType() {
+            return MIME_TYPE;
         }
 
-        public void setOutputFormat(String format) {
-            this.outputFormat = format;
+        /**
+         * @see org.geoserver.wms.map.RasterMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+         */
+        public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
+            produceMapCalled = true;
+            return new Map() {
+            };
         }
 
-        public void writeTo(OutputStream out) throws ServiceException, IOException {
-            this.writeToCalled = true;
+        /**
+         * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
+         *      org.geoserver.platform.Operation)
+         */
+        @Override
+        public String getMimeType(Object value, Operation operation) throws ServiceException {
+            return MIME_TYPE;
         }
+
+        /**
+         * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
+         *      org.geoserver.platform.Operation)
+         */
+        @Override
+        public void write(Object value, OutputStream output, Operation operation)
+                throws IOException, ServiceException {
+        }
+
     }
 
     public StyleInfo getDefaultStyle() {
@@ -250,23 +245,27 @@ public class WMSMockData {
         return request;
     }
 
-    public GetMapResponse createResponse() {
-        return createResponse(Collections.singletonList(mockMapProducer));
-    }
-
-    public GetMapResponse createResponse(List<GetMapOutputFormat> availableProducers) {
-        GetMapResponse getMap;
-        getMap = new GetMapResponse(availableProducers);
-        return getMap;
-    }
-
     /**
      * Creates a vector layer with associated FeatureType in the internal MemoryDataStore with the
      * given type and two attributes: name:String and geom:geometryType
      */
     public MapLayerInfo addFeatureTypeLayer(final String name,
             Class<? extends Geometry> geometryType) throws IOException {
-        org.geoserver.catalog.FeatureTypeInfo featureTypeInfo = new FeatureTypeInfoImpl(catalog);
+        
+        final DataStore dataStore = this.dataStore;
+        FeatureTypeInfoImpl featureTypeInfo = new FeatureTypeInfoImpl(catalog){
+            /**
+             * Override to avoid going down to the catalog and geoserver resource loader etc
+             */
+            @Override
+            public FeatureSource getFeatureSource(ProgressListener listener, Hints hints){
+                try {
+                    return dataStore.getFeatureSource(getQualifiedName());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
         featureTypeInfo.setName(name);
         featureTypeInfo.setNativeName(name);
         featureTypeInfo.setEnabled(true);
@@ -313,6 +312,10 @@ public class WMSMockData {
         fs.addFeatures(DataUtilities.collection(feature));
 
         return feature;
+    }
+
+    public GeoServer getGeoServer() {
+        return this.mockGeoServer;
     }
 
 }

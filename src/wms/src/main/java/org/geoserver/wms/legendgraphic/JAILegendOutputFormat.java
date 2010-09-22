@@ -58,7 +58,7 @@ public class JAILegendOutputFormat extends AbstractLegendGraphicOutputFormat {
      * @see AbstractLegendGraphicOutputFormat#produceLegendGraphic(GetLegendGraphicRequest)
      */
     @Override
-    public LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
+    public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
             throws ServiceException {
         // HACK: should we provide a jpeg specific legend producer just
         // like for GetMap?

@@ -11,6 +11,7 @@ import java.awt.Panel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -169,7 +170,6 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
     protected GetMapRequest createGetMapRequest(QName[] layerNames) {
         GetMapRequest request = new GetMapRequest();
         request.setBaseUrl("http://localhost:8080/geoserver");
-        request.setHttpRequest(createRequest("wms"));
 
         List<MapLayerInfo> layers = new ArrayList<MapLayerInfo>(layerNames.length);
         List styles = new ArrayList();
@@ -303,8 +303,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
      * @param testName
      * @param producer
      */
-    protected void assertNotBlank(String testName, DefaultRasterMapOutputFormat producer) {
-        BufferedImage image = (BufferedImage) producer.getImage();
+    protected void assertNotBlank(String testName, BufferedImage image) {
         assertNotBlank(testName, image, BG_COLOR);
         showImage(testName, image);
     }
