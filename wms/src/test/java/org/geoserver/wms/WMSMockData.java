@@ -173,8 +173,8 @@ public class WMSMockData {
 
         public boolean writeToCalled;
 
-        public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-                throws WmsException, IOException {
+        public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
+                WMSMapContext mapContext) throws WmsException, IOException {
             // do nothing
         }
 
@@ -245,14 +245,7 @@ public class WMSMockData {
         } catch (IOException e) {
             throw new RuntimeException("shouldn't happen", e);
         }
-        request.setRawKvp(new HashMap<String, Serializable>());
-
-        MockHttpServletRequest servletRequest = new MockHttpServletRequest();
-        request.setHttpRequest(servletRequest);
-        MockHttpSession session = new MockHttpSession();
-        servletRequest.setSession(session);
-        MockServletContext context = new MockServletContext();
-        session.setupServletContext(context);
+        request.setRawKvp(new HashMap<String, String>());
 
         return request;
     }

@@ -4,6 +4,7 @@
  */
 package org.geoserver.wms.kvp;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,10 +39,11 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
         this.wms = wms;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Object read(Object req, Map kvp, Map rawKvp) throws Exception {
         GetFeatureInfoRequest request = (GetFeatureInfoRequest) super.read(req, kvp, rawKvp);
+        request.setRawKvp(rawKvp);
 
         if (request.getQueryLayers() == null || request.getQueryLayers().size() == 0) {
             throw new ServiceException("No QUERY_LAYERS has been requested, or no "
@@ -61,7 +63,7 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
 
         // make sure they are a subset of layers
         List<MapLayerInfo> getMapLayers = getMapPart.getLayers();
-        List<MapLayerInfo> queryLayers = request.getQueryLayers();
+        List<MapLayerInfo> queryLayers = new ArrayList<MapLayerInfo>(request.getQueryLayers());
         queryLayers.removeAll(getMapLayers);
         if (queryLayers.size() > 0) {
             // we've already expanded base layers so let's avoid list the names, they are not

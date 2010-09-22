@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,8 +17,6 @@ import java.util.Map;
 
 import org.geoserver.ows.util.CaseInsensitiveMap;
 import org.geoserver.wms.MapLayerInfo;
-import org.geoserver.wms.WMS;
-import org.geoserver.wms.request.WMSRequest;
 import org.geotools.image.palette.InverseColorMapOp;
 import org.geotools.styling.Style;
 import org.opengis.filter.Filter;
@@ -35,13 +32,10 @@ import com.vividsolutions.jts.geom.Envelope;
  * @version $Id$
  */
 public class GetMapRequest extends WMSRequest {
-    /** DOCUMENT ME! */
+
     static final Color DEFAULT_BG = Color.white;
 
-    /** DOCUMENT ME! */
     public static final String SE_XML = "SE_XML";
-
-    private static final String GETMAP_REQUEST_TYPE = "GetMap";
 
     /** set of mandatory request's parameters */
     private MandatoryParameters mandatoryParams = new MandatoryParameters();
@@ -57,9 +51,6 @@ public class GetMapRequest extends WMSRequest {
 
     /** sql view parameters */
     private Map<String, String> viewParams = new HashMap<String, String>();
-
-    /** raw kvp parameters non-parsed */
-    private Map<String, String> rawKvp;
 
     public GetMapRequest() {
         super("GetMap");
@@ -364,13 +355,6 @@ public class GetMapRequest extends WMSRequest {
      */
     public URL getRemoteOwsURL() {
         return optionalParams.remoteOwsURL;
-    }
-
-    /**
-     * Gets the raw kvp parameters which were used to create the request.
-     */
-    public Map getRawKvp() {
-        return rawKvp;
     }
 
     /**
@@ -703,13 +687,6 @@ public class GetMapRequest extends WMSRequest {
      */
     public Integer getStartIndex() {
         return this.optionalParams.startIndex;
-    }
-
-    /**
-     * Sets the raw kvp parameters which were used to create the request.
-     */
-    public void setRawKvp(Map rawKvp) {
-        this.rawKvp = rawKvp;
     }
 
     public double getAngle() {

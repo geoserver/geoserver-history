@@ -48,7 +48,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
     /** DOCUMENT ME! */
     private DefaultRasterMapOutputFormat rasterMapProducer;
-    
+
     /** DOCUMENT ME! */
     private String mapFormat = "image/gif";
 
@@ -89,10 +89,9 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         this.rasterMapProducer = null;
         super.tearDownInternal();
     }
-    
-    public String getMapFormat()
-    {
-    	return this.mapFormat;
+
+    public String getMapFormat() {
+        return this.mapFormat;
     }
 
     /**
@@ -103,11 +102,10 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     public void testSimpleGetMapQuery() throws Exception {
 
-        
         Catalog catalog = getCatalog();
         final FeatureSource fs = catalog.getFeatureTypeByName(MockData.BASIC_POLYGONS.getPrefix(),
                 MockData.BASIC_POLYGONS.getLocalPart()).getFeatureSource(null, null);
-        
+
         final Envelope env = fs.getBounds();
 
         LOGGER.info("about to create map ctx for BasicPolygons with bounds " + env);
@@ -159,13 +157,13 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      */
     public void testBlueLake() throws IOException, IllegalFilterException, Exception {
         final Catalog catalog = getCatalog();
-        org.geoserver.catalog.FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
+        org.geoserver.catalog.FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(
+                MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
         Envelope env = typeInfo.getFeatureSource(null, null).getBounds();
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
-                .getMaxY()
-                + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
+                env.getMaxY() + shift);
 
         final WMSMapContext map = new WMSMapContext();
         int w = 400;
@@ -197,12 +195,13 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     }
 
     private void addToMap(final WMSMapContext map, final QName typeName) throws IOException {
-        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(typeName.getNamespaceURI(), typeName.getLocalPart());
-        
+        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(
+                typeName.getNamespaceURI(), typeName.getLocalPart());
+
         List<LayerInfo> layers = getCatalog().getLayers(ftInfo);
         StyleInfo defaultStyle = layers.get(0).getDefaultStyle();
         Style style = defaultStyle.getStyle();
-        
+
         map.addLayer(new FeatureSourceMapLayer(ftInfo.getFeatureSource(null, null), style));
     }
 
@@ -219,7 +218,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         Catalog catalog = getCatalog();
         Style style = catalog.getStyleByName("Default").getStyle();
 
-        FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(), MockData.LAKES.getLocalPart());
+        FeatureTypeInfo typeInfo = catalog.getFeatureTypeByName(MockData.LAKES.getNamespaceURI(),
+                MockData.LAKES.getLocalPart());
         Envelope env = typeInfo.getFeatureSource(null, null).getBounds();
         env.expandToInclude(fSource.getBounds());
 
@@ -228,9 +228,8 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
 
         double shift = env.getWidth() / 6;
 
-        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift, env
-                .getMaxY()
-                + shift);
+        env = new Envelope(env.getMinX() - shift, env.getMaxX() + shift, env.getMinY() - shift,
+                env.getMaxY() + shift);
 
         WMSMapContext map = new WMSMapContext();
         map.setRequest(new GetMapRequest(getWMS()));
@@ -250,42 +249,44 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         String typeName = fSource.getSchema().getName().getLocalPart();
         assertNotBlank("testDefaultStyle " + typeName, this.rasterMapProducer);
     }
-    
+
     /**
      * Checks {@link DefaultRasterMapOutputFormat} makes good use of {@link RenderExceptionStrategy}
      */
     @SuppressWarnings("deprecation")
     public void testRenderingErrorsHandling() throws Exception {
 
-        //the ones that are ignorable by the renderer
+        // the ones that are ignorable by the renderer
         assertNotNull(forceRenderingError(new TransformException("fake transform exception")));
-        assertNotNull(forceRenderingError(new NoninvertibleTransformException("fake non invertible exception")));
-        assertNotNull(forceRenderingError(new IllegalAttributeException("non illegal attribute exception")));
+        assertNotNull(forceRenderingError(new NoninvertibleTransformException(
+                "fake non invertible exception")));
+        assertNotNull(forceRenderingError(new IllegalAttributeException(
+                "non illegal attribute exception")));
         assertNotNull(forceRenderingError(new FactoryException("fake factory exception")));
 
-        //any other one should make the map producer fail
-        try{
+        // any other one should make the map producer fail
+        try {
             forceRenderingError(new RuntimeException("fake runtime exception"));
             fail("Expected WMSException");
-        }catch(WmsException e){
+        } catch (WmsException e) {
             assertTrue(true);
         }
 
-        try{
+        try {
             forceRenderingError(new IOException("fake IO exception"));
             fail("Expected WMSException");
-        }catch(WmsException e){
+        } catch (WmsException e) {
             assertTrue(true);
         }
-        
-        try{
+
+        try {
             forceRenderingError(new IllegalArgumentException("fake IAE exception"));
             fail("Expected WMSException");
-        }catch(WmsException e){
+        } catch (WmsException e) {
             assertTrue(true);
         }
     }
-    
+
     /**
      * Sets up a rendering loop and throws {@code renderExceptionToThrow} wrapped to a
      * RuntimeException when the renderer tries to get a Feature to render.
@@ -296,30 +297,33 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * </p>
      */
     @SuppressWarnings("unchecked")
-    private RenderedImage forceRenderingError(final Exception renderExceptionToThrow) throws Exception {
+    private RenderedImage forceRenderingError(final Exception renderExceptionToThrow)
+            throws Exception {
 
         final WMSMapContext map = new WMSMapContext();
         map.setMapWidth(100);
         map.setMapHeight(100);
         map.setRequest(new GetMapRequest(getWMS()));
-        final ReferencedEnvelope bounds = new ReferencedEnvelope(-180, 180, -90, 90, DefaultGeographicCRS.WGS84);
+        final ReferencedEnvelope bounds = new ReferencedEnvelope(-180, 180, -90, 90,
+                DefaultGeographicCRS.WGS84);
         map.setAreaOfInterest(bounds);
 
-        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(STREAMS.getNamespaceURI(), STREAMS.getLocalPart());
+        final FeatureTypeInfo ftInfo = getCatalog().getFeatureTypeByName(STREAMS.getNamespaceURI(),
+                STREAMS.getLocalPart());
 
-        final SimpleFeatureSource featureSource = (SimpleFeatureSource) ftInfo.getFeatureSource(null, null);
-        
+        final SimpleFeatureSource featureSource = (SimpleFeatureSource) ftInfo.getFeatureSource(
+                null, null);
+
         DecoratingFeatureSource source;
         // This source should make the renderer fail when asking for the features
         source = new DecoratingFeatureSource(featureSource) {
             @Override
-            public SimpleFeatureCollection getFeatures(Query query)
-                    throws IOException {
+            public SimpleFeatureCollection getFeatures(Query query) throws IOException {
                 throw new RuntimeException(renderExceptionToThrow);
                 // return delegate.getFeatures(query);
             }
         };
-        
+
         StyleInfo someStyle = getCatalog().getStyles().get(0);
         map.addLayer(source, someStyle.getStyle());
         this.rasterMapProducer.setOutputFormat(getMapFormat());
@@ -329,16 +333,13 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         return this.rasterMapProducer.getImage();
     }
 
-
     /**
-     * This dummy producer adds no functionality to DefaultRasterMapOutputFormat,
-     * just implements a void formatImageOutputStream to have a concrete class
-     * over which test that DefaultRasterMapOutputFormat correctly generates the
-     * BufferedImage.
+     * This dummy producer adds no functionality to DefaultRasterMapOutputFormat, just implements a
+     * void formatImageOutputStream to have a concrete class over which test that
+     * DefaultRasterMapOutputFormat correctly generates the BufferedImage.
      * 
-     * @author Gabriel Roldan, Axios Engineering
-     * @version $Id: DefaultRasterMapOutputFormatTest.java 6797 2007-05-16 10:23:50Z
-     *          aaime $
+     * @author Gabriel Roldan
+     * @version $Id: DefaultRasterMapOutputFormatTest.java 6797 2007-05-16 10:23:50Z aaime $
      */
     private static class DummyRasterMapProducer extends DefaultRasterMapOutputFormat {
 
@@ -346,11 +347,11 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
             super("image/gif", new String[] { "image/gif" }, wms);
         }
 
-        public void formatImageOutputStream(RenderedImage image, OutputStream outStream)
-                throws WmsException, IOException {
+        public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
+                WMSMapContext mapContext) throws WmsException, IOException {
             /*
-             * Intentionally left blank, since this class is used just to ensure
-             * the abstract raster producer correctly generates a BufferedImage.
+             * Intentionally left blank, since this class is used just to ensure the abstract raster
+             * producer correctly generates a BufferedImage.
              */
         }
 

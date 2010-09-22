@@ -7,6 +7,7 @@ package org.geoserver.kml;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Map;
 
 import junit.framework.Test;
@@ -29,6 +30,8 @@ import org.geotools.map.MapLayer;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
+import com.mockrunner.mock.web.MockHttpSession;
+import com.mockrunner.mock.web.MockServletContext;
 import com.vividsolutions.jts.geom.Point;
 
 /**
@@ -54,6 +57,8 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
      * The layer to encode the legend url for
      */
     private MapLayer mapLayer;
+    
+    private MockHttpServletRequest httpreq;
 
     /**
      * This is a READ ONLY TEST so we can use one time setup
@@ -70,6 +75,12 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
         mockData = new WMSMockData();
         mockData.setUp();
 
+        httpreq = new MockHttpServletRequest();
+        MockHttpSession session = new MockHttpSession();
+        httpreq.setSession(session);
+        MockServletContext context = new MockServletContext();
+        session.setupServletContext(context);
+        
         // Map<String, String> namespaces = new HashMap<String, String>();
         // namespaces.put("atom", "http://purl.org/atom/ns#");
         // XMLUnit.setXpathNamespaceContext(new SimpleNamespaceContext(namespaces));
@@ -77,14 +88,13 @@ public class KMLLegendTransformerTest extends WMSTestSupport {
         MapLayerInfo layer = mockData.addFeatureTypeLayer("TestPoints", Point.class);
         mapContext = new WMSMapContext();
         GetMapRequest request = mockData.createRequest();
-        request.setLayers(new MapLayerInfo[] { layer });
+        request.setLayers(Collections.singletonList(layer));
 
         SimpleFeatureSource featureSource;
         featureSource = (SimpleFeatureSource) ((FeatureTypeInfo)layer.getFeature()).getFeatureSource(null, null);
         
         mapLayer = new DefaultMapLayer(featureSource, mockData.getDefaultStyle().getStyle());
 
-        MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpRequest();
         httpreq.setScheme("http");
         httpreq.setServerName("geoserver.org");
         httpreq.setServerPort(8181);

@@ -136,6 +136,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
     @Override
     public GetMapRequest read(Object request, Map kvp, Map rawKvp) throws Exception {
         GetMapRequest getMap = (GetMapRequest) super.read(request, kvp, rawKvp);
+        // set the raw params used to create the request
+        getMap.setRawKvp(rawKvp);
 
         // do some additional checks
 
@@ -170,7 +172,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         
         final List<Object> requestedLayerInfos = new ArrayList<Object>();
         // layers
-        String layerParam = (String) kvp.get("LAYERS");
+        String layerParam = (String) rawKvp.get("LAYERS");
         if (layerParam != null) {
             List<String> layerNames = KvpUtils.readFlat(layerParam);
             requestedLayerInfos.addAll(parseLayers(layerNames, remoteOwsUrl, remoteOwsType));
@@ -210,7 +212,8 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
 
             if (getMap.getValidateSchema().booleanValue()) {
-                List errors = validateSld(new ByteArrayInputStream(getMap.getSldBody().getBytes()));
+                ByteArrayInputStream stream = new ByteArrayInputStream(getMap.getSldBody().getBytes());
+                List errors = validateSld(stream, getMap.getBaseUrl());
 
                 if (errors.size() != 0) {
                     throw new WmsException(SLDValidator.getErrorMessage(new ByteArrayInputStream(
@@ -236,7 +239,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                 List errors = null;
 
                 try {
-                    errors = validateSld(input);
+                    errors = validateSld(input, getMap.getBaseUrl());
                 } finally {
                     input.close();
                 }
@@ -376,9 +379,6 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
         }
 
-        // set the raw params used to create the request
-        getMap.setRawKvp(rawKvp);
-
         return getMap;
     }
     
@@ -443,11 +443,11 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
      * validates an sld document.
      * 
      */
-    private List validateSld(InputStream input) {
+    private List validateSld(InputStream input, String baseURL) {
         // user requested to validate the schema.
         SLDValidator validator = new SLDValidator();
 
-        return validator.validateSLD(input, httpRequest.getSession().getServletContext());
+        return validator.validateSLD(input, baseURL);
     }
 
     /**

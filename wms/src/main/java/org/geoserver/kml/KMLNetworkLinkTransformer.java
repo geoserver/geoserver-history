@@ -99,7 +99,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             
             start("Link");
 
-            String baseURL = ResponseUtils.baseURL(request.getHttpRequest());
+            String baseURL = request.getBaseUrl();
             String type = mapLayer.getType() == MapLayerInfo.TYPE_RASTER ? "png" : "kml";
             String url = ResponseUtils.appendPath(baseURL, "gwc/service/kml/" 
                     + prefixedName + "." + type + ".kml");

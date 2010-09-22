@@ -5,146 +5,136 @@
 package org.geoserver.wms.map;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
+import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
+import org.geoserver.platform.Operation;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.Map;
 import org.geotools.map.MapLayer;
-import org.geotools.renderer.GTRenderer;
+import org.springframework.util.Assert;
 
 /**
  * 
  * @author Simone Giannecchini, GeoSolutions
- * 
+ * @author Gabriel Roldan
  */
-public abstract class AbstractMapOutputFormat implements GetMapOutputFormat {
-    /**
-     * Holds the map context passed to produceMap, so subclasses can use it if they need it from
-     * inside {@linkPlain #formatImageOutputStream(String, BufferedImage, OutputStream)}
-     */
-    protected WMSMapContext mapContext;
-
-    /**
-     * set to <code>true</code> on <code>abort()</code> so <code>produceMap</code> leaves the image
-     * being worked on to the garbage collector.
-     */
-    protected boolean abortRequested;
-
-    /**
-     * The one to do the magic of rendering a map
-     */
-    protected GTRenderer renderer;
-
-    /**
-     * Set in produceMap(...) from the requested output format, it's holded just to be sure that
-     * method has been called before getContentType() thus supporting the workflow contract of the
-     * request processing
-     */
-    protected String requestedOutputFormat;
+public abstract class AbstractMapOutputFormat extends Response implements GetMapOutputFormat {
 
     private final String mime;
 
-    /**
-     * The list of GetCapabilities stated format names for this map producer.
-     */
-    private final Set<String> outputFormatNames;
-
-    protected AbstractMapOutputFormat(final String mime, final String outputFormat) {
-        this(mime, new String[] { outputFormat });
+    protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding, final String mime) {
+        this(responseBinding, mime, new String[] { mime });
     }
 
-    protected AbstractMapOutputFormat(final String mime, final String[] outputFormats) {
-        this(mime, outputFormats != null ? Arrays.asList(outputFormats) : null);
+    @SuppressWarnings("unchecked")
+    protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding,
+            final String mime, final String[] outputFormats) {
+        this(responseBinding, mime, outputFormats == null ? Collections.EMPTY_SET
+                : new HashSet<String>(Arrays.asList(outputFormats)));
     }
 
-    protected AbstractMapOutputFormat(final String mime, Collection<String> outputFormats) {
+    protected AbstractMapOutputFormat(final Class<? extends Map> responseBinding,
+            final String mime, Set<String> outputFormats) {
+        // Call Response superclass constructor with the kind of request we can handle
+        super(responseBinding, outputFormats);
         this.mime = mime;
         if (outputFormats == null) {
             outputFormats = Collections.emptySet();
         }
-        // Using a set that performs case insensitive look ups directly.
-        Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        names.addAll(outputFormats);
-        outputFormatNames = Collections.unmodifiableSet(names);
-
     }
 
     protected AbstractMapOutputFormat() {
-        this(null, (String[]) null);
-    }
-
-    /**
-     * @see GetMapOutputFormat#setMapContext(WMSMapContext)
-     */
-    public void setMapContext(WMSMapContext mapContext) {
-        this.mapContext = mapContext;
-    }
-
-    /**
-     * @see GetMapOutputFormat#getMapContext()
-     */
-    public WMSMapContext getMapContext() {
-        return this.mapContext;
+        this(null, null, (String[]) null);
     }
 
     /**
      * Halts the loading. Right now just calls renderer.stopRendering.
      */
-    public void abort() {
-        this.abortRequested = true;
-
-        if (this.renderer != null) {
-            this.renderer.stopRendering();
-        }
-    }
-
-    /**
-     * returns the content encoding for the output data (null for this class)
-     * 
-     * @return <code>null</code> since no special encoding is performed while writting to the output
-     *         stream. Do not confuse this with getMimeType().
-     */
-    public String getContentEncoding() {
-        return null;
-    }
+    // public void abort() {
+    // this.abortRequested = true;
+    //
+    // if (this.renderer != null) {
+    // this.renderer.stopRendering();
+    // }
+    // }
 
     /**
-     * @see GetMapOutputFormat#getContentType()
+     * @see GetMapOutputFormat#getMimeType()
      */
-    public String getContentType() {
+    public String getMimeType() {
         return mime;
     }
 
     /**
-     * @see GetMapOutputFormat#getOutputFormat()
+     * @return {@link #getMimeType()}
+     * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
+     *      org.geoserver.platform.Operation)
      */
-    public String getOutputFormat() {
-        return requestedOutputFormat == null ? getContentType() : requestedOutputFormat;
+    @Override
+    public String getMimeType(Object value, Operation operation) throws ServiceException {
+        return getMimeType();
     }
 
     /**
-     * @see GetMapOutputFormat#setOutputFormat(String)
+     * @see GetMapOutputFormat#getOutputFormatNames()
      */
-    public void setOutputFormat(final String outputFormat) {
-        // this lookup is made in a case insensitive manner, see
-        // outputFormatNames definition
-        if (outputFormatNames.contains(outputFormat)) {
-            this.requestedOutputFormat = outputFormat;
-        } else {
-            throw new IllegalArgumentException(outputFormat + " is not a recognized output "
-                    + "format for " + getClass().getSimpleName());
+    public Set<String> getOutputFormatNames() {
+        return super.getOutputFormats();
+    }
+
+    /**
+     * Evaluates whether this response can handle the given operation by checking if the operation's
+     * request is a {@link GetMapRequest} and the requested output format is contained in
+     * {@link #getOutputFormatNames()}.
+     * <p>
+     * NOTE: requested MIME Types may come with parameters, like, for example:
+     * {@code image/png;param1=value1}. This default canHandle implementation performs and exact
+     * match check against the requested and supported format names. Subclasses may feel free to
+     * override if needed.
+     * </p>
+     * 
+     * @see org.geoserver.ows.Response#canHandle(org.geoserver.platform.Operation)
+     */
+    @Override
+    public boolean canHandle(final Operation operation) {
+        GetMapRequest request;
+        Object[] parameters = operation.getParameters();
+        request = (GetMapRequest) OwsUtils.parameter(parameters, GetMapRequest.class);
+        if (request == null) {
+            return false;
         }
+        String outputFormat = request.getFormat();
+        Set<String> outputFormats = getOutputFormats();
+        boolean match = outputFormats.contains(outputFormat);
+        return match;
     }
 
     /**
-     * @see GetMapOutputFormat#getContentDisposition()
-     * @return {@code null}, subclasses should override as needed
+     * Returns a 2xn array of Strings, each of which is an HTTP header pair to be set on the HTTP
+     * Response. Can return null if there are no headers to be set on the response.
+     * 
+     * @param value
+     *            must be a {@link Map}
+     * @param operation
+     *            The operation being performed.
+     * 
+     * @return 2xn string array containing string-pairs of HTTP headers/values
+     * @see Response#getHeaders(Object, Operation)
+     * @see Map#getResponseHeaders()
      */
-    public String getContentDisposition() {
-        return null;
+    @Override
+    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
+        Assert.isInstanceOf(Map.class, value);
+        Map map = (Map) value;
+        String[][] responseHeaders = map.getResponseHeaders();
+        return responseHeaders;
     }
 
     /**
@@ -156,7 +146,7 @@ public abstract class AbstractMapOutputFormat implements GetMapOutputFormat {
      * @param extension
      * @return
      */
-    protected String getContentDisposition(String extension) {
+    protected String getContentDisposition(WMSMapContext mapContext, String extension) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < mapContext.getLayerCount(); i++) {
             MapLayer layer = mapContext.getLayer(i);
@@ -170,13 +160,6 @@ public abstract class AbstractMapOutputFormat implements GetMapOutputFormat {
             return "attachment; filename=" + sb.toString() + extension;
         }
         return "attachment; filename=geoserver" + extension;
-    }
-
-    /**
-     * @see GetMapOutputFormat#getOutputFormatNames()
-     */
-    public Set<String> getOutputFormatNames() {
-        return outputFormatNames;
     }
 
 }

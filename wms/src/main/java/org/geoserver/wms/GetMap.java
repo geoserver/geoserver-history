@@ -178,7 +178,7 @@ public class GetMap {
               // finally block)
 
             // track the external caching strategy for any map layers
-            boolean cachingPossible = "GET".equals(request.getHttpRequest().getMethod());
+            boolean cachingPossible = request.isGet();
             final String featureVersion = request.getFeatureVersion();
             int maxAge = Integer.MAX_VALUE;
             for (int i = 0; i < layers.size(); i++) {
@@ -707,14 +707,6 @@ public class GetMap {
             e.setCode("InvalidFormat");
             throw e;
         }
-        // Tell the producer which of its output format names the
-        // request
-        // was made for, the producer may need it for its logic.
-        // For example, result is different if requested image/png8
-        // instead of image/png
-        // I'm not so glad with this, but found a lot of producers were
-        // made that way
-        producer.setOutputFormat(outputFormat);
         return producer;
     }
 

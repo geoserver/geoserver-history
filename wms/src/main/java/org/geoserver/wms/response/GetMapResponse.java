@@ -46,7 +46,7 @@ public class GetMapResponse extends Response {
         this.wms = wms;
     }
 
-/**
+    /**
      * @param a {@link Map} as returned by {@link GetMap#run(GetMapRequest))
      * @param operation the GetMap operation descriptor
      * @return {@link Map#getMimeType()}
@@ -72,7 +72,6 @@ public class GetMapResponse extends Response {
         if (outputFormat == null) {
             throw new ServiceException("Format not supported: " + mimeType, "InvalidFormat");
         }
-        outputFormat.write(map, output);
     }
 
     @Override

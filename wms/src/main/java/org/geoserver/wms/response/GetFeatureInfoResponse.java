@@ -47,7 +47,7 @@ public class GetFeatureInfoResponse extends Response {
      */
     @Override
     public boolean canHandle(Operation operation) {
-        return "WMS".equals(operation.getService()) && "GetFeatureInfo".equals(operation.getId());
+        return "GetFeatureInfo".equals(operation.getId());
     }
 
     /**

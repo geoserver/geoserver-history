@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.geoserver.ows.util.RequestUtils;
+import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.response.featureinfo.FeatureTemplate;
@@ -81,13 +83,10 @@ public final class AtomUtils {
         String nsUri = feature.getType().getName().getNamespaceURI();
         String nsPrefix = wms.getNameSpacePrefix(nsUri);
 
-        return Requests.getBaseUrl(
-                context.getRequest().getHttpRequest(),
-                wms.getGeoServer()
-                )
-            + "wms/reflect?format=application/atom+xml&layers=" 
+        return ResponseUtils.appendPath(context.getRequest().getBaseUrl(),
+             "wms/reflect?format=application/atom+xml&layers=" 
             + nsPrefix + ":" + feature.getType().getTypeName() 
-            + "&featureid=" + feature.getID();
+            + "&featureid=" + feature.getID());
     }
 
     public static String getEntryURI(WMS wms, SimpleFeature feature, WMSMapContext context){

@@ -78,11 +78,12 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
         this.wms = wms;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public GetLegendGraphicRequest read(Object req, Map kvp, Map rawKvp) throws Exception {
 
         GetLegendGraphicRequest request = (GetLegendGraphicRequest) super.read(req, kvp, rawKvp);
+        request.setRawKvp(rawKvp);
 
         if (request.getVersion() == null || request.getVersion().length() == 0) {
             String version = (String) rawKvp.get("WMTVER");

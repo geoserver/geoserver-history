@@ -7,12 +7,14 @@ package org.geoserver.wms.map;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,9 +28,10 @@ import org.geoserver.wms.GetMapOutputFormat;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.map.QuickTileCache.MetaTileKey;
 import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.Map;
+import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.geometry.jts.ReferencedEnvelope;
-import org.vfny.geoserver.wms.WmsException;
-eoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
+import org.geotools.util.logging.Logging;
 
 /**
  * Wrapping map producer that performs on the fly meta tiling wrapping another map producer. It will
@@ -39,39 +42,19 @@ eoserver.wms.responses.map.metatile.QuickTileCache.MetaTileKey;
  * @author Andrea Aime - TOPP
  * @author Simone Giannecchini - GeoSolutions
  */
-public final class MetatileMapOutputFormat extends AbstractMapOutputFormat implements
-        GetMapOutputFormat {
+public final class MetatileMapOutputFormat implements GetMapOutputFormat {
+
     /** A logger for this class. */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.responses.wms.map.metatile");
+    private static final Logger LOGGER = Logging.getLogger(MetatileMapOutputFormat.class);
 
     /** Small number for double equality comparison */
     public static final double EPS = 1E-6;
 
+    private static QuickTileCache tileCache;
+
     private GetMapRequest request;
 
     private RasterMapOutputFormat delegate;
-
-    private RenderedImage tile;
-
-    private static QuickTileCache tileCache;
-
-    /**
-     * True if the request has the tiled hint, is 256x256 image, and the raw delegate is a raster
-     * one
-     * 
-     * @param request
-     * @param delegate
-     * @return
-     */
-    public static boolean isRequestTiled(GetMapRequest request, GetMapOutputFormat delegate) {
-        if (!(request.isTiled() && (request.getTilesOrigin() != null)
-                && (request.getWidth() == 256) && (request.getHeight() == 256) && delegate instanceof RasterMapOutputFormat)) {
-            return false;
-        }
-
-        return true;
-    }
 
     public MetatileMapOutputFormat(GetMapRequest request, RasterMapOutputFormat delegate) {
         if (tileCache == null) {
@@ -81,7 +64,11 @@ public final class MetatileMapOutputFormat extends AbstractMapOutputFormat imple
         this.delegate = delegate;
     }
 
-    public void produceMap() throws WmsException {
+    /**
+     * 
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
+     */
+    public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
         // get the key that identifies the meta tile. The cache will make sure
         // two threads asking
         // for the same tile will get the same key, and thus will synchronize
@@ -91,7 +78,9 @@ public final class MetatileMapOutputFormat extends AbstractMapOutputFormat imple
         QuickTileCache.MetaTileKey key = tileCache.getMetaTileKey(request);
 
         synchronized (key) {
-            tile = tileCache.getTile(key, request);
+            RenderedImage tile = tileCache.getTile(key, request);
+            List<GridCoverage2D> renderedCoverages = null;
+
             if (LOGGER.isLoggable(Level.FINER)) {
                 LOGGER.finer("Looked for meta tile " + key.metaTileCoords.x + ", "
                         + key.metaTileCoords.y + "in cache: " + ((tile != null) ? "hit!" : "miss"));
@@ -113,79 +102,59 @@ public final class MetatileMapOutputFormat extends AbstractMapOutputFormat imple
                 mapContext.setMapHeight(key.getTileSize() * key.getMetaFactor());
                 mapContext.setTileSize(key.getTileSize());
 
-                // generate, split and cache
-                delegate.setMapContext(mapContext);
-
                 if (this.delegate instanceof DefaultRasterMapOutputFormat) {
                     ((DefaultRasterMapOutputFormat) this.delegate).setMetatiled(true);
                 }
 
-                delegate.produceMap();
-
-                RenderedImage metaTile = delegate.getImage();
+                BufferedImageMap metaTileMap = delegate.produceMap(mapContext);
+                RenderedImage metaTile = metaTileMap.getImage();
                 RenderedImage[] tiles = split(key, metaTile, mapContext);
                 tileCache.storeTiles(key, tiles);
                 tile = tileCache.getTile(key, request, tiles);
+                renderedCoverages = metaTileMap.getRenderedCoverages();
             }
+            BufferedImageMap tileMap = new BufferedImageMap(mapContext, tile, getMimeType());
+            tileMap.setRenderedCoverages(renderedCoverages);
+            return tileMap;
         }
     }
 
-    // /**
-    // * Splits the tile into a set of tiles, numbered from lower right and
-    // going up so
-    // * that first row is 0,1,2,...,metaTileFactor, and so on.
-    // * In the case of a 3x3 meta-tile, the layout is as follows:
-    // * <pre>
-    // * 6 7 8
-    // * 3 4 5
-    // * 0 1 2
-    // * </pre>
-    // * @param key
-    // * @param metaTile
-    // * @param map
-    // * @return
-    // */
-    // private BufferedImage[] split(MetaTileKey key, BufferedImage metaTile,
-    // WMSMapContext map) {
-    // int metaFactor = key.getMetaFactor();
-    // BufferedImage[] tiles = new BufferedImage[key.getMetaFactor() *
-    // key.getMetaFactor()];
-    // int tileSize = key.getTileSize();
-    //
-    // for (int i = 0; i < metaFactor; i++) {
-    // for (int j = 0; j < metaFactor; j++) {
-    // // TODO: create child writable rasters instead of cloning the images
-    // using
-    // // graphics2d. Should be quite a bit faster and save some memory. Or
-    // else,
-    // // store meta-tiles in the cache directly, and extract children tiles
-    // // on demand (even simpler)
-    // BufferedImage tile;
-    //
-    // // keep the palette if necessary
-    // if (metaTile.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
-    // tile = new BufferedImage(tileSize, tileSize,
-    // BufferedImage.TYPE_BYTE_INDEXED,
-    // (IndexColorModel) metaTile.getColorModel());
-    // } else if (metaTile.getType() == BufferedImage.TYPE_CUSTOM) {
-    // throw new RuntimeException("We don't support custom buffered image
-    // tiling");
-    // } else {
-    // tile = new BufferedImage(tileSize, tileSize, metaTile.getType());
-    // }
-    //
-    // Graphics2D g2d = (Graphics2D) tile.getGraphics();
-    // AffineTransform at = AffineTransform.getTranslateInstance(-j * tileSize,
-    // (-tileSize * (metaFactor - 1)) + (i * tileSize));
-    // setupBackground(g2d, map);
-    // g2d.drawRenderedImage(metaTile, at);
-    // g2d.dispose();
-    // tiles[(i * key.getMetaFactor()) + j] = tile;
-    // }
-    // }
-    //
-    // return tiles;
-    // }
+    /**
+     * 
+     * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()
+     */
+    public Set<String> getOutputFormatNames() {
+        return delegate.getOutputFormatNames();
+    }
+
+    /**
+     * 
+     * @see org.geoserver.wms.GetMapOutputFormat#getMimeType()
+     */
+    public String getMimeType() {
+        return delegate.getMimeType();
+    }
+
+    /**
+     * True if the request has the tiled hint, is 256x256 image, and the raw delegate is a raster
+     * one
+     * 
+     * @param request
+     * @param delegate
+     * @return
+     */
+    public static boolean isRequestTiled(GetMapRequest request, GetMapOutputFormat delegate) {
+        boolean tiled = request.isTiled();
+        Point2D tilesOrigin = request.getTilesOrigin();
+        int width = request.getWidth();
+        int height = request.getHeight();
+        if (tiled && tilesOrigin != null && width == 256 && height == 256
+                && delegate instanceof RasterMapOutputFormat) {
+            return true;
+        }
+
+        return false;
+    }
 
     /**
      * Splits the tile into a set of tiles, numbered from lower right and going up so that first row
@@ -223,6 +192,7 @@ public final class MetatileMapOutputFormat extends AbstractMapOutputFormat imple
                 int y = (tileSize * (metaFactor - 1)) - (i * tileSize);
 
                 final Raster tile_;
+                RenderedImage tile;
                 if (metaTile instanceof PlanarImage) {
                     final PlanarImage pImage = (PlanarImage) metaTile;
 
@@ -257,13 +227,6 @@ public final class MetatileMapOutputFormat extends AbstractMapOutputFormat imple
         }
 
         return tiles;
-    }
-
-    /**
-     * Have the delegate encode the tile
-     */
-    public void writeTo(OutputStream out) throws ServiceException, IOException {
-        delegate.formatImageOutputStream(tile, out);
     }
 
 }
