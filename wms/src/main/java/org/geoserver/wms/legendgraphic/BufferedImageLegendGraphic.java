@@ -1,4 +1,4 @@
-package org.geoserver.wms.response.legendgraphic;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.image.BufferedImage;
 

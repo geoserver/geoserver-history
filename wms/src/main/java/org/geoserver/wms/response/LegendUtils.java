@@ -17,6 +17,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
@@ -35,7 +36,6 @@ import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.feature.type.PropertyType;
 import org.opengis.filter.expression.Expression;
 import org.opengis.style.ChannelSelection;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.ImageUtils;
 
 /**
@@ -381,8 +381,8 @@ public class LegendUtils {
 	 */
 	public static boolean isWithInScale(final Rule r,final  double scaleDenominator) {
 	    return (scaleDenominator == -1)
-	    || (((r.getMinScaleDenominator() - DefaultRasterLegendProducer.TOLERANCE) <= scaleDenominator)
-	    && ((r.getMaxScaleDenominator() + DefaultRasterLegendProducer.TOLERANCE) > scaleDenominator));
+	    || (((r.getMinScaleDenominator() - AbstractLegendGraphicOutputFormat.TOLERANCE) <= scaleDenominator)
+	    && ((r.getMaxScaleDenominator() + AbstractLegendGraphicOutputFormat.TOLERANCE) > scaleDenominator));
 	}
 
 	/**
