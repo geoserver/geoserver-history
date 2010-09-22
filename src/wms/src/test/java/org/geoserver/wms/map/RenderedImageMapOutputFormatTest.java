@@ -11,7 +11,6 @@ import java.awt.geom.NoninvertibleTransformException;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,12 +46,12 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
-public class DefaultRasterMapProducerTest extends WMSTestSupport {
+public class RenderedImageMapOutputFormatTest extends WMSTestSupport {
 
     private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(DefaultRasterMapProducerTest.class.getPackage().getName());
+            .getLogger(RenderedImageMapOutputFormatTest.class.getPackage().getName());
 
-    private DefaultRasterMapOutputFormat rasterMapProducer;
+    private RenderedImageMapOutputFormat rasterMapProducer;
 
     private String mapFormat = "image/gif";
 
@@ -60,7 +59,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * This is a READ ONLY TEST so we can use one time setup
      */
     public static Test suite() {
-        return new OneTimeTestSetup(new DefaultRasterMapProducerTest());
+        return new OneTimeTestSetup(new RenderedImageMapOutputFormatTest());
     }
 
     public void setUpInternal() throws Exception {
@@ -69,7 +68,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         this.rasterMapProducer = getProducerInstance();
     }
 
-    protected DefaultRasterMapOutputFormat getProducerInstance() {
+    protected RenderedImageMapOutputFormat getProducerInstance() {
         return new DummyRasterMapProducer(getWMS());
     }
 
@@ -215,7 +214,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
     }
 
     /**
-     * Checks {@link DefaultRasterMapOutputFormat} makes good use of {@link RenderExceptionStrategy}
+     * Checks {@link RenderedImageMapOutputFormat} makes good use of {@link RenderExceptionStrategy}
      */
     @SuppressWarnings("deprecation")
     public void testRenderingErrorsHandling() throws Exception {
@@ -257,7 +256,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * <p>
      * If the rendering succeeded returns the image, which is going to be a blank one but means the
      * renderer didn't complain about the exception caught. Otherwise throws back the exception
-     * thrown by {@link DefaultRasterMapOutputFormat#produceMap()}
+     * thrown by {@link RenderedImageMapOutputFormat#produceMap()}
      * </p>
      */
     @SuppressWarnings("unchecked")
@@ -295,7 +294,7 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
         RenderedImageMap imageMap = this.rasterMapProducer.produceMap(map);
         BufferedImage image = (BufferedImage) imageMap.getImage();
         imageMap.dispose();
-        
+
         return image;
     }
 
@@ -307,18 +306,10 @@ public class DefaultRasterMapProducerTest extends WMSTestSupport {
      * @author Gabriel Roldan
      * @version $Id: DefaultRasterMapOutputFormatTest.java 6797 2007-05-16 10:23:50Z aaime $
      */
-    private static class DummyRasterMapProducer extends DefaultRasterMapOutputFormat {
+    private static class DummyRasterMapProducer extends RenderedImageMapOutputFormat {
 
         public DummyRasterMapProducer(WMS wms) {
             super("image/gif", new String[] { "image/gif" }, wms);
-        }
-
-        public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-                WMSMapContext mapContext) throws ServiceException, IOException {
-            /*
-             * Intentionally left blank, since this class is used just to ensure the abstract raster
-             * producer correctly generates a BufferedImage.
-             */
         }
     }
 

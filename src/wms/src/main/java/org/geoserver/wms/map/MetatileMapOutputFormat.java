@@ -54,16 +54,16 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
 
     private GetMapRequest request;
 
-    private RasterMapOutputFormat delegate;
+    private RenderedImageMapOutputFormat delegate;
 
-    public MetatileMapOutputFormat(GetMapRequest request, RasterMapOutputFormat delegate) {
+    public MetatileMapOutputFormat(GetMapRequest request, RenderedImageMapOutputFormat delegate) {
         if (tileCache == null) {
             tileCache = (QuickTileCache) GeoServerExtensions.bean("metaTileCache");
         }
         this.request = request;
         this.delegate = delegate;
     }
-    
+
     /**
      * 
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
@@ -102,13 +102,7 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
                 mapContext.setMapHeight(key.getTileSize() * key.getMetaFactor());
                 mapContext.setTileSize(key.getTileSize());
 
-                RenderedImageMap metaTileMap;
-                if (this.delegate instanceof DefaultRasterMapOutputFormat) {
-                    DefaultRasterMapOutputFormat drmof = (DefaultRasterMapOutputFormat) this.delegate;
-                    metaTileMap = drmof.produceMap(mapContext, true);
-                } else {
-                    metaTileMap = delegate.produceMap(mapContext);
-                }
+                RenderedImageMap metaTileMap = delegate.produceMap(mapContext);
 
                 RenderedImage metaTile = metaTileMap.getImage();
                 RenderedImage[] tiles = split(key, metaTile, mapContext);
@@ -152,7 +146,7 @@ public final class MetatileMapOutputFormat implements GetMapOutputFormat {
         int width = request.getWidth();
         int height = request.getHeight();
         if (tiled && tilesOrigin != null && width == 256 && height == 256
-                && delegate instanceof RasterMapOutputFormat) {
+                && delegate instanceof RenderedImageMapOutputFormat) {
             return true;
         }
 

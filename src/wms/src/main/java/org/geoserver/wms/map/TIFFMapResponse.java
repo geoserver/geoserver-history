@@ -20,19 +20,19 @@ import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 import org.geotools.image.palette.InverseColorMapOp;
+import org.geotools.util.logging.Logging;
 
 /**
- * Map producer for producing Tiff images out of a map.
+ * Map response to encode Tiff images out of a map.
  * 
  * @author Simone Giannecchini
  * @since 1.4.x
  * 
  */
-public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
+public final class TIFFMapResponse extends RenderedImageMapResponse {
 
     /** A logger for this class. */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.responses.wms.map");
+    private static final Logger LOGGER = Logging.getLogger(TIFFMapResponse.class);
 
     private final static ImageWriterSpi writerSPI = new it.geosolutions.imageioimpl.plugins.tiff.TIFFImageWriterSpi();
 
@@ -50,8 +50,8 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
      * @param wms
      *            service facade
      */
-    public TIFFMapOutputFormat(WMS wms) {
-        super(MIME_TYPE, OUTPUT_FORMATS, wms);
+    public TIFFMapResponse(WMS wms) {
+        super(OUTPUT_FORMATS, wms);
     }
 
     /**

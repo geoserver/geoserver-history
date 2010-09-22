@@ -6,28 +6,23 @@ package org.geoserver.wms.map;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
 
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.WebMap;
 import org.springframework.util.Assert;
 
 /**
  * A {@link Response} to handle a {@link RawMap}
  * 
  * @author Gabriel Roldan
+ * @see RawMap
  */
-public class RawMapResponse extends Response {
+public class RawMapResponse extends AbstractMapResponse {
 
-    public RawMapResponse() {
-        super(RawMap.class);
-    }
-
-    @Override
-    public String getMimeType(Object value, Operation operation) throws ServiceException {
-        Assert.isInstanceOf(RawMap.class, value);
-        return ((WebMap) value).getMimeType();
+    public RawMapResponse(final Set<String> outputFormats) {
+        super(RawMap.class, outputFormats);
     }
 
     @Override
@@ -42,27 +37,4 @@ public class RawMapResponse extends Response {
             map.dispose();
         }
     }
-
-    /**
-     * Returns a 2xn array of Strings, each of which is an HTTP header pair to be set on the HTTP
-     * Response. Can return null if there are no headers to be set on the response.
-     * 
-     * @param value
-     *            must be a {@link WebMap}
-     * @param operation
-     *            The operation being performed.
-     * 
-     * @return {@link WebMap#getResponseHeaders()}: 2xn string array containing string-pairs of HTTP
-     *         headers/values
-     * @see Response#getHeaders(Object, Operation)
-     * @see WebMap#getResponseHeaders()
-     */
-    @Override
-    public String[][] getHeaders(Object value, Operation operation) throws ServiceException {
-        Assert.isInstanceOf(WebMap.class, value);
-        WebMap map = (WebMap) value;
-        String[][] responseHeaders = map.getResponseHeaders();
-        return responseHeaders;
-    }
-
 }

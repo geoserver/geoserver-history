@@ -182,7 +182,7 @@ public class ImageUtils {
     /**
      * 
      * @param originalImage
-     * @param invColorMap
+     * @param invColorMap may be {@code null}
      * @return
      */
     public static RenderedImage forceIndexed8Bitmask(RenderedImage originalImage, final InverseColorMapOp invColorMap) {

@@ -33,12 +33,10 @@ import com.vividsolutions.jts.geom.Point;
  * @author Gabriel Roldan
  * @version $Id$
  */
-public class EncodeSVG extends WebMap {
+public class StreamingSVGMap extends WebMap {
 
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map");
-
-    private static final String DOCTYPE = "<!DOCTYPE svg \n\tPUBLIC \"-//W3C//DTD SVG 20001102//EN\" \n\t\"http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd\">\n";
 
     /** the XML and SVG header */
     private static final String SVG_HEADER = "<?xml version=\"1.0\" standalone=\"no\"?>\n\t"
@@ -55,7 +53,7 @@ public class EncodeSVG extends WebMap {
      * @param mapContext
      * 
      */
-    public EncodeSVG(WMSMapContext mapContext) {
+    public StreamingSVGMap(WMSMapContext mapContext) {
         super(mapContext);
     }
 

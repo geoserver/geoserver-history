@@ -30,6 +30,7 @@ import org.geoserver.wms.WMSMapContext;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.map.WMSMapLayer;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.crs.ProjectedCRS;
@@ -39,10 +40,13 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+/**
+ * 
+ * @see RawMapResponse
+ */
 public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     /** A logger for this class. */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger("org.vfny.geoserver.responses.wms.map.openlayers");
+    private static final Logger LOGGER = Logging.getLogger(OpenLayersMapOutputFormat.class);
 
     /**
      * The mime type for the response header
@@ -112,7 +116,7 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public org.geoserver.wms.WebMap produceMap(WMSMapContext mapContext)
+    public RawMap produceMap(WMSMapContext mapContext)
             throws ServiceException, IOException {
         try {
             // create the template

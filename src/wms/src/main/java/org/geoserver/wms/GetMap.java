@@ -22,7 +22,7 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.data.util.CoverageUtils;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.map.MetatileMapOutputFormat;
-import org.geoserver.wms.map.RasterMapOutputFormat;
+import org.geoserver.wms.map.RenderedImageMapOutputFormat;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Query;
@@ -142,7 +142,7 @@ public class GetMap {
                 LOGGER.finer("Tiled request detected, activating on the fly meta tiler");
             }
 
-            delegate = new MetatileMapOutputFormat(request, (RasterMapOutputFormat) delegate);
+            delegate = new MetatileMapOutputFormat(request, (RenderedImageMapOutputFormat) delegate);
         }
 
         final List<MapLayerInfo> layers = request.getLayers();

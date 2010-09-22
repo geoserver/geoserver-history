@@ -25,9 +25,9 @@ import org.geotools.util.logging.Logging;
  * @author Didier Richard
  * @version $Id
  */
-public class PNGMapOutputFormat extends DefaultRasterMapOutputFormat {
+public class PNGMapResponse extends RenderedImageMapResponse {
     /** Logger */
-    private static final Logger LOGGER = Logging.getLogger(PNGMapOutputFormat.class);
+    private static final Logger LOGGER = Logging.getLogger(PNGMapResponse.class);
 
     private static final String MIME_TYPE = "image/png";
 
@@ -38,8 +38,8 @@ public class PNGMapOutputFormat extends DefaultRasterMapOutputFormat {
      *            the format name as to be reported in the capabilities document
      * @param wms
      */
-    public PNGMapOutputFormat(WMS wms) {
-        super(MIME_TYPE, OUTPUT_FORMATS, wms);
+    public PNGMapResponse(WMS wms) {
+        super(OUTPUT_FORMATS, wms);
     }
 
     /**
@@ -59,7 +59,7 @@ public class PNGMapOutputFormat extends DefaultRasterMapOutputFormat {
         }
 
         // get the one required by the GetMapRequest
-        final String format = getOutputFormat();
+        final String format = mapContext.getRequest().getFormat();
         if (format.equalsIgnoreCase("image/png8") || (mapContext.getPaletteInverter() != null)) {
             InverseColorMapOp paletteInverter = mapContext.getPaletteInverter();
             image = forceIndexed8Bitmask(image, paletteInverter);
