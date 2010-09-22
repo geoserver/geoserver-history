@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.geoserver.wms.request.GetMapRequest;
+import org.geoserver.wms.response.Map;
 import org.geotools.map.MapLayer;
 import org.geotools.renderer.GTRenderer;
 import org.vfny.geoserver.wms.GetMapProducer;
@@ -22,16 +24,14 @@ import org.vfny.geoserver.wms.WMSMapContext;
  */
 public abstract class AbstractGetMapProducer implements GetMapProducer {
     /**
-     * Holds the map context passed to produceMap, so subclasses can use it if
-     * they need it from inside {@linkPlain #formatImageOutputStream(String,
-     * BufferedImage, OutputStream)}
+     * Holds the map context passed to produceMap, so subclasses can use it if they need it from
+     * inside {@linkPlain #formatImageOutputStream(String, BufferedImage, OutputStream)}
      */
     protected WMSMapContext mapContext;
 
     /**
-     * set to <code>true</code> on <code>abort()</code> so
-     * <code>produceMap</code> leaves the image being worked on to the garbage
-     * collector.
+     * set to <code>true</code> on <code>abort()</code> so <code>produceMap</code> leaves the image
+     * being worked on to the garbage collector.
      */
     protected boolean abortRequested;
 
@@ -41,9 +41,9 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     protected GTRenderer renderer;
 
     /**
-     * Set in produceMap(...) from the requested output format, it's holded just
-     * to be sure that method has been called before getContentType() thus
-     * supporting the workflow contract of the request processing
+     * Set in produceMap(...) from the requested output format, it's holded just to be sure that
+     * method has been called before getContentType() thus supporting the workflow contract of the
+     * request processing
      */
     protected String requestedOutputFormat;
 
@@ -59,19 +59,19 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     }
 
     protected AbstractGetMapProducer(final String mime, final String[] outputFormats) {
-        this(mime,outputFormats != null ? Arrays.asList(outputFormats) : null);
+        this(mime, outputFormats != null ? Arrays.asList(outputFormats) : null);
     }
-    
-    protected AbstractGetMapProducer(final String mime, Collection<String> outputFormats ) {
+
+    protected AbstractGetMapProducer(final String mime, Collection<String> outputFormats) {
         this.mime = mime;
-        if( outputFormats == null ) {
+        if (outputFormats == null) {
             outputFormats = Collections.emptySet();
         }
         // Using a set that performs case insensitive look ups directly.
         Set<String> names = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
         names.addAll(outputFormats);
         outputFormatNames = Collections.unmodifiableSet(names);
-         
+
     }
 
     protected AbstractGetMapProducer() {
@@ -106,9 +106,8 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     /**
      * returns the content encoding for the output data (null for this class)
      * 
-     * @return <code>null</code> since no special encoding is performed while
-     *         writting to the output stream. Do not confuse this with
-     *         getMimeType().
+     * @return <code>null</code> since no special encoding is performed while writting to the output
+     *         stream. Do not confuse this with getMimeType().
      */
     public String getContentEncoding() {
         return null;
@@ -136,9 +135,9 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
         // outputFormatNames definition
         if (outputFormatNames.contains(outputFormat)) {
             this.requestedOutputFormat = outputFormat;
-        }else{
+        } else {
             throw new IllegalArgumentException(outputFormat + " is not a recognized output "
-                + "format for " + getClass().getSimpleName());
+                    + "format for " + getClass().getSimpleName());
         }
     }
 
@@ -149,14 +148,14 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     public String getContentDisposition() {
         return null;
     }
-    
+
 
     /**
-     * Utility method to build a standard content disposition header.
-     * It will concatenate the titles of the various layers in the map context,
-     * or generate "geoserver" instead (in the event no layer title is set).
-     * The file name will be followed by the extension provided, for example, 
+     * Utility method to build a standard content disposition header. It will concatenate the titles
+     * of the various layers in the map context, or generate "geoserver" instead (in the event no
+     * layer title is set). The file name will be followed by the extension provided, for example,
      * to generate layer.pdf extension will be ".pdf"
+     * 
      * @param extension
      * @return
      */
@@ -182,7 +181,5 @@ public abstract class AbstractGetMapProducer implements GetMapProducer {
     public Set<String> getOutputFormatNames() {
         return outputFormatNames;
     }
-    
-    
 
 }

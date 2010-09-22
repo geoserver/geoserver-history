@@ -12,8 +12,7 @@ import org.geoserver.wms.response.GetCapabilitiesTransformer;
 /**
  * WMS GetCapabilities operation default implementation.
  * 
- * @author groldan
- * 
+ * @author Gabriel Roldan
  */
 public class GetCapabilities {
 

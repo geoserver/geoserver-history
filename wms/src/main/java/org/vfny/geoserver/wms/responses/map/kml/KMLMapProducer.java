@@ -17,9 +17,9 @@ import javax.xml.transform.TransformerException;
 import org.geoserver.config.ServiceInfo;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
 /**
@@ -47,9 +47,12 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
 	protected KMLTransformer transformer;
 
 	private List<String> aliases = new ArrayList<String>();
+
+    private WMS wms;
 	
-	public KMLMapProducer() {
+	public KMLMapProducer(WMS wms) {
 		super(MIME_TYPE, OUTPUT_FORMATS);
+            this.wms = wms;
 	}
 
 	/**
@@ -97,7 +100,6 @@ public class KMLMapProducer extends AbstractGetMapProducer implements GetMapProd
 		// TODO: use GeoServer.isVerbose() to determine if we should indent?
 		transformer.setIndentation(3);
 		GetMapRequest request = mapContext.getRequest();
-		WMS wms = request.getWMS();
 		Charset encoding = wms.getCharSet();
 		transformer.setEncoding(encoding);
 	}

@@ -332,7 +332,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 CoordinateReferenceSystem crs = (getMapRequest.getCrs() == null) ? DefaultGeographicCRS.WGS84
                         : getMapRequest.getCrs();
                 currLayer = initializeInlineFeatureLayer(ul, crs);
-                addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+                addStyles(wms, getMapRequest, currLayer, styledLayers[i], layers, styles);
             } else {
 
                 LayerGroupInfo layerGroup = getWMS().getLayerGroupByName(layerName);
@@ -340,7 +340,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                 if (layerGroup != null) {
                     for (LayerInfo layer : layerGroup.getLayers()) {
                         currLayer = new MapLayerInfo(layer);
-                        addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+                        addStyles(wms, getMapRequest, currLayer, styledLayers[i], layers, styles);
                     }
                 } else {
                     LayerInfo layerInfo = getWMS().getLayerByName(layerName);
@@ -348,13 +348,13 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
                         throw new WmsException("Layer not found: " + layerName);
                     }
                     currLayer = new MapLayerInfo(layerInfo);
-                    addStyles(getMapRequest, currLayer, styledLayers[i], layers, styles);
+                    addStyles(wms, getMapRequest, currLayer, styledLayers[i], layers, styles);
                 }
             }
 
         }
 
-        getMapRequest.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
+        getMapRequest.setLayers(layers);
         getMapRequest.setStyles(styles);
     }
 
@@ -376,7 +376,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
      * @param styles
      * @throws IOException
      */
-    public static void addStyles(GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer,
+    public static void addStyles(WMS wms, GetMapRequest request, MapLayerInfo currLayer, StyledLayer layer,
             List<MapLayerInfo> layers, List<Style> styles) throws WmsException, IOException {
         if (currLayer == null) {
             return; // protection
@@ -437,7 +437,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
             if (layerStyles[t] instanceof NamedStyle) {
                 layers.add(currLayer);
                 String styleName = ((NamedStyle) layerStyles[t]).getName();
-                s = request.getWMS().getStyleByName(styleName);
+                s = wms.getStyleByName(styleName);
 
                 if (s == null) {
                     throw new WmsException("couldnt find style named '" + styleName + "'");
@@ -608,7 +608,7 @@ public class GetMapXmlReader extends org.geoserver.ows.XmlRequestReader {
         // Size/Height
         String height = getNodeValue(sizeNode, "Height");
 
-        if (width == null) {
+        if (height == null) {
             throw new Exception(
                     "GetMap XML parser - couldnt find node 'Height' in GetMap/Output/Size tag");
         }

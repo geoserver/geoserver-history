@@ -50,6 +50,7 @@ import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.MapDecoration;
 import org.geoserver.wms.response.MapDecorationLayout;
 import org.geoserver.wms.response.MetatiledMapDecorationLayout;
@@ -81,7 +82,6 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.RasterMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.map.metatile.MetatileMapProducer;
 
 /**
@@ -148,7 +148,7 @@ public abstract class DefaultRasterMapProducer extends
     }
 
     /** WMS Service configuration * */
-    protected WMS wms;
+    protected final WMS wms;
 
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.responses.wms.map");
@@ -163,14 +163,6 @@ public abstract class DefaultRasterMapProducer extends
     private boolean tiled = false;
     
     private List<GridCoverage2D> renderedCoverages = new ArrayList<GridCoverage2D>();
-
-
-    /**
-     * 
-     */
-    public DefaultRasterMapProducer() {
-        this(DEFAULT_MAP_FORMAT, null);
-    }
 
     /**
      * 
@@ -565,12 +557,9 @@ public abstract class DefaultRasterMapProducer extends
             : new MapDecorationLayout();
         }
 
-        WMS wms = mapContext.getRequest().getWMS();
-
-        if (wms != null){ 
-            MapDecorationLayout.Block watermark = 
-                getWatermark(mapContext.getRequest().getWMS().getServiceInfo());
-            if (watermark != null) layout.addBlock(watermark);
+        MapDecorationLayout.Block watermark = getWatermark(wms.getServiceInfo());
+        if (watermark != null) {
+            layout.addBlock(watermark);
         }
     }
 

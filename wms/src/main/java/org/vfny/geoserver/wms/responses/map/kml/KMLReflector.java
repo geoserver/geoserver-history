@@ -200,7 +200,7 @@ public class KMLReflector {
         } else {
             KMLNetworkLinkTransformer transformer = new KMLNetworkLinkTransformer();
             transformer.setIndentation(3);
-            Charset encoding = request.getWMS().getCharSet();
+            Charset encoding = wmsConfiguration.getCharSet();
             transformer.setEncoding(encoding);
             transformer.setEncodeAsRegion(superoverlay);
             transformer.setCachedMode("cached".equals(KMLUtils.getSuperoverlayMode(request)));

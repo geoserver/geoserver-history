@@ -14,9 +14,9 @@ import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.request.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;
+import org.geoserver.wms.response.LegendGraphic;
+import org.geoserver.wms.response.Map;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
 
 /**
  * Web Map Service implementation.
@@ -45,9 +45,9 @@ public interface WebMapService {
     /**
      * GetMap operation.
      */
-    GetMapResponse getMap(GetMapRequest request);
+    Map getMap(GetMapRequest request);
 
-    GetMapResponse map(GetMapRequest request);
+    Map map(GetMapRequest request);
 
     /**
      * DescribeLayer operation.
@@ -62,14 +62,14 @@ public interface WebMapService {
     /**
      * GetLegendGraphic operation.
      */
-    GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request);
+    LegendGraphic getLegendGraphic(GetLegendGraphicRequest request);
 
     /**
      * GetMap reflector
      */
-    GetMapResponse reflect(GetMapRequest request);
+    Map reflect(GetMapRequest request);
 
-    GetMapResponse getMapReflect(GetMapRequest request);
+    Map getMapReflect(GetMapRequest request);
 
     StyledLayerDescriptor getStyles(GetStylesRequest request);
 }

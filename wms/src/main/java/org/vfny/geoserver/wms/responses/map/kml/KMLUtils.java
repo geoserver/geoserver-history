@@ -12,8 +12,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.geoserver.catalog.Catalog;
+import org.geoserver.config.GeoServer;
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
@@ -40,7 +42,6 @@ import org.opengis.filter.FilterFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
@@ -110,6 +111,7 @@ public class KMLUtils {
      * @param bbox The bounding box of the request, may be <code>null</code>.
      * @param kvp Additional or overiding kvp parameters, may be <code>null</code>
      * @param tile Flag controlling whether the request should be made against tile cache
+     * @param geoserver 
      *
      * @return The full url for a getMap request.
      * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, Envelope, String[])}
@@ -120,10 +122,11 @@ public class KMLUtils {
             int layerIndex,
             Envelope bbox,
             String[] kvp,
-            boolean tile) {
+            boolean tile, GeoServer geoserver) {
        
         if ( tile ) {
-            return WMSRequests.getTiledGetMapUrl( mapContext.getRequest(), mapLayer, layerIndex, bbox, kvp );
+            org.geoserver.wms.request.GetMapRequest request = mapContext.getRequest();
+            return WMSRequests.getTiledGetMapUrl(geoserver, request, mapLayer, layerIndex, bbox, kvp );
         }
         
         return WMSRequests.getGetMapUrl( 
@@ -146,12 +149,13 @@ public class KMLUtils {
      * @param layerIndex The index of the layer in the request.
      * @param kvp Additional or overidding kvp parameters, may be <code>null</code>
      * @param tile Flag controlling wether the request should be made against tile cache
+     * @param geoserver 
      *
      * @return The full url for a getMap request.
      * @deprecated use {@link WMSRequests#getGetMapUrl(WMSMapContext, MapLayer, int, Envelope, String[])}
      */
-    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, int layerIndex, boolean tile) {
-        return getMapUrl(mapContext, mapLayer, layerIndex, mapContext.getAreaOfInterest(), null, tile);
+    public static String getMapUrl(WMSMapContext mapContext, MapLayer mapLayer, int layerIndex, boolean tile, GeoServer geoserver) {
+        return getMapUrl(mapContext, mapLayer, layerIndex, mapContext.getAreaOfInterest(), null, tile, geoserver);
     }
 
     /**

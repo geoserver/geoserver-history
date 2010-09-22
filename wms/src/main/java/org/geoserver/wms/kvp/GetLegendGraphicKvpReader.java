@@ -16,11 +16,10 @@ import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.LayerInfo.Type;
+import org.geoserver.ows.KvpRequestReader;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
@@ -36,12 +35,10 @@ import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.geotools.util.NullProgressListener;
+import org.geotools.util.logging.Logging;
 import org.opengis.feature.type.FeatureType;
-import org.vfny.geoserver.Request;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.WmsKvpRequestReader;
-import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 
 /**
  * Key/Value pair set parsed for a GetLegendGraphic request. When calling <code>getRequest</code>
@@ -51,20 +48,22 @@ import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
  * expected request parameters.
  * </p>
  * 
- * @author Gabriel Roldan, Axios Engineering
+ * @author Gabriel Roldan
  * @version $Id$
  * @see org.vfny.geoserver.wms.requests.GetLegendGraphicRequest
  */
-public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
-    /** DOCUMENT ME! */
-    private static final Logger LOGGER = org.geotools.util.logging.Logging
-            .getLogger(GetLegendGraphicKvpReader.class.getPackage().getName());
+public class GetLegendGraphicKvpReader extends KvpRequestReader {
+
+    private static final Logger LOGGER = Logging.getLogger(GetLegendGraphicKvpReader.class);
 
     /**
      * Factory to create styles from inline or remote SLD documents (aka, from SLD_BODY or SLD
      * parameters).
      */
-    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(GeoTools.getDefaultHints());
+    private static final StyleFactory styleFactory = CommonFactoryFinder.getStyleFactory(GeoTools
+            .getDefaultHints());
+
+    private WMS wms;
 
     /**
      * Creates a new GetLegendGraphicKvpReader object.
@@ -74,31 +73,24 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * @param wms
      *            WMS config object.
      */
-    public GetLegendGraphicKvpReader(Map params, WMS wms) {
-        super(params, wms);
+    public GetLegendGraphicKvpReader(WMS wms) {
+        super(GetLegendGraphicRequest.class);
+        this.wms = wms;
     }
 
-    /**
-     * DOCUMENT ME!
-     * 
-     * @param httpRequest
-     *            DOCUMENT ME!
-     * 
-     * @return DOCUMENT ME!
-     * 
-     * @throws ServiceException
-     *             see <code>throws WmsException</code>
-     * @throws WmsException
-     *             if some invalid parameter was passed.
-     */
-    public Request getRequest(HttpServletRequest httpRequest) throws ServiceException {
-        GetLegendGraphicRequest request = new GetLegendGraphicRequest();
-        // TODO: we should really get rid of the HttpServletRequest dependency
-        // beyond the HTTP facade. Neither the request readers should depend on
-        // it
-        request.setHttpServletRequest(httpRequest);
+    @SuppressWarnings("rawtypes")
+    @Override
+    public GetLegendGraphicRequest read(Object req, Map kvp, Map rawKvp) throws Exception {
 
-        String version = super.getRequestVersion();
+        GetLegendGraphicRequest request = (GetLegendGraphicRequest) super.read(req, kvp, rawKvp);
+
+        if (request.getVersion() == null || request.getVersion().length() == 0) {
+            String version = (String) rawKvp.get("WMTVER");
+            if (version == null) {
+                version = wms.getVersion();
+            }
+            request.setVersion(version);
+        }
 
         // Fix for http://jira.codehaus.org/browse/GEOS-710
         // Since at the moment none of the other request do check the version
@@ -109,14 +101,9 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
         // throw new WmsException("Invalid SLD version number \"" + version
         // + "\"");
         // }
-        final String layer = getValue("LAYER");
-        final String format = getValue("FORMAT");
-        final boolean strict;
-        {
-            String strictParam = getValue("STRICT");
-            strict = strictParam == null? true : Boolean.valueOf(strictParam).booleanValue();
-        }
-        request.setStrict(strict);
+        final String layer = (String) rawKvp.get("LAYER");
+        final String format = request.getFormat();
+        final boolean strict = request.isStrict();
         if (strict && layer == null) {
             throw new ServiceException("LAYER parameter not present for GetLegendGraphic",
                     "LayerNotDefined");
@@ -126,12 +113,11 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                     "MissingFormat");
         }
 
-        WMS wms = request.getWMS();
         MapLayerInfo mli = null;
         if (layer != null) {
             LayerInfo layerInfo = wms.getLayerByName(layer);
             if (layerInfo == null) {
-                throw new WmsException(layer + " layer does not exists.");
+                throw new ServiceException(layer + " layer does not exist.");
             }
 
             mli = new MapLayerInfo(layerInfo);
@@ -146,33 +132,32 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                     // it much safer to wrap a reader rather than a coverage in most cases, OOM can
                     // occur otherwise
                     final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) coverageInfo
-                            .getGridCoverageReader(new NullProgressListener(), GeoTools
-                                    .getDefaultHints());
+                            .getGridCoverageReader(new NullProgressListener(),
+                                    GeoTools.getDefaultHints());
                     final SimpleFeatureCollection feature = FeatureUtilities
                             .wrapGridCoverageReader(reader, null);
                     request.setLayer(feature.getSchema());
                 }
             } catch (IOException e) {
-                throw new WmsException(e);
+                throw new ServiceException(e);
             } catch (NoSuchElementException ne) {
-                throw new WmsException(ne, new StringBuffer(layer)
-                        .append(" layer does not exists.").toString(), ne.getLocalizedMessage());
+                throw new ServiceException(new StringBuffer(layer)
+                        .append(" layer does not exists.").toString(), ne);
             } catch (Exception te) {
-                throw new WmsException(te, "Can't obtain the schema for the required layer.", te
-                        .getLocalizedMessage());
+                throw new ServiceException("Can't obtain the schema for the required layer.", te);
             }
         }
-        
-        if (format != null && !GetLegendGraphicResponse.supportsFormat(format)) {
-            throw new WmsException(new StringBuffer("Invalid graphic format: ").append(format)
+
+        if (format != null && null == wms.getLegendGraphicOutputFormat(format)) {
+            throw new ServiceException(new StringBuffer("Invalid graphic format: ").append(format)
                     .toString(), "InvalidFormat");
         }
         request.setFormat(format);
 
         try {
-            parseOptionalParameters(request, mli);
+            parseOptionalParameters(request, mli, rawKvp);
         } catch (IOException e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
 
         return request;
@@ -188,8 +173,7 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * <li>SCALE for the {@link GetLegendGraphicRequest#getScale() scale} property.</li>
      * <li>WIDTH for the {@link GetLegendGraphicRequest#getWidth() width} property.</li>
      * <li>HEIGHT for the {@link GetLegendGraphicRequest#getHeight() height} property.</li>
-     * <li>EXCEPTIONS for the {@link GetLegendGraphicRequest#getExceptionsFormat() exceptions}
-     * property.</li>
+     * <li>EXCEPTIONS for the {@link GetLegendGraphicRequest#getExceptions() exceptions} property.</li>
      * <li>TRANSPARENT for the {@link GetLegendGraphicRequest#isTransparent() transparent} property.
      * </li>
      * <li>LEGEND_OPTIONS for the {@link GetLegendGraphicRequest#getLegendOptions() legendOptions}
@@ -206,46 +190,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * 
      * @task TODO: validate EXCEPTIONS parameter
      */
-    private void parseOptionalParameters(GetLegendGraphicRequest req, MapLayerInfo mli)
+    private void parseOptionalParameters(GetLegendGraphicRequest req, MapLayerInfo mli, Map rawKvp)
             throws IOException {
-        parseStyleAndRule(req, mli);
 
-        // not used by now, since we don't support nested layers yet
-        String featureType = getValue("FEATURETYPE");
+        parseStyleAndRule(req, mli, rawKvp);
 
-        String scale = getValue("SCALE");
-
-        if ((scale != null) && !"".equals(scale)) {
-            double scaleFactor = Double.valueOf(scale).doubleValue();
-            req.setScale(scaleFactor);
-        }
-
-        String width = getValue("WIDTH");
-
-        if ((width != null) && !"".equals(width)) {
-            int legendW = Integer.valueOf(width).intValue();
-            req.setWidth(legendW);
-        }
-
-        String height = getValue("HEIGHT");
-
-        if ((height != null) && !"".equals(height)) {
-            int legendH = Integer.valueOf(height).intValue();
-            req.setHeight(legendH);
-        }
-
-        String exceptions = getValue("EXCEPTIONS");
-
-        if (exceptions != null) {
-            req.setExceptionsFormat(exceptions);
-        }
-
-        String transparentParam = getValue("TRANSPARENT");
-        boolean transparentBackground = "true".equalsIgnoreCase(transparentParam);
-        req.setTransparent(transparentBackground);
-
+        String legendOptions = (String) rawKvp.get("LEGEND_OPTIONS");
         // the LEGEND_OPTIONS parameter gets parsed here.
-        req.setLegendOptions(Requests.parseOptionParameter(getValue("LEGEND_OPTIONS")));
+        req.setLegendOptions(Requests.parseOptionParameter(legendOptions));
     }
 
     /**
@@ -267,11 +219,11 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
      * @param ftype
      * @throws IOException
      */
-    private void parseStyleAndRule(GetLegendGraphicRequest req, MapLayerInfo layer)
+    private void parseStyleAndRule(GetLegendGraphicRequest req, MapLayerInfo layer, Map rawKvp)
             throws IOException {
-        String styleName = getValue("STYLE");
-        String sldUrl = getValue("SLD");
-        String sldBody = getValue("SLD_BODY");
+        String styleName = (String) rawKvp.get("STYLE");
+        String sldUrl = (String) rawKvp.get("SLD");
+        String sldBody = (String) rawKvp.get("SLD_BODY");
 
         if (LOGGER.isLoggable(Level.FINE)) {
             LOGGER.fine(new StringBuffer("looking for style ").append(styleName).toString());
@@ -300,14 +252,14 @@ public class GetLegendGraphicKvpReader extends WmsKvpRequestReader {
                 LOGGER.finer("taking style from STYLE parameter");
             }
 
-            sldStyle = getWMS().getStyleByName(styleName);
+            sldStyle = wms.getStyleByName(styleName);
         } else {
             sldStyle = layer.getDefaultStyle();
         }
 
         req.setStyle(sldStyle);
 
-        String rule = getValue("RULE");
+        String rule = (String) rawKvp.get("RULE");
         Rule sldRule = extractRule(sldStyle, rule);
 
         if (sldRule != null) {

@@ -16,10 +16,10 @@ import javax.xml.transform.TransformerException;
 
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 
 public class AtomGeoRSSMapProducer implements GetMapProducer {
     /** mime type */
@@ -41,7 +41,10 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
 
     private String outputFormat = MIME_TYPE;
 
-    public AtomGeoRSSMapProducer() {
+    private WMS wms;
+
+    public AtomGeoRSSMapProducer(WMS wms) {
+        this.wms = wms;
     }
 
     public String getContentType() throws IllegalStateException {
@@ -59,7 +62,7 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
     }
 
     public void writeTo(OutputStream out) throws ServiceException, IOException {
-        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
+        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer(wms);
         GetMapRequest request = map.getRequest();
 
         String geometryEncoding = (String) request.getFormatOptions().get("encoding");
@@ -71,7 +74,6 @@ public class AtomGeoRSSMapProducer implements GetMapProducer {
             tx.setGeometryEncoding(GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
         }
 
-        WMS wms = request.getWMS();
         Charset encoding = wms.getCharSet();
         tx.setEncoding(encoding);
         try {

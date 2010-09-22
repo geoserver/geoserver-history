@@ -26,6 +26,7 @@ import org.geoserver.ows.LocalWorkspace;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.map.WMSMapLayer;
@@ -35,7 +36,6 @@ import org.opengis.referencing.crs.ProjectedCRS;
 import org.vfny.geoserver.wms.GetMapProducer;
 import org.vfny.geoserver.wms.WMSMapContext;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.vfny.geoserver.wms.responses.AbstractGetMapProducer;
 
 import freemarker.ext.beans.BeansWrapper;
@@ -183,7 +183,7 @@ public class OpenLayersMapProducer extends AbstractGetMapProducer implements
 	    if(mapContext.getLayerCount() != 1 || mapContext.getRequest() == null)
 	        return Collections.emptyList();
 	    
-	    MapLayerInfo info = mapContext.getRequest().getLayers()[0];
+	    MapLayerInfo info = mapContext.getRequest().getLayers().get(0);
 	    return info.getOtherStyleNames();
 	}
 

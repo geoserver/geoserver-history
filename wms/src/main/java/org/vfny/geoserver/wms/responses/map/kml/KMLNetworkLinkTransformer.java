@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 
 import org.geoserver.ows.util.ResponseUtils;
 import org.geoserver.wms.MapLayerInfo;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.styling.Style;
 import org.geotools.xml.transform.TransformerBase;
 import org.geotools.xml.transform.Translator;
-import org.vfny.geoserver.wms.requests.GetMapRequest;
 import org.xml.sax.ContentHandler;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -80,12 +80,12 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
         }
         
         protected void encodeAsSuperOverlay(GetMapRequest request) {
-            MapLayerInfo[] layers = request.getLayers();
+            List<MapLayerInfo> layers = request.getLayers();
             List<Style> styles = request.getStyles();
-            for ( int i = 0; i < layers.length; i++ ) {
+            for ( int i = 0; i < layers.size(); i++ ) {
                 if("cached".equals(KMLUtils.getSuperoverlayMode(request)) &&
                         KMLUtils.isRequestGWCCompatible(request, i)) {
-                    encodeGWCLink(request, layers[i]);
+                    encodeGWCLink(request, layers.get(i));
                 } else {
                     encodeLayerSuperOverlay(request, layers, styles, i);
                 }
@@ -111,10 +111,10 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             end("NetworkLink");
         }
 
-        private void encodeLayerSuperOverlay(GetMapRequest request, MapLayerInfo[] layers,
+        private void encodeLayerSuperOverlay(GetMapRequest request, List<MapLayerInfo> layers,
                 List<Style> styles, int i) {
             start("NetworkLink");
-            element( "name", layers[i].getName() );
+            element( "name", layers.get(i).getName() );
             element( "open", "1" );
             element( "visibility", "1" );
           
@@ -140,7 +140,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             start("Link" );
   
             String style = i < styles.size()? styles.get(i).getName() : null;
-            String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), i, style, null, null);
+            String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style, null, null);
             start( "href" );
             cdata( href );
             end( "href" );
@@ -152,11 +152,11 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
         }
         
         protected void encodeAsOverlay( GetMapRequest request ) {
-            MapLayerInfo[] layers = request.getLayers();
+            List<MapLayerInfo> layers = request.getLayers();
             List<Style> styles = request.getStyles();
-            for ( int i = 0; i < layers.length; i++ ) {
+            for ( int i = 0; i < layers.size(); i++ ) {
                 start("NetworkLink");
-                element( "name", layers[i].getName() );
+                element( "name", layers.get(i).getName() );
                 element( "open", "1" );
                 element( "visibility", "1" );
                 
@@ -167,7 +167,7 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
                 request.setBbox(null);
                 
                 String style = i < styles.size()? styles.get(i).getName() : null;
-                String href = WMSRequests.getGetMapUrl(request, layers[i].getName(), i, style, null, null);
+                String href = WMSRequests.getGetMapUrl(request, layers.get(i).getName(), i, style, null, null);
                 start( "href" );
                 cdata( href );
                 end( "href" );
@@ -185,12 +185,12 @@ public class KMLNetworkLinkTransformer extends TransformerBase {
             Envelope e = new Envelope();
             e.setToNull();
             
-            for ( int i = 0; i < request.getLayers().length; i++ ) {
-                MapLayerInfo layer = request.getLayers()[i];
+            for ( int i = 0; i < request.getLayers().size(); i++ ) {
+                MapLayerInfo layer = request.getLayers().get(i);
                 
                 Envelope b = null;
                 try {
-                    b = request.getLayers()[i].getLatLongBoundingBox();
+                    b = request.getLayers().get(i).getLatLongBoundingBox();
                 } catch (IOException e1) {
                     LOGGER.warning( "Unable to calculate bounds for " + layer.getName() );
                     continue;

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.geoserver.wms.WMS;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureSource;
@@ -67,8 +68,8 @@ public class KMLRasterTransformer extends KMLMapTransformer {
      */
     boolean inline = false;
 
-    public KMLRasterTransformer(WMSMapContext mapContext) {
-        super(mapContext, null);
+    public KMLRasterTransformer(WMS wms, WMSMapContext mapContext) {
+        super(wms, mapContext, null);
 
         setNamespaceDeclarationEnabled(false);
     }

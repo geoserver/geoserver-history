@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.request.DescribeLayerRequest;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.geoserver.wms.request.GetFeatureInfoRequest;
@@ -24,6 +25,8 @@ import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.request.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;
+import org.geoserver.wms.response.LegendGraphic;
+import org.geoserver.wms.response.Map;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -38,11 +41,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
-import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLReflector;
-import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -220,14 +219,16 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#getMap(GetMapRequest)
      */
-    public GetMapResponse getMap(GetMapRequest request) {
-        return new GetMapResponse(WMSExtensions.findMapProducers(context));
+    public Map getMap(GetMapRequest request) {
+        GetMap getMap = (GetMap) context.getBean("wmsGetMap");
+        
+        return getMap.run(request);
     }
 
     /**
      * @see WebMapService#map(GetMapRequest)
      */
-    public GetMapResponse map(GetMapRequest request) {
+    public Map map(GetMapRequest request) {
         return getMap(request);
     }
 
@@ -243,11 +244,11 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#getLegendGraphic(GetLegendGraphicRequest)
      */
-    public GetLegendGraphicResponse getLegendGraphic(GetLegendGraphicRequest request) {
+    public LegendGraphic getLegendGraphic(GetLegendGraphicRequest request) {
         GetLegendGraphic getLegendGraphic = (GetLegendGraphic) context
                 .getBean("wmsGetLegendGraphic");
 
-        return (GetLegendGraphicResponse) getLegendGraphic.getResponse();
+        return getLegendGraphic.run(request);
     }
 
     public void kml(GetMapRequest getMap, HttpServletResponse response) {
@@ -262,7 +263,7 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#reflect(GetMapRequest)
      */
-    public GetMapResponse reflect(GetMapRequest request) {
+    public Map reflect(GetMapRequest request) {
         return getMapReflect(request);
     }
 
@@ -282,7 +283,7 @@ public class DefaultWebMapService implements WebMapService,
      * 
      * @see WebMapService#getMapReflect(GetMapRequest)
      */
-    public GetMapResponse getMapReflect(GetMapRequest request) {
+    public Map getMapReflect(GetMapRequest request) {
         GetMapRequest getMap = (GetMapRequest) request;
 
         // set the defaults
@@ -362,7 +363,7 @@ public class DefaultWebMapService implements WebMapService,
         try {
             reqCRS = CRS.decode(reqSRS);
         } catch (Exception e) {
-            throw new WmsException(e);
+            throw new ServiceException(e);
         }
 
         // Ready to determine the bounds based on the layers, if not specified
@@ -387,8 +388,8 @@ public class DefaultWebMapService implements WebMapService,
                                         .getCoordinateReferenceSystem();
                                 nativeBbox = curbbox.transform(nativeCrs, true);
                             } catch (Exception e) {
-                                throw new WmsException(
-                                        "Best effort native bbox computation failed", "", e);
+                                throw new ServiceException(
+                                        "Best effort native bbox computation failed", e);
                             }
                         }
                         curbbox = nativeBbox;

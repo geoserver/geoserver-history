@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.MapDecorationLayout;
 import org.geotools.renderer.lite.StreamingRenderer;
 import org.vfny.geoserver.wms.RasterMapProducer;
@@ -189,7 +190,7 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             
             // render the watermark
             MapDecorationLayout.Block watermark = 
-                DefaultRasterMapProducer.getWatermark(this.mapContext.getRequest().getWMS().getServiceInfo());
+                DefaultRasterMapProducer.getWatermark(wms.getServiceInfo());
 
             if (watermark != null) {
                 MapDecorationLayout layout = new MapDecorationLayout();
@@ -240,6 +241,21 @@ class PDFMapProducer extends AbstractRasterMapProducer implements
             try {
                 String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getName()
                         .getLocalPart();
+
+                if ((title != null) && !title.equals("")) {
+                    return "attachment; filename=" + title + ".pdf";
+                }
+            } catch (NullPointerException e) {
+            }
+        }
+
+        return "attachment; filename=geoserver.pdf";
+    }
+
+    public String getContentDisposition(GetMapRequest request, org.geoserver.wms.response.Map result){
+        if (request.getLayers().size() > 0) {
+            try {
+                String title = request.getLayers().get(0).getName();
 
                 if ((title != null) && !title.equals("")) {
                     return "attachment; filename=" + title + ".pdf";

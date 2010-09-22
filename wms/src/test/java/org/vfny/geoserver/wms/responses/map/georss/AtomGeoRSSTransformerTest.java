@@ -39,7 +39,7 @@ public class AtomGeoRSSTransformerTest extends WMSTestSupport {
     }
 
     public void testLatLongInternal() throws Exception {
-        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
+        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer(getWMS());
         tx.setGeometryEncoding(AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
         tx.setIndentation(2);
 
@@ -88,7 +88,7 @@ public class AtomGeoRSSTransformerTest extends WMSTestSupport {
     }
 
     public void testSimpleInternal() throws Exception {
-        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer();
+        AtomGeoRSSTransformer tx = new AtomGeoRSSTransformer(getWMS());
         tx.setGeometryEncoding(AtomGeoRSSTransformer.GeometryEncoding.SIMPLE);
         tx.setIndentation(2);
 

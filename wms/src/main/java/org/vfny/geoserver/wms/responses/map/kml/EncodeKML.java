@@ -24,6 +24,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.media.jai.GraphicsJAI;
 
+import org.geoserver.wms.WMS;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -93,13 +94,16 @@ public class EncodeKML {
     /** Flag to be monotored by writer loops */
     private boolean abortProcess;
 
+    private WMS wms;
+
     /**
      * Creates a new EncodeKML object.
      *
      * @param mapContext A full description of the map to be encoded.
      */
-    public EncodeKML(WMSMapContext mapContext) {
+    public EncodeKML(WMS wms, WMSMapContext mapContext) {
         this.mapContext = mapContext;
+        this.wms = wms;
     }
 
     /**
@@ -364,7 +368,7 @@ public class EncodeKML {
                 SimpleFeatureCollection fc = fSource.getFeatures(q);
 
                 // decide wheter to render vector or raster based on kmscore
-                int kmscore = mapContext.getRequest().getWMS().getKmScore();
+                int kmscore = wms.getKmScore();
                 Object kmScoreObj = mapContext.getRequest().getFormatOptions().get("kmscore");
                 if(kmScoreObj != null) {
                     kmscore = (Integer) kmScoreObj;

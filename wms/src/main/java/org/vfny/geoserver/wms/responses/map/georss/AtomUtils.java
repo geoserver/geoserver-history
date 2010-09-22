@@ -10,12 +10,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.response.featureinfo.FeatureTemplate;
 import org.geoserver.wms.util.WMSRequests;
 import org.geotools.map.MapLayer;
 import org.opengis.feature.simple.SimpleFeature;
 import org.vfny.geoserver.util.Requests;
 import org.vfny.geoserver.wms.WMSMapContext;
-import org.vfny.geoserver.wms.responses.featureInfo.FeatureTemplate;
 
 /**
  * The AtomUtils class provides some static methods useful in producing atom metadata related to 
@@ -76,21 +77,21 @@ public final class AtomUtils {
     }
 
     //TODO: use an html based output format
-    public static String getEntryURL(SimpleFeature feature, WMSMapContext context){
+    public static String getEntryURL(WMS wms, SimpleFeature feature, WMSMapContext context){
         String nsUri = feature.getType().getName().getNamespaceURI();
-        String nsPrefix = context.getRequest().getWMS().getNameSpacePrefix(nsUri);
+        String nsPrefix = wms.getNameSpacePrefix(nsUri);
 
         return Requests.getBaseUrl(
                 context.getRequest().getHttpRequest(),
-                context.getRequest().getWMS().getGeoServer()
+                wms.getGeoServer()
                 )
             + "wms/reflect?format=application/atom+xml&layers=" 
             + nsPrefix + ":" + feature.getType().getTypeName() 
             + "&featureid=" + feature.getID();
     }
 
-    public static String getEntryURI(SimpleFeature feature, WMSMapContext context){
-        return getEntryURL(feature, context);
+    public static String getEntryURI(WMS wms, SimpleFeature feature, WMSMapContext context){
+        return getEntryURL(wms, feature, context);
     }
 
     public static String getFeatureTitle(SimpleFeature feature){

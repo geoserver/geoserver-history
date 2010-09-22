@@ -132,6 +132,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
         return request;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public GetMapRequest read(Object request, Map kvp, Map rawKvp) throws Exception {
         GetMapRequest getMap = (GetMapRequest) super.read(request, kvp, rawKvp);
@@ -187,7 +188,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     layers.add((MapLayerInfo) o);
                 }
             }
-            getMap.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
+            getMap.setLayers(layers);
         }
 
 
@@ -338,12 +339,12 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
 
             // then proceed with standard processing
-            MapLayerInfo[] layers = getMap.getLayers();
-            if (isParseStyle() && (layers != null) && (layers.length > 0)) {
+            List<MapLayerInfo> layers = getMap.getLayers();
+            if (isParseStyle() && (layers != null) && (layers.size() > 0)) {
                 final List styles = getMap.getStyles();
 
-                if (layers.length != styles.size()) {
-                    String msg = layers.length + " layers requested, but found " + styles.size()
+                if (layers.size() != styles.size()) {
+                    String msg = layers.size() + " layers requested, but found " + styles.size()
                             + " styles specified. ";
                     throw new WmsException(msg, getClass().getName());
                 }
@@ -353,22 +354,22 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
                     if (currStyle == null)
                         throw new WmsException(
                                 "Could not find a style for layer "
-                                        + getMap.getLayers()[i].getName()
+                                        + getMap.getLayers().get(i).getName()
                                         + ", either none was specified or no default style is available for it",
                                 "NoDefaultStyle");
-                    checkStyle(currStyle, layers[i]);
+                    checkStyle(currStyle, layers.get(i));
                     if (LOGGER.isLoggable(Level.FINE)) {
                         LOGGER.fine(new StringBuffer("establishing ").append(currStyle.getName())
-                                .append(" style for ").append(layers[i].getName()).toString());
+                                .append(" style for ").append(layers.get(i).getName()).toString());
                     }
                 }
             }
             
             // check filter size matches with the layer list size
             List mapFilters = getMap.getFilter();
-            MapLayerInfo[] mapLayers = getMap.getLayers();
-            if (mapFilters != null && mapFilters.size() != mapLayers.length) {
-                String msg = mapLayers.length
+            List<MapLayerInfo> mapLayers = getMap.getLayers();
+            if (mapFilters != null && mapFilters.size() != mapLayers.size()) {
+                String msg = mapLayers.size()
                         + " layers requested, but found " + mapFilters.size()
                         + " filters specified. ";
                 throw new WmsException(msg, getClass().getName());
@@ -541,7 +542,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
         }
 
-        request.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
+        request.setLayers(layers);
         request.setStyles(styles);
     }
 
@@ -651,7 +652,7 @@ public class GetMapKvpRequestReader extends KvpRequestReader implements HttpServ
             }
         }
 
-        request.setLayers(layers.toArray(new MapLayerInfo[layers.size()]));
+        request.setLayers(layers);
         request.setStyles(styles);
     }
 

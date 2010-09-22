@@ -1,7 +1,8 @@
 /* Copyright (c) 2010 TOPP - www.openplans.org.  All rights reserved.
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
- */package org.geoserver.wms;
+ */
+package org.geoserver.wms;
 
 import static org.geoserver.ows.util.ResponseUtils.baseURL;
 
