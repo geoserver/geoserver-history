@@ -94,14 +94,6 @@ public class OpenLayersMapOutputFormat implements GetMapOutputFormat {
     public OpenLayersMapOutputFormat(WMS wms) {
         this.wms = wms;
     }
-    
-    /**
-     * @return {@code true}
-     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-     */
-    public boolean enabled() {
-        return true;
-    }
 
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()

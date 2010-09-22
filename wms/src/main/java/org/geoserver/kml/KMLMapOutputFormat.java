@@ -42,14 +42,6 @@ public class KMLMapOutputFormat implements GetMapOutputFormat {
     public KMLMapOutputFormat(WMS wms) {
         this.wms = wms;
     }
-
-    /**
-     * @return {@code true}
-     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-     */
-    public boolean enabled() {
-        return true;
-    }
     
     /**
      * @see org.geoserver.wms.GetMapOutputFormat#getOutputFormatNames()

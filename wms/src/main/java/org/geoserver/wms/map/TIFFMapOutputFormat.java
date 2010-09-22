@@ -126,9 +126,4 @@ public final class TIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
             LOGGER.fine("Writing tiff image done!");
         }
     }
-
-    public String getContentDisposition() {
-        // can be null
-        return null;
-    }
 }

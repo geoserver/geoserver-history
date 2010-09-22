@@ -61,14 +61,6 @@ public abstract class AbstractMapOutputFormat extends Response implements GetMap
     }
 
     /**
-     * @return {@code true}, subclasses should override as/if needed
-     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-     */
-    public boolean enabled() {
-        return true;
-    }
-
-    /**
      * Halts the loading. Right now just calls renderer.stopRendering.
      */
     // public void abort() {

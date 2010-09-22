@@ -396,9 +396,12 @@
     <bean id="SVGStreamingMapOutputFormat" 
         singleton="true"
         class="org.geoserver.wms.svg.SVGStreamingMapOutputFormat">
-        <constructor-arg index="0" ref="wms"/>
     </bean>
 
+    <bean id="wmsSVGStrategyExclusionFilter" class="org.geoserver.wms.svg.SVGStrategyExclusionFilter">
+      <description>Excludes the SVG map producer that's to be disabled based on the WMS preferences</description>
+	  <property name="WMS"><ref bean="wms"/></property>
+    </bean>
  	
 	<!-- http url mapping -->
 	<bean id="kmlURLMapping" 

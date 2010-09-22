@@ -70,7 +70,7 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
         super(BatikSVGMap.class, SVG.OUTPUT_FORMATS);
         this.wms = wms;
     }
-    
+
     /**
      * @return same as {@link #getMimeType()}
      * @see org.geoserver.ows.Response#getMimeType(java.lang.Object,
@@ -79,26 +79,6 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
     @Override
     public String getMimeType(Object value, Operation operation) throws ServiceException {
         return getMimeType();
-    }
-    
-    /**
-     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_BATIK Batik} svg
-     *         strategy
-     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-     */
-    public boolean enabled() {
-        boolean enabled = SVG.canHandle(wms, WMS.SVG_BATIK);
-        return enabled;
-    }
-
-    /**
-     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_BATIK Batik} svg
-     *         strategy
-     * @see org.geoserver.ows.Response#canHandle(org.geoserver.platform.Operation)
-     */
-    @Override
-    public boolean canHandle(Operation operation) {
-       return enabled();
     }
 
     /**
@@ -147,10 +127,10 @@ public final class SVGBatikMapOutputFormat extends Response implements GetMapOut
             ServiceException {
 
         BatikSVGMap map = (BatikSVGMap) value;
-        try{
+        try {
             SVGGraphics2D graphics = map.getGraphics();
             graphics.stream(new OutputStreamWriter(output, "UTF-8"));
-        }finally{
+        } finally {
             map.dispose();
         }
     }

@@ -71,5 +71,4 @@ public interface GetMapOutputFormat {
      */
     public String getMimeType();
 
-    public boolean enabled();
 }

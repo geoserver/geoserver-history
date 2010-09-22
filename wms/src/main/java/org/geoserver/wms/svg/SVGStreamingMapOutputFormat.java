@@ -12,7 +12,6 @@ import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetMapOutputFormat;
-import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
 
 /**
@@ -23,11 +22,8 @@ import org.geoserver.wms.WMSMapContext;
  */
 public final class SVGStreamingMapOutputFormat extends Response implements GetMapOutputFormat {
 
-    private WMS wms;
-
-    public SVGStreamingMapOutputFormat(WMS wms) {
+    public SVGStreamingMapOutputFormat() {
         super(EncodeSVG.class, SVG.OUTPUT_FORMATS);
-        this.wms = wms;
     }
 
     /**
@@ -52,25 +48,6 @@ public final class SVGStreamingMapOutputFormat extends Response implements GetMa
         } finally {
             map.dispose();
         }
-    }
-
-    /**
-     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_SIMPLE streaming} svg
-     *         strategy
-     * @see org.geoserver.wms.GetMapOutputFormat#enabled()
-     */
-    public boolean enabled() {
-        boolean enabled = SVG.canHandle(wms, WMS.SVG_SIMPLE);
-        return enabled;
-    }
-    
-    /**
-     * @return {@code true} if the WMS is configured for the {@link WMS#SVG_SIMPLE streaming} svg
-     *         strategy
-     * @see org.geoserver.ows.Response#canHandle(org.geoserver.platform.Operation)
-     */
-    public boolean canHandle(Operation operation) {
-        return enabled();
     }
 
     /**
