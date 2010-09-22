@@ -54,7 +54,7 @@ public class GeoTIFFMapOutputFormat extends DefaultRasterMapOutputFormat {
      *            that is asking us to encode the image.
      */
     public GeoTIFFMapOutputFormat(WMS wms) {
-        super(IMAGE_GEOTIFF, OUTPUT_FORMATS, wms);
+        super("image/tiff", OUTPUT_FORMATS, wms);
     }
 
     public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
