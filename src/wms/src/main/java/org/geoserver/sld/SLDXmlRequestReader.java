@@ -6,7 +6,7 @@ import java.util.Map;
 import org.geoserver.ows.XmlRequestReader;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.kvp.GetMapKvpRequestReader;
+import org.geoserver.wms.map.GetMapKvpRequestReader;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.SLDParser;
 import org.geotools.styling.StyleFactory;

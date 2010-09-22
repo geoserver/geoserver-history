@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.xml;
+package org.geoserver.wms.map;
 
 import java.awt.Color;
 import java.io.BufferedOutputStream;

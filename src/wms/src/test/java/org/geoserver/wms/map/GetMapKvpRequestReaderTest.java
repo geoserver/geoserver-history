@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.kvp;
+package org.geoserver.wms.map;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -29,6 +29,7 @@ import org.geoserver.test.ows.KvpRequestReaderTestSupport;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
+import org.geoserver.wms.kvp.PaletteManager;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.styling.Style;
 import org.opengis.filter.FilterFactory;

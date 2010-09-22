@@ -203,7 +203,7 @@
 	</bean>
 	
 	<bean id="getMapKvpReader"
-		class="org.geoserver.wms.kvp.GetMapKvpRequestReader">
+		class="org.geoserver.wms.map.GetMapKvpRequestReader">
         <constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getFeatureInfoKvpReader"
@@ -233,7 +233,7 @@
     </bean>
     
      <bean id="getMapXmlReader" 
-    	class="org.geoserver.wms.xml.GetMapXmlReader">
+    	class="org.geoserver.wms.map.GetMapXmlReader">
     	<constructor-arg ref="wms"/>
     </bean>
    	<bean id="sldXmlReader"

@@ -14,8 +14,8 @@ import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.GetMapRequest;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.kvp.GetMapKvpRequestReader;
 import org.geoserver.wms.kvp.MapLayerInfoKvpParser;
+import org.geoserver.wms.map.GetMapKvpRequestReader;
 
 /**
  * Builds a GetFeatureInfo request object given by a set of CGI parameters supplied in the

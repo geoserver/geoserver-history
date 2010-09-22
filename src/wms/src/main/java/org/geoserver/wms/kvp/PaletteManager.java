@@ -28,7 +28,7 @@ import org.vfny.geoserver.global.GeoserverDataDirectory;
  * @author Simone Giannecchini - GeoSolutions
  * 
  */
-class PaletteManager {
+public class PaletteManager {
     private static final Logger LOG = org.geotools.util.logging.Logging.getLogger("PaletteManager");
 
     /**
