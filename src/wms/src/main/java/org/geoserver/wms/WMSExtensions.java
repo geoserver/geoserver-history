@@ -10,9 +10,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.geoserver.platform.GeoServerExtensions;
+import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.springframework.context.ApplicationContext;
 import org.vfny.geoserver.wms.GetMapProducer;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Utility class uses to process GeoServer WMS extension points.
@@ -30,30 +30,28 @@ public class WMSExtensions {
     }
 
     /**
-     * Finds out a {@link GetMapProducer} specialized in generating the
-     * requested map format, registered in the spring context.
+     * Finds out a {@link GetMapProducer} specialized in generating the requested map format,
+     * registered in the spring context.
      * 
      * @param outputFormat
-     *            a request parameter object wich holds the processed request
-     *            objects, such as layers, bbox, outpu format, etc.
+     *            a request parameter object wich holds the processed request objects, such as
+     *            layers, bbox, outpu format, etc.
      * 
-     * @return A specialization of <code>GetMapDelegate</code> wich can
-     *         produce the requested output map format, or {@code null} if none
-     *         is found
-     * 
-     * @throws WmsException
-     *             if no specialization is configured for the output format
-     *             specified in <code>request</code> or if it can't be
-     *             instantiated
+     * @return A specialization of <code>GetMapDelegate</code> wich can produce the requested output
+     *         map format, or {@code null} if none is found
      */
     public static GetMapProducer findMapProducer(final String outputFormat,
             final ApplicationContext applicationContext) {
+
         final Collection<GetMapProducer> producers;
         producers = WMSExtensions.findMapProducers(applicationContext);
 
         return findMapProducer(outputFormat, producers);
     }
 
+    /**
+     * @return {@link GetMapProducer} for the requested outputFormat, or {@code null}
+     */
     public static GetMapProducer findMapProducer(String outputFormat,
             Collection<GetMapProducer> producers) {
 
@@ -67,5 +65,13 @@ public class WMSExtensions {
             }
         }
         return null;
+    }
+
+    /**
+     * @return the configured {@link GetFeatureInfoOutputFormat}s
+     */
+    public static List<GetFeatureInfoOutputFormat> findFeatureInfoFormats(
+            ApplicationContext applicationContext) {
+        return GeoServerExtensions.extensions(GetFeatureInfoOutputFormat.class, applicationContext);
     }
 }

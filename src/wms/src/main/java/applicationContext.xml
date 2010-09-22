@@ -46,6 +46,7 @@
 	<bean id="wmsGetFeatureInfo"
 		class="org.geoserver.wms.GetFeatureInfo">
       <constructor-arg ref="wms"/>
+      <constructor-arg ref="wmsGetFeatureInfoPlainText"/> <!-- default output format -->
 	</bean>
 		
 	<bean id="wmsGetLegendGraphic"
@@ -56,13 +57,20 @@
 	<bean id="wmsGetMap"
 		class="org.vfny.geoserver.wms.servlets.GetMap">
 	      <constructor-arg ref="wms"/>
-    </bean>	
-	
-	<!-- bean id="wmsGetMapLegacy"
-		class="org.vfny.geoserver.wms.servlets.GetMapLegacy"
-		parent="wmsService">
-	</bean-->	
-	
+    </bean>
+  
+    <!-- GetFeatureInfo output formats -->
+    <bean id="wmsGetFeatureInfoPlainText" class="org.geoserver.wms.response.featureinfo.TextFeatureInfoOutputFormat">
+      <constructor-arg ref="wms" />
+    </bean>
+  
+    <bean id="wmsGetFeatureInfoGML2" class="org.geoserver.wms.response.featureinfo.GML2FeatureInfoOutputFormat">
+      <constructor-arg ref="wms" />
+    </bean>
+    <bean id="wmsGetFeatureInfoHTML" class="org.geoserver.wms.response.featureinfo.HTMLFeatureInfoOutputFormat">
+      <constructor-arg ref="wms" />
+    </bean>
+        
 	<!-- wms service + descriptor -->
  	<bean id="wmsService2" class="org.geoserver.wms.DefaultWebMapService">
  	  <constructor-arg ref="wms"/>

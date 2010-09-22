@@ -1,4 +1,4 @@
-package org.vfny.geoserver.wms.responses.featureInfo;
+package org.geoserver.wms.response.featureinfo;
 
 import java.io.IOException;
 
