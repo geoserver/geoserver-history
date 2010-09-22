@@ -2,10 +2,8 @@ package org.geoserver.wms;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -14,15 +12,6 @@ import org.geoserver.test.GeoServerTestSupport;
 import org.w3c.dom.Document;
 
 public class ProxyBaseURLIntegrationTest extends GeoServerTestSupport {
-    
-    /** default base url to feed a WMSCapsTransformer with for it to append the DTD location */
-    private static final String baseUrl = "http://localhost/geoserver";
-
-    /** test map formats to feed a WMSCapsTransformer with */
-    private static final Set<String> mapFormats = Collections.singleton("image/png");
-
-    /** test legend formats to feed a WMSCapsTransformer with */
-    private static final Set<String> legendFormats = Collections.singleton("image/png");
     
     @Override
     protected void setUpInternal() throws Exception {
@@ -41,7 +30,7 @@ public class ProxyBaseURLIntegrationTest extends GeoServerTestSupport {
         getGeoServer().save(gs);
 
         Document dom = getAsDOM("wms?request=GetCapabilities");
-        print(dom);
+        //print(dom);
 
         String serviceOnlineRes = "/WMT_MS_Capabilities/Service/OnlineResource/@xlink:href";
         // @REVISIT: shouldn't it be WmsInfo.getOnlineResource?

@@ -202,7 +202,7 @@ public class WMSMockData {
          */
         public Map produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
             produceMapCalled = true;
-            return new Map() {
+            return new Map(mapContext) {
             };
         }
 

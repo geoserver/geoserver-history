@@ -2,6 +2,7 @@ package org.geoserver.wms;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.logging.Level;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletResponse;
@@ -11,6 +12,7 @@ import junit.framework.Test;
 
 import org.geoserver.data.test.MockData;
 import org.geoserver.test.RemoteOWSTestSupport;
+import org.geotools.util.logging.Logging;
 import org.w3c.dom.Document;
 
 import com.mockrunner.mock.web.MockHttpServletResponse;
@@ -61,6 +63,11 @@ public class GetMapIntegrationTest extends WMSTestSupport {
      */
     public static Test suite() {
         return new OneTimeTestSetup(new GetMapIntegrationTest());
+    }
+    
+    @Override
+    public void setUpInternal(){
+        Logging.getLogger("org.geoserver.ows").setLevel(Level.OFF);
     }
 
     @Override

@@ -64,6 +64,12 @@ public class KMLTransformerTest extends WMSTestSupport {
     }
 
     @Override
+    protected void tearDownInternal() {
+        mapContext.dispose();
+        // mapContext.clearLayerList();
+    }
+
+    @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
         dataDirectory.addStyle("allsymbolizers", getClass().getResource("allsymbolizers.sld"));
@@ -78,7 +84,6 @@ public class KMLTransformerTest extends WMSTestSupport {
                 "styles/graphics/bridgesubdir.png");
     }
 
-    @SuppressWarnings("unchecked")
     public void testVectorTransformer() throws Exception {
         KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
         transformer.setIndentation(2);
@@ -100,26 +105,31 @@ public class KMLTransformerTest extends WMSTestSupport {
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     public void testExternalGraphicBackround() throws Exception {
 
         MapLayer mapLayer = createMapLayer(MockData.POINTS, "Bridge");
-        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
-        mapContext.addLayer(mapLayer);
-        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
-        transformer.setIndentation(2);
+        Document document;
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
         featureSource = (SimpleFeatureSource) mapLayer.getFeatureSource();
         int nfeatures = featureSource.getFeatures().size();
+        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
+        try {
+            mapContext.addLayer(mapLayer);
+            KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext,
+                    mapLayer);
+            transformer.setIndentation(2);
 
-        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
-        // print(document);
-
+            // print(document);
+            document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+        } finally {
+            mapContext.dispose();
+        }
         // make sure we are generating icon styles, but that we're not sticking a color onto them
         XMLAssert.assertXpathEvaluatesTo("" + nfeatures, "count(//Style/IconStyle/Icon/href)",
                 document);
         XMLAssert.assertXpathEvaluatesTo("0", "count(//Style/IconStyle/Icon/color)", document);
+
     }
 
     /**
@@ -127,21 +137,25 @@ public class KMLTransformerTest extends WMSTestSupport {
      * 
      * @throws Exception
      */
-    @SuppressWarnings("unchecked")
     public void testExternalGraphicSubdir() throws Exception {
 
         MapLayer mapLayer = createMapLayer(MockData.POINTS, "BridgeSubdir");
-        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
-        mapContext.addLayer(mapLayer);
-        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
-        transformer.setIndentation(2);
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
         featureSource = (SimpleFeatureSource) mapLayer.getFeatureSource();
 
-        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
-        // print(document);
-
+        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
+        Document document;
+        try {
+            mapContext.addLayer(mapLayer);
+            KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext,
+                    mapLayer);
+            transformer.setIndentation(2);
+            // print(document);
+            document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+        } finally {
+            mapContext.dispose();
+        }
         // make sure we are generating icon styles with the subdir path
         XMLAssert.assertXpathEvaluatesTo(
                 "http://localhost:8080/geoserver/styles/graphics/bridgesubdir.png",
@@ -162,19 +176,25 @@ public class KMLTransformerTest extends WMSTestSupport {
             gs.save(info);
 
             MapLayer mapLayer = createMapLayer(MockData.POINTS, "Bridge");
-            WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
-            mapContext.addLayer(mapLayer);
-            KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
-            transformer.setIndentation(2);
-
             FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
             featureSource = (FeatureSource<SimpleFeatureType, SimpleFeature>) mapLayer
                     .getFeatureSource();
             int nfeatures = featureSource.getFeatures().size();
 
-            Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
-            // print(document);
+            WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
+            Document document;
 
+            try {
+                mapContext.addLayer(mapLayer);
+                KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext,
+                        mapLayer);
+                transformer.setIndentation(2);
+
+                document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+                // print(document);
+            } finally {
+                mapContext.dispose();
+            }
             // make sure we are using the proxy base URL
             XMLAssert.assertXpathEvaluatesTo("http://myhost:9999/gs/styles/bridge.png",
                     "//Style/IconStyle/Icon/href", document);
@@ -185,21 +205,24 @@ public class KMLTransformerTest extends WMSTestSupport {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public void testFilteredData() throws Exception {
         MapLayer mapLayer = createMapLayer(MockData.BASIC_POLYGONS, "SingleFeature");
-
-        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
-        mapContext.addLayer(mapLayer);
-
-        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
-        transformer.setIndentation(2);
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
         featureSource = (SimpleFeatureSource) mapLayer.getFeatureSource();
 
-        Document document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+        WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
+        Document document;
+        try {
+            mapContext.addLayer(mapLayer);
 
+            KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext,
+                    mapLayer);
+            transformer.setIndentation(2);
+            document = WMSTestSupport.transform(featureSource.getFeatures(), transformer);
+        } finally {
+            mapContext.dispose();
+        }
         Element element = document.getDocumentElement();
         assertEquals("kml", element.getNodeName());
         assertEquals(1, element.getElementsByTagName("Placemark").getLength());
@@ -310,59 +333,63 @@ public class KMLTransformerTest extends WMSTestSupport {
         // create the map producer
         KMZMapOutputFormat mapProducer = new KMZMapOutputFormat(getWMS());
         KMZMap kmzMap = mapProducer.produceMap(mapContext);
+        try {
+            // create the kmz
+            File tempDir = IOUtils.createRandomDirectory("./target", "kmplacemark", "test");
+            tempDir.deleteOnExit();
 
-        // create the kmz
-        File tempDir = IOUtils.createRandomDirectory("./target", "kmplacemark", "test");
-        tempDir.deleteOnExit();
+            File zip = new File(tempDir, "kmz.zip");
+            zip.deleteOnExit();
 
-        File zip = new File(tempDir, "kmz.zip");
-        zip.deleteOnExit();
+            FileOutputStream output = new FileOutputStream(zip);
+            mapProducer.write(kmzMap, output, null);
 
-        FileOutputStream output = new FileOutputStream(zip);
-        mapProducer.write(kmzMap, output, null);
+            output.flush();
+            output.close();
 
-        output.flush();
-        output.close();
+            assertTrue(zip.exists());
 
-        assertTrue(zip.exists());
+            // unzip and test it
+            ZipFile zipFile = new ZipFile(zip);
 
-        // unzip and test it
-        ZipFile zipFile = new ZipFile(zip);
+            ZipEntry entry = zipFile.getEntry("wms.kml");
+            assertNotNull(entry);
+            assertNotNull(zipFile.getEntry("layer_0.png"));
 
-        ZipEntry entry = zipFile.getEntry("wms.kml");
-        assertNotNull(entry);
-        assertNotNull(zipFile.getEntry("layer_0.png"));
+            // unzip the wms.kml to file
+            byte[] buffer = new byte[1024];
+            int len;
 
-        // unzip the wms.kml to file
-        byte[] buffer = new byte[1024];
-        int len;
+            InputStream inStream = zipFile.getInputStream(entry);
+            File temp = File.createTempFile("test_out", "kmz", tempDir);
+            temp.deleteOnExit();
+            BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(temp));
 
-        InputStream inStream = zipFile.getInputStream(entry);
-        File temp = File.createTempFile("test_out", "kmz", tempDir);
-        temp.deleteOnExit();
-        BufferedOutputStream outStream = new BufferedOutputStream(new FileOutputStream(temp));
+            while ((len = inStream.read(buffer)) >= 0)
+                outStream.write(buffer, 0, len);
+            inStream.close();
+            outStream.close();
 
-        while ((len = inStream.read(buffer)) >= 0)
-            outStream.write(buffer, 0, len);
-        inStream.close();
-        outStream.close();
+            // read in the wms.kml and check its contents
+            Document document = dom(new BufferedInputStream(new FileInputStream(temp)));
 
-        // read in the wms.kml and check its contents
-        Document document = dom(new BufferedInputStream(new FileInputStream(temp)));
+            assertEquals("kml", document.getDocumentElement().getNodeName());
+            if (doPlacemarks) {
+                assertEquals(getFeatureSource(MockData.BASIC_POLYGONS).getFeatures().size(),
+                        document.getElementsByTagName("Placemark").getLength());
+            } else {
+                assertEquals(0, document.getElementsByTagName("Placemark").getLength());
+            }
 
-        assertEquals("kml", document.getDocumentElement().getNodeName());
-        if (doPlacemarks) {
-            assertEquals(getFeatureSource(MockData.BASIC_POLYGONS).getFeatures().size(), document
-                    .getElementsByTagName("Placemark").getLength());
-        } else {
-            assertEquals(0, document.getElementsByTagName("Placemark").getLength());
+            zipFile.close();
+        } finally {
+            kmzMap.dispose();
         }
-
-        zipFile.close();
     }
 
     public void testSuperOverlayTransformer() throws Exception {
-        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(getWMS(), mapContext);
+        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(getWMS(),
+                mapContext);
         transformer.setIndentation(2);
 
         mapContext.setAreaOfInterest(new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0,

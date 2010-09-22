@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import junit.framework.Test;
+
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
@@ -44,6 +46,13 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
 
     GetLegendGraphic service;
 
+    /**
+     * This is a READ ONLY TEST so we can use one time setup
+     */
+    public static Test suite() {
+        return new OneTimeTestSetup(new AbstractLegendGraphicOutputFormatTest());
+    }
+    
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);

@@ -225,7 +225,7 @@ public abstract class WMSTestSupport extends GeoServerTestSupport {
             }
         }
 
-        LOGGER.info(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
+        LOGGER.fine(testName + ": pixel count=" + (image.getWidth() * image.getHeight())
                 + " non bg pixels: " + pixelsDiffer);
         return pixelsDiffer;
     }

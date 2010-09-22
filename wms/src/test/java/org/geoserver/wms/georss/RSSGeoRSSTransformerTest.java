@@ -46,8 +46,12 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
 
-        Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
-
+        Document document;
+        try {
+            document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        } finally {
+            map.dispose();
+        }
         Element element = document.getDocumentElement();
         assertEquals("rss", element.getNodeName());
 
@@ -90,9 +94,13 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         map.addLayer(createMapLayer(MockData.BASIC_POLYGONS));
 
-        Document document = getRSSResponse(map, GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
-        print(document);
-
+        Document document;
+        try {
+            // print(document);
+            document = getRSSResponse(map, GeoRSSTransformerBase.GeometryEncoding.SIMPLE);
+        } finally {
+            map.dispose();
+        }
         Element element = document.getDocumentElement();
         assertEquals("rss", element.getNodeName());
 
@@ -132,12 +140,17 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
     public void testFilter() throws Exception {
         // Set up a map context with a filtered layer
         WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.BUILDINGS));
-        MapLayer layer = createMapLayer(MockData.BUILDINGS);
-        Filter f = ff.equals(ff.property("ADDRESS"), ff.literal("215 Main Street"));
-        layer.setQuery(new Query(MockData.BUILDINGS.getLocalPart(), f));
-        map.addLayer(layer);
-        
-        Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        Document document;
+        try {
+            MapLayer layer = createMapLayer(MockData.BUILDINGS);
+            Filter f = ff.equals(ff.property("ADDRESS"), ff.literal("215 Main Street"));
+            layer.setQuery(new Query(MockData.BUILDINGS.getLocalPart(), f));
+            map.addLayer(layer);
+
+            document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        } finally {
+            map.dispose();
+        }
         NodeList items = document.getDocumentElement().getElementsByTagName("item");
         assertEquals(1, items.getLength());
     }
@@ -147,7 +160,12 @@ public class RSSGeoRSSTransformerTest extends WMSTestSupport {
         WMSMapContext map = new WMSMapContext(createGetMapRequest(MockData.LINES));
         map.addLayer(createMapLayer(MockData.LINES));
         
-        Document document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        Document document;
+        try {
+            document = getRSSResponse(map, AtomGeoRSSTransformer.GeometryEncoding.LATLONG);
+        } finally {
+            map.dispose();
+        }
         NodeList items = document.getDocumentElement().getElementsByTagName("item");
         
         // check all items are there

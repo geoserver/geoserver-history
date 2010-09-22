@@ -79,7 +79,7 @@ public class RenderingBufferTest extends WMSTestSupport {
                 + "&width=50&height=50&format=image/png" + "&srs=epsg:4326&bbox=-6,0,-1,5&x=49&y=49&query_layers=" 
                 + layerName + "&info_format=application/vnd.ogc.gml&buffer=30";
         Document dom = getAsDOM(request);
-        print(dom);
+        //print(dom);
         assertXpathEvaluatesTo("1", "count(//gml:featureMember)", dom);
     }
     
