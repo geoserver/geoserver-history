@@ -1,4 +1,4 @@
-package org.geoserver.wms.kvp;
+package org.geoserver.wms.capabilities;
 
 import java.util.HashMap;
 

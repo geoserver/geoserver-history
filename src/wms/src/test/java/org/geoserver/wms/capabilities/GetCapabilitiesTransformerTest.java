@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms;
+package org.geoserver.wms.capabilities;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 
@@ -25,7 +25,11 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.impl.ContactInfoImpl;
 import org.geoserver.config.impl.GeoServerImpl;
 import org.geoserver.config.impl.GeoServerInfoImpl;
-import org.geoserver.wms.response.GetCapabilitiesTransformer;
+import org.geoserver.wms.GetCapabilitiesRequest;
+import org.geoserver.wms.WMS;
+import org.geoserver.wms.WMSInfo;
+import org.geoserver.wms.WMSInfoImpl;
+import org.geoserver.wms.WMSTestSupport;
 import org.geotools.referencing.CRS;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
