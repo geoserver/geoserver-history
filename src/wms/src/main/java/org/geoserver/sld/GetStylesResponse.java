@@ -1,4 +1,4 @@
-package org.geoserver.wms.response;
+package org.geoserver.sld;
 
 import java.io.IOException;
 import java.io.OutputStream;
