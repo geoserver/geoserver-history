@@ -4,7 +4,7 @@
  */
 package org.vfny.geoserver.wms.responses.map.htmlimagemap;
 
-import org.vfny.geoserver.wms.WmsException;
+import org.geoserver.platform.ServiceException;
 
 
 /**
@@ -12,7 +12,7 @@ import org.vfny.geoserver.wms.WmsException;
  *
  * @author Mauro Bartolomeoli 
  */
-public class EncoderConfigurationException extends WmsException {
+public class EncoderConfigurationException extends ServiceException {
     /**
 	 * 
 	 */
