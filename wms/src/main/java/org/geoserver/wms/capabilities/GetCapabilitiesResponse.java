@@ -35,11 +35,7 @@ public class GetCapabilitiesResponse extends Response {
     public String getMimeType(final Object value, final Operation operation)
             throws ServiceException {
 
-        if (value instanceof GetCapabilitiesTransformer
-                && "GetCapabilities".equalsIgnoreCase(operation.getId())
-                && operation.getParameters().length > 0
-                && operation.getParameters()[0] instanceof GetCapabilitiesRequest) {
-
+        if (value instanceof GetCapabilitiesTransformer) {
             return GetCapabilitiesTransformer.WMS_CAPS_MIME;
         }
 
