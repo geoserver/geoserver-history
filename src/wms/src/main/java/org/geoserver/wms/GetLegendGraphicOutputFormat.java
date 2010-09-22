@@ -4,9 +4,6 @@
  */
 package org.geoserver.wms;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.geoserver.platform.ServiceException;
 
 /**
@@ -39,24 +36,6 @@ public interface GetLegendGraphicOutputFormat {
      *             something goes wrong
      */
     LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request) throws ServiceException;
-
-    /**
-     * Writes the given legend graphic created to the destination stream, though it could be used to
-     * encode the legend to the proper output format, provided that there are almost no risk that
-     * the encoding fails.
-     * 
-     * @param legend
-     *            the legend to encode
-     * @param output
-     *            an open stream where to send the produced legend graphic to.
-     * 
-     * @throws IOException
-     *             if something goes wrong in the actual process of writing content to
-     *             <code>out</code>.
-     * @throws ServiceException
-     *             if something else goes wrong.
-     */
-    void write(LegendGraphic legend, OutputStream output) throws IOException, ServiceException;
 
     /**
      * Returns the MIME type of the content supported by this format

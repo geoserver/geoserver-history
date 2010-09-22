@@ -1,7 +1,7 @@
 package org.geoserver.wms.map;
 
-import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WebMap;
 import org.geotools.xml.transform.TransformerBase;
 
 public class XMLTransformerMap extends WebMap {

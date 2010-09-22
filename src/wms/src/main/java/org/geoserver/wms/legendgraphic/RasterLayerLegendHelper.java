@@ -195,7 +195,6 @@ public class RasterLayerLegendHelper {
         return createResponse();
     }
 
-    @SuppressWarnings("unchecked")
     private synchronized BufferedImage createResponse() {
 
         if (image == null) {
@@ -208,7 +207,7 @@ public class RasterLayerLegendHelper {
             else {
                 image = ImageUtils.createImage(width, height, (IndexColorModel) null, transparent);
                 final Graphics2D graphics = ImageUtils.prepareTransparency(transparent, bgColor,
-                        image, new HashMap());
+                        image, new HashMap<RenderingHints.Key, Object>());
                 if (defaultLegend == null) {
                     drawRasterIcon(graphics);
                 } else {

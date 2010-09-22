@@ -5,8 +5,6 @@
 package org.geoserver.wms.legendgraphic;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
@@ -17,10 +15,8 @@ import junit.framework.Test;
 import org.geoserver.catalog.CoverageInfo;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
-import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetLegendGraphic;
 import org.geoserver.wms.GetLegendGraphicRequest;
-import org.geoserver.wms.LegendGraphic;
 import org.geoserver.wms.WMSTestSupport;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -42,7 +38,7 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
     private static final Logger LOGGER = Logging
             .getLogger(AbstractLegendGraphicOutputFormatTest.class);
 
-    private AbstractLegendGraphicOutputFormat legendProducer;
+    private BufferedImageLegendGraphicBuilder legendProducer;
 
     GetLegendGraphic service;
 
@@ -52,7 +48,7 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
     public static Test suite() {
         return new OneTimeTestSetup(new AbstractLegendGraphicOutputFormatTest());
     }
-    
+
     @Override
     protected void populateDataDirectory(MockData dataDirectory) throws Exception {
         super.populateDataDirectory(dataDirectory);
@@ -68,12 +64,7 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
     @Override
     public void setUpInternal() throws Exception {
         super.setUpInternal();
-        this.legendProducer = new AbstractLegendGraphicOutputFormat() {
-
-            public void write(LegendGraphic legend, OutputStream output) throws IOException,
-                    ServiceException {
-                throw new UnsupportedOperationException();
-            }
+        this.legendProducer = new BufferedImageLegendGraphicBuilder() {
 
             public String getContentType() {
                 return "image/png";
@@ -116,12 +107,11 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         req.setHeight(HEIGHT_HINT);
 
         // use default values for the rest of parameters
-        this.legendProducer.produceLegendGraphic(req);
+        this.legendProducer.buildLegendGraphic(req);
 
-        BufferedImageLegendGraphic legend = this.legendProducer.produceLegendGraphic(req);
+        BufferedImage image = this.legendProducer.buildLegendGraphic(req);
 
         // was the legend painted?
-        BufferedImage image = legend.getLegend();
         assertNotBlank("testUserSpecifiedRule", image, LegendUtils.DEFAULT_BG_COLOR);
 
         // was created only one rule?
@@ -157,12 +147,11 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         req.setHeight(HEIGHT_HINT);
 
         // use default values for the rest of parameters
-        this.legendProducer.produceLegendGraphic(req);
+        this.legendProducer.buildLegendGraphic(req);
 
-        BufferedImageLegendGraphic legend = this.legendProducer.produceLegendGraphic(req);
+        BufferedImage image = this.legendProducer.buildLegendGraphic(req);
 
         // was the legend painted?
-        BufferedImage image = legend.getLegend();
         assertNotBlank("testRainfall", image, LegendUtils.DEFAULT_BG_COLOR);
 
         // was the legend painted?
@@ -187,12 +176,11 @@ public class AbstractLegendGraphicOutputFormatTest extends WMSTestSupport {
         req.setHeight(HEIGHT_HINT);
 
         // use default values for the rest of parameters
-        this.legendProducer.produceLegendGraphic(req);
+        this.legendProducer.buildLegendGraphic(req);
 
-        BufferedImageLegendGraphic legend = this.legendProducer.produceLegendGraphic(req);
+        BufferedImage image = this.legendProducer.buildLegendGraphic(req);
 
         // was the legend painted?
-        BufferedImage image = legend.getLegend();
         assertNotBlank("testRainfall", image, LegendUtils.DEFAULT_BG_COLOR);
 
         // was the legend painted?

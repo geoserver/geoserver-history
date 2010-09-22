@@ -380,8 +380,8 @@ public class LegendUtils {
 	 */
 	public static boolean isWithInScale(final Rule r,final  double scaleDenominator) {
 	    return (scaleDenominator == -1)
-	    || (((r.getMinScaleDenominator() - AbstractLegendGraphicOutputFormat.TOLERANCE) <= scaleDenominator)
-	    && ((r.getMaxScaleDenominator() + AbstractLegendGraphicOutputFormat.TOLERANCE) > scaleDenominator));
+	    || (((r.getMinScaleDenominator() - BufferedImageLegendGraphicBuilder.TOLERANCE) <= scaleDenominator)
+	    && ((r.getMaxScaleDenominator() + BufferedImageLegendGraphicBuilder.TOLERANCE) > scaleDenominator));
 	}
 
 	/**
