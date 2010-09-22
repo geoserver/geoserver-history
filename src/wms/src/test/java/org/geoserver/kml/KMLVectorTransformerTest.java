@@ -7,7 +7,6 @@ package org.geoserver.kml;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathExists;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,9 +17,7 @@ import junit.framework.Test;
 import org.custommonkey.xmlunit.SimpleNamespaceContext;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.geoserver.catalog.FeatureTypeInfo;
-import org.geoserver.data.test.TestData;
 import org.geoserver.platform.GeoServerExtensions;
-import org.geoserver.test.GeoServerAbstractTestSupport;
 import org.geoserver.wms.MapLayerInfo;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSMockData;
@@ -35,16 +32,10 @@ import org.geotools.styling.Style;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
 
-import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.vividsolutions.jts.geom.Point;
 
 /**
  * Unit test suite for {@link KMLVectorTransformer}
- * 
- * @author Gabriel Roldan
- * @todo this test does not need to extend GeoServerAbstractTestSupport but just TestCase. For the
- *       time being, its a workaround for the build to keep going until we find out why these tests
- *       produce other ones to fail
  */
 public class KMLVectorTransformerTest extends WMSTestSupport {
 
@@ -94,7 +85,7 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         GetMapRequest request = mockData.createRequest();
         mapContext.setRequest(request);
 
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
 
         Document document;
 
@@ -132,19 +123,17 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         MapLayer mapLayer = new DefaultMapLayer(features, style);
         mapLayer.setTitle("TestPointsTitle");
 
-        WMSMapContext mapContext = new WMSMapContext();
         GetMapRequest request = mockData.createRequest();
-        request.setLayers(new MapLayerInfo[] { layer });
+        request.setLayers(Collections.singletonList(layer));
 
         request.setMaxFeatures(2);
         request.setStartIndex(2);
         request.setFormatOptions(Collections.singletonMap("relLinks", "true"));
-        MockHttpServletRequest httpreq = (MockHttpServletRequest) request.getHttpServletRequest();
-        httpreq.setRequestURL("baseurl");
         request.setBaseUrl("baseurl");
+        WMSMapContext mapContext = new WMSMapContext();
         mapContext.setRequest(request);
 
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
         transformer.setStandAlone(false);
         transformer.setIndentation(2);
 
@@ -158,9 +147,9 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         // we're at startIndex=2 and maxFeatures=2, so expect previous link to be 0, and next to be
         // 4
         String expectedLink;
-        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=0&maxfeatures=2";
+        expectedLink = "baseurl/rest/geosearch/gs/TestPoints.kml?startindex=0&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/atom:link[1]/@href", dom);
-        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=4&maxfeatures=2";
+        expectedLink = "baseurl/rest/geosearch/gs/TestPoints.kml?startindex=4&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/atom:link[2]/@href", dom);
 
         assertXpathEvaluatesTo("prev", "//Document/NetworkLink[1]/@id", dom);
@@ -169,7 +158,7 @@ public class KMLVectorTransformerTest extends WMSTestSupport {
         expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=0&maxfeatures=2";
         assertXpathEvaluatesTo(expectedLink, "//Document/NetworkLink[1]/Link/href", dom);
 
-        expectedLink = "baseurl/rest/geos/TestPoints.kml?startindex=4&maxfeatures=2";
+        expectedLink = "baseurl/rest/geosearch/gs/TestPoints.kml?startindex=4&maxfeatures=2";
         assertXpathEvaluatesTo("next", "//Document/NetworkLink[2]/@id", dom);
     }
 }

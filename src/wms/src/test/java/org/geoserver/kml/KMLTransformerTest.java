@@ -26,6 +26,7 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.config.GeoServerInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.data.util.IOUtils;
+import org.geoserver.kml.KMZMapOutputFormat.KMZMap;
 import org.geoserver.wms.WMSMapContext;
 import org.geoserver.wms.WMSTestSupport;
 import org.geoserver.wms.request.GetMapRequest;
@@ -35,6 +36,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.MapLayer;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.xml.transform.TransformerBase;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.w3c.dom.Document;
@@ -79,7 +81,7 @@ public class KMLTransformerTest extends WMSTestSupport {
 
     @SuppressWarnings("unchecked")
     public void testVectorTransformer() throws Exception {
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
         transformer.setIndentation(2);
 
         SimpleFeatureSource featureSource = DataUtilities.simple((FeatureSource) mapLayer
@@ -105,7 +107,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         MapLayer mapLayer = createMapLayer(MockData.POINTS, "Bridge");
         WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
         mapContext.addLayer(mapLayer);
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
         transformer.setIndentation(2);
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
@@ -132,7 +134,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         MapLayer mapLayer = createMapLayer(MockData.POINTS, "BridgeSubdir");
         WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
         mapContext.addLayer(mapLayer);
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
         transformer.setIndentation(2);
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
@@ -163,7 +165,7 @@ public class KMLTransformerTest extends WMSTestSupport {
             MapLayer mapLayer = createMapLayer(MockData.POINTS, "Bridge");
             WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.POINTS));
             mapContext.addLayer(mapLayer);
-            KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+            KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
             transformer.setIndentation(2);
 
             FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
@@ -191,7 +193,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         WMSMapContext mapContext = new WMSMapContext(createGetMapRequest(MockData.BASIC_POLYGONS));
         mapContext.addLayer(mapLayer);
 
-        KMLVectorTransformer transformer = new KMLVectorTransformer(mapContext, mapLayer);
+        KMLVectorTransformer transformer = new KMLVectorTransformer(getWMS(), mapContext, mapLayer);
         transformer.setIndentation(2);
 
         FeatureSource<SimpleFeatureType, SimpleFeature> featureSource;
@@ -249,7 +251,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     // }
 
     public void testRasterTransformerInline() throws Exception {
-        KMLRasterTransformer transformer = new KMLRasterTransformer(mapContext);
+        KMLRasterTransformer transformer = new KMLRasterTransformer(getWMS(), mapContext);
         transformer.setInline(true);
 
         Document document = WMSTestSupport.transform(mapLayer, transformer);
@@ -268,7 +270,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     }
 
     public void testRasterTransformerNotInline() throws Exception {
-        KMLRasterTransformer transformer = new KMLRasterTransformer(mapContext);
+        KMLRasterTransformer transformer = new KMLRasterTransformer(getWMS(), mapContext);
         transformer.setInline(false);
 
         Document document = WMSTestSupport.transform(mapLayer, transformer);
@@ -308,8 +310,7 @@ public class KMLTransformerTest extends WMSTestSupport {
 
         // create the map producer
         KMZMapOutputFormat mapProducer = new KMZMapOutputFormat(getWMS());
-        mapProducer.setMapContext(mapContext);
-        mapProducer.produceMap();
+        KMZMap kmzMap = mapProducer.produceMap(mapContext);
 
         // create the kmz
         File tempDir = IOUtils.createRandomDirectory("./target", "kmplacemark", "test");
@@ -319,7 +320,7 @@ public class KMLTransformerTest extends WMSTestSupport {
         zip.deleteOnExit();
 
         FileOutputStream output = new FileOutputStream(zip);
-        mapProducer.writeTo(output);
+        mapProducer.write(kmzMap, output, null);
 
         output.flush();
         output.close();
@@ -362,7 +363,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     }
 
     public void testSuperOverlayTransformer() throws Exception {
-        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(mapContext);
+        KMLSuperOverlayTransformer transformer = new KMLSuperOverlayTransformer(getWMS(), mapContext);
         transformer.setIndentation(2);
 
         mapContext.setAreaOfInterest(new ReferencedEnvelope(-180.0, 180.0, -90.0, 90.0,
@@ -380,7 +381,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     }
 
     public void testStyleConverter() throws Exception {
-        KMLTransformer transformer = new KMLTransformer();
+        KMLTransformer transformer = new KMLTransformer(getWMS());
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.BASIC_POLYGONS, "allsymbolizers"));
         mapContext.setAreaOfInterest(new ReferencedEnvelope(-180, 0, -90, 90,
@@ -405,7 +406,7 @@ public class KMLTransformerTest extends WMSTestSupport {
      * See http://jira.codehaus.org/browse/GEOS-2670
      */
     public void testDynamicSymbolizer() throws Exception {
-        KMLTransformer transformer = new KMLTransformer();
+        KMLTransformer transformer = new KMLTransformer(getWMS());
         mapContext.removeLayer(mapContext.getLayer(0));
         mapContext.addLayer(createMapLayer(MockData.STREAMS, "dynamicsymbolizer"));
         mapContext.setAreaOfInterest(new ReferencedEnvelope(-180, 0, -90, 90,
@@ -422,7 +423,7 @@ public class KMLTransformerTest extends WMSTestSupport {
     }
 
     public void testTransformer() throws Exception {
-        KMLTransformer transformer = new KMLTransformer();
+        KMLTransformer transformer = new KMLTransformer(getWMS());
 
         Document document = WMSTestSupport.transform(mapContext, transformer);
 
