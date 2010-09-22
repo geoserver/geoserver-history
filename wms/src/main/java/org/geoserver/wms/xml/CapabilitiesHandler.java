@@ -2,12 +2,13 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.util.requests;
+package org.geoserver.wms.xml;
 
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -26,14 +27,14 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     private static Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.vfny.geoserver.requests");
 
     /** Internal Capabilities request for construction. */
-    private CapabilitiesRequest request = null;
+    private GetCapabilitiesRequest request = null;
 
     /**
      * Creates a new CapabilitiesHandler
      * @param service this is the AbstractService Handling the Request
      * @param req
      */
-    public CapabilitiesHandler(CapabilitiesRequest request) {
+    public CapabilitiesHandler(GetCapabilitiesRequest request) {
         this.request = request;
     }
 
@@ -42,7 +43,7 @@ public class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler
     *
     * @return GetCapabilities request.
     */
-    public CapabilitiesRequest getRequest(HttpServletRequest req) {
+    public GetCapabilitiesRequest getRequest(HttpServletRequest req) {
         request.setHttpServletRequest(req);
 
         return request;

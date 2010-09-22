@@ -8,7 +8,7 @@ import javax.xml.transform.TransformerException;
 import org.geoserver.ows.Response;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 
 /**
  * OWS {@link Response} bean to handle WMS {@link GetCapabilities} results
@@ -34,7 +34,7 @@ public class GetCapabilitiesResponse extends Response {
         if (value instanceof GetCapabilitiesTransformer
                 && "GetCapabilities".equalsIgnoreCase(operation.getId())
                 && operation.getParameters().length > 0
-                && operation.getParameters()[0] instanceof WMSCapabilitiesRequest) {
+                && operation.getParameters()[0] instanceof GetCapabilitiesRequest) {
 
             return GetCapabilitiesTransformer.WMS_CAPS_MIME;
         }
@@ -60,7 +60,7 @@ public class GetCapabilitiesResponse extends Response {
         GetCapabilitiesTransformer transformer = (GetCapabilitiesTransformer) value;
 
         try {
-            WMSCapabilitiesRequest request = (WMSCapabilitiesRequest) operation.getParameters()[0];
+            GetCapabilitiesRequest request = (GetCapabilitiesRequest) operation.getParameters()[0];
             transformer.transform(request, output);
         } catch (TransformerException e) {
             throw new ServiceException(e);

@@ -45,6 +45,7 @@ import org.geoserver.catalog.WMSLayerInfo;
 import org.geoserver.config.ContactInfo;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.URLMangler.URLType;
+import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.data.ows.Layer;
 import org.geotools.data.ows.WMSCapabilities;
@@ -61,7 +62,6 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.TransformException;
 import org.vfny.geoserver.wms.WmsException;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest;
 import org.vfny.geoserver.wms.responses.DescribeLayerResponse;
 import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
@@ -183,7 +183,7 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          * The request from wich all the information needed to produce the capabilities document can
          * be obtained
          */
-        private WMSCapabilitiesRequest request;
+        private GetCapabilitiesRequest request;
 
         private Set<String> getMapFormats;
 
@@ -208,16 +208,16 @@ public class GetCapabilitiesTransformer extends TransformerBase {
          * DOCUMENT ME!
          * 
          * @param o
-         *            the {@link WMSCapabilitiesRequest}
+         *            the {@link GetCapabilitiesRequest}
          * @throws IllegalArgumentException
          *             if {@code o} is not of the expected type
          */
         public void encode(Object o) throws IllegalArgumentException {
-            if (!(o instanceof WMSCapabilitiesRequest)) {
+            if (!(o instanceof GetCapabilitiesRequest)) {
                 throw new IllegalArgumentException();
             }
 
-            this.request = (WMSCapabilitiesRequest) o;
+            this.request = (GetCapabilitiesRequest) o;
             this.wmsConfig = this.request.getWMS();
 
             if (LOGGER.isLoggable(Level.FINE)) {

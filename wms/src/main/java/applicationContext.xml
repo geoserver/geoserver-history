@@ -150,8 +150,8 @@
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
  		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
-		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.WMSCapabilitiesRequest" />
-      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.CapabilitiesKvpReader" />
+		<constructor-arg index="0" value="org.geoserver.wms.request.GetCapabilitiesRequest" />
+      	<constructor-arg index="1" value="org.geoserver.wms.kvp.CapabilitiesKvpReader" />
       	<constructor-arg index="2" ref="wms" />
 	</bean>
 
@@ -203,7 +203,7 @@
     	<constructor-arg index="0" value="http://www.opengis.net/ows"/> 
  	    <constructor-arg index="1" value="GetCapabilities"/> 
     	<constructor-arg index="2" ref="wms"/>
-    	<constructor-arg index="3" value="org.vfny.geoserver.wms.requests.CapabilitiesXmlReader"/>
+    	<constructor-arg index="3" value="org.geoserver.wms.xml.CapabilitiesXmlReader"/>
     </bean>
      <bean id="getMapXmlReader" 
     	class="org.geoserver.wms.xml.WMSXmlRequestReaderAdapter">
