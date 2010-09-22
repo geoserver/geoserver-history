@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.ows.Response;
+import org.geoserver.ows.util.OwsUtils;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.GetFeatureInfo;
@@ -36,9 +37,17 @@ public class GetFeatureInfoResponse extends Response {
      */
     public GetFeatureInfoResponse(final WMS wms,
             final GetFeatureInfoOutputFormat defaultOutputFormat) {
-        super(GetFeatureInfoRequest.class);
+        super(FeatureCollectionType.class);
         this.wms = wms;
         this.defaultOutputFormat = defaultOutputFormat;
+    }
+
+    /**
+     * @see org.geoserver.ows.Response#canHandle(org.geoserver.platform.Operation)
+     */
+    @Override
+    public boolean canHandle(Operation operation) {
+        return "WMS".equals(operation.getService()) && "GetFeatureInfo".equals(operation.getId());
     }
 
     /**
@@ -60,10 +69,12 @@ public class GetFeatureInfoResponse extends Response {
         Assert.notNull(value, "value is null");
         Assert.notNull(operation, "operation is null");
         Assert.isTrue(value instanceof FeatureCollectionType, "unrecognized result type:");
-        Assert.isTrue(operation.getParameters() != null && operation.getParameters().length == 1
-                && operation.getParameters()[0] instanceof GetFeatureInfoRequest);
 
-        GetFeatureInfoRequest request = (GetFeatureInfoRequest) operation.getParameters()[0];
+        GetFeatureInfoRequest request = (GetFeatureInfoRequest) OwsUtils.parameter(
+                operation.getParameters(), GetFeatureInfoRequest.class);
+
+        Assert.notNull(request);
+
         GetFeatureInfoOutputFormat outputFormat = getRequestedOutputFormat(request);
 
         return outputFormat.getContentType();
