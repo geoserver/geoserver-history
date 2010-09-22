@@ -37,7 +37,7 @@
   </bean>
 
     <!-- Exception handler, we need to output ows 1.1 exceptions -->
-	<bean id="wcs100ExceptionHandler" class="org.geoserver.ows.LegacyServiceExceptionHandler">
+	<bean id="wcs100ExceptionHandler" class="org.geoserver.wcs.response.LegacyServiceExceptionHandler">
 		<constructor-arg ref="wcsService-1.0.0"/>
 	       <constructor-arg ref="geoServer"/>
 		<property name="contentType" value="application/vnd.ogc.se_xml"/>
