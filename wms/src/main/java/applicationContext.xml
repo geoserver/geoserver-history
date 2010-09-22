@@ -107,6 +107,12 @@
 	</bean>
  	
  	<!-- kvp parsers -->
+  
+    <!-- 
+    Can't use MapLayerInfoKvpParser due to the issue with the workspace qualifier callbacks in Dispatcher:
+    the kvp parsers are run at Dispatcher.init(), before dispatching the request, when the KvpReaders all called. At that
+    time the KvpParsers already ran and may end up with valid layers that should not be if the WMSWorkSpaceQualifier catched them before.
+    
     <bean id="wmsLayersKvpParser" class="org.geoserver.wms.kvp.MapLayerInfoKvpParser">
       <description>
         Parses a comma separated list of layer names into a
@@ -127,7 +133,8 @@
       <property name="service" value="WMS"/>
       <property name="request" value="GetFeatureInfo"/>
     </bean>
-        
+    -->
+    
  	<bean id="widthKvpParser" class="org.geoserver.ows.kvp.IntegerKvpParser">
 		<constructor-arg value="width"/>
  	</bean>

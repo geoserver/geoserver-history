@@ -45,6 +45,8 @@ public class GetFeatureInfoKvpReader extends KvpRequestReader {
         GetFeatureInfoRequest request = (GetFeatureInfoRequest) super.read(req, kvp, rawKvp);
         request.setRawKvp(rawKvp);
 
+        request.setQueryLayers(new MapLayerInfoKvpParser("QUERY_LAYERS", wms).parse((String)rawKvp.get("QUERY_LAYERS")));
+        
         if (request.getQueryLayers() == null || request.getQueryLayers().size() == 0) {
             throw new ServiceException("No QUERY_LAYERS has been requested, or no "
                     + "queriable layer in the request anyways");
