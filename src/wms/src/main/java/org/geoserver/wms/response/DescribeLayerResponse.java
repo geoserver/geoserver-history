@@ -34,7 +34,7 @@ public class DescribeLayerResponse extends Response {
     public static final String DESCLAYER_MIME_TYPE = "application/vnd.ogc.wms_xml";
 
     public DescribeLayerResponse() {
-        super(DescribeLayerRequest.class);
+        super(DescribeLayerTransformer.class);
     }
 
     /**
