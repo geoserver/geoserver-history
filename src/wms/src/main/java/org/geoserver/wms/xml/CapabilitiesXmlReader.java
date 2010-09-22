@@ -126,7 +126,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
                     if (atts.getLocalName(i).equals("version")) {
                         request.setVersion(atts.getValue(i));
                     } else if (atts.getLocalName(i).equals("service")) {
-                        request.setService(atts.getValue(i));
+                        //ok WMS is implicit
                     } else if (atts.getLocalName(i).equals("updateSequence")) {
                         request.setUpdateSequence(atts.getValue(i));
                     }
