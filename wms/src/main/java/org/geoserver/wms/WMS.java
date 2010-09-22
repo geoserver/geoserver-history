@@ -26,7 +26,7 @@ import org.geoserver.config.GeoServerInfo;
 import org.geoserver.config.JAIInfo;
 import org.geoserver.wms.WMSInfo.WMSInterpolation;
 import org.geoserver.wms.WatermarkInfo.Position;
-import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
+import org.geoserver.wms.featureinfo.GetFeatureInfoOutputFormat;
 import org.geotools.styling.Style;
 import org.geotools.util.Converters;
 import org.geotools.util.Version;

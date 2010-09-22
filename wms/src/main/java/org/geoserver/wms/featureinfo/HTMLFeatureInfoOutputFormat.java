@@ -20,7 +20,6 @@ import org.geoserver.template.FeatureWrapper;
 import org.geoserver.template.GeoServerTemplateLoader;
 import org.geoserver.wms.GetFeatureInfoRequest;
 import org.geoserver.wms.WMS;
-import org.geoserver.wms.response.GetFeatureInfoOutputFormat;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
