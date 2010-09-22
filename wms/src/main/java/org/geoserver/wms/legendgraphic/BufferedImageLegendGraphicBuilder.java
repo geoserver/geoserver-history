@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.GetLegendGraphicRequest;
 import org.geoserver.wms.map.ImageUtils;
 import org.geotools.data.DataUtilities;
@@ -78,7 +77,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * @author Simone Giannecchini, GeoSolutions SAS
  * @version $Id$
  */
-public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGraphicOutputFormat {
+public class BufferedImageLegendGraphicBuilder {
 
     /** Factory that will resolve symbolizers into rendered styles */
     private static final SLDStyleFactory styleFactory = new SLDStyleFactory();
@@ -122,7 +121,7 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
      * Default constructor. Subclasses may provide its own with a String parameter to establish its
      * desired output format, if they support more than one (e.g. a JAI based one)
      */
-    public AbstractLegendGraphicOutputFormat() {
+    public BufferedImageLegendGraphicBuilder() {
         super();
     }
 
@@ -140,7 +139,7 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
      *             if there are problems creating a "sample" feature instance for the FeatureType
      *             <code>request</code> returns as the required layer (which should not occur).
      */
-    public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
+    public BufferedImage buildLegendGraphic(GetLegendGraphicRequest request)
             throws ServiceException {
 
         final Style gt2Style = request.getStyle();
@@ -155,8 +154,7 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
         if (buildRasterLegend) {
             final RasterLayerLegendHelper rasterLegendHelper = new RasterLayerLegendHelper(request);
             final BufferedImage image = rasterLegendHelper.getLegend();
-            final String contentType = getContentType();
-            return new BufferedImageLegendGraphic(contentType, image);
+            return image;
         }
 
         final SimpleFeature sampleFeature;
@@ -230,10 +228,7 @@ public abstract class AbstractLegendGraphicOutputFormat implements GetLegendGrap
         // JD: changed legend behavior, see GEOS-812
         // this.legendGraphic = scaleImage(mergeLegends(legendsStack), request);
         BufferedImage image = mergeLegends(legendsStack, applicableRules, request);
-        String contentType = getContentType();
-        BufferedImageLegendGraphic legendGraphic = new BufferedImageLegendGraphic(contentType,
-                image);
-        return legendGraphic;
+        return image;
     }
 
     /**

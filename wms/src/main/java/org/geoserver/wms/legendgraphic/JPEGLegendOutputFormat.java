@@ -12,30 +12,32 @@ import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.GetLegendGraphicRequest;
 
 /**
- * PNG output format for the WMS {@link GetLegendGraphic} operation.
+ * JAI based output format for the WMS {@link GetLegendGraphic} operation that creates legend
+ * graphics to be encoded as {@code image/jpeg}.
  * 
  * @author Gabriel Roldan
- * @author Justin Deoliveira
- * @version $Id: PNGLegendGraphicProducer.java 4776 2006-07-24 14:43:05Z afabiani $
+ * @version $Id$
  */
-public class PNGLegendOutputFormat implements GetLegendGraphicOutputFormat {
+public class JPEGLegendOutputFormat implements GetLegendGraphicOutputFormat {
 
-    public static final String MIME_TYPE = "image/png";
+    public static final String MIME_TYPE = "image/jpeg";
 
-    /**
-     * Creates a new JAI based legend producer for creating <code>outputFormat</code> type images.
-     */
-    public PNGLegendOutputFormat() {
+    public JPEGLegendOutputFormat() {
         //
     }
 
     /**
-     * Builds and returns a {@link BufferedImageLegendGraphic} appropriate to be encoded as PNG
+     * Builds a JPEG {@link BufferedImageLegendGraphic}
      * 
+     * @return a {@link BufferedImageLegendGraphic} holding a legend image appropriate to be encoded
+     *         as JPEG
      * @see GetLegendGraphicOutputFormat#produceLegendGraphic(GetLegendGraphicRequest)
      */
     public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
             throws ServiceException {
+        
+        request.setTransparent(false);
+        
         BufferedImageLegendGraphicBuilder builder = new BufferedImageLegendGraphicBuilder();
         BufferedImage legendGraphic = builder.buildLegendGraphic(request);
         BufferedImageLegendGraphic legend = new BufferedImageLegendGraphic(MIME_TYPE, legendGraphic);
@@ -43,8 +45,8 @@ public class PNGLegendOutputFormat implements GetLegendGraphicOutputFormat {
     }
 
     /**
-     * @return {@code "image/png"}
-     * @see org.geoserver.wms.GetLegendGraphicOutputFormat#getContentType()
+     * @return {@code image/jpeg}
+     * @see GetLegendGraphicOutputFormat#getContentType()
      */
     public String getContentType() throws IllegalStateException {
         return MIME_TYPE;

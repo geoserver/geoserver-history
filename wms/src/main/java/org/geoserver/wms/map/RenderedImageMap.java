@@ -4,8 +4,8 @@ import java.awt.image.RenderedImage;
 import java.util.Collections;
 import java.util.List;
 
-import org.geoserver.wms.WebMap;
 import org.geoserver.wms.WMSMapContext;
+import org.geoserver.wms.WebMap;
 import org.geotools.coverage.grid.GridCoverage2D;
 
 public class RenderedImageMap extends WebMap {

@@ -7,34 +7,25 @@ package org.geoserver.wms.legendgraphic;
 import java.awt.image.BufferedImage;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.GetLegendGraphic;
 import org.geoserver.wms.GetLegendGraphicOutputFormat;
 import org.geoserver.wms.GetLegendGraphicRequest;
+import org.geoserver.wms.LegendGraphic;
 
 /**
- * PNG output format for the WMS {@link GetLegendGraphic} operation.
+ * Producer of legend graphics in image/gif format.
  * 
  * @author Gabriel Roldan
- * @author Justin Deoliveira
- * @version $Id: PNGLegendGraphicProducer.java 4776 2006-07-24 14:43:05Z afabiani $
+ * @version $Id$
  */
-public class PNGLegendOutputFormat implements GetLegendGraphicOutputFormat {
+public class GIFLegendOutputFormat implements GetLegendGraphicOutputFormat {
 
-    public static final String MIME_TYPE = "image/png";
-
-    /**
-     * Creates a new JAI based legend producer for creating <code>outputFormat</code> type images.
-     */
-    public PNGLegendOutputFormat() {
-        //
-    }
+    static final String MIME_TYPE = "image/gif";
 
     /**
-     * Builds and returns a {@link BufferedImageLegendGraphic} appropriate to be encoded as PNG
-     * 
      * @see GetLegendGraphicOutputFormat#produceLegendGraphic(GetLegendGraphicRequest)
+     * @see BufferedImageLegendGraphicBuilder
      */
-    public BufferedImageLegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
+    public LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request)
             throws ServiceException {
         BufferedImageLegendGraphicBuilder builder = new BufferedImageLegendGraphicBuilder();
         BufferedImage legendGraphic = builder.buildLegendGraphic(request);
@@ -43,10 +34,10 @@ public class PNGLegendOutputFormat implements GetLegendGraphicOutputFormat {
     }
 
     /**
-     * @return {@code "image/png"}
-     * @see org.geoserver.wms.GetLegendGraphicOutputFormat#getContentType()
+     * @return {@code "image/gif"}
+     * @see GetLegendGraphicOutputFormat#getContentType()
      */
-    public String getContentType() throws IllegalStateException {
+    public String getContentType() {
         return MIME_TYPE;
     }
 

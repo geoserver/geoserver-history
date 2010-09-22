@@ -257,10 +257,6 @@
 		<constructor-arg ref="wms"/>
         <constructor-arg ref="wmsGetFeatureInfoPlainText"/> <!-- default output format -->
 	</bean>
-	<bean id="getLegendGraphicResponse"
-		class="org.geoserver.wms.legendgraphic.GetLegendGraphicResponse">
-		<constructor-arg ref="wms"/>
-	</bean>
 	<bean id="stylesResponse" class="org.geoserver.sld.GetStylesResponse"/>
 	
 	<!-- Wrapping the PutStyles servlet in a controller while we wait to rewrite it for good -->
@@ -291,14 +287,23 @@
 		GetLegendGraphic output formats
 	 -->
 	<bean id="wmsGIFLegendOutputFormat" 
-		class="org.geoserver.wms.legendgraphic.GifLegendOutputFormat">
+		class="org.geoserver.wms.legendgraphic.GIFLegendOutputFormat">
 	</bean>
-	<bean id="wmsJPEGLegendGraphicOutputFormat" class="org.geoserver.wms.legendgraphic.JAILegendOutputFormat">
-      <constructor-arg value="image/jpeg"></constructor-arg>
+    <bean id="wmsGIFLegendGraphicResponse" 
+        class="org.geoserver.wms.legendgraphic.GIFLegendGraphicResponse">
+    </bean>
+	<bean id="wmsJPEGLegendGraphicOutputFormat" 
+        class="org.geoserver.wms.legendgraphic.JPEGLegendOutputFormat">
 	</bean>
+    <bean id="wmsJPEGLegendGraphicResponse" 
+        class="org.geoserver.wms.legendgraphic.JPEGLegendGraphicResponse">
+    </bean>
 	<bean id="wmsPNGLegendOutputFormat" 
 		class="org.geoserver.wms.legendgraphic.PNGLegendOutputFormat">
 	</bean>
+    <bean id="wmsPNGLegendGraphicResponse" 
+        class="org.geoserver.wms.legendgraphic.PNGLegendGraphicResponse">
+    </bean>
 	
 	<!--  
 		Map producers and responses
