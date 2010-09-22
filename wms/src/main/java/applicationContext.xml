@@ -26,19 +26,25 @@
 		operation beans for handling incoming requests 
 	-->
 	<bean id="wmsGetCapabilities" 
-		class="org.geoserver.wms.GetCapabilitiesImpl" >
+		class="org.geoserver.wms.GetCapabilities" >
       <description>WMS GetCapabilities operation</description>
       <constructor-arg ref="wms"/>
 	</bean>
 
+    <bean id="wmsGetStyles"
+        class="org.geoserver.wms.GetStyles">
+       <description>WMS GetStyles operation</description>
+       <constructor-arg ref="wms"/>
+    </bean>
+    
 	<bean id="wmsDescribeLayer"
-		class="org.geoserver.wms.DescribeLayerImpl">
+		class="org.geoserver.wms.DescribeLayer">
        <description>WMS DescribeLayer operation</description>
       <constructor-arg ref="wms"/>
 	</bean>
 		
 	<bean id="wmsGetFeatureInfo"
-		class="org.vfny.geoserver.wms.servlets.GetFeatureInfo">
+		class="org.geoserver.wms.GetFeatureInfo">
       <constructor-arg ref="wms"/>
 	</bean>
 		
@@ -163,10 +169,8 @@
 	</bean>
 
 	<bean id="describeLayerKvpReader"
-		class="org.geoserver.wms.kvp.WMSKvpRequestReaderAdapter">
-		<constructor-arg index="0" value="org.vfny.geoserver.wms.requests.DescribeLayerRequest" />
-      	<constructor-arg index="1" value="org.vfny.geoserver.wms.requests.DescribeLayerKvpRequestReader" />
-      	<constructor-arg index="2" ref="wms" />
+		class="org.geoserver.wms.kvp.DescribeLayerKvpRequestReader">
+      	<constructor-arg ref="wms" />
 	</bean>
 	
 	<!-- bean id="getMapKvpReader"
@@ -232,9 +236,8 @@
 		<constructor-arg ref="geoServer"/>
 	</bean>
 	<bean id="getFeatureInfoResponse"
-		class="org.geoserver.ows.adapters.ResponseAdapter">
-		<constructor-arg value="org.vfny.geoserver.wms.responses.GetFeatureInfoResponse"/>
-		<constructor-arg ref="geoServer"/>
+		class="org.geoserver.wms.response.GetFeatureInfoResponse">
+		<constructor-arg ref="wms"/>
 	</bean>
 	<bean id="getLegendGraphicResponse"
 		class="org.geoserver.ows.adapters.ResponseAdapter">

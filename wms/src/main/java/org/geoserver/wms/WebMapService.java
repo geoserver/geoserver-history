@@ -4,6 +4,8 @@
  */
 package org.geoserver.wms;
 
+import net.opengis.wfs.FeatureCollectionType;
+
 import org.geoserver.wms.request.DescribeLayerRequest;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
 import org.geoserver.wms.request.GetFeatureInfoRequest;
@@ -13,28 +15,26 @@ import org.geoserver.wms.request.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
 import org.geoserver.wms.response.GetCapabilitiesTransformer;
 import org.geotools.styling.StyledLayerDescriptor;
-import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
-
 
 /**
  * Web Map Service implementation.
  * <p>
- * Each of the methods on this class corresponds to an operation as defined
- * by the Web Map Specification. See {@link http://www.opengeospatial.org/standards/wms}
- * for more details.
+ * Each of the methods on this class corresponds to an operation as defined by the Web Map
+ * Specification. See {@link http://www.opengeospatial.org/standards/wms} for more details.
  * </p>
+ * 
  * @author Justin Deoliveira, The Open Planning Project, jdeolive@openplans.org
- *
+ * 
  */
 public interface WebMapService {
-    
+
     /**
      * WMS service configuration.
      */
     WMSInfo getServiceInfo();
-    
+
     /**
      * GetCapabilities operation.
      */
@@ -57,7 +57,7 @@ public interface WebMapService {
     /**
      * GetFeatureInfo operation.
      */
-    GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request);
+    FeatureCollectionType getFeatureInfo(GetFeatureInfoRequest request);
 
     /**
      * GetLegendGraphic operation.

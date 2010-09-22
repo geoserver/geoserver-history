@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
+import net.opengis.wfs.FeatureCollectionType;
+
 import org.geoserver.platform.GeoServerExtensions;
 import org.geoserver.wms.request.DescribeLayerRequest;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
@@ -21,6 +23,7 @@ import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.request.GetStylesRequest;
 import org.geoserver.wms.response.DescribeLayerTransformer;
+import org.geoserver.wms.response.GetCapabilitiesTransformer;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
@@ -36,11 +39,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.vfny.geoserver.wms.WmsException;
-import org.vfny.geoserver.wms.responses.GetFeatureInfoResponse;
 import org.vfny.geoserver.wms.responses.GetLegendGraphicResponse;
 import org.vfny.geoserver.wms.responses.GetMapResponse;
 import org.vfny.geoserver.wms.responses.map.kml.KMLReflector;
-import org.vfny.geoserver.wms.servlets.GetFeatureInfo;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -233,10 +234,10 @@ public class DefaultWebMapService implements WebMapService,
     /**
      * @see WebMapService#getFeatureInfo(GetFeatureInfoRequest)
      */
-    public GetFeatureInfoResponse getFeatureInfo(GetFeatureInfoRequest request) {
+    public FeatureCollectionType getFeatureInfo(final GetFeatureInfoRequest request) {
         GetFeatureInfo getFeatureInfo = (GetFeatureInfo) context.getBean("wmsGetFeatureInfo");
 
-        return (GetFeatureInfoResponse) getFeatureInfo.getResponse();
+        return getFeatureInfo.run(request);
     }
 
     /**
