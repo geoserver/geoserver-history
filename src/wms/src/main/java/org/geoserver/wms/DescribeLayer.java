@@ -7,7 +7,7 @@ package org.geoserver.wms;
 import java.nio.charset.Charset;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.response.DescribeLayerTransformer;
+import org.geoserver.wms.describelayer.DescribeLayerTransformer;
 
 /**
  * DescribeLayer WMS operation default implementation.
