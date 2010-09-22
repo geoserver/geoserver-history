@@ -28,7 +28,7 @@ public class SVGTest extends WMSTestSupport {
         getWMS().setSvgRenderer(WMS.SVG_SIMPLE);
             Document doc = getAsDOM(
                 "wms?request=getmap&service=wms&version=1.1.1" + 
-                "&format=" + SVGMapOutputFormatProxy.MIME_TYPE + 
+                "&format=" + SVG.MIME_TYPE + 
                 "&layers=" + MockData.BASIC_POLYGONS.getPrefix() + ":" + MockData.BASIC_POLYGONS.getLocalPart() + 
                 "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
@@ -43,7 +43,7 @@ public class SVGTest extends WMSTestSupport {
         getWMS().setSvgRenderer(WMS.SVG_SIMPLE);
             Document doc = getAsDOM(
                 "wms?request=getmap&service=wms&version=1.1.1" + 
-                "&format=" + SVGMapOutputFormatProxy.MIME_TYPE + 
+                "&format=" + SVG.MIME_TYPE + 
                 "&layers=" + getLayerId(MockData.BASIC_POLYGONS) + 
                 "&styles=multifts" + 
                 "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
@@ -66,7 +66,7 @@ public class SVGTest extends WMSTestSupport {
         getWMS().setSvgRenderer(WMS.SVG_BATIK);
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + SVGMapOutputFormatProxy.MIME_TYPE + 
+            "&format=" + SVG.MIME_TYPE + 
             "&layers=" + getLayerId(MockData.BASIC_POLYGONS) + 
             "&styles=" + MockData.BASIC_POLYGONS.getLocalPart() + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
@@ -89,7 +89,7 @@ public class SVGTest extends WMSTestSupport {
         getWMS().setSvgRenderer(WMS.SVG_BATIK);
         Document doc = getAsDOM(
             "wms?request=getmap&service=wms&version=1.1.1" + 
-            "&format=" + SVGMapOutputFormatProxy.MIME_TYPE + 
+            "&format=" + SVG.MIME_TYPE + 
             "&layers=" + getLayerId(MockData.BASIC_POLYGONS) + 
             "&styles=multifts" + 
             "&height=1024&width=1024&bbox=-180,-90,180,90&srs=EPSG:4326" +  
