@@ -338,13 +338,13 @@
 		class="org.geoserver.wms.map.JPEGMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
-<!--	
+
 	<bean id="PDFMapProducer"
 		singleton="false"
 		class="org.geoserver.wms.map.PDFMapOutputFormat">
 		<constructor-arg index="0" ref="wms"/>
 	</bean>
--->	
+
 	<bean id="KMLMapProducer" 
 		singleton="false"
 		class="org.geoserver.kml.KMLMapOutputFormat">

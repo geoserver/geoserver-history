@@ -8,21 +8,20 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.DefaultWebMapService;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSMapContext;
-import org.geoserver.wms.request.GetMapRequest;
 import org.geoserver.wms.response.MapDecorationLayout;
 import org.geotools.renderer.lite.StreamingRenderer;
+import org.springframework.util.Assert;
 import org.vfny.geoserver.wms.WmsException;
 
 import com.lowagie.text.Document;
@@ -40,10 +39,10 @@ import com.vividsolutions.jts.geom.Envelope;
  * 
  * @author Pierre-Emmanuel Balageas, ALCER (http://www.alcer.com)
  * @author Simone Giannecchini - GeoSolutions
+ * @author Gabriel Roldan
  * @version $Id$
  */
-public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
-        RasterMapOutputFormat {
+public class PDFMapOutputFormat extends AbstractMapOutputFormat {
     /** A logger for this class. */
     private static final Logger LOGGER = org.geotools.util.logging.Logging
             .getLogger("org.vfny.geoserver.responses.wms.map.pdf");
@@ -51,25 +50,59 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
     /**
      * A kilobyte
      */
-    static final int KB = 1024;
+    private static final int KB = 1024;
 
     /** the only MIME type this map producer supports */
-    static final String MIME_TYPE = "application/pdf";
+    private static final String MIME_TYPE = "application/pdf";
 
-    WMS wms;
+    public static class PDFMap extends org.geoserver.wms.response.Map {
+
+        private WMSMapContext context;
+
+        public PDFMap(final WMSMapContext mapContext) {
+            this.context = mapContext;
+        }
+
+        public WMSMapContext getContext() {
+            return context;
+        }
+    }
+
+    private WMS wms;
 
     public PDFMapOutputFormat(WMS wms) {
-        super(MIME_TYPE);
+        super(PDFMap.class, MIME_TYPE);
         this.wms = wms;
     }
 
     /**
-     * Writes the image to the client.
-     * 
-     * @param out
-     *            The output stream to write to.
+     * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public void writeTo(OutputStream out) throws ServiceException, java.io.IOException {
+    public PDFMap produceMap(final WMSMapContext mapContext) throws ServiceException, IOException {
+
+        PDFMap result = new PDFMap(mapContext);
+        result.setContentDispositionHeader(mapContext, ".pdf");
+        return result;
+    }
+
+    /**
+     * Writes the PDF.
+     * <p>
+     * NOTE: the document seems to actually be created in memory, and being written down to
+     * {@code output} once we call {@link Document#close()}. If there's no other way to do so, it'd
+     * be better to actually split out the process into produceMap/write?
+     * </p>
+     * 
+     * @see org.geoserver.ows.Response#write(java.lang.Object, java.io.OutputStream,
+     *      org.geoserver.platform.Operation)
+     */
+    @Override
+    public void write(Object value, OutputStream output, Operation operation) throws IOException,
+            ServiceException {
+
+        Assert.isInstanceOf(PDFMap.class, value);
+        WMSMapContext mapContext = ((PDFMap) value).getContext();
+
         final int width = mapContext.getMapWidth();
         final int height = mapContext.getMapHeight();
 
@@ -87,7 +120,7 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
             document.setMargins(0, 0, 0, 0);
 
             // step 2: creation of the writer
-            PdfWriter writer = PdfWriter.getInstance(document, out);
+            PdfWriter writer = PdfWriter.getInstance(document, output);
 
             // step 3: we open the document
             document.open();
@@ -129,7 +162,7 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
 
             Rectangle paintArea = new Rectangle(width, height);
 
-            renderer = new StreamingRenderer();
+            StreamingRenderer renderer = new StreamingRenderer();
             renderer.setContext(mapContext);
             // TODO: expose the generalization distance as a param
             // ((StreamingRenderer) renderer).setGeneralizationDistance(0);
@@ -140,7 +173,7 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
 
             // we already do everything that the optimized data loading does...
             // if we set it to true then it does it all twice...
-            Map rendererParams = new HashMap();
+            java.util.Map rendererParams = new HashMap();
             rendererParams.put("optimizedDataLoadingEnabled", new Boolean(true));
             rendererParams.put("renderingBuffer", new Integer(mapContext.getBuffer()));
             // we need the renderer to draw everything on the batik provided graphics object
@@ -153,14 +186,6 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
             renderer.setRendererHints(rendererParams);
 
             Envelope dataArea = mapContext.getAreaOfInterest();
-
-            if (this.abortRequested) {
-                graphic.dispose();
-                // step 5: we close the document
-                document.close();
-
-                return;
-            }
 
             // enforce no more than x rendering errors
             int maxErrors = wms.getMaxRenderingErrors();
@@ -187,7 +212,7 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
 
             if (watermark != null) {
                 MapDecorationLayout layout = new MapDecorationLayout();
-                layout.paint(graphic, paintArea, this.mapContext);
+                layout.paint(graphic, paintArea, mapContext);
             }
 
             // check if a non ignorable error occurred
@@ -221,54 +246,6 @@ public class PDFMapOutputFormat extends AbstractRasterMapOutputFormat implements
         } catch (DocumentException t) {
             throw new WmsException("Error setting up the PDF", "internalError", t);
         }
-    }
 
-    public void produceMap() throws WmsException {
-        // do nothing here, we want to stream out directly
-    }
-
-    /**
-     * Returns a sensible <filename>.pdf for the http attachment header
-     */
-    @Override
-    public String getContentDisposition() {
-        if (this.mapContext.getLayer(0) != null) {
-            try {
-                String title = this.mapContext.getLayer(0).getFeatureSource().getSchema().getName()
-                        .getLocalPart();
-
-                if ((title != null) && !title.equals("")) {
-                    return "attachment; filename=" + title + ".pdf";
-                }
-            } catch (NullPointerException e) {
-            }
-        }
-
-        return "attachment; filename=geoserver.pdf";
-    }
-
-    public String getContentDisposition(GetMapRequest request, org.geoserver.wms.response.Map result) {
-        if (request.getLayers().size() > 0) {
-            try {
-                String title = request.getLayers().get(0).getName();
-
-                if ((title != null) && !title.equals("")) {
-                    return "attachment; filename=" + title + ".pdf";
-                }
-            } catch (NullPointerException e) {
-            }
-        }
-
-        return "attachment; filename=geoserver.pdf";
-    }
-
-    /**
-     * Does nothing
-     * 
-     * @see RasterMapProducer#formatImageOutputStream(RenderedImage, OutputStream)
-     */
-    public void formatImageOutputStream(RenderedImage image, OutputStream outStream,
-            WMSMapContext mapContext) throws WmsException, IOException {
-        // do nothing
     }
 }
