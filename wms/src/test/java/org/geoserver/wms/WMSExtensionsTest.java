@@ -104,8 +104,8 @@ public class WMSExtensionsTest extends TestCase {
         testFormatNames.add("image/fakeformat");
         testFormatNames.add("image/dummy");
 
-        expect(mockProducer.getOutputFormatNames()).andReturn(testFormatNames);// call#1
-        expect(mockProducer.getOutputFormatNames()).andReturn(testFormatNames);// call#2
+        expect(mockProducer.enabled()).andReturn(true).anyTimes();
+        expect(mockProducer.getOutputFormatNames()).andReturn(testFormatNames).anyTimes();
 
         replay(mockContext);
         replay(mockProducer);
