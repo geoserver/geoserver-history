@@ -7,8 +7,8 @@ package org.geoserver.wms;
 import net.opengis.wfs.FeatureCollectionType;
 
 import org.geoserver.sld.GetStylesRequest;
+import org.geoserver.wms.capabilities.GetCapabilitiesTransformer;
 import org.geoserver.wms.response.DescribeLayerTransformer;
-import org.geoserver.wms.response.GetCapabilitiesTransformer;
 import org.geotools.styling.StyledLayerDescriptor;
 
 /**

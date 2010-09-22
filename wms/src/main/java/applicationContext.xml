@@ -194,7 +194,7 @@
  	
  	<!-- kvp request readers -->
  	<bean id="wmsGetCapabilitiesKvpReader" 
- 		class="org.geoserver.wms.kvp.CapabilitiesKvpReader">
+ 		class="org.geoserver.wms.capabilities.CapabilitiesKvpReader">
 	</bean>
 
 	<bean id="describeLayerKvpReader"
@@ -229,7 +229,7 @@
 		
 	<!-- xml request readers -->
     <bean id="wmsCapabilitiesXmlReader" 
-    	class="org.geoserver.wms.xml.CapabilitiesXmlReader">
+    	class="org.geoserver.wms.capabilities.CapabilitiesXmlReader">
     </bean>
     
      <bean id="getMapXmlReader" 
@@ -243,7 +243,7 @@
    		
 	<!--  responses -->
 	<bean id="wmsGetCapabilitiesResponse"
-		class="org.geoserver.wms.response.GetCapabilitiesResponse">
+		class="org.geoserver.wms.capabilities.GetCapabilitiesResponse">
 	</bean>
 	<bean id="describeLayerResponse"
 		class="org.geoserver.wms.response.DescribeLayerResponse">

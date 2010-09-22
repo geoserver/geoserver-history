@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
-package org.geoserver.wms.xml;
+package org.geoserver.wms.capabilities;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -10,6 +10,7 @@ import java.io.StringReader;
 import junit.framework.TestCase;
 
 import org.geoserver.wms.GetCapabilitiesRequest;
+import org.geoserver.wms.capabilities.CapabilitiesXmlReader;
 
 /**
  * 

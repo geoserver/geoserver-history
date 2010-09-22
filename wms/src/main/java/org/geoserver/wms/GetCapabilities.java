@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.Set;
 
 import org.geoserver.platform.ServiceException;
-import org.geoserver.wms.response.GetCapabilitiesTransformer;
+import org.geoserver.wms.capabilities.GetCapabilitiesTransformer;
 
 /**
  * WMS GetCapabilities operation default implementation.
