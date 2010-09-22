@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.geoserver.wms.response.decoration;
+package org.geoserver.wms.decoration;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
