@@ -33,7 +33,6 @@ public class CapabilitiesXmlReaderTest extends TestCase {
         assertTrue(read instanceof GetCapabilitiesRequest);
 
         GetCapabilitiesRequest request = (GetCapabilitiesRequest) read;
-        assertEquals("WMS", request.getService());
         assertEquals("GetCapabilities", request.getRequest());
         assertEquals("1.2.0", request.getVersion());
         assertEquals("1", request.getUpdateSequence());
