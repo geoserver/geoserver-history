@@ -56,14 +56,12 @@ public class PDFMapOutputFormat extends AbstractMapOutputFormat {
 
     public static class PDFMap extends org.geoserver.wms.Map {
 
-        private WMSMapContext context;
-
         public PDFMap(final WMSMapContext mapContext) {
-            this.context = mapContext;
+            super(mapContext);
         }
 
         public WMSMapContext getContext() {
-            return context;
+            return mapContext;
         }
     }
 

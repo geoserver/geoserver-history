@@ -35,8 +35,12 @@ public class RawMapResponse extends Response {
             ServiceException {
         Assert.isInstanceOf(RawMap.class, value);
         RawMap map = (RawMap) value;
-        map.writeTo(output);
-        output.flush();
+        try {
+            map.writeTo(output);
+            output.flush();
+        } finally {
+            map.dispose();
+        }
     }
 
     /**

@@ -51,6 +51,8 @@ public class XMLTransformerMapResponse extends Response {
             }
             throw new ServiceException(operation.getId() + " operation failed.",
                     cause != null ? cause : e);
+        } finally {
+            map.dispose();
         }
     }
 

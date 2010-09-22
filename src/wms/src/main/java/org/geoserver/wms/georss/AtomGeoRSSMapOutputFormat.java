@@ -80,7 +80,7 @@ public class AtomGeoRSSMapOutputFormat implements GetMapOutputFormat {
         Charset encoding = wms.getCharSet();
         tx.setEncoding(encoding);
 
-        XMLTransformerMap result = new XMLTransformerMap(tx, mapContext, getMimeType());
+        XMLTransformerMap result = new XMLTransformerMap(mapContext, tx, mapContext, getMimeType());
         return result;
     }
 

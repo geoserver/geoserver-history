@@ -1,6 +1,7 @@
 package org.geoserver.wms.map;
 
 import org.geoserver.wms.Map;
+import org.geoserver.wms.WMSMapContext;
 import org.geotools.xml.transform.TransformerBase;
 
 public class XMLTransformerMap extends Map {
@@ -19,8 +20,9 @@ public class XMLTransformerMap extends Map {
      * @param mimeType
      *            the MIME-Type to be declared in the response
      */
-    public XMLTransformerMap(final TransformerBase transformer, final Object subject,
-            final String mimeType) {
+    public XMLTransformerMap(final WMSMapContext mapContext, final TransformerBase transformer,
+            final Object subject, final String mimeType) {
+        super(mapContext);
         this.transformer = transformer;
         this.transformerSubject = subject;
         setMimeType(mimeType);

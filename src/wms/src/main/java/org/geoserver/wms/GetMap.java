@@ -31,8 +31,10 @@ import org.geotools.data.ows.Layer;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.geotools.data.wms.WebMapServer;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.factory.FactoryRegistryException;
 import org.geotools.factory.GeoTools;
 import org.geotools.factory.Hints;
+import org.geotools.feature.SchemaException;
 import org.geotools.filter.function.EnvFunction;
 import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.FeatureSourceMapLayer;
@@ -57,6 +59,7 @@ import org.opengis.parameter.GeneralParameterValue;
 import org.opengis.parameter.ParameterValue;
 import org.opengis.parameter.ParameterValueGroup;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -100,20 +103,39 @@ public class GetMap {
      * 
      * @throws ServiceException
      *             if an error occurs creating the map from the provided request
-     * 
-     *             TODO: This method have become a 300+ lines monster, refactore it to private
-     *             methods from which names one can inferr what's going on... but get a decent test
-     *             coverage on it first as to avoid regressions as much as possible
      */
-    public Map run(final GetMapRequest request) {
-        assertMandatory(request);
+    public Map run(final GetMapRequest request) throws ServiceException {
+        // JD/GR:hold a reference in order to release resources later. mapcontext can leak memory --
+        // we make sure we done (see
+        // finally block)
+        WMSMapContext mapContext = new WMSMapContext(request);
+        try {
+            return run(request, mapContext);
+        } catch (ServiceException e) {
+            mapContext.dispose();
+            throw e;
+        } catch (RuntimeException e) {
+            mapContext.dispose();
+            throw (RuntimeException) e;
+        } catch (Exception e) {
+            mapContext.dispose();
+            throw new ServiceException("Internal error ", e);
+        }
+    }
+    
+    /**
+     * TODO: This method have become a 300+ lines monster, refactor it to private methods from
+     * which names one can infer what's going on... but get a decent test coverage on it first as
+     * to avoid regressions as much as possible
+     */
+    public Map run(final GetMapRequest request, WMSMapContext mapContext) throws ServiceException,
+            IOException {
+       assertMandatory(request);
 
         final String outputFormat = request.getFormat();
 
         GetMapOutputFormat delegate = getDelegate(outputFormat);
-        // JD:make instance variable in order to release resources later
-        // final WMSMapContext map = new WMSMapContext();
-        WMSMapContext mapContext = new WMSMapContext(request);
+        
 
         final Envelope env = request.getBbox();
 
@@ -172,9 +194,7 @@ public class GetMap {
             LOGGER.fine("setting up map");
         }
 
-        try { // mapcontext can leak memory -- we make sure we done (see
-              // finally block)
-
+        try { 
             // track the external caching strategy for any map layers
             boolean cachingPossible = request.isGet();
             final String featureVersion = request.getFeatureVersion();
@@ -369,8 +389,12 @@ public class GetMap {
 
                         try {
 
-                            layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
-                                    reader, readParameters), layerStyle);
+                            try {
+                                layer = new DefaultMapLayer(FeatureUtilities.wrapGridCoverageReader(
+                                        reader, readParameters), layerStyle);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
 
                             layer.setTitle(layers.get(i).getCoverage().getPrefixedName());
                             layer.setQuery(Query.ALL);
@@ -464,8 +488,6 @@ public class GetMap {
 
             return map;
 
-        } catch (Exception e) {
-            throw new ServiceException(e, "Internal error ", "");
         } finally {
             //clearMapContext(mapContext);
             EnvFunction.clearLocalValues();
@@ -660,25 +682,6 @@ public class GetMap {
             }
         }
         return combinedList;
-    }
-
-    /**
-     * Clearing the map context is paramount, otherwise we end up with a memory leak
-     * 
-     * @param mapContext
-     */
-    private void clearMapContext(WMSMapContext mapContext) {
-        try {
-            if (mapContext != null && mapContext.getLayerCount() > 0) {
-                mapContext.clearLayerList();
-            }
-        } catch (Exception e) {// we don't want to propagate a new error
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.log(Level.SEVERE,
-                        new StringBuffer("Getting feature source: ").append(e.getMessage())
-                                .toString(), e);
-            }
-        }
     }
 
     /**

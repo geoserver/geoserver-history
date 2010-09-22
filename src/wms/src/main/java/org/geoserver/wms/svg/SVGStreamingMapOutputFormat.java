@@ -47,7 +47,11 @@ public final class SVGStreamingMapOutputFormat extends Response implements GetMa
     public void write(Object value, OutputStream output, Operation operation) throws IOException,
             ServiceException {
         EncodeSVG map = (EncodeSVG) value;
-        map.encode(output);
+        try {
+            map.encode(output);
+        } finally {
+            map.dispose();
+        }
     }
 
     /**

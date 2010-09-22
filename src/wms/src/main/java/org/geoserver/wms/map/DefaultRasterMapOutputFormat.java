@@ -185,32 +185,37 @@ public abstract class DefaultRasterMapOutputFormat extends AbstractMapOutputForm
      * @param value
      *            must be a {@link BufferedImageMap}
      * @see GetMapOutputFormat#write(org.geoserver.wms.Map, OutputStream)
+     * @see #formatImageOutputStream(RenderedImage, OutputStream, WMSMapContext)
      */
     @Override
-    public void write(final Object value, final OutputStream output, final Operation operation)
+    public final void write(final Object value, final OutputStream output, final Operation operation)
             throws IOException, ServiceException {
 
         Assert.isInstanceOf(BufferedImageMap.class, value);
 
         final BufferedImageMap imageMap = (BufferedImageMap) value;
-        final RenderedImage image = imageMap.getImage();
-        final List<GridCoverage2D> renderedCoverages = imageMap.getRenderedCoverages();
-        final WMSMapContext mapContext = imageMap.getMapContext();
         try {
-            formatImageOutputStream(image, output, mapContext);
-            output.flush();
-        } finally {
-            // let go of the coverages created for rendering
-            for (GridCoverage2D coverage : renderedCoverages) {
-                coverage.dispose(true);
-            }
+            final RenderedImage image = imageMap.getImage();
+            final List<GridCoverage2D> renderedCoverages = imageMap.getRenderedCoverages();
+            final WMSMapContext mapContext = imageMap.getMapContext();
+            try {
+                formatImageOutputStream(image, output, mapContext);
+                output.flush();
+            } finally {
+                // let go of the coverages created for rendering
+                for (GridCoverage2D coverage : renderedCoverages) {
+                    coverage.dispose(true);
+                }
 
-            // let go of the image chain as quick as possible to free memory
-            if (image instanceof PlanarImage) {
-                disposePlanarImageChain((PlanarImage) image, new HashSet<PlanarImage>());
-            } else if (image instanceof BufferedImage) {
-                ((BufferedImage) image).flush();
+                // let go of the image chain as quick as possible to free memory
+                if (image instanceof PlanarImage) {
+                    disposePlanarImageChain((PlanarImage) image, new HashSet<PlanarImage>());
+                } else if (image instanceof BufferedImage) {
+                    ((BufferedImage) image).flush();
+                }
             }
+        } finally {
+            imageMap.dispose();
         }
     }
 

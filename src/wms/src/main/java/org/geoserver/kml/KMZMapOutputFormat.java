@@ -49,12 +49,12 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
 
     private WMS wms;
 
-    public static class KMZMap extends XMLTransformerMap{
-        public KMZMap(TransformerBase transformer, Object subject, String mimeType) {
-            super(transformer, subject, mimeType);
+    public static class KMZMap extends XMLTransformerMap {
+        public KMZMap(final WMSMapContext mapContext, TransformerBase transformer, String mimeType) {
+            super(mapContext, transformer, mapContext, mimeType);
         }
     }
-    
+
     public KMZMapOutputFormat(WMS wms) {
         super(KMZMap.class, MIME_TYPE, OUTPUT_FORMATS);
         this.wms = wms;
@@ -70,8 +70,7 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
      *            when producing the map.
      * @see org.geoserver.wms.GetMapOutputFormat#produceMap(org.geoserver.wms.WMSMapContext)
      */
-    public KMZMap produceMap(WMSMapContext mapContext) throws ServiceException,
-            IOException {
+    public KMZMap produceMap(WMSMapContext mapContext) throws ServiceException, IOException {
         KMLTransformer transformer = new KMLTransformer(wms);
         transformer.setKmz(true);
         Charset encoding = wms.getCharSet();
@@ -79,7 +78,7 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
         // TODO: use GeoServer.isVerbose() to determine if we should indent?
         transformer.setIndentation(3);
 
-        KMZMap map = new KMZMap(transformer, mapContext, MIME_TYPE);
+        KMZMap map = new KMZMap(mapContext, transformer, MIME_TYPE);
         map.setContentDispositionHeader(mapContext, ".kmz");
         return map;
     }
@@ -104,54 +103,63 @@ public class KMZMapOutputFormat extends AbstractMapOutputFormat implements GetMa
         Assert.isInstanceOf(XMLTransformerMap.class, value);
 
         final XMLTransformerMap map = (XMLTransformerMap) value;
-        final KMLTransformer transformer = (KMLTransformer) map.getTransformer();
-        final WMSMapContext mapContext = (WMSMapContext) map.getTransformerSubject();
-
-        // wrap the output stream in a zipped one
-        ZipOutputStream zip = new ZipOutputStream(output);
-
-        // first create an entry for the kml
-        ZipEntry entry = new ZipEntry("wms.kml");
-        zip.putNextEntry(entry);
-
         try {
-            transformer.transform(mapContext, zip);
-            zip.closeEntry();
-        } catch (TransformerException e) {
-            throw (IOException) new IOException().initCause(e);
-        }
+            final KMLTransformer transformer = (KMLTransformer) map.getTransformer();
+            final WMSMapContext mapContext = (WMSMapContext) map.getTransformerSubject();
 
-        final PNGMapOutputFormat mapProducer = new PNGMapOutputFormat(wms);
-        // write the images
-        for (int i = 0; i < mapContext.getLayerCount(); i++) {
-            MapLayer mapLayer = mapContext.getLayer(i);
+            // wrap the output stream in a zipped one
+            ZipOutputStream zip = new ZipOutputStream(output);
 
-            // create a context for this single layer
-            WMSMapContext subContext = new WMSMapContext();
-            subContext.addLayer(mapLayer);
-            subContext.setRequest(mapContext.getRequest());
-            subContext.setMapHeight(mapContext.getMapHeight());
-            subContext.setMapWidth(mapContext.getMapWidth());
-            subContext.setAreaOfInterest(mapContext.getAreaOfInterest());
-            subContext.setBgColor(mapContext.getBgColor());
-            subContext.setBuffer(mapContext.getBuffer());
-            subContext.setContactInformation(mapContext.getContactInformation());
-            subContext.setKeywords(mapContext.getKeywords());
-            subContext.setAbstract(mapContext.getAbstract());
-            subContext.setTransparent(true);
-
-            // render the map
-            BufferedImageMap imageMap = mapProducer.produceMap(subContext);
-
-            // write it to the zip stream
-            entry = new ZipEntry("layer_" + i + ".png");
+            // first create an entry for the kml
+            ZipEntry entry = new ZipEntry("wms.kml");
             zip.putNextEntry(entry);
-            mapProducer.write(imageMap, zip, operation);
-            zip.closeEntry();
-        }
 
-        zip.finish();
-        zip.flush();
+            try {
+                transformer.transform(mapContext, zip);
+                zip.closeEntry();
+            } catch (TransformerException e) {
+                throw (IOException) new IOException().initCause(e);
+            }
+
+            final PNGMapOutputFormat mapProducer = new PNGMapOutputFormat(wms);
+            // write the images
+            for (int i = 0; i < mapContext.getLayerCount(); i++) {
+                MapLayer mapLayer = mapContext.getLayer(i);
+
+                // create a context for this single layer
+                WMSMapContext subContext = new WMSMapContext();
+                subContext.addLayer(mapLayer);
+                subContext.setRequest(mapContext.getRequest());
+                subContext.setMapHeight(mapContext.getMapHeight());
+                subContext.setMapWidth(mapContext.getMapWidth());
+                subContext.setAreaOfInterest(mapContext.getAreaOfInterest());
+                subContext.setBgColor(mapContext.getBgColor());
+                subContext.setBuffer(mapContext.getBuffer());
+                subContext.setContactInformation(mapContext.getContactInformation());
+                subContext.setKeywords(mapContext.getKeywords());
+                subContext.setAbstract(mapContext.getAbstract());
+                subContext.setTransparent(true);
+
+                // render the map
+                BufferedImageMap imageMap;
+                try {
+                    imageMap = mapProducer.produceMap(subContext);
+                } finally {
+                    subContext.dispose();
+                }
+
+                // write it to the zip stream
+                entry = new ZipEntry("layer_" + i + ".png");
+                zip.putNextEntry(entry);
+                mapProducer.write(imageMap, zip, operation);
+                zip.closeEntry();
+            }
+
+            zip.finish();
+            zip.flush();
+        } finally {
+            map.dispose();
+        }
     }
 
 }

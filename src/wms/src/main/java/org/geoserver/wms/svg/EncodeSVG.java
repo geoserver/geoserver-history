@@ -47,8 +47,6 @@ public class EncodeSVG extends Map {
     /** the SVG closing element */
     private static final String SVG_FOOTER = "</svg>\n";
 
-    private WMSMapContext mapContext;
-
     private SVGWriter writer;
 
     /**
@@ -58,7 +56,7 @@ public class EncodeSVG extends Map {
      * 
      */
     public EncodeSVG(WMSMapContext mapContext) {
-        this.mapContext = mapContext;
+        super(mapContext);
     }
 
     public void encode(final OutputStream out) throws IOException {

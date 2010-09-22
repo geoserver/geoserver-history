@@ -6,6 +6,7 @@ package org.geoserver.wms;
 
 import java.util.HashMap;
 
+import org.geoserver.ows.Response;
 import org.geotools.map.MapLayer;
 
 public abstract class Map {
@@ -13,6 +14,40 @@ public abstract class Map {
     private String mimeType;
 
     private java.util.Map<String, String> responseHeaders;
+
+    protected final WMSMapContext mapContext;
+
+    /**
+     * @param context
+     *            the map context, can be {@code null} is there's _really_ no context around
+     */
+    public Map(final WMSMapContext context) {
+        this.mapContext = context;
+    }
+
+    /**
+     * Disposes any resource held by this Map.
+     * <p>
+     * This method is meant to be called right after the map is no longer needed. That generally
+     * happens at the end of a {@link Response#write} operation, and is meant to free any resource
+     * the map implementation might be holding, specially if it contains a refrerence to
+     * {@link WMSMapContext}, in which case it's mandatory that the map context's
+     * {@link WMSMapContext#dispose()} method is called.
+     * </p>
+     */
+    public final void dispose() {
+        if (mapContext != null) {
+            mapContext.dispose();
+        }
+        disposeInternal();
+    }
+
+    /**
+     * Hook for Map concrete subclasses to dispose any other resource than the {@link WMSMapContext}
+     */
+    protected void disposeInternal() {
+        // default implementation does nothing
+    }
 
     public String getMimeType() {
         return mimeType;

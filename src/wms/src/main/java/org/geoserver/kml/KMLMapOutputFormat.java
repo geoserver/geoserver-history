@@ -85,7 +85,8 @@ public class KMLMapOutputFormat implements GetMapOutputFormat {
         Charset encoding = wms.getCharSet();
         transformer.setEncoding(encoding);
 
-        XMLTransformerMap map = new XMLTransformerMap(transformer, mapContext, MIME_TYPE);
+        XMLTransformerMap map = new XMLTransformerMap(mapContext, transformer, mapContext,
+                MIME_TYPE);
         map.setContentDispositionHeader(mapContext, ".kml");
         return map;
     }
