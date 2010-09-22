@@ -7,6 +7,7 @@ package org.geoserver.wms.kvp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.geoserver.catalog.LayerGroupInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.ows.FlatKvpParser;
 import org.geoserver.ows.KvpParser;
@@ -45,11 +46,20 @@ public class MapLayerInfoKvpParser extends KvpParser {
 
             LayerInfo layerInfo = wms.getLayerByName(layerName);
             if (layerInfo == null) {
-                throw new ServiceException(layerName + ": no such layer on this server",
-                        "LayerNotDefined", getClass().getSimpleName());
+                LayerGroupInfo groupInfo = wms.getLayerGroupByName(layerName);
+                if (groupInfo == null) {
+                    throw new ServiceException(layerName + ": no such layer on this server",
+                            "LayerNotDefined", getClass().getSimpleName());
+                } else {
+                    for (LayerInfo li : groupInfo.getLayers()) {
+                        layer = new MapLayerInfo(li);
+                        layers.add(layer);
+                    }
+                }
+            } else {
+                layer = new MapLayerInfo(layerInfo);
+                layers.add(layer);
             }
-            layer = new MapLayerInfo(layerInfo);
-            layers.add(layer);
         }
 
         return layers;
