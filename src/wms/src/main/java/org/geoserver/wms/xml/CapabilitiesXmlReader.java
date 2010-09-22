@@ -6,32 +6,32 @@ package org.geoserver.wms.xml;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.geoserver.wms.WMS;
+import org.geoserver.ows.XmlRequestReader;
+import org.geoserver.ows.xml.v1_0.OWS;
 import org.geoserver.wms.request.GetCapabilitiesRequest;
-import org.vfny.geoserver.Request;
-import org.vfny.geoserver.util.requests.readers.XmlRequestReader;
 import org.vfny.geoserver.wms.WmsException;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.ParserAdapter;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
- * reads a WMS GetCapabilities request from an XML stream
+ * Reads a WMS GetCapabilities request from an XML stream
  * 
  * @author Gabriel Roldan
  * @version $Id$
- * 
- * @task TODO: see if it must be refactored to read WMS GetCapabilities too
  */
 public class CapabilitiesXmlReader extends XmlRequestReader {
-
-    private WMS wmsConfig;
 
     /**
      * Creates the new reader.
@@ -39,28 +39,20 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
      * @param wms
      *            The WMS service config.
      */
-    public CapabilitiesXmlReader(WMS wms) {
-        super(wms.getServiceInfo());
-        this.wmsConfig = wms;
+    public CapabilitiesXmlReader() {
+        super(OWS.GETCAPABILITIES, null, "WMS");
     }
 
     /**
-     * Reads the Capabilities XML request into a CapabilitiesRequest object.
-     * 
-     * @param reader
-     *            The plain POST text from the client.
-     * 
-     * @return The read CapabilitiesRequest object.
-     * 
-     * @throws WmsException
-     *             For any problems reading the request
+     * @param request
+     * @see org.geoserver.ows.XmlRequestReader#read(java.lang.Object, java.io.Reader, java.util.Map)
      */
-    public Request read(Reader reader, HttpServletRequest req) throws WmsException {
-        InputSource requestSource = new InputSource(reader);
-
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object read(Object request, Reader reader, Map kvp) throws Exception {
         // instantiante parsers and content handlers
-        GetCapabilitiesRequest request = new GetCapabilitiesRequest();
-        CapabilitiesHandler currentRequest = new CapabilitiesHandler(request);
+        GetCapabilitiesRequest req = new GetCapabilitiesRequest();
+        CapabilitiesHandler currentRequest = new CapabilitiesHandler(req);
 
         // read in XML file and parse to content handler
         try {
@@ -68,8 +60,7 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             SAXParser parser = factory.newSAXParser();
             ParserAdapter adapter = new ParserAdapter(parser.getParser());
             adapter.setContentHandler(currentRequest);
-            adapter.parse(requestSource);
-            LOGGER.fine("just parsed: " + requestSource);
+            adapter.parse(new InputSource(reader));
         } catch (SAXException e) {
             throw new WmsException(e, "XML capabilities request parsing error", getClass()
                     .getName());
@@ -79,8 +70,81 @@ public class CapabilitiesXmlReader extends XmlRequestReader {
             throw new WmsException(e, "Some sort of issue creating parser", getClass().getName());
         }
 
-        Request r = currentRequest.getRequest(req);
-
-        return r;
+        return req;
     }
+
+    /**
+     * A SAX content handler that acquires a GetCapabilities request from an incoming XML stream.
+     * 
+     * @author Rob Hranac, TOPP
+     * @version $Id$
+     */
+    private static class CapabilitiesHandler extends XMLFilterImpl implements ContentHandler {
+        /** Class logger */
+        private static Logger LOGGER = org.geotools.util.logging.Logging
+                .getLogger("org.geoserver.wms.xml.CapabilitiesHandler");
+
+        /** Internal Capabilities request for construction. */
+        private GetCapabilitiesRequest request = null;
+
+        /**
+         * Creates a new CapabilitiesHandler
+         * 
+         * @param service
+         *            this is the AbstractService Handling the Request
+         * @param req
+         */
+        public CapabilitiesHandler(GetCapabilitiesRequest request) {
+            this.request = request;
+        }
+
+        /**
+         * Returns the GetCapabilities request.
+         * 
+         * @return GetCapabilities request.
+         */
+        public GetCapabilitiesRequest getRequest(HttpServletRequest req) {
+            request.setHttpServletRequest(req);
+
+            return request;
+        }
+
+        /* ***********************************************************************
+         * Standard SAX content handler methods *
+         * **********************************************************************
+         */
+
+        /**
+         * Notes the start of the element and sets version and service tags, as required.
+         * 
+         * @param namespaceURI
+         *            URI for namespace appended to element.
+         * @param localName
+         *            Local name of element.
+         * @param rawName
+         *            Raw name of element.
+         * @param atts
+         *            Element attributes.
+         * 
+         * @throws SAXException
+         *             For any standard SAX errors.
+         */
+        public void startElement(String namespaceURI, String localName, String rawName,
+                Attributes atts) throws SAXException {
+            if (localName.equals("GetCapabilities")) {
+                LOGGER.finer("found capabilities start.");
+
+                for (int i = 0, n = atts.getLength(); i < n; i++) {
+                    if (atts.getLocalName(i).equals("version")) {
+                        request.setVersion(atts.getValue(i));
+                    } else if (atts.getLocalName(i).equals("service")) {
+                        request.setService(atts.getValue(i));
+                    } else if (atts.getLocalName(i).equals("updateSequence")) {
+                        request.setUpdateSequence(atts.getValue(i));
+                    }
+                }
+            }
+        }
+    }
+
 }
