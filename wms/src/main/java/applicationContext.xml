@@ -211,7 +211,7 @@
       	<constructor-arg ref="wms" />
 	</bean>
 	<bean id="getLegendGraphicKvpReader"
-			class="org.geoserver.wms.kvp.GetLegendGraphicKvpReader">
+			class="org.geoserver.wms.legendgraphic.GetLegendGraphicKvpReader">
       	<constructor-arg ref="wms" />
 	</bean>
   <!-- 
@@ -258,7 +258,7 @@
         <constructor-arg ref="wmsGetFeatureInfoPlainText"/> <!-- default output format -->
 	</bean>
 	<bean id="getLegendGraphicResponse"
-		class="org.geoserver.wms.response.GetLegendGraphicResponse">
+		class="org.geoserver.wms.legendgraphic.GetLegendGraphicResponse">
 		<constructor-arg ref="wms"/>
 	</bean>
 	<bean id="stylesResponse" class="org.geoserver.sld.GetStylesResponse"/>
