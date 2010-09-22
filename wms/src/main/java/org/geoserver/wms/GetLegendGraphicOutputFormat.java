@@ -10,22 +10,18 @@ import java.io.OutputStream;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geoserver.wms.response.LegendGraphic;
-import org.vfny.geoserver.wms.WmsException;
 
 /**
  * Provides the skeleton for producers of a legend image, as required by the GetLegendGraphic WMS
  * request.
  * 
  * <p>
- * To incorporate a new producer specialized in one or many output formats, there must be a
- * {@linkPlain org.vfny.geoserver.responses.wms.GetLegendGraphicProducerSpi} registered that can
- * provide instances of that concrete implementation.
+ * Implementations are meant to be state-less and to support a single image output format, which is
+ * declared in {@link #getContentType()}.
  * </p>
- * 
  * <p>
- * The methods defined in this interface respects the general parse request/produce response/get
- * mime type/write content workflow, so they should raise an exception if are called in the wrong
- * order (which is produceLegendGraphic -> getContentType -> writeTo)
+ * For a given GetLegendGraphicOutputFormat to be found at runtime, it is only needed that a Spring
+ * bean is declared in the GeoServer application context.
  * </p>
  * 
  * @author Gabriel Roldan
@@ -41,7 +37,7 @@ public interface GetLegendGraphicOutputFormat {
      *            validated so this method must not take care of verifying the requested layer
      *            exists and the like.
      * 
-     * @throws WmsException
+     * @throws ServiceException
      *             something goes wrong
      */
     LegendGraphic produceLegendGraphic(GetLegendGraphicRequest request) throws ServiceException;

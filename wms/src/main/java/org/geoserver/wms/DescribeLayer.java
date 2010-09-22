@@ -4,8 +4,6 @@
  */
 package org.geoserver.wms;
 
-import static org.geoserver.ows.util.ResponseUtils.baseURL;
-
 import java.nio.charset.Charset;
 
 import org.geoserver.platform.ServiceException;
@@ -29,10 +27,10 @@ public class DescribeLayer {
      * @see org.geoserver.wms.DescribeLayer#run(org.geoserver.wms.request.DescribeLayerRequest)
      */
     public DescribeLayerTransformer run(DescribeLayerRequest request) throws ServiceException {
+        String baseURL = request.getBaseUrl();
 
         DescribeLayerTransformer transformer;
-        transformer = new DescribeLayerTransformer(baseURL(request.getHttpRequest()));
-        transformer.setNamespaceDeclarationEnabled(false);
+        transformer = new DescribeLayerTransformer(baseURL);
         Charset encoding = wms.getCharSet();
         transformer.setEncoding(encoding);
         if (wms.getGeoServer().getGlobal().isVerbose()) {

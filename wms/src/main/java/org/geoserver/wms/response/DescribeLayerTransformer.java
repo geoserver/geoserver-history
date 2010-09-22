@@ -25,7 +25,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * <code>org.geotools.xml.transform.TransformerBase</code> specialized in producing a WMS
- * DescribeLayer response.
+ * DescribeLayer responses.
  * 
  * @author Gabriel Roldan
  * @version $Id$
@@ -41,13 +41,11 @@ public class DescribeLayerTransformer extends TransformerBase {
      *            the base URL, usually "http://host:port/geoserver"
      */
     public DescribeLayerTransformer(final String baseURL) {
-        super();
-
         if (baseURL == null) {
             throw new NullPointerException("serverBaseUrl");
         }
-
         this.baseURL = baseURL;
+        setNamespaceDeclarationEnabled(false);
     }
 
     /**

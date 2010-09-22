@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.legend.raster;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,6 +17,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
+import org.geoserver.wms.legendgraphic.ColorMapLegendCreator.Builder;
 import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.styling.ChannelSelection;
 import org.geotools.styling.ColorMap;
@@ -28,8 +29,6 @@ import org.geotools.styling.Style;
 import org.geotools.styling.Symbolizer;
 import org.vfny.geoserver.global.GeoserverDataDirectory;
 import org.vfny.geoserver.wms.responses.ImageUtils;
-import org.vfny.geoserver.wms.responses.LegendUtils;
-import org.vfny.geoserver.wms.responses.legend.raster.ColorMapLegendCreator.Builder;
 
 /**
  * Helper class to create legends for raster styles by parsing the rastersymbolizer element.

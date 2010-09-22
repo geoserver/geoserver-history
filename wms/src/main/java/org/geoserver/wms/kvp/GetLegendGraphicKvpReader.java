@@ -103,7 +103,9 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
         // }
         final String layer = (String) rawKvp.get("LAYER");
         final String format = request.getFormat();
-        final boolean strict = request.isStrict();
+        final boolean strict = rawKvp.containsKey("STRICT") ? Boolean.valueOf((String) rawKvp
+                .get("STRICT")) : request.isStrict();
+        request.setStrict(strict);
         if (strict && layer == null) {
             throw new ServiceException("LAYER parameter not present for GetLegendGraphic",
                     "LayerNotDefined");
@@ -131,11 +133,11 @@ public class GetLegendGraphicKvpReader extends KvpRequestReader {
 
                     // it much safer to wrap a reader rather than a coverage in most cases, OOM can
                     // occur otherwise
-                    final AbstractGridCoverage2DReader reader = (AbstractGridCoverage2DReader) coverageInfo
-                            .getGridCoverageReader(new NullProgressListener(),
-                                    GeoTools.getDefaultHints());
-                    final SimpleFeatureCollection feature = FeatureUtilities
-                            .wrapGridCoverageReader(reader, null);
+                    final AbstractGridCoverage2DReader reader;
+                    reader = (AbstractGridCoverage2DReader) coverageInfo.getGridCoverageReader(
+                            new NullProgressListener(), GeoTools.getDefaultHints());
+                    final SimpleFeatureCollection feature;
+                    feature = FeatureUtilities.wrapGridCoverageReader(reader, null);
                     request.setLayer(feature.getSchema());
                 }
             } catch (IOException e) {

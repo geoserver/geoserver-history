@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.requests;
+package org.geoserver.wms.kvp;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -13,17 +13,15 @@ import junit.framework.Test;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMS;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.wms.request.GetLegendGraphicRequest;
 import org.geotools.styling.Style;
-import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
 import com.mockrunner.mock.web.MockHttpServletRequest;
 
-
 public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
     /**
-     * request reader to test against, initialized by default with all
-     * parameters from <code>requiredParameters</code> and
-     * <code>optionalParameters</code>
+     * request reader to test against, initialized by default with all parameters from
+     * <code>requiredParameters</code> and <code>optionalParameters</code>
      */
     GetLegendGraphicKvpReader requestReader;
 
@@ -41,14 +39,13 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
 
     /** mock config object */
     WMS wms;
-    
+
     /**
      * This is a READ ONLY TEST so we can use one time setup
      */
     public static Test suite() {
         return new OneTimeTestSetup(new GetLegendGraphicKvpReaderTest());
     }
-    
 
     /**
      * Remainder:
@@ -89,80 +86,77 @@ public class GetLegendGraphicKvpReaderTest extends WMSTestSupport {
 
         wms = getWMS();
 
-        GetLegendGraphic service = new GetLegendGraphic(wms);
-        this.requestReader = new GetLegendGraphicKvpReader(allParameters, wms);
+        this.requestReader = new GetLegendGraphicKvpReader(wms);
         this.httpRequest = createRequest("wms", allParameters);
     }
 
     /**
-     * This test ensures that when a SLD parameter has been passed that refers
-     * to a SLD document with multiple styles, the required one is choosed based
-     * on the LAYER parameter.
+     * This test ensures that when a SLD parameter has been passed that refers to a SLD document
+     * with multiple styles, the required one is choosed based on the LAYER parameter.
      * <p>
      * This is the case where a remote SLD document is used in "library" mode.
      * </p>
+     * 
+     * @throws Exception
      */
-    public void testRemoteSLDMultipleStyles() throws ServiceException {
+    public void testRemoteSLDMultipleStyles() throws Exception {
         final URL remoteSldUrl = getClass().getResource("MultipleStyles.sld");
         this.allParameters.put("SLD", remoteSldUrl.toExternalForm());
 
         this.allParameters.put("LAYER", "cite:Ponds");
         this.allParameters.put("STYLE", "Ponds");
-        requestReader = new GetLegendGraphicKvpReader(this.allParameters, wms);
 
-        GetLegendGraphicRequest request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
+        GetLegendGraphicRequest request = requestReader.read(new GetLegendGraphicRequest(),
+                allParameters, allParameters);
 
-        //the style names Ponds is declared in third position on the sld doc
+        // the style names Ponds is declared in third position on the sld doc
         Style selectedStyle = request.getStyle();
         assertNotNull(selectedStyle);
         assertEquals("Ponds", selectedStyle.getName());
 
         this.allParameters.put("LAYER", "cite:Lakes");
         this.allParameters.put("STYLE", "Lakes");
-        requestReader = new GetLegendGraphicKvpReader(this.allParameters, wms);
-        request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
 
-        //the style names Ponds is declared in third position on the sld doc
+        request = requestReader.read(new GetLegendGraphicRequest(), allParameters, allParameters);
+
+        // the style names Ponds is declared in third position on the sld doc
         selectedStyle = request.getStyle();
         assertNotNull(selectedStyle);
         assertEquals("Lakes", selectedStyle.getName());
     }
-    
-    public void testMissingLayerParameter(){
+
+    public void testMissingLayerParameter() throws Exception {
         requiredParameters.remove("LAYER");
-        requestReader = new GetLegendGraphicKvpReader(requiredParameters, wms);
-        try{
-            requestReader.getRequest(httpRequest);
+        try {
+            requestReader.read(new GetLegendGraphicRequest(), requiredParameters,
+                    requiredParameters);
             fail("Expected ServiceException");
-        }catch(ServiceException e){
+        } catch (ServiceException e) {
             assertEquals("LayerNotDefined", e.getCode());
         }
     }
 
-    public void testMissingFormatParameter(){
+    public void testMissingFormatParameter() throws Exception {
         requiredParameters.remove("FORMAT");
-        requestReader = new GetLegendGraphicKvpReader(requiredParameters, wms);
-        try{
-            requestReader.getRequest(httpRequest);
+        try {
+            requestReader.read(new GetLegendGraphicRequest(), requiredParameters,
+                    requiredParameters);
             fail("Expected ServiceException");
-        }catch(ServiceException e){
+        } catch (ServiceException e) {
             assertEquals("MissingFormat", e.getCode());
         }
     }
 
-
-    public void testStrictParameter() {
+    public void testStrictParameter() throws Exception {
         GetLegendGraphicRequest request;
-        
-        //default value
-        requestReader = new GetLegendGraphicKvpReader(allParameters, wms);
-        request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
+
+        // default value
+        request = requestReader.read(new GetLegendGraphicRequest(), allParameters, allParameters);
         assertTrue(request.isStrict());
 
         allParameters.put("STRICT", "false");
         allParameters.remove("LAYER");
-        requestReader = new GetLegendGraphicKvpReader(allParameters, wms);
-        request = (GetLegendGraphicRequest) requestReader.getRequest(httpRequest);
+        request = requestReader.read(new GetLegendGraphicRequest(), allParameters, allParameters);
         assertFalse(request.isStrict());
     }
 }

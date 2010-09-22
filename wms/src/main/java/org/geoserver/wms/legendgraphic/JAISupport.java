@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.helpers;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

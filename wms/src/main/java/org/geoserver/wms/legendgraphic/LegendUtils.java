@@ -1,4 +1,4 @@
-package org.geoserver.wms.response;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.Color;
 import java.awt.Font;

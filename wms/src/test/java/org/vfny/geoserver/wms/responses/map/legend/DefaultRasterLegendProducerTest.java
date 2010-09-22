@@ -17,6 +17,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.data.test.MockData;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wms.WMSTestSupport;
+import org.geoserver.wms.legendgraphic.AbstractLegendGraphicOutputFormat;
 import org.geotools.coverage.grid.GridCoverage2D;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.resources.coverage.FeatureUtilities;
@@ -24,7 +25,6 @@ import org.geotools.styling.Rule;
 import org.geotools.styling.Style;
 import org.opengis.coverage.grid.GridCoverage;
 import org.vfny.geoserver.wms.requests.GetLegendGraphicRequest;
-import org.vfny.geoserver.wms.responses.DefaultRasterLegendProducer;
 import org.vfny.geoserver.wms.responses.LegendUtils;
 import org.vfny.geoserver.wms.servlets.GetLegendGraphic;
 
@@ -42,7 +42,7 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
                                                                                                .getName());
 
 
-    private DefaultRasterLegendProducer legendProducer;
+    private AbstractLegendGraphicOutputFormat legendProducer;
     GetLegendGraphic service;
 
     @Override
@@ -58,7 +58,7 @@ public class DefaultRasterLegendProducerTest extends WMSTestSupport {
     @Override
     public void setUpInternal() throws Exception {
         super.setUpInternal();
-        this.legendProducer = new DefaultRasterLegendProducer() {
+        this.legendProducer = new AbstractLegendGraphicOutputFormat() {
                     public void writeTo(OutputStream out)
                         throws ServiceException, IOException {
                         throw new UnsupportedOperationException();

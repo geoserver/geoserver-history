@@ -2,7 +2,7 @@
  * This code is licensed under the GPL 2.0 license, availible at the root
  * application directory.
  */
-package org.vfny.geoserver.wms.responses.legend.raster;
+package org.geoserver.wms.legendgraphic;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,13 +22,12 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.logging.Logger;
 
+import org.geoserver.wms.legendgraphic.LegendUtils.HAlign;
+import org.geoserver.wms.legendgraphic.LegendUtils.VAlign;
 import org.geotools.styling.ColorMap;
 import org.geotools.styling.ColorMapEntry;
 import org.geotools.styling.SelectedChannelType;
 import org.vfny.geoserver.wms.responses.ImageUtils;
-import org.vfny.geoserver.wms.responses.LegendUtils;
-import org.vfny.geoserver.wms.responses.LegendUtils.HAlign;
-import org.vfny.geoserver.wms.responses.LegendUtils.VAlign;
 
 
 
