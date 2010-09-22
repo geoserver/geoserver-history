@@ -60,7 +60,7 @@ public class PNGMapResponse extends RenderedImageMapResponse {
 
         // get the one required by the GetMapRequest
         final String format = mapContext.getRequest().getFormat();
-        if (format.equalsIgnoreCase("image/png8") || (mapContext.getPaletteInverter() != null)) {
+        if ("image/png8".equalsIgnoreCase(format) || (mapContext.getPaletteInverter() != null)) {
             InverseColorMapOp paletteInverter = mapContext.getPaletteInverter();
             image = forceIndexed8Bitmask(image, paletteInverter);
 
